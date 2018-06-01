@@ -202,7 +202,11 @@
                               <div class="col-xs-6">
                                   <table class="table table-striped">
                                   <tr>
+<<<<<<< HEAD
                                     <td width="150px"> No Invoice </td>
+=======
+                                    <td width="150px"> No invoice_po </td>
+>>>>>>> df9aadacc8d90d3422cebdfecaf7ef0d28ff3a5e
                                     <td> <input type="text" class="form-control noinvoice" name="no_invoice" required="" novalidate> </td>
                                   </tr>
 
@@ -745,10 +749,10 @@
                  
                   </div>
                   </div>
-          
-              <!-- FORM BAYAR UANG MUKA -->
+				  
+					    <!-- FORM BAYAR UANG MUKA -->
                             <div class="modal fade" id="bayaruangmuka" tabindex="-1" role="dialog"  aria-hidden="true">
-                <form method="post" action="{{url('fakturpembelian/bayaruangmuka')}}" enctype="multipart/form-data" class="form-horizontal" id="form_hasilum">  
+							  <form method="post" action="{{url('fakturpembelian/bayaruangmuka')}}" enctype="multipart/form-data" class="form-horizontal" id="form_hasilum">  
                                 <div class="modal-dialog" style="min-width: 1200px !important; min-height: 800px">
                                  
                                   <div class="modal-content">
@@ -758,7 +762,7 @@
                                         <span class="sr-only">Close</span>
                                       </button>                     
                                       <h3 class="modal-title" style="text-align: center;">
-                                          Uang Muka Pembelian asa
+                                          Uang Muka Pembelian
                                       </h3>     
                                     </div>
                                             
@@ -767,7 +771,7 @@
                                     <table class="table table-stripped tabel_tt">
                                       <tr>
                                         <td width="150px">
-                                          No Transaksiss Kas / Bank 
+                                          No Transaksi Kas / Bank 
                                         </td>
                                         <td>
                                           <input type='text' class='input-sm form-control no_umheader' id="transaksium" readonly="" data-toggle="modal" data-target="#caritransaksium">
@@ -775,7 +779,6 @@
                                           <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                           <input type="hidden" class="notr">
                                           <input type="hidden" class="akunhutang_um">
-                                          <input type="hidden" class="flag_um">
                                         </td>
                                       </tr>
                                       <tr>
@@ -855,24 +858,24 @@
 
                                       </table> 
                                     
-                   
-                  
+									 
+									
                                     </div>
                                       
                                       <div class="modal-footer">
                                           <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
                                           <button type="button" class="btn btn-primary" id="buttonsimpan_um">
                                             Simpan
-                    </button>
+										</button>
                                       </div>
                                        </form>
                                   </div>
                                 </div>
                              </div> 
-            
-            
-            
-              <!-- FORM BAYAR UANG MUKA -->
+						
+						
+						
+						  <!-- FORM BAYAR UANG MUKA -->
                             <div class="modal fade" id="caritransaksium" tabindex="-1" role="dialog"  aria-hidden="true">
                                 <div class="modal-dialog" style="min-width: 1000px !important; min-height: 800px">
                                   <div class="modal-content">
@@ -958,7 +961,7 @@
                                   </div>
 
 
-                  <div class="pull-left">
+									<div class="pull-left">
                                        <button  type="button" class="tbmh-po btn btn-success"  id="createmodal_po" data-toggle="modal" data-target="#myModal5"> <i class="fa fa-plus" aria-hidden="true"></i> Tambah PO </button>
                                     </div>
                                     <br>
@@ -1056,7 +1059,7 @@
 
                                           </table>
                                     </div>
-                                    </div>
+								                  	</div>
                                     
                                           <div class='pull-right'>
                                             <table border="0">
@@ -1209,6 +1212,7 @@
                 <td>No Transaksi Kas / Bank</td>
                 <td colspan="2">
                   <input placeholder="klik disini" type="text" name="bp_nomor_um" class=" form-control bp_nomor_um">
+                  <input type="hidden" name="bp_id_um" class=" form-control bp_id_um">
                 </td>
               </tr>
               <tr>
@@ -1282,10 +1286,10 @@
             </table>
           </div>
       </div>
-    </div>
-     <div class="modal-footer">
+      </div>
+      <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary save_bp_um disabled">Save changes</button>
       </div>
       </div>
      
@@ -1422,12 +1426,6 @@
 
 
 
-
-
-
-
-
-
 @endsection
 
 
@@ -1530,7 +1528,7 @@
 
   $('#tambahdataum').click(function(){
        
-     // toastr.info('asasasas');
+      
 
         nofaktur = $('.nofaktur').val();
         nokas = $('.no_umheader').val();
@@ -1543,17 +1541,12 @@
         akunhutang = $('.akunhutang_um').val();
         keteranganum = $('.keteranganum_header').val();
 
-        alert(keteranganum);
-
-
-        flag = $('.flag_um').val();
         if(dibayar == ''){
           toastr.info("harap diisi jumlah dibayar nya :)");
-        //  toastr.info(flag);
           return false;
         }
 
-
+      
           arrnotakas = [];
       $('.dataum').each(function(){
         valum = $(this).data('nota');
@@ -1576,8 +1569,8 @@
                   '<td><p class="tgl_text">'+tgl+'</p> <input type="hidden" class="tglum" value="'+tgl+'" name="tglum[]"></td>' +
                   '<td><p class="notaum_text">'+notaum+'</p> <input type="hidden" class="notaum" value="'+notaum+'" name="notaum[]"> </td>' +
                   '<td> <p class="jumlahum_text">'+jumlah+'</p> <input type="hidden" class="jumlahum" value="'+jumlah+'" name="jumlahum[]"> </td>' +
-                  '<td> <p class="dibayar_text">'+dibayar+'</p> <input type="hidden" class="dibayar" value="'+dibayar+'" name="dibayarum[]"> <input type="hidden" class="flagum" value="'+flag+'" name="flagum"> </td>'+
-                  '<td> <p class="keterangan_text">'+keterangan+'</p><input type="hidden" value="'+keterangan+'" class="keteranganum" name="keteranganum[]"> <input type="hidden" value='+notr+' class="notr"> <input type="hidden" class="akunhutangum" value="'+akunhutang+'" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="'+keteranganum+'" name="keteranganumheader">  </td>' +
+                  '<td> <p class="dibayar_text">'+dibayar+'</p> <input type="hidden" class="dibayar" value="'+dibayar+'" name="dibayarum[]"> </td>'+
+                  '<td> <p class="keterangan_text">'+keterangan+'</p><input type="hidden" value="'+keterangan+'" class="keteranganum" name="keteranganum[]"> <input type="hidden" value='+notr+' class="notr"> <input type="hidden" class="akunhutangum" value="'+akunhutang+'" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="'+keteranganum+'" name="keteranganumheader"> </td>' +
                   '<td> <button class="btn btn-sm btn-danger" type="button" onclick="hapusum(this)"><i class="fa fa-trash"></i></button></td>'+ 
                 "</tr>";
 
@@ -1586,7 +1579,7 @@
         /*tableum.row.add($(html2)).draw();*/
         }
         else {
-          // alert('dibayar');
+           // alert(dibayar);
            /* console.log($("#"+nokas));*/
             var a          = $('.nofaktur2'+notransaksi);
             var val = $(a).parents('tr');
@@ -1718,7 +1711,6 @@
         $('.nota_um').val(response.um[0].nota_um);
         $('.idtransaksi').val(response.um[0].idtransaksi);
         $('.akunhutang_um').val(response.um[0].acchutang);
-        $('.flag_um').val(response.um[0].flag);
           var tableum = $('#tabletransaksi').DataTable();
       }
     })    
@@ -1745,7 +1737,6 @@
     arrnoum = [];
     $('.dataum').each(function(){
       val = $(this).data('nota');
-      alert(val);
       arrnoum.push(val);
     })
     var a = $('ul#tabmenu').find('li.active').data('val');
@@ -1852,7 +1843,7 @@
                   var month1 = parseInt(month + 1)
                   console.log(d);
                   console.log();
-                  console.log(month + 'mosasanth');
+                  console.log(year);
 
                   if(month < 10) {
                     month = '0' + month1;
@@ -2061,7 +2052,7 @@
         })
     })
 
-  $('#createmodal_ttpo').click(function(){
+	$('#createmodal_ttpo').click(function(){
 
       cabang = $('.cabang').val();
       supplier = $('.idsup_po').val();
@@ -2114,7 +2105,7 @@
             }
         })
     })
-  
+	
    $('#createmodal').click(function(){
 
       jenisppn = $('.jenisppn').val();
@@ -2144,9 +2135,9 @@
 
       }
    })
-  
-  
-  $('#createmodal_pajakpo').click(function(){
+	
+	
+	$('#createmodal_pajakpo').click(function(){
    
       jenisppn = $('.jenisppn_po').val();
       dpp = $('.dpp_po').val();
@@ -4591,7 +4582,7 @@
     }
     })
 
-  $('#createmodal_po').click(function(){
+	$('#createmodal_po').click(function(){
        $('.loading').css('display', 'block');
 
       tanggal = $('.tgl').val();
@@ -4733,7 +4724,7 @@
       }
     })
 
-  $('#buttongetid').click(function(){
+	$('#buttongetid').click(function(){
       var checked = $(".check:checked").map(function(){
         return this.id;
       }).toArray();
@@ -4853,7 +4844,7 @@
                        $('#table_po').append(rowTampil);  
                    
                 }
-        }
+				}
                 else if(flag[0] == "FP"){
                      for(var i = 0; i < response.po.length; i++) {
                         var rowTampil =  "<tr id='datapo'> <td>"+ no +"</td>"+
@@ -4863,7 +4854,7 @@
 
                           no++;   
                          $('#table_po').append(rowTampil);    
-                      } 
+				            	} 
                 }
 
                 var jumlahtotalharga_fp = 0;
@@ -5163,9 +5154,9 @@
                   } //endfor
                })             
           })      
-    }
+		}
          })
-    
+		
   }
         else if(uniqueCabang.length > 1){
           toastr.info('Maaf Cabang yang di inputkan harus sama :) ');

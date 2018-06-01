@@ -104,7 +104,7 @@
         <select class="form-control akun_biaya chosen-select-width1" style="text-align: center; ">
           <option value="0" selected="">Pilih - akun</option>
           @foreach($akun as $val)
-            <option value="{{$val->id_akun}}" selected="">{{$val->id_akun}} - {{$val->nama_akun}}</option>
+            <option @if($val->id_akun == '531511000') selected="" @endif value="{{$val->id_akun}}" >{{$val->id_akun}} - {{$val->nama_akun}}</option>
           @endforeach
         </select>
       </td>
@@ -117,7 +117,7 @@
 	  <tr>
 		<td style="width: 100px">Total</td>
 		<td width="10">:</td>
-		<td width="200"><input type="text" name="total_jml" class="form-control total_jml" style="" readonly=""></td>
+		<td width="200"><input value="Rp. 0,00" type="text" name="total_jml" class="form-control total_jml" style="" readonly=""></td>
 	  </tr>
 	  <tr>
 		<td style="width: 100px">Nominal</td>
@@ -133,7 +133,7 @@
 
         <button type="button" class="btn btn-primary pull-right disabled save_biaya" style="margin-right: 20px" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
 
-        <button class="btn btn-primary btn_modal_bp" type="button" > Bayar dengan Uang Muka </button>
+        <button class="btn btn-primary btn_modal_bp disabled" type="button" > Bayar dengan Uang Muka </button>
 
       </td>
     </tr>
@@ -164,15 +164,15 @@
 	</div>
 	
 <div id="modal_biaya_update" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+  <div class="modal-dialog" style="width: 800px;">
 
     <!-- Modal content-->
-    <div class="modal-content">
+    <div class="modal-content ">
       <div class="modal-header">
         <button style="min-height:0;" type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Update Data</h4>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" >
      <table class="table table_detail">
          <div align="center" style="width: 100%;">  
         <h3 >Detail Biaya Penerus Hutang</h3>
@@ -606,6 +606,8 @@
                       $('.modal_penerus_tt').removeClass('disabled');
                       $('#print-penerus').removeClass('disabled');
                       $('.idfaktur').val(response.id);
+                      $('.save_bp_um').removeClass('disabled');
+                      $('.btn_modal_bp').removeClass('disabled');
                     });
             }else{
               swal({
@@ -639,6 +641,7 @@ function hitung_um() {
     temp+=b;
   })
   $('.bp_total_um').val(accounting.formatMoney(temp, "", 2, ".",','));
+
 }
   
 
@@ -677,24 +680,30 @@ $('.bp_nomor_um').focus(function(){
   })
 
 })
-var id_um    = $('.nofaktur').val();
+var id_um    = 1;
 
 $('.bp_tambah_um').click(function(){
   var nota = $('.bp_nomor_um').val();
   var sup = $('.agen_vendor').val();
   var nofaktur = $('.nofaktur').val();
+  var bp_id_um = $('.bp_id_um').val();
   var bp_dibayar_um = $('.bp_dibayar_um').val();
   bp_dibayar_um   = bp_dibayar_um.replace(/[^0-9\-]+/g,"")/1;
+
+
+
+
 
   if (nota == '') {
     toastr.warning("Uang Muka Harus dipilih");
     return false;
   }
-  console.log(nota);
   if (bp_dibayar_um == '' || bp_dibayar_um == '0') {
     toastr.warning("Pembayaran Tidak Boleh 0");
     return false;
   }
+
+  
   
 
   $.ajax({
@@ -713,41 +722,161 @@ $('.bp_tambah_um').click(function(){
         toastr.warning("Pembayaran Melebihi Sisa Uang Muka");
         return false;
       }
-      
-      datatable2.row.add([
-          '<p class="tb_faktur_um_text">'+nofaktur+'</p>'+
-          '<input type="hidden" class="tb_faktur_um_'+id_um+'">',
+      if (bp_id_um == '') {
+        datatable2.row.add([
+            '<p class="tb_faktur_um_text">'+nofaktur+'</p>'+
+            '<input type="hidden" class="tb_faktur_um_'+id_um+' tb_faktur_um" value="'+id_um+'">',
 
-          '<p class="tb_transaksi_um_text">'+data.data.nomor+'</p>'+
-          '<input type="hidden" class="tb_transaksi_um" name="tb_transaksi_um[]" value="'+data.data.nomor+'">',
+            '<p class="tb_transaksi_um_text">'+data.data.nomor+'</p>'+
+            '<input type="hidden" class="tb_transaksi_um" name="tb_transaksi_um[]" value="'+data.data.nomor+'">',
 
-          '<p class="tb_tanggal_text">'+data.data.um_tgl+'</p>',
+            '<p class="tb_tanggal_text">'+data.data.um_tgl+'</p>',
 
-          '<p class="tb_um_um_text">'+data.data.um_nomorbukti+'</p>'+
-          '<input type="hidden" class="tb_um_um" name="tb_um_um[]" value="'+data.data.um_nomorbukti+'">',
+            '<p class="tb_um_um_text">'+data.data.um_nomorbukti+'</p>'+
+            '<input type="hidden" class="tb_um_um" name="tb_um_um[]" value="'+data.data.um_nomorbukti+'">',
 
-          '<p class="tb_jumlah_um_text">'+accounting.formatMoney(data.data.total_um, "", 2, ".",',')+'</p>',
+            '<p class="tb_jumlah_um_text">'+accounting.formatMoney(data.data.total_um, "", 2, ".",',')+'</p>',
 
-          '<p class="tb_sisa_um_text">'+accounting.formatMoney(data.data.sisa_um, "", 2, ".",',')+'</p>',
+            '<p class="tb_sisa_um_text">'+accounting.formatMoney(data.data.sisa_um, "", 2, ".",',')+'</p>',
 
-          '<p class="tb_bayar_um_text">'+bp_dibayar_um+'</p>'+
-          '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+bp_dibayar_um+'">',
+            '<p class="tb_bayar_um_text">'+accounting.formatMoney(bp_dibayar_um, "", 2, ".",',')+'</p>'+
+            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+bp_dibayar_um+'">',
 
-          '<p class="tb_keterangan_um_text">'+data.data.um_keterangan+'</p>',
+            '<p class="tb_keterangan_um_text">'+data.data.um_keterangan+'</p>',
 
-          '<div class="btn-group ">'+
-          '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
-          '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
-          '</div>',
-        ]).draw();
-      id_um++;
-      array_um1.push(data.data.nomor);
-      array_um2.push(data.data.um_nomorbukti);
+            '<div class="btn-group ">'+
+            '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+            '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+            '</div>',
+          ]).draw();
+        id_um++;
+        array_um1.push(data.data.nomor);
+        array_um2.push(data.data.um_nomorbukti);
+      }else{
+        var par = $('.tb_faktur_um_'+bp_id_um).parents('tr');
+        $(par).find('.tb_bayar_um').val(bp_dibayar_um);
+        $(par).find('.tb_bayar_um_text').text(accounting.formatMoney(bp_dibayar_um, "", 2, ".",','));
+      }
       hitung_um();
       $('.bp_tabel_um :input').val('');
     },error:function(){
       toastr.warning('Terjadi Kesalahan');
     }
   })
+})
+
+
+function edit_um(a) {
+  var par = $(a).parents('tr');
+  var tb_faktur_um          = $(par).find('.tb_faktur_um').val();
+  var tb_transaksi_um       = $(par).find('.tb_transaksi_um').val();
+  var tb_tanggal_text       = $(par).find('.tb_tanggal_text').text();
+  var tb_um_um              = $(par).find('.tb_um_um').val();
+  var tb_jumlah_um_text     = $(par).find('.tb_jumlah_um_text').text();
+  var tb_sisa_um_text       = $(par).find('.tb_sisa_um_text').text();
+  var tb_bayar_um           = $(par).find('.tb_bayar_um').val();
+  var tb_keterangan_um_text = $(par).find('.tb_keterangan_um_text').text();
+
+  $('.bp_id_um').val(tb_faktur_um);
+  $('.bp_nomor_um').val(tb_transaksi_um);
+  $('.bp_tanggal_um').val(tb_tanggal_text);
+  $('.bp_jumlah_um').val(tb_jumlah_um_text);
+  $('.bp_sisa_um').val(tb_sisa_um_text);
+  $('.bp_keterangan_um').val(tb_keterangan_um_text)
+  $('.bp_dibayar_um').val(accounting.formatMoney(tb_bayar_um, "", 0, ".",','));
+
+}
+
+function hapus_um(a) {
+  var par             = $(a).parents('tr');
+  var tb_transaksi_um = $(par).find('.tb_transaksi_um').val();
+  var tb_um_um        = $(par).find('.tb_um_um').val();
+
+  var index1 = array_um1.indexOf(tb_transaksi_um);
+  var index2 = array_um2.indexOf(tb_um_um);
+
+  array_um1.splice(index1,1);
+  array_um2.splice(index2,1);
+
+  datatable2.row(par).remove().draw(false);
+
+  hitung_um();
+}
+
+
+$('.save_bp_um').click(function(){
+
+  var temp = 0;
+  var bp_total_um = $('.bp_total_um').val();
+  datatable2.$('.tb_bayar_um').each(function(){
+    var b = $(this).val();
+    b   = b.replace(/[^0-9\-]+/g,"")/1;
+    console.log(b);
+    temp+=b;
+  })
+  var total_jml = $('.total_jml').val();
+  total_jml   = total_jml.replace(/[^0-9\-]+/g,"")/100;
+
+  if (temp > total_jml) {
+    toastr.warning("Pembayaran Lebih Besar Dari Total Faktur");
+    return false;
+  }
+
+  swal({
+      title: "Apakah anda yakin?",
+      text: "Simpan Data!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Ya, Simpan!",
+      cancelButtonText: "Batal",
+      closeOnConfirm: true
+    },
+    function(){
+         $.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              }
+          });
+        $.ajax({
+        url:baseUrl + '/fakturpembelian/save_bp_um',
+        type:'get',
+        data:$('.head1 :input').serialize()
+              +'&'+$('.head_biaya :input').serialize()
+              +'&'+datatable2.$('input').serialize()+'&bp_total_um='+bp_total_um,
+        success:function(response){
+          if (response.status == 1) {
+              swal({
+                  title: "Berhasil!",
+                  type: 'success',
+                  text: "Data berhasil disimpan",
+                  timer: 900,
+                  showConfirmButton: true
+                  },function(){
+                   $('.save_bp_um').addClass('disabled');
+                   $('.btn_modal_bp').addClass('disabled');
+                   
+                  });
+          }else{
+            swal({
+              title: "Data Sudah Ada",
+              type: 'error',
+              timer: 900,
+              showConfirmButton: true
+
+            });
+          }
+        },
+        error:function(data){
+          swal({
+          title: "Terjadi Kesalahan",
+                  type: 'error',
+                  timer: 900,
+                 showConfirmButton: true
+
+      });
+     }
+    });  
+  });
 })
 </script>

@@ -48,6 +48,7 @@
           $('.bp_jumlah_um').val(accounting.formatMoney(data.data.total_um, "", 2, ".",','));
           $('.bp_sisa_um').val(accounting.formatMoney(data.data.sisa_um, "", 2, ".",','));
           $('.bp_keterangan_um').val(data.data.um_keterangan);
+          $('.bp_id_um').val('');
           $('#modal_show_um').modal('hide');
         },error:function(){
           toastr.warning('Terjadi Kesalahan');
