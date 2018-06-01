@@ -1208,7 +1208,7 @@
                 <td>No Transaksi Kas / Bank</td>
                 <td colspan="2">
                   <input placeholder="klik disini" type="text" name="bp_nomor_um" class=" form-control bp_nomor_um">
-                  <input hidden="" type="text" name="bp_id_um" class=" form-control bp_id_um">
+                  <input type="hidden" name="bp_id_um" class=" form-control bp_id_um">
                 </td>
               </tr>
               <tr>
@@ -1282,10 +1282,10 @@
             </table>
           </div>
       </div>
-    </div>
-     <div class="modal-footer">
+      </div>
+      <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary save_bp_um">Save changes</button>
+        <button type="button" class="btn btn-primary save_bp_um disabled">Save changes</button>
       </div>
       </div>
      
@@ -1419,12 +1419,6 @@
     </div>
   </div>
 </div>
-
-
-
-
-
-
 
 
 
