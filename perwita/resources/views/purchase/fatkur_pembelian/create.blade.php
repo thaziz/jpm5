@@ -202,11 +202,7 @@
                               <div class="col-xs-6">
                                   <table class="table table-striped">
                                   <tr>
-<<<<<<< HEAD
                                     <td width="150px"> No Invoice </td>
-=======
-                                    <td width="150px"> No invoice_po </td>
->>>>>>> df9aadacc8d90d3422cebdfecaf7ef0d28ff3a5e
                                     <td> <input type="text" class="form-control noinvoice" name="no_invoice" required="" novalidate> </td>
                                   </tr>
 
@@ -2994,17 +2990,29 @@
       val = $(this).val();
       qty = $('.qty').val();
 
-      numeric = Math.round(val).toFixed(2);
+      numeric = parseFloat(val).toFixed(2);
       $(this).val(addCommas(numeric));
 
       if(qty != '') {
         amount = parseInt(qty) * parseInt(val);
-        num_amount = Math.round(amount).toFixed(2);
-        numeric = Math.round(val).toFixed(2);
+        num_amount = parseFloat(amount).toFixed(2);
+        numeric = parseFloat(val).toFixed(2);
         harga = addCommas(numeric);
         $(this).val(harga);
         $('.amount').val(addCommas(num_amount));
       }
+
+      diskon = $('.diskon').val();
+      total = parseFloat((diskon / 100) * num_amount);
+        
+        hasiltotal = total.toFixed(2);
+        $('.hasildiskonitem').val(addCommas(hasiltotal));
+
+        hasil = parseFloat(num_amount) - parseFloat(total);
+        numeric = parseFloat(hasil).toFixed(2);
+
+        $('.biaya').val(addCommas(numeric));
+
     })
 
 
