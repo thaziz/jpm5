@@ -43,7 +43,7 @@
 	 	</div>
 	    <table class="table table-bordered table-hover table_outlet" style="font-size: 12px; ">
 	    <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
-        <button class="btn btn-primary btn_modal_bp disabled" type="button" > Bayar dengan Uang Muka </button>
+        <button class="btn btn-primary btn_modal_ot disabled" type="button" > Bayar dengan Uang Muka </button>
 	    <button type="button" class="btn btn-primary pull-right disabled save_update_outlet" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
 	    	
 	    <div class="loading text-center" style="display: none;">
@@ -129,6 +129,13 @@
 			</tbody>   	
 	    </table>
 	</div>
+
+
+
+
+
+
+
 
 <!-- {{-- MODAL TT OUTLET --}} -->
 
@@ -264,6 +271,10 @@
 
 	    });
 	 
+
+
+
+
 	 	var kom 	= [];
 	 	var tot_kom = [];
 	 	var tar_das = [];
@@ -544,6 +555,9 @@ function hitung_komisi(o){
                   $('.print-penerus').removeClass('disabled');
                   $('.idfaktur').val(response.id);
 
+                  $('.btn_modal_ot').removeClass('disabled');
+                  $('.save_ot_um').removeClass('disabled');
+
         });
       },
       error:function(data){
@@ -664,8 +678,262 @@ function simpan_tt() {
 
   }
 
-$('.btn_modal_bp').click(function(){
-  $('#modal_um_bp').modal('show');
+function print_penerus() {
+  var idfaktur = $('.idfaktur').val();
+  console.log(idfaktur);
+   window.open('{{url('fakturpembelian/detailbiayapenerus')}}'+'/'+idfaktur);
+  }
+
+function hitung_um_ot() {
+  var temp = 0;
+  datatable5.$('.tb_bayar_um').each(function(){
+    var b = $(this).val();
+    b   = b.replace(/[^0-9\-]+/g,"")/1;
+    console.log(b);
+    temp+=b;
+  })
+  $('.ot_total_um').val(accounting.formatMoney(temp, "", 2, ".",','));
+
+}
+  
+
+
+
+$('.btn_modal_ot').click(function(){
+  $('#modal_um_ot').modal('show');
+})
+
+
+var array_um1 = [0];
+var array_um2 = [0];
+$('.ot_nomor_um').focus(function(){
+  var sup = $('.selectOutlet').val();
+  if (sup == '0') {
+    toastr.warning('Agen/Vendor Harus Diisi');
+    return false;
+  }
+
+  $.ajax({
+    url:baseUrl +'/fakturpembelian/outlet_um',
+    data: {sup,array_um1,array_um2},
+    success:function(data){
+      console.log('asd');
+      $('.bp_div_um').html(data);
+      $('#modal_show_um').modal('show');
+    },error:function(){
+      toastr.warning('Terjadi Kesalahan');
+    }
+  })
+
+})
+
+
+var id_um    = 1;
+
+$('.ot_tambah_um').click(function(){
+  var nota = $('.ot_nomor_um').val();
+  var sup = $('.selectOutlet').val();
+  var nofaktur = $('.nofaktur').val();
+  var ot_id_um = $('.ot_id_um').val();
+  var ot_dibayar_um = $('.ot_dibayar_um').val();
+  ot_dibayar_um   = ot_dibayar_um.replace(/[^0-9\-]+/g,"")/1;
+
+
+
+
+
+  if (nota == '') {
+    toastr.warning("Uang Muka Harus dipilih");
+    return false;
+  }
+  if (ot_dibayar_um == '' || ot_dibayar_um == '0') {
+    toastr.warning("Pembayaran Tidak Boleh 0");
+    return false;
+  }
+
+  
+  
+
+  $.ajax({
+    url:baseUrl +'/fakturpembelian/biaya_penerus/append_um',
+    data: {nota,sup},
+    dataType:'json',
+    success:function(data){
+
+      $('.ot_nomor_um').val(data.data.nomor);
+      $('.ot_tanggal_um').val(data.data.um_tgl);
+      $('.ot_jumlah_um').val(accounting.formatMoney(data.data.total_um, "", 2, ".",','));
+      $('.ot_sisa_um').val(accounting.formatMoney(data.data.sisa_um, "", 2, ".",','));
+      $('.ot_keterangan_um').val(data.data.um_keterangan);
+
+      if (ot_dibayar_um > data.data.sisa_um) {
+        toastr.warning("Pembayaran Melebihi Sisa Uang Muka");
+        return false;
+      }
+      if (ot_id_um == '') {
+        datatable5.row.add([
+            '<p class="tb_faktur_um_text">'+nofaktur+'</p>'+
+            '<input type="hidden" class="tb_faktur_um_'+id_um+' tb_faktur_um" value="'+id_um+'">',
+
+            '<p class="tb_transaksi_um_text">'+data.data.nomor+'</p>'+
+            '<input type="hidden" class="tb_transaksi_um" name="tb_transaksi_um[]" value="'+data.data.nomor+'">',
+
+            '<p class="tb_tanggal_text">'+data.data.um_tgl+'</p>',
+
+            '<p class="tb_um_um_text">'+data.data.um_nomorbukti+'</p>'+
+            '<input type="hidden" class="tb_um_um" name="tb_um_um[]" value="'+data.data.um_nomorbukti+'">',
+
+            '<p class="tb_jumlah_um_text">'+accounting.formatMoney(data.data.total_um, "", 2, ".",',')+'</p>',
+
+            '<p class="tb_sisa_um_text">'+accounting.formatMoney(data.data.sisa_um, "", 2, ".",',')+'</p>',
+
+            '<p class="tb_bayar_um_text">'+accounting.formatMoney(ot_dibayar_um, "", 2, ".",',')+'</p>'+
+            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+ot_dibayar_um+'">',
+
+            '<p class="tb_keterangan_um_text">'+data.data.um_keterangan+'</p>',
+
+            '<div class="btn-group ">'+
+            '<a  onclick="edit_um_ot(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+            '<a  onclick="hapus_um_ot(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+            '</div>',
+          ]).draw();
+        id_um++;
+        array_um1.push(data.data.nomor);
+        array_um2.push(data.data.um_nomorbukti);
+      }else{
+        var par = $('.tb_faktur_um_'+ot_id_um).parents('tr');
+        $(par).find('.tb_bayar_um').val(ot_dibayar_um);
+        $(par).find('.tb_bayar_um_text').text(accounting.formatMoney(ot_dibayar_um, "", 2, ".",','));
+      }
+      hitung_um_ot();
+      $('.ot_tabel_um :input').val('');
+    },error:function(){
+      toastr.warning('Terjadi Kesalahan');
+    }
+  })
+})
+
+
+function edit_um_ot(a) {
+  var par = $(a).parents('tr');
+  var tb_faktur_um          = $(par).find('.tb_faktur_um').val();
+  var tb_transaksi_um       = $(par).find('.tb_transaksi_um').val();
+  var tb_tanggal_text       = $(par).find('.tb_tanggal_text').text();
+  var tb_um_um              = $(par).find('.tb_um_um').val();
+  var tb_jumlah_um_text     = $(par).find('.tb_jumlah_um_text').text();
+  var tb_sisa_um_text       = $(par).find('.tb_sisa_um_text').text();
+  var tb_bayar_um           = $(par).find('.tb_bayar_um').val();
+  var tb_keterangan_um_text = $(par).find('.tb_keterangan_um_text').text();
+
+  $('.ot_id_um').val(tb_faktur_um);
+  $('.ot_nomor_um').val(tb_transaksi_um);
+  $('.ot_tanggal_um').val(tb_tanggal_text);
+  $('.ot_jumlah_um').val(tb_jumlah_um_text);
+  $('.ot_sisa_um').val(tb_sisa_um_text);
+  $('.ot_keterangan_um').val(tb_keterangan_um_text)
+  $('.ot_dibayar_um').val(accounting.formatMoney(tb_bayar_um, "", 0, ".",','));
+
+}
+
+function hapus_um_ot(a) {
+  var par             = $(a).parents('tr');
+  var tb_transaksi_um = $(par).find('.tb_transaksi_um').val();
+  var tb_um_um        = $(par).find('.tb_um_um').val();
+
+  var index1 = array_um1.indexOf(tb_transaksi_um);
+  var index2 = array_um2.indexOf(tb_um_um);
+
+  array_um1.splice(index1,1);
+  array_um2.splice(index2,1);
+
+  datatable5.row(par).remove().draw(false);
+
+  hitung_um_ot();
+}
+
+
+$('.save_ot_um').click(function(){
+
+  var temp = 0;
+  var ot_total_um = $('.ot_total_um').val();
+  datatable5.$('.tb_bayar_um').each(function(){
+    var b = $(this).val();
+    b   = b.replace(/[^0-9\-]+/g,"")/1;
+    console.log(b);
+    temp+=b;
+  })
+  var total_jml = $('.total_all_komisi').val();
+  total_jml   = total_jml.replace(/[^0-9\-]+/g,"")/100;
+
+  if (temp > total_jml) {
+    toastr.warning("Pembayaran Lebih Besar Dari Total Faktur");
+    return false;
+  }
+
+  swal({
+      title: "Apakah anda yakin?",
+      text: "Simpan Data!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Ya, Simpan!",
+      cancelButtonText: "Batal",
+      closeOnConfirm: true
+    },
+    function(){
+         $.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              }
+          });
+        $.ajax({
+        url:baseUrl + '/fakturpembelian/save_bp_um',
+        type:'get',
+        data:$('.head1 :input').serialize()
+              +'&'+$('.head_biaya :input').serialize()
+              +'&'+datatable5.$('input').serialize()+'&bp_total_um='+ot_total_um,
+        success:function(response){
+          if (response.status == 1) {
+              swal({
+                  title: "Berhasil!",
+                  type: 'success',
+                  text: "Data berhasil disimpan",
+                  timer: 900,
+                  showConfirmButton: true
+                  },function(){
+                   $('.save_ot_um').addClass('disabled');
+                   $('.btn_modal_ot').addClass('disabled');
+                   
+                  });
+          }else if(response.status == 0){
+            swal({
+              title: "Data Faktur Tidak Ada",
+              type: 'error',
+              timer: 900,
+              showConfirmButton: true
+
+            });
+          }else if(response.status == 2){
+            swal({
+              title: "Status Faktur Pending",
+              type: 'error',
+              timer: 900,
+              showConfirmButton: true
+
+            });
+          }
+        },
+        error:function(data){
+          swal({
+          title: "Terjadi Kesalahan",
+                  type: 'error',
+                  timer: 900,
+                 showConfirmButton: true
+
+      });
+     }
+    });  
+  });
 })
 
 $.fn.serializeArray = function () {
