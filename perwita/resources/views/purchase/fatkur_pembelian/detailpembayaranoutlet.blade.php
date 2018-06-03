@@ -41,9 +41,9 @@
 	 		</tr>
 	 	</table>
 	 	</div>
-
 	    <table class="table table-bordered table-hover table_outlet" style="font-size: 12px; ">
 	    <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+        <button class="btn btn-primary btn_modal_bp disabled" type="button" > Bayar dengan Uang Muka </button>
 	    <button type="button" class="btn btn-primary pull-right disabled save_update_outlet" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
 	    	
 	    <div class="loading text-center" style="display: none;">

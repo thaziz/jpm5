@@ -2498,101 +2498,111 @@ public function save_bp_um(request $req)
 		$id = DB::table('uangmukapembelian_fp')
 				->max('umfp_id')+1;
 		
+		$pending = DB::table('faktur_pembelian')
+					 ->where('fp_nofaktur',$req->nofaktur)
+					 ->get();
 
-		$save = DB::table('uangmukapembelian_fp')
-				  ->insert([
-				  	'umfp_id'			=> $id,
-					'umfp_totalbiaya'	=> filter_var($req->bp_total_um, FILTER_SANITIZE_NUMBER_INT)/100,
-					'umfp_tgl'    		=> carbon::parse(str_replace('/', '-', $req->tgl_biaya_head))->format('Y-m-d'),
-					'umfp_idfp' 		=> $req->idfaktur,
-					'updated_by'		=> Auth::user()->m_name,
-					'created_by'		=> Auth::user()->m_name,
-					'created_at' 		=> carbon::now(),
-					'updated_at' 		=> carbon::now(),
-					'umfp_keterangan'	=> $req->Keterangan_biaya,
-					'umfp_nofaktur'		=> $req->nofaktur,
-				  ]);
+		if ($pending == null) {
+			return response()->json(['status'=>0]);
+		}
+		if ($pending->fp_pending_status == 'PENDING') {
+			return response()->json(['status'=>2]);
+		}else{
+			$save = DB::table('uangmukapembelian_fp')
+					  ->insert([
+					  	'umfp_id'			=> $id,
+						'umfp_totalbiaya'	=> filter_var($req->bp_total_um, FILTER_SANITIZE_NUMBER_INT)/100,
+						'umfp_tgl'    		=> carbon::parse(str_replace('/', '-', $req->tgl_biaya_head))->format('Y-m-d'),
+						'umfp_idfp' 		=> $req->idfaktur,
+						'updated_by'		=> Auth::user()->m_name,
+						'created_by'		=> Auth::user()->m_name,
+						'created_at' 		=> carbon::now(),
+						'updated_at' 		=> carbon::now(),
+						'umfp_keterangan'	=> $req->Keterangan_biaya,
+						'umfp_nofaktur'		=> $req->nofaktur,
+					  ]);
 
-		for ($i=0; $i < count($req->tb_transaksi_um); $i++) { 
+			for ($i=0; $i < count($req->tb_transaksi_um); $i++) { 
 
-			$dt = DB::table('uangmukapembeliandt_fp')
-				->max('umfpdt_id')+1;
-			
-			$um = DB::table('d_uangmuka')
-					->where('um_nomorbukti',$req->tb_um_um[$i])
-					->first();
+				$dt = DB::table('uangmukapembeliandt_fp')
+					->max('umfpdt_id')+1;
+				
+				$um = DB::table('d_uangmuka')
+						->where('um_nomorbukti',$req->tb_um_um[$i])
+						->first();
 
-			$fpg = DB::table('fpg')
-					 ->where('fpg_nofpg',$req->tb_transaksi_um[$i])
-					 ->first();
+				$fpg = DB::table('fpg')
+						 ->where('fpg_nofpg',$req->tb_transaksi_um[$i])
+						 ->first();
 
-			if($fpg != null){
+				if($fpg != null){
 
-				$cari_fpgdt = DB::table('fpg_dt')
-							->where('fpgdt_nofaktur',$req->tb_um_um[$i])
-							->where('fpgdt_idfpg',$fpg->idfpg)
-							->first();
-				$update_fpgdt = DB::table('fpg_dt')
+					$cari_fpgdt = DB::table('fpg_dt')
 								->where('fpgdt_nofaktur',$req->tb_um_um[$i])
 								->where('fpgdt_idfpg',$fpg->idfpg)
-								->update([
-									'fpgdt_sisapelunasanumfp' => $cari_fpgdt->fpgdt_sisapelunasanumfp - $req->tb_bayar_um[$i],
-								]);
+								->first();
+					$update_fpgdt = DB::table('fpg_dt')
+									->where('fpgdt_nofaktur',$req->tb_um_um[$i])
+									->where('fpgdt_idfpg',$fpg->idfpg)
+									->update([
+										'fpgdt_sisapelunasanumfp' => $cari_fpgdt->fpgdt_sisapelunasanumfp - $req->tb_bayar_um[$i],
+									]);
 
-				$flag = $fpg->fpg_flag;
+					$flag = $fpg->fpg_flag;
 
-			}else{
+				}else{
 
-				$bkk = DB::table('bukti_kas_keluar')
-					 ->where('bkk_nota',$req->tb_transaksi_um[$i])
-					 ->first();
+					$bkk = DB::table('bukti_kas_keluar')
+						 ->where('bkk_nota',$req->tb_transaksi_um[$i])
+						 ->first();
 
-				$cari_bkkd = DB::table('bukti_kas_keluar_detail')
-							->where('bkkd_bkk_id',$bkk->bkk_id)
-							->where('bkkd_ref',$req->tb_um_um[$i])
-							->first();
-
-				$update_bkkd = DB::table('bukti_kas_keluar_detail')
+					$cari_bkkd = DB::table('bukti_kas_keluar_detail')
 								->where('bkkd_bkk_id',$bkk->bkk_id)
 								->where('bkkd_ref',$req->tb_um_um[$i])
-								->update([
-									'bkkd_sisaum' => $cari_bkkd->bkkd_sisaum - $req->tb_bayar_um[$i],
-								]);
+								->first();
 
-				$flag = $bkk->bkk_flag;
+					$update_bkkd = DB::table('bukti_kas_keluar_detail')
+									->where('bkkd_bkk_id',$bkk->bkk_id)
+									->where('bkkd_ref',$req->tb_um_um[$i])
+									->update([
+										'bkkd_sisaum' => $cari_bkkd->bkkd_sisaum - $req->tb_bayar_um[$i],
+									]);
+
+					$flag = $bkk->bkk_flag;
+				}
+
+				$save_dt = DB::table('uangmukapembeliandt_fp')
+							  ->insert([
+							  	'umfpdt_id' 		   => $dt,
+								'umfpdt_transaksibank' => $req->tb_transaksi_um[$i],
+								'umfpdt_tgl' 		   => $um->um_tgl,
+								'umfpdt_jumlahum'  	   => $um->um_jumlah,
+								'umfpdt_dibayar'   	   => $req->tb_bayar_um[$i],
+								'umfpdt_keterangan'    => $um->um_keterangan,
+								'umfpdt_idfp' 		   => $req->idfaktur,
+								'umfpdt_idumfp' 	   => $id,
+								'umfpdt_notaum'  	   => $um->um_nomorbukti,
+								'created_at' 		   => carbon::now(),
+								'updated_at' 		   => carbon::now(),
+								'umfpdt_acchutang'     => $req->acc_penjualan_penerus,
+								'umfpdt_flag'  		   => $flag,
+							  ]);
+				
 			}
 
-			$save_dt = DB::table('uangmukapembeliandt_fp')
-						  ->insert([
-						  	'umfpdt_id' 		   => $dt,
-							'umfpdt_transaksibank' => $req->tb_transaksi_um[$i],
-							'umfpdt_tgl' 		   => $um->um_tgl,
-							'umfpdt_jumlahum'  	   => $um->um_jumlah,
-							'umfpdt_dibayar'   	   => $req->tb_bayar_um[$i],
-							'umfpdt_keterangan'    => $um->um_keterangan,
-							'umfpdt_idfp' 		   => $req->idfaktur,
-							'umfpdt_idumfp' 	   => $id,
-							'umfpdt_notaum'  	   => $um->um_nomorbukti,
-							'created_at' 		   => carbon::now(),
-							'updated_at' 		   => carbon::now(),
-							'umfpdt_acchutang'     => $req->acc_penjualan_penerus,
-							'umfpdt_flag'  		   => $flag,
-						  ]);
-			
+			$cari_fp = DB::table('faktur_pembelian')
+						 ->where('fp_nofaktur',$req->nofaktur)
+						 ->first();
+
+			$update_fp = DB::table('faktur_pembelian')
+						 ->where('fp_nofaktur',$req->nofaktur)
+						 ->update([
+						 	'fp_uangmuka' => $cari_fp->fp_uangmuka + filter_var($req->bp_total_um, FILTER_SANITIZE_NUMBER_INT)/100,
+						 	'fp_sisapelunasan'=> $cari_fp->fp_sisapelunasan - filter_var($req->bp_total_um, FILTER_SANITIZE_NUMBER_INT)/100
+						 ]);
+
+			return response()->json(['status'=>1]);
 		}
-
-		$cari_fp = DB::table('faktur_pembelian')
-					 ->where('fp_nofaktur',$req->nofaktur)
-					 ->first();
-
-		$update_fp = DB::table('faktur_pembelian')
-					 ->where('fp_nofaktur',$req->nofaktur)
-					 ->update([
-					 	'fp_uangmuka' => $cari_fp->fp_uangmuka + filter_var($req->bp_total_um, FILTER_SANITIZE_NUMBER_INT)/100,
-					 	'fp_sisapelunasan'=> $cari_fp->fp_sisapelunasan - filter_var($req->bp_total_um, FILTER_SANITIZE_NUMBER_INT)/100
-					 ]);
-
-		return response()->json(['status'=>1]);
 	});
 }
 
