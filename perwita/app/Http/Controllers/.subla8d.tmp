@@ -5504,6 +5504,7 @@ public function purchase_order() {
 
 				$harga = str_replace(',', '', $request->harga[$x]);
 				$totalharga = str_replace(',', '', $request->totalharga[$x]);
+				$biaya = str_replace(',', '', $request->biaya[$x]);
 				$nettoitem = str_replace(',', '', $request->nettoitem[$x]);
 
 				
@@ -5524,8 +5525,16 @@ public function purchase_order() {
 
 
 
-				if($request->biaya[$x] != ''){
-					$biaya = str_replace(',', '', $request->biaya[$x]);
+				if($request->diskon != ''){
+						
+
+					$diskon = $request->diskon;
+					$nominal = (float)$diskon / 100 * (float)$biaya;
+					$hargajadi = (float)$biaya - (float)$nominal;
+
+					$fatkurpembeliandt->fpdt_biaya = $hargajadi;  	
+				}
+				else {
 					$fatkurpembeliandt->fpdt_biaya = $biaya;  
 				}
 				
@@ -5536,7 +5545,7 @@ public function purchase_order() {
 					$fatkurpembeliandt->fpdt_accbiaya =  $dataakunitem;
 				}
 				$fatkurpembeliandt->fpdt_keterangan =  $request->keteranganitem[$x];
-				$fatkurpembeliandt->fpdt_netto =  $nettoitem[$x];
+				$fatkurpembeliandt->fpdt_diskon =  $request->diskonitem[$x];
 				$fatkurpembeliandt->fpdt_groupitem =  $request->groupitem[$x];
 				$fatkurpembeliandt->save();
 				/*$fatkurpembeliandt->fpdt_idpo =  */

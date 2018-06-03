@@ -5536,7 +5536,7 @@ public function purchase_order() {
 					$fatkurpembeliandt->fpdt_accbiaya =  $dataakunitem;
 				}
 				$fatkurpembeliandt->fpdt_keterangan =  $request->keteranganitem[$x];
-				$fatkurpembeliandt->fpdt_netto =  $nettoitem[$x];
+				$fatkurpembeliandt->fpdt_netto =  $request->nettoitem[$x];
 				$fatkurpembeliandt->fpdt_groupitem =  $request->groupitem[$x];
 				$fatkurpembeliandt->save();
 				/*$fatkurpembeliandt->fpdt_idpo =  */
