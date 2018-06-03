@@ -166,7 +166,50 @@
       }
     })
   })
-    
+  
+  idgudang = $('.idgudang').val();
+  
+    $.ajax({
+      data : {idgudang},
+      type : "get",
+      url : baseUrl + '/stockgudang/carigudang',
+      dataType : 'json',
+      success : function(response){
+
+        tablegudang = $('#tablegudang').DataTable();
+        tablegudang.clear().draw();
+
+        datagudang = response.gudang;
+        n = 1;
+        for(i = 0 ; i < response.count; i++){        
+          var row = "<tr> <td> "+n+" </td>" +
+                "<td> "+datagudang[i].kode_item+" - "+datagudang[i].nama_masteritem+" </td>" + 
+                "<td> "+datagudang[i].sg_qty+"</td>" +
+                "<td> "+datagudang[i].sg_minstock+" </td>" +
+                "<td>"; 
+                if(datagudang[i].sg_qty < datagudang[i].sg_minstock) {
+                  row +=   "<i class='btn btn-warning fa fa-exclamation-triangle' aria-hidden='true'></i> Waning";
+
+                }
+                    else {
+                   row +=   "<i class='fa fa-check' aria-hidden='true'></i>";
+
+                    }
+                    
+                 row +=  "</td>" +
+                "<td>  <a class='btn btn-sm btn-info' href='url('pengeluaranbarang/createpengeluaranbarang')'> <i class='fa fa-plus'> </i> Buat SPPB </a> &nbsp; <a class='btn btn-sm btn-primary' href='url('suratpermintaanpembelian/createspp')'> <i class='fa fa-plus'> </i> Buat SPP</i> </a></td>" +
+              "</tr>";
+         
+               tablegudang.rows.add($(row)).draw();
+              n++;
+        }
+
+
+      },
+      error : function(){
+        location.reload();
+      }
+    })
 
 </script>
 @endsection
