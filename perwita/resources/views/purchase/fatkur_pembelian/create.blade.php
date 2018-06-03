@@ -1241,7 +1241,9 @@
                   <input type="text" name="bp_dibayar_um" class=" form-control bp_dibayar_um">
                 </td>
                 <td align="right">
-                  <button class="btn btn-primary bp_tambah_um" type="button"><i class="fa fa-plus"> Tambah</i></button> 
+                  <button class="btn btn-primary bp_tambah_um "type="hidden" ><i class="fa fa-plus"> Tambah</i></button> 
+                  <button class="btn btn-primary ot_tambah_um" type="hidden" ><i class="fa fa-plus"> Tambah</i></button> 
+                  <button class="btn btn-primary sc_tambah_um" type="hidden" ><i class="fa fa-plus"> Tambah</i></button> 
                 </td>
               </tr>
             </table>
@@ -1285,7 +1287,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary save_bp_um disabled">Save changes</button>
+        <button type="hidden" class="btn btn-primary save_bp_um disabled" >Save changes</button>
+        <button type="hidden" class="btn btn-primary save_ot_um disabled" >Save changes</button>
+        <button type="hidden" class="btn btn-primary save_sc_um disabled" >Save changes</button>
       </div>
       </div>
      
@@ -5818,8 +5822,10 @@
         $('.nofaktur').val(response.nota);
       }
     })
-
+    // untuk rubah uang muka
     $(".tmbhdatapenerus").addClass('disabled');
+    $(".save_bp_um").prop('hidden',false);
+    $(".bp_tambah_um").prop('hidden',false);
     $(".tmbhdatapenerus").css('background','grey');
     $(".tmbhdatapenerus").css('color','black');
 
@@ -5832,9 +5838,14 @@
     $(".tmbhdataitem").css('color','none');
 
     $(".tmbhdataoutlet").removeClass('disabled');
+    $(".save_ot_um").prop('hidden',true);
+    $(".ot_tambah_um").prop('hidden',true);
     $(".tmbhdataoutlet").css('background','none');
     $(".tmbhdataoutlet").css('color','none');
 
+    $(".tmbhdatasubcon").removeClass('disabled');
+    $(".save_sc_um").prop('hidden',true);
+    $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").removeClass('disabled');
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
@@ -5849,6 +5860,8 @@ var old_nota =$('.nofaktur1').val();
     $('.nofaktur').val(old_nota);
 
     $(".tmbhdatapenerus").removeClass('disabled');
+    $(".save_bp_um").prop('hidden',true);
+    $(".bp_tambah_um").prop('hidden',true);
     $(".tmbhdatapenerus").css('background','none');
     $(".tmbhdatapenerus").css('color','none');
 
@@ -5861,10 +5874,14 @@ var old_nota =$('.nofaktur1').val();
     $(".tmbhdataitem").css('color','none');
 
     $(".tmbhdataoutlet").removeClass('disabled');
+    $(".save_ot_um").prop('hidden',true);
+    $(".ot_tambah_um").prop('hidden',true);
     $(".tmbhdataoutlet").css('background','none');
     $(".tmbhdataoutlet").css('color','none');
 
     $(".tmbhdatasubcon").removeClass('disabled');
+    $(".save_sc_um").prop('hidden',true);
+    $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
    })
@@ -5874,6 +5891,8 @@ var old_nota =$('.nofaktur1').val();
    var old_nota =$('.nofaktur1').val();
     $('.nofaktur').val(old_nota);
     $(".tmbhdatapenerus").removeClass('disabled');
+    $(".save_bp_um").prop('hidden',true);
+    $(".bp_tambah_um").prop('hidden',true);
     $(".tmbhdatapenerus").css('background','none');
     $(".tmbhdatapenerus").css('color','none');
 
@@ -5886,10 +5905,14 @@ var old_nota =$('.nofaktur1').val();
     $(".tmbhdataitem").css('color','black');
 
     $(".tmbhdataoutlet").removeClass('disabled');
+    $(".save_ot_um").prop('hidden',true);
+    $(".ot_tambah_um").prop('hidden',true);
     $(".tmbhdataoutlet").css('background','none');
     $(".tmbhdataoutlet").css('color','none');
 
     $(".tmbhdatasubcon").removeClass('disabled');
+    $(".save_sc_um").prop('hidden',true);
+    $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
    })
@@ -5907,6 +5930,8 @@ var old_nota =$('.nofaktur1').val();
       }
     })
     $(".tmbhdatapenerus").removeClass('disabled');
+    $(".save_bp_um").prop('hidden',true);
+    $(".bp_tambah_um").prop('hidden',true);
     $(".tmbhdatapenerus").css('background','none');
     $(".tmbhdatapenerus").css('color','none');
 
@@ -5919,10 +5944,14 @@ var old_nota =$('.nofaktur1').val();
     $(".tmbhdataitem").css('color','none');
 
     $(".tmbhdataoutlet").addClass('disabled');
+    $(".save_ot_um").prop('hidden',false);
+    $(".ot_tambah_um").prop('hidden',false);
     $(".tmbhdataoutlet").css('background','grey');
     $(".tmbhdataoutlet").css('color','black');
 
     $(".tmbhdatasubcon").removeClass('disabled');
+    $(".save_sc_um").prop('hidden',true);
+    $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
    });
@@ -5942,6 +5971,8 @@ var old_nota =$('.nofaktur1').val();
     })
 
     $(".tmbhdatapenerus").removeClass('disabled');
+    $(".save_bp_um").prop('hidden',true);
+    $(".bp_tambah_um").prop('hidden',true);
     $(".tmbhdatapenerus").css('background','none');
     $(".tmbhdatapenerus").css('color','none');
 
@@ -5954,10 +5985,14 @@ var old_nota =$('.nofaktur1').val();
     $(".tmbhdataitem").css('color','none');
 
     $(".tmbhdataoutlet").removeClass('disabled');
+    $(".save_ot_um").prop('hidden',true);
+    $(".ot_tambah_um").prop('hidden',true);
     $(".tmbhdataoutlet").css('background','none');
     $(".tmbhdataoutlet").css('color','none');
 
     $(".tmbhdatasubcon").addClass('disabled');
+    $(".save_sc_um").prop('hidden',false);
+    $(".sc_tambah_um").prop('hidden',false);
     $(".tmbhdatasubcon").css('background','grey');
     $(".tmbhdatasubcon").css('color','black');
    });
