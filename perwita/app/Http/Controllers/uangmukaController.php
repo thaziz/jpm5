@@ -105,7 +105,7 @@ class uangmukaController extends Controller
       $tahun = Carbon::now()->format('y');
    		
     	
-		$um = DB::select("select * from d_uangmuka where um_comp = '000' and to_char(um_tgl, 'MM') = '05' and to_char(um_tgl, 'YY') = '18' order by um_id desc limit 1");
+		$um = DB::select("SELECT * from d_uangmuka where um_comp = '$request->comp' and to_char(um_tgl, 'MM') = '$bulan' and to_char(um_tgl, 'YY') = '$tahun' order by um_id desc limit 1");
 
 	
 		if(count($um) > 0) {

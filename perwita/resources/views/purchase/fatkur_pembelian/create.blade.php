@@ -1245,7 +1245,8 @@
                   <input type="text" name="bp_dibayar_um" class=" form-control bp_dibayar_um">
                 </td>
                 <td align="right">
-                  <button class="btn btn-primary bp_tambah_um" type="button"><i class="fa fa-plus"> Tambah</i></button> 
+                    <button class="btn btn-primary bp_tambah_um "type="button" ><i class="fa fa-plus"> Tambah</i></button> 
+                  </div>
                 </td>
               </tr>
             </table>
@@ -1289,7 +1290,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary save_bp_um disabled">Save changes</button>
+        <button type="hidden" class="btn btn-primary save_bp_um disabled" >Save changes</button>
       </div>
       </div>
      
@@ -1298,6 +1299,215 @@
 </div><!-- /.modal -->
 
 
+
+{{-- modal uang muka outlet --}}
+
+<div id="modal_um_ot" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document" style="width: 1200px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Pembayaran Uang Muka</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+        <div class="col-sm-8">
+              <table class="table ot_tabel_um">
+              <tr>
+                <td>No Transaksi Kas / Bank</td>
+                <td colspan="2">
+                  <input placeholder="klik disini" type="text" name="ot_nomor_um" class=" form-control ot_nomor_um">
+                  <input type="hidden" name="ot_id_um" class=" form-control ot_id_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Tanggal</td>
+                <td colspan="2">
+                  <input type="text" name="ot_tanggal_um" class=" form-control ot_tanggal_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Jumlah</td>
+                <td colspan="2">
+                  <input readonly="" type="text" name="ot_jumlah_um" class=" form-control ot_jumlah_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Sisa Uang Muka</td>
+                <td colspan="2">
+                  <input readonly="" type="text" name="ot_sisa_um" class=" form-control ot_sisa_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Keterangan</td>
+                <td colspan="2">
+                  <input readonly="" type="text" name="ot_keterangan_um" class=" form-control ot_keterangan_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Dibayar</td>
+                <td>
+                  <input type="text" name="ot_dibayar_um" class=" form-control ot_dibayar_um">
+                </td>
+                <td align="right">
+            
+                    <button class="btn btn-primary ot_tambah_um" type="button" ><i class="fa fa-plus"> Tambah</i></button> 
+     
+                </td>
+              </tr>
+            </table>
+            </div>
+            <div class="col-sm-4">
+              <table class="table ">
+                <tr>
+                  <td align="center">
+                   <h3>Total Jumlah Uang Muka</h3>
+                  </td>
+                </tr>
+              <tr>
+                <td>
+                  <input readonly="" type="text" name="ot_total_um" class="ot_total_um form-control ">
+                </td>
+              </tr>
+            </table>
+            </div>
+
+              <div class="col-sm-12">
+               <table class="table table-bordered ot_tabel_detail_um" ">
+                <thead>
+                <tr class="tableum">
+                  <th style="width:120px"> No Faktur </th>
+                  <th> No Kas / Bank</th>
+                  <th> Tanggal </th>
+                  <th> No Uang Muka</th>
+                  <th> Jumlah Uang Muka </th>
+                  <th> Sisa Uang Muka </th>
+                  <th> Dibayar </th>
+                  <th> Keterangan</th>
+                  <th> Aksi </th> 
+                </tr>
+                </thead>
+                <tbody>
+              
+               </tbody>
+            </table>
+          </div>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="hidden" class="btn btn-primary save_ot_um disabled" >Save changes</button>
+      </div>
+      </div>
+     
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+{{-- modal uang muka subcon --}}
+
+<div id="modal_um_sc" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document" style="width: 1200px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Pembayaran Uang Muka</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+        <div class="col-sm-8">
+              <table class="table sc_tabel_um">
+              <tr>
+                <td>No Transaksi Kas / Bank</td>
+                <td colspan="2">
+                  <input placeholder="klik disini" type="text" name="sc_nomor_um" class=" form-control sc_nomor_um">
+                  <input type="hidden" name="sc_id_um" class=" form-control sc_id_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Tanggal</td>
+                <td colspan="2">
+                  <input type="text" name="sc_tanggal_um" class=" form-control sc_tanggal_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Jumlah</td>
+                <td colspan="2">
+                  <input readonly="" type="text" name="sc_jumlah_um" class=" form-control sc_jumlah_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Sisa Uang Muka</td>
+                <td colspan="2">
+                  <input readonly="" type="text" name="sc_sisa_um" class=" form-control sc_sisa_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Keterangan</td>
+                <td colspan="2">
+                  <input readonly="" type="text" name="sc_keterangan_um" class=" form-control sc_keterangan_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Dibayar</td>
+                <td>
+                  <input type="text" name="sc_dibayar_um" class=" form-control sc_dibayar_um">
+                </td>
+                <td align="right">
+            
+                    <button class="btn btn-primary sc_tambah_um" type="button" ><i class="fa fa-plus"> Tambah</i></button> 
+     
+                </td>
+              </tr>
+            </table>
+            </div>
+            <div class="col-sm-4">
+              <table class="table ">
+                <tr>
+                  <td align="center">
+                   <h3>Tscal Jumlah Uang Muka</h3>
+                  </td>
+                </tr>
+              <tr>
+                <td>
+                  <input readonly="" type="text" name="sc_total_um" class="sc_total_um form-control ">
+                </td>
+              </tr>
+            </table>
+            </div>
+
+              <div class="col-sm-12">
+               <table class="table table-bordered sc_tabel_detail_um" ">
+                <thead>
+                <tr class="tableum">
+                  <th style="width:120px"> No Faktur </th>
+                  <th> No Kas / Bank</th>
+                  <th> Tanggal </th>
+                  <th> No Uang Muka</th>
+                  <th> Jumlah Uang Muka </th>
+                  <th> Sisa Uang Muka </th>
+                  <th> Dibayar </th>
+                  <th> Keterangan</th>
+                  <th> Aksi </th> 
+                </tr>
+                </thead>
+                <tbody>
+              
+               </tbody>
+            </table>
+          </div>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="hidden" class="btn btn-primary save_sc_um disabled" >Save changes</button>
+      </div>
+      </div>
+     
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <div id="modal_show_um" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document" style="width: 1200px">
@@ -1311,6 +1521,8 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+{{--  --}}
+
 
 <!--  MODAL TT PENERUS  -->
 
@@ -6113,8 +6325,10 @@
         $('.nofaktur').val(response.nota);
       }
     })
-
+    // untuk rubah uang muka
     $(".tmbhdatapenerus").addClass('disabled');
+    $(".save_bp_um").prop('hidden',false);
+    $(".bp_tambah_um").prop('hidden',false);
     $(".tmbhdatapenerus").css('background','grey');
     $(".tmbhdatapenerus").css('color','black');
 
@@ -6127,9 +6341,14 @@
     $(".tmbhdataitem").css('color','none');
 
     $(".tmbhdataoutlet").removeClass('disabled');
+    $(".save_ot_um").prop('hidden',true);
+    $(".ot_tambah_um").prop('hidden',true);
     $(".tmbhdataoutlet").css('background','none');
     $(".tmbhdataoutlet").css('color','none');
 
+    $(".tmbhdatasubcon").removeClass('disabled');
+    $(".save_sc_um").prop('hidden',true);
+    $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").removeClass('disabled');
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
@@ -6144,6 +6363,8 @@ var old_nota =$('.nofaktur1').val();
     $('.nofaktur').val(old_nota);
 
     $(".tmbhdatapenerus").removeClass('disabled');
+    $(".save_bp_um").prop('hidden',true);
+    $(".bp_tambah_um").prop('hidden',true);
     $(".tmbhdatapenerus").css('background','none');
     $(".tmbhdatapenerus").css('color','none');
 
@@ -6156,10 +6377,14 @@ var old_nota =$('.nofaktur1').val();
     $(".tmbhdataitem").css('color','none');
 
     $(".tmbhdataoutlet").removeClass('disabled');
+    $(".save_ot_um").prop('hidden',true);
+    $(".ot_tambah_um").prop('hidden',true);
     $(".tmbhdataoutlet").css('background','none');
     $(".tmbhdataoutlet").css('color','none');
 
     $(".tmbhdatasubcon").removeClass('disabled');
+    $(".save_sc_um").prop('hidden',true);
+    $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
    })
@@ -6169,6 +6394,8 @@ var old_nota =$('.nofaktur1').val();
    var old_nota =$('.nofaktur1').val();
     $('.nofaktur').val(old_nota);
     $(".tmbhdatapenerus").removeClass('disabled');
+    $(".save_bp_um").prop('hidden',true);
+    $(".bp_tambah_um").prop('hidden',true);
     $(".tmbhdatapenerus").css('background','none');
     $(".tmbhdatapenerus").css('color','none');
 
@@ -6181,10 +6408,14 @@ var old_nota =$('.nofaktur1').val();
     $(".tmbhdataitem").css('color','black');
 
     $(".tmbhdataoutlet").removeClass('disabled');
+    $(".save_ot_um").prop('hidden',true);
+    $(".ot_tambah_um").prop('hidden',true);
     $(".tmbhdataoutlet").css('background','none');
     $(".tmbhdataoutlet").css('color','none');
 
     $(".tmbhdatasubcon").removeClass('disabled');
+    $(".save_sc_um").prop('hidden',true);
+    $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
    })
@@ -6202,6 +6433,8 @@ var old_nota =$('.nofaktur1').val();
       }
     })
     $(".tmbhdatapenerus").removeClass('disabled');
+    $(".save_bp_um").prop('hidden',true);
+    $(".bp_tambah_um").prop('hidden',true);
     $(".tmbhdatapenerus").css('background','none');
     $(".tmbhdatapenerus").css('color','none');
 
@@ -6214,10 +6447,14 @@ var old_nota =$('.nofaktur1').val();
     $(".tmbhdataitem").css('color','none');
 
     $(".tmbhdataoutlet").addClass('disabled');
+    $(".save_ot_um").prop('hidden',false);
+    $(".ot_tambah_um").prop('hidden',false);
     $(".tmbhdataoutlet").css('background','grey');
     $(".tmbhdataoutlet").css('color','black');
 
     $(".tmbhdatasubcon").removeClass('disabled');
+    $(".save_sc_um").prop('hidden',true);
+    $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
    });
@@ -6237,6 +6474,8 @@ var old_nota =$('.nofaktur1').val();
     })
 
     $(".tmbhdatapenerus").removeClass('disabled');
+    $(".save_bp_um").prop('hidden',true);
+    $(".bp_tambah_um").prop('hidden',true);
     $(".tmbhdatapenerus").css('background','none');
     $(".tmbhdatapenerus").css('color','none');
 
@@ -6249,10 +6488,14 @@ var old_nota =$('.nofaktur1').val();
     $(".tmbhdataitem").css('color','none');
 
     $(".tmbhdataoutlet").removeClass('disabled');
+    $(".save_ot_um").prop('hidden',true);
+    $(".ot_tambah_um").prop('hidden',true);
     $(".tmbhdataoutlet").css('background','none');
     $(".tmbhdataoutlet").css('color','none');
 
     $(".tmbhdatasubcon").addClass('disabled');
+    $(".save_sc_um").prop('hidden',false);
+    $(".sc_tambah_um").prop('hidden',false);
     $(".tmbhdatasubcon").css('background','grey');
     $(".tmbhdatasubcon").css('color','black');
    });
@@ -6433,10 +6676,76 @@ $('#tmbhdataitem').click(function(){
             ]
     });
 
+      var datatable5 = $('.ot_tabel_detail_um').DataTable({
+            responsive: true,
+            searching:false,
+            //paging: false,
+            "pageLength": 10,
+            "language": dataTableLanguage,
+            columnDefs: [
+              {
+                 targets: 4,
+                 className: 'right'
+              },
+              {
+                 targets: 5,
+                 className: 'right'
+              },
+              {
+                 targets: 6,
+                 className: 'right'
+              },
+              {
+                 targets: 8,
+                 className: 'center'
+              }
+            ]
+    });
+
+      var datatable7 = $('.sc_tabel_detail_um').DataTable({
+            responsive: true,
+            searching:false,
+            //paging: false,
+            "pageLength": 10,
+            "language": dataTableLanguage,
+            columnDefs: [
+              {
+                 targets: 4,
+                 className: 'right'
+              },
+              {
+                 targets: 5,
+                 className: 'right'
+              },
+              {
+                 targets: 6,
+                 className: 'right'
+              },
+              {
+                 targets: 8,
+                 className: 'center'
+              }
+            ]
+    });
+
 
  
 
 $('.bp_dibayar_um').maskMoney({
+        precision : 0,
+        thousands:'.',
+        allowZero:true,
+        defaultZero: true
+    });
+
+$('.ot_dibayar_um').maskMoney({
+        precision : 0,
+        thousands:'.',
+        allowZero:true,
+        defaultZero: true
+    });
+
+$('.sc_dibayar_um').maskMoney({
         precision : 0,
         thousands:'.',
         allowZero:true,

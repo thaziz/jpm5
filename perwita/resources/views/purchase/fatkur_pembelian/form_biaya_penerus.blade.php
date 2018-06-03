@@ -857,9 +857,17 @@ $('.save_bp_um').click(function(){
                    $('.btn_modal_bp').addClass('disabled');
                    
                   });
-          }else{
+          }else if(response.status == 0){
             swal({
-              title: "Data Sudah Ada",
+              title: "Data Faktur Tidak Ada",
+              type: 'error',
+              timer: 900,
+              showConfirmButton: true
+
+            });
+          }else if(response.status == 2){
+            swal({
+              title: "Status Faktur Pending",
               type: 'error',
               timer: 900,
               showConfirmButton: true

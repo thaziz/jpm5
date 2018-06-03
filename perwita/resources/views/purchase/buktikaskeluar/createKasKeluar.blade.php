@@ -1532,11 +1532,12 @@
           swal({
           title: "Berhasil!",
                   type: 'success',
-                  text: "Data Berhasil Dihapus",
+                  text: "Data Berhasil Disimpan",
                   timer: 2000,
                   showConfirmButton: true
                   },function(){
                      $('.id_header').val(data.id);
+                     $('.simpan_form').addClass('disabled');
           });
         },
         error:function(data){
