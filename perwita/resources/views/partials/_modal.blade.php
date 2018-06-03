@@ -1,3 +1,21 @@
+<style type="text/css">
+  
+  #form-table{
+    font-size: 8pt;
+  }
+
+  #form-table td{
+    padding: 5px 0px;
+  }
+
+  #form-table .form-control{
+    height: 30px;
+    width: 90%;
+    font-size: 8pt;
+  }
+
+</style>
+
  <!-- modal -->
 <div id="modal_periode" class="modal">
   <div class="modal-dialog" style="width: 30%;">
@@ -13,19 +31,82 @@
           <form role="form" class="form-inline">
               <div class="form-group">
                   <label for="exampleInputEmail2" class="sr-only">Email address</label>
-                  <input style="cursor: pointer;" type="text" placeholder="Bulan" id="periode_month"
-                         class="form-control" readonly value="{{date('m')}}">
+                  <input style="cursor: pointer;" type="text" placeholder="Bulan"
+                         class="form-control periode_month" readonly value="{{date('m')}}">
               </div>
               <div class="form-group">
                   <label for="exampleInputPassword2" class="sr-only">Password</label>
-                  <input style="cursor: pointer;" type="text" placeholder="Tahun" id="periode_year"
-                         class="form-control" readonly value="{{date('Y')}}">
+                  <input style="cursor: pointer;" type="text" placeholder="Tahun"
+                         class="form-control periode_year" readonly value="{{date('Y')}}">
               </div>
           </form>
       </div>
 
       <div class="modal-footer">
           <button class="btn btn-primary btn-sm" id="save" >Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- modal -->
+
+  <!-- modal -->
+<div id="modal_register_jurnal" class="modal">
+  <div class="modal-dialog" style="width: 30%;">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Form Register Jurnal</h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+
+      <div class="modal-body" style="padding: 10px;">
+        <div class="row">
+          <form role="form" class="form-inline">
+              <table border="0" id="form-table" class="col-md-12">
+
+                <tr>
+                  <td width="40%" class="text-center">Pilih Jenis Laporan</td>
+                  <td colspan="3">
+                    <select class="form-control" name="jenis" id="jenis" style="width: 95%;">
+                      <option value="1">Jurnal Kas</option>
+                      <option value="2">Jurnal Bank</option>
+                      <option value="3">Jurnal Memorial</option>
+                    </select>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="20%" class="text-center">Masukkan Tanggal</td>
+                  <td width="25%">
+                    <input type="text" class="form-control tanggal" name="tanggal" placeholder="MM/YYYY" style="width: 100%; cursor: pointer; background: white;" readonly>
+                  <td class="text-center" style="font-size: 8pt;">
+                    s/d
+                  </td>
+                  <td width="25%">
+                    <input type="text" class="form-control sampai" name="sampai" placeholder="MM/YYYY" style="cursor: pointer; background: white;" readonly>
+                  </td>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="40%" class="text-center">Dengan Nama Perkiraan</td>
+                  <td colspan="3">
+                    <select class="form-control" name="jenis" id="jenis" style="width: 30%;">
+                      <option value="1">Ya</option>
+                      <option value="2">Tidak</option>
+                    </select>
+                  </td>
+                </tr>
+
+              </table>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+          <button class="btn btn-primary btn-sm" id="save" >Proses</button>
       </div>
     </div>
   </div>
@@ -83,16 +164,31 @@
   <!-- modal -->
 
   <script type="text/javascript">
-    $('#periode_year').datepicker( {
+    $('.periode_year').datepicker( {
         format: "yyyy",
         viewMode: "years", 
         minViewMode: "years"
     });
 
-     $('#periode_month').datepicker( {
+    $('.periode_month').datepicker( {
         format: "mm",
         viewMode: "months", 
         minViewMode: "months"
+    });
+
+    $('.sampai').datepicker( {
+        format: "mm/yyyy",
+        viewMode: "months", 
+        minViewMode: "months"
+    })
+
+    $('.tanggal').datepicker( {
+        format: "mm/yyyy",
+        viewMode: "months", 
+        minViewMode: "months"
+    }).on("changeDate", function(){
+        $('.sampai').val("");
+        $('.sampai').datepicker("setStartDate", $(this).val());
     });
 
      $("#save").click(function(evt){
@@ -173,4 +269,5 @@
           }
         });
      })
+
   </script>
