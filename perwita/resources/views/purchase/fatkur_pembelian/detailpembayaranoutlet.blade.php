@@ -664,6 +664,10 @@ function simpan_tt() {
 
   }
 
+$('.btn_modal_bp').click(function(){
+  $('#modal_um_bp').modal('show');
+})
+
 $.fn.serializeArray = function () {
     var rselectTextarea= /^(?:select|textarea)/i;
     var rinput = /^(?:color|date|datetime|datetime-local|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i;

@@ -1241,9 +1241,15 @@
                   <input type="text" name="bp_dibayar_um" class=" form-control bp_dibayar_um">
                 </td>
                 <td align="right">
-                  <button class="btn btn-primary bp_tambah_um "type="hidden" ><i class="fa fa-plus"> Tambah</i></button> 
-                  <button class="btn btn-primary ot_tambah_um" type="hidden" ><i class="fa fa-plus"> Tambah</i></button> 
-                  <button class="btn btn-primary sc_tambah_um" type="hidden" ><i class="fa fa-plus"> Tambah</i></button> 
+                  <div class="bp_tambah_um" hidden="">
+                    <button class="btn btn-primary bp_tambah_um "type="button" ><i class="fa fa-plus"> Tambah</i></button> 
+                  </div>
+                  <div class="ot_tambah_um" hidden="">
+                    <button class="btn btn-primary ot_tambah_um" type="button" ><i class="fa fa-plus"> Tambah</i></button> 
+                  </div>
+                  <div class="sc_tambah_um" hidden="">
+                    <button class="btn btn-primary sc_tambah_um" type="button" ><i class="fa fa-plus"> Tambah</i></button> 
+                  </div>
                 </td>
               </tr>
             </table>
