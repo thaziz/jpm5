@@ -97,12 +97,7 @@
                 $(selector).chosen(config[selector]);
             }
          
-        
-        $('.date').datepicker( {
-            format: "mm",
-            viewMode: "months", 
-            minViewMode: "months"
-        });
+
      
 
         var dataTableLanguage = {

@@ -4245,22 +4245,17 @@ public function purchase_order() {
 	}
 
 	public function datagroupitem(Request $request){
+		$kodestock = $request->kodestock;
 		$grupitem = $request->grupitem;
 		if($grupitem != ''){
-			//return $grupitem;
-			$datagrup = DB::select("select * from jenis_item where kode_jenisitem = '$grupitem'");
-			$kodestock = $datagrup[0]->stock;
-			
+
 		}
 		else {
-			$kodestock = $request->kodestock;
+					$data['groupitem'] = DB::select("select * from jenis_item where stock != '$kodestock'");
+		$data['countgroupitem'] = count($data['groupitem']);
+			
 		}
 
-
-		//return json_encode($kodestock);
-		$data['groupitem'] = DB::select("select * from jenis_item where stock != '$kodestock'");
-		$data['countgroupitem'] = count($data['groupitem']);
-		
 		return json_encode($data);
 	}
 

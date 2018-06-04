@@ -79,7 +79,7 @@
                                                 <select onchange="ganti_nota()" class="form-control cabang_select">
                                                 @foreach($cabang as $val)
                                                     @if(Auth()->user()->kode_cabang == $val->kode)
-                                                    <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                    <option  selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                                                     @else
                                                     <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                                                     @endif
@@ -106,7 +106,7 @@
                                                 <select onchange="cari_kontrak()" class="form-control customer chosen-select-width" name="customer">
                                                 <option value="0">Pilih - Customer</option>
                                                 @foreach($customer as $val)
-                                                    <option  value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
+                                                    <option @if(isset($val->kontrak)) style="background: #68e86d" @endif value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
                                                 @endforeach
                                             </select>
                                             </div>

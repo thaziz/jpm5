@@ -94,11 +94,7 @@
                             </td>
                             <td>
                               <select class="form-control cabang_head idgudang" id="selectgudang" onchange="getData()" name="gudang">
-                                @if(Session::get('cabang') != '000')
-                                  @foreach($gudang as $data)
-                                    <option value="{{ $data->mg_id }}"> {{ $data->mg_namagudang }}</option>
-                                  @endforeach
-                                @endif
+                            
                               </select>
                             </td>
                           </tr>

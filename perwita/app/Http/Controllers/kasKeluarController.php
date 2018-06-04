@@ -190,7 +190,7 @@ class kasKeluarController extends Controller
 
 			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		} elseif($req->jenis_bayar == 7){
-			$all 	  = DB::select("SELECT kode, nama from agen where kategori = 'OUTLET' order by kode");
+			$all 	  = DB::select("SELECT kode, nama from agen where kategori = 'OUTLET' or kategori = 'AGEN DAN OUTLET' order by kode ASC");
 
 			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		} elseif($req->jenis_bayar == 9){
