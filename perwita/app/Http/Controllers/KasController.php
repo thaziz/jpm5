@@ -216,7 +216,7 @@ class KasController extends Controller
 
 			$cari_resi1 = DB::table('delivery_order')
 						   ->select('bpkd_no_resi')
-						   ->leftjoin('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
+						   ->join('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
 						   ->where('pendapatan',$cari_persen->jenis_pendapatan)
 						   ->whereIn('nomor',$request->resi_array)
 						   ->groupBy('bpkd_no_resi')
@@ -224,12 +224,10 @@ class KasController extends Controller
 						   ->get();
 
 		}
-
-		// return $cari_resi1;
 		for ($i=0; $i < count($cari_resi); $i++) { 
 			$resi[$i] = $cari_resi[$i]->nomor;
-			if (isset($cari_resi1[$i])) {
-				if ($cari_resi1[$i]->bpkd_no_resi != null) {
+			for ($b=0; $b < count($cari_resi1); $b++) { 
+				if ($cari_resi1[$b]->bpkd_no_resi == $cari_resi[$i]->nomor) {
 					if ($jenis_biaya == '3') {
 						// shuttle
 						$tarif_shuttle = $cari_resi[$i]->total_net;
@@ -263,16 +261,12 @@ class KasController extends Controller
 					}else{
 						unset($resi[$i]);
 					}
-				}elseif($cari_resi[$i]->jenis_tarif == 9){
-					unset($resi[$i]);
-				}
+				}					
 			}
-
 		}
+		// return $resi;
 		$resi = array_unique($resi);
 		$resi = array_values($resi);
-		
-
 		for ($i=0; $i < count($resi); $i++) { 
 			for ($a=0; $a < count($cari_loading); $a++) { 
 				if ($cari_loading[$a]->nomor == $resi[$i]) {
@@ -578,34 +572,7 @@ class KasController extends Controller
 		}
 
 
-		$cari_id_pc = DB::table('patty_cash')
-						 ->max('pc_id');
-
-				if ($cari_id_pc == null) {
-					$cari_id_pc = 1;
-				}else{
-					$cari_id_pc += 1;
-				}
-
-
 		
-					$save_patty = DB::table('patty_cash')
-						   ->insert([
-						   		'pc_id'		  	  => $cari_id_pc,
-						   		'pc_tgl'		  => Carbon::now(),
-						   		'pc_ref'	 	  => 10,
-						   		'pc_akun' 		  => $cari_persen->kode_akun,
-						   		'pc_akun_kas' 	  => $request->nama_kas,
-						   		'pc_keterangan'	  => $request->note,
-						   		'pc_comp'  	  	  => $request->cabang,
-						   		'pc_edit'  	  	  => 'UNALLOWED',
-						   		'pc_reim'  	  	  => 'UNRELEASED',
-						   		'pc_debet'  	  => 0,
-						   		'pc_no_trans'  	  => $request->no_trans,
-						   		'pc_kredit'  	  => round($total_penerus_float,2),
-						   		'created_at'	  => Carbon::now(),
-					        	'updated_at' 	  => Carbon::now()
-					]);
 
 		// JURNAL
 		$cari_id = DB::table('biaya_penerus_kas')
@@ -695,6 +662,29 @@ class KasController extends Controller
 				if ($acc == null) {
 					return response()->json(['status'=>3,'data'=>'Terdapat Resi Yang Tidak Memiliki Akun Biaya']);
 				}
+
+				$cari_id_pc = DB::table('patty_cash')
+							 ->max('pc_id')+1;
+
+
+				$save_patty = DB::table('patty_cash')
+					   ->insert([
+					   		'pc_id'			  => $cari_id_pc,
+					   		'pc_tgl'		  => Carbon::now(),
+					   		'pc_ref'	 	  => 10,
+					   		'pc_akun' 		  => $acc->id_akun,
+					   		'pc_akun_kas' 	  => $request->nama_kas,
+					   		'pc_keterangan'	  => $request->note,
+					   		'pc_comp'  	  	  => $jurnal[$i]['asal'],
+					   		'pc_edit'  	  	  => 'UNALLOWED',
+					   		'pc_reim'  	  	  => 'UNRELEASED',
+					   		'pc_debet'  	  => 0,
+					   		'pc_no_trans'  	  => $request->no_trans,
+					   		'pc_kredit'  	  => $jurnal[$i]['harga'],
+					   		'pc_user'    	  => Auth::user()->m_name,
+					   		'created_at'	  => Carbon::now(),
+				        	'updated_at' 	  => Carbon::now()
+				]);
 				array_push($akun, $acc->id_akun);
 				array_push($akun_val, $jurnal[$i]['harga']);
 			}
@@ -1047,34 +1037,7 @@ class KasController extends Controller
 		}
 
 
-		$cari_id_pc = DB::table('patty_cash')
-						 ->max('pc_id');
-
-				if ($cari_id_pc == null) {
-					$cari_id_pc = 1;
-				}else{
-					$cari_id_pc += 1;
-				}
-
-
-		
-					$save_patty = DB::table('patty_cash')
-						   ->where('pc_no_trans',$request->no_trans)
-						   ->update([
-						   		'pc_tgl'		  => Carbon::now(),
-						   		'pc_ref'	 	  => 10,
-						   		'pc_akun' 		  => $cari_persen->kode_akun,
-						   		'pc_akun_kas' 	  => $request->nama_kas,
-						   		'pc_keterangan'	  => $request->note,
-						   		'pc_comp'  	  	  => $request->cabang,
-						   		'pc_edit'  	  	  => 'UNALLOWED',
-						   		'pc_reim'  	  	  => 'UNRELEASED',
-						   		'pc_debet'  	  => 0,
-						   		'pc_no_trans'  	  => $request->no_trans,
-						   		'pc_kredit'  	  => round($total_penerus_float,2),
-						   		'created_at'	  => Carbon::now(),
-					        	'updated_at' 	  => Carbon::now()
-					]);
+	
 
 		// JURNAL
 		$cari_id = DB::table('biaya_penerus_kas')
@@ -1137,7 +1100,7 @@ class KasController extends Controller
 							 ->where('idjenisbayar',10)
 							 ->first();
 
-			$jurnal_save = d_jurnal::create(['jr_id'		=> $id_jurnal,
+			$jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 										'jr_year'   => carbon::parse(str_replace('/', '-', $request->tN))->format('Y'),
 										'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 										'jr_detail' => $jenis_bayar->jenisbayar,
@@ -1158,6 +1121,10 @@ class KasController extends Controller
 			$akun_val = [];
 			$jumlah   = [];
 
+			$delete = DB::table('patty_cash')
+					   ->where('pc_no_trans',$request->no_trans)
+					   ->delete();
+
 			array_push($akun, $request->nama_kas);
 			array_push($akun_val, $total_harga);
 			for ($i=0; $i < count($jurnal); $i++) { 
@@ -1169,6 +1136,31 @@ class KasController extends Controller
 				if ($acc == null) {
 					return response()->json(['status'=>3,'data'=>'Terdapat Resi Yang Tidak Memiliki Akun Biaya']);
 				}
+
+
+				$cari_id_pc = DB::table('patty_cash')
+							 ->max('pc_id')+1;
+
+
+				$save_patty = DB::table('patty_cash')
+					   ->insert([
+					   		'pc_id'			  => $cari_id_pc,
+					   		'pc_tgl'		  => Carbon::now(),
+					   		'pc_ref'	 	  => 10,
+					   		'pc_akun' 		  => $acc->id_akun,
+					   		'pc_akun_kas' 	  => $request->nama_kas,
+					   		'pc_keterangan'	  => $request->note,
+					   		'pc_comp'  	  	  => $jurnal[$i]['asal'],
+					   		'pc_edit'  	  	  => 'UNALLOWED',
+					   		'pc_reim'  	  	  => 'UNRELEASED',
+					   		'pc_debet'  	  => 0,
+					   		'pc_user'    	  => Auth::user()->m_name,
+					   		'pc_no_trans'  	  => $request->no_trans,
+					   		'pc_kredit'  	  => $jurnal[$i]['harga'],
+					   		'created_at'	  => Carbon::now(),
+				        	'updated_at' 	  => Carbon::now()
+				]);
+
 				array_push($akun, $acc->id_akun);
 				array_push($akun_val, $jurnal[$i]['harga']);
 			}
@@ -1215,6 +1207,10 @@ class KasController extends Controller
 					}
 				}
 			}
+
+
+
+
 			$jurnal_dt = d_jurnal_dt::insert($data_akun);
 
 			$lihat_jurnal = DB::table('d_jurnal_dt')
@@ -1477,7 +1473,7 @@ class KasController extends Controller
 
 			$cari_resi1 = DB::table('delivery_order')
 						   ->select('bpkd_no_resi')
-						   ->leftjoin('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
+						   ->join('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
 						   ->where('pendapatan',$cari_persen->jenis_pendapatan)
 						   ->whereIn('nomor',$request->resi_array)
 						   ->groupBy('bpkd_no_resi')
@@ -1499,8 +1495,8 @@ class KasController extends Controller
 		// return $cari_resi2;
 		for ($i=0; $i < count($cari_resi); $i++) { 
 			$resi[$i] = $cari_resi[$i]->nomor;
-			if (isset($cari_resi1[$i])) {
-				if ($cari_resi1[$i]->bpkd_no_resi != null) {
+			for ($b=0; $b < count($cari_resi1); $b++) { 
+				if ($cari_resi1[$b]->bpkd_no_resi == $cari_resi[$i]->nomor) {
 					if ($jenis_biaya == '3') {
 						// shuttle
 						$tarif_shuttle = $cari_resi[$i]->total_net;
@@ -1515,7 +1511,7 @@ class KasController extends Controller
 							$terbayar[$a] = $cari_resi_shuttle[$a]->bpkd_tarif_penerus;
 						}
 						$terbayar = array_sum($terbayar);
-						if ($terbayar >= $tarif_shuttle) {
+						if ($terbayar > $tarif_shuttle) {
 							unset($resi[$i]);
 						}
 
@@ -1534,12 +1530,13 @@ class KasController extends Controller
 					}else{
 						unset($resi[$i]);
 					}
-				}
+				}					
 			}
-
 		}
+
 		// $resi = array_filter($resi);
 		$resi = array_values($resi);
+		$resi = array_unique($resi);
 		// return $resi;
 		for ($i=0; $i < count($cari_resi2); $i++) { 
 			for ($a=0; $a < count($cari_resi); $a++) { 

@@ -564,9 +564,13 @@
     $(document).on( "click",".btndelete", function() {
         var name = $(this).attr("name");
         var id = $(this).attr("id");
-        if(!confirm("Hapus Data " +name+ " ?")) return false;
+        var tujuan = $(this).data("tujuan");
+        var asal = $(this).data("asal");
+        var prov = $(this).data("prov");
+        if(!confirm("Hapus Data " + asal +' menuju ke '+ prov + " ?")) return false;
         var value = {
             id: id,
+            name: name,
             _token: "{{ csrf_token() }}"
         };
         $.ajax({

@@ -373,6 +373,7 @@ class PengeluaranBarangController extends Controller
 						 ->where('sm_mutcat','=','1')
 						 ->orderBy('sm_date','ASC')
 						 ->get();
+						 
 			$kurang = $request->jumlah_setuju[$i];
 
 			for ($a=0; $a < count($cari_sm); $a++) { 

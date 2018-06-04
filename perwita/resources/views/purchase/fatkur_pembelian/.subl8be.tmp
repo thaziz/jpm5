@@ -308,7 +308,13 @@
                             </td>
                             <td style="text-align: right"> 
                              <div class="form-group"> <label class="col-sm-2 col-sm-2 control-label"> Rp </label> <div class="col-md-10"> <input type='text' class="form-control amount" style="text-align: right" name="amount" readonly="" required=""> </div> </div>
-                            </td>                        
+                            </td>
+                          
+                          </tr>
+
+                          <tr>
+                            <td> Diskon </td>
+                            <td> <div class="form-group"> <div class="col-md-3"> <input type='number' class='form-control diskon' name="diskon2" required="" value="0"> </div> <label class="col-sm-2 col-sm-2 control-label"> % </label> <div class="col-sm-7"> <input style='text-align: right' type="text" class="form-control hasildiskonitem" name="hasildiskon" readonly=""> </div> </div> </td>
                           </tr>
 
 
@@ -318,17 +324,10 @@
                             </td>
                           <td style="text-align: right">
 
-                              <div class="form-group"> <label class="col-sm-2 col-sm-2 control-label"> Rp </label> <div class="col-md-10"> <input type='text' class="form-control biaya" style="text-align: right" name="biaya"  required="" value="0"> </div> </div>
+                              <div class="form-group"> <label class="col-sm-2 col-sm-2 control-label"> Rp </label> <div class="col-md-10"> <input type='text' class="form-control biaya" style="text-align: right" name="biaya" readonly="" required=""> </div> </div>
                             </td>
                           </tr>
-                          
-                          <tr> 
-                            <td> Netto </td>
-                             <td style="text-align: right">
-
-                              <div class="form-group"> <label class="col-sm-2 col-sm-2 control-label"> Rp </label> <div class="col-md-10"> <input type='text' class="form-control nettoitem" style="text-align: right" name="biaya"  required="" readonly=""> </div> </div>
-                            </td>
-                          </tr>
+                         
 
 
                           <tr>
@@ -706,15 +705,12 @@
                               <th width='100px'>
                                 Update Stock ?
                               </th>
-                             
+                              <th width="100px">
+                               Diskon
+                              </th> 
                               <th width='300px'>
                                 Biaya 
                               </th> 
-
-                               <th width='300px'>
-                                Netto 
-                              </th> 
-
                               <th width='100px'>
                                 Account Biaya
                               </th>
@@ -1245,8 +1241,7 @@
                   <input type="text" name="bp_dibayar_um" class=" form-control bp_dibayar_um">
                 </td>
                 <td align="right">
-                    <button class="btn btn-primary bp_tambah_um "type="button" ><i class="fa fa-plus"> Tambah</i></button> 
-                  </div>
+                  <button class="btn btn-primary bp_tambah_um" type="button"><i class="fa fa-plus"> Tambah</i></button> 
                 </td>
               </tr>
             </table>
@@ -1290,7 +1285,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="hidden" class="btn btn-primary save_bp_um disabled" >Save changes</button>
+        <button type="button" class="btn btn-primary save_bp_um disabled">Save changes</button>
       </div>
       </div>
      
@@ -1299,215 +1294,6 @@
 </div><!-- /.modal -->
 
 
-
-{{-- modal uang muka outlet --}}
-
-<div id="modal_um_ot" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document" style="width: 1200px">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Pembayaran Uang Muka</h4>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-        <div class="col-sm-8">
-              <table class="table ot_tabel_um">
-              <tr>
-                <td>No Transaksi Kas / Bank</td>
-                <td colspan="2">
-                  <input placeholder="klik disini" type="text" name="ot_nomor_um" class=" form-control ot_nomor_um">
-                  <input type="hidden" name="ot_id_um" class=" form-control ot_id_um">
-                </td>
-              </tr>
-              <tr>
-                <td>Tanggal</td>
-                <td colspan="2">
-                  <input type="text" name="ot_tanggal_um" class=" form-control ot_tanggal_um">
-                </td>
-              </tr>
-              <tr>
-                <td>Jumlah</td>
-                <td colspan="2">
-                  <input readonly="" type="text" name="ot_jumlah_um" class=" form-control ot_jumlah_um">
-                </td>
-              </tr>
-              <tr>
-                <td>Sisa Uang Muka</td>
-                <td colspan="2">
-                  <input readonly="" type="text" name="ot_sisa_um" class=" form-control ot_sisa_um">
-                </td>
-              </tr>
-              <tr>
-                <td>Keterangan</td>
-                <td colspan="2">
-                  <input readonly="" type="text" name="ot_keterangan_um" class=" form-control ot_keterangan_um">
-                </td>
-              </tr>
-              <tr>
-                <td>Dibayar</td>
-                <td>
-                  <input type="text" name="ot_dibayar_um" class=" form-control ot_dibayar_um">
-                </td>
-                <td align="right">
-            
-                    <button class="btn btn-primary ot_tambah_um" type="button" ><i class="fa fa-plus"> Tambah</i></button> 
-     
-                </td>
-              </tr>
-            </table>
-            </div>
-            <div class="col-sm-4">
-              <table class="table ">
-                <tr>
-                  <td align="center">
-                   <h3>Total Jumlah Uang Muka</h3>
-                  </td>
-                </tr>
-              <tr>
-                <td>
-                  <input readonly="" type="text" name="ot_total_um" class="ot_total_um form-control ">
-                </td>
-              </tr>
-            </table>
-            </div>
-
-              <div class="col-sm-12">
-               <table class="table table-bordered ot_tabel_detail_um" ">
-                <thead>
-                <tr class="tableum">
-                  <th style="width:120px"> No Faktur </th>
-                  <th> No Kas / Bank</th>
-                  <th> Tanggal </th>
-                  <th> No Uang Muka</th>
-                  <th> Jumlah Uang Muka </th>
-                  <th> Sisa Uang Muka </th>
-                  <th> Dibayar </th>
-                  <th> Keterangan</th>
-                  <th> Aksi </th> 
-                </tr>
-                </thead>
-                <tbody>
-              
-               </tbody>
-            </table>
-          </div>
-      </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="hidden" class="btn btn-primary save_ot_um disabled" >Save changes</button>
-      </div>
-      </div>
-     
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
-{{-- modal uang muka subcon --}}
-
-<div id="modal_um_sc" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document" style="width: 1200px">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Pembayaran Uang Muka</h4>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-        <div class="col-sm-8">
-              <table class="table sc_tabel_um">
-              <tr>
-                <td>No Transaksi Kas / Bank</td>
-                <td colspan="2">
-                  <input placeholder="klik disini" type="text" name="sc_nomor_um" class=" form-control sc_nomor_um">
-                  <input type="hidden" name="sc_id_um" class=" form-control sc_id_um">
-                </td>
-              </tr>
-              <tr>
-                <td>Tanggal</td>
-                <td colspan="2">
-                  <input type="text" name="sc_tanggal_um" class=" form-control sc_tanggal_um">
-                </td>
-              </tr>
-              <tr>
-                <td>Jumlah</td>
-                <td colspan="2">
-                  <input readonly="" type="text" name="sc_jumlah_um" class=" form-control sc_jumlah_um">
-                </td>
-              </tr>
-              <tr>
-                <td>Sisa Uang Muka</td>
-                <td colspan="2">
-                  <input readonly="" type="text" name="sc_sisa_um" class=" form-control sc_sisa_um">
-                </td>
-              </tr>
-              <tr>
-                <td>Keterangan</td>
-                <td colspan="2">
-                  <input readonly="" type="text" name="sc_keterangan_um" class=" form-control sc_keterangan_um">
-                </td>
-              </tr>
-              <tr>
-                <td>Dibayar</td>
-                <td>
-                  <input type="text" name="sc_dibayar_um" class=" form-control sc_dibayar_um">
-                </td>
-                <td align="right">
-            
-                    <button class="btn btn-primary sc_tambah_um" type="button" ><i class="fa fa-plus"> Tambah</i></button> 
-     
-                </td>
-              </tr>
-            </table>
-            </div>
-            <div class="col-sm-4">
-              <table class="table ">
-                <tr>
-                  <td align="center">
-                   <h3>Tscal Jumlah Uang Muka</h3>
-                  </td>
-                </tr>
-              <tr>
-                <td>
-                  <input readonly="" type="text" name="sc_total_um" class="sc_total_um form-control ">
-                </td>
-              </tr>
-            </table>
-            </div>
-
-              <div class="col-sm-12">
-               <table class="table table-bordered sc_tabel_detail_um" ">
-                <thead>
-                <tr class="tableum">
-                  <th style="width:120px"> No Faktur </th>
-                  <th> No Kas / Bank</th>
-                  <th> Tanggal </th>
-                  <th> No Uang Muka</th>
-                  <th> Jumlah Uang Muka </th>
-                  <th> Sisa Uang Muka </th>
-                  <th> Dibayar </th>
-                  <th> Keterangan</th>
-                  <th> Aksi </th> 
-                </tr>
-                </thead>
-                <tbody>
-              
-               </tbody>
-            </table>
-          </div>
-      </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="hidden" class="btn btn-primary save_sc_um disabled" >Save changes</button>
-      </div>
-      </div>
-     
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 
 <div id="modal_show_um" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document" style="width: 1200px">
@@ -1521,8 +1307,6 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-{{--  --}}
-
 
 <!--  MODAL TT PENERUS  -->
 
@@ -3198,7 +2982,7 @@
       $('.biaya').val('');
       $('.acc_biaya').val('');
       $('.keterangan').val('');
-     // $('.diskon').val('');
+      $('.diskon').val('');
       $('.hasildiskonitem').val('');
     })
 
@@ -3216,39 +3000,18 @@
         harga = addCommas(numeric);
         $(this).val(harga);
         $('.amount').val(addCommas(num_amount));
-
-        biaya = $('.biaya').val();
-        hasilnetto = parseFloat(parseFloat(biaya) + parseFloat(num_amount)).toFixed(2);
-        $('.nettoitem').val(addCommas(hasilnetto));
       }
 
-     /* diskon = $('.diskon').val();
-      total = parseFloat((diskon / 100) * num_amount);*/
+      diskon = $('.diskon').val();
+      total = parseFloat((diskon / 100) * num_amount);
         
-      /*  hasiltotal = total.toFixed(2);
+        hasiltotal = total.toFixed(2);
         $('.hasildiskonitem').val(addCommas(hasiltotal));
 
         hasil = parseFloat(num_amount) - parseFloat(total);
         numeric = parseFloat(hasil).toFixed(2);
 
-        $('.biaya').val(addCommas(numeric));*/
-
-
-
-    })
-
-
-    $('.biaya').change(function(){
-      val = $(this).val();    
-      val = accounting.formatMoney(val, "", 2, ",",'.');
-      $(this).val(val);
-
-      hslbiaya =  val.replace(/,/g, '');
-
-      totalharga = $('.amount').val();
-      hsltotal =  totalharga.replace(/,/g, '');
-      hasilnetto = parseFloat(parseFloat(hslbiaya) + parseFloat(hsltotal)).toFixed(2);
-      $('.nettoitem').val(addCommas(hasilnetto));
+        $('.biaya').val(addCommas(numeric));
 
     })
 
@@ -3269,7 +3032,7 @@
         
         totalharga = $('.amount').val();
         hsljml =  totalharga.replace(/,/g, '');
-       /* total = parseFloat((diskon / 100) * hsljml);
+        total = parseFloat((diskon / 100) * hsljml);
         
         hasiltotal = total.toFixed(2);
         $('.hasildiskonitem').val(addCommas(hasiltotal));
@@ -3277,11 +3040,7 @@
         hasil = hsljml - total;
         numeric = Math.round(hasil).toFixed(2);
 
-        $('.biaya').val(addCommas(numeric));*/
-
-        biaya = $('.biaya').val();
-        hasilnetto =parseFloat(parseFloat(biaya) + parseFloat(hsljml)).toFixed(2);
-        $('.nettoitem').val(addCommas(hasilnetto));
+        $('.biaya').val(addCommas(numeric));
       }
     })
     $('.date').datepicker({
@@ -3566,7 +3325,7 @@
          
        
           var penerimaan = $('.penerimaan').val();
-          var nettoitem = $('.nettoitem').val();
+
           var grupitem = $('.groupitem').val();
           var string4 = grupitem.split(",");
           groupitem = string4[0];
@@ -3607,11 +3366,9 @@
               
 
                   "<td> <input type='text' class='form-control updatestockitem updatestockitem"+nourut+"' value='"+updatestock+"'  name='updatestock[]' readonly> </td>"+ // updatestock
-                      /* "<td> <input type='number' class='form-control diskonitem2 diskonitem2"+nourut+"' value='"+diskon+"' name='diskonitem[]' data-id="+nourut+"> </td>" + //diskon*/
+                       "<td> <input type='number' class='form-control diskonitem2 diskonitem2"+nourut+"' value='"+diskon+"' name='diskonitem[]' data-id="+nourut+"> </td>" + //diskon
 
-                  "<td>  <input type='text' class='input-sm form-control biayaitem biayaitem"+nourut+"' value='"+biaya+"'  name='biaya[]' data-id="+nourut+"> </td>"+ //biaya
-
-                    "<td>  <input type='text' class='input-sm form-control nettoitem2 nettoitem2"+nourut+"' value='"+nettoitem+"'  name='nettoitem[]' readonly> </td>"+ //biaya
+                  "<td>  <input type='text' class='input-sm form-control biayaitem biayaitem"+nourut+"' value='"+biaya+"'  name='biaya[]' readonly> </td>"+ //biaya
 
                   "<td> <input type='text' class='input-sm form-control acc_biayaitem acc_biayaitem"+nourut+"' value='"+acc_biaya+"' name='acc_biaya[]' readonly> </td>"+ //acc_biaya
 
@@ -3625,7 +3382,7 @@
 /*
                   <button class='btn btn-xs btn-success update' data-id='"+nourut+"' type='button' id='toggle"+nourut+"'> <i id='edit"+nourut+"' class='fa fa-pencil' aria-hidden='true'></i>"+nourut+"*/
 
-                  hsljml =  nettoitem.replace(/,/g, '');
+                  hsljml =  biaya.replace(/,/g, '');
                   console.log(hsljml);
 
                   $jumlahharga = $jumlahharga + parseInt(hsljml);
@@ -3664,8 +3421,7 @@
            
                 $('.harga').val('');
                 $('.amount').val('');
-                $('.nettoitem').val('');
-                $('.biaya').val('0');
+                $('.biaya').val('');
                 $('.acc_biaya').val('');
                 $('.acc_persediaan').val('');
                 $('.keterangan').val('');
@@ -3686,7 +3442,7 @@
                      diskon = $('.diskonitem2' + id).val();
                     if(qty != '') {
                        
-                     /* if(diskon != '') {
+                      if(diskon != '') {
                         totalharga = parseFloat(qty * harga);
                         hsltotal = totalharga.toFixed(2);
                         $('.totalbiayaitem' + id).val(hsltotal);
@@ -3696,268 +3452,14 @@
                         totalbiaya = parseFloat(hsltotal - hsldiskon);
                         hslbiaya = totalbiaya.toFixed(2);
                         $('.biayaitem' + id).val(addCommas(hslbiaya)); 
-                      }*/
-                    
+                      }
+                      else {
                         totalharga = parseFloat(qty * harga);
                         hsltotal = totalharga.toFixed(2);
                         $('.totalbiayaitem' + id).val(addCommas(hsltotal));
-                        biaya =$('.biayaitem' + id).val();
-                        hslbiaya = biaya.replace(/,/g, '');
-
-                        hslnetto = parseFloat(parseFloat(hslbiaya) + parseFloat(hsltotal)).toFixed(2);
-                        $('.nettoitem2').val(addCommas(hslnetto));
+                      }
                     }
                  })
-                
-                $('.biayaitem').change(function(){
-                  jmlbiayaqty = 0;
-                    var id = $(this).data('id');
-                    var biaya = $(this).val();
-                    
-                     val = $(this).val();
-      
-                     val = accounting.formatMoney(val, "", 2, ",",'.');
-                     $(this).val(val);
-
-                    biaya = $('.biayaitem' + id).val();
-                    hslbiaya = biaya.replace(/,/g,'');
-
-                    totalharga =  $('.totalbiayaitem' + id).val();
-                    hsltotalharga = totalharga.replace(/,/g,'');
-
-                    hslnett = parseFloat(parseFloat(hslbiaya) + parseFloat(hsltotalharga)).toFixed(2);
-                    $('.nettoitem2').val(addCommas(hslnett));
-
-
-                   /* diskon = $('.diskonitem2' + id).val();
-                    diskon2 = parseFloat(diskon * hsl / 100);
-                    console.log(diskon2);
-                    hsldiskon = diskon2.toFixed(2);
-                    totalbiaya = parseFloat(hsl - hsldiskon);
-                    console.log(totalbiaya);
-                    hsltotalbiaya = totalbiaya.toFixed(2);
-
-                 //   $('.biayaitem' + id).val(addCommas(hsltotalbiaya)); */
-
-                   $('.nettoitem2').each(function(){
-                      val2 = $(this).val();
-                      replaceval2 = val2.replace(/,/g,'');
-
-                      jmlbiayaqty = parseFloat(parseFloat(jmlbiayaqty) + parseFloat(replaceval2)).toFixed(2);
-
-                    })
-
-                 //menghitung jumlah
-                $('.jumlahharga').val(addCommas(jmlbiayaqty));
-
-
-
-                //diskon
-                diskon = $('.disc_item').val();
-                if(diskon != ''){
-                  hsl = parseFloat(parseFloat(diskon) * parseFloat(jmlbiayaqty)) / 100;
-                  hasildiskon = $('.hasildiskon').val(addCommas(hsl));
-
-                  jumlah = parseFloat(parseFloat(jmlbiayaqty) - parseFloat(hsl)).toFixed(2);
-                }
-                else {
-                  jumlah = jmlbiayaqty;
-                }
-
-                  //DPP
-                   $('.dpp').val(addCommas(jumlah));
-                   $('.dpp2').val(addCommas(jumlah));
-                   hsljumlah = $('.dpp').val();
-                    numeric2 = hsljumlah.replace(/,/g,'');
-                  
-                  //PPN
-
-
-                   //PPN
-                  inputppn = $('.inputppn').val();
-                  jenisppn = $('.jenisppn').val();
-                  ppn = $('.hasilppn').val(); 
-
-                  if(inputppn != '') {
-                     hasilppn = parseFloat((inputppn / 100) * numeric2);
-                     hasilppn2 =   hasilppn.toFixed(2);
-                     ppn2 = $('.hasilppn').val(addCommas(hasilppn2)); 
-                     ppn = $('.hasilppn').val(); 
-                  }
-
-                  pph = $('.hasilpph').val();
-
-                  if(pph != 0) {
-                    inputpph = $('.inputpph').val();
-                     hasilpph = parseFloat((inputpph / 100) * numeric2);
-                     hasilpph2 =   hasil.toFixed(2); 
-                     pph2 = $('.hasilpph').val(addCommas(hasilpph2));
-                     pph = $('.hasilpph').val();
-                  }
-
-          
-
-                    replacepph = pph.replace(/,/g,'');
-                    replaceppn = ppn.replace(/,/g,'');
-
-                     if(pph != 0 & ppn != '') { 
-                     // alert('pph ada ppn ada');//PPH  ADA DAN PPN  ADA
-                         jenisppn = $('.jenisppn').val();
-                        if(jenisppn == 'E') {          
-                          hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
-                          hsl = hasilnetto.toFixed(2);
-                          $('.nettohutang').val(addCommas(hsl));
-                          $('.sisahutang').val(addCommas(hsl));
-                          $('.dpp').val(addCommas(numeric2));
-                        }
-                        else if(jenisppn == 'I'){
-                            hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                            $('.dpp').val(addCommas(hargadpp));
-                            subtotal = $('.dpp').val();
-                            subtotal = $('.dpp').val();
-                            subharga = subtotal.replace(/,/g, '');
-                            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                     
-                            $('.hasilppn').val(addCommas(hargappn));
-
-                            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                            $('.nettohutang').val(addCommas(total));                     
-                            $('.sisahutang').val(addCommas(total));                     
-                        }
-                        else {
-
-                            hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                            hsl = hasilnetto.toFixed(2);
-                            $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
-                            $('.dpp').val(addCommas(numeric2));
-                        
-                        }
-                      }
-                      else if(pph != 0){ //PPH TIDAK KOSONG            
-                     //   alert('pph tdk kosong');
-                        if(ppn == '') { //PPN KOSONG          
-                          hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph));
-                          $('.nettohutang').val(hasil);
-                          $('.sisahutang').val(hasil);
-                            $('.dpp').val(addCommas(numeric2));
-                        }
-                        else{ //PPN TIDAK KOSONG            
-                            jenisppn = $('.jenisppn').val();
-                          if(jenisppn == 'E') {
-                          
-                            hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
-                            hsl = hasilnetto.toFixed(2);
-                            $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
-                             $('.dpp').val(addCommas(numeric2));
-                          }
-                          else if(jenisppn == 'I'){ //PPN TIDAK KOSONG && PPH TIDAK KOSONG
-
-                             hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                         
-                            $('.dpp').val(addCommas(hargadpp));
-                            subtotal = $('.dpp').val();
-                            subharga = subtotal.replace(/,/g, '');
-                            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                     
-                            $('.hasilppn').val(addCommas(hargappn));
-
-                            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                            $('.nettohutang').val(addCommas(total));
-                            $('.sisahutang').val(addCommas(total));
-
-                          }
-                          else {
-                            hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                            hsl = hasilnetto.toFixed(2);
-                            $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
-                            $('.dpp').val(addCommas(numeric2));
-                          }
-                        }
-                      }
-                      else if(ppn != '') { //PPN TIDAK KOSONG   
-                     // alert('ppn tdk kosong')        
-                        jenisppn = $('.jenisppn').val();
-                        if(pph == 0){ //PPN TIDAK KOSONG PPH KOSONG
-                    //    alert('pph kosong');
-                            if(jenisppn == 'E'){   
-                      //      alert('E');          
-                              hasil = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn));
-                              hsl = hasil.toFixed(2);
-                        /*      alert(parseFloat(numeric2));
-                              alert(parseFloat(replaceppn));
-                              alert(parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)));*/
-                              $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
-                            }
-                            else if(jenisppn == 'I'){
-                         
-                                hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                $('.dpp').val(addCommas(hargadpp));
-                                subtotal = $('.dpp').val();
-                                subharga = subtotal.replace(/,/g, '');
-                                hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                         
-                                $('.hasilppn').val(addCommas(hargappn));
-                                total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
-                                $('.nettohutang').val(addCommas(total));
-                                $('.sisahutang').val(addCommas(total));
-                            }
-                            else {
-                       
-                              hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
-                              hsl = hasilnetto.toFixed(2);
-                              $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
-                            }
-                        }
-                        else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
-                       
-                          jenisppn = $('.jenisppn').val();
-                          if(jenisppn == 'E') {          
-                            hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
-                            hsl = hasilnetto.toFixed(2);
-                            $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
-                              $('.dpp').val(addCommas(numeric2));
-                          }
-                          else if(jenisppn == 'I'){
-                                hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                         
-                                $('.dpp').val(addCommas(hargadpp));
-                                subtotal = $('.dpp').val();
-                                subharga = subtotal.replace(/,/g, '');
-                                hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                         
-                                $('.hasilppn').val(addCommas(hargappn));
-
-                                total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                                $('.nettohutang').val(addCommas(total)); 
-                                $('.sisahutang').val(addCommas(total)); 
-                          }
-                          else {
-
-                              hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                              hsl = hasilnetto.toFixed(2);
-                              $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
-                          
-                          }
-                        }
-                      } 
-                      else {
-                          $('.nettohutang').val(addCommas(numeric2));
-                          $('.sisahutang').val(addCommas(numeric2));
-                          $('.dpp').val(addCommas(numeric2));
-                      }
-                 })
-
-
 
                  $('.qtyitem').change(function(){
                   jmlbiayaqty = 0;
@@ -3972,14 +3474,8 @@
                     hsl = hasil.toFixed(2);
                     $('.totalbiayaitem' + id).val(addCommas(hsl));
 
-                    biaya = $('.biayaitem' + id).val();
-                    hslbiaya = biaya.replace(/,/g,'');
 
-                    hslnett = parseFloat(parseFloat(hslbiaya) + parseFloat(hsl)).toFixed(2);
-                    $('.nettoitem2').val(addCommas(hslnett));
-
-
-                   /* diskon = $('.diskonitem2' + id).val();
+                    diskon = $('.diskonitem2' + id).val();
                     diskon2 = parseFloat(diskon * hsl / 100);
                     console.log(diskon2);
                     hsldiskon = diskon2.toFixed(2);
@@ -3987,9 +3483,9 @@
                     console.log(totalbiaya);
                     hsltotalbiaya = totalbiaya.toFixed(2);
 
-                 //   $('.biayaitem' + id).val(addCommas(hsltotalbiaya)); */
+                    $('.biayaitem' + id).val(addCommas(hsltotalbiaya)); 
 
-                   $('.nettoitem2').each(function(){
+                   $('.biayaitem').each(function(){
                       val2 = $(this).val();
                       replaceval2 = val2.replace(/,/g,'');
 
@@ -3999,7 +3495,6 @@
 
                  //menghitung jumlah
                 $('.jumlahharga').val(addCommas(jmlbiayaqty));
-
 
 
                 //diskon
@@ -4227,15 +3722,20 @@
                     var totalharga = $('.totalbiayaitem' + id).val();
                     hsltotalharga =  totalharga.replace(/,/g, '');
 
-               
+                    diskon = $('.diskonitem2' + id).val();
+                    diskon2 = parseFloat(diskon * hsltotalharga / 100);
+                    console.log(diskon2);
+                    hsldiskon = diskon2.toFixed(2);
+                    totalbiaya = parseFloat(hsltotalharga - hsldiskon);
+                    console.log(totalbiaya);
+                    hsltotalbiaya = totalbiaya.toFixed(2);
 
-                    biaya = $('.biayaitem' + id).val();
-                    hslbiaya = biaya.replace(/,/g,'');
+                    $('.biayaitem' + id).val(addCommas(hsltotalbiaya)); 
 
-                    hslnett = parseFloat(parseFloat(hslbiaya) + parseFloat(hsl)).toFixed(2);
-                    $('.nettoitem2').val(addCommas(hslnett)); 
 
-                   $('.nettoitem2').each(function(){
+                     $('.biayaitem' + id).val(addCommas(hsltotalbiaya)); 
+
+                   $('.biayaitem').each(function(){
                       val2 = $(this).val();
                       replaceval2 = val2.replace(/,/g,'');
 
@@ -5722,7 +5222,7 @@
       diskon = $('.diskon').val();
 
       if(qty != '') {
-        /*  if(diskon != '') {
+          if(diskon != '') {
             hasil = parseFloat(qty * harga);  
             totalharga = hasil.toFixed(2);
             $('.amount').val(addCommas(totalharga));
@@ -5731,19 +5231,12 @@
             biaya = totalharga - hsldiskon;
             hslamount = biaya.toFixed(2); 
             $('.biaya').val(hslamount);
-            alert(hslamount);
           }
-          else {*/
+          else {
             hasil = parseFloat(qty * harga);  
             totalharga = hasil.toFixed(2);
-            $('.amount').val(addCommas(totalharga));
-
-            biaya = $('.biaya').val();
-            hslbiaya = biaya.replace(/,/g, '');
-            nettoitem = parseFloat(parseFloat(hslbiaya) + parseFloat(totalharga)).toFixed(2);
-            $('.nettoitem').val(addCommas(nettoitem));
-           /* alert('asas');
-          }*/
+              $('.amount').val(addCommas(totalharga));
+          }
       }
     })
 
@@ -6325,10 +5818,8 @@
         $('.nofaktur').val(response.nota);
       }
     })
-    // untuk rubah uang muka
+
     $(".tmbhdatapenerus").addClass('disabled');
-    $(".save_bp_um").prop('hidden',false);
-    $(".bp_tambah_um").prop('hidden',false);
     $(".tmbhdatapenerus").css('background','grey');
     $(".tmbhdatapenerus").css('color','black');
 
@@ -6341,14 +5832,9 @@
     $(".tmbhdataitem").css('color','none');
 
     $(".tmbhdataoutlet").removeClass('disabled');
-    $(".save_ot_um").prop('hidden',true);
-    $(".ot_tambah_um").prop('hidden',true);
     $(".tmbhdataoutlet").css('background','none');
     $(".tmbhdataoutlet").css('color','none');
 
-    $(".tmbhdatasubcon").removeClass('disabled');
-    $(".save_sc_um").prop('hidden',true);
-    $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").removeClass('disabled');
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
@@ -6363,8 +5849,6 @@ var old_nota =$('.nofaktur1').val();
     $('.nofaktur').val(old_nota);
 
     $(".tmbhdatapenerus").removeClass('disabled');
-    $(".save_bp_um").prop('hidden',true);
-    $(".bp_tambah_um").prop('hidden',true);
     $(".tmbhdatapenerus").css('background','none');
     $(".tmbhdatapenerus").css('color','none');
 
@@ -6377,14 +5861,10 @@ var old_nota =$('.nofaktur1').val();
     $(".tmbhdataitem").css('color','none');
 
     $(".tmbhdataoutlet").removeClass('disabled');
-    $(".save_ot_um").prop('hidden',true);
-    $(".ot_tambah_um").prop('hidden',true);
     $(".tmbhdataoutlet").css('background','none');
     $(".tmbhdataoutlet").css('color','none');
 
     $(".tmbhdatasubcon").removeClass('disabled');
-    $(".save_sc_um").prop('hidden',true);
-    $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
    })
@@ -6394,8 +5874,6 @@ var old_nota =$('.nofaktur1').val();
    var old_nota =$('.nofaktur1').val();
     $('.nofaktur').val(old_nota);
     $(".tmbhdatapenerus").removeClass('disabled');
-    $(".save_bp_um").prop('hidden',true);
-    $(".bp_tambah_um").prop('hidden',true);
     $(".tmbhdatapenerus").css('background','none');
     $(".tmbhdatapenerus").css('color','none');
 
@@ -6408,14 +5886,10 @@ var old_nota =$('.nofaktur1').val();
     $(".tmbhdataitem").css('color','black');
 
     $(".tmbhdataoutlet").removeClass('disabled');
-    $(".save_ot_um").prop('hidden',true);
-    $(".ot_tambah_um").prop('hidden',true);
     $(".tmbhdataoutlet").css('background','none');
     $(".tmbhdataoutlet").css('color','none');
 
     $(".tmbhdatasubcon").removeClass('disabled');
-    $(".save_sc_um").prop('hidden',true);
-    $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
    })
@@ -6433,8 +5907,6 @@ var old_nota =$('.nofaktur1').val();
       }
     })
     $(".tmbhdatapenerus").removeClass('disabled');
-    $(".save_bp_um").prop('hidden',true);
-    $(".bp_tambah_um").prop('hidden',true);
     $(".tmbhdatapenerus").css('background','none');
     $(".tmbhdatapenerus").css('color','none');
 
@@ -6447,14 +5919,10 @@ var old_nota =$('.nofaktur1').val();
     $(".tmbhdataitem").css('color','none');
 
     $(".tmbhdataoutlet").addClass('disabled');
-    $(".save_ot_um").prop('hidden',false);
-    $(".ot_tambah_um").prop('hidden',false);
     $(".tmbhdataoutlet").css('background','grey');
     $(".tmbhdataoutlet").css('color','black');
 
     $(".tmbhdatasubcon").removeClass('disabled');
-    $(".save_sc_um").prop('hidden',true);
-    $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
    });
@@ -6474,8 +5942,6 @@ var old_nota =$('.nofaktur1').val();
     })
 
     $(".tmbhdatapenerus").removeClass('disabled');
-    $(".save_bp_um").prop('hidden',true);
-    $(".bp_tambah_um").prop('hidden',true);
     $(".tmbhdatapenerus").css('background','none');
     $(".tmbhdatapenerus").css('color','none');
 
@@ -6488,14 +5954,10 @@ var old_nota =$('.nofaktur1').val();
     $(".tmbhdataitem").css('color','none');
 
     $(".tmbhdataoutlet").removeClass('disabled');
-    $(".save_ot_um").prop('hidden',true);
-    $(".ot_tambah_um").prop('hidden',true);
     $(".tmbhdataoutlet").css('background','none');
     $(".tmbhdataoutlet").css('color','none');
 
     $(".tmbhdatasubcon").addClass('disabled');
-    $(".save_sc_um").prop('hidden',false);
-    $(".sc_tambah_um").prop('hidden',false);
     $(".tmbhdatasubcon").css('background','grey');
     $(".tmbhdatasubcon").css('color','black');
    });
@@ -6676,76 +6138,10 @@ $('#tmbhdataitem').click(function(){
             ]
     });
 
-      var datatable5 = $('.ot_tabel_detail_um').DataTable({
-            responsive: true,
-            searching:false,
-            //paging: false,
-            "pageLength": 10,
-            "language": dataTableLanguage,
-            columnDefs: [
-              {
-                 targets: 4,
-                 className: 'right'
-              },
-              {
-                 targets: 5,
-                 className: 'right'
-              },
-              {
-                 targets: 6,
-                 className: 'right'
-              },
-              {
-                 targets: 8,
-                 className: 'center'
-              }
-            ]
-    });
-
-      var datatable7 = $('.sc_tabel_detail_um').DataTable({
-            responsive: true,
-            searching:false,
-            //paging: false,
-            "pageLength": 10,
-            "language": dataTableLanguage,
-            columnDefs: [
-              {
-                 targets: 4,
-                 className: 'right'
-              },
-              {
-                 targets: 5,
-                 className: 'right'
-              },
-              {
-                 targets: 6,
-                 className: 'right'
-              },
-              {
-                 targets: 8,
-                 className: 'center'
-              }
-            ]
-    });
-
 
  
 
 $('.bp_dibayar_um').maskMoney({
-        precision : 0,
-        thousands:'.',
-        allowZero:true,
-        defaultZero: true
-    });
-
-$('.ot_dibayar_um').maskMoney({
-        precision : 0,
-        thousands:'.',
-        allowZero:true,
-        defaultZero: true
-    });
-
-$('.sc_dibayar_um').maskMoney({
         precision : 0,
         thousands:'.',
         allowZero:true,

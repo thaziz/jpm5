@@ -464,6 +464,13 @@ class LaporanPembelianController extends Controller
 	//END OF
 
 
+
+	public function reportkartuhutang()
+	{
+		return view('purchase/laporan_analisa_pembelian/lap_kartu_hutang/lap_kartu_hutang');
+	}
+
+
 	//-----
 
 

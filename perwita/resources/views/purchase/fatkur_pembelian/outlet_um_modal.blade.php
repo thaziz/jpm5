@@ -1,4 +1,4 @@
-<table class="table bp_pilih_um table-hover">
+<table class="table ot_pilih_um table-hover">
   <thead>
     <th>No Kas/Hutang</th>
     <th>Uang Muka</th>
@@ -25,7 +25,7 @@
 
 
 <script type="text/javascript">
-     var datatable3 = $('.bp_pilih_um').DataTable({
+     var datatable4 = $('.ot_pilih_um').DataTable({
             responsive: true,
             searching:false,
             //paging: false,
@@ -37,18 +37,18 @@
 
     function pilih_um(a) {
       var nota = a;
-      var sup = $('.agen_vendor').val();
+      var sup = $('.selectOutlet').val();
       $.ajax({
         url:baseUrl +'/fakturpembelian/biaya_penerus/pilih_um',
         data: {nota,sup},
         dataType:'json',
         success:function(data){
-          $('.bp_nomor_um').val(data.data.nomor);
-          $('.bp_tanggal_um').val(data.data.um_tgl);
-          $('.bp_jumlah_um').val(accounting.formatMoney(data.data.total_um, "", 2, ".",','));
-          $('.bp_sisa_um').val(accounting.formatMoney(data.data.sisa_um, "", 2, ".",','));
-          $('.bp_keterangan_um').val(data.data.um_keterangan);
-          $('.bp_id_um').val('');
+          $('.ot_nomor_um').val(data.data.nomor);
+          $('.ot_tanggal_um').val(data.data.um_tgl);
+          $('.ot_jumlah_um').val(accounting.formatMoney(data.data.total_um, "", 2, ".",','));
+          $('.ot_sisa_um').val(accounting.formatMoney(data.data.sisa_um, "", 2, ".",','));
+          $('.ot_keterangan_um').val(data.data.um_keterangan);
+          $('.ot_id_um').val('');
           $('#modal_show_um').modal('hide');
         },error:function(){
           toastr.warning('Terjadi Kesalahan');

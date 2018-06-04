@@ -524,7 +524,10 @@
           }
           else {
              valupdatestock = val;
-             $('.lokasigudang').empty();
+              var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
+                              "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
+                           "</select> </td>";
+              $('.lokasigudang').html(rowgudang);
 
           }
       }
@@ -1008,7 +1011,10 @@
           }
           else {
              valupdatestock = val;
-             $('.lokasigudang').empty();
+             var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
+                              "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
+                           "</select> </td>";
+              $('.lokasigudang').html(rowgudang);
              //$('.penerimaan').val('NS');
           }
         }

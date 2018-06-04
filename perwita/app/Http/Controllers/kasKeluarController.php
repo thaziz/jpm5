@@ -157,7 +157,7 @@ class kasKeluarController extends Controller
 			$sup = 0;
 		}
 		if ($req->jenis_bayar == 2) {
-			$all = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier order by no_supplier");
+			$all = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier where status = 'SETUJU' and active = 'AKTIF' order by no_supplier");
 			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		} elseif($req->jenis_bayar == 3){
 			$agen 	  = DB::select("SELECT kode, nama from agen order by kode");
@@ -166,7 +166,7 @@ class kasKeluarController extends Controller
 
 			$subcon   = DB::select("SELECT kode, nama from subcon order by kode "); 
 
-			$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier order by no_supplier");
+			$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier where status = 'SETUJU' and active = 'AKTIF' order by no_supplier");
 
 			$all = array_merge($agen,$vendor,$subcon,$supplier);
 			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
@@ -177,7 +177,7 @@ class kasKeluarController extends Controller
 
 			$subcon   = DB::select("SELECT kode, nama from subcon order by kode "); 
 
-			$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier order by no_supplier");
+			$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier where status = 'SETUJU' and active = 'AKTIF' order by no_supplier");
 
 			$all = array_merge($agen,$vendor,$subcon,$supplier);
 			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
@@ -281,26 +281,18 @@ class kasKeluarController extends Controller
 					'bkkd_ref' 			=> 'NONE',
 					'bkkd_supplier' 	=> 'NONE',
 					]);
-				
-			}
 
+				$id_pt = DB::table('patty_cash')
+						   ->max('pc_id')+1;
 
-			$id_pt = DB::table('patty_cash')
-						   ->max('pc_id');
-				if ($id_pt == null) {
-					$id_pt = 1;
-				}else{
-					$id_pt += 1;
-				}
-
-			$patty_cash = DB::table('patty_cash')
+				$patty_cash = DB::table('patty_cash')
 							->insert([
-								'pc_id'  		=> $id_pt,
+								'pc_id'			=> $id_pt,
 								'pc_ref'  		=> $req->jenis_bayar,
-								'pc_akun'  		=> $req->hutang,
-								'pc_keterangan' => strtoupper($req->keterangan_head),
+								'pc_akun'  		=> $req->pt_akun_biaya[$i],
+								'pc_keterangan' => strtoupper($req->pt_keterangan[$i]),
 								'pc_debet' 		=> 0,
-								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
+								'pc_kredit' 	=> $req->pt_nominal[$i],
 								'updated_at' 	=> carbon::now(),
 								'created_at' 	=> carbon::now(),
 								'pc_akun_kas' 	=> $req->kas,
@@ -311,6 +303,13 @@ class kasKeluarController extends Controller
 								'pc_edit'  		=> 'UNALLOWED',
 								'pc_reim'  		=> 'UNRELEASED',
 							]);	
+				
+			}
+
+
+
+
+
 			// //JURNAL
 			$id_jurnal=d_jurnal::max('jr_id')+1;
 			// dd($id_jurnal);
@@ -428,6 +427,10 @@ class kasKeluarController extends Controller
 						->where('bkkd_bkk_id',$cari_nota->bkk_id)
 						->delete();
 
+			$delete = DB::table('patty_cash')
+						->where('pc_no_trans',$nota)
+						->delete();
+
 			for ($i=0; $i < count($req->pt_seq); $i++) {
 
 				$id_dt = DB::table('bukti_kas_keluar_detail')
@@ -452,17 +455,19 @@ class kasKeluarController extends Controller
 					'bkkd_ref' 			=> 'NONE',
 					'bkkd_supplier' 	=> 'NONE',
 					]);
-				
-			}
 
-			$patty_cash = DB::table('patty_cash')
-							->where('pc_no_trans',$nota)
-							->update([
+
+				$id_pt = DB::table('patty_cash')
+						   ->max('pc_id')+1;
+						   
+				$patty_cash = DB::table('patty_cash')
+							->insert([
+								'pc_id'			=> $id_pt,
 								'pc_ref'  		=> $req->jenis_bayar,
-								'pc_akun'  		=> $req->hutang,
-								'pc_keterangan' => strtoupper($req->keterangan_head),
+								'pc_akun'  		=> $req->pt_akun_biaya[$i],
+								'pc_keterangan' => strtoupper($req->pt_keterangan[$i]),
 								'pc_debet' 		=> 0,
-								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
+								'pc_kredit' 	=> $req->pt_nominal[$i],
 								'updated_at' 	=> carbon::now(),
 								'created_at' 	=> carbon::now(),
 								'pc_akun_kas' 	=> $req->kas,
@@ -473,6 +478,10 @@ class kasKeluarController extends Controller
 								'pc_edit'  		=> 'UNALLOWED',
 								'pc_reim'  		=> 'UNRELEASED',
 							]);	
+				
+			}
+
+			
 			// //JURNAL
 			$delete_jurnal = DB::table('d_jurnal')
 							   ->where('jr_ref',$nota)
@@ -871,7 +880,7 @@ class kasKeluarController extends Controller
 			$nota = 0;
 		}
 
-		$fpg = DB::select("SELECT fpg_nofpg as nota, fpg_tgl as tanggal, fpgdt_jumlahtotal as total 
+		$fpg = DB::select("SELECT fpg_nofpg as nota, fpg_tgl as tanggal, fpgdt_pelunasan as total 
 							from fpg inner join fpg_dt on fpgdt_idfpg = idfpg where fpgdt_nofaktur = '$req->fp_faktur'");	
 
 		$bkk = DB::select("SELECT bkk_nota as nota, bkk_tgl as tanggal, bkkd_total as total 
@@ -1055,6 +1064,11 @@ class kasKeluarController extends Controller
 				}else{
 					$id_dt += 1;
 				}
+				if ($req->jenis_bayar == 4) {
+					$sisa_um = filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT);
+				}else{
+					$sisa_um = 0;
+				}
 
 				$detail = DB::table('bukti_kas_keluar_detail')
 				  ->insert([
@@ -1069,6 +1083,7 @@ class kasKeluarController extends Controller
 					'created_at' 		=> carbon::now(),
 					'bkkd_ref' 			=> $req->fp_faktur[$i],
 					'bkkd_supplier' 	=> $req->supplier_faktur,
+					'bkkd_sisaum'    	=> $sisa_um,
 					]);
 
 				if ($req->jenis_bayar == 2 or $req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
@@ -1096,7 +1111,8 @@ class kasKeluarController extends Controller
 					$update_faktur =DB::table('d_uangmuka')
 									  ->where('um_nomorbukti',$req->fp_faktur[$i])
 									  ->update([
-									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
+									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT),
+									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai + filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
 									  ]);
 				}
 				
@@ -2227,8 +2243,10 @@ class kasKeluarController extends Controller
 					$update_faktur = DB::table('d_uangmuka')
 									  ->where('um_nomorbukti',$detail->bkkd_ref)
 									  ->update([
-									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan + $detail->bkkd_total
+									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan + $detail->bkkd_total,
+									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai - $detail->bkkd_total
 									  ]);
+			
 				}
 			}
 
@@ -2267,6 +2285,12 @@ class kasKeluarController extends Controller
 					$id_dt += 1;
 				}
 
+				if ($req->jenis_bayar == 4) {
+					$sisa_um = filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT);
+				}else{
+					$sisa_um = 0;
+				}
+
 				$detail = DB::table('bukti_kas_keluar_detail')
 				  ->insert([
 				  	'bkkd_id'  			=> $id_dt,
@@ -2279,6 +2303,7 @@ class kasKeluarController extends Controller
 					'updated_at'		=> carbon::now(),
 					'created_at' 		=> carbon::now(),
 					'bkkd_ref' 			=> $req->fp_faktur[$i],
+					'bkkd_sisaum'		=> $sisa_um,
 					'bkkd_supplier' 	=> $req->supplier_faktur,
 					]);
 
@@ -2304,10 +2329,11 @@ class kasKeluarController extends Controller
 					$cari_faktur = DB::table('d_uangmuka')
 									 ->where('um_nomorbukti',$req->fp_faktur[$i])
 									 ->first();
-					$update_faktur =DB::table('d_uangmuka')
+							$update_faktur =DB::table('d_uangmuka')
 									  ->where('um_nomorbukti',$req->fp_faktur[$i])
 									  ->update([
-									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
+									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT),
+									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai + filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
 									  ]);
 				}
 				
@@ -2582,7 +2608,8 @@ class kasKeluarController extends Controller
 					$update_faktur = DB::table('d_uangmuka')
 									  ->where('um_nomorbukti',$cari_nota[$i]->bkkd_ref)
 									  ->update([
-									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan + $cari_nota[$i]->bkkd_total
+									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan + $cari_nota[$i]->bkkd_total,
+									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai - $cari_nota[$i]->bkkd_total
 									  ]);
 				}
 			}

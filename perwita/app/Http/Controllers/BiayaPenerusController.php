@@ -2401,24 +2401,277 @@ public function biaya_penerus_um(request $req)
 	// 		 ->where('bkk_supplier',$req->sup)
 	// 		 ->get();
 
-	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen, d_uangmuka.*
+	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
 					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
+					   inner join fpg_dt on fpgdt_idfpg = idfpg
 					   inner join d_uangmuka on um_supplier = fpg_agen
 					   where fpgb_posting = 'DONE'
 					   and fpg_agen = '$req->sup'");
 
-	$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen, d_uangmuka.*
+
+	$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
 					   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
-					    inner join d_uangmuka on um_supplier = bkk_supplier
+					   inner join d_uangmuka on um_supplier = bkk_supplier
+					   where bkk_supplier = '$req->sup'");
+
+	$data = [];
+	
+	// return dd($req->all());
+	$data = array_merge($fpg,$bk);
+	$data1 = array_merge($fpg,$bk);
+
+	for ($i=0; $i < count($data1); $i++) { 
+		for ($a=0; $a < count($req->array_um1); $a++) { 
+			if ($data1[$i]->nomor == $req->array_um1[$a] and $data1[$i]->um_nomorbukti == $req->array_um2[$a]) {
+				unset($data[$i]);
+			}
+		}
+		
+	}
+
+	
+	return view('purchase.fatkur_pembelian.biaya_penerus_um_modal',compact('data'));
+}
+public function pilih_um(request $req)
+{
+	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
+					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
+					   inner join fpg_dt on fpgdt_idfpg = idfpg
+					   inner join d_uangmuka on um_supplier = fpg_agen
+					   where fpgb_posting = 'DONE'
+					   and fpg_agen = '$req->sup'");
+
+
+	$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
+					   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
+					   inner join d_uangmuka on um_supplier = bkk_supplier
 					   where bkk_supplier = '$req->sup'");
 
 	$data = [];
 	
 	// return $data;
-	return $data = array_merge($fpg,$bk);
+	$data = array_merge($fpg,$bk);
+
+
+	for ($i=0; $i < count($data); $i++) { 
+		if ($data[$i]->nomor == $req->nota) {
+			$head = $data[$i];
+		}
+	}
+	return response()->json(['data'=>$head]);
+}
+
+
+public function append_um(request $req)
+{
+	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
+					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
+					   inner join fpg_dt on fpgdt_idfpg = idfpg
+					   inner join d_uangmuka on um_supplier = fpg_agen
+					   where fpgb_posting = 'DONE'
+					   and fpg_agen = '$req->sup'");
+
+
+	$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
+					   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
+					   inner join d_uangmuka on um_supplier = bkk_supplier
+					   where bkk_supplier = '$req->sup'");
+
+	$data = [];
+	
+	// return $data;
+	$data = array_merge($fpg,$bk);
+
+
+	for ($i=0; $i < count($data); $i++) { 
+		if ($data[$i]->nomor == $req->nota) {
+			$head = $data[$i];
+		}
+	}
+	return response()->json(['data'=>$head]);
+}
+
+public function save_bp_um(request $req)
+{
+   	return DB::transaction(function() use ($req) {  
+		// dd($req->all());
+		$id = DB::table('uangmukapembelian_fp')
+				->max('umfp_id')+1;
+		
+		$pending = DB::table('faktur_pembelian')
+					 ->where('fp_nofaktur',$req->nofaktur)
+					 ->first();
+		if ($pending == null) {
+			return response()->json(['status'=>0]);
+		}
+		if ($pending->fp_pending_status == 'PENDING') {
+			return response()->json(['status'=>2]);
+		}else{
+			$save = DB::table('uangmukapembelian_fp')
+					  ->insert([
+					  	'umfp_id'			=> $id,
+						'umfp_totalbiaya'	=> filter_var($req->bp_total_um, FILTER_SANITIZE_NUMBER_INT)/100,
+						'umfp_tgl'    		=> carbon::parse(str_replace('/', '-', $req->tgl_biaya_head))->format('Y-m-d'),
+						'umfp_idfp' 		=> $req->idfaktur,
+						'updated_by'		=> Auth::user()->m_name,
+						'created_by'		=> Auth::user()->m_name,
+						'created_at' 		=> carbon::now(),
+						'updated_at' 		=> carbon::now(),
+						'umfp_keterangan'	=> $req->Keterangan_biaya,
+						'umfp_nofaktur'		=> $req->nofaktur,
+					  ]);
+
+			for ($i=0; $i < count($req->tb_transaksi_um); $i++) { 
+
+				$dt = DB::table('uangmukapembeliandt_fp')
+					->max('umfpdt_id')+1;
+				
+				$um = DB::table('d_uangmuka')
+						->where('um_nomorbukti',$req->tb_um_um[$i])
+						->first();
+
+				$fpg = DB::table('fpg')
+						 ->where('fpg_nofpg',$req->tb_transaksi_um[$i])
+						 ->first();
+
+				if($fpg != null){
+
+					$cari_fpgdt = DB::table('fpg_dt')
+								->where('fpgdt_nofaktur',$req->tb_um_um[$i])
+								->where('fpgdt_idfpg',$fpg->idfpg)
+								->first();
+					$update_fpgdt = DB::table('fpg_dt')
+									->where('fpgdt_nofaktur',$req->tb_um_um[$i])
+									->where('fpgdt_idfpg',$fpg->idfpg)
+									->update([
+										'fpgdt_sisapelunasanumfp' => $cari_fpgdt->fpgdt_sisapelunasanumfp - $req->tb_bayar_um[$i],
+									]);
+
+					$flag = $fpg->fpg_flag;
+
+				}else{
+
+					$bkk = DB::table('bukti_kas_keluar')
+						 ->where('bkk_nota',$req->tb_transaksi_um[$i])
+						 ->first();
+
+					$cari_bkkd = DB::table('bukti_kas_keluar_detail')
+								->where('bkkd_bkk_id',$bkk->bkk_id)
+								->where('bkkd_ref',$req->tb_um_um[$i])
+								->first();
+
+					$update_bkkd = DB::table('bukti_kas_keluar_detail')
+									->where('bkkd_bkk_id',$bkk->bkk_id)
+									->where('bkkd_ref',$req->tb_um_um[$i])
+									->update([
+										'bkkd_sisaum' => $cari_bkkd->bkkd_sisaum - $req->tb_bayar_um[$i],
+									]);
+
+					$flag = $bkk->bkk_flag;
+				}
+
+				$save_dt = DB::table('uangmukapembeliandt_fp')
+							  ->insert([
+							  	'umfpdt_id' 		   => $dt,
+								'umfpdt_transaksibank' => $req->tb_transaksi_um[$i],
+								'umfpdt_tgl' 		   => $um->um_tgl,
+								'umfpdt_jumlahum'  	   => $um->um_jumlah,
+								'umfpdt_dibayar'   	   => $req->tb_bayar_um[$i],
+								'umfpdt_keterangan'    => $um->um_keterangan,
+								'umfpdt_idfp' 		   => $req->idfaktur,
+								'umfpdt_idumfp' 	   => $id,
+								'umfpdt_notaum'  	   => $um->um_nomorbukti,
+								'created_at' 		   => carbon::now(),
+								'updated_at' 		   => carbon::now(),
+								'umfpdt_acchutang'     => $req->acc_penjualan_penerus,
+								'umfpdt_flag'  		   => $flag,
+							  ]);
+				
+			}
+
+			$cari_fp = DB::table('faktur_pembelian')
+						 ->where('fp_nofaktur',$req->nofaktur)
+						 ->first();
+
+			$update_fp = DB::table('faktur_pembelian')
+						 ->where('fp_nofaktur',$req->nofaktur)
+						 ->update([
+						 	'fp_uangmuka' => $cari_fp->fp_uangmuka + filter_var($req->bp_total_um, FILTER_SANITIZE_NUMBER_INT)/100,
+						 	'fp_sisapelunasan'=> $cari_fp->fp_sisapelunasan - filter_var($req->bp_total_um, FILTER_SANITIZE_NUMBER_INT)/100
+						 ]);
+
+			return response()->json(['status'=>1]);
+		}
+	});
+}
+
+
+public function outlet_um(request $req)
+{
+	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
+					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
+					   inner join fpg_dt on fpgdt_idfpg = idfpg
+					   inner join d_uangmuka on um_supplier = fpg_agen
+					   where fpgb_posting = 'DONE'
+					   and fpg_agen = '$req->sup'");
+
+
+	$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
+					   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
+					   inner join d_uangmuka on um_supplier = bkk_supplier
+					   where bkk_supplier = '$req->sup'");
+
+	$data = [];
+	
+	// return dd($req->all());
+	$data = array_merge($fpg,$bk);
+	$data1 = array_merge($fpg,$bk);
+
+	for ($i=0; $i < count($data1); $i++) { 
+		for ($a=0; $a < count($req->array_um1); $a++) { 
+			if ($data1[$i]->nomor == $req->array_um1[$a] and $data1[$i]->um_nomorbukti == $req->array_um2[$a]) {
+				unset($data[$i]);
+			}
+		}
+		
+	}
 
 	
-	return view('purchase.fatkur_pembelian.biaya_penerus_um_modal',compact('data'));
+	return view('purchase.fatkur_pembelian.outlet_um_modal',compact('data'));
+}
+
+public function subcon_um(request $req)
+{
+	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
+					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
+					   inner join fpg_dt on fpgdt_idfpg = idfpg
+					   inner join d_uangmuka on um_supplier = fpg_agen
+					   where fpgb_posting = 'DONE'
+					   and fpg_agen = '$req->sup'");
+
+
+	$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
+					   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
+					   inner join d_uangmuka on um_supplier = bkk_supplier
+					   where bkk_supplier = '$req->sup'");
+
+	$data = [];
+	
+	// return dd($req->all());
+	$data = array_merge($fpg,$bk);
+	$data1 = array_merge($fpg,$bk);
+
+	for ($i=0; $i < count($data1); $i++) { 
+		for ($a=0; $a < count($req->array_um1); $a++) { 
+			if ($data1[$i]->nomor == $req->array_um1[$a] and $data1[$i]->um_nomorbukti == $req->array_um2[$a]) {
+				unset($data[$i]);
+			}
+		}
+		
+	}
+
+	
+	return view('purchase.fatkur_pembelian.subcon_um_modal',compact('data'));
 }
 
 }

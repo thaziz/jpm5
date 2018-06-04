@@ -222,6 +222,8 @@ Route::get('fakturpembelian/hapusfakturpembelian/{id}' , 'PurchaseController@hap
 Route::get('fakturpembelian/getum' , 'PurchaseController@getum');
 Route::get('fakturpembelian/hasilum' , 'PurchaseController@hasilum');
 Route::post('fakturpembelian/bayaruangmuka' , 'PurchaseController@bayaruangmuka');
+Route::get('fakturpembelian/datagroupitem' , 'PurchaseController@datagroupitem');
+Route::get('fakturpembelian/jurnalumum' , 'PurchaseController@lihatjurnalumum');
 
 
 //BIAYA PENERUS AGEN
@@ -251,6 +253,11 @@ Route::get('fakturpembelian/notasubcon', 'BiayaPenerusController@notasubcon');
 Route::get('fakturpembelian/adinott', 'BiayaPenerusController@adinott');
 Route::get('fakturpembelian/nota_tt', 'BiayaPenerusController@nota_tt');
 Route::get('fakturpembelian/biaya_penerus_um', 'BiayaPenerusController@biaya_penerus_um');
+Route::get('fakturpembelian/biaya_penerus/pilih_um', 'BiayaPenerusController@pilih_um');
+Route::get('fakturpembelian/biaya_penerus/append_um', 'BiayaPenerusController@append_um');
+Route::get('fakturpembelian/save_bp_um', 'BiayaPenerusController@save_bp_um');
+Route::get('fakturpembelian/outlet_um', 'BiayaPenerusController@outlet_um');
+Route::get('fakturpembelian/subcon_um', 'BiayaPenerusController@subcon_um');
 
 //PEMBAYARAN OUTLET
 Route::get('fakturpembelian/getpembayaranoutlet', 'BiayaPenerusController@getpembayaranoutlet')->name('getpembayaranoutlet');
@@ -663,12 +670,12 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
 
   //LAPORAN KARTU HUTANG
   Route::get('kartuhutang/kartuhutang', 'LaporanPembelianControlle@kartuhutang');
-  Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPembelianControlle@reportkartuhutang');
-  Route::get('reportexcelkartuhutang/reportexcelkartuhutang', 'LaporanPembelianControlle@reportexcelkartuhutang');
+  Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPembelianController@reportkartuhutang');
+  Route::get('reportexcelkartuhutang/reportexcelkartuhutang', 'LaporanPembelianController@reportexcelkartuhutang');
   //END OF
 
   //LAPORAN MASTER GROUP ITEM
-  Route::get('reportmastergroupitem/reportmastergroupitem', 'LaporanPembelianControlle@reportmastergroupitem');
+  Route::get('reportmastergroupitem/reportmastergroupitem', 'LaporanPembelianController@reportmastergroupitem');
   //END OF
 
   //LAPORAN PAJAK MASUKAN
@@ -717,7 +724,7 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
   //END OF 
 //================================    BELUM SELESAI    ========================================//
 
-Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
+// Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
 Route::get('reportfakturpelunasan/reportfakturpelunasan', 'LaporanPurchaseController@reportfakturpelunasan');
 Route::get('reportanalisausiahutang/reportanalisausiahutang', 'LaporanPurchaseController@reportanalisausiahutang');
 Route::get('kartuhutangajax/kartuhutangajax', 'LaporanPurchaseController@kartuhutangajax');
@@ -1365,6 +1372,7 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller
 
 // delivery order kargo
 Route::get('sales/deliveryorderkargo', 'sales\do_kargo_Controller@index');
+Route::get('sales/datatable_do_kargo', 'sales\do_kargo_Controller@datatable_do_kargo')->name('datatable_do_kargo');
 Route::get('sales/deliveryorderkargoform', 'sales\do_kargo_Controller@form');
 Route::get('sales/cari_nopol_kargo', 'sales\do_kargo_Controller@cari_nopol_kargo');
 Route::get('sales/nama_subcon', 'sales\do_kargo_Controller@nama_subcon');
@@ -2411,6 +2419,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
   Route::get('sales/laporaninvoicepenjualan','laporan_penjualan\laporaninvoiceController@index');
   Route::get('data/jurnal/{ref}/{note}', 'jurnalController@lihatJurnal');
   Route::get('data/jurnal-umum', 'jurnalController@lihatJurnalUmum');
+  Route::get('data/jurnal-umum-pembelian', 'jurnalController@lihatJurnalPemb');
 
 
   //laporan Do

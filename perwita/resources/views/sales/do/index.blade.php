@@ -12,7 +12,6 @@
     tr.shown td.details-control {
         background: url('{{ asset('assets/img/details_close.png') }}') no-repeat center center;
     }
-    .dataTables_filter, .dataTables_info { display: none; }
    
     tr.shown td.details-control {
         background: url('{{ asset('assets/img/details_close.png') }}') no-repeat center center;

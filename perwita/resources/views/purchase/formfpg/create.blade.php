@@ -101,7 +101,7 @@
                         <div class="col-xs-6"> 
                             <table class="table table-striped table-bordered">
                             <tr>
-                              <td> Cabang </td>
+                              <th> Cabang </th>
                               <td>
                                    @if(Auth::user()->punyaAkses('Form Permintaan Giro','cabang'))
                                 <select class="form-control chosen-select-width  cabang" name="cabang">
@@ -1194,6 +1194,7 @@
      $('#buttongetid').click(function(){
 
         jenisbayar = $('.jenisbayar').val();
+        $('.jenisbayar').addClass('disabled');
         var checked = $(".check:checked").map(function(){
           return this.id;
         }).toArray();

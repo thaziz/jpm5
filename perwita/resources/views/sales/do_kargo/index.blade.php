@@ -5,6 +5,9 @@
 @section('content')
 <style type="text/css">
     .cssright { text-align: right; }
+    .center{
+        text-align: center;
+    }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -70,61 +73,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data as $row)
-                            <tr>
-                                <td><a onclick="detail('{{$row->nomor}}')" href="">{{ $row->nomor }}</a></td>
-                                <td>{{ $row->tanggal }}</td>
-                                <td>{{ $row->nama }}</td>
-                                <td>{{ $row->nama_pengirim }}</td>
-                                <td>{{ $row->nama_penerima }}</td>
-                                @foreach($kota as $val)
-                                    @if($val->id == $row->id_kota_asal)
-                                    <td>{{ $val->nama }}</td>
-                                    @endif
-                                @endforeach
-                                @foreach($kota as $val)
-                                    @if($val->id == $row->id_kota_tujuan)
-                                    <td>{{ $val->nama }}</td>
-                                    @endif
-                                @endforeach
-                                <td>{{ $row->status }}</td>
-                                <td>{{ $row->total_net }}</td>
-                                <td class="text-center">
-                                    <div class="btn-group">
-
-                                        @if($row->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah'))
-                                            @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
-                                            <a type="button" onclick="edit('{{$row->nomor}}')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
-                                            @endif
-                                        @endif
-
-
-                                        @if(Auth::user()->punyaAkses('Delivery Order','print'))
-                                            <button type="button" onclick="print('{{$row->nomor}}')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>
-                                        @endif
-
-                                        @if($row->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','hapus'))
-                                            @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
-                                            <button type="button" onclick="hapus('{{$row->nomor}}')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>
-                                            @endif
-                                        @endif
-
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-
                         </tbody>
 
                     </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
-
-
-
-
-
                     </div>
                   </div><!-- /.box-footer -->
               </div><!-- /.box -->
@@ -147,9 +101,40 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-    $(document).ready( function () {
-        $('#tabel_data').DataTable({
 
+
+    $(document).ready( function () {
+
+         $('#tabel_data').DataTable({
+            processing: true,
+            // responsive:true,
+            serverSide: true,
+            ajax: {
+                url:'{{ route("datatable_do_kargo") }}',
+            },
+            columnDefs: [
+              {
+                 targets: 8,
+                 className: 'right'
+              },
+              {
+                 targets:9,
+                 className: 'center'
+              },
+            ],
+            "columns": [
+            { "data": "nomor" },
+            { "data": "tanggal" },
+            { "data": "nama"},
+            { "data": "nama_pengirim" },
+            { "data": "nama_penerima" },
+            { "data": "asal"},
+            { "data": "tujuan" },
+            { "data": "status" },
+            { "data": "total_net" },
+            { "data": "aksi" },
+            
+            ]
       });
     });
 
