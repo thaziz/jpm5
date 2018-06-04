@@ -7628,12 +7628,6 @@ public function kekata($x) {
 							]);
 		}
 
-		$datafp = DB::select("select * from faktur_pembelian where fp_idfaktur = '$idfaktur'");
-		$umfp = $datafp[0]->fp_uangmuka;
-		$totaljumlah = str_replace(",", "", $request->totaljumlah);
-		$selisihuangmuka = floatval($umfp) - floatval($totaljumlah);
-		$hasiluangmuka = floatval($selisihuangmuka) + floatval($totaljumlah);
-
 		$data['header'] = DB::table('faktur_pembelian')
 							->where('fp_idfaktur' , $idfaktur)
 							->update([
@@ -7643,9 +7637,7 @@ public function kekata($x) {
 								'fp_dpp'	=> $dpp,
 								'fp_netto' => $netto,
 								'fp_sisapelunasan' => $netto,
-								'fp_uangmuka' => $hasiluangmuka,
 								'updated_by' => $request->username,
-
 							]);
 
 		//UPDATE TT
@@ -7973,52 +7965,9 @@ public function kekata($x) {
 											'umfpdt_transaksibank' => $request->nokas[$keys],
 											'umfpdt_tgl' => $request->tglum[$keys],
 											'umfpdt_jumlahum' => $jumlahum,
-											'umfpdt_dibayar' => $dibayar,
-											'umfpdt_notaum' => $request->notaum[$keys],
-											'umfpdt_acchutang' => $request->akunhutangum[$keys],
-											'umfpdt_flag' => $request->flagum
+											
 										]);
 								}
-
-									$dataum = DB::select("select * from d_uangmuka where um_nomorbukti = '$notaum'");
-								  	$sisaterpakai = $dataum[0]->um_sisaterpakai;
-
-								  	$hasilsisapakai = floatval($sisaterpakai) - floatval($dibayarum);
-
-								  	 $updateum = DB::table('d_uangmuka')
-					                ->where('um_nomorbukti' , $request->notaum[$i])
-					                ->update([
-					                	'um_sisaterpakai' => $hasilsisapakai,                                                           
-					                ]);
-
-					                $notransaksi = $request->nokas[$i];
-					                if($request->flagum == 'FPG'){
-
-					                	$datafpg = DB::select("select * from fpg, fpg_dt where fpg_nofpg = '$notransaksi' and fpgdt_idfpg = idfpg");
-					                	$idfpg = $datafpg[0]->idfpg;
-					                	$sisaum = $datafpg[0]->fpgdt_sisapelunasanumfp;
-
-					                	$hasilsisa = floatval($sisaum) - floatval($dibayarum);
-					                	 $updateum = DB::table('fpg_dt')
-						                ->where([['fpgdt_idfpg' , '='  , $idfpg], ['fpgdt_nofaktur' , '=' , $request->notaum[$i]]])
-						                ->update([
-						                	'fpgdt_sisapelunasanumfp' => $hasilsisa,                                                           
-						                ]);
-					                }
-					                else {
-					                	$databkk = DB::select("select * from bukti_kas_keluar where bkk_nota = '$notransaksi'");
-					                	$idbkk = $databkk[0]->bkk_id;
-					                	$sisaum = $datafpg[0]->bkkd_sisaum;
-
-					                	$hasilsisa = floatval($sisaum) - floatval($dibayarum);
-					                	 $updateum = DB::table('bukti_kas_keluar_detail')
-						                ->where([['bkkd_bkk_id' , '='  , $idbkk], ['bkkd_ref' , '=' , $request->notaum[$i]]])
-						                ->update([
-						                	'bkkd_sisaum' => $hasilsisa,                                                           
-						                ]);
-					                }
-
-
 		return json_encode('sukses');
 	});
 	}
