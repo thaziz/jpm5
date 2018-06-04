@@ -38,9 +38,11 @@
     function pilih_um(a) {
       var nota = a;
       var sup = $('.agen_vendor').val();
+      var id  = $('.nofaktur').val();
+
       $.ajax({
         url:baseUrl +'/fakturpembelian/biaya_penerus/pilih_um',
-        data: {nota,sup},
+        data: {nota,sup,id},
         dataType:'json',
         success:function(data){
           $('.bp_nomor_um').val(data.data.nomor);

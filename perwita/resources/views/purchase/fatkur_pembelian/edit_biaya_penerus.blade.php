@@ -553,7 +553,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="hidden" class="btn btn-primary save_bp_um disabled" >Save changes</button>
+        <button type="button" class="btn btn-primary save_bp_um " >Save changes</button>
       </div>
       </div>
      
@@ -692,7 +692,7 @@
 
   function hitung() {
     var temp = 0;
-    $('.bayar_biaya').each(function(){
+    datatable1.$('.bayar_biaya').each(function(){
       temp+=parseInt($(this).val());
     })
     $('.total_jml').val(accounting.formatMoney(temp, "", 2, ".",','));
@@ -848,8 +848,22 @@
 
    var e_akun_biaya_text = $('.e_akun_biaya :selected').text();
 
-   var par = $('.seq_biaya_'+e_jml_data).parents('tr');
+  var par = $('.seq_biaya_'+e_jml_data).parents('tr');
 
+  var um = "{{$bp->fp_uangmuka}}"/1;
+  var bayar_biaya = $(par).find('.bayar_biaya').val();
+  bayar_biaya = bayar_biaya.replace(/[^0-9\-]+/g,"")/1;
+  var temp = 0;
+  datatable1.$('.bayar_biaya').each(function(){
+    temp+=parseInt($(this).val());
+  })
+
+  temp = temp - bayar_biaya + e_nominal;
+
+  if (temp < um) {
+  toastr.warning('Pembayaran Uang Muka Melebihi Total');
+  return false;
+  }
 
    $(par).find('.seq').val(e_jml_data);
    $(par).find('.no_do').val(e_no_pod);
@@ -869,9 +883,26 @@
   }
 
   function hapus_biaya(par) {
+    var um = "{{$bp->fp_uangmuka}}"/1;
+
     var parent = $(par).parents('tr');
     var pod = $(parent).find('.no_do').val();
-    
+    var bayar_biaya = $(parent).find('.bayar_biaya').val();
+    bayar_biaya = bayar_biaya.replace(/[^0-9\-]+/g,"")/1;
+
+    var temp = 0;
+    datatable1.$('.bayar_biaya').each(function(){
+      temp+=parseInt($(this).val());
+    })
+    temp = temp - bayar_biaya;
+    console.log(um);
+    console.log(temp);
+
+    if (temp < um) {
+      toastr.warning('Pembayaran Uang Muka Melebihi Total');
+      return false;
+    }
+
     var index = array_do.indexOf(pod);
   
     array_do.splice(index,1);
@@ -1051,7 +1082,7 @@ function hitung_um() {
   var temp = 0;
   datatable2.$('.tb_bayar_um').each(function(){
     var b = $(this).val();
-    b   = b.replace(/[^0-9\-]+/g,"")/1;
+    b   = b.replace(/[^0-9\-]+/g,"")/100;
     console.log(b);
     temp+=b;
   })
@@ -1060,9 +1091,6 @@ function hitung_um() {
 }
   
 
-
-var array_um1 = [];
-var array_um2 = [];
 $('.btn_modal_bp').click(function(){
   $('#modal_um_bp').modal('show');
 })
@@ -1072,6 +1100,7 @@ var array_um1 = [0];
 var array_um2 = [0];
 $('.bp_nomor_um').focus(function(){
   var sup = $('.agen_vendor').val();
+  var id  = $('.nofaktur').val();
   if (sup == '0') {
     toastr.warning('Agen/Vendor Harus Diisi');
     return false;
@@ -1079,7 +1108,7 @@ $('.bp_nomor_um').focus(function(){
 
   $.ajax({
     url:baseUrl +'/fakturpembelian/biaya_penerus_um',
-    data: {sup,array_um1,array_um2},
+    data: {sup,array_um1,array_um2,id},
     success:function(data){
       console.log('asd');
       $('.bp_div_um').html(data);
@@ -1090,6 +1119,8 @@ $('.bp_nomor_um').focus(function(){
   })
 
 })
+
+
 var id_um    = 1;
 
 $('.bp_tambah_um').click(function(){
@@ -1099,7 +1130,7 @@ $('.bp_tambah_um').click(function(){
   var bp_id_um = $('.bp_id_um').val();
   var bp_dibayar_um = $('.bp_dibayar_um').val();
   bp_dibayar_um   = bp_dibayar_um.replace(/[^0-9\-]+/g,"")/1;
-
+  var id  = $('.nofaktur').val();
 
 
 
@@ -1118,7 +1149,7 @@ $('.bp_tambah_um').click(function(){
 
   $.ajax({
     url:baseUrl +'/fakturpembelian/biaya_penerus/append_um',
-    data: {nota,sup},
+    data: {nota,sup,id},
     dataType:'json',
     success:function(data){
 
@@ -1164,7 +1195,7 @@ $('.bp_tambah_um').click(function(){
         array_um2.push(data.data.um_nomorbukti);
       }else{
         var par = $('.tb_faktur_um_'+bp_id_um).parents('tr');
-        $(par).find('.tb_bayar_um').val(bp_dibayar_um);
+        $(par).find('.tb_bayar_um').val(accounting.formatMoney(bp_dibayar_um, "", 2, "",'.'));
         $(par).find('.tb_bayar_um_text').text(accounting.formatMoney(bp_dibayar_um, "", 2, ".",','));
       }
       hitung_um();
@@ -1185,6 +1216,7 @@ function edit_um(a) {
   var tb_jumlah_um_text     = $(par).find('.tb_jumlah_um_text').text();
   var tb_sisa_um_text       = $(par).find('.tb_sisa_um_text').text();
   var tb_bayar_um           = $(par).find('.tb_bayar_um').val();
+  console.log(tb_bayar_um);
   var tb_keterangan_um_text = $(par).find('.tb_keterangan_um_text').text();
 
   $('.bp_id_um').val(tb_faktur_um);
@@ -1220,7 +1252,7 @@ $('.save_bp_um').click(function(){
   var bp_total_um = $('.bp_total_um').val();
   datatable2.$('.tb_bayar_um').each(function(){
     var b = $(this).val();
-    b   = b.replace(/[^0-9\-]+/g,"")/1;
+    b   = b.replace(/[^0-9\-]+/g,"")/100;
     console.log(b);
     temp+=b;
   })
@@ -1249,8 +1281,8 @@ $('.save_bp_um').click(function(){
               }
           });
         $.ajax({
-        url:baseUrl + '/fakturpembelian/save_bp_um',
-        type:'post',
+        url:baseUrl + '/fakturpembelian/update_bp_um',
+        type:'get',
         data:$('.head1 :input').serialize()
               +'&'+$('.head_biaya :input').serialize()
               +'&'+datatable2.$('input').serialize()+'&bp_total_um='+bp_total_um,
@@ -1341,14 +1373,14 @@ $('.bp_dibayar_um').maskMoney({
   var total_um        = '{{$val->umfpdt_jumlahum}}';
   var sisa_um         = '{{$val->bkkd_sisa_um + $val->umfpdt_dibayar}}';
   var bp_dibayar_um   = '{{$val->umfpdt_dibayar}}';
-  var bp_dibayar_um   = '{{$val->umfpdt_keterangan}}';
+  var um_keterangan   = '{{$val->umfpdt_keterangan}}';
   console.log(nofaktur);
-  
+
   datatable2.row.add([
             '<p class="tb_faktur_um_text">'+nofaktur+'</p>'+
             '<input type="hidden" class="tb_faktur_um_'+id_um+' tb_faktur_um" value="'+id_um+'">',
 
-            '<p class="tb_transaksi_um_text">'++'</p>'+
+            '<p class="tb_transaksi_um_text">'+nomor+'</p>'+
             '<input type="hidden" class="tb_transaksi_um" name="tb_transaksi_um[]" value="'+nomor+'">',
 
             '<p class="tb_tanggal_text">'+um_tgl+'</p>',
@@ -1363,7 +1395,7 @@ $('.bp_dibayar_um').maskMoney({
             '<p class="tb_bayar_um_text">'+accounting.formatMoney(bp_dibayar_um, "", 2, ".",',')+'</p>'+
             '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+bp_dibayar_um+'">',
 
-            '<p class="tb_keterangan_um_text">'+data.data.um_keterangan+'</p>',
+            '<p class="tb_keterangan_um_text">'+um_keterangan+'</p>',
 
             '<div class="btn-group ">'+
             '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
