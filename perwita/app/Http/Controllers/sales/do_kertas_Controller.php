@@ -133,9 +133,10 @@ class do_kertas_Controller extends Controller
         $cabang = $request->cabang;
         return$cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from delivery_order
                                         -- WHERE kode_cabang = '$cabang'
-                                        where to_char(tanggal,'MM') = '$bulan'
-                                        AND jenis = 'KORAN'
-                                        AND to_char(tanggal,'YY') = '$tahun'");
+                                        -- where to_char(tanggal,'MM') = '$bulan'
+                                        where jenis = 'KORAN'
+                                        -- AND to_char(tanggal,'YY') = '$tahun'
+                                        ");
 
         $index = (integer)$cari_nota[0]->id + 1;
         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
