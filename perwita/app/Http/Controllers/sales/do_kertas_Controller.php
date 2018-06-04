@@ -131,10 +131,10 @@ class do_kertas_Controller extends Controller
         $bulan  = Carbon::now()->format('m');
         $tahun  = Carbon::now()->format('Y');
         $cabang = $request->cabang;
-        return$cari_nota = DB::select("SELECT  substring(max(nomor),11) as id, to_char(tanggal,'MM'),to_char(tanggal,'YY') from delivery_order
-                                        -- WHERE kode_cabang = '$cabang'
+        return$cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from delivery_order
+                                        WHERE kode_cabang = '$cabang'
                                         -- where to_char(tanggal,'MM') = '$bulan'
-                                        where jenis = 'KORAN'
+                                        and jenis = 'KORAN'
                                         -- AND to_char(tanggal,'YY') = '$tahun'
                                         ");
 
