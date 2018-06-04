@@ -255,7 +255,9 @@ Route::get('fakturpembelian/nota_tt', 'BiayaPenerusController@nota_tt');
 Route::get('fakturpembelian/biaya_penerus_um', 'BiayaPenerusController@biaya_penerus_um');
 Route::get('fakturpembelian/biaya_penerus/pilih_um', 'BiayaPenerusController@pilih_um');
 Route::get('fakturpembelian/biaya_penerus/append_um', 'BiayaPenerusController@append_um');
+Route::post('fakturpembelian/save_bp_um', 'BiayaPenerusController@save_bp_um');
 Route::get('fakturpembelian/save_bp_um', 'BiayaPenerusController@save_bp_um');
+Route::post('fakturpembelian/update_bp_um', 'BiayaPenerusController@update_bp_um');
 Route::get('fakturpembelian/outlet_um', 'BiayaPenerusController@outlet_um');
 Route::get('fakturpembelian/subcon_um', 'BiayaPenerusController@subcon_um');
 

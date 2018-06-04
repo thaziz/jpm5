@@ -1,4 +1,4 @@
-<table class="table ot_pilih_um table-hover">
+<table class="table ot_pilih_um table-hover" style="font-size: 12px">
   <thead>
     <th>No Kas/Hutang</th>
     <th>Uang Muka</th>
@@ -38,9 +38,10 @@
     function pilih_um(a) {
       var nota = a;
       var sup = $('.selectOutlet').val();
+      var id  = $('.nofaktur').val();
       $.ajax({
         url:baseUrl +'/fakturpembelian/biaya_penerus/pilih_um',
-        data: {nota,sup},
+        data: {nota,sup,id},
         dataType:'json',
         success:function(data){
           $('.ot_nomor_um').val(data.data.nomor);

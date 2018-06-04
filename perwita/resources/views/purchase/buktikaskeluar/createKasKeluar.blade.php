@@ -1016,10 +1016,7 @@
             valid.push(data.data[i].fp_nofaktur);
           }
 
-          var terbayar = parseFloat(data.data[0].fp_sisapelunasan) 
-                         + parseFloat(data.data[0].fp_debitnota) 
-                         - parseFloat(data.data[0].fp_creditnota) 
-                         + parseFloat(data.data[0].fp_uangmuka);
+          var terbayar = (parseFloat(data.data[0].fp_netto) + parseFloat(data.data[0].fp_creditnota)) - (parseFloat(data.data[0].fp_sisapelunasan) + parseFloat(data.data[0].fp_uangmuka) - parseFloat(data.data[0].fp_debitnota));
           $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_netto,"", 2, ".",','));
           $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
           $('.pelunasan_um').eq(0).val(accounting.formatMoney(data.data[0].fp_uangmuka,"", 2, ".",','));
@@ -1209,7 +1206,7 @@
 
         if (jenis_bayar == '2' || jenis_bayar == '6' || jenis_bayar == '7' || jenis_bayar == '9') {
 
-          var terbayar = parseFloat(data.data[0].fp_netto) - parseFloat(data.data[0].fp_sisapelunasan) + parseFloat(data.data[0].fp_debitnota) - parseFloat(data.data[0].fp_creditnota) + parseFloat(data.data[0].fp_uangmuka);
+          var terbayar = (parseFloat(data.data[0].fp_netto) + parseFloat(data.data[0].fp_creditnota)) - (parseFloat(data.data[0].fp_sisapelunasan) + parseFloat(data.data[0].fp_uangmuka) - parseFloat(data.data[0].fp_debitnota));
           $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_netto,"", 2, ".",','));
           $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
           $('.pelunasan_um').eq(0).val(accounting.formatMoney(data.data[0].fp_uangmuka,"", 2, ".",','));
@@ -1374,11 +1371,7 @@
       success:function(data){
         if (jenis_bayar == 2 || jenis_bayar == 6 || jenis_bayar == 7 || jenis_bayar == 9) {
 
-          var terbayar = parseFloat(data.data.fp_netto) 
-                         - parseFloat(data.data.fp_sisapelunasan) 
-                         + parseFloat(data.data.fp_debitnota) 
-                         - parseFloat(data.data.fp_creditnota) 
-                         + parseFloat(data.data.fp_uangmuka);
+          var terbayar = (parseFloat(data.data.fp_netto) + parseFloat(data.data.fp_creditnota)) - (parseFloat(data.data.fp_sisapelunasan) + parseFloat(data.data.fp_uangmuka) - parseFloat(data.data.fp_debitnota));
           $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data.fp_netto,"", 2, ".",','));
           $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
           $('.pelunasan_um').eq(0).val(accounting.formatMoney(data.data.fp_uangmuka,"", 2, ".",','));
