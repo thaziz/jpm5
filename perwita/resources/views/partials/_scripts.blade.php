@@ -97,7 +97,12 @@
                 $(selector).chosen(config[selector]);
             }
          
-    
+        
+        $('.date').datepicker( {
+            format: "mm",
+            viewMode: "months", 
+            minViewMode: "months"
+        });
      
 
         var dataTableLanguage = {
@@ -121,6 +126,11 @@
            $("#setting_periode").click(function(evt){
                 evt.preventDefault();
                 $("#modal_periode").modal("show");
+           })
+
+           $("#register_jurnal").click(function(evt){
+                evt.preventDefault();
+                $("#modal_register_jurnal").modal("show");
            })
 
            $("#option_periode").click(function(evt){
