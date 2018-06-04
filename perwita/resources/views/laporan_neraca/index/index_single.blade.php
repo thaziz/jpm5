@@ -342,12 +342,6 @@
         minViewMode: "months"
     });
 
-    $('.date').datepicker( {
-        format: "mm",
-        viewMode: "months", 
-        minViewMode: "months"
-    });
-
     $('.year').datepicker( {
         format: "yyyy",
         viewMode: "years", 

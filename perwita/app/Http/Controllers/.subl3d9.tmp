@@ -4246,11 +4246,11 @@ public function purchase_order() {
 
 	public function datagroupitem(Request $request){
 		$grupitem = $request->grupitem;
-		if($grupitem != ''){
-			//return $grupitem;
+		if(defined($grupitem)){
+			return $grupitem;
 			$datagrup = DB::select("select * from jenis_item where kode_jenisitem = '$grupitem'");
 			$kodestock = $datagrup[0]->stock;
-			
+			return json_encode($datagrup);
 		}
 		else {
 			$kodestock = $request->kodestock;

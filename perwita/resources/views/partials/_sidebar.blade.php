@@ -2840,6 +2840,11 @@
 
                                 <li>
                                     <a class="sidebar master-perusahaan  {{Request::is('master_keuangan/neraca') ? 'active' : '' || 
+                            Request::is('master-keuangan/*') ? 'active' : ''}}" id="register_jurnal"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Register Jurnal </a>
+                                </li>
+
+                                <li>
+                                    <a class="sidebar master-perusahaan  {{Request::is('master_keuangan/neraca') ? 'active' : '' || 
                             Request::is('master-keuangan/laporan-neraca*') ? 'active' : ''}}" href="{{ route("buku_besar.index_single", "bulan?m=".date("m")."&y=".date("Y")."") }}"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Buku Besar </a>
                                 </li>
 

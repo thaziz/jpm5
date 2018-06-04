@@ -75,8 +75,8 @@
                                                 <tr>
                                                     <td style="padding-top: 0.4cm">Tanggal</td>
                                                     <td colspan="5">
-                                                        <div class="input-group date">
-                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="ed_tanggal" value="{{ $do->tanggal or  date('Y-m-d') }}">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control date-do" name="ed_tanggal" value="{{ $do->tanggal or  date('Y-m-d') }}">
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -3980,6 +3980,10 @@
     });
     
     $('.date').datepicker({
+        autoclose: true,
+        format: 'yyyy-mm-dd'
+    });
+    $('.date-do').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd'
     });
