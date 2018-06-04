@@ -1282,7 +1282,7 @@ $('.save_bp_um').click(function(){
           });
         $.ajax({
         url:baseUrl + '/fakturpembelian/update_bp_um',
-        type:'get',
+        type:'post',
         data:$('.head1 :input').serialize()
               +'&'+$('.head_biaya :input').serialize()
               +'&'+datatable2.$('input').serialize()+'&bp_total_um='+bp_total_um,

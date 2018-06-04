@@ -108,7 +108,15 @@
       </td>
      </tr>
      <tr>
-      
+      <td style="width: 100px">Tanggal Faktur</td>
+      <td width="10">:</td>
+      <td width="200">
+        <input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="{{$date}}" readonly="" style="">
+        <input type="hidden" class="form-control tgl_resi"  readonly="" style="">
+        <input type="hidden" name="master_persen" class="form-control master_persen"  readonly="" style="">
+      </td>
+     </tr>
+     <tr>
       <td>Outlet</td>
       <td width="10">:</td>
       <td class="disabled">
@@ -491,6 +499,9 @@ var datatable2 = $('.table_outlet').DataTable({
               "pageLength": 10,
               "language": dataTableLanguage,
       });
+
+
+
  function cari_outlet() {
   var  selectOutlet = $('.selectOutlet').val();
   var  cabang     = $('.cabang').val();
@@ -517,6 +528,10 @@ $(document).ready(function(){
           format: 'DD/MM/YYYY'
       }         
 });
+
+  $('.tgl-biaya').datepicker({
+    format:'dd/mm/yyyy'
+  })
 })
 
   function tt_penerus_outlet() {
@@ -849,11 +864,11 @@ $('.save_ot_um').click(function(){
               }
           });
         $.ajax({
-        url:baseUrl + '/fakturpembelian/save_bp_um',
+        url:baseUrl + '/fakturpembelian/update_bp_um',
         type:'post',
         data:$('.head1 :input').serialize()
-              +'&'+$('.head_biaya :input').serialize()
-              +'&'+datatable5.$('input').serialize()+'&bp_total_um='+ot_total_um,
+              +'&'+$('.head_outlet :input').serialize()
+              +'&'+datatable5.$('input').serialize()+'&bp_total_um='+ot_total_um+'&flag=outlet',
         success:function(response){
           if (response.status == 1) {
               swal({

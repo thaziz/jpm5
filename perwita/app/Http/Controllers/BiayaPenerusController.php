@@ -402,7 +402,6 @@ class BiayaPenerusController extends Controller
 			if ($cari_fp->fp_jenisbayar == 6) {
 				$data = DB::table('akun')
 					  ->get();
-				$date = Carbon::now()->format('d/m/Y');
 
 				$agen = DB::table('agen')
 						  ->where('kategori','AGEN')
@@ -423,6 +422,8 @@ class BiayaPenerusController extends Controller
 						  ->join('faktur_pembelian','fp_nofaktur','=','bp_faktur')
 						  ->where('bp_faktur',$cari_fp->fp_nofaktur)
 						  ->first();
+
+				$date = Carbon::parse($bp->fp_tgl)->format('d/m/Y');
 
 				$bpd = DB::table('biaya_penerus_dt')
 						  ->where('bpd_bpid',$bp->bp_id)
@@ -482,7 +483,6 @@ class BiayaPenerusController extends Controller
 
 			} elseif ($cari_fp->fp_jenisbayar == 7){
 
-				$date = Carbon::now()->format('d/m/Y');
 
 				$agen = DB::table('agen')
 						  ->where('kategori','OUTLET')
@@ -494,6 +494,9 @@ class BiayaPenerusController extends Controller
 		        		  ->join('agen','kode','=','fp_supplier')
 		        		  ->where('fp_nofaktur',$cari_fp->fp_nofaktur)
 		        		  ->first();
+
+				$date = Carbon::parse($data->fp_tgl)->format('d/m/Y');
+		        		
 		        $cabang  = DB::table('cabang')
 		        			 ->get();
 		        $data_dt = DB::table('pembayaran_outlet_dt')
@@ -1524,14 +1527,14 @@ class BiayaPenerusController extends Controller
 			$akun_hutang = $akun_hutang->acc_hutang;
 			
 		   	
-		   $cari_tt = DB::table('form_tt')
+		    $cari_tt = DB::table('form_tt')
 		    			 ->where('tt_nofp',$request->nofaktur)
 		    			 ->get();
 
 			$save = DB::table('faktur_pembelian')->insert([
 								'fp_idfaktur'		=> $cari_id,
 								'fp_nofaktur'		=> $request->nofaktur,
-								'fp_tgl'			=> Carbon::now(),
+								'fp_tgl'			=> Carbon::parse($tgl[0])->format('Y-m-d'),
 								'fp_jenisbayar' 	=> 7,
 								'fp_comp'			=> $request->cabang,
 								'created_at'		=> Carbon::now(),
@@ -2644,6 +2647,7 @@ public function save_bp_um(request $req)
 		if ($pending->fp_pending_status == 'PENDING') {
 			return response()->json(['status'=>2]);
 		}else{
+	
 			$save = DB::table('uangmukapembelian_fp')
 					  ->insert([
 					  	'umfp_id'			=> $id,
@@ -2871,6 +2875,7 @@ public function update_bp_um(request $req)
 						   ]);
 			if ($um[$i]->umfpdt_flag == 'bkk') {
 				$cari_bkkd = DB::table('bukti_kas_keluar_detail')
+						 ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
 						 ->where('bkk_nota',$um[$i]->umfpdt_transaksibank)
 						 ->where('bkkd_ref',$um[$i]->umfpdt_notaum)
 						 ->first();
