@@ -888,7 +888,7 @@ $('.save_ot_um').click(function(){
           });
         $.ajax({
         url:baseUrl + '/fakturpembelian/save_bp_um',
-        type:'get',
+        type:'post',
         data:$('.head1 :input').serialize()
               +'&'+$('.head_biaya :input').serialize()
               +'&'+datatable5.$('input').serialize()+'&bp_total_um='+ot_total_um,

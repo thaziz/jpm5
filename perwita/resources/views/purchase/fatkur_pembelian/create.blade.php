@@ -1507,7 +1507,6 @@
      
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 
 <div id="modal_show_um" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document" style="width: 1200px">

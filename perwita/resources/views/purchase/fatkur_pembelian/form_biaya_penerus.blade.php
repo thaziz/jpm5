@@ -632,6 +632,13 @@
      });
   }
 
+function print_penerus() {
+  var idfaktur = $('.idfaktur').val();
+  console.log(idfaktur);
+  window.open('{{url('fakturpembelian/detailbiayapenerus')}}'+'/'+idfaktur);
+}
+
+
 function hitung_um() {
   var temp = 0;
   datatable2.$('.tb_bayar_um').each(function(){
@@ -645,11 +652,6 @@ function hitung_um() {
 }
   
 
-function print_penerus() {
-  var idfaktur = $('.idfaktur').val();
-  console.log(idfaktur);
-   window.open('{{url('fakturpembelian/detailbiayapenerus')}}'+'/'+idfaktur);
-  }
 
 var array_um1 = [];
 var array_um2 = [];
@@ -840,7 +842,7 @@ $('.save_bp_um').click(function(){
           });
         $.ajax({
         url:baseUrl + '/fakturpembelian/save_bp_um',
-        type:'get',
+        type:'post',
         data:$('.head1 :input').serialize()
               +'&'+$('.head_biaya :input').serialize()
               +'&'+datatable2.$('input').serialize()+'&bp_total_um='+bp_total_um,

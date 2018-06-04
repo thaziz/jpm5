@@ -1,4 +1,4 @@
-<table class="table bp_pilih_um table-hover">
+<table class="table bp_pilih_um table-hover" style="font-size: 12px">
   <thead>
     <th>No Kas/Hutang</th>
     <th>Uang Muka</th>

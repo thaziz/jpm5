@@ -106,8 +106,41 @@ class do_kargo_Controller extends Controller
 
     public function form($nomor=null){
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+
+        $kontrak_customer = DB::table('customer')
+                              ->join('kontrak_customer','kc_kode_customer','=','kode')
+                              ->select('kode')
+                              ->groupBy('kode')
+                              ->get();
+        for ($i=0; $i < count($kontrak_customer); $i++) { 
+          $kode[$i] = $kontrak_customer[$i]->kode;
+        }
+        $kode = array_unique($kode);
         $customer = DB::table('customer')
                       ->get();
+
+        for ($i=0; $i < count($customer); $i++) { 
+          for ($a=0; $a < count($kode); $a++) { 
+            if ($kode[$a] == $customer[$i]->kode) {
+              $customer[$i]->kontrak = 'YA';
+            }
+          }
+        }
+       
+
+        $kontrak_customer = DB::table('kontrak_customer')
+                              ->join('kontrak_customer_d','kcd_id','=','kc_id')
+                              ->select('kc_kode_customer')
+                              ->where('kc_aktif','AKTIF')
+                              ->where('kcd_jenis','KARGO')
+                              ->groupBy('kc_kode_customer')
+                              ->get();
+
+
+
+
+       
+
         $kendaraan = DB::select("   SELECT k.id,k.nopol,k.tipe_angkutan,k.status,k.kode_subcon,s.nama FROM kendaraan k
                                     LEFT JOIN subcon s ON s.kode=k.kode_subcon ");
         $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");

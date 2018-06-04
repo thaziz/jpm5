@@ -391,6 +391,11 @@ class BiayaPenerusController extends Controller
 		}
 		public function edit($id){
 			if (Auth::user()->punyaAKses('Faktur Pembelian','ubah')) {
+
+
+
+
+
 			$cari_fp = DB::table('faktur_pembelian')
 						 ->where('fp_idfaktur',$id)
 						 ->first();
@@ -415,12 +420,24 @@ class BiayaPenerusController extends Controller
 				}
 
 				$bp = DB::table('biaya_penerus')
+						  ->join('faktur_pembelian','fp_nofaktur','=','bp_faktur')
 						  ->where('bp_faktur',$cari_fp->fp_nofaktur)
 						  ->first();
 
 				$bpd = DB::table('biaya_penerus_dt')
 						  ->where('bpd_bpid',$bp->bp_id)
 						  ->get();
+
+				$bulan = Carbon::now()->format('m');
+			    $tahun = Carbon::now()->format('y');
+
+			    $cari_nota = DB::select("SELECT  substring(max(tt_noform),12) as id from form_tt
+			                                    WHERE tt_idcabang = '$bp->fp_comp'
+			                                    AND to_char(created_at,'MM') = '$bulan'
+			                                    AND to_char(created_at,'YY') = '$tahun'");
+			    $index = (integer)$cari_nota[0]->id + 1;
+			    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
+			    $nota = 'TT' . $bulan . $tahun .'/'.$bp->fp_comp.'/'. $index;
 
 				$form_tt = DB::table('form_tt')
 							 ->where('tt_nofp',$cari_fp->fp_nofaktur)
@@ -430,7 +447,37 @@ class BiayaPenerusController extends Controller
 				
 				$jt = Carbon::now()->subDays(-30)->format('d/m/Y');
 
-				return view('purchase/fatkur_pembelian/edit_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id'));
+				$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
+					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
+					   inner join fpg_dt on fpgdt_idfpg = idfpg
+					   inner join d_uangmuka on um_supplier = fpg_agen
+					   where fpgb_posting = 'DONE'
+					   and fpg_agen = '$req->sup'");
+
+
+				$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
+								   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
+								   inner join d_uangmuka on um_supplier = bkk_supplier
+								   where bkk_supplier = '$req->sup'");
+
+				$data = [];
+				
+				// return dd($req->all());
+				$trans = array_merge($fpg,$bk);
+
+				$um = DB::table('uangmukapembelian_fp')
+						->where('umfp_nofaktur',$bp->fp_nofaktur)
+						->get();
+
+				for ($i=0; $i < count($um); $i++) { 
+					for ($a=0; $a < count($trans); $a++) { 
+						if ($trans[$a]->nomor == $um[$i]->umfpdt_transaksibank and $trans[$a]->um_nomorbukti == $um[$i]->umfpdt_notaum) {
+							$um[$i]->sisa_um = $trans[$a]->
+						}
+					}
+				}
+
+				return view('purchase/fatkur_pembelian/edit_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um'));
 
 			} elseif ($cari_fp->fp_jenisbayar == 7){
 
@@ -995,6 +1042,8 @@ class BiayaPenerusController extends Controller
 			        				'tt_suratperan'	 	 => strtoupper($Peranan),
 			        				'tt_suratjalanasli'	 => strtoupper($Jalan),
 			        				'tt_faktur'			 => strtoupper($Faktur),
+			        				'tt_noform'			 => $request->nota_tt,
+			        				'tt_nofp'			 => $request->nofaktur,
 			        				'tt_idagen'			 => $request->supplier_tt,
 			        				'tt_idcabang'		 => $request->cabang
 			        			]);
@@ -1070,7 +1119,6 @@ class BiayaPenerusController extends Controller
 			$cari_tt = DB::table('form_tt')
 						   ->where('tt_noform',$id)
 						   ->first();
-
 			$cari_tipe = DB::table('faktur_pembelian')
 						   ->where('fp_nofaktur',$cari_tt->tt_nofp)
 						   ->get();
