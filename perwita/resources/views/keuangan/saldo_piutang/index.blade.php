@@ -137,7 +137,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Data Saldo Awal Akun
+                    <h5> Data Saldo Awal Piutang
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
@@ -213,7 +213,7 @@
 
  <!-- modal -->
 <div id="modal_tambah_akun" class="modal">
-  <div class="modal-dialog" style="width: 60%;">
+  <div class="modal-dialog modal-lg" style="width: 85%;">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

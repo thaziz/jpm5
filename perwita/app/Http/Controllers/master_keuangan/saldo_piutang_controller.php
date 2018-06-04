@@ -14,16 +14,16 @@ class saldo_piutang_controller extends Controller
 {
     public function index($cabang){
 
-        if(cek_periode() == 0)
-            return view("keuangan.err.err_periode");
+        // if(cek_periode() == 0)
+        //     return view("keuangan.err.err_periode");
 
-        if(Session::get('cabang') != '000'){
-            $cek_exist = DB::table('d_saldo_piutang')->where('kode_cabang', Session::get('cabang'))->get();
+        // if(Session::get('cabang') != '000'){
+        //     $cek_exist = DB::table('d_saldo_piutang')->where('kode_cabang', Session::get('cabang'))->get();
 
-            if(count($cek_exist) > 0){
-                $this->generate_saldo_piutang(date('m/Y'));
-            }
-        }
+        //     if(count($cek_exist) > 0){
+        //         $this->generate_saldo_piutang(date('m/Y'));
+        //     }
+        // }
 
         $cab  = DB::table('cabang')
                 ->select("kode", "nama")->get();
