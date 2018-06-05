@@ -2954,7 +2954,9 @@ public function update_bp_um(request $req)
 						 ->first();
 
 		}
-
+		$cari_fp = DB::table('faktur_pembelian')
+						 ->where('fp_nofaktur',$req->nofaktur)
+						 ->first();
 
 		$hapus_um = DB::table('uangmukapembelian_fp')
 					 	->where('umfp_nofaktur',$req->nofaktur)
@@ -3053,7 +3055,6 @@ public function update_bp_um(request $req)
 							  ]);
 				
 			}
-
 			$cari_fp = DB::table('faktur_pembelian')
 						 ->where('fp_nofaktur',$req->nofaktur)
 						 ->first();
@@ -3065,6 +3066,11 @@ public function update_bp_um(request $req)
 						 	'fp_sisapelunasan'=> $cari_fp->fp_sisapelunasan - filter_var($req->bp_total_um, FILTER_SANITIZE_NUMBER_INT)/100
 						 ]);
 
+			$cari_fp = DB::table('faktur_pembelian')
+						 ->where('fp_nofaktur',$req->nofaktur)
+						 ->first();
+
+			
 			return response()->json(['status'=>1]);
 		}
 	});
