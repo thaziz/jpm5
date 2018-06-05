@@ -320,9 +320,9 @@
                          <tr class="fpitem" id="data-item{{$index + 1}}"> <td>{{$index + 1}}</td>
 
                         <td> <select class="form-control barangitem brg{{$index + 1}} edit"  name="item[]" data-id="{{$index + 1}}" disabled="">
-                         @foreach($data['barang'] as $brg)
-                         <option value="{{$brg->kode_item}}" @if($fakturdt->kode_item == $brg->kode_item) selected @endif> {{$brg->nama_masteritem}} </option>
-                          @endforeach </select>  </td>  <!-- nama barang -->
+                         @foreach($data['barang'] as $brg) 
+                         <option value="{{$brg->kode_item}}" @if($fakturdt->fpdt_kodeitem == $brg->kode_item) selected @endif> {{$brg->nama_masteritem}} </option>
+                          @endforeach </select>   </td>  <!-- nama barang -->
 
                         <td> <input type="text" class="form-control qtyitem qtyitem{{$index + 1}} edit" value="{{$fakturdt->fpdt_qty}}" name="qty[]" data-id="{{$index +1}}" readonly=""> 
 
@@ -590,7 +590,7 @@
                                 <table class='table' style='width:90%'>
 								<tr>
 									<td> Pilih Group Item </td>
-									<td> <select class="form-control groupitem" name="groupitem"  id="selectgroup"> 
+									<td> <select class="form-control groupitem" name="grupitem"  id="selectgroup"> 
 											@foreach($data['jenisitem'] as $jenis)
 										  <option value="{{$jenis->kode_jenisitem}}"> {{$jenis->keterangan_jenisitem}} </option> 
 											@endforeach
@@ -749,6 +749,7 @@
                                           <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                           <input type="hidden" class="notr">
                                           <input type="hidden" class="akunhutang_um">
+                                          <input type="hidden" class="flag_um">
                                         </td>
                                       </tr>
                                       <tr>
@@ -1188,6 +1189,7 @@
         notransaksi = $('.notr').val();
         akunhutang = $('.akunhutang_um').val();
         keteranganum = $('.keteranganum_header').val();
+        flagum = $('.flag_um').val();
 
         if(dibayar == ''){
           toastr.info("harap diisi jumlah dibayar nya :)");
@@ -1220,7 +1222,7 @@
                   '<td><p class="notaum_text">'+notaum+'</p> <input type="hidden" class="notaum" value="'+notaum+'" name="notaum[]"> </td>' +
                   '<td> <p class="jumlahum_text">'+jumlah+'</p> <input type="hidden" class="jumlahum" value="'+jumlah+'" name="jumlahum[]"> </td>' +
                   '<td> <p class="dibayar_text">'+dibayar+'</p> <input type="hidden" class="dibayar" value="'+dibayar+'" name="dibayarum[]"> </td>'+
-                  '<td> <p class="keterangan_text">'+keterangan+'</p><input type="hidden" value="'+keterangan+'" class="keteranganum" name="keteranganum[]"> <input type="hidden" value='+notr+' class="notr"> <input type="hidden" class="akunhutangum" value="'+akunhutang+'" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="'+keteranganum+'" name="keteranganumheader"> </td>' +
+                  '<td> <p class="keterangan_text">'+keterangan+'</p><input type="hidden" value="'+keterangan+'" class="keteranganum" name="keteranganum[]"> <input type="hidden" value='+notr+' class="notr"> <input type="hidden" class="akunhutangum" value="'+akunhutang+'" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="'+keteranganum+'" name="keteranganumheader"> <input type="hidden" class="flagum" value="'+flagum+'" name="flagum"></td>' +
                   '<td> <button class="btn btn-sm btn-danger" type="button" onclick="hapusum(this)"><i class="fa fa-trash"></i></button></td>'+ 
                 "</tr>";
 
@@ -1240,6 +1242,8 @@
             $(val).find('.dibayar').val(dibayar);
             $(val).find('.jumlahum').val(jumlah);
             $(val).find('.keteranganum').val(keterangan);
+            $(val).find('.keteranganumheader').val(keteranganum);
+            $(val).find('.flagum').val(flagum);
 
             $(val).find('.nofaktur').text(nofaktur);
             $(val).find('.nokas_text').text(nokas);
@@ -1374,6 +1378,7 @@
         $('.nota_um').val(response.um[0].nota_um);
         $('.idtransaksi').val(response.um[0].idtransaksi);
         $('.akunhutang_um').val(response.um[0].acchutang);
+        $('.flag_um').val(response.um[0].flag);
           var tableum = $('#tabletransaksi').DataTable();
       }
     })    
@@ -3425,9 +3430,9 @@
                   "<td> <input type='text' class='form-control input-sm' value='"+pobarang[k][j].nama_masteritem+"' readonly > <input type='hidden' class='form-control input-sm' value='"+pobarang[k][j].pbdt_item+"' readonly name='kodeitem[]' > </td>" +
                   "<td> <input type='text' class='form-control input-sm' value='"+pobarang[k][j].sumqty+"' readonly name='qty[]'></td>" +
                   "<td> <input type='text' class='form-control input-sm' value='"+addCommas(pobarang[k][j].podt_jumlahharga)+"' readonly name='harga[]'></td>" +
-                  "<td> <input type='text' class='form-control input-sm totalharga"+pobarang[k][j].po_id+"' value='"+addCommas(pobarang[k][j].sumharga)+"' readonly name='totalharga[]'></td>" +
-                  "<td> <input type='text' class='form-control input-sm' value='"+pobarang[k][j].pbdt_updatestock+"' readonly name='updatestock'></td>" +
-                  "<td> <input type='text' class='form-control input-sm' value='"+pobarang[k][j].acc_persediaan+"' readonly name='accpersediaan[]'></td>" +
+                  "<td> <input type='text' class='form-control input-sm totalharga"+pobarang[k][j].po_id+"' value='"+addCommas(pobarang[k][j].sumharga)+"' readonly name='totalharga[]'> </td>" +
+                  "<td> <input type='text' class='form-control input-sm' value='"+pobarang[k][j].pbdt_updatestock+"' readonly name='updatestock[]'></td>" +
+                  "<td> <input type='text' class='form-control input-sm' value='"+pobarang[k][j].acc_persediaan+"' readonly name='accpersediaan[]'> </td>" +
                   "<td> <input type='text' class='form-control input-sm' value='"+pobarang[k][j].acc_hpp+"' readonly name='accbiaya[]'></td> <input type='hidden' class='form-control input-sm' value='"+pobarang[k][j].po_id+"' name='po_id[]' readonly=''>  <input type='hidden' value='PO' name='flag'> " +
                   "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+pobarang[k][j].po_id+"' type='button'><i class='fa fa-trash'></i></button> </td>" +
                   "</tr>";
@@ -4223,12 +4228,12 @@
           jumlahharga = $('.jumlahharga_po').val();
           replacejumlah = jumlahharga.replace(/,/g,'');
          
-            val2 = $('.biayaitem' + id).val();
+            val2 = $('.nettoitem' + id).val();
            // alert(val2);
             replaceval2 = val2.replace(/,/g,'');
 
             hasil = parseFloat(parseFloat(replacejumlah) - parseFloat(replaceval2)).toFixed(2);
-
+            $('.tampilpo').val('update');
          
           //menghitung jumlah
           $('.jumlahharga_po').val(addCommas(hasil));
@@ -4584,6 +4589,7 @@
           var id = $(this).data('id');
           var total = $('.totalharga' + id).length;
        //   replace = total.replace(/,/g,'');
+        $('.tampilpo').val('update');
           val = [];
           jumlahharga = $('.jumlahharga_po').val();
           replacejumlah = jumlahharga.replace(/,/g,'');
@@ -5300,7 +5306,7 @@
           $('.keterangan2').attr('disabled' , true);
 
           $('.noinvoice').attr('disabled' , true);
-          $('.groupitem').attr('disabled' , true);
+         // $('.groupitem').attr('disabled' , true);
 
           $('.tampilpo').val('update');
      
@@ -5330,7 +5336,7 @@
           var acc_biaya = $('.acc_biaya').val();
           var acc_persediaan = $('.acc_persediaan').val();
           var keterangan = $('.keterangan').val();
-         
+        
        
           var penerimaan = $('.penerimaan').val();
 
@@ -5342,7 +5348,7 @@
                   "<td> <select class='form-control barangitem brg"+nourut+"'  name='item[]' data-id="+nourut+"> @foreach($data['barang'] as $brg) <option value='{{$brg->kode_item}}'>{{$brg->nama_masteritem}}</option> @endforeach </select>  </td>" + //nama barang
 
                   "<td> <input type='text' class='form-control qtyitem qtyitem"+nourut+"' value="+qty+" name='qty[]' data-id="+nourut+"> " +
-                  "<input type='hidden' class='form-control groupitem' value="+groupitem+" name='groupitem'> </td>"+ //qty
+                  "<input type='hidden' class='form-control groupitem' value="+groupitem+" name='grupitem[]'> </td>"+ //qty
                   
                   "<td> <select class='form-control gudangitem gudangitem"+nourut+"' name='gudang[]' readonly> @foreach($data['gudang'] as $gudang)  <option value='{{$gudang->mg_id}}'> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td>"+ //gudang
 
@@ -5372,23 +5378,55 @@
 /*
                   <button class='btn btn-xs btn-success update' data-id='"+nourut+"' type='button' id='toggle"+nourut+"'> <i id='edit"+nourut+"' class='fa fa-pencil' aria-hidden='true'></i>"+nourut+"*/
 
-                  hsljml =  biaya.replace(/,/g, '');
-                  console.log(hsljml);
+                  hsljml =  netto.replace(/,/g, '');
+                  //console.log(hsljml);
+
+                 // alert(hsljml + 'hsljml');
 
                   $jumlahharga = $jumlahharga + parseInt(hsljml);
                   numeric = parseFloat($jumlahharga).toFixed(2);
-               /*   $('.jumlahharga_po').val(addCommas(numeric));
-                  $('.dpp_po').val(addCommas(numeric));
-                  $('.dpp2').val(addCommas(numeric));
-                  $('.dpp_po2').val(addCommas(numeric));
-                  $('.nettohutang_po').val(addCommas(numeric));*/
-
-
-
+     
                  /* Data Jumlah DPP*/
                   total = $('.jumlahharga_po').val();
                   replacetotal = total.replace(/,/g,'');
                   hasiltotal = parseFloat(parseFloat(replacetotal) + parseFloat(numeric)).toFixed(2);
+
+                  //alert(hasiltotal + 'hasiltotal');
+
+                    //cek jika double item
+                  nobrg = nourut - 1;
+                  idbarang = $('.brg'+nobrg).val();
+                  
+                  //alert(item);
+                  //alert(idbarang);
+                  if(item == idbarang){
+                    toastr.info('Mohon maaf barang tersebut sudah ditambah :)');
+                    return false;
+                  }
+                  else {
+                    $('#tablefp').append(row);
+                  }
+
+                
+                 $('.brg'+nourut).val(item);
+
+                 //pembersihan value
+                 //pembersihan data
+                $('.item').prop('selectedIndex',0);
+                $('.qty').val('');
+                $('.gudang').val('');
+                $('.harga').val('');
+                $('.amount').val('');
+                $('.biaya').val('0');
+                $('.nettomodal').val('');
+                $('.acc_biaya').val('');
+                $('.keterangan').val('');
+                $('.diskon').val('');
+                $('.hasildiskonitem').val('');
+
+             
+                $('.tampilpo').val('update');
+                $('.inputtandaterima').val('tidaksukses');
 
              $('.jumlahharga_po').val(addCommas(hasiltotal));
 
@@ -5724,37 +5762,7 @@
 
                  /*END DATA DPP*/
 
-                  //cek jika double item
-                  nobrg = nourut - 1;
-                  idbarang = $('.brg'+nobrg).val();
-                
-                  if(item == idbarang){
-                    toastr.info('Mohon maaf barang tersebut sudah ditambah :)');
-                  }
-                  else {
-                    $('#tablefp').append(row);
-                  }
 
-                
-                 $('.brg'+nourut).val(item);
-
-                 //pembersihan value
-                 //pembersihan data
-                $('.item').prop('selectedIndex',0);
-                $('.qty').val('');
-                $('.gudang').val('');
-                $('.harga').val('');
-                $('.amount').val('');
-                $('.biaya').val('0');
-                $('.nettomodal').val('');
-                $('.acc_biaya').val('');
-                $('.keterangan').val('');
-                $('.diskon').val('');
-                $('.hasildiskonitem').val('');
-
-             
-                $('.tampilpo').val('update');
-              $('.inputtandaterima').val('tidaksukses');
   
         })
 
@@ -6510,7 +6518,7 @@
 
         $(document).on('click','.removes-btn',function(){
           var id = $(this).data('id');
-         
+         $('.tampilpo').val('update');
           var parent = $('#data-item'+id);
           parent.remove();
 
@@ -6550,7 +6558,7 @@
           $('i#edit'+id).toggleClass('fa-floppy-o fa-pencil');
             $('button#toggle'+id).toggleClass('save update');
        })     
-      })
+    
 
 
 
