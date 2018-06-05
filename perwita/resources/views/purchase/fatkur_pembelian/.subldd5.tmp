@@ -749,8 +749,8 @@
                                           <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                           
                                           <input type="hidden" class="akunhutang_um">
+                                          <input type="hidden" class="akunhutang_um">
                                           <input type="hidden" class="notr">
-                                          <input type="hidden" class="flag_um">
                                         </td>
                                       </tr>
                                       <tr>
@@ -835,7 +835,7 @@
                                               <td> <p class="notaum_text">{{$umfp->umfpdt_notaum}}</p> <input type="hidden" class="notaum" value="{{$umfp->umfpdt_notaum}}" name="notaum[]"></td>
                                               <td> <p class="jumlahum_text"> {{number_format($umfp->umfpdt_jumlahum,2,",",".")}}</p> <input type="hidden" class="jumlahum" value="{{$umfp->umfpdt_jumlahum}}" name="jumlahum[]">  </td>
                                               <td> <p class="dibayar_text"> {{number_format($umfp->umfpdt_dibayar,2,",",".")}} </p> <input type="hidden" class="dibayar" value="{{$umfp->umfpdt_dibayar}}" name="dibayarum[]"> </td>
-                                              <td>  <p class="keterangan_text">{{$umfp->umfpdt_keterangan}}</p><input type="hidden" value="{{$umfp->umfpdt_keterangan}}" class="keteranganum" name="keteranganum[]">  <input type="hidden" class="akunhutangum" value="{{$umfp->umfpdt_acchutang}}" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="{{$umfp->umfp_keterangan}}" name="keteranganumheader"> <input type="hidden" class="flagum" value="{{$umfp->umfpdt_flag}}" name="flagum[]">  </td>
+                                              <td>  <p class="keterangan_text">{{$umfp->umfpdt_keterangan}}</p><input type="hidden" value="{{$umfp->umfpdt_keterangan}}" class="keteranganum" name="keteranganum[]">  <input type="hidden" class="akunhutangum" value="{{$umfp->umfpdt_acchutang}}" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="{{$umfp->umfp_keterangan}}" name="keteranganumheader"> <input type="hidden" class="flagum" value="{{$umfp->umfpdt_flag}}" name="flagum[]"> </td>
                                               <td> <button class="btn btn-sm btn-danger" type="button" onclick="hapusum(this)"><i class="fa fa-trash"></i></button> </td>
                                            
 
@@ -1193,7 +1193,7 @@
         keteranganum = $('.keteranganum_header').val();
         flagum = $('.flag_um').val();
 
-       // alert(flagum);
+        alert(notransaksi);
         if(dibayar == ''){
           toastr.info("harap diisi jumlah dibayar nya :)");
           return false;
@@ -1321,11 +1321,9 @@
     jumlahum = $(val).find('.jumlahum').val();
     keteranganum = $(val).find('.keteranganum').val();
     keteranganumheader = $(val).find('.keteranganumheader').val();
-    flagum = $(val).find('.flagum').val();
-
     notr = $(val).find('.idtrum').data('id');
     
-    //alert(notr);
+    alert(notr);
     //alert(a);
 
     /*$('.nofaktur').val(nofaktur);*/
@@ -1337,13 +1335,17 @@
     $('.dibayar_header').val(addCommas(dibayar));
     $('.nota_um').val(notaum);
     $('.notr').val(notr);
-    $('.flag_um').val(flagum);
 
 
   }
 
+  sisahutangpoheader = $('.sisahutang_po').val();
+  sisahutangpoheader2 =  sisahutangpoheader.replace(/,/g,'');
 
- 
+  uangmukafp = $(".fp_uangmuka").val();
+  uangmukafp2 =  uangmukafp.replace(/,/g,'');
+
+  hasilsisa = 
 
 
 

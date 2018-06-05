@@ -275,7 +275,6 @@
      <tr>
       <td> Cabang </td>
       <td> : </td>
-      <td> {{$data['fpg'][0]->namacabang}} </td>
      </tr>
     
    </table>
@@ -415,11 +414,11 @@
         <td class="textcenter top right" valign="top" height="300">
          <table width="100%">
           @if($data['fpg'][0]->fpg_jenisbayar != '5')
-             @foreach($data['fpg_dt'] as $fpgdt)
-              <tr>
-               <td>{{$fpgdt->fpgdt_keterangan}}</td>
-              </tr>
-              @endforeach
+         @foreach($data['fpg_dt'] as $fpgdt)
+          <tr>
+           <td>{{$fpgdt->fpgdt_keterangan}}</td>
+          </tr>
+          @endforeach
           @else
            <tr>
            <td style="text-align: center">{{$data['fpg'][0]->fpg_keterangan}}</td>
