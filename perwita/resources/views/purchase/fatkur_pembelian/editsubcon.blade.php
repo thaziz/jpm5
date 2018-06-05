@@ -366,8 +366,8 @@ No Faktur
  <div class=" col-sm-12 tb_sb_hidden">
   <h3>Tabel Detail Resi</h3>
   <hr>
-      <button type="button" class="btn btn-primary pull-right save_subcon disabled" id="save_subcon" onclick="save_subcon()"><i class="fa fa-save"></i> Simpan Data</button>
-      <button type="button" style="margin-right: 20px" class="btn btn-warning pull-right print_subcon disabled" id="print_subcon" onclick="print_penerus()"><i class="fa fa-print"></i> Print</button>
+      <button type="button" class="btn btn-primary pull-right save_subcon " id="save_subcon" onclick="save_subcon()"><i class="fa fa-save"></i> Simpan Data</button>
+      <button type="button" style="margin-right: 20px" class="btn btn-warning pull-right print_subcon" id="print_subcon" onclick="print_penerus()"><i class="fa fa-print"></i> Print</button>
       <button type="button" style="margin-right: 20px" class="btn btn-warning pull-right print-penerus" id="print-penerus" onclick="print_penerus_tt()" ><i class="fa fa-print"></i> Print Tanda Terima</button>
         <button class="btn btn-primary btn_modal_sc  pull-right " style="margin-right: 20px" type="button" > Bayar dengan Uang Muka </button>
 
@@ -786,7 +786,7 @@ No Faktur
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="hidden" class="btn btn-primary save_sc_um disabled" >Save changes</button>
+        <button type="hidden" class="btn btn-primary save_sc_um " >Save changes</button>
       </div>
       </div>
      
@@ -974,6 +974,7 @@ function cariSUB(){
   var m_seq = $('.m_seq').val();
   var nota_subcon = $('.nota_subcon').val();
   var m_do_subcon = $('.m_do_subcon').val();
+  var m_do_asal   = $('.m_do_asal').val();
 
   var no_do_asal = $('.no_do_asal').val();
   var no_do_tujuan = $('.no_do_tujuan').val();
@@ -1031,20 +1032,6 @@ function cariSUB(){
   var no_do_tujuan = $('.m_do_tujuan').val();
   var no_tipe_kendaraan = $('.m_tipe_kendaraan').val();
 
-  if (m_do_asal != sc_tujuan_subcon) {
-      toastr.warning('Asal Do Tidak Sama Dengan Asal Kontrak');
-      return false;
-  }
-
-  if (m_do_tujuan != m_do_tujuan) {
-      toastr.warning('Tujuan Do Tidak Sama Dengan Tujuan Kontrak');
-      return false;
-  }
-
-  if (m_tipe_kendaraan != m_tipe_kendaraan) {
-      toastr.warning('Tipe Kendaraan Do Tidak Sama Dengan Tipe Kendaraan Kontrak');
-      return false;
-  }
   
   if (index == -1) {
       subcon.row.add([
@@ -1078,10 +1065,26 @@ function cariSUB(){
       $('.m_seq').val(m_seq);
       $('.modal_tt_subcon').removeClass('disabled');
       $('.modal_tt_subcon').removeClass('disabled');
-      $('.save_subcon').addClass('disabled');
       toastr.success('Append Berhasil, Silahkan Membuat Form Tanda Terima.');
   }else{
     var par = $('.sub_seq_'+m_do_subcon).parents('tr');
+    var um = $('.sc_total_um').val();
+    um = um.replace(/[^0-9\-]+/g,"")/100;
+    var bayar_biaya = $(par).find('.d_harga_subcon').val();
+    bayar_biaya = bayar_biaya.replace(/[^0-9\-]+/g,"")/1;
+    var temp = 0;
+
+    subcon.$('.d_harga_subcon').each(function(){
+      temp+=parseInt($(this).val());
+    })
+
+    temp = temp - bayar_biaya + sc_total_dt;
+
+    if (temp < um) {
+      toastr.warning('Pembayaran Uang Muka Melebihi Total');
+      return false;
+    }
+
     $(par).find('.d_resi_subcon').val(m_do_subcon);
     $(par).find('.d_harga_subcon').val(sc_total_dt);
     $(par).find('.d_jumlah_subcon').val(sc_jumlah);
@@ -1167,6 +1170,27 @@ function hapus_subcon(o){
     var cari = $(ini).find('.dt_resi_subcon').val();
     var temp1=0;
     var cariIndex = array_do.indexOf(cari);
+
+
+
+    var um = $('.sc_total_um').val();
+    um = um.replace(/[^0-9\-]+/g,"")/100;
+    var bayar_biaya = $(ini).find('.d_harga_subcon').val();
+    bayar_biaya = bayar_biaya.replace(/[^0-9\-]+/g,"")/1;
+    var temp = 0;
+
+    subcon.$('.d_harga_subcon').each(function(){
+      temp+=parseInt($(this).val());
+    })
+
+    temp = temp - bayar_biaya;
+
+    if (temp < um) {
+      toastr.warning('Pembayaran Uang Muka Melebihi Total');
+      return false;
+    }
+
+
     array_do.splice(cariIndex,1);
     
  
@@ -1245,6 +1269,7 @@ $('.modal_tt_subcon').click(function(){
   }
   var cabang = $('.cabang').val();
   var nota_id_tt = $('.nota_id_tt').val();
+
   if (nota_id_tt == '') {
       $.ajax({
         url:baseUrl +'/fakturpembelian/nota_tt',
@@ -1266,7 +1291,7 @@ $('.modal_tt_subcon').click(function(){
         }
       })
   }else{
-    var total_subcon = $('.total_subcon').val();
+    var total_subcon = '{{$valid_cetak->tt_totalterima}}';
     var nota_no_tt = '{{$valid_cetak->tt_noform}}'
     var tempo_subcon = '{{carbon\carbon::parse($valid_cetak->tt_tglkembali)->format('d/m/Y')}}'
     var sekarang = '{{carbon\carbon::parse($valid_cetak->tt_tgl)->format('d/m/Y')}}'
@@ -1330,25 +1355,30 @@ function save_subcon(){
                   timer: 900,
                  showConfirmButton: true
                   },function(){
-                
+                $.ajax({
+                      url:baseUrl + '/fakturpembelian/simpan_tt',
+                      type:'get',
+                      dataType:'json',
+                      data:$('.tabel_tt_subcon :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
+                      success:function(response){
+                            toastr.info('Tanda Terima Telah Disimpan');
+
+                      },
+                      error:function(data){
+                        swal({
+                        title: "Terjadi Kesalahan",
+                                type: 'error',
+                                timer: 900,
+                               showConfirmButton: true
+
+                    });
+                   }
+                  });
                 $('.print_subcon').removeClass('disabled');
-                    $('.save_subcon').addClass('disabled');
+                $('.save_subcon').addClass('disabled');
                 $('.modal_tt_subcon').addClass('disabled');
                 $('.append_subcon').addClass('disabled');
           });
-      }else{
-        swal({
-          title: "No FP dirubah Menjadi "+response.nota,
-                type: 'error',
-                timer: 900,
-               showConfirmButton: true
-
-        },function(){
-            $('.idfaktur').val(response.id);
-            $('.save_subcon').addClass('disabled');
-              $('.modal_tt_subcon').addClass('disabled');
-              $('.append_subcon').addClass('disabled');
-        });
       }
       },
       error:function(data){
@@ -1540,7 +1570,7 @@ $('.sc_tambah_um').click(function(){
             '<p class="tb_sisa_um_text">'+accounting.formatMoney(data.data.sisa_um, "", 2, ".",',')+'</p>',
 
             '<p class="tb_bayar_um_text">'+accounting.formatMoney(sc_dibayar_um, "", 2, ".",',')+'</p>'+
-            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+sc_dibayar_um+'">',
+            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+accounting.formatMoney(sc_dibayar_um, "", 2, "",'.')+'">',
 
             '<p class="tb_keterangan_um_text">'+data.data.um_keterangan+'</p>',
 
@@ -1610,7 +1640,7 @@ $('.save_sc_um').click(function(){
   var sc_total_um = $('.sc_total_um').val();
   datatable7.$('.tb_bayar_um').each(function(){
     var b = $(this).val();
-    b   = b.replace(/[^0-9\-]+/g,"")/1;
+    b   = b.replace(/[^0-9\-]+/g,"")/100;
     console.log(b);
     temp+=b;
   })
@@ -1639,10 +1669,10 @@ $('.save_sc_um').click(function(){
               }
           });
         $.ajax({
-        url:baseUrl + '/fakturpembelian/save_bp_um',
-        type:'get',
+        url:baseUrl + '/fakturpembelian/update_bp_um',
+        type:'post',
         data:$('.head1 :input').serialize()
-              +'&'+$('.head_biaya :input').serialize()
+              +'&'+$('.head_subcon :input').serialize()
               +'&'+datatable7.$('input').serialize()+'&bp_total_um='+sc_total_um,
         success:function(response){
           if (response.status == 1) {
@@ -1653,8 +1683,8 @@ $('.save_sc_um').click(function(){
                   timer: 900,
                   showConfirmButton: true
                   },function(){
-                   $('.save_sc_um').addClass('disabled');
-                   $('.btn_modal_sc').addClass('disabled');
+                   // $('.save_sc_um').addClass('disabled');
+                   // $('.btn_modal_sc').addClass('disabled');
                    
                   });
           }else if(response.status == 0){

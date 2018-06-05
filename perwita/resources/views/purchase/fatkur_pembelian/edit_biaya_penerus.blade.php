@@ -850,7 +850,8 @@
 
   var par = $('.seq_biaya_'+e_jml_data).parents('tr');
 
-  var um = "{{$bp->fp_uangmuka}}"/1;
+  var um = $('.bp_total_um').val();
+  um = um.replace(/[^0-9\-]+/g,"")/100;
   var bayar_biaya = $(par).find('.bayar_biaya').val();
   bayar_biaya = bayar_biaya.replace(/[^0-9\-]+/g,"")/1;
   var temp = 0;
@@ -883,7 +884,8 @@
   }
 
   function hapus_biaya(par) {
-    var um = "{{$bp->fp_uangmuka}}"/1;
+    var um = $('.bp_total_um').val();
+    um = um.replace(/[^0-9\-]+/g,"")/100;
 
     var parent = $(par).parents('tr');
     var pod = $(parent).find('.no_do').val();
@@ -1181,7 +1183,7 @@ $('.bp_tambah_um').click(function(){
             '<p class="tb_sisa_um_text">'+accounting.formatMoney(data.data.sisa_um, "", 2, ".",',')+'</p>',
 
             '<p class="tb_bayar_um_text">'+accounting.formatMoney(bp_dibayar_um, "", 2, ".",',')+'</p>'+
-            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+bp_dibayar_um+'">',
+            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+accounting.formatMoney(bp_dibayar_um, "", 2, "",'.')+'">',
 
             '<p class="tb_keterangan_um_text">'+data.data.um_keterangan+'</p>',
 

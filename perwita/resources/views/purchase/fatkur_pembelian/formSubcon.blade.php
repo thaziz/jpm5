@@ -994,7 +994,6 @@ function hitung_um_sc() {
     temp+=b;
   })
   $('.sc_total_um').val(accounting.formatMoney(temp, "", 2, ".",','));
-
 }
   
 
@@ -1090,7 +1089,7 @@ $('.sc_tambah_um').click(function(){
             '<p class="tb_sisa_um_text">'+accounting.formatMoney(data.data.sisa_um, "", 2, ".",',')+'</p>',
 
             '<p class="tb_bayar_um_text">'+accounting.formatMoney(sc_dibayar_um, "", 2, ".",',')+'</p>'+
-            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+sc_dibayar_um+'">',
+            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+accounting.formatMoney(sc_dibayar_um, "", 2, "",'.')+'">',
 
             '<p class="tb_keterangan_um_text">'+data.data.um_keterangan+'</p>',
 

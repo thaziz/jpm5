@@ -520,7 +520,6 @@ class BiayaPenerusController extends Controller
 		       	$valid_cetak = DB::table('form_tt')
 		       					 ->where('tt_nofp',$data->fp_nofaktur)
 		       					 ->first();
-
 		       	$bulan = Carbon::now()->format('m');
 			    $tahun = Carbon::now()->format('y');
 
@@ -596,6 +595,7 @@ class BiayaPenerusController extends Controller
 				$valid_cetak = DB::table('form_tt')
 		       					 ->where('tt_nofp',$data->fp_nofaktur)
 		       					 ->first();
+		       	// dd($valid_cetak);
 
 		       	$cabang = DB::table('cabang')
 		       				->get();
@@ -1155,7 +1155,8 @@ class BiayaPenerusController extends Controller
 
 
 		public function simpan_tt_subcon(request $request){
-		
+			
+			dd($request->all());
 	
 
 			 $total = filter_var($request->total_terima, FILTER_SANITIZE_NUMBER_INT);
@@ -2567,7 +2568,7 @@ public function biaya_penerus_um(request $req)
 		if ($um != null) {
 			for ($i=0; $i < count($data); $i++) { 
 				for ($a=0; $a < count($um); $a++) { 
-					if ($data[$a]->nomor == $um[$i]->umfpdt_transaksibank and $data[$a]->um_nomorbukti == $um[$i]->umfpdt_notaum) {
+					if ($data[$i]->nomor == $um[$a]->umfpdt_transaksibank and $data[$i]->um_nomorbukti == $um[$a]->umfpdt_notaum) {
 						$data[$i]->sisa_um += $um[$a]->umfpdt_dibayar;
 					}
 				}
@@ -2608,7 +2609,7 @@ public function pilih_um(request $req)
 		if ($um != null) {
 			for ($i=0; $i < count($data); $i++) { 
 				for ($a=0; $a < count($um); $a++) { 
-					if ($data[$a]->nomor == $um[$i]->umfpdt_transaksibank and $data[$a]->um_nomorbukti == $um[$i]->umfpdt_notaum) {
+					if ($data[$i]->nomor == $um[$a]->umfpdt_transaksibank and $data[$i]->um_nomorbukti == $um[$a]->umfpdt_notaum) {
 						$data[$i]->sisa_um += $um[$a]->umfpdt_dibayar;
 					}
 				}
@@ -2656,7 +2657,7 @@ public function append_um(request $req)
 		if ($um != null) {
 			for ($i=0; $i < count($data); $i++) { 
 				for ($a=0; $a < count($um); $a++) { 
-					if ($data[$a]->nomor == $um[$i]->umfpdt_transaksibank and $data[$a]->um_nomorbukti == $um[$i]->umfpdt_notaum) {
+					if ($data[$i]->nomor == $um[$a]->umfpdt_transaksibank and $data[$i]->um_nomorbukti == $um[$a]->umfpdt_notaum) {
 						$data[$i]->sisa_um += $um[$a]->umfpdt_dibayar;
 					}
 				}
@@ -2881,7 +2882,7 @@ public function subcon_um(request $req)
 		if ($um != null) {
 			for ($i=0; $i < count($data); $i++) { 
 				for ($a=0; $a < count($um); $a++) { 
-					if ($data[$a]->nomor == $um[$i]->umfpdt_transaksibank and $data[$a]->um_nomorbukti == $um[$i]->umfpdt_notaum) {
+					if ($data[$i]->nomor == $um[$a]->umfpdt_transaksibank and $data[$i]->um_nomorbukti == $um[$a]->umfpdt_notaum) {
 						$data[$i]->sisa_um += $um[$a]->umfpdt_dibayar;
 					}
 				}

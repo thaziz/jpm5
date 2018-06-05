@@ -97,17 +97,12 @@
                 $(selector).chosen(config[selector]);
             }
          
-<<<<<<< HEAD
       /*  
         $('.date').datepicker( {
             format: "mm",
             viewMode: "months", 
             minViewMode: "months"
         });*/
-=======
-
->>>>>>> 88317fdcb3219dd72341fd8fa365cb61d2e9347b
-     
 
         var dataTableLanguage = {
            "emptyTable": "Tidak ada data",
