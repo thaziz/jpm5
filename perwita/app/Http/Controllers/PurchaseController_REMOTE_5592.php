@@ -7207,7 +7207,7 @@ public function kekata($x) {
 			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
 		}
 		
-		/*dd($data);*/
+		//dd($data);
 		return view('purchase/formfpg/fpg', compact('data'));
 	}
 
@@ -8757,6 +8757,7 @@ public function kekata($x) {
 						'fpgdt_pelunasan' => $pelunasan,
 						'fpgdt_sisafaktur' =>$sisafaktur,
 						'fpgdt_sisapelunasanumfp' => $pelunasan,
+						'fpgdt_keterangan' => $request->fpgdt_keterangan[$j],
 						]);
 
 					$updatefaktur = fakturpembelian::where('fp_idfaktur', '=' , $idfp);

@@ -260,7 +260,7 @@
                                                               @for($j=0;$j< count($data['pembayaran']);$j++)
                                                                 @for($k=0; $k < count($data['pembayaran'][$j]); $k++)
                                                                   <tr style="height: 30%">
-                                                                    <tr class="bayar{{$data['pembayaran'][$j][$k]->idfp}}"'> <td><?php echo $n ?></td>
+                                                                    <tr class="bayar{{$data['pembayaran'][$j][$k]->idfp}}"> <td><?php echo $n ?></td>
                                                                     <td>  {{$data['pembayaran'][$j][$k]->nofpg}} </td>
                                                                     <td>  {{$data['pembayaran'][$j][$k]->nofaktur}} </td>
                                                                     <td>{{$data['pembayaran'][$j][$k]->tgl}} </td>
@@ -442,10 +442,10 @@
                                             <td class='pembayarankanan{{$index + 1}}' data-pembayaranaslifaktur="{{ number_format($data['perhitungan'][$index], 2) }}">  <input type='text' class='input-sm pembayaranitem pembayaranitem{{$index + 1}} form-control' style='text-align:right' readonly data-id="{{$index + 1}}" name='pembayaran[]' value="{{ number_format($data['perhitungan'][$index], 2) }}">  </td> <!-- PEMBAYARAN -->
 
 
-                                            <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}"' value="{{ number_format($fpgd->fp_sisapelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
+                                            <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}" value="{{ number_format($fpgd->fp_sisapelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
                                             <!-- SISA PELUNASAN -->
 
-                                            <td> <input type='text' class='input-sm form-control' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td>
+                                            <td> <input type='text' class='input-sm form-control keteranganitem{{$index + 1}}' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td>
 
                                             <td> <button class='btn btn-danger removes-btn' data-id="{{$index + 1}}" data-nmrfaktur="+nmrf[i]+" data-faktur="{{$fpgd->fp_nofaktur}}" data-idfpgdt="{{$fpgd->fpgdt_id}}" data-idfp="{{$fpgd->fpgdt_idfp}}" type='button'><i class='fa fa-trash'></i></button> </td>
 
@@ -466,10 +466,10 @@
                                             <td class='pembayarankanan{{$index + 1}}' data-pembayaranaslifaktur="{{ number_format($data['perhitungan'][$index], 2) }}">  <input type='text' class='input-sm pembayaranitem pembayaranitem{{$index + 1}} form-control' style='text-align:right' readonly data-id="{{$index + 1}}" name='pembayaran[]' value="{{ number_format($data['perhitungan'][$index], 2) }}">  </td> <!-- PEMBAYARAN -->
 
 
-                                            <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}"' value="{{ number_format($fpgd->v_pelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
+                                            <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}" value="{{ number_format($fpgd->v_pelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
                                             <!-- SISA PELUNASAN -->
 
-                                            <td> <input type='text' class='input-sm form-control' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td> 
+                                            <td> <input type='text' class='input-sm form-control keteranganitem{{$index + 1}}' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td> 
 
                                             <td> <button class='btn btn-danger removes-btn' data-id="{{$index + 1}}" data-nmrfaktur="+nmrf[i]+" data-faktur="{{$fpgd->v_nomorbukti}}" data-idfpgdt="{{$fpgd->fpgdt_id}}" data-idfp="{{$fpgd->fpgdt_idfp}}" type='button'><i class='fa fa-trash'></i></button> </td>
 
@@ -490,10 +490,10 @@
                                             <td class='pembayarankanan{{$index + 1}}' data-pembayaranaslifaktur="{{ number_format($data['perhitungan'][$index], 2) }}">  <input type='text' class='input-sm pembayaranitem pembayaranitem{{$index + 1}} form-control' style='text-align:right' readonly data-id="{{$index + 1}}" name='pembayaran[]' value="{{ number_format($data['perhitungan'][$index], 2) }}">  </td> <!-- PEMBAYARAN -->
 
 
-                                            <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}"' value="{{ number_format($fpgd->ik_pelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
+                                            <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}" value="{{ number_format($fpgd->ik_pelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
                                             <!-- SISA PELUNASAN -->
 
-                                            <td> <input type='text' class='input-sm form-control' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td>
+                                            <td> <input type='text' class='input-sm form-control keteranganitem{{$index + 1}}' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td>
 
                                             <td> <button class='btn btn-danger removes-btn' data-id="{{$index + 1}}" data-nmrfaktur="+nmrf[i]+" data-faktur="{{$fpgd->ik_nota}}" data-idfpgdt="{{$fpgd->fpgdt_id}}" data-idfp="{{$fpgd->fpgdt_idfp}}" type='button'><i class='fa fa-trash'></i></button> </td>
 
@@ -516,10 +516,10 @@
                                             <td class='pembayarankanan{{$index + 1}}' data-pembayaranaslifaktur="{{ number_format($data['perhitungan'][$index], 2) }}">  <input type='text' class='input-sm pembayaranitem pembayaranitem{{$index + 1}} form-control' style='text-align:right' readonly data-id="{{$index + 1}}" name='pembayaran[]' value="{{ number_format($data['perhitungan'][$index], 2) }}">  </td> <!-- PEMBAYARAN -->
 
 
-                                            <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}"' value="{{ number_format($fpgd->um_sisapelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
+                                            <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}" value="{{ number_format($fpgd->um_sisapelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
                                             <!-- SISA PELUNASAN -->
 
-                                            <td> <input type='text' class='input-sm form-control' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td>
+                                            <td> <input type='text' class='input-sm form-control keteranganitem{{$index + 1}}' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td>
 
                                             <td> <button class='btn btn-danger removes-btn' data-id="{{$index + 1}}" data-nmrfaktur="+nmrf[i]+" data-faktur="{{$fpgd->fpgdt_nofaktur}}" data-idfpgdt="{{$fpgd->fpgdt_id}}" data-idfp="{{$fpgd->fpgdt_idfp}}" type='button'><i class='fa fa-trash'></i></button> </td>
 
@@ -1663,7 +1663,7 @@
 
                                   "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].fp_sisapelunasan)+" readonly name='sisapelunasan[]' style='text-align:right'> <input type='hidden' class='debitnota"+nmr+"' value="+data.faktur[i][0].fp_debitnota+"> <input type='hidden' class='creditnota"+nmr+"' value="+data.faktur[i][0].fp_creditnota+"> </td>" + //sisapelunasan
 
-                                  "<td> <input type='text' class='input-sm form-control keteranganitem' name='fpgdt_keterangan[]'> </td>" + //
+                                  "<td> <input type='text' class='input-sm form-control keteranganitem"+nmr+"' name='fpgdt_keterangan[]'> </td>" + //
                                  
 
                                   "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].fp_nofaktur+" type='button'><i class='fa fa-trash'></i></button> </td>" +
@@ -1729,7 +1729,7 @@
 
                                   "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].v_pelunasan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
 
-                                  "<td> <input type='text' class='input-sm form-control keteranganitem' name='fpgdt_keterangan[]'> </td>" +
+                                  "<td> <input type='text' class='input-sm form-control keteranganitem"+nmr+"' name='fpgdt_keterangan[]'> </td>" +
 
                                   "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].v_nomorbukti+" data-idfaktur="+data.faktur[i][0].v_id+" type='button'><i class='fa fa-trash'></i></button> </td>" +
                                   "</tr>";
@@ -1899,6 +1899,7 @@
                 tempnofp = tempnofp + 1;
                 id = $(this).data('id');
                 $('.id').val(id);
+                $('.keteranganitem' + id).attr('readonly' , false);
             
                 //NILAI DI DALAM TABLE
                 sisapelunasan =   $('.sisapelunasan' + id).val();
@@ -1962,12 +1963,11 @@
                 pengurangan = parseFloat(parseFloat(pembayaranasli) - parseFloat(nilaiaslipelunasan)).toFixed(2);
 
                 //pembayaran
-                  alert(pembayaranasli2);
-                  alert(pelunasanasli2);
+               
                  tmbhnpelunasan = parseFloat(parseFloat(nilaiaslipelunasan2) + parseFloat(pelunasanasli2)).toFixed(2); 
                  penguranganpembayaran = parseFloat(parseFloat(pembayaranasli2)- parseFloat(pelunasanasli2)).toFixed(2);
 
-                 alert(tmbhnpelunasan + 'tmbhnpelunasan');
+             
                 // alert(nilaiaslipelunasan);
                 // alert(pelunasanasli);
                  $('.sisatrbyr').val(addCommas(tmbhnpelunasan));
@@ -2047,7 +2047,7 @@
         tempnofp = tempnofp + 1;
         id = $(this).data('id');
         $('.id').val(id);
-    
+        $('.keteranganitem' + id).attr('readonly' , false);
 
         //NILAI DI DALAM TABLE
         sisapelunasan =   $('.sisapelunasan' + id).val();
@@ -2092,8 +2092,7 @@
 
         // alert(nilaiaslipelunasan);
         // alert(pelunasanasli);
-        alert(pembayaranasli2  + 'pembayaran');
-        alert(pelunasanasli2 + 'pelunasan');
+     
          $('.sisatrbyr').val(addCommas(tmbhnpelunasan));
          $('.pembayaran').val(addCommas(penguranganpembayaran));         
          $('.sisafaktur').val(addCommas(tmbhnpelunasan));
@@ -2127,7 +2126,7 @@
                     $sisafaktur2 = $('.sisafaktur').val();  
                   })
 
-                  alert($jumlahkredit);
+               
                   $('.cnkanan').val(addCommas($jumlahkredit));
 
 
@@ -2137,10 +2136,6 @@
                   cnkanan =   cnkanan2.replace(/,/g, '');
                   dbkanan2 = $('.dnkanan').val();
                   dbkanan = dbkanan2.replace(/,/g, '');
-
-                  alert(dbkanan + 'dbkanan');
-                  alert($sisaterbayar + 'dbkanan');
-                  alert(cnkanan + 'dbkanan');
 
        })
               //removes no faktur
@@ -2199,7 +2194,7 @@
       //  alert('hei');
          id = $('.mbid').val();
         
-         alert('hai');
+         //alert('hai');
           $.ajax({
               type : "post",
               data : {id},
