@@ -599,7 +599,49 @@ class BiayaPenerusController extends Controller
 
 		       	$cabang = DB::table('cabang')
 		       				->get();
-				return view('purchase/fatkur_pembelian/editsubcon',compact('date','kota','subcon','akun_biaya','akun','valid_cetak','data','data_dt','cabang'));
+
+		       	$bulan = Carbon::now()->format('m');
+			    $tahun = Carbon::now()->format('y');
+
+			    $cari_nota = DB::select("SELECT  substring(max(tt_noform),12) as id from form_tt
+			                                    WHERE tt_idcabang = '$data->fp_comp'
+			                                    AND to_char(created_at,'MM') = '$bulan'
+			                                    AND to_char(created_at,'YY') = '$tahun'");
+			    $index = (integer)$cari_nota[0]->id + 1;
+			    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
+			    $nota = 'TT' . $bulan . $tahun .'/'.$data->fp_comp.'/'. $index;
+
+
+		       	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
+					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
+					   inner join fpg_dt on fpgdt_idfpg = idfpg
+					   inner join d_uangmuka on um_supplier = fpg_agen
+					   where fpgb_posting = 'DONE'
+					   and fpg_agen = '$data->fp_supplier'");
+
+
+				$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
+								   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
+								   inner join d_uangmuka on um_supplier = bkk_supplier
+								   where bkk_supplier = '$data->fp_supplier'");
+
+				
+				// return dd($req->all());
+				$trans = array_merge($fpg,$bk);
+
+				$um = DB::table('uangmukapembelian_fp')
+						->join('uangmukapembeliandt_fp','umfpdt_idumfp','=','umfp_id')
+						->where('umfp_nofaktur',$data->fp_nofaktur)
+						->get();
+
+				for ($i=0; $i < count($um); $i++) { 
+					for ($a=0; $a < count($trans); $a++) { 
+						if ($trans[$a]->nomor == $um[$i]->umfpdt_transaksibank and $trans[$a]->um_nomorbukti == $um[$i]->umfpdt_notaum) {
+							$um[$i]->bkkd_sisa_um 	= $trans[$a]->sisa_um;
+						}
+					}
+				}
+				return view('purchase/fatkur_pembelian/editsubcon',compact('date','kota','subcon','akun_biaya','akun','valid_cetak','data','data_dt','cabang','um','nota'));
 			}
 
 

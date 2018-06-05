@@ -1,4 +1,4 @@
-<table class="table sc_pilih_um table-hover">
+<table class="table sc_pilih_um table-hover" style="font-size: 12px">
   <thead>
     <th>No Kas/Hutang</th>
     <th>Uang Muka</th>
@@ -35,24 +35,25 @@
           
     });
 
-    function pilih_um(a) {
-      var nota = a;
-      var sup = $('.nama_sc').val();
-      $.ajax({
-        url:baseUrl +'/fakturpembelian/biaya_penerus/pilih_um',
-        data: {nota,sup},
-        dataType:'json',
-        success:function(data){
-          $('.sc_nomor_um').val(data.data.nomor);
-          $('.sc_tanggal_um').val(data.data.um_tgl);
-          $('.sc_jumlah_um').val(accounting.formatMoney(data.data.total_um, "", 2, ".",','));
-          $('.sc_sisa_um').val(accounting.formatMoney(data.data.sisa_um, "", 2, ".",','));
-          $('.sc_keterangan_um').val(data.data.um_keterangan);
-          $('.sc_id_um').val('');
-          $('#modal_show_um').modal('hide');
-        },error:function(){
-          toastr.warning('Terjadi Kesalahan');
-        }
-      })
-    }
+  function pilih_um(a) {
+    var nota = a;
+    var sup = $('.nama_sc').val();
+    var id = $('.nofaktur').val();
+    $.ajax({
+      url:baseUrl +'/fakturpembelian/biaya_penerus/pilih_um',
+      data: {nota,sup,id},
+      dataType:'json',
+      success:function(data){
+        $('.sc_nomor_um').val(data.data.nomor);
+        $('.sc_tanggal_um').val(data.data.um_tgl);
+        $('.sc_jumlah_um').val(accounting.formatMoney(data.data.total_um, "", 2, ".",','));
+        $('.sc_sisa_um').val(accounting.formatMoney(data.data.sisa_um, "", 2, ".",','));
+        $('.sc_keterangan_um').val(data.data.um_keterangan);
+        $('.sc_id_um').val('');
+        $('#modal_show_um').modal('hide');
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
+  }
 </script>

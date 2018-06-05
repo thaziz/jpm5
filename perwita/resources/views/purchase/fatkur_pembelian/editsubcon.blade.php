@@ -338,6 +338,7 @@ No Faktur
        <tr>
       <td colspan="3">
         <button class="btn btn-info modal_tt_subcon disabled pull-left" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+
           <button type="button" class="btn btn-primary pull-right append_subcon" onclick="cariSUB()"><i class="fa fa-plus">&nbsp;Append</i></button>
           <button type="button" style="margin-right: 20px" class="btn  pull-right" onclick="cancel_data()"><i class="fa fa-close">&nbsp;Clear</i></button>
       </td>
@@ -368,6 +369,7 @@ No Faktur
       <button type="button" class="btn btn-primary pull-right save_subcon disabled" id="save_subcon" onclick="save_subcon()"><i class="fa fa-save"></i> Simpan Data</button>
       <button type="button" style="margin-right: 20px" class="btn btn-warning pull-right print_subcon disabled" id="print_subcon" onclick="print_penerus()"><i class="fa fa-print"></i> Print</button>
       <button type="button" style="margin-right: 20px" class="btn btn-warning pull-right print-penerus" id="print-penerus" onclick="print_penerus_tt()" ><i class="fa fa-print"></i> Print Tanda Terima</button>
+        <button class="btn btn-primary btn_modal_sc  pull-right " style="margin-right: 20px" type="button" > Bayar dengan Uang Muka </button>
 
 
       <table class="table table-bordered table-hover tabel_subcon" style="font-size: 12px;">
@@ -564,11 +566,7 @@ No Faktur
           <tr>
             <td>No Tanda Terima</td>
             <td>
-              @if($valid_cetak->tt_noform == null)
-              <input type="text" name="no_tt" readonly="" class="form-control" value="{{$nota}}">
-              @else
-              <input type="text" name="no_tt" readonly="" class="form-control" value="{{$valid_cetak->tt_noform}}">
-              @endif
+              <input type="text" name="no_tt" readonly="" class="form-control" value="{{$valid_cetak->tt_noform or $nota}}">
             </td>
           </tr>
           <tr>
@@ -689,6 +687,125 @@ No Faktur
     </div> 
   </div>
 </div>
+
+
+
+{{-- modal uang muka subcon --}}
+
+<div id="modal_um_sc" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document" style="width: 1200px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Pembayaran Uang Muka</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+        <div class="col-sm-8">
+              <table class="table sc_tabel_um">
+              <tr>
+                <td>No Transaksi Kas / Bank</td>
+                <td colspan="2">
+                  <input placeholder="klik disini" type="text" name="sc_nomor_um" class=" form-control sc_nomor_um">
+                  <input type="hidden" name="sc_id_um" class=" form-control sc_id_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Tanggal</td>
+                <td colspan="2">
+                  <input type="text" name="sc_tanggal_um" class=" form-control sc_tanggal_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Jumlah</td>
+                <td colspan="2">
+                  <input readonly="" type="text" name="sc_jumlah_um" class=" form-control sc_jumlah_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Sisa Uang Muka</td>
+                <td colspan="2">
+                  <input readonly="" type="text" name="sc_sisa_um" class=" form-control sc_sisa_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Keterangan</td>
+                <td colspan="2">
+                  <input readonly="" type="text" name="sc_keterangan_um" class=" form-control sc_keterangan_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Dibayar</td>
+                <td>
+                  <input type="text" name="sc_dibayar_um" class=" form-control sc_dibayar_um">
+                </td>
+                <td align="right">
+            
+                    <button class="btn btn-primary sc_tambah_um" type="button" ><i class="fa fa-plus"> Tambah</i></button> 
+     
+                </td>
+              </tr>
+            </table>
+            </div>
+            <div class="col-sm-4">
+              <table class="table ">
+                <tr>
+                  <td align="center">
+                   <h3>Tscal Jumlah Uang Muka</h3>
+                  </td>
+                </tr>
+              <tr>
+                <td>
+                  <input readonly="" type="text" name="sc_total_um" class="sc_total_um form-control ">
+                </td>
+              </tr>
+            </table>
+            </div>
+
+              <div class="col-sm-12">
+               <table class="table table-bordered sc_tabel_detail_um" style="font-size: 12px">>
+                <thead>
+                <tr class="tableum">
+                  <th style="width:120px"> No Faktur </th>
+                  <th> No Kas / Bank</th>
+                  <th> Tanggal </th>
+                  <th> No Uang Muka</th>
+                  <th> Jumlah Uang Muka </th>
+                  <th> Sisa Uang Muka </th>
+                  <th> Dibayar </th>
+                  <th> Keterangan</th>
+                  <th> Aksi </th> 
+                </tr>
+                </thead>
+                <tbody>
+              
+               </tbody>
+            </table>
+          </div>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="hidden" class="btn btn-primary save_sc_um disabled" >Save changes</button>
+      </div>
+      </div>
+     
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="modal_show_um" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document" style="width: 1200px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Pilih Uang Muka</h4>
+      </div>
+      <div class="modal-body bp_div_um">
+        
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 @endsection
 @section('extra_scripts')
 <script type="text/javascript">
@@ -1317,6 +1434,341 @@ function simpan_tt() {
     
      window.open('{{url('fakturpembelian/cetak_tt')}}'+'/'+idfaktur);
   }
+
+
+
+
+$('.btn_modal_sc').click(function(){
+  $('#modal_um_sc').modal('show');
+})
+
+function hitung_um_sc() {
+  var temp = 0;
+  datatable7.$('.tb_bayar_um').each(function(){
+    var b = $(this).val();
+    b   = b.replace(/[^0-9\-]+/g,"")/100;
+    temp+=b;
+  })
+  $('.sc_total_um').val(accounting.formatMoney(temp, "", 2, ".",','));
+}
+
+
+var array_um1 = [0];
+var array_um2 = [0];
+$('.sc_nomor_um').focus(function(){
+  var sup = $('.nama_sc').val();
+  if (sup == '0') {
+    toastr.warning('Agen/Vendor Harus Diisi');
+    return false;
+  }
+var id = $('.nofaktur').val();
+
+
+  $.ajax({
+    url:baseUrl +'/fakturpembelian/subcon_um',
+    data: {sup,array_um1,array_um2,id},
+    success:function(data){
+      console.log('asd');
+      $('.bp_div_um').html(data);
+      $('#modal_show_um').modal('show');
+    },error:function(){
+      toastr.warning('Terjadi Kesalahan');
+    }
+  })
+
+})
+
+
+var id_um    = 1;
+
+$('.sc_tambah_um').click(function(){
+  var nota = $('.sc_nomor_um').val();
+  var sup = $('.nama_sc').val();
+  var nofaktur = $('.nofaktur').val();
+  var sc_id_um = $('.sc_id_um').val();
+  var sc_dibayar_um = $('.sc_dibayar_um').val();
+  sc_dibayar_um   = sc_dibayar_um.replace(/[^0-9\-]+/g,"")/1;
+  var id = $('.nofaktur').val();
+
+
+
+
+
+  if (nota == '') {
+    toastr.warning("Uang Muka Harus dipilih");
+    return false;
+  }
+  if (sc_dibayar_um == '' || sc_dibayar_um == '0') {
+    toastr.warning("Pembayaran Tidak Boleh 0");
+    return false;
+  }
+
+  
+  
+
+  $.ajax({
+    url:baseUrl +'/fakturpembelian/biaya_penerus/append_um',
+    data: {nota,sup,id},
+    dataType:'json',
+    success:function(data){
+
+      $('.sc_nomor_um').val(data.data.nomor);
+      $('.sc_tanggal_um').val(data.data.um_tgl);
+      $('.sc_jumlah_um').val(accounting.formatMoney(data.data.total_um, "", 2, ".",','));
+      $('.sc_sisa_um').val(accounting.formatMoney(data.data.sisa_um, "", 2, ".",','));
+      $('.sc_keterangan_um').val(data.data.um_keterangan);
+
+      if (sc_dibayar_um > data.data.sisa_um) {
+        toastr.warning("Pembayaran Melebihi Sisa Uang Muka");
+        return false;
+      }
+      if (sc_id_um == '') {
+        datatable7.row.add([
+            '<p class="tb_faktur_um_text">'+nofaktur+'</p>'+
+            '<input type="hidden" class="tb_faktur_um_'+id_um+' tb_faktur_um" value="'+id_um+'">',
+
+            '<p class="tb_transaksi_um_text">'+data.data.nomor+'</p>'+
+            '<input type="hidden" class="tb_transaksi_um" name="tb_transaksi_um[]" value="'+data.data.nomor+'">',
+
+            '<p class="tb_tanggal_text">'+data.data.um_tgl+'</p>',
+
+            '<p class="tb_um_um_text">'+data.data.um_nomorbukti+'</p>'+
+            '<input type="hidden" class="tb_um_um" name="tb_um_um[]" value="'+data.data.um_nomorbukti+'">',
+
+            '<p class="tb_jumlah_um_text">'+accounting.formatMoney(data.data.total_um, "", 2, ".",',')+'</p>',
+
+            '<p class="tb_sisa_um_text">'+accounting.formatMoney(data.data.sisa_um, "", 2, ".",',')+'</p>',
+
+            '<p class="tb_bayar_um_text">'+accounting.formatMoney(sc_dibayar_um, "", 2, ".",',')+'</p>'+
+            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+sc_dibayar_um+'">',
+
+            '<p class="tb_keterangan_um_text">'+data.data.um_keterangan+'</p>',
+
+            '<div class="btn-group ">'+
+            '<a  onclick="edit_um_sc(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+            '<a  onclick="hapus_um_sc(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+            '</div>',
+          ]).draw();
+        id_um++;
+        array_um1.push(data.data.nomor);
+        array_um2.push(data.data.um_nomorbukti);
+      }else{
+        var par = $('.tb_faktur_um_'+sc_id_um).parents('tr');
+        $(par).find('.tb_bayar_um').val(accounting.formatMoney(sc_dibayar_um, "", 2, "",'.'));
+        $(par).find('.tb_bayar_um_text').text(accounting.formatMoney(sc_dibayar_um, "", 2, ".",','));
+      }
+      hitung_um_sc();
+      $('.sc_tabel_um :input').val('');
+    },error:function(){
+      toastr.warning('Terjadi Kesalahan');
+    }
+  })
+})
+
+
+function edit_um_sc(a) {
+  var par = $(a).parents('tr');
+  var tb_faktur_um          = $(par).find('.tb_faktur_um').val();
+  var tb_transaksi_um       = $(par).find('.tb_transaksi_um').val();
+  var tb_tanggal_text       = $(par).find('.tb_tanggal_text').text();
+  var tb_um_um              = $(par).find('.tb_um_um').val();
+  var tb_jumlah_um_text     = $(par).find('.tb_jumlah_um_text').text();
+  var tb_sisa_um_text       = $(par).find('.tb_sisa_um_text').text();
+  var tb_bayar_um           = $(par).find('.tb_bayar_um').val();
+  var tb_keterangan_um_text = $(par).find('.tb_keterangan_um_text').text();
+
+  $('.sc_id_um').val(tb_faktur_um);
+  $('.sc_nomor_um').val(tb_transaksi_um);
+  $('.sc_tanggal_um').val(tb_tanggal_text);
+  $('.sc_jumlah_um').val(tb_jumlah_um_text);
+  $('.sc_sisa_um').val(tb_sisa_um_text);
+  $('.sc_keterangan_um').val(tb_keterangan_um_text)
+  $('.sc_dibayar_um').val(accounting.formatMoney(tb_bayar_um, "", 0, ".",','));
+
+}
+
+function hapus_um_sc(a) {
+  var par             = $(a).parents('tr');
+  var tb_transaksi_um = $(par).find('.tb_transaksi_um').val();
+  var tb_um_um        = $(par).find('.tb_um_um').val();
+
+  var index1 = array_um1.indexOf(tb_transaksi_um);
+  var index2 = array_um2.indexOf(tb_um_um);
+
+  array_um1.splice(index1,1);
+  array_um2.splice(index2,1);
+
+  datatable7.row(par).remove().draw(false);
+
+  hitung_um_sc();
+}
+
+
+$('.save_sc_um').click(function(){
+
+  var temp = 0;
+  var sc_total_um = $('.sc_total_um').val();
+  datatable7.$('.tb_bayar_um').each(function(){
+    var b = $(this).val();
+    b   = b.replace(/[^0-9\-]+/g,"")/1;
+    console.log(b);
+    temp+=b;
+  })
+  var total_jml = $('.total_subcon').val();
+  total_jml   = total_jml.replace(/[^0-9\-]+/g,"")/100;
+
+  if (temp > total_jml) {
+    toastr.warning("Pembayaran Lebih Besar Dari Total Faktur");
+    return false;
+  }
+
+  swal({
+      title: "Apakah anda yakin?",
+      text: "Simpan Data!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Ya, Simpan!",
+      cancelButtonText: "Batal",
+      closeOnConfirm: true
+    },
+    function(){
+         $.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              }
+          });
+        $.ajax({
+        url:baseUrl + '/fakturpembelian/save_bp_um',
+        type:'get',
+        data:$('.head1 :input').serialize()
+              +'&'+$('.head_biaya :input').serialize()
+              +'&'+datatable7.$('input').serialize()+'&bp_total_um='+sc_total_um,
+        success:function(response){
+          if (response.status == 1) {
+              swal({
+                  title: "Berhasil!",
+                  type: 'success',
+                  text: "Data berhasil disimpan",
+                  timer: 900,
+                  showConfirmButton: true
+                  },function(){
+                   $('.save_sc_um').addClass('disabled');
+                   $('.btn_modal_sc').addClass('disabled');
+                   
+                  });
+          }else if(response.status == 0){
+            swal({
+              title: "Data Faktur Tidak Ada",
+              type: 'error',
+              timer: 900,
+              showConfirmButton: true
+
+            });
+          }else if(response.status == 2){
+            swal({
+              title: "Status Faktur Pending",
+              type: 'error',
+              timer: 900,
+              showConfirmButton: true
+
+            });
+          }
+        },
+        error:function(data){
+          swal({
+          title: "Terjadi Kesalahan",
+                  type: 'error',
+                  timer: 900,
+                 showConfirmButton: true
+
+      });
+     }
+    });  
+  });
+})
+
+
+
+var datatable7 = $('.sc_tabel_detail_um').DataTable({
+      responsive: true,
+      searching:false,
+      //paging: false,
+      "pageLength": 10,
+      "language": dataTableLanguage,
+      columnDefs: [
+        {
+           targets: 4,
+           className: 'right'
+        },
+        {
+           targets: 5,
+           className: 'right'
+        },
+        {
+           targets: 6,
+           className: 'right'
+        },
+        {
+           targets: 8,
+           className: 'center'
+        }
+      ]
+});
+
+$('.sc_dibayar_um').maskMoney({
+    precision : 0,
+    thousands:'.',
+    allowZero:true,
+    defaultZero: true
+});
+
+
+
+@foreach($um as $i=>$val)
+
+  var nofaktur        = '{{$val->umfp_nofaktur}}';
+  var nomor           = '{{$val->umfpdt_transaksibank}}';
+  var um_tgl          = '{{$val->umfp_tgl}}';
+  var um_nomorbukti   = '{{$val->umfpdt_notaum}}';
+  var total_um        = '{{$val->umfpdt_jumlahum}}';
+  var sisa_um         = '{{$val->bkkd_sisa_um + $val->umfpdt_dibayar}}';
+  var bp_dibayar_um   = '{{$val->umfpdt_dibayar}}';
+  var um_keterangan   = '{{$val->umfpdt_keterangan}}';
+  console.log(nofaktur);
+
+  datatable7.row.add([
+            '<p class="tb_faktur_um_text">'+nofaktur+'</p>'+
+            '<input type="hidden" class="tb_faktur_um_'+id_um+' tb_faktur_um" value="'+id_um+'">',
+
+            '<p class="tb_transaksi_um_text">'+nomor+'</p>'+
+            '<input type="hidden" class="tb_transaksi_um" name="tb_transaksi_um[]" value="'+nomor+'">',
+
+            '<p class="tb_tanggal_text">'+um_tgl+'</p>',
+
+            '<p class="tb_um_um_text">'+um_nomorbukti+'</p>'+
+            '<input type="hidden" class="tb_um_um" name="tb_um_um[]" value="'+um_nomorbukti+'">',
+
+            '<p class="tb_jumlah_um_text">'+accounting.formatMoney(total_um, "", 2, ".",',')+'</p>',
+
+            '<p class="tb_sisa_um_text">'+accounting.formatMoney(sisa_um, "", 2, ".",',')+'</p>',
+
+            '<p class="tb_bayar_um_text">'+accounting.formatMoney(bp_dibayar_um, "", 2, ".",',')+'</p>'+
+            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+bp_dibayar_um+'">',
+
+            '<p class="tb_keterangan_um_text">'+um_keterangan+'</p>',
+
+            '<div class="btn-group ">'+
+            '<a  onclick="edit_um_sc(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+            '<a  onclick="hapus_um_sc(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+            '</div>',
+          ]).draw();
+    id_um++;
+    array_um1.push(nomor);
+    array_um2.push(um_nomorbukti);
+    hitung_um_sc();
+    $('.bp_tabel_um :input').val('');
+@endforeach
 </script>
 
 @endsection
