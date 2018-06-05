@@ -7757,7 +7757,7 @@ public function kekata($x) {
 								DB::delete("DELETE from  d_jurnal where jr_ref = '$nofaktur' and jr_detail = 'FAKTUR PEMBELIAN'");
 								$datajurnal = [];
 								$totalhutang = 0;
-								$datajurnalum = [];
+
 								$nettohutangpo = str_replace(',', '', $request->nettohutang_po);
 
 
@@ -7936,71 +7936,6 @@ public function kekata($x) {
 						                	'fp_uangmuka' => $totaljumlah,
 						                    'fp_sisapelunasan' => $hasilsisapelunasan,                                        
 						               	]);
-
-						               	 //savejurnal
-						               	$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
-										if(isset($lastidjurnal)) {
-											$idjurnal = $lastidjurnal;
-											$idjurnal = (int)$idjurnal + 1;
-										}
-										else {
-											$idjurnal = 1;
-										}
-									
-										$year = date('Y');	
-										$date = date('Y-m-d');
-										$jurnal = new d_jurnal();
-										$jurnal->jr_id = $idjurnal;
-								        $jurnal->jr_year = date('Y');
-								        $jurnal->jr_date = date('Y-m-d');
-								        $jurnal->jr_detail = 'UANG MUKA PEMBELIAN FP';
-								        $jurnal->jr_ref = $nofaktur;
-								        $jurnal->jr_note = $request->keteranganumheader;
-								        $jurnal->save();
-							       		
-							       		$acchutangdagang = $request->acchutangdagang;
-								        $caridkaheader = DB::select("select * from d_akun where id_akun = '$acchutangdagang'");
-								        $akundkaheader = $caridkaheader[0]->akun_dka;
-
-							       		if($akundkaheader == 'D'){
-							       			$dataakun_um = array (
-											'id_akun' => $request->acchutangdagang,
-											'subtotal' => '-' . $totaljumlah,
-											'dk' => 'D',
-											);
-							       		}
-							       		else {
-							       			$dataakun_um = array (
-											'id_akun' => $request->acchutangdagang,
-											'subtotal' => $totaljumlah,
-											'dk' => 'D',
-											);	
-							       		}
-								        		
-										array_push($datajurnalum, $dataakun_um );
-							    		
-							    		$key  = 1;
-							    		for($j = 0; $j < count($datajurnalum); $j++){
-							    			
-							    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
-											if(isset($lastidjurnaldt)) {
-												$idjurnaldt = $lastidjurnaldt;
-												$idjurnaldt = (int)$idjurnaldt + 1;
-											}
-											else {
-												$idjurnaldt = 1;
-											}
-
-							    			$jurnaldt = new d_jurnal_dt();
-							    			$jurnaldt->jrdt_jurnal = $idjurnal;
-							    			$jurnaldt->jrdt_detailid = $key;
-							    			$jurnaldt->jrdt_acc = $datajurnalum[$j]['id_akun'];
-							    			$jurnaldt->jrdt_value = $datajurnalum[$j]['subtotal'];
-							    			$jurnaldt->jrdt_statusdk = $datajurnalum[$j]['dk'];
-							    			$jurnaldt->save();
-							    			$key++;
-
-										}
 					    		}
 					    		
 
