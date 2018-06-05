@@ -236,8 +236,8 @@ class master_akun_controller extends Controller
                     ->where('maf_cabang',$req->cabang)
                     ->get();
      
-        $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->where('kode_cabang',$req->cabang)->get();
-        $akun2 = DB::table('d_akun')->where('id_akun','like','7%')->where('kode_cabang',$req->cabang)->get();
+        $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->where('kode_cabang',$req->cabang)->orWhere('id_akun','like','7%')->get();
+        $akun2 = DB::table('d_akun')->where('id_akun','like','7%')->where('kode_cabang',$req->cabang)->orWhere('id_akun','like','7%')->get();
         $akun  = array_merge($akun1,$akun2);
       }
 
@@ -263,8 +263,8 @@ class master_akun_controller extends Controller
                     ->where('maf_cabang',$req->cabang)
                     ->get();
      
-        $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->where('kode_cabang',$req->cabang)->get();
-        $akun2 = DB::table('d_akun')->where('id_akun','like','7%')->where('kode_cabang',$req->cabang)->get();
+        $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->where('kode_cabang',$req->cabang)->orWhere('id_akun','like','7%')->get();
+        $akun2 = DB::table('d_akun')->where('id_akun','like','7%')->where('kode_cabang',$req->cabang)->orWhere('id_akun','like','7%')->get();
         $akun  = array_merge($akun1,$akun2);
       }
 
