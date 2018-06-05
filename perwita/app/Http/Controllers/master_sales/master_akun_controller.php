@@ -29,7 +29,7 @@ class master_akun_controller extends Controller
       $cabang = DB::table('cabang')
                   ->get();
 
-      $akun = DB::table('d_akun')->where('id_akun','like','5'.'%')->orWhere('id_akun','like','7%')->get();
+      $akun = DB::table('d_akun')->where('id_akun','like','5'.'%')->orWhere('id_akun','like','7%')->orWhere('id_akun','like','6%')->get();
       // $akun  = array_merge($akun1,$akun2);
     	return view('master_sales.master_akun.index',compact('akun','akun_item','akun_patty','cabang'));
     }
@@ -229,7 +229,8 @@ class master_akun_controller extends Controller
      
         $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->get();
         $akun2 = DB::table('d_akun')->where('id_akun','like','7%')->get();
-        $akun  = array_merge($akun1,$akun2);
+        $akun3 = DB::table('d_akun')->where('id_akun','like','6%')->get();
+        $akun  = array_merge($akun1,$akun2,$akun3);
       }else{
         $akun_patty = DB::table('master_akun_fitur')
                     ->where('maf_group','1')
@@ -238,7 +239,8 @@ class master_akun_controller extends Controller
      
         $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->where('kode_cabang',$req->cabang)->get();
         $akun2 = DB::table('d_akun')->where('id_akun','like','7%')->where('kode_cabang',$req->cabang)->get();
-        $akun  = array_merge($akun1,$akun2);
+        $akun3 = DB::table('d_akun')->where('id_akun','like','6%')->where('kode_cabang',$req->cabang)->get();
+        $akun  = array_merge($akun1,$akun2,$akun3);
       }
 
       return view('master_sales.master_akun.dropdown_patty',compact('akun','akun_patty'));
@@ -256,7 +258,8 @@ class master_akun_controller extends Controller
      
         $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->get();
         $akun2 = DB::table('d_akun')->where('id_akun','like','7%')->get();
-        $akun  = array_merge($akun1,$akun2);
+        $akun3 = DB::table('d_akun')->where('id_akun','like','6%')->get();
+        $akun  = array_merge($akun1,$akun2,$akun3);
       }else{
         $akun_patty = DB::table('master_akun_fitur')
                     ->where('maf_group','1')
@@ -265,7 +268,8 @@ class master_akun_controller extends Controller
      
         $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->where('kode_cabang',$req->cabang)->get();
         $akun2 = DB::table('d_akun')->where('id_akun','like','7%')->where('kode_cabang',$req->cabang)->get();
-        $akun  = array_merge($akun1,$akun2);
+        $akun3 = DB::table('d_akun')->where('id_akun','like','6%')->where('kode_cabang',$req->cabang)->get();
+        $akun  = array_merge($akun1,$akun2,$akun3);
       }
 
       return view('master_sales.master_akun.dropdown_item',compact('akun','akun_item'));

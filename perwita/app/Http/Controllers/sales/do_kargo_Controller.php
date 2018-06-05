@@ -61,12 +61,16 @@ class do_kargo_Controller extends Controller
 
                             if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah')){
                                 if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
-                                $a = '<a type="button" onclick="edit(\''.$data->nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>';
+                                $a = '<button type="button" onclick="edit(\''.$data->nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
                                 }
+                            }else{
+                              $a = '';
                             }
 
                             if(Auth::user()->punyaAkses('Delivery Order','print')){
                                 $b = '<button type="button" onclick="print(\''.$data->nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
+                            }else{
+                              $b = '';
                             }
 
 
@@ -74,6 +78,8 @@ class do_kargo_Controller extends Controller
                                 if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
                                   $c = '<button type="button" onclick="hapus(\''.$data->nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
                                 }
+                            }else{
+                              $c = '';
                             }
                             return $a . $b .$c  ;
                             

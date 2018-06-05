@@ -96,6 +96,16 @@
             for (var selector in config) {
                 $(selector).chosen(config[selector]);
             }
+<<<<<<< HEAD
+=======
+         
+      /*  
+        $('.date').datepicker( {
+            format: "mm",
+            viewMode: "months", 
+            minViewMode: "months"
+        });*/
+>>>>>>> 9bc54ab2c4c5cb41e5066ff03868fa207f2e2ef2
 
         var dataTableLanguage = {
            "emptyTable": "Tidak ada data",
