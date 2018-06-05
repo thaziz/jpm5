@@ -747,10 +747,9 @@
                                           <input type='text' class='input-sm form-control no_umheader' id="transaksium" readonly="" data-toggle="modal" data-target="#caritransaksium">
                                           <input type="hidden" class="nota_um editum">
                                           <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                          
-                                          <input type="hidden" class="akunhutang_um">
-                                          <input type="hidden" class="akunhutang_um">
                                           <input type="hidden" class="notr">
+                                          <input type="hidden" class="akunhutang_um">
+                                          <input type="hidden" class="flag_um">
                                         </td>
                                       </tr>
                                       <tr>
@@ -819,7 +818,7 @@
                                       <table class="table table-bordered" id="tablehasilum">
                                           <thead>
                                           <tr class="tableum">
-                                            <th style="width:200px"> No Faktur </th> <th> No Kas / Bank</th> <th> Tanggal </th> <th> No Uang Muka </th> <th> Jumlah Uang Muka </th> <th> Dibayar </th> <th> Keterangan </th> <th> Hapus </th> 
+                                            <th style="width:120px"> No Faktur </th> <th> No Kas / Bank</th> <th> Tanggal </th> <th> No Uang Muka </th> <th> Jumlah Uang Muka </th> <th> Dibayar </th> <th> Keterangan </th> <th> Hapus </th> 
                                           </tr>
 
 
@@ -829,13 +828,14 @@
                                             @foreach($dataumfp as $index=>$umfp)
 
                                               <tr class="dataum dataum{{$index}}" data-nota="{{$umfp->umfpdt_transaksibank}}">
-                                              <td>  <p class="nofaktur idtrum nofaktur2{{$index}}"  onclick="klikkas(this)" data-id="{{$index}}"> {{$umfp->umfp_nofaktur}} {{$index}} </p> <input type="hidden" class="nofaktur" value="{{$umfp->umfp_nofaktur}}" name="nofaktur[]"> <input type="hidden"  value="{{$umfp->umfp_id}}" name="idumfp"> </td>
+                                              <td>  <p class="nofaktur nofaktur2{{$index}}"  onclick="klikkas(this)"> {{$umfp->umfp_nofaktur}} </p> <input type="hidden" class="nofaktur" value="{{$umfp->umfp_nofaktur}}" name="nofaktur[]"> <input type="hidden" class="nofaktur" value="{{$umfp->umfp_id}}" name="idumfp"> </td>
                                               <td> <p class="nokas_text">{{$umfp->umfpdt_transaksibank}}</p> <input type="hidden" class="nokas" value="{{$umfp->umfpdt_transaksibank}}" name="nokas[]"> </td>
                                               <td><p class="tgl_text">{{$umfp->umfpdt_tgl}}</p> <input type="hidden" class="tglum" value="{{$umfp->umfpdt_tgl}}" name="tglum[]"> </td>
                                               <td> <p class="notaum_text">{{$umfp->umfpdt_notaum}}</p> <input type="hidden" class="notaum" value="{{$umfp->umfpdt_notaum}}" name="notaum[]"></td>
                                               <td> <p class="jumlahum_text"> {{number_format($umfp->umfpdt_jumlahum,2,",",".")}}</p> <input type="hidden" class="jumlahum" value="{{$umfp->umfpdt_jumlahum}}" name="jumlahum[]">  </td>
                                               <td> <p class="dibayar_text"> {{number_format($umfp->umfpdt_dibayar,2,",",".")}} </p> <input type="hidden" class="dibayar" value="{{$umfp->umfpdt_dibayar}}" name="dibayarum[]"> </td>
-                                              <td>  <p class="keterangan_text">{{$umfp->umfpdt_keterangan}}</p><input type="hidden" value="{{$umfp->umfpdt_keterangan}}" class="keteranganum" name="keteranganum[]">  <input type="hidden" class="akunhutangum" value="{{$umfp->umfpdt_acchutang}}" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="{{$umfp->umfp_keterangan}}" name="keteranganumheader"> <input type="hidden" class="flagum" value="{{$umfp->umfpdt_flag}}" name="flagum[]"> </td>
+                                              <td>  <p class="keterangan_text">{{$umfp->umfpdt_keterangan}}</p><input type="hidden" value="{{$umfp->umfpdt_keterangan}}" class="keteranganum" name="keteranganum[]"> <input type="hidden" value='{{$index}}' class="notr"> <input type="hidden" class="akunhutangum" value="{{$umfp->umfpdt_acchutang}}" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="
+                                              {{$umfp->umfp_keterangan}}" name="keteranganumheader"></td>
                                               <td> <button class="btn btn-sm btn-danger" type="button" onclick="hapusum(this)"><i class="fa fa-trash"></i></button> </td>
                                            
 
@@ -1116,9 +1116,7 @@
     
   //transaksi_um
   $('.dibayar_header').change(function(){
-
      jumlahheader2 = $('.jumlah_header').val();
-     $('.tampilpo').val('update');
  //     alert(jumlahheader2);
      val = $(this).val();
       
@@ -1193,7 +1191,6 @@
         keteranganum = $('.keteranganum_header').val();
         flagum = $('.flag_um').val();
 
-        alert(notransaksi);
         if(dibayar == ''){
           toastr.info("harap diisi jumlah dibayar nya :)");
           return false;
@@ -1219,13 +1216,13 @@
           notr += 1;
         }
 
-        html2 = '<tr class="dataum dataum'+notr+'" data-nota='+nokas+'> <td> <p class="nofaktur idtrum nofaktur2'+notr+'"  onclick="klikkas(this)" data-id='+notr+'>'+nofaktur+'</p> <input type="hidden" class="nofaktur" value="'+nofaktur+'" name="nofaktur[]"> </td>'+
+        html2 = '<tr class="dataum dataum'+notr+'" data-nota='+nokas+'> <td> <p class="nofaktur nofaktur2'+notr+'"  onclick="klikkas(this)">'+nofaktur+'</p> <input type="hidden" class="nofaktur" value="'+nofaktur+'" name="nofaktur[]"> </td>'+
                   '<td> <p class="nokas_text">'+nokas+'</p> <input type="hidden" class="nokas" value="'+nokas+'" name="nokas[]"> </td>' +
                   '<td><p class="tgl_text">'+tgl+'</p> <input type="hidden" class="tglum" value="'+tgl+'" name="tglum[]"></td>' +
                   '<td><p class="notaum_text">'+notaum+'</p> <input type="hidden" class="notaum" value="'+notaum+'" name="notaum[]"> </td>' +
                   '<td> <p class="jumlahum_text">'+jumlah+'</p> <input type="hidden" class="jumlahum" value="'+jumlah+'" name="jumlahum[]"> </td>' +
                   '<td> <p class="dibayar_text">'+dibayar+'</p> <input type="hidden" class="dibayar" value="'+dibayar+'" name="dibayarum[]"> </td>'+
-                  '<td> <p class="keterangan_text">'+keterangan+'</p><input type="hidden" value="'+keterangan+'" class="keteranganum" name="keteranganum[]"> <input type="hidden" class="akunhutangum" value="'+akunhutang+'" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="'+keteranganum+'" name="keteranganumheader"> <input type="hidden" class="flagum" value="'+flagum+'" name="flagum[]"></td>' +
+                  '<td> <p class="keterangan_text">'+keterangan+'</p><input type="hidden" value="'+keterangan+'" class="keteranganum" name="keteranganum[]"> <input type="hidden" value='+notr+' class="notr"> <input type="hidden" class="akunhutangum" value="'+akunhutang+'" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="'+keteranganum+'" name="keteranganumheader"> <input type="hidden" class="flagum" value="'+flagum+'" name="flagum[]"></td>' +
                   '<td> <button class="btn btn-sm btn-danger" type="button" onclick="hapusum(this)"><i class="fa fa-trash"></i></button></td>'+ 
                 "</tr>";
 
@@ -1320,10 +1317,8 @@
     dibayar = $(val).find('.dibayar').val();
     jumlahum = $(val).find('.jumlahum').val();
     keteranganum = $(val).find('.keteranganum').val();
-    keteranganumheader = $(val).find('.keteranganumheader').val();
-    notr = $(val).find('.idtrum').data('id');
+    notr = $(val).find('.notr').val();
     
-    alert(notr);
     //alert(a);
 
     /*$('.nofaktur').val(nofaktur);*/
@@ -1331,7 +1326,6 @@
     $('.tgl_umheader').val(tglum);
     $('.jumlah_header').val(jumlahum);
      $('.keterangan_header').val(keteranganum);
-     $('.keteranganum_header').val(keteranganumheader);
     $('.dibayar_header').val(addCommas(dibayar));
     $('.nota_um').val(notaum);
     $('.notr').val(notr);
@@ -1349,8 +1343,6 @@
       
       hasilsisa = (parseFloat(sisahutang) - parseFloat(totalum)).toFixed(2);
       $('.sisahutang_po').val(addCommas(hasilsisa));
-
-      $('.fp_uangmuka').val(totalum);
 
     });
 

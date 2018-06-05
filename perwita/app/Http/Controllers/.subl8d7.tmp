@@ -5629,6 +5629,7 @@ public function purchase_order() {
 			  	$hasilterpakai = floatval($sisaterpakai) + floatval($dibayarum);
 			  	$hasilsisapakai = floatval($pelunasan) - floatval($hasilterpakai);
 
+
 			  	 $updateum = DB::table('d_uangmuka')
                 ->where('um_nomorbukti' , $request->notaum[$i])
                 ->update([

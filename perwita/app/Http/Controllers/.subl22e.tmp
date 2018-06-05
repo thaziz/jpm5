@@ -5624,10 +5624,8 @@ public function purchase_order() {
 			  	$notaum = $request->notaum[$i];
 			  	$dataum = DB::select("select * from d_uangmuka where um_nomorbukti = '$notaum'");
 			  	$sisaterpakai = $dataum[0]->um_sisaterpakai;
-			  	$pelunasan = $dataum[0]->um_sisapelunasan;
 
-			  	$hasilterpakai = floatval($sisaterpakai) + floatval($dibayarum);
-			  	$hasilsisapakai = floatval($pelunasan) - floatval($hasilterpakai);
+			  	$hasilsisapakai = floatval($sisaterpakai) - floatval($dibayarum);
 
 			  	 $updateum = DB::table('d_uangmuka')
                 ->where('um_nomorbukti' , $request->notaum[$i])
@@ -5635,9 +5633,8 @@ public function purchase_order() {
                 	'um_sisaterpakai' => $hasilsisapakai,                                                           
                 ]);
 
-
                 $notransaksi = $request->nokas[$i];
-                if($request->flagum[$i] == 'FPG'){
+                if($request->flagum == 'FPG'){
 
                 	$datafpg = DB::select("select * from fpg, fpg_dt where fpg_nofpg = '$notransaksi' and fpgdt_idfpg = idfpg");
                 	$idfpg = $datafpg[0]->idfpg;

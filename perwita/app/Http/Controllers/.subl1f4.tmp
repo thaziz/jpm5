@@ -5626,7 +5626,13 @@ public function purchase_order() {
 			  	$sisaterpakai = $dataum[0]->um_sisaterpakai;
 			  	$pelunasan = $dataum[0]->um_sisapelunasan;
 
+			  	if($sisaterpakai == null){
+			  		$sisaterpakai = 0;
+			  	}
+
 			  	$hasilterpakai = floatval($sisaterpakai) + floatval($dibayarum);
+
+			  	return $hasilterpakai;
 			  	$hasilsisapakai = floatval($pelunasan) - floatval($hasilterpakai);
 
 			  	 $updateum = DB::table('d_uangmuka')

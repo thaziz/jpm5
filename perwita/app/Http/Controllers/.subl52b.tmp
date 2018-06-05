@@ -5626,13 +5626,16 @@ public function purchase_order() {
 			  	$sisaterpakai = $dataum[0]->um_sisaterpakai;
 			  	$pelunasan = $dataum[0]->um_sisapelunasan;
 
-			  	$hasilterpakai = floatval($sisaterpakai) + floatval($dibayarum);
-			  	$hasilsisapakai = floatval($pelunasan) - floatval($hasilterpakai);
+			  	
+			  	$hasilterpakai = floatval($sisaterpakai) - floatval($dibayarum);
 
+			  	/*return $hasilterpakai;*/
+			  
+			  	//return $hasilsisapakai;
 			  	 $updateum = DB::table('d_uangmuka')
                 ->where('um_nomorbukti' , $request->notaum[$i])
                 ->update([
-                	'um_sisaterpakai' => $hasilsisapakai,                                                           
+                	'um_sisaterpakai' => $hasilterpakai,                                                           
                 ]);
 
 
@@ -5917,136 +5920,6 @@ public function purchase_order() {
 			}		
 			   
 
-
-			  /* $id_akun=[];
-			   $akun=[];*/
-
-
-			   /*//biaya
-			   foreach ($request->biaya as $idx => $value) {
-			   $biaya = str_replace(',', '', $value);			   
-			   $subtotal=$biaya-($biaya*(float)$diskonJurnal/100);
-				   if($request->updatestock[0] == "Y"){
-				   		$id_akun[$idx]['akun']=$request->acc_persediaan[$idx];	
-				   }
-				   else {
-				   		$id_akun[$idx]['akun']=$request->acc_biaya[$idx];	
-				   }               			   
-	               $id_akun[$idx]['subtotal']=$subtotal;
-	               $id_akun[$idx]['ppn']=$subtotal*round((float)$request->inputppn/100);
-	               $id_akun[$idx]['pph']=$subtotal*round((float)$request->inputpph/100);
-        	   } //endforeach
-
-			$Nilaijurnal=$this->groupJurnalFpItem($id_akun);
-			$nilaiHutang=0;
-			$nilaiPPH=0;
-			$nilaiPPN=0;
-
-			foreach ($Nilaijurnal as  $indexakun=> $dataJurnal) { 
-				   $nilaiHutang+=$dataJurnal['subtotal'];	 
-				   $nilaiPPH+=$dataJurnal['pph'];
-				   $nilaiPPN+=$dataJurnal['ppn'];	   
-			       $acc=master_akun::
-			                  select('id_akun','nama_akun')
-			                  ->where('id_akun','like', ''.$dataJurnal['akun'].'%')                                    
-			                  ->where('kode_cabang',$cabang)
-			                  ->orderBy('id_akun')
-			                  ->first();                                    
-			        if(count($acc)!=0){
-				        $akun[$indexakun]['id_akun']=$acc->id_akun;
-				        $akun[$indexakun]['value']=$dataJurnal['subtotal'];
-				        $akun[$indexakun]['dk']='D';
-				        $indexakun++;              
-			        }
-			        else{
-			            $dataInfo=['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Belum Tersedia'];
-				    DB::rollback();
-			            return json_encode($dataInfo);
-			        }       
-			}  
-
-
-	$acchutangdagang = substr($request->acchutangdagang, 0,5);
- 	$akunHutang=master_akun::
-                  select('id_akun','nama_akun')
-                  ->where('id_akun','like', ''.$acchutangdagang.'%')                                    
-                  ->where('kode_cabang',$cabang)
-                  ->orderBy('id_akun')
-                  ->first();                    
-
-                  if(count($akunHutang)==0){
-                        $dataInfo=['status'=>'gagal','info'=>'Akun HUtang Untuk Cabang Belum Tersedia'];
-                        DB::rollback();
-                        return json_encode($dataInfo);
-                    }
-
-                $akun[$indexakun]['id_akun']=$akunHutang->id_akun;
-                $akun[$indexakun]['value']=$nilaiHutang-$nilaiPPN+$nilaiPPH;
-                $akun[$indexakun]['dk']='K';
-                $indexakun++;
-
-	if($request->jenisppn=='I'){        
-         $akunPPN=master_akun::
-                  select('id_akun','nama_akun')
-                  ->where('id_akun','like', '2302%')                                    
-                  ->where('kode_cabang',$cabang)
-                  ->orderBy('id_akun')
-                  ->first(); 
-        if(count($akunPPN)!=0){
-                $akun[$indexakun]['id_akun']=$akunPPN->id_akun;
-                $akun[$indexakun]['value']=$nilaiPPN;
-                $akun[$indexakun]['dk']='D';
-                $indexakun++;
-        }
-        else{
-            
-            $dataInfo=['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Belum Tersedia'];
-		DB::rollback();
-                      return json_encode($dataInfo);
-        } 
-    }
-    else if($request->jenisppn=='E'){        
-         $akunPPN=master_akun::
-                  select('id_akun','nama_akun')
-                  ->where('id_akun','like', '2301%')                                    
-                  ->where('kode_cabang',$cabang)
-                  ->orderBy('id_akun')
-                  ->first();                   
-        if(count($akunPPN)!=0){
-                $akun[$indexakun]['id_akun']=$akunPPN->id_akun;
-                $akun[$indexakun]['value']=$nilaiPPN;
-                $akun[$indexakun]['dk']='D';
-                $indexakun++;
-        }
-        else{
-            
-            $dataInfo=['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Belum Tersedia'];
-		DB::rollback();
-                      return json_encode($dataInfo);
-        } 
-    }
-
-  
- 			$id_jurnal=d_jurnal::max('jr_id')+1;
- 			$key=1;
-                foreach ($akun as $data) {   
-                        
-                        $jurnal_dt[$key]['jrdt_jurnal']=$id_jurnal;
-                        $jurnal_dt[$key]['jrdt_detailid']=$key;
-                        $jurnal_dt[$key]['jrdt_acc']=$data['id_akun'];
-                        $jurnal_dt[$key]['jrdt_value']=$data['value'];
-                        $jurnal_dt[$key]['jrdt_statusdk']=$data['dk'];
-                        $key++;
-                }
-            d_jurnal::create([
-                        'jr_id'=>$id_jurnal,
-                        'jr_year'=> date('Y',strtotime($request->tglitem)),
-                        'jr_date'=> date('Y-m-d',strtotime($request->tglitem)),
-                        'jr_detail'=> 'FP ITEM',
-                        'jr_ref'=> $request->nofakturitem,
-                        'jr_note'=> 'FP ITEM',
-                        ]);
-            d_jurnal_dt::insert($jurnal_dt);*/
 
 		return json_encode($idfaktur);
 		});

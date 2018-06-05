@@ -5626,6 +5626,10 @@ public function purchase_order() {
 			  	$sisaterpakai = $dataum[0]->um_sisaterpakai;
 			  	$pelunasan = $dataum[0]->um_sisapelunasan;
 
+			  	if($sisaterpakai == null){
+			  		
+			  	}
+
 			  	$hasilterpakai = floatval($sisaterpakai) + floatval($dibayarum);
 			  	$hasilsisapakai = floatval($pelunasan) - floatval($hasilterpakai);
 

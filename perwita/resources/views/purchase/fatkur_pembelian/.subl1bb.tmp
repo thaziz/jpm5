@@ -1778,13 +1778,13 @@
           notr += 1;
         }
 
-        html2 = '<tr class="dataum dataum'+notr+'" data-nota='+nokas+'> <td> <p class="nofaktur idtrum nofaktur2'+notr+'"  onclick="klikkas(this)"  data-id='+notr+'>'+nofaktur+'</p> <input type="hidden" class="nofaktur" value="'+nofaktur+'" name="nofaktur[]"> </td>'+
+        html2 = '<tr class="dataum dataum'+notr+'" data-nota='+nokas+'> <td> <p class="nofaktur nofaktur2'+notr+'"  onclick="klikkas(this)">'+nofaktur+'</p> <input type="hidden" class="nofaktur" value="'+nofaktur+'" name="nofaktur[]"> </td>'+
                   '<td> <p class="nokas_text">'+nokas+'</p> <input type="hidden" class="nokas" value="'+nokas+'" name="nokas[]"> </td>' +
                   '<td><p class="tgl_text">'+tgl+'</p> <input type="hidden" class="tglum" value="'+tgl+'" name="tglum[]"></td>' +
                   '<td><p class="notaum_text">'+notaum+'</p> <input type="hidden" class="notaum" value="'+notaum+'" name="notaum[]"> </td>' +
                   '<td> <p class="jumlahum_text">'+jumlah+'</p> <input type="hidden" class="jumlahum" value="'+jumlah+'" name="jumlahum[]"> </td>' +
                   '<td> <p class="dibayar_text">'+dibayar+'</p> <input type="hidden" class="dibayar" value="'+dibayar+'" name="dibayarum[]"> </td>'+
-                  '<td> <p class="keterangan_text">'+keterangan+'</p><input type="hidden" value="'+keterangan+'" class="keteranganum" name="keteranganum[]"> <input type="hidden" class="akunhutangum" value="'+akunhutang+'" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value='+keteranganum+' name="keteranganumheader"> <input type="hidden" class="flagum" value='+flagum+' name="flagum[]"> </td>' +
+                  '<td> <p class="keterangan_text">'+keterangan+'</p><input type="hidden" value="'+keterangan+'" class="keteranganum" name="keteranganum[]"> <input type="hidden" value='+notr+' class="notr"> <input type="hidden" class="akunhutangum" value="'+akunhutang+'" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="'+keteranganum+'" name="keteranganumheader"> <input type="hidden" class="flagum" value="'+flagum+'" name="flagum[]"> </td>' +
                   '<td> <button class="btn btn-sm btn-danger" type="button" onclick="hapusum(this)"><i class="fa fa-trash"></i></button></td>'+ 
                 "</tr>";
 
@@ -1878,9 +1878,8 @@
     notaum = $(val).find('.notaum').val();
     dibayar = $(val).find('.dibayar').val();
     jumlahum = $(val).find('.jumlahum').val();
-    keteranganumheader = $(val).find('.keteranganumheader').val();
     keteranganum = $(val).find('.keteranganum').val();
-      notr = $(val).find('.idtrum').data('id');
+    notr = $(val).find('.notr').val();
     
     //alert(a);
 
@@ -1888,7 +1887,6 @@
     $('.no_umheader').val(nokas);
     $('.tgl_umheader').val(tglum);
     $('.jumlah_header').val(jumlahum);
-     $('.keteranganum_header').val(keteranganum);
      $('.keterangan_header').val(keteranganum);
     $('.dibayar_header').val(dibayar);
     $('.nota_um').val(notaum);
