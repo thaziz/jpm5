@@ -117,7 +117,6 @@ class invoice_Controller extends Controller
                     ->where('id_nomor_invoice',$id)
                     ->get();
         }
-        // dd($detail);
         $counting = count($detail); 
   
         $update_status = DB::table('invoice')
@@ -139,7 +138,7 @@ class invoice_Controller extends Controller
 
         // return $push;
         $terbilang = $this->penyebut($head->i_total_tagihan);
-        if ($head->i_pendapatan == 'PAKET') {
+        if ($head->i_pendapatan == 'PAKET' or $head->i_pendapatan == 'KARGO') {
           return view('sales.invoice.print',compact('head','detail','terbilang','push'));
         }else{
           return view('sales.invoice.print_1',compact('head','detail','terbilang','push'));
