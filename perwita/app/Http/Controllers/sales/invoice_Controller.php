@@ -117,7 +117,7 @@ class invoice_Controller extends Controller
                     ->where('id_nomor_invoice',$id)
                     ->get();
         }
-        // dd($detail);
+        dd($detail);
         $counting = count($detail); 
   
         $update_status = DB::table('invoice')
