@@ -849,7 +849,7 @@
                                       <table class="table table-bordered" id="tablehasilum">
                                           <thead>
                                           <tr class="tableum">
-                                            <th style="width:120px"> No Faktur </th> <th> No Kas / Bank</th> <th> Tanggal </th> <th> No Uang Muka </th> <th> Jumlah Uang Muka </th> <th> Dibayar </th> <th> Keterangan </th> <th> Hapus </th> 
+                                            <th style="width:150px"> No Faktur </th> <th> No Kas / Bank</th> <th> Tanggal </th> <th> No Uang Muka </th> <th> Jumlah Uang Muka </th> <th> Dibayar </th> <th> Keterangan </th> <th> Hapus </th> 
                                           </tr>
 
 
@@ -1778,13 +1778,13 @@
           notr += 1;
         }
 
-        html2 = '<tr class="dataum dataum'+notr+'" data-nota='+nokas+'> <td> <p class="nofaktur nofaktur2'+notr+'"  onclick="klikkas(this)">'+nofaktur+'</p> <input type="hidden" class="nofaktur" value="'+nofaktur+'" name="nofaktur[]"> </td>'+
+        html2 = '<tr class="dataum dataum'+notr+'" data-nota='+nokas+'> <td> <p class="nofaktur idtrum nofaktur2'+notr+'"  onclick="klikkas(this)"  data-id='+notr+'>'+nofaktur+'</p> <input type="hidden" class="nofaktur" value="'+nofaktur+'" name="nofaktur[]"> </td>'+
                   '<td> <p class="nokas_text">'+nokas+'</p> <input type="hidden" class="nokas" value="'+nokas+'" name="nokas[]"> </td>' +
                   '<td><p class="tgl_text">'+tgl+'</p> <input type="hidden" class="tglum" value="'+tgl+'" name="tglum[]"></td>' +
                   '<td><p class="notaum_text">'+notaum+'</p> <input type="hidden" class="notaum" value="'+notaum+'" name="notaum[]"> </td>' +
                   '<td> <p class="jumlahum_text">'+jumlah+'</p> <input type="hidden" class="jumlahum" value="'+jumlah+'" name="jumlahum[]"> </td>' +
                   '<td> <p class="dibayar_text">'+dibayar+'</p> <input type="hidden" class="dibayar" value="'+dibayar+'" name="dibayarum[]"> </td>'+
-                  '<td> <p class="keterangan_text">'+keterangan+'</p><input type="hidden" value="'+keterangan+'" class="keteranganum" name="keteranganum[]"> <input type="hidden" value='+notr+' class="notr"> <input type="hidden" class="akunhutangum" value="'+akunhutang+'" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="'+keteranganum+'" name="keteranganumheader"> <input type="hidden" class="flagum" value="'+flagum+'" name="flagum"> </td>' +
+                  '<td> <p class="keterangan_text">'+keterangan+'</p><input type="hidden" value="'+keterangan+'" class="keteranganum" name="keteranganum[]"> <input type="hidden" class="akunhutangum" value="'+akunhutang+'" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value='+keteranganum+' name="keteranganumheader"> <input type="hidden" class="flagum" value='+flagum+' name="flagum[]"> </td>' +
                   '<td> <button class="btn btn-sm btn-danger" type="button" onclick="hapusum(this)"><i class="fa fa-trash"></i></button></td>'+ 
                 "</tr>";
 
@@ -1878,8 +1878,9 @@
     notaum = $(val).find('.notaum').val();
     dibayar = $(val).find('.dibayar').val();
     jumlahum = $(val).find('.jumlahum').val();
+    keteranganumheader = $(val).find('.keteranganumheader').val();
     keteranganum = $(val).find('.keteranganum').val();
-    notr = $(val).find('.notr').val();
+      notr = $(val).find('.idtrum').data('id');
     
     //alert(a);
 
@@ -1887,6 +1888,7 @@
     $('.no_umheader').val(nokas);
     $('.tgl_umheader').val(tglum);
     $('.jumlah_header').val(jumlahum);
+     $('.keteranganum_header').val(keteranganum);
      $('.keterangan_header').val(keteranganum);
     $('.dibayar_header').val(dibayar);
     $('.nota_um').val(notaum);
@@ -3638,19 +3640,21 @@
                   idbarang = $('.brg-'+nobrg).val();
                  // alert(idbarang);
                  // alert(item);
-                  if(kodeitem == idbarang){
+                 /* if(kodeitem == idbarang){
                     toastr.info('Mohon maaf barang tersebut sudah ditambah :)');
                     return false;
                   }
                   else {
-                    $('#tablefp').append(row);
+                   
+                    }
+                  }*/
+
+                   $('#tablefp').append(row);
 
                     if(kodestock == 'T'){
-                      alert(kodestock);
-                     $('.tdgudangitem').hide();
+                     // alert(kodestock);
+                      $('.tdgudangitem').hide();
                     }
-                  }
-
                   hsljml =  nettoitem.replace(/,/g, '');
                   console.log(hsljml);
 
@@ -5836,7 +5840,7 @@
 
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                            $('#item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+"'>"+obj.nama_masteritem+"</option>");
+                            $('#item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+"'>"+obj.kode_item+" - "+obj.nama_masteritem+"</option>");
                            $("#item").trigger("chosen:updated");
                            $("#item").trigger("liszt:updated");
                         })
@@ -5928,7 +5932,7 @@
                       $('.item').append(" <option value='none'>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                          $('.item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
+                          $('.item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.kode_item+" - "+obj.nama_masteritem+"</option>");
                           $(".item").trigger("chosen:updated");
                           $(".item").trigger("liszt:updated");
                         })
@@ -5950,7 +5954,7 @@
                       $('.item').append(" <option value='none'>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                          $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
+                          $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'> "+obj.kode_item+" - "+obj.nama_masteritem+"</option>");
                           $(".item").trigger("chosen:updated");
                              $(".item").trigger("liszt:updated");
                         })
@@ -5992,7 +5996,7 @@
                       $('.item').append(" <option value='none'>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                          $('.item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
+                          $('.item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.kode_item+" - "+obj.nama_masteritem+"</option>");
                           $(".item").trigger("chosen:updated");
                           $(".item").trigger("liszt:updated");
                         })
@@ -6014,7 +6018,7 @@
                       $('.item').append(" <option value='none'>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                          $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
+                          $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.kode_item+" - "+obj.nama_masteritem+"</option>");
                           $(".item").trigger("chosen:updated");
                              $(".item").trigger("liszt:updated");
                         })
@@ -6071,7 +6075,7 @@
                       $('.item').append(" <option value='none'>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                          $('.item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
+                          $('.item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.kode_item+" - "+obj.nama_masteritem+"</option>");
                           $(".item").trigger("chosen:updated");
                           $(".item").trigger("liszt:updated");
                         })
@@ -6093,7 +6097,7 @@
                       $('.item').append(" <option value='none'>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                          $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
+                          $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.kode_item+" - "+obj.nama_masteritem+"</option>");
                           $(".item").trigger("chosen:updated");
                              $(".item").trigger("liszt:updated");
                         })

@@ -97,7 +97,6 @@
                 $(selector).chosen(config[selector]);
             }
 
-
         var dataTableLanguage = {
            "emptyTable": "Tidak ada data",
            "sInfoFiltered": ". Telah Di Filter Dari _MAX_ total Data",
