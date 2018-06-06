@@ -8157,7 +8157,6 @@ public function kekata($x) {
 						$deleteumfp = DB::delete("DELETE from uangmukapembelian_fp where umfp_nofaktur = '$nofaktur'");
 						//DB::delete("DELETE from d_jurnal where umfp_nofaktur = '$nofaktur'");
 					    DB::delete("DELETE from d_jurnal where jr_detail = 'UANG MUKA PEMBELIAN FP' and jr_ref = '$nofaktur'");
-					    
 					}
 
 					$tipestock = $data['faktur'][0]->fp_tipe;
@@ -8170,8 +8169,6 @@ public function kekata($x) {
 					$deletefp2 = DB::table('form_tt')->where('tt_nofp' , '=' , $nofaktur)->delete();
 					$deletefp = DB::table('faktur_pembelian')->where('fp_idfaktur' , '=' , $id)->delete();
 					$deleteumfp = DB::delete("DELETE from uangmukapembelian_fp where umfp_nofaktur = '$nofaktur'");
-					DB::delete("DELETE from d_jurnal where jr_detail = 'FAKTUR PEMBELIAN' and jr_ref = '$nofaktur'");						
-
 				}
 
 				

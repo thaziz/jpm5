@@ -7964,14 +7964,14 @@ public function kekata($x) {
 
 							       		if($akundkaheader == 'D'){
 							       			$dataakun_um = array (
-											'id_akun' => $request->acchutang,
+											'id_akun' => $request->acchutangdagang,
 											'subtotal' => '-' . $totaljumlah,
 											'dk' => 'D',
 											);
 							       		}
 							       		else {
 							       			$dataakun_um = array (
-											'id_akun' => $request->acchutang,
+											'id_akun' => $request->acchutangdagang,
 											'subtotal' => $totaljumlah,
 											'dk' => 'D',
 											);	
@@ -8152,26 +8152,13 @@ public function kekata($x) {
 					$deletefp2 = DB::table('form_tt')->where('tt_nofp' , '=' , $nofaktur)->delete();
 					$deletefp = DB::table('faktur_pembelian')->where('fp_idfaktur' , '=' , $id)->delete();			
 					$deletebt = 	DB::delete("DELETE from barang_terima where bt_idtransaksi = '$id' and bt_flag = 'FP'");
-					$dataum = $data['faktur'][0]->fp_uangmuka;
-					if($dataum != null){
-						$deleteumfp = DB::delete("DELETE from uangmukapembelian_fp where umfp_nofaktur = '$nofaktur'");
-						//DB::delete("DELETE from d_jurnal where umfp_nofaktur = '$nofaktur'");
-					    DB::delete("DELETE from d_jurnal where jr_detail = 'UANG MUKA PEMBELIAN FP' and jr_ref = '$nofaktur'");
-					    
-					}
-
-					$tipestock = $data['faktur'][0]->fp_tipe;
-					if($tipestock == 'NS'){
-					    DB::delete("DELETE from d_jurnal where jr_detail = 'FAKTUR PEMBELIAN' and jr_ref = '$nofaktur'");						
-					}
+					$deleteumfp = DB::delete("DELETE from uangmukapembelian_fp where umfp_nofaktur = '$nofaktur'");
 				}
 				else {
 					$deletefp = DB::table('fakturpajakmasukan')->where('fpm_idfaktur' , '=' , $id)->delete();
 					$deletefp2 = DB::table('form_tt')->where('tt_nofp' , '=' , $nofaktur)->delete();
 					$deletefp = DB::table('faktur_pembelian')->where('fp_idfaktur' , '=' , $id)->delete();
 					$deleteumfp = DB::delete("DELETE from uangmukapembelian_fp where umfp_nofaktur = '$nofaktur'");
-					DB::delete("DELETE from d_jurnal where jr_detail = 'FAKTUR PEMBELIAN' and jr_ref = '$nofaktur'");						
-
 				}
 
 				
