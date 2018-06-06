@@ -8178,7 +8178,7 @@ public function kekata($x) {
 			                ]);
 						  	
 						
-							if($flag == 'FPG'){
+							if($request->flagum[$keys] == 'FPG'){
 			                	$datafpg = DB::select("select * from fpg, fpg_dt where fpg_nofpg = '$notransaksi' and fpgdt_idfpg = idfpg");
 								$sisaumfpg = $datafpg[0]->fpgdt_sisapelunasanumfp;
 								$idfpg = $datafpg[0]->fpgdt_idfpg;
@@ -8188,7 +8188,7 @@ public function kekata($x) {
 
 
 								$updateum = DB::table('fpg_dt')
-					                ->where([['fpgdt_idfpg' , '='  , $idfpg], ['fpgdt_nofaktur' , '=' , $notaum]])
+					                ->where([['fpgdt_idfpg' , '='  , $idfpg], ['fpgdt_nofaktur' , '=' , $request->notaum[$keys]]])
 					                ->update([
 					                	'fpgdt_sisapelunasanumfp' => $selisih,                                                           
 					                ]);
@@ -8204,7 +8204,7 @@ public function kekata($x) {
 
 
 								$updateum = DB::table('bukti_kas_keluar_detail')
-					                ->where([['bkkd_bkk_id' , '='  , $idfpg], ['bkkd_ref' , '=' , $notaum]])
+					                ->where([['bkkd_bkk_id' , '='  , $idfpg], ['bkkd_ref' , '=' , $request->notaum[$keys]]])
 					                ->update([
 					                	'bkkd_sisaum' => $selisih,                                                           
 					                ]);

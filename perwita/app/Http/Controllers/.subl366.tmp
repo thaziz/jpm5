@@ -7756,83 +7756,83 @@ public function kekata($x) {
 
 								if($tipefp == 'NS' || $tipefp == 'J'){
 									$nofaktur = $request->nofaktur[0];
-									DB::delete("DELETE from  d_jurnal where jr_ref = '$nofaktur' and jr_detail = 'FAKTUR PEMBELIAN'");
-									$datajurnal = [];
-									$totalhutang = 0;
-									$datajurnalum = [];
-									$nettohutangpo = str_replace(',', '', $request->nettohutang_po);
+								DB::delete("DELETE from  d_jurnal where jr_ref = '$nofaktur' and jr_detail = 'FAKTUR PEMBELIAN'");
+								$datajurnal = [];
+								$totalhutang = 0;
+								$datajurnalum = [];
+								$nettohutangpo = str_replace(',', '', $request->nettohutang_po);
 
 
-									for($ja = 0; $ja < count($request->acc_persediaan); $ja++){
-										
-										$totalharga = str_replace(',', '', $request->nettoitem[$ja]);
-
-										$datajurnal[$ja]['id_akun'] = $request->acc_persediaan[$ja];
-										$datajurnal[$ja]['subtotal'] = $totalharga;
-										$datajurnal[$ja]['dk'] = 'D';
-									}	
-
-
-									$dataakun = array (
-										'id_akun' => $request->acchutang,
-										'subtotal' => $nettohutangpo,
-										'dk' => 'K',
-										);
-
-									array_push($datajurnal, $dataakun );
+								for($ja = 0; $ja < count($request->acc_persediaan); $ja++){
 									
-									//return $datajurnal;
-									$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
-									if(isset($lastidjurnal)) {
-										$idjurnal = $lastidjurnal;
-										$idjurnal = (int)$idjurnal + 1;
+									$totalharga = str_replace(',', '', $request->nettoitem[$ja]);
+
+									$datajurnal[$ja]['id_akun'] = $request->acc_persediaan[$ja];
+									$datajurnal[$ja]['subtotal'] = $totalharga;
+									$datajurnal[$ja]['dk'] = 'D';
+								}	
+
+
+								$dataakun = array (
+									'id_akun' => $request->acchutang,
+									'subtotal' => $nettohutangpo,
+									'dk' => 'K',
+									);
+
+								array_push($datajurnal, $dataakun );
+								
+								//return $datajurnal;
+								$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+								if(isset($lastidjurnal)) {
+									$idjurnal = $lastidjurnal;
+									$idjurnal = (int)$idjurnal + 1;
+								}
+								else {
+									$idjurnal = 1;
+								}
+							
+								$year = date('Y');	
+								$date = date('Y-m-d');
+								$jurnal = new d_jurnal();
+								$jurnal->jr_id = $idjurnal;
+						        $jurnal->jr_year = date('Y');
+						        $jurnal->jr_date = date('Y-m-d');
+						        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
+						        $jurnal->jr_ref = $nofaktur;
+						        $jurnal->jr_note = $request->keterangan;
+						        $jurnal->save();
+					       		
+
+					       
+					    		$key  = 1;
+					    		for($j = 0; $j < count($datajurnal); $j++){
+					    			
+					    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+									if(isset($lastidjurnaldt)) {
+										$idjurnaldt = $lastidjurnaldt;
+										$idjurnaldt = (int)$idjurnaldt + 1;
 									}
 									else {
-										$idjurnal = 1;
+										$idjurnaldt = 1;
 									}
-								
-									$year = date('Y');	
-									$date = date('Y-m-d');
-									$jurnal = new d_jurnal();
-									$jurnal->jr_id = $idjurnal;
-							        $jurnal->jr_year = date('Y');
-							        $jurnal->jr_date = date('Y-m-d');
-							        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
-							        $jurnal->jr_ref = $nofaktur;
-							        $jurnal->jr_note = $request->keterangan;
-							        $jurnal->save();
-						       		
 
-						       
-						    		$key  = 1;
-						    		for($j = 0; $j < count($datajurnal); $j++){
-						    			
-						    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
-										if(isset($lastidjurnaldt)) {
-											$idjurnaldt = $lastidjurnaldt;
-											$idjurnaldt = (int)$idjurnaldt + 1;
-										}
-										else {
-											$idjurnaldt = 1;
-										}
-
-						    			$jurnaldt = new d_jurnal_dt();
-						    			$jurnaldt->jrdt_jurnal = $idjurnal;
-						    			$jurnaldt->jrdt_detailid = $key;
-						    			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
-						    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
-						    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
-						    			$jurnaldt->save();
-						    			$key++;
-						    		}
+					    			$jurnaldt = new d_jurnal_dt();
+					    			$jurnaldt->jrdt_jurnal = $idjurnal;
+					    			$jurnaldt->jrdt_detailid = $key;
+					    			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
+					    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
+					    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
+					    			$jurnaldt->save();
+					    			$key++;
+					    		}
 								}
 								
-								//UPDATE UM
+
 					    		if($request->totaljumlah != ''){
 					    			DB::delete("DELETE from d_jurnal where jr_detail = 'UANG MUKA PEMBELIAN FP' and jr_ref = '$nofaktur'");
 
 
-					    			
+					    			//UPDATE UM
 						    		$totaljumlah = str_replace(",", "", $request->totaljumlah);
 
 						    		$data['header4'] = DB::table('uangmukapembelian_fp')
@@ -8163,22 +8163,21 @@ public function kekata($x) {
 						for($n = 0 ; $n < count($dataumfp); $n++){
 							$notaum = $dataumfp[$n]->umfpdt_notaum;
 							$databayar = $dataumfp[$n]->umfpdt_dibayar;
-							$notransaksi = $dataumfp[$n]->umfpdt_transaksibank;
 
 							$dataum = DB::select("select * from d_uangmuka where um_nomorbukti = '$notaum'");
 							$sisaterpakai = $dataum[0]->um_sisaterpakai;
 
 							$selisihsisapakai = floatval($sisaterpakai) + floatval($databayar);
-						  	$flag = $dataumfp[$n]->umfpdt_flag;
+						  	
 						 
 						  	 $updateum = DB::table('d_uangmuka')
-			                ->where('um_nomorbukti' , $notaum)
+			                ->where('um_nomorbukti' , $request->notaum[$keys])
 			                ->update([
 			                	'um_sisaterpakai' => $selisihsisapakai,                                                           
 			                ]);
 						  	
 						
-							if($flag == 'FPG'){
+							if($request->flagum[$keys] == 'FPG'){
 			                	$datafpg = DB::select("select * from fpg, fpg_dt where fpg_nofpg = '$notransaksi' and fpgdt_idfpg = idfpg");
 								$sisaumfpg = $datafpg[0]->fpgdt_sisapelunasanumfp;
 								$idfpg = $datafpg[0]->fpgdt_idfpg;
@@ -8188,7 +8187,7 @@ public function kekata($x) {
 
 
 								$updateum = DB::table('fpg_dt')
-					                ->where([['fpgdt_idfpg' , '='  , $idfpg], ['fpgdt_nofaktur' , '=' , $notaum]])
+					                ->where([['fpgdt_idfpg' , '='  , $idfpg], ['fpgdt_nofaktur' , '=' , $request->notaum[$keys]]])
 					                ->update([
 					                	'fpgdt_sisapelunasanumfp' => $selisih,                                                           
 					                ]);
@@ -8204,7 +8203,7 @@ public function kekata($x) {
 
 
 								$updateum = DB::table('bukti_kas_keluar_detail')
-					                ->where([['bkkd_bkk_id' , '='  , $idfpg], ['bkkd_ref' , '=' , $notaum]])
+					                ->where([['bkkd_bkk_id' , '='  , $idfpg], ['bkkd_ref' , '=' , $request->notaum[$keys]]])
 					                ->update([
 					                	'bkkd_sisaum' => $selisih,                                                           
 					                ]);
