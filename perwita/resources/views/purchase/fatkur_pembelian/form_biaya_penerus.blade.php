@@ -100,11 +100,11 @@
     <tr>
       <td style="width: 100px ;">Akun</td>
       <td width="10">:</td>
-      <td>
+      <td class="disabled">
         <select class="form-control akun_biaya chosen-select-width1" style="text-align: center; ">
           <option value="0" selected="">Pilih - akun</option>
           @foreach($akun as $val)
-            <option @if($val->id_akun == '531511000') selected="" @endif value="{{$val->id_akun}}" >{{$val->id_akun}} - {{$val->nama_akun}}</option>
+            <option @if($val->id_akun == '531512000') selected="" @endif value="{{$val->id_akun}}" >{{$val->id_akun}} - {{$val->nama_akun}}</option>
           @endforeach
         </select>
       </td>
@@ -204,7 +204,7 @@
         <tr>
           <td style="width: 100px ;">Akun</td>
           <td width="10">:</td>
-          <td>
+          <td class="disabled">
             <select class="form-control e_akun_biaya chosen-select-width1" style="text-align: center; ">
               <option value="0" selected="">Pilih - akun</option>
               @foreach($akun as $val)
@@ -542,7 +542,7 @@
                     timer: 900,
                     showConfirmButton: true
                     },function(){
-                      $('.save_biaya').addClass('disabled');
+                      $('.save_biaya').removeClass('disabled');
                     });
           },
           error:function(data){

@@ -312,7 +312,7 @@
 				<tr>
 					<td>No.Faktur</td>
 					<td>:</td>
-					<td>{{$head->i_nomor}}</td>
+					<td>{{ strtoupper($head->i_nomor)}}</td>
 				</tr>
 				<tr>
 					<td>Tanggal</td>

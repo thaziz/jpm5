@@ -117,7 +117,6 @@ class invoice_Controller extends Controller
                     ->where('id_nomor_invoice',$id)
                     ->get();
         }
-        // dd($detail);
         $counting = count($detail); 
   
         $update_status = DB::table('invoice')
@@ -577,7 +576,7 @@ public function simpan_invoice(request $request)
 
             $save_header_invoice = DB::table('invoice')
                                      ->insert([
-                                          'i_nomor'              =>  $request->nota_invoice,
+                                          'i_nomor'              =>  strtoupper($request->nota_invoice),
                                           'i_tanggal'            =>  $tgl,
                                           'i_keterangan'         =>  $request->ed_keterangan,
                                           'i_tgl_mulai_do'       =>  $do_awal,
@@ -764,7 +763,7 @@ public function simpan_invoice(request $request)
 
             $save_header_invoice = DB::table('invoice')
                                      ->insert([
-                                          'i_nomor'              =>  $request->nota_invoice,
+                                          'i_nomor'              =>  strtoupper($request->nota_invoice),
                                           'i_tanggal'            =>  $tgl,
                                           'i_keterangan'         =>  $request->ed_keterangan,
                                           'i_tgl_mulai_do'       =>  $do_awal,
