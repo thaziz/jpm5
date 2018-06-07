@@ -1096,8 +1096,10 @@ function hitung_pajak_lain(){
    }
 
    function ngeprint(){
-       var id = $('#nota_invoice').val();
-        window.open('{{url('sales/cetak_nota')}}'+'/'+id);
+        var id = $('#nota_invoice').val();
+        id = id.replace(/\//g, "-");
+        window.open(baseUrl+'/sales/cetak_nota/'+id);
+        location.reload();
     }
 
 

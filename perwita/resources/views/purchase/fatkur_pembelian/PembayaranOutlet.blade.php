@@ -16,6 +16,13 @@
 		 		</select>
 		 	</td>
 		 </tr>
+		 <tr>
+	      <td style="width: 100px">Tanggal Faktur</td>
+	      <td width="10">:</td>
+	      <td width="200">
+	        <input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="" readonly="" style="">
+	      </td>
+	     </tr>
 		  <tr>
 		 	<td>Tanggal</td>
 		 	<td width="10">:</td>
@@ -71,6 +78,9 @@ $('.jatuh_tempo_outlet').datepicker({
 	format:'dd/mm/yyyy'
 });
 
+$('.tgl-biaya').datepicker({
+	format:'dd/mm/yyyy'
+});
 $('.reportrange').daterangepicker({
           autoclose: true,
           "opens": "left",
