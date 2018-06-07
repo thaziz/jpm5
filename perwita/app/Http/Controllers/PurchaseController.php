@@ -5086,7 +5086,7 @@ public function purchase_order() {
 				}
 				else {
 					$akunppn = $datakun2[0]->id_akun;
-					$akundka = $dataakun[0]->akun_dka;
+					$akundka = $datakun2[0]->akun_dka;
 
 					if($akundka == 'K'){
 						$dataakun = array (
@@ -5122,12 +5122,24 @@ public function purchase_order() {
 				}
 				else {
 					$akunpph = $datakun2[0]->id_akun;
+					$akundka = $datakun2[0]->akun_dka;
 
-					$dataakun = array (
-						'id_akun' => $akunpph,
-						'subtotal' => $hasilpph,
-						'dk' => 'K',
-					);
+
+					if($akundka == 'D'){
+						$dataakun = array (
+							'id_akun' => $akunpph,
+							'subtotal' => $hasilpph,
+							'dk' => 'K',
+						);
+					}
+					else {
+						$dataakun = array (
+							'id_akun' => $akunpph,
+							'subtotal' => '-' . $hasilpph,
+							'dk' => 'K',
+						);
+					}
+
 					array_push($datajurnal, $dataakun );
 				}
 
