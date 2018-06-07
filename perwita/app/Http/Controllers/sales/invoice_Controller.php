@@ -576,7 +576,7 @@ public function simpan_invoice(request $request)
 
             $save_header_invoice = DB::table('invoice')
                                      ->insert([
-                                          'i_nomor'              =>  $request->nota_invoice,
+                                          'i_nomor'              =>  strtoupper($request->nota_invoice),
                                           'i_tanggal'            =>  $tgl,
                                           'i_keterangan'         =>  $request->ed_keterangan,
                                           'i_tgl_mulai_do'       =>  $do_awal,
@@ -763,7 +763,7 @@ public function simpan_invoice(request $request)
 
             $save_header_invoice = DB::table('invoice')
                                      ->insert([
-                                          'i_nomor'              =>  $request->nota_invoice,
+                                          'i_nomor'              =>  strtoupper($request->nota_invoice),
                                           'i_tanggal'            =>  $tgl,
                                           'i_keterangan'         =>  $request->ed_keterangan,
                                           'i_tgl_mulai_do'       =>  $do_awal,
