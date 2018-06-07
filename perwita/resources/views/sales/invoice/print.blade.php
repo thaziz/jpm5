@@ -356,6 +356,7 @@
 					<th class="textcenter borderbottomtabel borderrighttabel" width="8%">Kuantum</th>
 					<th class="textcenter borderbottomtabel borderrighttabel" width="11%">Harga Satuan</th>
 					<th class="textcenter borderbottomtabel borderrighttabel" width="11%">Harga Bruto</th>
+					<th class="textcenter borderbottomtabel borderrighttabel" width="11%">Diskon</th>
 					<th class="textcenter borderbottomtabel" width="11%">Harga Netto</th>
 				</tr>
 				@php
@@ -368,8 +369,9 @@
 					<td class="borderbottomtabel borderrighttabel"> {{$row->id_tgl_do}} </td>
 					<td class="textleft borderbottomtabel borderrighttabel">{{$row->id_keterangan}} </td>
 					<td class="borderbottomtabel borderrighttabel">{{$row->jumlah}}&nbsp;{{$row->kode_satuan}}</td>
-					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->tarif_dasar, 2, ",", ".") }} </td>
-					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->id_harga_bruto, 2, ",", ".") }} </td>
+					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->tarif_dasar+$row->biaya_tambahan+$row->tarif_penerus, 2, ",", ".") }} </td>
+					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->id_harga_bruto+$row->biaya_tambahan, 2, ",", ".") }} </td>
+					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->diskon, 2, ",", ".") }} </td>
 					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->id_harga_netto, 2, ",", ".") }} </td>
 				</tr>
 				@endforeach
