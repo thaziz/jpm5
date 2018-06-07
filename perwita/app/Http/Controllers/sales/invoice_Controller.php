@@ -629,7 +629,7 @@ public function simpan_invoice(request $request)
                  $save_detail_invoice = DB::table('invoice_d')
                                           ->insert([
                                               'id_id'            => $cari_id,
-                                              'id_nomor_invoice' => strtoupper($request->nota_invoice,
+                                              'id_nomor_invoice' => strtoupper($request->nota_invoice),
                                               'id_nomor_do'      => $request->do_detail[$i],
                                               'create_by'        => Auth::user()->m_name,
                                               'create_at'        => Carbon::now(),
@@ -728,7 +728,7 @@ public function simpan_invoice(request $request)
                  $save_detail_invoice = DB::table('invoice_d')
                                           ->insert([
                                               'id_id'            => $cari_id,
-                                              'id_nomor_invoice' => strtoupper($request->nota_invoice,
+                                              'id_nomor_invoice' => strtoupper($request->nota_invoice),
                                               'id_nomor_do'      => $request->do_detail[$i],
                                               'create_by'        => Auth::user()->m_name,
                                               'create_at'        => Carbon::now(),
@@ -815,7 +815,7 @@ public function simpan_invoice(request $request)
                  $save_detail_invoice = DB::table('invoice_d')
                                           ->insert([
                                               'id_id'            => $cari_id,
-                                              'id_nomor_invoice' => strtoupper($request->nota_invoice,
+                                              'id_nomor_invoice' => strtoupper($request->nota_invoice),
                                               'id_nomor_do'      => $request->do_detail[$i],
                                               'create_by'        => Auth::user()->m_name,
                                               'create_at'        => Carbon::now(),
