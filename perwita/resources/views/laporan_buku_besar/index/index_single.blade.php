@@ -138,7 +138,7 @@
                       @foreach($data as $data_akun)
                           <?php $mt = ($urt == 0) ? "m-t" : "m-t-lg"; $saldo = $saldo_awal[$data_akun->akun]; ?>
 
-                          <div class="col-md-4 col-md-offset-8 text-left {{ $mt }} acc" data-id="{{ $data_akun->akun }}" style="font-size: 8pt; padding: 10px; cursor: pointer;">
+                          <div class="col-md-4 col-md-offset-7 text-left {{ $mt }} acc" data-id="{{ $data_akun->akun }}" style="font-size: 8pt; padding: 10px; cursor: pointer; border: 1px solid #ddd; border-bottom: 0px; background: #1C2331; color: white;">
                             <b>Nama Perkiraan : {{ $data_akun->akun }} {{ $data_akun->main_name }}</b>
                           </div>
                           

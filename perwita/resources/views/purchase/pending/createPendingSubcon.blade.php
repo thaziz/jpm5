@@ -109,6 +109,10 @@
               <td><input readonly="" class="form-control" type="text" value="{{$percent->persen}}%"></td>
             </tr>
             <tr>
+              <td>Keterangan</td>
+              <td><input name="keterangan" class="form-control" type="text" value=""></td>
+            </tr>
+            <tr>
               <td colspan="2">
                 <input  type="button" name="" onclick="approve_all()" value="Approve All" class="btn btn-primary approve_all">
               </td>
@@ -186,7 +190,7 @@
          <tr>
             <td>Keterangan</td>
               <td>
-                <textarea class="form-control keterangan" name="keterangan"></textarea>
+                <textarea class="form-control keterangan" name="x"></textarea>
               </td>
             </tr>
         </table>
@@ -272,7 +276,7 @@
             <tr>
               <td>Keterangan</td>
               <td>
-                <textarea class="form-control keterangan" name="keterangan"></textarea>
+                <textarea class="form-control keterangan" name="x"></textarea>
               </td>
             </tr>
           </table>

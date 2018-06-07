@@ -185,10 +185,10 @@
 		  <tr>
 			<td style="width: 100px">Akun</td>
 			<td width="10">:</td>
-			<td width="200">
+			<td width="200" class="disabled">
 				<select class="form-control chosen-select-width1 sc_akun">
 					@foreach($akun_biaya as $i)
-						<option @if($i->id_akun == '521011000') selected="" @endif value="{{$i->id_akun}}">{{$i->id_akun}} - {{$i->nama_akun}}</option>
+						<option @if($i->id_akun == '521011000') selected="" @endif value="{{$i->id_akun}}">5210 - SUBCON KARGO</option>
 					@endforeach
 				</select>
 			</td>
@@ -440,7 +440,7 @@
 </div>
 <script type="text/javascript">
 	// global variable
-	var array_do =[];
+var array_do =[];
 var config1 = {
                '.chosen-select'           : {},
                '.chosen-select-deselect'  : {allow_single_deselect:true},

@@ -1067,6 +1067,8 @@ Route::get('master_sales/ganti_akun_patty', 'master_sales\master_akun_controller
 Route::get('master_sales/ganti_akun_item', 'master_sales\master_akun_controller@ganti_akun_item');
 Route::get('master_sales/hapus_akun_patty', 'master_sales\master_akun_controller@hapus_akun_patty');
 Route::get('master_sales/hapus_akun_item', 'master_sales\master_akun_controller@hapus_akun_item');
+Route::get('master_sales/insert_all', 'master_sales\master_akun_controller@insert_all');
+
 //grup agen
 Route::get('master_sales/agen', 'master_sales\agen_Controller@index');
 Route::get('master_sales/agen/tabel', 'master_sales\agen_Controller@table_data');
