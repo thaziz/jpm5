@@ -311,7 +311,7 @@
        <td class="right">1</td>
        <td class="textleft right">{{$brg->kode_item}}</td>
        <td class="textleft right">{{$brg->nama_masteritem}}</td>
-       <td class="textleft right">{{$brg->fpdt_qty}}</td>
+       <td class="textright right">{{$brg->fpdt_qty}}</td>
        <td class="textright right">{{$brg->unitstock}}</td>
        <td class="textright right">{{number_format($brg->fpdt_harga, 2)}}</td>
        <td class="textright right">{{number_format($brg->fpdt_totalharga, 2)}}</td>

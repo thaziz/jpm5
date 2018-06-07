@@ -139,7 +139,7 @@
 
                                         <tr>
                                           <td> Group Item </td>
-                                          <td> <select class="form-control jenisitem" required="" name="jenisitem">
+                                          <td> <select class="form-control jenisitem" required="" name="jenisitem" id="selectgroup">
                                            <option value=""> -- Pilih Group Item -- </option>
                                            @foreach($data['jenisitem'] as $jnsitem)
                                             <option value="{{$jnsitem->kode_jenisitem}},{{$jnsitem->stock}}"> {{$jnsitem->keterangan_jenisitem}} </option>
@@ -1220,19 +1220,38 @@
       var jnsitem = $('.jenisitem').val();
       var variable = jnsitem.split(",");
       var jenisitem = variable[0];
+      kodestock = variable[1];
      // console.log(jenisitem);
 
       if(jenisitem == '') {
         toastr.info('Harap Memilih Group Item Terlebih Dahulu');
+        return false;
       }
 
       if($('.penerimaan').val() != 'T'){
         if($('.updatestock').val() == ''){
             toastr.info('Harap Memilih Update Stock Terlebih Dahulu');
+            return false;
         }
 
       }
 
+         $.ajax({
+            type : "get",
+            data  : {kodestock},
+            url : baseUrl + "/fakturpembelian/datagroupitem",
+            dataType : "json",
+            success : function(response){
+             
+            
+              for(i = 0; i < response.countgroupitem; i++){
+              //  console.log(response.groupitem[i].kode_jenisitem+','+response.groupitem[i].stock);
+                 $('#selectgroup option[value="'+response.groupitem[i].kode_jenisitem+','+response.groupitem[i].stock+'"]').remove();
+              }
+
+              /*$('#selectgroup option[value="J,T"]').remove();*/
+            }
+          })
 
       var rowStr  = "<tr class='addbarang' id='field-"+no+"' data-id='"+no+"'>";
           rowStr += "<td> "+no+"</td>";
@@ -1280,6 +1299,8 @@
 
       if(jenisitem != ''){
         $('#table-data').append(rowStr);
+        $('#updatestock').addClass('disabled');
+
        }
 
        //harga
