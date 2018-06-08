@@ -366,11 +366,6 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-$('.plafonkredit').change(function(){
-   val = $(this).val();
-   val = accounting.formatMoney(val, "", 2, ",",'.');
-   $(this).val(val);
-})
 
    
 

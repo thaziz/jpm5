@@ -1042,7 +1042,7 @@ class MasterPurchaseController extends Controller
 
 
 	public function editsupplier($id) {
-		$data = DB::select("select * from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and supplier.no_supplier = '$id'");
+		$data = DB::select("select *, cabang.nama as namacabang from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and supplier.no_supplier = '$id'");
 		
 		return view('purchase/master/master_supplier/edit', compact('data'));
 	}
@@ -1051,7 +1051,7 @@ class MasterPurchaseController extends Controller
 
 
 
-		$data['supplier'] = DB::select("select * from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and supplier.idsup = '$id'");
+		$data['supplier'] = DB::select("select *, cabang.nama as namacabang, cabang.kode as kodecabang from supplier, cabang, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and supplier.idsup = '$id' and idcabang = kode");
 		$data['item_supplier'] = DB::select("select * from itemsupplier,masteritem where is_idsup = '$id' and is_kodeitem = kode_item");
 		$data['countitem'] = count($data['item_supplier']);
 		$data['barang'] = masterItemPurchase::all();
