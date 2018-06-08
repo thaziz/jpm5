@@ -107,7 +107,8 @@ class pendingController extends Controller
 	}
 
 	public function save(Request $request){
-		// dd($request->status);
+		dd($request->all());
+		return DB::transaction(function() use ($request) {  
 		if($request->status == 1){
 
 		   for ($i=0; $i < count($request->id_bpd); $i++) { 
@@ -120,30 +121,129 @@ class pendingController extends Controller
 					
 		   }
 			//UPDATE BP
+
+		   $faktur = DB::table('faktur_pembelian')
+							->where('fp_nofaktur',$request->no_trans)
+							->first();
+							
 		    $cari_bpd = DB::table('biaya_penerus_dt')
 		   				 ->where('bpd_bpid',$request->id_bpd[0])
 		   				 ->get();
 
 		   	
-		   	 for ($i=0; $i < count($cari_bpd); $i++) { 
+		   	for ($i=0; $i < count($cari_bpd); $i++) { 
 		   	 	$status[$i] = $cari_bpd[$i]->bpd_status;
-		   	 }
+		   	}
 
-		   	 if (isset($status)) {
+		   	if (isset($status)) {
+
 		   	 	if (in_array('PENDING', $status)) {
 	   	 			$pending_status = 'PENDING';
 		   	 	}else{
 		   	 		$pending_status = 'APPROVED';
 		   	 	}
 
-		   	 $update_bp = DB::table('faktur_pembelian')
+		   		$update_bp = DB::table('faktur_pembelian')
 			   	 			 ->join('biaya_penerus','fp_nofaktur','=','bp_faktur')
 			   				 ->where('bp_id',$request->id_bpd[0])
 			   				 ->update([
 			   				 	'fp_pending_status' => $pending_status
 			   				 ]);
+
+		   	// //JURNAL
+				$id_jurnal=d_jurnal::max('jr_id')+1;
+				// dd($id_jurnal);
+				$jenis_bayar = DB::table('jenisbayar')
+								 ->where('idjenisbayar',6)
+								 ->first();
+				if ($pending_status == "APPROVED") {
+					$save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
+											'jr_year'   => carbon::parse(str_replace('/', '-', $request->tN))->format('Y'),
+											'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
+											'jr_detail' => $jenis_bayar->jenisbayar,
+											'jr_ref'  	=> $request->no_trans,
+											'jr_note'  	=> 'BUKTI KAS KELUAR',
+											'jr_insert' => carbon::now(),
+											'jr_update' => carbon::now(),
+											]);
+				}
+				
+
+
+				$akun 	  = [];
+				$akun_val = [];
+				array_push($akun, $request->acc_penjualan_penerus);
+				array_push($akun_val, $total_biaya);
+				for ($i=0; $i < count($jurnal); $i++) { 
+
+					$id_akun = DB::table('d_akun')
+									  ->where('id_akun','like','5315' . '%')
+									  ->where('kode_cabang',$jurnal[$i]['asal'])
+									  ->first();
+
+					if ($id_akun == null) {
+						$id_akun = DB::table('d_akun')
+									  ->where('id_akun','like','5315%')
+									  ->where('kode_cabang','000')
+									  ->first();
+					}
+					array_push($akun, $id_akun->id_akun);
+					array_push($akun_val, $jurnal[$i]['harga']);
+				}
+
+				$data_akun = [];
+				for ($i=0; $i < count($akun); $i++) { 
+
+					$cari_coa = DB::table('d_akun')
+									  ->where('id_akun',$akun[$i])
+									  ->first();
+
+					if (substr($akun[$i],0, 1)==2) {
+						
+						if ($cari_coa->akun_dka == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->keterangan;
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->keterangan;
+						}
+					}else if (substr($akun[$i],0, 1)>2) {
+
+						if ($cari_coa->akun_dka == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->keterangan;
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->keterangan;
+						}
+					}
+				}
+
+				if ($pending_status == 'APPROVED') {
+					$jurnal_dt = d_jurnal_dt::insert($data_akun);
+				}
+
+				$lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
+				// dd($lihat);
+
 			   				 
-		   	 }
+		   	}
 
 		   
 		   	
@@ -226,6 +326,7 @@ class pendingController extends Controller
 		   	return 'Success';
 			 
 		}
+		});
 		
 
 	}

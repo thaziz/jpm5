@@ -91,7 +91,7 @@ class kasKeluarController extends Controller
 			$data = DB::table('bukti_kas_keluar')
 				  ->join('jenisbayar','idjenisbayar','=','bkk_jenisbayar')
 				  ->join('cabang','kode','=','bkk_comp')
-				  ->where('kode_cabang',$cabang)
+				  ->where('kode',$cabang)
 				  ->orderBy('bkk_id','ASC')
 				  ->get();
 		}

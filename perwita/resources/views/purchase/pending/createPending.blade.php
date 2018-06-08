@@ -366,7 +366,7 @@
       $.ajax({
       url:baseUrl + '/pending/save',
       type:'post',
-      data:'status=2'+'&'+$('.satuan :input').serialize(),
+      data:'status=2'+'&'+$('.satuan :input').serialize()+'&'+$('.table_header :input').serialize(),
       success:function(response){
         swal({
         title: "Berhasil!",
@@ -410,7 +410,8 @@
       $.ajax({
       url:baseUrl + '/pending/save',
       type:'post',
-      data:'status=1'+'&'+datatable1.$('input').serialize()+'&'+$('.tabel_keterangan :input').serialize(),
+      data:'status=1'+'&'+datatable1.$('input').serialize()+'&'+$('.tabel_keterangan :input').serialize()
+      +'&'+$('.table_header :input').serialize(),
       success:function(response){
         swal({
         title: "Berhasil!",
@@ -419,7 +420,7 @@
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                  location.href = '../pending/index'
+                  // location.href = '../pending/index'
                 });
       },
       error:function(data){
