@@ -5437,61 +5437,7 @@ public function purchase_order() {
 
 					array_push($datajurnalpo, $dataakun );
 				}
-
-				$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
-
-				$totalhutangjr = floatval($hasilppn) - floatval($hasilpph);
-				$acchutang = $request->acchutangdagang;
-
-					if(isset($lastidjurnal)) {
-						$idjurnal = $lastidjurnal;
-						$idjurnal = (int)$idjurnal + 1;
-					}
-					else {
-						$idjurnal = 1;
-					}
 				
-					$year = date('Y');	
-					$date = date('Y-m-d');
-					$jurnal = new d_jurnal();
-					$jurnal->jr_id = $idjurnal;
-			        $jurnal->jr_year = date('Y');
-			        $jurnal->jr_date = date('Y-m-d');
-			        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
-			        $jurnal->jr_ref = $nofaktur;
-			        $jurnal->jr_note = $request->keterangan_po;
-			        $jurnal->save();
-		       		
-			        
-		       		$dataakun = array (
-						'id_akun' => $acchutang,
-						'subtotal' => $hasilpph,
-						'dk' => 'K',
-					);
-
-					array_push($datajurnalpo, $dataakun);
-		    		$key  = 1;
-		    		for($j = 0; $j < count($datajurnalpo); $j++){
-		    			
-		    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
-						if(isset($lastidjurnaldt)) {
-							$idjurnaldt = $lastidjurnaldt;
-							$idjurnaldt = (int)$idjurnaldt + 1;
-						}
-						else {
-							$idjurnaldt = 1;
-						}
-
-		    			$jurnaldt = new d_jurnal_dt();
-		    			$jurnaldt->jrdt_jurnal = $idjurnal;
-		    			$jurnaldt->jrdt_detailid = $key;
-		    			$jurnaldt->jrdt_acc = $datajurnalpo[$j]['id_akun'];
-		    			$jurnaldt->jrdt_value = $datajurnalpo[$j]['subtotal'];
-		    			$jurnaldt->jrdt_statusdk = $datajurnalpo[$j]['dk'];
-		    			$jurnaldt->save();
-		    			$key++;
-		    		}	
-
 			}
 
 			
@@ -7483,7 +7429,7 @@ public function kekata($x) {
 				 	]);	
 
 
-			$datacndn = DB::select("select * from cndnpembelian_dt where cndt_idfp = '$idfp'");
+			$datacndn = DB::select("select * from cndnpembelian where cndt_idfp = '$idfp");
 				if(count($datacndn) != 0){
 					$updatecndn = cndn_dt::where('cndt_idfp' ,  '=' , $idfp);
 					$updatecndn->update([

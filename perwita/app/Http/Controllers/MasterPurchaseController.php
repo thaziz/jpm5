@@ -266,7 +266,7 @@ class MasterPurchaseController extends Controller
 
 		// $data = masterItemPurchase::find($id);
 		$data['item'] = DB::select("select * from masteritem, cabang, jenis_item where  masteritem.comp_id = cabang.kode and masteritem.kode_item = '$id' and masteritem.jenisitem = jenis_item.kode_jenisitem ORDER BY kode_item DESC");
-		
+		//dd($data);
 
 		return view('purchase/master/master_item/edit',compact('data','akun'));
 	}
@@ -360,6 +360,7 @@ class MasterPurchaseController extends Controller
 	   $data->unit2 = $request->unit2;
     	
         $data->unit3 = $request->unit3;
+        $data->unitstock = $request->unit3;
        	if($request->konversi2 == '') {
 
 		}else{
