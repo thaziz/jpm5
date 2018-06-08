@@ -22,7 +22,7 @@ class pendingController extends Controller
 	public function index(){
 		$cabang = Auth::user()->kode_cabang;
 		if (Auth::user()->punyaAkses('Pending','all')) {
-			$agen = DB::table('faktur_pembelian')
+			return$agen = DB::table('faktur_pembelian')
 				  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
 				  ->join('agen','bp_kode_vendor','=','kode')
 				  ->where('fp_pending_status','PENDING')	  

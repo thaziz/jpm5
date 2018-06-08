@@ -116,8 +116,8 @@ class kasKeluarController extends Controller
 
 	    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),13) as id from bukti_kas_keluar
 	                                    WHERE bkk_comp = '$req->cabang'
-	                                    AND to_char(bkk_tgl,'MM') = '$bulan'
-	                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
+	                                    AND to_char(created_at,'MM') = '$bulan'
+	                                    AND to_char(created_at,'YY') = '$tahun'");
 
 	    $index = (integer)$cari_nota[0]->id + 1;
 	    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
@@ -219,8 +219,8 @@ class kasKeluarController extends Controller
 
 			    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),13) as id from bukti_kas_keluar
 			                                    WHERE bkk_comp = '$req->cabang'
-			                                    AND to_char(bkk_tgl,'MM') = '$bulan'
-			                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
+			                                    AND to_char(created_at,'MM') = '$bulan'
+			                                    AND to_char(created_at,'YY') = '$tahun'");
 
 			    $index = (integer)$cari_nota[0]->id + 1;
 			    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
@@ -1017,8 +1017,8 @@ class kasKeluarController extends Controller
 
 			    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),13) as id from bukti_kas_keluar
 			                                    WHERE bkk_comp = '$req->cabang'
-			                                    AND to_char(bkk_tgl,'MM') = '$bulan'
-			                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
+			                                    AND to_char(created_at,'MM') = '$bulan'
+			                                    AND to_char(created_at,'YY') = '$tahun'");
 
 			    $index = (integer)$cari_nota[0]->id + 1;
 			    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
