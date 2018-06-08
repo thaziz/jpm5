@@ -992,6 +992,7 @@ function hitung_total_tagihan(){
 
    function ngeprint(){
        var id = $('#nota_invoice').val();
+        id = id.replace(/\//g, "-");
         window.open('{{url('sales/cetak_nota')}}'+'/'+id);
     }
     $('.reload').click(function(){

@@ -152,15 +152,19 @@
                            
                             @else
                             @if(Auth::user()->PunyaAkses('Faktur Pembelian','hapus'))
+
+                              @if($faktur->fp_edit == 'ALLOWED')
                               <a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData({{$faktur->fp_idfaktur}})">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
                               </a>
+
                               @endif
                             @endif
                           @endif
                         <input type="hidden" value="{{$faktur->fp_jenisbayar}}">
                        </td> 
 
+                       @endif
                        @endif
                       </tr>
                       @endforeach

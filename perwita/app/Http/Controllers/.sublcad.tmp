@@ -993,8 +993,8 @@ class PurchaseController extends Controller
 	}
 
 	public function cetakkonfirmasi($id){
-		$data['co'] = DB::select("select * from confirm_order, spp, confirm_order_dt, masteritem, supplier where co_id = codt_idco and codt_kodeitem = kode_item and codt_supplier = idsup and codt_idco = '$id' and co_idspp = spp_id");
-		//dd($data);
+		$data['co'] = DB::select("select * from confirm_order, confirm_order_dt, masteritem, supplier where co_id = codt_idco and codt_kodeitem = kode_item and codt_supplier = idsup and codt_idco = '$id'");
+
 		return view('purchase.confirm_order.cetak_co', compact('data'));
 	}
 

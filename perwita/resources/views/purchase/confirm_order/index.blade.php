@@ -76,9 +76,9 @@
                             @endif
 
                           @if($co->co_mng_pem_approved == 'BELUM DI SETUJUI')
-                                 <td> <span class="label label-info"> {{$co->co_mng_pem_approved}} </span></td>     
+                                 <td> <span class="label label-info"> {{$co->co_mng_pem_approved}} </span>   </td>     
                           @else
-                            <td> <span class="label label-warning"> {{$co->co_mng_pem_approved}} </span></td>
+                            <td> <span class="label label-warning"> {{$co->co_mng_pem_approved}} </span> &nbsp; &nbsp; <a class="btn btn-sm btn-success" href="{{url('konfirmasi_order/cetakkonfirmasi/'.$co->co_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i>  </a></td>
                           @endif
 
        
@@ -126,13 +126,6 @@
         format: 'dd-mm-yyyy'
     });
     
-    $no = 0;
-    $('.carispp').click(function(){
-      $no++;
-      $("#addColumn").append('<tr> <td> ' + $no +' </td> <td> no spp </td> <td> Perusahaan Cabang Nganjuk </td><td> 21 Juli 2016  </td> <td> <a href="{{ url('purchase/konfirmasi_orderdetail')}}" class="btn btn-danger btn-flat" id="tmbh_data_barang">Lihat Detail</a> </td> <td> <i style="color:red" >Disetujui </i> </td> </tr>');   
-    })
- 
-   
 
 </script>
 @endsection
