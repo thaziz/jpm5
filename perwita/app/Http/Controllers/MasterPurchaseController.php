@@ -1069,6 +1069,8 @@ class MasterPurchaseController extends Controller
 		/*	*/
 
 		if($request->iskontrak == 'tdkeditkontrak') {	
+			$replaceplafon = str_replace(',', '', $request->plafon_kredit);
+
 		/*dd('sama');*/
 			$statusactive = 'AKTIF';
 			$data = masterSupplierPurchase::find($id);
@@ -1081,7 +1083,7 @@ class MasterPurchaseController extends Controller
 			$data->propinsi = strtoupper($request->provinsi);
 			$data->contact_person = strtoupper($request->cp);
 			$data->syarat_kredit = strtoupper($request->syarat_kredit);
-			$data->plafon = strtoupper($request->plafon_kredit);
+			$data->plafon = strtoupper($replaceplafon);
 			$data->currency = strtoupper($request->matauang);
 			$data->pajak_npwp = strtoupper($request->npwp);
 			$data->ppn =strtoupper( $request->pajak_ppn);
@@ -1132,7 +1134,7 @@ class MasterPurchaseController extends Controller
 						$iditemsup = 1;
 					}
 
-					echo($iditemsup);
+					//echo($iditemsup);
 					$itemsupplier = new itemsupplier();
 					$replacehrga = str_replace(',', '', $request->harga[$i]);
 				//	dd($replacehrga);
@@ -1156,7 +1158,7 @@ class MasterPurchaseController extends Controller
 						$iditemsup = 1;
 					}
 
-					echo($iditemsup);
+				//	echo($iditemsup);
 					$itemsupplier = new itemsupplier();
 					$replacehrga = str_replace(',', '', $request->harga[$i]);
 				//	dd($replacehrga);
@@ -1170,7 +1172,7 @@ class MasterPurchaseController extends Controller
 
 				}
 				else {
-					echo($request->iditemsup[$i]);
+				//	echo($request->iditemsup[$i]);
 					$updateitem = itemsupplier::where([['is_id', '=', $request->iditemsup[$i]] , ['is_idsup' , '=' , $request->idsupplier]]);
 					$replacehrg = str_replace(',', '', $request->harga[$i]);
 				//	dd($replacehrg);
