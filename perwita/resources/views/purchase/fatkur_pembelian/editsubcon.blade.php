@@ -77,6 +77,7 @@
 <div class="ibox" style="padding-top: 10px;" >
 <div class="ibox-title"><h5>Detail Faktur Pembelian</h5>
   <a href="../fakturpembelian" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+  <a class="pull-right jurnal" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal</i></a>
 </div>
 <div class="ibox-content col-sm-12">
 
@@ -291,10 +292,10 @@ No Faktur
       <tr>
       <td style="width: 100px">Akun</td>
       <td width="10">:</td>
-      <td width="200">
+      <td width="200" class="disabled">
         <select class="form-control chosen-select-width1 sc_akun">
           @foreach($akun_biaya as $i)
-            <option value="{{$i->id_akun}}">{{$i->id_akun}} - {{$i->nama_akun}}</option>
+            <option @if($i->id_akun == '521011000') selected="" @endif value="{{$i->id_akun}}">5210 - SUBCON KARGO</option>
           @endforeach
         </select>
       </td>
@@ -806,6 +807,26 @@ No Faktur
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+
+<div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body tabel_jurnal">
+              
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 @endsection
 @section('extra_scripts')
 <script type="text/javascript">
@@ -1319,6 +1340,8 @@ function save_subcon(){
   var nota_subcon =$('.nota_subcon').val();
   var jenis_kendaraan = $('.kode_angkutan').val();
   var tarif_subcon = $('.tarif_subcon').val();
+  var selectOutlet = $('.nama_sc').val();
+  var cabang = $('.cabang').val();
 
   swal({
     title: "Apakah anda yakin?",
@@ -1359,7 +1382,7 @@ function save_subcon(){
                       url:baseUrl + '/fakturpembelian/simpan_tt',
                       type:'get',
                       dataType:'json',
-                      data:$('.tabel_tt_subcon :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
+                      data:$('.tabel_tt_subcon :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head_subcon :input').serialize()+'&cabang='+cabang,
                       success:function(response){
                             toastr.info('Tanda Terima Telah Disimpan');
 
@@ -1423,7 +1446,7 @@ function simpan_tt() {
           url:baseUrl + '/fakturpembelian/simpan_tt',
           type:'get',
           dataType:'json',
-          data:$('.tabel_tt_subcon :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
+          data:$('.tabel_tt_subcon :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head_subcon :input').serialize()+'&cabang='+cabang,
           success:function(response){
                 swal({
                     title: "Berhasil!",
@@ -1799,6 +1822,28 @@ $('.sc_dibayar_um').maskMoney({
     hitung_um_sc();
     $('.bp_tabel_um :input').val('');
 @endforeach
+
+
+function jurnal() {
+    var id = '{{ $id }}';
+    $.ajax({
+        url:baseUrl + '/fakturpembelian/biaya_penerus/jurnal',
+        type:'get',
+        data:{id},
+        success:function(data){
+           $('.tabel_jurnal').html(data);
+        },
+        error:function(data){
+            // location.reload();
+        }
+    }); 
+  }
+
+$('.jurnal').click(function(){
+  $('.modal_jurnal').modal('show');
+  jurnal();
+})
+
 </script>
 
 @endsection

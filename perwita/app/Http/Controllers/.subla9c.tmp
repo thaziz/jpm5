@@ -990,14 +990,9 @@ class PurchaseController extends Controller
 	
 		
 		return json_encode($data);
-	}
 
-	public function cetakkonfirmasi($id){
-		$data['co'] = DB::select("select * from confirm_order, spp, confirm_order_dt, masteritem, supplier where co_id = codt_idco and codt_kodeitem = kode_item and codt_supplier = idsup and codt_idco = '$id' and co_idspp = spp_id");
-		//dd($data);
-		return view('purchase.confirm_order.cetak_co', compact('data'));
+		
 	}
-
 
 	public function saveconfirmorderdt(Request $request){
 	//	dd($request);
@@ -3024,7 +3019,6 @@ public function purchase_order() {
 
 
 					$acchutangsupplier = $datafp[0]->fp_acchutang;
-					$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
 					if(isset($lastidjurnal)) {
 						$idjurnal = $lastidjurnal;
 						$idjurnal = (int)$idjurnal + 1;
@@ -3040,7 +3034,7 @@ public function purchase_order() {
 			        $jurnal->jr_year = date('Y');
 			        $jurnal->jr_date = date('Y-m-d');
 			        $jurnal->jr_detail = 'PENERIMAAN BARANG ' . $request->flag;
-			        $jurnal->jr_ref = $lpb;
+			        $jurnal->jr_ref = $idpb;
 			        $jurnal->jr_note = $request->keterangan;
 			        $jurnal->save();
 		       		
@@ -3076,7 +3070,7 @@ public function purchase_order() {
 		    		} 
 				}
 			}
-			else if($flag == 'PO'){ // jurnal jika bukan fp
+			else { // jurnal jika bukan fp
 				$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
 					if(isset($lastidjurnal)) {
 						$idjurnal = $lastidjurnal;
@@ -3093,7 +3087,7 @@ public function purchase_order() {
 			        $jurnal->jr_year = date('Y');
 			        $jurnal->jr_date = date('Y-m-d');
 			        $jurnal->jr_detail = 'PENERIMAAN BARANG ' . $request->flag;
-			        $jurnal->jr_ref = $lpb;
+			        $jurnal->jr_ref = $idpb;
 			        $jurnal->jr_note = $request->flag;
 			        $jurnal->save();
 		       		
@@ -4059,13 +4053,12 @@ public function purchase_order() {
 		return json_encode('sukses');
 	}
 
-	public function lihatjurnal(Request $request){
-		$lpb = $request->ref;
-		$note = $request->note;
+	public function lihatjurnal($id){
+		
 		$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
                         FROM d_akun a join d_jurnal_dt jd
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
-                        (select j.jr_id from d_jurnal j where jr_ref='$lpb')")); 
+                        (select j.jr_id from d_jurnal j where jr_ref='$id')")); 
 		$data['countjurnal'] = count($data['jurnal']);
  		return json_encode($data);
 	}

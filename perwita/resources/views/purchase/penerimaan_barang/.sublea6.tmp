@@ -648,11 +648,11 @@
 
                           if(response.jurnal[key].dk == 'D'){
                             $totalDebit = parseFloat($totalDebit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
-                            rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td>";
+                            rowtampil2 += "<td>"+accounting.formatMoney(response.jurnal[key].jrdt_value, "", 2, ",",'.')+"</td> <td> </td>";
                           }
                           else {
-                            $totalKredit = parseFloat($totalKredit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
-                            rowtampil2 += "<td> </td><td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td>";
+                            $totalKredit = parseFloat($totalKredit) + parseFloat(response.jurnal[key].jrdt_value);
+                            rowtampil2 += "<td> </td><td>"+accounting.formatMoney(response.jurnal[key].jrdt_value, "", 2, ",",'.')+"</td>";
                           }
                             $('#table_jurnal').append(rowtampil2);
                         }
@@ -867,7 +867,7 @@
                             "<tr> <td> Diterima oleh </td> <td> : </td> <td>"+response.judul[j].pb_terimadari+"</td> </tr>" + //terimadari
                             "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_po+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_po+"> <i class='fa fa-trash'> </i>  Hapus </a> &nbsp;";
                               if(response.jurnal.length > 0){
-                        rowtampil += "<a class='btn btn-xs btn-primary' onclick=lihatjurnal('"+response.judul[j].pb_lpb+"','"+response.judul[j].pb_keterangan+"')> <i class='fa fa-book'> </i> Lihat Jurnal </a>";
+                        rowtampil += "<a class='btn btn-xs btn-primary' onclick='lihatjurnal('"+response.judul[j].pb_lpb+","+response.judul[j].pb_keterangan+"')'> <i class='fa fa-book'> </i> Lihat Jurnal </a>";
 
                               }
                             rowtampil += "</td> </tr>" +

@@ -19,7 +19,7 @@
 		<td><p class="ksd_tujuan">{{$val['ksd_tujuan']}}</p></td>
 		<td><p class="ksd_angkutan">{{$val['ksd_angkutan']}}</p></td>
 		<td><p class="ksd_harga">{{number_format($val['ksd_harga'])}}</p></td>
-		<td><p class="ksd_jenis_tarif">{{$val['ksd_jenis_tarif']}}</p></td>
+		<td><p class="ksd_jenis_tarif">{{$val['jenis_tarif']}}</p></td>
 	  </tr>
 	  @endforeach
 	  @endif
