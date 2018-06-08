@@ -1067,7 +1067,7 @@ class BiayaPenerusController extends Controller
 												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
 												'jr_detail' => $jenis_bayar->jenisbayar,
 												'jr_ref'  	=> $request->nofaktur,
-												'jr_note'  	=> 'BUKTI KAS KELUAR',
+												'jr_note'  	=> 'BIAYA PENERUS HUTANG',
 												'jr_insert' => carbon::now(),
 												'jr_update' => carbon::now(),
 												]);
