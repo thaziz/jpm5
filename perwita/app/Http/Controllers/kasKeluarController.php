@@ -80,12 +80,22 @@ class kasKeluarController extends Controller
 	}
 
 	public function index(){
-
-		$data = DB::table('bukti_kas_keluar')
+		$cabang = Auth::user()->kode_cabang;
+		if (Auth::user()->punyaAkses('Bukti Kas Keluar','all')) {
+			$data = DB::table('bukti_kas_keluar')
 				  ->join('jenisbayar','idjenisbayar','=','bkk_jenisbayar')
 				  ->join('cabang','kode','=','bkk_comp')
 				  ->orderBy('bkk_id','ASC')
 				  ->get();
+		}else{
+			$data = DB::table('bukti_kas_keluar')
+				  ->join('jenisbayar','idjenisbayar','=','bkk_jenisbayar')
+				  ->join('cabang','kode','=','bkk_comp')
+				  ->where('kode_cabang',$cabang)
+				  ->orderBy('bkk_id','ASC')
+				  ->get();
+		}
+		
 		return view('purchase.buktikaskeluar.indexKasKeluar',compact('data'));
 	}
 
