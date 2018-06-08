@@ -510,6 +510,7 @@
       if(kontrak == 'YA'){
       //       RRRZ(kontrak);
               if(tr == 0){
+                alert(tr);
         toastr.info('jenis Supplier adalah Kontrak, Mohon Tambah Data Barang :) ');
         return false;
       }        
@@ -595,7 +596,7 @@ $(function(){
                      
     $no++;
 
-    var rowBrg = "<tr id='dataitem item-"+$no+"' class='item-"+$no+"'>" +
+    var rowBrg = "<tr id='dataitem item-"+$no+"' class='dataitem item-"+$no+"'>" +
                   "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
                   "<td> <select class='form-control' name='brg[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
                    "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
