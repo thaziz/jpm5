@@ -692,7 +692,12 @@ $(function(){
 
     })
 
- 
+    $('.plafonkredit').change(function(){
+       val = $(this).val();
+       val = accounting.formatMoney(val, "", 2, ",",'.');
+       $(this).val(val);
+    })
+
    $(document).on('click','.removes-btn',function(){
               var id = $(this).data('id');
              // alert(id);
