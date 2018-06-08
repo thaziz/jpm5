@@ -71,25 +71,31 @@ class saldo_piutang_controller extends Controller
      //            })
      //            ->select("kode", "nama")->get();
 
+        $cek_cust = DB::table('customer')->select("*")->get();
         $cek_exist = DB::table('d_saldo_piutang')->where('kode_cabang', Session::get('cabang'))->where("periode", date('m/Y'))->get();
 
-        if(count($cek_exist) > 0){
+        if(count($cek_exist) == count($cek_cust)){
             return "<center>Penambahan Saldo Piutang Hanya Dilakukan Di Awal Musim...</center>";
         }
 
-        $cab  = DB::table('cabang')
-                ->whereNotIn('kode', function($query){
-                     $query->select('kode_cabang')
-                           ->from('d_saldo_piutang')->get();
-                })->select("kode", "nama")->get();
+        // $cab  = DB::table('cabang')
+        //         ->whereNotIn('kode', function($query){
+        //              $query->select('kode_cabang')
+        //                    ->from('d_saldo_piutang')->get();
+        //         })->select("kode", "nama")->get();
 
-        if(Session::get("cabang") != '000'){
+        if(Session::get("cabang") != '0000'){
             $cab  = DB::table('cabang')
                     ->where("kode", Session::get("cabang"))
                     ->select("kode", "nama")->get();
         }
 
-    	$cust = DB::table('customer')->select("kode", "nama", "alamat")->get();
+    	$cust = DB::table('customer')
+              ->whereNotIn("kode", function($query){
+                  $query->select("kode_customer")
+                        ->from("d_saldo_piutang")
+                        ->where("kode_cabang", Session::get("cabang"))->get();
+              })->select("kode", "nama", "alamat")->get();
 
         // return $cab;
     	return view("keuangan.saldo_piutang.insert")
@@ -105,44 +111,44 @@ class saldo_piutang_controller extends Controller
             "status"    => "sukses"
         ];
 
-        for ($i=0; $i < count($request["customer"]); $i++) {
-            $jml = str_replace(".", "", explode(",", $request["jumlah"][$i])[0]);
-            $id = (DB::table("d_saldo_piutang")->max("id") == null) ? 1 : (DB::table("d_saldo_piutang")->max("id")+1);
-            $cust = DB::table("customer")->where("kode", $request["customer"][$i])->select("nama")->first();
+        $id = (DB::table("d_saldo_piutang")->max("id") == null) ? 1 : (DB::table("d_saldo_piutang")->max("id")+1);
+        $saldo_awal = str_replace(".", "", explode(",", $request["cust"]["saldo"])[0]);
+        $ck1 = DB::table("d_saldo_piutang")->where("kode_cabang", $request["cust"]["cabang"])->where("kode_customer", $request["cust"]["customer"])->where("periode", date("m/Y"))->get();
 
-            // return $jml;
+        if(count($ck1) > 0){
+          $response = [
+              "status"    => "exist"
+          ];
 
-            DB::table("d_saldo_piutang")->insert([
-                "id"                => $id,
-                "kode_cabang"       => $request["cabang"],
-                "kode_customer"     => $request["customer"][$i],
-                "jumlah"            => $jml,
-                "periode"           => $request["periode"],
-                "tanggal_buat"      => date("Y-m-d H:i:s"),
-                "terakhir_diupdate" => date("Y-m-d H:i:s"),
-            ]);
-
-            $ids = (DB::table('d_saldo_piutang_detail')->where("id_saldo_piutang", $id)->max("id_detail") == null) ? 1 : (DB::table('d_saldo_piutang_detail')->where("id_saldo_piutang", $id)->max("id_detail")+1);
-
-            // DB::table("d_saldo_piutang_detail")->insert([
-            //     "id_saldo_piutang"  => $id,
-            //     "id_detail"         => $ids,
-            //     "id_referensi"      => "-",
-            //     "jumlah"            => $jml,
-            //     "tanggal"           => date("Y-m-d H:i:s"),
-            //     "jatuh_tempo"       => null,
-            //     "keterangan"        => "Saldo Awal ".$cust->nama." Periode ".$request["periode"],
-            // ]);
+          return json_encode($response);
         }
 
-        // return json_encode($ids);
+        DB::table("d_saldo_piutang")->insert([
+            "id"                => $id,
+            "kode_cabang"       => $request["cust"]["cabang"],
+            "kode_customer"     => $request["cust"]["customer"],
+            "jumlah"            => $saldo_awal,
+            "periode"           => date("m/Y"),
+            "tanggal_buat"      => date("Y-m-d H:i:s"),
+            "terakhir_diupdate" => date("Y-m-d H:i:s"),
+        ]);
 
-        // foreach($request['detail'] as $detail){
-            
+        foreach ($request["detail"] as $key => $detail) {
 
-        // }
+          $ids = (DB::table('d_saldo_piutang_detail')->where("id_saldo_piutang", $id)->max("id_detail") == null) ? 1 : (DB::table('d_saldo_piutang_detail')->where("id_saldo_piutang", $id)->max("id_detail")+1);
 
-    	return json_encode($response);
+            DB::table("d_saldo_piutang_detail")->insert([
+                "id_saldo_piutang"  => $id,
+                "id_detail"         => $ids,
+                "id_referensi"      => $detail["nomor_faktur"],
+                "jumlah"            => $detail["jumlah"],
+                "tanggal"           => date("Y-m-d H:i:s"),
+                "jatuh_tempo"       => $detail["jatuh_tempo"],
+                "keterangan"        => $detail["keterangan"],
+            ]);
+        }
+
+    	  return json_encode($response);
     }
 
 
