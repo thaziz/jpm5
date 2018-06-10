@@ -3569,6 +3569,123 @@ public function save_bp_um(request $req)
 						 	'fp_sisapelunasan'=> $cari_fp->fp_sisapelunasan - filter_var($req->bp_total_um, FILTER_SANITIZE_NUMBER_INT)/100
 						 ]);
 
+			// JURNAL
+
+			for ($i=0; $i < count($req->tb_um_um); $i++) { 
+
+				$cari_asal_2[$i] = $req->tb_um_um[$i]; 
+			}
+			if (isset($cari_asal_2)) {
+			    $unik_asal = array_unique($cari_asal_2);
+			    $unik_asal = array_values($unik_asal);
+
+			    for ($i=0; $i < count($unik_asal); $i++) { 
+					for ($a=0; $a < count($req->tb_um_um); $a++) { 
+						if($req->tb_um_um[$a] == $unik_asal[$i]){
+							${$unik_asal[$i]}[$a] = filter_var($req->bp_total_um[$a], FILTER_SANITIZE_NUMBER_INT);
+						}
+					}
+				}
+
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					${'total'.$unik_asal[$i]} = array_sum(${$unik_asal[$i]});
+				}
+				// $harga_array = [];
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					 $harga_array[$i] = ${'total'.$unik_asal[$i]};
+				}
+				for ($i=0; $i < count($harga_array); $i++) { 
+					 $jurnal[$i]['harga'] = round($harga_array[$i],2);
+					 $jurnal[$i]['asal'] = $unik_asal[$i];
+
+				}
+
+
+			}
+			return $jurnal;
+			$id_jurnal=d_jurnal::max('jr_id')+1;
+			// dd($id_jurnal);
+		
+
+			$save_jurnal = d_jurnal::create(['jr_id'		=> $id_jurnal,
+												'jr_year'   => carbon::parse(str_replace('/', '-', $req->tgl_biaya_head))->format('Y'),
+												'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tgl_biaya_head))->format('Y-m-d'),
+												'jr_detail' => 'UANG MUKA PEMBELIAN FP',
+												'jr_ref'  	=> $req->nofaktur,
+												'jr_note'  	=> 'BIAYA SUBCON',
+												'jr_insert' => carbon::now(),
+												'jr_update' => carbon::now(),
+												]);
+
+ 
+			$akun 	  = [];
+			$akun_val = [];
+			for ($i=0; $i < count($jurnal); $i++) { 
+				$db = DB::table('d_uangmuka')
+						->where('um_nomorbukti',$jurnal[$i]['asal'])
+						->first();
+				array_push($akun, $db->um_akunhutang);
+				array_push($akun_val, $jurnal[$i]['harga']);
+
+			}
+			for ($i=0; $i < count($req->bp_total_um); $i++) { 
+				$sum[$i] = filter_var($req->bp_total_um, FILTER_SANITIZE_NUMBER_INT)/100;
+			}
+			$sum = array_sum($sum);
+
+			array_push($akun, $cari_fp->fp_acchutang);
+			array_push($akun_val, $sum);
+			
+
+			$data_akun = [];
+			for ($i=0; $i < count($akun); $i++) { 
+
+				$cari_coa = DB::table('d_akun')
+								  ->where('id_akun',$akun[$i])
+								  ->first();
+
+				if (substr($akun[$i],0, 1)==1) {
+					
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $cari_fp->fp_keterangan;
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $cari_fp->fp_keterangan;
+					}
+				}else if (substr($akun[$i],0, 1)>1) {
+
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $cari_fp->fp_keterangan;
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $cari_fp->fp_keterangan;
+					}
+				}
+			}
+
+			$jurnal_dt = d_jurnal_dt::insert($data_akun);
+
+			$lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
+			dd($lihat);
+
 			return response()->json(['status'=>1]);
 		}
 	});
@@ -3855,7 +3972,123 @@ public function update_bp_um(request $req)
 						 ->where('fp_nofaktur',$req->nofaktur)
 						 ->first();
 
+			// JURNAL
+			for ($i=0; $i < count($req->tb_um_um); $i++) { 
+
+				$cari_asal_2[$i] = $req->tb_um_um[$i]; 
+			}
+
+			if (isset($cari_asal_2)) {
+			    $unik_asal = array_unique($cari_asal_2);
+			    $unik_asal = array_values($unik_asal);
+
+			    for ($i=0; $i < count($unik_asal); $i++) { 
+					for ($a=0; $a < count($req->tb_um_um); $a++) { 
+						if($req->tb_um_um[$a] == $unik_asal[$i]){
+							${$unik_asal[$i]}[$a] = filter_var($req->bp_total_um[$a], FILTER_SANITIZE_NUMBER_INT)/100;
+						}
+					}
+				}
+
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					${'total'.$unik_asal[$i]} = array_sum(${$unik_asal[$i]});
+				}
+				// $harga_array = [];
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					 $harga_array[$i] = ${'total'.$unik_asal[$i]};
+				}
+				for ($i=0; $i < count($harga_array); $i++) { 
+					 $jurnal[$i]['harga'] = round($harga_array[$i],2);
+					 $jurnal[$i]['asal'] = $unik_asal[$i];
+
+				}
+
+
+			}
+			// return $jurnal;
+			$id_jurnal=d_jurnal::max('jr_id')+1;
+			// dd($id_jurnal);
+		
+
+			$save_jurnal = d_jurnal::create(['jr_id'		=> $id_jurnal,
+												'jr_year'   => carbon::parse(str_replace('/', '-', $req->tgl_biaya_head))->format('Y'),
+												'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tgl_biaya_head))->format('Y-m-d'),
+												'jr_detail' => 'UANG MUKA PEMBELIAN FP',
+												'jr_ref'  	=> $req->nofaktur,
+												'jr_note'  	=> 'BIAYA SUBCON',
+												'jr_insert' => carbon::now(),
+												'jr_update' => carbon::now(),
+												]);
+
+ 
+			$akun 	  = [];
+			$akun_val = [];
+			for ($i=0; $i < count($jurnal); $i++) { 
+				$db = DB::table('d_uangmuka')
+						->where('um_nomorbukti',$jurnal[$i]['asal'])
+						->first();
+				array_push($akun, $db->um_akunhutang);
+				array_push($akun_val, $jurnal[$i]['harga']);
+
+			}
+			for ($i=0; $i < count($req->bp_total_um); $i++) { 
+				$sum[$i] = filter_var($req->bp_total_um, FILTER_SANITIZE_NUMBER_INT)/100;
+			}
+
+			$sum = array_sum($sum);
+
+			array_push($akun, $cari_fp->fp_acchutang);
+			array_push($akun_val, $sum);
 			
+
+			$data_akun = [];
+			for ($i=0; $i < count($akun); $i++) { 
+
+				$cari_coa = DB::table('d_akun')
+								  ->where('id_akun',$akun[$i])
+								  ->first();
+
+				if (substr($akun[$i],0, 1)==1) {
+					
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $cari_fp->fp_keterangan;
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $cari_fp->fp_keterangan;
+					}
+				}else if (substr($akun[$i],0, 1)>1) {
+
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $cari_fp->fp_keterangan;
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $cari_fp->fp_keterangan;
+					}
+				}
+			}
+
+			$jurnal_dt = d_jurnal_dt::insert($data_akun);
+
+			$lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
+			// dd($lihat);
 			return response()->json(['status'=>1]);
 		}
 	});
