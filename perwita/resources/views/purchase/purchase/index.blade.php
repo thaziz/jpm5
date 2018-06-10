@@ -257,17 +257,9 @@
                         </table>
                       
                        
-                         <textarea rows="4" cols="100" name="keterangan" required="" class="keterangankeuangan">
-                     
-                         </textarea>
+                         <textarea rows="4" cols="100" name="keterangan" required="" class="keterangankeuangan">                    
+                        </textarea>
                         
-                      
-                  
-                        
-
-
-                         
-                          
                           <input type="hidden" class='textsetuju'>
 
 

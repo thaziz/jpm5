@@ -161,6 +161,14 @@
 
                          </td>
                       </tr>
+
+                       <tr>
+                        <td> <b> DPP </b> </td>
+                        <td> <div class="row"> <div class='col-md-3'> Rp </div> <div class='col-md-9'> <input type='text' class='form-control dpp_po' readonly="" name='dpp_po' style="text-align: right" value="{{ number_format($faktur->fp_dpp, 2) }}">  <input type='hidden' class='form-control dpp_po2' readonly=""  style="text-align: right" value="{{number_format($faktur->fp_dpp, 2)}}">
+                        </div> </div> </td>
+                      </tr>
+
+
                       <tr>
                         <td> <b> Jenis PPn </b> </td>
                         <td>  <div class="col-xs-4"> 
@@ -185,11 +193,7 @@
 
                         </select> </div> <div class="col-xs-6"> &nbsp;  <button type="button" class="btn btn-primary" id="createmodal_pajakpo" data-toggle="modal" data-target="#myModal1">  Faktur Pajak </button> </div> </td>
                       </tr>
-                      <tr>
-                        <td> <b> DPP </b> </td>
-                        <td> <div class="row"> <div class='col-md-3'> Rp </div> <div class='col-md-9'> <input type='text' class='form-control dpp_po' readonly="" name='dpp_po' style="text-align: right" value="{{ number_format($faktur->fp_dpp, 2) }}">  <input type='hidden' class='form-control dpp_po2' readonly=""  style="text-align: right" value="{{number_format($faktur->fp_dpp, 2)}}">
-                        </div> </div> </td>
-                      </tr>
+                     
                       <tr>
                         <td> <b> PPn % </b> </td>
                         @if($faktur->fp_ppn != '')
@@ -1058,10 +1062,11 @@
                           <table id="table_jurnal" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th>ID Akun </th>
-                                            <th>Akun</th>
-                                            <th>Debit</th>
-                                            <th>Kredit</th>                                            
+                                            <th> ID Akun </th>
+                                            <th> Akun</th>
+                                            <th> Debit</th>
+                                            <th> Kredit</th>
+                                            <th> Uraian / Detail </th>                                         
                                         </tr>
                                     </thead>
                                     
@@ -7037,6 +7042,8 @@ $('.edit').click(function(){
           dataType : "json",
           success:function(response){
                 $('#jurnal').modal('show');
+                hasilpph = $('.hasilpph_po').val();
+                hasilppn = $('.hasilppn_po').val();
 
              $('.loading').css('display', 'none');
                 $('.listjurnal').empty();
@@ -7050,14 +7057,27 @@ $('.edit').click(function(){
                           "<td> "+response.jurnal[key].id_akun+"</td>" +
                           "<td> "+response.jurnal[key].nama_akun+"</td>";
 
-                          if(response.jurnal[key].dk == 'D'){
-                            $totalDebit = parseFloat($totalDebit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
-                            rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td>";
+                          if(hasilpph != '' && hasilppn == ''){
+                            if(response.jurnal[key].dk == 'D'){
+                              $totalDebit = parseFloat($totalDebit) + parseFloat(response.jurnal[key].jrdt_value);
+                              rowtampil2 += "<td>"+accounting.formatMoney(response.jurnal[key].jrdt_value, "", 2, ",",'.')+"</td> <td> </td>";
+                            }
+                            else {
+                              $totalKredit = parseFloat($totalKredit) + parseFloat(response.jurnal[key].jrdt_value);
+                              rowtampil2 += "<td> </td><td>"+accounting.formatMoney(response.jurnal[key].jrdt_value, "", 2, ",",'.')+"</td>";
+                            }
+                          }else {
+                            if(response.jurnal[key].dk == 'D'){
+                              $totalDebit = parseFloat($totalDebit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                              rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td>";
+                            }
+                            else {
+                              $totalKredit = parseFloat($totalKredit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                              rowtampil2 += "<td> </td><td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td>";
+                            }
                           }
-                          else {
-                            $totalKredit = parseFloat($totalKredit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
-                            rowtampil2 += "<td> </td><td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td>";
-                          }
+
+                            rowtampil2 += "<td>"+response.jurnal[key].jrdt_detail+"</td>";
                             $('#table_jurnal').append(rowtampil2);
                         }
                      var rowtampil1 = "</tbody>" +
@@ -7065,7 +7085,8 @@ $('.edit').click(function(){
                           "<tr class='listjurnal'> " +
                                   "<th colspan='2'>Total</th>" +                        
                                   "<th>"+accounting.formatMoney($totalDebit, "", 2, ",",'.')+"</th>" +
-                                  "<th>"+accounting.formatMoney($totalKredit,"",2,',','.')+"</th>"
+                                  "<th>"+accounting.formatMoney($totalKredit,"",2,',','.')+"</th>" +
+                                  "<th>&nbsp</th>" +
                           "<tr>" +
                       "</tfoot>";
                                      
