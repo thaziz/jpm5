@@ -1503,7 +1503,7 @@
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Simpan!",
     cancelButtonText: "Batal",
-    closeOnConfirm: true,
+    closeOnConfirm: false,
     showLoaderOnConfirm: true
     },function(){
 
@@ -1522,16 +1522,29 @@
              tabel_faktur.$('input').serialize(),
         dataType:'json',
         success:function(data){
-          swal({
-          title: "Berhasil!",
-                  type: 'success',
-                  text: "Data Berhasil Disimpan",
-                  timer: 2000,
-                  showConfirmButton: true
-                  },function(){
-                     $('.id_header').val(data.id);
-                     $('.simpan_form').addClass('disabled');
-          });
+          if (data.status == 1) {
+            swal({
+            title: "Berhasil!",
+                    type: 'success',
+                    text: "Data Berhasil Disimpan",
+                    timer: 2000,
+                    showConfirmButton: true
+                    },function(){
+                       $('.id_header').val(data.id);
+                       $('.simpan_form').addClass('disabled');
+            });
+          }else if (data.status == 0) {
+            swal({
+            title: "Berhasil!",
+                    type: 'error',
+                    text: data.message,
+                    timer: 2000,
+                    showConfirmButton: true
+                    },function(){
+               
+            });
+          }
+          
         },
         error:function(data){
         }

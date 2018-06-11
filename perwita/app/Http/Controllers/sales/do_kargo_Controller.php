@@ -34,7 +34,7 @@ class do_kargo_Controller extends Controller
         return view('sales.do_kargo.index',compact('data','kota'));
     }
 
-    public function datatable_do_kargo($value='')
+    public function datatable_do_kargo()
     {
 
       $cabang = auth::user()->kode_cabang;
@@ -52,7 +52,6 @@ class do_kargo_Controller extends Controller
                     ->orderBy('tanggal','DESC')
                     ->get();
       }
-        
         // return $data;
         $data = collect($data);
         // return $data;
@@ -61,7 +60,7 @@ class do_kargo_Controller extends Controller
 
                             if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah')){
                                 if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
-                                $a = '<button type="button" onclick="edit(\''.$data->nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
+                                  $a = '<button type="button" onclick="edit(\''.$data->nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
                                 }
                             }else{
                               $a = '';
