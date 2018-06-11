@@ -55,7 +55,7 @@ class do_kargo_Controller extends Controller
         
         // return $data;
         $data = collect($data);
-        return $data;
+        // return $data;
         return Datatables::of($data)
                         ->addColumn('aksi', function ($data) {
 
@@ -86,26 +86,26 @@ class do_kargo_Controller extends Controller
 
                                    
                         })
-                        ->addColumn('asal', function ($data) {
-                          $kota = DB::table('kota')
-                                    ->get();
+                        // ->addColumn('asal', function ($data) {
+                        //   $kota = DB::table('kota')
+                        //             ->get();
 
-                          for ($i=0; $i < count($kota); $i++) { 
-                            if ($data->id_kota_asal == $kota[$i]->id) {
-                                return $kota[$i]->nama;
-                            }
-                          }
-                        })
-                        ->addColumn('tujuan', function ($data) {
-                          $kota = DB::table('kota')
-                                    ->get();
+                        //   for ($i=0; $i < count($kota); $i++) { 
+                        //     if ($data->id_kota_asal == $kota[$i]->id) {
+                        //         return $kota[$i]->nama;
+                        //     }
+                        //   }
+                        // })
+                        // ->addColumn('tujuan', function ($data) {
+                        //   $kota = DB::table('kota')
+                        //             ->get();
 
-                          for ($i=0; $i < count($kota); $i++) { 
-                            if ($data->id_kota_tujuan == $kota[$i]->id) {
-                                return $kota[$i]->nama;
-                            }
-                          }
-                        })
+                        //   for ($i=0; $i < count($kota); $i++) { 
+                        //     if ($data->id_kota_tujuan == $kota[$i]->id) {
+                        //         return $kota[$i]->nama;
+                        //     }
+                        //   }
+                        // })
                         ->addIndexColumn()
                         ->make(true);
     }
