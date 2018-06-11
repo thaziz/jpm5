@@ -53,7 +53,7 @@ class do_kargo_Controller extends Controller
                     ->get();
       }
         // return $data;
-        return $data = collect($data);
+        $data = collect($data);
         // return $data;
         return Datatables::of($data)
                         ->addColumn('aksi', function ($data) {
