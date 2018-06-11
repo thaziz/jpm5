@@ -52,9 +52,8 @@ class do_kargo_Controller extends Controller
                     ->orderBy('tanggal','DESC')
                     ->get();
       }
-        
         // return $data;
-        $data = collect($data);
+        return $data = collect($data);
         // return $data;
         return Datatables::of($data)
                         ->addColumn('aksi', function ($data) {
