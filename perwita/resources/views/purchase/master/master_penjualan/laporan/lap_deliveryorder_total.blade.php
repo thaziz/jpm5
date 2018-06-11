@@ -72,7 +72,7 @@
                            <select style="width: 200px; margin-top: 20px;" name="laporan" class="cari_semua laporan chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
                             <option value=""  selected=""> --Laporan--</option>
                             <option value="DEFAULT">MASTER</option>
-                            <option value="MASTER DETAIL">MASTER DETAIL</option>
+                            <option value="MASTER DETAIL">DO DETAIL</option>
                             <option value="rekap">REKAP CUSTOMER</option>
                             <option value="rekap_detail">REKAP CUSTOMER DETIL</option>
                             <option value="REKAP BULANAN">REKAP BULANAN</option>
