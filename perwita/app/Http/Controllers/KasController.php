@@ -202,7 +202,7 @@ class KasController extends Controller
 		for ($i=0; $i < count($request->resi_array); $i++) {
 
 			$cari_resi = DB::table('delivery_order')
-						   ->where('pendapatan',$cari_persen->jenis_pendapatan)
+						   // ->where('pendapatan',$cari_persen->jenis_pendapatan)
 						   ->whereIn('nomor',$request->resi_array)
 						   ->orderBy('nomor','ASC')
 						   ->get();
@@ -224,6 +224,7 @@ class KasController extends Controller
 						   ->get();
 
 		}
+
 		for ($i=0; $i < count($cari_resi); $i++) { 
 			$resi[$i] = $cari_resi[$i]->nomor;
 			for ($b=0; $b < count($cari_resi1); $b++) { 
@@ -337,6 +338,7 @@ class KasController extends Controller
 	public function save_penerus(request $request){
 		return DB::transaction(function() use ($request) {  
 		 // dd($request->all());
+
 		if ($request->jenis_pembiayaan == 'PAKET') {
 
 			$cari_persen = DB::table('master_persentase')
