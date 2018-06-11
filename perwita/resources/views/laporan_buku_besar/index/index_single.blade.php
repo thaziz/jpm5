@@ -12,6 +12,7 @@
       font-weight: 400;
       padding: 7px;
       border-top:1px dotted #efefef;
+      border-bottom:1px dotted #efefef;
     }
 
     .table_neraca td.money{
@@ -63,7 +64,7 @@
               </li>
 
           </ol>
-      </div>
+      </div>{{-- 
 
       <div class="col-lg-12" style="border: 1px solid #eee; margin-top: 15px;">
         <table border="0" id="form-table" class="col-md-10">
@@ -100,7 +101,7 @@
         </tr>
 
       </table>
-    </div>
+    </div> --}}
   </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -134,69 +135,85 @@
                         @endif
 
                       <?php $urt = 0; ?>
+                      
+                      @foreach($time as $data_time)
+                         @foreach($data as $data_akun)
+                            <?php $mt = ($urt == 0) ? "m-t" : "m-t-lg"; $saldo = $saldo_awal[$data_time->time."/".$data_akun->akun]; ?>
+                             <table class="table_neraca tree" border="0" width="100%" style="font-size: 8pt; border-bottom: 2px solid #efefef; margin-bottom: 5px;">
+                               <tbody>
+                                 <tr>
+                                   <td style="padding: 20px 20px 10px 20px; background: #fff; color: #2E2E2E">Periode {{ $throttle }} : {{ $data_time->time }}</td>
+                                   <td width="60%" style="padding: 20px 20px 10px 20px; background: #2E2E2E; color: white" class="text-right">Nama Perkiraan : {{ $data_akun->main_name }}</td>
+                                 </tr>
 
-                      @foreach($data as $data_akun)
-                          <?php $mt = ($urt == 0) ? "m-t" : "m-t-lg"; $saldo = $saldo_awal[$data_akun->akun]; ?>
+                                 <tr>
+                                   <td colspan="2">
+                                      <table class="table_neraca tree" border="0" width="100%" style="font-size: 8pt; border-bottom: 2px solid #efefef; margin-bottom: 5px;">
+                                        <thead>
+                                          <tr>
+                                            <th width="10%">Tanggal</th>
+                                              <th width="14%">No.Bukti</th>
+                                              <th width="40%">Keterangan</th>
+                                              <th width="12%">Debet</th>
+                                              <th width="12%">Kredit</th>
+                                              <th width="12%">Saldo</th>
+                                            </tr>
+                                        </thead>
 
-                          <div class="col-md-4 col-md-offset-7 text-left {{ $mt }} acc" data-id="{{ $data_akun->akun }}" style="font-size: 8pt; padding: 10px; cursor: pointer; border: 1px solid #ddd; border-bottom: 0px; background: #1C2331; color: white;">
-                            <b>Nama Perkiraan : {{ $data_akun->akun }} {{ $data_akun->main_name }}</b>
-                          </div>
-                          
-                          <div class="col-md-12" id="wrap-{{ $data_akun->akun }}">
-                            <table id="table-{{ $data_akun->akun }}" class="table_neraca tree" border="0" width="100%" style="font-size: 8pt; border-bottom: 2px solid #efefef; margin-bottom: 5px;">
-                              <thead>
-                                <tr>
-                                  <th width="10%">Tanggal</th>
-                                  <th width="14%">No.Bukti</th>
-                                  <th width="40%">Keterangan</th>
-                                  <th width="12%">Debet</th>
-                                  <th width="12%">Kredit</th>
-                                  <th width="12%">Saldo</th>
-                                </tr>
-                              </thead>
+                                        <tbody>
+                                          <tr>
+                                            <tr>
+                                              <td class="text-center"></td>
+                                              <td class="text-center"></td>
+                                              <td style="padding-left: 50px;">Saldo Awal</td>
+                                              <td class="money"></td>
+                                              <td class="money"></td>
+                                              <td class="money">{{ number_format($saldo, 2) }}</td>
+                                            </tr>
+                                          </tr>
 
-                              <tbody>
+                                          @foreach($grap as $data_grap)
+                                            <?php
+                                              if($throttle == "Bulan")
+                                                $cek = date("n-Y", strtotime($data_grap->jr_date)) == $data_time->time;
+                                              else
+                                                $cek = date("Y", strtotime($data_grap->jr_date)) == $data_time->time;
+                                            ?>
 
-                                <tr>
-                                  <td class="text-center"></td>
-                                  <td class="text-center"></td>
-                                  <td style="padding-left: 50px;">Saldo Awal</td>
-                                  <td class="money"></td>
-                                  <td class="money"></td>
-                                  <td class="money">{{ number_format($saldo, 2) }}</td>
-                                </tr>
+                                            @if($data_grap->acc == $data_akun->akun && $cek)
 
-                                @foreach($grap as $data_grap)
-                                  @if($data_grap->acc == $data_akun->akun)
+                                              <?php 
+                                                $debet = 0; $kredit = 0;
 
-                                    <?php 
-                                      $debet = 0; $kredit = 0;
+                                                $saldo += $data_grap->jrdt_value;
 
-                                      $saldo += $data_grap->jrdt_value;
+                                                if($data_grap->jrdt_statusdk == "D")
+                                                  $debet = str_replace("-", "", $data_grap->jrdt_value);
+                                                else
+                                                  $kredit = str_replace("-", "", $data_grap->jrdt_value);
 
-                                      if($data_grap->jrdt_statusdk == "D")
-                                        $debet = str_replace("-", "", $data_grap->jrdt_value);
-                                      else
-                                        $kredit = str_replace("-", "", $data_grap->jrdt_value);
+                                              ?>
 
-                                    ?>
+                                              <tr>
+                                                <td class="text-center">{{ date("d-m-Y", strtotime($data_grap->jr_date)) }}</td>
+                                                <td class="text-center">{{ $data_grap->jr_ref }}</td>
+                                                <td>{{ $data_grap->jr_note }}</td>
+                                                <td class="money">{{ number_format($debet, 2) }}</td>
+                                                <td class="money">{{ number_format($kredit, 2) }}</td>
+                                                <td class="money">{{ number_format($saldo, 2) }}</td>
+                                              </tr>
+                                            @endif
 
-                                    <tr>
-                                      <td class="text-center">{{ date("d-m-Y", strtotime($data_grap->jr_date)) }}</td>
-                                      <td class="text-center">{{ $data_grap->jr_ref }}</td>
-                                      <td>{{ $data_grap->jr_note }}</td>
-                                      <td class="money">{{ number_format($debet, 2) }}</td>
-                                      <td class="money">{{ number_format($kredit, 2) }}</td>
-                                      <td class="money">{{ number_format($saldo, 2) }}</td>
-                                    </tr>
-                                  @endif
-                                @endforeach
-                                
-                              </tbody>
-                            </table>
-                          </div>
+                                  @endforeach
+                                        </tbody>
+                                      </table>
+                                   </td>
+                                 </tr>
+                               </body>
+                             </table>
+                          @endforeach
 
-                          <?php $urt++; ?>
+                       <br><br>
                       @endforeach
 
                       </div>

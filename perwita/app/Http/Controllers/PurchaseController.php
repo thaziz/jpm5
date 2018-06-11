@@ -1750,6 +1750,12 @@ public function purchase_order() {
 			return json_encode($data);
 	}
 
+	public function grapcabang(){
+		$data = DB::table('cabang')->select('kode', 'nama')->get();
+
+		return json_encode($data);
+	}
+
 	//warehouse 
 
 	public function penerimaanbarang() {
