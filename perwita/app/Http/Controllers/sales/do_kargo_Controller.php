@@ -57,35 +57,31 @@ class do_kargo_Controller extends Controller
         $data = collect($data);
         // return $data;
         return Datatables::of($data)
-                        // ->addColumn('aksi', function ($data) {
+                        ->addColumn('aksi', function ($data) {
 
-                        //     if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah')){
-                        //         if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
-                        //         $a = '<button type="button" onclick="edit(\''.$data->nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
-                        //         }
-                        //     }else{
-                        //       $a = '';
-                        //     }
+                            if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah')){
+                                  $a = '<button type="button" onclick="edit(\''.$data->nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
+                            }else{
+                              $a = '';
+                            }
 
-                        //     if(Auth::user()->punyaAkses('Delivery Order','print')){
-                        //         $b = '<button type="button" onclick="print(\''.$data->nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
-                        //     }else{
-                        //       $b = '';
-                        //     }
+                            if(Auth::user()->punyaAkses('Delivery Order','print')){
+                                $b = '<button type="button" onclick="print(\''.$data->nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
+                            }else{
+                              $b = '';
+                            }
 
 
-                        //     if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','hapus')){
-                        //         if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
-                        //           $c = '<button type="button" onclick="hapus(\''.$data->nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
-                        //         }
-                        //     }else{
-                        //       $c = '';
-                        //     }
-                        //     return $a . $b .$c  ;
+                            if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','hapus')){
+                                  $c = '<button type="button" onclick="hapus(\''.$data->nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
+                            }else{
+                              $c = '';
+                            }
+                            return $a . $b .$c  ;
                             
 
                                    
-                        // })
+                        })
                         ->addColumn('asal', function ($data) {
                           $kota = DB::table('kota')
                                     ->get();
