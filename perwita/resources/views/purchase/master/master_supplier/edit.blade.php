@@ -173,7 +173,7 @@
                           <tr>
                             <td>   Syarat Kredit  </td>
                             <td>
-                               <input type="text" class="form-control" name="syarat_kredit" value="{{$sup->syarat_kredit}}">
+                               <input type="text" class="form-control plafonkredit" name="syarat_kredit" value="{{$sup->syarat_kredit}}">
                             </td>
                           </tr>
 

@@ -715,7 +715,7 @@
                         timer: 900,
                        showConfirmButton: false
                         },function(){
-                      //   location.reload();
+                        location.reload();
                 });
              }
              else  if(response.status == 'gagal') {
