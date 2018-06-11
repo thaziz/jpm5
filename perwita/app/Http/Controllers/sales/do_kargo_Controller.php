@@ -56,7 +56,6 @@ class do_kargo_Controller extends Controller
         // return $data;
         $data = collect($data);
         // return $data;
-        return cek_periode(carbon::now()->format('m'),carbon::now()->format('Y');
         return Datatables::of($data)
                         ->addColumn('aksi', function ($data) {
 
