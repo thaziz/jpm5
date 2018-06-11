@@ -1626,8 +1626,8 @@ class KasController extends Controller
 
 	    $cari_nota = DB::select("SELECT  substring(max(bpk_nota),12) as id from biaya_penerus_kas
 	                                    WHERE bpk_comp = '$request->cabang'
-	                                    AND to_char(bpk_tanggal,'MM') = '$bulan'
-	                                    AND to_char(bpk_tanggal,'YY') = '$tahun'");
+	                                    AND to_char(created_at,'MM') = '$bulan'
+	                                    AND to_char(created_at,'YY') = '$tahun'");
 	    $index = (integer)$cari_nota[0]->id + 1;
 	    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
 
