@@ -608,6 +608,7 @@
                       $('.idfaktur').val(response.id);
                       $('.save_bp_um').removeClass('disabled');
                       $('.btn_modal_bp').removeClass('disabled');
+                      $('#tabmenu').addClass('disabled');
                     });
             }else{
               swal({
