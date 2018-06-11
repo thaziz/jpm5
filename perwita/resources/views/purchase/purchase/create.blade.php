@@ -281,10 +281,10 @@
             else {
              alertSuccess(); 
              $('.save').attr('disabled' , true);
-
+/*
                                html = "<a class='btn btn-info btn-sm' href={{url('purchaseorder/print')}}"+'/'+response.info+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
                   $('.print').html(html);
-            }
+*/            }
 
           },
           error : function(){

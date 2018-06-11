@@ -185,10 +185,10 @@
 		  <tr>
 			<td style="width: 100px">Akun</td>
 			<td width="10">:</td>
-			<td width="200">
+			<td width="200" class="disabled">
 				<select class="form-control chosen-select-width1 sc_akun">
 					@foreach($akun_biaya as $i)
-						<option @if($i->id_akun == '521011000') selected="" @endif value="{{$i->id_akun}}">{{$i->id_akun}} - {{$i->nama_akun}}</option>
+						<option @if($i->id_akun == '521011000') selected="" @endif value="{{$i->id_akun}}">5210 - SUBCON KARGO</option>
 					@endforeach
 				</select>
 			</td>
@@ -440,7 +440,7 @@
 </div>
 <script type="text/javascript">
 	// global variable
-	var array_do =[];
+var array_do =[];
 var config1 = {
                '.chosen-select'           : {},
                '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -994,7 +994,6 @@ function hitung_um_sc() {
     temp+=b;
   })
   $('.sc_total_um').val(accounting.formatMoney(temp, "", 2, ".",','));
-
 }
   
 
@@ -1090,7 +1089,7 @@ $('.sc_tambah_um').click(function(){
             '<p class="tb_sisa_um_text">'+accounting.formatMoney(data.data.sisa_um, "", 2, ".",',')+'</p>',
 
             '<p class="tb_bayar_um_text">'+accounting.formatMoney(sc_dibayar_um, "", 2, ".",',')+'</p>'+
-            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+sc_dibayar_um+'">',
+            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+accounting.formatMoney(sc_dibayar_um, "", 2, "",'.')+'">',
 
             '<p class="tb_keterangan_um_text">'+data.data.um_keterangan+'</p>',
 

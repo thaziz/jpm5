@@ -31,8 +31,8 @@ use App\biaya_penerus;
 use App\biaya_penerus_dt;
 use App\master_note;
 use App\tb_master_pajak;
-use App\tb_coa;
-use App\tb_jurnal;
+use App\d_jurnal;
+use App\d_jurnal_dt;
 use DB;
 use Response;
 Use Carbon\Carbon;
@@ -382,6 +382,136 @@ class BiayaPenerusController extends Controller
 									 ]);
 					}	
 
+					$cari_dt=DB::table('biaya_penerus_dt')		
+						 ->join('delivery_order','bpd_pod','=','nomor')
+						 ->where('bpd_bpid','=',$id_bp)
+						 ->get();
+
+
+					for ($i=0; $i < count($cari_dt); $i++) { 
+
+						$cari_asal_2[$i] = $cari_dt[$i]->kode_cabang; 
+					}
+					if (isset($cari_asal_2)) {
+					    $unik_asal = array_unique($cari_asal_2);
+					    $unik_asal = array_values($unik_asal);
+
+					    // return $unik_asal;
+					    for ($i=0; $i < count($unik_asal); $i++) { 
+							for ($a=0; $a < count($cari_dt); $a++) { 
+								if($cari_dt[$a]->kode_cabang==$unik_asal[$i]){
+									${$unik_asal[$i]}[$a] = $cari_dt[$a]->bpd_nominal;
+								}
+							}
+						}
+
+						for ($i=0; $i < count($unik_asal); $i++) { 
+							${'total'.$unik_asal[$i]} = array_sum(${$unik_asal[$i]});
+						}
+						// $harga_array = [];
+						for ($i=0; $i < count($unik_asal); $i++) { 
+							 $harga_array[$i] = ${'total'.$unik_asal[$i]};
+						}
+						for ($i=0; $i < count($harga_array); $i++) { 
+							 $jurnal[$i]['harga'] = round($harga_array[$i],2);
+							 $jurnal[$i]['asal'] = $unik_asal[$i];
+
+						}
+
+
+					}
+
+					// //JURNAL
+					$id_jurnal=d_jurnal::max('jr_id')+1;
+					// dd($id_jurnal);
+					$jenis_bayar = DB::table('jenisbayar')
+									 ->where('idjenisbayar',6)
+									 ->first();
+					if ($pending_status == "APPROVED") {
+						$save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
+												'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
+												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
+												'jr_detail' => $jenis_bayar->jenisbayar,
+												'jr_ref'  	=> $request->nofaktur,
+												'jr_note'  	=> 'BUKTI KAS KELUAR',
+												'jr_insert' => carbon::now(),
+												'jr_update' => carbon::now(),
+												]);
+					}
+					
+
+
+					$akun 	  = [];
+					$akun_val = [];
+					array_push($akun, $request->acc_penjualan_penerus);
+					array_push($akun_val, $total_biaya);
+					for ($i=0; $i < count($jurnal); $i++) { 
+
+						$id_akun = DB::table('d_akun')
+										  ->where('id_akun','like','5315' . '%')
+										  ->where('kode_cabang',$jurnal[$i]['asal'])
+										  ->first();
+
+						if ($id_akun == null) {
+							$id_akun = DB::table('d_akun')
+										  ->where('id_akun','like','5315%')
+										  ->where('kode_cabang','000')
+										  ->first();
+						}
+						array_push($akun, $id_akun->id_akun);
+						array_push($akun_val, $jurnal[$i]['harga']);
+					}
+
+					$data_akun = [];
+					for ($i=0; $i < count($akun); $i++) { 
+
+						$cari_coa = DB::table('d_akun')
+										  ->where('id_akun',$akun[$i])
+										  ->first();
+
+						if (substr($akun[$i],0, 1)==2) {
+							
+							if ($cari_coa->akun_dka == 'D') {
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_statusdk'] = 'D';
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->Keterangan_biaya;
+							}else{
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_statusdk'] = 'K';
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->Keterangan_biaya;
+							}
+						}else if (substr($akun[$i],0, 1)>2) {
+
+							if ($cari_coa->akun_dka == 'D') {
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_statusdk'] = 'K';
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->Keterangan_biaya;
+							}else{
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_statusdk'] = 'D';
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->Keterangan_biaya;
+							}
+						}
+					}
+
+					if ($pending_status == 'APPROVED') {
+						$jurnal_dt = d_jurnal_dt::insert($data_akun);
+					}
+
+					$lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
+					// dd($lihat);
 					return response()->json(['status'=>1,'sp'=>$pending_status,'id'=>$id]);
 				}else{
 					return response()->json(['status'=>2,'alert'=>'DATA SUDAH ADA']);
@@ -520,7 +650,6 @@ class BiayaPenerusController extends Controller
 		       	$valid_cetak = DB::table('form_tt')
 		       					 ->where('tt_nofp',$data->fp_nofaktur)
 		       					 ->first();
-
 		       	$bulan = Carbon::now()->format('m');
 			    $tahun = Carbon::now()->format('y');
 
@@ -596,6 +725,7 @@ class BiayaPenerusController extends Controller
 				$valid_cetak = DB::table('form_tt')
 		       					 ->where('tt_nofp',$data->fp_nofaktur)
 		       					 ->first();
+		       	// dd($valid_cetak);
 
 		       	$cabang = DB::table('cabang')
 		       				->get();
@@ -641,7 +771,7 @@ class BiayaPenerusController extends Controller
 						}
 					}
 				}
-				return view('purchase/fatkur_pembelian/editsubcon',compact('date','kota','subcon','akun_biaya','akun','valid_cetak','data','data_dt','cabang','um','nota'));
+				return view('purchase/fatkur_pembelian/editsubcon',compact('date','kota','subcon','akun_biaya','akun','valid_cetak','data','data_dt','cabang','um','nota','id'));
 			}
 
 
@@ -662,6 +792,74 @@ class BiayaPenerusController extends Controller
 		 	$delete = DB::table('form_tt')
 		 				->where('tt_nofp',$cari->fp_nofaktur)
 		 				->delete();
+
+
+		 	$delete_jurnal = DB::table('d_jurnal')
+							   ->where('jr_ref',$cari->fp_nofaktur)
+							   ->delete();
+
+
+			$um = DB::table('uangmukapembelian_fp')
+				->join('uangmukapembeliandt_fp','umfpdt_idumfp','=','umfp_id')
+				->where('umfp_nofaktur',$cari->fp_nofaktur)
+				->get();
+
+			for ($i=0; $i < count($um); $i++) { 	
+
+				$cari_fp = DB::table('faktur_pembelian')
+							 ->where('fp_nofaktur',$cari->fp_nofaktur)
+							 ->first();
+
+				$update_fp = DB::table('faktur_pembelian')
+							   ->where('fp_nofaktur',$cari->fp_nofaktur)
+							   ->update([
+							   	'fp_uangmuka'=>$cari_fp->fp_uangmuka - $um[$i]->umfpdt_dibayar,
+							   	'fp_sisapelunasan'=>$cari_fp->fp_sisapelunasan + $um[$i]->umfpdt_dibayar,
+							   ]);
+				if ($um[$i]->umfpdt_flag == 'bkk') {
+					$cari_bkkd = DB::table('bukti_kas_keluar_detail')
+							 ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+							 ->where('bkk_nota',$um[$i]->umfpdt_transaksibank)
+							 ->where('bkkd_ref',$um[$i]->umfpdt_notaum)
+							 ->first();
+
+					$update_bkkd = DB::table('bukti_kas_keluar_detail')
+							 ->where('bkkd_id',$cari_bkkd->bkkd_id)
+							 ->update([
+							 	'bkkd_sisaum'=>$cari_bkkd->bkkd_sisaum + $um[$i]->umfpdt_dibayar,
+							 ]);
+
+				}else{
+					$cari_fgpdt = DB::table('fpg_dt')
+							 ->join('fpg','idfpg','=','fpgdt_idfpg')
+							 ->where('fpg_nofpg',$um[$i]->umfpdt_transaksibank)
+							 ->where('fpgdt_nofaktur',$um[$i]->umfpdt_notaum)
+							 ->first();
+
+					$update_bkkd = DB::table('fpg_dt')
+							 ->where('fpgdt_id',$cari_fgpdt->fpgdt_id)
+							 ->update([
+							 	'fpgdt_sisapelunasanumfp'=>$cari_fgpdt->fpgdt_sisapelunasanumfp + $um[$i]->umfpdt_dibayar,
+							 ]);
+
+					$cari_fgpdt = DB::table('fpg_dt')
+							 ->join('fpg','idfpg','=','fpgdt_idfpg')
+							 ->where('fpg_nofpg',$um[$i]->umfpdt_transaksibank)
+							 ->where('fpgdt_nofaktur',$um[$i]->umfpdt_notaum)
+							 ->first();
+
+				}	
+				$cari_fp = DB::table('faktur_pembelian')
+							 ->where('fp_nofaktur',$cari->fp_nofaktur)
+							 ->first();
+
+			}
+
+
+			$hapus_um = DB::table('uangmukapembelian_fp')
+					 	->where('umfp_nofaktur',$cari->fp_nofaktur)
+					    ->delete();
+
 
 		 	$delete = DB::table('faktur_pembelian')
 		 				->where('fp_idfaktur',$id)
@@ -810,7 +1008,143 @@ class BiayaPenerusController extends Controller
 										  'bpd_tarif_resi'  => $request->do_harga[$i]
 									 ]);
 					}	
+					// JURNAL
+					
 
+					$cari_dt=DB::table('biaya_penerus_dt')		
+						 ->join('delivery_order','bpd_pod','=','nomor')
+						 ->where('bpd_bpid','=',$cari_bp->bp_id)
+						 ->get();
+
+
+					for ($i=0; $i < count($cari_dt); $i++) { 
+
+						$cari_asal_2[$i] = $cari_dt[$i]->kode_cabang; 
+					}
+					if (isset($cari_asal_2)) {
+					    $unik_asal = array_unique($cari_asal_2);
+					    $unik_asal = array_values($unik_asal);
+
+					    // return $unik_asal;
+					    for ($i=0; $i < count($unik_asal); $i++) { 
+							for ($a=0; $a < count($cari_dt); $a++) { 
+								if($cari_dt[$a]->kode_cabang==$unik_asal[$i]){
+									${$unik_asal[$i]}[$a] = $cari_dt[$a]->bpd_nominal;
+								}
+							}
+						}
+
+						for ($i=0; $i < count($unik_asal); $i++) { 
+							${'total'.$unik_asal[$i]} = array_sum(${$unik_asal[$i]});
+						}
+						// $harga_array = [];
+						for ($i=0; $i < count($unik_asal); $i++) { 
+							 $harga_array[$i] = ${'total'.$unik_asal[$i]};
+						}
+						for ($i=0; $i < count($harga_array); $i++) { 
+							 $jurnal[$i]['harga'] = round($harga_array[$i],2);
+							 $jurnal[$i]['asal'] = $unik_asal[$i];
+
+						}
+
+
+					}
+
+
+					$delete_jurnal = DB::table('d_jurnal')
+							   ->where('jr_ref',$request->nofaktur)
+							   ->delete();
+
+					$id_jurnal=d_jurnal::max('jr_id')+1;
+					$jenis_bayar = DB::table('jenisbayar')
+									 ->where('idjenisbayar',6)
+									 ->first();
+
+
+					if ($pending_status == "APPROVED") {
+						$save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
+												'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
+												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
+												'jr_detail' => $jenis_bayar->jenisbayar,
+												'jr_ref'  	=> $request->nofaktur,
+												'jr_note'  	=> 'BIAYA PENERUS HUTANG',
+												'jr_insert' => carbon::now(),
+												'jr_update' => carbon::now(),
+												]);
+					}
+					
+
+
+					$akun 	  = [];
+					$akun_val = [];
+					array_push($akun, $request->acc_penjualan_penerus);
+					array_push($akun_val, $total_biaya);
+					for ($i=0; $i < count($jurnal); $i++) { 
+
+						$id_akun = DB::table('d_akun')
+										  ->where('id_akun','like','5315' . '%')
+										  ->where('kode_cabang',$jurnal[$i]['asal'])
+										  ->first();
+
+						if ($id_akun == null) {
+							$id_akun = DB::table('d_akun')
+										  ->where('id_akun','like','5315%')
+										  ->where('kode_cabang','000')
+										  ->first();
+						}
+						array_push($akun, $id_akun->id_akun);
+						array_push($akun_val, $jurnal[$i]['harga']);
+					}
+
+					$data_akun = [];
+					for ($i=0; $i < count($akun); $i++) { 
+
+						$cari_coa = DB::table('d_akun')
+										  ->where('id_akun',$akun[$i])
+										  ->first();
+
+						if (substr($akun[$i],0, 1)==2) {
+							
+							if ($cari_coa->akun_dka == 'D') {
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_statusdk'] = 'D';
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->Keterangan_biaya;
+							}else{
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_statusdk'] = 'K';
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->Keterangan_biaya;
+							}
+						}else if (substr($akun[$i],0, 1)>2) {
+
+							if ($cari_coa->akun_dka == 'D') {
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_statusdk'] = 'K';
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->Keterangan_biaya;
+							}else{
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_statusdk'] = 'D';
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->Keterangan_biaya;
+							}
+						}
+					}
+					if ($pending_status == 'APPROVED') {
+						$jurnal_dt = d_jurnal_dt::insert($data_akun);
+					}
+					
+					$lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
+					// dd($lihat);
 					return response()->json(['status'=>1,'sp'=>$pending_status]);
 				}else{
 					return response()->json(['status'=>2,'alert'=>'Gagal Mengedit Data']);
@@ -1155,7 +1489,8 @@ class BiayaPenerusController extends Controller
 
 
 		public function simpan_tt_subcon(request $request){
-		
+			
+			dd($request->all());
 	
 
 			 $total = filter_var($request->total_terima, FILTER_SANITIZE_NUMBER_INT);
@@ -1509,21 +1844,8 @@ class BiayaPenerusController extends Controller
 		}
 
 		public function save_outlet(request $request){
-			// dd($request);	
-			// "selectOutlet" => "A012"
-	  //     "rangepicker" => "02/08/2017 - 01/02/2018"
-	  //     "note" => "Biaya untuk outlet wisnu"
-	  //     "nofaktur" => "FP0218/001/O-003"
-	  //     "tgl" => "01-February-2018"
-	  //     "chck" => array:25 [▶]
-	  //     "no_resi" => array:25 [▶]
-	  //     "komisi" => array:25 [▶]
-	  //     "biaya_komisi" => array:25 [▶]
-	  //     "total_komisi" => array:25 [▶]
-	  //     "total_tarif" => "Rp 44.700,00"
-	  //     "total_komisi_outlet" => "Rp 4.470,00"
-	  //     "total_komisi_tambahan" => "Rp 0,00"
-	  //     "total_all_komisi" => "Rp 4.470,00"
+   		return DB::transaction(function() use ($request) {  
+			
 			$year =Carbon::now()->format('Y'); 
 			$month =Carbon::now()->format('m'); 
 
@@ -1566,8 +1888,12 @@ class BiayaPenerusController extends Controller
 			$akun_hutang = DB::table('agen')
 							 ->where('kode',$request->selectOutlet)
 							 ->first();
-			$akun_hutang = $akun_hutang->acc_hutang;
-			
+
+			$akun_hutang = substr($akun_hutang->acc_hutang,0, 4);
+
+			$cari = DB::table('d_akun')->where('id_akun','like',$akun_hutang.'%')->where('kode_cabang',$request->cabang)->first();
+
+			$akun_hutang = $cari->id_akun;
 		   	
 		    $cari_tt = DB::table('form_tt')
 		    			 ->where('tt_nofp',$request->nofaktur)
@@ -1576,7 +1902,7 @@ class BiayaPenerusController extends Controller
 			$save = DB::table('faktur_pembelian')->insert([
 								'fp_idfaktur'		=> $cari_id,
 								'fp_nofaktur'		=> $request->nofaktur,
-								'fp_tgl'			=> Carbon::parse($tgl[0])->format('Y-m-d'),
+								'fp_tgl'			=> Carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
 								'fp_jenisbayar' 	=> 7,
 								'fp_comp'			=> $request->cabang,
 								'created_at'		=> Carbon::now(),
@@ -1589,6 +1915,7 @@ class BiayaPenerusController extends Controller
 								'fp_edit'			=> 'UNALLOWED',
 								'fp_jatuhtempo'		=> carbon::parse(str_replace('/', '-', $request->jatuh_tempo_outlet))->format('Y-m-d'),
 								'fp_idtt'			=> $cari_tt[0]->tt_idform,
+								'fp_acchutang'      => $akun_hutang,
 								'created_by'  		=> Auth::user()->m_username,
 								'updated_by'  		=> Auth::user()->m_username,
 								]);
@@ -1659,11 +1986,142 @@ class BiayaPenerusController extends Controller
 			}
 
 
+			// //JURNAL
+
+
+
+			$cari_dt=DB::table('pembayaran_outlet_dt')		
+						 ->join('delivery_order','potd_pod','=','nomor')
+						 ->where('potd_potid','=',$cari_potid)
+						 ->get();
+
+
+			for ($i=0; $i < count($cari_dt); $i++) { 
+
+				$cari_asal_2[$i] = $cari_dt[$i]->kode_cabang; 
+			}
+			if (isset($cari_asal_2)) {
+			    $unik_asal = array_unique($cari_asal_2);
+			    $unik_asal = array_values($unik_asal);
+
+			    // return $unik_asal;
+			    for ($i=0; $i < count($unik_asal); $i++) { 
+					for ($a=0; $a < count($cari_dt); $a++) { 
+						if($cari_dt[$a]->kode_cabang==$unik_asal[$i]){
+							${$unik_asal[$i]}[$a] = $cari_dt[$a]->potd_komisi_total;
+						}
+					}
+				}
+
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					${'total'.$unik_asal[$i]} = array_sum(${$unik_asal[$i]});
+				}
+				// $harga_array = [];
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					 $harga_array[$i] = ${'total'.$unik_asal[$i]};
+				}
+				for ($i=0; $i < count($harga_array); $i++) { 
+					 $jurnal[$i]['harga'] = round($harga_array[$i],2);
+					 $jurnal[$i]['asal'] = $unik_asal[$i];
+
+				}
+
+
+			}
+
+			$id_jurnal=d_jurnal::max('jr_id')+1;
+			$jenis_bayar = DB::table('jenisbayar')
+							 ->where('idjenisbayar',7)
+							 ->first();
+
+			$save_jurnal = d_jurnal::create(['jr_id'		=> $id_jurnal,
+												'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
+												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
+												'jr_detail' => $jenis_bayar->jenisbayar,
+												'jr_ref'  	=> $request->nofaktur,
+												'jr_note'  	=> 'PEMBAYARAN OUTLET',
+												'jr_insert' => carbon::now(),
+												'jr_update' => carbon::now(),
+												]);
+
+
+			$akun 	  = [];
+			$akun_val = [];
+
+			array_push($akun, $akun_hutang);
+			array_push($akun_val, $request->total_all_komisi);
+
+			for ($i=0; $i < count($jurnal); $i++) { 
+
+				$id_akun = DB::table('d_akun')
+								  ->where('id_akun','like','5317' . '%')
+								  ->where('kode_cabang',$jurnal[$i]['asal'])
+								  ->first();
+
+				if ($id_akun == null) {
+					$id_akun = DB::table('d_akun')
+								  ->where('id_akun','like','5317%')
+								  ->where('kode_cabang','000')
+								  ->first();
+				}
+				array_push($akun, $id_akun->id_akun);
+				array_push($akun_val, $jurnal[$i]['harga']);
+			}
+
+			$data_akun = [];
+			for ($i=0; $i < count($akun); $i++) { 
+
+				$cari_coa = DB::table('d_akun')
+								  ->where('id_akun',$akun[$i])
+								  ->first();
+
+				if (substr($akun[$i],0, 1)==2) {
+					
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->note;
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->note;
+					}
+				}else if (substr($akun[$i],0, 1)>2) {
+
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->note;
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->note;
+					}
+				}
+			}
+
+			$jurnal_dt = d_jurnal_dt::insert($data_akun);
+			$lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
+			// dd($lihat);
+
 			return response()->json(['id'=>$cari_id]);
-			
+		});
 		}
 
 		public function update_outlet(request $request){
+   		return DB::transaction(function() use ($request) {  
 
 			// dd($request->all());
 			$cari_nota  = DB::table('faktur_pembelian')
@@ -1686,15 +2144,40 @@ class BiayaPenerusController extends Controller
 			$tgl[0] = str_replace(' ', '', $tgl[0]);
 			$tgl[1] = str_replace(' ', '', $tgl[1]);
 
+			$akun_hutang = DB::table('agen')
+							 ->where('kode',$request->selectOutlet)
+							 ->first();
+
+			$akun_hutang = substr($akun_hutang->acc_hutang,0, 4);
+
+			$cari = DB::table('d_akun')->where('id_akun','like',$akun_hutang.'%')->where('kode_cabang',$request->cabang)->first();
+
+			$akun_hutang = $cari->id_akun;
+
+			$cari_tt = DB::table('form_tt')
+						 ->where('tt_noform',$request->nota_tt)
+						 ->first();
+
 			$update_pot = DB::table('faktur_pembelian')
 							->where('fp_nofaktur',$cari_nota->fp_nofaktur)
 							->update([
-							  	'fp_keterangan'			=> $request->note,
-							  	'fp_netto'				=> round($request->total_all_komisi,2),
-								'fp_sisapelunasan'  	=> round($request->total_all_komisi,2),
-								'fp_pending_status'  	=> 'APPROVED',
-							  	'updated_at'			=> Carbon::now(),
-							  	'updated_by'  			=> Auth::user()->m_username,
+							  	'fp_idfaktur'		=> $request->id,
+								'fp_nofaktur'		=> $request->nofaktur,
+								'fp_tgl'			=> Carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
+								'fp_jenisbayar' 	=> 7,
+								'fp_comp'			=> $request->cabang,
+								'updated_at'		=> Carbon::now(),
+								'fp_keterangan'		=> $request->note,
+								'fp_status'			=> 'Released',
+								'fp_pending_status'	=> 'APPROVED',
+								'fp_supplier'		=> $request->selectOutlet,
+								'fp_netto'			=> round($request->total_all_komisi,2),
+								'fp_sisapelunasan'  => round($request->total_all_komisi,2),
+								'fp_edit'			=> 'UNALLOWED',
+								'fp_jatuhtempo'		=> carbon::parse(str_replace('/', '-', $request->jatuh_tempo_outlet))->format('Y-m-d'),
+								'fp_idtt'			=> $cari_tt->tt_idform,
+								'fp_acchutang'      => $akun_hutang,
+								'updated_by'  		=> Auth::user()->m_username,
 							]);
 
 			$update_pot = DB::table('pembayaran_outlet')
@@ -1750,7 +2233,144 @@ class BiayaPenerusController extends Controller
 						->where('fp_nofaktur',$cari_nota->fp_nofaktur)
 						->first();
 
+
+			// //JURNAL
+
+
+
+			$cari_dt=DB::table('pembayaran_outlet_dt')		
+						 ->join('delivery_order','potd_pod','=','nomor')
+						 ->where('potd_potid','=',$cari_pot->pot_id)
+						 ->get();
+
+			for ($i=0; $i < count($cari_dt); $i++) { 
+
+				$cari_asal_2[$i] = $cari_dt[$i]->kode_cabang; 
+			}
+
+
+			if (isset($cari_asal_2)) {
+			    $unik_asal = array_unique($cari_asal_2);
+			    $unik_asal = array_values($unik_asal);
+
+			    // return $unik_asal;
+			    for ($i=0; $i < count($unik_asal); $i++) { 
+					for ($a=0; $a < count($cari_dt); $a++) { 
+						if($cari_dt[$a]->kode_cabang==$unik_asal[$i]){
+							${$unik_asal[$i]}[$a] = $cari_dt[$a]->potd_komisi_total;
+						}
+					}
+				}
+
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					${'total'.$unik_asal[$i]} = array_sum(${$unik_asal[$i]});
+				}
+				// $harga_array = [];
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					 $harga_array[$i] = ${'total'.$unik_asal[$i]};
+				}
+				for ($i=0; $i < count($harga_array); $i++) { 
+					 $jurnal[$i]['harga'] = round($harga_array[$i],2);
+					 $jurnal[$i]['asal'] = $unik_asal[$i];
+
+				}
+
+
+			}
+
+			$delete_jurnal = DB::table('d_jurnal')
+							   ->where('jr_ref',$request->nofaktur)
+							   ->delete();
+			$id_jurnal=d_jurnal::max('jr_id')+1;
+			$jenis_bayar = DB::table('jenisbayar')
+							 ->where('idjenisbayar',7)
+							 ->first();
+
+			$save_jurnal = d_jurnal::create(['jr_id'		=> $id_jurnal,
+												'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
+												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
+												'jr_detail' => $jenis_bayar->jenisbayar,
+												'jr_ref'  	=> $request->nofaktur,
+												'jr_note'  	=> 'PEMBAYARAN OUTLET',
+												'jr_insert' => carbon::now(),
+												'jr_update' => carbon::now(),
+												]);
+
+
+			$akun 	  = [];
+			$akun_val = [];
+
+			array_push($akun, $akun_hutang);
+			array_push($akun_val, $request->total_all_komisi);
+
+			for ($i=0; $i < count($jurnal); $i++) { 
+
+				$id_akun = DB::table('d_akun')
+								  ->where('id_akun','like','5317' . '%')
+								  ->where('kode_cabang',$jurnal[$i]['asal'])
+								  ->first();
+
+				if ($id_akun == null) {
+					$id_akun = DB::table('d_akun')
+								  ->where('id_akun','like','5317%')
+								  ->where('kode_cabang','000')
+								  ->first();
+				}
+				array_push($akun, $id_akun->id_akun);
+				array_push($akun_val, $jurnal[$i]['harga']);
+			}
+
+			$data_akun = [];
+			for ($i=0; $i < count($akun); $i++) { 
+
+				$cari_coa = DB::table('d_akun')
+								  ->where('id_akun',$akun[$i])
+								  ->first();
+
+				if (substr($akun[$i],0, 1)==2) {
+					
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->note;
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->note;
+					}
+				}else if (substr($akun[$i],0, 1)>2) {
+
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->note;
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->note;
+					}
+				}
+			}
+
+			$jurnal_dt = d_jurnal_dt::insert($data_akun);
+			$lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
+			// dd($lihat);
+
+
 			return response()->json(['status'=>$status->fp_pending_status]);
+		});
 		}
 
 		public function getpembayaransubcon(){
@@ -1968,262 +2588,272 @@ class BiayaPenerusController extends Controller
 
    		return DB::transaction(function() use ($request) {  
    			// dd($request->all());
+	
+			$valid = DB::table('faktur_pembelian')
+						 ->where('fp_nofaktur',$request->nofaktur)
+						 ->first();
+
+		
+			$nota = $request->nofaktur;
+
+
+
 			$tgl_biaya_head = carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d');
 
 			$total_subcon = filter_var($request->total_subcon, FILTER_SANITIZE_NUMBER_FLOAT)/100;
 
 			$cari_tt = DB::table('form_tt')
-						 ->where('tt_nofp',$request->nofaktur)
+						 ->where('tt_nofp',$nota)
 						 ->first();
+
 			$cari_id = DB::table('faktur_pembelian')
-						 ->max('fp_idfaktur');
+						 ->max('fp_idfaktur')+1;
 
-			if ($cari_id == null) {
-				$cari_id = 1;
-			}else{
-				$cari_id += 1;
-			}
-			$valid = DB::table('faktur_pembelian')
-						 ->where('fp_nofaktur',$request->nofaktur)
-						 ->first();
+			$acc_hutang = DB::table('subcon')
+							->where('kode',$request->nama_subcon)
+							->first();
+			
+			$hutang = substr($acc_hutang->acc_code,0, 4);
 
-			if ($valid == null) {
-				$acc_hutang = DB::table('subcon')
-								->where('kode',$request->nama_subcon)
-								->first();
+			$akun_hutang = DB::table('d_akun')
+								  ->where('id_akun','like',$hutang . '%')
+								  ->where('kode_cabang',$request->cabang)
+								  ->first();
 
-				$save = DB::table('faktur_pembelian')->insert([
-							'fp_idfaktur'		=> $cari_id,
-							'fp_nofaktur'		=> $request->nofaktur,
-							'fp_tgl'			=> $tgl_biaya_head,
-							'fp_jenisbayar' 	=> 9,
-							'fp_comp'			=> $request->cabang,
-							'created_at'		=> Carbon::now(),
-							'updated_at'		=> Carbon::now(),
-							'fp_keterangan'		=> $request->keterangan_subcon,
-							'fp_status'			=> 'Released',
-							'fp_noinvoice'		=> $request->invoice_subcon,
-							'fp_pending_status'	=> 'PENDING',
-							'fp_supplier'		=> $request->nama_subcon,
-							'fp_netto'			=> $total_subcon,
-							'fp_sisapelunasan'  => $total_subcon,
-							'fp_edit'			=> 'UNALLOWED',
-							'fp_jatuhtempo'		=> carbon::parse(str_replace('/', '-', $request->tempo_subcon))->format('Y-m-d'),
-							'fp_idtt'			=> $cari_tt->tt_idform,
-							'fp_acchutang'		=> $acc_hutang->acc_code,
-							'created_by'  		=> Auth::user()->m_username,
-							'updated_by'  		=> Auth::user()->m_username,
-						]);
-
-				$id_pb = DB::table('pembayaran_subcon')
-						 ->max('pb_id');
-
-				if ($id_pb == null) {
-					$id_pb = 1;
-				}else{
-					$id_pb += 1;
-				}
-
-				$save = DB::table('pembayaran_subcon')->insert([
-							  'pb_id'  			  => $id_pb,
-							  'pb_faktur'  		  => $request->nofaktur,
-							  'pb_status'  		  => 'Released',
-							  'pb_kode_subcon'    => $request->nama_subcon,
-							  'pb_keterangan' 	  => $request->keterangan_subcon,
-							  'updated_at' 		  => Carbon::now(),
-							  'created_at' 	      => Carbon::now(),
-							  'pb_acc'	      	  => $acc_hutang->acc_code,
-							  'pb_csf'	 		  => $acc_hutang->csf_code,
-						]);
-
-				$pending = [];
-				for ($i=0; $i < count($request->d_resi_subcon); $i++) { 
-					$id_pbd = DB::table('pembayaran_subcon_dt')
-						 ->max('pbd_id');
-
-					if ($id_pbd == null) {
-						$id_pbd = 1;
-					}else{
-						$id_pbd += 1;
-					}
-
-					$cari_do = DB::table('delivery_order')
-								 ->where('nomor',$request->d_resi_subcon[$i])
-								 ->first();
-
-					$persen = DB::table('subcon')
-								->where('kode',$request->nama_subcon)
-								->first()->persen;
-
-					$hasil_persen = ($persen/100)*$cari_do->total_net;
-					if ($request->d_harga_subcon[$i] > $hasil_persen) {
-						$pending[$i] = 'PENDING';
-					}else{
-						$pending[$i] = 'APPROVED';
-					}
-
-					$save = DB::table('pembayaran_subcon_dt')->insert([
-								  'pbd_id'   		 => $id_pbd,
-								  'pbd_pb_id'   	 => $id_pb,
-								  'pbd_ksd_id'   	 => $request->d_ksd_id[$i],
-								  'pbd_pb_dt'   	 => $i+1,
-								  'pbd_resi'  	 	 => $request->d_resi_subcon[$i],
-								  'pbd_jumlah'    	 => $request->d_jumlah_subcon[$i],
-								  'pbd_tarif_resi' 	 => $cari_do->total_net,
-								  'pbd_keterangan' 	 => $request->d_memo_subcon[$i],
-								  'updated_at'     	 => Carbon::now(),
-								  'created_at'     	 => Carbon::now(),
-								  'pbd_tarif_harga'  => $request->d_harga_subcon[$i],
-								  'pbd_acc'	      	 => $request->d_akun[$i],
-							  	  'pbd_csf'	 		 => $request->d_akun[$i],
-							  	  'pbd_status'		 => $pending[$i],
+			$save = DB::table('faktur_pembelian')->insert([
+						'fp_idfaktur'		=> $cari_id,
+						'fp_nofaktur'		=> $nota,
+						'fp_tgl'			=> $tgl_biaya_head,
+						'fp_jenisbayar' 	=> 9,
+						'fp_comp'			=> $request->cabang,
+						'created_at'		=> Carbon::now(),
+						'updated_at'		=> Carbon::now(),
+						'fp_keterangan'		=> $request->keterangan_subcon,
+						'fp_status'			=> 'Released',
+						'fp_noinvoice'		=> $request->invoice_subcon,
+						'fp_pending_status'	=> 'PENDING',
+						'fp_supplier'		=> $request->nama_subcon,
+						'fp_netto'			=> $total_subcon,
+						'fp_sisapelunasan'  => $total_subcon,
+						'fp_edit'			=> 'UNALLOWED',
+						'fp_jatuhtempo'		=> carbon::parse(str_replace('/', '-', $request->tempo_subcon))->format('Y-m-d'),
+						'fp_idtt'			=> $cari_tt->tt_idform,
+						'fp_acchutang'		=> $akun_hutang->id_akun,
+						'created_by'  		=> Auth::user()->m_username,
+						'updated_by'  		=> Auth::user()->m_username,
 					]);
-				}
 
-				if (in_array('PENDING', $pending)) {
-					$status = 'PENDING';
-				}else{
-					$status = 'APPROVED';
-				}
+			$id_pb = DB::table('pembayaran_subcon')
+					 ->max('pb_id');
 
-				$save = DB::table('faktur_pembelian')
-						  ->where('fp_nofaktur',$request->nofaktur)
-						  ->update([
-							'fp_pending_status'		=> $status,
-						  ]);
-
-
-	  			return Response()->json(['status' => 1,'id'=>$cari_id]);
+			if ($id_pb == null) {
+				$id_pb = 1;
 			}else{
-
-				$year =Carbon::now()->format('y'); 
-				$month =Carbon::now()->format('m'); 
-
-				 $idfaktur =   fakturpembelian::where('fp_comp' , $request->cabang)
-												->where('fp_nofaktur','LIKE','%'.'SC-0'.'%')
-												->max('fp_nofaktur');
-			//	dd($nosppid);
-				if(isset($idfaktur)) {
-					$explode  = explode("/", $idfaktur);
-					$idfaktur = $explode[2];
-					$idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
-					$idfaktur = str_replace('-', '', $idfaktur) ;
-					$string = (int)$idfaktur + 1;
-					$idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
-				}
-
-				else {
-					$idfaktur = '001';
-				}
-
-				$nota = 'FP' . $month . $year . '/' . $request->cabang . '/SC-' .  $idfaktur;
-
-				$acc_hutang = DB::table('subcon')
-								->where('kode',$request->nama_subcon)
-								->first();
-
-				$save = DB::table('faktur_pembelian')->insert([
-							'fp_idfaktur'		=> $cari_id,
-							'fp_nofaktur'		=> $nota,
-							'fp_tgl'			=> $tgl_biaya_head,
-							'fp_jenisbayar' 	=> 9,
-							'fp_comp'			=> $request->cabang,
-							'created_at'		=> Carbon::now(),
-							'updated_at'		=> Carbon::now(),
-							'fp_keterangan'		=> $request->keterangan_subcon,
-							'fp_status'			=> 'Released',
-							'fp_noinvoice'		=> $request->invoice_subcon,
-							'fp_pending_status'	=> 'PENDING',
-							'fp_supplier'		=> $request->nama_subcon,
-							'fp_netto'			=> $total_subcon,
-							'fp_sisapelunasan'  => $total_subcon,
-							'fp_edit'			=> 'UNALLOWED',
-							'fp_jatuhtempo'		=> carbon::parse(str_replace('/', '-', $request->tempo_subcon))->format('Y-m-d'),
-							'fp_idtt'			=> $cari_tt->tt_idform,
-							'fp_acchutang'		=> $acc_hutang->acc_code,
-							'created_by'  		=> Auth::user()->m_username,
-							'updated_by'  		=> Auth::user()->m_username,
-						]);
-
-				$id_pb = DB::table('pembayaran_subcon')
-						 ->max('pb_id');
-
-				if ($id_pb == null) {
-					$id_pb = 1;
-				}else{
-					$id_pb += 1;
-				}
-
-				$save = DB::table('pembayaran_subcon')->insert([
-							  'pb_id'  			  => $id_pb,
-							  'pb_faktur'  		  => $nota,
-							  'pb_status'  		  => 'Released',
-							  'pb_kode_subcon'    => $request->nama_subcon,
-							  'pb_keterangan' 	  => $request->keterangan_subcon,
-							  'updated_at' 		  => Carbon::now(),
-							  'created_at' 	      => Carbon::now(),
-							  'pb_acc'	      	  => $acc_hutang->acc_code,
-							  'pb_csf'	 		  => $acc_hutang->csf_code,
-						]);
-
-				$pending = [];
-				for ($i=0; $i < count($request->d_resi_subcon); $i++) { 
-					$id_pbd = DB::table('pembayaran_subcon_dt')
-						 ->max('pbd_id');
-
-					if ($id_pbd == null) {
-						$id_pbd = 1;
-					}else{
-						$id_pbd += 1;
-					}
-
-					$cari_do = DB::table('delivery_order')
-								 ->where('nomor',$request->d_resi_subcon[$i])
-								 ->first();
-
-					$persen = DB::table('subcon')
-								->where('kode',$request->nama_subcon)
-								->first()->persen;
-
-					$hasil_persen = ($persen/100)*$cari_do->total_net;
-					if ($request->d_harga_subcon[$i] > $hasil_persen) {
-						$pending[$i] = 'PENDING';
-					}else{
-						$pending[$i] = 'APPROVED';
-					}
-					$save = DB::table('pembayaran_subcon_dt')->insert([
-								  'pbd_id'   		 => $id_pbd,
-								  'pbd_pb_id'   	 => $id_pb,
-								  'pbd_ksd_id'   	 => $request->d_ksd_id[$i],
-								  'pbd_pb_dt'   	 => $i+1,
-								  'pbd_resi'  	 	 => $request->d_resi_subcon[$i],
-								  'pbd_jumlah'    	 => $request->d_jumlah_subcon[$i],
-								  'pbd_tarif_resi' 	 => $cari_do->total_net,
-								  'pbd_keterangan' 	 => $request->d_memo_subcon[$i],
-								  'updated_at'     	 => Carbon::now(),
-								  'created_at'     	 => Carbon::now(),
-								  'pbd_tarif_harga'  => $request->d_harga_subcon[$i],
-								  'pbd_acc'	      	 => $request->d_akun[$i],
-							  	  'pbd_csf'	 		 => $request->d_akun[$i],
-							  	  'pbd_status'		 => $pending[$i],
-					]);
-				}
-
-				if (in_array('PENDING', $pending)) {
-					$status = 'PENDING';
-				}else{
-					$status = 'APPROVED';
-				}
-
-				$save = DB::table('faktur_pembelian')
-						  ->where('fp_nofaktur',$nota)
-						  ->update([
-							'fp_pending_status'		=> $status,
-						  ]);
-
-
-	  			return Response()->json(['status' => 2,'nota'=>$nota,'id'=>$cari_id]);
+				$id_pb += 1;
 			}
+
+			$save = DB::table('pembayaran_subcon')->insert([
+						  'pb_id'  			  => $id_pb,
+						  'pb_faktur'  		  => $request->nofaktur,
+						  'pb_status'  		  => 'Released',
+						  'pb_kode_subcon'    => $request->nama_subcon,
+						  'pb_keterangan' 	  => $request->keterangan_subcon,
+						  'updated_at' 		  => Carbon::now(),
+						  'created_at' 	      => Carbon::now(),
+						  'pb_acc'	      	  => $akun_hutang->id_akun,
+						  'pb_csf'	 		  => $akun_hutang->id_akun,
+					]);
+
+			$pending = [];
+
+			for ($i=0; $i < count($request->d_resi_subcon); $i++) { 
+				$id_pbd = DB::table('pembayaran_subcon_dt')
+					 ->max('pbd_id');
+
+				if ($id_pbd == null) {
+					$id_pbd = 1;
+				}else{
+					$id_pbd += 1;
+				}
+
+				$cari_do = DB::table('delivery_order')
+							 ->where('nomor',$request->d_resi_subcon[$i])
+							 ->first();
+
+				$persen = DB::table('subcon')
+							->where('kode',$request->nama_subcon)
+							->first()->persen;
+
+				$hasil_persen = ($persen/100)*$cari_do->total_net;
+				if ($request->d_harga_subcon[$i] > $hasil_persen) {
+					$pending[$i] = 'PENDING';
+				}else{
+					$pending[$i] = 'APPROVED';
+				}
+
+				$save = DB::table('pembayaran_subcon_dt')->insert([
+							  'pbd_id'   		 => $id_pbd,
+							  'pbd_pb_id'   	 => $id_pb,
+							  'pbd_ksd_id'   	 => $request->d_ksd_id[$i],
+							  'pbd_pb_dt'   	 => $i+1,
+							  'pbd_resi'  	 	 => $request->d_resi_subcon[$i],
+							  'pbd_jumlah'    	 => $request->d_jumlah_subcon[$i],
+							  'pbd_tarif_resi' 	 => $cari_do->total_net,
+							  'pbd_keterangan' 	 => $request->d_memo_subcon[$i],
+							  'updated_at'     	 => Carbon::now(),
+							  'created_at'     	 => Carbon::now(),
+							  'pbd_tarif_harga'  => $request->d_harga_subcon[$i],
+							  'pbd_acc'	      	 => $request->d_akun[$i],
+						  	  'pbd_csf'	 		 => $request->d_akun[$i],
+						  	  'pbd_status'		 => $pending[$i],
+				]);
+			}
+
+			if (in_array('PENDING', $pending)) {
+				$status = 'PENDING';
+			}else{
+				$status = 'APPROVED';
+			}
+
+			$save = DB::table('faktur_pembelian')
+					  ->where('fp_nofaktur',$nota)
+					  ->update([
+						'fp_pending_status'		=> $status,
+					  ]);
+
+			$cari_dt=DB::table('pembayaran_subcon_dt')		
+						 ->join('delivery_order','pbd_resi','=','nomor')
+						 ->where('pbd_pb_id','=',$id_pb)
+						 ->get();
+
+
+			for ($i=0; $i < count($cari_dt); $i++) { 
+
+				$cari_asal_2[$i] = $cari_dt[$i]->kode_cabang; 
+			}
+			if (isset($cari_asal_2)) {
+			    $unik_asal = array_unique($cari_asal_2);
+			    $unik_asal = array_values($unik_asal);
+
+			    // return $unik_asal;
+			    for ($i=0; $i < count($unik_asal); $i++) { 
+					for ($a=0; $a < count($cari_dt); $a++) { 
+						if($cari_dt[$a]->kode_cabang==$unik_asal[$i]){
+							${$unik_asal[$i]}[$a] = $cari_dt[$a]->pbd_tarif_harga;
+						}
+					}
+				}
+
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					${'total'.$unik_asal[$i]} = array_sum(${$unik_asal[$i]});
+				}
+				// $harga_array = [];
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					 $harga_array[$i] = ${'total'.$unik_asal[$i]};
+				}
+				for ($i=0; $i < count($harga_array); $i++) { 
+					 $jurnal[$i]['harga'] = round($harga_array[$i],2);
+					 $jurnal[$i]['asal'] = $unik_asal[$i];
+
+				}
+
+
+			}
+			// dd($jurnal);
+
+			// //JURNAL
+			$id_jurnal=d_jurnal::max('jr_id')+1;
+			// dd($id_jurnal);
+			$jenis_bayar = DB::table('jenisbayar')
+							 ->where('idjenisbayar',9)
+							 ->first();
+			if ($status == "APPROVED") {
+				$save_jurnal = d_jurnal::create(['jr_id'	=> $id_jurnal,
+											'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
+											'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
+											'jr_detail' => $jenis_bayar->jenisbayar,
+											'jr_ref'  	=> $request->nofaktur,
+											'jr_note'  	=> 'BIAYA SUBCON',
+											'jr_insert' => carbon::now(),
+											'jr_update' => carbon::now(),
+											]);
+			}
+		
+
+
+			$akun 	  = [];
+			$akun_val = [];
+			array_push($akun, $akun_hutang->id_akun);
+			array_push($akun_val, $total_subcon);
+			for ($i=0; $i < count($jurnal); $i++) { 
+
+				$id_akun = DB::table('d_akun')
+								  ->where('id_akun','like','5210' . '%')
+								  ->where('kode_cabang',$jurnal[$i]['asal'])
+								  ->first();
+
+				if ($id_akun == null) {
+					$id_akun = DB::table('d_akun')
+								  ->where('id_akun','like','5210%')
+								  ->where('kode_cabang','000')
+								  ->first();
+				}
+
+				array_push($akun, $id_akun->id_akun);
+				array_push($akun_val, $jurnal[$i]['harga']);
+			}
+
+			$data_akun = [];
+			for ($i=0; $i < count($akun); $i++) { 
+
+				$cari_coa = DB::table('d_akun')
+								  ->where('id_akun',$akun[$i])
+								  ->first();
+
+				if (substr($akun[$i],0, 1)==2) {
+					
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->keterangan_subcon;
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->keterangan_subcon;
+					}
+				}else if (substr($akun[$i],0, 1)>2) {
+
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->keterangan_subcon;
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->keterangan_subcon;
+					}
+				}
+			}
+			if ($status == 'APPROVED') {
+				$jurnal_dt = d_jurnal_dt::insert($data_akun);
+			}
+
+			$lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
+			// dd($lihat);
+
+  			return Response()->json(['status' => 1,'id'=>$cari_id]);
 		});
 	}
 
@@ -2251,112 +2881,256 @@ class BiayaPenerusController extends Controller
 						 ->where('fp_nofaktur',$request->nofaktur)
 						 ->first();
 
-				$acc_hutang = DB::table('subcon')
-								->where('kode',$request->nama_subcon)
-								->first();
-
-				$save = DB::table('faktur_pembelian')
-							->where('fp_nofaktur',$request->nofaktur)
-							->update([
-							'fp_nofaktur'		=> $request->nofaktur,
-							'fp_tgl'			=> $tgl_biaya_head,
-							'fp_jenisbayar' 	=> 9,
-							'fp_comp'			=> $request->cabang,
-							'created_at'		=> Carbon::now(),
-							'updated_at'		=> Carbon::now(),
-							'fp_keterangan'		=> $request->keterangan_subcon,
-							'fp_status'			=> 'Released',
-							'fp_noinvoice'		=> $request->invoice_subcon,
-							'fp_pending_status'	=> 'PENDING',
-							'fp_supplier'		=> $request->nama_subcon,
-							'fp_netto'			=> $total_subcon,
-							'fp_sisapelunasan'  => $total_subcon,
-							'fp_edit'			=> 'UNALLOWED',
-							'fp_jatuhtempo'		=> carbon::parse(str_replace('/', '-', $request->tempo_subcon))->format('Y-m-d'),
-							'fp_idtt'			=> $cari_tt->tt_idform,
-							'fp_acchutang'		=> $acc_hutang->acc_code,
-							'created_by'  		=> Auth::user()->m_username,
-							'updated_by'  		=> Auth::user()->m_username,
-						]);
-
-			
-
-				$save = DB::table('pembayaran_subcon')
-							->where('pb_faktur',$request->nofaktur)
-							->update([
-							  'pb_faktur'  		  => $request->nofaktur,
-							  'pb_status'  		  => 'Released',
-							  'pb_kode_subcon'    => $request->nama_subcon,
-							  'pb_keterangan' 	  => $request->keterangan_subcon,
-							  'updated_at' 		  => Carbon::now(),
-							  'pb_acc'	      	  => $acc_hutang->acc_code,
-							  'pb_csf'	 		  => $acc_hutang->csf_code,
-						]);
-
-				$pending = [];
-				$pbd_id = DB::table('pembayaran_subcon')
-							->where('pb_faktur',$request->nofaktur)
+			$acc_hutang = DB::table('subcon')
+							->where('kode',$request->nama_subcon)
 							->first();
+			
+			$hutang = substr($acc_hutang->acc_code,0, 4);
 
-				$delete = DB::table('pembayaran_subcon_dt')->where('pbd_pb_id',$pbd_id->pb_id)->delete();
+			$akun_hutang = DB::table('d_akun')
+								  ->where('id_akun','like',$hutang . '%')
+								  ->where('kode_cabang',$request->cabang)
+								  ->first();
 
-				for ($i=0; $i < count($request->d_resi_subcon); $i++) { 
-					$id_pbd = DB::table('pembayaran_subcon_dt')
-						 ->max('pbd_id');
-
-					if ($id_pbd == null) {
-						$id_pbd = 1;
-					}else{
-						$id_pbd += 1;
-					}
-
-					$cari_do = DB::table('delivery_order')
-								 ->where('nomor',$request->d_resi_subcon[$i])
-								 ->first();
-
-					$persen = DB::table('subcon')
-								->where('kode',$request->nama_subcon)
-								->first()->persen;
-
-					$hasil_persen = ($persen/100)*$cari_do->total_net;
-					if ($request->d_harga_subcon[$i] > $hasil_persen) {
-						$pending[$i] = 'PENDING';
-					}else{
-						$pending[$i] = 'APPROVED';
-					}
-
-					$save = DB::table('pembayaran_subcon_dt')->insert([
-								  'pbd_id'   		 => $id_pbd,
-								  'pbd_pb_id'   	 => $pbd_id->pb_id,
-								  'pbd_ksd_id'   	 => $request->d_ksd_id[$i],
-								  'pbd_pb_dt'   	 => $i+1,
-								  'pbd_resi'  	 	 => $request->d_resi_subcon[$i],
-								  'pbd_jumlah'    	 => $request->d_jumlah_subcon[$i],
-								  'pbd_tarif_resi' 	 => $cari_do->total_net,
-								  'pbd_keterangan' 	 => $request->d_memo_subcon[$i],
-								  'updated_at'     	 => Carbon::now(),
-								  'created_at'     	 => Carbon::now(),
-								  'pbd_tarif_harga'  => $request->d_harga_subcon[$i],
-								  'pbd_acc'	      	 => $request->d_akun[$i],
-							  	  'pbd_csf'	 		 => $request->d_akun[$i],
-							  	  'pbd_status'		 => $pending[$i],
+			$save = DB::table('faktur_pembelian')
+						->where('fp_nofaktur',$request->nofaktur)
+						->update([
+						'fp_nofaktur'		=> $request->nofaktur,
+						'fp_tgl'			=> $tgl_biaya_head,
+						'fp_jenisbayar' 	=> 9,
+						'fp_comp'			=> $request->cabang,
+						'created_at'		=> Carbon::now(),
+						'updated_at'		=> Carbon::now(),
+						'fp_keterangan'		=> $request->keterangan_subcon,
+						'fp_status'			=> 'Released',
+						'fp_noinvoice'		=> $request->invoice_subcon,
+						'fp_pending_status'	=> 'PENDING',
+						'fp_supplier'		=> $request->nama_subcon,
+						'fp_netto'			=> $total_subcon,
+						'fp_sisapelunasan'  => $total_subcon,
+						'fp_edit'			=> 'UNALLOWED',
+						'fp_jatuhtempo'		=> carbon::parse(str_replace('/', '-', $request->tempo_subcon))->format('Y-m-d'),
+						'fp_idtt'			=> $cari_tt->tt_idform,
+						'fp_acchutang'		=> $akun_hutang->id_akun,
+						'created_by'  		=> Auth::user()->m_username,
+						'updated_by'  		=> Auth::user()->m_username,
 					]);
-				}
 
-				if (in_array('PENDING', $pending)) {
-					$status = 'PENDING';
+		
+
+			$save = DB::table('pembayaran_subcon')
+						->where('pb_faktur',$request->nofaktur)
+						->update([
+						  'pb_faktur'  		  => $request->nofaktur,
+						  'pb_status'  		  => 'Released',
+						  'pb_kode_subcon'    => $request->nama_subcon,
+						  'pb_keterangan' 	  => $request->keterangan_subcon,
+						  'updated_at' 		  => Carbon::now(),
+						  'pb_acc'	      	  => $akun_hutang->id_akun,
+						  'pb_csf'	 		  => $akun_hutang->id_akun,
+					]);
+
+			$pending = [];
+			$pbd_id = DB::table('pembayaran_subcon')
+						->where('pb_faktur',$request->nofaktur)
+						->first();
+
+			$delete = DB::table('pembayaran_subcon_dt')->where('pbd_pb_id',$pbd_id->pb_id)->delete();
+
+			for ($i=0; $i < count($request->d_resi_subcon); $i++) { 
+				$id_pbd = DB::table('pembayaran_subcon_dt')
+					 ->max('pbd_id');
+
+				if ($id_pbd == null) {
+					$id_pbd = 1;
 				}else{
-					$status = 'APPROVED';
+					$id_pbd += 1;
 				}
 
-				$save = DB::table('faktur_pembelian')
-						  ->where('fp_nofaktur',$request->nofaktur)
-						  ->update([
-							'fp_pending_status'		=> $status,
-						  ]);
+				$cari_do = DB::table('delivery_order')
+							 ->where('nomor',$request->d_resi_subcon[$i])
+							 ->first();
+
+				$persen = DB::table('subcon')
+							->where('kode',$request->nama_subcon)
+							->first()->persen;
+
+				$hasil_persen = ($persen/100)*$cari_do->total_net;
+				if ($request->d_harga_subcon[$i] > $hasil_persen) {
+					$pending[$i] = 'PENDING';
+				}else{
+					$pending[$i] = 'APPROVED';
+				}
+
+				$save = DB::table('pembayaran_subcon_dt')->insert([
+							  'pbd_id'   		 => $id_pbd,
+							  'pbd_pb_id'   	 => $pbd_id->pb_id,
+							  'pbd_ksd_id'   	 => $request->d_ksd_id[$i],
+							  'pbd_pb_dt'   	 => $i+1,
+							  'pbd_resi'  	 	 => $request->d_resi_subcon[$i],
+							  'pbd_jumlah'    	 => $request->d_jumlah_subcon[$i],
+							  'pbd_tarif_resi' 	 => $cari_do->total_net,
+							  'pbd_keterangan' 	 => $request->d_memo_subcon[$i],
+							  'updated_at'     	 => Carbon::now(),
+							  'created_at'     	 => Carbon::now(),
+							  'pbd_tarif_harga'  => $request->d_harga_subcon[$i],
+							  'pbd_acc'	      	 => $request->d_akun[$i],
+						  	  'pbd_csf'	 		 => $request->d_akun[$i],
+						  	  'pbd_status'		 => $pending[$i],
+				]);
+			}
+
+			if (in_array('PENDING', $pending)) {
+				$status = 'PENDING';
+			}else{
+				$status = 'APPROVED';
+			}
+
+			$save = DB::table('faktur_pembelian')
+					  ->where('fp_nofaktur',$request->nofaktur)
+					  ->update([
+						'fp_pending_status'		=> $status,
+					  ]);
 
 
-	  			return Response()->json(['status' => 1]);
+			$cari_dt=DB::table('pembayaran_subcon_dt')		
+					 ->join('delivery_order','pbd_resi','=','nomor')
+					 ->where('pbd_pb_id','=',$pbd_id->pb_id)
+					 ->get();
+
+
+			for ($i=0; $i < count($cari_dt); $i++) { 
+
+				$cari_asal_2[$i] = $cari_dt[$i]->kode_cabang; 
+			}
+			if (isset($cari_asal_2)) {
+			    $unik_asal = array_unique($cari_asal_2);
+			    $unik_asal = array_values($unik_asal);
+
+			    // return $unik_asal;
+			    for ($i=0; $i < count($unik_asal); $i++) { 
+					for ($a=0; $a < count($cari_dt); $a++) { 
+						if($cari_dt[$a]->kode_cabang==$unik_asal[$i]){
+							${$unik_asal[$i]}[$a] = $cari_dt[$a]->pbd_tarif_harga;
+						}
+					}
+				}
+
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					${'total'.$unik_asal[$i]} = array_sum(${$unik_asal[$i]});
+				}
+				// $harga_array = [];
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					 $harga_array[$i] = ${'total'.$unik_asal[$i]};
+				}
+				for ($i=0; $i < count($harga_array); $i++) { 
+					 $jurnal[$i]['harga'] = round($harga_array[$i],2);
+					 $jurnal[$i]['asal'] = $unik_asal[$i];
+
+				}
+
+
+			}
+			// dd($jurnal);
+
+			// //JURNAL
+
+			$delete_jurnal = DB::table('d_jurnal')
+							   ->where('jr_ref',$request->nofaktur)
+							   ->delete();
+
+			$id_jurnal=d_jurnal::max('jr_id')+1;
+			// dd($id_jurnal);
+			$jenis_bayar = DB::table('jenisbayar')
+							 ->where('idjenisbayar',9)
+							 ->first();
+
+			if ($status == "APPROVED") {
+				$save_jurnal = d_jurnal::create(['jr_id'	=> $id_jurnal,
+												'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
+												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
+												'jr_detail' => $jenis_bayar->jenisbayar,
+												'jr_ref'  	=> $request->nofaktur,
+												'jr_note'  	=> 'BIAYA SUBCON',
+												'jr_insert' => carbon::now(),
+												'jr_update' => carbon::now(),
+												]);
+			}
+
+ 
+			$akun 	  = [];
+			$akun_val = [];
+			array_push($akun, $akun_hutang->id_akun);
+			array_push($akun_val, $total_subcon);
+			for ($i=0; $i < count($jurnal); $i++) { 
+
+				$id_akun = DB::table('d_akun')
+								  ->where('id_akun','like','5210' . '%')
+								  ->where('kode_cabang',$jurnal[$i]['asal'])
+								  ->first();
+
+				if ($id_akun == null) {
+					$id_akun = DB::table('d_akun')
+								  ->where('id_akun','like','5210%')
+								  ->where('kode_cabang','000')
+								  ->first();
+				}
+
+				array_push($akun, $id_akun->id_akun);
+				array_push($akun_val, $jurnal[$i]['harga']);
+			}
+
+			$data_akun = [];
+			for ($i=0; $i < count($akun); $i++) { 
+
+				$cari_coa = DB::table('d_akun')
+								  ->where('id_akun',$akun[$i])
+								  ->first();
+
+				if (substr($akun[$i],0, 1)==2) {
+					
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->keterangan_subcon;
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->keterangan_subcon;
+					}
+				}else if (substr($akun[$i],0, 1)>2) {
+
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->keterangan_subcon;
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->keterangan_subcon;
+					}
+				}
+			}
+			if ($status == 'APPROVED') {
+				$jurnal_dt = d_jurnal_dt::insert($data_akun);
+			}
+
+			$lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
+			// dd($lihat);
+
+  			return Response()->json(['status' => 1]);
 		});
 	}
 
@@ -2385,6 +3159,17 @@ class BiayaPenerusController extends Controller
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
+		$jenis_bayar = DB::table('jenis_tarif')
+					 ->get();
+
+		for ($i=0; $i < count($kontrak); $i++) { 
+			for ($a=0; $a < count($jenis_bayar); $a++) { 
+				if ($kontrak[$i]->ksd_jenis_tarif == $jenis_bayar[$a]->jt_id ) {
+					$kontrak[$i]->nama_tarif = $jenis_bayar[$a]->jt_nama_tarif;
+				}
+			}
+		}
+
 		// $fix=[][];
 		for ($i=0; $i < count($kontrak); $i++) { 
 			$fix[$i]['ksd_nota'] = $kontrak[$i]->ks_nota;
@@ -2395,6 +3180,7 @@ class BiayaPenerusController extends Controller
 			$fix[$i]['ksd_tujuan'] = $tujuan[$i]->tujuan;
 			$fix[$i]['ksd_angkutan'] = $kontrak[$i]->nama;
 			$fix[$i]['ksd_id_angkutan'] = $kontrak[$i]->kode;
+			$fix[$i]['jenis_tarif'] = $kontrak[$i]->nama_tarif;
 		}
 			return view('purchase/fatkur_pembelian/tabelModalSubcon',compact('fix'));
 	}
@@ -2567,7 +3353,7 @@ public function biaya_penerus_um(request $req)
 		if ($um != null) {
 			for ($i=0; $i < count($data); $i++) { 
 				for ($a=0; $a < count($um); $a++) { 
-					if ($data[$a]->nomor == $um[$i]->umfpdt_transaksibank and $data[$a]->um_nomorbukti == $um[$i]->umfpdt_notaum) {
+					if ($data[$i]->nomor == $um[$a]->umfpdt_transaksibank and $data[$i]->um_nomorbukti == $um[$a]->umfpdt_notaum) {
 						$data[$i]->sisa_um += $um[$a]->umfpdt_dibayar;
 					}
 				}
@@ -2608,7 +3394,7 @@ public function pilih_um(request $req)
 		if ($um != null) {
 			for ($i=0; $i < count($data); $i++) { 
 				for ($a=0; $a < count($um); $a++) { 
-					if ($data[$a]->nomor == $um[$i]->umfpdt_transaksibank and $data[$a]->um_nomorbukti == $um[$i]->umfpdt_notaum) {
+					if ($data[$i]->nomor == $um[$a]->umfpdt_transaksibank and $data[$i]->um_nomorbukti == $um[$a]->umfpdt_notaum) {
 						$data[$i]->sisa_um += $um[$a]->umfpdt_dibayar;
 					}
 				}
@@ -2656,7 +3442,7 @@ public function append_um(request $req)
 		if ($um != null) {
 			for ($i=0; $i < count($data); $i++) { 
 				for ($a=0; $a < count($um); $a++) { 
-					if ($data[$a]->nomor == $um[$i]->umfpdt_transaksibank and $data[$a]->um_nomorbukti == $um[$i]->umfpdt_notaum) {
+					if ($data[$i]->nomor == $um[$a]->umfpdt_transaksibank and $data[$i]->um_nomorbukti == $um[$a]->umfpdt_notaum) {
 						$data[$i]->sisa_um += $um[$a]->umfpdt_dibayar;
 					}
 				}
@@ -2881,7 +3667,7 @@ public function subcon_um(request $req)
 		if ($um != null) {
 			for ($i=0; $i < count($data); $i++) { 
 				for ($a=0; $a < count($um); $a++) { 
-					if ($data[$a]->nomor == $um[$i]->umfpdt_transaksibank and $data[$a]->um_nomorbukti == $um[$i]->umfpdt_notaum) {
+					if ($data[$i]->nomor == $um[$a]->umfpdt_transaksibank and $data[$i]->um_nomorbukti == $um[$a]->umfpdt_notaum) {
 						$data[$i]->sisa_um += $um[$a]->umfpdt_dibayar;
 					}
 				}
@@ -2953,7 +3739,9 @@ public function update_bp_um(request $req)
 						 ->first();
 
 		}
-
+		$cari_fp = DB::table('faktur_pembelian')
+						 ->where('fp_nofaktur',$req->nofaktur)
+						 ->first();
 
 		$hapus_um = DB::table('uangmukapembelian_fp')
 					 	->where('umfp_nofaktur',$req->nofaktur)
@@ -3052,7 +3840,6 @@ public function update_bp_um(request $req)
 							  ]);
 				
 			}
-
 			$cari_fp = DB::table('faktur_pembelian')
 						 ->where('fp_nofaktur',$req->nofaktur)
 						 ->first();
@@ -3064,10 +3851,52 @@ public function update_bp_um(request $req)
 						 	'fp_sisapelunasan'=> $cari_fp->fp_sisapelunasan - filter_var($req->bp_total_um, FILTER_SANITIZE_NUMBER_INT)/100
 						 ]);
 
+			$cari_fp = DB::table('faktur_pembelian')
+						 ->where('fp_nofaktur',$req->nofaktur)
+						 ->first();
+
+			
 			return response()->json(['status'=>1]);
 		}
 	});
 }
+
+
+public function jurnal(request $req)
+	{
+		$bkk = DB::table('faktur_pembelian')	
+				 ->where('fp_idfaktur',$req->id)
+				 ->first();
+		$data= DB::table('d_jurnal')
+				 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
+				 ->join('d_akun','jrdt_acc','=','id_akun')
+				 ->where('jr_ref',$bkk->fp_nofaktur)
+				 ->get();
+
+
+		$d = [];
+		$k = [];
+		for ($i=0; $i < count($data); $i++) { 
+			if ($data[$i]->jrdt_value < 0) {
+				$data[$i]->jrdt_value *= -1;
+			}
+		}
+
+		for ($i=0; $i < count($data); $i++) { 
+			if ($data[$i]->jrdt_statusdk == 'D') {
+				$d[$i] = $data[$i]->jrdt_value;
+			}elseif ($data[$i]->jrdt_statusdk == 'K') {
+				$k[$i] = $data[$i]->jrdt_value;
+			}
+		}
+		$d = array_values($d);
+		$k = array_values($k);
+
+		$d = array_sum($d);
+		$k = array_sum($k);
+
+		return view('purchase.buktikaskeluar.jurnal',compact('data','d','k'));
+	}
 
 }
 

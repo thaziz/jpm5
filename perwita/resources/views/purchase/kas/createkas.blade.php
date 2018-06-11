@@ -107,7 +107,7 @@
                 </td>
                 @else
                 <td class="disabled">
-                    <select disabled="" class="form-control cabang_select" name="cabang">
+                    <select class="form-control cabang_select" name="cabang">
                         @foreach($cabang as $val)
                         @if(Auth::user()->kode_cabang == $val->kode)
                             <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>

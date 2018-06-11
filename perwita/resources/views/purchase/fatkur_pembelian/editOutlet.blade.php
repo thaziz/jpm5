@@ -79,6 +79,7 @@
 <div class="ibox" style="padding-top: 10px;" >
 <div class="ibox-title"><h5>Detail Faktur Pembelian</h5>
 <a href="../fakturpembelian" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+<a class="pull-right jurnal" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal</i></a>
 </div>
 <div class="ibox-content col-sm-12">
 <div class="col-sm-6">          
@@ -111,7 +112,7 @@
       <td style="width: 100px">Tanggal Faktur</td>
       <td width="10">:</td>
       <td width="200">
-        <input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="{{$date}}" readonly="" style="">
+        <input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="{{carbon\carbon::parse($data->fp_tgl)->format('d/m/Y')}}" readonly="" style="">
         <input type="hidden" class="form-control tgl_resi"  readonly="" style="">
         <input type="hidden" name="master_persen" class="form-control master_persen"  readonly="" style="">
       </td>
@@ -489,6 +490,25 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+
+<div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body tabel_jurnal">
+              
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 @endsection
 @section('extra_scripts')
 <script type="text/javascript">
@@ -564,11 +584,11 @@ $(document).ready(function(){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
+      var nota_tt = $('.notandaterima').val();
       $.ajax({
       url:baseUrl + '/fakturpembelian/update_outlet',
       type:'post',
-      data: $('.head_outlet :input').serialize()+'&'+datatable2.$('input').serialize()+'&'+$('.header_total_outlet1 :input').serialize()+'&'+$('.header_total_outlet2 :input').serialize()+'&id='+'{{$id}}',
+      data: $('.head_outlet :input').serialize()+'&'+datatable2.$('input').serialize()+'&'+$('.header_total_outlet1 :input').serialize()+'&'+$('.header_total_outlet2 :input').serialize()+'&id='+'{{$id}}'+'&nota_tt='+nota_tt,
       success:function(response){
         swal({
         title: "Berhasil!",
@@ -619,7 +639,7 @@ function simpan_tt() {
           $.ajax({
           url:baseUrl + '/fakturpembelian/simpan_tt',
           type:'get',
-          data:$('.tabel_tt_outlet :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
+          data:$('.tabel_tt_outlet :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head_outlet :input').serialize()+'&cabang='+cabang,
           success:function(response){
                 swal({
                     title: "Berhasil!",
@@ -976,7 +996,7 @@ $('.ot_dibayar_um').maskMoney({
             '<p class="tb_sisa_um_text">'+accounting.formatMoney(sisa_um, "", 2, ".",',')+'</p>',
 
             '<p class="tb_bayar_um_text">'+accounting.formatMoney(bp_dibayar_um, "", 2, ".",',')+'</p>'+
-            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+bp_dibayar_um+'">',
+            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+accounting.formatMoney(bp_dibayar_um, "", 2, "",'.')+'">',
 
             '<p class="tb_keterangan_um_text">'+um_keterangan+'</p>',
 
@@ -1017,6 +1037,28 @@ $.fn.serializeArray = function () {
         };
     }).get();
 }
+
+
+
+function jurnal() {
+    var id = '{{ $id }}';
+    $.ajax({
+        url:baseUrl + '/fakturpembelian/biaya_penerus/jurnal',
+        type:'get',
+        data:{id},
+        success:function(data){
+           $('.tabel_jurnal').html(data);
+        },
+        error:function(data){
+            // location.reload();
+        }
+    }); 
+  }
+
+$('.jurnal').click(function(){
+  $('.modal_jurnal').modal('show');
+  jurnal();
+})
 
 </script>
 

@@ -58,6 +58,19 @@
                           <div class="col-xs-6">
                             <table border="0" class="table">
                               <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
+
+                               <tr>
+                               
+                                <td width="200px">
+                                  Cabang
+                                </td>
+                                <td>
+                                  <input type="text" class="form-control input-sm" name="cabang" value="{{$sup->namacabang}}" readonly="">
+                                  <input type="hidden" class="form-control input-sm cabang" name="cabang" value="{{$sup->kodecabang}}" readonly="">
+                                </td>
+                                </tr>
+
+
                               <tr>
                                 <input type="hidden" class="form-control input-sm" name="idsupplier" value="{{$sup->idsup}}" readonly="">
                                 <td width="200px">
@@ -209,14 +222,23 @@
                           <td>
                             Acc Hutang Dagang
                           </td>
-                          <td> <input type="text" class="form-control acchutangdagang input-sm" name="acchutangdagang" readonly="" value="{{$sup->acc_hutang}}"> </td>
+                          <td> 
+                            <select class="form-control chosen-select-width1 acc_hutangdagang" name="acc_hutangdagang">
+                              <option value=""> Pilih Id Akun
+                              </option>
+                            </select>
+                          </td>
                         </tr>
                          
                          <tr>
                           <td>
                             Acc CSF
                           </td>
-                          <td> <input type="text" class="form-control acccsf input-sm" name="acc_csf" readonly="" value="{{$sup->acc_csf}}"> </td>
+                          <td> <select class="form-control chosen-select-width1 acc_csf" name="acc_csf">
+                              <option value=""> Pilih Id Akun
+                              </option>
+                            </select>
+                          </td>
                         </tr>
 
                         <tr>
@@ -422,7 +444,7 @@
                               <td> <a class="btn btn-danger removes-btn" data-id="{{$index}}"> <i class="fa fa-trash"> </i> </a> </td>
                             </tr>
                             @endforeach
-              \\						            </table>
+            					            </table>
 						  
 						            @else
 						              <div class="tablebarang">
@@ -488,6 +510,7 @@
       if(kontrak == 'YA'){
       //       RRRZ(kontrak);
               if(tr == 0){
+                alert(tr);
         toastr.info('jenis Supplier adalah Kontrak, Mohon Tambah Data Barang :) ');
         return false;
       }        
@@ -573,7 +596,7 @@ $(function(){
                      
     $no++;
 
-    var rowBrg = "<tr id='dataitem item-"+$no+"' class='item-"+$no+"'>" +
+    var rowBrg = "<tr id='dataitem item-"+$no+"' class='dataitem item-"+$no+"'>" +
                   "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
                   "<td> <select class='form-control' name='brg[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
                    "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
@@ -692,7 +715,12 @@ $(function(){
 
     })
 
- 
+    $('.plafonkredit').change(function(){
+       val = $(this).val();
+       val = accounting.formatMoney(val, "", 2, ",",'.');
+       $(this).val(val);
+    })
+
    $(document).on('click','.removes-btn',function(){
               var id = $(this).data('id');
              // alert(id);
@@ -723,6 +751,160 @@ $(function(){
   })
 
 
+
+$('.cabang').change(function(){
+
+
+    cabang = $('.cabang').val();
+     $.ajax({
+      data :  {cabang},
+      url : baseUrl + '/mastersupplier/getacchutang',
+      dataType : 'json',
+      success : function(response){
+
+     
+
+        $('.acc_hutangdagang').empty();
+          $('.acc_hutangdagang').append(" <option value=''>  -- Pilih id akun -- </option> ");
+            $.each(response, function(i , obj) {
+      //        console.log(obj.is_kodeitem);
+              $('.acc_hutangdagang').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+            })
+              $('.acc_hutangdagang').trigger("chosen:updated");
+          $('.acc_hutangdagang').trigger("liszt:updated");
+
+
+           $('.acc_csf').empty();
+          $('.acc_csf').append(" <option value=''>  -- Pilih id akun -- </option> ");
+            $.each(response, function(i , obj) {
+      //        console.log(obj.is_kodeitem);
+              $('.acc_csf').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+            })
+              $('.acc_csf').trigger("chosen:updated");
+          $('.acc_csf').trigger("liszt:updated");
+
+        
+
+         }
+     })
+     })
+
+
+     cabang = $('.cabang').val();
+     $.ajax({
+      data :  {cabang},
+      url : baseUrl + '/mastersupplier/getacchutang',
+      dataType : 'json',
+      success : function(response){
+
+     
+
+        $('.acc_hutangdagang').empty();
+          $('.acc_hutangdagang').append(" <option value=''>  -- Pilih id akun -- </option> ");
+            $.each(response, function(i , obj) {
+      //        console.log(obj.is_kodeitem);
+              $('.acc_hutangdagang').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+            })
+              $('.acc_hutangdagang').trigger("chosen:updated");
+          $('.acc_hutangdagang').trigger("liszt:updated");
+
+
+           $('.acc_csf').empty();
+          $('.acc_csf').append(" <option value=''>  -- Pilih id akun -- </option> ");
+            $.each(response, function(i , obj) {
+      //        console.log(obj.is_kodeitem);
+              $('.acc_csf').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+            })
+              $('.acc_csf').trigger("chosen:updated");
+          $('.acc_csf').trigger("liszt:updated");
+
+        
+
+         }
+     })
+
+
+
+      $('.cabang').change(function(){
+         cabang = $('.cabang').val();
+      $.ajax({
+          type : "get",
+          data : {cabang},
+          url : baseUrl + '/mastersupplier/getnosupplier',
+          dataType : 'json',
+          success : function (response){     
+  
+               var d = new Date();
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
+
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+                 nofaktur = 'SP' + '-' + cabang + '/'  + response.idsupplier ;
+              
+                $('.nosupplier').val(nofaktur);
+
+                
+          },
+          error : function (){
+            location.reload();
+          }
+        })
+      })
+
+      cabang = $('.cabang').val();
+      $.ajax({
+          type : "get",
+          data : {cabang},
+          url : baseUrl + '/mastersupplier/getnosupplier',
+          dataType : 'json',
+          success : function (response){     
+  
+               var d = new Date();
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
+
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+                 nofaktur = 'SP' + '-' + cabang + '/'  + response.idsupplier ;
+              
+                $('.nosupplier').val(nofaktur);
+
+                
+          },
+        })
+
+  
 
      
         $('.kontrak').change(function(){
@@ -803,7 +985,7 @@ $(function(){
 
       $(".acc_hutangdagang").chosen(config);
       $(".acc_csf").chosen(config);
-      $('.cabang').chosen(config);
+      //$('.cabang').chosen(config);
       $('.kota').chosen(config);
     })
      },2000);

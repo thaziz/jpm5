@@ -141,7 +141,7 @@
     }
     .top{
       border-top: 1px solid black;
-    }
+    }Ban
     .bot{
       border-bottom: 1px solid black;
     }
@@ -262,7 +262,7 @@
        <th>&nbsp;</th>
      </tr>
      <tr>
-       <td>No.Faktur</td>
+       <td>No.FPG</td>
        <td>:</td>
        <td>{{$data['fpg'][0]->fpg_nofpg}}</td>
      </tr>
@@ -270,6 +270,12 @@
        <td>Tanggal</td>
        <td>:</td>
        <td>{{ Carbon\Carbon::parse($data['fpg'][0]->fpg_tgl)->format('d-M-Y ') }}</td>
+     </tr>
+
+     <tr>
+      <td> Cabang </td>
+      <td> : </td>
+      <td> {{$data['fpg'][0]->namacabang}} </td>
      </tr>
     
    </table>
@@ -284,7 +290,7 @@
     <table>
       <tr>
         <td>
-        @if($data['fpg'][0]->fpg_jenisbayar == '5' || $data['fpg'][0]->fpg_jenisbayar == '3' )
+        @if($data['fpg'][0]->fpg_jenisbayar == '5' || $data['fpg'][0]->fpg_jenisbayar == '3' ||  $data['fpg'][0]->fpg_jenisbayar == '2' )
          {{$data['fpg'][0]->nama_supplier}}
 
         @elseif($data['fpg'][0]->fpg_jenisbayar == '6' || $data['fpg'][0]->fpg_jenisbayar == '7' || $data['fpg'][0]->fpg_jenisbayar == '9' || $data['fpg'][0]->fpg_jenisbayar == '1' )
@@ -321,7 +327,7 @@
      <tr>  
           <th colspan="3" class="top right textcenter" width="35%" height="25px">Faktur Pembelian)</th>
           <th rowspan="2" class="top right textcenter">Keterangan</th>
-          <th rowspan="2" class="top right textcenter">No.Cek/BG</th>
+          <th rowspan="2" class="top right textcenter"> &nbsp; No.Cek/BG &nbsp;</th>
           <th rowspan="2" class="top right textcenter">Bank</th>
           <th rowspan="2" class="top textcenter">Jumlah</th>
      </tr>
@@ -409,11 +415,11 @@
         <td class="textcenter top right" valign="top" height="300">
          <table width="100%">
           @if($data['fpg'][0]->fpg_jenisbayar != '5')
-         @foreach($data['fpg_dt'] as $fpgdt)
-          <tr>
-           <td>{{$fpgdt->fpgdt_keterangan}}</td>
-          </tr>
-          @endforeach
+             @foreach($data['fpg_dt'] as $fpgdt)
+              <tr>
+               <td>&nbsp; &nbsp; {{$fpgdt->fpgdt_keterangan}} &nbsp; &nbsp;</td>
+              </tr>
+              @endforeach
           @else
            <tr>
            <td style="text-align: center">{{$data['fpg'][0]->fpg_keterangan}}</td>

@@ -142,7 +142,7 @@
 
                         <tr>
                           <td> Satuan Stock </td>
-                          <td> <input type="text" class="form-control i" required="" name="unitstock"> </td>
+                          <td> <input type="text" class="form-control i" required="" name="unitstock" readonly=""> </td>
                         </tr>
                       </table>
                     </div>

@@ -96,19 +96,19 @@
                               </tr>
                               <tr>
                                 <td> Ke Satu </td>
-                                <td> <input type="text" class="form-control" name="unit1" value="{{$item->unit1}}"> </td>
+                                <td> <input type="text" class="form-control d" name="unit1" value="{{$item->unit1}}"> </td>
                                 <td> </td>
                               </tr>
                               <tr>
                                 <td> Ke Dua </td>
-                                <td> <input type="text" class="form-control" name="unit2" value="{{$item->unit2}}"> </td>
+                                <td> <input type="text" class="form-control e" name="unit2" value="{{$item->unit2}}"> </td>
                                 <td> <div class='form-group'> <label class='col-sm-3 col-sm-3 control-label'> 1 PCS </label> <div class='col-sm-6'> <input type='text' class='form-control biaya'  name='konversi2' value="{{$item->konversi3}}">  </div> </div>
                                 </td>
                               </tr>
 
                               <tr>
                                 <td> Ke Tiga </td>
-                                <td> <input type="text" class="form-control" name="unit3" value="{{$item->unit3}}"></td>
+                                <td> <input type="text" class="form-control g" name="unit3" value="{{$item->unit3}}"></td>
                                 <td> <div class='form-group'> <label class='col-sm-3 col-sm-3 control-label'> 1 PCS </label> <div class='col-sm-6'> <input type='text' class='form-control biaya'  name='konversi3' value="{{$item->konversi3}}"> </div> </div></td>
                               </tr>
 
@@ -116,7 +116,7 @@
 
                               <tr>
                                 <td> Satuan Stock </td>
-                                <td> <input type="text" class="form-control" required="" name="unitstock" value="{{$item->unitstock}}"> </td>
+                                <td> <input type="text" class="form-control i" required="" name="unitstock" value="{{$item->unitstock}}" readonly=""> </td>
                               </tr>
                             </table>
                         </div>
@@ -251,6 +251,31 @@
     })
      },2000);
 
+ $('.d').change(function(){ //qtysatu
+      if($('.e').val() != '') {
+        e = $('e').val();
+        $('.i').val(e);
+      }
+      else if ($('.g').val() != ''){
+        g = $('.g').val();
+        $('.i').val(g);
+      }
+      else {
+        d = $('.d').val();
+        $('.i').val(d);
+      }
+   })
+
+   $('.e').change(function(){ //qtydua
+      val = $(this).val();
+      $('.i').val(val);
+   })
+
+   
+   $('.g').change(function(){ //qtytiga
+      val = $(this).val();
+      $('.i').val(val);
+  })
 
     $('.harga').change(function(){
        
@@ -292,42 +317,7 @@
         format: 'yyyy-mm-dd'
     });
     
-     var image_holder = $(".image-holder");
-      image_holder.html('<img src="{{asset($data['item'][0]->foto)}}" class="img-responsive" width="40px">');
-      
-      setTimeout(function(){
-        image_holder.html('<img src="{{asset($data['item'][0]->foto)}}" class="img-responsive">');
-        $('.save').attr('disabled', false);
-      }, 1000);
-
-     $(".uploadGambar").on('change', function () {        
-          alert('ana');
-        if (typeof (FileReader) != "undefined")   {
-
-            image_holder.empty();
-
-            var reader = new FileReader();
-            reader.onload = function (e) {
-              image_holder.html('<img src="{{ asset('image/loading1.gif') }}" class="img-responsive" width="40px">');
-              
-              $('.save').attr('disabled', true);
-
-              setTimeout(function(){
-                image_holder.empty();
-                $("<img />", {
-                    "src": e.target.result,
-                    "class": "thumb-image img-responsive",
-                    "height": "100px",
-                }).appendTo(image_holder);
-                $('.save').attr('disabled', false);
-              }, 2000)
-            }
-            image_holder.show();
-            reader.readAsDataURL($(this)[0].files[0]);
-        } else {
-            alert("This browser does not support FileReader.");
-        }
-
-      });
+  
+    
 </script>
 @endsection

@@ -117,7 +117,6 @@ class invoice_Controller extends Controller
                     ->where('id_nomor_invoice',$id)
                     ->get();
         }
-        // dd($detail);
         $counting = count($detail); 
   
         $update_status = DB::table('invoice')
@@ -139,7 +138,7 @@ class invoice_Controller extends Controller
 
         // return $push;
         $terbilang = $this->penyebut($head->i_total_tagihan);
-        if ($head->i_pendapatan == 'PAKET') {
+        if ($head->i_pendapatan == 'PAKET' or $head->i_pendapatan == 'KARGO') {
           return view('sales.invoice.print',compact('head','detail','terbilang','push'));
         }else{
           return view('sales.invoice.print_1',compact('head','detail','terbilang','push'));
@@ -577,7 +576,7 @@ public function simpan_invoice(request $request)
 
             $save_header_invoice = DB::table('invoice')
                                      ->insert([
-                                          'i_nomor'              =>  $request->nota_invoice,
+                                          'i_nomor'              =>  strtoupper($request->nota_invoice),
                                           'i_tanggal'            =>  $tgl,
                                           'i_keterangan'         =>  $request->ed_keterangan,
                                           'i_tgl_mulai_do'       =>  $do_awal,
@@ -630,7 +629,7 @@ public function simpan_invoice(request $request)
                  $save_detail_invoice = DB::table('invoice_d')
                                           ->insert([
                                               'id_id'            => $cari_id,
-                                              'id_nomor_invoice' => $request->nota_invoice,
+                                              'id_nomor_invoice' => strtoupper($request->nota_invoice),
                                               'id_nomor_do'      => $request->do_detail[$i],
                                               'create_by'        => Auth::user()->m_name,
                                               'create_at'        => Carbon::now(),
@@ -729,7 +728,7 @@ public function simpan_invoice(request $request)
                  $save_detail_invoice = DB::table('invoice_d')
                                           ->insert([
                                               'id_id'            => $cari_id,
-                                              'id_nomor_invoice' => $request->nota_invoice,
+                                              'id_nomor_invoice' => strtoupper($request->nota_invoice),
                                               'id_nomor_do'      => $request->do_detail[$i],
                                               'create_by'        => Auth::user()->m_name,
                                               'create_at'        => Carbon::now(),
@@ -764,7 +763,7 @@ public function simpan_invoice(request $request)
 
             $save_header_invoice = DB::table('invoice')
                                      ->insert([
-                                          'i_nomor'              =>  $request->nota_invoice,
+                                          'i_nomor'              =>  strtoupper($request->nota_invoice),
                                           'i_tanggal'            =>  $tgl,
                                           'i_keterangan'         =>  $request->ed_keterangan,
                                           'i_tgl_mulai_do'       =>  $do_awal,
@@ -816,7 +815,7 @@ public function simpan_invoice(request $request)
                  $save_detail_invoice = DB::table('invoice_d')
                                           ->insert([
                                               'id_id'            => $cari_id,
-                                              'id_nomor_invoice' => $request->nota_invoice,
+                                              'id_nomor_invoice' => strtoupper($request->nota_invoice),
                                               'id_nomor_do'      => $request->do_detail[$i],
                                               'create_by'        => Auth::user()->m_name,
                                               'create_at'        => Carbon::now(),

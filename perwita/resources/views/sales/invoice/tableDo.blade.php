@@ -7,7 +7,7 @@
            <th>Tgl Order</th>
            <th>Nama Customer</th>
            <th>Keterangan</th>
-           <th>Harga Bruto</th>
+           <th>Harga Netto</th>
            <th style="text-align: center;"><input type="checkbox" class="parent_check" onchange="check_parent()"></th>
         </tr>
     </thead>
@@ -45,7 +45,7 @@
            <th>Tgl Order</th>
            <th>Nama Customer</th>
            <th>Keterangan</th>
-           <th>Harga Bruto</th>
+           <th>Harga Netto</th>
            <th style="text-align: center;"><input type="checkbox" class="parent_check" onchange="check_parent()"></th>
         </tr>
     </thead>
@@ -63,7 +63,7 @@
                     <td>{{$val->tanggal}}</td>
                     <td>{{$val->nama_customer}}</td>
                     <td>{{$val->keterangan_tarif}}</td>
-                    <td align="right"> {{number_format($val->total+$val->biaya_tambahan, 2, ",", ".")}}</td>
+                    <td align="right"> {{number_format($val->total_net, 2, ",", ".")}}</td>
                     <td align="center">
                         <input class="tanda" type="checkbox"  name="tanda">
                     </td>

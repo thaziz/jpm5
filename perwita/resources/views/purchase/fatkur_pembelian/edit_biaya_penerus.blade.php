@@ -69,6 +69,7 @@
     <div class="ibox" style="padding-top: 10px;" >
       <div class="ibox-title"><h5>Detail Faktur Pembelian</h5>
         <a href="../fakturpembelian" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+        <a class="pull-right jurnal" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal</i></a>
       </div>
       <div class="ibox-content col-sm-12">
 
@@ -202,11 +203,11 @@
               <tr>
                 <td style="width: 100px ;">Akun</td>
                 <td width="10">:</td>
-                <td>
+                <td class="disabled">
                   <select class="form-control akun_biaya chosen-select-width1" style="text-align: center; ">
                     <option value="0" selected="">Pilih - akun</option>
                     @foreach($akun as $val)
-                      <option value="{{$val->id_akun}}" selected="">{{$val->id_akun}} - {{$val->nama_akun}}</option>
+                      <option @if($val->id_akun == '531512000') selected="" @endif value="{{$val->id_akun}}" >{{$val->id_akun}} - {{$val->nama_akun}}</option>
                     @endforeach
                   </select>
                 </td>
@@ -573,6 +574,26 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+
+<div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body tabel_jurnal">
+              
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 @endsection
 @section('extra_scripts')
 <script type="text/javascript">
@@ -850,7 +871,8 @@
 
   var par = $('.seq_biaya_'+e_jml_data).parents('tr');
 
-  var um = "{{$bp->fp_uangmuka}}"/1;
+  var um = $('.bp_total_um').val();
+  um = um.replace(/[^0-9\-]+/g,"")/100;
   var bayar_biaya = $(par).find('.bayar_biaya').val();
   bayar_biaya = bayar_biaya.replace(/[^0-9\-]+/g,"")/1;
   var temp = 0;
@@ -883,7 +905,8 @@
   }
 
   function hapus_biaya(par) {
-    var um = "{{$bp->fp_uangmuka}}"/1;
+    var um = $('.bp_total_um').val();
+    um = um.replace(/[^0-9\-]+/g,"")/100;
 
     var parent = $(par).parents('tr');
     var pod = $(parent).find('.no_do').val();
@@ -1181,7 +1204,7 @@ $('.bp_tambah_um').click(function(){
             '<p class="tb_sisa_um_text">'+accounting.formatMoney(data.data.sisa_um, "", 2, ".",',')+'</p>',
 
             '<p class="tb_bayar_um_text">'+accounting.formatMoney(bp_dibayar_um, "", 2, ".",',')+'</p>'+
-            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+bp_dibayar_um+'">',
+            '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+accounting.formatMoney(bp_dibayar_um, "", 2, "",'.')+'">',
 
             '<p class="tb_keterangan_um_text">'+data.data.um_keterangan+'</p>',
 
@@ -1408,6 +1431,29 @@ $('.bp_dibayar_um').maskMoney({
     hitung_um();
     $('.bp_tabel_um :input').val('');
 @endforeach
+
+
+
+  function jurnal() {
+    var id = '{{ $id }}';
+    $.ajax({
+        url:baseUrl + '/fakturpembelian/biaya_penerus/jurnal',
+        type:'get',
+        data:{id},
+        success:function(data){
+           $('.tabel_jurnal').html(data);
+        },
+        error:function(data){
+            // location.reload();
+        }
+    }); 
+  }
+
+$('.jurnal').click(function(){
+  $('.modal_jurnal').modal('show');
+  jurnal();
+})
+
 </script>
 
 

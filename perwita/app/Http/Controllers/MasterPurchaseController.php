@@ -266,7 +266,7 @@ class MasterPurchaseController extends Controller
 
 		// $data = masterItemPurchase::find($id);
 		$data['item'] = DB::select("select * from masteritem, cabang, jenis_item where  masteritem.comp_id = cabang.kode and masteritem.kode_item = '$id' and masteritem.jenisitem = jenis_item.kode_jenisitem ORDER BY kode_item DESC");
-		
+		//dd($data);
 
 		return view('purchase/master/master_item/edit',compact('data','akun'));
 	}
@@ -360,6 +360,7 @@ class MasterPurchaseController extends Controller
 	   $data->unit2 = $request->unit2;
     	
         $data->unit3 = $request->unit3;
+        $data->unitstock = $request->unit3;
        	if($request->konversi2 == '') {
 
 		}else{
@@ -1041,7 +1042,7 @@ class MasterPurchaseController extends Controller
 
 
 	public function editsupplier($id) {
-		$data = DB::select("select * from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and supplier.no_supplier = '$id'");
+		$data = DB::select("select *, cabang.nama as namacabang from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and supplier.no_supplier = '$id'");
 		
 		return view('purchase/master/master_supplier/edit', compact('data'));
 	}
@@ -1050,7 +1051,7 @@ class MasterPurchaseController extends Controller
 
 
 
-		$data['supplier'] = DB::select("select * from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and supplier.idsup = '$id'");
+		$data['supplier'] = DB::select("select *, cabang.nama as namacabang, cabang.kode as kodecabang from supplier, cabang, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and supplier.idsup = '$id' and idcabang = kode");
 		$data['item_supplier'] = DB::select("select * from itemsupplier,masteritem where is_idsup = '$id' and is_kodeitem = kode_item");
 		$data['countitem'] = count($data['item_supplier']);
 		$data['barang'] = masterItemPurchase::all();
@@ -1068,6 +1069,8 @@ class MasterPurchaseController extends Controller
 		/*	*/
 
 		if($request->iskontrak == 'tdkeditkontrak') {	
+			$replaceplafon = str_replace(',', '', $request->plafon_kredit);
+
 		/*dd('sama');*/
 			$statusactive = 'AKTIF';
 			$data = masterSupplierPurchase::find($id);
@@ -1080,7 +1083,7 @@ class MasterPurchaseController extends Controller
 			$data->propinsi = strtoupper($request->provinsi);
 			$data->contact_person = strtoupper($request->cp);
 			$data->syarat_kredit = strtoupper($request->syarat_kredit);
-			$data->plafon = strtoupper($request->plafon_kredit);
+			$data->plafon = strtoupper($replaceplafon);
 			$data->currency = strtoupper($request->matauang);
 			$data->pajak_npwp = strtoupper($request->npwp);
 			$data->ppn =strtoupper( $request->pajak_ppn);
@@ -1131,7 +1134,7 @@ class MasterPurchaseController extends Controller
 						$iditemsup = 1;
 					}
 
-					echo($iditemsup);
+					//echo($iditemsup);
 					$itemsupplier = new itemsupplier();
 					$replacehrga = str_replace(',', '', $request->harga[$i]);
 				//	dd($replacehrga);
@@ -1155,7 +1158,7 @@ class MasterPurchaseController extends Controller
 						$iditemsup = 1;
 					}
 
-					echo($iditemsup);
+				//	echo($iditemsup);
 					$itemsupplier = new itemsupplier();
 					$replacehrga = str_replace(',', '', $request->harga[$i]);
 				//	dd($replacehrga);
@@ -1169,7 +1172,7 @@ class MasterPurchaseController extends Controller
 
 				}
 				else {
-					echo($request->iditemsup[$i]);
+				//	echo($request->iditemsup[$i]);
 					$updateitem = itemsupplier::where([['is_id', '=', $request->iditemsup[$i]] , ['is_idsup' , '=' , $request->idsupplier]]);
 					$replacehrg = str_replace(',', '', $request->harga[$i]);
 				//	dd($replacehrg);
