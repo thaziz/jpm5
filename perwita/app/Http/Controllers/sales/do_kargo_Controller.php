@@ -34,7 +34,7 @@ class do_kargo_Controller extends Controller
         return view('sales.do_kargo.index',compact('data','kota'));
     }
 
-    public function datatable_do_kargo($value='')
+    public function datatable_do_kargo()
     {
 
       $cabang = auth::user()->kode_cabang;
@@ -55,7 +55,7 @@ class do_kargo_Controller extends Controller
         
         // return $data;
         $data = collect($data);
-        // return $data;
+        return $data;
         return Datatables::of($data)
                         ->addColumn('aksi', function ($data) {
 
