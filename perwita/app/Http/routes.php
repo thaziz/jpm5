@@ -117,6 +117,7 @@ Route::get('purchaseorder/print/{id}', 'PurchaseController@cetak');
 Route::post('purchaseorder/detailpurchasekeuangan', 'PurchaseController@detailpurchasekeuangan');
 Route::post('purchaseorder/updatekeuangan', 'PurchaseController@updatekeuangan');
 Route::post('purchaseorder/getcabang', 'PurchaseController@getcabang');
+Route::get('purchaseorder/grapcabang', 'PurchaseController@grapcabang');
 Route::get('purchaseorder/deletepurchase/{id}', 'PurchaseController@deletepurchase');
 
 
@@ -1915,7 +1916,7 @@ Route::get('master_keuangan/laba_rugi/pdf/single/{throtle}', [
 
 // buku besar
 
-Route::get('master_keuangan/buku_besar/single/{throtle}', [
+Route::post('master_keuangan/buku_besar/single', [
   'uses' => 'master_keuangan\laporan\laporan_buku_besar@index_buku_besar_single',
   'as'   => 'buku_besar.index_single'
 ]);
@@ -2107,6 +2108,11 @@ Route::get('master_keuangan/akun/cek_parrent/{id}', [
 Route::get('master_keuangan/akun/share_akun', [
   'uses'=> 'master_keuangan\akun_controller@share_akun',
   'as'  => 'akun.share'
+]);
+
+Route::get('master_keuangan/akun/get/{cabang}', [
+  'uses'=> 'master_keuangan\akun_controller@get_akun',
+  'as'  => 'akun.get'
 ]);
 
 Route::get('master_keuangan/akun/tabel', 'master_keuangan\akun_controller@table_data');
