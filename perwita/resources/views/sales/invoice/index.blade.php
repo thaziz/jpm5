@@ -1,10 +1,13 @@
-@extends('main')
+UNDER MAINTENANCE(LAGI DIPERBAIKI)
+
+{{-- @extends('main')
 
 @section('title', 'dashboard')
 
 @section('content')
 <style type="text/css">
     .cssright { text-align: right; }
+    .center { text-align: center; }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -70,48 +73,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data as $row)
-                            <tr>
-                                <td><a onclick="lihat('{{ $row->i_nomor }}')">{{ $row->i_nomor }}</a></td>
-                                <td>{{ $row->i_tanggal }}</td>
-                                <td>{{ $row->nama }}</td>
-                                <td>{{ $row->i_jatuh_tempo }}</td>
-                                <td style="text-align:right"> {{ number_format($row->i_total_tagihan, 2, ",", ".") }} </td>
-                                <td style="text-align:right"> {{ number_format($row->i_sisa_pelunasan, 2, ",", ".") }} </td>
-                                <td>{{ $row->i_keterangan }}</td>
-                                <td>{{ $row->i_no_faktur_pajak }}</td>
-                                <td>
-                                    @if($row->i_statusprint == 'Released')
-                                    <label class="label label-warning">{{$row->i_statusprint}}</label>
-                                    @else
-                                    <label class="label label-success">{{$row->i_statusprint}}</label>
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group ">
-
-                                        @if($row->i_statusprint == 'Released' or Auth::user()->punyaAkses('Invoice','ubah'))
-                                            @if(cek_periode(carbon\carbon::parse($row->i_tanggal)->format('m'),carbon\carbon::parse($row->i_tanggal)->format('Y') ) != 0)
-                                            <a  onclick="edit('{{$row->i_nomor}}')" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>
-                                            @endif
-                                        @endif
-
-                                        @if(Auth::user()->punyaAkses('Invoice','print'))
-                                        <a  onclick="ngeprint('{{$row->i_nomor}}')" class="btn btn-xs btn-warning"><i class="fa fa-print"></i></a>
-                                        @endif
-
-                                        @if($row->i_statusprint == 'Released' or Auth::user()->punyaAkses('Invoice','hapus'))
-                                            @if(cek_periode(carbon\carbon::parse($row->i_tanggal)->format('m'),carbon\carbon::parse($row->i_tanggal)->format('Y') ) != 0)
-                                            <a  onclick="hapus('{{$row->i_nomor}}')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>
-                                            @endif
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
 
                         </tbody>
-
                     </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
@@ -144,17 +107,47 @@
 @section('extra_scripts')
 <script type="text/javascript">
     $(document).ready( function () {
-        $('#tabel_data').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": false,
-            "responsive": true,
-            "autoWidth": false,
-            "pageLength": 10,
-            "retrieve" : true,
+
+         $('#tabel_data').DataTable({
+            processing: true,
+            // responsive:true,
+            serverSide: true,
+            ajax: {
+                url:'{{ route("datatable_invoice1") }}',
+            },
+            columnDefs: [
+              {
+                 targets: 4,
+                 className: 'cssright'
+              },
+              {
+                 targets: 5,
+                 className: 'cssright'
+              },
+              {
+                 targets:8,
+                 className: 'center'
+              },
+              {
+                 targets:9,
+                 className: 'center'
+              },
+            ],
+            "columns": [
+            { "data": "i_nomor" },
+            { "data": "i_tanggal" },
+            { "data": "customer"},
+            { "data": "i_jatuh_tempo" },
+            { "data": "tagihan" },
+            { "data": "sisa"},
+            { "data": "i_keterangan" },
+            { "data": "i_faktur_pajak" },
+            { "data": "status" },
+            { "data": "aksi" },
+            
+            ]
       });
+      $.fn.dataTable.ext.errMode = 'throw';
     });
 
 
@@ -229,3 +222,4 @@
 
 </script>
 @endsection
+ --}}

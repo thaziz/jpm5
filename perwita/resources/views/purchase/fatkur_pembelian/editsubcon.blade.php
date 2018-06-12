@@ -78,6 +78,7 @@
 <div class="ibox-title"><h5>Detail Faktur Pembelian</h5>
   <a href="../fakturpembelian" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
   <a class="pull-right jurnal" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal</i></a>
+<a class="pull-right jurnal_um" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal Uang Muka</i></a>
 </div>
 <div class="ibox-content col-sm-12">
 
@@ -1824,7 +1825,8 @@ $('.sc_dibayar_um').maskMoney({
 @endforeach
 
 
-function jurnal() {
+
+  function jurnal() {
     var id = '{{ $id }}';
     $.ajax({
         url:baseUrl + '/fakturpembelian/biaya_penerus/jurnal',
@@ -1839,9 +1841,29 @@ function jurnal() {
     }); 
   }
 
+  function jurnal_um() {
+    var id = '{{ $id }}';
+    $.ajax({
+        url:baseUrl + '/fakturpembelian/biaya_penerus/jurnal_um',
+        type:'get',
+        data:{id},
+        success:function(data){
+           $('.tabel_jurnal').html(data);
+        },
+        error:function(data){
+            // location.reload();
+        }
+    }); 
+  }
+
 $('.jurnal').click(function(){
   $('.modal_jurnal').modal('show');
   jurnal();
+})
+
+$('.jurnal_um').click(function(){
+  $('.modal_jurnal').modal('show');
+  jurnal_um();
 })
 
 </script>

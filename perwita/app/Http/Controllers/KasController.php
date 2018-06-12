@@ -131,6 +131,7 @@ class KasController extends Controller
 		$akun_kargo  = DB::table('master_persentase')
 					  ->where('cabang','GLOBAL')
 					  ->where('jenis_biaya',5)
+					  ->orWhere('jenis_biaya',6)
 					  ->get();
 		return view('purchase/kas/createkas',compact('now','akun','akun_persen','cabang','angkutan','akun_kargo','akun_paket'));
 	}
