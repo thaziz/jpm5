@@ -3109,7 +3109,13 @@
 
       hasiltarif = parseFloat((tarif / 100) * hsldpp);
       hasiltarif2 =  hasiltarif.toFixed(2);
-      $('.hasilpph').val(addCommas(hasiltarif2));
+      if(val == ''){
+          $('.hasilpph').val('');
+      }
+      else {
+          $('.hasilpph').val(addCommas(hasiltarif2));
+
+      }
 
       hasilnetto = hsldpp - hasiltarif2;
       hasilnetto2 =  Math.round(hasilnetto).toFixed(2);
@@ -3123,13 +3129,103 @@
         jenisppn = $('.jenisppn').val();
         numeric2 = dpp.replace(/,/g,'');
 
-      if(val == ''){
+      if(val == ''){ // PPH KOSONG
           toastr.info('silahkan pilih pajak pphh :)');
-          return false;
-      }
+          
+          if($('.hasilppn').val() != '') { //ppn  tidak kosong
+             hasilpph = 0;
+          if($('.jenisppn').val() == 'E'){
+          
+             ppn = $('.hasilppn').val();
+             hasilppn = ppn.replace(/,/g,'');
+             pph = addCommas(hasiltarif2);
+            
+             hasilnetto = parseFloat(parseFloat(hsldpp)+parseFloat(hasilppn) - parseFloat(hasilpph)); 
+             hsl = hasilnetto.toFixed(2);
+             $('.nettohutang').val(addCommas(hsl));
+           //  $('.sisahutang').val(addCommas(hsl));
+          
+             totaljumlah2 = $('.totaljumlah').val();
+          //    alert(totaljumlah2);
+              if(totaljumlah2 != ''){
+                totaljumlah = totaljumlah2.replace(/,/g,'');
+                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                $('.sisahutang').val(addCommas(hslselisihum));
+              }
+              else {
+                $('.sisahutang').val(addCommas(hsl));
+              }
+          }
+
+         else if(jenisppn == 'I'){ 
+              
+            hargadpp = parseFloat((parseFloat(hsldpp) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
+                         
+            $('.dpp').val(addCommas(hargadpp));
+            subtotal = $('.dpp').val();
+            subharga = subtotal.replace(/,/g, '');
+            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
+     
+            $('.hasilppn').val(addCommas(hargappn));
+
+            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
+            $('.nettohutang').val(addCommas(total));                 
+            //$('.sisahutang').val(addCommas(total)); 
+
+             totaljumlah2 = $('.totaljumlah').val();
+          //    alert(totaljumlah2);
+              if(totaljumlah2 != ''){
+                totaljumlah = totaljumlah2.replace(/,/g,'');
+                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                $('.sisahutang').val(addCommas(hslselisihum));
+              }
+              else {
+                $('.sisahutang').val(addCommas(total));
+              }
+
+        }
+        else {
+       
+          $('.inputppn').val('');
+          $('.hasilppn').val('');
+          hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasilpph));
+          netto2 = hslnetto.toFixed(2);
+          $('.nettohutang').val(addCommas(netto2));
+          //$('.sisahutang').addCommas(netto2);
+
+          totaljumlah2 = $('.totaljumlah').val();
+          //    alert(totaljumlah2);
+          if(totaljumlah2 != ''){
+            totaljumlah = totaljumlah2.replace(/,/g,'');
+            hslselisihum = parseFloat(parseFloat(netto2) - parseFloat(totaljumlah)).toFixed(2);
+            $('.sisahutang').val(addCommas(hslselisihum));
+          }
+          else {
+            $('.sisahutang').val(addCommas(netto2));
+          }
+
+        }
+      } // end ppn tdk kosong
       else {
 
-
+          hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasilpph));
+          netto2 = hslnetto.toFixed(2);
+          $('.nettohutang').val(addCommas(netto2));
+         // $('.sisahutang').val(addCommas(netto2));
+          
+          totaljumlah2 = $('.totaljumlah').val();
+          //    alert(totaljumlah2);
+          if(totaljumlah2 != ''){
+            totaljumlah = totaljumlah2.replace(/,/g,'');
+            hslselisihum = parseFloat(parseFloat(netto2) - parseFloat(totaljumlah)).toFixed(2);
+            $('.sisahutang').val(addCommas(hslselisihum));
+          }
+          else {
+            $('.sisahutang').val(addCommas(netto2));
+          }
+      }
+      } // PPH ADA NILAI NYA
+      else {
       if($('.hasilppn').val() != '') { //ppn  tidak kosong
           if($('.jenisppn').val() == 'E'){
           
@@ -3247,7 +3343,7 @@
         numeric2 = dpp.replace(/,/g,'');
 
       if(val == ''){
-
+        $('.hasilpph_po').val('');
       }
       else {
         hasiltarif = parseFloat((tarif / 100) * hsldpp);

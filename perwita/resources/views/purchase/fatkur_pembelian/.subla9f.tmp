@@ -220,7 +220,7 @@
                             
                           </select> </td>
 
-                         <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputpph_po" readonly="" value="{{$faktur->fp_nilaipph}}"> </div> <div class="col-md-8"> <input type="text" class="form-control hasilpph_po" style='text-align: right' readonly="" name='hasilpph_po' value="{{number_format($faktur->fp_pph, 2)}}"> </div> </div> </td>
+                         <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputpph_po" readonly=""> </div> <div class="col-md-8"> <input type="text" class="form-control hasilpph_po" style='text-align: right' readonly="" name='hasilpph_po' value="{{ number_format($faktur->fp_pph, 2) }}"> </div> </div> </td>
                       </tr>
                       <tr>
                         <td> <b> Netto Hutang </b> </td>
@@ -343,11 +343,11 @@
                         <td> <input type="text" class="form-control updatestockitem updatestockitem{{$index + 1}}" value="{{$fakturdt->fpdt_updatedstock}}"  name='updatestock[]' readonly=""> </td><!-- "+ // updatestock -->
     
 
-                      <td>  <input type='text' class="form-control biayaitem biayaitem{{$index + 1}} edit" value="{{ number_format($fakturdt->fpdt_biaya, 2)}}"  name='biaya[]' readonly="" data-id="{{$index + 1}}">  </td> <!-- "+ //biaya -->
+                      <td>  <input type='text' class="form-control biayaitem biayaitem{{$index + 1}} edit" value="{{ number_format($fakturdt->fpdt_biaya, 2) }}"  name='biaya[]' readonly="" data-id="{{$index + 1}}">  </td> <!-- "+ //biaya -->
 
-                      <td>  <input type='text' class="form-control nettoitem nettoitem{{$index + 1}}" value="{{ number_format($fakturdt->fpdt_netto, 2)}}"  name='nettoitem[]' readonly=""> </td> <!-- "+ //biaya -->
+                      <td>  <input type='text' class="form-control nettoitem nettoitem{{$index + 1}}" value="{{ number_format($fakturdt->fpdt_netto, 2) }}"  name='nettoitem[]' readonly=""> </td> <!-- "+ //biaya -->
 
-                      <td> <input type="text" class="form-control acc_biayaitem acc_biayaitem{{$index + 1}}" value="{{$fakturdt->fpdt_accbiaya}}" name='acc_biaya[]' readonly=""> </td> <!-- "+ //acc_biaya -->
+                      <td> <input type="text" class="form-control acc_biayaitem acc_biayaitem{{$index + 1}} " value="{{$fakturdt->fpdt_accbiaya}} " name='acc_biaya[]' readonly=""> </td> <!-- "+ //acc_biaya -->
 
                       <td> <input type="text" class="form-control acc_persediaanitem acc_persediaanitem{{$index + 1}} " value='{{$fakturdt->fpdt_accpersediaan}}' name='acc_persediaan[]' readonly=""> </td> <!-- "+ //acc_persediaan -->
 
@@ -402,7 +402,7 @@
                                 @else 
                                     <td> {{$fakturdt->fp_nofaktur}}</td>
                                 @endif
-                            <td> <input type="hidden" class="form-control input-sm" value="{{$fakturdt->po_id}}" name="po_id[]" readonly="">  <input type="text" class="form-control input-sm" value="{{$fakturdt->nama_masteritem}}" readonly="">
+                            <td> <input type="text" class="form-control input-sm" value="{{$fakturdt->po_id}}" name="po_id[]" readonly="">  <input type="text" class="form-control input-sm" value="{{$fakturdt->nama_masteritem}}" readonly="">
                                 <input type="hidden" value="{{$fakturdt->kode_item}}" name="kodeitem[]">
                                 <input type="hidden" value="PO" name="flag">
                             </td>
@@ -834,7 +834,7 @@
                                             @foreach($dataumfp as $index=>$umfp)
 
                                               <tr class="dataum dataum{{$index}}" data-nota="{{$umfp->umfpdt_transaksibank}}">
-                                              <td>  <p class="nofaktur idtrum nofaktur2{{$index}}"  onclick="klikkas(this)" data-id="{{$index}}"> {{$umfp->umfp_nofaktur}} {{$index}} </p>  <input type="hidden"  value="{{$umfp->umfp_id}}" name="idumfp"> </td>
+                                              <td>  <p class="nofaktur idtrum nofaktur2{{$index}}"  onclick="klikkas(this)" data-id="{{$index}}"> {{$umfp->umfp_nofaktur}} {{$index}} </p> <input type="hidden" class="nofaktur" value="{{$umfp->umfp_nofaktur}}" name="nofaktur[]"> <input type="hidden"  value="{{$umfp->umfp_id}}" name="idumfp"> </td>
                                               <td> <p class="nokas_text">{{$umfp->umfpdt_transaksibank}}</p> <input type="hidden" class="nokas" value="{{$umfp->umfpdt_transaksibank}}" name="nokas[]"> </td>
                                               <td><p class="tgl_text">{{$umfp->umfpdt_tgl}}</p> <input type="hidden" class="tglum" value="{{$umfp->umfpdt_tgl}}" name="tglum[]"> </td>
                                               <td> <p class="notaum_text">{{$umfp->umfpdt_notaum}}</p> <input type="hidden" class="notaum" value="{{$umfp->umfpdt_notaum}}" name="notaum[]"></td>
@@ -1052,7 +1052,7 @@
 </div>
 <div id="jurnal" class="modal" >
                   <div class="modal-dialog">
-                    <div class="modal-content">
+                    <div class="modal-content no-padding">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h5 class="modal-title">Laporan Jurnal</h5>
@@ -1067,7 +1067,7 @@
                                             <th> Akun</th>
                                             <th> Debit</th>
                                             <th> Kredit</th>
-                                            <th style="width:100px"> Uraian / Detail </th>                                         
+                                            <th> Uraian / Detail </th>                                         
                                         </tr>
                                     </thead>
                                     
@@ -7051,24 +7051,14 @@ $('.edit').click(function(){
                 $totalDebit=0;
                 $totalKredit=0;
                         console.log(response);
-                    
+                      
                         for(key = 0; key < response.countjurnal; key++) {
                            
                           var rowtampil2 = "<tr class='listjurnal'>" +
                           "<td> "+response.jurnal[key].id_akun+"</td>" +
                           "<td> "+response.jurnal[key].nama_akun+"</td>";
 
-                          if(hasilpph != '' && hasilppn != ''){
-                          
-                            if(response.jurnal[key].dk == 'D'){
-                              $totalDebit = parseFloat($totalDebit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
-                              rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td>";
-                            }
-                            else {
-                              $totalKredit = parseFloat($totalKredit) + parseFloat(response.jurnal[key].jrdt_value);
-                              rowtampil2 += "<td> </td><td>"+accounting.formatMoney(response.jurnal[key].jrdt_value, "", 2, ",",'.')+"</td>";
-                            }
-                          }else if(hasilpph != '' && hasilppn == ''){
+                          if(hasilpph != '' && hasilppn == ''){
                             if(response.jurnal[key].dk == 'D'){
                               $totalDebit = parseFloat($totalDebit) + parseFloat(response.jurnal[key].jrdt_value);
                               rowtampil2 += "<td>"+accounting.formatMoney(response.jurnal[key].jrdt_value, "", 2, ",",'.')+"</td> <td> </td>";
@@ -7077,10 +7067,8 @@ $('.edit').click(function(){
                               $totalKredit = parseFloat($totalKredit) + parseFloat(response.jurnal[key].jrdt_value);
                               rowtampil2 += "<td> </td><td>"+accounting.formatMoney(response.jurnal[key].jrdt_value, "", 2, ",",'.')+"</td>";
                             }
-                          }
-                          else {
-                          
-                              if(response.jurnal[key].dk == 'D'){
+                          }else {
+                            if(response.jurnal[key].dk == 'D'){
                               $totalDebit = parseFloat($totalDebit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
                               rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td>";
                             }

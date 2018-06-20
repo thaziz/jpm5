@@ -7949,15 +7949,8 @@ public function kekata($x) {
 		$netto = str_replace(',', '', $request->nettohutang_po);
 
 
-		$datafp = DB::select("select * from faktur_pembelian where fp_nofaktur = '$nofaktur'");
-
-
-
-		$datappn = $datafp[0]->fp_ppn;
-		$datapph = $datafp[0]->fp_pph;
-		$datadiskon = $datafp[0]->fp_discount;
-		
-		if($request->hasilpph_po != 0.00 ){
+		$datafp = DB::select("select * from faktur_pembelian where")
+		if($request->hasilpph_po != 0 ){
 			$pph = str_replace(',', '', $request->hasilpph_po);
 			$stringpph = explode(",", $request->jenispph_po);
 			$jenispph = $stringpph[0];
@@ -7971,21 +7964,8 @@ public function kekata($x) {
 								'fp_pph' => $pph,
 							]);
 		}
-		else {
-			$pph = str_replace(',', '', $request->hasilpph_po);
-			$stringpph = explode(",", $request->jenispph_po);
-			$jenispph = $stringpph[0];
-			$nilaipph = $stringpph[1];
-
-			$data['header4'] = DB::table('faktur_pembelian')
-							->where('fp_idfaktur' , $idfaktur)
-							->update([
-								'fp_jenispph' => null,
-								'fp_nilaipph' => null,
-								'fp_pph' => null,
-							]);
-		}
-		if($request->hasilppn_po != ''){		
+		if($request->hasilppn_po != '' || $request->hasilppn_po != 0){
+			return 'ok';
 			$hasilppn = str_replace(',', '', $request->hasilppn_po);
 			$data['header3'] = DB::table('faktur_pembelian')
 							->where('fp_idfaktur' , $idfaktur)
@@ -8004,29 +7984,6 @@ public function kekata($x) {
 								'fpm_inputppn' => $request->inputppn_po,
 								'fpm_jenisppn' => $request->jenisppn_po,
 							]);
-		}
-		else {
-			$hasilppn = str_replace(',', '', $request->hasilppn_po);
-			$data['header3'] = DB::table('faktur_pembelian')
-							->where('fp_idfaktur' , $idfaktur)
-							->update([
-								'fp_ppn' => null,
-								'fp_inputppn' => null,
-								'fp_jenisppn' => null,
-							]);
-
-			
-			DB::delete("DELETE from  fakturpajakmasukan  where fpm_idfaktur = '$idfaktur'");
-
-			/*$data['fpm'] = DB::table('fakturpajakmasukan')
-							->where('fpm_idfaktur' , $idfaktur)
-							->update([
-								'fpm_dpp' => $dpp,
-								'fpm_netto' => $netto,
-								'fpm_hasilppn' => $hasilppn,
-								'fpm_inputppn' => $request->inputppn_po,
-								'fpm_jenisppn' => $request->jenisppn_po,
-							]);*/
 		}
 		if($request->disc_item_po != '' || $request->disc_item_po != 0){
 			$hasildiskon_po = str_replace(',', '', $request->hasildiskon_po);
