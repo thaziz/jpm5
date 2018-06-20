@@ -263,6 +263,7 @@ Route::post('fakturpembelian/update_bp_um', 'BiayaPenerusController@update_bp_um
 Route::get('fakturpembelian/outlet_um', 'BiayaPenerusController@outlet_um');
 Route::get('fakturpembelian/subcon_um', 'BiayaPenerusController@subcon_um');
 Route::get('fakturpembelian/biaya_penerus/jurnal', 'BiayaPenerusController@jurnal');
+Route::get('fakturpembelian/biaya_penerus/jurnal_um', 'BiayaPenerusController@jurnal_um');
 //PEMBAYARAN OUTLET
 Route::get('fakturpembelian/getpembayaranoutlet', 'BiayaPenerusController@getpembayaranoutlet')->name('getpembayaranoutlet');
 Route::get('fakturpembelian/cari_outlet', 'BiayaPenerusController@cari_outlet');
@@ -1490,6 +1491,8 @@ Route::post('sales/invoice/hapus_data', 'sales\invoice_Controller@hapus_data');
 Route::post('sales/invoice/hapus_data_detail', 'sales\invoice_Controller@hapus_data_detail');
 Route::get('sales/invoice_form/{nomor}/nota', 'sales\invoice_Controller@cetak_nota');
 Route::get('sales/invoice_form/{nilai}/terbilang', 'sales\invoice_Controller@penyebut');
+Route::get('sales/datatable_invoice1', 'sales\invoice_Controller@datatable_invoice')->name('datatable_invoice1');
+
 // end invoice
 // invoice pembetulan
 Route::get('sales/invoice_pembetulan', 'sales\invoice_pembetulan_controller@index');

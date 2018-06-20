@@ -1007,11 +1007,9 @@ function hitung_pajak_lain(){
 
     // SIMPAN DATA
     function simpan(){
-        var accPiutang=$(".grup_item").find(':selected').data('accpiutang'); 
-        var csfPiutang=$(".grup_item").find(':selected').data('csfpiutang'); 
+        var acc_piutang=$(".grup_item").find(':selected').data('accpiutang'); 
         var pajak_lain=$("#pajak_lain").find(':selected').data('pph'); 
-        var ed_pendapatan = $('#cb_pendapatan').val();
-        var ed_customer = $('#customer').val();
+        var ed_customer=$("#customer").val(); 
       swal({
         title: "Apakah anda yakin?",
         text: "Update Data Invoice!",
@@ -1036,11 +1034,9 @@ function hitung_pajak_lain(){
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
                +'&'+$('.table_pajak :input').serialize()
-               +'&ed_pendapatan='+ed_pendapatan
-               +'&ed_customer='+ed_customer
-               +'&accPiutang='+accPiutang
-               +'&csfPiutang='+csfPiutang
-               +'&pajak_lain='+pajak_lain,
+               +'&acc_piutang='+acc_piutang
+               +'&pajak_lain='+pajak_lain
+               +'&ed_customer='+ed_customer,
           success:function(response){
             
 

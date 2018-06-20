@@ -3582,7 +3582,7 @@ public function save_bp_um(request $req)
 			    for ($i=0; $i < count($unik_asal); $i++) { 
 					for ($a=0; $a < count($req->tb_um_um); $a++) { 
 						if($req->tb_um_um[$a] == $unik_asal[$i]){
-							${$unik_asal[$i]}[$a] = filter_var($req->bp_total_um[$a], FILTER_SANITIZE_NUMBER_INT);
+							${$unik_asal[$i]}[$a] = filter_var($req->tb_bayar_um[$a], FILTER_SANITIZE_NUMBER_INT);
 						}
 					}
 				}
@@ -3602,7 +3602,6 @@ public function save_bp_um(request $req)
 
 
 			}
-			return $jurnal;
 			$id_jurnal=d_jurnal::max('jr_id')+1;
 			// dd($id_jurnal);
 		
@@ -3684,7 +3683,7 @@ public function save_bp_um(request $req)
 			$jurnal_dt = d_jurnal_dt::insert($data_akun);
 
 			$lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
-			dd($lihat);
+			// dd($lihat);
 
 			return response()->json(['status'=>1]);
 		}
@@ -3985,7 +3984,7 @@ public function update_bp_um(request $req)
 			    for ($i=0; $i < count($unik_asal); $i++) { 
 					for ($a=0; $a < count($req->tb_um_um); $a++) { 
 						if($req->tb_um_um[$a] == $unik_asal[$i]){
-							${$unik_asal[$i]}[$a] = filter_var($req->bp_total_um[$a], FILTER_SANITIZE_NUMBER_INT)/100;
+							${$unik_asal[$i]}[$a] = (float)$req->tb_bayar_um[$a];
 						}
 					}
 				}
@@ -4005,7 +4004,16 @@ public function update_bp_um(request $req)
 
 
 			}
+
+
 			// return $jurnal;
+
+
+			$delete_jurnal = DB::table('d_jurnal')
+							   ->where('jr_ref',$req->nofaktur)
+							   ->where('jr_detail','UANG MUKA PEMBELIAN FP')
+							   ->delete();
+
 			$id_jurnal=d_jurnal::max('jr_id')+1;
 			// dd($id_jurnal);
 		
@@ -4104,6 +4112,45 @@ public function jurnal(request $req)
 				 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
 				 ->join('d_akun','jrdt_acc','=','id_akun')
 				 ->where('jr_ref',$bkk->fp_nofaktur)
+				 ->where('jr_detail','!=','UANG MUKA PEMBELIAN FP')
+				 ->get();
+
+
+		$d = [];
+		$k = [];
+		for ($i=0; $i < count($data); $i++) { 
+			if ($data[$i]->jrdt_value < 0) {
+				$data[$i]->jrdt_value *= -1;
+			}
+		}
+
+		for ($i=0; $i < count($data); $i++) { 
+			if ($data[$i]->jrdt_statusdk == 'D') {
+				$d[$i] = $data[$i]->jrdt_value;
+			}elseif ($data[$i]->jrdt_statusdk == 'K') {
+				$k[$i] = $data[$i]->jrdt_value;
+			}
+		}
+		$d = array_values($d);
+		$k = array_values($k);
+
+		$d = array_sum($d);
+		$k = array_sum($k);
+
+		return view('purchase.buktikaskeluar.jurnal',compact('data','d','k'));
+	}
+
+
+public function jurnal_um(request $req)
+	{
+		$bkk = DB::table('faktur_pembelian')	
+				 ->where('fp_idfaktur',$req->id)
+				 ->first();
+		$data= DB::table('d_jurnal')
+				 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
+				 ->join('d_akun','jrdt_acc','=','id_akun')
+				 ->where('jr_ref',$bkk->fp_nofaktur)
+				 ->where('jr_detail','=','UANG MUKA PEMBELIAN FP')
 				 ->get();
 
 

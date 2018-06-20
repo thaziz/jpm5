@@ -11,6 +11,7 @@ use App\d_jurnal;
 use App\d_jurnal_dt;
 use Carbon\Carbon;
 use Auth;
+use Yajra\Datatables\Datatables;
 
 
 class invoice_Controller extends Controller
@@ -40,6 +41,78 @@ class invoice_Controller extends Controller
         echo json_encode($datax);
     }
 
+    public function datatable_invoice()
+    {
+        $cabang = auth::user()->kode_cabang;
+        if (Auth::user()->punyaAkses('Invoice','all')) {
+            $data = DB::table('invoice')
+                      ->join('customer','kode','=','i_kode_customer')
+                      ->get();
+        }else{
+            $data = DB::table('invoice')
+                      ->join('customer','kode','=','i_kode_customer')
+                      ->where('i_kode_cabang',$cabang)
+                      ->get();
+        }
+
+        $data = collect($data);
+        // return $data;
+        return Datatables::of($data)
+                        ->addColumn('aksi', function ($data) {
+
+                            if($data->i_statusprint == 'Released' or Auth::user()->punyaAkses('Invoice','ubah')){
+                                if(cek_periode(carbon::parse($data->i_tanggal)->format('m'),carbon::parse($data->i_tanggal)->format('Y') ) != 0){
+                                  $a = '<button type="button" onclick="edit(\''.$data->i_nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
+                                }
+                            }else{
+                              $a = '';
+                            }
+
+                            if(Auth::user()->punyaAkses('Invoice','print')){
+                                $b = '<button type="button" onclick="print(\''.$data->i_nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
+                            }else{
+                              $b = '';
+                            }
+
+
+                            if($data->i_statusprint == 'Released' or Auth::user()->punyaAkses('Invoice','hapus')){
+                                if(cek_periode(carbon::parse($data->i_tanggal)->format('m'),carbon::parse($data->i_tanggal)->format('Y') ) != 0){
+                                  $c = '<button type="button" onclick="hapus(\''.$data->i_nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
+                                }
+                            }else{
+                              $c = '';
+                            }
+                            return $a . $b .$c  ;
+                                   
+                        })
+                        ->addColumn('customer', function ($data) {
+                          $kota = DB::table('customer')
+                                    ->get();
+
+                          for ($i=0; $i < count($kota); $i++) { 
+                            if ($data->i_kode_customer == $kota[$i]->kode) {
+                                return $kota[$i]->nama;
+                            }
+                          }
+                        })
+                        ->addColumn('tagihan', function ($data) {
+                          return number_format($data->i_total_tagihan,2,',','.'  ); 
+                        })
+                        ->addColumn('sisa', function ($data) {
+                          return number_format($data->i_sisa_pelunasan,2,',','.'  ); 
+                        })
+                        ->addColumn('status', function ($data) {
+                            if($data->i_statusprint == 'Released'){
+                              return '<label class="label label-warning">'.$data->i_statusprint.'</label>';
+                            }else{
+                              return '<label class="label label-success">'.$data->i_statusprint.'</label>';
+                            }
+                        })
+                        ->addIndexColumn()
+                        ->make(true);
+
+    }
+
     public function get_data (Request $request) {
         $id =$request->input('kode');
         $data = DB::table('invoice')->where('kode', $id)->first();
@@ -55,7 +128,7 @@ class invoice_Controller extends Controller
 
 
     public function index(){
-     $cabang = auth::user()->kode_cabang;
+        $cabang = auth::user()->kode_cabang;
         if (Auth::user()->punyaAkses('Invoice','all')) {
             $data = DB::table('invoice')
                       ->join('customer','kode','=','i_kode_customer')
@@ -487,7 +560,7 @@ public function pajak_lain(request $request)
 public function simpan_invoice(request $request)
 {
 
-  // dd($request->all());
+  dd($request->all());
    return DB::transaction(function() use ($request) {  
 
 
@@ -527,20 +600,13 @@ public function simpan_invoice(request $request)
                             ->where('id_akun','like','1302'.'%')
                             ->where('kode_cabang',$cabang)
                             ->first();
-      $request->accPiutang = $cari_acc_piutang->id_akun;
+    }else if($request->ed_pendapatan == 'KORAN'){
+      $cari_acc_piutang = $request->acc_piutang;
     }
 
     $cari_no_invoice = DB::table('invoice')
                          ->where('i_nomor',$request->nota_invoice)
                          ->first();
-    // dd($request->all());
-    // dd($total_tagihan);
-    $ppn_type='';
-    $ppn_persen='';
-    $nilaiPpn='';
-    $akunPPH='';
-    $d=[];
-
 
     $request->netto_detail = str_replace(['Rp', '\\', '.', ' '], '', $request->netto_detail);
     $request->netto_detail =str_replace(',', '.', $request->netto_detail);
@@ -573,6 +639,19 @@ public function simpan_invoice(request $request)
     if ($request->ed_pendapatan == 'PAKET' || $request->ed_pendapatan == 'KARGO') {
 
         if ($cari_no_invoice == null) {
+
+        }else{
+            $bulan = Carbon::now()->format('m');
+            $tahun = Carbon::now()->format('y');
+            $cabang= Auth::user()->kode_cabang;
+            $cari_nota = DB::select("SELECT  substring(max(i_nomor),11) as id from invoice
+                                            WHERE i_kode_cabang = '$cabang'
+                                            AND to_char(create_at,'MM') = '$bulan'
+                                            AND to_char(create_at,'YY') = '$tahun'");
+            $index = (integer)$cari_nota[0]->id + 1;
+            $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+            $nota = 'INV' . Auth::user()->kode_cabang . $bulan . $tahun . $index;
+        }
 
             $save_header_invoice = DB::table('invoice')
                                      ->insert([
@@ -658,104 +737,6 @@ public function simpan_invoice(request $request)
              }
 
             return response()->json(['status' => 1]);
-
-        }else{
-
-             $bulan = Carbon::now()->format('m');
-             $tahun = Carbon::now()->format('y');
-             $cabang= Auth::user()->kode_cabang;
-             $cari_nota = DB::select("SELECT  substring(max(i_nomor),11) as id from invoice
-                                            WHERE i_kode_cabang = '$cabang'
-                                            AND to_char(create_at,'MM') = '$bulan'
-                                            AND to_char(create_at,'YY') = '$tahun'");
-             $index = (integer)$cari_nota[0]->id + 1;
-             $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-             $nota = 'INV' . Auth::user()->kode_cabang . $bulan . $tahun . $index;
-
-
-             $save_header_invoice = DB::table('invoice')
-                                     ->insert([
-                                          'i_nomor'              =>  $nota,
-                                          'i_tanggal'            =>  $tgl,
-                                          'i_keterangan'         =>  $request->ed_keterangan,
-                                          'i_tgl_mulai_do'       =>  $do_awal,
-                                          'i_tgl_sampai_do'      =>  $do_akhir,
-                                          'i_jatuh_tempo'        =>  $ed_jatuh_tempo,
-                                          'i_total'              =>  $total_tagihan,
-                                          'i_total_tagihan'      =>  $total_tagihan,
-                                          'i_sisa_pelunasan'     =>  $total_tagihan,
-                                          'i_sisa_akhir'         =>  $total_tagihan,
-                                          'i_netto_detail'       =>  $netto_total,
-                                          'i_diskon1'            =>  $diskon1,
-                                          'i_status'             =>  'Released',
-                                          'i_diskon2'            =>  $diskon2,
-                                          'i_statusprint'        =>  'Released',
-                                          'i_netto'              =>  $ed_total,
-                                          'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
-                                          'i_ppntpe'             =>  $ppn_type,
-                                          'i_ppnrte'             =>  $ppn_persen,
-                                          'i_ppnrp'              =>  $total_ppn,
-                                          'i_kode_pajak'         =>  $request->kode_pajak_lain,
-                                          'i_pajak_lain'         =>  $total_pph,
-                                          'i_tagihan'            =>  $total_tagihan,
-                                          'i_kode_customer'      =>  $request->ed_customer,
-                                          'i_kode_cabang'        =>  $cabang,
-                                          'create_by'            =>  Auth::user()->m_name,
-                                          'create_at'            =>  Carbon::now(),
-                                          'i_acc_piutang'        =>  $request->accPiutang,
-                                          'i_csf_piutang'        =>  $request->accPiutang,
-                                          'update_by'            =>  Auth::user()->m_name,
-                                          'i_grup_item'          =>  $request->grup_item,
-                                          'update_at'            =>  Carbon::now(),
-                                          'i_pendapatan'         =>  $request->ed_pendapatan
-                                     ]);
-
-             for ($i=0; $i < count($request->do_detail); $i++) { 
-                
-                $cari_id = DB::table('invoice_d')
-                             ->max('id_id');
-
-                 if ($cari_id == null ) {
-                     $cari_id = 1;
-                 }else{
-                     $cari_id += 1;
-                 }
-                 $do = DB::table('delivery_order')
-                         ->where('nomor',$request->do_detail[$i])
-                         ->first();
-
-
-                 $save_detail_invoice = DB::table('invoice_d')
-                                          ->insert([
-                                              'id_id'            => $cari_id,
-                                              'id_nomor_invoice' => strtoupper($request->nota_invoice),
-                                              'id_nomor_do'      => $request->do_detail[$i],
-                                              'create_by'        => Auth::user()->m_name,
-                                              'create_at'        => Carbon::now(),
-                                              'update_by'        => Auth::user()->m_name,
-                                              'update_at'        => Carbon::now(),
-                                              'id_tgl_do'        => $do->tanggal,
-                                              'id_jumlah'        => $request->dd_jumlah[$i],
-                                              'id_keterangan'    => $do->deskripsi,
-                                              'id_harga_satuan'  => $do->tarif_dasar,
-                                              'id_harga_bruto'   => $request->dd_total[$i],
-                                              'id_diskon'        => $request->dd_diskon[$i],
-                                              'id_harga_netto'   => $request->harga_netto[$i],
-                                              'id_kode_satuan'   => $do->kode_satuan,
-                                              'id_kuantum'       => $do->jumlah,
-                                              'id_kode_item'     => 'tidak ada',
-                                              'id_tipe'          => 'tidak tahu',
-                                              'id_acc_penjualan' => $request->akun[$i]
-                                          ]);
-                    $update_do = DB::table('delivery_order')
-                                   ->where('nomor',$request->do_detail[$i])
-                                   ->update([
-                                    'status_do'=>'Approved'
-                                   ]);
-             }
-
-             return response()->json(['status' => 2,'nota'=>$nota]);
-        }
 
     }else if($request->ed_pendapatan == 'KORAN'){
 
