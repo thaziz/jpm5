@@ -33,14 +33,7 @@
 
               <div class="box" id="seragam_box">
                 <div class="box-header">
-                @if(count($jurnal_dt)!=0)
-                    <div class="pull-right">
-                         <a onclick="lihatjurnal('{{$data->i_nomor or null}}','INVOICE')" class="btn-xs btn-primary" aria-hidden="true"> 
-                          <i class="fa  fa-eye"> </i>
-                           &nbsp;  Lihat Jurnal  
-                         </a> 
-                    </div>
-                @endif
+                <a class="pull-right jurnal" onclick="lihat_jurnal()" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal</i></a>
                 </div><!-- /.box-header -->
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
@@ -437,7 +430,23 @@
     </div>
 </div>
 
-<div id="data-jurnal">
+<div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Jurnal Invoice</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body tabel_jurnal">
+          
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="row" style="padding-bottom: 50px;"></div>
@@ -1077,18 +1086,21 @@ function hitung_pajak_lain(){
      });
     }
 
-   function lihatjurnal($ref,$note){
+   function lihat_jurnal(){
 
-          $.ajax({
-          url:baseUrl + '/data/jurnal/'+$ref+'/'+$note,
-          type:'get',
-          
-         
-          success:function(response){
-                $('#data-jurnal').html(response);
-                $('#jurnal').modal('show');
-              }
-        });
+        var id = '{{ $id }}';
+        $.ajax({
+            url:baseUrl + '/sales/invoice/jurnal',
+            type:'get',
+            data:{id},
+            success:function(data){
+               $('.tabel_jurnal').html(data);
+               $('.modal_jurnal').modal('show');
+            },
+            error:function(data){
+                // location.reload();
+            }
+        }); 
    }
 
    function ngeprint(){

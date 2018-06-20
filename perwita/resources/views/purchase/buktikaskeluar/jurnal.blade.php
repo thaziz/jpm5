@@ -11,7 +11,7 @@
 		@foreach($data as $data)
 		<tr>
 			<td>{{ $data->id_akun }}</td>
-			<td>{{ $data->nama_akun }}</td>
+			<td>{{ $data->jrdt_detail }}</td>
 			<td align="right">@if($data->jrdt_statusdk == 'D'){{ number_format($data->jrdt_value, 2, ",", ".") }}  @endif</td>
 			<td align="right">@if($data->jrdt_statusdk == 'K'){{ number_format($data->jrdt_value, 2, ",", ".") }} @endif</td>
 		</tr>

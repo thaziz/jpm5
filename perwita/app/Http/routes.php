@@ -1492,6 +1492,7 @@ Route::post('sales/invoice/hapus_data_detail', 'sales\invoice_Controller@hapus_d
 Route::get('sales/invoice_form/{nomor}/nota', 'sales\invoice_Controller@cetak_nota');
 Route::get('sales/invoice_form/{nilai}/terbilang', 'sales\invoice_Controller@penyebut');
 Route::get('sales/datatable_invoice1', 'sales\invoice_Controller@datatable_invoice')->name('datatable_invoice1');
+Route::get('sales/invoice/jurnal', 'sales\invoice_Controller@jurnal1');
 
 // end invoice
 // invoice pembetulan

@@ -1038,6 +1038,7 @@ class kasKeluarController extends Controller
 			$cari_nota = DB::table('bukti_kas_keluar')
 						   ->where('bkk_nota',$req->nota)
 						   ->first();
+						   
 			if ($cari_nota != null) {
 				if ($cari_nota->updated_by == $user) {
 					return 'Data Sudah Ada';
