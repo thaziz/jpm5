@@ -149,6 +149,38 @@ class PengeluaranBarangController extends Controller
 					$cari_id_dt += 1;
 				}
 
+				$kodeitem = $request->nama_barang[$i];
+				$cabang = $request->cabang;
+
+				$dataitem = DB::select("select * from masteritem where kode_item = '$kodeitem'");
+				$accpersediaan2 = $dataitem[0]->acc_persediaan;
+
+				$accpersediaan = substr($accpersediaan2, 0,4);
+				$jenisitem = substr($kodeitem, 0,1);
+
+
+				$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan%' and kode_cabang = '$cabang'");
+
+				$akunpersediaan = $datakun2[0]->id_akun;
+
+				if($jenisitem == 'P'){
+					$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
+				}
+				else if($jenisitem == 'S'){
+					$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
+				}
+				else if($jenisitem == 'A'){
+					$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
+				}
+				else if($jenisitem == 'C'){
+					$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
+				}
+				else {
+					$akunbiaya = DB::select("select * from d_akun where kode_cabang = '$cabang' ");
+				}
+
+				$akunbiaya2 = $akunbiaya[0]->id_akun;
+
 				if ($request->stock_gudang[$i] != 0) {
 					$save_dt = DB::table('pengeluaran_barang_dt')
 								 ->insert([
@@ -156,9 +188,10 @@ class PengeluaranBarangController extends Controller
 								 	'pbd_pb_id'	 		=> $cari_id,
 								 	'pbd_pb_dt'	 		=> $i+1,
 								 	'pbd_nama_barang'	=> $request->nama_barang[$i],
-								 	'pbd_jumlah_barang' => $request->diminta[$i],						 	
-								 	'pbd_nopol' 		=> $request->nopol[$i]					 	
-
+								 	'pbd_jumlah_barang' => $request->diminta[$i],
+								 	'pbd_nopol' 		=> $request->nopol[$i],
+								 	'pbd_akunhutangpersediaan' => $akunpersediaan,
+								 	'pbd_akunhutangbiaya' => $akunbiaya2,
 								 ]);
 				}
 				
@@ -307,6 +340,7 @@ class PengeluaranBarangController extends Controller
 		// dd($request->all()); 	
    		return DB::transaction(function() use ($request) {  
 
+   		$datajurnal = [];
 		$total = [];
 		$data = DB::table('pengeluaran_barang')
 			      // ->join('pengeluaran_barang_dt','pbd_pb_id','=','pb_id')
@@ -342,7 +376,6 @@ class PengeluaranBarangController extends Controller
 				$idbarangterima = (int)$idbarangterima + 1;
 				
 			}
-
 			else {
 				$idbarangterima = 1;
 				
@@ -365,6 +398,13 @@ class PengeluaranBarangController extends Controller
 					$barangterima->bt_cabangpo = $datapb[0]->pb_peminta;
 					$barangterima->save();
 
+				}
+
+				if($jeniskeluar == 'Pemakaian Reguler'){
+					$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
+					$datajurnal[$i]['subtotal'] = $totalharga;
+					$datajurnal[$i]['dk'] = 'D';
+					$datajurnal[$i]['detail'] = $request->keterangandt[$i];
 				}
 
 			$cari_sm = DB::table('stock_mutation')
@@ -479,10 +519,6 @@ class PengeluaranBarangController extends Controller
 						 ->first();
 
 				$kurang = $pengurangan_sisa;
-
-				
-
-				
 			}
 
 			
@@ -496,9 +532,6 @@ class PengeluaranBarangController extends Controller
 								->update([
 									'sg_qty' => $stock
 								]);
-
-
-			
 		}
 
 
@@ -529,7 +562,6 @@ class PengeluaranBarangController extends Controller
 		}
 
 
-			
 
 		return response()->json(['status'=>1]);
 	});
