@@ -847,11 +847,16 @@ function hitung_pajak_lain(){
                nomor_do.push(no_do);
             }
         });
-
+        $.ajaxSetup({
+            headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
         $.ajax({
             url:baseUrl +'/sales/append_do',
             data:{nomor_dt,nomor_do,cb_pendapatan},
+            type:'post',
             dataType:'json',
             success:function(response){
                 if (response.jenis == 'KORAN') {

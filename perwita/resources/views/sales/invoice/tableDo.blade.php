@@ -16,6 +16,7 @@
         @if($val->id_nomor_do == null or $val->id_nomor_invoice == $id)
                 <tr>
                     <td align="center">
+                      {{ csrf_field() }}
                         {{$i+1}}
                         <input type="hidden" value="{{$val->dd_id}}" class="nomor_dt" name="id_dt">
                     </td>
