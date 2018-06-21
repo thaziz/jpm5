@@ -1,6 +1,6 @@
-UNDER MAINTENANCE(LAGI DIPERBAIKI)
 
-{{-- @extends('main')
+
+@extends('main')
 
 @section('title', 'dashboard')
 
@@ -222,4 +222,3 @@ UNDER MAINTENANCE(LAGI DIPERBAIKI)
 
 </script>
 @endsection
- --}}
