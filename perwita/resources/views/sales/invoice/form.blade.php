@@ -742,6 +742,7 @@ function hitung_total_tagihan(){
         $.ajax({
             url:baseUrl +'/sales/append_do',
             data:{nomor_dt,nomor_do,cb_pendapatan},
+            type:'post',
             dataType:'json',
             success:function(response){
                 if (response.jenis == 'KORAN') {
