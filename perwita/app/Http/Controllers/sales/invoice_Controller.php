@@ -69,7 +69,7 @@ class invoice_Controller extends Controller
                             }
 
                             if(Auth::user()->punyaAkses('Invoice','print')){
-                                $b = '<button type="button" onclick="print(\''.$data->i_nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
+                                $b = '<button type="button" onclick="ngeprint(\''.$data->i_nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
                             }else{
                               $b = '';
                             }

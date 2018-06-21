@@ -469,44 +469,40 @@ class KasController extends Controller
 
 	    $isset =  DB::table('biaya_penerus_kas')
 	    		  ->select('bpk_nota')
+	    		  ->where('bpk_nota',$request->no_trans)
 	    		  ->get();
 
-	    $ada_data = 0;
-	    for ($i=0; $i < count($isset); $i++) { 
-	    	if($isset[$i]->bpk_nota == $request->no_trans){
-	    		$ada_data = 1;
-	    	}
-	    }
+	 
 	    $total_penerus_float = array_sum($request->penerus);
 
-        if($ada_data == 0){
-		$nomor=$id;
-		biaya_penerus_kas::create([
-		  	'bpk_id'      	  	 => $id,
-		  	'bpk_nota'  	  	 => $request->no_trans,
-		  	'bpk_jenis_biaya' 	 => $request->jenis_pembiayaan,
-		  	'bpk_pembiayaan'  	 => $pembiayaan,
-		  	'bpk_total_tarif' 	 => round($request->total_tarif,2),
-		  	'bpk_tanggal'     	 => Carbon::parse($request->tN)->format('Y-m-d'),
-		  	'bpk_nopol'		  	 => strtoupper($request->nopol),
-		  	'bpk_status'	  	 => 'Released',
-		  	'bpk_status_pending' => $pending_status,	
-		  	'bpk_kode_akun'		 => $request->nama_kas,
-		  	'bpk_sopir'		 	 => strtoupper($request->nama_sopir),
-		  	'bpk_keterangan'	 => $request->note,
-		  	'bpk_tipe_angkutan'  => $request->jenis_kendaraan,		
-		  	'created_at'		 => Carbon::now(),
-		  	'bpk_comp'	 		 => $request->cabang,
-		  	'bpk_tarif_penerus'	 => round($total_penerus_float,2),
-		  	'bpk_edit'	 		 => 'UNALLOWED',
-		  	'bpk_biaya_lain'	 => round($request->biaya_dll,2),
-		  	'bpk_jarak'	 		 => $request->km,
-		  	'bpk_harga_bbm'	     => round($request->total_bbm,2),
-			'bpk_jenis_bbm'      => $cari_persen->jenis_bbm,
-			'bpk_acc_biaya'      => $cari_persen->kode_akun,
-		  	'created_by'		 => Auth::user()->m_name,
-		  	'updated_by'		 => Auth::user()->m_name,
-		  ]);
+        if($isset == null){
+			$nomor=$id;
+			biaya_penerus_kas::create([
+			  	'bpk_id'      	  	 => $id,
+			  	'bpk_nota'  	  	 => $request->no_trans,
+			  	'bpk_jenis_biaya' 	 => $request->jenis_pembiayaan,
+			  	'bpk_pembiayaan'  	 => $pembiayaan,
+			  	'bpk_total_tarif' 	 => round($request->total_tarif,2),
+			  	'bpk_tanggal'     	 => Carbon::parse($request->tN)->format('Y-m-d'),
+			  	'bpk_nopol'		  	 => strtoupper($request->nopol),
+			  	'bpk_status'	  	 => 'Released',
+			  	'bpk_status_pending' => $pending_status,	
+			  	'bpk_kode_akun'		 => $request->nama_kas,
+			  	'bpk_sopir'		 	 => strtoupper($request->nama_sopir),
+			  	'bpk_keterangan'	 => $request->note,
+			  	'bpk_tipe_angkutan'  => $request->jenis_kendaraan,		
+			  	'created_at'		 => Carbon::now(),
+			  	'bpk_comp'	 		 => $request->cabang,
+			  	'bpk_tarif_penerus'	 => round($total_penerus_float,2),
+			  	'bpk_edit'	 		 => 'UNALLOWED',
+			  	'bpk_biaya_lain'	 => round($request->biaya_dll,2),
+			  	'bpk_jarak'	 		 => $request->km,
+			  	'bpk_harga_bbm'	     => round($request->total_bbm,2),
+				'bpk_jenis_bbm'      => $cari_persen->jenis_bbm,
+				'bpk_acc_biaya'      => $cari_persen->kode_akun,
+			  	'created_by'		 => Auth::user()->m_name,
+			  	'updated_by'		 => Auth::user()->m_name,
+			  ]);
 
 		}else{
 
@@ -710,12 +706,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
 				}else if (substr($akun[$i],0, 1)>1) {
 
@@ -725,12 +723,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
 				}
 			}
@@ -1186,12 +1186,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
 				}else if (substr($akun[$i],0, 1)>1) {
 
@@ -1201,12 +1203,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
 				}
 			}

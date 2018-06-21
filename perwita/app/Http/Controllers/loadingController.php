@@ -10,7 +10,8 @@ use carbon\carbon;
 use DB;
 use App\biaya_penerus_kas;
 use App\biaya_penerus_kas_detail;
-
+use App\d_jurnal;
+use App\d_jurnal_dt;
 class loadingController extends Controller
 {	
 	public function FunctionName($value='')
@@ -158,16 +159,13 @@ class loadingController extends Controller
 					->first();
 
 
-			$akun = DB::table('d_akun')
-					  ->where('id_akun','like','2199'.'%')
+			$cari_akun = DB::table('d_akun')
+					  ->where('id_akun','like','5299'.'%')
 					  ->where('kode_cabang',$request->cabang)
 					  ->first();
 
-			if ($akun == null) {
-				$akun = DB::table('d_akun')
-					  ->where('id_akun','like','2199'.'%')
-					  ->where('kode_cabang','000')
-					  ->first();
+			if ($cari_akun == null) {
+				return response()->json(['status'=>3,'data'=>'Akun Hutang Untuk Cabang Ini Tidak Tersedia']);
 			}
 
 	        if($cari_data == 0){
@@ -193,7 +191,7 @@ class loadingController extends Controller
 				  	'bpk_jarak'	 		 => 0,
 				  	'bpk_harga_bbm'	     => 0,
 					'bpk_jenis_bbm'      => 0,
-					'bpk_acc_biaya'      => $akun->id_akun,
+					'bpk_acc_biaya'      => $cari_akun->id_akun,
 				  	'created_by'		 => Auth::user()->m_name,
 				  	'updated_by'		 => Auth::user()->m_name,
 				]);
@@ -205,6 +203,7 @@ class loadingController extends Controller
 
 
 			for ($i=0; $i < count($request->no_resi); $i++) { 
+
 				$id_bpkd = DB::table('biaya_penerus_kas_detail')
 					->max('bpkd_id');
 
@@ -250,25 +249,177 @@ class loadingController extends Controller
 
 
 		
-			$save_patty = DB::table('patty_cash')
-				   ->insert([
-			   		'pc_id'		  	  => $cari_id_pc,
-			   		'pc_tgl'		  => Carbon::parse($request->tN)->format('Y-m-d'),
-			   		'pc_ref'	 	  => 10,
-			   		'pc_akun' 		  => $akun->id_akun,
-			   		'pc_akun_kas' 	  => $request->nama_kas,
-			   		'pc_keterangan'	  => $request->note,
-			   		'pc_comp'  	  	  => $request->cabang,
-			   		'pc_edit'  	  	  => 'UNALLOWED',
-			   		'pc_reim'  	  	  => 'UNRELEASED',
-			   		'pc_debet'  	  => 0,
-			   		'pc_no_trans'  	  => $request->no_trans,
-			   		'pc_kredit'  	  => $request->total_penerus,
-			   		'created_at'	  => Carbon::now(),
-			   		'updated_by'	  => Auth::user()->m_username,
-			   		'created_by'	  => Auth::user()->m_username,
-		        	'updated_at' 	  => Carbon::now()
-			]);
+			// JURNAL
+			$cari_id = DB::table('biaya_penerus_kas')
+			  			   ->where('bpk_id','=',$id)
+			  			   ->get();
+
+			$cari=DB::table('biaya_penerus_kas')			
+						 ->join('cabang','kode','=','bpk_comp')
+						 ->where('bpk_id','=',$id)
+						 ->get();
+			$cari_dt=DB::table('biaya_penerus_kas_detail')		
+						 ->where('bpkd_bpk_id','=',$id)
+						 ->get();
+		    $cari_asal=DB::table('biaya_penerus_kas_detail')
+		    			 ->select('bpkd_kode_cabang_awal')			
+						 ->where('bpkd_bpk_id','=',$id)
+						 ->get();
+
+			for ($i=0; $i < count($cari_asal); $i++) { 
+
+				$cari_asal_2[$i] = $cari_asal[$i]->bpkd_kode_cabang_awal; 
+			}
+
+			if (isset($cari_asal_2)) {
+			    $unik_asal = array_unique($cari_asal_2);
+			    $unik_asal = array_values($unik_asal);
+
+			    // return $unik_asal;
+			    for ($i=0; $i < count($unik_asal); $i++) { 
+					for ($a=0; $a < count($cari_dt); $a++) { 
+						if($cari_dt[$a]->bpkd_kode_cabang_awal==$unik_asal[$i]){
+							${$unik_asal[$i]}[$a] = $cari_dt[$a]->bpkd_tarif_penerus;
+						}
+					}
+				}
+
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					${'total'.$unik_asal[$i]} = array_sum(${$unik_asal[$i]});
+				}
+				// $harga_array = [];
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					 $harga_array[$i] = ${'total'.$unik_asal[$i]};
+				}
+				for ($i=0; $i < count($harga_array); $i++) { 
+					 $jurnal[$i]['harga'] = round($harga_array[$i],2);
+					 $jurnal[$i]['asal'] = $unik_asal[$i];
+
+				}
+
+				// IKI MAS JURNAL.E HARGA MBEK ASALE
+				
+				// //JURNAL
+				$id_jurnal=d_jurnal::max('jr_id')+1;
+				$jenis_bayar = DB::table('jenisbayar')
+								 ->where('idjenisbayar',10)
+								 ->first();
+
+				$jurnal_save = d_jurnal::create(['jr_id'		=> $id_jurnal,
+											'jr_year'   => carbon::parse(str_replace('/', '-', $request->tN))->format('Y'),
+											'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
+											'jr_detail' => $jenis_bayar->jenisbayar,
+											'jr_ref'  	=> $request->no_trans,
+											'jr_note'  	=> 'BIAYA PENERUS KAS LOADING/UNLOADING',
+											'jr_insert' => carbon::now(),
+											'jr_update' => carbon::now(),
+											]);
+
+				//IKI TOTAL KABEH HARGANE
+				$total_harga=array_sum($harga_array);
+
+				$cari_akun = substr($cari_akun->id_akun, 0,4);
+
+
+
+				$akun 	  = [];
+				$akun_val = [];
+				$jumlah   = [];
+
+				array_push($akun, $request->nama_kas);
+				array_push($akun_val, $total_harga);
+				for ($i=0; $i < count($jurnal); $i++) { 
+					$acc = DB::table('d_akun')
+							 ->where('id_akun','like',$cari_akun .'%')
+							 ->where('kode_cabang',$jurnal[$i]['asal'])
+							 ->first();
+
+					if ($acc == null) {
+						return response()->json(['status'=>3,'data'=>'Terdapat Resi Yang Tidak Memiliki Akun Biaya']);
+					}
+
+					$cari_id_pc = DB::table('patty_cash')
+								 ->max('pc_id')+1;
+
+
+					$save_patty = DB::table('patty_cash')
+						   ->insert([
+						   		'pc_id'			  => $cari_id_pc,
+						   		'pc_tgl'		  => Carbon::now(),
+						   		'pc_ref'	 	  => 10,
+						   		'pc_akun' 		  => $acc->id_akun,
+						   		'pc_akun_kas' 	  => $request->nama_kas,
+						   		'pc_keterangan'	  => $request->note,
+						   		'pc_comp'  	  	  => $jurnal[$i]['asal'],
+						   		'pc_edit'  	  	  => 'UNALLOWED',
+						   		'pc_reim'  	  	  => 'UNRELEASED',
+						   		'pc_debet'  	  => 0,
+						   		'pc_no_trans'  	  => $request->no_trans,
+						   		'pc_kredit'  	  => $jurnal[$i]['harga'],
+						   		'pc_user'    	  => Auth::user()->m_name,
+						   		'created_at'	  => Carbon::now(),
+					        	'updated_at' 	  => Carbon::now()
+					]);
+					array_push($akun, $acc->id_akun);
+					array_push($akun_val, $jurnal[$i]['harga']);
+				}
+
+				// dd($akun_val);
+
+
+				for ($i=0; $i < count($akun); $i++) { 
+
+					$cari_coa = DB::table('d_akun')
+									  ->where('id_akun','like',$akun[$i].'%')
+									  ->first();
+
+
+					if (substr($akun[$i],0, 1)==1) {
+						
+						if ($cari_coa->akun_dka == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
+						}
+					}else if (substr($akun[$i],0, 1)>1) {
+
+						if ($cari_coa->akun_dka == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
+						}
+					}
+				}
+				$jurnal_dt = d_jurnal_dt::insert($data_akun);
+
+				$lihat_jurnal = DB::table('d_jurnal_dt')
+							->where('jrdt_jurnal',$id_jurnal)
+							->get();
+
+
+			}
+
+			// dd($lihat_jurnal);
 
 			return response()->json(['status'=>1,'id'=>$id]);
 
@@ -423,15 +574,12 @@ class loadingController extends Controller
 
 
 			$akun = DB::table('d_akun')
-					  ->where('id_akun','like','2199'.'%')
+					  ->where('id_akun','like','5299'.'%')
 					  ->where('kode_cabang',$request->cabang)
 					  ->first();
 
 			if ($akun == null) {
-				$akun = DB::table('d_akun')
-					  ->where('id_akun','like','2199'.'%')
-					  ->where('kode_cabang','000')
-					  ->first();
+				return response()->json(['status'=>3,'data'=>'Akun Hutang Untuk Cabang Ini Tidak Tersedia']);
 			}
 
 				biaya_penerus_kas::where('bpk_nota',$request->no_trans)->update([
@@ -499,34 +647,190 @@ class loadingController extends Controller
 			}
 			
 
-			$cari_id_pc = DB::table('patty_cash')
-						 ->max('pc_id');
+			// JURNAL
+			$cari_id = DB::table('biaya_penerus_kas')
+			  			   ->where('bpk_id','=',$request->id)
+			  			   ->get();
 
-			if ($cari_id_pc == null) {
-				$cari_id_pc = 1;
-			}else{
-				$cari_id_pc += 1;
+			$cari=DB::table('biaya_penerus_kas')			
+						 ->join('cabang','kode','=','bpk_comp')
+						 ->where('bpk_id','=',$request->id)
+						 ->get();
+			$cari_dt=DB::table('biaya_penerus_kas_detail')		
+						 ->where('bpkd_bpk_id','=',$request->id)
+						 ->get();
+		    $cari_asal=DB::table('biaya_penerus_kas_detail')
+		    			 ->select('bpkd_kode_cabang_awal')			
+						 ->where('bpkd_bpk_id','=',$request->id)
+						 ->get();
+
+			for ($i=0; $i < count($cari_asal); $i++) { 
+
+				$cari_asal_2[$i] = $cari_asal[$i]->bpkd_kode_cabang_awal; 
 			}
 
 
-		
-			$save_patty = DB::table('patty_cash')
-				   ->where('pc_no_trans',$request->no_trans)
-				   ->update([
-			   		'pc_tgl'		  => Carbon::parse($request->tN)->format('Y-m-d'),
-			   		'pc_ref'	 	  => 10,
-			   		'pc_akun' 		  => $akun->id_akun,
-			   		'pc_akun_kas' 	  => $request->nama_kas,
-			   		'pc_keterangan'	  => $request->note,
-			   		'pc_comp'  	  	  => $request->cabang,
-			   		'pc_edit'  	  	  => 'UNALLOWED',
-			   		'pc_reim'  	  	  => 'UNRELEASED',
-			   		'pc_debet'  	  => 0,
-			   		'pc_no_trans'  	  => $request->no_trans,
-			   		'pc_kredit'  	  => $request->total_penerus,
-			   		'updated_by'	  => Auth::user()->m_username,
-		        	'updated_at' 	  => Carbon::now()
-			]);
+
+
+			if (isset($cari_asal_2)) {
+			    $unik_asal = array_unique($cari_asal_2);
+			    $unik_asal = array_values($unik_asal);
+
+			    // return $unik_asal;
+			    for ($i=0; $i < count($unik_asal); $i++) { 
+					for ($a=0; $a < count($cari_dt); $a++) { 
+						if($cari_dt[$a]->bpkd_kode_cabang_awal==$unik_asal[$i]){
+							${$unik_asal[$i]}[$a] = $cari_dt[$a]->bpkd_tarif_penerus;
+						}
+					}
+				}
+
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					${'total'.$unik_asal[$i]} = array_sum(${$unik_asal[$i]});
+				}
+				// $harga_array = [];
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					 $harga_array[$i] = ${'total'.$unik_asal[$i]};
+				}
+				for ($i=0; $i < count($harga_array); $i++) { 
+					 $jurnal[$i]['harga'] = round($harga_array[$i],2);
+					 $jurnal[$i]['asal'] = $unik_asal[$i];
+
+				}
+
+				// IKI MAS JURNAL.E HARGA MBEK ASALE
+				$delete_jurnal = DB::table('d_jurnal')
+								   ->where('jr_ref',$request->no_trans)
+								   ->delete();
+				// //JURNAL
+				$id_jurnal=d_jurnal::max('jr_id')+1;
+				$jenis_bayar = DB::table('jenisbayar')
+								 ->where('idjenisbayar',10)
+								 ->first();
+
+				$jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
+											'jr_year'   => carbon::parse(str_replace('/', '-', $request->tN))->format('Y'),
+											'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
+											'jr_detail' => $jenis_bayar->jenisbayar,
+											'jr_ref'  	=> $request->no_trans,
+											'jr_note'  	=> 'BIAYA PENERUS KAS',
+											'jr_insert' => carbon::now(),
+											'jr_update' => carbon::now(),
+											]);
+
+				//IKI TOTAL KABEH HARGANE
+				$total_harga=array_sum($harga_array);
+
+				$cari_akun = substr($cari_persen->kode_akun, 0,4);
+
+
+
+				$akun 	  = [];
+				$akun_val = [];
+				$jumlah   = [];
+
+				$delete = DB::table('patty_cash')
+						   ->where('pc_no_trans',$request->no_trans)
+						   ->delete();
+
+				array_push($akun, $request->nama_kas);
+				array_push($akun_val, $total_harga);
+				for ($i=0; $i < count($jurnal); $i++) { 
+					$acc = DB::table('d_akun')
+							 ->where('id_akun','like',$cari_akun .'%')
+							 ->where('kode_cabang',$jurnal[$i]['asal'])
+							 ->first();
+
+					if ($acc == null) {
+						return response()->json(['status'=>3,'data'=>'Terdapat Resi Yang Tidak Memiliki Akun Biaya']);
+					}
+
+
+					$cari_id_pc = DB::table('patty_cash')
+								 ->max('pc_id')+1;
+
+
+					$save_patty = DB::table('patty_cash')
+						   ->insert([
+						   		'pc_id'			  => $cari_id_pc,
+						   		'pc_tgl'		  => Carbon::now(),
+						   		'pc_ref'	 	  => 10,
+						   		'pc_akun' 		  => $acc->id_akun,
+						   		'pc_akun_kas' 	  => $request->nama_kas,
+						   		'pc_keterangan'	  => $request->note,
+						   		'pc_comp'  	  	  => $jurnal[$i]['asal'],
+						   		'pc_edit'  	  	  => 'UNALLOWED',
+						   		'pc_reim'  	  	  => 'UNRELEASED',
+						   		'pc_debet'  	  => 0,
+						   		'pc_user'    	  => Auth::user()->m_name,
+						   		'pc_no_trans'  	  => $request->no_trans,
+						   		'pc_kredit'  	  => $jurnal[$i]['harga'],
+						   		'created_at'	  => Carbon::now(),
+					        	'updated_at' 	  => Carbon::now()
+					]);
+
+					array_push($akun, $acc->id_akun);
+					array_push($akun_val, $jurnal[$i]['harga']);
+				}
+
+				// dd($akun_val);
+
+
+				for ($i=0; $i < count($akun); $i++) { 
+
+					$cari_coa = DB::table('d_akun')
+									  ->where('id_akun','like',$akun[$i].'%')
+									  ->first();
+
+
+					if (substr($akun[$i],0, 1)==1) {
+						
+						if ($cari_coa->akun_dka == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
+						}
+					}else if (substr($akun[$i],0, 1)>1) {
+
+						if ($cari_coa->akun_dka == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
+						}
+					}
+				}
+
+
+
+
+				$jurnal_dt = d_jurnal_dt::insert($data_akun);
+
+				$lihat_jurnal = DB::table('d_jurnal_dt')
+							->where('jrdt_jurnal',$id_jurnal)
+							->get();
+
+
+			}
 
 			return response()->json(['status'=>1,'id'=>$request->id]);
 

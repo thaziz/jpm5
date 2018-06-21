@@ -1469,7 +1469,7 @@ Route::get('sales/invoice_form', 'sales\invoice_Controller@form');
 Route::get('sales/nota_invoice', 'sales\invoice_Controller@nota_invoice');
 Route::get('sales/cari_do_invoice', 'sales\invoice_Controller@cari_do_invoice');
 Route::get('sales/cari_do_edit_invoice', 'sales\invoice_Controller@cari_do_edit_invoice');
-Route::get('sales/append_do', 'sales\invoice_Controller@append_do');
+Route::post('sales/append_do', 'sales\invoice_Controller@append_do');
 Route::get('sales/pajak_lain', 'sales\invoice_Controller@pajak_lain');
 Route::get('sales/jatuh_tempo_customer', 'sales\invoice_Controller@jatuh_tempo_customer');
 Route::get('sales/edit_invoice/{i}', 'sales\invoice_Controller@edit_invoice');
