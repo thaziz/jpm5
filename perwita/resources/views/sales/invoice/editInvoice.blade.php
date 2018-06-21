@@ -645,7 +645,7 @@ function hitung_total_tagihan(){
         netto_total      = parseFloat(netto_total)/100;
         netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
         netto_detail     = parseFloat(netto_detail)/100;
-        diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
+        diskon2          = diskon2.replace(/[^0-9.\-]+/g,"");
         diskon2          = parseFloat(diskon2);
 
         var ppn  = $('.ppn').val();
@@ -826,7 +826,7 @@ function hitung_pajak_lain(){
    // untuk mengirim yang di check ke controller dengan ajax
    
       $('#btnsave').click(function(){
-
+        var token = '{{ csrf_field() }}';
         var nomor_dt = [];
         var nomor_do = [];
         var cb_pendapatan = $('#cb_pendapatan').val();
@@ -854,7 +854,7 @@ function hitung_pajak_lain(){
         });
 
         $.ajax({
-            url:baseUrl +'/sales/append_do',
+            url:baseUrl +'/sales/append_do'+'&'+token,
             data:{nomor_dt,nomor_do,cb_pendapatan},
             type:'post',
             dataType:'json',

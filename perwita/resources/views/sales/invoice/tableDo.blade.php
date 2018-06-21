@@ -18,19 +18,19 @@
                     <td align="center">
                       {{ csrf_field() }}
                         {{$i+1}}
-                        <input type="hidden" value="{{$val->dd_id}}" class="nomor_dt" name="id_dt">
+                        <input type="hidden" value="{{$val->dd_id}}" class="nomor_dt" >
                     </td>
                     <td>
                         {{$val->nomor}} -
                         {{$val->dd_nomor_dt}}
-                        <input type="hidden" value="{{$val->dd_nomor}}" class="nomor_do" name="nomor_do">
+                        <input type="hidden" value="{{$val->dd_nomor}}" class="nomor_do" >
                     </td>
                     <td>{{$val->tanggal}}</td>
                     <td>{{$val->nama_customer}}</td>
                     <td>{{$val->dd_keterangan}}</td>
                     <td align="right">{{number_format($val->dd_total, 2, ",", ".")}}</td>
                     <td align="center">
-                        <input class="tanda" type="checkbox"  name="tanda">
+                        <input class="tanda" type="checkbox"  >
                     </td>
                 </tr>
         @endif

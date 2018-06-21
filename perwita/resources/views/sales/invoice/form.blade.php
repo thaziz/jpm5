@@ -535,7 +535,7 @@ function hitung_total_tagihan(){
         netto_total      = parseFloat(netto_total)/100;
         netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
         netto_detail     = parseFloat(netto_detail)/100;
-        diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
+        diskon2          = diskon2.replace(/[^0-9.\-]+/g,"");
         diskon2          = parseFloat(diskon2);
 
         var ppn  = $('.ppn').val();
@@ -717,6 +717,7 @@ function hitung_total_tagihan(){
    var index_detail = 0;
    $('#btnsave').click(function(){
 
+        var token = '{{ csrf_field() }}';
         var nomor_dt = [];
         var nomor_do = [];
         var cb_pendapatan = $('#cb_pendapatan').val();
@@ -738,10 +739,14 @@ function hitung_total_tagihan(){
             }
         });
 
-
+        $.ajaxSetup({
+            headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         $.ajax({
             url:baseUrl +'/sales/append_do',
-            data:{nomor_dt,nomor_do,cb_pendapatan},
+            data:{token,nomor_dt,nomor_do,cb_pendapatan},
             type:'post',
             dataType:'json',
             success:function(response){
