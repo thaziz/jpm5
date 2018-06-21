@@ -950,6 +950,11 @@ function hitung_total_tagihan(){
                 
              }
 
+             if (response.status ==0) {
+                
+                    toastr.warning(response.message)
+                
+             }
 
             if (response.status == 2) {
                 swal({
