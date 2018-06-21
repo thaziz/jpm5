@@ -236,9 +236,7 @@ class PurchaseController extends Controller
 		if($request->penerimaan != 'T'){
 			$data['stock'] = DB::select("select * from  masteritem LEFT OUTER JOIN stock_gudang on kode_item = sg_item and  sg_gudang = '$gudang' where kode_item = '$id' ");
 		}
-		else {
-			$data['stock'] = '-';
-		}
+		$data['stock'] = '-';
 		$data['mastersupplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 
 		return json_encode($data);
