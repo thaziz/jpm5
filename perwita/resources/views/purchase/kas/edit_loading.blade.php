@@ -78,6 +78,7 @@
       <div class="ibox-title">
         <h5>Biaya Penerus Kas</h5>
         <a href="../biaya_penerus_loading/index" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+        <a class="pull-right jurnal" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal</i></a>
       </div>
       <div class="ibox-content col-sm-12">
         <div class="col-sm-6">
@@ -203,7 +204,24 @@
 </div> 
 
 
-
+<div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body tabel_jurnal">
+          
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="row" style="padding-bottom: 50px;"></div>
 
@@ -635,5 +653,20 @@ function reload(){
   location.reload();
 }
 
+$('.jurnal').click(function(){
+  var id = '{{ $id }}';
+  $.ajax({
+      url:baseUrl + '/biaya_penerus/jurnal',
+      type:'get',
+      data:{id},
+      success:function(data){
+         $('.tabel_jurnal').html(data);
+         $('.modal_jurnal').modal('show');
+      },
+      error:function(data){
+          // location.reload();
+      }
+  }); 
+})
 </script>
 @endsection

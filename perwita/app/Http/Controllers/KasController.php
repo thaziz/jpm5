@@ -706,12 +706,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
 				}else if (substr($akun[$i],0, 1)>1) {
 
@@ -721,12 +723,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
 				}
 			}
@@ -1182,12 +1186,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
 				}else if (substr($akun[$i],0, 1)>1) {
 
@@ -1197,12 +1203,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
 				}
 			}

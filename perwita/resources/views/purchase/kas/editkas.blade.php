@@ -778,22 +778,20 @@ function reload(){
 }
 
 $('.jurnal').click(function(){
-    $('.modal_jurnal').modal('show');
+  var id = '{{ $id }}';
+  $.ajax({
+      url:baseUrl + '/biaya_penerus/jurnal',
+      type:'get',
+      data:{id},
+      success:function(data){
+         $('.tabel_jurnal').html(data);
+         $('.modal_jurnal').modal('show');
+      },
+      error:function(data){
+          // location.reload();
+      }
+  }); 
 })
-function jurnal() {
-    var id = '{{ $id }}';
-    $.ajax({
-        url:baseUrl + '/biaya_penerus/jurnal',
-        type:'get',
-        data:{id},
-        success:function(data){
-           $('.tabel_jurnal').html(data);
-        },
-        error:function(data){
-            // location.reload();
-        }
-    }); 
-  }
 
 </script>
 @endsection
