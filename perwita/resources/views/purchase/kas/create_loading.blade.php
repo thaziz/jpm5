@@ -621,7 +621,18 @@ function(){
           $('.asd').attr('hidden',false);
           $('.process').addClass('disabled');
           $('.cari').addClass('disabled');
-        }
+        }else if (response.status == 3) {
+          swal({
+              title: "Peringatan!",
+              type: 'warning',
+              text: response.data,
+              timer: 900,
+             showConfirmButton: true
+              },function(){
+              toastr.warning('No DO telah diganti menjadi ' + response.nota)
+          });
+       }
+
         
         $('.asd').attr('hidden',false);
       },
