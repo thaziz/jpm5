@@ -1081,7 +1081,7 @@
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
                +'&'+$('.table_pajak :input').serialize()
-               +'&accPiutang='+accPiutang
+               +'&acc_piutang='+acc_piutang
                +'&pajak_lain='+pajak_lain
                +'&ed_customer='+ed_customer
                +'&cb_pendapatan='+cb_pendapatan,

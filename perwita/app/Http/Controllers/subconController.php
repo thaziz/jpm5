@@ -30,18 +30,26 @@ class subconController extends Controller
 				 ->orderBy('ks_id','asc')
 				 ->get();
 
-			$subcon = DB::table('kontrak_subcon')
-				 ->join('subcon','kode','=','ks_nama')
-				 ->orderBy('ks_id','asc')
+			$subcon = DB::table('subcon')
 				 ->get();
 
-		 
+	
 
 		for ($i=0; $i < count($data); $i++) { 
 			$tgl1[$i] = Carbon::parse($data[$i]->ks_tgl_mulai)->format('d/m/Y');
 			$tgl2[$i] = Carbon::parse($data[$i]->ks_tgl_akhir)->format('d/m/Y');
+			for ($a=0; $a < count($subcon); $a++) { 
+				if ($data[$i]->ks_nama == $subcon[$a]->kode) {
+					$data[$i]->nama_subcon = $subcon[$a]->nama;
+				}
+			}
 		}
-		
+
+		for ($i=0; $i < count($data); $i++) { 
+			if(!isset($data[$i]->nama_subcon)){
+				$data[$i]->nama_subcon = 'DATA TIDAK DITEMUKAN';
+			}
+		}
 		return view('master_subcon.indexSubcon',compact('data','tgl1','tgl2','subcon'));
 	}
 
