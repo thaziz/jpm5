@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use PDF;
 use App\tb_coa;
+use App\d_jurnal;
+use App\d_jurnal_dt;
 use App\tb_jurnal;
 use App\patty_cash;
 use DB;
@@ -400,12 +402,7 @@ class PengeluaranBarangController extends Controller
 
 				}
 
-				if($jeniskeluar == 'Pemakaian Reguler'){
-					$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
-					$datajurnal[$i]['subtotal'] = $totalharga;
-					$datajurnal[$i]['dk'] = 'D';
-					$datajurnal[$i]['detail'] = $request->keterangandt[$i];
-				}
+
 
 			$cari_sm = DB::table('stock_mutation')
 						 ->where('sm_stock',$request->sg_id[$i])
@@ -561,7 +558,110 @@ class PengeluaranBarangController extends Controller
 			]);
 		}
 
+		if($jeniskeluar == 'Pemakaian Reguler'){
+				$hppsm = DB::select("select * from pengeluaran_stock_mutasi where psm_pb_id = '$idtransaksi'");
 
+				//return $hppsm;
+
+				$datapb = DB::select("select * from pengeluaran_barang where pb_id = '$idtransaksi'");
+
+				$datapbd = DB::select("select * from pengeluaran_barang , pengeluaran_barang_dt where pb_id = '$idtransaksi' and pbd_pb_id = pb_id");
+				for($i = 0; $i < count($datapbd); $i++){
+					$item = $datapbd[$i]->pbd_nama_barang;
+					//return $item;
+					$hppsm = DB::select("select * from pengeluaran_stock_mutasi where psm_item = '$item' and psm_pb_id = '$idtransaksi'");
+
+					$hppitem = 0;
+					//return count($hppsm);
+					for($j =0; $j < count($hppsm); $j++){
+						$harga = $hppsm[$j]->psm_harga;
+						$qty = $hppsm[$j]->psm_qty;
+						
+						$hppitem = floatval($harga) * floatval($qty);						
+					//	return $hppitem;
+					}
+
+
+					$dataakun = array (
+						'id_akun' => $datapbd[$i]->pbd_akunhutangpersediaan,
+						'subtotal' => $hppitem,
+						'dk' => 'D',
+						'detail' => $datapb[0]->pb_keperluan,
+					);	
+
+					array_push($datajurnal, $dataakun);
+				}
+
+				for($m = 0; $m < count($datapbd); $m++){
+					$item = $datapbd[$m]->pbd_nama_barang;
+					$hppsm = DB::select("select * from pengeluaran_stock_mutasi where psm_item = '$item'");
+					$hppitem = 0;
+					for($j =0; $j < count($hppsm); $j++){
+						$harga = $hppsm[$j]->psm_harga;
+						$qty = $hppsm[$j]->psm_qty;
+						
+						$hppitem = floatval($harga) * floatval($qty);
+					}
+
+					$dataakun = array (
+						'id_akun' => $datapbd[$m]->pbd_akunhutangbiaya,
+						'subtotal' => $hppitem,
+						'dk' => 'D',
+						'detail' => $datapb[0]->pb_keperluan,
+					);	
+
+					array_push($datajurnal, $dataakun);
+				}
+				
+				//return $datajurnal;
+
+				$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+					if(isset($lastidjurnal)) {
+						$idjurnal = $lastidjurnal;
+						$idjurnal = (int)$idjurnal + 1;
+					}
+					else {
+						$idjurnal = 1;
+					}
+				
+					$year = date('Y');	
+					$date = date('Y-m-d');
+					$jurnal = new d_jurnal();
+					$jurnal->jr_id = $idjurnal;
+			        $jurnal->jr_year = date('Y');
+			        $jurnal->jr_date = date('Y-m-d');
+			        $jurnal->jr_detail = 'PENGELUARAN BARANG GUDANG';
+			        $jurnal->jr_ref = $datapb[0]->pb_nota;
+			        $jurnal->jr_note = $datapb[0]->pb_keperluan;
+			        $jurnal->save();
+		       		
+			      
+
+				
+		    		$key  = 1;
+		    		for($j = 0; $j < count($datajurnal); $j++){
+		    			
+		    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+						if(isset($lastidjurnaldt)) {
+							$idjurnaldt = $lastidjurnaldt;
+							$idjurnaldt = (int)$idjurnaldt + 1;
+						}
+						else {
+							$idjurnaldt = 1;
+						}
+
+		    			$jurnaldt = new d_jurnal_dt();
+		    			$jurnaldt->jrdt_jurnal = $idjurnal;
+		    			$jurnaldt->jrdt_detailid = $key;
+		    			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
+		    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
+		    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
+		    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
+		    			$jurnaldt->save();
+		    			$key++;
+		    		} 	
+					
+			}	
 
 		return response()->json(['status'=>1]);
 	});

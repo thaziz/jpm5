@@ -186,27 +186,26 @@
                               </table>
                               </div>
 
-                              <div class="col-sm-8">
+                              <div class="col-sm-12">
                                 <p style="color:red"> <i> *Hapus data yang tidak di perlukan </i></p>
-                                  
+
                                   <table class="table table-datatable" id="table-barang">
                                   <thead>
                                       <tr> 
                                           <th> No </th>
-                                          <th> Nama Barang </th>
+                                          <th style="width:300px"> Nama Barang </th>
                                           <th> Qty PO </th>
-                                          <th> Qty Return </th>
+                                          <th style="width:70px"> Qty Return </th>
                                           <th> Harga Return </th>
                                           <th> Total Harga Return </th>
-                                          <th > Qty Terima </th>
-                                          <th > Harga Terima </th>
-                                          <th > Total Harga Terima </th>
+                                          <th style="width:70px"> Qty Terima </th>
+                                          <th style="width:70px"> Harga Terima </th>
+                                          <th style="width:70px"> Total Harga Terima </th>
                                           <th> Aksi </th>
                                       </tr>
                                   </thead>
                                      
                                   </table>
-                                  
                              </div>
                           </div>
                           
@@ -615,14 +614,14 @@
                  for(var i = 0; i < table2.length; i++){  
                        var html2 = "<tr class='databarang data"+nmrbnk+"' id="+table2[i].po_id+" data-nopo='"+table2[i].po_noform+"'>" +
                             "<td>"+nmrbnk+"</td>" +
-                            "<td style='width:150px'> <p style='width:150px'>"+table2[i].nama_masteritem+"</p> <input type='hidden' class='kodeitem"+nmrbnk+"' value='"+table2[i].podt_kodeitem+"' name='kodeitem[]'></td>" + // no faktur
+                            "<td style='width:200px'> <p style='width:200px'>"+table2[i].nama_masteritem+"</p> <input type='hidden' class='kodeitem"+nmrbnk+"' value='"+table2[i].podt_kodeitem+"' name='kodeitem[]'></td>" + // no faktur
                             "<td>"+table2[i].podt_qtykirim+"<input type='hidden' class='qtykirim"+nmrbnk+"' value='"+table2[i].podt_qtykirim+"' name='qtypo[]'> </td>" +
-                            "<td> <input type='text' class='form-control input-sm  qtyreturn qtyreturn"+nmrbnk+"' data-id='"+nmrbnk+"' name='qtyreturn[]' style='width:70px' required value='0'></td>" +
-                            "<td > <input type='text' class='form-control input-sm jumlahharga"+nmrbnk+"' value="+addCommas(table2[i].podt_jumlahharga)+" readonly name='jumlahharga[]'> </td>" +
-                            "<td> <input type='text' class='form-control input-sm totalharga"+nmrbnk+"' value="+addCommas(table2[i].podt_totalharga)+" readonly name='totalharga[]' style='width:150px'> <input type='hidden' class='minusharga minusharga"+nmrbnk+"' style='width:150px'> <input type='hidden' value='"+table2[i].podt_lokasigudang+"' name='lokasigudang[]'> </td>" + 
-                            "<td> <input type='text' class='form-control input-sm  qtyterima qtyterima"+nmrbnk+"' data-id='"+nmrbnk+"' name='qtyterima[]' style='width:70px' required value='0'></td>" + //qtyterima
-                            "<td style='width:80px'> <input type='text' class='form-control input-sm jumlahhargaterima jumlahhargaterima"+nmrbnk+"' name='jumlahhargaterima[]' data-id='"+nmrbnk+"' style='width:150px' value='0.00'> </td>" + //jumlahharga terima
-                            "<td > <input type='text' class='form-control input-sm totalhargaterima"+nmrbnk+"'  name='totalhargaterima[]' readonly style='width:150px' value='0.00'> <input type='hidden' name='akunitem[]' value='"+table2[i].podt_akunitem+"'>"+   //totalhargaterima
+                            "<td> <input type='text' class='form-control input-sm  qtyreturn qtyreturn"+nmrbnk+"' data-id='"+nmrbnk+"' name='qtyreturn[]' style='width:70px' required></td>" +
+                            "<td> <input type='text' class='form-control input-sm jumlahharga"+nmrbnk+"' value="+addCommas(table2[i].podt_jumlahharga)+" readonly name='jumlahharga[]'> </td>" +
+                            "<td> <input type='text' class='form-control input-sm totalharga"+nmrbnk+"' value="+addCommas(table2[i].podt_totalharga)+" readonly name='totalharga[]'> <input type='hidden' class='minusharga minusharga"+nmrbnk+"'> <input type='hidden' value='"+table2[i].podt_lokasigudang+"' name='lokasigudang[]'> </td>" + 
+                            "<td> <input type='text' class='form-control input-sm  qtyterima qtyterima"+nmrbnk+"' data-id='"+nmrbnk+"' name='qtyterima[]' style='width:70px' required></td>" + //qtyterima
+                            "<td> <input type='text' class='form-control input-sm jumlahhargaterima jumlahhargaterima"+nmrbnk+"' name='jumlahhargaterima[]' data-id='"+nmrbnk+"'> </td>" + //jumlahharga terima
+                            "<td> <input type='text' class='form-control input-sm totalhargaterima"+nmrbnk+"'  name='totalhargaterima[]' readonly>" +   //totalhargaterima
                             "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+nmrbnk+"' type='button'><i class='fa fa-trash'></i></button> </td>" +
                            "</tr>";
                           
@@ -631,15 +630,10 @@
                  } 
 
                 $('.qtyreturn').each(function(){
-                  $(this).keyup(function(){
+                  $(this).change(function(){
                     dataid = $(this).data('id');
                     qty = $(this).val();
                     qtykirim = $('.qtykirim' + dataid).val();
-
-                    if(qty == ''){
-                      $(this).val('0');
-                    }
-
                     if(parseInt(qty) > parseInt(qtykirim)){
                       toastr.info('Tidak bisa melebihi dari jumlah qty PO :) ');
                       $(this).val('');
@@ -727,7 +721,7 @@
                   .draw();
                 })
 
-                /*$('.qtyterima').each(function(){
+                $('.qtyterima').each(function(){
                   
                   $(this).change(function(){
                     id = $(this).data('id');
@@ -741,49 +735,17 @@
 
                   })
                 })
-*/
+
 
               $('.jumlahhargaterima').each(function(){
-                  
-                $(this).change(function(){
                   id = $(this).data('id');
+                $(this).change(function(){
                    val = $(this).val();     
                    val = accounting.formatMoney(val, "", 2, ",",'.');
                    $(this).val(val);
 
                    qtyterima = $('.qtyterima' + id).val();
-                   if(qtyterima != ''){
-                      hargaitem =   val.replace(/,/g, ''); 
-                      totalharga = (qtyterima * parseFloat(hargaitem)).toFixed(2);
-                      $('.totalhargaterima' + id).val(addCommas(totalharga));
-                   }
-                })
-              })
-
-
-              $('.qtyterima').each(function(){
-              
-                $(this).keyup(function(){
-                   id = $(this).data('id');
-                  qty = $(this).val();
-                  hpp = $('.jumlahhargaterima' + id).val();
-                  if(hpp != ''){
-                    hargaitem =   hpp.replace(/,/g, ''); 
-                    totalharga = (parseFloat(qty) * parseFloat(hargaitem)).toFixed(2);
-
-                    $('.totalhargaterima' + id).val(addCommas(totalharga));
-                  }
-
-                   qtyreturn = $('.qtyreturn' +id).val();
-                   // val = $(this).val();
-                    if(qtyreturn == ''){
-                      toastr.info('Qty Return Belum diisi :)' );
-                      $(this).val('0');
-                    }else{
-                    if(parseInt(qty) > parseInt(qtyreturn)){
-                      toastr.info("Tidak Bisa input data lebih dari qty return :)");
-                      $(this).val('0');
-                    }}
+                   if(qtyterima )
                 })
               })
           }

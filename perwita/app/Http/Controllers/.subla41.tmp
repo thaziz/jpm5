@@ -360,8 +360,8 @@ class ReturnPembelianController extends Controller
 		$jumlahharga = str_replace(',', '',  $request->jumlahharga[$i]);
 		$totalharga = str_replace(',', '',  $request->totalharga[$i]);
 
-		$jumlahhargaterima = str_replace(',', '',  $request->jumlahhargaterima[$i]);
-		$totalhargaterima = str_replace(',', '',  $request->totalhargaterima[$i]);
+		$jumlahhargaterima = str_replace(',', '',  $request->jumlahharga[$i]);
+		$totalhargaterima = str_replace(',', '',  $request->totalharga[$i]);
 
 
 			$rndt = new returnpembelian_dt();
@@ -374,10 +374,9 @@ class ReturnPembelianController extends Controller
 			$rndt->rndt_totalharga = $totalharga;
 			$rndt->create_by = $request->username;
 			$rndt->update_by = $request->username;
-			$rndt->rndt_hargaterima = $jumlahhargaterima;
-			$rndt->rndt_qtyterima = $request->qtyterima[$j];
-			$rndt->rndt_totalhargaterima = $totalhargaterima;
-			$rndt->rndt_akunitem = $request->akunitem[$j];
+			$rndt->hargaterima = 
+			$rndt->qtyterima = $request->qtyterima[$j];
+			$rndt->totalhargaterima = 
 			$rndt->save();
 		}
 		
