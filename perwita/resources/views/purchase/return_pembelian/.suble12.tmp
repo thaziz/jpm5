@@ -627,7 +627,7 @@
                            "</tr>";
                           
                        tablebarang.rows.add($(html2)).draw(); 
-                      nmrbnk++;                                        
+                      nmrbnk++;                                                                                  
                  } 
 
                 $('.qtyreturn').each(function(){

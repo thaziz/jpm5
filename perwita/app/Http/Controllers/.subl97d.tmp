@@ -853,8 +853,7 @@ class ReturnPembelianController extends Controller
 						else {
 							$idsm = 1;
 						}
-						$lokasigudang = $request->lokasigudang[$j];
-						$datagudang2 = DB::select("select * from stock_gudang where sg_item = '$iditem' and sg_gudang = '$lokasigudang' and sg_cabang = '$cabang'");
+						$datagudang2 = DB::select("select * from stock_gudang where sg_item = '$iditem'");
 						$idgudang2 = $datagudang2[0]->sg_id;
 				//		dd($idgudang2);
 						$stock_mutation->sm_stock = $idgudang2;
@@ -887,16 +886,17 @@ class ReturnPembelianController extends Controller
 				$qtyterima = $dataterima[$i]->rndt_qtyterima;
 				if($qtyterima != 0){
 					//masuk gudang
+
 					$itemterima = $dataterima[$i]->rndt_item;
 					//UPDATE DATA STOCK GUDANG
-					$lokasigudang = $dataterima[$i]->rndt_lokasigudang;
+					$lokasigudang = $request->lokasigudang[$j];
 					$itemterima = $request->kodeitem[$j];
 					$stockgudang = DB::select("select * from stock_gudang where sg_gudang = '$lokasigudang' and sg_cabang = '$cabang' and sg_item = '$itemterima' ");
 				/*	return $iditem . $cabang . $lokasigudang;*/
 					//return $stockgudang[0]->sg_qty;
 					$hasilstockgudang = (int)$stockgudang[0]->sg_qty + (int)$qtyterima;
 
-					$updatestockgudang = stock_gudang::where([['sg_gudang' , '=', $lokasigudang],['sg_cabang' , '=' , $cabang], ['sg_item' , '=' , $itemterima]]);
+					$updatestockgudang = stock_gudang::where([['sg_gudang' , '=', $request->lokasigudang[$j]],['sg_cabang' , '=' , $cabang], ['sg_item' , '=' , $itemterima]]);
 
 					$updatestockgudang->update([
 						'sg_qty' => $hasilstockgudang,
@@ -905,39 +905,15 @@ class ReturnPembelianController extends Controller
 					$datapodt = DB::select("select * from pembelian_orderdt where podt_idpo = '$idpo2' and podt_kodeitem = '$itemterima'");
 					$qtypo = $datapodt[0]->podt_qtykirim;
 
-					$hasilqtypo = (int)$qtypo + (int)$qtyterima;
+					$hasilqtypo = (int)
 
-					$updatepodt = pembelian_orderdt::where(['podt_idpo' , '=', $idpo2]);
+					$updatepodt = pembelian_orderdt::where([['podt_idpo' , '=', $idpo2],['podt_kodeitem' , '=' , $itemterima]]);
 
-					$lastidpodt = pembelian_orderdt::max('podt_id'); 
-						$mytime = Carbon::now(); 
-
-						if(isset($lastidpodt)) {
-							$idpodt = $lastidpodt;
-							$idpodt = (int)$lastidpodt + 1;
-						}
-						else {
-							$idpodt = 1;
-						}
-
-					$updatepodt->insert([
-						'podt_qtykirim' => $hasilqtypo,
-						'podt_id' => $idpodt,
-						'podt_kodeitem' => $itemterima,
-						'podt_approval' => 
-						'podt_qtykirim' => $qtyterima,
-						'podt_jumlahharga' => $dataterima[0]->rndt_hargaterima,
-						'podt_statuskirim' => 'LENGKAP',
-						'podt_idspp' => 
-						'podt_idpo' =>
-						'podt_lokasigudang' => $lokasigudang,
-						'podt_tglkirim' => $mytime,
-						'podt_supplier' =>
-						'podt_totalharga' => $dataterima[0]->rndt_totalhargaterima,
-						'podt_akunitem' => $dataterima[0]->rndt_akunitem,
-						'podt_keterangan' =>
-
+					$updatepodt->update([
+						'sg_qty' => $hasilstockgudang,
 						]);
+
+				} // end if qty tdk kosong
 
 						$stock_mutation = new stock_mutation();
 						$lastidsm = stock_mutation::max('sm_id'); 
@@ -950,32 +926,26 @@ class ReturnPembelianController extends Controller
 						else {
 							$idsm = 1;
 						}
-
-						//$lokasigudang = $request->lokasigudang[$j];
-						$datagudang2 = DB::select("select * from stock_gudang where sg_item = '$itemterima' and sg_gudang = '$lokasigudang' and sg_cabang = '$cabang'");
-						$idgudang2 = $datagudang2[0]->sg_id;
-
+						
 				//		dd($idgudang2);
 						$stock_mutation->sm_stock = $idgudang2;
 						$stock_mutation->sm_id = $idsm;
 						$stock_mutation->sm_comp =  $cabang;
 						$stock_mutation->sm_date = 	$mytime;
-						$stock_mutation->sm_item = $itemterima;
-						$stock_mutation->sm_mutcat = '1';
-						$stock_mutation->sm_qty = $qtyterima;
-						$stock_mutation->sm_use =  0;
-						$stock_mutation->sm_hpp = $dataterima[$i]->rndt_harga;
-						$stock_mutation->sm_lpb =  $dataterima[0]->nota;
+						$stock_mutation->sm_item = $iditem;
+						$stock_mutation->sm_mutcat = '4';
+						$stock_mutation->sm_qty = $request->qtyreturn[$j];
+						$stock_mutation->sm_use =  $request->qtyreturn[$j];
+						$stock_mutation->sm_hpp = $jumlahharga;
+						$stock_mutation->sm_lpb =  $request->nota ;
 						$stock_mutation->sm_suratjalan = '-' ;
 						$stock_mutation->sm_po = $idrn ;
-						$stock_mutation->sm_id_gudang = $lokasigudang;
-						$stock_mutation->sm_sisa = $qtyterima;
+						$stock_mutation->sm_id_gudang = $request->lokasigudang[$j];
+						$stock_mutation->sm_sisa = '0';
 						$stock_mutation->sm_flag = 'RN';
 						$stock_mutation->created_by = $request->username;
 						$stock_mutation->updated_by = $request->username;
 						$stock_mutation->save();
-
-				} // end if qty tdk kosong
 			}
   
 			return json_encode($data);
