@@ -75,7 +75,7 @@
                         <td><a href="{{ url('master_sales/detail_kontrak')}}/{{$val->ks_id}}">{{ $val->ks_nota }}</a></td>
                         <td>{{$val->ks_tgl_mulai}}</td>
                         <td>{{$val->ks_tgl_akhir}}</td>
-                        <td>{{$subcon[$i]->nama}}</td>
+                        <td>{{$val->nama_subcon}}</td>
                         <td>{{$val->nama}}</td>
                         <!-- <td align="center"><input type="checkbox" class="allow" name="cek[]"></td> -->
                         <td class="text-center">

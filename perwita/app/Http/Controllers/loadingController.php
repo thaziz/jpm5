@@ -36,6 +36,8 @@ class loadingController extends Controller
     	}
 
     	return view('purchase.kas.index_loading',compact('data'));
+
+
     }
 
     public function create_loading()

@@ -952,7 +952,7 @@ function hitung_total_tagihan(){
 
              if (response.status ==0) {
                 
-                    toastr.warning(response.message)
+                    toastr.warning(response.message);
                 
              }
 
@@ -961,6 +961,18 @@ function hitung_total_tagihan(){
                     title: "Berhasil!",
                     type: 'success',
                     text: "Data berhasil disimpan",
+                    timer: 900,
+                   showConfirmButton: true
+                    },function(){
+                    toastr.warning('No DO telah diganti menjadi ' + response.nota)
+                });
+             }
+
+             if (response.status == 3) {
+                swal({
+                    title: "Peringatan!",
+                    type: 'warning',
+                    text: response.data,
                     timer: 900,
                    showConfirmButton: true
                     },function(){

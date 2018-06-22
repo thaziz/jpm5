@@ -122,7 +122,7 @@
             </tr>
             <tr>
               <td>Tanggal</td>
-              <td><input readonly="" class="form-control" value="{{$now}}" type="text" name="tN"></td>
+              <td><input readonly="" class="form-control tanggal" value="{{$now}}" type="text" name="tN"></td>
             </tr>
           </table>
         </div>
@@ -225,6 +225,10 @@
 
 <script src="{{ asset('assets/vendors/chosen/chosen.jquery.js') }}"></script>
 <script type="text/javascript">
+
+  $('.tanggal').datepicker({
+    format:'dd-mm-yyyy'
+  });
 var datatable;
   $(document).ready(function(){
     // $('.hid').attr('hidden',true);
@@ -617,7 +621,18 @@ function(){
           $('.asd').attr('hidden',false);
           $('.process').addClass('disabled');
           $('.cari').addClass('disabled');
-        }
+        }else if (response.status == 3) {
+          swal({
+              title: "Peringatan!",
+              type: 'warning',
+              text: response.data,
+              timer: 900,
+             showConfirmButton: true
+              },function(){
+              toastr.warning('No DO telah diganti menjadi ' + response.nota)
+          });
+       }
+
         
         $('.asd').attr('hidden',false);
       },

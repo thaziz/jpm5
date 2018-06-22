@@ -197,7 +197,7 @@
                       timer: 2000,
                       showConfirmButton: true
                       },function(){
-                         location.reload();
+                         // location.reload();
               });
           },
           error:function(data){
