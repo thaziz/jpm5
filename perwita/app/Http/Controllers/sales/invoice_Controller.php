@@ -1006,7 +1006,7 @@ public function simpan_invoice(request $request)
                                 ->where('id_akun','like',$akunPPN.'%')
                                 ->where('kode_cabang',$cabang)
                                 ->first();
-                  if ($akun_diskon == null) {
+                  if ($akun_ppn == null) {
                     return response()->json(['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_ppn->id_akun);
