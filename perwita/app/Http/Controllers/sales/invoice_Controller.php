@@ -795,15 +795,18 @@ public function simpan_invoice(request $request)
                   $hasil = array_search(0, $temp);
 
                   if ($hasil == false) {
+                    $diskon = $request->diskon2/2;
                     $total_ppn = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/2;
-                    $tot_own -=$total_ppn;
-                    $tot_vendor -=$total_ppn;
+                    $tot_own   = $tot_own - $total_ppn - $diskon;
+                    $tot_vendor= $tot_vendor - $total_ppn - $diskon;
                   }elseif ($hasil == 0) {
+                    $diskon = $request->diskon2;
                     $total_ppn  = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100);
-                    $tot_vendor = $tot_vendor - $total_ppn;
+                    $tot_vendor= $tot_vendor - $total_ppn - $diskon;
                   }elseif ($hasil == 1) {
+                    $diskon = $request->diskon2;
                     $total_ppn  = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100);
-                    $tot_own = $tot_own - $total_ppn;
+                    $tot_own   = $tot_own - $total_ppn - $diskon;
                   }
                 }
                   // dd($total_tagihan);

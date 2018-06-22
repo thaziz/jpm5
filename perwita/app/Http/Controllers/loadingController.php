@@ -167,7 +167,7 @@ class loadingController extends Controller
 					  ->first();
 
 			if ($cari_akun == null) {
-				return response()->json(['status'=>3,'data'=>'Akun Hutang Untuk Cabang Ini Tidak Tersedia']);
+				return response()->json(['status'=>3,'data'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia']);
 			}
 
 	        if($cari_data == 0){
@@ -581,7 +581,7 @@ class loadingController extends Controller
 					  ->first();
 
 			if ($akun == null) {
-				return response()->json(['status'=>3,'data'=>'Akun Hutang Untuk Cabang Ini Tidak Tersedia']);
+				return response()->json(['status'=>3,'data'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia']);
 			}
 
 				biaya_penerus_kas::where('bpk_nota',$request->no_trans)->update([
