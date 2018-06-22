@@ -968,6 +968,18 @@ function hitung_total_tagihan(){
                 });
              }
 
+             if (response.status == 3) {
+                swal({
+                    title: "Peringatan!",
+                    type: 'warning',
+                    text: response.data,
+                    timer: 900,
+                   showConfirmButton: true
+                    },function(){
+                    toastr.warning('No DO telah diganti menjadi ' + response.nota)
+                });
+             }
+
              if (response.status == 1) {
                 swal({
                     title: "Berhasil!",
