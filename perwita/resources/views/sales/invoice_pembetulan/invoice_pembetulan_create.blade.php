@@ -1064,9 +1064,9 @@
         closeOnConfirm: true
       },
       function(){
-            var accPiutang=$("#customer").find(':selected').data('accpiutang'); 
+            var acc_piutang=$(".grup_item").find(':selected').data('accpiutang'); 
             var pajak_lain=$("#pajak_lain").find(':selected').data('pph'); 
-            var ed_customer=$("#customer").val(); 
+            var ed_customer=$("#customer").val();  
                // alert(accPiutang);
            $.ajaxSetup({
             headers: {

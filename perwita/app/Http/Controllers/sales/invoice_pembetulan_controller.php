@@ -449,467 +449,467 @@ class invoice_pembetulan_controller extends Controller
             // JURNAL
             if ($request->cb_pendapatan == 'PAKET') {
               $id_jurnal=d_jurnal::max('jr_id')+1;
-          // dd($id_jurnal);
-          $delete = d_jurnal::where('jr_ref',$nota)->delete();
-          $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
-                        'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
-                        'jr_date'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
-                        'jr_detail' => 'INVOICE ' . $request->ed_pendapatan,
-                        'jr_ref'    => $nota,
-                        'jr_note'   => 'INVOICE',
-                        'jr_insert' => carbon::now(),
-                        'jr_update' => carbon::now(),
-                        ]);
+              // dd($id_jurnal);
+              $delete = d_jurnal::where('jr_ref',$nota)->delete();
+              $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
+                            'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
+                            'jr_date'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
+                            'jr_detail' => 'INVOICE ' . $request->ed_pendapatan,
+                            'jr_ref'    => $nota,
+                            'jr_note'   => 'INVOICE',
+                            'jr_insert' => carbon::now(),
+                            'jr_update' => carbon::now(),
+                            ]);
 
-          if ($request->ed_pendapatan == 'PAKET') {
+              if ($request->ed_pendapatan == 'PAKET') {
 
-              $tot_vendor = 0;
-              $tot_own = 0;
+                  $tot_vendor = 0;
+                  $tot_own = 0;
 
-              for ($i=0; $i < count($request->do_detail); $i++) { 
-                $do = DB::table('delivery_order')
-                        ->where('nomor',$request->do_detail[$i])
-                        ->first();
+                  for ($i=0; $i < count($request->do_detail); $i++) { 
+                    $do = DB::table('delivery_order')
+                            ->where('nomor',$request->do_detail[$i])
+                            ->first();
 
-                $tot_vendor += $do->total_vendo;
-                $tot_own += $do->total_dpp;
-              }
-
-
-              $akun     = [];
-              $akun_val = [];
-              if ($request->cb_jenis_ppn != 4) {
-                // MENAMBAH TOTAL TAGIHAN DAN MENGURANGI TOTAL TAGIHAN
-                if ($ppn_type == 'npkp') {
-                  $temp = [$tot_own,$tot_vendor];
-                  $hasil = array_search(0, $temp);
-
-                  if ($hasil == false) {
-                    $total_ppn = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/2;
-                    $tot_own -=$total_ppn;
-                    $tot_vendor -=$total_ppn;
-                  }elseif ($hasil == 0) {
-                    $total_ppn  = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100);
-                    $tot_vendor = $tot_vendor - $total_ppn;
-                  }elseif ($hasil == 1) {
-                    $total_ppn  = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100);
-                    $tot_own = $tot_own - $total_ppn;
+                    $tot_vendor += $do->total_vendo;
+                    $tot_own += $do->total_dpp;
                   }
-                }
-                  // dd($total_tagihan);
 
-                array_push($akun, $cari_acc_piutang);
-                array_push($akun_val, $total_tagihan);
 
-                // DISKON
-                // dd($request->diskon2 );
-                if ($request->diskon2 != 0) {
-                  $akun_diskon = DB::table('d_akun')
-                                ->where('id_akun','like','5398'.'%')
-                                ->where('kode_cabang',$cabang)
-                                ->first();
-                  if ($akun_diskon == null) {
-                    return response()->json(['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
-                  }
-                  array_push($akun, $akun_diskon->id_akun);
-                  array_push($akun_val, (float)$request->diskon2);
-                }
-                // JURNAL PPN
-                if (isset($akunPPN)) {
-                  $akun_ppn = DB::table('d_akun')
-                                ->where('id_akun','like',$akunPPN.'%')
-                                ->where('kode_cabang',$cabang)
-                                ->first();
-                  if ($akun_ppn == null) {
-                    return response()->json(['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
-                  }
-                  array_push($akun, $akun_ppn->id_akun);
-                  array_push($akun_val,(filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100));
-                }
+                  $akun     = [];
+                  $akun_val = [];
+                  if ($request->cb_jenis_ppn != 4) {
+                    // MENAMBAH TOTAL TAGIHAN DAN MENGURANGI TOTAL TAGIHAN
+                    if ($ppn_type == 'npkp') {
+                      $temp = [$tot_own,$tot_vendor];
+                      $hasil = array_search(0, $temp);
 
-                // JURNAL PPH
-                if ($request->kode_pajak_lain != '0') {
-                  if ($request->kode_pajak_lain != 'T') {
-                    $cari_pajak = DB::table('pajak')
-                                  ->where('kode',$request->kode_pajak_lain)
-                                  ->first();
-                    $akun_pph1 = $cari_pajak->acc1;
-                    $akun_pph1 = substr($akun_pph1,0, 4);
-                    $akun_pph  = DB::table('d_akun')
-                                  ->where('id_akun','like',$akun_pph1.'%')
-                                  ->where('kode_cabang',$cabang)
-                                  ->first();
-                    if ($akun_pph == null) {
-                      return response()->json(['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      if ($hasil == false) {
+                        $total_ppn = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/2;
+                        $tot_own -=$total_ppn;
+                        $tot_vendor -=$total_ppn;
+                      }elseif ($hasil == 0) {
+                        $total_ppn  = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100);
+                        $tot_vendor = $tot_vendor - $total_ppn;
+                      }elseif ($hasil == 1) {
+                        $total_ppn  = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100);
+                        $tot_own = $tot_own - $total_ppn;
+                      }
                     }
-                    array_push($akun, $akun_pph->id_akun);
-                    array_push($akun_val,(filter_var($request->pph,FILTER_SANITIZE_NUMBER_INT)/100));
-                  }
-                }
+                      // dd($total_tagihan);
 
-                // PENDAPATAN VENDOR
-                if ($tot_vendor != 0) {
-                  $akun_vendor = DB::table('d_akun')
-                                ->where('id_akun','like','4501'.'%')
-                                ->where('kode_cabang',$cabang)
-                                ->first();
-                  if ($akun_vendor == null) {
-                    return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Vendor Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
-                  }
-                  array_push($akun, $akun_vendor->id_akun);
-                  array_push($akun_val, $tot_vendor);
-                }
-                // PENDAPATAN OWN
-                if ($tot_own != 0) {
-                  $akun_own = DB::table('d_akun')
-                                ->where('id_akun','like','4301'.'%')
-                                ->where('kode_cabang',$cabang)
-                                ->first();
-                  if ($akun_own == null) {
-                    return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
-                  }
-                  array_push($akun, $akun_own->id_akun);
-                  array_push($akun_val, $tot_own);
-                }
-                
-              }else{
-                // NON PPN
-                array_push($akun, $cari_acc_piutang);
-                array_push($akun_val, $total_tagihan);
-                // DISKON
-                if ($request->diskon2 != 0) {
-                  $akun_diskon = DB::table('d_akun')
-                                ->where('id_akun','like','5398'.'%')
-                                ->where('kode_cabang',$cabang)
-                                ->first();
-                  if ($akun_diskon == null) {
-                    return response()->json(['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
-                  }
-                  array_push($akun, $akun_diskon->id_akun);
-                  array_push($akun_val, (float)$request->diskon2);
-                }
+                    array_push($akun, $cari_acc_piutang);
+                    array_push($akun_val, $total_tagihan);
 
-                // JURNAL PPH
-                if ($request->kode_pajak_lain != '0') {
-                  if ($request->kode_pajak_lain != 'T') {
-                    $cari_pajak = DB::table('pajak')
-                                  ->where('kode',$request->kode_pajak_lain)
-                                  ->first();
-                    $akun_pph1 = $cari_pajak->acc1;
-                    $akun_pph1 = substr($akun_pph1,0, 4);
-                    $akun_pph  = DB::table('d_akun')
-                                  ->where('id_akun','like',$akun_pph1.'%')
-                                  ->where('kode_cabang',$cabang)
-                                  ->first();
-                    if ($akun_pph == null) {
-                      return response()->json(['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                    // DISKON
+                    // dd($request->diskon2 );
+                    if ($request->diskon2 != 0) {
+                      $akun_diskon = DB::table('d_akun')
+                                    ->where('id_akun','like','5398'.'%')
+                                    ->where('kode_cabang',$cabang)
+                                    ->first();
+                      if ($akun_diskon == null) {
+                        return response()->json(['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      }
+                      array_push($akun, $akun_diskon->id_akun);
+                      array_push($akun_val, (float)$request->diskon2);
                     }
-                    array_push($akun, $akun_pph->id_akun);
-                    array_push($akun_val,(filter_var($request->pph,FILTER_SANITIZE_NUMBER_INT)/100));
-                  }
-                }
-
-                // PENDAPATAN VENDOR
-                if ($tot_vendor != 0) {
-                  $akun_vendor = DB::table('d_akun')
-                                ->where('id_akun','like','4501'.'%')
-                                ->where('kode_cabang',$cabang)
-                                ->first();
-                  if ($akun_vendor == null) {
-                    return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Vendor Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
-                  }
-                  array_push($akun, $akun_vendor->id_akun);
-                  array_push($akun_val, $tot_vendor);
-                }
-                // PENDAPATAN OWN
-                if ($tot_own != 0) {
-                  $akun_own = DB::table('d_akun')
-                                ->where('id_akun','like','4301'.'%')
-                                ->where('kode_cabang',$cabang)
-                                ->first();
-                  if ($akun_own == null) {
-                    return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
-                  }
-                  array_push($akun, $akun_own->id_akun);
-                  array_push($akun_val, $tot_own);
-                }
-              }
-          }elseif ($request->ed_pendapatan == 'KARGO'){
-              // KARGO
-              $tot_subcon = 0;
-              $tot_own = 0;
-
-              for ($i=0; $i < count($request->do_detail); $i++) { 
-                $do = DB::table('delivery_order')
-                        ->where('nomor',$request->do_detail[$i])
-                        ->first();
-
-                if ($do->status_kendaraan == 'OWN') {
-                  $tot_own += $do->total_net;
-                }else{
-                  $tot_subcon += $do->total_net;
-                }
-              }
-
-
-              $akun     = [];
-              $akun_val = [];
-              if ($request->cb_jenis_ppn != 4) {
-                // MENAMBAH TOTAL TAGIHAN DAN MENGURANGI TOTAL TAGIHAN
-                if ($ppn_type == 'npkp') {
-                  $temp = [$tot_own,$tot_subcon];
-                  $hasil = array_search(0, $temp);
-
-                  if ($hasil == false) {
-                    $total_ppn = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/2;
-                    $tot_own -=$total_ppn;
-                    $tot_subcon -=$total_ppn;
-                  }elseif ($hasil == 0) {
-                    $total_ppn  = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100);
-                    $tot_subcon = $tot_subcon - $total_ppn;
-                  }elseif ($hasil == 1) {
-                    $total_ppn  = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100);
-                    $tot_own = $tot_own - $total_ppn;
-                  }
-                }
-                  // dd($total_tagihan);
-
-                array_push($akun, $cari_acc_piutang);
-                array_push($akun_val, $total_tagihan);
-
-                // DISKON
-                // dd($request->diskon2 );
-                if ($request->diskon2 != 0) {
-                  $akun_diskon = DB::table('d_akun')
-                                ->where('id_akun','like','5398'.'%')
-                                ->where('kode_cabang',$cabang)
-                                ->first();
-                  if ($akun_diskon == null) {
-                    return response()->json(['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
-                  }
-                  array_push($akun, $akun_diskon->id_akun);
-                  array_push($akun_val, (float)$request->diskon2);
-                }
-                // JURNAL PPN
-                if (isset($akunPPN)) {
-                  $akun_ppn = DB::table('d_akun')
-                                ->where('id_akun','like',$akunPPN.'%')
-                                ->where('kode_cabang',$cabang)
-                                ->first();
-                  if ($akun_diskon == null) {
-                    return response()->json(['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
-                  }
-                  array_push($akun, $akun_ppn->id_akun);
-                  array_push($akun_val,(filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100));
-                }
-
-                // JURNAL PPH
-                if ($request->kode_pajak_lain != '0') {
-                  if ($request->kode_pajak_lain != 'T') {
-                    $cari_pajak = DB::table('pajak')
-                                  ->where('kode',$request->kode_pajak_lain)
-                                  ->first();
-                    $akun_pph1 = $cari_pajak->acc1;
-                    $akun_pph1 = substr($akun_pph1,0, 4);
-                    $akun_pph  = DB::table('d_akun')
-                                  ->where('id_akun','like',$akun_pph1.'%')
-                                  ->where('kode_cabang',$cabang)
-                                  ->first();
-                    if ($akun_pph == null) {
-                      return response()->json(['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                    // JURNAL PPN
+                    if (isset($akunPPN)) {
+                      $akun_ppn = DB::table('d_akun')
+                                    ->where('id_akun','like',$akunPPN.'%')
+                                    ->where('kode_cabang',$cabang)
+                                    ->first();
+                      if ($akun_ppn == null) {
+                        return response()->json(['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      }
+                      array_push($akun, $akun_ppn->id_akun);
+                      array_push($akun_val,(filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100));
                     }
-                    array_push($akun, $akun_pph->id_akun);
-                    array_push($akun_val,(filter_var($request->pph,FILTER_SANITIZE_NUMBER_INT)/100));
-                  }
-                }
 
-                // PENDAPATAN VENDOR
-                if ($tot_subcon != 0) {
-                  $akun_vendor = DB::table('d_akun')
-                                ->where('id_akun','like','4401'.'%')
-                                ->where('kode_cabang',$cabang)
-                                ->first();
-                  if ($akun_vendor == null) {
-                    return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Vendor Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
-                  }
-                  array_push($akun, $akun_vendor->id_akun);
-                  array_push($akun_val, $tot_subcon);
-                }
-                // PENDAPATAN OWN
-                if ($tot_own != 0) {
-                  $akun_own = DB::table('d_akun')
-                                ->where('id_akun','like','4201'.'%')
-                                ->where('kode_cabang',$cabang)
-                                ->first();
-                  if ($akun_own == null) {
-                    return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
-                  }
-                  array_push($akun, $akun_own->id_akun);
-                  array_push($akun_val, $tot_own);
-                }
-              }else{
-                // NON PPN
-                array_push($akun, $cari_acc_piutang);
-                array_push($akun_val, $total_tagihan);
-                // DISKON
-                if ($request->diskon2 != 0) {
-                  $akun_diskon = DB::table('d_akun')
-                                ->where('id_akun','like','5398'.'%')
-                                ->where('kode_cabang',$cabang)
-                                ->first();
-                  if ($akun_diskon == null) {
-                    return response()->json(['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
-                  }
-                  array_push($akun, $akun_diskon->id_akun);
-                  array_push($akun_val, (float)$request->diskon2);
-                }
-
-                // JURNAL PPH
-                if ($request->kode_pajak_lain != '0') {
-                  if ($request->kode_pajak_lain != 'T') {
-                    $cari_pajak = DB::table('pajak')
-                                  ->where('kode',$request->kode_pajak_lain)
-                                  ->first();
-                    $akun_pph1 = $cari_pajak->acc1;
-                    $akun_pph1 = substr($akun_pph1,0, 4);
-                    $akun_pph  = DB::table('d_akun')
-                                  ->where('id_akun','like',$akun_pph1.'%')
-                                  ->where('kode_cabang',$cabang)
-                                  ->first();
-                    if ($akun_pph == null) {
-                      return response()->json(['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                    // JURNAL PPH
+                    if ($request->kode_pajak_lain != '0') {
+                      if ($request->kode_pajak_lain != 'T') {
+                        $cari_pajak = DB::table('pajak')
+                                      ->where('kode',$request->kode_pajak_lain)
+                                      ->first();
+                        $akun_pph1 = $cari_pajak->acc1;
+                        $akun_pph1 = substr($akun_pph1,0, 4);
+                        $akun_pph  = DB::table('d_akun')
+                                      ->where('id_akun','like',$akun_pph1.'%')
+                                      ->where('kode_cabang',$cabang)
+                                      ->first();
+                        if ($akun_pph == null) {
+                          return response()->json(['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                        }
+                        array_push($akun, $akun_pph->id_akun);
+                        array_push($akun_val,(filter_var($request->pph,FILTER_SANITIZE_NUMBER_INT)/100));
+                      }
                     }
-                    array_push($akun, $akun_pph->id_akun);
-                    array_push($akun_val,(filter_var($request->pph,FILTER_SANITIZE_NUMBER_INT)/100));
+
+                    // PENDAPATAN VENDOR
+                    if ($tot_vendor != 0) {
+                      $akun_vendor = DB::table('d_akun')
+                                    ->where('id_akun','like','4501'.'%')
+                                    ->where('kode_cabang',$cabang)
+                                    ->first();
+                      if ($akun_vendor == null) {
+                        return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Vendor Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      }
+                      array_push($akun, $akun_vendor->id_akun);
+                      array_push($akun_val, $tot_vendor);
+                    }
+                    // PENDAPATAN OWN
+                    if ($tot_own != 0) {
+                      $akun_own = DB::table('d_akun')
+                                    ->where('id_akun','like','4301'.'%')
+                                    ->where('kode_cabang',$cabang)
+                                    ->first();
+                      if ($akun_own == null) {
+                        return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      }
+                      array_push($akun, $akun_own->id_akun);
+                      array_push($akun_val, $tot_own);
+                    }
+                    
+                  }else{
+                    // NON PPN
+                    array_push($akun, $cari_acc_piutang);
+                    array_push($akun_val, $total_tagihan);
+                    // DISKON
+                    if ($request->diskon2 != 0) {
+                      $akun_diskon = DB::table('d_akun')
+                                    ->where('id_akun','like','5398'.'%')
+                                    ->where('kode_cabang',$cabang)
+                                    ->first();
+                      if ($akun_diskon == null) {
+                        return response()->json(['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      }
+                      array_push($akun, $akun_diskon->id_akun);
+                      array_push($akun_val, (float)$request->diskon2);
+                    }
+
+                    // JURNAL PPH
+                    if ($request->kode_pajak_lain != '0') {
+                      if ($request->kode_pajak_lain != 'T') {
+                        $cari_pajak = DB::table('pajak')
+                                      ->where('kode',$request->kode_pajak_lain)
+                                      ->first();
+                        $akun_pph1 = $cari_pajak->acc1;
+                        $akun_pph1 = substr($akun_pph1,0, 4);
+                        $akun_pph  = DB::table('d_akun')
+                                      ->where('id_akun','like',$akun_pph1.'%')
+                                      ->where('kode_cabang',$cabang)
+                                      ->first();
+                        if ($akun_pph == null) {
+                          return response()->json(['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                        }
+                        array_push($akun, $akun_pph->id_akun);
+                        array_push($akun_val,(filter_var($request->pph,FILTER_SANITIZE_NUMBER_INT)/100));
+                      }
+                    }
+
+                    // PENDAPATAN VENDOR
+                    if ($tot_vendor != 0) {
+                      $akun_vendor = DB::table('d_akun')
+                                    ->where('id_akun','like','4501'.'%')
+                                    ->where('kode_cabang',$cabang)
+                                    ->first();
+                      if ($akun_vendor == null) {
+                        return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Vendor Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      }
+                      array_push($akun, $akun_vendor->id_akun);
+                      array_push($akun_val, $tot_vendor);
+                    }
+                    // PENDAPATAN OWN
+                    if ($tot_own != 0) {
+                      $akun_own = DB::table('d_akun')
+                                    ->where('id_akun','like','4301'.'%')
+                                    ->where('kode_cabang',$cabang)
+                                    ->first();
+                      if ($akun_own == null) {
+                        return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      }
+                      array_push($akun, $akun_own->id_akun);
+                      array_push($akun_val, $tot_own);
+                    }
                   }
-                }
-                // PENDAPATAN VENDOR
-                if ($tot_subcon != 0) {
-                  $akun_vendor = DB::table('d_akun')
-                                ->where('id_akun','like','4401'.'%')
-                                ->where('kode_cabang',$cabang)
-                                ->first();
-                  if ($akun_vendor == null) {
-                    return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Vendor Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+              }elseif ($request->ed_pendapatan == 'KARGO'){
+                  // KARGO
+                  $tot_subcon = 0;
+                  $tot_own = 0;
+
+                  for ($i=0; $i < count($request->do_detail); $i++) { 
+                    $do = DB::table('delivery_order')
+                            ->where('nomor',$request->do_detail[$i])
+                            ->first();
+
+                    if ($do->status_kendaraan == 'OWN') {
+                      $tot_own += $do->total_net;
+                    }else{
+                      $tot_subcon += $do->total_net;
+                    }
                   }
-                  array_push($akun, $akun_vendor->id_akun);
-                  array_push($akun_val, $tot_subcon);
-                }
-                // PENDAPATAN OWN
-                if ($tot_own != 0) {
-                  $akun_own = DB::table('d_akun')
-                                ->where('id_akun','like','4201'.'%')
-                                ->where('kode_cabang',$cabang)
-                                ->first();
-                  if ($akun_own == null) {
-                    return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+
+
+                  $akun     = [];
+                  $akun_val = [];
+                  if ($request->cb_jenis_ppn != 4) {
+                    // MENAMBAH TOTAL TAGIHAN DAN MENGURANGI TOTAL TAGIHAN
+                    if ($ppn_type == 'npkp') {
+                      $temp = [$tot_own,$tot_subcon];
+                      $hasil = array_search(0, $temp);
+
+                      if ($hasil == false) {
+                        $total_ppn = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/2;
+                        $tot_own -=$total_ppn;
+                        $tot_subcon -=$total_ppn;
+                      }elseif ($hasil == 0) {
+                        $total_ppn  = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100);
+                        $tot_subcon = $tot_subcon - $total_ppn;
+                      }elseif ($hasil == 1) {
+                        $total_ppn  = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100);
+                        $tot_own = $tot_own - $total_ppn;
+                      }
+                    }
+                      // dd($total_tagihan);
+
+                    array_push($akun, $cari_acc_piutang);
+                    array_push($akun_val, $total_tagihan);
+
+                    // DISKON
+                    // dd($request->diskon2 );
+                    if ($request->diskon2 != 0) {
+                      $akun_diskon = DB::table('d_akun')
+                                    ->where('id_akun','like','5398'.'%')
+                                    ->where('kode_cabang',$cabang)
+                                    ->first();
+                      if ($akun_diskon == null) {
+                        return response()->json(['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      }
+                      array_push($akun, $akun_diskon->id_akun);
+                      array_push($akun_val, (float)$request->diskon2);
+                    }
+                    // JURNAL PPN
+                    if (isset($akunPPN)) {
+                      $akun_ppn = DB::table('d_akun')
+                                    ->where('id_akun','like',$akunPPN.'%')
+                                    ->where('kode_cabang',$cabang)
+                                    ->first();
+                      if ($akun_diskon == null) {
+                        return response()->json(['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      }
+                      array_push($akun, $akun_ppn->id_akun);
+                      array_push($akun_val,(filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100));
+                    }
+
+                    // JURNAL PPH
+                    if ($request->kode_pajak_lain != '0') {
+                      if ($request->kode_pajak_lain != 'T') {
+                        $cari_pajak = DB::table('pajak')
+                                      ->where('kode',$request->kode_pajak_lain)
+                                      ->first();
+                        $akun_pph1 = $cari_pajak->acc1;
+                        $akun_pph1 = substr($akun_pph1,0, 4);
+                        $akun_pph  = DB::table('d_akun')
+                                      ->where('id_akun','like',$akun_pph1.'%')
+                                      ->where('kode_cabang',$cabang)
+                                      ->first();
+                        if ($akun_pph == null) {
+                          return response()->json(['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                        }
+                        array_push($akun, $akun_pph->id_akun);
+                        array_push($akun_val,(filter_var($request->pph,FILTER_SANITIZE_NUMBER_INT)/100));
+                      }
+                    }
+
+                    // PENDAPATAN VENDOR
+                    if ($tot_subcon != 0) {
+                      $akun_vendor = DB::table('d_akun')
+                                    ->where('id_akun','like','4401'.'%')
+                                    ->where('kode_cabang',$cabang)
+                                    ->first();
+                      if ($akun_vendor == null) {
+                        return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Vendor Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      }
+                      array_push($akun, $akun_vendor->id_akun);
+                      array_push($akun_val, $tot_subcon);
+                    }
+                    // PENDAPATAN OWN
+                    if ($tot_own != 0) {
+                      $akun_own = DB::table('d_akun')
+                                    ->where('id_akun','like','4201'.'%')
+                                    ->where('kode_cabang',$cabang)
+                                    ->first();
+                      if ($akun_own == null) {
+                        return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      }
+                      array_push($akun, $akun_own->id_akun);
+                      array_push($akun_val, $tot_own);
+                    }
+                  }else{
+                    // NON PPN
+                    array_push($akun, $cari_acc_piutang);
+                    array_push($akun_val, $total_tagihan);
+                    // DISKON
+                    if ($request->diskon2 != 0) {
+                      $akun_diskon = DB::table('d_akun')
+                                    ->where('id_akun','like','5398'.'%')
+                                    ->where('kode_cabang',$cabang)
+                                    ->first();
+                      if ($akun_diskon == null) {
+                        return response()->json(['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      }
+                      array_push($akun, $akun_diskon->id_akun);
+                      array_push($akun_val, (float)$request->diskon2);
+                    }
+
+                    // JURNAL PPH
+                    if ($request->kode_pajak_lain != '0') {
+                      if ($request->kode_pajak_lain != 'T') {
+                        $cari_pajak = DB::table('pajak')
+                                      ->where('kode',$request->kode_pajak_lain)
+                                      ->first();
+                        $akun_pph1 = $cari_pajak->acc1;
+                        $akun_pph1 = substr($akun_pph1,0, 4);
+                        $akun_pph  = DB::table('d_akun')
+                                      ->where('id_akun','like',$akun_pph1.'%')
+                                      ->where('kode_cabang',$cabang)
+                                      ->first();
+                        if ($akun_pph == null) {
+                          return response()->json(['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                        }
+                        array_push($akun, $akun_pph->id_akun);
+                        array_push($akun_val,(filter_var($request->pph,FILTER_SANITIZE_NUMBER_INT)/100));
+                      }
+                    }
+                    // PENDAPATAN VENDOR
+                    if ($tot_subcon != 0) {
+                      $akun_vendor = DB::table('d_akun')
+                                    ->where('id_akun','like','4401'.'%')
+                                    ->where('kode_cabang',$cabang)
+                                    ->first();
+                      if ($akun_vendor == null) {
+                        return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Vendor Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      }
+                      array_push($akun, $akun_vendor->id_akun);
+                      array_push($akun_val, $tot_subcon);
+                    }
+                    // PENDAPATAN OWN
+                    if ($tot_own != 0) {
+                      $akun_own = DB::table('d_akun')
+                                    ->where('id_akun','like','4201'.'%')
+                                    ->where('kode_cabang',$cabang)
+                                    ->first();
+                      if ($akun_own == null) {
+                        return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
+                      }
+                      array_push($akun, $akun_own->id_akun);
+                      array_push($akun_val, $tot_own);
+                    }
                   }
-                  array_push($akun, $akun_own->id_akun);
-                  array_push($akun_val, $tot_own);
-                }
               }
-          }
-          
-          $data_akun = [];
-          for ($i=0; $i < count($akun); $i++) { 
-
-            $cari_coa = DB::table('d_akun')
-                      ->where('id_akun',$akun[$i])
-                      ->first();
-
-            if (substr($akun[$i],0, 1)==1) {
               
-              if ($cari_coa->akun_dka == 'D') {
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = $akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'D';
-                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
-              }else{
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = $akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'K';
-                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              $data_akun = [];
+              for ($i=0; $i < count($akun); $i++) { 
+
+                $cari_coa = DB::table('d_akun')
+                          ->where('id_akun',$akun[$i])
+                          ->first();
+
+                if (substr($akun[$i],0, 1)==1) {
+                  
+                  if ($cari_coa->akun_dka == 'D') {
+                    $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                    $data_akun[$i]['jrdt_detailid'] = $i+1;
+                    $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                    $data_akun[$i]['jrdt_value']    = $akun_val[$i];
+                    $data_akun[$i]['jrdt_statusdk'] = 'D';
+                    $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                  }else{
+                    $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                    $data_akun[$i]['jrdt_detailid'] = $i+1;
+                    $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                    $data_akun[$i]['jrdt_value']    = $akun_val[$i];
+                    $data_akun[$i]['jrdt_statusdk'] = 'K';
+                    $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                  }
+                }else if (substr($akun[$i],0, 4)==2302 or substr($akun[$i],0, 4)==2398) {
+
+                  if ($cari_coa->akun_dka == 'D') {
+                    $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                    $data_akun[$i]['jrdt_detailid'] = $i+1;
+                    $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                    $data_akun[$i]['jrdt_value']    = $akun_val[$i];
+                    $data_akun[$i]['jrdt_statusdk'] = 'D';
+                    $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                  }else{
+                    $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                    $data_akun[$i]['jrdt_detailid'] = $i+1;
+                    $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                    $data_akun[$i]['jrdt_value']    = $akun_val[$i];
+                    $data_akun[$i]['jrdt_statusdk'] = 'K';
+                    $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                  }
+                }else if (substr($akun[$i],0, 1)==2) {
+
+                  if ($cari_coa->akun_dka == 'D') {
+                    $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                    $data_akun[$i]['jrdt_detailid'] = $i+1;
+                    $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                    $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
+                    $data_akun[$i]['jrdt_statusdk'] = 'K';
+                    $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                  }else{
+                    $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                    $data_akun[$i]['jrdt_detailid'] = $i+1;
+                    $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                    $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
+                    $data_akun[$i]['jrdt_statusdk'] = 'D';
+                    $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                  }
+                }else if (substr($akun[$i],0, 1)==4) {
+
+                  if ($cari_coa->akun_dka == 'D') {
+                    $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                    $data_akun[$i]['jrdt_detailid'] = $i+1;
+                    $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                    $data_akun[$i]['jrdt_value']    = $akun_val[$i];
+                    $data_akun[$i]['jrdt_statusdk'] = 'D';
+                    $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                  }else{
+                    $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                    $data_akun[$i]['jrdt_detailid'] = $i+1;
+                    $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                    $data_akun[$i]['jrdt_value']    = $akun_val[$i];
+                    $data_akun[$i]['jrdt_statusdk'] = 'K';
+                    $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                  }
+                }
+                else if (substr($akun[$i],0, 1)==5) {
+
+                  if ($cari_coa->akun_dka == 'D') {
+                    $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                    $data_akun[$i]['jrdt_detailid'] = $i+1;
+                    $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                    $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
+                    $data_akun[$i]['jrdt_statusdk'] = 'K';
+                    $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                  }else{
+                    $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                    $data_akun[$i]['jrdt_detailid'] = $i+1;
+                    $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                    $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
+                    $data_akun[$i]['jrdt_statusdk'] = 'D';
+                    $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                  }
+                }
               }
-            }else if (substr($akun[$i],0, 4)==2302 or substr($akun[$i],0, 4)==2398) {
 
-              if ($cari_coa->akun_dka == 'D') {
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = $akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'D';
-                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
-              }else{
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = $akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'K';
-                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
-              }
-            }else if (substr($akun[$i],0, 1)==2) {
+              $jurnal_dt = d_jurnal_dt::insert($data_akun);
 
-              if ($cari_coa->akun_dka == 'D') {
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'K';
-                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
-              }else{
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'D';
-                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
-              }
-            }else if (substr($akun[$i],0, 1)==4) {
-
-              if ($cari_coa->akun_dka == 'D') {
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = $akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'D';
-                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
-              }else{
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = $akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'K';
-                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
-              }
-            }
-            else if (substr($akun[$i],0, 1)==5) {
-
-              if ($cari_coa->akun_dka == 'D') {
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'K';
-                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
-              }else{
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'D';
-                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
-              }
-            }
-          }
-
-          $jurnal_dt = d_jurnal_dt::insert($data_akun);
-
-          $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
-          // dd($lihat);
+              $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
+              // dd($lihat);
             }
             return response()->json(['status' =>1, 'nota'=>$nota]);    
         }
@@ -965,23 +965,25 @@ class invoice_pembetulan_controller extends Controller
 
     return DB::transaction(function() use ($request) {  
 
-    $invoice = DB::table('invoice')
-                  ->where('i_nomor',$request->id)
-                  ->first();
+        $invoice = DB::table('invoice')
+                      ->where('i_nomor',$request->id)
+                      ->first();
 
-    $invoice_pembetulan = DB::table('invoice_pembetulan')
-                            ->where('ip_nomor',$request->id)
-                            ->first();
-    // dd($invoice_pembetulan);
-    $penambahan = $invoice->i_sisa_pelunasan + $invoice->i_debet;
-    $terbayar   = $invoice->i_sisa_pelunasan + $invoice->i_debet;
+        $invoice_pembetulan = DB::table('invoice_pembetulan')
+                                ->where('ip_nomor',$request->id)
+                                ->first();
 
-      if (($penambahan - $terbayar) < $invoice->i_debet) {
-        return response()->json(['status'=>2,'ket'=>'Data Tidak Bisa Dihapus Karena Sisa kurang Dari Debet']);
-      }else{
+
+        
 
 
         if ($invoice_pembetulan->ip_total_tagihan <  $invoice_pembetulan->ip_total_revisi) {
+
+          $debet = $invoice_pembetulan->ip_total_revisi - $invoice_pembetulan->ip_total_tagihan;
+
+          if ($invoice->i_sisa_akhir < $debet) {
+            return response()->json(['status'=>2,'ket'=>'Data Tidak Bisa Dihapus Karena Sisa kurang Dari Debet']);
+          }
 
           $selisih = $invoice_pembetulan->ip_total_revisi - $invoice_pembetulan->ip_total_tagihan;
 
@@ -1020,7 +1022,6 @@ class invoice_pembetulan_controller extends Controller
                             ->delete();
 
         return response()->json(['status'=>1]);
-      }
     });
   }
   public function update_invoice_pembetulan(request $request)
