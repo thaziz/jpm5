@@ -166,6 +166,23 @@ class invoice_pembetulan_controller extends Controller
         $request->diskon2 = str_replace(['Rp', '\\', '.', ' '], '', $request->diskon2);
         $request->diskon2 =str_replace(',', '.', $request->diskon2);
 
+
+        if ($request->ed_pendapatan == 'PAKET') {
+          $cari_acc_piutang1 = DB::table('d_akun')
+                                ->where('id_akun','like','1303'.'%')
+                                ->where('kode_cabang',$cabang)
+                                ->first();
+          $cari_acc_piutang = $cari_acc_piutang1->id_akun;
+        }else if($request->ed_pendapatan == 'KARGO'){
+          $cari_acc_piutang1 = DB::table('d_akun')
+                                ->where('id_akun','like','1302'.'%')
+                                ->where('kode_cabang',$cabang)
+                                ->first();
+          $cari_acc_piutang = $cari_acc_piutang1->id_akun;
+        }else if($request->ed_pendapatan == 'KORAN'){
+          $cari_acc_piutang = $request->acc_piutang;
+        }
+
         if ($request->cb_jenis_ppn == 1) {
             $ppn_type = 'pkp';
             $ppn_persen = 10;
@@ -189,7 +206,7 @@ class invoice_pembetulan_controller extends Controller
             $akunPPH='2301';
         }
         
-          if ($cari_no_invoice == null) {
+        if ($cari_no_invoice == null) {
             $save_header_invoice = DB::table('invoice_pembetulan')
                                      ->insert([
                                           'ip_nomor'              =>  $request->nota_invoice,
@@ -428,8 +445,13 @@ class invoice_pembetulan_controller extends Controller
                                           'ip_ref' =>$nota,
                                         ]);
 
-             return response()->json(['status' =>1, 'nota'=>$nota]);    
-          }
+
+            // JURNAL
+            if ($jenis=='K') {
+              # code...
+            }
+            return response()->json(['status' =>1, 'nota'=>$nota]);    
+        }
 
 
 

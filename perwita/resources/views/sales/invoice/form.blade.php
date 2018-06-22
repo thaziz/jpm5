@@ -952,7 +952,7 @@ function hitung_total_tagihan(){
 
              if (response.status ==0) {
                 
-                    toastr.warning(response.message)
+                    toastr.warning(response.message);
                 
              }
 
