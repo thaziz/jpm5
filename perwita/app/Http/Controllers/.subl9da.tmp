@@ -6312,7 +6312,7 @@ public function purchase_order() {
 					}
 					array_push($datajurnal, $dataakun );
 					}
-					$totalhutang = floatval($totalhutang) + floatval($hasilppn);
+					$totalhutang = floatval($totalhutang) + $hasilppn;
 				}
 			
 
@@ -6352,8 +6352,6 @@ public function purchase_order() {
 						}
 						array_push($datajurnal, $dataakun );
 					}
-
-					$totalhutang = floatval($totalhutang) - floatval($hasilpph);
 			}
 
 			//jurnal

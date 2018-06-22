@@ -617,17 +617,17 @@
                             "<td>"+nmrbnk+"</td>" +
                             "<td style='width:150px'> <p style='width:150px'>"+table2[i].nama_masteritem+"</p> <input type='hidden' class='kodeitem"+nmrbnk+"' value='"+table2[i].podt_kodeitem+"' name='kodeitem[]'></td>" + // no faktur
                             "<td>"+table2[i].podt_qtykirim+"<input type='hidden' class='qtykirim"+nmrbnk+"' value='"+table2[i].podt_qtykirim+"' name='qtypo[]'> </td>" +
-                            "<td> <input type='number' class='form-control input-sm  qtyreturn qtyreturn"+nmrbnk+"' data-id='"+nmrbnk+"' name='qtyreturn[]' style='width:70px' required value='0'></td>" +
+                            "<td> <input type='text' class='form-control input-sm  qtyreturn qtyreturn"+nmrbnk+"' data-id='"+nmrbnk+"' name='qtyreturn[]' style='width:70px' required value='0'></td>" +
                             "<td > <input type='text' class='form-control input-sm jumlahharga"+nmrbnk+"' value="+addCommas(table2[i].podt_jumlahharga)+" readonly name='jumlahharga[]'> </td>" +
                             "<td> <input type='text' class='form-control input-sm totalharga"+nmrbnk+"' value="+addCommas(table2[i].podt_totalharga)+" readonly name='totalharga[]' style='width:150px'> <input type='hidden' class='minusharga minusharga"+nmrbnk+"' style='width:150px'> <input type='hidden' value='"+table2[i].podt_lokasigudang+"' name='lokasigudang[]'> </td>" + 
-                            "<td> <input type='number' class='form-control input-sm  qtyterima qtyterima"+nmrbnk+"' data-id='"+nmrbnk+"' name='qtyterima[]' style='width:70px' required value='0'></td>" + //qtyterima
+                            "<td> <input type='text' class='form-control input-sm  qtyterima qtyterima"+nmrbnk+"' data-id='"+nmrbnk+"' name='qtyterima[]' style='width:70px' required value='0'></td>" + //qtyterima
                             "<td style='width:80px'> <input type='text' class='form-control input-sm jumlahhargaterima jumlahhargaterima"+nmrbnk+"' name='jumlahhargaterima[]' data-id='"+nmrbnk+"' style='width:150px' value='0.00'> </td>" + //jumlahharga terima
                             "<td > <input type='text' class='form-control input-sm totalhargaterima"+nmrbnk+"'  name='totalhargaterima[]' readonly style='width:150px' value='0.00'> <input type='hidden' name='akunitem[]' value='"+table2[i].podt_akunitem+"'>"+   //totalhargaterima
                             "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+nmrbnk+"' type='button'><i class='fa fa-trash'></i></button> </td>" +
                            "</tr>";
                           
                        tablebarang.rows.add($(html2)).draw(); 
-                      nmrbnk++;                                        
+                      nmrbnk++;                                                                                  
                  } 
 
                 $('.qtyreturn').each(function(){
@@ -792,51 +792,8 @@
                     totalharga = (parseFloat(qty) * parseFloat(hargaitem)).toFixed(2);
 
                     $('.totalhargaterima' + id).val(addCommas(totalharga));
-                    total2 = $('.total').val();
-                    total = total2.replace(/,/g, ''); 
+                    total = 
 
-                    hsltotal = (parseFloat(total) + parseFloat(totalharga)).toFixed(2);
-
-                    $('.subtotal').val(addCommas(hsltotal));
-                    jenisppn = $('.jenisppn').val();
-
-                     subtotal3 = $('.subtotal').val();
-                     subtotal2 =   subtotal3.replace(/,/g, ''); 
-                      if(jenisppn != 'T'){
-                          if(jenisppn == 'E'){
-                
-                            hargappn = parseFloat(inputppn * parseFloat(subtotal2) / 100);
-                       
-                            $('.hasilppn').val(addCommas(hargappn));
-                            total = parseFloat(parseFloat(subtotal2) + parseFloat(hargappn));
-                           
-                            numhar = total.toFixed(2);
-                            $('.total').val(addCommas(numhar));
-                            $('.subtotal').val(addCommas(subtotal2));
-                          }
-                          else if(jenisppn == 'I'){                            
-                              hargappn = parseFloat(subtotal2 * 100) / (100 + parseFloat(inputppn) );                     
-                              hargappn2 = hargappn.toFixed(2);
-                              $('.subtotal').val(addCommas(hargappn2));
-                             // alert(subtotal2 *100);
-                             // alert(100 + parseFloat(inputppn));
-
-
-                              ppnasli = parseFloat((parseFloat(inputppn) / 100) * parseFloat(hargappn2)).toFixed(2);
-                              $('.hargappn').val(addCommas(ppnasli));
-                              hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli)).toFixed(2);
-                             // total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
-                              $('.total').val(addCommas(hasiltotal));
-                          }
-                          else {
-                             $('.subtotal').val(addCommas(subtotal));
-                             $('.total').val(addCommas(subtotal));
-                          }
-                        }
-                        else {
-                            $('.total').val(addCommas(hsltotal));
-
-                        }
                   }
 
 

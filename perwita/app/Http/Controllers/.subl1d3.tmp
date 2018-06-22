@@ -913,30 +913,16 @@ class ReturnPembelianController extends Controller
 						$mytime = Carbon::now(); 
 
 						if(isset($lastidpodt)) {
-							$idpodt = $lastidpodt;
-							$idpodt = (int)$lastidpodt + 1;
+							$idpodt = $lastidsm;
+							$idsm = (int)$lastidsm + 1;
 						}
 						else {
-							$idpodt = 1;
+							$idsm = 1;
 						}
 
 					$updatepodt->insert([
 						'podt_qtykirim' => $hasilqtypo,
-						'podt_id' => $idpodt,
-						'podt_kodeitem' => $itemterima,
-						'podt_approval' => 
-						'podt_qtykirim' => $qtyterima,
-						'podt_jumlahharga' => $dataterima[0]->rndt_hargaterima,
-						'podt_statuskirim' => 'LENGKAP',
-						'podt_idspp' => 
-						'podt_idpo' =>
-						'podt_lokasigudang' => $lokasigudang,
-						'podt_tglkirim' => $mytime,
-						'podt_supplier' =>
-						'podt_totalharga' => $dataterima[0]->rndt_totalhargaterima,
-						'podt_akunitem' => $dataterima[0]->rndt_akunitem,
-						'podt_keterangan' =>
-
+						'podt_id' =>
 						]);
 
 						$stock_mutation = new stock_mutation();

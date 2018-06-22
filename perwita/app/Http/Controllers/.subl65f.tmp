@@ -933,10 +933,7 @@ class ReturnPembelianController extends Controller
 						'podt_lokasigudang' => $lokasigudang,
 						'podt_tglkirim' => $mytime,
 						'podt_supplier' =>
-						'podt_totalharga' => $dataterima[0]->rndt_totalhargaterima,
-						'podt_akunitem' => $dataterima[0]->rndt_akunitem,
-						'podt_keterangan' =>
-
+						'podt_totalharga' => 
 						]);
 
 						$stock_mutation = new stock_mutation();
