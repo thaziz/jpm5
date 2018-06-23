@@ -546,11 +546,7 @@
    }
     //ajax cari nota
     $(document).ready(function(){
-        var temp12 = 0;
-        table_detail.$('.harga_netto :input').each(function(){
-            temp12 += $(this).val()/1;
-        })
-        console.log(temp12);
+       
         // $('.diskon2').maskMoney({precision:0,thousands:'.'})
         if ($('#cb_pendapatan').val() == 'KORAN') {
             $('.grup_item_tr').prop('hidden',false);
