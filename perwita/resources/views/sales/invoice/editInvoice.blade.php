@@ -488,7 +488,7 @@
     }
     //data tabel detail
     var table_detail = $('#table_data').DataTable({
-     // searching:false,
+     searching:true,
      columnDefs: [
           {
              targets: 0 ,
