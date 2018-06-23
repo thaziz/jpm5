@@ -354,7 +354,7 @@ class nota_debet_kredit_Controller extends Controller
                     ->join('invoice','i_nomor','=','cdd_nomor_invoice')
                     ->where('cd_nomor',$id)
                     ->get();
-
+          // dd($data_dt);
           return view('sales.nota_debet_kredit.edit_cn_dn', compact('customer','cabang','pajak','akun','pajak','akun_biaya','data','data_dt'));
       }else{
 

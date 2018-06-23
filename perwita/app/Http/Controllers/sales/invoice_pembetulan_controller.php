@@ -129,7 +129,6 @@ class invoice_pembetulan_controller extends Controller
 
   public function simpan_invoice_pembetulan(request $request)
   {
-    // dd($request->all());
     return DB::transaction(function() use ($request) {  
 
 
@@ -153,7 +152,6 @@ class invoice_pembetulan_controller extends Controller
         $total_pph      = filter_var($request->pph, FILTER_SANITIZE_NUMBER_FLOAT)/100;
         $tagihan_awal   = filter_var($request->tagihan_awal, FILTER_SANITIZE_NUMBER_FLOAT)/100;
         $sisa_tagihan   = filter_var($request->sisa_tagihan, FILTER_SANITIZE_NUMBER_FLOAT)/100;
-
         $cari_no_invoice = DB::table('invoice_pembetulan')
                              ->where('ip_nomor',$request->nota_invoice)
                              ->first();
@@ -410,6 +408,10 @@ class invoice_pembetulan_controller extends Controller
                   $cari_invoice = DB::table('invoice')
                                     ->where('i_nomor',$request->nota_invoice)
                                     ->first();
+                  dd($request->all());
+
+                  $tes = $ppn_persen/(100 + $ppn_persen) * $hasil;
+                  dd(round($tes,2));
 
                   $save_cdd = DB::table('cn_dn_penjualan_d')
                                 ->insert([
@@ -421,11 +423,11 @@ class invoice_pembetulan_controller extends Controller
                                   'cdd_ppn_awal'        => $cari_invoice->i_ppnrp,
                                   'cdd_pph_awal'        => $cari_invoice->i_pajak_lain,
                                   'cdd_netto_awal'      => $cari_invoice->i_total_tagihan,
-                                  'cdd_jenis_ppn'       => 0,
+                                  'cdd_jenis_ppn'       => $request->cb_jenis_ppn,
                                   'cdd_jenis_pajak'     => 0,
                                   'cdd_netto_awal'      => $cari_invoice->i_total_tagihan,
                                   'cdd_dpp_akhir'       => $hasil,
-                                  'cdd_ppn_akhir'       => 0,
+                                  'cdd_ppn_akhir'       => round($tes,2),
                                   'cdd_pph_akhir'       => 0,
                                   'cdd_netto_akhir'     => $hasil,
                                 ]);
@@ -943,6 +945,7 @@ class invoice_pembetulan_controller extends Controller
               }
 
             }else{
+              
               for ($i=0; $i < count($akun); $i++) { 
                 for ($a=0; $a < count($cari_jurnal_lama); $a++) { 
                   if ($akun[$i] == $cari_jurnal_lama[$a]->jrdt_acc) {
@@ -1060,7 +1063,7 @@ class invoice_pembetulan_controller extends Controller
             $jurnal_dt = d_jurnal_dt::insert($data_akun);
 
             $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
-            dd($lihat);
+            // dd($lihat);
             return response()->json(['status' =>1, 'nota'=>$nota]);    
         }
 
