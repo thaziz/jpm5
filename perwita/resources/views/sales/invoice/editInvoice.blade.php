@@ -299,7 +299,7 @@
                             <tr>
                                 <td style="padding-top: 0.4cm; text-align:right">Netto Detail</td>
                                 <td colspan="4">
-                                    <input type="text" name="netto_detail" readonly=""  class="form-control netto_detail" style="text-transform: uppercase;text-align:right" >
+                                    <input type="text" name="netto_detail" readonly=""  class="form-control netto_detail" style="text-transform: uppercase;text-align:right; background: red;color: white" >
                                 </td>
                             </tr>
                             <tr>
