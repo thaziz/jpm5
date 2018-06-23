@@ -813,13 +813,13 @@ function hitung_pajak_lain(){
             temp_diskon += parseFloat($(this).val());
         });
 
-    
+        
         netto = temp_total-(temp_diskon2+temp_diskon);
         netto_diskon1 = temp_total + temp_bp - temp_diskon;
         if (netto_diskon1 < 0) {
             netto_diskon1 =0;
         }
-        $('.ed_total').val(accounting.formatMoney(temp_total+temp_bp,"",2,'.',','));
+        $('.ed_total').val(accounting.formatMoney(temp_total+temp_bp-temp_diskon,"",2,'.',','));
         $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
         $('.netto_total').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
         $('.netto_detail').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
