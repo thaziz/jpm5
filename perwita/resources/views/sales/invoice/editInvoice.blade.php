@@ -488,7 +488,7 @@
     }
     //data tabel detail
     var table_detail = $('#table_data').DataTable({
-     searching:true,
+     searching:false,
      columnDefs: [
           {
              targets: 0 ,
@@ -518,8 +518,6 @@
 
     });
 
-
-
     //date picker
     $('.tgl').datepicker({
         format:'dd/mm/yyyy',
@@ -546,11 +544,6 @@
    }
     //ajax cari nota
     $(document).ready(function(){
-        var temp12 = 0;
-        table_detail.$('.harga_netto :input').each(function(){
-            temp12 += $(this).val()/1;
-        })
-        console.log(temp12);
         // $('.diskon2').maskMoney({precision:0,thousands:'.'})
         if ($('#cb_pendapatan').val() == 'KORAN') {
             $('.grup_item_tr').prop('hidden',false);
@@ -813,13 +806,13 @@ function hitung_pajak_lain(){
             temp_diskon += parseFloat($(this).val());
         });
 
-        
+    
         netto = temp_total-(temp_diskon2+temp_diskon);
         netto_diskon1 = temp_total + temp_bp - temp_diskon;
         if (netto_diskon1 < 0) {
             netto_diskon1 =0;
         }
-        $('.ed_total').val(accounting.formatMoney(temp_total+temp_bp-temp_diskon,"",2,'.',','));
+        $('.ed_total').val(accounting.formatMoney(temp_total+temp_bp,"",2,'.',','));
         $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
         $('.netto_total').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
         $('.netto_detail').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
