@@ -440,6 +440,7 @@
             success:function(response){
                 if ($('#nota_invoice').val() == $('#old_invoice').val() ) {
                     $('#nota_invoice').val(response.nota);
+                    $('#old_invoice').val(response.nota);
                 }
             }
         });

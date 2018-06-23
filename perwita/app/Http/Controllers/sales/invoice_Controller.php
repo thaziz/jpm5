@@ -318,11 +318,16 @@ public function nota_invoice(request $request){
     // dd($request->all());
     $bulan = Carbon::now()->format('m');
     $tahun = Carbon::now()->format('y');
-
+    $update = DB::table('invoice')
+                ->update(['create_at'=>carbon::now()
+              ]);
+    // return 'asd';
     $cari_nota = DB::select("SELECT  substring(max(i_nomor),11) as id from invoice
                                     WHERE i_kode_cabang = '$request->cabang'
+                                    AND i_nomor like 'INV%'
                                     AND to_char(create_at,'MM') = '$bulan'
-                                    AND to_char(create_at,'YY') = '$tahun'");
+                                    AND to_char(create_at,'YY') = '$tahun'
+                                    ");
     $index = (integer)$cari_nota[0]->id + 1;
     $index = str_pad($index, 5, '0', STR_PAD_LEFT);
     $nota = 'INV' . $request->cabang . $bulan . $tahun . $index;
