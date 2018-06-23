@@ -1,4 +1,4 @@
-@extends('main')
+`@extends('main')
 
 @section('title', 'dashboard')
 
@@ -259,7 +259,7 @@
                             </td>
                             <td>
                                 {{number_format($val->biaya_tambahan, 2, ",", ".")}}
-                                <input type="hidden" class="dd_biaya_tambahan" value="{{0}}" name="dd_biaya_tambahan[]">
+                                <input type="hidden" class="dd_biaya_tambahan" value="{{$val->biaya_tambahan}}" name="dd_biaya_tambahan[]">
                             </td>
                             <td>
                                 {{number_format($val->id_diskon, 2, ",", ".")}}
@@ -801,7 +801,7 @@ function hitung_pajak_lain(){
         table_detail.$('.dd_biaya_tambahan').each(function(){
             temp_bp += parseFloat($(this).val());
         });
-
+        console.log(temp_bp);
         table_detail.$('.dd_diskon').each(function(){
             temp_diskon += parseFloat($(this).val());
         });

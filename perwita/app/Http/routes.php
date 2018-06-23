@@ -288,6 +288,7 @@ Route::get('master_subcon/datatable_kontrak', 'subconController@datatable_kontra
 Route::get('master_subcon/set_modal', 'subconController@set_modal');
 Route::get('master_subcon/hapus_d_kontrak', 'subconController@hapus_d_kontrak');
 Route::get('master_subcon/check_kontrak', 'subconController@check_kontrak');
+Route::get('master_subcon/detail/{id}', 'subconController@detail');
 
 
 //PEMBAYARAN SUBCON

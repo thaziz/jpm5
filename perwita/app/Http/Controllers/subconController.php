@@ -624,5 +624,60 @@ public function check_kontrak(request $request)
          return json_encode('success 2');
     }
 }
+
+public function detail($id)
+{
+	$data = DB::table('kontrak_subcon')
+				 ->join('cabang','kode','=','ks_cabang')
+				 ->where('ks_id',$id)
+				 ->orderBy('ks_id','asc')
+				 ->first();
+
+	$subcon = DB::table('kontrak_subcon')
+			 ->join('subcon','kode','=','ks_nama')
+			 ->where('ks_id',$id)
+			 ->orderBy('ks_id','asc')
+			 ->first();
+	$jenis_tarif = DB::table('jenis_tarif')
+				     ->get();
+	 $subcon_dt = DB::SELECT("SELECT kontrak_subcon.*,kontrak_subcon_dt.*, asal.nama as asal ,asal.id as id_asal,
+					 				tujuan.nama as tujuan, tujuan.id as id_tujuan,
+					 				angkutan.kode as kode_angkutan, angkutan.nama as angkutan
+								    from kontrak_subcon 
+								    inner join kontrak_subcon_dt
+								    on ksd_ks_id = ks_id
+								    inner join 
+								    (SELECT nama,id from kota) as asal
+								    on asal.id = ksd_asal
+								    inner join 
+						 	 	    (SELECT nama,id from kota) as tujuan
+							 	    on tujuan.id = ksd_tujuan
+							 	    inner join
+							 	    (SELECT kode,nama from tipe_angkutan) as angkutan
+							 	    on angkutan.kode  = ksd_angkutan
+							 	    where ks_id = '$id'");
+
+	for ($i=0; $i < count($subcon_dt); $i++) { 
+	 	$subcon_dt[$i]->ksd_harga = round($subcon_dt[$i]->ksd_harga);
+	}
+	
+
+	$sub = DB::table('subcon')
+			 ->get();
+
+	$cabang = DB::table('cabang')
+				->get();
+	$kota   = DB::table('kota')
+				->get();
+	$angkutan = DB::table('tipe_angkutan')
+				->get();
+
+	$tgl1 = Carbon::parse($data->ks_tgl_mulai)->format('d-m-Y');
+	$tgl2 = Carbon::parse($data->ks_tgl_akhir)->format('d-m-Y');
+	$tgl3 = Carbon::parse($data->ks_tgl)->format('d-m-Y');
+
+
+	return view('master_subcon.detail_subcon',compact('data','subcon','subcon_dt','tgl1','tgl2','tgl3','cabang','kota','angkutan','sub','jenis_tarif','id'));
+}
 }
 
