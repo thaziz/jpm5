@@ -518,6 +518,8 @@
 
     });
 
+    
+
     //date picker
     $('.tgl').datepicker({
         format:'dd/mm/yyyy',
