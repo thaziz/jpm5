@@ -318,9 +318,9 @@ public function nota_invoice(request $request){
     // dd($request->all());
     $bulan = Carbon::now()->format('m');
     $tahun = Carbon::now()->format('y');
-    $update = DB::table('invoice')
-                ->update(['create_at'=>carbon::now()
-              ]);
+    // $update = DB::table('invoice')
+    //             ->update(['create_at'=>carbon::now()
+    //           ]);
     // return 'asd';
     $cari_nota = DB::select("SELECT  substring(max(i_nomor),11) as id from invoice
                                     WHERE i_kode_cabang = '$request->cabang'
