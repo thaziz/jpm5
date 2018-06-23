@@ -95,6 +95,16 @@ class invoice_Controller extends Controller
                             }
                           }
                         })
+                        ->addColumn('cabang', function ($data) {
+                          $kota = DB::table('cabang')
+                                    ->get();
+
+                          for ($i=0; $i < count($kota); $i++) { 
+                            if ($data->i_kode_cabang == $kota[$i]->kode) {
+                                return $kota[$i]->nama;
+                            }
+                          }
+                        })
                         ->addColumn('tagihan', function ($data) {
                           return number_format($data->i_total_tagihan,2,',','.'  ); 
                         })
