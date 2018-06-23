@@ -935,7 +935,7 @@ function hitung_total_tagihan(){
 
           $.ajax({
           url:baseUrl + '/sales/simpan_invoice',
-          type:'get',
+          type:'post',
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
