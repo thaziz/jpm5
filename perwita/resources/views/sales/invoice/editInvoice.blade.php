@@ -518,7 +518,7 @@
 
     });
 
-    
+
 
     //date picker
     $('.tgl').datepicker({
@@ -547,7 +547,7 @@
     //ajax cari nota
     $(document).ready(function(){
         var temp12 = 0;
-        table_detail.$('.harga_netto').each(function(){
+        table_detail.$('.harga_netto :input').each(function(){
             temp12 += $(this).val()/1;
         })
         console.log(temp12);
