@@ -408,11 +408,12 @@ class invoice_pembetulan_controller extends Controller
                   $cari_invoice = DB::table('invoice')
                                     ->where('i_nomor',$request->nota_invoice)
                                     ->first();
-                  dd($request->all());
+                  // dd($request->all());
 
                   $tes = $ppn_persen/(100 + $ppn_persen) * $hasil;
-                  dd(round($tes,2));
-
+                  // dd(round($tes,2));
+                  $hasil = $hasil - $tes;
+                  dd($hasil);
                   $save_cdd = DB::table('cn_dn_penjualan_d')
                                 ->insert([
                                   'cdd_id'              => $id,
@@ -846,7 +847,7 @@ class invoice_pembetulan_controller extends Controller
                 }
               }
 
-
+              dd($akun_val);
 
               $data_akun = [];
               for ($i=0; $i < count($akun); $i++) { 
