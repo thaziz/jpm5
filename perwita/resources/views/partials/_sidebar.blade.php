@@ -401,6 +401,9 @@
                 {{
 
                     /*================== MASTER TARIF ==================*/
+                    /* TARIF VENDOR */
+                    Request::is('sales/tarif_vendor') ? 'active' : '' || 
+                    Request::is('sales/tarif_vendor/*') ? 'active' : '' ||
                     /* tarif_cabang_dokumen */
                     Request::is('sales/tarif_cabang_dokumen') ? 'active' : '' || 
                     Request::is('sales/tarif_cabang_dokumen/*') ? 'active' : '' ||
@@ -524,6 +527,13 @@
                        " style="padding-left: 10%;">
                        <a href="#" {{-- style="padding-left: 30%;" --}} style="font-size: 13px;">Master Tarif<span class="fa arrow"></span></a>
                        <ul class="nav nav-third-level" >
+
+                        @if(Auth::user()->PunyaAkses('Tarif Vendor','aktif'))
+                        <li class="sidebar master-perusahaan">
+                            <a href="{{ url('sales/tarif_vendor')}}" class="{{Request::is('sales/tarif_vendor') ? 'active' : '' ||
+                         Request::is('sales/tarif_vendor/*') ? 'active' : ''}} "><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Vendor</a>
+                        </li>
+                        @endif
 
                         @if(Auth::user()->PunyaAkses('Tarif Cabang Dokumen','aktif'))
                         <li class="sidebar master-perusahaan">
