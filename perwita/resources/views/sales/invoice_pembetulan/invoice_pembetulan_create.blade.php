@@ -833,7 +833,7 @@
         var nomor_dt = [];
         var nomor_do = [];
         var cb_pendapatan = $('#cb_pendapatan').val();
-        
+        var token = '{{ csrf_field() }}';
         table_data_do.$('.tanda').each(function(){
             var check = $(this).is(':checked');
             if (check == true) {
@@ -850,12 +850,17 @@
                nomor_do.push(no_do);
             }
         });
-
+        $.ajaxSetup({
+            headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
         $.ajax({
             url:baseUrl +'/sales/append_do',
-            data:{nomor_dt,nomor_do,cb_pendapatan},
+            data:{token,nomor_dt,nomor_do,cb_pendapatan},
             dataType:'json',
+            type:'post',
             success:function(response){
                 if (response.jenis == 'KORAN') {
                     // //////////////////////////////////
@@ -1059,9 +1064,9 @@
         closeOnConfirm: true
       },
       function(){
-            var accPiutang=$("#customer").find(':selected').data('accpiutang'); 
+            var acc_piutang=$(".grup_item").find(':selected').data('accpiutang'); 
             var pajak_lain=$("#pajak_lain").find(':selected').data('pph'); 
-            var ed_customer=$("#customer").val(); 
+            var ed_customer=$("#customer").val();  
                // alert(accPiutang);
            $.ajaxSetup({
             headers: {
@@ -1076,7 +1081,7 @@
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
                +'&'+$('.table_pajak :input').serialize()
-               +'&accPiutang='+accPiutang
+               +'&acc_piutang='+acc_piutang
                +'&pajak_lain='+pajak_lain
                +'&ed_customer='+ed_customer
                +'&cb_pendapatan='+cb_pendapatan,

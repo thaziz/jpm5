@@ -323,4 +323,10 @@ class akun_Controller extends Controller
 
         return "Akun Pusat Berhasil Di Share Ke Semua Cabang";
     }
+
+    public function get_akun($cabang){
+        $data = DB::table("d_akun")->where('kode_cabang', $cabang)->select("id_akun", "nama_akun")->orderBy("id_akun", "asc")->get();
+
+        return json_encode($data);
+    }
 }

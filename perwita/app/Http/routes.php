@@ -117,6 +117,7 @@ Route::get('purchaseorder/print/{id}', 'PurchaseController@cetak');
 Route::post('purchaseorder/detailpurchasekeuangan', 'PurchaseController@detailpurchasekeuangan');
 Route::post('purchaseorder/updatekeuangan', 'PurchaseController@updatekeuangan');
 Route::post('purchaseorder/getcabang', 'PurchaseController@getcabang');
+Route::get('purchaseorder/grapcabang', 'PurchaseController@grapcabang');
 Route::get('purchaseorder/deletepurchase/{id}', 'PurchaseController@deletepurchase');
 
 
@@ -262,6 +263,7 @@ Route::post('fakturpembelian/update_bp_um', 'BiayaPenerusController@update_bp_um
 Route::get('fakturpembelian/outlet_um', 'BiayaPenerusController@outlet_um');
 Route::get('fakturpembelian/subcon_um', 'BiayaPenerusController@subcon_um');
 Route::get('fakturpembelian/biaya_penerus/jurnal', 'BiayaPenerusController@jurnal');
+Route::get('fakturpembelian/biaya_penerus/jurnal_um', 'BiayaPenerusController@jurnal_um');
 //PEMBAYARAN OUTLET
 Route::get('fakturpembelian/getpembayaranoutlet', 'BiayaPenerusController@getpembayaranoutlet')->name('getpembayaranoutlet');
 Route::get('fakturpembelian/cari_outlet', 'BiayaPenerusController@cari_outlet');
@@ -286,6 +288,7 @@ Route::get('master_subcon/datatable_kontrak', 'subconController@datatable_kontra
 Route::get('master_subcon/set_modal', 'subconController@set_modal');
 Route::get('master_subcon/hapus_d_kontrak', 'subconController@hapus_d_kontrak');
 Route::get('master_subcon/check_kontrak', 'subconController@check_kontrak');
+Route::get('master_subcon/detail/{id}', 'subconController@detail');
 
 
 //PEMBAYARAN SUBCON
@@ -1467,7 +1470,7 @@ Route::get('sales/invoice_form', 'sales\invoice_Controller@form');
 Route::get('sales/nota_invoice', 'sales\invoice_Controller@nota_invoice');
 Route::get('sales/cari_do_invoice', 'sales\invoice_Controller@cari_do_invoice');
 Route::get('sales/cari_do_edit_invoice', 'sales\invoice_Controller@cari_do_edit_invoice');
-Route::get('sales/append_do', 'sales\invoice_Controller@append_do');
+Route::post('sales/append_do', 'sales\invoice_Controller@append_do');
 Route::get('sales/pajak_lain', 'sales\invoice_Controller@pajak_lain');
 Route::get('sales/jatuh_tempo_customer', 'sales\invoice_Controller@jatuh_tempo_customer');
 Route::get('sales/edit_invoice/{i}', 'sales\invoice_Controller@edit_invoice');
@@ -1489,6 +1492,9 @@ Route::post('sales/invoice/hapus_data', 'sales\invoice_Controller@hapus_data');
 Route::post('sales/invoice/hapus_data_detail', 'sales\invoice_Controller@hapus_data_detail');
 Route::get('sales/invoice_form/{nomor}/nota', 'sales\invoice_Controller@cetak_nota');
 Route::get('sales/invoice_form/{nilai}/terbilang', 'sales\invoice_Controller@penyebut');
+Route::get('sales/datatable_invoice1', 'sales\invoice_Controller@datatable_invoice')->name('datatable_invoice1');
+Route::get('sales/invoice/jurnal', 'sales\invoice_Controller@jurnal1');
+
 // end invoice
 // invoice pembetulan
 Route::get('sales/invoice_pembetulan', 'sales\invoice_pembetulan_controller@index');
@@ -1912,7 +1918,7 @@ Route::get('master_keuangan/laba_rugi/pdf/single/{throtle}', [
 
 // buku besar
 
-Route::get('master_keuangan/buku_besar/single/{throtle}', [
+Route::post('master_keuangan/buku_besar/single', [
   'uses' => 'master_keuangan\laporan\laporan_buku_besar@index_buku_besar_single',
   'as'   => 'buku_besar.index_single'
 ]);
@@ -2104,6 +2110,11 @@ Route::get('master_keuangan/akun/cek_parrent/{id}', [
 Route::get('master_keuangan/akun/share_akun', [
   'uses'=> 'master_keuangan\akun_controller@share_akun',
   'as'  => 'akun.share'
+]);
+
+Route::get('master_keuangan/akun/get/{cabang}', [
+  'uses'=> 'master_keuangan\akun_controller@get_akun',
+  'as'  => 'akun.get'
 ]);
 
 Route::get('master_keuangan/akun/tabel', 'master_keuangan\akun_controller@table_data');

@@ -86,6 +86,7 @@
                         <input type="hidden" name="fp_ppn" value="{{$data['fp'][0]->fp_ppn}}">
                         <input type="hidden" name="fp_diskon" value="{{$data['fp'][0]->fp_discount}}">
                         <input type="hidden" name="fp_hsldiskon" value="{{$data['fp'][0]->fp_hsldiscount}}">
+                        <input type="hidden" name="fp_keterangan" value="{{$data['fp'][0]->fp_keterangan}}">
                         <input type="hidden" name="gudang" value="{{$data['header'][0]->bt_gudang}}">
 			                   <input type="hidden" name="ref" value="{{$data['header'][0]->bt_id}}">
                         <input type="hidden" name="comp" value="{{$data['comp']}}">
@@ -183,6 +184,7 @@
                               
                               <input type="hidden" value="{{$data['fpdt'][$x]->fpdt_netto}}" name="jumlahharga[]">
                               <input type="hidden" value="{{$data['fpdt'][$x]->fpdt_harga}}" name="hpp[]">
+                              <input type="hidden" value="{{$data['fpdt'][$x]->fpdt_keterangan}}" name="keteranganfpdetail[]">
                               <td> 
                               @for($c=0; $c < count($data['sisa'][$x]); $c++)
                                 @if( $data['fpdt'][$x]->fpdt_id == $data['sisa'][$x][$c]->fpdt_id)
@@ -253,14 +255,15 @@
                       <tr>
                         <th style="width:200px"> Supplier </th>
                         <td style="width:400px"> <h3> {{$data['po'][0]->nama_supplier}} </h3> </td>
-                           <input type="hidden" name="idpo" value="{{$data['po'][0]->po_id}}" class="idpo">
+                        <input type="hidden" name="idpo" value="{{$data['po'][0]->po_id}}" class="idpo">
                         <input type="hidden" name="acchutangsupplierpo" value="{{$data['po'][0]->po_acchutangdagang}}">
                         <input type="hidden" name="ppn_po" value="{{$data['po'][0]->po_ppn}}">
                         <input type="hidden" name="diskon_po" value="{{$data['po'][0]->po_diskon}}">
                         <input type="hidden" name="gudang" value="{{$data['header'][0]->bt_gudang}}">
-			<input type="hidden" name="ref" value="{{$data['header'][0]->bt_id}}">
+			                  <input type="hidden" name="ref" value="{{$data['header'][0]->bt_id}}">
                         <input type="hidden" name="comp" value="{{$data['comp']}}">
-			<input type="hidden" name="comp_po" value="{{$data['header'][0]->bt_cabangpo}}">
+                        <input type="hidden" name="comp_po" value="{{$data['header'][0]->bt_cabangpo}}">
+			                  <input type="hidden" name="po_keterangan" value="{{$data['po'][0]->po_catatan}}">
                       </tr>
                       
                         <tr>
@@ -346,6 +349,8 @@
                             data-id=<?php echo $n ?> name="qtydikirim[]"> <input type="hidden" class="item{{$j}}" value="{{$data['podtbarang'][$i][$j]->kode_item}}">
 
                             <input type="hidden" value="{{$data['podtbarang'][$i][$j]->podt_jumlahharga}}" name="jumlahharga[]" class="jumlahharga{{$j}}">
+                            <input type="hidden" value="{{$data['podtbarang'][$i][$j]->podt_keterangan}}" name="keterangandt[]" class="keterangandt{{$j}}">
+
                             <input type="hidden" class="item kodeitem{{$j}}" value="{{$data['podtbarang'][$i][$j]->podt_kodeitem}}" name="kodeitem[]">
 
                             <input type="hidden" class="akunitem" value="{{$data['podtbarang'][$i][$j]->podt_akunitem}}" name="accpersediaan[]">
@@ -606,9 +611,11 @@
                                 <table id="table_jurnal" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Akun</th>
+                                            <th> ID Akun </th>
+                                            <th> Nama Akun</th>
                                             <th>Debit</th>
                                             <th>Kredit</th>                                            
+                                            <th> Uraian / Detail </th>                                            
                                         </tr>
                                     </thead>
                                     
@@ -644,7 +651,7 @@
                       
                         for(key = 0; key < response.countjurnal; key++) {
                            
-                          var rowtampil2 = "<tr class='listjurnal'> <td>"+response.jurnal[key].id_akun+" - "+response.jurnal[key].nama_akun+"</td>";
+                          var rowtampil2 = "<tr class='listjurnal'> <td>"+response.jurnal[key].id_akun+" </td> <td>"+response.jurnal[key].nama_akun+"</td>";
 
                           if(response.jurnal[key].dk == 'D'){
                             $totalDebit = parseFloat($totalDebit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
@@ -654,14 +661,18 @@
                             $totalKredit = parseFloat($totalKredit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
                             rowtampil2 += "<td> </td><td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td>";
                           }
+
+                            rowtampil2 += "<td>"+response.jurnal[key].jrdt_detail+"</td>";
+
                             $('#table_jurnal').append(rowtampil2);
                         }
                      var rowtampil1 = "</tbody>" +
                       "<tfoot>" +
                           "<tr class='listjurnal'> " +
-                                  "<th>Total</th>" +                        
+                                  "<th colspan='2'>Total</th>" +                        
                                   "<th>"+accounting.formatMoney($totalDebit, "", 2, ",",'.')+"</th>" +
-                                  "<th>"+accounting.formatMoney($totalKredit,"",2,',','.')+"</th>"
+                                  "<th>"+accounting.formatMoney($totalKredit,"",2,',','.')+"</th>" +
+                                  "<th>&nbsp;</th>" +
                           "<tr>" +
                       "</tfoot>";
                                      

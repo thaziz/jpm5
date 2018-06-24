@@ -737,7 +737,17 @@ function(){
           $('.asd').attr('hidden',false);
           $('.process').addClass('disabled');
           $('.cari').addClass('disabled');
-        }
+        }else if (response.status == 3) {
+          swal({
+              title: "Peringatan!",
+              type: 'warning',
+              text: response.data,
+              timer: 900,
+             showConfirmButton: true
+              },function(){
+              toastr.warning('No DO telah diganti menjadi ' + response.nota)
+          });
+       }
         
         $('.asd').attr('hidden',false);
       },
@@ -778,22 +788,20 @@ function reload(){
 }
 
 $('.jurnal').click(function(){
-    $('.modal_jurnal').modal('show');
+  var id = '{{ $id }}';
+  $.ajax({
+      url:baseUrl + '/biaya_penerus/jurnal',
+      type:'get',
+      data:{id},
+      success:function(data){
+         $('.tabel_jurnal').html(data);
+         $('.modal_jurnal').modal('show');
+      },
+      error:function(data){
+          // location.reload();
+      }
+  }); 
 })
-function jurnal() {
-    var id = '{{ $id }}';
-    $.ajax({
-        url:baseUrl + '/biaya_penerus/jurnal',
-        type:'get',
-        data:{id},
-        success:function(data){
-           $('.tabel_jurnal').html(data);
-        },
-        error:function(data){
-            // location.reload();
-        }
-    }); 
-  }
 
 </script>
 @endsection

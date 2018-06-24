@@ -132,7 +132,7 @@
                         <div class="col-sm-12">
                           <div class="col-sm-6"> <div class="judul-spp"> </div> </div>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-10">
                            <div class="tablespp"> </div>
                         </div>
                      
@@ -551,6 +551,7 @@
                         '<th style="width:130px"> Harga Per Item </th>' +
                         '<th style="width:130px"> Total Harga</th>' +
                         '<th style="width:200px" id="tdgudang"> Dikirim Ke </th>' +      
+                        '<th style="width:200px" > Keterangan </th>' +      
                     '</tr>' +
                    
                     '</thead>' +
@@ -575,8 +576,11 @@
                         '<td> <input type="text" class="form-control totalharga2 totalharga2'+nosup+'" readonly="" name="totalharga[]" data-id='+nosup+'>  </td>';
 
                         if(response.spp[0][0].spp_tipe != 'J'){
-                          rowTable += '<td id="tdgudang"> <select class="form-control gudang" name="lokasikirim[]" class="tdgudang">  @foreach($data['gudang'] as $gdg) <option value="{{$gdg->mg_id}}"> {{$gdg->mg_namagudang}}</option> @endforeach </select></td>' + //cabang
-                         '<tr>';
+                          rowTable += '<td id="tdgudang"> <select class="form-control gudang" name="lokasikirim[]" class="tdgudang">  @foreach($data['gudang'] as $gdg) <option value="{{$gdg->mg_id}}"> {{$gdg->mg_namagudang}}</option> @endforeach </select></td>'; //cabang
+                         
+
+                        rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required>  </td>' +
+                        '<tr>';
 
                         }
                        nosup++;

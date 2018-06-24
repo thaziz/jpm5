@@ -95,11 +95,7 @@
                                     <select onchange="ganti_jt()" class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $i=> $val)
-                                        @foreach($kota as $kot)
-                                          @if($kot->id == $val->kota)
-                                            <option value="{{$val->kode}}"  > {{$val->kode}} - {{$val->nama}} - {{ $kot->nama }}</option>
-                                          @endif
-                                        @endforeach
+                                            <option value="{{$val->kode}}"  > {{$val->kode}} - {{$val->nama}}</option>
                                     @endforeach
                                     </select>
                                     <input type="hidden" class="ed_customer" name="ed_customer" value="" >
@@ -212,7 +208,7 @@
                     <table class="table table-hover table_pajak">
                         <tbody>
                             <tr>
-                                <td style="width:64%; padding-top: 0.4cm; text-align:right">Total(+ biaya tambahan)</td>
+                                <td style="width:64%; padding-top: 0.4cm; text-align:right">Harga Bruto (+ biaya tambahan)</td>
                                 <td colspan="4">
                                     <input type="text" name="ed_total" class="form-control ed_total" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
                                 </td>
@@ -226,7 +222,7 @@
                             <tr>
                                 <td style="padding-top: 0.4cm; text-align:right">Netto Detail</td>
                                 <td colspan="4">
-                                    <input type="text" name="netto_detail" readonly=""  class="form-control netto_detail" style="text-transform: uppercase;text-align:right" >
+                                    <input type="text" name="netto_detail" readonly=""  class="form-control netto_detail" style="text-transform: uppercase;text-align:right;background: red;color: white" >
                                 </td>
                             </tr>
                             <tr>
@@ -444,6 +440,7 @@
             success:function(response){
                 if ($('#nota_invoice').val() == $('#old_invoice').val() ) {
                     $('#nota_invoice').val(response.nota);
+                    $('#old_invoice').val(response.nota);
                 }
             }
         });
@@ -539,7 +536,7 @@ function hitung_total_tagihan(){
         netto_total      = parseFloat(netto_total)/100;
         netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
         netto_detail     = parseFloat(netto_detail)/100;
-        diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
+        diskon2          = diskon2.replace(/[^0-9.\-]+/g,"");
         diskon2          = parseFloat(diskon2);
 
         var ppn  = $('.ppn').val();
@@ -721,6 +718,7 @@ function hitung_total_tagihan(){
    var index_detail = 0;
    $('#btnsave').click(function(){
 
+        var token = '{{ csrf_field() }}';
         var nomor_dt = [];
         var nomor_do = [];
         var cb_pendapatan = $('#cb_pendapatan').val();
@@ -742,10 +740,15 @@ function hitung_total_tagihan(){
             }
         });
 
-
+        $.ajaxSetup({
+            headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         $.ajax({
             url:baseUrl +'/sales/append_do',
-            data:{nomor_dt,nomor_do,cb_pendapatan},
+            data:{token,nomor_dt,nomor_do,cb_pendapatan},
+            type:'post',
             dataType:'json',
             success:function(response){
                 if (response.jenis == 'KORAN') {
@@ -920,8 +923,7 @@ function hitung_total_tagihan(){
         closeOnConfirm: true
       },
       function(){
-            var accPiutang=$(".grup_item").find(':selected').data('accpiutang'); 
-            var csfPiutang=$(".grup_item").find(':selected').data('csfpiutang'); 
+            var acc_piutang=$(".grup_item").find(':selected').data('accpiutang'); 
             var pajak_lain=$("#pajak_lain").find(':selected').data('pph'); 
             var ed_customer=$("#customer").val(); 
                // alert(accPiutang);
@@ -938,10 +940,10 @@ function hitung_total_tagihan(){
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
                +'&'+$('.table_pajak :input').serialize()
-               +'&accPiutang='+accPiutang
-               +'&csfPiutang='+csfPiutang
+               +'&acc_piutang='+acc_piutang
                +'&pajak_lain='+pajak_lain
                +'&ed_customer='+ed_customer,
+
           success:function(response){
              if (response.status =='gagal') {
                 
@@ -949,12 +951,29 @@ function hitung_total_tagihan(){
                 
              }
 
+             if (response.status ==0) {
+                
+                    toastr.warning(response.message);
+                
+             }
 
             if (response.status == 2) {
                 swal({
                     title: "Berhasil!",
                     type: 'success',
                     text: "Data berhasil disimpan",
+                    timer: 900,
+                   showConfirmButton: true
+                    },function(){
+                    toastr.warning('No DO telah diganti menjadi ' + response.nota)
+                });
+             }
+
+             if (response.status == 3) {
+                swal({
+                    title: "Peringatan!",
+                    type: 'warning',
+                    text: response.data,
                     timer: 900,
                    showConfirmButton: true
                     },function(){

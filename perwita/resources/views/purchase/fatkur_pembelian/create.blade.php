@@ -2541,7 +2541,7 @@
                 $('.sisahutang').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(hasilnetto);
+                $('.sisahutang').val(addCommas(hasilnetto));
               }
 
             }
@@ -2558,7 +2558,7 @@
                     $('.sisahutang').val(addCommas(hslselisihum));
                   }
                   else {
-                    $('.sisahutang').val(hasilnetto);
+                    $('.sisahutang').val(addCommas(hasilnetto));
                   }
 
                 $('.dpp').val(addCommas(dpp));
@@ -2589,7 +2589,7 @@
                 $('.sisahutang').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(total);
+                $('.sisahutang').val(addCommas(total));
               }
 
             }
@@ -2616,7 +2616,7 @@
                 $('.sisahutang').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(total);
+                $('.sisahutang').val(addCommas(total));
               }
 
             }
@@ -2636,7 +2636,7 @@
                 $('.sisahutang').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(dpp);
+                $('.sisahutang').val(addCommas(dpp));
               }
 
             }
@@ -2654,7 +2654,7 @@
                 $('.sisahutang').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(total);
+                $('.sisahutang').val(addCommas(total));
               }
 
 
@@ -2698,7 +2698,7 @@
                     $('.sisahutang_po').val(addCommas(hslselisihum));
                 }
                 else {
-                  $('.sisahutang_po').val(hasilnetto);
+                  $('.sisahutang_po').val(addCommas(hasilnetto));
                 }
 
             }
@@ -2714,7 +2714,7 @@
                     $('.sisahutang_po').val(addCommas(hslselisihum));
                 }
                 else {
-                  $('.sisahutang_po').val(hasilnetto);
+                  $('.sisahutang_po').val(addCommas(hasilnetto));
                 }
             } 
           }
@@ -2740,7 +2740,7 @@
                     $('.sisahutang_po').val(addCommas(hslselisihum));
                 }
                 else {
-                  $('.sisahutang_po').val(total);
+                  $('.sisahutang_po').val(addCommas(total));
                 }
 
             }
@@ -2764,7 +2764,7 @@
                     $('.sisahutang_po').val(addCommas(hslselisihum));
                 }
                 else {
-                  $('.sisahutang_po').val(total);
+                  $('.sisahutang_po').val(addCommas(total));
                 }
 
             }
@@ -2784,7 +2784,7 @@
                     $('.sisahutang_po').val(addCommas(hslselisihum));
                 }
                 else {
-                  $('.sisahutang_po').val(dpp);
+                  $('.sisahutang_po').val(addCommas(dpp));
                 }
 
             }
@@ -2801,7 +2801,7 @@
                     $('.sisahutang_po').val(addCommas(hslselisihum));
                 }
                 else {
-                  $('.sisahutang_po').val(total);
+                  $('.sisahutang_po').val(addCommas(total));
                 }
 
             }
@@ -2860,7 +2860,7 @@
                 $('.sisahutang').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(hsl);
+                $('.sisahutang').val(addCommas(hsl));
               }
 
 
@@ -2879,7 +2879,7 @@
                 $('.sisahutang').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(hsl);
+                $('.sisahutang').val(addCommas(hsl));
               }
           }
       }
@@ -2907,7 +2907,7 @@
                 $('.sisahutang').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(total);
+                $('.sisahutang').val(addCommas(total));
               }
 
             }
@@ -2933,7 +2933,7 @@
                 $('.sisahutang').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(total);
+                $('.sisahutang').val(addCommas(hsl));
               }      
             }
       }
@@ -2980,11 +2980,11 @@
                 $('.sisahutang_po').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang_po').val(hsl);
+                $('.sisahutang_po').val(addCommas(hsl));
               }
 
           }else{ //PPH KOSONG
-             $('.nettohutang_po').val(dpp);
+             $('.nettohutang_po').val(addCommas(dpp));
               totaljumlah2 = $('.totaljumlah').val();
           //    alert(totaljumlah2);
               if(totaljumlah2 != ''){
@@ -2993,7 +2993,7 @@
                 $('.sisahutang_po').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang_po').val(dpp);
+                $('.sisahutang_po').val(addCommas(dpp));
               }
           }
       }
@@ -3015,7 +3015,7 @@
                 $('.sisahutang_po').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang_po').val(hsl);
+                $('.sisahutang_po').val(addCommas(hsl));
               }
 
 
@@ -3034,7 +3034,7 @@
                 $('.sisahutang_po').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang_po').val(hsl);
+                $('.sisahutang_po').val(addCommas(hsl));
               }
 
           }
@@ -3062,7 +3062,7 @@
                 $('.sisahutang_po').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang_po').val(total);
+                $('.sisahutang_po').val(addCommas(total));
               }
 
             }
@@ -3087,7 +3087,7 @@
                 $('.sisahutang_po').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang_po').val(total);
+                $('.sisahutang_po').val(addCommas(total));
               }
 
             }
@@ -3109,7 +3109,13 @@
 
       hasiltarif = parseFloat((tarif / 100) * hsldpp);
       hasiltarif2 =  hasiltarif.toFixed(2);
-      $('.hasilpph').val(addCommas(hasiltarif2));
+      if(val == ''){
+          $('.hasilpph').val('');
+      }
+      else {
+          $('.hasilpph').val(addCommas(hasiltarif2));
+
+      }
 
       hasilnetto = hsldpp - hasiltarif2;
       hasilnetto2 =  Math.round(hasilnetto).toFixed(2);
@@ -3123,20 +3129,17 @@
         jenisppn = $('.jenisppn').val();
         numeric2 = dpp.replace(/,/g,'');
 
-      if(val == ''){
+      if(val == ''){ // PPH KOSONG
           toastr.info('silahkan pilih pajak pphh :)');
-          return false;
-      }
-      else {
-
-
-      if($('.hasilppn').val() != '') { //ppn  tidak kosong
+          
+          if($('.hasilppn').val() != '') { //ppn  tidak kosong
+             hasilpph = 0;
           if($('.jenisppn').val() == 'E'){
           
              ppn = $('.hasilppn').val();
              hasilppn = ppn.replace(/,/g,'');
              pph = addCommas(hasiltarif2);
-             hasilpph = pph.replace(/,/g,'');
+            
              hasilnetto = parseFloat(parseFloat(hsldpp)+parseFloat(hasilppn) - parseFloat(hasilpph)); 
              hsl = hasilnetto.toFixed(2);
              $('.nettohutang').val(addCommas(hsl));
@@ -3150,7 +3153,7 @@
                 $('.sisahutang').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(hsl);
+                $('.sisahutang').val(addCommas(hsl));
               }
           }
 
@@ -3177,7 +3180,7 @@
                 $('.sisahutang').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(total);
+                $('.sisahutang').val(addCommas(total));
               }
 
         }
@@ -3185,9 +3188,9 @@
        
           $('.inputppn').val('');
           $('.hasilppn').val('');
-          hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasiltarif2));
+          hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasilpph));
           netto2 = hslnetto.toFixed(2);
-          $('.nettohutang').addCommas(netto2);
+          $('.nettohutang').val(addCommas(netto2));
           //$('.sisahutang').addCommas(netto2);
 
           totaljumlah2 = $('.totaljumlah').val();
@@ -3198,7 +3201,100 @@
             $('.sisahutang').val(addCommas(hslselisihum));
           }
           else {
-            $('.sisahutang').val(netto2);
+            $('.sisahutang').val(addCommas(netto2));
+          }
+
+        }
+      } // end ppn tdk kosong
+      else {
+
+          hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasilpph));
+          netto2 = hslnetto.toFixed(2);
+          $('.nettohutang').val(addCommas(netto2));
+         // $('.sisahutang').val(addCommas(netto2));
+          
+          totaljumlah2 = $('.totaljumlah').val();
+          //    alert(totaljumlah2);
+          if(totaljumlah2 != ''){
+            totaljumlah = totaljumlah2.replace(/,/g,'');
+            hslselisihum = parseFloat(parseFloat(netto2) - parseFloat(totaljumlah)).toFixed(2);
+            $('.sisahutang').val(addCommas(hslselisihum));
+          }
+          else {
+            $('.sisahutang').val(addCommas(netto2));
+          }
+      }
+      } // PPH ADA NILAI NYA
+      else {
+      if($('.hasilppn').val() != '') { //ppn  tidak kosong
+          if($('.jenisppn').val() == 'E'){
+          
+             ppn = $('.hasilppn').val();
+             hasilppn = ppn.replace(/,/g,'');
+             pph = addCommas(hasiltarif2);
+             hasilpph = pph.replace(/,/g,'');
+             hasilnetto = parseFloat(parseFloat(hsldpp)+parseFloat(hasilppn) - parseFloat(hasilpph)); 
+             hsl = hasilnetto.toFixed(2);
+             $('.nettohutang').val(addCommas(hsl));
+           //  $('.sisahutang').val(addCommas(hsl));
+          
+             totaljumlah2 = $('.totaljumlah').val();
+          //    alert(totaljumlah2);
+              if(totaljumlah2 != ''){
+                totaljumlah = totaljumlah2.replace(/,/g,'');
+                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                $('.sisahutang').val(addCommas(hslselisihum));
+              }
+              else {
+                $('.sisahutang').val(addCommas(hsl));
+              }
+          }
+
+         else if(jenisppn == 'I'){ 
+              
+            hargadpp = parseFloat((parseFloat(hsldpp) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
+                         
+            $('.dpp').val(addCommas(hargadpp));
+            subtotal = $('.dpp').val();
+            subharga = subtotal.replace(/,/g, '');
+            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
+     
+            $('.hasilppn').val(addCommas(hargappn));
+
+            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
+            $('.nettohutang').val(addCommas(total));                 
+            //$('.sisahutang').val(addCommas(total)); 
+
+             totaljumlah2 = $('.totaljumlah').val();
+          //    alert(totaljumlah2);
+              if(totaljumlah2 != ''){
+                totaljumlah = totaljumlah2.replace(/,/g,'');
+                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                $('.sisahutang').val(addCommas(hslselisihum));
+              }
+              else {
+                $('.sisahutang').val(addCommas(total));
+              }
+
+        }
+        else {
+       
+          $('.inputppn').val('');
+          $('.hasilppn').val('');
+          hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasiltarif2));
+          netto2 = hslnetto.toFixed(2);
+          $('.nettohutang').val(addCommas(netto2));
+          //$('.sisahutang').addCommas(netto2);
+
+          totaljumlah2 = $('.totaljumlah').val();
+          //    alert(totaljumlah2);
+          if(totaljumlah2 != ''){
+            totaljumlah = totaljumlah2.replace(/,/g,'');
+            hslselisihum = parseFloat(parseFloat(netto2) - parseFloat(totaljumlah)).toFixed(2);
+            $('.sisahutang').val(addCommas(hslselisihum));
+          }
+          else {
+            $('.sisahutang').val(addCommas(netto2));
           }
 
         }
@@ -3218,7 +3314,7 @@
             $('.sisahutang').val(addCommas(hslselisihum));
           }
           else {
-            $('.sisahutang').val(netto2);
+            $('.sisahutang').val(addCommas(netto2));
           }
 
 
@@ -3247,7 +3343,7 @@
         numeric2 = dpp.replace(/,/g,'');
 
       if(val == ''){
-
+        $('.hasilpph_po').val('');
       }
       else {
         hasiltarif = parseFloat((tarif / 100) * hsldpp);
@@ -3274,10 +3370,11 @@
               if(totaljumlah2 != ''){
                 totaljumlah = totaljumlah2.replace(/,/g,'');
                 hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                $('.sisahutang').val(addCommas(hslselisihum));
+                $('.sisahutang_po').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(hsl);
+                //alert(hsl);
+                $('.sisahutang_po').val(addCommas(hsl));
               }
           }
 
@@ -3300,10 +3397,10 @@
               if(totaljumlah2 != ''){
                 totaljumlah = totaljumlah2.replace(/,/g,'');
                 hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                $('.sisahutang').val(addCommas(hslselisihum));
+                $('.sisahutang_po').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(total);
+                $('.sisahutang_po').val(addCommas(total));
               }
 
         }
@@ -3320,10 +3417,10 @@
               if(totaljumlah2 != ''){
                 totaljumlah = totaljumlah2.replace(/,/g,'');
                 hslselisihum = parseFloat(parseFloat(netto2) - parseFloat(totaljumlah)).toFixed(2);
-                $('.sisahutang').val(addCommas(hslselisihum));
+                $('.sisahutang_po').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(netto2);
+                $('.sisahutang_po').val(addCommas(netto2));
               }
 
         }
@@ -3339,10 +3436,10 @@
               if(totaljumlah2 != ''){
                 totaljumlah = totaljumlah2.replace(/,/g,'');
                 hslselisihum = parseFloat(parseFloat(netto2) - parseFloat(totaljumlah)).toFixed(2);
-                $('.sisahutang').val(addCommas(hslselisihum));
+                $('.sisahutang_po').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(netto2);
+                $('.sisahutang_po').val(addCommas(netto2));
               }
       }
 
@@ -3397,7 +3494,7 @@
         $('.sisahutang').val(addCommas(hslselisihum));
       }
       else {
-        $('.sisahutang').val(numeric2);
+        $('.sisahutang').val(addCommas(numeric2));
       }
 
         
@@ -3426,7 +3523,7 @@
               $('.sisahutang').val(addCommas(hslselisihum));
             }
             else {
-              $('.sisahutang').val(hsl);
+              $('.sisahutang').val(addCommas(hsl));
             }
 
           }
@@ -3453,7 +3550,7 @@
               $('.sisahutang').val(addCommas(hslselisihum));
             }
             else {
-              $('.sisahutang').val(total);
+              $('.sisahutang').val(addCommas(total));
             }
    
           }
@@ -3473,7 +3570,7 @@
                       $('.sisahutang').val(addCommas(hslselisihum));
                     }
                     else {
-                      $('.sisahutang').val(hsl);
+                      $('.sisahutang').val(addCommas(hsl));
                     }
           }
         }
@@ -3494,7 +3591,7 @@
                     $('.sisahutang').val(addCommas(hslselisihum));
                   }
                   else {
-                    $('.sisahutang').val(hasil);
+                    $('.sisahutang').val(addCommas(hasil));
                   }
 
           }
@@ -3516,7 +3613,7 @@
                     $('.sisahutang').val(addCommas(hslselisihum));
                   }
                   else {
-                    $('.sisahutang').val(hsl);
+                    $('.sisahutang').val(addCommas(hsl));
                   }
 
             }
@@ -3545,7 +3642,7 @@
                 $('.sisahutang').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(total);
+                $('.sisahutang').val(addCommas(total));
               }
             }
             else if(jenisppn == 'T'){               
@@ -3564,7 +3661,7 @@
                   $('.sisahutang').val(addCommas(hslselisihum));
                 }
                 else {
-                  $('.sisahutang').val(total);
+                  $('.sisahutang').val(addCommas(total));
                 }  
 
 
@@ -3591,7 +3688,7 @@
                   $('.sisahutang').val(addCommas(hslselisihum));
                 }
                 else {
-                  $('.sisahutang').val(hsl);
+                  $('.sisahutang').val(addCommas(hsl));
                 } 
               }
               else if(jenisppn == 'I'){
@@ -3617,7 +3714,7 @@
                   $('.sisahutang').val(addCommas(hslselisihum));
                 }
                 else {
-                  $('.sisahutang').val(total);
+                  $('.sisahutang').val(addCommas(total));
                 } 
 
               }
@@ -3635,7 +3732,7 @@
                   $('.sisahutang').val(addCommas(hslselisihum));
                 }
                 else {
-                  $('.sisahutang').val(numeric2);
+                  $('.sisahutang').val(addCommas(numeric2));
                 } 
 
               }
@@ -3657,7 +3754,7 @@
                   $('.sisahutang').val(addCommas(hslselisihum));
                 }
                 else {
-                  $('.sisahutang').val(hsl);
+                  $('.sisahutang').val(addCommas(hsl));
                 } 
 
             }
@@ -3686,7 +3783,7 @@
                   $('.sisahutang').val(addCommas(hslselisihum));
                 }
                 else {
-                  $('.sisahutang').val(total);
+                  $('.sisahutang').val(addCommas(total));
                 }  
 
             }
@@ -3706,7 +3803,7 @@
                   $('.sisahutang').val(addCommas(hslselisihum));
                 }
                 else {
-                  $('.sisahutang').val(total);
+                  $('.sisahutang').val(addCommas(total));
                 } 
 
 
@@ -3726,7 +3823,7 @@
               $('.sisahutang').val(addCommas(hslselisihum));
             }
             else {
-              $('.sisahutang').val(numeric2);
+              $('.sisahutang').val(addCommas(numeric2));
             }
         }
 
@@ -4285,7 +4382,7 @@
                     hsltotalharga = totalharga.replace(/,/g,'');
 
                     hslnett = parseFloat(parseFloat(hslbiaya) + parseFloat(hsltotalharga)).toFixed(2);
-                    $('.nettoitem2').val(addCommas(hslnett));
+                    $('.nettoitem2' + id).val(addCommas(hslnett));
 
 
                    /* diskon = $('.diskonitem2' + id).val();
@@ -4366,7 +4463,18 @@
                           hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                           hsl = hasilnetto.toFixed(2);
                           $('.nettohutang').val(addCommas(hsl));
-                          $('.sisahutang').val(addCommas(hsl));
+                         // $('.sisahutang').val(addCommas(hsl));
+                          totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              }
+
                           $('.dpp').val(addCommas(numeric2));
                         }
                         else if(jenisppn == 'I'){
@@ -4381,16 +4489,38 @@
 
                             total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
                             $('.nettohutang').val(addCommas(total));                     
-                            $('.sisahutang').val(addCommas(total));                     
+                          //  $('.sisahutang').val(addCommas(total));
+
+                             totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(total);
+                              }
+
                         }
                         else {
 
                             hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
+                      //      $('.sisahutang').val(addCommas(hsl));
                             $('.dpp').val(addCommas(numeric2));
-                        
+                          
+                               totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              }
                         }
                       }
                       else if(pph != 0){ //PPH TIDAK KOSONG            
@@ -4398,8 +4528,20 @@
                         if(ppn == '') { //PPN KOSONG          
                           hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph));
                           $('.nettohutang').val(hasil);
-                          $('.sisahutang').val(hasil);
-                            $('.dpp').val(addCommas(numeric2));
+                          //$('.sisahutang').val(hasil);
+                          $('.dpp').val(addCommas(numeric2));
+                        
+                           totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hasil) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hasil);
+                              }
+
                         }
                         else{ //PPN TIDAK KOSONG            
                             jenisppn = $('.jenisppn').val();
@@ -4408,8 +4550,20 @@
                             hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
-                             $('.dpp').val(addCommas(numeric2));
+                            //$('.sisahutang').val(addCommas(hsl));
+                            $('.dpp').val(addCommas(numeric2));
+                            
+                              totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              }
+
                           }
                           else if(jenisppn == 'I'){ //PPN TIDAK KOSONG && PPH TIDAK KOSONG
 
@@ -4424,15 +4578,38 @@
 
                             total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
                             $('.nettohutang').val(addCommas(total));
-                            $('.sisahutang').val(addCommas(total));
+                        //    $('.sisahutang').val(addCommas(total)); 
+
+                             totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(total);
+                              }
+
 
                           }
                           else {
                             hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
+                          //  $('.sisahutang').val(addCommas(hsl));
                             $('.dpp').val(addCommas(numeric2));
+                          
+                             totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(total);
+                              }
                           }
                         }
                       }
@@ -4449,8 +4626,20 @@
                               alert(parseFloat(replaceppn));
                               alert(parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)));*/
                               $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
+                              //$('.sisahutang').val(addCommas(hsl));
+                              $('.dpp').val(addCommas(numeric2));
+
+                              totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(total);
+                              }
+
                             }
                             else if(jenisppn == 'I'){
                          
@@ -4463,15 +4652,39 @@
                                 $('.hasilppn').val(addCommas(hargappn));
                                 total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
                                 $('.nettohutang').val(addCommas(total));
-                                $('.sisahutang').val(addCommas(total));
+                                //$('.sisahutang').val(addCommas(total));
+                                
+                                totaljumlah2 = $('.totaljumlah').val();
+                            //    alert(totaljumlah2);
+                                if(totaljumlah2 != ''){
+                                  totaljumlah = totaljumlah2.replace(/,/g,'');
+                                  hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                                  $('.sisahutang').val(addCommas(hslselisihum));
+                                }
+                                else {
+                                  $('.sisahutang').val(total);
+                                }
+
                             }
                             else {
                        
                               hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
                               hsl = hasilnetto.toFixed(2);
                               $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
+                             // $('.sisahutang').val(addCommas(hsl));
+                              $('.dpp').val(addCommas(numeric2));
+
+                              totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              }
+
                             }
                         }
                         else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
@@ -4481,8 +4694,20 @@
                             hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
-                              $('.dpp').val(addCommas(numeric2));
+                            //$('.sisahutang').val(addCommas(hsl));
+                            
+                             totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              }
+
+                            $('.dpp').val(addCommas(numeric2));
                           }
                           else if(jenisppn == 'I'){
                                 hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
@@ -4496,23 +4721,54 @@
 
                                 total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
                                 $('.nettohutang').val(addCommas(total)); 
-                                $('.sisahutang').val(addCommas(total)); 
+                               // $('.sisahutang').val(addCommas(total)); 
+                                
+                                totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(total);
+                              }
                           }
                           else {
 
                               hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                               hsl = hasilnetto.toFixed(2);
                               $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
-                          
+                             // $('.sisahutang').val(addCommas(hsl));
+                              $('.dpp').val(addCommas(numeric2));
+                              
+                               totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              }
+
                           }
                         }
                       } 
                       else {
                           $('.nettohutang').val(addCommas(numeric2));
-                          $('.sisahutang').val(addCommas(numeric2));
+                        //  $('.sisahutang').val(addCommas(numeric2));
                           $('.dpp').val(addCommas(numeric2));
+                      
+                          if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(numeric2) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(numeric2);
+                              } 
                       }
                  })
 
@@ -4535,7 +4791,7 @@
                     hslbiaya = biaya.replace(/,/g,'');
 
                     hslnett = parseFloat(parseFloat(hslbiaya) + parseFloat(hsl)).toFixed(2);
-                    $('.nettoitem2').val(addCommas(hslnett));
+                    $('.nettoitem2' + id).val(addCommas(hslnett));
 
 
                    /* diskon = $('.diskonitem2' + id).val();
@@ -4616,7 +4872,20 @@
                           hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                           hsl = hasilnetto.toFixed(2);
                           $('.nettohutang').val(addCommas(hsl));
-                          $('.sisahutang').val(addCommas(hsl));
+
+                           totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              }
+
+
+                         // $('.sisahutang').val(addCommas(hsl));
                           $('.dpp').val(addCommas(numeric2));
                         }
                         else if(jenisppn == 'I'){
@@ -4631,16 +4900,37 @@
 
                             total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
                             $('.nettohutang').val(addCommas(total));                     
-                            $('.sisahutang').val(addCommas(total));                     
+                             totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hasilnetto) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hasilnetto);
+                              }                     
                         }
                         else {
 
                             hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
+                            //$('.sisahutang').val(addCommas(hsl));
+                            
+                             totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              }
+
                             $('.dpp').val(addCommas(numeric2));
-                        
+                            
                         }
                       }
                       else if(pph != 0){ //PPH TIDAK KOSONG            
@@ -4648,7 +4938,19 @@
                         if(ppn == '') { //PPN KOSONG          
                           hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph));
                           $('.nettohutang').val(hasil);
-                          $('.sisahutang').val(hasil);
+                          //$('.sisahutang').val(hasil);
+                          
+                           totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hasil) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hasil);
+                              }
+
                             $('.dpp').val(addCommas(numeric2));
                         }
                         else{ //PPN TIDAK KOSONG            
@@ -4658,8 +4960,20 @@
                             hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
-                             $('.dpp').val(addCommas(numeric2));
+                            //$('.sisahutang').val(addCommas(hsl));
+                            
+                             totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              }
+
+                            $('.dpp').val(addCommas(numeric2));
                           }
                           else if(jenisppn == 'I'){ //PPN TIDAK KOSONG && PPH TIDAK KOSONG
 
@@ -4674,14 +4988,38 @@
 
                             total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
                             $('.nettohutang').val(addCommas(total));
-                            $('.sisahutang').val(addCommas(total));
+                           // $('.sisahutang').val(addCommas(total));
+
+                            totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(total);
+                              }
+
 
                           }
                           else {
                             hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
+                            //$('.sisahutang').val(addCommas(hsl));
+                            
+                             totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              }
+
                             $('.dpp').val(addCommas(numeric2));
                           }
                         }
@@ -4699,8 +5037,21 @@
                               alert(parseFloat(replaceppn));
                               alert(parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)));*/
                               $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
+                              //$('.sisahutang').val(addCommas(hsl));
+                              $('.dpp').val(addCommas(numeric2));
+
+                              totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              }
+
+
                             }
                             else if(jenisppn == 'I'){
                          
@@ -4713,15 +5064,39 @@
                                 $('.hasilppn').val(addCommas(hargappn));
                                 total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
                                 $('.nettohutang').val(addCommas(total));
-                                $('.sisahutang').val(addCommas(total));
+                              //  $('.sisahutang').val(addCommas(total));
+                              
+                                totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(total);
+                              }
+
                             }
                             else {
                        
                               hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
                               hsl = hasilnetto.toFixed(2);
                               $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
+                              //$('.sisahutang').val(addCommas(hsl));
+                              $('.dpp').val(addCommas(numeric2));
+                              
+                              totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              }
+
                             }
                         }
                         else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
@@ -4731,8 +5106,21 @@
                             hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
-                              $('.dpp').val(addCommas(numeric2));
+                           // $('.sisahutang').val(addCommas(hsl));
+                            $('.dpp').val(addCommas(numeric2));
+
+                            totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              }
+
+
                           }
                           else if(jenisppn == 'I'){
                                 hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
@@ -4746,22 +5134,57 @@
 
                                 total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
                                 $('.nettohutang').val(addCommas(total)); 
-                                $('.sisahutang').val(addCommas(total)); 
+                               // $('.sisahutang').val(addCommas(total)); 
+                                
+                                totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(total);
+                              }
+
                           }
                           else {
 
                               hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                               hsl = hasilnetto.toFixed(2);
                               $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
+                              //$('.sisahutang').val(addCommas(hsl));
+                              $('.dpp').val(addCommas(numeric2));
+
+                               totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              }
                           
                           }
                         }
                       } 
                       else {
                           $('.nettohutang').val(addCommas(numeric2));
-                          $('.sisahutang').val(addCommas(numeric2));
+                         // $('.sisahutang').val(addCommas(numeric2));
+                          
+                           totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(numeric2) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(numeric2);
+                              }
+
                           $('.dpp').val(addCommas(numeric2));
                       }
                  })
@@ -4793,7 +5216,7 @@
                     hslbiaya = biaya.replace(/,/g,'');
 
                     hslnett = parseFloat(parseFloat(hslbiaya) + parseFloat(hsl)).toFixed(2);
-                    $('.nettoitem2').val(addCommas(hslnett)); 
+                    $('.nettoitem2' + id).val(addCommas(hslnett)); 
 
                    $('.nettoitem2').each(function(){
                       val2 = $(this).val();
@@ -4862,8 +5285,20 @@
                           hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                           hsl = hasilnetto.toFixed(2);
                           $('.nettohutang').val(addCommas(hsl));
-                          $('.sisahutang').val(addCommas(hsl));
+                         // $('.sisahutang').val(addCommas(hsl));
                           $('.dpp').val(addCommas(numeric2));
+
+                            totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              } 
+
                         }
                         else if(jenisppn == 'I'){
                             hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
@@ -4876,16 +5311,39 @@
                             $('.hasilppn').val(addCommas(hargappn));
                             total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
                             $('.nettohutang').val(addCommas(total));                     
-                            $('.sisahutang').val(addCommas(total));                     
+                           // $('.sisahutang').val(addCommas(total));
+
+                             totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(total);
+                              } 
+
                         }
                         else {
 
                             hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
+                          //  $('.sisahutang').val(addCommas(hsl));
                             $('.dpp').val(addCommas(numeric2));
-                        
+                            
+                              totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              } 
+
                         }
                       }
                       else if(pph != 0){ //PPH TIDAK KOSONG            
@@ -4893,8 +5351,19 @@
                         if(ppn == '') { //PPN KOSONG          
                           hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph));
                           $('.nettohutang').val(hasil);
-                          $('.sisahutang').val(hasil);
-                            $('.dpp').val(addCommas(numeric2));
+                        //  $('.sisahutang').val(hasil);
+                           $('.dpp').val(addCommas(numeric2));
+                          
+                             totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hasil) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hasil);
+                              } 
                         }
                         else{ //PPN TIDAK KOSONG            
                             jenisppn = $('.jenisppn').val();
@@ -4903,8 +5372,20 @@
                             hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
-                             $('.dpp').val(addCommas(numeric2));
+                          //  $('.sisahutang').val(addCommas(hsl));
+                            $('.dpp').val(addCommas(numeric2));
+                            
+                            totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              } 
+
                           }
                           else if(jenisppn == 'I'){ //PPN TIDAK KOSONG && PPH TIDAK KOSONG
 
@@ -4919,15 +5400,38 @@
 
                             total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
                             $('.nettohutang').val(addCommas(total));
-                            $('.sisahutang').val(addCommas(total));
+                            //$('.sisahutang').val(addCommas(total)); 
+
+                            totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(total);
+                              } 
 
                           }
                           else {
                             hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
+                           // $('.sisahutang').val(addCommas(hsl));
                             $('.dpp').val(addCommas(numeric2));
+                            
+                            totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                              if(totaljumlah2 != ''){
+                                totaljumlah = totaljumlah2.replace(/,/g,'');
+                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                $('.sisahutang').val(addCommas(hslselisihum));
+                              }
+                              else {
+                                $('.sisahutang').val(hsl);
+                              } 
+
                           }
                         }
                       }
@@ -4944,8 +5448,19 @@
                               alert(parseFloat(replaceppn));
                               alert(parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)));*/
                               $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
+                            // $('.sisahutang').val(addCommas(hsl));
+                               $('.dpp').val(addCommas(numeric2));
+                            
+                               totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                                if(totaljumlah2 != ''){
+                                  totaljumlah = totaljumlah2.replace(/,/g,'');
+                                  hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                  $('.sisahutang').val(addCommas(hslselisihum));
+                                }
+                                else {
+                                  $('.sisahutang').val(hsl);
+                                } 
                             }
                             else if(jenisppn == 'I'){
                          
@@ -4958,15 +5473,38 @@
                                 $('.hasilppn').val(addCommas(hargappn));
                                 total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
                                 $('.nettohutang').val(addCommas(total));
-                                $('.sisahutang').val(addCommas(total));
+                               // $('.sisahutang').val(addCommas(total));
+                            
+                                 totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                                if(totaljumlah2 != ''){
+                                  totaljumlah = totaljumlah2.replace(/,/g,'');
+                                  hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                                  $('.sisahutang').val(addCommas(hslselisihum));
+                                }
+                                else {
+                                  $('.sisahutang').val(total);
+                                } 
                             }
                             else {
                        
                               hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
                               hsl = hasilnetto.toFixed(2);
                               $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
+                             // $('.sisahutang').val(addCommas(hsl));
+                              $('.dpp').val(addCommas(numeric2));
+                              
+                              totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                                if(totaljumlah2 != ''){
+                                  totaljumlah = totaljumlah2.replace(/,/g,'');
+                                  hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                  $('.sisahutang').val(addCommas(hslselisihum));
+                                }
+                                else {
+                                  $('.sisahutang').val(hsl);
+                                } 
+
                             }
                         }
                         else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
@@ -4976,8 +5514,20 @@
                             hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
-                              $('.dpp').val(addCommas(numeric2));
+                           // $('.sisahutang').val(addCommas(hsl));
+                            $('.dpp').val(addCommas(numeric2));
+                            
+                             totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                                if(totaljumlah2 != ''){
+                                  totaljumlah = totaljumlah2.replace(/,/g,'');
+                                  hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                  $('.sisahutang').val(addCommas(hslselisihum));
+                                }
+                                else {
+                                  $('.sisahutang').val(hsl);
+                                } 
+
                           }
                           else if(jenisppn == 'I'){
                                 hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
@@ -4991,23 +5541,55 @@
 
                                 total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
                                 $('.nettohutang').val(addCommas(total)); 
-                                $('.sisahutang').val(addCommas(total)); 
+                               // $('.sisahutang').val(addCommas(total)); 
+                          
+                               totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                                if(totaljumlah2 != ''){
+                                  totaljumlah = totaljumlah2.replace(/,/g,'');
+                                  hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                                  $('.sisahutang').val(addCommas(hslselisihum));
+                                }
+                                else {
+                                  $('.sisahutang').val(total);
+                                } 
+
                           }
                           else {
 
                               hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                               hsl = hasilnetto.toFixed(2);
                               $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
-                          
+                              //$('.sisahutang').val(addCommas(hsl));
+                              $('.dpp').val(addCommas(numeric2));
+                              
+                               totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                                if(totaljumlah2 != ''){
+                                  totaljumlah = totaljumlah2.replace(/,/g,'');
+                                  hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                  $('.sisahutang').val(addCommas(hslselisihum));
+                                }
+                                else {
+                                  $('.sisahutang').val(hsl);
+                                } 
                           }
                         }
                       } 
                       else {
                           $('.nettohutang').val(addCommas(numeric2));
-                          $('.sisahutang').val(addCommas(numeric2));
+                          //$('.sisahutang').val(addCommas(numeric2));
                           $('.dpp').val(addCommas(numeric2));
+                          totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                          if(totaljumlah2 != ''){
+                            totaljumlah = totaljumlah2.replace(/,/g,'');
+                            hslselisihum = parseFloat(parseFloat(numeric2) - parseFloat(totaljumlah)).toFixed(2);
+                            $('.sisahutang').val(addCommas(hslselisihum));
+                          }
+                          else {
+                            $('.sisahutang').val(numeric2);
+                          } 
                       }
 
 
@@ -5100,8 +5682,20 @@
                           hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                           hsl = hasilnetto.toFixed(2);
                           $('.nettohutang').val(addCommas(hsl));
-                          $('.sisahutang').val(addCommas(hsl));
+                        //  $('.sisahutang').val(addCommas(hsl));
                           $('.dpp').val(addCommas(numeric2));
+                        
+                          totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                          if(totaljumlah2 != ''){
+                            totaljumlah = totaljumlah2.replace(/,/g,'');
+                            hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                            $('.sisahutang').val(addCommas(hslselisihum));
+                          }
+                          else {
+                            $('.sisahutang').val(hsl);
+                          } 
+
                         }
                         else if(jenisppn == 'I'){
                             hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
@@ -5115,25 +5709,60 @@
 
                             total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
                             $('.nettohutang').val(addCommas(total));                     
-                            $('.sisahutang').val(addCommas(total));                     
+                           // $('.sisahutang').val(addCommas(total));                     
+                            
+                            totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                          if(totaljumlah2 != ''){
+                            totaljumlah = totaljumlah2.replace(/,/g,'');
+                            hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                            $('.sisahutang').val(addCommas(hslselisihum));
+                          }
+                          else {
+                            $('.sisahutang').val(total);
+                          } 
+
                         }
                         else {
 
                             hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
+                           // $('.sisahutang').val(addCommas(hsl));
                             $('.dpp').val(addCommas(numeric2));
-                        
-                        }
+                            
+                            totaljumlah2 = $('.totaljumlah').val();
+                            //    alert(totaljumlah2);
+                            if(totaljumlah2 != ''){
+                              totaljumlah = totaljumlah2.replace(/,/g,'');
+                              hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                              $('.sisahutang').val(addCommas(hslselisihum));
+                            }
+                            else {
+                              $('.sisahutang').val(hsl);
+                            } 
+
+                        } 
                       }
                       else if(pph != 0){ //PPH TIDAK KOSONG            
                      //   alert('pph tdk kosong');
                         if(ppn == '') { //PPN KOSONG          
                           hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph));
                           $('.nettohutang').val(hasil);
-                          $('.sisahutang').val(hasil);
-                            $('.dpp').val(addCommas(numeric2));
+                         // $('.sisahutang').val(hasil);
+                          $('.dpp').val(addCommas(numeric2));
+                        
+                          totaljumlah2 = $('.totaljumlah').val();
+                            //    alert(totaljumlah2);
+                            if(totaljumlah2 != ''){
+                              totaljumlah = totaljumlah2.replace(/,/g,'');
+                              hslselisihum = parseFloat(parseFloat(hasil) - parseFloat(totaljumlah)).toFixed(2);
+                              $('.sisahutang').val(addCommas(hslselisihum));
+                            }
+                            else {
+                              $('.sisahutang').val(hasil);
+                            } 
+
                         }
                         else{ //PPN TIDAK KOSONG            
                             jenisppn = $('.jenisppn').val();
@@ -5142,8 +5771,20 @@
                             hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
-                             $('.dpp').val(addCommas(numeric2));
+                            //$('.sisahutang').val(addCommas(hsl));
+                            
+                            totaljumlah2 = $('.totaljumlah').val();
+                            //    alert(totaljumlah2);
+                            if(totaljumlah2 != ''){
+                              totaljumlah = totaljumlah2.replace(/,/g,'');
+                              hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                              $('.sisahutang').val(addCommas(hslselisihum));
+                            }
+                            else {
+                              $('.sisahutang').val(hsl);
+                            } 
+
+                            $('.dpp').val(addCommas(numeric2));
                           }
                           else if(jenisppn == 'I'){ //PPN TIDAK KOSONG && PPH TIDAK KOSONG
 
@@ -5158,15 +5799,38 @@
 
                             total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
                             $('.nettohutang').val(addCommas(total));
-                            $('.sisahutang').val(addCommas(total));
+                            //$('.sisahutang').val(addCommas(total));
+
+                             totaljumlah2 = $('.totaljumlah').val();
+                            //    alert(totaljumlah2);
+                            if(totaljumlah2 != ''){
+                              totaljumlah = totaljumlah2.replace(/,/g,'');
+                              hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                              $('.sisahutang').val(addCommas(hslselisihum));
+                            }
+                            else {
+                              $('.sisahutang').val(total);
+                            } 
 
                           }
                           else {
                             hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
+                           // $('.sisahutang').val(addCommas(hsl));
                             $('.dpp').val(addCommas(numeric2));
+                            
+                             totaljumlah2 = $('.totaljumlah').val();
+                            //    alert(totaljumlah2);
+                            if(totaljumlah2 != ''){
+                              totaljumlah = totaljumlah2.replace(/,/g,'');
+                              hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                              $('.sisahutang').val(addCommas(hslselisihum));
+                            }
+                            else {
+                              $('.sisahutang').val(hsl);
+                            } 
+
                           }
                         }
                       }
@@ -5183,8 +5847,20 @@
                               alert(parseFloat(replaceppn));
                               alert(parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)));*/
                               $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
+                             // $('.sisahutang').val(addCommas(hsl));
+                              $('.dpp').val(addCommas(numeric2));
+                            
+                                totaljumlah2 = $('.totaljumlah').val();
+                            //    alert(totaljumlah2);
+                            if(totaljumlah2 != ''){
+                              totaljumlah = totaljumlah2.replace(/,/g,'');
+                              hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                              $('.sisahutang').val(addCommas(hslselisihum));
+                            }
+                            else {
+                              $('.sisahutang').val(hsl);
+                            } 
+
                             }
                             else if(jenisppn == 'I'){
                          
@@ -5197,15 +5873,38 @@
                                 $('.hasilppn').val(addCommas(hargappn));
                                 total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
                                 $('.nettohutang').val(addCommas(total));
-                                $('.sisahutang').val(addCommas(total));
+                                //$('.sisahutang').val(addCommas(total));
+                            
+                                 totaljumlah2 = $('.totaljumlah').val();
+                                //    alert(totaljumlah2);
+                                if(totaljumlah2 != ''){
+                                  totaljumlah = totaljumlah2.replace(/,/g,'');
+                                  hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                                  $('.sisahutang').val(addCommas(hslselisihum));
+                                }
+                                else {
+                                  $('.sisahutang').val(total);
+                                }
                             }
                             else {
                        
                               hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
                               hsl = hasilnetto.toFixed(2);
                               $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
+                            //  $('.sisahutang').val(addCommas(hsl));
+                              $('.dpp').val(addCommas(numeric2));
+
+                                totaljumlah2 = $('.totaljumlah').val();
+                                //    alert(totaljumlah2);
+                                if(totaljumlah2 != ''){
+                                  totaljumlah = totaljumlah2.replace(/,/g,'');
+                                  hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                  $('.sisahutang').val(addCommas(hslselisihum));
+                                }
+                                else {
+                                  $('.sisahutang').val(hsl);
+                                }
+
                             }
                         }
                         else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
@@ -5215,8 +5914,19 @@
                             hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
-                            $('.sisahutang').val(addCommas(hsl));
-                              $('.dpp').val(addCommas(numeric2));
+                            //$('.sisahutang').val(addCommas(hsl));
+                            $('.dpp').val(addCommas(numeric2));
+
+                             totaljumlah2 = $('.totaljumlah').val();
+                                //    alert(totaljumlah2);
+                            if(totaljumlah2 != ''){
+                              totaljumlah = totaljumlah2.replace(/,/g,'');
+                              hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                              $('.sisahutang').val(addCommas(hslselisihum));
+                            }
+                            else {
+                              $('.sisahutang').val(hsl);
+                            }
                           }
                           else if(jenisppn == 'I'){
                                 hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
@@ -5230,23 +5940,57 @@
 
                                 total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
                                 $('.nettohutang').val(addCommas(total)); 
-                                $('.sisahutang').val(addCommas(total)); 
+                             //   $('.sisahutang').val(addCommas(total)); 
+                                
+                                totaljumlah2 = $('.totaljumlah').val();
+                                //    alert(totaljumlah2);
+                                if(totaljumlah2 != ''){
+                                  totaljumlah = totaljumlah2.replace(/,/g,'');
+                                  hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                                  $('.sisahutang').val(addCommas(hslselisihum));
+                                }
+                                else {
+                                  $('.sisahutang').val(total);
+                                }
+
                           }
                           else {
 
                               hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                               hsl = hasilnetto.toFixed(2);
                               $('.nettohutang').val(addCommas(hsl));
-                              $('.sisahutang').val(addCommas(hsl));
-                                $('.dpp').val(addCommas(numeric2));
+                              //$('.sisahutang').val(addCommas(hsl));
+                              $('.dpp').val(addCommas(numeric2));
+
+                              totaljumlah2 = $('.totaljumlah').val();
+                                //    alert(totaljumlah2);
+                                if(totaljumlah2 != ''){
+                                  totaljumlah = totaljumlah2.replace(/,/g,'');
+                                  hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                  $('.sisahutang').val(addCommas(hslselisihum));
+                                }
+                                else {
+                                  $('.sisahutang').val(hsl);
+                                }
                           
                           }
                         }
                       } 
                       else {
                           $('.nettohutang').val(addCommas(numeric2));
-                          $('.sisahutang').val(addCommas(numeric2));
+                        //  $('.sisahutang').val(addCommas(numeric2));
                           $('.dpp').val(addCommas(numeric2));
+                      
+                          totaljumlah2 = $('.totaljumlah').val();
+                          //    alert(totaljumlah2);
+                          if(totaljumlah2 != ''){
+                            totaljumlah = totaljumlah2.replace(/,/g,'');
+                            hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                            $('.sisahutang').val(addCommas(numeric2));
+                          }
+                          else {
+                            $('.sisahutang').val(numeric2);
+                          }
                       }
 
 
@@ -5951,7 +6695,9 @@
                     var jumlahtotalharga = 0;
                       for(var k = 0 ; k < response.po_barang.length; k++){
                         for(var z = 0; z < response.po_barang[k].length; z++){
-                             var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].pbdt_item+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].sumqty+"> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pb_gudang+" name='pb_gudang[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].podt_jumlahharga+" name='hpp[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].sumharga+" name='totalharga[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pbdt_updatestock+" name='updatestock[]'> </th>   <th> <input type='hidden' value="+flag[0]+" name='flag'>  <th> <input type='hidden' value="+response.po_barang[k][z].pb_po+" name='idpo[]'> <input type='hidden' value="+jenis[0]+" name='jenis'> <input type='hidden' value="+response.po_barang[k][z].podt_akunitem+" name='akunitem[]'></th> </tr> ";
+                             var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].pbdt_item+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].sumqty+"> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pb_gudang+" name='pb_gudang[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].podt_jumlahharga+" name='hpp[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].sumharga+" name='totalharga[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pbdt_updatestock+" name='updatestock[]'> </th>   <th> <input type='hidden' value="+flag[0]+" name='flag'>  <th> <input type='hidden' value="+response.po_barang[k][z].pb_po+" name='idpo[]'> <input type='hidden' value="+jenis[0]+" name='jenis'> <input type='hidden' value="+response.po_barang[k][z].podt_akunitem+" name='akunitem[]'>" +
+                              "<input type='hidden' value="+response.po_barang[k][z].podt_keterangan+" name='keteranganitem[]'>" +
+                             "</th> </tr> ";
 
                               $('#input_data').append(rowinput);
                                 jumlahtotalharga = jumlahtotalharga + parseInt(response.po_barang[k][z].sumharga);
@@ -5969,7 +6715,7 @@
                   $('th.updatestockpo').remove();
                       for(var k = 0 ; k < response.po_barang.length; k++){
                         for(var z = 0; z < response.po_barang[k].length; z++){
-                             var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].podt_kodeitem+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].podt_qtykirim+"> </th>  <th> <input type='hidden'  value="+response.po_barang[k][z].podt_totalharga+" name='totalharga[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pbdt_updatestock+" name='updatestock[]'> </th>   <th> <input type='hidden' value="+response.po_barang[k][z].po_id+" name='idpo[]'>    <th> <input type='hidden' value="+flag[0]+" name='flag'>  <input type='hidden' value="+response.po_barang[k][z].podt_jumlahharga+" name='hpp[]'>  <input type='text' value="+jenis[0]+" name='jenis'>  <input type='hidden' value="+response.po_barang[k][z].podt_akunitem+" name='akunitem[]'>  </th> </tr> ";
+                             var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].podt_kodeitem+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].podt_qtykirim+"> </th>  <th> <input type='hidden'  value="+response.po_barang[k][z].podt_totalharga+" name='totalharga[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pbdt_updatestock+" name='updatestock[]'> </th>   <th> <input type='hidden' value="+response.po_barang[k][z].po_id+" name='idpo[]'>    <th> <input type='hidden' value="+flag[0]+" name='flag'>  <input type='hidden' value="+response.po_barang[k][z].podt_jumlahharga+" name='hpp[]'>  <input type='text' value="+jenis[0]+" name='jenis'>  <input type='hidden' value="+response.po_barang[k][z].podt_akunitem+" name='akunitem[]'><input type='hidden' value="+response.po_barang[k][z].podt_keterangan+" name='keteranganitem[]'>  </th> </tr> ";
 
                               $('#input_data').append(rowinput);
                          

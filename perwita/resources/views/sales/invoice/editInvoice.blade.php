@@ -1,4 +1,4 @@
-@extends('main')
+`@extends('main')
 
 @section('title', 'dashboard')
 
@@ -33,14 +33,7 @@
 
               <div class="box" id="seragam_box">
                 <div class="box-header">
-                @if(count($jurnal_dt)!=0)
-                    <div class="pull-right">
-                         <a onclick="lihatjurnal('{{$data->i_nomor or null}}','INVOICE')" class="btn-xs btn-primary" aria-hidden="true"> 
-                          <i class="fa  fa-eye"> </i>
-                           &nbsp;  Lihat Jurnal  
-                         </a> 
-                    </div>
-                @endif
+                <a class="pull-right jurnal" onclick="lihat_jurnal()" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal</i></a>
                 </div><!-- /.box-header -->
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
@@ -266,7 +259,7 @@
                             </td>
                             <td>
                                 {{number_format($val->biaya_tambahan, 2, ",", ".")}}
-                                <input type="hidden" class="dd_biaya_tambahan" value="{{0}}" name="dd_biaya_tambahan[]">
+                                <input type="hidden" class="dd_biaya_tambahan" value="{{$val->biaya_tambahan}}" name="dd_biaya_tambahan[]">
                             </td>
                             <td>
                                 {{number_format($val->id_diskon, 2, ",", ".")}}
@@ -306,7 +299,7 @@
                             <tr>
                                 <td style="padding-top: 0.4cm; text-align:right">Netto Detail</td>
                                 <td colspan="4">
-                                    <input type="text" name="netto_detail" readonly=""  class="form-control netto_detail" style="text-transform: uppercase;text-align:right" >
+                                    <input type="text" name="netto_detail" readonly=""  class="form-control netto_detail" style="text-transform: uppercase;text-align:right; background: red;color: white" >
                                 </td>
                             </tr>
                             <tr>
@@ -437,7 +430,23 @@
     </div>
 </div>
 
-<div id="data-jurnal">
+<div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Jurnal Invoice</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body tabel_jurnal">
+          
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="row" style="padding-bottom: 50px;"></div>
@@ -636,7 +645,7 @@ function hitung_total_tagihan(){
         netto_total      = parseFloat(netto_total)/100;
         netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
         netto_detail     = parseFloat(netto_detail)/100;
-        diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
+        diskon2          = diskon2.replace(/[^0-9.\-]+/g,"");
         diskon2          = parseFloat(diskon2);
 
         var ppn  = $('.ppn').val();
@@ -792,7 +801,7 @@ function hitung_pajak_lain(){
         table_detail.$('.dd_biaya_tambahan').each(function(){
             temp_bp += parseFloat($(this).val());
         });
-
+        console.log(temp_bp);
         table_detail.$('.dd_diskon').each(function(){
             temp_diskon += parseFloat($(this).val());
         });
@@ -817,7 +826,7 @@ function hitung_pajak_lain(){
    // untuk mengirim yang di check ke controller dengan ajax
    
       $('#btnsave').click(function(){
-
+        var token = '{{ csrf_field() }}';
         var nomor_dt = [];
         var nomor_do = [];
         var cb_pendapatan = $('#cb_pendapatan').val();
@@ -838,11 +847,16 @@ function hitung_pajak_lain(){
                nomor_do.push(no_do);
             }
         });
-
+        $.ajaxSetup({
+            headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
         $.ajax({
-            url:baseUrl +'/sales/append_do',
+            url:baseUrl +'/sales/append_do'+'&'+token,
             data:{nomor_dt,nomor_do,cb_pendapatan},
+            type:'post',
             dataType:'json',
             success:function(response){
                 if (response.jenis == 'KORAN') {
@@ -1007,11 +1021,9 @@ function hitung_pajak_lain(){
 
     // SIMPAN DATA
     function simpan(){
-        var accPiutang=$(".grup_item").find(':selected').data('accpiutang'); 
-        var csfPiutang=$(".grup_item").find(':selected').data('csfpiutang'); 
+        var acc_piutang=$(".grup_item").find(':selected').data('accpiutang'); 
         var pajak_lain=$("#pajak_lain").find(':selected').data('pph'); 
-        var ed_pendapatan = $('#cb_pendapatan').val();
-        var ed_customer = $('#customer').val();
+        var ed_customer=$("#customer").val(); 
       swal({
         title: "Apakah anda yakin?",
         text: "Update Data Invoice!",
@@ -1036,11 +1048,9 @@ function hitung_pajak_lain(){
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
                +'&'+$('.table_pajak :input').serialize()
-               +'&ed_pendapatan='+ed_pendapatan
-               +'&ed_customer='+ed_customer
-               +'&accPiutang='+accPiutang
-               +'&csfPiutang='+csfPiutang
-               +'&pajak_lain='+pajak_lain,
+               +'&acc_piutang='+acc_piutang
+               +'&pajak_lain='+pajak_lain
+               +'&ed_customer='+ed_customer,
           success:function(response){
             
 
@@ -1081,18 +1091,21 @@ function hitung_pajak_lain(){
      });
     }
 
-   function lihatjurnal($ref,$note){
+   function lihat_jurnal(){
 
-          $.ajax({
-          url:baseUrl + '/data/jurnal/'+$ref+'/'+$note,
-          type:'get',
-          
-         
-          success:function(response){
-                $('#data-jurnal').html(response);
-                $('#jurnal').modal('show');
-              }
-        });
+        var id = '{{ $id }}';
+        $.ajax({
+            url:baseUrl + '/sales/invoice/jurnal',
+            type:'get',
+            data:{id},
+            success:function(data){
+               $('.tabel_jurnal').html(data);
+               $('.modal_jurnal').modal('show');
+            },
+            error:function(data){
+                // location.reload();
+            }
+        }); 
    }
 
    function ngeprint(){

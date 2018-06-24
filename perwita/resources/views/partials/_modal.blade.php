@@ -114,6 +114,104 @@
   <!-- modal -->
 
    <!-- modal -->
+<div id="modal_buku_besar" class="modal">
+  <div class="modal-dialog" style="width: 40%;">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Form Buku Besar</h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+
+      <div class="modal-body" style="padding: 10px;">
+        <div class="row">
+          <form role="form" class="form-inline" id="form-buku-besar" method="POST" action="{{ route("buku_besar.index_single") }}">
+              <input type="hidden" value="{{ csrf_token() }}" name="_token" readonly>
+              <table border="0" id="form-table" class="col-md-12">
+
+                <tr>
+                  <td width="40%" class="text-center">Periode Buku Besar</td>
+                  <td colspan="3">
+                    <select class="form-control buku_besar select_validate" name="jenis" id="periode_buku_besar" style="width: 80%;">
+                      <option value="Bulan">Bulanan</option>
+                      <option value="Tahun">Tahunan</option>
+                    </select>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="40%" class="text-center">Pilih Cabang</td>
+                  <td colspan="3">
+                    <select class="form-control buku_besar select_validate" name="buku_besar_cabang" id="buku_besar_cabang" style="width: 80%;">
+
+                    </select>
+                    &nbsp;&nbsp; <small id="buku_besar_cabang_txt" style="display: none;"><i class="fa fa-hourglass-half"></i></small>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="20%" class="text-center">Masukkan <span id="state-masuk">Bulan</span></td>
+                  <td width="25%">
+                    <input type="text" class="form-control buku_besar form_validate buku_besar_tanggal first" name="d1" placeholder="MM/YYYY" style="width: 100%; cursor: pointer; background: white;" readonly>
+
+                    <input type="text" class="form-control buku_besar form_validate buku_besar_tahun first" name="y1" placeholder="YYYY" style="width: 90%; cursor: pointer; background: white; display: none;" readonly>
+
+                  <td class="text-center" style="font-size: 8pt;">
+                    s/d
+                  </td>
+                  <td width="25%">
+                    <input type="text" class="form-control buku_besar form_validate buku_besar_tanggal sampai" name="d2" placeholder="MM/YYYY" style="cursor: pointer; background: white;" readonly>
+
+                    <input type="text" class="form-control buku_besar form_validate buku_besar_tahun sampai" name="y2" placeholder="YYYY" style="width: 90%; cursor: pointer; background: white; display: none;" readonly>
+                  </td>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="40%" class="text-center">Kode Akun</td>
+                  <td colspan="3">
+                    <select class="form-control buku_besar select_validate" name="akun1" id="akun1" style="width: 35%;">
+
+                    </select>
+                    <small id="buku_besar_akun1_txt"> &nbsp;Pilih Cabang Dahulu</small>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="40%" class="text-center">Sampai Dengan Akun</td>
+                  <td colspan="3">
+                    <select class="form-control buku_besar select_validate" name="akun2" id="akun2" style="width: 35%;">
+                      
+                    </select>
+                    <small id="buku_besar_akun2_txt"> &nbsp;Pilih Cabang Dahulu</small>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="40%" class="text-center">Dengan Akun Lawan</td>
+                  <td colspan="3">
+                    <select class="form-control buku_besar select_validate" name="akun_lawan" id="akun_lawan" style="width: 30%;">
+                      <option value="false">Tidak</option>
+                      <option value="true">Ya</option>
+                    </select>
+                  </td>
+                </tr>
+
+              </table>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+          <button class="btn btn-primary btn-sm" id="proses_buku_besar" >Proses</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- modal -->
+
+   <!-- modal -->
 <div id="modal_option_periode" class="modal">
   <div class="modal-dialog" style="width: 30%;">
     <div class="modal-content">
@@ -176,20 +274,20 @@
         minViewMode: "months"
     });
 
-    $('.sampai').datepicker( {
-        format: "mm/yyyy",
-        viewMode: "months", 
-        minViewMode: "months"
-    })
+    // $('.sampai').datepicker( {
+    //     format: "mm/yyyy",
+    //     viewMode: "months", 
+    //     minViewMode: "months"
+    // })
 
-    $('.tanggal').datepicker( {
-        format: "mm/yyyy",
-        viewMode: "months", 
-        minViewMode: "months"
-    }).on("changeDate", function(){
-        $('.sampai').val("");
-        $('.sampai').datepicker("setStartDate", $(this).val());
-    });
+    // $('.tanggal').datepicker( {
+    //     format: "mm/yyyy",
+    //     viewMode: "months", 
+    //     minViewMode: "months"
+    // }).on("changeDate", function(){
+    //     $('.sampai').val("");
+    //     $('.sampai').datepicker("setStartDate", $(this).val());
+    // });
 
      $("#save").click(function(evt){
         evt.preventDefault();
@@ -269,5 +367,174 @@
           }
         });
      })
+
+     // script for buku besar
+
+      akun = [];
+
+      $('.buku_besar_tanggal.sampai').datepicker( {
+          format: "yyyy-mm",
+          viewMode: "months", 
+          minViewMode: "months"
+      })
+
+      $('.buku_besar_tanggal.first').datepicker( {
+          format: "yyyy-mm",
+          viewMode: "months", 
+          minViewMode: "months"
+      }).on("changeDate", function(){
+          $('.buku_besar_tanggal.sampai').val("");
+          $('.buku_besar_tanggal.sampai').datepicker("setStartDate", $(this).val());
+      });
+
+      $('.buku_besar_tahun.sampai').datepicker( {
+          format: "yyyy",
+          viewMode: "years", 
+          minViewMode: "years"
+      })
+
+      $('.buku_besar_tahun.first').datepicker( {
+          format: "yyyy",
+          viewMode: "years", 
+          minViewMode: "years"
+      }).on("changeDate", function(){
+          $('.buku_besar_tahun.sampai').val("");
+          $('.buku_besar_tahun.sampai').datepicker("setStartDate", $(this).val());
+      });
+
+      $("#periode_buku_besar").change(function(evt){
+        evt.preventDefault();
+
+        periode = $(this);
+
+        $("#state-masuk").text(periode.val());
+        if(periode.val() == "Bulan"){
+          $(".buku_besar_tahun").css("display", "none");
+          $(".buku_besar_tanggal").css("display", "inline-block");
+        }else if(periode.val() == "Tahun"){
+          $(".buku_besar_tanggal").css("display", "none");
+          $(".buku_besar_tahun").css("display", "inline-block");
+        }
+      })
+
+
+      $("#buku_besar_cabang").change(function(evt){
+        evt.preventDefault();
+        cab = $(this);
+        html = '<option value="---">-- Akun</option>';
+
+        if(cab.val() != "---"){
+          $.ajax(baseUrl+"/master_keuangan/akun/get/"+cab.val(), {
+             timeout: 15000,
+             type: "get",
+             dataType: 'json',
+             success: function (data) {
+                $.each(data, function(i, n){
+                    html = html + '<option value="'+n.id_akun+'">'+n.id_akun+'</option>';
+                })
+
+                $("#akun1").html(html);
+                $("#akun2").html(html);
+
+                $("#buku_besar_akun1_txt").fadeOut(300);
+                $("#buku_besar_akun2_txt").fadeOut(300);
+
+                akun = data;
+             },
+             error: function(request, status, err) {
+                if (status == "timeout") {
+                  alert("Request Timeout. Gagal Mengambil Data Akun.");
+                }else {
+                  alert("Internal Server Error. Gagal Mengambil Data Akun.");
+                }
+
+                $(".cek").removeAttr("disabled");
+            }
+          });
+        }
+      })
+
+      $("#akun1").change(function(evt){
+        evt.preventDefault();
+
+        akun1 = $(this);
+        html = '<option value="---" selected>-- Akun</option>';
+
+        if(akun1.val() != "---"){
+          idx = akun.findIndex(a => a.id_akun === akun1.val());
+
+          $("#buku_besar_akun1_txt").html(" &nbsp;"+akun[idx].nama_akun);
+          $("#buku_besar_akun1_txt").fadeIn(200);
+
+          $.each(akun, function(i, n){
+            if(n.id_akun >= akun1.val())
+              html = html + '<option value="'+n.id_akun+'">'+n.id_akun+'</option>';
+            else
+              html = html + '<option value="'+n.id_akun+'" style="background:#ff4444; color:white;" disabled>'+n.id_akun+'</option>';
+          })
+          
+          $("#akun2").html(html);
+        }else{
+          $("#buku_besar_akun1_txt").fadeOut(300);
+          $("#buku_besar_akun2_txt").fadeOut(300);
+
+          $.each(akun, function(i, n){
+            html = html + '<option value="'+n.id_akun+'">'+n.id_akun+'</option>';
+          })
+          
+          $("#akun2").html(html);
+        }
+      })
+
+      $("#akun2").change(function(evt){
+        evt.preventDefault();
+
+        akun2 = $(this);
+        html = '<option value="---" selected>-- Akun</option>';
+
+        if(akun2.val() != "---"){
+          idx = akun.findIndex(a => a.id_akun === akun2.val());
+
+          $("#buku_besar_akun2_txt").html(" &nbsp;"+akun[idx].nama_akun);
+          $("#buku_besar_akun2_txt").fadeIn(200);
+        }else{
+          $("#buku_besar_akun2_txt").fadeOut(300);
+        }
+      })
+
+      $('#proses_buku_besar').click(function(evt){
+        evt.preventDefault()
+
+        if(validate_form_buku_besar() == true){
+          $("#form-buku-besar").submit();
+        }
+      })
+
+      function validate_form_buku_besar(){
+      a = true;
+      $(".buku_besar.form_validate").each(function(i, e){
+        if($(this).val() == "" && $(this).is(":visible")){
+          a = false;
+          $(this).focus();
+          toastr.warning('Harap Lengkapi Data Diatas');
+          return false;
+        }
+      })
+
+      $(".buku_besar.select_validate").each(function(i, e){
+        if($(this).val() == "---"){
+          a = false;
+          $(this).focus();
+          toastr.warning('Harap Lengkapi Data Diatas');
+          return false;
+        }
+      })
+
+      return a;
+    }
+
+      
+
+     // buku besar end
 
   </script>

@@ -1644,6 +1644,7 @@ public function purchase_order() {
 				$podt->podt_idspp = strtoupper($request->idspp[$n]);
 				$podt->podt_idpo = $po->po_id;
 				$podt->podt_totalharga = $replacetotalharga;
+				$podt->podt_keterangan = $request->keterangandt[$n];
 				if($request->spptipe != 'J'){
 					
 					$podt->podt_lokasigudang = strtoupper($request->lokasikirim[$n]);
@@ -1748,6 +1749,12 @@ public function purchase_order() {
 			}
 
 			return json_encode($data);
+	}
+
+	public function grapcabang(){
+		$data = DB::table('cabang')->select('kode', 'nama')->get();
+
+		return json_encode($data);
 	}
 
 	//warehouse 
@@ -2046,12 +2053,27 @@ public function purchase_order() {
 					$penerimaanbarangdt->update_by = $request->username;
 					$penerimaanbarangdt->save();
 
+					$accpersediaan = $request->accpersediaan[$i];
 
-					
-					$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
-					$datajurnal[$i]['subtotal'] = $totalharga;
-					$datajurnal[$i]['dk'] = 'D';
-					$totalhutang = $totalhutang + $totalharga;
+					$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$cabang'");
+
+					$akundka = $datakun2[0]->akun_dka;
+
+					if($akundka == 'D'){
+						$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
+						$datajurnal[$i]['subtotal'] = $totalharga;
+						$datajurnal[$i]['dk'] = 'D';
+						$datajurnal[$i]['detail'] = $request->keterangandt[$i];
+						$totalhutang = $totalhutang + $totalharga;
+
+					}
+					else {
+						$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
+						$datajurnal[$i]['subtotal'] = '-' .$totalharga;
+						$datajurnal[$i]['dk'] = 'D';
+						$datajurnal[$i]['detail'] = $request->keterangandt[$i];
+						$totalhutang = $totalhutang + $totalharga;
+					}					
 
 				}
 				else if($request->qtyterima[$i] == '') { // SAMPLING
@@ -2107,10 +2129,27 @@ public function purchase_order() {
 						$penerimaanbarangdt->create_by = $request->username;
 						$penerimaanbarangdt->save();
 
-						$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
-						$datajurnal[$i]['subtotal'] = $totalharga;
-						$datajurnal[$i]['dk'] = 'D';
-						$totalhutang = $totalhutang + $totalharga;
+						$accpersediaan = $request->accpersediaan[$i];
+
+						$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$cabang'");
+
+						$akundka = $datakun2[0]->akun_dka;
+
+						if($akundka == 'D'){
+							$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
+							$datajurnal[$i]['subtotal'] = $totalharga;
+							$datajurnal[$i]['dk'] = 'D';
+							$datajurnal[$i]['detail'] = $request->keterangandt[$i];
+							$totalhutang = $totalhutang + $totalharga;
+
+						}
+						else {
+							$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
+							$datajurnal[$i]['subtotal'] = '-' .$totalharga;
+							$datajurnal[$i]['dk'] = 'D';
+							$datajurnal[$i]['detail'] = $request->keterangandt[$i];
+							$totalhutang = $totalhutang + $totalharga;
+						}
 					}
 				}
 			}
@@ -2373,10 +2412,27 @@ public function purchase_order() {
 						$penerimaanbarangdt->update_by = $request->username;
 						$penerimaanbarangdt->save();
 
-						$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
-						$datajurnal[$i]['subtotal'] = $totalharga;
-						$datajurnal[$i]['dk'] = 'D';
-						$totalhutang = $totalhutang + $totalharga;
+
+						$accpersediaan = $request->accpersediaan[$i];
+						$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$cabang'");
+
+						$akundka = $datakun2[0]->akun_dka;
+
+						if($akundka == 'D'){
+							$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
+							$datajurnal[$i]['subtotal'] = $totalharga;
+							$datajurnal[$i]['dk'] = 'D';
+							$datajurnal[$i]['detail'] = $request->keteranganfpdetail[$i];
+							$totalhutang = $totalhutang + $totalharga;
+						}
+						else {
+							$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
+							$datajurnal[$i]['subtotal'] =  '-' . $totalharga;
+							$datajurnal[$i]['dk'] = 'D';
+							$datajurnal[$i]['detail'] = $request->keteranganfpdetail[$i];
+							$totalhutang = $totalhutang + $totalharga;
+
+						}
 					}
 					else if($request->qtyterima[$i] == '') {
 					
@@ -2431,10 +2487,25 @@ public function purchase_order() {
 							$penerimaanbarangdt->update_by = $request->username;
 							$penerimaanbarangdt->save();
 							
-							$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
-							$datajurnal[$i]['subtotal'] = $totalharga;
-							$datajurnal[$i]['dk'] = 'D';
-							$totalhutang = $totalhutang + $totalharga;
+							$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$cabang'");
+
+							$akundka = $datakun2[0]->akun_dka;
+
+							if($akundka == 'D'){
+								$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
+								$datajurnal[$i]['subtotal'] = $totalharga;
+								$datajurnal[$i]['dk'] = 'D';
+								$datajurnal[$i]['detail'] = $request->keteranganfpdetail[$i];
+								$totalhutang = $totalhutang + $totalharga;
+							}
+							else {
+								$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
+								$datajurnal[$i]['subtotal'] =  '-' . $totalharga;
+								$datajurnal[$i]['dk'] = 'D';
+								$datajurnal[$i]['detail'] = $request->keteranganfpdetail[$i];
+								$totalhutang = $totalhutang + $totalharga;
+
+							}
 						}
 					}
 				}
@@ -2971,6 +3042,7 @@ public function purchase_order() {
 								'id_akun' => $akunppn,
 								'subtotal' => '-' . $hasilppn,
 								'dk' => 'D',
+								'detail' => $request->fp_keterangan,
 								);
 							}
 							else {
@@ -2978,6 +3050,7 @@ public function purchase_order() {
 								'id_akun' => $akunppn,
 								'subtotal' => $hasilppn,
 								'dk' => 'D',
+								'detail' => $request->fp_keterangan,
 								);
 							}
 							array_push($datajurnal, $dataakun );
@@ -3009,6 +3082,7 @@ public function purchase_order() {
 								'id_akun' => $akunpph,
 								'subtotal' => '-' . $hasilpph,
 								'dk' => 'K',
+								'detail' => $request->fp_keterangan,
 								);
 							}
 							else {
@@ -3016,6 +3090,7 @@ public function purchase_order() {
 								'id_akun' => $akunpph,
 								'subtotal' => $hasilpph,
 								'dk' => 'K',
+								'detail' => $request->fp_keterangan,
 								);
 							}
 							array_push($datajurnal, $dataakun );
@@ -3049,6 +3124,7 @@ public function purchase_order() {
 						'id_akun' => $acchutangsupplier,
 						'subtotal' => $totalhutang,
 						'dk' => 'K',
+						'detail' => $request->fp_keterangan
 					);	
 			        
 
@@ -3071,6 +3147,7 @@ public function purchase_order() {
 		    			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
 		    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
 		    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
+		    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
 		    			$jurnaldt->save();
 		    			$key++;
 		    		} 
@@ -3094,7 +3171,7 @@ public function purchase_order() {
 			        $jurnal->jr_date = date('Y-m-d');
 			        $jurnal->jr_detail = 'PENERIMAAN BARANG ' . $request->flag;
 			        $jurnal->jr_ref = $lpb;
-			        $jurnal->jr_note = $request->flag;
+			        $jurnal->jr_note = $request->keterangan;
 			        $jurnal->save();
 		       		
 			        if($flag == 'PO'){
@@ -3102,6 +3179,7 @@ public function purchase_order() {
 						'id_akun' => $request->acchutangsupplierpo,
 						'subtotal' => $totalhutang,
 						'dk' => 'K',
+						'detail' => $request->po_keterangan,
 						);
 			        }
 			        else {
@@ -3109,6 +3187,7 @@ public function purchase_order() {
 						'id_akun' => $request->acchutangsupplier,
 						'subtotal' => $totalhutang,
 						'dk' => 'K',
+						'detail' => $request->po_keterangan,
 						);	
 			        }
 
@@ -3131,6 +3210,7 @@ public function purchase_order() {
 		    			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
 		    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
 		    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
+		    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
 		    			$jurnaldt->save();
 		    			$key++;
 		    		}   
@@ -3512,7 +3592,7 @@ public function purchase_order() {
 		$flag = $data['header'][0]->bt_flag;
 
 
-		$data['po'] = DB::select("select distinct spp_id, po_acchutangdagang, po_ppn,po_diskon, spp_cabang, podt_idspp , po_id, spp_nospp, po_no, spp_lokasigudang, nama_supplier , idsup  from pembelian_order, pembelian_orderdt, spp, supplier where po_id = '$idtransaksi' and podt_idpo = po_id and podt_idspp = spp_id and po_supplier = idsup");
+		$data['po'] = DB::select("select distinct spp_id, po_acchutangdagang, po_ppn,po_diskon, spp_cabang, podt_idspp , po_id, spp_nospp, po_no, spp_lokasigudang, nama_supplier , idsup , po_catatan from pembelian_order, pembelian_orderdt, spp, supplier where po_id = '$idtransaksi' and podt_idpo = po_id and podt_idspp = spp_id and po_supplier = idsup");
 
 			for($j = 0; $j < count($data['po']); $j++){
 				$idspp = $data['po'][$j]->spp_id; 
@@ -3702,7 +3782,7 @@ public function purchase_order() {
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$id')")); 
 		
-		/*dd($data);*/
+		//dd($data);
 		return view('purchase/penerimaan_barang/detail_copy', compact('data','jurnal_dt'));
 			
 	}
@@ -4062,7 +4142,7 @@ public function purchase_order() {
 	public function lihatjurnal(Request $request){
 		$lpb = $request->ref;
 		$note = $request->note;
-		$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
+		$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk, jrdt_detail
                         FROM d_akun a join d_jurnal_dt jd
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$lpb')")); 
@@ -4072,7 +4152,7 @@ public function purchase_order() {
 
 	public function lihatjurnalpelunasan(Request $request){
 		$id = $request->id;
-		$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
+		$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk, jrdt_detail
                         FROM d_akun a join d_jurnal_dt jd
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$id')")); 
@@ -4083,7 +4163,7 @@ public function purchase_order() {
 	public function lihatjurnalumum(Request $request){
 		$id = $request->nota;
 		$detail = $request->detail;
-		$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
+		$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk, jrdt_detail
                         FROM d_akun a join d_jurnal_dt jd
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$id' and jr_detail = '$detail')")); 
@@ -4803,9 +4883,7 @@ public function purchase_order() {
 											->where([['pbdt_po',$idpo_update],['pbdt_item' , $iditem_update]])
 											->update([
 												'pbdt_hpp' => $hargajadi,											
-											]);																									
-										
-								
+											]);														
 								}
 
 							}
@@ -4831,9 +4909,7 @@ public function purchase_order() {
 											->where([['sm_po',$idpo_update],['sm_item' , $iditem_update2],['sm_flag' , "PO"]])
 											->update([
 												'sm_hpp' => $hargajadi,											
-											]);																									
-										
-								
+											]);																		
 								}
 
 							}
@@ -4900,7 +4976,6 @@ public function purchase_order() {
 
 		$datafaktur = DB::select("select * from faktur_pembelian where fp_nofaktur = '$nofaktur'");
 	
-
 		for($i = 0 ; $i < count($request->item_po); $i++){
 				$hargabarang = str_replace(',', '', $request->hpp[$i]);									
 				$diskon = $request->disc_item_po;
@@ -4948,11 +5023,13 @@ public function purchase_order() {
 					$datajurnal[$i]['id_akun'] = $request->akunitem[$i];
 					$datajurnal[$i]['subtotal'] = '-' . $total;
 					$datajurnal[$i]['dk'] = 'D';
+					$datajurnal[$i]['detail'] = $request->keteranganitem[$i];
 				}
 				else {
 					$datajurnal[$i]['id_akun'] = $request->akunitem[$i];
 					$datajurnal[$i]['subtotal'] =  $total;
-					$datajurnal[$i]['dk'] = 'D';	
+					$datajurnal[$i]['dk'] = 'D';
+					$datajurnal[$i]['detail'] = $request->keteranganitem[$i];	
 				}
 		}
 
@@ -5041,7 +5118,7 @@ public function purchase_order() {
                 	 $updateum = DB::table('fpg_dt')
 	                ->where([['fpgdt_idfpg' , '='  , $idfpg], ['fpgdt_nofaktur' , '=' , $request->notaum[$i]]])
 	                ->update([
-	                	'fpgdt_sisapelunasanumfp' => $hasilsisa,                                                           
+	                	'fpgdt_sisapelunasanumfp' => $hasilsisa,                                                          
 	                ]);
                 }
                 else {
@@ -5069,11 +5146,13 @@ public function purchase_order() {
                		$datajurnalum[$i]['id_akun'] = $akunhutangum;
 					$datajurnalum[$i]['subtotal'] = '-' . $dibayarum;
 					$datajurnalum[$i]['dk'] = 'K';
+					$datajurnalum[$i]['detail'] =  $request->keteranganum[$i];
                	}
                	else {
                		$datajurnalum[$i]['id_akun'] = $akunhutangum;
 					$datajurnalum[$i]['subtotal'] = '-' . $dibayarum;
 					$datajurnalum[$i]['dk'] = 'K';	
+					$datajurnalum[$i]['detail'] = $request->keteranganum[$i];
                	}
 
 			  }	
@@ -5118,6 +5197,7 @@ public function purchase_order() {
 					'id_akun' => $request->acchutangdagang,
 					'subtotal' => '-' . $totaljumlah,
 					'dk' => 'D',
+					'detail' => $request->keteranganumheader,
 					);
 	       		}
 	       		else {
@@ -5125,6 +5205,7 @@ public function purchase_order() {
 					'id_akun' => $request->acchutangdagang,
 					'subtotal' => $totaljumlah,
 					'dk' => 'D',
+					'detail' => $request->keteranganumheader,
 					);	
 	       		}
 		        		
@@ -5148,6 +5229,7 @@ public function purchase_order() {
 	    			$jurnaldt->jrdt_acc = $datajurnalum[$j]['id_akun'];
 	    			$jurnaldt->jrdt_value = $datajurnalum[$j]['subtotal'];
 	    			$jurnaldt->jrdt_statusdk = $datajurnalum[$j]['dk'];
+	    			$jurnaldt->jrdt_detail = $datajurnalum[$j]['detail'];
 	    			$jurnaldt->save();
 	    			$key++;
 
@@ -5215,6 +5297,7 @@ public function purchase_order() {
 						'id_akun' => $akunppn,
 						'subtotal' => '-' . $hasilppn,
 						'dk' => 'D',
+						'detail' => $request->keterangan_po,
 					);
 
 					}
@@ -5223,6 +5306,7 @@ public function purchase_order() {
 						'id_akun' => $akunppn,
 						'subtotal' => $hasilppn,
 						'dk' => 'D',
+						'detail' => $request->keterangan_po
 					);
 
 					}
@@ -5256,8 +5340,9 @@ public function purchase_order() {
 			        
 		       		$dataakun = array (
 						'id_akun' => $acchutang,
-						'subtotal' => $hasilppn,
+						'subtotal' =>  $hasilppn,
 						'dk' => 'K',
+						'detail' => $request->keterangan_po,
 					);
 
 					array_push($datajurnalpo, $dataakun );
@@ -5279,6 +5364,7 @@ public function purchase_order() {
 		    			$jurnaldt->jrdt_acc = $datajurnalpo[$j]['id_akun'];
 		    			$jurnaldt->jrdt_value = $datajurnalpo[$j]['subtotal'];
 		    			$jurnaldt->jrdt_statusdk = $datajurnalpo[$j]['dk'];
+		    			$jurnaldt->jrdt_detail = $datajurnalpo[$j]['detail'];
 		    			$jurnaldt->save();
 		    			$key++;
 		    		}
@@ -5304,15 +5390,17 @@ public function purchase_order() {
 					if($akundka == 'D'){
 						$dataakun = array (
 							'id_akun' => $akunpph,
-							'subtotal' => $hasilpph,
+							'subtotal' => '-' . $hasilpph,
 							'dk' => 'K',
+							'detail' => $request->keterangan_po,
 						);
 					}
 					else {
 						$dataakun = array (
 							'id_akun' => $akunpph,
-							'subtotal' => '-' . $hasilpph,
+							'subtotal' => $hasilpph,
 							'dk' => 'K',
+							'detail' => $request->keterangan_po,
 						);
 					}
 
@@ -5346,8 +5434,9 @@ public function purchase_order() {
 			        
 		       		$dataakun = array (
 						'id_akun' => $acchutang,
-						'subtotal' => $hasilpph,
+						'subtotal' => '-' . $hasilpph,
 						'dk' => 'K',
+						'detail' => $request->keterangan_po,
 					);
 
 					array_push($datajurnalpo, $dataakun);
@@ -5369,6 +5458,7 @@ public function purchase_order() {
 		    			$jurnaldt->jrdt_acc = $datajurnalpo[$j]['id_akun'];
 		    			$jurnaldt->jrdt_value = $datajurnalpo[$j]['subtotal'];
 		    			$jurnaldt->jrdt_statusdk = $datajurnalpo[$j]['dk'];
+		    			$jurnaldt->jrdt_detail = $datajurnalpo[$j]['detail'];
 		    			$jurnaldt->save();
 		    			$key++;
 		    		}	
@@ -5391,6 +5481,7 @@ public function purchase_order() {
 						'id_akun' => $akunppn,
 						'subtotal' => '-' . $hasilppn,
 						'dk' => 'D',
+						'detail' => $request->keterangan_po,
 					);
 
 					}
@@ -5399,6 +5490,7 @@ public function purchase_order() {
 						'id_akun' => $akunppn,
 						'subtotal' => $hasilppn,
 						'dk' => 'D',
+						'detail' => $request->keterangan_po,
 					);
 
 					}
@@ -5423,15 +5515,17 @@ public function purchase_order() {
 					if($akundka == 'D'){
 						$dataakun = array (
 							'id_akun' => $akunpph,
-							'subtotal' => $hasilpph,
+							'subtotal' => '-' . $hasilpph,
 							'dk' => 'K',
+							'detail' => $request->keterangan_po,
 						);
 					}
 					else {
 						$dataakun = array (
 							'id_akun' => $akunpph,
-							'subtotal' => '-' . $hasilpph,
+							'subtotal' =>  $hasilpph,
 							'dk' => 'K',
+							'detail' => $request->keterangan_po,
 						);
 					}
 
@@ -5440,7 +5534,8 @@ public function purchase_order() {
 
 				$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
 
-				$totalhutangjr = floatval($hasilppn) - floatval($hasilpph);
+				$totalhutangjr = floatval($hasilppn) - floatval($hasilpph);	
+				
 				$acchutang = $request->acchutangdagang;
 
 					if(isset($lastidjurnal)) {
@@ -5465,8 +5560,9 @@ public function purchase_order() {
 			        
 		       		$dataakun = array (
 						'id_akun' => $acchutang,
-						'subtotal' => $hasilpph,
+						'subtotal' => $totalhutangjr,
 						'dk' => 'K',
+						'detail' => $request->keterangan_po,
 					);
 
 					array_push($datajurnalpo, $dataakun);
@@ -5488,6 +5584,7 @@ public function purchase_order() {
 		    			$jurnaldt->jrdt_acc = $datajurnalpo[$j]['id_akun'];
 		    			$jurnaldt->jrdt_value = $datajurnalpo[$j]['subtotal'];
 		    			$jurnaldt->jrdt_statusdk = $datajurnalpo[$j]['dk'];
+		    			$jurnaldt->jrdt_detail = $datajurnalpo[$j]['detail'];
 		    			$jurnaldt->save();
 		    			$key++;
 		    		}	
@@ -5936,11 +6033,13 @@ public function purchase_order() {
 					$datajurnal[$x]['id_akun'] = $dataakunitem;
 					$datajurnal[$x]['subtotal'] = '-' . $nettoitem;
 					$datajurnal[$x]['dk'] = 'D';
+					$datajurnal[$x]['detail'] =  $request->keteranganitem[$x];
 				}
 				else {
 					$datajurnal[$x]['id_akun'] = $dataakunitem;
 					$datajurnal[$x]['subtotal'] = $nettoitem;
 					$datajurnal[$x]['dk'] = 'D';
+					$datajurnal[$x]['detail'] = $request->keteranganitem[$x];
 				}
 				$totalhutang = $totalhutang + $nettoitem;
 			}
@@ -6057,11 +6156,14 @@ public function purchase_order() {
                		$datajurnalum[$i]['id_akun'] = $akunhutangum;
 					$datajurnalum[$i]['subtotal'] = '-' . $dibayarum;
 					$datajurnalum[$i]['dk'] = 'K';
+					$datajurnalum[$i]['detail'] = $request->keteranganum[$i];
                	}
                	else {
                		$datajurnalum[$i]['id_akun'] = $akunhutangum;
 					$datajurnalum[$i]['subtotal'] = '-' . $dibayarum;
 					$datajurnalum[$i]['dk'] = 'K';	
+					$datajurnalum[$i]['detail'] = $request->keteranganum[$i];
+
                	}
 
 			  }	
@@ -6106,6 +6208,7 @@ public function purchase_order() {
 					'id_akun' => $request->acchutangdagang,
 					'subtotal' => '-' . $totaljumlah,
 					'dk' => 'D',
+					'detail' => $request->keteranganumheader,
 					);
 	       		}
 	       		else {
@@ -6113,6 +6216,7 @@ public function purchase_order() {
 					'id_akun' => $request->acchutangdagang,
 					'subtotal' => $totaljumlah,
 					'dk' => 'D',
+					'detail' => $request->keteranganumheader,
 					);	
 	       		}
 		        		
@@ -6136,6 +6240,7 @@ public function purchase_order() {
 	    			$jurnaldt->jrdt_acc = $datajurnalum[$j]['id_akun'];
 	    			$jurnaldt->jrdt_value = $datajurnalum[$j]['subtotal'];
 	    			$jurnaldt->jrdt_statusdk = $datajurnalum[$j]['dk'];
+	    			$jurnaldt->jrdt_detail = $datajurnalum[$j]['detail'];
 	    			$jurnaldt->save();
 	    			$key++;
 
@@ -6192,6 +6297,7 @@ public function purchase_order() {
 						'id_akun' => $akunppn,
 						'subtotal' => '-' . $hasilppn,
 						'dk' => 'D',
+						'detail' => $request->keteranganheader,
 						);
 					}
 					else {
@@ -6199,6 +6305,7 @@ public function purchase_order() {
 						'id_akun' => $akunppn,
 						'subtotal' => $hasilppn,
 						'dk' => 'D',
+						'detail' => $request->keteranganheader,
 						);
 					}
 					array_push($datajurnal, $dataakun );
@@ -6230,6 +6337,7 @@ public function purchase_order() {
 							'id_akun' => $akunpph,
 							'subtotal' => '-' . $hasilpph,
 							'dk' => 'K',
+							'detail' => $request->keteranganheader,
 							);
 						}
 						else {
@@ -6237,6 +6345,7 @@ public function purchase_order() {
 							'id_akun' => $akunpph,
 							'subtotal' => $hasilpph,
 							'dk' => 'K',
+							'detail' => $request->keteranganheader,
 							);
 						}
 						array_push($datajurnal, $dataakun );
@@ -6271,6 +6380,7 @@ public function purchase_order() {
 					'id_akun' => $acchutang,
 					'subtotal' => $totalhutang,
 					'dk' => 'K',
+					'detail' => $request->keteranganheader,
 				);
 
 				array_push($datajurnal, $dataakun );
@@ -6292,6 +6402,7 @@ public function purchase_order() {
 	    			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
 	    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
 	    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
+	    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
 	    			$jurnaldt->save();
 	    			$key++;
 	    		}	
@@ -7821,15 +7932,15 @@ public function kekata($x) {
 		$idpo = [];
 		for($j = 0; $j < $countidpo; $j++){
 			$poid = $request->po_id[$j];
-			array_push($idpo, $poid);
+			array_push($idpo,$poid);
 		}
 
 		$idpo = array_unique($idpo);
-	
+		
 
 		//UPDATE FAKTUR HEADER
 		$idfaktur = $request->idfaktur;
-
+		$nofaktur = $request->nofaktur;
 
 		//DATA FAKTUR
 		//$jumlahtotal = $request->jumlahtotal_po;
@@ -7837,7 +7948,16 @@ public function kekata($x) {
 		$dpp = str_replace(',', '', $request->dpp_po);
 		$netto = str_replace(',', '', $request->nettohutang_po);
 
-		if($request->hasilpph_po != 0 ){
+
+		$datafp = DB::select("select * from faktur_pembelian where fp_nofaktur = '$nofaktur'");
+
+
+
+		$datappn = $datafp[0]->fp_ppn;
+		$datapph = $datafp[0]->fp_pph;
+		$datadiskon = $datafp[0]->fp_discount;
+		
+		if($request->hasilpph_po != 0.00 ){
 			$pph = str_replace(',', '', $request->hasilpph_po);
 			$stringpph = explode(",", $request->jenispph_po);
 			$jenispph = $stringpph[0];
@@ -7851,7 +7971,21 @@ public function kekata($x) {
 								'fp_pph' => $pph,
 							]);
 		}
-		if($request->hasilppn_po != '' || $request->hasilppn_po != 0){
+		else {
+			$pph = str_replace(',', '', $request->hasilpph_po);
+			$stringpph = explode(",", $request->jenispph_po);
+			$jenispph = $stringpph[0];
+			$nilaipph = $stringpph[1];
+
+			$data['header4'] = DB::table('faktur_pembelian')
+							->where('fp_idfaktur' , $idfaktur)
+							->update([
+								'fp_jenispph' => null,
+								'fp_nilaipph' => null,
+								'fp_pph' => null,
+							]);
+		}
+		if($request->hasilppn_po != ''){		
 			$hasilppn = str_replace(',', '', $request->hasilppn_po);
 			$data['header3'] = DB::table('faktur_pembelian')
 							->where('fp_idfaktur' , $idfaktur)
@@ -7870,6 +8004,29 @@ public function kekata($x) {
 								'fpm_inputppn' => $request->inputppn_po,
 								'fpm_jenisppn' => $request->jenisppn_po,
 							]);
+		}
+		else {
+			$hasilppn = str_replace(',', '', $request->hasilppn_po);
+			$data['header3'] = DB::table('faktur_pembelian')
+							->where('fp_idfaktur' , $idfaktur)
+							->update([
+								'fp_ppn' => null,
+								'fp_inputppn' => null,
+								'fp_jenisppn' => null,
+							]);
+
+			
+			DB::delete("DELETE from  fakturpajakmasukan  where fpm_idfaktur = '$idfaktur'");
+
+			/*$data['fpm'] = DB::table('fakturpajakmasukan')
+							->where('fpm_idfaktur' , $idfaktur)
+							->update([
+								'fpm_dpp' => $dpp,
+								'fpm_netto' => $netto,
+								'fpm_hasilppn' => $hasilppn,
+								'fpm_inputppn' => $request->inputppn_po,
+								'fpm_jenisppn' => $request->jenisppn_po,
+							]);*/
 		}
 		if($request->disc_item_po != '' || $request->disc_item_po != 0){
 			$hasildiskon_po = str_replace(',', '', $request->hasildiskon_po);
@@ -7900,9 +8057,9 @@ public function kekata($x) {
 							]);
 
 		//UPDATE TT
-		$nofaktur = $request->nofaktur[0];
+		$nofaktur = $request->nofaktur;
 		$updatett = DB::table('form_tt')
-							->where('tt_nofp' , 'FP0618/000/I-015')
+							->where('tt_nofp' , '$nofaktur')
 							->update([
 								'tt_lainlain' => $request->lainlain_tt2,
 								'tt_totalterima' => $netto,
@@ -7914,16 +8071,25 @@ public function kekata($x) {
 			$countiditem = count($request->kodeitem);
 			
 			for($j= 0; $j < count($idpo); $j++){ // MENGHITUNG PO
+
 				$idpo2 = $idpo[$j];
+				
+				//return $idfaktur;
 				$datafp['fp'] = DB::select("select * from faktur_pembeliandt where fpdt_idfp = '$idfaktur'");
 				//return $datafp['fp'];
 				
-
+				//$idfaktur = $idpo[$j];
+			//	return $idpo[$j];
 				//UPDATE PB PO
 
 				
 
 				$iditem = $request->kodeitem[0];
+				//return $idpo2;
+
+
+				
+			//	$idpo2 = 5;
 				$dataitempo['po'] = DB::select("select * from faktur_pembeliandt where fpdt_idfp = '$idfaktur' and fpdt_idpo = '$idpo2' and fpdt_kodeitem = '$iditem'");
 			//	return count($dataitempo['po']);
 			
@@ -8131,30 +8297,112 @@ public function kekata($x) {
 					} // END FOR FP ALL
 
 								$tipefp = $datafp[0]->fp_tipe;
-
+								$datacomp2 = $request->cabang;
 								if($tipefp == 'NS' || $tipefp == 'J'){
-									$nofaktur = $request->nofaktur[0];
+									$nofaktur = $request->nofaktur;
 									DB::delete("DELETE from  d_jurnal where jr_ref = '$nofaktur' and jr_detail = 'FAKTUR PEMBELIAN'");
 									$datajurnal = [];
 									$totalhutang = 0;
-									$datajurnalum = [];
-									$nettohutangpo = str_replace(',', '', $request->nettohutang_po);
+								//	$datajurnalum = [];
+									//$nettohutangpo = str_replace(',', '', $request->nettohutang_po);
+
+									if($request->hasilppn_po != ''){
+										$hasilppn = str_replace(',', '', $request->hasilppn_po);
+										$datakun2 = DB::select("select * from d_akun where id_akun LIKE '2302%' and kode_cabang = '$datacomp2'");
+										if(count($datakun2) == 0){
+											 $dataInfo=['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Belum Tersedia'];
+										    DB::rollback();
+									            return json_encode($dataInfo);
+										}
+										else {
+											$akunppn = $datakun2[0]->id_akun;
+											$akundka = $datakun2[0]->akun_dka;
+
+											//return $akunppn;
+											if($akundka == 'K'){
+												$dataakun = array (
+												'id_akun' => $akunppn,
+												'subtotal' => '-' . $hasilppn,
+												'dk' => 'D',
+												'detail' => $request->keterangan,
+												);
+											}
+											else {
+												$dataakun = array (
+												'id_akun' => $akunppn,
+												'subtotal' => $hasilppn,
+												'dk' => 'D',
+												'detail' => $request->keterangan,
+												);
+											}
+											array_push($datajurnal, $dataakun );
+											}
+											
+										}
+									
 
 
-									for($ja = 0; $ja < count($request->acc_persediaan); $ja++){
+									//akun PPH
+									if($request->hasilpph_po != ''){
+										$hasilppn = str_replace(',', '', $request->hasilppn_po);
+										$hasilpph = str_replace(',', '', $request->hasilpph_po);
+
+										$pph = str_replace(',', '', $request->hasilpph_po);
+										$stringpph = explode(",", $request->jenispph_po);
+										$jenispph = $stringpph[0];
+										$nilaipph = $stringpph[1];
+
+											$datapph = DB::select("select * from pajak where id = '$jenispph'");
+											$kodepajak2 = $datapph[0]->acc1;
+											$kodepajak = substr($kodepajak2, 0,4);
+
+											$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$kodepajak%' and kode_cabang = '$datacomp2'");
+											if(count($datakun2) == 0){
+												$dataInfo=['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Belum Tersedia'];
+											    DB::rollback();
+										            return json_encode($dataInfo);
+											}
+											else {
+												$akunpph = $datakun2[0]->id_akun;
+												$akundka = $datakun2[0]->akun_dka;
+
+												if($akundka == 'D'){
+													$dataakun = array (
+													'id_akun' => $akunpph,
+													'subtotal' => '-' . $hasilpph,
+													'dk' => 'K',
+													'detail' => $request->keterangan,
+													);
+												}
+												else {
+													$dataakun = array (
+													'id_akun' => $akunpph,
+													'subtotal' => $hasilpph,
+													'dk' => 'K',
+													'detail' => $request->keterangan,
+													);
+												}
+												array_push($datajurnal, $dataakun );
+											}
+									}
+
+
+									for($ja = 0; $ja < count($request->acc_biaya); $ja++){
 										
 										$totalharga = str_replace(',', '', $request->nettoitem[$ja]);
-
-										$datajurnal[$ja]['id_akun'] = $request->acc_persediaan[$ja];
+									//	return $totalharga;
+										$datajurnal[$ja]['id_akun'] = $request->acc_biaya[$ja];
 										$datajurnal[$ja]['subtotal'] = $totalharga;
 										$datajurnal[$ja]['dk'] = 'D';
+										$datajurnal[$ja]['detail'] = $request->keterangan;
 									}	
 
 
 									$dataakun = array (
 										'id_akun' => $request->acchutang,
-										'subtotal' => $nettohutangpo,
+										'subtotal' => $netto,
 										'dk' => 'K',
+										'detail' => $request->keterangan,
 										);
 
 									array_push($datajurnal, $dataakun );
@@ -8180,8 +8428,6 @@ public function kekata($x) {
 							        $jurnal->jr_note = $request->keterangan;
 							        $jurnal->save();
 						       		
-
-						       
 						    		$key  = 1;
 						    		for($j = 0; $j < count($datajurnal); $j++){
 						    			
@@ -8200,13 +8446,346 @@ public function kekata($x) {
 						    			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
 						    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
 						    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
+						    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
 						    			$jurnaldt->save();
 						    			$key++;
 						    		}
 								}
+								else { // jurnal FP PO
+								$datajurnalpo = [];
+								$nofaktur = $request->nofaktur;
+								DB::delete("DELETE from  d_jurnal where jr_ref = '$nofaktur' and jr_detail = 'FAKTUR PEMBELIAN'");
+								//akun PPN
+								$datacomp2 = $request->cabang;
+								if($request->hasilppn_po != '' && $request->hasilpph_po == ''){
+									$hasilppn = str_replace(',', '', $request->hasilppn_po);
+									$datakun2 = DB::select("select * from d_akun where id_akun LIKE '2302%' and kode_cabang = '$datacomp2'");
+									if(count($datakun2) == 0){
+										 $dataInfo=['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Belum Tersedia'];
+									    DB::rollback();
+								            return json_encode($dataInfo);
+									}
+									else {
+										$akunppn = $datakun2[0]->id_akun;
+										$akundka = $datakun2[0]->akun_dka;
+
+										if($akundka == 'K'){
+											$dataakun = array (
+											'id_akun' => $akunppn,
+											'subtotal' => '-' . $hasilppn,
+											'dk' => 'D',
+											'detail' => $request->keterangan,
+										);
+
+										}
+										else {
+											$dataakun = array (
+											'id_akun' => $akunppn,
+											'subtotal' => $hasilppn,
+											'dk' => 'D',
+											'detail' => $request->keterangan
+										);
+
+										}
+										array_push($datajurnalpo, $dataakun );
+									}
+
+									$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+
+									//$totalhutangjr = floatval($hasilppn) - floatval($hasilpph);
+									$acchutang = $request->acchutang;
+
+										if(isset($lastidjurnal)) {
+											$idjurnal = $lastidjurnal;
+											$idjurnal = (int)$idjurnal + 1;
+										}
+										else {
+											$idjurnal = 1;
+										}
+									
+										$year = date('Y');	
+										$date = date('Y-m-d');
+										$jurnal = new d_jurnal();
+										$jurnal->jr_id = $idjurnal;
+								        $jurnal->jr_year = date('Y');
+								        $jurnal->jr_date = date('Y-m-d');
+								        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
+								        $jurnal->jr_ref = $nofaktur;
+								        $jurnal->jr_note = $request->keterangan;
+								        $jurnal->save();
+							       		
+								        
+							       		$dataakun = array (
+											'id_akun' => $acchutang,
+											'subtotal' =>  $hasilppn,
+											'dk' => 'K',
+											'detail' => $request->keterangan,
+										);
+
+										array_push($datajurnalpo, $dataakun);
+							    		$key  = 1;
+							    		for($j = 0; $j < count($datajurnalpo); $j++){
+							    			
+							    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+											if(isset($lastidjurnaldt)) {
+												$idjurnaldt = $lastidjurnaldt;
+												$idjurnaldt = (int)$idjurnaldt + 1;
+											}
+											else {
+												$idjurnaldt = 1;
+											}
+
+							    			$jurnaldt = new d_jurnal_dt();
+							    			$jurnaldt->jrdt_jurnal = $idjurnal;
+							    			$jurnaldt->jrdt_detailid = $key;
+							    			$jurnaldt->jrdt_acc = $datajurnalpo[$j]['id_akun'];
+							    			$jurnaldt->jrdt_value = $datajurnalpo[$j]['subtotal'];
+							    			$jurnaldt->jrdt_statusdk = $datajurnalpo[$j]['dk'];
+							    			$jurnaldt->jrdt_detail = $datajurnalpo[$j]['detail'];
+							    			$jurnaldt->save();
+							    			$key++;
+							    		}
+
+								}
+
+								if($request->hasilpph_po != '' && $request->hasilppn_po == ''){
+									$hasilppn = str_replace(',', '', $request->hasilppn_po);
+									$hasilpph = str_replace(',', '', $request->hasilpph_po);
+
+									$pph = str_replace(',', '', $request->hasilpph_po);
+									$stringpph = explode(",", $request->jenispph_po);
+									$jenispph = $stringpph[0];
+									$nilaipph = $stringpph[1];
+
+									$datapph = DB::select("select * from pajak where id = '$jenispph'");
+									$kodepajak2 = $datapph[0]->acc1;
+									$kodepajak = substr($kodepajak2, 0,4);
+
+									$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$kodepajak%' and kode_cabang = '$datacomp2'");
+									if(count($datakun2) == 0){
+										$dataInfo=['status'=>'gagal','info'=>'Akun PPH Untuk '.$datacomp2.' Belum Tersedia'];
+									    DB::rollback();
+								            return json_encode($dataInfo);
+									}
+									else {
+										$akunpph = $datakun2[0]->id_akun;
+										$akundka = $datakun2[0]->akun_dka;
+
+
+										if($akundka == 'D'){
+											$dataakun = array (
+												'id_akun' => $akunpph,
+												'subtotal' => '-' . $hasilpph,
+												'dk' => 'K',
+												'detail' => $request->keterangan,
+											);
+										}
+										else {
+											$dataakun = array (
+												'id_akun' => $akunpph,
+												'subtotal' => $hasilpph,
+												'dk' => 'K',
+												'detail' => $request->keterangan,
+											);
+										}
+
+										array_push($datajurnalpo, $dataakun );
+									}
+
+									$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+
+									//$totalhutangjr = floatval($hasilppn) - floatval($hasilpph);
+									$acchutang = $request->acchutang;
+
+										if(isset($lastidjurnal)) {
+											$idjurnal = $lastidjurnal;
+											$idjurnal = (int)$idjurnal + 1;
+										}
+										else {
+											$idjurnal = 1;
+										}
+									
+										$year = date('Y');	
+										$date = date('Y-m-d');
+										$jurnal = new d_jurnal();
+										$jurnal->jr_id = $idjurnal;
+								        $jurnal->jr_year = date('Y');
+								        $jurnal->jr_date = date('Y-m-d');
+								        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
+								        $jurnal->jr_ref = $nofaktur;
+								        $jurnal->jr_note = $request->keterangan;
+								        $jurnal->save();
+							       		
+								        
+							       		$dataakun = array (
+											'id_akun' => $acchutang,
+											'subtotal' => '-' . $hasilpph,
+											'dk' => 'K',
+											'detail' => $request->keterangan,
+										);
+
+										array_push($datajurnalpo, $dataakun);
+							    		$key  = 1;
+							    		for($j = 0; $j < count($datajurnalpo); $j++){
+							    			
+							    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+											if(isset($lastidjurnaldt)) {
+												$idjurnaldt = $lastidjurnaldt;
+												$idjurnaldt = (int)$idjurnaldt + 1;
+											}
+											else {
+												$idjurnaldt = 1;
+											}
+
+							    			$jurnaldt = new d_jurnal_dt();
+							    			$jurnaldt->jrdt_jurnal = $idjurnal;
+							    			$jurnaldt->jrdt_detailid = $key;
+							    			$jurnaldt->jrdt_acc = $datajurnalpo[$j]['id_akun'];
+							    			$jurnaldt->jrdt_value = $datajurnalpo[$j]['subtotal'];
+							    			$jurnaldt->jrdt_statusdk = $datajurnalpo[$j]['dk'];
+							    			$jurnaldt->jrdt_detail = $datajurnalpo[$j]['detail'];
+							    			$jurnaldt->save();
+							    			$key++;
+							    		}	
+								}
+
+
+								if($request->hasilpph_po != '' && $request->hasilppn_po != ''){
+									$hasilppn = str_replace(',', '', $request->hasilppn_po);
+									$hasilpph = str_replace(',', '', $request->hasilpph_po);
+
+									$pph = str_replace(',', '', $request->hasilpph_po);
+									$stringpph = explode(",", $request->jenispph_po);
+									$jenispph = $stringpph[0];
+									$nilaipph = $stringpph[1];
+
+									$datakun2 = DB::select("select * from d_akun where id_akun LIKE '2302%' and kode_cabang = '$datacomp2'");
+									if(count($datakun2) == 0){
+										 $dataInfo=['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Belum Tersedia'];
+									    DB::rollback();
+								            return json_encode($dataInfo);
+									}
+									else {
+										$akunppn = $datakun2[0]->id_akun;
+										$akundka = $datakun2[0]->akun_dka;
+
+										if($akundka == 'K'){
+											$dataakun = array (
+											'id_akun' => $akunppn,
+											'subtotal' => '-' . $hasilppn,
+											'dk' => 'D',
+											'detail' => $request->keterangan,
+										);
+
+										}
+										else {
+											$dataakun = array (
+											'id_akun' => $akunppn,
+											'subtotal' => $hasilppn,
+											'dk' => 'D',
+											'detail' => $request->keterangan,
+										);
+
+										}
+										array_push($datajurnalpo, $dataakun );
+									}
+
+									$datapph = DB::select("select * from pajak where id = '$jenispph'");
+									$kodepajak2 = $datapph[0]->acc1;
+									$kodepajak = substr($kodepajak2, 0,4);
+
+									$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$kodepajak%' and kode_cabang = '$datacomp2'");
+									if(count($datakun2) == 0){
+										$dataInfo=['status'=>'gagal','info'=>'Akun PPH Untuk '.$datacomp2.' Belum Tersedia'];
+									    DB::rollback();
+								            return json_encode($dataInfo);
+									}
+									else {
+										$akunpph = $datakun2[0]->id_akun;
+										$akundka = $datakun2[0]->akun_dka;
+
+
+										if($akundka == 'D'){
+											$dataakun = array (
+												'id_akun' => $akunpph,
+												'subtotal' => '-' . $hasilpph,
+												'dk' => 'K',
+												'detail' => $request->keterangan,
+											);
+										}
+										else {
+											$dataakun = array (
+												'id_akun' => $akunpph,
+												'subtotal' =>  $hasilpph,
+												'dk' => 'K',
+												'detail' => $request->keterangan,
+											);
+										}
+
+										array_push($datajurnalpo, $dataakun );
+									}
+
+									$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+
+									$totalhutangjr = floatval($hasilppn) - floatval($hasilpph);
+									$acchutang = $request->acchutang;
+
+										if(isset($lastidjurnal)) {
+											$idjurnal = $lastidjurnal;
+											$idjurnal = (int)$idjurnal + 1;
+										}
+										else {
+											$idjurnal = 1;
+										}
+									
+										$year = date('Y');	
+										$date = date('Y-m-d');
+										$jurnal = new d_jurnal();
+										$jurnal->jr_id = $idjurnal;
+								        $jurnal->jr_year = date('Y');
+								        $jurnal->jr_date = date('Y-m-d');
+								        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
+								        $jurnal->jr_ref = $nofaktur;
+								        $jurnal->jr_note = $request->keterangan;
+								        $jurnal->save();
+							       		
+								        
+							       		$dataakun = array (
+											'id_akun' => $acchutang,
+											'subtotal' => $totalhutangjr,
+											'dk' => 'K',
+											'detail' => $request->keterangan,
+										);
+
+										array_push($datajurnalpo, $dataakun);
+							    		$key  = 1;
+							    		for($j = 0; $j < count($datajurnalpo); $j++){
+							    			
+							    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+											if(isset($lastidjurnaldt)) {
+												$idjurnaldt = $lastidjurnaldt;
+												$idjurnaldt = (int)$idjurnaldt + 1;
+											}
+											else {
+												$idjurnaldt = 1;
+											}
+
+							    			$jurnaldt = new d_jurnal_dt();
+							    			$jurnaldt->jrdt_jurnal = $idjurnal;
+							    			$jurnaldt->jrdt_detailid = $key;
+							    			$jurnaldt->jrdt_acc = $datajurnalpo[$j]['id_akun'];
+							    			$jurnaldt->jrdt_value = $datajurnalpo[$j]['subtotal'];
+							    			$jurnaldt->jrdt_statusdk = $datajurnalpo[$j]['dk'];
+							    			$jurnaldt->jrdt_detail = $datajurnalpo[$j]['detail'];
+							    			$jurnaldt->save();
+							    			$key++;
+							    		}	
+
+								}
+								}
 								
 								//UPDATE UM
-					    		if($request->totaljumlah != ''){
+					    		if($request->totaljumlah != 0.00){
 					    			DB::delete("DELETE from d_jurnal where jr_detail = 'UANG MUKA PEMBELIAN FP' and jr_ref = '$nofaktur'");
 
 
@@ -8311,7 +8890,7 @@ public function kekata($x) {
 											]);
 						            }
 
-						            	$hasilsisapelunasan = floatval($nettohutangpo) - floatval($totaljumlah);
+						            	$hasilsisapelunasan = floatval($netto) - floatval($totaljumlah);
 									    $updatesm = DB::table('faktur_pembelian')
 						                ->where('fp_idfaktur' , $idfaktur)
 						                ->update([
@@ -8460,9 +9039,9 @@ public function kekata($x) {
 
 		return json_encode($fpg);*/
 
-		$datas['um'] = DB::select("select fpg_flag as flag, fpg_nofpg as nota, idfpg as idtransaksi, fpg_tgl as tgl, fpg_keterangan as keterangan, fpg_agen as supplier, fpg_totalbayar as totalbayar , fpgdt_sisapelunasanumfp as sisaterpakai, um_nomorbukti as no_um from fpg, d_uangmuka, fpg_dt where fpg_agen = '$nosupplier' and fpg_agen = um_supplier and fpg_posting = 'DONE' and fpgdt_idfpg = idfpg  and fpgdt_idfp = um_id union select bkk_flag as flag,  bkk_nota as nota, bkk_id as idtransaksi, bkk_tgl as tgl, bkk_keterangan as keterangan , bkk_supplier as supplier , bkk_total as totalbayar , bkkd_sisaum as sisaterpakai, um_nomorbukti as no_um  from bukti_kas_keluar, bukti_kas_keluar_detail, d_uangmuka where bkk_supplier = '$nosupplier' and bkk_supplier = um_supplier and bkkd_bkk_id = bkk_id   and bkkd_ref = um_supplier  ");
+		$datas['um'] = DB::select("select fpg_flag as flag, fpg_nofpg as nota, idfpg as idtransaksi, fpg_tgl as tgl, fpg_keterangan as keterangan, fpg_agen as supplier, fpg_totalbayar as totalbayar , fpgdt_sisapelunasanumfp as sisaterpakai, um_nomorbukti as no_um from fpg, d_uangmuka, fpg_dt where fpg_agen = '$nosupplier' and fpg_agen = um_supplier and fpg_posting = 'DONE' and fpgdt_idfpg = idfpg  and fpgdt_idfp = um_id and um_comp = '$cabang' union select bkk_flag as flag,  bkk_nota as nota, bkk_id as idtransaksi, bkk_tgl as tgl, bkk_keterangan as keterangan , bkk_supplier as supplier , bkk_total as totalbayar , bkkd_sisaum as sisaterpakai, um_nomorbukti as no_um  from bukti_kas_keluar, bukti_kas_keluar_detail, d_uangmuka where bkk_supplier = '$nosupplier' and bkk_supplier = um_supplier and bkkd_bkk_id = bkk_id   and bkkd_ref = um_supplier and um_comp = '$cabang'  ");
 
-		$datas['um1'] = DB::select("select fpg_flag as flag, fpg_nofpg as nota, idfpg as idtransaksi, fpg_tgl as tgl, fpg_keterangan as keterangan, fpg_agen as supplier, fpg_totalbayar as totalbayar , fpgdt_sisapelunasanumfp as sisaterpakai, um_nomorbukti as no_um from fpg, d_uangmuka, fpg_dt where fpg_agen = '$nosupplier' and fpg_agen = um_supplier and fpg_posting = 'DONE' and fpgdt_idfpg = idfpg  and fpgdt_idfp = um_id union select bkk_flag as flag, bkk_nota as nota, bkk_id as idtransaksi, bkk_tgl as tgl, bkk_keterangan as keterangan , bkk_supplier as supplier , bkk_total as totalbayar , bkkd_sisaum as sisaterpakai , um_nomorbukti as no_um from bukti_kas_keluar, bukti_kas_keluar_detail, d_uangmuka where bkk_supplier = '$nosupplier' and bkk_supplier = um_supplier and bkkd_bkk_id = bkk_id   and bkkd_ref = um_supplier  ");
+		$datas['um1'] = DB::select("select fpg_flag as flag, fpg_nofpg as nota, idfpg as idtransaksi, fpg_tgl as tgl, fpg_keterangan as keterangan, fpg_agen as supplier, fpg_totalbayar as totalbayar , fpgdt_sisapelunasanumfp as sisaterpakai, um_nomorbukti as no_um from fpg, d_uangmuka, fpg_dt where fpg_agen = '$nosupplier' and fpg_agen = um_supplier and fpg_posting = 'DONE' and fpgdt_idfpg = idfpg  and fpgdt_idfp = um_id and  um_comp = '$cabang' union select bkk_flag as flag, bkk_nota as nota, bkk_id as idtransaksi, bkk_tgl as tgl, bkk_keterangan as keterangan , bkk_supplier as supplier , bkk_total as totalbayar , bkkd_sisaum as sisaterpakai , um_nomorbukti as no_um from bukti_kas_keluar, bukti_kas_keluar_detail, d_uangmuka where bkk_supplier = '$nosupplier' and bkk_supplier = um_supplier and bkkd_bkk_id = bkk_id   and bkkd_ref = um_supplier and um_comp = '$cabang'  ");
 
 		if(count($request->arrnoum) != 0){
 			for($i = 0 ; $i < count($datas['um']); $i++){
