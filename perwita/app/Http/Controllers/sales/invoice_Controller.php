@@ -138,6 +138,17 @@ class invoice_Controller extends Controller
 
 
     public function index(){
+
+        // $cabang = DB::table('cabang')
+        //             ->get();
+
+        // for ($i=0; $i < count($cabang); $i++) { 
+        //   $insert = DB::table('d_akun')
+        //               ->insert([
+        //                 'id_akun'
+        //               ])
+        // }
+
         $cabang = auth::user()->kode_cabang;
         if (Auth::user()->punyaAkses('Invoice','all')) {
             $data = DB::table('invoice')
