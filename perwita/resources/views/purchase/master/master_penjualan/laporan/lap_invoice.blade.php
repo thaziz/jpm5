@@ -56,10 +56,30 @@
                             </select>
                           </div>
 
+
                           <div class="form-group col-md-2">
                             <button  class="btn btn-info" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </button>
                           </div>
                       </div>
+
+                <div>
+                  <div class="form-group col-md-4">
+                      <select class="cari_semua chosen-select-width laporan" id="jenis"  name="jenis">
+                        <option value="INVOICE">INVOICE</option>
+                        <option value="ENTRY">ENTRY</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                      <select class="cari_semua chosen-select-width" id="cabang"  name="cabang">
+                        <option></option>
+                        @foreach ($cabang as $element)
+                          <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                </div> 
+
               </div> 
               <h3 id="replace" align="center"></h3> 
               <div class="box" id="seragam_box">
@@ -69,7 +89,7 @@
                     <div class="box-body">
                       <br>
                       <div class="row" style="margin-top: 20px;margin-left: 30px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
-                      <div class="row" style="margin-top: -39px;margin-left: 98px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
+                      <div class="row" style="margin-top: -59px;margin-left: 112px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
                     </div>
                 </form>
                 <div class="box-body">
@@ -109,20 +129,43 @@
     var b = d.getSeconds();
     var c = d.getMilliseconds();
     var table;
+      
+
+
+    
+
 
     function cari(){
       var awal =  $('#date_awal').val();
       var akir =  $('#date_akir').val();
       var customer =  $('.select-picker5').val();
-      $.ajax({
-        data: {awal:awal,akir:akir,customer:customer},
-        url: baseUrl + '/carireport_invoice/carireport_invoice',
-        type: "get",
-         success : function(data){
-          $('#drop_here').html(data);
-        }
-      });
+      var cabang =  $('#cabang').val();
+      var laporan = $('.laporan').val();
+
+      if (laporan == 'INVOICE') {
+        $.ajax({
+          data: {awal:awal,akir:akir,customer:customer,cabang:cabang},
+          url: baseUrl + '/carireport_invoice/carireport_invoice',
+          type: "get",
+           success : function(data){
+            $('#drop_here').html(data);
+          }
+       });
+      }else if (laporan == 'ENTRY') {
+        $.ajax({
+          data: {awal:awal,akir:akir,customer:customer,cabang:cabang},
+          url: baseUrl + '/carientry_invoice/carientry_invoice',
+          type: "get",
+           success : function(data){
+            $('#drop_here').html(data);
+          }
+       });
+      }
+      
     }
+
+
+
     function cetak(){
       var awal =  $('#date_awal').val();
       var akir =  $('#date_akir').val();
