@@ -924,18 +924,18 @@ class ReturnPembelianController extends Controller
 						'podt_qtykirim' => $hasilqtypo,
 						'podt_id' => $idpodt,
 						'podt_kodeitem' => $itemterima,
-						'podt_approval' => 
+						'podt_approval' => $datapodt[0]->qty_approval,
 						'podt_qtykirim' => $qtyterima,
 						'podt_jumlahharga' => $dataterima[0]->rndt_hargaterima,
 						'podt_statuskirim' => 'LENGKAP',
-						'podt_idspp' => 
-						'podt_idpo' =>
+						'podt_idspp' => $datapodt[0]->podt_idspp,
+						'podt_idpo' => $datapodt[0]->podt_idpo,
 						'podt_lokasigudang' => $lokasigudang,
 						'podt_tglkirim' => $mytime,
-						'podt_supplier' =>
+						'podt_supplier' => $datapodt[0]->podt_supplier,
 						'podt_totalharga' => $dataterima[0]->rndt_totalhargaterima,
 						'podt_akunitem' => $dataterima[0]->rndt_akunitem,
-						'podt_keterangan' =>
+						'podt_keterangan' => $datapodt[0]->podt_keterangan,
 
 						]);
 
