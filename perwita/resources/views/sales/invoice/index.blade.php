@@ -62,6 +62,7 @@
                             <tr>
                                 <th>Nomor</th>
                                 <th>Tanggal </th>
+                                <th>Cabang </th>
                                 <th>Customer</th>
                                 <th>JT</th>
                                 <th>Tagihan </th>
@@ -117,25 +118,26 @@
             },
             columnDefs: [
               {
-                 targets: 4,
-                 className: 'cssright'
-              },
-              {
                  targets: 5,
                  className: 'cssright'
               },
               {
-                 targets:8,
+                 targets: 6,
+                 className: 'cssright'
+              },
+              {
+                 targets:7,
                  className: 'center'
               },
               {
-                 targets:9,
+                 targets:10,
                  className: 'center'
               },
             ],
             "columns": [
             { "data": "i_nomor" },
             { "data": "i_tanggal" },
+            { "data": "cabang" },
             { "data": "customer"},
             { "data": "i_jatuh_tempo" },
             { "data": "tagihan" },

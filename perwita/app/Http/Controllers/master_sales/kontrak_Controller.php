@@ -370,7 +370,7 @@ class kontrak_Controller extends Controller
                   ->join('customer','kode','=','kc_kode_customer')
                   ->where('kc_id',$id)
                   ->first();
-
+                  
         $data_dt = DB::table('kontrak_customer_d')              
                   ->join('jenis_tarif','jt_id','=','kcd_jenis_tarif')
                   ->join('tipe_angkutan','kode','=','kcd_kode_angkutan')

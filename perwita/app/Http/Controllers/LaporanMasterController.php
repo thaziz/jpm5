@@ -2609,17 +2609,23 @@ class LaporanMasterController extends Controller
    			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
    			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran')->get();
    		$customer = DB::table('customer')->orderBy('kode','ASC')->get();
+
+   		$piutang = DB::table('d_akun')
+   						->where('nama_akun','like','%PIUTANG%')
+   						->get();
    		 // $invo = DB::select("SELECT invoice.i_kode_customer,customer.nama as cnama,sum(invoice.i_total)  from invoice join customer on customer.kode = invoice.i_kode_customer  group by i_kode_customer,customer.nama order by i_kode_customer");
    		
    		 // $cndn = DB::select("SELECT sum(cd_total),cd_customer from cn_dn_penjualan group by cd_customer order by cd_customer");
    		 // return [$invo,$cndn];
 
-   		return view('purchase/master/master_penjualan/laporan/lap_piutang/lap_piutang',compact('data','data_i','data_p','customer'));
+   		return view('purchase/master/master_penjualan/laporan/lap_piutang/lap_piutang',compact('data','data_i','data_p','customer','piutang'));
    }
    public function cari_kartupiutang(Request $request){
+   	// dd($request->all());
    		$awal = substr($request->min,-2);
    		$akir = substr($request->max,-2);
    		$customer = $request->customer;
+   		$akun = $request->akun;
 
    		if ($customer == null or '') {
    			$data_i = DB::select("SELECT i_kode_customer,customer.nama as cnama 
@@ -2635,6 +2641,13 @@ class LaporanMasterController extends Controller
 	   										group by i_nomor 
 	   										order by i_nomor");
 	   		
+	   		$data_saldo = DB::select("SELECT sum(i_total_tagihan) as saldo,i_kode_customer
+   										from invoice
+   										where date_part('month',i_tanggal) >= '$awal' 
+	   									and date_part('month',i_tanggal) <= '$akir' 
+										group by i_kode_customer,i_acc_piutang
+   										");
+
 
 	   		$a = DB::table('invoice')
 	   			->select('i_tipe as flag','i_nomor as kode','i_kode_customer as cutomer','i_tanggal as tanggal','i_keterangan as keterangan','i_total_tagihan as total');
@@ -2650,8 +2663,10 @@ class LaporanMasterController extends Controller
 	   			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
 	   			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran');
 
+   			// return 'a';
 	   		$data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
    		}else{
+   			// return 'b';
    			$data_i = DB::select("SELECT i_kode_customer,customer.nama as cnama 
    										from invoice 
    										join customer on customer.kode = invoice.i_kode_customer 
@@ -2686,7 +2701,7 @@ class LaporanMasterController extends Controller
    		}
    		
    		
-   		return view('purchase/master/master_penjualan/laporan/lap_piutang/ajax_lap_piutang',compact('data','data_i','data_p','customer'));
+   		return view('purchase/master/master_penjualan/laporan/lap_piutang/ajax_lap_piutang',compact('data','data_i','data_p','customer','data_saldo'));
 
    }
    public function rekap_customer(){

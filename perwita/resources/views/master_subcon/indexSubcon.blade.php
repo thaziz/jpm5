@@ -72,7 +72,7 @@
                     <tbody>
                       @foreach($data as $i => $val)
                       <tr>
-                        <td><a href="{{ url('master_sales/detail_kontrak')}}/{{$val->ks_id}}">{{ $val->ks_nota }}</a></td>
+                        <td><a href="{{ url('master_subcon/detail')}}/{{$val->ks_id}}">{{ $val->ks_nota }}</a></td>
                         <td>{{$val->ks_tgl_mulai}}</td>
                         <td>{{$val->ks_tgl_akhir}}</td>
                         <td>{{$val->nama_subcon}}</td>
