@@ -16,14 +16,14 @@ class saldo_akun_controller extends Controller
 {
     public function index(){
         
-        if(cek_periode() == 0)
+        if(cek_periode() == 1)
             // return view("keuangan.err.err_periode");
 
     	$data = master_akun_saldo::where("tahun", "=", date("Y"))->where("bulan", "=", date("m"))->whereNotNull("saldo_akun")->orderBy("id_akun", "asc")->get();
 
-    	//return date("Y");
 
-        // return $data;
+         date("Y");
+
 
     	return view("keuangan.akun_saldo.index")->withData($data);
     }
