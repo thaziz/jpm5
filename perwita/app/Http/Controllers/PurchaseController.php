@@ -1955,14 +1955,14 @@ public function purchase_order() {
 			$penerimaanbarang->pb_po = $request->po_id;
 			$penerimaanbarang->pb_updatestock =$request->updatestock;
 			$penerimaanbarang->pb_lpb = $lpb;
-			$penerimaanbarang->pb_suratjalan = $request->suratjalan;
+			$penerimaanbarang->pb_suratjalan = strtoupper($request->suratjalan);
 			$penerimaanbarang->pb_supplier = $request->idsup;
 			$penerimaanbarang->pb_gudang = $request->gudang;
-			$penerimaanbarang->pb_terimadari = $request->diterimadari;
+			$penerimaanbarang->pb_terimadari = strtoupper($request->diterimadari);
 			$penerimaanbarang->create_by = $request->username;
 			$penerimaanbarang->update_by = $request->username;
 			$penerimaanbarang->pb_acchutangdagang = $request->acchutangsupplierpo;
-			$penerimaanbarang->pb_keterangan = $request->keterangan;
+			$penerimaanbarang->pb_keterangan = strtoupper($request->keterangan);
 			
 			$penerimaanbarang->save();
 
@@ -4773,7 +4773,7 @@ public function purchase_order() {
 				$fatkurpembeliand->fp_nofaktur = $nofaktur;
 				$fatkurpembeliand->fp_tgl = $request->tgl_po;
 				$fatkurpembeliand->fp_idsup = $idsup;
-				$fatkurpembeliand->fp_keterangan = $request->keterangan_po;
+				$fatkurpembeliand->fp_keterangan = strtoupper($request->keterangan_po);
 				$fatkurpembeliand->fp_noinvoice = $request->no_invoice_po;
 				$fatkurpembeliand->fp_jatuhtempo = $request->jatuhtempo_po;
 				$fatkurpembeliand->fp_jumlah = $total;
@@ -5820,7 +5820,7 @@ public function purchase_order() {
 				$fatkurpembelian->fp_nofaktur = $nofaktur;
 				$fatkurpembelian->fp_tgl = $request->tglitem;
 				$fatkurpembelian->fp_idsup = $idsup;
-				$fatkurpembelian->fp_keterangan = $request->keteranganheader;
+				$fatkurpembelian->fp_keterangan = strtoupper($request->keteranganheader);
 				$fatkurpembelian->fp_noinvoice = $request->noinvoice;
 				$fatkurpembelian->fp_jatuhtempo = $request->jatuhtempoitem;
 				$fatkurpembelian->fp_jumlah = $total;
@@ -7024,7 +7024,7 @@ public function kekata($x) {
 		$bbk->bbk_id = $idbbk;
 		$bbk->bbk_nota = $request->nobbk;
 		$bbk->bbk_kodebank = $request->kodebank;
-		$bbk->bbk_keterangan = $request->keteranganheader;
+		$bbk->bbk_keterangan = strtoupper($request->keteranganheader);
 		if($request->flag == 'CEKBG'){
 			$totalcekbg = str_replace(',', '', $request->totalcekbg);
 			$bbk->bbk_cekbg = $totalcekbg;
@@ -9669,7 +9669,7 @@ public function kekata($x) {
 			//	$formfpg->fpg_uangmuka = $request->uangmuka;
 				$formfpg->fpg_cekbg = $cekbg;
 				$formfpg->fpg_nofpg = $request->nofpg;
-				$formfpg->fpg_keterangan = $request->keterangan;
+				$formfpg->fpg_keterangan = strtoupper($request->keterangan);
 
 
 				if($request->jenisbayar == 5) {
