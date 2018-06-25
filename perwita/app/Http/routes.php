@@ -79,6 +79,7 @@ Route::post('setting/hak_akses/edit_hak_akses', 'setting\hak_akses_Controller@ed
 
 //***PEMBELIAN
 //***PEMBELIAN
+Route::get('tes' , 'sales\invoice_Controller@index');
 
 
 Route::get('suratpermintaanpembelian' , 'PurchaseController@spp_index');
