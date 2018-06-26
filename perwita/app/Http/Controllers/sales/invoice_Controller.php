@@ -679,7 +679,6 @@ public function simpan_invoice(request $request)
     $cari_nota = DB::table('invoice')
              ->where('i_nomor',$request->nota_invoice)
              ->first();
-             
     if ($cari_nota != null) {
       if ($cari_nota->update_by == $user) {
         return 'Data Sudah Ada';
