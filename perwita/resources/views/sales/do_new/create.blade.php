@@ -1,0 +1,911 @@
+@extends('main')
+
+@section('title', 'dashboard')
+
+@section('content')
+<style type="text/css">
+    .cssright 
+    { 
+        text-align: right; 
+    }
+    .table td,th,tr{
+        border:none;
+    }
+    .pointer_none{
+        pointer-events: none;
+    }
+</style>
+
+<div class="wrapper wrapper-content animatdo fadeInRight">
+    <div class="row">
+        <div class="col-lg-12" >
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5 style="margin-left : 5px"> DELIVERY ORDER
+                     <!-- {{Session::get('comp_year')}} -->
+                     </h5>
+                    <div class="ibox-tools">
+                        <input type="text" class="pull-right" style="border: none; text-align: right;" readonly="" name="crud_atas" id="crud_atas" 
+                    </div>
+                </div>
+                <div class="ibox-content" >
+                <div>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                    Petunjuk Input
+                    </button>
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" style="width: 800px;" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">Point-Point Yang Harus Diperhatikan</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <span><b style="color: red">1 .*Data Customer Berwarna <g style="color: green">Hijau</g> Menandakan Bahwa Customer Tersebut Memiliki Kontrak</b></span><br>
+                            <span><b style="color: red">2 .*Pencarian Tarif Penerus Pada Customer Yang Memiliki  <g style="color: green">Kontrak</g> ,Cari Dengan tombol </b> <span class="input-group-btn"> <button type="button"  class="btn btn-warning"> <i class="fa fa-search"></i> Tipe </span>
+                          </div>
+                          <div class="modal-footer">                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                                
+                    
+                </div>
+                <div id="drop"></div>
+                <br>
+          <div class="row">
+            <div class="col-xs-12">
+
+                <div class="box" id="seragam_box">
+                <div class="box-header">
+                </div><!-- /.box-header -->
+                  <div class="box-body">
+                        <div class="x_content">
+                            <form id="form_header" class="form-horizontal kirim">                                
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <table class="table dt-responsive nowrap table-hover">
+                                            <tbody>
+                                                <tr style="max-height: 15px !important; height: 15px !important; overflow:hidden;">
+                                                    <td style="width:110px; padding-top: 0.4cm">Nomor</td>
+                                                    <td colspan="5">
+                                                        <input type="text" class="form-control" id="do_nomor" name="do_nomor" style="text-transform: uppercase"  value="" >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm">Tanggal</td>
+                                                    <td colspan="1">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control datepicker_today" name="do_tanggal" id="do_tanggal" value="">
+                                                        </div>
+                                                    </td>
+
+                                                    <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                                    <td colspan="3">
+                                                        <select class="form-control"  name="do_cabang" {{-- onclick="setMaxDisc()" --}} style="width:100%" id="do_cabang">
+                                                            <option value="" >- Pilih -</option>
+                                                        @foreach ($cabang as $row)
+                                                            @if($row->diskon != null)
+                                                            <option value="{{ $row->kode }}" data-diskon="{{ $row->diskon }}">{{ $row->kode }} - {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
+                                                            @else
+                                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                        </select>
+                                                    </td>
+
+
+                                                </tr>
+                                             
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm">Customer</td>
+                                                    <td colspan="5">
+                                                        <select class="chosen-select-width customerpengirim"  name="do_customer" onchange="" id="do_customer" style="width:100%" >
+                                                        <option value="">- Pilih -</option>
+                                                        @foreach ($customer as $row)
+                                                            @if ( $row->kc_aktif  == 'AKTIF' && $row->kcd_jenis)
+                                                                <option style="background-color: #79fea5;" value="{{ $row->kode }}" data-alamat="{{$row->alamat}}" data-telpon="{{$row->telpon}}"  data-status="{{ $row->kc_aktif }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                                            @endif
+                                                        @endforeach
+                                                        @foreach ($cus as $row1)
+                                                                <option value="{{ $row1->kode }}" data-alamat="{{$row1->alamat}}" data-telpon="{{$row1->telpon}}"  >{{ $row1->kode }} - {{ $row1->nama }} </option>
+                                                        @endforeach
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm">Kota Asal</td>
+                                                    <td colspan="5">
+                                                        <select class="chosen-select-width replace_deskripsi" id="do_kota_asal" onchange="asal()" name="do_kota_asal" style="width:100%" >
+                                                            <option value="">- Pilih -</option>
+                                                            @foreach ($kota as $row)
+                                                                <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm">Kota Tujuan</td>
+                                                    <td colspan="5">
+                                                        <select class="chosen-select-width replace_deskripsi" id="do_kota_tujuan" onchange="getKecamatan()" id="do_kota_tujuan" name="do_kota_tujuan" style="width:100%" >
+                                                            <option value="">- Pilih -</option>
+                                                            @foreach ($kota as $row)
+                                                                <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm" class="kecamatantujuanlabel">Kecamatan Tujuan</td>
+                                                    <td colspan="5">
+                                                        <select class="chosen-select-width form-control" id="do_kecamatan_tujuan" name="do_kecamatan_tujuan" style="width:100%" >
+                                                            <option value="">- Pilih -</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <select class="form-control" name="pendapatan" id="pendapatan" class="form-control" style="display:none" >
+                                                            <option value="PAKET">PAKET</option>
+                                                        </select>
+                                                    <td style="width:110px; padding-top: 0.4cm">Type Kiriman</td>
+                                                    <td colspan="5">
+                                                        <select class="form-control"  name="type_kiriman" id="type_kiriman">
+                                                            <option value="">- Pilih -</option>
+                                                            <option value="DOKUMEN">DOKUMEN</option>
+                                                            <option value="KILOGRAM">KILOGRAM</option>
+                                                            <option value="KOLI">KOLI</option>
+                                                            <option value="SEPdoA">SEPdoA</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr id="tr_jenis_kiriman">
+                                                    <td style="width:110px; padding-top: 0.4cm">Jenis Kiriman</td>
+                                                    <td colspan="5">
+                                                        <select class="form-control" name="jenis_kiriman" id="jenis_kiriman" >
+                                                            <option value="">- Pilih -</option>
+                                                            <option value="REGULER">REGULER</option>
+                                                            <option value="EXPRESS">EXPRESS</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr id="jenis_kendaraan">
+                                                    <td style="width:120px; padding-top: 0.4cm">Jenis Kendaraan</td>
+                                                    <td colspan="5">
+                                                        <select class="select2_single form-control"  name="do_angkutan" id="do_angkutan" style="width: 100% !important;">
+                                                            <option value="">- Pilih -</option>
+                                                            @foreach ($angkutan as $row)
+                                                                <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr id="surat_jalan">
+                                                    <td style="padding-top: 0.4cm">No Surat Jalan</td>
+                                                    <td colspan="5">
+                                                        <input type="text" class="form-control" name="do_surat_jalan" style="text-transform: uppercase" value="" >
+                                                    </td>
+                                                </tr>
+                                                <tr id="nopol">
+                                                    <td style="padding-top: 0.4cm">Nopol</td>
+                                                    <td colspan="5">
+                                                        <select class="chosen-select-width"  name="do_nopol" style="width:100%">
+                                                            <option value="">- Pilih -</option>
+                                                            @foreach ($kendaraan as $row)
+                                                                <option value="{{ $row->nopol }}"> {{ $row->nopol }} </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr id="berat">
+                                                    <td style="padding-top: 0.4cm">Berat</td>
+                                                    <td colspan="5">
+                                                        <input onkeyup="BeratDefault()" type="text" class="form-control" name="do_berat" style="text-align:right">
+                                                    </td>
+                                                </tr>
+                                                <tr id="jml_unit">
+                                                    <td style="padding-top: 0.4cm">Jumlah Unit</td>
+                                                    <td colspan="5">
+                                                        <input type="text" class="form-control jmlunit" onkeyup="setJml()" name="do_jml_unit" style="text-align:right" >
+                                                    </td>
+                                                </tr>
+                                               
+                                                <tr id="dimensi">
+                                                    <td style="padding-top: 0.4cm">Panjang</td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="do_panjang" style="text-align:right" >
+                                                    </td>
+                                                    <td style="padding-top: 0.4cm">Lebar</td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="do_lebar" style="text-align:right">
+                                                    </td>
+                                                    <td style="padding-top: 0.4cm">Tinggi</td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="do_tinggi" style="text-align:right">
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr id="koli">
+                                                    <td style="padding-top: 0.4cm">Koli</td>
+                                                    <td colspan="5">
+                                                        <input type="text" class="form-control" name="do_koli" style="text-align:right">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    {{-- <td style="width:110px; padding-top: 0.4cm">Tarif Vendor</td>
+                                                    <td colspan="2">
+                                                        <select class="chosen-select-width pointer_none" name="do_vendor_pilih" style="width:100%" id="do_vendor_pilih">
+                                                            <option value="">- Pilih -</option>
+                                                        </select>
+                                                    </td> --}}
+                                                    <td style="width:110px; padding-top: 0.4cm">Tarif Vendor</td>
+                                                    <td>
+                                                        <div>
+                                                             <label class="radio-inline">
+                                                              <input type="radio" class="cek_vendor_ya" name="cek_vendor">Ya
+                                                            </label>
+                                                            <label class="radio-inline">
+                                                              <input type="radio" class="cek_vendor_tidak" name="cek_vendor">Tidak
+                                                            </label>
+                                                        </div>
+                                                    </td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">DO Outlet</td>
+                                                    <td colspan="2">
+                                                        <select class="chosen-select-width"  name="do_outlet" style="width:100%" id="do_outlet">
+                                                            <option value="">- Pilih -</option>
+                                                            <option value="NON OUTLET">NON OUTLET</option>
+                                                            @foreach ($outlet as $row)
+                                                                <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                    <td style="width: 80px" class="disabldo" >
+                                                       <div class="checkbox checkbox-info checkbox-circle">
+                                                            <input onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
+                                                            <label>
+                                                                Kontrak
+                                                            </label>
+                                                        </div>
+                                                    </td>
+                                                    <td style="width: 80px">
+                                                        <span class="input-group-btn"> <button type="button" id="btn_cari_harga" class="btn btn-primary"> <i class="fa fa-search"></i> Search
+                                                    </td>
+                                                    <td style="width: 80px" id="hidden_button" hidden="">
+                                                        <span class="input-group-btn"> <button type="button" id="btn_cari_tipe" class="btn btn-warning"> <i class="fa fa-search"></i> Tipe
+                                                    </td>
+                                                        
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <div class="col-md-5">
+                                        <table class="table dt-responsive nowrap table-hover">
+                                            <tbody>
+                                                <tr style="max-height: 15px !important; height: 15px !important; overflow:hidden;">
+                                                    <td style="padding-top: 0.4cm">Tarif Dasar</td>
+                                                    <td colspan="2">
+                                                        <input type="text" class="form-control" name="do_tarif_dasar" style="text-align:right" readonly="readonly" tabindex="-1" >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm">Tarif Penerus</td>
+                                                    <td colspan="2">
+                                                        <input type="text" class="form-control" name="do_tarif_penerus" id="do_tarif_penerus" style="text-align:right" readonly="readonly" tabindex="-1">
+                                                        <div id="button_a" hidden=""></div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm">Biaya Tambahan</td>
+                                                    <td colspan="2">
+                                                        <input type="text" class="form-control" name="do_biaya_tambahan" id="do_biaya_tambahan" style="text-align:right"  >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm" id="div_kom">Discount</td>
+                                                    <td  id="div_kom">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control hanyaangkadiskon" name="do_diskon_h" id="do_diskon_h" style="text-align:right">
+                                                            <span class="input-group-addon">%</span>
+                                                        </div>
+                                                    </td>
+                                                    <td  id="div_kom">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">Rp</span>
+                                                            <input type="text" class="form-control" name="do_diskon_v" id="do_diskon_v" onkeyup="dikonval()" style="text-align:right">
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr id="komisi">
+                                                    <td style="padding-top: 0.4cm" id="div_kom">Biaya Komisi</td>
+                                                    <td colspan="2" id="div_kom">
+                                                        <input type="text" class="form-control" name="do_biaya_komisi" id="do_biaya_komisi" style="text-align:right">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm" id="div_kom">Dpp</td>
+                                                    <td colspan="2" id="div_kom">
+                                                        <input type="text" class="form-control dv" name="do_dpp" id="do_dpp" style="text-align:right" tabindex="-1"
+                                                        
+                                                    >
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm" id="div_kom">Vendor</td>
+                                                    <td style="width: 80px">
+                                                       <div class="checkbox checkbox-info checkbox-circle">
+                                                                <input class="vendor_tarif" type="checkbox"  name="vendor_tarif">
+                                                                <label>
+                                                                    Vendor
+                                                                </label>
+                                                        </div>
+                                                    </td>
+                                                    <td colspan="2" id="div_kom">
+                                                        <input type="text" class="form-control dv" name="do_vendor" id="do_vendor" style="text-align:right" tabindex="-1"
+                                                        
+                                                    >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm; ">Jenis PPN</td>
+                                                    <td>
+                                                        <select class="form-control" name="do_jenis_ppn" id="do_jenis_ppn" onchange="setJmlPPN()">
+                                                            <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
+                                                            <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
+                                                            <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
+                                                        </select>
+                                                         <input type="hidden" name="acc_penjualan" class="form-control"  value="">
+                                                    </td>
+                                                    <td style="width:35%">
+                                                        <input type="text" class="form-control jml_ppn" name="do_jml_ppn" readonly="readonly" tabindex="-1" style="text-align:right">
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm" id="div_kom">Total</td>
+                                                    <td colspan="2" id="div_kom">
+                                                        <input type="text" class="form-control" name="do_total_h" id="do_total_h" style="text-align:right" readonly="readonly" tabindex="-1">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="hidden" name="do_total_total"></td>
+                                                </tr>
+                                                <input type="hidden" name="do_total_total">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <table class="table dt-responsive nowrap table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="2" style="text-align:center">
+                                                        <h3>DATA PENGIRIM</h3>
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">Marketing</td>
+                                                    <td colspan="">
+                                                        <select class="chosen-select-width marketingpengirim"  name="do_marketing" style="width:100%">
+                                                            <option>- Pilih -</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:110px;">Company Name</td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="do_company_name_pengirim" style="text-transform: uppercase" value="">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">Nama</td>
+                                                    <td>
+                                                        <input type="text" class="form-control namapengirim" name="do_nama_pengirim" style="text-transform: uppercase" value="">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">Alamat</td>
+                                                    <td>
+                                                        <input type="text" class="form-control alamatpengirim hanyaangka" name="do_alamat_pengirim"  style="text-transform: uppercase" value="">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">Kode Pos</td>
+                                                    <td>
+                                                        <input type="text" class="form-control kodepospengirim hanyaangka" name="do_kode_pos_pengirim"  style="text-transform: uppercase" value="">
+                                                        <span id="errmsg"></span>
+                                                    </td>
+                                                </tr>
+                                                <tr>    
+                                                    <td style="width:110px; padding-top: 0.4cm">Telpon</td>
+                                                    <td>
+                                                        <input type="text" class="form-control teleponpengirim hanyaangka" name="do_telpon_pengirim"  style="text-transform: uppercase" value="">
+                                                        <span id="errmsg"></span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <table class="table dt-responsive nowrap table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="2" style="text-align:center">
+                                                        <h3>DATA PENERIMA</h3>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:110px;">Company Name</td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="do_company_name_penerima"style="text-transform: uppercase" value="">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">Nama</td>
+                                                    <td>
+                                                        <input type="text" class="form-control namapenerima replace_deskripsi" name="do_nama_penerima" style="text-transform: uppercase" value="">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">Alamat</td>
+                                                    <td>
+                                                        <input type="text" class="form-control alamarpenerima" name="do_alamat_penerima"  style="text-transform: uppercase" value="">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">Kab/Kota</td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="do_kota" readonly="readonly" tabindex="-1" requirdo style="text-transform: uppercase">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">Kecamatan</td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="do_kecamatan" readonly="readonly" tabindex="-1" requirdo style="text-transform: uppercase">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">Kode Pos</td>
+                                                    <td>
+                                                        <input type="text" class="form-control kodepospenerima hanyaangka" name="do_kode_pos_penerima"  style="text-transform: uppercase" value="">
+                                                        <span id="errmsg"></span>
+                                                    </td>
+                                                </tr>
+                                                <tr>    
+                                                    <td style="width:110px; padding-top: 0.4cm">Telpon</td>
+                                                    <td>
+                                                        <input type="text" class="form-control teleponpenerima hanyaangka" name="do_telpon_penerima"  style="text-transform: uppercase" value="">
+                                                        <span id="errmsg"></span>
+                                                    </td>
+                                                </tr>
+                                                <tr>    
+                                                    <td style="width:110px; padding-top: 0.4cm">Deskripsi</td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="do_deskripsi"  style="text-transform: uppercase" value="">
+                                                    </td>
+                                                </tr>
+                                                <tr>    
+                                                    <td style="width:110px; padding-top: 0.4cm">Instruksi</td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="do_instruksi"  style="text-transform: uppercase" value="">
+                                                    </td>
+                                                </tr>
+                                                <tr style="display:none;">
+                                                    <td style="width:110px; ">Jenis Pembayaran</td>
+                                                    <td colspan="5">
+                                                        <select class="form-control" name="do_jenis_pembayaran"  >
+                                                            <option value="">- Pilih -</option>
+                                                            <option value="CASH">CASH</option>
+                                                            <option value="KRdoIT">KRdoIT</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i> Simpan</button>
+                                        <button type="button" class="btn btn-success " onclick="cetak()"><i class="glyphicon glyphicon-print "></i> Cetak</button>
+                                        <button type="button" class="btn btn-success " id="btnsimpan_tambah" name="btnsimpan_tambah" ><i class="glyphicon glyphicon-save"></i> Simpan & Tambah Baru</button>
+                                    </div>
+
+                                    
+                                </div>
+                            </form>
+                        </div>
+                        <!--TIPE PENDAPATAN PAKET-->
+                        <!-- modal dokumen-->
+                        <div id="modal_dokumen" class="modal" >
+                            <div class="modal-dialog modal-lg">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                  <h4 class="modal-title">Insert doit Delivery Order Cabang</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="form-horizontal kirim_detail">
+                                        <table id="table_data" class="table table-stripdo table-borderdo table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="width:120px; padding-top: 0.4cm">No Sales Order</td>
+                                                    <td colspan="5">
+                                                        <div class="input-group" style="width : 100%">
+                                                            <input  type="text" class="form-control" name="do_so" readonly="readonly" tabindex="-1"> <span class="input-group-btn"> <button type="button" id="btn_pilih_so" class="btn btn-primary">Search
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:120px; padding-top: 0.4cm">Item</td>
+                                                    <td colspan="5">
+                                                        <div class="input-group" style="width : 100%">
+                                                            <input  type="text" class="form-control" name="do_item" disabldo="disabldo"> <span class="input-group-btn"> <button type="button" id="btn_pilih_item" class="btn btn-primary">Search
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr id="kargo">
+                                                    <td style="width:120px; padding-top: 0.4cm">Jenis Kendaraan</td>
+                                                    <td>
+                                                        <select class="select2_single form-control"  name="do_angkutan" id="do_angkutan" style="width: 100% !important;" disabldo="disabldo">
+                                                            <option value="">- Pilih -</option>
+
+                                                        </select>
+                                                    </td>
+
+                                                    <td style="padding-top: 0.4cm">No Surat Jalan</td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="do_surat_jalan" style="text-transform: uppercase">
+                                                    </td>
+                                                    <td style="padding-top: 0.4cm">Nopol</td>
+                                                    <td>
+                                                        <select class="chosen-select-width"  name="do_nopol" style="width:100%">
+                                                            <option value="">- Pilih -</option>
+
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr id="dimensi">
+                                                    <td style="padding-top: 0.4cm">Panjang</td>
+                                                    <td><input type="text" class="form-control" name="do_panjang" style="text-align:right"></td>
+                                                    <td style="padding-top: 0.4cm">Lebar</td>
+                                                    <td><input type="text" class="form-control" name="do_lebar" style="text-align:right"></td>
+                                                    <td style="padding-top: 0.4cm">Tinggi</td>
+                                                    <td><input type="text" class="form-control" name="do_tinggi" style="text-align:right"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm">Jumlah</td>
+                                                    <td><input type="text" class="form-control" name="do_jumlah" id="do_jumlah" style="text-align:right"></td>
+                                                    <td style="padding-top: 0.4cm">Satuan</td>
+                                                    <td colspan="3"><input type="text" class="form-control" id="dosatuan" name="do_satuan" readonly="readonly" tabindex="-1"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm">Harga</td>
+                                                    <td><input type="text" class="form-control" name="do_harga" style="text-align:right"></td>
+                                                    <td style="padding-top: 0.4cm; width: 105px">Biaya Penerus</td>
+                                                    <td colspan="3"><input type="text" class="form-control" name="do_biaya_penerus" style="text-align:right" ></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm">Discount</td>
+                                                    <td><input type="text" class="form-control" name="do_diskon" style="text-align:right"></td>
+                                                    <td style="padding-top: 0.4cm">Total</td>
+                                                    <td colspan="3"><input type="text" class="form-control" name="do_total_harga" style="text-align:right" readonly="readonly" tabindex="-1" ></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm">Keterangan</td>
+                                                    <td colspan="5"><textarea class="form-control" rows="3" name="do_keterangan" id="do_keterangan"  style="text-transform: uppercase"></textarea></td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" id="btnsave">Save changes</button>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="box-body" style="display:none">
+                    <table id="table_data_detail" class="table table-borderdo table-stripdo">
+                        <thead>
+                            <tr>
+                                <th> No SO</th>
+                                <th> Kode Item</th>
+                                <th> Nama Item </th>
+                                <th> Keterangan </th>
+                                <th> Qty </th>
+                                <th> Satuan </th>
+                                <th> Ttl Harga </th>
+                                <th> Aksi </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div><!-- /.box-body -->
+                <div class="box-footer">
+                  <div class="pull-right">
+
+
+
+
+
+                    </div>
+                  </div><!-- /.box-footer -->
+              </div><!-- /.box -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@endsection
+@section('extra_scripts')
+<script type="text/javascript">
+
+//SEMUNYIKAN BEBERAPA FIELD
+    $(document).ready( function () {
+        $("#surat_jalan").hide();
+        $("#dimensi").hide();
+        $("#nopol").hide();
+        $("#koli").hide();
+        $("#berat").hide();
+        $("#jenis_kendaraan").hide();
+        $("#komisi").hide();
+        $("#jml_unit").hide();
+        $(".jenis_unit").hide();
+    });
+
+
+//CARI NOMOR DO
+    $('#do_cabang').change(function(){
+
+        var cabang_this = $(this).val();
+        var tanggal_this = $('#do_tanggal').val();
+
+        $.ajax({
+           url:('{{ route('cari_nomor_deliveryorder_paket') }}'),
+           type:'get',
+           data:{a:cabang_this,b:tanggal_this},
+           success:function(response){
+            console.log(response);
+                if ($('#do_nomor').val() == '') {
+                    $('#do_nomor').val(response.nomor);
+                }else{
+                    var rep = $('#do_nomor').val();
+                    var rep_nom = rep.substr(0,3);
+                        if (rep_nom == 'PAK') {
+                            $('#do_nomor').val(response.nomor);
+                        }else{
+                        }
+                }
+           }
+        })
+    })
+
+//------- FUNGSI KETIKA MERUBAH ASAL/TUJUAN UNCHECK VENDOR -------//
+
+//CARI KECAMATAN
+    function getKecamatan() {
+        $('#do_kecamatan_tujuan').append('<option value="">- Pilih -</option>').trigger('chosen:updated');
+
+        var kot = $('#do_kota_tujuan').find(':selected').val();
+        $('.cek_vendor_ya').prop("checked",false);
+        $.ajax({
+            type: "GET",
+            data : {a:kot},
+            url : ('{{ route('cari_kecamatan_deliveryorder_paket') }}'),
+            dataType:'json',
+            success: function(data)
+            {   
+                 console.log(data);
+                 for (var i = 0; i < data.length; i++) {
+                    $('#do_kecamatan_tujuan').append('<option value="'+data[i].id+'">'+data[i].nama+'</option>').trigger('chosen:updated');
+                 }
+                             
+            }
+        })
+    }
+//RUBAH KOLOM ASAL KOTA
+    function asal() {
+        $('.cek_vendor_ya').prop("checked",false);
+    }
+//CLOSE MODAL VENDOR
+    function close_vendor() {
+        $('.cek_vendor_ya').prop("checked",false);
+    }
+
+//----------------------- FUNFSI BERAKIR ------------------------//
+
+//CARI TYPE KIRIMAN
+    $('#type_kiriman').change(function(){
+       type_kiriman=$(this).val();
+            if ( type_kiriman =='DOKUMEN') {
+                $("#surat_jalan").hide();
+                $("#dimensi").hide();
+                $("#nopol").hide();
+                $("#koli").hide();
+                $("#berat").hide();
+                $("#jenis_kendaraan").hide();
+                $("#jml_unit").hide();
+                $('#tr_jenis_kiriman').show();
+                $(".jenis_unit").hide();
+            }else if ( type_kiriman =='KARGO PAKET') {
+                $("#surat_jalan").show();
+                $("#dimensi").hide();
+                $("#nopol").show();
+                $("#koli").hide();
+                $("#berat").hide();
+                $("#jenis_kendaraan").show();
+                $("#jml_unit").hide();
+                $('#tr_jenis_kiriman').show();
+                $(".jenis_unit").hide();
+            }else if ( type_kiriman =='KILOGRAM') {
+                $("#surat_jalan").hide();
+                $("#dimensi").show();
+                $("#nopol").hide();
+                $("#koli").show();
+                $("#berat").show();
+                $("#jenis_kendaraan").hide();
+                $("#jml_unit").hide();
+                $('#tr_jenis_kiriman').show();
+                $(".jenis_unit").hide();
+            }else if ( type_kiriman =='KOLI') {
+                $("#surat_jalan").hide();
+                $("#dimensi").hide();
+                $("#nopol").hide();
+                $("#koli").show();
+                $("#berat").show();
+                $("#jenis_kendaraan").hide();
+                $("#jml_unit").hide();
+                $('#tr_jenis_kiriman').show();
+                $(".jenis_unit").hide();
+            }else if ( type_kiriman =='SEPdoA') {
+                $("#surat_jalan").hide();
+                $("#dimensi").hide();
+                $("#nopol").hide();
+                $("#koli").hide();
+                $("#berat").hide();
+                $("#jenis_kendaraan").hide();
+                $("#jml_unit").show();
+                $(".jenis_unit").show();
+                $("#tr_jenis_kiriman").hide();
+            }else if ( type_kiriman =='KERTAS') {
+                $("#surat_jalan").show();
+                $("#dimensi").hide();
+                $("#nopol").show();
+                $("#koli").hide();
+                $("#berat").show();
+                $("#jenis_kendaraan").hide();
+                $("#jml_unit").hide();
+                $('#tr_jenis_kiriman').show();
+                $(".jenis_unit").hide();
+            }else if ( type_kiriman =='KARGO KERTAS') {
+                $("#surat_jalan").show();
+                $("#dimensi").hide();
+                $("#nopol").show();
+                $("#koli").hide();
+                $("#berat").hide();
+                $("#jenis_kendaraan").show();
+                $('#tr_jenis_kiriman').show();
+                $("#jml_unit").hide();
+                $(".jenis_unit").hide();
+            }else if (type_kiriman ==''){
+                $("#surat_jalan").hide();
+                $("#dimensi").hide();
+                $("#nopol").hide();
+                $("#koli").hide();
+                $("#berat").hide();
+                $("#jenis_kendaraan").hide();
+                $("#do_biaya_komisi").hide();
+                $("#jml_unit").hide();
+                $(".jenis_unit").hide();
+            }
+    });
+
+
+//HITUNG
+function hitung() {
+    //FIELD
+    var jenis_ppn = $("select[name='do_jenis_ppn']").val();
+    var tarif_dasar = $("input[name='do_tarif_dasar']").val();
+    var total  = parseFloat(tarif_dasar);
+
+    var ppn  = 0;
+    if (jenis_ppn == 1) {
+        ppn =parseFloat(total) * parseFloat(0.1);
+        total = total + ppn;
+    }else if (jenis_ppn == 2) {
+        ppn =parseFloat(total) * parseFloat(0.01);
+        total = total + ppn;
+    }else if (jenis_ppn == 4) {
+        ppn =0;
+    }else if (jenis_ppn == 3) {
+        ppn =parseFloat(total) / parseFloat(100.1);
+        //total = total - ppn;
+    }else if (jenis_ppn == 5) {
+        ppn =parseFloat(total) / parseFloat(10.1);
+        total = total - ppn;
+    }
+    console.log(ppn);
+    $("input[name='do_jml_ppn']").val(accounting.formatMoney(ppn,"",0,'.',','));
+
+}
+
+
+//CEK VENDOR 
+    $(".cek_vendor_ya").click(function() {
+        if ($('#do_kota_asal').val() == '' || $('#do_kota_tujuan').val() == '') {
+            toastr.warning('Kota Asal / Kota Tujuan Tidak Boleh Kosong!!');
+            $('.cek_vendor_ya').prop("checked",false);
+        }else{
+            var asal = $('#do_kota_asal').find(':selected').val();
+            var tujuan = $('#do_kota_tujuan').find(':selected').val();
+
+            if ($('.cek_vendor_ya').is(":checked") == true) {
+                $.ajax({
+                type: "GET",
+                data : {a:asal,b:tujuan},
+                url : ('{{ route('cari_vendor_deliveryorder_paket') }}'),
+                success: function(data){   
+                    $('#drop').html(data);
+                    $("#modal_vendor").modal("show");
+                    $('#datatable').DataTable();
+                }})
+            }else{
+                console.log('b');
+            }
+        }
+    });
+    
+//CEK OUTLET / CEK KOMISI
+    $("#do_outlet").change(function() {
+        if ($(this).val() == 'NON OUTLET' || $(this).val() == '') {
+            $('#komisi').hide();
+        }else{
+            $('#komisi').show();
+        }     
+    });
+//PILIH VENDOR
+ function Pilih_vendor(a){
+        var id_vendor = $(a).find('.id_vendor').val();
+
+         $.ajax({
+            data: {a:id_vendor},
+            url:('{{ route('replace_vendor_deliveryorder_paket') }}'),
+            type:'get',
+            success:function(data){
+                console.log(data);
+                $("#modal_vendor").modal("hide");
+                $("input[name='do_tarif_dasar']").val(accounting.formatMoney(data[0].tarif_vendor,"",0,'.',','));
+                hitung();
+            }
+        });
+        
+    }
+    
+//set ppn
+    function setJmlPPN(){
+
+    }
+</script>
+@endsection
