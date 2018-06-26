@@ -951,8 +951,10 @@
       variable = jnsitem.split(",");
       jenisitem = variable[0];
       penerimaan = variable[1];
+      kodestock = variable[1];
       $('.penerimaan').val(penerimaan);
-    
+      
+
       if(jenisitem == ''){
         toastr.info('Harap pilih Group Item terlebih dahulu :)');
           $('#updatestock option').prop('selected', function(){
@@ -1216,6 +1218,28 @@
 
        $('select[name*="idbarang"] option').attr('disabled' , false);
 
+         jnsitem = $('.jenisitem').val();
+          variable = jnsitem.split(",");
+       
+          kodestock = variable[1];
+
+
+         $.ajax({
+            type : "get",
+            data  : {kodestock},
+            url : baseUrl + "/fakturpembelian/datagroupitem",
+            dataType : "json",
+            success : function(response){
+             
+            
+              for(i = 0; i < response.countgroupitem; i++){
+              //  console.log(response.groupitem[i].kode_jenisitem+','+response.groupitem[i].stock);
+                 $('#selectgroup option[value="'+response.groupitem[i].kode_jenisitem+','+response.groupitem[i].stock+'"]').remove();
+              }
+
+              /*$('#selectgroup option[value="J,T"]').remove();*/
+            }
+          })
 
       var jnsitem = $('.jenisitem').val();
       var variable = jnsitem.split(",");

@@ -96,7 +96,52 @@
     </div>
 </div>
 
-
+<div class="modal modal_jurnal fade" id="modal_pajak" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Faktur Pajak</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+          <table class="table table_pajak">
+              <tr>
+                  <td>Nomor Pajak</td>
+                  <td>
+                    <input type="text" class="form-control" name="nomor_pajak">
+                    <input type="hidden" class="form-control invoice" name="invoice">
+                </td>
+              </tr>
+              <tr>
+                <td>PDF (max 1MB)</td>
+                <td>
+                  <div class="file-upload">
+                    <div class="file-select">
+                      <div class="file-select-name" id="noFile">Choose Image...</div> 
+                      <input type="file" name="image" onchange="loadFile(event)" id="chooseFile">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Preview</td>
+                <td align="left">
+                  <div class="preview_td">
+                      <img style="width: 150px;height: 200px;border:1px solid pink" id="output" >
+                  </div>
+                </td>
+              </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary save_pajak" data-dismiss="modal">Save Pajak</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="row" style="padding-bottom: 50px;"></div>
 
@@ -143,7 +188,7 @@
             { "data": "tagihan" },
             { "data": "sisa"},
             { "data": "i_keterangan" },
-            { "data": "i_faktur_pajak" },
+            { "data": "faktur_pajak" },
             { "data": "status" },
             { "data": "aksi" },
             
@@ -221,6 +266,89 @@
     });
 }
 
+function faktur_pajak(nomor) {
+    $('.invoice').val(nomor);
+    $('#modal_pajak').modal('show');
+}
 
+
+
+$('#chooseFile').bind('change', function () {
+  var filename = $("#chooseFile").val();
+  var fsize = $('#chooseFile')[0].files[0].size;
+  if(fsize>1048576) //do something if file size more than 1 mb (1048576)
+  {
+      return false;
+  }
+  if (/^\s*$/.test(filename)) {
+    $(".file-upload").removeClass('active');
+    $("#noFile").text("No file chosen..."); 
+  }
+  else {
+    $(".file-upload").addClass('active');
+    $("#noFile").text(filename.replace("C:\\fakepath\\", "")); 
+  }
+});
+
+var loadFile = function(event) {
+  var fsize = $('#chooseFile')[0].files[0].size;
+  if(fsize>1048576) //do something if file size more than 1 mb (1048576)
+  {
+      iziToast.warning({
+        icon: 'fa fa-times',
+        message: 'File Is To Big!',
+      });
+      return false;
+  }
+  var reader = new FileReader();
+  reader.onload = function(){
+    var output = document.getElementById('output');
+    output.src = reader.result;
+  };
+  reader.readAsDataURL(event.target.files[0]);
+};
+
+$('.save_pajak').click(function(){
+
+
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    var formdata = new FormData();  
+    formdata.append( 'files', $('#chooseFile')[0].files[0]);
+       console.log(formdata);
+    $.ajax({
+          url:baseUrl + '/sales/pajak_invoice'+'?'+$('.table_pajak :input').serialize(),
+          data:formdata,
+          type:'POST',
+          dataType:'json',
+          processData: false,
+          contentType: false,
+          success:function(data){
+              swal({
+              title: "Berhasil!",
+                      type: 'success',
+                      text: "Data Berhasil Dihapus",
+                      timer: 2000,
+                      showConfirmButton: true
+                      },function(){
+                        $('.invoice').val('');
+                         
+              });
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+    });
+})
 </script>
 @endsection
