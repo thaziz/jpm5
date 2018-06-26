@@ -1473,7 +1473,7 @@ $('#btnsave2').click(function(){
     var jenis                = $('.jenis_biaya').val();
     var akun_acc_biaya       = $('.akun_acc_biaya').val();
     var keterangan_modal     = $('.keterangan_modal').val();
-
+    var total_bayar          = $('.total_bayar').val();
 
     if (jumlah_biaya_admin == '') {
         jumlah_biaya_admin = 0;
@@ -1498,6 +1498,7 @@ $('#btnsave2').click(function(){
         $(par).find('.i_kredit').val('0');
     }
     $(par).find('.i_bayar_text').val(accounting.formatMoney(angka,"",2,'.',','));
+    $(par).find('.i_bayar').val(angka);
     $(par).find('.i_bayar').val(angka);
     $(par).find('.i_akun_biaya ').val(akun_biaya);
     $(par).find('.i_keterangan ').val(keterangan_modal);
