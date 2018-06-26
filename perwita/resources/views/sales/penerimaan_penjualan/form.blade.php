@@ -1052,6 +1052,7 @@ $('#btnsave').click(function(){
                         accounting.formatMoney(response.data[i].i_sisa_akhir, "", 2, ".",',')+'<input type="hidden" class="i_sisa" name="i_sisa[]" value="'+response.data[i].i_sisa_akhir+'">',
                         '<input type="text" style="text-align:right;" readonly class="form-control i_bayar_text input-sm" value="0">'+
                         '<input type="hidden" style="text-align:right;" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="0">'+
+                        '<input type="hidden" style="text-align:right;" readonly class="form-control i_tot_bayar input-sm" name="i_tot_bayar[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_debet input-sm" name="i_debet[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_kredit input-sm" name="i_kredit[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="0">',
