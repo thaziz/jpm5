@@ -2181,7 +2181,7 @@ $('#btnsimpan').click(function(){
 
           $.ajax({
           url:baseUrl + '/sales/simpan_kwitansi',
-          type:'post',
+          type:'get',
           dataType:'json',
           data:$('.tabel_header :input').serialize()
                +'&'+table_data.$('input').serialize()

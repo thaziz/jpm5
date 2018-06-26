@@ -81,16 +81,20 @@ class penerimaan_penjualan_Controller extends Controller
         $customer = DB::select(" SELECT kode,nama,cabang FROM customer ORDER BY nama ASC ");
         $akun = DB::table('d_akun')
                   ->get();
-
+        $akun = ['B2','B3'];
         $akun_biaya = DB::table('akun_biaya')
+                  // ->whereIn('kode',$akun)
                   ->get();
 
+        $akun_biaya_all = DB::table('akun_biaya')
+                  ->whereNotIn('kode',$akun)
+                  ->get();
         $akun_bank = DB::table('masterbank')
                   ->get();
 
         $tgl  = Carbon::now()->format('d/m/Y');
        
-        return view('sales.penerimaan_penjualan.form',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','kas_bank','akun','tgl','akun_biaya','akun_bank' ));
+        return view('sales.penerimaan_penjualan.form',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','kas_bank','akun','tgl','akun_biaya','akun_bank','akun_biaya_all'));
     }
 
 
@@ -126,8 +130,8 @@ class penerimaan_penjualan_Controller extends Controller
 
         $cari_nota = DB::select("SELECT  substring(max(k_nomor),11) as id from kwitansi
                                         WHERE k_kode_cabang = '$request->cabang'
-                                        AND to_char(k_tanggal,'MM') = '$bulan'
-                                        AND to_char(k_tanggal,'YY') = '$tahun'");
+                                        AND to_char(k_create_at,'MM') = '$bulan'
+                                        AND to_char(k_create_at,'YY') = '$tahun'");
         $index = (integer)$cari_nota[0]->id + 1;
         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
         $nota = 'KWT' . $request->cabang . $bulan . $tahun . $index;
@@ -143,8 +147,8 @@ class penerimaan_penjualan_Controller extends Controller
 
             $cari_nota = DB::select("SELECT  substring(max(k_nomor),11) as id from kwitansi
                                             WHERE k_kode_cabang = '$request->cabang'
-                                            AND to_char(k_tanggal,'MM') = '$bulan'
-                                            AND to_char(k_tanggal,'YY') = '$tahun'");
+                                            AND to_char(k_create_at,'MM') = '$bulan'
+                                            AND to_char(k_create_at,'YY') = '$tahun'");
             $index = (integer)$cari_nota[0]->id + 1;
             $index = str_pad($index, 5, '0', STR_PAD_LEFT);
             $nota = 'CRU' . $request->cabang . $bulan . $tahun . $index;
@@ -200,7 +204,17 @@ class penerimaan_penjualan_Controller extends Controller
         // return $request->customer;
 
       // dd($request->all());
-       $temp_1  = DB::table('invoice')
+      if ($request->cabang == '000') {
+        $temp_1  = DB::table('invoice')
+                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->where('i_kode_customer',$request->customer)
+                  ->where('i_sisa_akhir','!=',0)
+                  // ->where('i_kode_cabang',$request->cabang)
+                  ->where('i_pendapatan',$request->jenis_tarif)
+                  ->orWhere('k_nomor',$request->id)
+                  ->get();
+      }else{
+        $temp_1  = DB::table('invoice')
                   ->leftjoin('kwitansi','k_nomor','=','i_nomor')
                   ->where('i_kode_customer',$request->customer)
                   ->where('i_sisa_akhir','!=',0)
@@ -208,6 +222,8 @@ class penerimaan_penjualan_Controller extends Controller
                   ->where('i_pendapatan',$request->jenis_tarif)
                   ->orWhere('k_nomor',$request->id)
                   ->get();
+      }
+       
 
         if (isset($request->array_edit)) {
             $temp_2  = DB::table('invoice')
@@ -367,7 +383,7 @@ class penerimaan_penjualan_Controller extends Controller
     public function simpan_kwitansi(request $request)
     {
         return DB::transaction(function() use ($request) {  
-            // dd($request->all());
+            dd($request->all());
         $tgl = str_replace('/', '-', $request->ed_tanggal);
         $tgl = Carbon::parse($tgl)->format('Y-m-d');
 
