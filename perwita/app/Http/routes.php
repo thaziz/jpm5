@@ -79,7 +79,7 @@ Route::post('setting/hak_akses/edit_hak_akses', 'setting\hak_akses_Controller@ed
 
 //***PEMBELIAN
 //***PEMBELIAN
-Route::get('tes' , 'sales\invoice_Controller@index');
+// Route::get('tes' , 'sales\invoice_Controller@index');
 
 
 Route::get('suratpermintaanpembelian' , 'PurchaseController@spp_index');
@@ -1471,6 +1471,7 @@ Route::get('sales/surat_jalan_trayek_form/{nomor}/nota', 'sales\surat_jalan_tray
 
 //invoice penjualan
 Route::get('sales/invoice', 'sales\invoice_Controller@index');
+Route::post('sales/pajak_invoice', 'sales\invoice_Controller@pajak_invoice');
 Route::get('sales/invoice_form', 'sales\invoice_Controller@form');
 Route::get('sales/nota_invoice', 'sales\invoice_Controller@nota_invoice');
 Route::get('sales/cari_do_invoice', 'sales\invoice_Controller@cari_do_invoice');

@@ -12,8 +12,9 @@ use App\d_jurnal_dt;
 use Carbon\Carbon;
 use Auth;
 use Yajra\Datatables\Datatables;
-
-
+// use Intervention\Image\ImageManagerStatic as Image;
+use File;
+use Illuminate\Support\Facades\Storage;
 class invoice_Controller extends Controller
 {
     public function table_data_detail (Request $request) {
@@ -94,6 +95,9 @@ class invoice_Controller extends Controller
                                 return $kota[$i]->nama;
                             }
                           }
+                        })
+                        ->addColumn('faktur_pajak', function ($data) {
+                          return '<button class="btn btn-primary" onclick="faktur_pajak(\''.$data->i_nomor.'\')">Tambah Faktur Pajak</button>';
                         })
                         ->addColumn('cabang', function ($data) {
                           $kota = DB::table('cabang')
@@ -817,20 +821,11 @@ public function simpan_invoice(request $request)
               if ($request->cb_jenis_ppn != 4) {
                 // MENAMBAH TOTAL TAGIHAN DAN MENGURANGI TOTAL TAGIHAN
                 if ($ppn_type == 'npkp') {
-                  $temp = [$tot_own,$tot_vendor];
-                  $hasil = array_search(0, $temp);
-
-                  if ($hasil == false) {
-                    $total_ppn = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/2;
-                    $tot_own -=$total_ppn;
-                    $tot_vendor -=$total_ppn;
-                  }elseif ($hasil == 0) {
-                    $total_ppn  = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100);
-                    $tot_vendor = $tot_vendor - $total_ppn;
-                  }elseif ($hasil == 1) {
-                    $total_ppn  = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100);
-                    $tot_own = $tot_own - $total_ppn;
-                  }
+ 
+                    $tot_own1 = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/$request->netto_detail * $tot_own;
+                    $tot_vendor1 = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/$request->netto_detail * $tot_vendor;
+                    $tot_own -= $tot_own1;
+                    $tot_vendor -= $tot_vendor1;
                 }
                   // dd($total_tagihan);
 
@@ -992,21 +987,14 @@ public function simpan_invoice(request $request)
               $akun_val = [];
               if ($request->cb_jenis_ppn != 4) {
                 // MENAMBAH TOTAL TAGIHAN DAN MENGURANGI TOTAL TAGIHAN
+        
                 if ($ppn_type == 'npkp') {
-                  $temp = [$tot_own,$tot_subcon];
-                  $hasil = array_search(0, $temp);
-
-                  if ($hasil == false) {
-                    $total_ppn = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/2;
-                    $tot_own -=$total_ppn;
-                    $tot_subcon -=$total_ppn;
-                  }elseif ($hasil == 0) {
-                    $total_ppn  = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100);
-                    $tot_subcon = $tot_subcon - $total_ppn;
-                  }elseif ($hasil == 1) {
-                    $total_ppn  = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100);
-                    $tot_own = $tot_own - $total_ppn;
-                  }
+       
+                  $tot_own1 = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/$request->netto_detail * $tot_own;
+                  $tot_subcon1 = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/$request->netto_detail * $tot_subcon1;
+                  $tot_own -= $tot_own1;
+                  $tot_subcon -= $tot_subcon1;
+    
                 }
                   // dd($total_tagihan);
 
@@ -1405,9 +1393,8 @@ public function simpan_invoice(request $request)
           // MENAMBAH TOTAL TAGIHAN DAN MENGURANGI TOTAL TAGIHAN
           if ($ppn_type == 'npkp') {
             for ($i=0; $i < count($pendapatan_koran); $i++) { 
-              $pembagi = count($pendapatan_koran);
-              $total_ppn = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/$pembagi;
-              $harga_koran[$i]-=$total_ppn;
+              $harga_koran1 = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/$request->netto_detail * $harga_koran[$i];
+              $harga_koran[$i] -= $harga_koran1;
             }
           }
           // PIUTANG
@@ -1971,4 +1958,39 @@ public function update_invoice(request $request)
 
       return view('purchase.buktikaskeluar.jurnal',compact('data','d','k'));
     }
+
+
+    public function pajak_invoice(request $request)
+    {
+      // dd($request->file('files'));
+
+
+      $file = $request->file('files');
+      $id = $request->invoice;
+      if ($file != null) {
+
+        $file_name = 'pajak'.'_' . $id . '.' . $file->getClientOriginalExtension();
+
+        if (!is_dir(storage_path('uploads/invoice/'))) {
+          mkdir(storage_path('uploads/invoice/'), 0777, true);
+        }
+
+        $path = storage_path('uploads/invoice');
+        // return $original_path;
+        // Image::make($file)
+        //         ->resize(261,null,function ($constraint) {
+        //           $constraint->aspectRatio();
+        //            })
+        //         ->save($original_path . $file_name)
+        //         ->resize(90, 90)
+        //         ->save($thumbnail_path . $file_name);
+
+        Storage::putFileAs('photos', new File($path), 'pajak_'.$request->nomor_pajak.'.'.'jpg');
+
+        $user = DB::table('invoice')->where('nomor',$id)->update(['i_image_pajak' => $file_name,'i_faktur_pajak'=>$request->nomor_pajak]);
+
+        return response()->json(['status'=>1]);
+      }
+    }
+
 }
