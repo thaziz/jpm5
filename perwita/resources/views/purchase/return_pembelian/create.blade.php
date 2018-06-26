@@ -156,7 +156,7 @@
                                   
                                    <tr>
                                   <td> Sub Total </td>
-                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm subtotal" name="subtotal" readonly=""> </div></td>
+                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm subtotal" name="subtotal" readonly=""> <input type='hidden' class='subtotal2'> </div></td>
                               </tr>
 
                               <tr>
@@ -181,7 +181,7 @@
                               </tr>
                               <tr>
                                   <td> Total </td>
-                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm total" name="total" readonly=""></div> </td>
+                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm total" name="total" readonly=""> <input type='hidden' class="total2">  </div> </td>
                               </tr>
                               </table>
                               </div>
@@ -593,6 +593,7 @@
               $('#myModal5').modal('toggle');
               $('.nopo').val(response.po[0].po_no);
               $('.subtotal').val(addCommas(response.po[0].po_subtotal));
+              $('.subtotal2').val(addCommas(response.po[0].po_subtotal));
               $('.idpo').val(response.po[0].po_id);
               $('.jenisppn').val(response.po[0].po_jenisppn);
 
@@ -605,6 +606,7 @@
                 $('.hasilppn').val(addCommas(response.po[0].po_hasilppn));
               }
               $('.total').val(addCommas(response.po[0].po_totalharga));
+              $('.total2').val(addCommas(response.po[0].po_totalharga));
 
 
                 var tablebarang = $('#table-barang').DataTable();
@@ -619,10 +621,10 @@
                             "<td>"+table2[i].podt_qtykirim+"<input type='hidden' class='qtykirim"+nmrbnk+"' value='"+table2[i].podt_qtykirim+"' name='qtypo[]'> </td>" +
                             "<td> <input type='number' class='form-control input-sm  qtyreturn qtyreturn"+nmrbnk+"' data-id='"+nmrbnk+"' name='qtyreturn[]' style='width:70px' required value='0'></td>" +
                             "<td > <input type='text' class='form-control input-sm jumlahharga"+nmrbnk+"' value="+addCommas(table2[i].podt_jumlahharga)+" readonly name='jumlahharga[]'> </td>" +
-                            "<td> <input type='text' class='form-control input-sm totalharga"+nmrbnk+"' value="+addCommas(table2[i].podt_totalharga)+" readonly name='totalharga[]' style='width:150px'> <input type='hidden' class='minusharga minusharga"+nmrbnk+"' style='width:150px'> <input type='hidden' value='"+table2[i].podt_lokasigudang+"' name='lokasigudang[]'> </td>" + 
+                            "<td> <input type='text' class='form-control input-sm totalharga totalharga"+nmrbnk+"' value="+addCommas(table2[i].podt_totalharga)+" readonly name='totalharga[]' style='width:150px'> <input type='hidden' class='minusharga minusharga"+nmrbnk+"' style='width:150px'> <input type='hidden' value='"+table2[i].podt_lokasigudang+"' name='lokasigudang[]'> </td>" + 
                             "<td> <input type='number' class='form-control input-sm  qtyterima qtyterima"+nmrbnk+"' data-id='"+nmrbnk+"' name='qtyterima[]' style='width:70px' required value='0'></td>" + //qtyterima
                             "<td style='width:80px'> <input type='text' class='form-control input-sm jumlahhargaterima jumlahhargaterima"+nmrbnk+"' name='jumlahhargaterima[]' data-id='"+nmrbnk+"' style='width:150px' value='0.00'> </td>" + //jumlahharga terima
-                            "<td > <input type='text' class='form-control input-sm totalhargaterima"+nmrbnk+"'  name='totalhargaterima[]' readonly style='width:150px' value='0.00'> <input type='hidden' name='akunitem[]' value='"+table2[i].podt_akunitem+"'>"+   //totalhargaterima
+                            "<td > <input type='text' class='form-control input-sm totalhargaterima totalhargaterima"+nmrbnk+"'  name='totalhargaterima[]' readonly style='width:150px' value='0.00'> <input type='hidden' name='akunitem[]' value='"+table2[i].podt_akunitem+"'>"+   //totalhargaterima
                             "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+nmrbnk+"' type='button'><i class='fa fa-trash'></i></button> </td>" +
                            "</tr>";
                           
@@ -630,13 +632,20 @@
                       nmrbnk++;                                        
                  } 
 
+                $('.qtyreturn').focus(function(){
+                  $(this).select();
+                })
+
                 $('.qtyreturn').each(function(){
                   $(this).keyup(function(){
+
+                 //   $(this).select();
                     dataid = $(this).data('id');
                     qty = $(this).val();
                     qtykirim = $('.qtykirim' + dataid).val();
 
                     if(qty == ''){
+                  //    alert('as');
                       $(this).val('0');
                       return false;
                     }
@@ -664,29 +673,40 @@
                       inputppn = response.po[0].po_ppn;
                       hasilppn = response.po[0].po_hasilppn;
                       totalharga =$('.total').val(addCommas(response.po[0].po_totalharga));
-                      hasilminus = 0;
-                      $('.minusharga').each(function(){
-                        valminus2 = $(this).val();
+                      hasiltotalharga = 0;
+                      $('.totalharga').each(function(){
+                        valharga2 = $(this).val();
+                      //  alert(valharga2);
                         //alert(valminus2);
-                        if(valminus2 != ''){
-                          valminus = valminus2.replace(/,/g, ''); 
+                        if(valharga2 != ''){
+                          valharga = valharga2.replace(/,/g, ''); 
                          // alert(valminus);
-                          hasilminus = parseFloat(parseFloat(hasilminus) + parseFloat(valminus)).toFixed(2);
+                          hasiltotalharga = parseFloat(parseFloat(hasiltotalharga) + parseFloat(valharga)).toFixed(2);
                           // alert(subtotal);   
                          // alert(valminus); 
-                         
-                          // alert(hargasubtotal);
                         }
-
                       })
-                     // alert(hasilminus);
-                      hargasubtotal = parseFloat(parseFloat(subtotal) - parseFloat(hasilminus)).toFixed(2);
+
+                    totalhargaterimafix = 0;
+                    $('.totalhargaterima').each(function(){
+                      val2 = $(this).val();
+                      val =val2.replace(/,/g, '');
+
+
+                      totalhargaterimafix = (parseFloat(totalhargaterimafix) + parseFloat(val)).toFixed(2);
+                    })
+                   // alert(hasiltotalharga);
+                  //    hargasubtotal = $('.subtotal').val(addCommas(hasiltotalharga));
+                    
+                    hasilsub = (parseFloat(hasiltotalharga) + parseFloat(totalhargaterimafix)).toFixed(2);
                     //  alert(hargasubtotal);
-                      $('.subtotal').val(addCommas(hargasubtotal));
-                      $('.total').val(addCommas(hargasubtotal));
+
+                    $('.subtotal').val(addCommas(hasilsub));
+                    
                       subtotal3 = $('.subtotal').val();
                       subtotal2 =   subtotal3.replace(/,/g, ''); 
                       if(jenisppn != 'T'){
+                      //  alert('ha');
                           if(jenisppn == 'E'){
                 
                             hargappn = parseFloat(inputppn * parseFloat(subtotal2) / 100);
@@ -717,6 +737,9 @@
                              $('.total').val(addCommas(subtotal));
                           }
                         }
+                        else {
+                            $('.total').val(addCommas(hasilsub));
+                        }
                        
                   })
                 })
@@ -742,7 +765,10 @@
 
                   })
                 })
-*/
+*/      
+
+
+
 
               $('.jumlahhargaterima').each(function(){
                   
@@ -758,46 +784,36 @@
                       totalharga = (qtyterima * parseFloat(hargaitem)).toFixed(2);
                       $('.totalhargaterima' + id).val(addCommas(totalharga));
                    }
-                })
-              })
+
+                     hasiltotalharga = 0;
+                      $('.totalharga').each(function(){
+                        valharga2 = $(this).val();
+                      //  alert(valharga2);
+                        //alert(valminus2);
+                        if(valharga2 != ''){
+                          valharga = valharga2.replace(/,/g, ''); 
+                         // alert(valminus);
+                          hasiltotalharga = parseFloat(parseFloat(hasiltotalharga) + parseFloat(valharga)).toFixed(2);
+                          // alert(subtotal);   
+                         // alert(valminus); 
+                        }
+                      })
+
+                    totalhargaterimafix = 0;
+                    $('.totalhargaterima').each(function(){
+                      val2 = $(this).val();
+                      val =val2.replace(/,/g, '');
 
 
-              $('.qtyterima').each(function(){
-              
-                $(this).keyup(function(){
-                   id = $(this).data('id');
-                  qty = $(this).val();
-                  hpp = $('.jumlahhargaterima' + id).val();
+                      totalhargaterimafix = (parseFloat(totalhargaterimafix) + parseFloat(val)).toFixed(2);
+                    })
+                   // alert(hasiltotalharga);
+                  //    hargasubtotal = $('.subtotal').val(addCommas(hasiltotalharga));
+                    
+                    hasilsub = (parseFloat(hasiltotalharga) + parseFloat(totalhargaterimafix)).toFixed(2);
+                    //  alert(hargasubtotal);
 
-                   qtyreturn = $('.qtyreturn' + id).val();
-                   // val = $(this).val();
-                    if(qtyreturn == ''){
-                      toastr.info('Qty Return Belum diisi :)' );
-                      $(this).val('0');
-                      return false;
-                    }else{
-                    if(parseInt(qty) > parseInt(qtyreturn)){
-                      toastr.info("Tidak Bisa input data lebih dari qty return :)");
-                      $(this).val('0');
-                      return false;
-                    }}
-
-                    if(qty == ''){
-                      $(this).val('0');
-                      return false;
-                    }
-
-                  if(hpp != ''){
-                    hargaitem =   hpp.replace(/,/g, ''); 
-                    totalharga = (parseFloat(qty) * parseFloat(hargaitem)).toFixed(2);
-
-                    $('.totalhargaterima' + id).val(addCommas(totalharga));
-                    total2 = $('.total').val();
-                    total = total2.replace(/,/g, ''); 
-
-                    hsltotal = (parseFloat(total) + parseFloat(totalharga)).toFixed(2);
-
-                    $('.subtotal').val(addCommas(hsltotal));
+                     $('.subtotal').val(addCommas(hasilsub));
                     jenisppn = $('.jenisppn').val();
 
                      subtotal3 = $('.subtotal').val();
@@ -834,7 +850,115 @@
                           }
                         }
                         else {
-                            $('.total').val(addCommas(hsltotal));
+                            $('.total').val(addCommas(hasilsub));
+
+                        }
+                })
+              })
+
+
+
+
+              $('.qtyterima').each(function(){
+              
+                $(this).keyup(function(){
+                   id = $(this).data('id');
+                  qty = $(this).val();
+                  hpp = $('.jumlahhargaterima' + id).val();
+
+                   qtyreturn = $('.qtyreturn' + id).val();
+                   // val = $(this).val();
+                    if(qtyreturn == ''){
+                      toastr.info('Qty Return Belum diisi :)' );
+                      $(this).val('0');
+                      return false;
+                    }else{
+                    if(parseInt(qty) > parseInt(qtyreturn)){
+                      toastr.info("Tidak Bisa input data lebih dari qty return :)");
+                      $(this).val('0');
+                      return false;
+                    }}
+
+                    if(qty == ''){
+                      $(this).val('0');
+                      return false;
+                    }
+
+
+                  hasiltotal2 = $('.total2').val();
+                  hasiltotal =  hasiltotal2.replace(/,/g, '');
+                  totalhargafix = 0;
+                  $('.totalharga').each(function(){
+                    val2 = $(this).val();
+                    val =  val2.replace(/,/g, '');
+
+                    totalhargafix = (parseFloat(totalhargafix) + parseFloat(val)).toFixed(2);
+                  })
+
+
+
+                  if(hpp != ''){
+                    hargaitem =   hpp.replace(/,/g, ''); 
+                    totalharga = (parseFloat(qty) * parseFloat(hargaitem)).toFixed(2);
+
+                    $('.totalhargaterima' + id).val(addCommas(totalharga));
+                    total2 = $('.total').val();
+                    total = total2.replace(/,/g, ''); 
+
+                     totalhargaterimafix = 0;
+                    $('.totalhargaterima').each(function(){
+                      val2 = $(this).val();
+                      val =val2.replace(/,/g, '');
+
+
+                      totalhargaterimafix = (parseFloat(totalhargaterimafix) + parseFloat(val)).toFixed(2);
+                    })
+
+               //   alert(totalhargaterimafix);
+
+
+                   // hsltotal = (parseFloat(total) + parseFloat(totalharga)).toFixed(2);
+
+                    hasilsub = (parseFloat(totalhargafix) + parseFloat(totalhargaterimafix)).toFixed(2);
+
+                    $('.subtotal').val(addCommas(hasilsub));
+                    jenisppn = $('.jenisppn').val();
+
+                     subtotal3 = $('.subtotal').val();
+                     subtotal2 =   subtotal3.replace(/,/g, ''); 
+                      if(jenisppn != 'T'){
+                          if(jenisppn == 'E'){
+                
+                            hargappn = parseFloat(inputppn * parseFloat(subtotal2) / 100);
+                       
+                            $('.hasilppn').val(addCommas(hargappn));
+                            total = parseFloat(parseFloat(subtotal2) + parseFloat(hargappn));
+                           
+                            numhar = total.toFixed(2);
+                            $('.total').val(addCommas(numhar));
+                            $('.subtotal').val(addCommas(subtotal2));
+                          }
+                          else if(jenisppn == 'I'){                            
+                              hargappn = parseFloat(subtotal2 * 100) / (100 + parseFloat(inputppn) );                     
+                              hargappn2 = hargappn.toFixed(2);
+                              $('.subtotal').val(addCommas(hargappn2));
+                             // alert(subtotal2 *100);
+                             // alert(100 + parseFloat(inputppn));
+
+
+                              ppnasli = parseFloat((parseFloat(inputppn) / 100) * parseFloat(hargappn2)).toFixed(2);
+                              $('.hargappn').val(addCommas(ppnasli));
+                              hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli)).toFixed(2);
+                             // total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
+                              $('.total').val(addCommas(hasiltotal));
+                          }
+                          else {
+                             $('.subtotal').val(addCommas(subtotal));
+                             $('.total').val(addCommas(subtotal));
+                          }
+                        }
+                        else {
+                            $('.total').val(addCommas(hasilsub));
 
                         }
                   }

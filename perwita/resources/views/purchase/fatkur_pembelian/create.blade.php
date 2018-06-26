@@ -2046,6 +2046,8 @@
 
     })
 
+     
+
   //MENDAPATKAN NO FAKTUR
       cabang = $('.cabang').val();
       var a = $('ul#tabmenu').find('li.active').data('val');
