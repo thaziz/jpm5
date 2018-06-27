@@ -207,7 +207,7 @@
                       <tr>
                          <td style='text-align: right'>
                           <select class='form-control pajakpph_po edit' name="jenispph_po" disabled="">
-                            @if($faktur->fp_pph != '')
+                            @if($faktur->fp_pph != '0.00')
                               @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}'   @if($pajak->nama == $faktur->fp_jenispph) selected @endif> {{$pajak->nama}}</option> @endforeach
   
                             @else

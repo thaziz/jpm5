@@ -158,6 +158,9 @@
                     /* tarif penerus koli */
                     Request::is('sales/tarif_penerus_koli') ? 'active' : '' || 
                     Request::is('sales/tarif_penerus_koli/*') ? 'active' : '' ||
+                    /* tarif penerus vendor */
+                    Request::is('sales/tarif_vendor') ? 'active' : '' || 
+                    Request::is('sales/tarif_vendor/*') ? 'active' : '' ||
                  /*================ END OF MASTER TARIF =================*/
 
                  /*===================== MASTER DO ======================*/
@@ -431,6 +434,7 @@
                     /* tarif penerus koli */
                     Request::is('sales/tarif_penerus_koli') ? 'active' : '' || 
                     Request::is('sales/tarif_penerus_koli/*') ? 'active' : '' ||
+                    
                     /*=============== END OF MASTER TARIF ==============*/
                     /*===================== MASTER DO ======================*/
                     /* agen */
@@ -519,7 +523,10 @@
                     Request::is('sales/tarif_penerus_kilogram/*') ? 'active' : ''|| 
                     /* tarif penerus koli */
                     Request::is('sales/tarif_penerus_koli') ? 'active' : '' || 
-                    Request::is('sales/tarif_penerus_koli/*') ? 'active' : '' 
+                    Request::is('sales/tarif_penerus_koli/*') ? 'active' : '' ||
+                    /* tarif penerus vendor */
+                    Request::is('sales/tarif_vendor') ? 'active' : '' || 
+                    Request::is('sales/tarif_vendor/*') ? 'active' : '' 
                     /*=============== END OF MASTER TARIF ==============*/
 
                 }}
@@ -528,7 +535,7 @@
                        <a href="#" {{-- style="padding-left: 30%;" --}} style="font-size: 13px;">Master Tarif<span class="fa arrow"></span></a>
                        <ul class="nav nav-third-level" >
 
-                        @if(Auth::user()->PunyaAkses('Tarif Vendor','aktif'))
+                        @if(Auth::user()->PunyaAkses('Tarif Cabang Vendor','aktif'))
                         <li class="sidebar master-perusahaan">
                             <a href="{{ url('sales/tarif_vendor')}}" class="{{Request::is('sales/tarif_vendor') ? 'active' : '' ||
                          Request::is('sales/tarif_vendor/*') ? 'active' : ''}} "><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Vendor</a>
@@ -637,6 +644,21 @@
 
                         </li>
                         @endif
+
+                        {{-- @if(Auth::user()->PunyaAkses('Tarif Penerus Vendor','aktif'))
+                        <li >
+                            <a
+                        class="sidebar master-perusahaan 
+
+                        {{Request::is('sales/tarif_penerus_vendor') ? 'active' : '' ||
+                         Request::is('sales/tarif_penerus_vendor/*') ? 'active' : ''}} 
+
+
+                        " href="{{ url('sales/tarif_penerus_vendor')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus vendor</a>
+
+                        </li>
+                        @endif --}}
+
                     </ul>
                 </li>
 
@@ -1233,6 +1255,9 @@
                     /* delivery order */
                     Request::is('sales/deliveryorder') ? 'active' : '' || 
                     Request::is('sales/deliveryorder/*') ? 'active' : '' ||
+                    /* delivery order New */
+                    Request::is('sales/deliveryorder_paket') ? 'active' : '' || 
+                    Request::is('sales/deliveryorder_paket/*') ? 'active' : '' ||
                     /* Delivery order kargo */
                     Request::is('sales/deliveryorderkargo') ? 'active' : '' || 
                     Request::is('sales/deliveryorderkargo/*') ? 'active' : '' ||
@@ -1397,6 +1422,9 @@
                             /* delivery order */
                             Request::is('sales/deliveryorder') ? 'active' : '' || 
                             Request::is('sales/deliveryorder/*') ? 'active' : '' ||
+                            /* delivery order New */
+                            Request::is('sales/deliveryorder_paket') ? 'active' : '' || 
+                            Request::is('sales/deliveryorder_paket/*') ? 'active' : '' ||
                             /* Update Status order */
                             Request::is('sales/deliveryorderform') ? 'active' : '' || 
                             /* Delivery order kargo */
@@ -1442,6 +1470,8 @@
                         
                     Request::is('sales/deliveryorder') ? 'active' : '' || 
                             Request::is('sales/deliveryorder/*') ? 'active' : '' ||
+                    Request::is('sales/deliveryorder_paket') ? 'active' : '' || 
+                            Request::is('sales/deliveryorder_paket/*') ? 'active' : '' ||
                     Request::is('sales/deliveryorderkargo') ? 'active' : '' || 
                             Request::is('sales/deliveryorderkargo/*') ? 'active' : '' ||
                     Request::is('sales/deliveryorderkertas') ? 'active' : '' || 
@@ -1472,6 +1502,16 @@
                             Request::is('sales/deliveryorder/*') ? 'active' : ''}} 
 
                             " href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
+                            </li>
+                            @endif
+                            @if(Auth::user()->PunyaAkses('Delivery Order New','aktif'))
+                            <li >
+                            <a class="sidebar master-perusahaan 
+                            {{Request::is('sales/deliveryorder_paket') ? 'active' : '' || 
+                            Request::is('sales/deliveryorder_paket/create') ? 'active' : '' || 
+                            Request::is('sales/deliveryorder_paket/*') ? 'active' : ''}} 
+
+                            " href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO) New</a>
                             </li>
                             @endif
                             @if(Auth::user()->PunyaAkses('Delivery Order Kargo','aktif'))
@@ -2473,6 +2513,7 @@
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder') ? 'active' : '' || 
                                     Request::is('sales/laporandeliveryorder/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Paket</a>
                                 </li>
+                                
                                  <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder_koran') ? 'active' : '' || 
                                     Request::is('sales/laporandeliveryorder_koran/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder_koran')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Koran</a>

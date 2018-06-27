@@ -79,6 +79,7 @@ Route::post('setting/hak_akses/edit_hak_akses', 'setting\hak_akses_Controller@ed
 
 //***PEMBELIAN
 //***PEMBELIAN
+// Route::get('tes' , 'sales\invoice_Controller@index');
 
 
 Route::get('suratpermintaanpembelian' , 'PurchaseController@spp_index');
@@ -975,6 +976,9 @@ Route::get('carideliveryorder_total/carideliveryorder_total','LaporanMasterContr
   //rekap tri wulan
   Route::get('ajaxcarideliveryorder_total_rekaptriwulan/ajaxcarideliveryorder_total_rekaptriwulan','LaporanMasterController@ajaxcarideliveryorder_total_rekaptriwulan');
   //end off
+  //deial Entry
+  Route::get('ajaxcarideliveryorder_total_entry/ajaxcarideliveryorder_total_entry','LaporanMasterController@ajaxcarideliveryorder_total_entry');
+  //end off
   //deial mobil
   Route::get('ajaxcarideliveryorder_total_detailnopol/ajaxcarideliveryorder_total_detailnopol','LaporanMasterController@ajaxcarideliveryorder_total_detailnopol');
   //end off
@@ -1010,6 +1014,7 @@ Route::get('cari_lap_invoice/cari_lap_invoice','LaporanMasterController@cari_lap
 Route::post('reportinvoice/reportinvoice', 'LaporanMasterController@reportinvoice')->name('reportinvoice');
 Route::get('excelinvoice/excelinvoice', 'LaporanMasterController@excelinvoice')->name('excelinvoice');
 Route::get('carireport_invoice/carireport_invoice', 'LaporanMasterController@carireport_invoice')->name('carireport_invoice');
+Route::get('carientry_invoice/carientry_invoice', 'LaporanMasterController@carientry_invoice')->name('carientry_invoice');
 //END OF LAPORAN INVOICE
 
 //LAPORAN KWITANSI
@@ -1378,6 +1383,33 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_controller
 // Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller@tarif_penerus_sepeda_indentdo');
 //end delivery order
 
+
+
+
+
+
+
+
+
+
+//deny do baru
+
+  //index
+  Route::get('sales/deliveryorder_paket', 'do_new\do_paketController@index');
+  Route::get('sales/deliveryorder_paket/datatable_deliveryorder_paket', 'do_new\do_paketController@datatable_deliveryorder_paket')->name('datatable_deliveryorder_paket');
+  //create
+  Route::get('sales/deliveryorder_paket/create_deliveryorder_paket', 'do_new\do_paketController@create_deliveryorder_paket')->name('create_deliveryorder_paket');
+  Route::get('sales/deliveryorder_paket/cari_nomor_deliveryorder_paket', 'do_new\do_paketController@cari_nomor_deliveryorder_paket')->name('cari_nomor_deliveryorder_paket');
+    //cari kecamatan
+    Route::get('sales/deliveryorder_paket/cari_kecamatan_deliveryorder_paket', 'do_new\do_paketController@cari_kecamatan_deliveryorder_paket')->name('cari_kecamatan_deliveryorder_paket');
+    //cari vendor
+    Route::get('sales/deliveryorder_paket/cari_vendor_deliveryorder_paket', 'do_new\do_paketController@cari_vendor_deliveryorder_paket')->name('cari_vendor_deliveryorder_paket');
+    //replace vendor
+    Route::get('sales/deliveryorder_paket/replace_vendor_deliveryorder_paket', 'do_new\do_paketController@replace_vendor_deliveryorder_paket')->name('replace_vendor_deliveryorder_paket');
+
+
+
+
 // delivery order kargo
 Route::get('sales/deliveryorderkargo', 'sales\do_kargo_Controller@index');
 Route::get('sales/datatable_do_kargo', 'sales\do_kargo_Controller@datatable_do_kargo')->name('datatable_do_kargo');
@@ -1466,6 +1498,7 @@ Route::get('sales/surat_jalan_trayek_form/{nomor}/nota', 'sales\surat_jalan_tray
 
 //invoice penjualan
 Route::get('sales/invoice', 'sales\invoice_Controller@index');
+Route::post('sales/pajak_invoice', 'sales\invoice_Controller@pajak_invoice');
 Route::get('sales/invoice_form', 'sales\invoice_Controller@form');
 Route::get('sales/nota_invoice', 'sales\invoice_Controller@nota_invoice');
 Route::get('sales/cari_do_invoice', 'sales\invoice_Controller@cari_do_invoice');
@@ -2608,7 +2641,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
 
   // tarif cabang koli
   Route::get('sales/tarif_vendor', 'tarif\tarif_vendorController@index');
-  Route::get('sales/tarif_vendor/tabel', 'tarif\tarif_vendorController@table_data');
+  Route::get('sales/tarif_vendor/tabel', 'tarif\tarif_vendorController@table_data')->name('tarif_vendor_datatable');
   Route::get('sales/tarif_vendor/get_data', 'tarif\tarif_vendorController@get_data');
   Route::get('sales/tarif_vendor/save_data', 'tarif\tarif_vendorController@save_data');
   Route::get('sales/tarif_vendor/hapus_data', 'tarif\tarif_vendorController@hapus_data');
@@ -3062,3 +3095,18 @@ Route::get('master/master_perusahaan', 'MasterPerusahaanController@index');
 Route::post('master/master_perusahaan/save_data', 'MasterPerusahaanController@simpan');
 
 //END OF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

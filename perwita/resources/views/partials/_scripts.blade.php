@@ -70,6 +70,11 @@
     
     <script>
 
+        var datepicker_today = $('.datepicker_today').datepicker({
+          format:"yyyy-mm-dd",
+          autoclose:true
+        }).datepicker("setDate", "0");
+
    /*     $('body').removeClass('fixed-sidebar');
         $("body").toggleClass("mini-navbar");*/
 

@@ -1052,6 +1052,7 @@ $('#btnsave').click(function(){
                         accounting.formatMoney(response.data[i].i_sisa_akhir, "", 2, ".",',')+'<input type="hidden" class="i_sisa" name="i_sisa[]" value="'+response.data[i].i_sisa_akhir+'">',
                         '<input type="text" style="text-align:right;" readonly class="form-control i_bayar_text input-sm" value="0">'+
                         '<input type="hidden" style="text-align:right;" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="0">'+
+                        '<input type="hidden" style="text-align:right;" readonly class="form-control i_tot_bayar input-sm" name="i_tot_bayar[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_debet input-sm" name="i_debet[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_kredit input-sm" name="i_kredit[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="0">',
@@ -1472,10 +1473,11 @@ $('#btnsave2').click(function(){
     var jenis                = $('.jenis_biaya').val();
     var akun_acc_biaya       = $('.akun_acc_biaya').val();
     var keterangan_modal     = $('.keterangan_modal').val();
-
+    var total_bayar          = $('.total_bayar').val();
+    total_bayar              = total_bayar.replace(/[^0-9\-]+/g,"")/100;
 
     if (jumlah_biaya_admin == '') {
-        jumlah_biaya_admin = 0;
+        jumlah_biaya_admin = 0;1
     }else{
         jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
         jumlah_biaya_admin       = parseFloat(jumlah_biaya_admin);
@@ -1498,6 +1500,7 @@ $('#btnsave2').click(function(){
     }
     $(par).find('.i_bayar_text').val(accounting.formatMoney(angka,"",2,'.',','));
     $(par).find('.i_bayar').val(angka);
+    $(par).find('.i_tot_bayar').val(total_bayar);
     $(par).find('.i_akun_biaya ').val(akun_biaya);
     $(par).find('.i_keterangan ').val(keterangan_modal);
     var temp = 0;
@@ -2029,6 +2032,8 @@ $('#save_um').click(function(){
                         var jumlah_biaya_admin   = $('.jumlah_biaya_admin_um').val();
                         var jenis                = $('.jenis_biaya_um').val();
                         var akun_acc_biaya       = $('.akun_acc_biaya_um').val();
+                        var total_bayar          = $('total_bayar').val();
+                        total_bayar              = total_bayar.replace(/[^0-9\-]+/g,"")/100;
 
                         if (jumlah_biaya_admin == '') {
                             jumlah_biaya_admin = 0;
@@ -2051,6 +2056,7 @@ $('#save_um').click(function(){
                         }
                         $(par).find('.i_bayar_text').val(accounting.formatMoney(angka,"",2,'.',','));
                         $(par).find('.i_bayar').val(angka);
+                        $(par).find('.i_tot_bayar').val(total_bayar);
                         $(par).find('.i_akun_biaya').val(akun_biaya);
                         var temp = 0;
 
@@ -2181,7 +2187,7 @@ $('#btnsimpan').click(function(){
 
           $.ajax({
           url:baseUrl + '/sales/simpan_kwitansi',
-          type:'post',
+          type:'get',
           dataType:'json',
           data:$('.tabel_header :input').serialize()
                +'&'+table_data.$('input').serialize()

@@ -24,7 +24,7 @@
 </style>
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> TARIF CABANG KILOGRAM </h2>
+                    <h2> TARIF VENDOR </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
@@ -36,10 +36,10 @@
                           <a> Master Penjualan</a>
                         </li>
                         <li>
-                          <a> Master Tarif</a>
+                          <a> Master Vendor</a>
                         </li>
                         <li class="active">
-                            <strong> Tarif Cabang Kilogram </strong>
+                            <strong> Tarif Vendor </strong>
                         </li>
 
                     </ol>
@@ -74,41 +74,17 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
-                    <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
-                        <div class="box-body">
-                            <div class="row">
-                        <div class="col-xs- float-left">
-                          <table>
-                            <tr>
-                              <td valign="top" style="padding-left: 20px;"><p style="background-color: red;width: 15px;height: 15px">&nbsp;</p></td>
-                              <td><p>&nbsp;&nbsp;&nbsp;</p></td>
-                              <td valign="top"><p> Menghapus Seluruh Data <b>kota</b> Menuju <b>Provinsi</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
-                                                       
-                              <td valign="top" style="padding-left: 50px;"><p style="background-color: purple;width: 15px;height: 15px">&nbsp;</p></td>
-                              <td><p>&nbsp;&nbsp;&nbsp;</p></td>
-                              <td  valign="top"><p>Menghapus Data <b>kota</b> Menuju <b>Kota</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
-
-                              <td valign="top" style="padding-left: 50px;"><p style="background-color: #595959;width: 15px;height: 15px">&nbsp;</p></td>
-                              <td><p>&nbsp;&nbsp;&nbsp; </p></td>
-                              <td  valign="top"><p>Menghapus data Tidak diperbolehkan</p></td>
-                            </tr>
-                          </table>
-                        </div>
-                        </div>
-                    </form>
+                    
                 <div class="box-body">
-                    <table id="table_data" class="table table-bordered table-striped">
+                    <table id="datatable" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th style="width:70px"> Kode</th>
                                 <th> Asal </th>
                                 <th> Tujuan </th>
-                                <th> Provinsi Tujuan </th>
                                 <th> Tarif </th>
-                                <th> Jenis </th>
                                 <th> Cabang </th>
                                 <th> Waktu </th>
-                                <th> Keterangan </th>
                                 <th style="width:80px"> Aksi </th>
                             </tr>
                         </thead>
@@ -173,6 +149,7 @@
                                         </select>
                                     </td>
                                 </tr>
+
                                 <tr id="hilang2">
                                     <td style="padding-top: 0.4cm">Kota Tujuan</td>
                                     <td>   
@@ -195,7 +172,7 @@
                                         </select>
                                     </td>
                                 </tr>
-                                <tr id="hilang">
+                                {{-- <tr id="hilang">
                                     <td style="padding-top: 0.4cm">Provinsi Tujuan</td>
                                     <td>   
                                         <select class="chosen-select-width c"  name="cb_provinsi_tujuan" id="cb_provinsi_tujuan" style="width:100%" i>
@@ -205,7 +182,7 @@
                                         @endforeach
                                         </select>
                                     </td>
-                                </tr>
+                                </tr> --}}
                                 <tr>
                                     <td style="padding-top: 0.4cm">Acc Penjualan</td>
                                     <td>
@@ -244,7 +221,7 @@
                                       <td class="pad"><input type="text" name="waktu_regular"></td>
                                   </tr>
                                   <tr>
-                                      <td class="pad">Tarif Kertas / Kg</td>
+                                      <td class="pad">Tarif</td>
                                       <td class="pad"><input type="text" name="tarifkertas_reguler"></td>
                                   </tr>
 
@@ -264,41 +241,15 @@
                                       <td class="pad"><input type="text" name="waktu_express"></td>
                                   </tr>
                                    <tr>
-                                      <td class="pad">Tarif Kertas / Kg</td>
+                                      <td class="pad">Tarif</td>
                                       <td class="pad"><input type="text" name="tarifkertas_express"></td>
                                   </tr>
                                   
                               </tbody>
                           </table>
-                          
-                          <input type="hidden" name="kodekota" id="kodekota">
-                          {{-- KODE utama  --}}
-                          <input type="hidden" name="id0">
-                          <input type="hidden" name="id1">
-                          <input type="hidden" name="id2">
-                          <input type="hidden" name="id3">
-                          <input type="hidden" name="id4">
-                          <input type="hidden" name="id5">
-                          <input type="hidden" name="id6">
-                          <input type="hidden" name="id7">
-
-                          <input type="hidden" name="id8">
-                          <input type="hidden" name="id9">
-
-                          {{-- KODE DETAIL --}}
-                          <input type="hidden" name="kode0">
-                          <input type="hidden" name="kode1">
-                          <input type="hidden" name="kode2">
-                          <input type="hidden" name="kode3">
-                          <input type="hidden" name="kode4">
-                          <input type="hidden" name="kode5">
-                          <input type="hidden" name="kode6">
-                          <input type="hidden" name="kode7">
-                          <input type="hidden" name="kode8">
-                          <input type="hidden" name="kode9">
+                    
 
                           {{-- KODE SAMA KILO --}}
-                          <input type="hidden" name="kode_sama_kilo">
                         </form>
                       </div>
                       <div class="modal-footer">
@@ -334,6 +285,37 @@
 @section('extra_scripts')
 <script type="text/javascript">
     
+  $('#datatable').DataTable({
+            processing: true,
+            // responsive:true,
+            serverSide: true,
+            ajax: {
+                url:'{{ route('tarif_vendor_datatable') }}',
+            },
+             columnDefs: [
+
+                  {
+                     targets: 0 ,
+                     className: 'd_id left'
+                  },
+                  
+
+                ],
+            "columns": [
+            { "data": "id_tarif_vendor" },
+            { "data": "id_kota_asal_vendor" },
+            { "data": "id_kota_tujuan_vendor" },
+            { "data": "tarif_vendor" },
+            { "data": "cabang_vendor" },
+            { "data": "waktu_vendor" },
+            { 'data': 'button' },
+            ]
+      });
+
+
+
+
+
   $('#cb_kota_asal').change(function(){
         var idkota = $('#cb_kota_asal :selected').data('kota');
         var kotaid = $('#kodekota').val(idkota);
@@ -346,48 +328,7 @@
     $('#cb_provinsi_tujuan').change(function(){
         $('#hilang2').hide();
     })
-    // $(document).ready( function () {
-    //     $('#table_data').DataTable({
-    //         "paging": true,
-    //         "lengthChange": true,
-    //         "searching": true,
-    //         "ordering": true,
-    //         "info": false,
-    //         "responsive": true,
-    //         "autoWidth": true,
-    //         "pageLength": 10,
-    //         // "retrieve" : true,
-    //         "processing": true,
-    //         "serverSide": true,
-    //         "ajax": {
-    //           "url" :  baseUrl + "/sales/tarif_cabang_kilogram/tabel",
-    //           "type": "GET"
-    //         },
-    //         "columns": [
-    //         { "data": "kode" },
-    //         { "data": "asal" },
-    //         { "data": "tujuan" },
-    //         { "data": "provinsi" },
-    //         { "data": "harga", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-    //         { "data": "jenis", },
-    //         { "data": "cabang", },
-    //         { "data": "waktu", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-    //         { "data": "keterangan" },
-    //         { "data": "button" },
-    //         ]
-    //     });
-    //     var config = {
-    //             '.chosen-select'           : {},
-    //             '.chosen-select-deselect'  : {allow_single_deselect:true},
-    //             '.chosen-select-no-single' : {disable_search_threshold:10},
-    //             '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-    //             '.chosen-select-width'     : {width:"100%",search_contains:true}
-    //             }
-    //         for (var selector in config) {
-    //             $(selector).chosen(config[selector]);
-    //         }
-    //     $("input[name='ed_harga'],input[name='ed_waktu']").maskMoney({thousands:'.', decimal:',', precision:-1});
-    // });
+ 
 
     $("select[name='cb_acc_penjualan']").change(function(){
         var nama_akun = $(this).find(':selected').data('nama_akun');
@@ -513,7 +454,7 @@
     $(document).on("click","#btnsave",function(){
         $.ajax(
         {
-            url : baseUrl + "/sales/tarif_cabang_kilogram/save_data",
+            url : baseUrl + "/sales/tarif_vendor/save_data",
             type: "get",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
@@ -530,10 +471,8 @@
                     }
                 }else if(data.crud == 'E'){
                     if(data.result == 1){
-                        //$.notify('Successfull update data');
                         var table = $('#table_data').DataTable();
                         table.ajax.reload( null, false );
-                        //$("#edkode").focus();
                         $("#modal").modal('hide');
                         $("#btn_add").focus();
                     }else{
@@ -551,19 +490,18 @@
         });
     });
 
-    $(document).on( "click",".btndelete", function() {
-          var name = $(this).attr("name");
-        var prov = $(this).data("prov");
-        var asal = $(this).data("asal");
-        var id = $(this).attr("id");
-        if(!confirm("Hapus Data seluruh" + asal +' menuju ke '+ prov + " ?")) return false;
+    function hapus(parm) {
+      var par   = $(parm).parents('tr');
+      var id    = $(par).find('.d_id').text();
+
+      if(!confirm("Hapus Data"+" ?")) return false;
         var value = {
             id: id,
             _token: "{{ csrf_token() }}"
         };
         $.ajax({
             type: "get",
-            url : baseUrl + "/sales/tarif_cabang_kilogram/hapus_data",
+            url : baseUrl + "/sales/tarif_vendor/hapus_data",
             //dataType:"JSON",
             data: value,
             success: function(data, textStatus, jqXHR)
@@ -584,41 +522,9 @@
         });
 
 
-    });
-    $(document).on( "click",".btndelete_perkota", function() {
-        var name = $(this).attr("name");
-        var id = $(this).attr("id");
-        var tujuan = $(this).data("tujuan");
-        var asal = $(this).data("asal");
-        if(!confirm("Hapus Data " + asal +' menuju ke '+ tujuan + " ?")) return false;
-        var value = {
-            id: id,name:name,
-            _token: "{{ csrf_token() }}"
-        };
-        $.ajax({
-            type: "get",
-            url : baseUrl + "/sales/tarif_cabang_kilogram/hapus_data_perkota",
-            //dataType:"JSON",
-            data: value,
-            success: function(data, textStatus, jqXHR)
-            {
-                var data = jQuery.parseJSON(data);
-                if(data.result ==1){
-                    var table = $('#table_data').DataTable();
-                    table.ajax.reload( null, false );
-                }else{
-                    swal("Error","Data tidak bisa hapus : "+data.error,"error");
-                }
-
-            },
-            error: function(jqXHR, textStatus, errorThrown)
-            {
-                swal("Error!", textStatus, "error");
-            }
-        });
-
-
-    });
+    }
+  
+  
     
 
 </script>

@@ -76,6 +76,7 @@
                             <option value="rekap">REKAP CUSTOMER</option>
                             <option value="rekap_detail">REKAP CUSTOMER DETIL</option>
                             <option value="REKAP BULANAN">REKAP BULANAN</option>
+                            <option value="DETAIL ENTRY">DETAIL ENTRY</option>
                             <option value="DETAIL PER NOPOL">DETAIL PER NOPOL</option>
                             <option value="DETAIL PER MOBIL">DETAIL PER MOBIL</option>
                             <option value="DETAIL PER SOPIR" class="redline">DETAIL PER SOPIR</option>
@@ -657,18 +658,35 @@
             
         });
       }
+      //CARI DETAIL PER ENTRY
+      else if(laporan == 'DETAIL ENTRY'){
+        $.ajax({
+            data: $('#cari_data').serialize(),
+            url: baseUrl + '/ajaxcarideliveryorder_total_entry/ajaxcarideliveryorder_total_entry',
+            type: "get",
+            success: function (response, textStatus, request) {
+              $('#replace').html(response);
+              // $('#table_detailsales').DataTable({});
+            },
+            error: function (ajaxContext) {
+              toastr.error('Export error: '+ajaxContext.responseText);
+            },
+            
+        });
+      }
+
       //CARI DETAIL PER SOPIR
       else if(laporan == 'DETAIL PER SOPIR'){
-        alert('a');
+        alert('UNKNOWN PROCCESS!! DONT TRY AGAIN !');
       }
       
       //CARI REKAP PER MOBIL
       else if(laporan == 'REKAP PER MOBIL'){
-        alert('a');
+        alert('UNKNOWN PROCCESS!! DONT TRY AGAIN !');
       }
       //CARI REKAP PER SOPIR
       else if(laporan == 'REKAP PER SOPIR'){
-        alert('a');
+        alert('UNKNOWN PROCCESS!! DONT TRY AGAIN !');
       }
 
     }
