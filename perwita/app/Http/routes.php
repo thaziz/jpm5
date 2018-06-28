@@ -79,7 +79,7 @@ Route::post('setting/hak_akses/edit_hak_akses', 'setting\hak_akses_Controller@ed
 
 //***PEMBELIAN
 //***PEMBELIAN
-Route::get('tes' , 'sales\invoice_Controller@index');
+// Route::get('tes' , 'sales\invoice_Controller@index');
 
 
 Route::get('suratpermintaanpembelian' , 'PurchaseController@spp_index');
@@ -1385,6 +1385,34 @@ Route::get('sales/cari_modaldeliveryorder_sepeda', 'sales\do_Controller@cari_mod
 Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller@tarif_penerus_sepeda_indentdo');
 //end delivery order
 
+
+
+
+
+
+
+
+
+
+//deny do baru
+
+  //index
+  Route::get('sales/deliveryorder_paket', 'do_new\do_paketController@index');
+  Route::get('sales/deliveryorder_paket/datatable_deliveryorder_paket', 'do_new\do_paketController@datatable_deliveryorder_paket')->name('datatable_deliveryorder_paket');
+  //create
+  Route::get('sales/deliveryorder_paket/create_deliveryorder_paket', 'do_new\do_paketController@create_deliveryorder_paket')->name('create_deliveryorder_paket');
+  Route::get('sales/deliveryorder_paket/cari_nomor_deliveryorder_paket', 'do_new\do_paketController@cari_nomor_deliveryorder_paket')->name('cari_nomor_deliveryorder_paket');
+    //cari kecamatan
+    Route::get('sales/deliveryorder_paket/cari_kecamatan_deliveryorder_paket', 'do_new\do_paketController@cari_kecamatan_deliveryorder_paket')->name('cari_kecamatan_deliveryorder_paket');
+    //cari vendor
+    Route::get('sales/deliveryorder_paket/cari_vendor_deliveryorder_paket', 'do_new\do_paketController@cari_vendor_deliveryorder_paket')->name('cari_vendor_deliveryorder_paket');
+    //replace vendor
+    Route::get('sales/deliveryorder_paket/replace_vendor_deliveryorder_paket', 'do_new\do_paketController@replace_vendor_deliveryorder_paket')->name('replace_vendor_deliveryorder_paket');
+  //simpan data
+  Route::get('sales/deliveryorder_paket/save_deliveryorder_paket', 'do_new\do_paketController@save_deliveryorder_paket')->name('save_deliveryorder_paket');
+
+
+
 // delivery order kargo
 Route::get('sales/deliveryorderkargo', 'sales\do_kargo_Controller@index');
 Route::get('sales/datatable_do_kargo', 'sales\do_kargo_Controller@datatable_do_kargo')->name('datatable_do_kargo');
@@ -1473,6 +1501,7 @@ Route::get('sales/surat_jalan_trayek_form/{nomor}/nota', 'sales\surat_jalan_tray
 
 //invoice penjualan
 Route::get('sales/invoice', 'sales\invoice_Controller@index');
+Route::post('sales/pajak_invoice', 'sales\invoice_Controller@pajak_invoice');
 Route::get('sales/invoice_form', 'sales\invoice_Controller@form');
 Route::get('sales/nota_invoice', 'sales\invoice_Controller@nota_invoice');
 Route::get('sales/cari_do_invoice', 'sales\invoice_Controller@cari_do_invoice');
@@ -3084,6 +3113,3 @@ Route::post('master/master_perusahaan/save_data', 'MasterPerusahaanController@si
 
 
 
-//deny do baru
-Route::get('sales/deliveryorder_paket', 'sales\do_paket_controller@index');
-Route::get('sales/de liveryorder_paket/create', 'sales\do_paket_controller@form');

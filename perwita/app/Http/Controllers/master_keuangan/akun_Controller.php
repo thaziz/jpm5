@@ -20,15 +20,24 @@ class akun_Controller extends Controller
         // if(cek_periode() == 0)
         //     return view("keuangan.err.err_periode");
 
+        $cabang = DB::table("cabang")->where("kode", $_GET["cab"])->select("nama")->first();
+
+        if(Session::get("cabang") == "000")
+            $cabangs = DB::table("cabang")->select("kode", "nama")->get();
+        else
+            $cabangs = DB::table("cabang")->where("kode", Session::get("cabang"))->select("kode", "nama")->get();
+
         $data = DB::table("d_akun")
                 ->join("cabang", "cabang.kode", "=", "d_akun.kode_cabang")
                 ->join('d_akun_saldo', 'd_akun_saldo.id_akun', '=', 'd_akun.id_akun')
                 ->where("d_akun_saldo.bulan", date('m'))
                 ->where("d_akun_saldo.tahun", date('Y'))
+                ->where("d_akun.kode_cabang", $_GET["cab"])
                 ->select("d_akun.*", "cabang.nama as nama_cabang", "d_akun_saldo.saldo_akun as saldo")
                 ->orderBy("id_akun", "asc")->get();
+
         // return json_encode($data);
-        return view("keuangan.master_akun.index")->withData($data);
+        return view("keuangan.master_akun.index")->withData($data)->withCabang($cabang)->withCabangs($cabangs);
     }
 
     public function add($parrent){

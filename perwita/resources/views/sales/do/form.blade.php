@@ -462,7 +462,11 @@
                                                 <tr>
                                                     <td><input type="hidden" name="ed_total_total"></td>
                                                 </tr>
-                                                <input type="hidden" name="ed_total_total">
+                                                
+
+                                                <input type="hidden" name="ed_total_temp">
+
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -955,7 +959,7 @@
             }
 
         //$("input[name='ed_harga'],input[name='ed_jumlah'],input[name='ed_biaya_penerus'],input[name='ed_diskon']").maskMoney({thousands:'.', decimal:',', precision:-1});
-        $("input[name='ed_biaya_tambahan'],input[name='ed_biaya_komisi'],input[name='ed_berat'],input[name='ed_dpp'],input[name='ed_vendor']").maskMoney({thousands:'.', decimal:',', precision:-1});
+        $("input[name='ed_biaya_tambahan'],input[name='ed_biaya_komisi'],input[name='ed_berat'],input[name='ed_dpp'],input[name='ed_vendor']").maskMoney({thousands:'', decimal:'', precision:-1});
     @if($do != null)
         $('#btn_cari_harga').click();
     @endif

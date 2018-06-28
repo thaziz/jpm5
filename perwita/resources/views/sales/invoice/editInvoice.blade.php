@@ -854,8 +854,8 @@ function hitung_pajak_lain(){
         });
 
         $.ajax({
-            url:baseUrl +'/sales/append_do'+'&'+token,
-            data:{nomor_dt,nomor_do,cb_pendapatan},
+            url:baseUrl +'/sales/append_do',
+            data:{token,nomor_dt,nomor_do,cb_pendapatan},
             type:'post',
             dataType:'json',
             success:function(response){

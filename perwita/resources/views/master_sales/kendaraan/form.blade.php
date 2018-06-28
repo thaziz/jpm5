@@ -89,6 +89,7 @@
                                         <option value="DPT">DPT</option>
                                         <option value="OWN">OWN</option>
                                         <option value="SUB">SUB</option>
+                                        <option value="SEWA">SEWA</option>
                                     </select>
                                 </td>
 

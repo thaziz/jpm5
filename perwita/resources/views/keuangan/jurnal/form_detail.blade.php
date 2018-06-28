@@ -9,7 +9,7 @@
         @if($dataDetail1->trdt_accstatusdk == "D")
           <tr>
             <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-left" width="45%">
-              <select name="nama_akun_debet[]" style="width:100%" class="form-control chosen-select">
+              <select name="nama_akun_debet[]" style="width:100%" class="form-control">
                 @foreach($akun as $dataAkun)
                   <?php $able = ($dataAkun->id_akun == $dataDetail1->trdt_acc) ? "selected" : ""; ?>
                   <option value="{{ $dataAkun->id_akun }}" {{ $able }}>{{ $dataAkun->nama_akun }}</option>
@@ -47,7 +47,7 @@
         @if($dataDetail1->trdt_accstatusdk == "K")
           <tr>
             <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-left" width="45%">
-              <select name="nama_akun_kredit[]" style="width:100%" class="form-control chosen-select">
+              <select name="nama_akun_kredit[]" style="width:100%" class="form-control">
                 @foreach($akun as $dataAkun)
                   <?php $able = ($dataAkun->id_akun == $dataDetail1->trdt_acc) ? "selected" : ""; ?>
                   <option value="{{ $dataAkun->id_akun }}" {{ $able }}>{{ $dataAkun->nama_akun }}</option>
@@ -84,7 +84,7 @@
 <script>
   $(document).ready(function(){
 
-    $(".chosen-select").chosen({width: '100%'});
+    $(".chosen-select").chosen({width: '80%'});
 
     $.fn.maskFunc = function(){
       $('.currency').inputmask("currency", {
