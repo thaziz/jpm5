@@ -219,8 +219,15 @@
 
     function ngeprint(id){
         var id = id.replace(/\//g, "-");
-        window.open(baseUrl+'/sales/cetak_nota/'+id);
-        location.reload();
+        var w = window.open(baseUrl+'/sales/cetak_nota/'+id);
+        // var interval = setInterval(function(){ 
+        $(w).ready(function(){
+          var table = $('#tabel_data').DataTable();
+          table.ajax.reload(); 
+        })
+        
+        // }, 5000);
+        // clearInterval(interval);
     }
 
     function hapus(id){
@@ -250,7 +257,8 @@
                       timer: 2000,
                       showConfirmButton: true
                       },function(){
-                         location.reload();
+                         var table = $('#tabel_data').DataTable();
+                         table.ajax.reload();
               });
           },
           error:function(data){

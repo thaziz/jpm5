@@ -61,6 +61,7 @@
                      </h5>
 
                      <a href="../penerimaan_penjualan" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                <a class="pull-right jurnal" onclick="lihat_jurnal()" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal</i></a>
 
                 </div>
                
@@ -783,7 +784,24 @@
 
 
 
-
+<div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Jurnal Invoice</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body tabel_jurnal">
+          
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
@@ -1055,11 +1073,12 @@ $('#btnsave').click(function(){
                 var i_nomor = response.data[i].i_nomor;
                 i_nomor = i_nomor.replace(/\//g,"");
                 table_data.row.add([
-                        '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+response.data[i].i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+response.data[i].i_nomor+'" name="i_nomor[]" value="'+response.data[i].i_nomor+'">',
+                        '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+response.data[i].i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+i_nomor+'" name="i_nomor[]" value="'+response.data[i].i_nomor+'">',
                         accounting.formatMoney(response.data[i].i_tagihan, "", 2, ".",',')+'<input type="hidden" class="i_tagihan" name="i_tagihan[]" value="'+response.data[i].i_tagihan+'">',
                         accounting.formatMoney(response.data[i].i_sisa_akhir, "", 2, ".",',')+'<input type="hidden" class="i_sisa" name="i_sisa[]" value="'+response.data[i].i_sisa_akhir+'">',
                         '<input type="text" style="text-align:right;" readonly class="form-control i_bayar_text input-sm" value="0">'+
                         '<input type="hidden" style="text-align:right;" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="0">'+
+                        '<input type="hidden" style="text-align:right;" readonly class="form-control i_tot_bayar input-sm" name="i_tot_bayar[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_debet input-sm" name="i_debet[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_kredit input-sm" name="i_kredit[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="0">',
@@ -1097,6 +1116,7 @@ $('#btnsave').click(function(){
 function akun_biaya1(){
    var jenis =  $('.akun_biaya').find(':selected').data('jenis');
    var biaya =  $('.akun_biaya').find(':selected').data('biaya');
+     console.log(jenis);
 
    $('.jenis_biaya').val('');
    $('.akun_acc_biaya').val('');
@@ -1123,27 +1143,30 @@ function hitung() {
     if (biaya_admin == '') {
         biaya_admin = 0;
     }else{
-        biaya_admin       = biaya_admin.replace(/[^0-9\-]+/g,"");
+        biaya_admin       = biaya_admin.replace(/[^0-9\-]+/g,"")*1;
     }
     biaya_admin = parseFloat(biaya_admin);
     
-        console.log(biaya_admin);
     
     var sisa_terbayar = $('.sisa_terbayar').val();
     sisa_terbayar     = parseFloat(sisa_terbayar);
-    angka             = angka.replace(/[^0-9\-]+/g,"");
+    angka             = angka.replace(/[^0-9\-]+/g,"")*1;
     var total         = sisa_terbayar - angka - biaya_admin;
     if (total < 0) {
         total = 0;
     }
-
+    
     if (angka > sisa_terbayar) {
+
         if ($('.akun_biaya').val() != 'U2') {
-            $('.akun_biaya').val('B3').trigger('chosen:updated');
+            $('.akun_biaya').val('B3');
+
             akun_biaya1();
             var jenis         = $('.jenis_biaya').val();
             var akun_acc_biaya= $('.akun_acc_biaya').val();
         }
+
+
     }
     $('.ed_jumlah_bayar').val(accounting.formatMoney(angka,"",2,'.',','));
     $('.jumlah_bayar').val(angka);
@@ -1151,7 +1174,8 @@ function hitung() {
     $('.ed_total').val(accounting.formatMoney(total,"",2,'.',','))
     $('.total').val(total);
     angka = parseFloat(angka);
-  
+    console.log(angka)
+    console.log(sisa_terbayar)
     
     if (jenis == 'D') {
         $('.total_bayar').val(accounting.formatMoney(angka+biaya_admin,"",2,'.',','))
@@ -1178,10 +1202,9 @@ function histori(p){
     var i_nomor             = $(par).find('.i_nomor').val();
     var i_sisa_pelunasan    = $(par).find('.i_sisa_pelunasan').val();
     var i_bayar             = $(par).find('.i_bayar ').val();
-    var i_keterangan        = $(par).find('.i_keterangan').val();
-    console.log(i_keterangan);
     var nota_kwitansi       = $('#nota_kwitansi').val();
     var i_tagihan           = $(par).find('.i_tagihan ').val();
+    var i_keterangan        = $(par).find('.i_keterangan ').val();
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val(); 
     var asd                 = simpan_um.length;
     simpan_um.splice(0,asd);
@@ -1226,11 +1249,11 @@ function histori(p){
                     $('.ed_nota_kredit').val(accounting.formatMoney(temp1,"",2,'.',','));
                     $('.nota_kredit').val(temp1);
 
-                    
+
                     $('.ed_nomor_invoice').val(i_nomor);
                     $('.ed_jumlah_tagihan').val(accounting.formatMoney(i_tagihan,"",2,'.',','));
                     $('.jumlah_tagihan').val(i_tagihan);
-                    $('.ed_keterangan').val(i_keterangan);
+                    $('.keterangan_modal').val(i_keterangan);
 
                     var jumlah_tagihan = $('.jumlah_tagihan').val();
                     jumlah_tagihan     = parseFloat(jumlah_tagihan);
@@ -1258,8 +1281,12 @@ function histori(p){
                     $('.jumlah_bayar').val(i_bayar);
                     $('.jumlah_biaya_admin ').val(biaya_admin);
                     var biaya_admin    = $(par).find('.i_akun_biaya').val();
-                    console.log(biaya_admin);
-                    $('.akun_biaya ').val(biaya_admin).trigger('chosen:updated');
+                    $('.akun_biaya').val(biaya_admin);
+
+                    var jenis =  $('.akun_biaya').find(':selected').data('jenis');
+                    var biaya =  $('.akun_biaya').find(':selected').data('biaya');
+                    $('.jenis_biaya').val(jenis);
+                    $('.akun_acc_biaya').val(biaya);
                     if (biaya_admin == '0') {
                         $('.jumlah_biaya_admin').attr('readonly',true);
                     }else{
@@ -1337,7 +1364,12 @@ function histori(p){
                     $('.jumlah_bayar').val(i_bayar);
                     $('.jumlah_biaya_admin_um').val(biaya_admin);
                     var biaya_admin    = $(par).find('.i_akun_biaya ').val();
-                    $('.akun_biaya_um').val(biaya_admin).trigger('chosen:updated');
+                    $('.akun_biaya_um').val(biaya_admin);
+
+                    var jenis =  $('.akun_biaya_um').find(':selected').data('jenis');
+                    var biaya =  $('.akun_biaya_um').find(':selected').data('biaya');
+                    $('.jenis_biaya').val(jenis);
+                    $('.akun_acc_biaya').val(biaya);
                     if (biaya_admin == '0') {
                         $('.jumlah_biaya_admin_um').attr('readonly',true);
                     }else{
@@ -1480,18 +1512,19 @@ $('#btnsave2').click(function(){
     var jumlah_biaya_admin   = $('.jumlah_biaya_admin').val();
     var jenis                = $('.jenis_biaya').val();
     var akun_acc_biaya       = $('.akun_acc_biaya').val();
-    var ed_keterangan        = $('.ed_keterangan').val();
-
+    var keterangan_modal     = $('.keterangan_modal').val();
+    var total_bayar          = $('.total_bayar').val();
+    total_bayar              = total_bayar.replace(/[^0-9\-]+/g,"")/100;
+    console.log(total_bayar);
     if (jumlah_biaya_admin == '') {
-        jumlah_biaya_admin = 0;
+        jumlah_biaya_admin = 0;1
     }else{
         jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
         jumlah_biaya_admin       = parseFloat(jumlah_biaya_admin);
     }
     
     var angka                = $('.angka').val();
-    angka                    = angka.replace(/[^0-9\-]+/g,"");
-    angka                    = parseFloat(angka);
+    angka                    = angka.replace(/[^0-9\-]+/g,"")*1;
     var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
     ed_nomor_invoice = ed_nomor_invoice.replace(/\//g,"");
     var tes                  = [];
@@ -1504,11 +1537,17 @@ $('#btnsave2').click(function(){
         $(par).find('.i_debet').val(jumlah_biaya_admin);
         $(par).find('.i_kredit').val('0');
     }
+    console.log(angka);
 
-    $(par).find('.i_bayar_text').val(accounting.formatMoney(angka,"",2,'.',','));
+    $(par).find('.i_bayar_text').val(accounting.formatMoney(total_bayar,"",2,'.',','));
     $(par).find('.i_bayar').val(angka);
-    $(par).find('.i_akun_biaya ').val(akun_biaya);
-    $(par).find('.i_keterangan ').val(ed_keterangan);
+    $(par).find('.i_tot_bayar').val(total_bayar);
+    if (jumlah_biaya_admin == 0) {
+        $(par).find('.i_akun_biaya ').val('0');
+    }else{
+        $(par).find('.i_akun_biaya ').val(akun_biaya);
+    }
+    $(par).find('.i_keterangan ').val(keterangan_modal);
     var temp = 0;
     table_data.$('.i_bayar').each(function(){
         var i_bayar = Math.round($(this).val()).toFixed(2);
@@ -2110,90 +2149,6 @@ $('#save_um').click(function(){
      });
 })
 
-@foreach($data_dt as $val)
-var nomor = [];
-
-var i_nomor   = "{{$val->kd_nomor_invoice}}"
-var i_tagihan = "{{$val->i_total_tagihan}}"
-var i_sisa    = "{{$val->i_sisa_pelunasan}}"
-var bayar     = "{{$val->kd_total_bayar}}"
-var i_debet   = "{{$val->kd_debet}}"
-var i_kredit  = "{{$val->kd_kredit}}"
-var akun_biaya= "{{$val->kd_kode_biaya}}"
-var i_ket     = "{{$val->kd_keterangan}}"
-var i_ket     = "{{$val->kd_keterangan}}"
-array_simpan.push(i_nomor);
-array_edit.push(i_nomor);
-array_harga.push(bayar);
-i_nomor1 = i_nomor.replace(/\//g,"");
-
-    table_data.row.add([
-        '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+i_nomor1+'" name="i_nomor[]" value="'+i_nomor+'">',
-
-        accounting.formatMoney(i_tagihan, "", 2, ".",',')+'<input type="hidden" class="i_tagihan" name="i_tagihan[]" value="'+i_tagihan+'">',
-
-        accounting.formatMoney(parseFloat(i_sisa)+parseFloat(bayar), "", 2, ".",',')+'<input type="hidden" class="i_sisa" name="i_sisa[]" value="'+parseFloat(i_sisa)+parseFloat(bayar)+'">',
-
-        '<input type="text" style="text-align:right;" readonly class="form-control i_bayar_text input-sm" value="'+accounting.formatMoney(bayar, "", 2, ".",',')+'">'+
-        '<input type="hidden" style="text-align:right;" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="'+bayar+'">'+
-        '<input type="hidden" readonly class="form-control i_debet input-sm" name="i_debet[]" value="'+i_debet+'">'+
-        '<input type="hidden" readonly class="form-control i_kredit input-sm" name="i_kredit[]" value="'+i_kredit+'">'+
-        '<input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="'+akun_biaya+'">',
-
-        '<input type="text" placeholder="keterangan..." class="form-control input-sm i_keterangan" name="i_keterangan[]" value="'+i_ket+'">',
-        '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>'
-         ]).draw();
-
-        $('#modal_invoice').modal('hide');
-        $('.customer_tr').addClass('disabled');
-
-    $('.i_bayar').blur(function(){
-      var temp =  $(this).val();
-      console.log(temp);
-      $(this).val(accounting.formatMoney(temp, "", 2, ".",','));
-    });  
-
-    $(".i_bayar").focus(function() {
-         $(this).select();
-    });
-
-    var temp = 0;
-
-    table_data.$('.i_bayar').each(function(){
-        var i_bayar = Math.round($(this).val()).toFixed(2);
-            i_bayar = parseFloat(i_bayar);
-        temp += i_bayar;
-    })
-
-    var temp1 = 0;
-    table_data.$('.i_debet').each(function(){
-        var i_bayar = Math.round($(this).val()).toFixed(2);
-            i_bayar = parseFloat(i_bayar);
-        temp1 += i_bayar;
-    })
-
-    var temp2 = 0;
-    table_data.$('.i_kredit').each(function(){
-        var i_bayar = Math.round($(this).val()).toFixed(2);
-            i_bayar = parseFloat(i_bayar);
-        temp2 += i_bayar;
-    });
-
-    $('.total_jumlah_bayar').val(temp);
-    $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
-    $('.ed_debet').val(temp1);
-    $('.ed_debet_text').val(accounting.formatMoney(temp1,"",2,'.',','));
-
-    $('.ed_kredit').val(temp2);
-    $('.ed_kredit_text').val(accounting.formatMoney(temp2,"",2,'.',','));
-
-    $('.jenis_pembayaran_td').addClass('disabled');
-    $('.cabang_td').addClass('disabled');
-    $('.customer_td').addClass('disabled');
-    $('.akun_bank_td').addClass('disabled');
-    hitung_bayar()
-
-@endforeach
 
 
 function edit_um(a) {
@@ -2277,7 +2232,7 @@ $('#btnsimpan').click(function(){
 
           $.ajax({
           url:baseUrl + '/sales/update_kwitansi',
-          type:'post',
+          type:'get',
           dataType:'json',
           data:$('.tabel_header :input').serialize()
                +'&'+table_data.$('input').serialize()
@@ -2346,6 +2301,117 @@ window.onbeforeunload = function(event)
 
 };
 
+
+
+
+@foreach($data_dt as $val)
+var nomor = [];
+
+var i_nomor   = "{{$val->kd_nomor_invoice}}"
+var i_tagihan = "{{$val->i_total_tagihan}}"
+var i_sisa    = "{{$val->i_sisa_pelunasan}}"
+var bayar     = "{{$val->kd_total_bayar}}"
+var i_debet   = "{{$val->kd_debet}}"
+var i_kredit  = "{{$val->kd_kredit}}"
+var akun_biaya= "{{$val->kd_kode_biaya}}"
+var i_ket     = "{{$val->kd_keterangan}}"
+array_simpan.push(i_nomor);
+array_edit.push(i_nomor);
+array_harga.push(bayar);
+console.log(bayar);
+i_nomor1 = i_nomor.replace(/\//g,"");
+if (i_debet != 0) {
+    var pembayaran = bayar*1 - i_debet*1;
+}else if (i_kredit != 0){
+    var pembayaran = bayar*1 + i_kredit*1;
+}else{
+    var pembayaran = bayar*1;
+}
+    table_data.row.add([
+        '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+i_nomor1+'" name="i_nomor[]" value="'+i_nomor+'">',
+
+        accounting.formatMoney(i_tagihan, "", 2, ".",',')+'<input type="hidden" class="i_tagihan" name="i_tagihan[]" value="'+i_tagihan+'">',
+
+        accounting.formatMoney(parseFloat(i_sisa)+parseFloat(bayar), "", 2, ".",',')+'<input type="hidden" class="i_sisa" name="i_sisa[]" value="'+parseFloat(i_sisa)+parseFloat(bayar)+'">',
+
+        '<input type="text" style="text-align:right;" readonly class="form-control i_bayar_text input-sm" value="'+accounting.formatMoney(bayar, "", 2, ".",',')+'">'+
+        '<input type="hidden" style="text-align:right;" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="'+pembayaran+'">'+
+        '<input type="hidden" style="text-align:right;" readonly class="form-control i_tot_bayar input-sm" name="i_tot_bayar[]" value="'+bayar+'">'+
+        '<input type="hidden" readonly class="form-control i_debet input-sm" name="i_debet[]" value="'+i_debet+'">'+
+        '<input type="hidden" readonly class="form-control i_kredit input-sm" name="i_kredit[]" value="'+i_kredit+'">'+
+        '<input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="'+akun_biaya+'">',
+
+        '<input type="text" placeholder="keterangan..." class="form-control input-sm i_keterangan" name="i_keterangan[]" value="'+i_ket+'">',
+        '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>'
+         ]).draw();
+
+        $('#modal_invoice').modal('hide');
+        $('.customer_tr').addClass('disabled');
+
+    $('.i_bayar').blur(function(){
+      var temp =  $(this).val();
+      console.log(temp);
+      $(this).val(accounting.formatMoney(temp, "", 2, ".",','));
+    });  
+
+    $(".i_bayar").focus(function() {
+         $(this).select();
+    });
+
+    var temp = 0;
+
+    table_data.$('.i_bayar').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp += i_bayar;
+    })
+
+    var temp1 = 0;
+    table_data.$('.i_debet').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp1 += i_bayar;
+    })
+
+    var temp2 = 0;
+    table_data.$('.i_kredit').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp2 += i_bayar;
+    });
+
+    $('.total_jumlah_bayar').val(temp);
+    $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    $('.ed_debet').val(temp1);
+    $('.ed_debet_text').val(accounting.formatMoney(temp1,"",2,'.',','));
+
+    $('.ed_kredit').val(temp2);
+    $('.ed_kredit_text').val(accounting.formatMoney(temp2,"",2,'.',','));
+
+    $('.jenis_pembayaran_td').addClass('disabled');
+    $('.cabang_td').addClass('disabled');
+    $('.customer_td').addClass('disabled');
+    $('.akun_bank_td').addClass('disabled');
+    hitung_bayar()
+
+@endforeach
+
+function lihat_jurnal(){
+
+        var id = '{{ $id }}';
+        $.ajax({
+            url:baseUrl + '/sales/invoice/jurnal',
+            type:'get',
+            data:{id},
+            success:function(data){
+               $('.tabel_jurnal').html(data);
+               $('.modal_jurnal').modal('show');
+            },
+            error:function(data){
+                // location.reload();
+            }
+        }); 
+   }
 </script>
 
 @endsection

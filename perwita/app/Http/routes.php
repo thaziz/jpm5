@@ -1665,6 +1665,7 @@ Route::post('sales/save_um_kwitansi', 'sales\penerimaan_penjualan_Controller@sav
 Route::get('sales/kwitansi_cari_um', 'sales\penerimaan_penjualan_Controller@kwitansi_cari_um');
 
 Route::get('sales/hapus_um_kwitansi', 'sales\penerimaan_penjualan_Controller@hapus_um_kwitansi');
+Route::get('sales/kwitansi/jurnal', 'sales\penerimaan_penjualan_Controller@jurnal');
 
 
 
