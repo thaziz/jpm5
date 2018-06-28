@@ -243,7 +243,7 @@
                 });
    }
 
-
+$(".mask_money_dn").maskMoney({thousands:'.', decimal:',', precision:-1});
 
 
     </script>

@@ -75,7 +75,7 @@ class update_o_Controller extends Controller
         return Response::json($results);
     }
 	public function store1(Request $request){
-		  // return $request->asw;
+		   // return $request->asw;
        // dd($request);
        $store = new updateso;
        $store->u_o_nomor=$request->a[0]['value'];

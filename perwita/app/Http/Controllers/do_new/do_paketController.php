@@ -132,10 +132,11 @@ class do_paketController extends Controller
         $angkutan = DB::select(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC ");
         $authe = Auth::user()->kode_cabang; 
         if ($authe == '000') {
-            $cabang = DB::select("select kode, nama, (select dc_diskon from d_disc_cabang x where dc_cabang = y.kode and dc_jenis = 'PAKET') diskon from cabang y group by kode order by kode asc ");
+            $cabang = DB::select(" select kode, nama, (select dc_diskon from d_disc_cabang x where dc_cabang = y.kode and dc_jenis = 'PAKET') diskon from cabang y group by kode order by kode asc ");
         }else{
             $cabang = DB::select(" select kode, nama, (select dc_diskon from d_disc_cabang x where dc_cabang = y.kode and dc_jenis = 'PAKET') diskon from cabang y where kode = '$authe' group by kode order by kode asc ");
         }
+
         return view('sales.do_new.create', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data','cus'));
    }
 
@@ -206,6 +207,155 @@ class do_paketController extends Controller
     	$data = DB::table('tarif_vendor')->where('id_tarif_vendor','=',$vendor)->get();
 
     	return response()->json($data);
+
+    }
+
+//SAVE DATA
+    public function save_deliveryorder_paket(Request $request)
+    {
+      // dd($request->all());
+      $simpan = '';
+
+
+      $kota_asal = $request->do_kota_asal;
+      $jumlah = 1;
+      $jml_unit = null;
+      if ($request->type_kiriman == 'KILOGRAM' || $request->type_kiriman == 'KERTAS') {
+          $jumlah = filter_var($request->do_berat, FILTER_SANITIZE_NUMBER_INT);
+          $kode_satuan = 'KG';
+      } else if ($request->type_kiriman == 'KOLI') {
+          $jumlah = filter_var($request->do_koli, FILTER_SANITIZE_NUMBER_INT);
+          $kode_satuan = 'KOLI';
+      } else if ($request->type_kiriman == 'KARGO PAKET' || $request->type_kiriman == 'KARGO KERTAS') {
+          $kode_satuan = 'KARGO';
+      } else if ($request->type_kiriman == 'DOKUMEN') {
+          $kode_satuan = 'DOKUMEN';
+      } else if ($request->type_kiriman == 'SEPEDA') {
+          $kode_satuan = 'SEPEDA';
+      }
+
+      // if ($request->acc_penjualan == '') {
+      //     $dataInfo = ['status' => 'gagal', 'info' => 'Akun Pada Master Item Belum Ada Atau Pencarian Harga Belum Di Lakukan'];
+      //     return json_encode($dataInfo);
+      // }
+
+      // $select_akun = DB::table('d_akun')
+      //              ->where('id_akun','like','1303'.'%')
+      //              ->where('kode_cabang',$request->cb_cabang)
+      //              ->first();
+
+      // if ($select_akun == null) {
+      //     $dataInfo = ['status' => 'gagal', 'info' => 'Akun Piutang Pada Cabang Ini Belum Tersedia'];
+      //     return json_encode($dataInfo);
+      // }else{
+      //   $akun_piutang = $select_akun->id_akun;
+      // }
+      $akun_piutang = 1;
+      //cek nama username/user
+      $namanama  = Auth::user()->m_nama;
+      if ($namanama == null) {
+          $namanama  = Auth::user()->m_nama;
+      }else{
+          $namanama  = Auth::user()->m_username;
+      }
+
+      if ($request->kontrak_tr == '') {
+          $bol_kon = false;
+      }else{
+          $bol_kon = $request->kontrak_tr;
+      }
+      if ($request->kontrak_cus == '') {
+          $cus_kon = 0;
+      }else{
+          $cus_kon = $request->kontrak_cus;
+      }
+      if ($request->kontrak_cus_dt == '') {
+          $cus_kon_dt = 0;
+      }else{
+          $cus_kon_dt = $request->kontrak_cus_dt;
+      }
+
+      $data = array(
+                'nomor' => strtoupper($request->do_nomor),
+                'tanggal' => $request->do_tanggal,
+                'catatan_admin' => '-',
+                'id_kota_asal' => $request->do_kota_asal,
+                'id_kota_tujuan' => $request->do_kota_tujuan,
+                'id_kecamatan_tujuan' => $request->do_kecamatan_tujuan,
+                'pendapatan' => $request->pendapatan,
+                'type_kiriman' => $request->type_kiriman,
+                'jenis_pengiriman' => $request->jenis_kiriman,
+                'kode_tipe_angkutan' => $request->do_angkutan,
+                'no_surat_jalan' => strtoupper($request->do_surat_jalan),
+                'nopol' => strtoupper($request->do_nopol),
+                'lebar' => filter_var($request->do_lebar, FILTER_SANITIZE_NUMBER_INT),
+                'panjang' => filter_var($request->do_panjang, FILTER_SANITIZE_NUMBER_INT),
+                'tinggi' => filter_var($request->do_tinggi, FILTER_SANITIZE_NUMBER_INT),
+                'berat' => filter_var($request->do_berat, FILTER_SANITIZE_NUMBER_INT),
+                'koli' => filter_var($request->do_koli, FILTER_SANITIZE_NUMBER_INT),
+                'kode_outlet' => $request->do_outlet,
+                'kode_cabang' => $request->do_cabang,
+                'tarif_dasar' => filter_var($request->do_tarif_dasar, FILTER_SANITIZE_NUMBER_INT),
+                'tarif_penerus' => filter_var($request->do_tarif_penerus, FILTER_SANITIZE_NUMBER_INT),
+                'biaya_tambahan' => filter_var($request->do_biaya_tambahan, FILTER_SANITIZE_NUMBER_INT),
+                'biaya_komisi' => filter_var($request->do_biaya_komisi, FILTER_SANITIZE_NUMBER_INT),
+                'kode_customer' => $request->do_customer,
+                'kode_marketing' => $request->do_marketing,
+                'ppn' => $request->ck_ppn,
+                'company_name_pengirim' => strtoupper($request->do_company_name_pengirim),
+                'nama_pengirim' => strtoupper($request->do_nama_pengirim),
+                'alamat_pengirim' => strtoupper($request->do_alamat_pengirim),
+                'kode_pos_pengirim' => strtoupper($request->do_kode_pos_pengirim),
+                'telpon_pengirim' => strtoupper($request->do_telpon_pengirim),
+                'company_name_penerima' => strtoupper($request->do_company_name_penerima),
+                'nama_penerima' => strtoupper($request->do_nama_penerima),
+                'alamat_penerima' => strtoupper($request->do_alamat_penerima),
+                'kode_pos_penerima' => strtoupper($request->do_kode_pos_penerima),
+                'telpon_penerima' => strtoupper($request->do_telpon_penerima),
+                'instruksi' => strtoupper($request->do_instruksi),
+                'deskripsi' => strtoupper($request->do_deskripsi),
+                'jenis_pembayaran' => strtoupper($request->do_jenis_pembayaran),
+                'total' => filter_var($request->do_total_temp, FILTER_SANITIZE_NUMBER_INT),
+                'diskon' => filter_var($request->do_diskon_v, FILTER_SANITIZE_NUMBER_INT),
+                'diskon_value' => filter_var($request->do_diskon_v, FILTER_SANITIZE_NUMBER_INT),
+                'jenis' => 'PAKET',
+                'kode_satuan' => $kode_satuan,
+                'jumlah' => $jumlah,
+                'jenis_ppn' => $request->do_jenis_ppn,
+                'acc_penjualan' => $request->acc_penjualan,
+                'acc_piutang_do'        => $akun_piutang,
+                'csf_piutang_do'        => $akun_piutang,
+                'created_by'        => $namanama,
+                'updated_by'        => $namanama,
+                'total_vendo'        => filter_var($request->do_vendor, FILTER_SANITIZE_NUMBER_INT),
+                'total_dpp'        => filter_var($request->do_dpp, FILTER_SANITIZE_NUMBER_INT),
+                'kontrak'        =>  $bol_kon,
+                'kontrak_cus'        => $cus_kon,
+                'kontrak_cus_dt'        => $cus_kon_dt,
+                'total_net' => filter_var($request->do_total_h, FILTER_SANITIZE_NUMBER_INT),
+      );
+    DB::table('delivery_order')->insert($data);
+    //end save do
+
+    //simpan update status status 
+    $increment = DB::table('u_s_order_do')->max('id');
+
+    if ($increment == 0) {
+        $increment = 1;
+    }else{
+        $increment += 1;
+    }
+
+    $data1 = array(
+        'no_do' => strtoupper($request->do_nomor),
+        'status' => 'MANIFESTED',
+        'nama' => strtoupper($request->do_nama_pengirim),
+        'catatan' => '-',
+        'asal_barang' => $request->do_kota_asal,
+        'id'=>$increment,
+    );
+    $simpan = DB::table('u_s_order_do')->insert($data1);
+
 
     }
 

@@ -55,6 +55,7 @@
                     
                 </div>
                 <div id="drop"></div>
+                
                 <br>
           <div class="row">
             <div class="col-xs-12">
@@ -205,35 +206,35 @@
                                                 <tr id="berat">
                                                     <td style="padding-top: 0.4cm">Berat</td>
                                                     <td colspan="5">
-                                                        <input onkeyup="BeratDefault()" type="text" class="form-control" name="do_berat" style="text-align:right">
+                                                        <input onkeyup="BeratDefault()" type="text" class="form-control" value="0" name="do_berat" style="text-align:right">
                                                     </td>
                                                 </tr>
                                                 <tr id="jml_unit">
                                                     <td style="padding-top: 0.4cm">Jumlah Unit</td>
                                                     <td colspan="5">
-                                                        <input type="text" class="form-control jmlunit" onkeyup="setJml()" name="do_jml_unit" style="text-align:right" >
+                                                        <input type="text" class="form-control jmlunit" onkeyup="setJml()" value="0" name="do_jml_unit" style="text-align:right" >
                                                     </td>
                                                 </tr>
                                                
                                                 <tr id="dimensi">
                                                     <td style="padding-top: 0.4cm">Panjang</td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="do_panjang" style="text-align:right" >
+                                                        <input type="text" class="form-control" name="do_panjang" value="0" style="text-align:right" >
                                                     </td>
                                                     <td style="padding-top: 0.4cm">Lebar</td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="do_lebar" style="text-align:right">
+                                                        <input type="text" class="form-control" name="do_lebar" value="0" style="text-align:right">
                                                     </td>
                                                     <td style="padding-top: 0.4cm">Tinggi</td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="do_tinggi" style="text-align:right">
+                                                        <input type="text" class="form-control" name="do_tinggi" value="0" style="text-align:right">
                                                     </td>
                                                 </tr>
                                                 
                                                 <tr id="koli">
                                                     <td style="padding-top: 0.4cm">Koli</td>
                                                     <td colspan="5">
-                                                        <input type="text" class="form-control" name="do_koli" style="text-align:right">
+                                                        <input type="text" class="form-control" name="do_koli" value="0" style="text-align:right">
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -287,53 +288,54 @@
                                         </table>
                                     </div>
                                     
+                                    
                                     <div class="col-md-5">
                                         <table class="table dt-responsive nowrap table-hover">
                                             <tbody>
                                                 <tr style="max-height: 15px !important; height: 15px !important; overflow:hidden;">
                                                     <td style="padding-top: 0.4cm">Tarif Dasar</td>
                                                     <td colspan="2">
-                                                        <input type="text" class="form-control" name="do_tarif_dasar" style="text-align:right" readonly="readonly" tabindex="-1" >
+                                                        <input type="text" class="form-control mask_money_dn hitung_keyup" name="do_tarif_dasar" value="0" style="text-align:right" tabindex="-1" >
                                                     </td>
                                                 </tr>
-                                                <tr>
+                                                <tr class="do_tarif_penerus">
                                                     <td style="padding-top: 0.4cm">Tarif Penerus</td>
                                                     <td colspan="2">
-                                                        <input type="text" class="form-control" name="do_tarif_penerus" id="do_tarif_penerus" style="text-align:right" readonly="readonly" tabindex="-1">
+                                                        <input type="text" class="form-control" name="do_tarif_penerus" id="do_tarif_penerus" value="0" style="text-align:right" readonly="readonly" tabindex="-1">
                                                         <div id="button_a" hidden=""></div>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm">Biaya Tambahan</td>
                                                     <td colspan="2">
-                                                        <input type="text" class="form-control" name="do_biaya_tambahan" id="do_biaya_tambahan" style="text-align:right"  >
+                                                        <input type="text" class="form-control hitung_keyup mask_money_dn" name="do_biaya_tambahan" id="do_biaya_tambahan" value="0" style="text-align:right"  >
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm" id="div_kom">Discount</td>
                                                     <td  id="div_kom">
                                                         <div class="input-group">
-                                                            <input type="text" class="form-control hanyaangkadiskon" name="do_diskon_h" id="do_diskon_h" style="text-align:right">
+                                                            <input type="text" class="form-control hanyaangkadiskon mask_money_dn " name="do_diskon_p" id="do_diskon_p" value="0" onkeyup="diskon_persen()" style="text-align:right">
                                                             <span class="input-group-addon">%</span>
                                                         </div>
                                                     </td>
                                                     <td  id="div_kom">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">Rp</span>
-                                                            <input type="text" class="form-control" name="do_diskon_v" id="do_diskon_v" onkeyup="dikonval()" style="text-align:right">
+                                                            <input type="text" class="form-control mask_money_dn" name="do_diskon_v" id="do_diskon_v" value="0" onkeyup="diskon_value()" style="text-align:right">
                                                         </div>
                                                     </td>
                                                 </tr>
                                                 <tr id="komisi">
                                                     <td style="padding-top: 0.4cm" id="div_kom">Biaya Komisi</td>
                                                     <td colspan="2" id="div_kom">
-                                                        <input type="text" class="form-control" name="do_biaya_komisi" id="do_biaya_komisi" style="text-align:right">
+                                                        <input type="text" class="form-control hitung_keyup mask_money_dn" name="do_biaya_komisi" id="do_biaya_komisi" value="0" style="text-align:right">
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm" id="div_kom">Dpp</td>
                                                     <td colspan="2" id="div_kom">
-                                                        <input type="text" class="form-control dv" name="do_dpp" id="do_dpp" style="text-align:right" tabindex="-1"
+                                                        <input type="text" class="form-control dv mask_money_dn check_harga_vendor"  name="do_dpp" id="do_dpp" value="0" style="text-align:right" tabindex="-1"
                                                         
                                                     >
                                                     </td>
@@ -350,7 +352,7 @@
                                                         </div>
                                                     </td>
                                                     <td colspan="2" id="div_kom">
-                                                        <input type="text" class="form-control dv" name="do_vendor" id="do_vendor" style="text-align:right" tabindex="-1"
+                                                        <input type="text" class="form-control dv mask_money_dn check_harga_vendor" name="do_vendor" id="do_vendor" value="0" style="text-align:right" tabindex="-1"
                                                         
                                                     >
                                                     </td>
@@ -366,20 +368,20 @@
                                                          <input type="hidden" name="acc_penjualan" class="form-control"  value="">
                                                     </td>
                                                     <td style="width:35%">
-                                                        <input type="text" class="form-control jml_ppn" name="do_jml_ppn" readonly="readonly" tabindex="-1" style="text-align:right">
+                                                        <input type="text" class="form-control jml_ppn" name="do_jml_ppn" value="0" readonly="readonly" tabindex="-1" style="text-align:right">
                                                     </td>
                                                 </tr>
                                                 
                                                 <tr>
                                                     <td style="padding-top: 0.4cm" id="div_kom">Total</td>
                                                     <td colspan="2" id="div_kom">
-                                                        <input type="text" class="form-control" name="do_total_h" id="do_total_h" style="text-align:right" readonly="readonly" tabindex="-1">
+                                                        <input type="text" class="form-control" name="do_total_h" id="do_total_h" value="0" style="text-align:right" readonly="readonly" tabindex="-1">
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td><input type="hidden" name="do_total_total"></td>
                                                 </tr>
-                                                <input type="hidden" name="do_total_total">
+                                                <input type="hidden" name="do_total_temp">
                                             </tbody>
                                         </table>
                                     </div>
@@ -662,6 +664,13 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+
+//VARIABLE GLOBAL 
+$("input[name='do_vendor']").prop('readonly',true);
+
+
+
+
 //SEMUNYIKAN BEBERAPA FIELD
     $(document).ready( function () {
         $("#surat_jalan").hide();
@@ -707,8 +716,8 @@
 //CARI KECAMATAN
     function getKecamatan() {
         $('#do_kecamatan_tujuan').append('<option value="">- Pilih -</option>').trigger('chosen:updated');
-
         var kot = $('#do_kota_tujuan').find(':selected').val();
+        
         $('.cek_vendor_ya').prop("checked",false);
         $.ajax({
             type: "GET",
@@ -717,13 +726,15 @@
             dataType:'json',
             success: function(data)
             {   
-                 console.log(data);
                  for (var i = 0; i < data.length; i++) {
-                    $('#do_kecamatan_tujuan').append('<option value="'+data[i].id+'">'+data[i].nama+'</option>').trigger('chosen:updated');
+                    $('#do_kecamatan_tujuan').append('<option value="'+data[i].id+'" data-nama="'+data[i].nama+'">'+data[i].nama+'</option>').trigger('chosen:updated');
                  }
                              
             }
         })
+
+        var kot_replace = $('#do_kota_tujuan').find(':selected').data('nama');
+        $("input[name='do_kota']").val(kot_replace);
     }
 //RUBAH KOLOM ASAL KOTA
     function asal() {
@@ -735,6 +746,14 @@
     }
 
 //----------------------- FUNFSI BERAKIR ------------------------//
+
+
+//CARI DAN REPLACE DATA PADA KECAMTAN
+    $('#do_kecamatan_tujuan').change(function(){
+        var kec_replace = $(this).find(':selected').data('nama');
+        $("input[name='do_kecamatan']").val(kec_replace);
+    })
+
 
 //CARI TYPE KIRIMAN
     $('#type_kiriman').change(function(){
@@ -823,13 +842,65 @@
     });
 
 
-//HITUNG
+//HITUNG FUNGSI 1 UNTUK SEMUA
 function hitung() {
-    //FIELD
+    //--Field
     var jenis_ppn = $("select[name='do_jenis_ppn']").val();
     var tarif_dasar = $("input[name='do_tarif_dasar']").val();
-    var total  = parseFloat(tarif_dasar);
+    var biaya_tambahan = $("input[name='do_biaya_tambahan']").val();
+    var diskon_p  = $("input[name='do_diskon_p']").val();
+    var diskon_v  = $("input[name='do_diskon_v']").val();
+    var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
+    
+    var this_selected_value = $('#do_cabang').find(':selected').data('diskon');
+        
+    //--Regex
+    var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");
+    var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
+    var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
+    var diskon_p = diskon_p.replace(/[A-Za-z$. ,-]/g, "");
+    var diskon_v = diskon_v.replace(/[A-Za-z$. ,-]/g, "");
+    var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g,"");
 
+
+
+    if (diskon_p > 100) {
+        toastr.warning("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
+        $("input[name='do_diskon_p']").val(0);
+    }
+
+    if(diskon_p > this_selected_value){
+        toastr.warning("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
+        $("input[name='do_diskon_p']").val(0);
+    }
+
+    //alert ketika diskon dan biaya tambahan di pakai 2-2nya
+    if (diskon_p > 0 && biaya_tambahan > 0) {
+        toastr.warning('Diskon dan biaya tambahan di isi salah satu!!');
+        $("input[name='do_diskon_p']").val(0);
+        $("input[name='do_diskon_v']").val(0);
+        $("input[name='do_biaya_tambahan']").val(0);
+    }
+
+    //-- menghitung atas
+    var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi);
+
+    if (diskon_p != 0) {
+        var diskon_value_utama = diskon_p / 100 * total;
+        $("input[name='do_diskon_v']").val(Math.round(diskon_value_utama));
+    }else if (diskon_p == 0) {  
+        var diskon_value_utama = diskon_p / 100 * total;
+        $("input[name='do_diskon_v']").val(Math.round(diskon_value_utama));
+    }
+        //PENGURANGAN DISKON
+        var total_dpp = total - diskon_value_utama;
+        $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+        $("input[name='do_total_temp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+    //CHECKBOX VENDOR
+    
+
+
+    //--PPN
     var ppn  = 0;
     if (jenis_ppn == 1) {
         ppn =parseFloat(total) * parseFloat(0.1);
@@ -841,18 +912,22 @@ function hitung() {
         ppn =0;
     }else if (jenis_ppn == 3) {
         ppn =parseFloat(total) / parseFloat(100.1);
-        //total = total - ppn;
     }else if (jenis_ppn == 5) {
         ppn =parseFloat(total) / parseFloat(10.1);
         total = total - ppn;
     }
-    console.log(ppn);
+    
+    var total_h = total-diskon_value_utama; 
+
+    
+    //--hasil perhitungan
     $("input[name='do_jml_ppn']").val(accounting.formatMoney(ppn,"",0,'.',','));
+    $("input[name='do_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
 
 }
 
 
-//CEK VENDOR 
+//CEK VENDOR / CARI MODAL / MEMUNCULKAN MODAL
     $(".cek_vendor_ya").click(function() {
         if ($('#do_kota_asal').val() == '' || $('#do_kota_tujuan').val() == '') {
             toastr.warning('Kota Asal / Kota Tujuan Tidak Boleh Kosong!!');
@@ -862,6 +937,7 @@ function hitung() {
             var tujuan = $('#do_kota_tujuan').find(':selected').val();
 
             if ($('.cek_vendor_ya').is(":checked") == true) {
+                $('.do_tarif_penerus').hide();
                 $.ajax({
                 type: "GET",
                 data : {a:asal,b:tujuan},
@@ -877,6 +953,7 @@ function hitung() {
         }
     });
     
+
 //CEK OUTLET / CEK KOMISI
     $("#do_outlet").change(function() {
         if ($(this).val() == 'NON OUTLET' || $(this).val() == '') {
@@ -885,6 +962,8 @@ function hitung() {
             $('#komisi').show();
         }     
     });
+
+
 //PILIH VENDOR
  function Pilih_vendor(a){
         var id_vendor = $(a).find('.id_vendor').val();
@@ -903,9 +982,224 @@ function hitung() {
         
     }
     
-//set ppn
+//SET PPN / CHNGE PPN / GANTI PPN
     function setJmlPPN(){
+        hitung();
+    }
+
+
+//ONKEUP BIAYA TAMBAHANN
+    $(".hitung_keyup").keyup(function() {
+        hitung();
+    });
+
+
+//DISKON VALUE
+    function diskon_value(){
+        if ($("input[name='do_diskon_v']").val() != 0) {
+            $("input[name='do_diskon_p']").attr('readonly',true);
+
+            var jenis_ppn = $("select[name='do_jenis_ppn']").val();
+            var tarif_dasar = $("input[name='do_tarif_dasar']").val();
+            var biaya_tambahan = $("input[name='do_biaya_tambahan']").val();
+            var diskon_p  = $("input[name='do_diskon_p']").val();
+            var diskon_v  = $("input[name='do_diskon_v']").val();
+            var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
+            
+            var this_selected_value = $('#do_cabang').find(':selected').data('diskon');
+
+            //--Regex
+            var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");
+            var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
+            var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
+            var diskon_p = diskon_p.replace(/[A-Za-z$. ,-]/g, "");
+            var diskon_v = diskon_v.replace(/[A-Za-z$. ,-]/g, "");
+            var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g,"");
+
+            //alert ketika diskon dan biaya tambahan di pakai 2-2nya
+            if (diskon_p > 0 && biaya_tambahan > 0) {
+                toastr.warning('Diskon dan biaya tambahan di isi salah satu!!');
+                $("input[name='do_diskon_p']").val(0);
+                $("input[name='do_diskon_v']").val(0);
+                $("input[name='do_biaya_tambahan']").val(0);
+            }
+
+            //-- menghitung atas
+            var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi);
+
+            var diskon_total = parseFloat(diskon_v)/parseFloat(total)*100;
+        
+            if(diskon_total > this_selected_value){
+                toastr.warning("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
+                $("input[name='do_diskon_v']").val(0);
+                $('#do_diskon_p').val(0);
+            }
+
+
+            $('#do_diskon_p').val(Math.round(diskon_total,2));
+            if(diskon_v == 0 || diskon_v == ''){
+                $('#do_diskon_p').val(0);
+            }
+                //PENGURANGAN DISKON
+                var total_dpp = total - diskon_v;
+                $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+                $("input[name='do_total_temp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+                
+            var ppn  = 0;
+            if (jenis_ppn == 1) {
+                ppn =parseFloat(total) * parseFloat(0.1);
+                total = total + ppn;
+            }else if (jenis_ppn == 2) {
+                ppn =parseFloat(total) * parseFloat(0.01);
+                total = total + ppn;
+            }else if (jenis_ppn == 4) {
+                ppn =0;
+            }else if (jenis_ppn == 3) {
+                ppn =parseFloat(total) / parseFloat(100.1);
+            }else if (jenis_ppn == 5) {
+                ppn =parseFloat(total) / parseFloat(10.1);
+                total = total - ppn;
+            }
+            
+            var total_h = total-diskon_v; 
+            $("input[name='do_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
+
+
+        }else{
+            var jenis_ppn = $("select[name='do_jenis_ppn']").val();
+            var tarif_dasar = $("input[name='do_tarif_dasar']").val();
+            var biaya_tambahan = $("input[name='do_biaya_tambahan']").val();
+            var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
+            var diskon_p  = $("input[name='do_diskon_p']").val();
+            var diskon_v  = $("input[name='do_diskon_v']").val();
+
+            //--Regex
+            var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");
+            var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
+            var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
+            var diskon_p = diskon_p.replace(/[A-Za-z$. ,-]/g, "");
+            var diskon_v = diskon_v.replace(/[A-Za-z$. ,-]/g, "");
+            var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g,"");
+
+
+            $("input[name='do_diskon_p']").attr('readonly',false);          
+
+            var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi);
+
+            var diskon_total = parseFloat(diskon_v)/parseFloat(total)*100;
+
+            $('#do_diskon_p').val(Math.round(diskon_total,2));
+            console.log(diskon_total)
+                //PENGURANGAN DISKON
+                var total_dpp = total - diskon_v;
+                $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+                $("input[name='do_total_temp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+
+            var ppn  = 0;
+            if (jenis_ppn == 1) {
+                ppn =parseFloat(total) * parseFloat(0.1);
+                total = total + ppn;
+            }else if (jenis_ppn == 2) {
+                ppn =parseFloat(total) * parseFloat(0.01);
+                total = total + ppn;
+            }else if (jenis_ppn == 4) {
+                ppn =0;
+            }else if (jenis_ppn == 3) {
+                ppn =parseFloat(total) / parseFloat(100.1);
+            }else if (jenis_ppn == 5) {
+                ppn =parseFloat(total) / parseFloat(10.1);
+                total = total - ppn;
+            }
+            
+            var total_h = total-diskon_v; 
+            $("input[name='do_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
+
+
+        }
 
     }
+
+
+//DISKON PERCENT / DISKON PERSEN
+    function diskon_persen(){
+        if ($("input[name='do_diskon_p']").val() != 0) {
+            $("input[name='do_diskon_v']").attr('readonly',true);
+        }else{
+            $("input[name='do_diskon_v']").attr('readonly',false);
+        }
+
+        hitung();
+    }
+
+
+//VENDOR PADA PERHITUNGAN
+    $(".vendor_tarif").change(function() {
+        //FIELD
+        var dpp    = $('#do_dpp').val();
+        var vendor = $('#do_vendor').val();
+        //REGEX
+        var dpp = dpp.replace(/[A-Za-z$. ,-]/g, "");
+        var vendor = vendor.replace(/[A-Za-z$. ,-]/g, "");
+
+        if ($('.vendor_tarif').is(':checked') == true) {
+            $("input[name='do_vendor']").prop('readonly',false);
+
+            if (dpp == 0) {
+                $("input[name='do_vendor']").val(accounting.formatMoney(dpp,"",0,'.',','));
+                $("input[name='do_dpp']").val(accounting.formatMoney(0,"",0,'.',','));
+            }else{
+                $("input[name='do_vendor']").val(accounting.formatMoney(dpp,"",0,'.',','));
+                $("input[name='do_dpp']").val(accounting.formatMoney(vendor,"",0,'.',','));
+            }
+            
+            
+        }else{
+            $("input[name='do_vendor']").prop('readonly',true);
+            if (vendor == 0) {
+                $("input[name='do_dpp']").val(accounting.formatMoney(vendor,"",0,'.',','));
+                $("input[name='do_vendor']").val(accounting.formatMoney(0,"",0,'.',','));
+            }else{
+                $("input[name='do_dpp']").val(accounting.formatMoney(vendor,"",0,'.',','));
+                $("input[name='do_vendor']").val(accounting.formatMoney(dpp,"",0,'.',','));
+            }
+            
+        }
+    });
+
+
+//CEK VENDOR TAMBAH , JIKA MELEBIHI DARI TOTAL PENJUMLAHAN AKAN ERROR
+    $('.check_harga_vendor').keyup(function(){
+
+        var dpp    = $('#do_dpp').val();
+        var vendor = $('#do_vendor').val();
+        var harga_temp = $("input[name='do_total_temp']").val();
+        var cek = parseInt(dpp)+parseInt(vendor);
+
+        if (cek > harga_temp) {
+            toastr.warning('Diskon dan biaya tambahan di isi salah satu!!');
+            $('#do_dpp').val(0);
+            $('#do_vendor').val(0);
+        }
+    })
+
+
+//SIMPAN DATA
+    $(document).on("click","#btnsimpan",function(){
+        $.ajax(
+        {
+            url :  ("{{ route('save_deliveryorder_paket') }}"),
+            type: "GET",
+            dataType:"JSON",
+            data : $('.kirim :input').serialize() ,
+            success: function(data, textStatus, jqXHR)
+            {
+               swal("Sukses!", textStatus, "sukses");
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+               swal("Error!", textStatus, "error");
+            }
+        });
+    });
 </script>
 @endsection
