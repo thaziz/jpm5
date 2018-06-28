@@ -18,7 +18,8 @@
             </td>
             <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="45%"><input type="text" name="debet[]" value="0" class="currency debet form-control" style="width: 100%"></td>
             <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="10%">
-              <button class="btn btn-danger btn-xs delete_row"><i class="fa fa-eraser"></i></button></td>
+              <button class="btn btn-danger btn-xs delete_row"><i class="fa fa-eraser"></i></button>
+            </td>
           </tr>
         @endif
       @endforeach
@@ -105,17 +106,7 @@
     })
 
     $("table").on("keyup", ".debet", function(){
-      $total = 0;
-      $(".debet").each(function(){
-        $value = $(this).val()
-        $nilai = $value.split(",")[0].replace(/\./g,"").substring(3)
-
-        //alert($nilai)
-        $total += parseInt($nilai)
-      })
-
-      //alert($total)
-      $("#total_debet").val($total);
+      
     })
 
     $("table").on("keyup", ".kredit", function(){
