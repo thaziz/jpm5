@@ -41,6 +41,16 @@
     .modal-open{
       overflow: inherit;
     }
+
+    .cabang{
+      color: #555;
+    }
+    .cabang:hover{
+      color: white;
+    }
+    .cabangs:hover{
+      background: #0099CC;
+    }
   </style>
 @endsection
 
@@ -100,21 +110,13 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Data Saldo Akun Periode {{ date_ind(date("m")) }} {{ date("Y") }}
+                    <h5> Data Saldo Akun Cabang {{ $cabang->nama }} Periode {{ date_ind(date("m")) }} {{ date("Y") }}
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
-                        {{-- <button class="btn btn-sm btn-success" id="collapsed" data-toggle="tooltip" data-placement="top" title="Sembunyikan Semua Sub Akun">
-                          <i class="fa fa-archive fa-fw"></i>
+                        <button class="btn btn-sm btn-default pilihCabang" data-parrent="0" data-toggle="modal" data-target="#modal_pilih_cabang">
+                          <i class="fa fa-list"></i> &nbsp;Pilih Cabang
                         </button>
-                        
-                        <button class="btn btn-sm btn-success" id="expand" data-toggle="tooltip" data-placement="top" title="Tampilkan Semua Sub Akun">
-                          <i class="fa fa-code-fork fa-fw"></i>
-                        </button> --}}
-
-                        {{-- <button class="btn btn-sm btn-primary tambahAkun" data-parrent="10" data-toggle="modal" data-target="#modal_tambah_akun">
-                          <i class="fa fa-plus"></i> &nbsp;Tambah Data Saldo Awal Akun
-                        </button> --}}
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -144,10 +146,10 @@
                                   
                                   @if($dataAkun->is_active == 1)
                                     <tr>
-                                    	<td>{{ $dataAkun->akun->id_akun }}</td>
-                                    	<td>{{ $dataAkun->akun->nama_akun }}</td>
+                                    	<td>{{ $dataAkun->id_akun }}</td>
+                                    	<td>{{ $dataAkun->nama_akun }}</td>
 
-                                    	@if($dataAkun->akun->akun_dka == "D")
+                                    	@if($dataAkun->akun_dka == "D")
                                     		@if($dataAkun->saldo_akun < 0)
                                     			<?php $tipe = "K"; $kredit = ($dataAkun->saldo_akun * -1); ?>
                                     		@else
@@ -161,12 +163,12 @@
                                     		@endif
                                     	@endif
 
-                                    	<td class="text-center">{{ $dataAkun->akun->akun_dka }}</td>
+                                    	<td class="text-center">{{ $dataAkun->akun_dka }}</td>
                                     	<td class="text-right">{{ number_format($debet,2) }}</td>
                                     	<td class="text-right">{{ number_format($kredit,2) }}</td>
                                       <td class="text-center">
-                                        <span data-toggle="tooltip" data-placement="top" title="Sesuaikan Saldo {{ $dataAkun->akun->nama_akun }}">
-                                            <button class="btn btn-xs btn-info editAkun" data-id="{{ $dataAkun->akun->id_akun }}"><i class="fa fa-pencil fa-fw"></i></button>
+                                        <span data-toggle="tooltip" data-placement="top" title="Sesuaikan Saldo {{ $dataAkun->nama_akun }}">
+                                            <button class="btn btn-xs btn-info editAkun" data-id="{{ $dataAkun->id_akun }}"><i class="fa fa-pencil fa-fw"></i></button>
                                         </span>
                                       </td>
                                     </tr>
@@ -222,6 +224,32 @@
       </div>
       <div class="modal-body">
         
+      </div>
+
+    </div>
+  </div>
+</div>
+  <!-- modal -->
+
+  <!-- modal -->
+<div id="modal_pilih_cabang" class="modal">
+  <div class="modal-dialog" style="width: 20%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Pilih Cabang</h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+      <div class="modal-body">
+        <div class="wrap" style="background: none; height: 300px; overflow-y: scroll; padding-right: 20px;">
+            @foreach($cabangs as $cabang)
+              <a class="cabang" href="{{ url('master_keuangan/akun?cab='.$cabang->kode) }}">
+                <div class="col-md-12 cabangs" style="border: 1px solid #ccc; padding: 5px; border-radius: 1px; margin-top: 2px; cursor: pointer;">
+                  {{ $cabang->nama }}
+                </div>
+              </a>
+            @endforeach
+        </div>
       </div>
 
     </div>

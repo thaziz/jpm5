@@ -46,43 +46,12 @@
           <select name="jenis" class="select_validate form-control" id="jenis">
             <option value="Neraca/Balance Sheet"> Neraca / Balance Sheet</option>
             <option value="Laba Rugi"> Laba Rugi</option>
-
-            {{-- @foreach($cabang as $cab)
-              <option value="{{ $cab->kode_cabang }}">{{ $cab->nama_cabang }}</option>
-            @endforeach --}}
-
           </select>
         </td>
       </tr>
 
     </table>
   </div>
-
-
-  {{-- <div class="col-md-12 m-t" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
-
-    <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Pilih Akun</small></span>
-    
-    <div class="col-md-12 m-t" style="padding: 0px; height: 300px; overflow-y: scroll; border-bottom: 1px solid #bbb;">
-      <table border="0" class="table table-bordered" style="padding:0px; font-size: 8pt;">
-        
-        <thead>
-          <tr>
-            <th width="10%" style="background: white; color: #999;position: sticky;top: 0;">
-              <input type="checkbox" name="check_all" id="check_all">
-            </th>
-            <th width="15%" style="background: white; color: #999;position: sticky;top: 0;">ID Akun</th>
-            <th style="background: white; color: #999;position: sticky;top: 0;">Nama Akun</th>
-          </tr>
-        </thead>
-        
-        <tbody id="akun-wrap">
-
-        </tbody>
-
-      </table>
-    </div>
-  </div> --}}
 
   </form>
 
@@ -138,6 +107,8 @@
       btn = $(this);
       btn.attr("disabled", "disabled");
       btn.text("Menyimpan...");
+
+      console.log($("#data_form").serialize());
 
       if(validate_form()){
         $.ajax(baseUrl+"/master_keuangan/group_akun/save",{
@@ -196,7 +167,7 @@
 
     function validate_form(){
       a = true;
-      $(".form_validate").each(function(i, e){
+      $("#data_form .form_validate").each(function(i, e){
         if($(this).val() == ""){
           a = false;
           $(this).focus();
@@ -205,7 +176,7 @@
         }
       })
 
-      $(".select_validate").each(function(i, e){
+      $("#data_form .select_validate").each(function(i, e){
         if($(this).val() == "---"){
           a = false;
           $(this).focus();
