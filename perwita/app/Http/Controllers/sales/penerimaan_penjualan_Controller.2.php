@@ -411,7 +411,6 @@ class penerimaan_penjualan_Controller extends Controller
           $cari_nota = DB::table('kwitansi')
                    ->where('k_nomor',$request->nota)
                    ->first();
-            dd($cari_nota);
                    
           if ($cari_nota != null) {
             if ($cari_nota->update_by == $user) {
@@ -438,7 +437,7 @@ class penerimaan_penjualan_Controller extends Controller
           $save_kwitansi = DB::table('kwitansi')
                              ->insert([
                               'k_id' => $k_id,
-                              'k_nomor' => $request->nota,
+                              'k_nomor' => $nota,
                               'k_tanggal'=> $tgl,
                               'k_jenis_tarif'=> $request->jenis_tarif,
                               'k_kode_customer' => $request->customer,
@@ -457,7 +456,9 @@ class penerimaan_penjualan_Controller extends Controller
                               'k_kode_akun'=> $request->cb_akun_h
                              ]);
 
-
+          // $save_kwitansi = DB::table('kwitansi')
+          //                     ->where('k_nomor',$nota)
+          //                     ->get();
           $del = DB::table('kwitansi_uang_muka')
                   ->where('ku_keterangan','OLD')
                   ->delete();
@@ -467,12 +468,14 @@ class penerimaan_penjualan_Controller extends Controller
                   $cari_invoice = DB::table('invoice')
                                     ->where('i_nomor',$request->i_nomor[$i])
                                     ->first();
+          // dd($cari_invoice);
 
-                  if ($request->i_biaya_admin[$i] == '') {
+                  if ($request->akun_biaya[$i] == '') {
                       $i_biaya_admin[$i] = 0;
                   }else{
                       $i_biaya_admin[$i] = $request->i_biaya_admin[$i];
                   }
+          dd($request->akun_biaya[$i]);
 
                   $cd = DB::table('cn_dn_penjualan')
                           ->join('cn_dn_penjualan_d','cdd_id','=','cd_id')

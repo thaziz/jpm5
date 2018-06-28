@@ -1498,7 +1498,7 @@ $('#btnsave2').click(function(){
         $(par).find('.i_debet').val(jumlah_biaya_admin);
         $(par).find('.i_kredit').val('0');
     }
-    $(par).find('.i_bayar_text').val(accounting.formatMoney(angka,"",2,'.',','));
+    $(par).find('.i_bayar_text').val(accounting.formatMoney(total_bayar,"",2,'.',','));
     $(par).find('.i_bayar').val(angka);
     $(par).find('.i_tot_bayar').val(total_bayar);
     $(par).find('.i_akun_biaya ').val(akun_biaya);
@@ -2054,7 +2054,7 @@ $('#save_um').click(function(){
                         }else{
                             $(par).find('.i_debet').val(jumlah_biaya_admin);
                         }
-                        $(par).find('.i_bayar_text').val(accounting.formatMoney(angka,"",2,'.',','));
+                        $(par).find('.i_bayar_text').val(accounting.formatMoney(total_bayar,"",2,'.',','));
                         $(par).find('.i_bayar').val(angka);
                         $(par).find('.i_tot_bayar').val(total_bayar);
                         $(par).find('.i_akun_biaya').val(akun_biaya);

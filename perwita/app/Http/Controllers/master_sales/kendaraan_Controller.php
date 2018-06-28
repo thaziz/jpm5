@@ -125,14 +125,19 @@ class kendaraan_Controller extends Controller
     public function index(){
         $sql = "    SELECT k.id,k.nopol,t.nama tipe_angkutan,k.gps,k.kode_cabang, c.nama nama_cabang, k.status FROM kendaraan k
                     LEFT JOIN cabang c ON c.kode=k.kode_cabang
-                    LEFT JOIN tipe_angkutan t ON t.kode=k.tipe_angkutan where k.status != 'SUB' ";
+                    LEFT JOIN tipe_angkutan t ON t.kode=k.tipe_angkutan where k.status = 'DPT' or k.status = 'OWN' ";
         $data =  DB::select($sql);
 
         $sql = "    SELECT k.id,k.nopol,t.nama tipe_angkutan,k.gps,k.kode_cabang, c.nama nama_cabang, k.status FROM kendaraan k
                     LEFT JOIN cabang c ON c.kode=k.kode_cabang
                     LEFT JOIN tipe_angkutan t ON t.kode=k.tipe_angkutan where k.status = 'SUB'  ";
         $data1 =  DB::select($sql);
-        return view('master_sales.kendaraan.index',compact('data','data1'));
+
+        $sql = "    SELECT k.id,k.nopol,t.nama tipe_angkutan,k.gps,k.kode_cabang, c.nama nama_cabang, k.status FROM kendaraan k
+                    LEFT JOIN cabang c ON c.kode=k.kode_cabang
+                    LEFT JOIN tipe_angkutan t ON t.kode=k.tipe_angkutan where k.status = 'SEWA'  ";
+        $data2 =  DB::select($sql);
+        return view('master_sales.kendaraan.index',compact('data','data1','data2'));
     }
     
     public function form($id=null){
