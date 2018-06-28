@@ -283,9 +283,9 @@
                                             </td>
                                             <td>
                                               <div class="col-xs-4">
-                                                  <select class="form-control input-sm jenisppheaderclear disabled" readonly="">
+                                                  <select class="form-control input-sm jenisppheader clear disabled" readonly="">
                                                      @foreach($data['pph'] as $pajak)
-                                                       <option value="{{$pajak->kode}}">
+                                                       <option value="{{$pajak->id}}">
                                                           {{$pajak->nama}}
                                                       </option>
                                                      
@@ -359,7 +359,7 @@
                                               <div class="col-xs-4">
                                                   <select class="form-control input-sm jenispphcn clear" readonly="">
                                                      @foreach($data['pph'] as $pajak)
-                                                       <option value="{{$pajak->kode}}">
+                                                       <option value="{{$pajak->id}}">
                                                           {{$pajak->nama}}
                                                       </option>
                                                      
@@ -499,14 +499,14 @@
                                   <table id="tblfaktur" class="table  table-bordered table-striped tbl-purchase">
                                        <thead>
                                          <tr>
-                                          <th style="width:10px">No</th>
+                                          <th>No</th>
                                           <th style="width:120px"> No Faktur </th>
                                           <th style="width:120px"> Supplier </th>
                                            <th> Jatuh tempo </th>
                                           
                                           <th> Netto Hutang </th>
                                           <th> Sisa Hutang </th>
-                                          <th style="width:50px"> Aksi </th>      
+                                          <th> Aksi </th>      
                                         </tr>
                                       </thead>                          
                                       <tbody>
@@ -1185,8 +1185,8 @@ jenisbayar2 = $('.jenisbayar2').val();
             $('.acchutang').val(faktur[0][0].fp_acchutang);
              $('.jenisppncn').val(faktur[0][0].fp_jenisppn);
             $('.inputppncn').val(faktur[0][0].fp_inputppn);
-            $('.hasilppnhcn').val(faktur[0][0].fp_ppn);
-            $('.jenisppcn').val(faktur[0][0].fp_jenispph);
+            $('.hasilppncn').val(faktur[0][0].fp_ppn);
+            $('.jenispphcn').val(faktur[0][0].fp_jenispph);
             $('.inputpphcn').val(faktur[0][0].fp_nilaipph);
             $('.hasilpphcn').val(faktur[0][0].fp_pph);
 
@@ -1257,7 +1257,7 @@ jenisbayar2 = $('.jenisbayar2').val();
               if(pph != 0) {
                 inputpph = $('.inputpphcn').val();
                  hasilpph = parseFloat((inputpph / 100) * numeric2);
-                 hasilpph2 =   hasil.toFixed(2); 
+                 hasilpph2 =   hasilpph.toFixed(2); 
                  pph2 = $('.hasilpphcn').val(addCommas(hasilpph2));
                  pph = $('.hasilpphcn').val();
               }
