@@ -72,7 +72,7 @@
                          @foreach($data['faktur'] as $faktur)
                           <tr>
                             <td width="150px"> Cabang </td>
-                            <td> <input type="text" class="input-sm form-control" value="{{$faktur->nama}}" readonly=""> <input type="hidden" class="input-sm form-control cabang" value="{{$faktur->fp_comp}}" readonly="" name="cabang">  </td>
+                            <td> <input type="text" class="input-sm form-control" value="{{$faktur->nama}}" readonly=""> <input type="hidden" class="input-sm form-control cabang" value="{{$faktur->fp_comp}}" readonly="" name="cabang"> <input type="hidden" class="input-sm form-control cabangtransaksi" value="{{$faktur->fp_comp}}" readonly="" name="cabang"> </td>
                           </tr>
 
                           <tr>                         
@@ -120,8 +120,7 @@
                             <td> <b> Supplier </b> </td>
                             <td> <input type="text" class="form-control" readonly="" value="{{$faktur->nama_supplier}}">
                                  <input type="hidden" class="form-control idsup" readonly="" value="{{$faktur->idsup}}">
-                                 <input type="hidden" class="form-control idsup2" readonly="" value="
-                                 {{$faktur->idsup}},{{$faktur->syarat_kredit}},{{$faktur->nama_supplier}},{{$faktur->acc_hutang}},{{$faktur->no_supplier}}">
+                                 <input type="hidden" class="form-control idsup2" readonly="" value="{{$faktur->idsup}},{{$faktur->syarat_kredit}},{{$faktur->nama_supplier}},{{$faktur->acc_hutang}},{{$faktur->no_supplier}}">
                                  
                             </td>
                            
@@ -131,7 +130,7 @@
                             <td>
                               <b> Tipe </b>
                             </td>
-                            <td> <input type="text" readonly=""  class="form-control" value="{{$faktur->fp_tipe}}"> </td>
+                            <td> <input type="text" readonly=""  class="form-control tipe" value="{{$faktur->fp_tipe}}"> </td>
                           </tr>
 
                           <tr>
@@ -207,7 +206,7 @@
                       <tr>
                          <td style='text-align: right'>
                           <select class='form-control pajakpph_po edit' name="jenispph_po" disabled="">
-                            @if($faktur->fp_pph != '0.00')
+                            @if($faktur->fp_pph != '0.00' && $faktur->fp_pph != '')
                               @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}'   @if($pajak->nama == $faktur->fp_jenispph) selected @endif> {{$pajak->nama}}</option> @endforeach
   
                             @else
@@ -232,8 +231,10 @@
                         <td> <input type='text' class='form-control sisahutang_po' readonly="" name="sisapelunasan_po" style="text-align: right" value="{{ number_format($faktur->fp_sisapelunasan, 2) }}"> <input type='hidden' class='form-control fp_uangmuka' value="{{$faktur->fp_uangmuka}}"> </td>
                       </tr>
 
-                      <tr> <td> <button class="btn btn-sm btn-primary" type="button" id="createmodal_um" data-target="#bayaruangmuka" data-toggle="modal"> Bayar dengan Uang Muka </button> </td> <td>   @if(isset($jurnal_um))
-                           <button class="btn btn-sm btn-info" type="button" onclick="lihatjurnal('{{$data['faktur'][0]->fp_nofaktur or null}}','UANG MUKA PEMBELIAN FP')" class="btn-sm btn-info" aria-hidden="true">             
+                      <tr> <td> <button class="btn btn-sm btn-primary" type="button" id="createmodal_um" data-target="#bayaruangmuka" data-toggle="modal"> Bayar dengan Uang Muka </button> </td> <td>
+
+                       @if(isset($jurnal_um))
+                           <button class="btn btn-sm btn-info" type="button" onclick="lihatjurnalum('{{$data['faktur'][0]->fp_nofaktur or null}}','UANG MUKA PEMBELIAN FP')" class="btn-sm btn-info" aria-hidden="true">             
                                 <i class="fa  fa-eye"> </i>
                                  &nbsp;  Lihat Jurnal Uang Muka  
                            </button> 
@@ -1225,7 +1226,7 @@
           notr += 1;
         }
 
-        html2 = '<tr class="dataum dataum'+notr+'" data-nota='+nokas+'> <td> <p class="nofaktur idtrum nofaktur2'+notr+'"  onclick="klikkas(this)" data-id='+notr+'>'+nofaktur+'</p> <input type="hidden" class="nofaktur" value="'+nofaktur+'" name="nofaktur[]"> </td>'+
+        html2 = '<tr class="dataum dataum'+notr+'" data-nota='+nokas+'> <td> <p class="nofaktur idtrum nofaktur2'+notr+'"  onclick="klikkas(this)" data-id='+notr+'>'+nofaktur+'</p> <input type="hidden" class="nofaktur" value="'+nofaktur+'"> </td>'+
                   '<td> <p class="nokas_text">'+nokas+'</p> <input type="hidden" class="nokas" value="'+nokas+'" name="nokas[]"> </td>' +
                   '<td><p class="tgl_text">'+tgl+'</p> <input type="hidden" class="tglum" value="'+tgl+'" name="tglum[]"></td>' +
                   '<td><p class="notaum_text">'+notaum+'</p> <input type="hidden" class="notaum" value="'+notaum+'" name="notaum[]"> </td>' +
@@ -1418,13 +1419,8 @@
       val = $(this).data('nota');
       arrnoum.push(val);
     })
-    var a = $('ul#tabmenu').find('li.active').data('val');
-    if(a == 'I'){
-      cabang = $('.cabang').val()
-    }
-    else {
-      cabang = $('.cabangtransaksi').val();
-    }
+  
+    cabang = $('.cabangtransaksi').val();
 
     $.ajax({
       url : baseUrl + '/fakturpembelian/getum',
@@ -4005,13 +4001,13 @@
         replaceppn = ppn.replace(/,/g,'');
         jenisppn = $('.jenisppn_po').val();
         numeric2 = dpp.replace(/,/g,'');
-
+        
       if(val == ''){
         $('.hasilpph_po').val('0.00');
         $('.inputpph_po').val('0');
+        hasiltarif2 = 0;
       }
-      else {
-
+         
       if($('.hasilppn_po').val() != '') { //ppn  tidak kosong
           if($('.jenisppn_po').val() == 'E'){
           
@@ -4092,7 +4088,7 @@
             $('.sisahutang_po').val(addCommas(hasilsisahutang));
           }
       }
-    }
+    
     })
 
 
@@ -7030,7 +7026,62 @@ $('.ubah').click(function(){
 $('.edit').click(function(){
    $('.tampilpo').val('update');
 })
+  
+  function lihatjurnalum($ref,$note){
+    nota = $ref;
+          detail = $note;
 
+          $.ajax({
+          url:baseUrl +'/fakturpembelian/jurnalumum',
+          type:'get',
+          data:{nota,detail},
+          dataType : "json",
+          success:function(response){
+                $('#jurnal').modal('show');
+                hasilpph = $('.hasilpph_po').val();
+                hasilppn = $('.hasilppn_po').val();
+
+             $('.loading').css('display', 'none');
+                $('.listjurnal').empty();
+                $totalDebit=0;
+                $totalKredit=0;
+                        console.log(response);
+                    
+                        for(key = 0; key < response.countjurnal; key++) {
+                           
+                          var rowtampil2 = "<tr class='listjurnal'>" +
+                          "<td> "+response.jurnal[key].id_akun+"</td>" +
+                          "<td> "+response.jurnal[key].nama_akun+"</td>";
+
+                          
+                            if(response.jurnal[key].dk == 'D'){
+                              $totalDebit = parseFloat(Math.abs($totalDebit)) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                              rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td>";
+                            }
+                            else {
+                              $totalKredit = parseFloat(Math.abs($totalKredit)) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                              rowtampil2 += "<td> </td><td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td>";
+                            }
+                         
+
+                            rowtampil2 += "<td>"+response.jurnal[key].jrdt_detail+"</td>";
+                            $('#table_jurnal').append(rowtampil2);
+                        }
+                     var rowtampil1 = "</tbody>" +
+                      "<tfoot>" +
+                          "<tr class='listjurnal'> " +
+                                  "<th colspan='2'>Total</th>" +                        
+                                  "<th>"+accounting.formatMoney($totalDebit, "", 2, ",",'.')+"</th>" +
+                                  "<th>"+accounting.formatMoney($totalKredit,"",2,',','.')+"</th>" +
+                                  "<th>&nbsp</th>" +
+                          "<tr>" +
+                      "</tfoot>";
+                                     
+                   
+                      $('#table_jurnal').append(rowtampil1);
+              }
+        });
+  }
 
   function lihatjurnal($ref,$note){
           nota = $ref;
@@ -7110,7 +7161,7 @@ $('.edit').click(function(){
    }
 
 
-   function lihatjurnalum($ref,$note){
+/*   function lihatjurnalum($ref,$note){
 
           $.ajax({
           url:baseUrl +'/fakturpembelian/lihatjurnalumum',
@@ -7123,5 +7174,5 @@ $('.edit').click(function(){
               }
         });
    }
-</script>
+*/</script>
 @endsection

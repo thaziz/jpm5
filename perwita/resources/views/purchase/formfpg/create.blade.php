@@ -165,12 +165,12 @@
 
                           <tr>
                             <td> <h4> Hutang Cek / BG (K) </h4> </td>
-                            <td> <input type='text' readonly="" name="hutangcekbg" class="input-sm form-control hutangbank" > </td>
+                            <td> <input type='text' readonly="" name="hutangcekbg" class="input-sm form-control hutangbank" name="hutangbank"> </td>
                           </tr>
 
                           <tr>
                             <td> <h4> Uang Muka </h4> </td>
-                            <td> <input type="text" readonly="" name="uangmuka" class="input-sm form-control uangmuka" > </td>
+                            <td> <input type="text" readonly="" name="uangmuka" class="input-sm form-control uangmuka" name="hutangum" > </td>
                           </tr>
                           </table>
                         </div>                    
@@ -1330,6 +1330,8 @@
                                       "</tr>";
                               $('#tableum').append(row);
                               $no++;
+                              $('.uangmuka').val(uangmuka[0].um_akunhutang); 
+
                         }
                       }
                       
@@ -1780,7 +1782,7 @@
                     bank = $('.bank').val();
                     explode = bank.split(",");
                     kodebank = explode[4];
-                    $('.hutangdagang').val(kodebank);
+                    $('.hutangbank').val(kodebank);
 
                     $('#myModal2').modal('hide');
 

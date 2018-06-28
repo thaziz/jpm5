@@ -97,6 +97,8 @@ Route::get('suratpermintaanpembelian/getnospp', 'PurchaseController@getnospp');
 Route::get('suratpermintaanpembelian/cetakspp/{id}', 'PurchaseController@cetakspp');
 Route::get('suratpermintaanpembelian/editspp/{id}', 'PurchaseController@editspp');
 
+Route::get('testing/analisa', 'PurchaseController@queryanalisa');
+
 Route::get('konfirmasi_order/konfirmasi_order' , 'PurchaseController@confirm_order');
 Route::get('konfirmasi_order/konfirmasi_orderdetail/{id}' , 'PurchaseController@confirm_order_dt');
 Route::get('konfirmasi_order/ajax_confirmorderdt' , 'PurchaseController@ajax_confirmorderdt');
