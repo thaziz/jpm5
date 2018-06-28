@@ -469,13 +469,13 @@ class penerimaan_penjualan_Controller extends Controller
                                     ->where('i_nomor',$request->i_nomor[$i])
                                     ->first();
           // dd($cari_invoice);
-          dd($request->all());
 
                   if ($request->akun_biaya[$i] == '') {
                       $i_biaya_admin[$i] = 0;
                   }else{
                       $i_biaya_admin[$i] = $request->i_biaya_admin[$i];
                   }
+          dd($request->akun_biaya[$i]);
 
                   $cd = DB::table('cn_dn_penjualan')
                           ->join('cn_dn_penjualan_d','cdd_id','=','cd_id')
