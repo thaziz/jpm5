@@ -11,21 +11,38 @@ use App\master_akun;
 
 use DB;
 use Validator;
+use Session;
 
 class saldo_akun_controller extends Controller
 {
     public function index(){
         
-        if(cek_periode() == 1)
+        // if(cek_periode() == 1)
             // return view("keuangan.err.err_periode");
+
+        $cabang = DB::table("cabang")->where("kode", $_GET["cab"])->select("nama")->first();
+
+        if(Session::get("cabang") == "000")
+            $cabangs = DB::table("cabang")->select("kode", "nama")->get();
+        else
+            $cabangs = DB::table("cabang")->where("kode", Session::get("cabang"))->select("kode", "nama")->get();
+
 
     	$data = master_akun_saldo::where("tahun", "=", date("Y"))->where("bulan", "=", date("m"))->whereNotNull("saldo_akun")->orderBy("id_akun", "asc")->get();
 
+        $data = DB::table("d_akun_saldo")
+                    ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                    ->where("d_akun_saldo.tahun", date("Y"))
+                    ->where("d_akun_saldo.bulan", date("m"))
+                    ->where("d_akun.kode_cabang", $_GET["cab"])
+                    ->whereNotNull("d_akun_saldo.saldo_akun")
+                    ->orderBy("d_akun.id_akun", "asc")
+                    ->select("d_akun_saldo.*", "d_akun.*")->get();
 
-         date("Y");
 
+        // return json_encode($data);
 
-    	return view("keuangan.akun_saldo.index")->withData($data);
+    	return view("keuangan.akun_saldo.index")->withData($data)->withCabang($cabang)->withCabangs($cabangs);
     }
 
     public function add($parrent){
