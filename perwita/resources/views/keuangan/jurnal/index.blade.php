@@ -56,7 +56,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
       <div class="col-lg-10">
-          <h2> Master Akun </h2>
+          <h2> Jurnal Memorial Standart </h2>
           <ol class="breadcrumb">
               <li>
                   <a>Home</a>
@@ -68,7 +68,7 @@
                   <a>Keuangan</a>
               </li>
               <li class="active">
-                  <strong> Saldo Awal Akun  </strong>
+                  <strong> Jurnal Memorial Standart  </strong>
               </li>
 
           </ol>
@@ -83,7 +83,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Data Saldo Awal Akun
+                    <h5> Data Jurnal Memorial Standart
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
@@ -96,7 +96,7 @@
                         </button> --}}
 
                         <button class="btn btn-sm btn-primary tambahAkun" data-parrent="10" data-toggle="modal" data-target="#modal_tambah_akun">
-                          <i class="fa fa-plus"></i> &nbsp;Tambah Data Jurnal
+                          <i class="fa fa-plus"></i> &nbsp;Tambah Data Jurnal Memorial Standart
                         </button>
                     </div>
                 </div>
@@ -165,7 +165,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">Form Tambah Data Jurnal Transaksi</h4>
+          <h4 class="modal-title">Form Tambah Data Jurnal Memorial Standart</h4>
           <input type="hidden" class="parrent"/>
         </div>
         <div class="modal-body">

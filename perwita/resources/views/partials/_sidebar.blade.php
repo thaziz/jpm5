@@ -2180,7 +2180,7 @@
 
                             <li >
                                     <a class="sidebar master-perusahaan {{Request::is('keuangan/jurnal_umum') ? 'active' : '' || 
-                            Request::is('keuangan/jurnal_umum/*') ? 'active' : ''   }}" href="{{ url('keuangan/jurnal_umum')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Jurnal Umum </a>
+                            Request::is('keuangan/jurnal_umum/*') ? 'active' : ''   }}" href="{{ url('keuangan/jurnal_umum')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Jurnal Memorial Standart </a>
                                 </li>
                             @endif
                             @if(Auth::user()->PunyaAkses('Desain Neraca','aktif'))
