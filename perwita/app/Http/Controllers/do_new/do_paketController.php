@@ -275,6 +275,14 @@ class do_paketController extends Controller
           $cus_kon_dt = $request->kontrak_cus_dt;
       }
 
+      if ($request->do_jenis_ppn == 2) {
+          $ppn_value = $request->do_jml_ppn;
+          $ppn_bol = true;
+      }else{
+          $ppn_value = 0;
+          $ppn_bol = false;
+      }
+
       $data = array(
                 'nomor' => strtoupper($request->do_nomor),
                 'tanggal' => $request->do_tanggal,
@@ -301,7 +309,8 @@ class do_paketController extends Controller
                 'biaya_komisi' => filter_var($request->do_biaya_komisi, FILTER_SANITIZE_NUMBER_INT),
                 'kode_customer' => $request->do_customer,
                 'kode_marketing' => $request->do_marketing,
-                'ppn' => $request->ck_ppn,
+                'ppn_val' => filter_var($ppn_value, FILTER_SANITIZE_NUMBER_INT),
+                'ppn' => $ppn_bol,
                 'company_name_pengirim' => strtoupper($request->do_company_name_pengirim),
                 'nama_pengirim' => strtoupper($request->do_nama_pengirim),
                 'alamat_pengirim' => strtoupper($request->do_alamat_pengirim),
@@ -315,7 +324,7 @@ class do_paketController extends Controller
                 'instruksi' => strtoupper($request->do_instruksi),
                 'deskripsi' => strtoupper($request->do_deskripsi),
                 'jenis_pembayaran' => strtoupper($request->do_jenis_pembayaran),
-                'total' => filter_var($request->do_total_temp, FILTER_SANITIZE_NUMBER_INT),
+                'total' => filter_var($request->do_tarif_dasar, FILTER_SANITIZE_NUMBER_INT),
                 'diskon' => filter_var($request->do_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'diskon_value' => filter_var($request->do_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'jenis' => 'PAKET',
@@ -356,11 +365,8 @@ class do_paketController extends Controller
     );
     $simpan = DB::table('u_s_order_do')->insert($data1);
 
+    // return response()->json('status'=>'sukses');
+
 
     }
-
-
-
-  
-
 }
