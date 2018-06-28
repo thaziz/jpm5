@@ -15,6 +15,7 @@
         pointer-events: none;
     }
 </style>
+                
 
 <div class="wrapper wrapper-content animatdo fadeInRight">
     <div class="row">
@@ -54,7 +55,6 @@
                                 
                     
                 </div>
-                <div id="drop"></div>
                 
                 <br>
           <div class="row">
@@ -215,7 +215,7 @@
                                                         <input type="text" class="form-control jmlunit" onkeyup="setJml()" value="0" name="do_jml_unit" style="text-align:right" >
                                                     </td>
                                                 </tr>
-                                               
+                                                <div id="drop"></div>
                                                 <tr id="dimensi">
                                                     <td style="padding-top: 0.4cm">Panjang</td>
                                                     <td>
@@ -402,6 +402,9 @@
                                                     <td colspan="">
                                                         <select class="chosen-select-width marketingpengirim"  name="do_marketing" style="width:100%">
                                                             <option>- Pilih -</option>
+                                                            @foreach ($marketing as $row)
+                                                                <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                                            @endforeach
                                                         </select>
                                                     </td>
                                                 </tr>
@@ -895,6 +898,7 @@ function hitung() {
         //PENGURANGAN DISKON
         var total_dpp = total - diskon_value_utama;
         $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+        $("input[name='do_vendor']").val(accounting.formatMoney(0,"",0,'.',','));
         $("input[name='do_total_temp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
     //CHECKBOX VENDOR
     
@@ -1043,6 +1047,7 @@ function hitung() {
                 //PENGURANGAN DISKON
                 var total_dpp = total - diskon_v;
                 $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+                $("input[name='do_vendor']").val(accounting.formatMoney(0,"",0,'.',','));
                 $("input[name='do_total_temp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
                 
             var ppn  = 0;
@@ -1093,6 +1098,7 @@ function hitung() {
                 //PENGURANGAN DISKON
                 var total_dpp = total - diskon_v;
                 $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+                $("input[name='do_vendor']").val(accounting.formatMoney(0,"",0,'.',','));
                 $("input[name='do_total_temp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
 
             var ppn  = 0;
