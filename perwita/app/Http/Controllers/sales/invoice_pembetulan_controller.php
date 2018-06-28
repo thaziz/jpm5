@@ -427,7 +427,7 @@ class invoice_pembetulan_controller extends Controller
         }else{
           $nilai_ppn = $ppn_persen/100 * $hasil;
         }
-        dd($hasil);
+        // dd($hasil);
 
 
         dd(round($hasil,2));
