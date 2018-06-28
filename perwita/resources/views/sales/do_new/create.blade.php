@@ -1198,7 +1198,8 @@ function hitung() {
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
-            {
+            {   
+               
                swal("Sukses!", textStatus, "sukses");
             },
             error: function(jqXHR, textStatus, errorThrown)

@@ -365,7 +365,7 @@ class do_paketController extends Controller
     );
     $simpan = DB::table('u_s_order_do')->insert($data1);
 
-    return response()->json('status'=>'sukses');
+    // return response()->json('status'=>'sukses');
 
 
     }
