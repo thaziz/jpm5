@@ -2647,6 +2647,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
   Route::get('sales/tarif_vendor/save_data', 'tarif\tarif_vendorController@save_data');
   Route::get('sales/tarif_vendor/hapus_data', 'tarif\tarif_vendorController@hapus_data');
   Route::get('sales/tarif_vendor/hapus_data_perkota', 'tarif\tarif_vendorController@hapus_data_perkota');
+  Route::get('sales/tarif_vendor/cabang_vendor', 'tarif\tarif_vendorController@cabang_vendor')->name('cabang_vendor');
   // end tarif cabang koli
 
   Route::get('master_sales/group_customer','master_sales\grup_customer_Controller@index');

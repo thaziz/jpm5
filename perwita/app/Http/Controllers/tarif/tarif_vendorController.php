@@ -14,11 +14,21 @@ class tarif_VendorController extends Controller
     public function table_data () {
 
         $cabang = Auth::user()->kode_cabang;
-      if (Auth::user()->punyaAkses('Tarif Penerus Vendor','all')) {
-            $list = DB::table('tarif_vendor')->select('tarif_vendor.*')->get();
+
+        if (Auth::user()->punyaAkses('Tarif Penerus Vendor','all')) {
+            $list = DB::table('tarif_vendor')
+                            ->select('tarif_vendor.*','cabang.nama as cabang')
+                            ->leftjoin('cabang','cabang.kode','=','tarif_vendor.cabang_vendor')
+                            ->leftjoin('kota as k1','k1.id','=','tarif_vendor.id_kota_asal_vendor')
+                            ->leftjoin('kota as k2','k2.id','=','tarif_vendor.id_kota_tujuan_vendor')
+                            ->get();
         }else{
-            $list = DB::table('tarif_vendor')->select('tarif_vendor.*')->get();
-            // $list = DB::table('tarif_vendor')->select('tarif_vendor.*','cabang.nama as cabang')->join('cabang','cabang.kode','=','tarif_vendor.cabang_default')->where('cabang_default',$cabang)->get();
+            $list = DB::table('tarif_vendor')->select('tarif_vendor.*','cabang.*')
+                            ->select('tarif_vendor.*','k1.nama as asal','k2.nama as tujuan','cabang.nama as nama_cab')
+                            ->leftjoin('cabang','cabang.kode','=','tarif_vendor.cabang_vendor')
+                            ->leftjoin('kota as k1','k1.id','=','tarif_vendor.id_kota_asal_vendor')
+                            ->leftjoin('kota as k2','k2.id','=','tarif_vendor.id_kota_tujuan_vendor')/*->where('cabang_vendor',$cabang)*/
+                            ->get();
         }
 
 
@@ -66,6 +76,10 @@ class tarif_VendorController extends Controller
 
     }
 
+    public function cabang_vendor(Request $request)
+    {
+        return 'a';
+    }
     public function get_data (Request $request) {
         $id =$request->input('id');
         $data = DB::table('tarif_vendor')->where('id', $id)->first();

@@ -466,8 +466,9 @@ class LaporanPembelianController extends Controller
 
 
 	public function reportkartuhutang()
-	{
-		return view('purchase/laporan_analisa_pembelian/lap_kartu_hutang/lap_kartu_hutang');
+	{	
+		$customer = DB::table('customer')->get();
+		return view('purchase/laporan_analisa_pembelian/lap_kartu_hutang/lap_kartu_hutang',compact('customer'));
 	}
 
 
