@@ -295,7 +295,7 @@
 
     function validate_form(){
       a = true;
-      $(".form_validate").each(function(i, e){
+      $("#akun_form .form_validate").each(function(i, e){
         if($(this).val() == "" && $(this).is(":visible")){
           a = false;
           $(this).focus();

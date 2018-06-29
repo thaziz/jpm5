@@ -1160,7 +1160,7 @@
                         {{ Request::is('master_keuangan/saldo_akun') ? 'active' : '' || 
                             Request::is('master_keuangan/saldo_akun/*') ? 'active' : ''}} 
 
-                        " href="{{ url('master_keuangan/saldo_akun?cab='.Session::get('cabang'))}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Saldo Akun</a>
+                        " href="{{ url('master_keuangan/saldo_akun?cab='.Session::get('cabang').'&date='.date("m").'&year='.date("Y"))}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Saldo Akun</a>
                         </li>
                         @endif
                         @if(Auth::user()->PunyaAkses('Saldo Piutang','aktif'))
@@ -2180,7 +2180,7 @@
 
                             <li >
                                     <a class="sidebar master-perusahaan {{Request::is('keuangan/jurnal_umum') ? 'active' : '' || 
-                            Request::is('keuangan/jurnal_umum/*') ? 'active' : ''   }}" href="{{ url('keuangan/jurnal_umum?cab='.Session::get('cabang'))}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Jurnal Transaksi </a>
+                            Request::is('keuangan/jurnal_umum/*') ? 'active' : ''   }}" href="{{ url('keuangan/jurnal_umum?cab='.Session::get('cabang').'&date='.date("m").'&year='.date("Y"))}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Jurnal Transaksi </a>
                                 </li>
                             @endif
                             @if(Auth::user()->PunyaAkses('Desain Neraca','aktif'))
