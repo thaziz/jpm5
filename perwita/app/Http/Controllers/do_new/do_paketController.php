@@ -185,16 +185,33 @@ class do_paketController extends Controller
     {
         // dd($request->all());
     	$asal = $request->a;
-    	$tujuan = $request->b;
+      $tujuan = $request->b;
+      $cabang = $request->c;
+      $jenis = $request->d;
+      if ($jenis == '' || $jenis == null) {
+        $vendor = DB::table('tarif_vendor')
+                ->select('vendor.nama','jenis','tujuan.nama as tuj','asal.nama as as','id_tarif_vendor','id_kota_asal_vendor','id_kota_tujuan_vendor','tarif_vendor.cabang_vendor','kode','tarif_vendor','waktu_vendor')
+                ->leftjoin('vendor','tarif_vendor.vendor_id','=','vendor.kode')
+                ->leftjoin('kota as asal','tarif_vendor.id_kota_asal_vendor','=','asal.id')
+                ->leftjoin('kota as tujuan','tarif_vendor.id_kota_tujuan_vendor','=','tujuan.id')
+                ->where('id_kota_asal_vendor','=',$asal)
+                ->where('id_kota_tujuan_vendor','=',$tujuan)
+                ->where('tarif_vendor.cabang_vendor','=',$cabang)
+                ->get();
+      }else{
+        $vendor = DB::table('tarif_vendor')
+                ->select('vendor.nama','jenis','tujuan.nama as tuj','asal.nama as as','id_tarif_vendor','id_kota_asal_vendor','id_kota_tujuan_vendor','id_tarif_vendor.cabang_vendor','kode','tarif_vendor','waktu_vendor')
+                ->leftjoin('vendor','tarif_vendor.vendor_id','=','vendor.kode')
+                ->leftjoin('kota as asal','tarif_vendor.id_kota_asal_vendor','=','asal.id')
+                ->leftjoin('kota as tujuan','tarif_vendor.id_kota_tujuan_vendor','=','tujuan.id')
+                ->where('id_kota_asal_vendor','=',$asal)
+                ->where('id_kota_tujuan_vendor','=',$tujuan)
+                ->where('id_tarif_vendor.cabang_vendor','=',$cabang)
+                ->where('jenis','=',$jenis)
+                ->get();
+      }
 
-    	$vendor = DB::table('tarif_vendor')
-    						->select('vendor.nama','tujuan.nama as tuj','asal.nama as as','id_tarif_vendor','id_kota_asal_vendor','id_kota_tujuan_vendor','vendor.cabang_vendor','kode','tarif_vendor','waktu_vendor')
-    						->leftjoin('vendor','tarif_vendor.vendor_id','=','vendor.kode')
-    						->leftjoin('kota as asal','tarif_vendor.id_kota_asal_vendor','=','asal.id')
-    						->leftjoin('kota as tujuan','tarif_vendor.id_kota_tujuan_vendor','=','tujuan.id')
-    						->where('id_kota_asal_vendor','=',$asal)
-    						->where('id_kota_tujuan_vendor','=',$tujuan)
-    						->get();
+    	
     	// return $vendor;
     	return view('sales.do_new.ajax_modal_vendor',compact('vendor'));
     }

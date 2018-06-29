@@ -1042,7 +1042,6 @@ $('#btnsave').click(function(){
         data:{nomor},
         dataType:'json',
         success:function(response){
-
             for(var i = 0; i < response.data.length;i++){
                 var i_nomor = response.data[i].i_nomor;
                 i_nomor = i_nomor.replace(/\//g,"");
@@ -1060,7 +1059,6 @@ $('#btnsave').click(function(){
                         '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>'
                     ]).draw();
 
-                $('#modal_invoice').modal('hide');
                 $('.customer_tr').addClass('disabled');
             }     
 
@@ -1083,6 +1081,8 @@ $('#btnsave').click(function(){
             $('.tab_detail ul li .tab-1').trigger('click');
         }
     })
+    $('#modal_invoice').modal('hide');
+
 });
 
 function akun_biaya1(){
@@ -1250,6 +1250,10 @@ function histori(p){
                     $('.jumlah_biaya_admin ').val(biaya_admin);
                     var biaya_admin    = $(par).find('.i_akun_biaya').val();
                     $('.akun_biaya ').val(biaya_admin).trigger('chosen:updated');
+                    var jenis =  $('.akun_biaya').find(':selected').data('jenis');
+                    var biaya =  $('.akun_biaya').find(':selected').data('biaya');
+                    $('.jenis_biaya').val(jenis);
+                    $('.akun_acc_biaya').val(biaya);
                     if (biaya_admin == '0') {
                         $('.jumlah_biaya_admin').attr('readonly',true);
                     }else{
@@ -1328,6 +1332,10 @@ function histori(p){
                     $('.jumlah_biaya_admin_um').val(biaya_admin);
                     var biaya_admin    = $(par).find('.i_akun_biaya ').val();
                     $('.akun_biaya_um').val(biaya_admin).trigger('chosen:updated');
+                    var jenis =  $('.akun_biaya_um').find(':selected').data('jenis');
+                    var biaya =  $('.akun_biaya_um').find(':selected').data('biaya');
+                    $('.jenis_biaya').val(jenis);
+                    $('.akun_acc_biaya').val(biaya);
                     if (biaya_admin == '0') {
                         $('.jumlah_biaya_admin_um').attr('readonly',true);
                     }else{
@@ -1501,7 +1509,11 @@ $('#btnsave2').click(function(){
     $(par).find('.i_bayar_text').val(accounting.formatMoney(total_bayar,"",2,'.',','));
     $(par).find('.i_bayar').val(angka);
     $(par).find('.i_tot_bayar').val(total_bayar);
-    $(par).find('.i_akun_biaya ').val(akun_biaya);
+    if (jumlah_biaya_admin == 0) {
+        $(par).find('.i_akun_biaya ').val('0');
+    }else{
+        $(par).find('.i_akun_biaya ').val(akun_biaya);
+    }
     $(par).find('.i_keterangan ').val(keterangan_modal);
     var temp = 0;
     table_data.$('.i_bayar').each(function(){

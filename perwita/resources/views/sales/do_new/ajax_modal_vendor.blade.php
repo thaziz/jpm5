@@ -29,8 +29,8 @@
                 <td>{{ $element->tuj }}</td>
                 <td>{{ $element->as }}</td>
                 <td>{{ $element->nama }}</td>
-                <td>{{ $element->tarif_vendor }}</td>
-                <td>{{ $element->waktu_vendor }}</td>
+                <td align="right">{{ number_format($element->tarif_vendor,0,'','.') }}</td>
+                <td>{{ number_format($element->waktu_vendor,0,'','.') }}</td>
               </tr>
             @endforeach
           </tbody>

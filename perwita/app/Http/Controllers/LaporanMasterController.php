@@ -2732,7 +2732,6 @@ class LaporanMasterController extends Controller
    			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran');
 
    		$data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
-
    		$ds = DB::table('kwitansi')
    			->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto','nomor')
    			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')

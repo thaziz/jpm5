@@ -1665,6 +1665,7 @@ Route::post('sales/save_um_kwitansi', 'sales\penerimaan_penjualan_Controller@sav
 Route::get('sales/kwitansi_cari_um', 'sales\penerimaan_penjualan_Controller@kwitansi_cari_um');
 
 Route::get('sales/hapus_um_kwitansi', 'sales\penerimaan_penjualan_Controller@hapus_um_kwitansi');
+Route::get('sales/kwitansi/jurnal', 'sales\penerimaan_penjualan_Controller@jurnal');
 
 
 
@@ -2649,6 +2650,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
   Route::get('sales/tarif_vendor/save_data', 'tarif\tarif_vendorController@save_data');
   Route::get('sales/tarif_vendor/hapus_data', 'tarif\tarif_vendorController@hapus_data');
   Route::get('sales/tarif_vendor/hapus_data_perkota', 'tarif\tarif_vendorController@hapus_data_perkota');
+  Route::get('sales/tarif_vendor/cabang_vendor', 'tarif\tarif_vendorController@cabang_vendor')->name('cabang_vendor');
   // end tarif cabang koli
 
   Route::get('master_sales/group_customer','master_sales\grup_customer_Controller@index');

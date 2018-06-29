@@ -74,6 +74,10 @@
           format:"yyyy-mm-dd",
           autoclose:true
         }).datepicker("setDate", "0");
+        var datepicker_date = $('.datepicker_date').datepicker({
+          format:"yyyy-mm-dd",
+          autoclose:true
+        });
 
    /*     $('body').removeClass('fixed-sidebar');
         $("body").toggleClass("mini-navbar");*/
