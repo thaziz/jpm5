@@ -2044,7 +2044,7 @@ $('#save_um').click(function(){
                         var jumlah_biaya_admin   = $('.jumlah_biaya_admin_um').val();
                         var jenis                = $('.jenis_biaya_um').val();
                         var akun_acc_biaya       = $('.akun_acc_biaya_um').val();
-                        var total_bayar          = $('total_bayar').val();
+                        var total_bayar          = $('.total_bayar').val();
                         total_bayar              = total_bayar.replace(/[^0-9\-]+/g,"")/100;
 
                         if (jumlah_biaya_admin == '') {

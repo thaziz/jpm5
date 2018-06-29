@@ -1567,12 +1567,13 @@ Route::get('sales/nota_debet_kredit/hapus_cn_dn', 'sales\nota_debet_kredit_Contr
 
 // uang muka penjualan
 Route::get('sales/uang_muka_penjualan', 'sales\uang_muka_penjualan_Controller@index');
-Route::get('sales/uang_muka_penjualan/nota_uang_muka', 'sales\uang_muka_penjualan_Controller@nota_uang_mukakw');
+Route::get('sales/uang_muka_penjualan/nota_uang_muka', 'sales\uang_muka_penjualan_Controller@nota_uang_muka');
 Route::get('sales/uang_muka_penjualan/tabel', 'sales\uang_muka_penjualan_Controller@table_data');
 Route::get('sales/uang_muka_penjualan/nota_uang_muka', 'sales\uang_muka_penjualan_Controller@nota_uang_muka');
 Route::get('sales/uang_muka_penjualan/get_data', 'sales\uang_muka_penjualan_Controller@get_data');
-Route::post('sales/uang_muka_penjualan/save_data', 'sales\uang_muka_penjualan_Controller@save_data');
-Route::post('sales/uang_muka_penjualan/hapus_data', 'sales\uang_muka_penjualan_Controller@hapus_data');
+Route::get('sales/uang_muka_penjualan/edit', 'sales\uang_muka_penjualan_Controller@edit');
+Route::get('sales/uang_muka_penjualan/save_data', 'sales\uang_muka_penjualan_Controller@save_data');
+Route::get('sales/uang_muka_penjualan/hapus_data', 'sales\uang_muka_penjualan_Controller@hapus_data');
 // end uang muka penjualan
 
 //invoice lain

@@ -69,7 +69,7 @@
                   </table>
                 </div><!-- /.box-body -->
                 <!-- modal -->
-                <div id="modal" class="modal" >
+                <div id="modal_um" class="modal" >
                   <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -85,15 +85,15 @@
                                     <td>
                                         <input type="text" name="ed_nomor" class="form-control ed_nomor" style="text-transform: uppercase" >
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
-                                        <input type="hidden" name="ed_nomor_old" class="form-control" >
-                                        <input type="hidden" class="form-control" name="crud" class="form-control" >
+                                        <input type="hidden" name="ed_nomor_old" class="form-control ed_nomor_old" >
+                                        <input type="hidden" class="form-control crud" name="crud" class="form-control" >
                                     </td>
                                 </tr>
                                 <tr>
 									<td style="padding-top: 0.4cm">Tanggal</td>
 									<td >
 										<div class="input-group date">
-											<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control col-xs-12" name="ed_tanggal" value="{{ $data->tanggal or  date('Y-m-d') }}">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control col-xs-12 ed_tanggal" name="ed_tanggal" value="{{ $data->tanggal or  date('Y-m-d') }}">
 										</div>
 									</td>
                                 </tr>
@@ -101,7 +101,7 @@
                                     <td style="padding-top: 0.4cm">Cabang</td>
                                     <td>   
                                         <select onchange="nota_um()" class="chosen-select-width b cb_cabang"  name="cb_cabang" style="width:100%">
-                                            <option value="" ></option>
+                                            <option value="0" >Pilih - Cabang</option>
                                         @foreach ($cabang as $row)
                                             <option value="{{ $row->kode }}"> {{ $row->kode }} - {{ $row->nama }} </option>
                                         @endforeach
@@ -111,22 +111,22 @@
                                 <tr>
 									<td style="width:110px; padding-top: 0.4cm">Customer</td>
 									<td >
-									<select class="chosen-select-width" name="cb_customer" >
-											<option value=""></option>
+									<select class="chosen-select-width cb_customer" name="cb_customer" >
+											<option value="0">Pilih - Customer</option>
 										@foreach ($customer as $row)
 											<option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
 										@endforeach
 										</select>
 									</td>
                                 </tr>
-								<tr>
+{{-- 								<tr>
 									<td style="padding-top: 0.4cm">Jenis</td>
 									<td>
 										<select class="form-control" name="cb_jenis" >
 											<option value="U"> UANG MUKA/DP </option>
 										</select>
 									</td>
-								</tr>
+								</tr> --}}
 								<tr>
 									<td style="padding-top: 0.4cm">Jumlah</td>
 									<td>
@@ -136,7 +136,7 @@
 								<tr>
 									<td style="width:120px; padding-top: 0.4cm">Keterangan</td>
 									<td >
-										<input type="text" name="ed_keterangan" class="form-control" style="text-transform: uppercase" > 
+										<input type="text" name="ed_keterangan" class="form-control ed_keterangan" style="text-transform: uppercase" > 
 									</td>
 								</tr>
                             </tbody>
@@ -176,10 +176,14 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
     $(document).ready( function () {
         $('#table_data').DataTable({
             "paging": true,
             "lengthChange": true,
+            processing: true,
+            // responsive:true,
+            serverSide: true,
             "searching": true,
             "ordering": true,
             "info": false,
@@ -231,143 +235,134 @@
     
     });
 
-    $(document).on("click","#btn_add",function(){
-		var fullDate = new Date();
-		var twoDigitMonth = ((fullDate.getMonth().length+1) === 1)? (fullDate.getMonth()+1) :(fullDate.getMonth()+1);//fullDate.getMonth().length+1
-		if(twoDigitMonth.length==1)	twoDigitMonth="0" +twoDigitMonth;
-		var twoDigitDate = fullDate.getDate()+"";
-		if(twoDigitDate.length==1)	twoDigitDate="0" +twoDigitDate;
-		var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + twoDigitDate; 
-        $("input[name='crud']").val('N');
-        $("input[name='ed_nomor']").val('');
-        $("input[name='ed_nomor_old']").val('');
-        $("input[name='ed_tanggal']").val('');
-		$("select[name='cb_customer']").val('').trigger('chosen:updated');
-		$("select[name='cb_cabang']").val('').trigger('chosen:updated');
-        $("select[name='cb_jenis']").val('');
-        $("input[name='ed_jumlah']").val('0');
-        $("input[name='ed_keterangan']").val('');
-        $("input[name='ed_tanggal']").val(currentDate);
-        $("#modal").modal("show");
-        $("input[name='ed_nomor']").focus();
-    });
-
-    $(document).on( "click",".btnedit", function() {
-        var id=$(this).attr("id");
-        var value = {
-            id: id
-        };
-        $.ajax(
-        {
-            url : baseUrl + "/sales/uang_muka_penjualan/get_data",
-            type: "GET",
-            data : value,
-            dataType:'json',
-            success: function(data, textStatus, jqXHR)
-            {
-                $("input[name='crud']").val('E');
-				$("input[name='ed_nomor']").val(data.nomor);
-				$("input[name='ed_nomor_old']").val(data.nomor);
-				$("input[name='ed_tanggal']").val(data.tanggal);
-				$("select[name='cb_customer']").val(data.kode_customer).trigger('chosen:updated');
-				$("select[name='cb_cabang']").val(data.kode_cabang).trigger('chosen:updated');
-				$("select[name='cb_jenis']").val(data.jenis);
-				$("input[name='ed_jumlah']").val(data.jumlah);
-				$("input[name='ed_keterangan']").val(data.keterangan);
-                $("#modal").modal('show');
-                $("input[name='ed_nomor']").focus();
-            },
-            error: function(jqXHR, textStatus, errorThrown)
-            {
-                swal("Error!", textStatus, "error");
-            }
-        });
-    });
-        function nota_um() {
-            var cb_cabang = $('.cb_cabang').val();
-
-            $.ajax({
-                url:baseUrl + '/sales/uang_muka_penjualan/nota_uang_muka',
-                data:{cb_cabang},
-                dataType:'json',
-                success:function(response){
-                    $('.ed_nomor').val(response.nota);
-                }
-            })
-        }
-
-    $(document).on("click","#btnsave",function(){
-        $.ajax(
-        {
-            url : baseUrl + "/sales/uang_muka_penjualan/save_data",
-            type: "POST",
-            dataType:"JSON",
-            data : $('.kirim :input').serialize() ,
-            success: function(data, textStatus, jqXHR)
-            {
-                if(data.crud == 'N'){
-                    if(data.result == 1){
-                        var table = $('#table_data').DataTable();
-                        table.ajax.reload( null, false );
-                        $("#modal").modal('hide');
-                        $("#btn_add").focus();
-                    }else{
-                        alert("Gagal menyimpan data!");
-                    }
-                }else if(data.crud == 'E'){
-                    if(data.result == 1){
-                        //$.notify('Successfull update data');
-                        var table = $('#table_data').DataTable();
-                        table.ajax.reload( null, false );
-                        //$("#edkode").focus();
-                        $("#modal").modal('hide');
-                        $("#btn_add").focus();
-                    }else{
-                        swal("Error","Can't update data, error : "+data.error,"error");
-                    }
-                }else{
-                    swal("Error","invalid order","error");
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown)
-            {
-               swal("Error!", textStatus, "error");
-            }
-        });
-    });
-
-    $(document).on( "click",".btndelete", function() {
-        var name = $(this).attr("name");
-        var id = $(this).attr("id");
-        if(!confirm("Hapus Data " +name+ " ?")) return false;
-        var value = {
-            id: id,
-            _token: "{{ csrf_token() }}"
-        };
-        $.ajax({
-            type: "POST",
-            url : baseUrl + "/sales/uang_muka_penjualan/hapus_data",
-            dataType:"JSON",
-            data: value,
-            success: function(data, textStatus, jqXHR)
-            {
-                if(data.result ==1){
-                    var table = $('#table_data').DataTable();
-                    table.ajax.reload( null, false );
-                }else{
-                    swal("Error","Data tidak bisa hapus : "+data.error,"error");
-                }
-
-            },
-            error: function(jqXHR, textStatus, errorThrown)
-            {
-                swal("Error!", textStatus, "error");
-            }
-        });
-
-
-    });
     
+    $('#btn_add').click(function(){
+        $.ajax({
+            url:'{{url('sales/uang_muka_penjualan/nota_uang_muka')}}',
+            dataType:'json',
+            type:'get',
+            success:function(data){
+                $('.kirim :input').val('');
+                $('.cb_cabang').val('0').trigger('chosen:updated');
+                $('.cb_customer').val('0').trigger('chosen:updated');
+                $('.kirim :input').val('');
+                $('.ed_nomor').val(data.nota);
+                $('.crud').val('N');
+                var now = '{{carbon\carbon::now()->format('Y-m-d')}}';
+                console.log(now);
+                $('.ed_tanggal').datepicker({format:'yyyy-mm-dd'}).datepicker("setDate",'{{carbon\carbon::now()->format('Y-m-d')}}');
+                $('#modal_um').modal('show');
+            },
+            error:function(){
 
+            }
+        })
+    })
+
+    function edit(id) {
+        $.ajax({
+            url:'{{url('sales/uang_muka_penjualan/edit')}}',
+            dataType:'json',
+            type:'get',
+            data:{id},
+            success:function(data){
+                $('.cb_cabang').val(data.data.kode_cabang).trigger('chosen:updated');
+                $('.cb_customer').val(data.data.kode_customer).trigger('chosen:updated');
+                $('.ed_nomor').val(data.data.nomor);
+                $('.ed_nomor_old').val(data.data.nomor);
+                $('.angka').val(accounting.formatMoney(data.data.jumlah,"",0,'.',','))
+                $('.angka').val(accounting.formatMoney(data.data.jumlah,"",0,'.',','))
+                $('.ed_keterangan').val(data.data.keterangan);
+                $('.ed_tanggal').val(data.data.tanggal);
+                $('.crud').val('E');
+                $('#modal_um').modal('show');
+            },
+            error:function(){
+
+            }
+        })
+    }
+    function nota_um(argument) {
+        var cb_cabang = $('.cb_cabang').val();
+        $.ajax({
+            url:'{{url('sales/uang_muka_penjualan/nota_uang_muka')}}',
+            dataType:'json',
+            type:'get',
+            data:{cb_cabang},
+            success:function(data){
+                $('.ed_nomor').val(data.nota);
+                $('#modal_um').modal('show');
+            },
+            error:function(){
+
+            }
+        })
+    }
+    $('#btnsave').click(function(){
+
+        $.ajax({
+            url:'{{url('sales/uang_muka_penjualan/save_data')}}',
+            dataType:'json',
+            type:'get',
+            data:$('.kirim :input').serialize(),
+            success:function(data){
+                if (data.status == 1) {
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload();
+                    $('#modal_um').modal('hide');
+                }else{
+                    toastr.warning(data.pesan);
+                }
+            },
+            error:function(){
+
+            }
+        })
+    })
+
+
+function hapus(id){
+        swal({
+        title: "Apakah anda yakin?",
+        text: "Hapus Data!",
+        type: "warning",
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false
+    },
+
+    function(){
+
+         $.ajax({
+          url:'{{url('sales/uang_muka_penjualan/hapus_data')}}',
+          data:{id},
+          type:'get',
+          success:function(data){
+              swal({
+              title: "Berhasil!",
+                      type: 'success',
+                      text: "Data Berhasil Dihapus",
+                      timer: 2000,
+                      showConfirmButton: true
+                      },function(){
+                         var table = $('#table_data').DataTable();
+                         table.ajax.reload();
+              });
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+      });
+    });
+}
 </script>
 @endsection
