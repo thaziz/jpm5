@@ -311,7 +311,7 @@ class do_kargo_Controller extends Controller
     {   
         // return dd($request->all());
         if ($request->status_kendaraan == 'OWN') {
-            $jenis = ['OWN','DPT'];
+            $jenis = ['OWN','DPT','SEWA'];
             $data = DB::table('kendaraan')
                   ->join('tipe_angkutan','tipe_angkutan.kode','=','kendaraan.tipe_angkutan')
                   ->whereIn('kendaraan.status',$jenis)

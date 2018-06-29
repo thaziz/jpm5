@@ -39,6 +39,15 @@
     }.chosen-select {
         background: red;
     }
+    .cabang{
+      color: #555;
+    }
+    .cabang:hover{
+      color: white;
+    }
+    .cabangs:hover{
+      background: #0099CC;
+    }
   </style>
 @endsection
 
@@ -100,10 +109,14 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Data Akun
+                    <h5> Data Akun Cabang {{ $cabang->nama }}
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
+                        <button class="btn btn-sm btn-default pilihCabang" data-parrent="0" data-toggle="modal" data-target="#modal_pilih_cabang">
+                          <i class="fa fa-list"></i> &nbsp;Pilih Cabang
+                        </button>
+
                         <button class="btn btn-sm btn-primary tambahAkun" data-parrent="0" data-toggle="modal" data-target="#modal_tambah_akun">
                           <i class="fa fa-plus"></i> &nbsp;Tambah Data Akun
                         </button>
@@ -201,6 +214,32 @@
       </div>
       <div class="modal-body">
         <center class="text-muted">Menyiapkan Form</center>
+      </div>
+
+    </div>
+  </div>
+</div>
+  <!-- modal -->
+
+  <!-- modal -->
+<div id="modal_pilih_cabang" class="modal">
+  <div class="modal-dialog" style="width: 20%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Pilih Cabang</h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+      <div class="modal-body">
+        <div class="wrap" style="background: none; height: 300px; overflow-y: scroll; padding-right: 20px;">
+            @foreach($cabangs as $cabang)
+              <a class="cabang" href="{{ url('master_keuangan/akun?cab='.$cabang->kode) }}">
+                <div class="col-md-12 cabangs" style="border: 1px solid #ccc; padding: 5px; border-radius: 1px; margin-top: 2px; cursor: pointer;">
+                  {{ $cabang->nama }}
+                </div>
+              </a>
+            @endforeach
+        </div>
       </div>
 
     </div>

@@ -53,6 +53,7 @@ use Session;
 use Mail;
 use App\returnpembelian;
 use App\returnpembelian_dt;
+
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 
@@ -123,7 +124,7 @@ class ReturnPembelianController extends Controller
 		$idpo = $request->idpo;
 		if(count($idpo) == 0){
 		
-							$data['po'] = DB::select("select * from pembelian_order where po_supplier = '$supplier' and po_idfaktur is null and po_setujufinance = 'DISETUJUI' and po_statusreturn = 'AKTIF' and po_cabang = '$cabang' and po_id != '$idpo' ");
+			$data['po'] = DB::select("select * from pembelian_order where po_supplier = '$supplier' and po_idfaktur is null and po_setujufinance = 'DISETUJUI' and po_statusreturn = 'AKTIF' and po_cabang = '$cabang' and po_id != '$idpo' ");
 			
 		}
 		else {
@@ -474,17 +475,14 @@ class ReturnPembelianController extends Controller
 				$podt->podt_qtykirim = $data['podt'][$n]->podt_qtykirim;
 				$podt->podt_supplier =	$data['podt'][$n]->podt_supplier;
 
-			
-
 				$podt->podt_jumlahharga = $data['podt'][$n]->podt_jumlahharga;
 				$podt->podt_statuskirim = $data['podt'][$n]->podt_statuskirim;
 				$podt->podt_idspp = $data['podt'][$n]->podt_idspp;
 				$podt->podt_idpo = $idpo2;
 				$podt->podt_totalharga = $data['podt'][$n]->podt_totalharga;
 				$podt->podt_lokasigudang = $data['podt'][$n]->podt_lokasigudang;
-				//$podt->create_by = $request->username;	
+				$podt->podt_keterangan = $data['podt'][$n]->podt_keterangan;
 				$podt->save();
-
 			}
 
 			//update podt
@@ -670,9 +668,6 @@ class ReturnPembelianController extends Controller
 												//	return $idpo . $iditem . $idpbdt;
 													$idpb = $data['pb'][$i][$yz]->pbdt_idpb;
 
-
-
-
 														//update di stockmutation di penerimaan barang
 													$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_po' , '=' , $idpb] , ['sm_id_gudang' , '=' , $request->lokasigudang[$k] ], ['sm_comp' , '=' , $cabang] , ['sm_item' , '=' , $iditem]]);
 
@@ -783,8 +778,6 @@ class ReturnPembelianController extends Controller
 								                            'rnsm_idsm'       => $datasmt[0]->sm_id,
 								                        ]);
 
-								                           
-
 													$updatesmt->update([
 														'sm_qty' => 0,
 														'sm_sisa' => 0,
@@ -829,8 +822,6 @@ class ReturnPembelianController extends Controller
 					for($x = 0 ; $x < count($data['pb'][0]); $x++){
 						$jumlahterima = $jumlahterima + (int)$data['pb'][0][$x]->pbdt_qty;
 					}
-
-					
 
 				//update peritem di pbdt
 				$hasilqty = (int)$request->qtypo[$j] - (int)$request->qtyreturn[$j];
@@ -882,15 +873,22 @@ class ReturnPembelianController extends Controller
 
 			//nambah persediaan ketika ada qtyterima
 			$dataterima = DB::select("select * from returnpembelian, returnpembelian_dt where rn_id = '$idrn' and rndt_idrn = rn_id ");
-
+			$jurnalreturn = [];
 			for($i = 0; $i < count($dataterima); $i++){
 				$qtyterima = $dataterima[$i]->rndt_qtyterima;
+				$hargaterima = $dataterima[$i]->rndt_hargaterima;
+
+				
+
+
+
+
 				if($qtyterima != 0){
 					//masuk gudang
 					$itemterima = $dataterima[$i]->rndt_item;
 					//UPDATE DATA STOCK GUDANG
 					$lokasigudang = $dataterima[$i]->rndt_lokasigudang;
-					$itemterima = $request->kodeitem[$j];
+					$itemterima = $request->kodeitem[$i];
 					$stockgudang = DB::select("select * from stock_gudang where sg_gudang = '$lokasigudang' and sg_cabang = '$cabang' and sg_item = '$itemterima' ");
 				/*	return $iditem . $cabang . $lokasigudang;*/
 					//return $stockgudang[0]->sg_qty;
@@ -904,41 +902,55 @@ class ReturnPembelianController extends Controller
 
 					$datapodt = DB::select("select * from pembelian_orderdt where podt_idpo = '$idpo2' and podt_kodeitem = '$itemterima'");
 					$qtypo = $datapodt[0]->podt_qtykirim;
+					$hargapo = $datapodt[0]->podt_jumlahharga;
 
-					$hasilqtypo = (int)$qtypo + (int)$qtyterima;
+					$datapb = DB::select("select * from penerimaan_barang where pb_po = '$idpo2'");
 
-					$updatepodt = pembelian_orderdt::where(['podt_idpo' , '=', $idpo2]);
 
-					$lastidpodt = pembelian_orderdt::max('podt_id'); 
-						$mytime = Carbon::now(); 
+					if(floatval($hargapo) != floatval($hargaterima)){
 
-						if(isset($lastidpodt)) {
-							$idpodt = $lastidpodt;
-							$idpodt = (int)$lastidpodt + 1;
+						$updatepodt = purchase_orderdt::where(['podt_idpo' , '=', $idpo2]);
+
+						$lastidpodt = purchase_orderdt::max('podt_id'); 
+							$mytime = Carbon::now(); 
+
+							if(isset($lastidpodt)) {
+								$idpodt = $lastidpodt;
+								$idpodt = (int)$lastidpodt + 1;
+							}
+							else {
+								$idpodt = 1;
+							}	
+
+						$updatepodt->insert([
+						//	'podt_qtykirim' => $hasilqtypo,
+							'podt_id' => $idpodt,
+							'podt_kodeitem' => $itemterima,
+							'podt_approval' => $datapodt[0]->podt_approval,
+							'podt_qtykirim' => $qtyterima,
+							'podt_jumlahharga' => $dataterima[0]->rndt_hargaterima,
+							'podt_statuskirim' => 'LENGKAP',
+							'podt_idspp' => $datapodt[0]->podt_idspp,
+							'podt_idpo' => $datapodt[0]->podt_idpo,
+							'podt_lokasigudang' => $lokasigudang,
+							'podt_tglkirim' => $mytime,
+							'podt_supplier' => $datapodt[0]->podt_supplier,
+							'podt_totalharga' => $dataterima[0]->rndt_totalhargaterima,
+							'podt_akunitem' => $dataterima[0]->rndt_akunitem,
+							'podt_keterangan' => $datapodt[0]->podt_keterangan,
+							'podt_sisaterima' => '0',
+							]);
 						}
 						else {
-							$idpodt = 1;
+
+							$hasilqtypo = (int)$datapodt[0]->podt_qtykirim + (int)$qtykirim;
+							$updatepodt->update([
+								'podt_qtykirim' => $hasilqtypo,
+							]);
 						}
 
-					$updatepodt->insert([
-						'podt_qtykirim' => $hasilqtypo,
-						'podt_id' => $idpodt,
-						'podt_kodeitem' => $itemterima,
-						'podt_approval' => $datapodt[0]->qty_approval,
-						'podt_qtykirim' => $qtyterima,
-						'podt_jumlahharga' => $dataterima[0]->rndt_hargaterima,
-						'podt_statuskirim' => 'LENGKAP',
-						'podt_idspp' => $datapodt[0]->podt_idspp,
-						'podt_idpo' => $datapodt[0]->podt_idpo,
-						'podt_lokasigudang' => $lokasigudang,
-						'podt_tglkirim' => $mytime,
-						'podt_supplier' => $datapodt[0]->podt_supplier,
-						'podt_totalharga' => $dataterima[0]->rndt_totalhargaterima,
-						'podt_akunitem' => $dataterima[0]->rndt_akunitem,
-						'podt_keterangan' => $datapodt[0]->podt_keterangan,
 
-						]);
-
+					
 						$stock_mutation = new stock_mutation();
 						$lastidsm = stock_mutation::max('sm_id'); 
 						$mytime = Carbon::now(); 
@@ -965,7 +977,7 @@ class ReturnPembelianController extends Controller
 						$stock_mutation->sm_qty = $qtyterima;
 						$stock_mutation->sm_use =  0;
 						$stock_mutation->sm_hpp = $dataterima[$i]->rndt_harga;
-						$stock_mutation->sm_lpb =  $dataterima[0]->nota;
+						$stock_mutation->sm_lpb =  $dataterima[0]->rn_nota;
 						$stock_mutation->sm_suratjalan = '-' ;
 						$stock_mutation->sm_po = $idrn ;
 						$stock_mutation->sm_id_gudang = $lokasigudang;
@@ -976,6 +988,39 @@ class ReturnPembelianController extends Controller
 						$stock_mutation->save();
 
 				} // end if qty tdk kosong
+
+				$datapodt = DB::select("select * from pembelian_order, pembelian_orderdt where podt_idpo = po_id");
+				for($i = 0; $i < count($datapodt); $i++){
+					$idakun = $datapodt[$i]->podt_akunitem;
+
+					$dataakun = DB::select("select * from d_akun where id_akun = '$idakun'");
+					$dka = $dataakun[0]->akun_dka;
+
+					if($dka == 'D'){
+						$jurnalreturn[$i]['id_akun'] = $datapodt[$i]->podt_akunitem;
+						$jurnalreturn[$i]['subtotal'] = '-' . $datapodt[$i]->podt_totalharga;
+						$jurnalreturn[$i]['dk'] = 'K';
+					}
+					else {
+						$jurnalreturn[$i]['id_akun']  =  $datapodt[$i]->podt_akunitem;
+						$jurnalreturn[$i]['subtotal'] = $datapodt[$i]->podt_totalharga;
+						$jurnalreturn[$i]['dk'] = 'K';	
+					}
+
+					//$totalhutang = $totalhutang + $totalharga;
+				} // end for
+
+				$cabang = $datapodt[0]->po_cabangtransaksi;
+				$datadakun = DB::select("select * from d_akun where id_akun LIKE '1408%' and kode_cabang = '$cabang'");
+				$akunreturn = $datadakun[0]->id_akun;
+
+				$dataakun2 = array (
+						'id_akun' => $akunreturn,
+						'subtotal' => $totalhutang,
+						'dk' => 'K',
+						);
+
+					array_push($datajurnal, $dataakun );
 			}
   
 			return json_encode($data);

@@ -9,7 +9,7 @@
         @if($dataDetail1->trdt_accstatusdk == "D")
           <tr>
             <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-left" width="45%">
-              <select name="nama_akun_debet[]" style="width:100%" class="form-control chosen-select">
+              <select name="nama_akun_debet[]" style="width:100%" class="form-control">
                 @foreach($akun as $dataAkun)
                   <?php $able = ($dataAkun->id_akun == $dataDetail1->trdt_acc) ? "selected" : ""; ?>
                   <option value="{{ $dataAkun->id_akun }}" {{ $able }}>{{ $dataAkun->nama_akun }}</option>
@@ -18,7 +18,8 @@
             </td>
             <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="45%"><input type="text" name="debet[]" value="0" class="currency debet form-control" style="width: 100%"></td>
             <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="10%">
-              <button class="btn btn-danger btn-xs delete_row"><i class="fa fa-eraser"></i></button></td>
+              <button class="btn btn-danger btn-xs delete_row"><i class="fa fa-eraser"></i></button>
+            </td>
           </tr>
         @endif
       @endforeach
@@ -47,7 +48,7 @@
         @if($dataDetail1->trdt_accstatusdk == "K")
           <tr>
             <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-left" width="45%">
-              <select name="nama_akun_kredit[]" style="width:100%" class="form-control chosen-select">
+              <select name="nama_akun_kredit[]" style="width:100%" class="form-control">
                 @foreach($akun as $dataAkun)
                   <?php $able = ($dataAkun->id_akun == $dataDetail1->trdt_acc) ? "selected" : ""; ?>
                   <option value="{{ $dataAkun->id_akun }}" {{ $able }}>{{ $dataAkun->nama_akun }}</option>
@@ -84,7 +85,7 @@
 <script>
   $(document).ready(function(){
 
-    $(".chosen-select").chosen({width: '100%'});
+    $(".chosen-select").chosen({width: '80%'});
 
     $.fn.maskFunc = function(){
       $('.currency').inputmask("currency", {
@@ -105,17 +106,7 @@
     })
 
     $("table").on("keyup", ".debet", function(){
-      $total = 0;
-      $(".debet").each(function(){
-        $value = $(this).val()
-        $nilai = $value.split(",")[0].replace(/\./g,"").substring(3)
-
-        //alert($nilai)
-        $total += parseInt($nilai)
-      })
-
-      //alert($total)
-      $("#total_debet").val($total);
+      
     })
 
     $("table").on("keyup", ".kredit", function(){

@@ -363,14 +363,14 @@
                           <td> {{$j + 1}} </td>
                           <td> {{$data['podtbarang'][$i][$j]->nama_masteritem}} </td>
                           <td> {{$data['podtbarang'][$i][$j]->unitstock}} </td>
-                           <td data-kodeitem="{{$data['podtbarang'][$i][$j]->podt_kodeitem}}" data-id={{$j}}> {{$data['podtbarang'][$i][$j]->podt_qtykirim}} <input type="hidden" class="status{{$j}}" name="status[]"> </td>
+                           <td data-kodeitem="{{$data['podtbarang'][$i][$j]->podt_kodeitem}}" data-id={{$j}}> {{$data['podtbarang'][$i][$j]->podt_qtykirim}} <input type="hidden" class="status{{$j}}" name="status[]"> <input type="hidden" value="{{$data['podtbarang'][$i][$j]->podt_id}}" name="idpodt[]"> </td>
 
                         
                            <td class="isijmlhditerima">  <input type="number" class="form-control qtyreceive qtyterima{{$j}}" id=qtyterima<?php echo $n ?> name="qtyterima[]" data-id=<?php echo $n ?> data-kodeitem="{{$data['podtbarang'][$i][$j]->podt_kodeitem}}" data-spp="{{$data['po'][$i]->spp_id}}"> <div class=jmlhkirim<?php echo $n ?>> </div> <div class=idspp<?php echo $n ?>> <div id=idbarang<?php echo $n?>>  </div> </td>   
                           
                           <td> 
                             
-                            <input type="text" data-id=<?php echo $n ?> class="form-control sisa" id=sisa<?php echo $n ?> value="{{$data['sisa'][$n][0]->podt_qtykirim - $data['sisa'][$n][0]->sum}}" readonly="">
+                            <input type="text" data-id=<?php echo $n ?> class="form-control sisa" id=sisa<?php echo $n ?> value="{{$data['podtbarang'][$i][$j]->podt_sisaterima}}" readonly="">
 
                           </td>
                           

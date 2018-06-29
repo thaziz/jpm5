@@ -11,26 +11,18 @@
       overflow-y: scroll;
     }
 
-    #table{
-      width: 100%;
+    #form-table{
+      font-size: 8pt;
     }
 
-    #table td{
-      padding: 8px 20px;
+    #form-table td{
+      padding: 5px 0px;
     }
 
-    #table_form{
-      border:0px solid black;
-      width: 100%;
-    }
-
-    #table_form input{
-      padding-left: 5px;
-    }
-
-    #table_form td{
-      padding: 10px 0px 0px 0px;
-      vertical-align: top;
+    #form-table .form-control{
+      height: 30px;
+      width: 90%;
+      font-size: 8pt;
     }
 
     .error-badge{
@@ -42,12 +34,19 @@
       display: none;
     }
 
-    #table_form .right_side{
-      padding-left: 10px;
-    }
-
     .modal-open{
       overflow: inherit;
+    }.chosen-select {
+        background: red;
+    }
+    .cabang{
+      color: #555;
+    }
+    .cabang:hover{
+      color: white;
+    }
+    .cabangs:hover{
+      background: #0099CC;
     }
   </style>
 @endsection
@@ -55,104 +54,113 @@
 @section('content')
 
 <div class="row wrapper border-bottom white-bg page-heading">
-      <div class="col-lg-10">
-          <h2> Master Akun </h2>
-          <ol class="breadcrumb">
-              <li>
-                  <a>Home</a>
-              </li>
-              <li>
-                  <a>Operasional</a>
-              </li>
-              <li>
-                  <a>Keuangan</a>
-              </li>
-              <li class="active">
-                  <strong> Saldo Awal Akun  </strong>
-              </li>
+    <div class="col-lg-10">
+        <h2> Jurnal Transaksi </h2>
+        <ol class="breadcrumb">
+            <li>
+                <a>Home</a>
+            </li>
+            <li>
+                <a>Keuangan</a>
+            </li>
+            <li class="active">
+                <strong> Jurnal Transaksi  </strong>
+            </li>
 
-          </ol>
-      </div>
-      <div class="col-lg-2">
+        </ol>
+    </div>
 
-      </div>
-  </div>
+    <div class="col-lg-12" style="border: 1px solid #eee; margin-top: 15px;">
+      <table border="0" id="form-table" class="col-md-10">
+      <tr>
+        <td width="15%" class="text-center">Filter Berdasarkan : </td>
+        <td width="18%">
+          <select class="form-control" style="width:90%; height: 30px" id="berdasarkan">
+              <option value="0">Kode Akun</option>
+              <option value="1">Nama Akun</option>
+              <option value="2">Posisi Debet/Kredit</option>
+              <option value="4">Shared Akun</option>
+            </select>
+        </td>
+
+        <td width="18%">
+          <select class="form-control" style="width:90%; height: 30px" id="yang">
+              <option value="1">Yang Mengandung</option>
+              <option value="2">Yang Berawalan</option>
+            </select>
+        </td>
+
+        <td width="15%" class="text-center">Kata Kunci : </td>
+        <td width="20%">
+          <input class="form-control" style="width:90%; height: 30px;" data-toggle="tooltip" id="filter" placeholder="Masukkan Kata Kunci">
+        </td>
+
+        <td width="15%" class="text-left">
+          <button class="btn btn-success btn-sm" id="set" style="font-size: 8pt;"> Terapkan</button>
+        </td>
+      </tr>
+
+    </table>
+    </div>
+</div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Data Saldo Awal Akun
+                    <h5> Data Jurnal Transaksi {{-- {{ $cabang->nama }} --}}
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
-                        {{-- <button class="btn btn-sm btn-success" id="collapsed" data-toggle="tooltip" data-placement="top" title="Sembunyikan Semua Sub Akun">
-                          <i class="fa fa-archive fa-fw"></i>
+                        <button class="btn btn-sm btn-default pilihCabang" data-parrent="0" data-toggle="modal" data-target="#modal_pilih_cabang">
+                          <i class="fa fa-list"></i> &nbsp;Pilih Cabang
                         </button>
-                        
-                        <button class="btn btn-sm btn-success" id="expand" data-toggle="tooltip" data-placement="top" title="Tampilkan Semua Sub Akun">
-                          <i class="fa fa-code-fork fa-fw"></i>
-                        </button> --}}
 
-                        <button class="btn btn-sm btn-primary tambahAkun" data-parrent="10" data-toggle="modal" data-target="#modal_tambah_akun">
-                          <i class="fa fa-plus"></i> &nbsp;Tambah Data Jurnal
+                        <button class="btn btn-sm btn-primary tambahAkun" data-parrent="0" data-toggle="modal" data-target="#modal_tambah_akun">
+                          <i class="fa fa-plus"></i> &nbsp;Tambah Data Jurnal Transaksi
                         </button>
                     </div>
                 </div>
                 <div class="ibox-content">
-                        <div class="row">
-            <div class="col-xs-12">
-              
-              <div class="box" id="seragam_box">
-                <div class="box-header">
-                </div><!-- /.box-header -->
-                <div class="box-body" style="min-height: 330px;">
-                
-                  <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
-                    <thead>
-                      <tr>
-                        <th width="15%" style="padding:8px 0px" class="text-center">Tahun Jurnal</ht>
-                        <th width="15%" style="padding:8px 0px" class="text-center">Tanggal</th>
-                        <th style="padding:8px 0px" class="text-center">Jurnal Detail</th>
-                        <th style="padding:8px 0px" class="text-center">Jurnal Referensi</th>
-                        <th width="20%" style="padding:8px 0px" class="text-center">Jurnal Note</th>
-                        <th width="20%" style="padding:8px 0px" class="text-center">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-
-                      @foreach($data as $dataJurnal)
-                      	<?php $debet = 0; $kredit = 0; ?>
-
-                        <tr>
-                        	<td class="text-center">{{ $dataJurnal->jr_year }}</td>
-                        	<td class="text-center">{{ $dataJurnal->jr_date }}</td>
-                        	<td class="text-center">{{ $dataJurnal->jr_detail }}</td>
-                        	<td class="text-center">{{ $dataJurnal->jr_ref }}</td>
-                        	<td class="text-center">{{ $dataJurnal->jr_note }}</td>
-                          <td class="text-center">
-                            <span data-toggle="tooltip" data-placement="top" title="Tampilkan Detail">
-                              <button class="btn btn-success btn-xs" class="detail" data-toggle="modal" data-target="#modal-detail" onclick="$('#id_jrdt').val({{ $dataJurnal->jr_id }})"><i class="fa fa-search-plus"></i></button>
-                            </span>
-                          </td>
-                        </tr>
+                    <div class="row">
+                      <div class="col-xs-12">
                         
-                      @endforeach
-                      
-                    </tbody>
-                    
-                   
-                  </table>
-                </div><!-- /.box-body -->
-                <div class="box-footer">
-                  <div class="pull-right">  
-                    
-                    </div>
-                  </div><!-- /.box-footer --> 
-              </div><!-- /.box -->
-            </div><!-- /.col -->
-          </div><!-- /.row -->
+                        <div class="box" id="seragam_box">
+                          <div class="box-header">
+                          </div><!-- /.box-header -->
+                          <div class="box-body" style="min-height: 330px;">
+
+                            <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px; font-size: 8pt;">
+                              <thead>
+                                <tr>
+                                  <th width="15%" class="text-center">Tahun Jurnal</th>
+                                  <th width="30%" class="text-center">Tanggal</th>
+                                  <th class="text-center">Jurnal Detail</th>
+                                  <th class="text-center">Jurnal Referensi</th>
+                                  <th class="text-center">Jurnal Note</th>
+                                  {{-- <th style="padding:8px 0px" class="text-center">Saldo</th> --}}
+                                </tr>
+                              </thead>
+                              <tbody  class="searchable">
+
+                                @foreach($data as $dataAkun)
+                                  <tr>
+                                    <td width="15%" class="text-center">{{ $dataAkun->jr_year }}</td>
+                                    <td width="30%" class="text-center">{{ date("d-m-Y", strtotime($dataAkun->jr_year)) }}</td>
+                                    <td class="text-center">{{ $dataAkun->jr_detail }}</td>
+                                    <td class="text-center">{{ $dataAkun->jr_ref }}</td>
+                                    <td class="text-center">{{ $dataAkun->jr_note }}</td>
+                                    {{-- <th style="padding:8px 0px" class="text-center">Saldo</th> --}}
+                                  </tr>
+                                @endforeach
+                                
+                              </tbody>
+                            </table>
+                          </div><!-- /.box-body -->
+                      </div><!-- /.box -->
+                    </div><!-- /.col -->
+                  </div><!-- /.row -->
                 </div>
             </div>
         </div>
@@ -160,39 +168,21 @@
 </div>
 
  <!-- modal -->
-  <div id="modal_tambah_akun" class="modal">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">Form Tambah Data Jurnal Transaksi</h4>
-          <input type="hidden" class="parrent"/>
-        </div>
-        <div class="modal-body">
-          <center class="text-muted">Menyiapkan Form</center>
-        </div>
-
+<div id="modal_tambah_akun" class="modal">
+  <div class="modal-dialog" style="width: 60%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Form Tambah Data Jurnal Transaksi</h4>
+        <input type="hidden" class="parrent"/>
       </div>
+      <div class="modal-body">
+        <center class="text-muted">Menyiapkan Form</center>
+      </div>
+
     </div>
   </div>
-  <!-- modal -->
-
-  <!-- modal -->
-  <div id="modal-detail" class="modal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">Detail Jurnal</h4>
-          <input type="hidden" id="id_jrdt">
-        </div>
-        <div class="modal-body">
-          <center class="text-muted">Menyiapkan Detail</center>
-        </div>
-
-      </div>
-    </div>
-  </div>
+</div>
   <!-- modal -->
 
 <!-- modal -->
@@ -206,6 +196,32 @@
       </div>
       <div class="modal-body">
         <center class="text-muted">Menyiapkan Form</center>
+      </div>
+
+    </div>
+  </div>
+</div>
+  <!-- modal -->
+
+  <!-- modal -->
+<div id="modal_pilih_cabang" class="modal">
+  <div class="modal-dialog" style="width: 20%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Pilih Cabang</h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+      <div class="modal-body">
+        <div class="wrap" style="background: none; height: 300px; overflow-y: scroll; padding-right: 20px;">
+            @foreach($cabangs as $cabang)
+              <a class="cabang" href="{{ url('keuangan/jurnal_umum?cab='.$cabang->kode) }}">
+                <div class="col-md-12 cabangs" style="border: 1px solid #ccc; padding: 5px; border-radius: 1px; margin-top: 2px; cursor: pointer;">
+                  {{ $cabang->nama }}
+                </div>
+              </a>
+            @endforeach
+        </div>
       </div>
 
     </div>
@@ -228,6 +244,8 @@
 
     @if(Session::has('sukses'))
         alert("{{ Session::get('sukses') }}")
+    @elseif(Session::has('terpakai'))
+        alert("{{ Session::get('terpakai') }}")
     @endif
 
     tableDetail = $('.tbl-penerimabarang').DataTable({
@@ -246,34 +264,14 @@
     $("#modal_tambah_akun").on("hidden.bs.modal", function(e){
       $("#modal_tambah_akun .modal-body").html('<center class="text-muted">Menyiapkan Form</center>');
       if($change)
-        window.location = baseUrl+"/keuangan/jurnal_umum";
-    })
-
-    $("#modal-detail").on("shown.bs.modal", function(e){
-      //alert($("#modal-detail .modal-header #id_jrdt").val())
-      $("#modal-detail .modal-body").html('<center class="text-muted">Menyiapkan Detail</center>');
-
-      $.ajax(baseUrl+"/keuangan/jurnal_umum/show-detail/"+$("#modal-detail .modal-header #id_jrdt").val(), {
-         timeout: 5000,
-         dataType: "html",
-         success: function (data) {
-             $("#modal-detail .modal-body").html(data);
-         },
-         error: function(request, status, err) {
-            if (status == "timeout") {
-              $("#modal-detail .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
-            } else {
-              $("#modal-detail .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
-            }
-        } 
-      });
+        window.location = baseUrl+"/master_keuangan/akun";
     })
 
     $("#modal_tambah_akun").on("shown.bs.modal", function(e){
       //alert($("#modal_tambah_akun .modal-header .parrent").val())
 
       $.ajax(baseUrl+"/keuangan/jurnal_umum/add", {
-         timeout: 5000,
+         timeout: 15000,
          dataType: "html",
          success: function (data) {
              $("#modal_tambah_akun .modal-body").html(data);
@@ -288,21 +286,12 @@
       });
     })
 
-    $(".editAkun").on("click", function(){
-      $("#modal_edit_akun .modal-header .parrent").val($(this).data("parrent"));
-    })
-
-    $("#modal_edit_akun").on("hidden.bs.modal", function(e){
+    $(".searchable").on("click", ".editAkun", function(){
+      $("#modal_edit").modal("show");
       $("#modal_edit_akun .modal-body").html('<center class="text-muted">Menyiapkan Form</center>');
-      if($change)
-        window.location = baseUrl+"/master_keuangan/akun";
-    })
 
-    $("#modal_edit_akun").on("shown.bs.modal", function(e){
-      //alert($("#modal_edit_akun .modal-header .parrent").val())
-
-      $.ajax(baseUrl+"/master_keuangan/edit/"+$("#modal_edit_akun .modal-header .parrent").val(), {
-         timeout: 5000,
+      $.ajax(baseUrl+"/master_keuangan/edit/"+$(this).data("parrent"), {
+         timeout: 15000,
          dataType: "html",
          success: function (data) {
              $("#modal_edit_akun .modal-body").html(data);
@@ -317,23 +306,24 @@
       });
     })
 
-    $("#table").treegrid({
-          treeColumn: 0,
-          initialState: "expanded"
-    });
+    $('#set').click(function () {
+        $val = $('#filter').val().toUpperCase();
 
-    $("#collapsed").click(function(){
-      $('#table').treegrid('collapseAll');
+        if($("#yang").val() == 1)
+          tableDetail.columns($("#berdasarkan").val()).every( function () {
+              var that = this;
+              // console.log(that);
+              that.search($val).draw();
+          });
+        else{
+          tableDetail.columns($("#berdasarkan").val()).every( function () {
+              var that = this;
+              // console.log(that);
+              that.search('^' + $val, true, false).draw();
+          });
+        }
     })
 
-    $("#expand").click(function(){
-      $('#table').treegrid('expandAll');
-    })
-
-    $('.date').datepicker({
-        autoclose: true,
-        format: 'yyyy-mm-dd'
-    });
   })
 
 </script>

@@ -149,7 +149,7 @@
                                 Total
                               </td>
                               <td>
-                                <input type="text" class="form-control total" readonly="" style='text-align:right;'' name="total" value="{{ number_format($data['bbk'][0]->bbk_total, 2) }}" readonly="">
+                                <input type="text" class="form-control total" readonly="" style='text-align:right;' name="total" value="{{ number_format($data['bbk'][0]->bbk_total, 2) }}" readonly="">
                               </td>
                             </tr>
 
@@ -329,7 +329,8 @@
                                                   <th> ID Akun </th>
                                                   <th>Akun</th>
                                                   <th>Debit</th>
-                                                  <th>Kredit</th>                                            
+                                                  <th>Kredit</th>
+                                                  <th> Uraian </th>                                         
                                               </tr>
                                           </thead>
                                           
@@ -1139,7 +1140,7 @@
                 /*$('#data-jurnal').html(response);*/
                 $('#jurnal').modal('show');
 
-                  $('#jurnal').modal('show'); 
+                $('#jurnal').modal('show'); 
              $('.loading').css('display', 'none');
                 $('.listjurnal').empty();
                 $totalDebit=0;
@@ -1152,12 +1153,14 @@
 
                           if(response.jurnal[key].dk == 'D'){
                             $totalDebit = parseFloat($totalDebit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
-                            rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td>";
+                            rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td> <td>"+response.jurnal[key].jrdt_detail+"</td>";
                           }
                           else {
                             $totalKredit = parseFloat($totalKredit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
-                            rowtampil2 += "<td> </td><td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td>";
+                            rowtampil2 += "<td> </td><td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td>"+response.jurnal[key].jrdt_detail+"</td>";
                           }
+
+                            rowtampil2 += +
                             $('#table_jurnal').append(rowtampil2);
                         }
                      var rowtampil1 = "</tbody>" +
