@@ -128,7 +128,7 @@ class ReturnPembelianController extends Controller
 			
 		}
 		else {
-							$data['po'] = DB::select("select * from pembelian_order where po_supplier = '$supplier' and po_idfaktur is null and po_setujufinance = 'DISETUJUI' and po_statusreturn = 'AKTIF' and po_cabang = '$cabang'  ");
+			$data['po'] = DB::select("select * from pembelian_order where po_supplier = '$supplier' and po_idfaktur is null and po_setujufinance = 'DISETUJUI' and po_statusreturn = 'AKTIF' and po_cabang = '$cabang'  ");
 				
 		}
 
@@ -141,20 +141,32 @@ class ReturnPembelianController extends Controller
 
 		if($cabang == 000){
 			$data['rn'] = DB::select("select * from returnpembelian, pembelian_order , supplier where rn_supplier = idsup and rn_idpotidakaktif = po_id and rn_id = '$id'");
-
+			$jurnalRef = $data['rn'][0]->rn_nota;
 			$data['rndt'] = DB::select("select * from returnpembelian_dt , masteritem, pembelian_orderdt, returnpembelian where rndt_idrn = rn_id and rndt_idrn = '$id' and rndt_item = kode_item and rn_idpoaktif = podt_idpo and rndt_item = podt_kodeitem");
-
 			$data['cabang'] = DB::select("select * from cabang");
 			$data['supplier'] = DB::select("select * from supplier where active = 'AKTIF' and status = 'SETUJU'");
 		}
 		else {
-		$data['rn'] = DB::select("select * from returnpembelian, pembelian_order , supplier where rn_supplier = idsup and rn_idpotidakaktif = po_id and rn_id = '$id' and rn_cabang = '$cabang'");
-
+			$data['rn'] = DB::select("select * from returnpembelian, pembelian_order , supplier where rn_supplier = idsup and rn_idpotidakaktif = po_id and rn_id = '$id' and rn_cabang = '$cabang'");
+			$jurnalRef = $data['rn'][0]->rn_nota;
 			$data['rndt'] = DB::select("select * from returnpembelian_dt , masteritem, pembelian_orderdt, returnpembelian where rndt_idrn = rn_id and rndt_idrn = '$id' and rndt_item = kode_item and rn_idpoaktif = podt_idpo and rndt_item = podt_kodeitem");
 
 			$data['cabang'] = DB::select("select * from cabang");
 			$data['supplier'] = DB::select("select * from supplier where active = 'AKTIF' and status = 'SETUJU'");
 		}
+
+
+
+		$data['jurnal_return'] =collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
+		                    FROM d_akun a join d_jurnal_dt jd
+		                    on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
+		                    (select j.jr_id from d_jurnal j where jr_ref='$jurnalRef' and jr_detail = 'RETURN PEMBELIAN RETURN')"));
+		
+		$data['jurnal_terima'] =collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
+		                    FROM d_akun a join d_jurnal_dt jd
+		                    on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
+		                    (select j.jr_id from d_jurnal j where jr_ref='$jurnalRef' and jr_detail = 'RETURN PEMBELIAN TERIMA')"));
+		
 
 		return view('purchase/return_pembelian/detail' , compact('data'));
 	}
@@ -427,6 +439,7 @@ class ReturnPembelianController extends Controller
 			$po->po_hasilppn = $hasilppn;
 		}
 
+
 		$subtotal = str_replace(',', '', $request->subtotal);
 		$total = str_replace(',', '', $request->total);
 		$po->po_subtotal = $subtotal;
@@ -437,9 +450,14 @@ class ReturnPembelianController extends Controller
 		$po->po_tipe = $data['po'][0]->po_tipe;
 		$po->po_penerimaan = $data['po'][0]->po_penerimaan;
 		$po->po_jenisppn = $request->jenisppn;
+		$po->po_hasilppn = $hasilppn;
 		$po->po_statusreturn = 'AKTIF';
 		$po->create_by = $request->username;	
 		$po->po_setujufinance = 'DISETUJUI';
+		$po->po_keteranganfinance = $data['po'][0]->po_keteranganfinance;
+		$po->po_acchutangdagang = $data['po'][0]->po_acchutangdagang;
+		$po->po_cabangtransaksi = $data['po'][0]->po_cabangtransaksi;
+		$po->update_by = $request->username;
 		$po->save();
 
 
@@ -482,7 +500,10 @@ class ReturnPembelianController extends Controller
 				$podt->podt_totalharga = $data['podt'][$n]->podt_totalharga;
 				$podt->podt_lokasigudang = $data['podt'][$n]->podt_lokasigudang;
 				$podt->podt_keterangan = $data['podt'][$n]->podt_keterangan;
-				$podt->save();
+				$podt->podt_sisaterima = $data['podt'][$n]->podt_sisaterima;
+				$podt->podt_akunitem = $data['podt'][$n]->podt_akunitem;
+//				$podt->podt_akunitem = $data['podt'][$n]->podt_akunitem;
+ 				$podt->save();
 			}
 
 			//update podt
@@ -805,10 +826,6 @@ class ReturnPembelianController extends Controller
 			}// END FOR KODEITEM
 			
 
-
-
-			
-			
 			//update pbdt
 			for($j = 0; $j < count($request->kodeitem); $j++){
 				$iditem = $request->kodeitem[$j];
@@ -874,15 +891,12 @@ class ReturnPembelianController extends Controller
 			//nambah persediaan ketika ada qtyterima
 			$dataterima = DB::select("select * from returnpembelian, returnpembelian_dt where rn_id = '$idrn' and rndt_idrn = rn_id ");
 			$jurnalreturn = [];
+			$jurnalterima = [];
 			for($i = 0; $i < count($dataterima); $i++){
 				$qtyterima = $dataterima[$i]->rndt_qtyterima;
 				$hargaterima = $dataterima[$i]->rndt_hargaterima;
 
 				
-
-
-
-
 				if($qtyterima != 0){
 					//masuk gudang
 					$itemterima = $dataterima[$i]->rndt_item;
@@ -905,6 +919,7 @@ class ReturnPembelianController extends Controller
 					$hargapo = $datapodt[0]->podt_jumlahharga;
 
 					$datapb = DB::select("select * from penerimaan_barang where pb_po = '$idpo2'");
+
 
 
 					if(floatval($hargapo) != floatval($hargaterima)){
@@ -935,13 +950,52 @@ class ReturnPembelianController extends Controller
 							'podt_lokasigudang' => $lokasigudang,
 							'podt_tglkirim' => $mytime,
 							'podt_supplier' => $datapodt[0]->podt_supplier,
-							'podt_totalharga' => $dataterima[0]->rndt_totalhargaterima,
-							'podt_akunitem' => $dataterima[0]->rndt_akunitem,
+							'podt_totalharga' => $dataterima[$i]->rndt_totalhargaterima,
+							'podt_akunitem' => $dataterima[$i]->rndt_akunitem,
 							'podt_keterangan' => $datapodt[0]->podt_keterangan,
 							'podt_sisaterima' => '0',
 							]);
+
+							$idakun = $datapodt[0]->podt_akunitem;
+
+							$dataakun = DB::select("select * from d_akun where id_akun = '$idakun'");
+
+						
+							$dka = $dataakun[0]->akun_dka;
+
+							if($dka == 'D'){
+								$jurnalterima[$i]['id_akun'] = $datapodt[0]->podt_akunitem;
+								$jurnalterima[$i]['subtotal'] = $dataterima[$i]->rndt_totalhargaterima;
+								$jurnalterima[$i]['dk'] = 'D';
+								$jurnalterima[$i]['detail'] = $datapodt[0]->podt_keterangan;
+							}
+							else {
+								$jurnalterima[$i]['id_akun']  =  $datapodt[0]->podt_akunitem;
+								$jurnalterima[$i]['subtotal'] = '-' .$dataterima[$i]->rndt_totalhargaterima;
+								$jurnalterima[$i]['dk'] = 'D';	
+								$jurnalterima[$i]['detail'] = $datapodt[0]->podt_keterangan;
+							}
+
 						}
 						else {
+
+							$idakun = $datapodt[0]->podt_akunitem;
+
+							$dataakun = DB::select("select * from d_akun where id_akun = '$idakun'");
+							$dka = $dataakun[0]->akun_dka;
+
+							if($dka == 'D'){
+								$jurnalterima[$i]['id_akun'] = $datapodt[0]->podt_akunitem;
+								$jurnalterima[$i]['subtotal'] = '-' . $datapodt[0]->podt_totalharga;
+								$jurnalterima[$i]['dk'] = 'D';
+								$jurnalterima[$i]['detail'] = $datapodt[0]->podt_keterangan;
+							}
+							else {
+								$jurnalterima[$i]['id_akun']  =  $datapodt[0]->podt_akunitem;
+								$jurnalterima[$i]['subtotal'] = $datapodt[0]->podt_totalharga;
+								$jurnalterima[$i]['dk'] = 'D';	
+								$jurnalterima[$i]['detail'] = $datapodt[0]->podt_keterangan;
+							}
 
 							$hasilqtypo = (int)$datapodt[0]->podt_qtykirim + (int)$qtykirim;
 							$updatepodt->update([
@@ -987,9 +1041,13 @@ class ReturnPembelianController extends Controller
 						$stock_mutation->updated_by = $request->username;
 						$stock_mutation->save();
 
-				} // end if qty tdk kosong
 
-				$datapodt = DB::select("select * from pembelian_order, pembelian_orderdt where podt_idpo = po_id");
+
+
+				} // end if qty tdk kosong
+			}
+			
+			$datapodt = DB::select("select * from pembelian_order, pembelian_orderdt where podt_idpo = po_id and podt_idpo = '$idpo2'");
 				for($i = 0; $i < count($datapodt); $i++){
 					$idakun = $datapodt[$i]->podt_akunitem;
 
@@ -1000,29 +1058,166 @@ class ReturnPembelianController extends Controller
 						$jurnalreturn[$i]['id_akun'] = $datapodt[$i]->podt_akunitem;
 						$jurnalreturn[$i]['subtotal'] = '-' . $datapodt[$i]->podt_totalharga;
 						$jurnalreturn[$i]['dk'] = 'K';
+						$jurnalreturn[$i]['detail'] = $datapodt[$i]->podt_keterangan;
 					}
 					else {
 						$jurnalreturn[$i]['id_akun']  =  $datapodt[$i]->podt_akunitem;
 						$jurnalreturn[$i]['subtotal'] = $datapodt[$i]->podt_totalharga;
-						$jurnalreturn[$i]['dk'] = 'K';	
+						$jurnalreturn[$i]['dk'] = 'K';
+						$jurnalreturn[$i]['detail'] = $datapodt[$i]->podt_keterangan;
 					}
 
 					//$totalhutang = $totalhutang + $totalharga;
 				} // end for
 
 				$cabang = $datapodt[0]->po_cabangtransaksi;
+				//return $datapodt;
 				$datadakun = DB::select("select * from d_akun where id_akun LIKE '1408%' and kode_cabang = '$cabang'");
 				$akunreturn = $datadakun[0]->id_akun;
+				$dkareturn = $datadakun[0]->akun_dka;
 
-				$dataakun2 = array (
+
+				$hargareturn = str_replace(',', '',  $request->totalreturn);
+
+				if($dkareturn == 'D'){
+					$dataakun2 = array (
 						'id_akun' => $akunreturn,
-						'subtotal' => $totalhutang,
-						'dk' => 'K',
-						);
+						'subtotal' => $hargareturn,
+						'dk' => 'D',
+						'detail' => $request->keterangan,
+					);
+				}
+				else {
+					$dataakun2 = array (
+						'id_akun' => $akunreturn,
+						'subtotal' => '-'.$hargareturn,
+						'dk' => 'D',
+						'detail' => $request->keterangan,
+					);
+				}
+				array_push($jurnalreturn,$dataakun2);
 
-					array_push($datajurnal, $dataakun );
-			}
-  
+
+					$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+					if(isset($lastidjurnal)) {
+						$idjurnal = $lastidjurnal;
+						$idjurnal = (int)$idjurnal + 1;
+					}
+					else {
+						$idjurnal = 1;
+					}
+				
+					$year = date('Y');	
+					$date = date('Y-m-d');
+					$jurnal = new d_jurnal();
+					$jurnal->jr_id = $idjurnal;
+			        $jurnal->jr_year = date('Y');
+			        $jurnal->jr_date = date('Y-m-d');
+			        $jurnal->jr_detail = 'RETURN PEMBELIAN RETURN';
+			        $jurnal->jr_ref = $request->nota;
+			        $jurnal->jr_note = $request->keterangan;
+			        $jurnal->save();
+		       		
+			      
+		        
+		    		$key  = 1;
+		    		for($j = 0; $j < count($jurnalreturn); $j++){
+		    			
+		    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+						if(isset($lastidjurnaldt)) {
+							$idjurnaldt = $lastidjurnaldt;
+							$idjurnaldt = (int)$idjurnaldt + 1;
+						}
+						else {
+							$idjurnaldt = 1;
+						}
+
+		    			$jurnaldt = new d_jurnal_dt();
+		    			$jurnaldt->jrdt_jurnal = $idjurnal;
+		    			$jurnaldt->jrdt_detailid = $key;
+		    			$jurnaldt->jrdt_acc = $jurnalreturn[$j]['id_akun'];
+		    			$jurnaldt->jrdt_value = $jurnalreturn[$j]['subtotal'];
+		    			$jurnaldt->jrdt_statusdk = $jurnalreturn[$j]['dk'];
+		    			$jurnaldt->jrdt_detail = $jurnalreturn[$j]['detail'];
+		    			$jurnaldt->save();
+		    			$key++;
+		    		}   
+
+
+
+		    		if(count($jurnalterima) != 0){
+		    			$cabang = $datapodt[0]->po_cabangtransaksi;
+						$datadakun = DB::select("select * from d_akun where id_akun LIKE '1408%' and kode_cabang = '$cabang'");
+						$akunreturn = $datadakun[0]->id_akun;
+						$dkareturn = $datadakun[0]->akun_dka;
+
+
+						$hargaterima = str_replace(',', '',  $request->totalterima);
+
+						if($dkareturn == 'D'){
+							$dataakun2 = array (
+								'id_akun' => $akunreturn,
+								'subtotal' => '-' . $hargaterima,
+								'dk' => 'K',
+								'detail' => $request->keterangan,
+							);
+						}
+						else {
+							$dataakun2 = array (
+								'id_akun' => $akunreturn,
+								'subtotal' => $hargaterima,
+								'dk' => 'K',
+								'detail' => $request->keterangan,
+							);
+						}
+						array_push($jurnalreturn,$dataakun2);
+
+
+							$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+							if(isset($lastidjurnal)) {
+								$idjurnal = $lastidjurnal;
+								$idjurnal = (int)$idjurnal + 1;
+							}
+							else {
+								$idjurnal = 1;
+							}
+						
+							$year = date('Y');	
+							$date = date('Y-m-d');
+							$jurnal = new d_jurnal();
+							$jurnal->jr_id = $idjurnal;
+					        $jurnal->jr_year = date('Y');
+					        $jurnal->jr_date = date('Y-m-d');
+					        $jurnal->jr_detail = 'RETURN PEMBELIAN TERIMA';
+					        $jurnal->jr_ref = $request->nota;
+					        $jurnal->jr_note = $request->keterangan;
+					        $jurnal->save();
+				       		
+					      
+				        
+				    		$key  = 1;
+				    		for($j = 0; $j < count($jurnalreturn); $j++){
+				    			
+				    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+								if(isset($lastidjurnaldt)) {
+									$idjurnaldt = $lastidjurnaldt;
+									$idjurnaldt = (int)$idjurnaldt + 1;
+								}
+								else {
+									$idjurnaldt = 1;
+								}
+
+				    			$jurnaldt = new d_jurnal_dt();
+				    			$jurnaldt->jrdt_jurnal = $idjurnal;
+				    			$jurnaldt->jrdt_detailid = $key;
+				    			$jurnaldt->jrdt_acc = $jurnalreturn[$j]['id_akun'];
+				    			$jurnaldt->jrdt_value = $jurnalreturn[$j]['subtotal'];
+				    			$jurnaldt->jrdt_statusdk = $jurnalreturn[$j]['dk'];
+				    			$jurnaldt->jrdt_detail = $jurnalreturn[$j]['detail'];
+				    			$jurnaldt->save();
+				    			$key++;
+				    		} 
+		    		}
 			return json_encode($data);
 		});	
 	}

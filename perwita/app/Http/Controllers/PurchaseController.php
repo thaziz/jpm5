@@ -1653,6 +1653,7 @@ public function purchase_order() {
 				}
 				
 				$podt->podt_akunitem = $dataakunitem;
+				$podt->podt_sisaterima = $request->qtykirim[$n];
 				$podt->save();
 
 					/*	$updatesppdt = sppdt_purchase::where([['sppd_idspp', '=', $id], ['spp_detail.sppd_idsppdetail' , '=' , $request->idsppd[$i]]]);*/
@@ -9139,8 +9140,8 @@ public function kekata($x) {
 			->select('bkk_nota as nota' , 'bkk_tgl as tgl' , 'bkk_total as nominal')
 			->where('bkk_jenisbayar' , '2')
 			->get();
-*/
-		$bbk = DB::select("select bbk_nota as nota, bbk_tgl as tgl, bbkd_nominal as nominal ,'K' as flag from bukti_bank_keluar_detail, bukti_bank_keluar where bbkd_idbbk = bbk_id and bbkd_akunhutang = '2101'");
+*/		//2101
+		$bbk = DB::select("select bbk_nota as nota, bbk_tgl as tgl, bbkd_nominal as nominal ,'K' as flag from bukti_bank_keluar_detail, bukti_bank_keluar where bbkd_idbbk = bbk_id and bbkd_akunhutang LIKE '2101%'");
 
 
 		$fp = DB::select("select 'D' as flag, fp_nofaktur as nota , fp_tgl as tgl , fp_netto as nominal from faktur_pembelian where fp_jenisbayar = '2'");
@@ -9150,6 +9151,15 @@ public function kekata($x) {
 		$bkk = DB::select("select 'K' as flag , bkk_nota as nota, bkk_tgl as tgl, bkk_total as nominal from bukti_kas_keluar where bkk_jenisbayar = '2'");
 
 		$datas['data'] = array_merge($fp, $um, $bkk , $bbk);
+
+		//end 2103
+		$bbk2 = DB::select("select bbk_nota as nota, bbk_tgl as tgl, bbkd_nominal as nominal ,'K' as flag from bukti_bank_keluar_detail, bukti_bank_keluar where bbkd_idbbk = bbk_id and bbkd_akunhutang LIKE '2103%'");
+
+		$fp2 = DB::select("select 'D' as flag, fp_nofaktur as nota , fp_tgl as tgl , fp_netto as nominal from faktur_pembelian where fp_jenisbayar = '6' or fp_jenisbayar = '7' or fp_jenisbayar = '9'");
+
+		$um2 = DB::select("select 'K' as flag, fp_nofaktur as nota, fp_tgl as tgl, fp_uangmuka as nominal from faktur_pembelian where fp_uangmuka != 0.00 or fp_jenisbayar = '7' or fp_jenisbayar = '9' or fp_jenisbayar = '6'");
+
+		$bkk2 = DB::select("select 'K' as flag , bkk_nota as nota, bkk_tgl as tgl, bkk_total as nominal from bukti_kas_keluar where bkk_jenisbayar = '7' or bkk_jenisbayar = '6' or bkk_jenisbayar = '9'");
 
 		return ($datas['data']);
 
