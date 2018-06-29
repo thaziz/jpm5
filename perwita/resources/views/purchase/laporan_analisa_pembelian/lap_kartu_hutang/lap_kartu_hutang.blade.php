@@ -78,6 +78,28 @@
                           </select>
                       </td>
                     </tr>
+                    <tr>
+                      <td>Cabang</td>
+                      <td>
+                          <select class="chosen-select-width">
+                              <option>- Pilih -</option>
+                              @foreach ($cabang as $cabang)
+                                <option value="{{ $cabang->kode }}">{{ $cabang->kode }} - {{ $cabang->nama }}</option>
+                              @endforeach
+                          </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Akun</td>
+                      <td>
+                          <select class="chosen-select-width">
+                              <option>- Pilih -</option>
+                              @foreach ($akun as $akun)
+                                <option value="{{ $akun->id_akun }}">{{ $akun->id_akun }} - {{ $akun->nama_akun }}</option>
+                              @endforeach
+                          </select>
+                      </td>
+                    </tr>
                   </table>
                 </div>
                   <div class="row"> &nbsp; &nbsp; 
@@ -96,21 +118,34 @@
                         <th>Tanggal</th>
                         <th>No bukti</th>
                         <th>Keterangan</th>
-                        <th>debbet</th>
+                        <th>debet</th>
                         <th>kredit</th>
                         <th>saldo</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>2</td>
-                        <td>3</td>
-                        <td>4</td>
-                        <td>5</td>
-                        <td>6</td>
-                        <td>7</td>
-                      </tr>
+                     @foreach ($data['data'] as $index => $element)
+                       <tr>
+                         <td>{{ $index+1 }}</td>
+                         <td>{{ $element->tgl }}</td>
+                         <td>{{ $element->nota }}</td>
+                         @if ($element->keterangan == null)
+                            <td>{{ $element->keterangan }}</td>
+                         @else
+                            <td>{{ $element->keterangan }}</td>
+                         @endif
+                         
+                         @if ($element->flag == 'D')
+                            <td>{{ $element->debet }}</td>
+                            <td>0</td>
+                         @else
+                            <td>0</td>
+                            <td>{{ $element->kredit }}</td>
+                         @endif
+                         
+                         <td>{{ $element->flag }}</td>
+                       </tr>
+                     @endforeach
                     </tbody>
                   </table>
                 </div><!-- /.box-body -->
