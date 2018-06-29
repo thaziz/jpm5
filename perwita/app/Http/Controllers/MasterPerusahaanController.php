@@ -40,7 +40,6 @@ class MasterPerusahaanController extends Controller
 	    		'mp_signature2'=>$request->mp_signature2,
     		]);
     	}else{
-
     		$image = DB::table('master_perusahaan')->where('mp_id','=','1')->update([
 	    		'mp_id'=>$maxid,
 	    		'mp_nama' => $request->ed_nama,

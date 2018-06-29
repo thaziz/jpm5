@@ -32,8 +32,8 @@ class saldo_akun_controller extends Controller
 
         $data = DB::table("d_akun_saldo")
                     ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
-                    ->where("d_akun_saldo.tahun", date("Y"))
-                    ->where("d_akun_saldo.bulan", date("m"))
+                    ->where("d_akun_saldo.tahun", $_GET["year"])
+                    ->where("d_akun_saldo.bulan", $_GET["date"])
                     ->where("d_akun.kode_cabang", $_GET["cab"])
                     ->whereNotNull("d_akun_saldo.saldo_akun")
                     ->orderBy("d_akun.id_akun", "asc")
