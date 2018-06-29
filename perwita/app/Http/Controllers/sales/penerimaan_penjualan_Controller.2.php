@@ -10,6 +10,7 @@ use Auth;
 use Yajra\Datatables\Datatables;
 use App\d_jurnal;
 use App\d_jurnal_dt;
+use Response;
 class penerimaan_penjualan_Controller extends Controller
 {
     
@@ -1855,6 +1856,15 @@ class penerimaan_penjualan_Controller extends Controller
                 ->get();
 
       return response()->json(['data' => $data]);
+    }
+
+    public function simpan_um_sementara(request $request)
+    {
+      $data = DB::table('uang_muka_penjualan')
+                ->where('kode_customer',$request->customer)
+                ->where('kode_cabang',$request->cabang)
+                ->get();
+      return Response::json(['data'=>$data]);
     }
 
 

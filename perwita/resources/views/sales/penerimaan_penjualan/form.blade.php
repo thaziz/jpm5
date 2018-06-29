@@ -153,7 +153,7 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td style=" padding-top: 0.4cm" colspan="20" class="cabang_td">
-                                    <select class="cb_cabang disabled form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
+                                    <select  class="cb_cabang disabled form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
                                         <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
                                         @if(Auth()->user()->kode_cabang == $row->kode)
@@ -170,7 +170,7 @@
                                 <td style="padding-top: 0.4cm">Customer</td>
                                 <td  class="customer_td">
                                     <div>
-                                        <select class="chosen-select-width customer"  name="customer " id="customer " style="width:100%" >
+                                        <select onchange="um_sementara()" class="chosen-select-width customer"  name="customer " id="customer " style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                         @foreach ($customer as $row)
                                             <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} - {{ $row->cabang }}</option>
@@ -870,6 +870,7 @@ function nota_kwitansi() {
         dataType:'json',
         success:function(response){
             $('#ed_nomor').val(response.nota);
+            um_sementara();
         }
     })
 
@@ -978,6 +979,7 @@ function nota_tes(){
         error:function(){
         }
     });
+    um_sementara();
 }
     
 
@@ -1715,8 +1717,500 @@ $('#update_biaya').click(function(){
     $('#modal_edit_biaya').modal('hide');
 })
 var simpan_um = [];
-
+// UANG MUKA
 // cari um
+// $('.cari_um').click(function(){
+//     if ($('#cb_akun_h').val() == '0') {
+//         toastr.warning('Akun Harus Dipilih')
+//         return 1
+//     }
+//     if ($('.customer').val() == '0') {
+//         toastr.warning('Customer Harus Dipilih')
+//         return 1
+//     }
+//     var cb_cabang = $('.cb_cabang').val();
+//     var cb_customer = $('.customer').val();
+
+//     $.ajax({
+//         url:baseUrl + '/sales/cari_um',
+//         data:{cb_cabang,cb_customer,simpan_um},
+//         success:function(data){
+//             $('.um_table').html(data);
+
+//             $('#modal_cari_um').modal('show');       
+//         }
+//     })
+// });
+// // simpan
+// $('#btnadd_um').click(function(){
+//     if ($('#cb_akun_h').val() == '0') {
+//         toastr.warning('Akun Harus Dipilih')
+//         return 1
+//     }
+//     if ($('.customer').val() == '0') {
+//         toastr.warning('Customer Harus Dipilih')
+//         return 1
+//     }
+//    $('.cari_um').removeClass('disabled');
+   
+
+//     $('.tabel_um :input').val('');
+//     $('.seq_um ').val(count_um);
+
+
+
+//     $('#modal_um').modal('show');
+// });
+// // pilih um
+// function pilih_um(par) {
+//     var um = $(par).find('.nomor_modal_um').val();
+//     $.ajax({
+//         url:baseUrl+'/sales/pilih_um',
+//         data:{um,simpan_um},
+//         dataType : 'json',
+//         success:function(response){
+//             $('.no_um').val(response.data[0].nomor);
+//             $('.nominal_um_text').val(accounting.formatMoney(response.data[0].jumlah,"",2,'.',','));
+//             $('.nominal_um').val(response.data[0].jumlah);
+//             $('.terpakai_um_text').val(accounting.formatMoney(response.data[0].sisa_uang_muka,"",2,'.',','));
+//             $('.terpakai_um').val(response.data[0].sisa_uang_muka);
+//             $('.status_um').val(response.data[0].status_um);
+//             $('#modal_cari_um').modal('hide');
+
+//         },
+//         error:function(){
+//         }
+//     });
+
+// }
+// var tabel_uang_muka = $('#tabel_uang_muka').DataTable({
+//      columnDefs: [  
+//                       {
+//                          targets: 0,
+//                          className: 'center'
+//                       },
+//                       {
+//                          targets: 4 ,
+//                          className: 'center'
+//                       },
+       
+//                       {
+//                          targets: 3,
+//                          className: 'right'
+//                       },
+//                       {
+                      
+//                          targets: 5,
+//                          className: 'center'
+//                       },
+//                       {
+                      
+//                          targets: 6,
+//                          className: 'center'
+//                       }
+//                     ],
+// });
+// $('.jumlah_bayar_um').maskMoney({precision:0,thousands:'.',defaultZero: true});
+// $('.jumlah_bayar_um ').keyup(function(){
+//    var jumlah = $(this).val();
+//    jumlah     = jumlah.replace(/[^0-9\-]+/g,"");
+//    jumlah     = parseFloat(jumlah);
+//    var total_um  = $('.total_um ').val();
+//    total_um   = parseFloat(total_um);
+
+//    if (jumlah > total_um) {
+//     jumlah = total_um;
+//    }
+//    $(this).val(accounting.formatMoney(jumlah,"",0,'.',','));
+// });
+
+// function akun_biaya_um(){
+//    var jenis =  $('.akun_biaya_um').find(':selected').data('jenis');
+//    var biaya =  $('.akun_biaya_um').find(':selected').data('biaya');
+//    console.log(jenis);
+//    $('.jenis_biaya_um').val('');
+//    $('.akun_acc_biaya_um').val('');
+//    $('.jenis_biaya_um').val(jenis);
+//    $('.akun_acc_biaya_um').val(biaya);
+//    $('.jumlah_biaya_admin_um').val('0');
+//    if ($('.akun_biaya_um').val() == '0') {
+//     $('.jumlah_biaya_admin_um ').attr('readonly',true);
+//    }else{
+//     $('.jumlah_biaya_admin_um ').attr('readonly',false);
+//    }
+// }
+
+// function hitung_um(){
+//     var sisa_terbayar = $('.sisa_terbayar_um').val();
+//     var jumlah_bayar = $('.jumlah_bayar').val();
+//     var jumlah_biaya_admin  = $('.jumlah_biaya_admin_um').val();
+//     jumlah_biaya_admin     = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
+//     jumlah_biaya_admin     = parseFloat(jumlah_biaya_admin);
+//     var akun_biaya         = $('.akun_biaya_um').val();
+//     var jenis              = $('.jenis_biaya_um').val();
+
+
+
+//     if (jenis != 'K') {
+//         if (jumlah_biaya_admin > sisa_terbayar) {
+//             toastr.warning('Biaya Tidak Boleh Melebihi Sisa Piutang');
+//             $('.jumlah_biaya_admin_um').val('0');
+//             var jumlah_biaya_admin  = $('.jumlah_biaya_admin_um').val();
+//             jumlah_biaya_admin     = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
+//             jumlah_biaya_admin     = parseFloat(jumlah_biaya_admin);
+//         }
+//         var hasil = sisa_terbayar - jumlah_bayar - jumlah_biaya_admin;
+
+//         $('.ed_total').val(accounting.formatMoney(hasil,"",2,'.',','));
+//         $('.total').val(hasil);
+        
+//         var hasil1 = parseFloat(jumlah_bayar) + parseFloat(jumlah_biaya_admin);
+//         $('.total_bayar ').val(accounting.formatMoney(hasil1,"",2,'.',','));
+//     }else{
+//         toastr.warning('Jenis Akun Biaya Tidak Boleh Kredit');
+//         $('.akun_biaya_um').val('0').trigger('chosen:updated');
+//         akun_biaya_um();
+
+//     }
+
+
+
+
+// }
+    
+
+
+// $('.append_um').click(function(){
+//     var seq_um      = $('.seq_um').val();
+//     var no_um       = $('.no_um').val();
+//     var nominal_um  = $('.nominal_um').val();
+//     var terpakai_um   = $('.terpakai_um').val();
+//     var status_um   = $('.status_um').val();
+//     var terpakai_um = $('.terpakai_um').val();
+//     var sisa_terbayar_um = $('.sisa_terbayar_um').val();
+//     var jumlah_bayar_um   = $('.jumlah_bayar_um ').val();
+//     jumlah_bayar_um  = jumlah_bayar_um.replace(/[^0-9\-]+/g,"");
+//     jumlah_bayar_um = parseFloat(jumlah_bayar_um);
+//     if (jumlah_bayar_um > terpakai_um) {
+//         toastr.warning('Jumlah Lebih Besar Dari Sisa Uang Muka');
+//         $('.jumlah_bayar_um ').val('0');
+//         return 1;
+//     }
+//     if (jumlah_bayar_um == 0 ||  jumlah_bayar_um =='') {
+//         toastr.warning('Jumlah Bayar Harus Diisi');
+//         return 1;
+//     }
+
+//     if (jumlah_bayar_um > sisa_terbayar_um) {
+//         toastr.warning('Jumlah Bayar Melebihi Sisa Piutang');
+//         $('.jumlah_bayar_um ').val('0');
+//         return 1;
+//     }
+    
+//     var sisa_akhir = terpakai_um - jumlah_bayar_um;
+//     var index = simpan_um.indexOf(no_um);
+//     if (index == -1) {
+
+//             table_histori_um.row.add([
+                    
+//                     '<p class="no_um_text">'+no_um+'</p>'
+//                     +'<input type="hidden" value="'+no_um+'" class="m_no_um m_um_'+no_um+'" name="m_no_um[]">',
+
+//                     '<p class="m_nominal_um_text">'+accounting.formatMoney(nominal_um,"",2,'.',',')+'</p>'+
+//                     '<input type="hidden" value="'+nominal_um+'" class="m_nominal_um">',
+
+//                     '<p class="m_terpakai_um_text">'+accounting.formatMoney(terpakai_um,"",2,'.',',')+'</p>'+
+//                     '<input type="hidden" value="'+terpakai_um+'" class="m_terpakai_um">',
+
+//                     '<p class="m_jumlah_bayar_um_text">'+accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+'</p>'+
+//                     '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
+
+//                     '<p class="m_sisa_akhir_um_text">'+accounting.formatMoney(sisa_akhir,"",2,'.',',')+'</p>'+
+//                     '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
+
+//                     '<div class="btn-group ">'+
+//                     '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+//                     '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+//                     '</div>',
+
+//                 ]).draw();
+
+
+//             count_um++;
+
+//             simpan_um.push(no_um);
+//             var temp = 0;
+            
+//             table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+//                 var ini = $(this).val();
+//                 ini = parseFloat(ini);
+//                 temp+=ini;
+//             });
+//             console.log(temp);
+//             $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+//             $('.jumlah_bayar').val(temp);
+//             $('.tabel_pembayaran_um input').val('');
+//             hitung_um();
+//     }else{
+//         var par = $('.m_um_'+no_um).parents('tr');
+//         table_histori_um.row(par).remove().draw(false);
+
+//         table_histori_um.row.add([
+                    
+//                     '<p class="no_um_text">'+no_um+'</p>'
+//                     +'<input type="hidden" value="'+no_um+'" class="m_no_um m_um_'+no_um+'" name="m_no_um[]">',
+
+//                     '<p class="m_nominal_um_text">'+accounting.formatMoney(nominal_um,"",2,'.',',')+'</p>'+
+//                     '<input type="hidden" value="'+nominal_um+'" class="m_nominal_um">',
+
+//                     '<p class="m_terpakai_um_text">'+accounting.formatMoney(terpakai_um,"",2,'.',',')+'</p>'+
+//                     '<input type="hidden" value="'+terpakai_um+'" class="m_terpakai_um">',
+
+//                     '<p class="m_jumlah_bayar_um_text">'+accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+'</p>'+
+//                     '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
+
+//                     '<p class="m_sisa_akhir_um_text">'+accounting.formatMoney(sisa_akhir,"",2,'.',',')+'</p>'+
+//                     '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
+
+//                     '<div class="btn-group ">'+
+//                     '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+//                     '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+//                     '</div>',
+
+//                 ]).draw();
+
+//             var temp = 0;
+            
+//             table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+//                 var ini = $(this).val();
+//                 ini = parseFloat(ini);
+//                 temp+=ini;
+//             });
+//             console.log(temp);
+//             $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+//             $('.jumlah_bayar').val(temp);
+//             $('.tabel_pembayaran_um input').val('');
+//             hitung_um();
+//     }
+//     // hitung();
+
+// });
+
+
+
+
+
+
+// $('#save_um').click(function(){
+//     var customer = $('.customer').val();
+//     var ed_nomor_invoice = $('.ed_nomor_invoice').val();
+//     swal({
+//         title: "Apakah anda yakin?",
+//         text: "Simpan Data Uang Muka!",
+//         type: "warning",
+//         showCancelButton: true,
+//         confirmButtonColor: "#DD6B55",
+//         confirmButtonText: "Ya, Simpan!",
+//         cancelButtonText: "Batal",
+//         closeOnConfirm: true
+//       },
+//       function(){
+
+//                // alert(accPiutang);
+//            $.ajaxSetup({
+//             headers: {
+//                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//                 }
+//             });
+
+//           $.ajax({
+//           url:baseUrl + '/sales/save_um_kwitansi',
+//           type:'post',
+//           dataType:'json',
+//           data:$('.tabel_header :input').serialize()
+//                +'&'+table_histori_um.$('input').serialize()
+//                +'&customer='+customer
+//                +'&ed_nomor_invoice='+ed_nomor_invoice,
+//           success:function(response){
+//                 swal({
+//                     title: "Berhasil!",
+//                     type: 'success',
+//                     text: "Data berhasil disimpan",
+//                     timer: 900,
+//                    showConfirmButton: true
+//                     },function(){
+
+//                         var jumlah_bayar         = $('.jumlah_bayar').val();
+//                         jumlah_bayar             = parseFloat(jumlah_bayar);
+//                         var akun_biaya           = $('.akun_biaya_um').val();
+//                         var jumlah_biaya_admin   = $('.jumlah_biaya_admin_um').val();
+//                         var jenis                = $('.jenis_biaya_um').val();
+//                         var akun_acc_biaya       = $('.akun_acc_biaya_um').val();
+//                         var total_bayar          = $('.total_bayar').val();
+//                         total_bayar              = total_bayar.replace(/[^0-9\-]+/g,"")/100;
+
+//                         if (jumlah_biaya_admin == '') {
+//                             jumlah_biaya_admin = 0;
+//                         }else{
+//                             jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
+//                             jumlah_biaya_admin       = parseFloat(jumlah_biaya_admin);
+//                         }
+
+//                         var angka                = $('.jumlah_bayar').val();
+//                         angka                    = angka.replace(/[^0-9\-]+/g,"");
+//                         angka                    = parseFloat(angka);
+//                         var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
+//                         ed_nomor_invoice = ed_nomor_invoice.replace(/\//g,"");
+//                         var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
+//                         var jumlah_biaya         = 0;
+//                         if (jenis == 'K') {
+//                             $(par).find('.i_kredit').val(jumlah_biaya_admin);
+//                         }else{
+//                             $(par).find('.i_debet').val(jumlah_biaya_admin);
+//                         }
+//                         $(par).find('.i_bayar_text').val(accounting.formatMoney(total_bayar,"",2,'.',','));
+//                         $(par).find('.i_bayar').val(angka);
+//                         $(par).find('.i_tot_bayar').val(total_bayar);
+//                         $(par).find('.i_akun_biaya').val(akun_biaya);
+//                         var temp = 0;
+
+//                         table_data.$('.i_bayar').each(function(){
+//                             var i_bayar = Math.round($(this).val()).toFixed(2);
+//                                 i_bayar = parseFloat(i_bayar);
+//                             temp += i_bayar;
+//                         })
+
+//                         var temp1 = 0;
+//                         table_data.$('.i_debet').each(function(){
+//                             var i_bayar = Math.round($(this).val()).toFixed(2);
+//                                 i_bayar = parseFloat(i_bayar);
+//                             temp1 += i_bayar;
+//                         })
+
+//                         var temp2 = 0;
+//                         table_data.$('.i_kredit').each(function(){
+//                             var i_bayar = Math.round($(this).val()).toFixed(2);
+//                                 i_bayar = parseFloat(i_bayar);
+//                             temp2 += i_bayar;
+//                         });
+
+//                         $('.total_jumlah_bayar').val(temp);
+//                         $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
+//                         $('.ed_debet').val(temp1);
+//                         $('.ed_debet_text').val(accounting.formatMoney(temp1,"",2,'.',','));
+
+//                         $('.ed_kredit').val(temp2);
+//                         $('.ed_kredit_text').val(accounting.formatMoney(temp2,"",2,'.',','));
+
+//                         hitung_bayar();
+//                         $('#modal_um').modal('hide');
+//                 });
+
+          
+//           },
+//           error:function(data){
+//             swal({
+//             title: "Terjadi Kesalahan",
+//                     type: 'error',
+//                     timer: 900,
+//                    showConfirmButton: true
+
+//         });
+//        }
+//       });  
+//      });
+// })
+
+
+// function edit_um(a) {
+//     var par = $(a).parents('tr');
+//     var um = $(par).find('.m_no_um').val();
+
+//     var nota_kwitansi = $('#nota_kwitansi').val();
+//     var m_jumlah_bayar_um = $(par).find('.m_jumlah_bayar_um').val();
+//     var ed_nomor_invoice = $('.ed_nomor_invoice').val();
+
+//     m_jumlah_bayar_um = parseFloat(m_jumlah_bayar_um);
+//     $.ajax({
+//         url:baseUrl+'/sales/pilih_um',
+//         data:{um,nota_kwitansi,ed_nomor_invoice},
+//         dataType : 'json',
+//         success:function(response){
+//             $('.no_um').val(response.data[0].nomor);
+//             $('.nominal_um_text').val(accounting.formatMoney(response.data[0].jumlah,"",2,'.',','));
+//             $('.nominal_um').val(response.data[0].jumlah);
+//             if (response.status == 'E') {
+//                 $('.terpakai_um_text').val(accounting.formatMoney(response.data[0].sisa_uang_muka,"",2,'.',','));
+//                 $('.terpakai_um').val(response.data[0].sisa_uang_muka);
+//             }else{
+//                 $('.terpakai_um_text').val(accounting.formatMoney(parseFloat(response.data[0].sisa_uang_muka)+m_jumlah_bayar_um,"",2,'.',','));
+//                 $('.terpakai_um').val(parseFloat(response.data[0].sisa_uang_muka)+m_jumlah_bayar_um);
+//             }
+            
+//             $('.status_um').val(response.data[0].status_um);
+//             $('#modal_cari_um').modal('hide');
+//             toastr.info('Edit Data Berhasil Diinisialisasi');
+//         },
+//         error:function(){
+//         }
+//     });
+
+// }
+// function hapus_um(a) {
+//     var par = $(a).parents('tr');
+//     var no  = $(par).find('.m_no_um').val();
+//     table_histori_um.row(par).remove().draw(false);
+//     var index = array_simpan.indexOf(no);
+//     simpan_um.splice(index,1);
+//     var temp = 0;
+    
+//     table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+//         var ini = $(this).val();
+//         ini = parseFloat(ini);
+//         temp+=ini;
+//     });
+//     console.log(temp);
+//     $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+//     $('.jumlah_bayar').val(temp);
+//     $('.tabel_pembayaran_um input').val('');
+//     hitung_um();
+
+// }
+var array_uang_muka = [];
+function um_sementara() {
+    if ($('.cb_jenis_pembayaran').val() == 'U') {
+        var customer = $('.customer').val();
+        var cabang   = $('.cb_cabang').val();
+        $.ajax({
+            url:baseUrl + '/sales/kwitansi/simpan_um_sementara',
+            data:{customer,cabang},
+            success:function(data){
+                var nomor;
+                var jumlah;
+                var sisa;
+                var status;
+                for (var i = 0; i < data.data.length; i++) {
+                    nomor = new Object();
+                    jumlah = new Object();
+                    sisa = new Object();
+                    status = new Object();
+                    array_uang_muka[i]  = nomor;
+                    array_uang_muka[i]  = jumlah;
+                    array_uang_muka[i]  = sisa;
+                    array_uang_muka[i]  = status;
+                    array_uang_muka[i]['nomor']  = data.data[i].nomor;
+                    array_uang_muka[i]['jumlah'] = data.data[i].jumlah;
+                    array_uang_muka[i]['sisa']   = data.data[i].sisa_uang_muka;
+                    array_uang_muka[i]['status']3  = data.data[i].status_um;
+                }
+                console.log(array_uang_muka);
+                var index = array_uang_muka.indexOf
+            }
+        })
+    }
+}
+    
+
 $('.cari_um').click(function(){
     if ($('#cb_akun_h').val() == '0') {
         toastr.warning('Akun Harus Dipilih')
@@ -1739,441 +2233,7 @@ $('.cari_um').click(function(){
         }
     })
 });
-// simpan
-$('#btnadd_um').click(function(){
-    if ($('#cb_akun_h').val() == '0') {
-        toastr.warning('Akun Harus Dipilih')
-        return 1
-    }
-    if ($('.customer').val() == '0') {
-        toastr.warning('Customer Harus Dipilih')
-        return 1
-    }
-   $('.cari_um').removeClass('disabled');
-   
 
-    $('.tabel_um :input').val('');
-    $('.seq_um ').val(count_um);
-
-
-
-    $('#modal_um').modal('show');
-});
-// pilih um
-function pilih_um(par) {
-    var um = $(par).find('.nomor_modal_um').val();
-    $.ajax({
-        url:baseUrl+'/sales/pilih_um',
-        data:{um,simpan_um},
-        dataType : 'json',
-        success:function(response){
-            $('.no_um').val(response.data[0].nomor);
-            $('.nominal_um_text').val(accounting.formatMoney(response.data[0].jumlah,"",2,'.',','));
-            $('.nominal_um').val(response.data[0].jumlah);
-            $('.terpakai_um_text').val(accounting.formatMoney(response.data[0].sisa_uang_muka,"",2,'.',','));
-            $('.terpakai_um').val(response.data[0].sisa_uang_muka);
-            $('.status_um').val(response.data[0].status_um);
-            $('#modal_cari_um').modal('hide');
-
-        },
-        error:function(){
-        }
-    });
-
-}
-var tabel_uang_muka = $('#tabel_uang_muka').DataTable({
-     columnDefs: [  
-                      {
-                         targets: 0,
-                         className: 'center'
-                      },
-                      {
-                         targets: 4 ,
-                         className: 'center'
-                      },
-       
-                      {
-                         targets: 3,
-                         className: 'right'
-                      },
-                      {
-                      
-                         targets: 5,
-                         className: 'center'
-                      },
-                      {
-                      
-                         targets: 6,
-                         className: 'center'
-                      }
-                    ],
-});
-$('.jumlah_bayar_um').maskMoney({precision:0,thousands:'.',defaultZero: true});
-$('.jumlah_bayar_um ').keyup(function(){
-   var jumlah = $(this).val();
-   jumlah     = jumlah.replace(/[^0-9\-]+/g,"");
-   jumlah     = parseFloat(jumlah);
-   var total_um  = $('.total_um ').val();
-   total_um   = parseFloat(total_um);
-
-   if (jumlah > total_um) {
-    jumlah = total_um;
-   }
-   $(this).val(accounting.formatMoney(jumlah,"",0,'.',','));
-});
-
-function akun_biaya_um(){
-   var jenis =  $('.akun_biaya_um').find(':selected').data('jenis');
-   var biaya =  $('.akun_biaya_um').find(':selected').data('biaya');
-   console.log(jenis);
-   $('.jenis_biaya_um').val('');
-   $('.akun_acc_biaya_um').val('');
-   $('.jenis_biaya_um').val(jenis);
-   $('.akun_acc_biaya_um').val(biaya);
-   $('.jumlah_biaya_admin_um').val('0');
-   if ($('.akun_biaya_um').val() == '0') {
-    $('.jumlah_biaya_admin_um ').attr('readonly',true);
-   }else{
-    $('.jumlah_biaya_admin_um ').attr('readonly',false);
-   }
-}
-
-function hitung_um(){
-    var sisa_terbayar = $('.sisa_terbayar_um').val();
-    var jumlah_bayar = $('.jumlah_bayar').val();
-    var jumlah_biaya_admin  = $('.jumlah_biaya_admin_um').val();
-    jumlah_biaya_admin     = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
-    jumlah_biaya_admin     = parseFloat(jumlah_biaya_admin);
-    var akun_biaya         = $('.akun_biaya_um').val();
-    var jenis              = $('.jenis_biaya_um').val();
-
-
-
-    if (jenis != 'K') {
-        if (jumlah_biaya_admin > sisa_terbayar) {
-            toastr.warning('Biaya Tidak Boleh Melebihi Sisa Piutang');
-            $('.jumlah_biaya_admin_um').val('0');
-            var jumlah_biaya_admin  = $('.jumlah_biaya_admin_um').val();
-            jumlah_biaya_admin     = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
-            jumlah_biaya_admin     = parseFloat(jumlah_biaya_admin);
-        }
-        var hasil = sisa_terbayar - jumlah_bayar - jumlah_biaya_admin;
-
-        $('.ed_total').val(accounting.formatMoney(hasil,"",2,'.',','));
-        $('.total').val(hasil);
-        
-        var hasil1 = parseFloat(jumlah_bayar) + parseFloat(jumlah_biaya_admin);
-        $('.total_bayar ').val(accounting.formatMoney(hasil1,"",2,'.',','));
-    }else{
-        toastr.warning('Jenis Akun Biaya Tidak Boleh Kredit');
-        $('.akun_biaya_um').val('0').trigger('chosen:updated');
-        akun_biaya_um();
-
-    }
-
-
-
-
-}
-    
-
-
-$('.append_um').click(function(){
-    var seq_um      = $('.seq_um').val();
-    var no_um       = $('.no_um').val();
-    var nominal_um  = $('.nominal_um').val();
-    var terpakai_um   = $('.terpakai_um').val();
-    var status_um   = $('.status_um').val();
-    var terpakai_um = $('.terpakai_um').val();
-    var sisa_terbayar_um = $('.sisa_terbayar_um').val();
-    var jumlah_bayar_um   = $('.jumlah_bayar_um ').val();
-    jumlah_bayar_um  = jumlah_bayar_um.replace(/[^0-9\-]+/g,"");
-    jumlah_bayar_um = parseFloat(jumlah_bayar_um);
-    if (jumlah_bayar_um > terpakai_um) {
-        toastr.warning('Jumlah Lebih Besar Dari Sisa Uang Muka');
-        $('.jumlah_bayar_um ').val('0');
-        return 1;
-    }
-    if (jumlah_bayar_um == 0 ||  jumlah_bayar_um =='') {
-        toastr.warning('Jumlah Bayar Harus Diisi');
-        return 1;
-    }
-
-    if (jumlah_bayar_um > sisa_terbayar_um) {
-        toastr.warning('Jumlah Bayar Melebihi Sisa Piutang');
-        $('.jumlah_bayar_um ').val('0');
-        return 1;
-    }
-    
-    var sisa_akhir = terpakai_um - jumlah_bayar_um;
-    var index = simpan_um.indexOf(no_um);
-    if (index == -1) {
-
-            table_histori_um.row.add([
-                    
-                    '<p class="no_um_text">'+no_um+'</p>'
-                    +'<input type="hidden" value="'+no_um+'" class="m_no_um m_um_'+no_um+'" name="m_no_um[]">',
-
-                    '<p class="m_nominal_um_text">'+accounting.formatMoney(nominal_um,"",2,'.',',')+'</p>'+
-                    '<input type="hidden" value="'+nominal_um+'" class="m_nominal_um">',
-
-                    '<p class="m_terpakai_um_text">'+accounting.formatMoney(terpakai_um,"",2,'.',',')+'</p>'+
-                    '<input type="hidden" value="'+terpakai_um+'" class="m_terpakai_um">',
-
-                    '<p class="m_jumlah_bayar_um_text">'+accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+'</p>'+
-                    '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
-
-                    '<p class="m_sisa_akhir_um_text">'+accounting.formatMoney(sisa_akhir,"",2,'.',',')+'</p>'+
-                    '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
-
-                    '<div class="btn-group ">'+
-                    '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
-                    '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
-                    '</div>',
-
-                ]).draw();
-
-
-            count_um++;
-
-            simpan_um.push(no_um);
-            var temp = 0;
-            
-            table_histori_um.$('.m_jumlah_bayar_um').each(function(){
-                var ini = $(this).val();
-                ini = parseFloat(ini);
-                temp+=ini;
-            });
-            console.log(temp);
-            $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
-            $('.jumlah_bayar').val(temp);
-            $('.tabel_pembayaran_um input').val('');
-            hitung_um();
-    }else{
-        var par = $('.m_um_'+no_um).parents('tr');
-        table_histori_um.row(par).remove().draw(false);
-
-        table_histori_um.row.add([
-                    
-                    '<p class="no_um_text">'+no_um+'</p>'
-                    +'<input type="hidden" value="'+no_um+'" class="m_no_um m_um_'+no_um+'" name="m_no_um[]">',
-
-                    '<p class="m_nominal_um_text">'+accounting.formatMoney(nominal_um,"",2,'.',',')+'</p>'+
-                    '<input type="hidden" value="'+nominal_um+'" class="m_nominal_um">',
-
-                    '<p class="m_terpakai_um_text">'+accounting.formatMoney(terpakai_um,"",2,'.',',')+'</p>'+
-                    '<input type="hidden" value="'+terpakai_um+'" class="m_terpakai_um">',
-
-                    '<p class="m_jumlah_bayar_um_text">'+accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+'</p>'+
-                    '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
-
-                    '<p class="m_sisa_akhir_um_text">'+accounting.formatMoney(sisa_akhir,"",2,'.',',')+'</p>'+
-                    '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
-
-                    '<div class="btn-group ">'+
-                    '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
-                    '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
-                    '</div>',
-
-                ]).draw();
-
-            var temp = 0;
-            
-            table_histori_um.$('.m_jumlah_bayar_um').each(function(){
-                var ini = $(this).val();
-                ini = parseFloat(ini);
-                temp+=ini;
-            });
-            console.log(temp);
-            $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
-            $('.jumlah_bayar').val(temp);
-            $('.tabel_pembayaran_um input').val('');
-            hitung_um();
-    }
-    // hitung();
-
-});
-
-
-
-
-
-
-$('#save_um').click(function(){
-    var customer = $('.customer').val();
-    var ed_nomor_invoice = $('.ed_nomor_invoice').val();
-    swal({
-        title: "Apakah anda yakin?",
-        text: "Simpan Data Uang Muka!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Ya, Simpan!",
-        cancelButtonText: "Batal",
-        closeOnConfirm: true
-      },
-      function(){
-
-               // alert(accPiutang);
-           $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-          $.ajax({
-          url:baseUrl + '/sales/save_um_kwitansi',
-          type:'post',
-          dataType:'json',
-          data:$('.tabel_header :input').serialize()
-               +'&'+table_histori_um.$('input').serialize()
-               +'&customer='+customer
-               +'&ed_nomor_invoice='+ed_nomor_invoice,
-          success:function(response){
-                swal({
-                    title: "Berhasil!",
-                    type: 'success',
-                    text: "Data berhasil disimpan",
-                    timer: 900,
-                   showConfirmButton: true
-                    },function(){
-
-                        var jumlah_bayar         = $('.jumlah_bayar').val();
-                        jumlah_bayar             = parseFloat(jumlah_bayar);
-                        var akun_biaya           = $('.akun_biaya_um').val();
-                        var jumlah_biaya_admin   = $('.jumlah_biaya_admin_um').val();
-                        var jenis                = $('.jenis_biaya_um').val();
-                        var akun_acc_biaya       = $('.akun_acc_biaya_um').val();
-                        var total_bayar          = $('.total_bayar').val();
-                        total_bayar              = total_bayar.replace(/[^0-9\-]+/g,"")/100;
-
-                        if (jumlah_biaya_admin == '') {
-                            jumlah_biaya_admin = 0;
-                        }else{
-                            jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
-                            jumlah_biaya_admin       = parseFloat(jumlah_biaya_admin);
-                        }
-
-                        var angka                = $('.jumlah_bayar').val();
-                        angka                    = angka.replace(/[^0-9\-]+/g,"");
-                        angka                    = parseFloat(angka);
-                        var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
-                        ed_nomor_invoice = ed_nomor_invoice.replace(/\//g,"");
-                        var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
-                        var jumlah_biaya         = 0;
-                        if (jenis == 'K') {
-                            $(par).find('.i_kredit').val(jumlah_biaya_admin);
-                        }else{
-                            $(par).find('.i_debet').val(jumlah_biaya_admin);
-                        }
-                        $(par).find('.i_bayar_text').val(accounting.formatMoney(total_bayar,"",2,'.',','));
-                        $(par).find('.i_bayar').val(angka);
-                        $(par).find('.i_tot_bayar').val(total_bayar);
-                        $(par).find('.i_akun_biaya').val(akun_biaya);
-                        var temp = 0;
-
-                        table_data.$('.i_bayar').each(function(){
-                            var i_bayar = Math.round($(this).val()).toFixed(2);
-                                i_bayar = parseFloat(i_bayar);
-                            temp += i_bayar;
-                        })
-
-                        var temp1 = 0;
-                        table_data.$('.i_debet').each(function(){
-                            var i_bayar = Math.round($(this).val()).toFixed(2);
-                                i_bayar = parseFloat(i_bayar);
-                            temp1 += i_bayar;
-                        })
-
-                        var temp2 = 0;
-                        table_data.$('.i_kredit').each(function(){
-                            var i_bayar = Math.round($(this).val()).toFixed(2);
-                                i_bayar = parseFloat(i_bayar);
-                            temp2 += i_bayar;
-                        });
-
-                        $('.total_jumlah_bayar').val(temp);
-                        $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
-                        $('.ed_debet').val(temp1);
-                        $('.ed_debet_text').val(accounting.formatMoney(temp1,"",2,'.',','));
-
-                        $('.ed_kredit').val(temp2);
-                        $('.ed_kredit_text').val(accounting.formatMoney(temp2,"",2,'.',','));
-
-                        hitung_bayar();
-                        $('#modal_um').modal('hide');
-                });
-
-          
-          },
-          error:function(data){
-            swal({
-            title: "Terjadi Kesalahan",
-                    type: 'error',
-                    timer: 900,
-                   showConfirmButton: true
-
-        });
-       }
-      });  
-     });
-})
-
-
-function edit_um(a) {
-    var par = $(a).parents('tr');
-    var um = $(par).find('.m_no_um').val();
-
-    var nota_kwitansi = $('#nota_kwitansi').val();
-    var m_jumlah_bayar_um = $(par).find('.m_jumlah_bayar_um').val();
-    var ed_nomor_invoice = $('.ed_nomor_invoice').val();
-
-    m_jumlah_bayar_um = parseFloat(m_jumlah_bayar_um);
-    $.ajax({
-        url:baseUrl+'/sales/pilih_um',
-        data:{um,nota_kwitansi,ed_nomor_invoice},
-        dataType : 'json',
-        success:function(response){
-            $('.no_um').val(response.data[0].nomor);
-            $('.nominal_um_text').val(accounting.formatMoney(response.data[0].jumlah,"",2,'.',','));
-            $('.nominal_um').val(response.data[0].jumlah);
-            if (response.status == 'E') {
-                $('.terpakai_um_text').val(accounting.formatMoney(response.data[0].sisa_uang_muka,"",2,'.',','));
-                $('.terpakai_um').val(response.data[0].sisa_uang_muka);
-            }else{
-                $('.terpakai_um_text').val(accounting.formatMoney(parseFloat(response.data[0].sisa_uang_muka)+m_jumlah_bayar_um,"",2,'.',','));
-                $('.terpakai_um').val(parseFloat(response.data[0].sisa_uang_muka)+m_jumlah_bayar_um);
-            }
-            
-            $('.status_um').val(response.data[0].status_um);
-            $('#modal_cari_um').modal('hide');
-            toastr.info('Edit Data Berhasil Diinisialisasi');
-        },
-        error:function(){
-        }
-    });
-
-}
-function hapus_um(a) {
-    var par = $(a).parents('tr');
-    var no  = $(par).find('.m_no_um').val();
-    table_histori_um.row(par).remove().draw(false);
-    var index = array_simpan.indexOf(no);
-    simpan_um.splice(index,1);
-    var temp = 0;
-    
-    table_histori_um.$('.m_jumlah_bayar_um').each(function(){
-        var ini = $(this).val();
-        ini = parseFloat(ini);
-        temp+=ini;
-    });
-    console.log(temp);
-    $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
-    $('.jumlah_bayar').val(temp);
-    $('.tabel_pembayaran_um input').val('');
-    hitung_um();
-
-}
 
 
 $('#btnsimpan').click(function(){
