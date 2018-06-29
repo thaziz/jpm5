@@ -64,10 +64,33 @@
                  
                   <div class="box-body">
                       <div class="row">
-                      <div class="col-xs-6">
+                      <div class="col-xs-12">
+                          @foreach($data['rn'] as $rn)
+                         @if(count($data['jurnal_return'])!=0)
+                          <div class="pull-right">  
+                         
+                              <a onclick="lihatjurnal('{{$data['rn'][0]->rn_nota or null}}','RETURN PEMBELIAN RETURN')" class="btn-xs btn-primary" aria-hidden="true">
+                       
+                                <i class="fa  fa-eye"> </i>
+                                 &nbsp;  Lihat Jurnal Return
+                               </a> 
+                          </div>
+                          @endif
+
+                           @if(count($data['jurnal_terima'])!=0)
+                          <div class="pull-right">  
+                                <a onclick="lihatjurnal('{{$data['rn'][0]->rn_nota or null}}','RETURN PEMBELIAN TERIMA')" class="btn-xs btn-primary" aria-hidden="true">
+                       
+                                <i class="fa  fa-eye"> </i>
+                                 &nbsp;  Lihat Jurnal Terima
+                               </a> 
+                          </div>
+                          @endif
+
+
                         <input type="hidden" value="{{Auth::user()->m_name}}" name="username">
                            <table border="0" class="table">
-                             @foreach($data['rn'] as $rn)
+                           
                             <tr>
                                 <td> Cabang </td>
                                  <td> 
@@ -138,13 +161,7 @@
                        
                       </div>
 
-                      <div class="col-sm-6">   
-
-                          <table class="table table-stripped">
-                             
-                          </table>
-                          
-                      </div>
+                    
                     
                       </div>
 
@@ -156,6 +173,7 @@
 
 
                       <div class="col-sm-12">
+                       
                           <div class="col-sm-8">
                           <br>
                               <table class="table">
@@ -419,7 +437,32 @@
     </div>
 </div>
 
-
+<div id="jurnal" class="modal" >
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h5 class="modal-title">Laporan Jurnal</h5>
+                        <h4 class="modal-title">No Faktur:  <u>{{$data['faktur'][0]->fp_nofaktur or null }}</u> </h4>
+                        
+                      </div>
+                      <div class="modal-body" style="padding: 15px 20px 15px 20px">   
+                          <table id="table_jurnal" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th> ID Akun </th>
+                                            <th> Akun</th>
+                                            <th> Debit</th>
+                                            <th> Kredit</th>
+                                            <th style="width:100px"> Uraian / Detail </th>                                         
+                                        </tr>
+                                    </thead>
+                                    
+                                </table>                            
+                          </div>                          
+                    </div>
+                  </div>
+                </div>
 
 <div class="row" style="padding-bottom: 50px;"></div>
 
@@ -439,6 +482,64 @@
         $('.simpanitem').show();
         $('.kembali').show();
     })
+
+
+
+     function lihatjurnal($ref,$note){
+    nota = $ref;
+          detail = $note;
+
+          $.ajax({
+          url:baseUrl +'/fakturpembelian/jurnalumum',
+          type:'get',
+          data:{nota,detail},
+          dataType : "json",
+          success:function(response){
+                $('#jurnal').modal('show');
+                hasilpph = $('.hasilpph_po').val();
+                hasilppn = $('.hasilppn_po').val();
+
+             $('.loading').css('display', 'none');
+                $('.listjurnal').empty();
+                $totalDebit=0;
+                $totalKredit=0;
+                        console.log(response);
+                    
+                        for(key = 0; key < response.countjurnal; key++) {
+                           
+                          var rowtampil2 = "<tr class='listjurnal'>" +
+                          "<td> "+response.jurnal[key].id_akun+"</td>" +
+                          "<td> "+response.jurnal[key].nama_akun+"</td>";
+
+                          
+                            if(response.jurnal[key].dk == 'D'){
+                              $totalDebit = parseFloat(Math.abs($totalDebit)) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                              rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td>";
+                            }
+                            else {
+                              $totalKredit = parseFloat(Math.abs($totalKredit)) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                              rowtampil2 += "<td> </td><td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td>";
+                            }
+                         
+
+                            rowtampil2 += "<td>"+response.jurnal[key].jrdt_detail+"</td>";
+                            $('#table_jurnal').append(rowtampil2);
+                        }
+                     var rowtampil1 = "</tbody>" +
+                      "<tfoot>" +
+                          "<tr class='listjurnal'> " +
+                                  "<th colspan='2'>Total</th>" +                        
+                                  "<th>"+accounting.formatMoney($totalDebit, "", 2, ",",'.')+"</th>" +
+                                  "<th>"+accounting.formatMoney($totalKredit,"",2,',','.')+"</th>" +
+                                  "<th>&nbsp</th>" +
+                          "<tr>" +
+                      "</tfoot>";
+                                     
+                   
+                      $('#table_jurnal').append(rowtampil1);
+              }
+        });
+  }
 
 
     $('.simpanitem').hide();

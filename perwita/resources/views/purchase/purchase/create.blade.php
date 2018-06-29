@@ -918,6 +918,8 @@
                         $('.hargappn').val(addCommas(ppnhar));
                         $('.total').val(addCommas(subharga));
                         $('.subtotal').val(subtotal);
+                        $('.ppn').val('');
+                        $('.hargappn').val('');
                     }
                   }
               })
