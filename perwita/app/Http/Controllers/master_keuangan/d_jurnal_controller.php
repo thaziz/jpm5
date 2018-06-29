@@ -20,6 +20,7 @@ class d_jurnal_controller extends Controller
     	// return "aaa";
 
         $cabang = DB::table("cabang")->where("kode", $_GET["cab"])->select("nama")->first();
+        $date = (substr($_GET['date'], 0, 1) == 0) ? substr($_GET['date'], 1, 1) : $_GET["date"];
 
         if(Session::get("cabang") == "000")
             $cabangs = DB::table("cabang")->select("kode", "nama")->get();
@@ -30,6 +31,9 @@ class d_jurnal_controller extends Controller
                 ->join("d_jurnal_dt", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
                 ->join('d_akun', "d_akun.id_akun", "=", "d_jurnal_dt.jrdt_acc")
                 ->where("d_akun.kode_cabang", $_GET['cab'])
+                ->where(DB::raw("substring(jr_ref, 1,5)"), "TRANS")
+                ->where(DB::raw("date_part('month', jr_date)"), $date)
+                ->where(DB::raw("date_part('year', jr_date)"), $_GET["year"])
                 ->select(DB::raw("distinct d_jurnal.jr_id"), "d_jurnal.*")->get();
 
         // return json_encode($data);

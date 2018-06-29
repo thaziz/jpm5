@@ -36,8 +36,6 @@
 
     .modal-open{
       overflow: inherit;
-    }.chosen-select {
-        background: red;
     }
     .cabang{
       color: #555;
@@ -113,9 +111,15 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
-                        <button class="btn btn-sm btn-default pilihCabang" data-parrent="0" data-toggle="modal" data-target="#modal_pilih_cabang">
-                          <i class="fa fa-list"></i> &nbsp;Pilih Cabang
+                      <div style="display: inline-block; background: none;">
+                        <button class="btn btn-sm btn-default pilihCabang" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                          <i class="fa fa-list"></i> &nbsp;Pengaturan Halaman
+                            <span class="caret"></span>
                         </button>
+                        <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1" style="right: 150px;">
+                          <li><a href="#" data-toggle="modal" data-target="#modal_setting_table"><i class="fa fa-table fa-fw"></i> &nbsp;Pengaturan Tampilan Table</a></li>
+                        </ul>
+                      </div>
 
                         <button class="btn btn-sm btn-primary tambahAkun" data-parrent="0" data-toggle="modal" data-target="#modal_tambah_akun">
                           <i class="fa fa-plus"></i> &nbsp;Tambah Data Akun
@@ -222,23 +226,37 @@
   <!-- modal -->
 
   <!-- modal -->
-<div id="modal_pilih_cabang" class="modal">
-  <div class="modal-dialog" style="width: 20%">
+<div id="modal_setting_table" class="modal">
+  <div class="modal-dialog" style="width: 30%">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Pilih Cabang</h4>
+        <h4 class="modal-title">Setting Tampilan Table</h4>
         <input type="hidden" class="parrent"/>
       </div>
       <div class="modal-body">
-        <div class="wrap" style="background: none; height: 300px; overflow-y: scroll; padding-right: 20px;">
-            @foreach($cabangs as $cabang)
-              <a class="cabang" href="{{ url('master_keuangan/akun?cab='.$cabang->kode) }}">
-                <div class="col-md-12 cabangs" style="border: 1px solid #ccc; padding: 5px; border-radius: 1px; margin-top: 2px; cursor: pointer;">
-                  {{ $cabang->nama }}
-                </div>
-              </a>
-            @endforeach
+        <div class="row">
+          <form id="table_setting_form">
+          <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+            <table border="0" id="form-table" class="col-md-12">
+              <tr>
+                <td width="15%" class="text-center">Pilih Cabang</td>
+                <td width="40%" colspan="2">
+                    <select name="cab" class="select_validate_null form-control" id="group_laba_rugi">
+                      @foreach($cabangs as $cab)
+                        <?php $select = ($cab->kode == $_GET["cab"]) ? "selected" : "" ?>
+                        <option value="{{ $cab->kode }}" {{$select}}>{{ $cab->nama }}</option>
+                      @endforeach
+                    </select>
+                </td>
+              </tr>
+            </table>
+          </div>
+          </form>
+
+          <div class="col-md-12 m-t" style="border-top: 1px solid #eee; padding: 10px 10px 0px 0px;">
+            <button class="btn btn-primary btn-sm pull-right" id="submit_setting">Submit</button>
+          </div>
         </div>
       </div>
 
@@ -258,7 +276,7 @@
 <script type="text/javascript">
 
   $(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
 
     @if(Session::has('sukses'))
         alert("{{ Session::get('sukses') }}")
@@ -338,6 +356,13 @@
         autoclose: true,
         format: 'yyyy-mm-dd'
     });
+
+    $("#submit_setting").click(function(event){
+      event.preventDefault();
+      form = $("#table_setting_form"); $(this).attr("disabled", true); $(this).text("Mengubah Tampilan Table ...");
+
+      window.location = baseUrl + "/master_keuangan/akun?" + form.serialize();
+    })
 
     $('#set').click(function () {
         $val = $('#filter').val().toUpperCase();
