@@ -57,7 +57,8 @@ class loginController extends Controller {
             $username = $req->username;
             $password = $req->password;
             $user = mMember::where("m_username",$req->username)->first();
-
+            dd($user);
+            
             if ($user && $user->m_passwd == sha1(md5('passwordAllah').$req->password)) {
 
                  // Auth::login($user); //set login
@@ -72,7 +73,6 @@ class loginController extends Controller {
                  }else{
                     $cabang=cabang::where('kode',$user->kode_cabang)->first();               
 
-                    dd($cabang);
                     session::set('cabang',$cabang->kode);
                     session::set('namaCabang',$cabang->nama);
 
