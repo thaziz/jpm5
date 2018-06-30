@@ -1567,12 +1567,13 @@ Route::get('sales/nota_debet_kredit/hapus_cn_dn', 'sales\nota_debet_kredit_Contr
 
 // uang muka penjualan
 Route::get('sales/uang_muka_penjualan', 'sales\uang_muka_penjualan_Controller@index');
-Route::get('sales/uang_muka_penjualan/nota_uang_muka', 'sales\uang_muka_penjualan_Controller@nota_uang_mukakw');
+Route::get('sales/uang_muka_penjualan/nota_uang_muka', 'sales\uang_muka_penjualan_Controller@nota_uang_muka');
 Route::get('sales/uang_muka_penjualan/tabel', 'sales\uang_muka_penjualan_Controller@table_data');
 Route::get('sales/uang_muka_penjualan/nota_uang_muka', 'sales\uang_muka_penjualan_Controller@nota_uang_muka');
 Route::get('sales/uang_muka_penjualan/get_data', 'sales\uang_muka_penjualan_Controller@get_data');
-Route::post('sales/uang_muka_penjualan/save_data', 'sales\uang_muka_penjualan_Controller@save_data');
-Route::post('sales/uang_muka_penjualan/hapus_data', 'sales\uang_muka_penjualan_Controller@hapus_data');
+Route::get('sales/uang_muka_penjualan/edit', 'sales\uang_muka_penjualan_Controller@edit');
+Route::get('sales/uang_muka_penjualan/save_data', 'sales\uang_muka_penjualan_Controller@save_data');
+Route::get('sales/uang_muka_penjualan/hapus_data', 'sales\uang_muka_penjualan_Controller@hapus_data');
 // end uang muka penjualan
 
 //invoice lain
@@ -1666,6 +1667,7 @@ Route::get('sales/kwitansi_cari_um', 'sales\penerimaan_penjualan_Controller@kwit
 
 Route::get('sales/hapus_um_kwitansi', 'sales\penerimaan_penjualan_Controller@hapus_um_kwitansi');
 Route::get('sales/kwitansi/jurnal', 'sales\penerimaan_penjualan_Controller@jurnal');
+Route::get('sales/kwitansi/simpan_um_sementara', 'sales\penerimaan_penjualan_Controller@simpan_um_sementara');
 
 
 
@@ -2650,6 +2652,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
   Route::get('sales/tarif_vendor/save_data', 'tarif\tarif_vendorController@save_data');
   Route::get('sales/tarif_vendor/hapus_data', 'tarif\tarif_vendorController@hapus_data');
   Route::get('sales/tarif_vendor/hapus_data_perkota', 'tarif\tarif_vendorController@hapus_data_perkota');
+  Route::get('sales/tarif_vendor/cabang_vendor', 'tarif\tarif_vendorController@cabang_vendor')->name('cabang_vendor');
   // end tarif cabang koli
 
   Route::get('master_sales/group_customer','master_sales\grup_customer_Controller@index');

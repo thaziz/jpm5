@@ -854,6 +854,7 @@ function hitung() {
     var diskon_p  = $("input[name='do_diskon_p']").val();
     var diskon_v  = $("input[name='do_diskon_v']").val();
     var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
+    var do_vendor  = $("input[name='do_vendor']").val();
     
     var this_selected_value = $('#do_cabang').find(':selected').data('diskon');
         
@@ -864,6 +865,7 @@ function hitung() {
     var diskon_p = diskon_p.replace(/[A-Za-z$. ,-]/g, "");
     var diskon_v = diskon_v.replace(/[A-Za-z$. ,-]/g, "");
     var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g,"");
+    var do_vendor = do_vendor.replace(/[A-Za-z$. ,-]/g,"");
 
 
 
@@ -897,9 +899,14 @@ function hitung() {
     }
         //PENGURANGAN DISKON
         var total_dpp = total - diskon_value_utama;
-        $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
-        $("input[name='do_vendor']").val(accounting.formatMoney(0,"",0,'.',','));
-        $("input[name='do_total_temp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+        var sub_dpp = total_dpp - do_vendor;
+
+        if ($('.vendor_tarif').is(':checked') == true) {
+            console.log(sub_dpp);
+            console.log(total_dpp);
+            $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
+        }
+        
     //CHECKBOX VENDOR
     
 
@@ -933,18 +940,22 @@ function hitung() {
 
 //CEK VENDOR / CARI MODAL / MEMUNCULKAN MODAL
     $(".cek_vendor_ya").click(function() {
-        if ($('#do_kota_asal').val() == '' || $('#do_kota_tujuan').val() == '') {
-            toastr.warning('Kota Asal / Kota Tujuan Tidak Boleh Kosong!!');
+        if ($('#do_kota_asal').val() == '' 
+            || $('#do_kota_tujuan').val() == '' 
+            || $('#do_cabang').val() == '' ) {
+            toastr.warning('Data Kurang Lengkap ,Ada data yg Tidak Boleh Kosong!!');
             $('.cek_vendor_ya').prop("checked",false);
         }else{
             var asal = $('#do_kota_asal').find(':selected').val();
             var tujuan = $('#do_kota_tujuan').find(':selected').val();
+            var cabang = $('#do_cabang').find(':selected').val();
+            var jenis = $('#jenis_kiriman').find(':selected').val();
 
             if ($('.cek_vendor_ya').is(":checked") == true) {
                 $('.do_tarif_penerus').hide();
                 $.ajax({
                 type: "GET",
-                data : {a:asal,b:tujuan},
+                data : {a:asal,b:tujuan,c:cabang,d:jenis},
                 url : ('{{ route('cari_vendor_deliveryorder_paket') }}'),
                 success: function(data){   
                     $('#drop').html(data);
@@ -977,8 +988,16 @@ function hitung() {
             url:('{{ route('replace_vendor_deliveryorder_paket') }}'),
             type:'get',
             success:function(data){
-                console.log(data);
+                $("input[name='do_vendor']").prop('readonly',true);
+                $("input[name='do_dpp']").prop('readonly',true);
+                $("input[name='vendor_tarif']").prop('checked'  ,true);
                 $("#modal_vendor").modal("hide");
+                
+
+                if ($('.vendor_tarif').is(':checked') == true) {
+                    $("input[name='do_vendor']").val(accounting.formatMoney(data[0].tarif_vendor,"",0,'.',','));
+                }
+
                 $("input[name='do_tarif_dasar']").val(accounting.formatMoney(data[0].tarif_vendor,"",0,'.',','));
                 hitung();
             }
@@ -1009,6 +1028,8 @@ function hitung() {
             var diskon_p  = $("input[name='do_diskon_p']").val();
             var diskon_v  = $("input[name='do_diskon_v']").val();
             var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
+            var do_vendor  = $("input[name='do_vendor']").val();
+
             
             var this_selected_value = $('#do_cabang').find(':selected').data('diskon');
 
@@ -1019,6 +1040,7 @@ function hitung() {
             var diskon_p = diskon_p.replace(/[A-Za-z$. ,-]/g, "");
             var diskon_v = diskon_v.replace(/[A-Za-z$. ,-]/g, "");
             var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g,"");
+            var do_vendor = do_vendor.replace(/[A-Za-z$. ,-]/g,"");
 
             //alert ketika diskon dan biaya tambahan di pakai 2-2nya
             if (diskon_p > 0 && biaya_tambahan > 0) {
@@ -1046,9 +1068,17 @@ function hitung() {
             }
                 //PENGURANGAN DISKON
                 var total_dpp = total - diskon_v;
-                $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
-                $("input[name='do_vendor']").val(accounting.formatMoney(0,"",0,'.',','));
-                $("input[name='do_total_temp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+                var sub_dpp = total_dpp - do_vendor;
+
+                if ($('.vendor_tarif').is(':checked') == true) {
+                    console.log(sub_dpp);
+                    console.log(total_dpp);
+                    $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
+                }
+
+                // $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+                // $("input[name='do_vendor']").val(accounting.formatMoney(0,"",0,'.',','));
+                // $("input[name='do_total_temp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
                 
             var ppn  = 0;
             if (jenis_ppn == 1) {
@@ -1097,9 +1127,13 @@ function hitung() {
             console.log(diskon_total)
                 //PENGURANGAN DISKON
                 var total_dpp = total - diskon_v;
-                $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
-                $("input[name='do_vendor']").val(accounting.formatMoney(0,"",0,'.',','));
-                $("input[name='do_total_temp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+                var sub_dpp = total_dpp - do_vendor;
+
+                if ($('.vendor_tarif').is(':checked') == true) {
+                    console.log(sub_dpp);
+                    console.log(total_dpp);
+                    $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
+                }
 
             var ppn  = 0;
             if (jenis_ppn == 1) {
@@ -1128,6 +1162,7 @@ function hitung() {
 
 //DISKON PERCENT / DISKON PERSEN
     function diskon_persen(){
+
         if ($("input[name='do_diskon_p']").val() != 0) {
             $("input[name='do_diskon_v']").attr('readonly',true);
         }else{
@@ -1179,10 +1214,15 @@ function hitung() {
         var dpp    = $('#do_dpp').val();
         var vendor = $('#do_vendor').val();
         var harga_temp = $("input[name='do_total_temp']").val();
+
+        var dpp = dpp.replace(/[A-Za-z$. ,-]/g, "");
+        var vendor = vendor.replace(/[A-Za-z$. ,-]/g, "");
+        var harga_temp = harga_temp.replace(/[A-Za-z$. ,-]/g, "");
+
         var cek = parseInt(dpp)+parseInt(vendor);
 
         if (cek > harga_temp) {
-            toastr.warning('Diskon dan biaya tambahan di isi salah satu!!');
+            toastr.warning('Tidak boleh meleihi batas!');
             $('#do_dpp').val(0);
             $('#do_vendor').val(0);
         }
@@ -1199,7 +1239,7 @@ function hitung() {
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
             {   
-               
+
                swal("Sukses!", textStatus, "sukses");
             },
             error: function(jqXHR, textStatus, errorThrown)

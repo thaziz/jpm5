@@ -466,8 +466,33 @@ class LaporanPembelianController extends Controller
 
 
 	public function reportkartuhutang()
-	{
-		return view('purchase/laporan_analisa_pembelian/lap_kartu_hutang/lap_kartu_hutang');
+	{	
+		$customer = DB::table('customer')->get();
+
+		$akun = DB::table('d_akun')
+			->where(function ($query) {
+                $query->where('id_akun', 'like', '2101%')
+                      ->orWhere('id_akun', 'like', '2102%');
+    		})
+    		->get();
+
+		$cabang = DB::table('cabang')->get();
+		
+
+		$bbk = DB::select("select bbk_nota as nota, bbk_tgl as tgl, bbkd_nominal as kredit ,bbk_keterangan as keterangan,'K' as flag from bukti_bank_keluar_detail, bukti_bank_keluar where bbkd_idbbk = bbk_id and bbkd_akunhutang like '2101%' ");
+
+		$fp = DB::select("select 'D' as flag, fp_nofaktur as nota,fp_keterangan as keterangan, fp_tgl as tgl , fp_netto as debet from faktur_pembelian where fp_jenisbayar = '2'");
+
+		$um = DB::select("select 'K' as flag, fp_nofaktur as nota,fp_keterangan as keterangan, fp_tgl as tgl, fp_uangmuka as kredit from faktur_pembelian where fp_jenisbayar = '2' and fp_uangmuka != '0' ");
+
+		$bkk = DB::select("select 'K' as flag , bkk_nota as nota,bkk_keterangan as keterangan, bkk_tgl as tgl, bkk_total as kredit from bukti_kas_keluar where bkk_jenisbayar = '2'");
+
+		$data['data'] = array_merge($fp, $um, $bkk , $bbk);
+
+		// return ($data['data']);
+
+		
+		return view('purchase/laporan_analisa_pembelian/lap_kartu_hutang/lap_kartu_hutang',compact('customer','data','akun','cabang'));
 	}
 
 

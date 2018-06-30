@@ -146,7 +146,7 @@
 
 
                       <div class="row">
-                          <div class="col-sm-8">
+                          <div class="col-sm-6">
                           <br>
                               <table class="table">
                                   <tr>
@@ -186,7 +186,23 @@
                               </table>
                               </div>
 
-                              <div class="col-sm-8">
+                              <div class="col-xs-5">
+                              <br>
+                                <table class="table">
+                                <tr>
+                                  <th> TOTAL RETURN PEMBELIAN </th>
+                                  <td> <input type="text" style="text-align:right" class="form-control totalreturn input-sm" name="totalreturn" readonly="" value="0.00"> </td>
+                                </tr>
+                                <tr>
+                                  <th> TOTAL HARGA TERIMA </th>
+                                  <td> <input type="text" style="text-align:right" class="form-control totalterima input-sm" name="totalterima" readonly="" value="0.00"> </td>
+                                 
+                                </tr>
+                                </table>
+                              </div>
+                              </div>
+
+                              <div class="col-sm-10">
                                 <p style="color:red"> <i> *Hapus data yang tidak di perlukan </i></p>
                                   
                                   <table class="table table-datatable" id="table-barang">
@@ -208,7 +224,7 @@
                                   </table>
                                   
                              </div>
-                          </div>
+                       
                           
 
                      
@@ -617,11 +633,11 @@
                  for(var i = 0; i < table2.length; i++){  
                        var html2 = "<tr class='databarang data"+nmrbnk+"' id="+table2[i].po_id+" data-nopo='"+table2[i].po_noform+"'>" +
                             "<td>"+nmrbnk+"</td>" +
-                            "<td style='width:150px'> <p style='width:150px'>"+table2[i].nama_masteritem+"</p> <input type='hidden' class='kodeitem"+nmrbnk+"' value='"+table2[i].podt_kodeitem+"' name='kodeitem[]'></td>" + // no faktur
+                            "<td style='width:150px'> <p style='width:120px'>"+table2[i].nama_masteritem+"</p> <input type='hidden' class='kodeitem"+nmrbnk+"' value='"+table2[i].podt_kodeitem+"' name='kodeitem[]'></td>" + // no faktur
                             "<td>"+table2[i].podt_qtykirim+"<input type='hidden' class='qtykirim"+nmrbnk+"' value='"+table2[i].podt_qtykirim+"' name='qtypo[]'> </td>" +
                             "<td> <input type='number' class='form-control input-sm  qtyreturn qtyreturn"+nmrbnk+"' data-id='"+nmrbnk+"' name='qtyreturn[]' style='width:70px' required value='0'></td>" +
                             "<td > <input type='text' class='form-control input-sm jumlahharga"+nmrbnk+"' value="+addCommas(table2[i].podt_jumlahharga)+" readonly name='jumlahharga[]'> </td>" +
-                            "<td> <input type='text' class='form-control input-sm totalharga totalharga"+nmrbnk+"' value="+addCommas(table2[i].podt_totalharga)+" readonly name='totalharga[]' style='width:150px'> <input type='hidden' class='minusharga minusharga"+nmrbnk+"' style='width:150px'> <input type='hidden' value='"+table2[i].podt_lokasigudang+"' name='lokasigudang[]'> </td>" + 
+                            "<td> <input type='text' class='form-control input-sm totalharga totalharga"+nmrbnk+"' value="+addCommas(table2[i].podt_totalharga)+" readonly name='totalharga[]' style='width:100px'> <input type='hidden' class='minusharga minusharga"+nmrbnk+"' style='width:150px'> <input type='hidden' value='"+table2[i].podt_lokasigudang+"' name='lokasigudang[]'> </td>" + 
                             "<td> <input type='number' class='form-control input-sm  qtyterima qtyterima"+nmrbnk+"' data-id='"+nmrbnk+"' name='qtyterima[]' style='width:70px' required value='0'></td>" + //qtyterima
                             "<td style='width:80px'> <input type='text' class='form-control input-sm jumlahhargaterima jumlahhargaterima"+nmrbnk+"' name='jumlahhargaterima[]' data-id='"+nmrbnk+"' style='width:150px' value='0.00'> </td>" + //jumlahharga terima
                             "<td > <input type='text' class='form-control input-sm totalhargaterima totalhargaterima"+nmrbnk+"'  name='totalhargaterima[]' readonly style='width:150px' value='0.00'> <input type='hidden' name='akunitem[]' value='"+table2[i].podt_akunitem+"'>"+   //totalhargaterima
@@ -686,6 +702,18 @@
                          // alert(valminus); 
                         }
                       })
+
+                    
+                    hasilminus = 0;
+                    $('.minusharga').each(function(){
+                      val = $(this).val();
+                      if(val != ''){
+                        valreturn = val.replace(/,/g,'');
+                        hasilminus = parseFloat(parseFloat(hasilminus) + parseFloat(valreturn)).toFixed(2);
+                      }
+                    })
+
+                    $('.totalreturn').val(addCommas(hasilminus));
 
                     totalhargaterimafix = 0;
                     $('.totalhargaterima').each(function(){
@@ -809,7 +837,7 @@
                     })
                    // alert(hasiltotalharga);
                   //    hargasubtotal = $('.subtotal').val(addCommas(hasiltotalharga));
-                    
+                    $('.totalterima').val(addCommas(totalhargaterimafix));
                     hasilsub = (parseFloat(hasiltotalharga) + parseFloat(totalhargaterimafix)).toFixed(2);
                     //  alert(hargasubtotal);
 
@@ -916,6 +944,7 @@
 
                //   alert(totalhargaterimafix);
 
+                    $('.totalterima').val(addCommas(totalhargaterimafix));
 
                    // hsltotal = (parseFloat(total) + parseFloat(totalharga)).toFixed(2);
 

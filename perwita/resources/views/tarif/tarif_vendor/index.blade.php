@@ -84,6 +84,7 @@
                                 <th> Tujuan </th>
                                 <th> Tarif </th>
                                 <th> Cabang </th>
+                                <th> jenis </th>
                                 <th> Waktu </th>
                                 <th style="width:80px"> Aksi </th>
                             </tr>
@@ -117,11 +118,11 @@
                                  <tr>
                                     <td style="padding-top: 0.4cm">Cabang</td>
                                     <td>   
-                                        <select class="chosen-select-width b"  name="cb_cabang" id="ed_harga"  style="width:100%">
+                                        <select class="chosen-select-width b"  name="cb_cabang" id="cb_cabang"  style="width:100%">
                                             <option value="" selected="" disabled="">-- Pilih Cabang --</option>
-                                        @foreach ($cabang as $row)
-                                             <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}"> {{ $row->nama }} </option>
-                                        @endforeach
+                                            @foreach ($cabang as $row)
+                                                 <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            @endforeach
                                         </select>
                                     </td>
                                 </tr>
@@ -129,7 +130,7 @@
                                  <tr>
                                     <td style="padding-top: 0.4cm">Cabang</td>
                                     <td class="disabled">   
-                                        <select class="chosen-select-width b"  name="cb_cabang" id="ed_harga" style="width:100%">
+                                        <select class="chosen-select-width b"  name="cb_cabang" id="cb_cabang" style="width:100%">
                                             <option value="" selected="" disabled="">-- Pilih Cabang --</option>
                                         @foreach ($cabang as $row)
                                             <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -298,16 +299,21 @@
                      targets: 0 ,
                      className: 'd_id left'
                   },
+                  {
+                     targets: 3 ,
+                     className: 'right'
+                  },
                   
 
                 ],
             "columns": [
             { "data": "id_tarif_vendor" },
-            { "data": "id_kota_asal_vendor" },
-            { "data": "id_kota_tujuan_vendor" },
-            { "data": "tarif_vendor" },
-            { "data": "cabang_vendor" },
-            { "data": "waktu_vendor" },
+            { "data": "asal" },
+            { "data": "tujuan" },
+            { "data": "tarif_vendor" ,render: $.fn.dataTable.render.number( '.', '.', 0, '' ) },
+            { "data": "nama_cab" },
+            { "data": "jenis" },
+            { "data": "waktu_vendor" ,render: $.fn.dataTable.render.number( '.', '.', 0, '' ) },
             { 'data': 'button' },
             ]
       });
@@ -329,6 +335,24 @@
         $('#hilang2').hide();
     })
  
+    $('#cb_cabang').change(function(){
+      $.ajax({
+            type: "get",
+            url : ('{{ route('cabang_vendor') }}'),
+            //dataType:"JSON",
+            data: $(this).val(),
+            success: function(data, textStatus, jqXHR)
+            {
+                
+
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+                swal("Error!", textStatus, "error");
+            }
+        });
+    })
+
 
     $("select[name='cb_acc_penjualan']").change(function(){
         var nama_akun = $(this).find(':selected').data('nama_akun');
@@ -450,7 +474,8 @@
             }
         });
     });
-
+  
+  $()
     $(document).on("click","#btnsave",function(){
         $.ajax(
         {
