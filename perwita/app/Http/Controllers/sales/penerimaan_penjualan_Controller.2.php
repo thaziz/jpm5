@@ -203,7 +203,7 @@ class penerimaan_penjualan_Controller extends Controller
         // return $request->customer;
 
       // dd($request->all());
-      if ($request->cabang == '000') {
+      if (Auth::user()->punyaAkses('Kwitansi','cabang')) {
         $temp_1  = DB::table('invoice')
                   ->leftjoin('kwitansi','k_nomor','=','i_nomor')
                   ->where('i_kode_customer',$request->customer)
@@ -239,7 +239,7 @@ class penerimaan_penjualan_Controller extends Controller
         }
         
 
-        if ($request->cabang == '000') {
+        if (Auth::user()->punyaAkses('Kwitansi','cabang')) {
           $temp1_1  = DB::table('invoice')
                   ->leftjoin('kwitansi','k_nomor','=','i_nomor')
                   ->where('i_statusprint','Printed')

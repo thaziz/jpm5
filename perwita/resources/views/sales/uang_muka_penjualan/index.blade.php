@@ -245,7 +245,7 @@
                 $('.kirim :input').val('');
                 $('.cb_cabang').val('0').trigger('chosen:updated');
                 $('.cb_customer').val('0').trigger('chosen:updated');
-                $('.kirim :input').val('');
+                $('.cb_cabang').val('{{ Auth::user()->kode_cabang}}').trigger('chosen:updated');
                 $('.ed_nomor').val(data.nota);
                 $('.crud').val('N');
                 var now = '{{carbon\carbon::now()->format('Y-m-d')}}';

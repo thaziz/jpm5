@@ -137,7 +137,7 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td> 
                                 <td colspan="20" class="cabang_td">
-                                    <select onchange="ganti_nota()" class="cb_cabang  form-control chosen-select-width"  name="cb_cabang" onchange="nota_kwitansi()" >
+                                    <select onchange="um_sementara()" onchange="ganti_nota()" class="cb_cabang  form-control chosen-select-width"  name="cb_cabang" onchange="nota_kwitansi()" >
                                         <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
                                         @if(Auth()->user()->kode_cabang == $row->kode)
@@ -574,7 +574,7 @@
                                                             <input type="hidden" readonly="readonly" class="form-control jumlah_bayar">
                                                         </td>
                                                     </tr>
-                                                    <tr>
+                                                    <tr style="display: none">
                                                         <td>Akun Biaya</td>
                                                         <td style="max-width: 200px" class="">
                                                             <select onchange="akun_biaya_um()" class="form-control akun_biaya_um" id="akun_biaya">
@@ -738,7 +738,18 @@
                             </div>
                             <div class="modal-body ">
                                 <div class="um_table">
-                                    
+                                    <table id="tabel_um_modal" class="table table-bordered table-hover table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Nomor Uang Muka</th>
+                                                <th>Total</th>
+                                                <th>Sisa</th>
+                                                <th>Status Uang Muka</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <div class="modal-footer">
                                 </div>
@@ -1397,7 +1408,7 @@ function histori(p){
                             $('.jumlah_bayar').val(temp);
                             $('.tabel_pembayaran_um input').val('');
                             $('#modal_um').modal('show');
-                            hitung_um();
+                            // hitung_um();
 
 
                         }
@@ -2176,7 +2187,25 @@ var simpan_um = [];
 //     hitung_um();
 
 // }
+
+var table_um = $('#tabel_um_modal').DataTable({
+                    columnDefs: [
+                      {
+                         targets: 1 ,
+                         className: 'right'
+                      },
+                      {
+                         targets: 2,
+                         className: 'right'
+                      },
+                      {
+                         targets: 3,
+                         className: 'center'
+                      },
+                    ],
+               });
 var array_uang_muka = [];
+var uang_muka_terpakai = [];
 function um_sementara() {
     if ($('.cb_jenis_pembayaran').val() == 'U') {
         var customer = $('.customer').val();
@@ -2189,6 +2218,7 @@ function um_sementara() {
                 var jumlah;
                 var sisa;
                 var status;
+                array_uang_muka.splice(0,array_uang_muka.length);
                 for (var i = 0; i < data.data.length; i++) {
                     nomor = new Object();
                     jumlah = new Object();
@@ -2201,17 +2231,17 @@ function um_sementara() {
                     array_uang_muka[i]['nomor']  = data.data[i].nomor;
                     array_uang_muka[i]['jumlah'] = data.data[i].jumlah;
                     array_uang_muka[i]['sisa']   = data.data[i].sisa_uang_muka;
-                    array_uang_muka[i]['status']3  = data.data[i].status_um;
+                    array_uang_muka[i]['status'] = data.data[i].status_um;
                 }
                 console.log(array_uang_muka);
-                var index = array_uang_muka.indexOf
+                // var index = array_uang_muka.indexOf
             }
         })
     }
 }
     
-
 $('.cari_um').click(function(){
+
     if ($('#cb_akun_h').val() == '0') {
         toastr.warning('Akun Harus Dipilih')
         return 1
@@ -2222,17 +2252,297 @@ $('.cari_um').click(function(){
     }
     var cb_cabang = $('.cb_cabang').val();
     var cb_customer = $('.customer').val();
+    table_um.clear().draw();
 
-    $.ajax({
-        url:baseUrl + '/sales/cari_um',
-        data:{cb_cabang,cb_customer,simpan_um},
-        success:function(data){
-            $('.um_table').html(data);
+    for (var i = 0; i < array_uang_muka.length; i++) {
+        table_um.row.add([
+            array_uang_muka[i]['nomor']+
+            '<input type="hidden" value="'+array_uang_muka[i]['nomor']+'" class="nomor_modal_um um_flag_'+array_uang_muka[i]['nomor']+'" name="">',
 
-            $('#modal_cari_um').modal('show');       
+            accounting.formatMoney(array_uang_muka[i]['jumlah'], "", 2, ".",','),
+
+            
+            accounting.formatMoney(array_uang_muka[i]['sisa'], "", 2, ".",','),
+
+            array_uang_muka[i]['status'],
+        ]).draw();
+    }
+    table_um.$('.nomor_modal_um').each(function(){
+        var par = $(this).parents('tr');
+        console.log(uang_muka_terpakai.length);
+        for (var i = 0; i < uang_muka_terpakai.length; i++) {
+            var ini = $(par).find('.um_flag_'+uang_muka_terpakai[i]).val();
+            if (ini != undefined) {
+                table_um.row(par).remove().draw();
+            }
         }
     })
+    $('#modal_cari_um').modal('show');       
+    
 });
+function set_terpakai() {
+    table_histori_um.$('.m_no_um').each(function(){
+        uang_muka_terpakai.push($(this).val());
+    })
+}
+
+$('#tabel_um_modal tbody').on('click', 'tr', function () {
+    var data = $(this).find('.nomor_modal_um').val();
+    // console.log(data);
+    for (var i = 0; i < array_uang_muka.length; i++) {
+        if (array_uang_muka[i]['nomor'] == data) {
+            $('.no_um').val(array_uang_muka[i]['nomor']);
+            $('.nominal_um_text').val(accounting.formatMoney(array_uang_muka[i]['jumlah'], "", 2, ".",','));
+            $('.nominal_um').val(array_uang_muka[i]['jumlah']);
+
+            $('.terpakai_um_text').val(accounting.formatMoney(array_uang_muka[i]['sisa'], "", 2, ".",','));
+            $('.terpakai_um').val(array_uang_muka[i]['sisa']);
+            $('.status_um').val(array_uang_muka[i]['status']);
+        }
+    }
+    $('#modal_cari_um').modal('hide');       
+
+});
+
+
+var tabel_uang_muka = $('#tabel_uang_muka').DataTable({
+     columnDefs: [  
+                      {
+                         targets: 0,
+                         className: 'center'
+                      },
+                      {
+                         targets: 4 ,
+                         className: 'center'
+                      },
+       
+                      {
+                         targets: 3,
+                         className: 'right'
+                      },
+                      {
+                      
+                         targets: 5,
+                         className: 'center'
+                      },
+                      {
+                      
+                         targets: 6,
+                         className: 'center'
+                      }
+                    ],
+});
+$('.jumlah_bayar_um').maskMoney({precision:0,thousands:'.',defaultZero: true});
+$('.jumlah_bayar_um ').keyup(function(){
+   var jumlah = $(this).val();
+   jumlah     = jumlah.replace(/[^0-9\-]+/g,"");
+   jumlah     = parseFloat(jumlah);
+   var total_um  = $('.total_um ').val();
+   total_um   = parseFloat(total_um);
+
+   if (jumlah > total_um) {
+    jumlah = total_um;
+   }
+   $(this).val(accounting.formatMoney(jumlah,"",0,'.',','));
+});
+
+function akun_biaya_um(){
+   var jenis =  $('.akun_biaya_um').find(':selected').data('jenis');
+   var biaya =  $('.akun_biaya_um').find(':selected').data('biaya');
+   console.log(jenis);
+   $('.jenis_biaya_um').val('');
+   $('.akun_acc_biaya_um').val('');
+   $('.jenis_biaya_um').val(jenis);
+   $('.akun_acc_biaya_um').val(biaya);
+   $('.jumlah_biaya_admin_um').val('0');
+   if ($('.akun_biaya_um').val() == '0') {
+    $('.jumlah_biaya_admin_um ').attr('readonly',true);
+   }else{
+    $('.jumlah_biaya_admin_um ').attr('readonly',false);
+   }
+}
+
+function hitung_um(){
+    var sisa_terbayar = $('.sisa_terbayar_um').val();
+    var jumlah_bayar = $('.jumlah_bayar').val();
+    var jumlah_biaya_admin  = $('.jumlah_biaya_admin_um').val();
+    jumlah_biaya_admin     = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
+    jumlah_biaya_admin     = parseFloat(jumlah_biaya_admin);
+    var akun_biaya         = $('.akun_biaya_um').val();
+    var jenis              = $('.jenis_biaya_um').val();
+
+
+
+    if (jenis != 'K') {
+        if (jumlah_biaya_admin > sisa_terbayar) {
+            toastr.warning('Biaya Tidak Boleh Melebihi Sisa Piutang');
+            $('.jumlah_biaya_admin_um').val('0');
+            var jumlah_biaya_admin  = $('.jumlah_biaya_admin_um').val();
+            jumlah_biaya_admin     = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
+            jumlah_biaya_admin     = parseFloat(jumlah_biaya_admin);
+        }
+        var hasil = sisa_terbayar - jumlah_bayar - jumlah_biaya_admin;
+
+        $('.ed_total').val(accounting.formatMoney(hasil,"",2,'.',','));
+        $('.total').val(hasil);
+        
+        var hasil1 = parseFloat(jumlah_bayar) + parseFloat(jumlah_biaya_admin);
+        $('.total_bayar ').val(accounting.formatMoney(hasil1,"",2,'.',','));
+    }else{
+        toastr.warning('Jenis Akun Biaya Tidak Boleh Kredit');
+        $('.akun_biaya_um').val('0').trigger('chosen:updated');
+        akun_biaya_um();
+
+    }
+
+
+
+
+}
+    
+
+
+$('.append_um').click(function(){
+    var seq_um      = $('.seq_um').val();
+    var no_um       = $('.no_um').val();
+    var nominal_um  = $('.nominal_um').val();
+    var terpakai_um   = $('.terpakai_um').val();
+    var status_um   = $('.status_um').val();
+    var terpakai_um = $('.terpakai_um').val();
+    var sisa_terbayar_um = $('.sisa_terbayar_um').val();
+    var jumlah_bayar_um   = $('.jumlah_bayar_um ').val();
+    jumlah_bayar_um  = jumlah_bayar_um.replace(/[^0-9\-]+/g,"");
+    jumlah_bayar_um = parseFloat(jumlah_bayar_um);
+    if (jumlah_bayar_um > terpakai_um) {
+        toastr.warning('Jumlah Lebih Besar Dari Sisa Uang Muka');
+        $('.jumlah_bayar_um ').val('0');
+        return 1;
+    }
+    if (jumlah_bayar_um == 0 ||  jumlah_bayar_um =='') {
+        toastr.warning('Jumlah Bayar Harus Diisi');
+        return 1;
+    }
+
+    if (jumlah_bayar_um > sisa_terbayar_um) {
+        toastr.warning('Jumlah Bayar Melebihi Sisa Piutang');
+        $('.jumlah_bayar_um ').val('0');
+        return 1;
+    }
+    
+    var sisa_akhir = terpakai_um - jumlah_bayar_um;
+    var index = simpan_um.indexOf(no_um);
+    if (index == -1) {
+
+            table_histori_um.row.add([
+                    
+                    '<p class="no_um_text">'+no_um+'</p>'
+                    +'<input type="hidden" value="'+no_um+'" class="m_no_um m_um_'+no_um+'" name="m_no_um[]">',
+
+                    '<p class="m_nominal_um_text">'+accounting.formatMoney(nominal_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+nominal_um+'" class="m_nominal_um">',
+
+                    '<p class="m_terpakai_um_text">'+accounting.formatMoney(terpakai_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+terpakai_um+'" class="m_terpakai_um">',
+
+                    '<p class="m_jumlah_bayar_um_text">'+accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
+
+                    '<p class="m_sisa_akhir_um_text">'+accounting.formatMoney(sisa_akhir,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
+
+                    '<div class="btn-group ">'+
+                    '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+                    '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+                    '</div>',
+
+                ]).draw();
+
+
+            count_um++;
+
+            set_terpakai();
+            var temp = 0;
+            
+            table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+                var ini = $(this).val();
+                ini = parseFloat(ini);
+                temp+=ini;
+            });
+            $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+            $('.jumlah_bayar').val(temp);
+            $('.tabel_pembayaran_um input').val('');
+            hitung_um();
+    }else{
+        var par = $('.m_um_'+no_um).parents('tr');
+        table_histori_um.row(par).remove().draw(false);
+
+        table_histori_um.row.add([
+                    
+                    '<p class="no_um_text">'+no_um+'</p>'
+                    +'<input type="hidden" value="'+no_um+'" class="m_no_um m_um_'+no_um+'" name="m_no_um[]">',
+
+                    '<p class="m_nominal_um_text">'+accounting.formatMoney(nominal_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+nominal_um+'" class="m_nominal_um">',
+
+                    '<p class="m_terpakai_um_text">'+accounting.formatMoney(terpakai_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+terpakai_um+'" class="m_terpakai_um">',
+
+                    '<p class="m_jumlah_bayar_um_text">'+accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
+
+                    '<p class="m_sisa_akhir_um_text">'+accounting.formatMoney(sisa_akhir,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
+
+                    '<div class="btn-group ">'+
+                    '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+                    '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+                    '</div>',
+
+                ]).draw();
+
+            var temp = 0;
+            
+            table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+                var ini = $(this).val();
+                ini = parseFloat(ini);
+                temp+=ini;
+            });
+            console.log(temp);
+            $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+            $('.jumlah_bayar').val(temp);
+            $('.tabel_pembayaran_um input').val('');
+            hitung_um();
+    }
+    // hitung();
+
+});
+
+
+
+function hapus_um(a) {
+    var par = $(a).parents('tr');
+    var no  = $(par).find('.m_no_um').val();
+    table_histori_um.row(par).remove().draw(false);
+    var index = array_simpan.indexOf(no);
+    simpan_um.splice(index,1);
+    var temp = 0;
+    
+    table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+        var ini = $(this).val();
+        ini = parseFloat(ini);
+        temp+=ini;
+    });
+    console.log(temp);
+    $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+    $('.jumlah_bayar').val(temp);
+    $('.tabel_pembayaran_um input').val('');
+    hitung_um();
+
+}
+// END UANG MUKA
+
+
+
 
 
 
