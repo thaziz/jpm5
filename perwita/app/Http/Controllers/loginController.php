@@ -72,7 +72,7 @@ class loginController extends Controller {
                  }else{
                     $cabang=cabang::where('kode',$user->kode_cabang)->first();               
 
-
+                    dd($cabang);
                     session::set('cabang',$cabang->kode);
                     session::set('namaCabang',$cabang->nama);
 
