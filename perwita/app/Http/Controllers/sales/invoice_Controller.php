@@ -966,7 +966,7 @@ public function simpan_invoice(request $request)
                 if ($ppn_type == 'npkp') {
        
                   $tot_own1 = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/$request->netto_detail * $tot_own;
-                  $tot_subcon1 = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/$request->netto_detail * $tot_subcon1;
+                  $tot_subcon1 = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/$request->netto_detail * $tot_subcon;
                   $tot_own -= $tot_own1;
                   $tot_subcon -= $tot_subcon1;
     
