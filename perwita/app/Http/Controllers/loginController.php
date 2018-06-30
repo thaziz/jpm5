@@ -57,7 +57,7 @@ class loginController extends Controller {
             $username = $req->username;
             $password = $req->password;
             $user = mMember::where("m_username",$req->username)->first();
-            dd($user->m_id);
+            dd($user->kode_cabang);
 
             if ($user && $user->m_passwd == sha1(md5('passwordAllah').$req->password)) {
 
