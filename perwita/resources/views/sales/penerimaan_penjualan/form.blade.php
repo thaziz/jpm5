@@ -794,7 +794,9 @@ var simpan_um = [];
 var harga_um = [];
 var array_um= [];
 var array_um_harga=[];
-
+var invoice_um = [];
+var array_uang_muka = [];
+var uang_muka_terpakai = [];
 // datepicker
 $('.ed_tanggal').datepicker({
     format:'dd/mm/yyyy',
@@ -1189,6 +1191,7 @@ function histori(p){
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val(); 
     var asd                 = simpan_um.length;
     simpan_um.splice(0,asd);
+    table_histori_um.clear().draw();
 
     if (cb_jenis_pembayaran != 'U') {
 
@@ -1315,6 +1318,7 @@ function histori(p){
 
 
                     $('.ed_nomor_invoice').val(i_nomor);
+                    var ed_nomor_invoice = $('.ed_nomor_invoice').val();
                     $('.ed_jumlah_tagihan').val(accounting.formatMoney(i_tagihan,"",2,'.',','));
                     $('.jumlah_tagihan').val(i_tagihan);
 
@@ -1354,73 +1358,57 @@ function histori(p){
                     }else{
                         $('.jumlah_biaya_admin_um').attr('readonly',false);
                     }
-                    $.ajax({
-                        url:baseUrl + '/sales/kwitansi_cari_um',
-                        data:{i_nomor,nota_kwitansi},
-                        dataType:'json',
-                        success:function(response){
-                            table_histori_um.clear().draw();
-                            console.log(response);
-                            for (var i = 0; i < response.data.length; i++) {
+              
+                    for (var i = 0; i < array_uang_muka.length; i++) {
+                        var nomor_um_temp = array_uang_muka[i]['nomor'];
+                        try{
+                            table_histori_um.row.add([
+                                '<p class="no_um_text">'+array_uang_muka[i]['nomor']+'</p>'
+                                +'<input type="hidden" value="'+array_uang_muka[i]['nomor']+'" class="m_no_um m_um_'+array_uang_muka[i]['nomor']+'" name="m_no_um[]">',
 
-                                var sisa_akhir = parseFloat(response.data[i].sisa_uang_muka)+parseFloat(response.data[i].ku_jumlah) - parseFloat(response.data[i].ku_jumlah);
+                                '<p class="m_nominal_um_text">'+accounting.formatMoney(array_uang_muka[i]['jumlah'],"",2,'.',',')+'</p>'+
+                                '<input type="hidden" value="'+array_uang_muka[i]['jumlah']+'" class="m_nominal_um">',
 
-                                table_histori_um.row.add([
+                                '<p class="m_terpakai_um_text">'+accounting.formatMoney(array_uang_muka[i]['nomor']*1+invoice_um[ed_nomor_invoice][nomor_um_temp]['jumlah'],"",2,'.',',')+'</p>'+
+                                '<input type="hidden" value="'+array_uang_muka[i]['nomor']*1+invoice_um[ed_nomor_invoice][nomor_um_temp]['jumlah']+'" class="m_terpakai_um">',
 
-                                    '<p class="no_um_text">'+response.data[i].ku_nomor_um+'</p>'
-                                    +'<input type="hidden" value="'+response.data[i].ku_nomor_um+'" class="m_no_um m_um_'+response.data[i].ku_nomor_um+'" name="m_no_um[]">',
+                                '<p class="m_jumlah_bayar_um_text">'+accounting.formatMoney(invoice_um[ed_nomor_invoice][nomor_um_temp]['jumlah'],"",2,'.',',')+'</p>'+
+                                '<input type="hidden" value="'+invoice_um[ed_nomor_invoice][nomor_um_temp]['jumlah']+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
 
-                                    '<p class="m_nominal_um_text">'+accounting.formatMoney(response.data[i].jumlah,"",2,'.',',')+'</p>'+
-                                    '<input type="hidden" value="'+response.data[i].jumlah+'" class="m_nominal_um">',
+                                '<p class="m_sisa_akhir_um_text">'+accounting.formatMoney(array_uang_muka[i]['sisa'],"",2,'.',',')+'</p>'+
+                                '<input type="hidden" value="'+array_uang_muka[i]['sisa']+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
 
-                                    '<p class="m_terpakai_um_text">'+accounting.formatMoney(parseFloat(response.data[i].sisa_uang_muka)+parseFloat(response.data[i].ku_jumlah),"",2,'.',',')+'</p>'+
-                                    '<input type="hidden" value="'+parseFloat(response.data[i].sisa_uang_muka)+parseFloat(response.data[i].ku_jumlah)+'" class="m_terpakai_um">',
+                                '<div class="btn-group ">'+
+                                '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+                                '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+                                '</div>',
+                            ]).draw(false);
 
-                                    '<p class="m_jumlah_bayar_um_text">'+accounting.formatMoney(response.data[i].ku_jumlah,"",2,'.',',')+'</p>'+
-                                    '<input type="hidden" value="'+response.data[i].ku_jumlah+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
-
-                                    '<p class="m_sisa_akhir_um_text">'+accounting.formatMoney(sisa_akhir,"",2,'.',',')+'</p>'+
-                                    '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
-
-                                    '<div class="btn-group ">'+
-                                    '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
-                                    '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
-                                    '</div>',
-
-
-                                ]).draw();
-
-                                simpan_um.push(response.data[i].ku_nomor_um);
-                            }
-
-                            console.log(simpan_um);
-
-                            var temp = 0;
-                            
-                            table_histori_um.$('.m_jumlah_bayar_um').each(function(){
-                                var ini = $(this).val();
-                                ini = parseFloat(ini);
-                                temp += ini;
-                            });
-
-
-                            $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
-                            $('.jumlah_bayar').val(temp);
-                            $('.tabel_pembayaran_um input').val('');
-                            $('#modal_um').modal('show');
-                            // hitung_um();
-
+                        }catch(err){
 
                         }
-                    })
+                    }
 
+                    var temp = 0;
+                    
+                    table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+                        var ini = $(this).val();
+                        ini = parseFloat(ini);
+                        temp += ini;
+                    });
+
+
+                    $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+                    $('.jumlah_bayar').val(temp);
+                    $('.tabel_pembayaran_um input').val('');
+                    $('#modal_um').modal('show');
+                    // hitung_um();
+                    set_terpakai();
                 }
             })
         }
         })
     }
-    
-  
 }
 
 
@@ -2204,8 +2192,31 @@ var table_um = $('#tabel_um_modal').DataTable({
                       },
                     ],
                });
-var array_uang_muka = [];
-var uang_muka_terpakai = [];
+
+// var invoice_um1 = [{'invoice':{'um1':{'jmlah':1,'sisa':1,'bayar':1},'um2':{'jmlah':1,'sisa':1,'bayar':1}}}];
+// var invoice = new Object();
+// invoice_um[0] = invoice;
+// um1 = new Object();
+// var tes = 'asd';
+// // um2 = new Object();
+// // invoice_um[0]['invoice'] = um1;
+// // jml = new Object();
+// // sisa = new Object();
+// // bayar = new Object();
+// // var tes = 'asdasdasd';
+// invoice_um['invoice']['um1'].push(jml);
+// invoice_um['invoice']['um1'].push(sisa);
+// invoice_um['invoice']['um1'].push(bayar);
+// invoice_um['invoice']['um1'] = jml;
+// invoice_um['invoice']['um1'] = sisa;
+// invoice_um['invoice']['um1'] = bayar;
+
+// invoice_um['invoice']['um1'][tes] = 'bayar';
+// invoice_um['invoice']['um1']['sisa'] = 'bayar';
+// invoice_um['invoice']['um1']['bayar'] = 'bayar';
+
+// console.log(invoice_um);
+// console.log(invoice_um1);
 function um_sementara() {
     if ($('.cb_jenis_pembayaran').val() == 'U') {
         var customer = $('.customer').val();
@@ -2281,6 +2292,7 @@ $('.cari_um').click(function(){
     
 });
 function set_terpakai() {
+    uang_muka_terpakai.splice(0,uang_muka_terpakai.length);
     table_histori_um.$('.m_no_um').each(function(){
         uang_muka_terpakai.push($(this).val());
     })
@@ -2539,6 +2551,114 @@ function hapus_um(a) {
     hitung_um();
 
 }
+
+
+
+
+$('#save_um').click(function(){
+    var ed_nomor_invoice= $('.ed_nomor_invoice').val();
+    invoice = new Object();
+    invoice_um = invoice;
+
+    table_histori_um.$('.m_no_um').each(function(i){
+        window["Object"+i] = new Object();
+        invoice_um[ed_nomor_invoice] = window["Object"+i];
+    })
+
+
+    table_histori_um.$('.m_no_um').each(function(i){
+        var par             = $(this).parents('tr');
+        var m_no_um         = $(par).find('.m_no_um').val();
+        var m_jumlah_bayar_um = $(par).find('.m_jumlah_bayar_um').val();
+        jumlah_um = new Object();
+        invoice_um[ed_nomor_invoice][m_no_um] = jumlah_um;
+        invoice_um[ed_nomor_invoice][m_no_um]['jumlah'] = m_jumlah_bayar_um;
+    })
+
+    for (var i = 0; i < array_uang_muka.length; i++) {
+        var nomor = array_uang_muka[i]['nomor'];
+        try{
+            var jumlah = invoice_um[ed_nomor_invoice][nomor]['jumlah'];
+ 
+            array_uang_muka[i]['sisa'] -= jumlah;
+        }catch(err){
+
+        }
+        
+    }
+
+    console.log(array_uang_muka);
+
+    var customer = $('.customer').val();
+    var ed_nomor_invoice = $('.ed_nomor_invoice').val();
+
+    var jumlah_bayar         = $('.jumlah_bayar').val();
+    jumlah_bayar             = parseFloat(jumlah_bayar);
+    var akun_biaya           = $('.akun_biaya_um').val();
+    var jumlah_biaya_admin   = $('.jumlah_biaya_admin_um').val();
+    var jenis                = $('.jenis_biaya_um').val();
+    var akun_acc_biaya       = $('.akun_acc_biaya_um').val();
+    var total_bayar          = $('.total_bayar').val();
+    total_bayar              = total_bayar.replace(/[^0-9\-]+/g,"")/100;
+
+    if (jumlah_biaya_admin == '') {
+        jumlah_biaya_admin = 0;
+    }else{
+        jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
+        jumlah_biaya_admin       = parseFloat(jumlah_biaya_admin);
+    }
+
+    var angka                = $('.jumlah_bayar').val();
+    angka                    = angka.replace(/[^0-9\-]+/g,"");
+    angka                    = parseFloat(angka);
+    var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
+    ed_nomor_invoice = ed_nomor_invoice.replace(/\//g,"");
+    var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
+    var jumlah_biaya         = 0;
+    if (jenis == 'K') {
+        $(par).find('.i_kredit').val(jumlah_biaya_admin);
+    }else{
+        $(par).find('.i_debet').val(jumlah_biaya_admin);
+    }
+    $(par).find('.i_bayar_text').val(accounting.formatMoney(total_bayar,"",2,'.',','));
+    $(par).find('.i_bayar').val(angka);
+    $(par).find('.i_tot_bayar').val(total_bayar);
+    $(par).find('.i_akun_biaya').val(akun_biaya);
+    var temp = 0;
+
+    table_data.$('.i_bayar').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp += i_bayar;
+    })
+
+    var temp1 = 0;
+    table_data.$('.i_debet').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp1 += i_bayar;
+    })
+
+    var temp2 = 0;
+    table_data.$('.i_kredit').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp2 += i_bayar;
+    });
+
+    $('.total_jumlah_bayar').val(temp);
+    $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    $('.ed_debet').val(temp1);
+    $('.ed_debet_text').val(accounting.formatMoney(temp1,"",2,'.',','));
+
+    $('.ed_kredit').val(temp2);
+    $('.ed_kredit_text').val(accounting.formatMoney(temp2,"",2,'.',','));
+
+    hitung_bayar();
+    $('#modal_um').modal('hide');
+
+})
+
 // END UANG MUKA
 
 
