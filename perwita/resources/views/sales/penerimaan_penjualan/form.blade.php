@@ -1430,32 +1430,26 @@ function hapus_detail(o) {
     var index = array_simpan.indexOf(arr);
     var index1 = $(par).find('.i_flag_um').val();
     ed_nomor_invoice = arr.replace(/\//g,"");
-    console.log(ed_nomor_invoice);
-    console.log(index1);
-    try{
+    
+
         for (var i = 0; i < array_uang_muka.length; i++) {
             var nomor = array_uang_muka[i]['nomor'];
-            var jumlah = invoice_um[index1][ed_nomor_invoice][nomor]['jumlah'];
-            array_uang_muka[i]['sisa'] = parseFloat(array_uang_muka[i]['sisa']) + parseFloat(jumlah);
-        }
-        delete invoice_um[index1];
-        console.log(array_uang_muka);
-        console.log(invoice_um);
-    }catch(err){
-        console.log('error');
-    }
+            try{
+                var jumlah = invoice_um[index1][ed_nomor_invoice][nomor]['jumlah'];
+                array_uang_muka[i]['sisa'] = parseFloat(array_uang_muka[i]['sisa']) + parseFloat(jumlah);
 
-    array_simpan.splice(index,1);
-    $.ajax({
-        url:baseUrl + '/sales/hapus_um_kwitansi',
-        data:$('.tabel_header :input').serialize()
-             +'&i_nomor='+arr
-             +'&flag='+'H'
-             +'&flag_nota='+flag_nota,
-        dataType:'json',
-        success:function(response){
+            }catch(err){
+                console.log('error');
+            }
         }
-    })
+        
+        delete invoice_um[index1];
+                // console.log(invoice_um);
+        
+    // console.log(array_uang_muka);
+    // console.log(index1);
+    array_simpan.splice(index,1);
+
     table_data.row(par).remove().draw(false);
 
     var temp =  0 ;
@@ -1470,10 +1464,7 @@ function hapus_detail(o) {
         $('.akun_bank_td').removeClass('disabled');
 
     }
-    console.log(array_uang_muka);
-
 }
-
 //hitung total bayar
 
 function hitung_bayar() {

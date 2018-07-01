@@ -2,7 +2,7 @@
 
 @section('title', 'dashboard')
 
-@section('content')customer
+@section('content')
 <style type="text/css">
       .id {display:none; }
       .cssright { text-align: right; }
@@ -1049,10 +1049,10 @@ $('.tambah_invoice').click(function(){
     var cb_cabang = $('.cb_cabang').val();
     var cb_customer = $('.customer').val();
     var jenis_tarif = $('.jenis_tarif').val();
-
+    var nota_kwitansi = $('#nota_kwitansi').val()
     $.ajax({
         url:baseUrl + '/sales/cari_invoice',
-        data:{cb_cabang,cb_customer,array_simpan,array_edit,array_harga,jenis_tarif},
+        data:{cb_cabang,cb_customer,array_simpan,array_edit,array_harga,jenis_tarif,nota_kwitansi},
         success:function(data){
 
 
@@ -1084,12 +1084,13 @@ $('#btnsave').click(function(){
 ///////////////////////////////////////////
     $.ajax({
         url:baseUrl + '/sales/append_invoice',
-        data:{nomor},
+        data:{nomor,array_edit,array_harga},
         dataType:'json',
         success:function(response){
             for(var i = 0; i < response.data.length;i++){
                 var i_nomor = response.data[i].i_nomor;
                 i_nomor = i_nomor.replace(/\//g,"");
+
                 table_data.row.add([
                         '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+response.data[i].i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+i_nomor+'" name="i_nomor[]" value="'+response.data[i].i_nomor+'">'+'<input type="hidden" class="i_flag_um" value="'+index_um+'">',
                         accounting.formatMoney(response.data[i].i_tagihan, "", 2, ".",',')+'<input type="hidden" class="i_tagihan" name="i_tagihan[]" value="'+response.data[i].i_tagihan+'">',
@@ -1457,32 +1458,26 @@ function hapus_detail(o) {
     var index = array_simpan.indexOf(arr);
     var index1 = $(par).find('.i_flag_um').val();
     ed_nomor_invoice = arr.replace(/\//g,"");
-    console.log(ed_nomor_invoice);
-    console.log(index1);
-    try{
+    
+
         for (var i = 0; i < array_uang_muka.length; i++) {
             var nomor = array_uang_muka[i]['nomor'];
-            var jumlah = invoice_um[index1][ed_nomor_invoice][nomor]['jumlah'];
-            array_uang_muka[i]['sisa'] = parseFloat(array_uang_muka[i]['sisa']) + parseFloat(jumlah);
-        }
-        delete invoice_um[index1];
-        console.log(array_uang_muka);
-        console.log(invoice_um);
-    }catch(err){
-        console.log('error');
-    }
+            try{
+                var jumlah = invoice_um[index1][ed_nomor_invoice][nomor]['jumlah'];
+                array_uang_muka[i]['sisa'] = parseFloat(array_uang_muka[i]['sisa']) + parseFloat(jumlah);
 
-    array_simpan.splice(index,1);
-    $.ajax({
-        url:baseUrl + '/sales/hapus_um_kwitansi',
-        data:$('.tabel_header :input').serialize()
-             +'&i_nomor='+arr
-             +'&flag='+'H'
-             +'&flag_nota='+flag_nota,
-        dataType:'json',
-        success:function(response){
+            }catch(err){
+                console.log('error');
+            }
         }
-    })
+        
+        delete invoice_um[index1];
+                // console.log(invoice_um);
+        
+    // console.log(array_uang_muka);
+    // console.log(index1);
+    array_simpan.splice(index,1);
+
     table_data.row(par).remove().draw(false);
 
     var temp =  0 ;
@@ -1497,8 +1492,6 @@ function hapus_detail(o) {
         $('.akun_bank_td').removeClass('disabled');
 
     }
-    console.log(array_uang_muka);
-
 }
 //hitung total bayar
 
@@ -2243,7 +2236,7 @@ var i_ket     = "{{$val->kd_keterangan}}"
 array_simpan.push(i_nomor);
 array_edit.push(i_nomor);
 array_harga.push(bayar);
-console.log(bayar);
+// console.log(bayar);
 i_nomor1 = i_nomor.replace(/\//g,"");
 if (i_debet != 0) {
     var pembayaran = bayar*1 - i_debet*1;
@@ -2334,10 +2327,11 @@ if (i_debet != 0) {
             invoice_um[index_um][i_nomor1]['{{ $val2->ku_nomor_um }}']['jumlah'] = '{{ $val2->ku_jumlah }}';
         @endif
     @endforeach
-    console.log(invoice_um);    
-    console.log(index_um);
-    console.log(i_nomor1);
+    // console.log(invoice_um);    
+    // console.log(index_um);
+    // console.log(invoice_um);
     index_um++;
+    // console.log(invoice_um);
 
 @endforeach
 

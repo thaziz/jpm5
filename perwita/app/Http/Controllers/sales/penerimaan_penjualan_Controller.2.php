@@ -191,13 +191,14 @@ class penerimaan_penjualan_Controller extends Controller
         $array_edit   = $request->array_edit;
         $array_harga  = $request->array_harga;
         $jenis_tarif  = $request->jenis_tarif;
+        $nota_kwitansi  = $request->nota_kwitansi;
         if (isset($request->id)) {
           $id         = $request->id;
         }else{
           $id         = 0;
         }
 
-        return view('sales.penerimaan_penjualan.tabel_invoice',compact('cabang','customer','array_simpan','array_edit','array_harga','id','jenis_tarif'));
+        return view('sales.penerimaan_penjualan.tabel_invoice',compact('cabang','customer','array_simpan','array_edit','array_harga','id','jenis_tarif','nota_kwitansi'));
     }
     public function datatable_detail_invoice(request $request)
     {   
@@ -206,30 +207,30 @@ class penerimaan_penjualan_Controller extends Controller
       // dd($request->all());
       if (Auth::user()->punyaAkses('Kwitansi','cabang')) {
         $temp_1  = DB::table('invoice')
-                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->leftjoin('kwitansi_d','kd_nomor_invoice','=','i_nomor')
                   ->where('i_kode_customer',$request->customer)
                   ->where('i_statusprint','Printed')
                   ->where('i_sisa_akhir','!=',0)
                   // ->where('i_kode_cabang',$request->cabang)
                   ->where('i_pendapatan',$request->jenis_tarif)
-                  ->orWhere('k_nomor',$request->id)
+                  ->orWhere('kd_nomor_invoice',$request->id)
                   ->get();
       }else{
         $temp_1  = DB::table('invoice')
-                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->leftjoin('kwitansi_d','kd_nomor_invoice','=','i_nomor')
                   ->where('i_kode_customer',$request->customer)
                   ->where('i_sisa_akhir','!=',0)
                   ->where('i_statusprint','Printed')
                   ->where('i_kode_cabang',$request->cabang)
                   ->where('i_pendapatan',$request->jenis_tarif)
-                  ->orWhere('k_nomor',$request->id)
+                  ->orWhere('kd_nomor_invoice',$request->id)
                   ->get();
       }
        
 
         if (isset($request->array_edit)) {
             $temp_2  = DB::table('invoice')
-                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->leftjoin('kwitansi_d','kd_nomor_invoice','=','i_nomor')
                   ->whereIn('i_nomor',$request->array_edit)
                   ->get();
             $temp   = array_merge($temp_1,$temp_2);
@@ -239,10 +240,10 @@ class penerimaan_penjualan_Controller extends Controller
             $temp = $temp_1;
         }
         
-
+        
         if (Auth::user()->punyaAkses('Kwitansi','cabang')) {
           $temp1_1  = DB::table('invoice')
-                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->leftjoin('kwitansi_d','kd_nomor_invoice','=','i_nomor')
                   ->where('i_statusprint','Printed')
                   ->where('i_kode_customer',$request->customer)
                   ->where('i_sisa_akhir','!=',0)
@@ -250,7 +251,7 @@ class penerimaan_penjualan_Controller extends Controller
                   ->get();
         }else{
           $temp1_1  = DB::table('invoice')
-                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->leftjoin('kwitansi_d','kd_nomor_invoice','=','i_nomor')
                   ->where('i_statusprint','Printed')
                   ->where('i_kode_customer',$request->customer)
                   ->where('i_sisa_akhir','!=',0)
@@ -262,7 +263,7 @@ class penerimaan_penjualan_Controller extends Controller
 
         if (isset($request->array_edit)) {
             $temp1_2  = DB::table('invoice')
-                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->leftjoin('kwitansi_d','kd_nomor_invoice','=','i_nomor')
                   ->whereIn('i_nomor',$request->array_edit)
                   ->get();
             $temp1   = array_merge($temp1_1,$temp1_2);
@@ -273,14 +274,16 @@ class penerimaan_penjualan_Controller extends Controller
         }
 
                   
-        for ($i=0; $i < count($temp1); $i++) { 
-            if ($temp1[$i]->k_nomor != null) {
-                unset($temp[$i]);
-            } 
-        }
+        // for ($i=0; $i < count($temp1); $i++) { 
+        //   if ($temp1[$i]->kd_k_nomor != $request->nota_kwitansi) {
+        //     if ($temp1[$i]->kd_nomor_invoice != null) {
+        //         unset($temp[$i]);
+        //     } 
+        //   }
+        // }
 
+        
         $temp = array_values($temp);
-
 
         if (isset($request->array_simpan)) {
 
@@ -303,11 +306,11 @@ class penerimaan_penjualan_Controller extends Controller
                 for ($a=0; $a < count($request->array_edit); $a++) { 
                     if ($request->array_edit[$a] == $data[$i]->i_nomor) {
                         $data[$i]->i_sisa_pelunasan = $data[$i]->i_sisa_pelunasan+$request->array_harga[$a];
+                        $data[$i]->i_sisa_akhir = $data[$i]->i_sisa_akhir+$request->array_harga[$a];
                     }
                 }
             }
         
-        // return $data;
         $data = collect($data);
         // return $data;
         return Datatables::of($data)
@@ -338,11 +341,11 @@ class penerimaan_penjualan_Controller extends Controller
         for ($i=0; $i < count($data); $i++) { 
             for ($a=0; $a < count($request->array_edit); $a++) { 
                 if ($request->array_edit[$a] == $data[$i]->i_nomor) {
-                    $data[$i]->i_sisa_pelunasan = $data[$i]->i_sisa_akhir+$request->array_harga[$a];
+                    $data[$i]->i_sisa_pelunasan = $data[$i]->i_sisa_pelunasan+$request->array_harga[$a];
+                    $data[$i]->i_sisa_akhir = $data[$i]->i_sisa_akhir+$request->array_harga[$a];
                 }
             }
         }
-
         return response()->json(['data'=>$data]);
         
     }
