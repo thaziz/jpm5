@@ -114,7 +114,7 @@
                                         <option value="0">Pilih - Pembayaran</option>
                                         <option value="T"> TUNAI/CASH </option>
                                         <option value="C"> TRANSFER </option>
-                                        <option value="U" selected=""> UANG MUKA </option>
+                                        <option value="U"> UANG MUKA </option>
                                         <option value="B"> NOTA/BIAYA LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
                                     </select>
@@ -126,7 +126,7 @@
 
                                     <select  class="form-control jenis_tarif" onchange="nota_tes()" name="jenis_tarif" >
                                         <option value="0">Pilih - Jenis</option>
-                                        <option value="PAKET" selected=""> PAKET </option>
+                                        <option value="PAKET"> PAKET </option>
                                         <option value="KORAN"> KORAN </option>
                                     <option value="KARGO"> KARGO </option>
                                         
@@ -822,7 +822,8 @@ var anjay = [];
 
 
 var table_data = $('#table_data').DataTable({
-                    searching:false,
+                    searching:true,
+                    sorting:false,
                     columnDefs: [
                       {
                          targets: 1 ,
@@ -1578,170 +1579,7 @@ $('#btnsave2').click(function(){
     $('#modal_info').modal('hide');
 
 })
-// add biaya modal
-var count = 1;
-$('#btnadd_biaya').click(function(){
-    $('.m_sequence').val(count);
-    $('#modal_biaya').modal('show');
-})
 
-// save biaya lain
-$('#btnsave3').click(function(){
-    var seq          = $('.m_sequence').val();
-    var akun_lain    = $('.akun_lain').val();
-    var m_acc        = $('.m_acc').val();
-    var m_csf        = $('.m_csf').val();
-    var m_debet      = $('.m_debet').val();
-    var m_jumlah     = $('.m_jumlah ').val();
-    m_jumlah         = m_jumlah.replace(/[^0-9\-]+/g,"");
-    var m_keterangan = $('.m_keterangan ').val();
-    var m_nama_akun  = $('.m_nama_akun').val();
-    var debet        = 0;
-    var kredit       = 0;
-    if (m_debet == 'DEBET') {
-        debet  = m_jumlah;
-        kredit = 0;
-    }else{
-        debet  = 0;
-        kredit = m_jumlah;
-    }
-
-    table_data_biaya.row.add([
-            '<p class="b_seq_text">'+seq+'</p>'+'<input type="hidden" class="b_flag_'+seq+'">',
-            '<p class="b_nama_akun_text">'+m_nama_akun+'</p>'+'<input type="hidden" class="b_kode_akun" value="'+m_acc+'" name="b_akun[]">',
-            '<p class="b_debet_text">'+m_debet+'</p>',
-            '<p class="b_jumlah_text">'+accounting.formatMoney(m_jumlah,"",2,'.',',')+'</p>'+
-            '<input type="hidden" class="b_jumlah" value="'+m_jumlah+'" name="b_jumlah[]">'+
-            '<input type="hidden" class="b_debet" value="'+debet+'" name="b_debet[]">'+
-            '<input type="hidden" class="b_kredit" value="'+kredit+'" name="b_kredit[]">',
-            '<p class="b_keterangan_text">'+m_keterangan+'</p>'+
-            '<input type="hidden" class="b_keterangan" value="'+m_keterangan+'" name="b_keterangan[]">',
-            '<button type="button" onclick="hapus_detail_biaya(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
-            '<label class="fa fa-trash"><label></button>'+
-            '<button type="button" onclick="edit_detail_biaya(this)" class="btn btn-warning hapus btn-sm" title="edit">'+
-            '<label class="fa fa-pencil"><label></button>'
-
-        ]).draw();
-    var temp = 0;    
-    var temp1 = 0; 
-
-    table_data_biaya.$('.b_debet').each(function(){
-        var deb = parseFloat($(this).val());
-        temp += deb;
-    })  
-    table_data_biaya.$('.b_kredit').each(function(){
-        var deb = parseFloat($(this).val());
-        temp1 += deb;
-    })  
-
-    $('.ed_debet').val(temp);
-    $('.ed_kredit').val(temp1);
-    $('.ed_debet_text').val(accounting.formatMoney(temp,"",2,'.',','));
-    $('.ed_kredit_text').val(accounting.formatMoney(temp1,"",2,'.',','));
-
-    $('.m_acc').val('');
-    $('.m_csf').val('');
-    $('.m_debet').val('');
-    $('.m_jumlah ').val('');
-    $('.m_keterangan ').val('');
-    $('.m_nama_akun').val('');
-
-    hitung_bayar();
-
-        $('#modal_biaya').modal('hide');
-    count+=1;  
-
-$('.tab_detail ul li .tab-2').trigger('click');
-
-});
-// hapus detail biaya
-function hapus_detail_biaya(p) {
-    var par = p.parentNode.parentNode;
-    table_data_biaya.row(par).remove().draw(false);
-    hitung_bayar();
-}
-
-function edit_detail_biaya(p) {
-    var par = p.parentNode.parentNode;
-    var b_seq = $('.b_seq_text').text();
-    var b_kode_akun = $('.b_kode_akun').val();
-    var b_debet_text = $('.b_debet_text').text();
-    var b_nama_akun_text = $('.b_nama_akun_text').text();
-    var b_jumlah = $('.b_jumlah').val();
-    var b_keterangan = $('.b_keterangan').val();
-
-
-    $('.me_nomor ').val(b_seq);
-    $('.akun_lain').val(b_kode_akun).trigger('chosen:updated');
-    $('.me_debet').val(b_debet_text);
-    $('.me_acc').val(b_kode_akun);
-    $('.me_csf').val(b_kode_akun);
-    $('.m_nama_akun').val(b_nama_akun_text);
-    $('.me_jumlah').val(b_jumlah);
-    $('.me_keterangan').val(b_keterangan);
-    $('#modal_edit_biaya').modal('show');
-}
-
-$('#update_biaya').click(function(){
-    var me_nomor = $('.me_nomor').val();
-    var par = $('.b_flag_'+me_nomor).parents('tr');
-    var akun_lain = $('.akun_lain').val();
-    var me_debet = $('.me_debet').val();
-    var me_acc = $('.me_acc').val();
-    var me_jumlah = $('.me_jumlah').val();
-    me_jumlah     = me_jumlah.replace(/[^0-9\-]+/g,"");
-
-    var me_keterangan = $('.me_keterangan').val();
-    var m_nama_akun = $('.m_nama_akun').val();
-    var debet        = 0;
-    var kredit       = 0;
-    console.log(par);
-    console.log(me_nomor);
-    $(par).find('.b_nama_akun_text').text(m_nama_akun);
-    $(par).find('.b_kode_akun').val(me_acc);
-    $(par).find('.b_debet_text').text(me_debet);
-    $(par).find('.b_debet_text').text(me_debet);
-    if (me_debet == 'DEBET') {
-        debet  = me_jumlah;
-        kredit = 0;
-    }else{
-        debet  = 0;
-        kredit = me_jumlah;
-    }
-    $(par).find('.b_jumlah_text').text(accounting.formatMoney(me_jumlah,"",2,'.',','));
-    $(par).find('.b_jumlah').val(me_jumlah);
-    $(par).find('.b_debet').val(debet);
-    $(par).find('.b_kredit').val(kredit);
-    $(par).find('.b_keterangan').val(me_keterangan);
-    var temp = 0;    
-    var temp1 = 0; 
-
-    table_data_biaya.$('.b_debet').each(function(){
-        var deb = parseFloat($(this).val());
-        temp += deb;
-    })  
-    table_data_biaya.$('.b_kredit').each(function(){
-        var deb = parseFloat($(this).val());
-        temp1 += deb;
-    })  
-
-    $('.ed_debet').val(temp);
-    $('.ed_kredit').val(temp1);
-    $('.ed_debet_text').val(accounting.formatMoney(temp,"",2,'.',','));
-    $('.ed_kredit_text').val(accounting.formatMoney(temp1,"",2,'.',','));
-
-    $('.m_acc').val('');
-    $('.m_csf').val('');
-    $('.m_debet').val('');
-    $('.m_jumlah ').val('');
-    $('.m_keterangan ').val('');
-    $('.m_nama_akun').val('');
-
-    hitung_bayar();
-    hitung_bayar();
-
-    $('#modal_edit_biaya').modal('hide');
-})
 var simpan_um = [];
 // UANG MUKA
 // cari um
@@ -2220,30 +2058,7 @@ var table_um = $('#tabel_um_modal').DataTable({
                     ],
                });
 
-// var invoice_um1 = [{'invoice':{'um1':{'jmlah':1,'sisa':1,'bayar':1},'um2':{'jmlah':1,'sisa':1,'bayar':1}}}];
-// var invoice = new Object();
-// invoice_um[0] = invoice;
-// um1 = new Object();
-// var tes = 'asd';
-// // um2 = new Object();
-// // invoice_um[0]['invoice'] = um1;
-// // jml = new Object();
-// // sisa = new Object();
-// // bayar = new Object();
-// // var tes = 'asdasdasd';
-// invoice_um['invoice']['um1'].push(jml);
-// invoice_um['invoice']['um1'].push(sisa);
-// invoice_um['invoice']['um1'].push(bayar);
-// invoice_um['invoice']['um1'] = jml;
-// invoice_um['invoice']['um1'] = sisa;
-// invoice_um['invoice']['um1'] = bayar;
 
-// invoice_um['invoice']['um1'][tes] = 'bayar';
-// invoice_um['invoice']['um1']['sisa'] = 'bayar';
-// invoice_um['invoice']['um1']['bayar'] = 'bayar';
-
-// console.log(invoice_um);
-// console.log(invoice_um1);
 function um_sementara() {
     if ($('.cb_jenis_pembayaran').val() == 'U') {
         var customer = $('.customer').val();
@@ -2739,6 +2554,13 @@ $('#save_um').click(function(){
 
 
 $('#btnsimpan').click(function(){
+
+    table_data.$('.i_bayar').each(function(i){
+        if ($(this).val() == 0 || $(this).val() == '') {
+            toastr.warning('Ada Data Yang Belum Diinput Nilainya');
+            return false;
+        }
+    })
     var customer = $('.customer').val();
     swal({
         title: "Apakah anda yakin?",
@@ -2749,57 +2571,83 @@ $('#btnsimpan').click(function(){
         confirmButtonText: "Ya, Simpan!",
         cancelButtonText: "Batal",
         closeOnConfirm: true
-      },
-      function(){
-
-               // alert(accPiutang);
-           $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },function(){
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+            var array_index = [];
+            var array_invoice = [];
+            var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
+            var nota_kwitansi = $('#nota_kwitansi').val();
+            table_data.$('.i_flag_um').each(function(i){
+                array_index[i] = $(this).val();
+            })
 
-          $.ajax({
-          url:baseUrl + '/sales/simpan_kwitansi',
-          type:'get',
-          dataType:'json',
-          data:$('.tabel_header :input').serialize()
-               +'&'+table_data.$('input').serialize()
-               +'&'+table_data_biaya.$('input').serialize()
-               +'&'+tabel_uang_muka.$('input').serialize()
-               +'&'+$('.table_rincian :input').serialize()
-               +'&customer='+customer,
-          success:function(response){
-            if (response.status == 1) {
-                swal({
-                    title: "Berhasil!",
-                    type: 'success',
-                    text: "Data berhasil disimpan",
-                    timer: 900,
-                   showConfirmButton: true
-                    },function(){
-                        // location.reload();
-                        $('.temp_1').addClass('disabled');
-                        $('.print').removeClass('disabled');
-                        $('.flag_nota').val('success');
-                });
-            }else{
-                $('#nota_kwitansi').val(response.nota);
-                toastr.info('Nomor Kwitansi Telah Dirubah Menjadi '+response.nota);
-                $('#btnsimpan').click();
-            }
-          },
-          error:function(data){
-            swal({
-            title: "Terjadi Kesalahan",
-                    type: 'error',
-                    timer: 900,
-                   showConfirmButton: true
+            table_data.$('.i_nomor').each(function(i){
+                array_invoice[i] = $(this).val();
+            })
 
-        });
-       }
-      });  
-     });
+            $.ajax({
+                url:baseUrl + '/sales/kwitansi/simpan_um',
+                type:'get',
+                dataType:'json',
+                data:{invoice_um,array_index,array_invoice,array_uang_muka,cb_jenis_pembayaran,nota_kwitansi},
+                success:function(response){
+                    $.ajax({
+                        url:baseUrl + '/sales/simpan_kwitansi',
+                        type:'get',
+                        dataType:'json',
+                        data:$('.tabel_header :input').serialize()
+                           +'&'+table_data.$('input').serialize()
+                           +'&'+table_data_biaya.$('input').serialize()
+                           +'&'+tabel_uang_muka.$('input').serialize()
+                           +'&'+$('.table_rincian :input').serialize()
+                           +'&customer='+customer,
+                        success:function(response){
+                            if (response.status == 1) {
+                                swal({
+                                    title: "Berhasil!",
+                                    type: 'success',
+                                    text: "Data berhasil disimpan",
+                                    timer: 900,
+                                   showConfirmButton: true
+                                    },function(){
+                                        // location.reload();
+                                        $('.temp_1').addClass('disabled');
+                                        $('.print').removeClass('disabled');
+                                        $('.flag_nota').val('success');
+                                });
+                            }else{
+                                $('#nota_kwitansi').val(response.nota);
+                                toastr.info('Nomor Kwitansi Telah Dirubah Menjadi '+response.nota);
+                                $('#btnsimpan').click();
+                            }
+                        },
+                        error:function(data){
+                            swal({
+                            title: "Terjadi Kesalahan",
+                                    type: 'error',
+                                    timer: 900,
+                                   showConfirmButton: true
+
+                            });
+                        }
+                    });  
+                },
+                error:function(data){
+                    swal({
+                    title: "Terjadi Kesalahan",
+                            type: 'error',
+                            timer: 900,
+                           showConfirmButton: true
+
+                    });
+                }
+            }); 
+            
+    });
 })
 
 $('.reload').click(function(){
