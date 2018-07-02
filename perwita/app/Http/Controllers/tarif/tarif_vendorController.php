@@ -32,43 +32,14 @@ class tarif_VendorController extends Controller
         }
 
 
-        // return $list;
-        // $data = array();
-        // foreach ($list as $r) {
-        //     $data[] = (array) $r;
-        // }
-        // $i=0;
-        // foreach ($data as $key) {
-        //     // add new button
-
-        //     $div_1  =   '<div class="btn-group">';
-        //                           if (Auth::user()->punyaAkses('Tarif Penerus Vendor','ubah')) {
-        //                           $div_2  = '<button type="button" id="'.$data[$i]['id'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>';
-        //                           }else{
-        //                             $div_2 = '';
-        //                           }
-        //                           if (Auth::user()->punyaAkses('Tarif Penerus Vendor','hapus')) {
-        //                           $div_3  = '<button type="button" id="'.$data[$i]['id'].'" name="'.$data[$i]['id'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>';
-        //                           }else{
-        //                             $div_3 = '';
-        //                           }
-        //                           $div_4   = '</div>';
-        //                         $all_div = $div_1 . $div_2 . $div_3 . $div_4;
-
-        //                         $data[$i]['button'] = $all_div;
-                               
-        //                         $i++;
-         
-        // }
-        // $datax = array('data' => $data);
         $data = collect($list);
         // echo json_encode($datax);
         return Datatables::of($data)
         ->addColumn('button', function ($data) {
                           return  '<div class="btn-group">'.
-                                   '<button type="button" onclick="edit(this)" class="btn btn-info btn-sm" title="edit">'.
+                                   '<button type="button" onclick="edit(this)" class="btn btn-info btn-sm" title="edit" id="'.$data->id_tarif_sama.'">'.
                                    '<label class="fa fa-pencil"></label></button>'.
-                                   '<button type="button" onclick="hapus(this)" class="btn btn-danger btn-sm" title="hapus">'.
+                                   '<button type="button" onclick="hapus(this)" class="btn btn-danger btn-sm" title="hapus" id="'.$data->id_tarif_sama.'">'.
                                    '<label class="fa fa-trash"></label></button>'.
                                   '</div>';
                 })

@@ -467,13 +467,14 @@ class LaporanPembelianController extends Controller
 
 	public function reportkartuhutang()
 	{	
-		$customer = DB::table('customer')->get();
+		$supplier = DB::table('supplier')->get();
 
 		$akun = DB::table('d_akun')
 			->where(function ($query) {
                 $query->where('id_akun', 'like', '2101%')
                       ->orWhere('id_akun', 'like', '2102%');
     		})
+    		->orderBy('id_akun','ASC')
     		->get();
 
 		$cabang = DB::table('cabang')->get();
@@ -492,7 +493,80 @@ class LaporanPembelianController extends Controller
 		// return ($data['data']);
 
 		
-		return view('purchase/laporan_analisa_pembelian/lap_kartu_hutang/lap_kartu_hutang',compact('customer','data','akun','cabang'));
+		return view('purchase/laporan_analisa_pembelian/lap_kartu_hutang/lap_kartu_hutang',compact('supplier','data','akun','cabang'));
+	}
+	public function carikartuhutan_perakun(Request $request)
+	{
+		// dd($request->all());
+		$min= $request->min;
+		$max= $request->max;
+
+		//untuk bbk
+		if ($request->akun != '' || $request->akun != null) {
+			$akun_bbk = " AND bbkd_akunhutang = '".$request->akun."' ";
+		}else{
+			$akun_bbk = '';
+		}
+		if ($request->cabang != '' || $request->cabang != null) {
+			$cabang_bbk = " AND bbk_cabang = '".$request->cabang."' ";
+		}else{
+			$cabang_bbk = '';
+		}
+
+		if ($request->supplier != '' || $request->supplier != null) {
+			$supplier_bbk = " AND bbkd_jenissup = '".$request->supplier."' ";
+		}else{
+			$supplier_bbk = '';
+		}
+		
+		//untuk fp_pembelian		
+		if ($request->akun != '' || $request->akun != null) {
+			$akun = " AND fp_acchutang = '".$request->akun."' ";
+		}else{
+			$akun = '';
+		}
+		if ($request->supplier != '' || $request->supplier != null) {
+			$supplier = " AND fp_supplier = '".$request->supplier."' ";
+		}else{
+			$supplier = '';
+		}
+		if ($request->cabang != '' || $request->cabang != null) {
+			$cabang = " AND fp_comp = '".$request->cabang."' ";
+		}else{
+			$cabang = '';
+		}
+		
+		//untuk bkk
+		if ($request->akun != '' || $request->akun != null) {
+			$akun_bkk = " AND bkk_akun_hutang = '".$request->akun."' ";
+		}else{
+			$akun_bkk = '';
+		}
+		if ($request->supplier != '' || $request->supplier != null) {
+			$supplier_bkk = " AND bkk_supplier = '".$request->supplier."' ";
+		}else{
+			$supplier_bkk = '';
+		}
+		if ($request->cabang != '' || $request->cabang != null) {
+			$cabang_bkk = " AND bkk_comp = '".$request->cabang."' ";
+		}else{
+			$cabang_bkk = '';
+		}
+
+
+
+		$bbk = DB::select("select 'K' as flag,bbk_nota as nota, bbk_tgl as tgl, bbkd_nominal as kredit ,bbk_keterangan as keterangan from bukti_bank_keluar_detail, bukti_bank_keluar where bbkd_idbbk = bbk_id and bbk_tgl >= '$min' AND bbk_tgl <= '$max' $akun_bbk $cabang_bbk $supplier_bbk ");
+
+		$fp = DB::select("select 'D' as flag, fp_nofaktur as nota,fp_keterangan as keterangan, fp_tgl as tgl , fp_netto as debet from faktur_pembelian where fp_jenisbayar = '2' and fp_tgl >= '$min' AND fp_tgl <= '$max' $akun $supplier $cabang ");
+
+		$um = DB::select("select 'K' as flag, fp_nofaktur as nota,fp_keterangan as keterangan, fp_tgl as tgl, fp_uangmuka as kredit from faktur_pembelian where fp_jenisbayar = '2' and fp_uangmuka != '0' and fp_tgl >= '$min' AND fp_tgl <= '$max' $akun $supplier $cabang");
+
+		$bkk = DB::select("select 'K' as flag , bkk_nota as nota,bkk_keterangan as keterangan, bkk_tgl as tgl, bkk_total as kredit from bukti_kas_keluar where bkk_jenisbayar = '2' and bkk_tgl >= '$min' AND bkk_tgl <= '$max' $akun_bkk $supplier_bkk $cabang_bkk ");
+
+		$data['data'] = array_merge($fp, $um, $bkk , $bbk);
+
+		return view('purchase/laporan_analisa_pembelian/lap_kartu_hutang/kartu_hutang/ajax_pencarian_akun',compact('supplier','data','akun','cabang')); 
+
 	}
 
 
