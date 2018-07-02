@@ -452,7 +452,6 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembaya
         }
     })
 }else{
-    console.log('asd');
  var m_data_acc   =  $('.m_data_acc').val();
  var m_jumlah_kas = $('.m_jumlah_kas').val();
  m_jumlah_kas     = m_jumlah_kas.replace(/[^0-9\-]+/g,"");
@@ -540,7 +539,7 @@ $('#btnsimpan').click(function(){
 
           $.ajax({
           url:baseUrl + '/sales/posting_pembayaran_form/simpan_posting',
-          type:'post',
+          type:'get',
           dataType:'json',
           data:$('.table_header1 :input').serialize()
                +'&'+$('.table_header2 :input').serialize()

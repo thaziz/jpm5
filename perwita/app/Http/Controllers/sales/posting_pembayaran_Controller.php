@@ -7,28 +7,80 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Carbon\Carbon;
 use Auth;
-
-
+use App\d_jurnal;
+use App\d_jurnal_dt;
+use Yajra\Datatables\Datatables;
 class posting_pembayaran_Controller extends Controller
 {
-    public function table_data_detail (Request $request) {
-        $nomor = strtoupper($request->input('nomor'));
-        $sql = "   SELECT * FROM posting_pembayaran_d WHERE nomor_posting_pembayaran='$nomor'  ";
-        $list = DB::select(DB::raw($sql));
-        $data = array();
-        foreach ($list as $r) {
-            $data[] = (array) $r;
+    public function datatable_posting (Request $request) {
+        $cabang = auth::user()->kode_cabang;
+        if (Auth::user()->punyaAkses('Posting Pembayaran','all')) {
+            $data = DB::table('posting_pembayaran')
+                      ->join('cabang','kode','=','kode_cabang')
+                      ->get();
+        }else{
+            $data = DB::table('posting_pembayaran')
+                      ->join('cabang','kode','=','kode_cabang')
+                      ->where('kode_cabang',$cabang)
+                      ->get();
         }
-        $i=0;
-        foreach ($data as $key) {
-            // add new button
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['id'].'" name="'.$data[$i]['nomor_penerimaan_penjualan'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                    </div> ';
-            $i++;
-        }
-        $datax = array('data' => $data);
-        echo json_encode($datax);
+
+        $data = collect($data);
+        // return $data;
+        return Datatables::of($data)
+                        ->addColumn('aksi', function ($data) {
+
+                            if(Auth::user()->punyaAkses('Posting Pembayaran','ubah')){
+                                if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
+                                  $a = '<button type="button" onclick="edit(\''.$data->nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
+                                }
+                            }else{
+                              $a = '';
+                            }
+
+                            if(Auth::user()->punyaAkses('Posting Pembayaran','print')){
+                                $b = '<button type="button" onclick="ngeprint(\''.$data->nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
+                            }else{
+                              $b = '';
+                            }
+
+
+                            if(Auth::user()->punyaAkses('Posting Pembayaran','hapus')){
+                                if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
+                                  $c = '<button type="button" onclick="hapus(\''.$data->nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
+                                }
+                            }else{
+                              $c = '';
+                            }
+                            return $a . $b .$c  ;
+                                   
+                        })
+                        ->addColumn('jumlah_text', function ($data) {
+                          return number_format($data->jumlah,2,',','.'  ); 
+                        })
+                        ->addColumn('pembayaran', function ($data) {
+                          if ($data->jenis_pembayaran == 'C') {
+                              $a = 'TRANSFER';
+                          }
+                          if ($data->jenis_pembayaran == 'K') {
+                              $a = 'TRANSFER KAS';
+                          }
+                          if ($data->jenis_pembayaran == 'L') {
+                              $a = 'LAIN-LAIN';
+                          }
+                          if ($data->jenis_pembayaran == 'F') {
+                              $a = 'CHEQUIE/BG';
+                          }
+                          if ($data->jenis_pembayaran == 'B') {
+                              $a = 'NOTA/BIAYA LAIN';
+                          }
+                          if ($data->jenis_pembayaran == 'U') {
+                              $a = 'UANG MUKA/DP';
+                          }
+                          return '<label class="label label-warning">'.$a.'</label>';
+                        })
+                        ->addIndexColumn()
+                        ->make(true);
     }
 
     public function get_data (Request $request) {
@@ -43,53 +95,6 @@ class posting_pembayaran_Controller extends Controller
         echo json_encode($data);
     }
 
-    public function save_data (Request $request) {
-        $simpan='';
-        $crud = $request->crud_h;
-        $nomor_old = $request->ed_nomor_old;
-        $data = array(
-                'nomor' => strtoupper($request->ed_nomor),
-                'tanggal' => strtoupper($request->ed_tanggal),
-                'kode_cabang' => strtoupper($request->ed_cabang),
-                'jenis_pembayaran' => strtoupper($request->ed_jenis_pembayaran),
-                'keterangan' => strtoupper($request->ed_keterangan),
-                'jumlah' => filter_var($request->ed_jumlah, FILTER_SANITIZE_NUMBER_INT),
-            );
-
-        if ($crud == 'N' and $nomor_old =='') {
-            //auto number
-            if ($data['nomor'] ==''){
-                $tanggal = strtoupper($request->ed_tanggal);
-                $kode_cabang = strtoupper($request->ed_cabang);
-                $tanggal = date_create($tanggal);
-                $tanggal = date_format($tanggal,'ym');
-                $sql = "	SELECT CAST(MAX(SUBSTRING (nomor FROM '....$')) AS INTEGER) + 1 nomor
-                            FROM posting_pembayaran WHERE to_char(tanggal, 'YYMM')='$tanggal' AND kode_cabang='$kode_cabang' ";
-                $list = collect(\DB::select($sql))->first();
-                if ($list->nomor == ''){
-                    //$data['nomor']='SJT-'.$kode_cabang.'-'.$tanggal.'-00001';
-                    $data['nomor']='PST'.$kode_cabang.$tanggal.'00001';
-                } else{
-                    $kode  = substr_replace('00000',$list->nomor,-strlen($list->nomor)); 
-                    $data['nomor']='PST'.$kode_cabang.$tanggal.$kode;
-                }
-            }
-            // end auto number
-            $simpan = DB::table('posting_pembayaran')->insert($data);
-        } else {
-            $simpan = DB::table('posting_pembayaran')->where('nomor', $nomor_old)->update($data);
-        }
-        if($simpan == TRUE){
-            $result['error']='';
-            $result['result']=1;
-            $result['nomor']=$data['nomor'];
-        }else{
-            $result['error']=$data;
-            $result['result']=0;
-        }
-        $result['crud']=$crud;
-        echo json_encode($result);
-    }
 
     public function hapus_data($nomor_posting_pembayaran=null){
         DB::beginTransaction();
@@ -302,6 +307,7 @@ class posting_pembayaran_Controller extends Controller
     {
         $data = DB::table('uang_muka_penjualan')
                   ->where('kode_cabang',$request->cabang)
+                  ->where('id_bank',$request->akun_bank)
                   ->where('nomor_posting',null)
                   ->get();
         return view('sales.posting_pembayaran.table_uang_muka',compact('data'));
@@ -335,93 +341,221 @@ class posting_pembayaran_Controller extends Controller
         // dd($request->all());
         return DB::transaction(function() use ($request) {  
 
-            $cari_posting = DB::table('posting_pembayaran')
-                              ->where('nomor',$request->nomor_posting)
-                              ->first();
+            
             $akun        = DB::table('masterbank')
                              ->where('mb_id',$request->akun_bank)
                              ->first();
-            if ($cari_posting == null) {
-                $save_posting = DB::table('posting_pembayaran')
-                                  ->insert([
-                                      'nomor' =>$request->nomor_posting,
-                                      'tanggal' =>$request->ed_tanggal,
-                                      'nomor_cek' =>$request->nomor_cek,
-                                      'kode_akun_kredit' => $akun->mb_kode,
-                                      'kode_akun_debet' => $akun->mb_kode,
-                                      'jumlah' => $request->ed_jumlah,
-                                      'keterangan' =>  $request->ed_keterangan,
-                                      'create_by' => Auth::user()->m_username,
-                                      'update_by' => Auth::user()->m_username ,
-                                      'create_at' => Carbon::now(),
-                                      'update_at' => Carbon::now(),
-                                      'jenis_pembayaran' => $request->cb_jenis_pembayaran,
-                                      'kode_cabang' => $request->cb_cabang
-                                  ]);
+
+            $user = Auth::user()->m_name;
+            if (Auth::user()->m_name == null) {
+                return response()->json([
+                  'status'=>0,
+                  'message'=>'Nama User Anda Belum Ada, Silahkan Hubungi Pihak Terkait'
+                ]);
+            }
+
+            $cari_nota = DB::table('posting_pembayaran')
+                              ->where('nomor',$request->nomor_posting)
+                              ->first();
+
+            if ($cari_nota != null) {
+                if ($cari_nota->nomor == $user) {
+                  return 'Data Sudah Ada';
+                }else{
+                    $bulan = Carbon::now()->format('m');
+                    $tahun = Carbon::now()->format('y');
+
+                    $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from posting_pembayaran
+                                                    WHERE kode_cabang = '$request->cabang'
+                                                    AND to_char(create_at,'MM') = '$bulan'
+                                                    AND to_char(create_at,'YY') = '$tahun'");
+                    $index = (integer)$cari_nota[0]->id + 1;
+                    $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+                    $nota = 'PST' . $request->cabang . $bulan . $tahun . $index;
+
+                }
+            }elseif ($cari_nota == null) {
+                $nota = $request->nomor_posting;
+            }
+
+
+            $save_posting = DB::table('posting_pembayaran')
+                              ->insert([
+                                  'nomor' =>$nota,
+                                  'tanggal' =>$request->ed_tanggal,
+                                  'nomor_cek' =>$request->nomor_cek,
+                                  'kode_akun_kredit' => $akun->mb_kode,
+                                  'kode_akun_debet' => $akun->mb_kode,
+                                  'jumlah' => $request->ed_jumlah,
+                                  'keterangan' =>  $request->ed_keterangan,
+                                  'create_by' => Auth::user()->m_name,
+                                  'update_by' => Auth::user()->m_name ,
+                                  'create_at' => Carbon::now(),
+                                  'update_at' => Carbon::now(),
+                                  'jenis_pembayaran' => $request->cb_jenis_pembayaran,
+                                  'kode_cabang' => $request->cb_cabang
+                              ]);
 
 
 
-                    for ($i=0; $i < count($request->d_nomor_kwitansi); $i++) { 
-                        $id = DB::table('posting_pembayaran_d')
-                                ->max('id');
-                        if ($id == null) {
-                            $id = 1;
-                        }else{
-                            $id += 1;
-                        }
+            for ($i=0; $i < count($request->d_nomor_kwitansi); $i++) { 
+                $id = DB::table('posting_pembayaran_d')
+                        ->max('id');
+                if ($id == null) {
+                    $id = 1;
+                }else{
+                    $id += 1;
+                }
 
-                        $save_detail = DB::table('posting_pembayaran_d')
-                                         ->insert([
-                                            'id' => $id,
-                                            'nomor_posting_pembayaran' =>$request->nomor_posting,
-                                            'nomor_penerimaan_penjualan'=>$request->d_nomor_kwitansi[$i],
-                                            'jumlah' =>$request->d_netto[$i],
-                                            'create_by' =>Auth::user()->m_username,
-                                            'create_at' =>Carbon::now(),
-                                            'update_by'=>Auth::user()->m_username,
-                                            'update_at'=> Carbon::now(),
-                                            'kode_customer'=> $request->d_customer[$i],
-                                            'keterangan'=> $request->d_keterangan[$i],
-                                            'kode_acc'=> $request->d_kode_akun[$i],
-                                            'kode_csf'=> $request->d_kode_akun[$i],
+                $save_detail = DB::table('posting_pembayaran_d')
+                                 ->insert([
+                                    'id' => $id,
+                                    'nomor_posting_pembayaran' =>$nota,
+                                    'nomor_penerimaan_penjualan'=>$request->d_nomor_kwitansi[$i],
+                                    'jumlah' =>$request->d_netto[$i],
+                                    'create_by' =>Auth::user()->m_username,
+                                    'create_at' =>Carbon::now(),
+                                    'update_by'=>Auth::user()->m_username,
+                                    'update_at'=> Carbon::now(),
+                                    'kode_customer'=> $request->d_customer[$i],
+                                    'keterangan'=> $request->d_keterangan[$i],
+                                    'kode_acc'=> $request->d_kode_akun[$i],
+                                    'kode_csf'=> $request->d_kode_akun[$i],
+                                 ]);
+
+                if ($request->cb_jenis_pembayaran != 'U') {
+
+
+                    $update_kwitansi = DB::table('kwitansi')
+                                         ->where('k_nomor',$request->d_nomor_kwitansi[$i])
+                                         ->update([
+                                            'k_nomor_posting'   => $request->nomor_posting,
+                                            'k_tgl_posting'     => $request->ed_tanggal,
                                          ]);
+                }else{
+                    $update_kwitansi = DB::table('uang_muka_penjualan')
+                                         ->where('nomor',$request->d_nomor_kwitansi[$i])
+                                         ->update([
+                                            'nomor_posting'   => $request->nomor_posting,
+                                            'tgl_posting'     => $request->ed_tanggal,
+                                            'status'          => 'Approved',
+                                         ]);
+                }
+            }
 
-                        if ($request->cb_jenis_pembayaran != 'U') {
 
+            // JURNAL
+            
+            ////////// JURNAL PEMBAYARAN CHEQUE/BG DAN TRANSFER
+            if ($request->cb_jenis_pembayaran == 'F' or $request->cb_jenis_pembayaran == 'C') {
 
-                            $update_kwitansi = DB::table('kwitansi')
-                                                 ->where('k_nomor',$request->d_nomor_kwitansi[$i])
-                                                 ->update([
-                                                    'k_nomor_posting'   => $request->nomor_posting,
-                                                    'k_tgl_posting'     => $request->ed_tanggal,
-                                                 ]);
-                        }else{
-                            $update_kwitansi = DB::table('uang_muka_penjualan')
-                                                 ->where('nomor',$request->d_nomor_kwitansi[$i])
-                                                 ->update([
-                                                    'nomor_posting'   => $request->nomor_posting,
-                                                    'tgl_posting'     => $request->ed_tanggal,
-                                                    'status'          => 'Approved',
-                                                 ]);
+                $id_jurnal=d_jurnal::max('jr_id')+1;
+                $delete = d_jurnal::where('jr_ref',$nota)->delete();
+                $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
+                              'jr_year'   => carbon::parse($request->ed_tanggal)->format('Y'),
+                              'jr_date'   => carbon::parse($request->ed_tanggal)->format('Y-m-d'),
+                              'jr_detail' => 'POSTING PEMBAYARAN ' . $request->cb_jenis_pembayaran,
+                              'jr_ref'    => $nota,
+                              'jr_note'   => 'POSTING PEMBAYARAN',
+                              'jr_insert' => carbon::now(),
+                              'jr_update' => carbon::now(),
+                              ]);
+                $temp_akun_piutang = [];
+                $temp_nominal_piutang = [];
+                for ($i=0; $i < count($request->d_nomor_kwitansi); $i++) { 
+                    $kwitansi = DB::table('kwitansi_d')
+                                  ->where('kd_k_nomor',$request->d_nomor_kwitansi[$i])
+                                  ->get();
+                    for ($a=0; $a < count($kwitansi); $a++) { 
+                        array_push($temp_akun_piutang, $kwitansi[$a]->kd_kode_akun_acc);
+                        array_push($temp_nominal_piutang, $kwitansi[$a]->kd_total_bayar);
+                    }
+                    
+                }
+                $fix_akun_piutang = array_unique($temp_akun_piutang);
+            
+                $fix_nominal_akun = [];
+                for ($i=0; $i < count($fix_akun_piutang); $i++) { 
+                    for ($a=0; $a < count($temp_akun_piutang); $a++) { 
+                        if ($fix_akun_piutang[$i] == $temp_akun_piutang[$a]) {
+                            if (!isset($fix_nominal_akun[$i])) {
+                                $fix_nominal_akun[$i] = 0;
+                            }
+                            $fix_nominal_akun[$i] += $temp_nominal_piutang[$a];
                         }
                     }
+                }
 
-                return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
+                $master_bank        = DB::table('masterbank')
+                                         ->where('mb_id',$request->akun_bank)
+                                         ->first();
 
-            }else{
-                $bulan = Carbon::now()->format('m');
-                $tahun = Carbon::now()->format('y');
+                $akun = [];
+                $akun_val = [];
+                array_push($akun, $master_bank->mb_kode);
+                array_push($akun_val, $request->ed_jumlah);
 
-                $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from posting_pembayaran
-                                                WHERE kode_cabang = '$request->cabang'
-                                                AND to_char(tanggal,'MM') = '$bulan'
-                                                AND to_char(tanggal,'YY') = '$tahun'");
-                $index = (integer)$cari_nota[0]->id + 1;
-                $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-                $nota = 'PST' . $request->cabang . $bulan . $tahun . $index;
+                for ($i=0; $i < count($fix_akun_piutang); $i++) { 
+                    array_push($akun, $fix_akun_piutang[$i]);
+                    array_push($akun_val, $fix_nominal_akun[$i]);
+                }
 
-                return response()->json(['nota'=>$nota]);
-            }                  
+                $data_akun = [];
+                for ($i=0; $i < count($akun); $i++) { 
+
+                    $cari_coa = DB::table('d_akun')
+                            ->where('id_akun',$akun[$i])
+                            ->first();
+
+                    if (substr($akun[$i],0, 4)==1001 or substr($akun[$i],0, 4)==1003 or substr($akun[$i],0, 4)==1099 or substr($akun[$i],0, 2)==11) {
+                    
+                        if ($cari_coa->akun_dka == 'D') {
+                            $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                            $data_akun[$i]['jrdt_detailid'] = $i+1;
+                            $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                            $data_akun[$i]['jrdt_value']    = $akun_val[$i];
+                            $data_akun[$i]['jrdt_type']     = null;
+                            $data_akun[$i]['jrdt_statusdk'] = 'D';
+                            $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                        }else{
+                            $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                            $data_akun[$i]['jrdt_detailid'] = $i+1;
+                            $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                            $data_akun[$i]['jrdt_value']    = $akun_val[$i];
+                            $data_akun[$i]['jrdt_type']     = null;
+                            $data_akun[$i]['jrdt_statusdk'] = 'K';
+                            $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                        }
+                    }else if (substr($akun[$i],0, 2)==13) {
+
+                        if ($cari_coa->akun_dka == 'D') {
+                            $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                            $data_akun[$i]['jrdt_detailid'] = $i+1;
+                            $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                            $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
+                            $data_akun[$i]['jrdt_type']     = null;
+                            $data_akun[$i]['jrdt_statusdk'] = 'K';
+                            $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                        }else{
+                            $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                            $data_akun[$i]['jrdt_detailid'] = $i+1;
+                            $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                            $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
+                            $data_akun[$i]['jrdt_type']     = null;
+                            $data_akun[$i]['jrdt_statusdk'] = 'D';
+                            $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                        }
+                    }
+                }
+            }
+
+            if ($request->cb_jenis_pembayaran == 'F' or $request->cb_jenis_pembayaran == 'C') {
+                $jurnal_dt = d_jurnal_dt::insert($data_akun);
+                $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
+            }
+            // dd($lihat);
+            return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
+
             
         });
     }

@@ -72,37 +72,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data as $row)
-                            <tr>
-                                <td>{{ $row->nomor }}</td>
-                                <td>{{ $row->tanggal }}</td>
-                                <td>{{ $row->jenis_pembayaran }}</td>
-                                <td style="text-align:right"> {{ number_format($row->jumlah, 0, ",", ".") }} </td>
-                                <td>{{ $row->keterangan }}</td>
-                                <td class="text-center">
-                                    <div class="btn-group">
-
-                                    @if(Auth::user()->punyaAkses('Posting Penjualan','ubah'))
-                                        @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
-                                        <a onclick="edit('{{$row->nomor}}')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
-                                        @endif
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Posting Penjualan','print'))
-                                        <a onclick="print('{{$row->nomor}}')" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnprnt"><i class="fa fa-print"></i></a>
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Posting Penjualan','hapus'))
-                                        @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
-                                        <a onclick="hapus('{{$row->nomor}}')" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
-                                        @endif
-                                    @endif
-
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-
                         </tbody>
 
                     </table>
@@ -138,17 +107,35 @@
 <script type="text/javascript">
     $(document).ready( function () {
         $('#tabel_data').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": false,
-            "responsive": true,
-            "autoWidth": false,
-            "pageLength": 10,
-            "retrieve" : true,
-            
-      });
+            processing: true,
+            // responsive:true,
+            serverSide: true,
+            ajax: {
+                url:'{{ route("datatable_posting") }}',
+            },
+            columnDefs: [
+              {
+                 targets: 3,
+                 className: 'cssright'
+              },
+              {
+                 targets: 2,
+                 className: 'center'
+              },
+              {
+                 targets:5,
+                 className: 'center'
+              },
+            ],
+            "columns": [
+            { "data": "nomor" },
+            { "data": "tanggal" },
+            { "data": "pembayaran" },
+            { "data": "jumlah_text"},
+            { "data": "keterangan" },
+            { "data": "aksi" },
+            ]
+        });
     });
 
 

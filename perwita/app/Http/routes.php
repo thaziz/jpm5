@@ -309,8 +309,17 @@ Route::get('master_subcon/cari_kontrak', 'BiayaPenerusController@cari_kontrak');
 Route::get('fakturpembelian/getpembayaransubcon', 'BiayaPenerusController@getpembayaransubcon')->name('getpembayaransubcon');
 Route::get('fakturpembelian/cari_subcon', 'BiayaPenerusController@cari_subcon');
 
+// PEMBAYARAN VENDOR
 
-
+Route::get('fakturpembelian/pilih_kontrak', 'pembayaran_vendor_controller@pilih_kontrak');
+Route::get('fakturpembelian/pilih_kontrak_all', 'pembayaran_vendor_controller@pilih_kontrak_all');
+Route::get('fakturpembelian/caripodsubcon', 'pembayaran_vendor_controller@caripodsubcon');
+Route::get('fakturpembelian/subcon_save', 'pembayaran_vendor_controller@subcon_save');
+Route::get('fakturpembelian/subcon_save', 'pembayaran_vendor_controller@subcon_save');
+Route::get('fakturpembelian/subcon_update', 'pembayaran_vendor_controller@subcon_update');
+Route::get('master_subcon/cari_kontrak', 'pembayaran_vendor_controller@cari_kontrak');
+Route::get('fakturpembelian/getpembayaransubcon', 'pembayaran_vendor_controller@getpembayaransubcon')->name('getpembayaransubcon');
+Route::get('fakturpembelian/cari_subcon', 'pembayaran_vendor_controller@cari_subcon');
 
 
 //BIAYA PENERUS KAS
@@ -1699,10 +1708,12 @@ Route::get('sales/posting_pembayaran_form/cari_kwitansi', 'sales\posting_pembaya
 Route::get('sales/posting_pembayaran_form/cari_uang_muka', 'sales\posting_pembayaran_Controller@cari_uang_muka');
 Route::get('sales/posting_pembayaran_form/append', 'sales\posting_pembayaran_Controller@append');
 Route::post('sales/posting_pembayaran_form/simpan_posting', 'sales\posting_pembayaran_Controller@simpan_posting');
+Route::get('sales/posting_pembayaran_form/simpan_posting', 'sales\posting_pembayaran_Controller@simpan_posting');
 Route::post('sales/posting_pembayaran_form/update_posting', 'sales\posting_pembayaran_Controller@update_posting');
 Route::get('sales/posting_pembayaran_edit/{id}', 'sales\posting_pembayaran_Controller@edit');
 Route::get('sales/posting_pembayaran_hapus', 'sales\posting_pembayaran_Controller@posting_pembayaran_hapus');
 Route::get('sales/posting_pembayaran_print/{id}', 'sales\posting_pembayaran_Controller@posting_pembayaran_print');
+Route::get('sales/datatable_posting', 'sales\posting_pembayaran_Controller@datatable_posting')->name('datatable_posting');
 
 
 
