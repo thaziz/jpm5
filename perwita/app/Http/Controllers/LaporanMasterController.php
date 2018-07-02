@@ -2712,26 +2712,7 @@ class LaporanMasterController extends Controller
 
    public function kartupiutang(){
    		
-   		$data_i = DB::select("SELECT i_kode_customer,customer.nama as cnama from invoice join customer on customer.kode = invoice.i_kode_customer  group by i_kode_customer,customer.nama order by i_kode_customer");
-
-   		$data_p = DB::select("SELECT i_nomor,i_tanggal,i_keterangan,i_kode_customer from invoice group by i_nomor order by i_nomor");
    		
-
-   		$a = DB::table('invoice')
-   			->select('i_tipe as flag','i_nomor as kode','i_kode_customer as cutomer','i_tanggal as tanggal','i_keterangan as keterangan','i_total_tagihan as total');
-
-   		$b = DB::table('cn_dn_penjualan')
-   			->select('cd_jenis','cd_nomor','cd_customer','cd_tanggal','cd_keterangan','cd_total');
-
-   		$c = DB::table('kwitansi')
-   			->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto');
-
-   		$d = DB::table('kwitansi')
-   			->select('k_create_by','nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto')
-   			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
-   			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran');
-
-   		$data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
    		$ds = DB::table('kwitansi')
    			->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto','nomor')
    			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
@@ -2739,12 +2720,13 @@ class LaporanMasterController extends Controller
    		$customer = DB::table('customer')->orderBy('kode','ASC')->get();
 
    		$piutang = DB::table('d_akun')
-   						->where('nama_akun','like','%PIUTANG%')
+   						->where(function ($query) {
+			                $query->where('nama_akun', 'like', 'KAS%')
+			                	  ->orWhere('nama_akun','like','%PIUTANG%')
+			                      ->orWhere('nama_akun', 'like', 'PENDAPATAN%');
+			    		})
+			    		->orderBy('id_akun','ASC')
    						->get();
-   		 // $invo = DB::select("SELECT invoice.i_kode_customer,customer.nama as cnama,sum(invoice.i_total)  from invoice join customer on customer.kode = invoice.i_kode_customer  group by i_kode_customer,customer.nama order by i_kode_customer");
-   		
-   		 // $cndn = DB::select("SELECT sum(cd_total),cd_customer from cn_dn_penjualan group by cd_customer order by cd_customer");
-   		 // return [$invo,$cndn];
 
    		return view('purchase/master/master_penjualan/laporan/lap_piutang/lap_piutang',compact('data','data_i','data_p','customer','piutang'));
    }
@@ -2791,7 +2773,6 @@ class LaporanMasterController extends Controller
 	   			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
 	   			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran');
 
-   			// return 'a';
 	   		$data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
    		}else{
    			// return 'b';
@@ -2827,7 +2808,7 @@ class LaporanMasterController extends Controller
 
 	   		$data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
    		}
-   		
+   		return $data;
    		
    		return view('purchase/master/master_penjualan/laporan/lap_piutang/ajax_lap_piutang',compact('data','data_i','data_p','customer','data_saldo'));
 
@@ -3501,8 +3482,50 @@ class LaporanMasterController extends Controller
 			   		return 'b';
 			   }
 
+   
+
+
+   public function testtest()
+   {
+   		$curl = curl_init();
+
+   		curl_setopt($curl, CURLOPT_HEADER, 1);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($curl, CURLOPT_HTTPGET, 1);
+		curl_setopt($curl, CURLOPT_URL, 'https://api.rajaongkir.com/starter/cost' );
+		curl_setopt($curl, CURLOPT_DNS_CACHE_TIMEOUT, 2 );
+		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+		    "key: 0113b4ac84f7f9f40c548a7b4d04ac3f"
+		  ));
+
+		// curl_setopt_array($curl, array(
+		//   CURLOPT_URL => "https://api.rajaongkir.com/starter/province?id=12",
+		//   CURLOPT_RETURNTRANSFER => true,
+		//   CURLOPT_ENCODING => "",
+		//   CURLOPT_MAXREDIRS => 10,
+		//   CURLOPT_TIMEOUT => 30,
+		//   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+		//   CURLOPT_CUSTOMREQUEST => "GET",
+		//   CURLOPT_HTTPHEADER => array(
+		//     "key: 0113b4ac84f7f9f40c548a7b4d04ac3f"
+		//   ),
+		// ));
+
+		$response = curl_exec($curl);
+		$err = curl_error($curl);
+
+		curl_close($curl);
+
+		if ($err) {
+		  echo "cURL Error #:" . $err;
+		} else {
+		  echo $response;
+		}
+
    }
 
-   
+
+
+   }
 
 ?>

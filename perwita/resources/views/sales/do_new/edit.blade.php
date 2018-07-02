@@ -14,6 +14,7 @@
     .pointer_none{
         pointer-events: none;
     }
+    .
 </style>
                 
 
@@ -73,27 +74,37 @@
                                                 <tr style="max-height: 15px !important; height: 15px !important; overflow:hidden;">
                                                     <td style="width:110px; padding-top: 0.4cm">Nomor</td>
                                                     <td colspan="5">
-                                                        <input type="text" class="form-control" id="do_nomor" name="do_nomor" style="text-transform: uppercase"  value="" >
+                                                        <input type="text" class="form-control" id="do_nomor" name="do_nomor" style="text-transform: uppercase"  value="{{ $data->nomor }}" readonly="" >
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm">Tanggal</td>
                                                     <td colspan="1">
                                                         <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control datepicker_today" name="do_tanggal" id="do_tanggal" value="">
+                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control datepicker_today" name="do_tanggal" id="do_tanggal" value="{{ $data->tanggal }}">
                                                         </div>
                                                     </td>
 
                                                     <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                                     <td colspan="3">
-                                                        <select class="form-control"  name="do_cabang" {{-- onclick="setMaxDisc()" --}} style="width:100%" id="do_cabang">
+                                                        <select class="form-control"  name="do_cabang" {{-- onclick="setMaxDisc()" --}} style="width:100%;pointer-events: none" id="do_cabang">
                                                             <option value="" >- Pilih -</option>
+
                                                         @foreach ($cabang as $row)
-                                                            @if($row->diskon != null)
-                                                            <option value="{{ $row->kode }}" data-diskon="{{ $row->diskon }}">{{ $row->kode }} - {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
+                                                            @if ($row->kode == $data->kode_cabang)
+                                                                @if($row->diskon != null)
+                                                                    <option selected="" value="{{ $row->kode }}" data-diskon="{{ $row->diskon }}">{{ $row->kode }} - {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
+                                                                @else
+                                                                    <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
+                                                                @endif
                                                             @else
-                                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
+                                                                @if($row->diskon != null)
+                                                                    <option value="{{ $row->kode }}" data-diskon="{{ $row->diskon }}">{{ $row->kode }} - {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
+                                                                @else
+                                                                    <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
+                                                                @endif
                                                             @endif
+                                                            
                                                         @endforeach
                                                         </select>
                                                     </td>
@@ -107,12 +118,23 @@
                                                         <select class="chosen-select-width customerpengirim"  name="do_customer" onchange="" id="do_customer" style="width:100%" >
                                                         <option value="">- Pilih -</option>
                                                         @foreach ($customer as $row)
+                                                        @if ($data->kode_customer == $row->kode)
                                                             @if ( $row->kc_aktif  == 'AKTIF' && $row->kcd_jenis)
+                                                                <option selected="" style="background-color: #79fea5;" value="{{ $row->kode }}" data-alamat="{{$row->alamat}}" data-telpon="{{$row->telpon}}"  data-status="{{ $row->kc_aktif }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                                            @endif
+                                                        @else
+                                                             @if ( $row->kc_aktif  == 'AKTIF' && $row->kcd_jenis)
                                                                 <option style="background-color: #79fea5;" value="{{ $row->kode }}" data-alamat="{{$row->alamat}}" data-telpon="{{$row->telpon}}"  data-status="{{ $row->kc_aktif }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                                             @endif
+                                                        @endif
                                                         @endforeach
+
                                                         @foreach ($cus as $row1)
+                                                        @if ($data->kode_customer == $row1->kode)
+                                                                <option selected="" value="{{ $row1->kode }}" data-alamat="{{$row1->alamat}}" data-telpon="{{$row1->telpon}}"  >{{ $row1->kode }} - {{ $row1->nama }} </option>
+                                                        @else
                                                                 <option value="{{ $row1->kode }}" data-alamat="{{$row1->alamat}}" data-telpon="{{$row1->telpon}}"  >{{ $row1->kode }} - {{ $row1->nama }} </option>
+                                                        @endif
                                                         @endforeach
                                                         </select>
                                                     </td>
@@ -124,7 +146,11 @@
                                                         <select class="chosen-select-width replace_deskripsi" id="do_kota_asal" onchange="asal()" name="do_kota_asal" style="width:100%" >
                                                             <option value="">- Pilih -</option>
                                                             @foreach ($kota as $row)
-                                                                <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
+                                                                @if ($row->id == $data->id_kota_asal)
+                                                                    <option selected="" value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
+                                                                @else
+                                                                    <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
+                                                                @endif
                                                             @endforeach
                                                         </select>
                                                     </td>
@@ -135,7 +161,11 @@
                                                         <select class="chosen-select-width replace_deskripsi" id="do_kota_tujuan" onchange="getKecamatan()" id="do_kota_tujuan" name="do_kota_tujuan" style="width:100%" >
                                                             <option value="">- Pilih -</option>
                                                             @foreach ($kota as $row)
-                                                                <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
+                                                                @if ($row->id == $data->id_kota_tujuan)
+                                                                    <option selected="" value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
+                                                                @else
+                                                                    <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
+                                                                @endif
                                                             @endforeach
                                                         </select>
                                                     </td>
@@ -145,6 +175,13 @@
                                                     <td colspan="5">
                                                         <select class="chosen-select-width form-control" id="do_kecamatan_tujuan" name="do_kecamatan_tujuan" style="width:100%" >
                                                             <option value="">- Pilih -</option>
+                                                             @foreach ($kecamatan as $row)
+                                                                @if ($row->id == $data->id_kecamatan_tujuan )
+                                                                    <option selected="" value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
+                                                                @else
+                                                                    <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
+                                                                @endif
+                                                            @endforeach
                                                         </select>
                                                     </td>
                                                 </tr>
@@ -156,11 +193,11 @@
                                                     <td style="width:110px; padding-top: 0.4cm">Type Kiriman</td>
                                                     <td colspan="5">
                                                         <select class="form-control"  name="type_kiriman" id="type_kiriman">
+
                                                             <option value="">- Pilih -</option>
                                                             <option value="DOKUMEN">DOKUMEN</option>
                                                             <option value="KILOGRAM">KILOGRAM</option>
                                                             <option value="KOLI">KOLI</option>
-                                                            <option value="SEPdoA">SEPdoA</option>
                                                         </select>
                                                     </td>
                                                 </tr>
@@ -206,35 +243,35 @@
                                                 <tr id="berat">
                                                     <td style="padding-top: 0.4cm">Berat</td>
                                                     <td colspan="5">
-                                                        <input onkeyup="BeratDefault()" type="text" class="form-control" value="0" name="do_berat" style="text-align:right">
+                                                        <input onkeyup="BeratDefault()" type="text" class="form-control" value="{{ $data->berat }}" name="do_berat" style="text-align:right">
                                                     </td>
                                                 </tr>
                                                 <tr id="jml_unit">
                                                     <td style="padding-top: 0.4cm">Jumlah Unit</td>
                                                     <td colspan="5">
-                                                        <input type="text" class="form-control jmlunit" onkeyup="setJml()" value="0" name="do_jml_unit" style="text-align:right" >
+                                                        <input type="text" class="form-control jmlunit" onkeyup="setJml()" value="{{ $data->berat }}" name="do_jml_unit" style="text-align:right" >
                                                     </td>
                                                 </tr>
                                                 <div id="drop"></div>
                                                 <tr id="dimensi">
                                                     <td style="padding-top: 0.4cm">Panjang</td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="do_panjang" value="0" style="text-align:right" >
+                                                        <input type="text" class="form-control" name="do_panjang" value="{{ $data->panjang }}" style="text-align:right" >
                                                     </td>
                                                     <td style="padding-top: 0.4cm">Lebar</td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="do_lebar" value="0" style="text-align:right">
+                                                        <input type="text" class="form-control" name="do_lebar" value="{{ $data->lebar }}" style="text-align:right">
                                                     </td>
                                                     <td style="padding-top: 0.4cm">Tinggi</td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="do_tinggi" value="0" style="text-align:right">
+                                                        <input type="text" class="form-control" name="do_tinggi" value="{{ $data->tinggi }}" style="text-align:right">
                                                     </td>
                                                 </tr>
                                                 
                                                 <tr id="koli">
                                                     <td style="padding-top: 0.4cm">Koli</td>
                                                     <td colspan="5">
-                                                        <input type="text" class="form-control" name="do_koli" value="0" style="text-align:right">
+                                                        <input type="text" class="form-control" name="do_koli" value="{{ $data->koli }}" style="text-align:right">
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -264,11 +301,15 @@
                                                             <option value="">- Pilih -</option>
                                                             <option value="NON OUTLET">NON OUTLET</option>
                                                             @foreach ($outlet as $row)
-                                                                <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                                                @if ($row->kode == $data->kode_outlet)
+                                                                    <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                                                @else 
+                                                                    <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                                                @endif
                                                             @endforeach
                                                         </select>
                                                     </td>
-                                                    <td style="width: 80px" class="disabled" >
+                                                    <td style="width: 80px" class="disabldo" >
                                                        <div class="checkbox checkbox-info checkbox-circle">
                                                             <input onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
                                                             <label>
@@ -287,61 +328,66 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    
+
                                     {{-- HIDDEN --}}
 
 
 
-                                    <input type="hidden" name="tarif_vendor_bol" id="tarif_vendor_bol">
+                                    <input type="hidden" name="tarif_vendor_bol" id="tarif_vendor_bol" value="{{ $data->tarif_vendor_bol }}">
 
 
                                     {{-- END OF HIDDEN --}}
+
+
+                                    
                                     <div class="col-md-5">
                                         <table class="table dt-responsive nowrap table-hover">
                                             <tbody>
                                                 <tr style="max-height: 15px !important; height: 15px !important; overflow:hidden;">
                                                     <td style="padding-top: 0.4cm">Tarif Dasar</td>
                                                     <td colspan="2">
-                                                        <input type="text" class="form-control mask_money_dn hitung_keyup" name="do_tarif_dasar" value="0" style="text-align:right" tabindex="-1" >
+                                                        <input type="text" class="form-control mask_money_dn hitung_keyup" name="do_tarif_dasar" value="{{ number_format($data->tarif_dasar,0,'.','.') }}" style="text-align:right" tabindex="-1" >
                                                     </td>
                                                 </tr>
                                                 <tr class="do_tarif_penerus">
                                                     <td style="padding-top: 0.4cm">Tarif Penerus</td>
                                                     <td colspan="2">
-                                                        <input type="text" class="form-control" name="do_tarif_penerus" id="do_tarif_penerus" value="0" style="text-align:right" readonly="readonly" tabindex="-1">
+                                                        <input type="text" class="form-control" name="do_tarif_penerus" id="do_tarif_penerus" value="{{ number_format($data->tarif_penerus,0,'.','.') }}" style="text-align:right" readonly="readonly" tabindex="-1">
                                                         <div id="button_a" hidden=""></div>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm">Biaya Tambahan</td>
                                                     <td colspan="2">
-                                                        <input type="text" class="form-control hitung_keyup mask_money_dn" name="do_biaya_tambahan" id="do_biaya_tambahan" value="0" style="text-align:right"  >
+                                                        <input type="text" class="form-control hitung_keyup mask_money_dn" name="do_biaya_tambahan" id="do_biaya_tambahan" value="{{ number_format($data->biaya_tambahan,0,'.','.') }}" style="text-align:right"  >
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm" id="div_kom">Discount</td>
                                                     <td  id="div_kom">
                                                         <div class="input-group">
-                                                            <input type="text" class="form-control hanyaangkadiskon mask_money_dn " name="do_diskon_p" id="do_diskon_p" value="0" onkeyup="diskon_persen()" style="text-align:right">
+                                                            <input type="text" class="form-control hanyaangkadiskon mask_money_dn " name="do_diskon_p" id="do_diskon_p" value="{{ number_format($data->diskon_value,0,'.','.') }}" onkeyup="diskon_persen()" style="text-align:right">
                                                             <span class="input-group-addon">%</span>
                                                         </div>
                                                     </td>
                                                     <td  id="div_kom">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">Rp</span>
-                                                            <input type="text" class="form-control mask_money_dn" name="do_diskon_v" id="do_diskon_v" value="0" onkeyup="diskon_value()" style="text-align:right">
+                                                            <input type="text" class="form-control mask_money_dn" name="do_diskon_v" id="do_diskon_v" value="{{ number_format($data->diskon,0,'.','.') }}" onkeyup="diskon_value()" style="text-align:right">
                                                         </div>
                                                     </td>
                                                 </tr>
                                                 <tr id="komisi">
                                                     <td style="padding-top: 0.4cm" id="div_kom">Biaya Komisi</td>
                                                     <td colspan="2" id="div_kom">
-                                                        <input type="text" class="form-control hitung_keyup mask_money_dn" name="do_biaya_komisi" id="do_biaya_komisi" value="0" style="text-align:right">
+                                                        <input type="text" class="form-control hitung_keyup mask_money_dn" name="do_biaya_komisi" id="do_biaya_komisi" value="{{ number_format($data->biaya_komisi,0,'.','.') }}" style="text-align:right">
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm" id="div_kom">Dpp</td>
                                                     <td colspan="2" id="div_kom">
-                                                        <input type="text" class="form-control dv mask_money_dn check_harga_vendor"  name="do_dpp" id="do_dpp" value="0" style="text-align:right" tabindex="-1"
+                                                        <input type="text" class="form-control dv mask_money_dn check_harga_vendor"  name="do_dpp" id="do_dpp" value="{{ number_format($data->total_dpp,0,'.','.') }}" style="text-align:right" tabindex="-1"
                                                         
                                                     >
                                                     </td>
@@ -358,7 +404,7 @@
                                                         </div>
                                                     </td>
                                                     <td colspan="2" id="div_kom">
-                                                        <input type="text" class="form-control dv mask_money_dn check_harga_vendor" name="do_vendor" id="do_vendor" value="0" style="text-align:right" tabindex="-1"
+                                                        <input type="text" class="form-control dv mask_money_dn check_harga_vendor" name="do_vendor" id="do_vendor" value="{{ number_format($data->total_vendo,0,'.','.') }}" style="text-align:right" tabindex="-1"
                                                         
                                                     >
                                                     </td>
@@ -374,14 +420,14 @@
                                                          <input type="hidden" name="acc_penjualan" class="form-control"  value="">
                                                     </td>
                                                     <td style="width:35%">
-                                                        <input type="text" class="form-control jml_ppn" name="do_jml_ppn" value="0" readonly="readonly" tabindex="-1" style="text-align:right">
+                                                        <input type="text" class="form-control jml_ppn" name="do_jml_ppn" readonly="readonly" tabindex="-1" style="text-align:right">
                                                     </td>
                                                 </tr>
                                                 
                                                 <tr>
                                                     <td style="padding-top: 0.4cm" id="div_kom">Total</td>
                                                     <td colspan="2" id="div_kom">
-                                                        <input type="text" class="form-control" name="do_total_h" id="do_total_h" value="0" style="text-align:right" readonly="readonly" tabindex="-1">
+                                                        <input type="text" class="form-control" name="do_total_h" id="do_total_h" value="{{ number_format($data->total_net,0,'.','.') }}" style="text-align:right" readonly="readonly" tabindex="-1">
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -409,7 +455,11 @@
                                                         <select class="chosen-select-width marketingpengirim"  name="do_marketing" style="width:100%">
                                                             <option>- Pilih -</option>
                                                             @foreach ($marketing as $row)
-                                                                <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                                                @if ($row->kode == $data->kode_marketing)
+                                                                    <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                                                @else 
+                                                                    <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                                                @endif
                                                             @endforeach
                                                         </select>
                                                     </td>
@@ -417,32 +467,32 @@
                                                 <tr>
                                                     <td style="width:110px;">Company Name</td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="do_company_name_pengirim" style="text-transform: uppercase" value="">
+                                                        <input type="text" class="form-control" name="do_company_name_pengirim" style="text-transform: uppercase" value="{{ $data->company_name_pengirim }}">
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Nama</td>
                                                     <td>
-                                                        <input type="text" class="form-control namapengirim" name="do_nama_pengirim" style="text-transform: uppercase" value="">
+                                                        <input type="text" class="form-control namapengirim" name="do_nama_pengirim" style="text-transform: uppercase" value="{{ $data->nama_pengirim }}">
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Alamat</td>
                                                     <td>
-                                                        <input type="text" class="form-control alamatpengirim hanyaangka" name="do_alamat_pengirim"  style="text-transform: uppercase" value="">
+                                                        <input type="text" class="form-control alamatpengirim hanyaangka" name="do_alamat_pengirim"  style="text-transform: uppercase" value="{{ $data->alamat_pengirim }}">
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Kode Pos</td>
                                                     <td>
-                                                        <input type="text" class="form-control kodepospengirim hanyaangka" name="do_kode_pos_pengirim"  style="text-transform: uppercase" value="">
+                                                        <input type="text" class="form-control kodepospengirim hanyaangka" name="do_kode_pos_pengirim"  style="text-transform: uppercase" value="{{ $data->kode_pos_pengirim }}">
                                                         <span id="errmsg"></span>
                                                     </td>
                                                 </tr>
                                                 <tr>    
                                                     <td style="width:110px; padding-top: 0.4cm">Telpon</td>
                                                     <td>
-                                                        <input type="text" class="form-control teleponpengirim hanyaangka" name="do_telpon_pengirim"  style="text-transform: uppercase" value="">
+                                                        <input type="text" class="form-control teleponpengirim hanyaangka" name="do_telpon_pengirim"  style="text-transform: uppercase" value="{{ $data->telpon_pengirim }}">
                                                         <span id="errmsg"></span>
                                                     </td>
                                                 </tr>
@@ -461,57 +511,57 @@
                                                 <tr>
                                                     <td style="width:110px;">Company Name</td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="do_company_name_penerima"style="text-transform: uppercase" value="">
+                                                        <input type="text" class="form-control" name="do_company_name_penerima"style="text-transform: uppercase" value="{{ $data->company_name_pengirim }}">
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Nama</td>
                                                     <td>
-                                                        <input type="text" class="form-control namapenerima replace_deskripsi" name="do_nama_penerima" style="text-transform: uppercase" value="">
+                                                        <input type="text" class="form-control namapenerima replace_deskripsi" name="do_nama_penerima" style="text-transform: uppercase" value="{{ $data->nama_pengirim }}">
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Alamat</td>
                                                     <td>
-                                                        <input type="text" class="form-control alamarpenerima" name="do_alamat_penerima"  style="text-transform: uppercase" value="">
+                                                        <input type="text" class="form-control alamarpenerima" name="do_alamat_penerima"  style="text-transform: uppercase" value="{{ $data->alamat_pengirim }}">
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Kab/Kota</td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="do_kota" readonly="readonly" tabindex="-1" requirdo style="text-transform: uppercase">
+                                                        <input type="text" class="form-control" name="do_kota" readonly="readonly" value="{{ $data->kota_nama }}" tabindex="-1" required style="text-transform: uppercase">
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Kecamatan</td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="do_kecamatan" readonly="readonly" tabindex="-1" requirdo style="text-transform: uppercase">
+                                                        <input type="text" class="form-control" name="do_kecamatan" readonly="readonly" value="{{ $data->kecamatan_nama }}" tabindex="-1" required style="text-transform: uppercase">
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Kode Pos</td>
                                                     <td>
-                                                        <input type="text" class="form-control kodepospenerima hanyaangka" name="do_kode_pos_penerima"  style="text-transform: uppercase" value="">
+                                                        <input type="text" class="form-control kodepospenerima hanyaangka" name="do_kode_pos_penerima"  style="text-transform: uppercase" value="{{ $data->kode_pos_pengirim }}">
                                                         <span id="errmsg"></span>
                                                     </td>
                                                 </tr>
                                                 <tr>    
                                                     <td style="width:110px; padding-top: 0.4cm">Telpon</td>
                                                     <td>
-                                                        <input type="text" class="form-control teleponpenerima hanyaangka" name="do_telpon_penerima"  style="text-transform: uppercase" value="">
+                                                        <input type="text" class="form-control teleponpenerima hanyaangka" name="do_telpon_penerima"  style="text-transform: uppercase" value="{{ $data->telpon_pengirim }}">
                                                         <span id="errmsg"></span>
                                                     </td>
                                                 </tr>
                                                 <tr>    
                                                     <td style="width:110px; padding-top: 0.4cm">Deskripsi</td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="do_deskripsi"  style="text-transform: uppercase" value="">
+                                                        <input type="text" class="form-control" name="do_deskripsi"  style="text-transform: uppercase" value="{{ $data->deskripsi }}">
                                                     </td>
                                                 </tr>
                                                 <tr>    
                                                     <td style="width:110px; padding-top: 0.4cm">Instruksi</td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="do_instruksi"  style="text-transform: uppercase" value="">
+                                                        <input type="text" class="form-control" name="do_instruksi"  style="text-transform: uppercase" value="{{ $data->instruksi }}">
                                                     </td>
                                                 </tr>
                                                 <tr style="display:none;">
@@ -520,7 +570,7 @@
                                                         <select class="form-control" name="do_jenis_pembayaran"  >
                                                             <option value="">- Pilih -</option>
                                                             <option value="CASH">CASH</option>
-                                                            <option value="KRdoIT">KRdoIT</option>
+                                                            <option value="KREDIT">KREDIT</option>
                                                         </select>
                                                     </td>
                                                 </tr>
@@ -673,11 +723,6 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-
-//VARIABLE GLOBAL 
-$("input[name='do_vendor']").prop('readonly',true);
-
-//CEK JIKA TARIF VENDOR DI PENCET
 $('.radio-inline').click(function() {
    
    if($('.cek_vendor_ya').is(':checked')) { 
@@ -690,22 +735,81 @@ $('.radio-inline').click(function() {
 
 });
 
-
+//WILAYAH EDIT/PENGAMBILAN DATA / MENAMPILKAN DATA
 
 //SEMUNYIKAN BEBERAPA FIELD
     $(document).ready( function () {
-        $("#surat_jalan").hide();
-        $("#dimensi").hide();
-        $("#nopol").hide();
-        $("#koli").hide();
-        $("#berat").hide();
-        $("#jenis_kendaraan").hide();
-        $("#komisi").hide();
-        $("#jml_unit").hide();
-        $(".jenis_unit").hide();
+            $("#surat_jalan").hide();
+            $("#dimensi").hide();
+            $("#nopol").hide();
+            $("#koli").hide();
+            $("#berat").hide();
+            $("#jenis_kendaraan").hide();
+            $("#komisi").hide();
+            $("#jml_unit").hide();
+            $(".jenis_unit").hide();
+
+        //CEK TIPE
+        if ($('#type_kiriman').val() == 'KILOGRAM' ) {
+            $("#dimensi").show();
+            $("#koli").show();
+            $("#berat").show();
+        }else if ($('#type_kiriman').val() == 'KOLI' ) {
+            $("#koli").show();
+            $("#berat").show();
+        }
+
+        //MENGELUARKAN FIELD KOMISI
+        if ($("#do_biaya_komisi").val() != 0) {
+            $("#komisi").show();
+        } 
+
+        //CEK CENTANG PADA TARIF VENDOR
+        if ('{{ $data->tarif_vendor_bol }}' == true) {
+            $('.cek_vendor_ya').prop('checked',true);
+        }
+        
     });
 
+$('#type_kiriman').val('{{ $data->type_kiriman }}');
+$('#jenis_kiriman').val('{{ $data->jenis_pengiriman }}');
+$('#do_jenis_ppn').val('{{ $data->jenis_ppn }}');
+$('.jml_ppn').val('{{ $data->ppn_val }}');
 
+if ($('#do_vendor').val() != 0 ) {
+    $('.vendor_tarif').prop('checked',true);
+}
+if ($('#do_jenis_ppn').val() == 3) {
+
+    var tarif_dasar = $("input[name='do_tarif_dasar']").val();
+    var biaya_tambahan = $("input[name='do_biaya_tambahan']").val();
+    var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
+    var jenis_ppn = $("select[name='do_jenis_ppn']").val();
+
+    var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
+    var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
+    var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g,"");
+    var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");
+
+
+
+    var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi);
+    var ppn  = 0;
+    if (jenis_ppn == 3) {
+        ppn = parseFloat(total) / parseFloat(100.1);
+    }
+
+    $(".jml_ppn").val(ppn);
+
+    
+}
+
+//END OF
+
+//VARIABLE GLOBAL 
+$("input[name='do_vendor']").prop('readonly',true);
+
+    
 //CARI NOMOR DO
     $('#do_cabang').change(function(){
 
@@ -1251,7 +1355,7 @@ function hitung() {
     $(document).on("click","#btnsimpan",function(){
         $.ajax(
         {
-            url :  ("{{ route('save_deliveryorder_paket') }}"),
+            url :  ("{{ route('update_deliveryorder_paket') }}"),
             type: "GET",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
@@ -1268,7 +1372,7 @@ function hitung() {
             },
             error: function(jqXHR, textStatus, errorThrown)
             {
-               alert('gagal');
+               toastr.error('Gagal Tersimpan!');
             }
         });
     });

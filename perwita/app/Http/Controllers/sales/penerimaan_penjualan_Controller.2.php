@@ -10,6 +10,8 @@ use Auth;
 use Yajra\Datatables\Datatables;
 use App\d_jurnal;
 use App\d_jurnal_dt;
+use Response;
+use Exception;
 class penerimaan_penjualan_Controller extends Controller
 {
     
@@ -189,45 +191,46 @@ class penerimaan_penjualan_Controller extends Controller
         $array_edit   = $request->array_edit;
         $array_harga  = $request->array_harga;
         $jenis_tarif  = $request->jenis_tarif;
+        $nota_kwitansi  = $request->nota_kwitansi;
         if (isset($request->id)) {
           $id         = $request->id;
         }else{
           $id         = 0;
         }
 
-        return view('sales.penerimaan_penjualan.tabel_invoice',compact('cabang','customer','array_simpan','array_edit','array_harga','id','jenis_tarif'));
+        return view('sales.penerimaan_penjualan.tabel_invoice',compact('cabang','customer','array_simpan','array_edit','array_harga','id','jenis_tarif','nota_kwitansi'));
     }
     public function datatable_detail_invoice(request $request)
     {   
         // return $request->customer;
 
       // dd($request->all());
-      if ($request->cabang == '000') {
+      if (Auth::user()->punyaAkses('Kwitansi','cabang')) {
         $temp_1  = DB::table('invoice')
-                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->leftjoin('kwitansi_d','kd_nomor_invoice','=','i_nomor')
                   ->where('i_kode_customer',$request->customer)
                   ->where('i_statusprint','Printed')
                   ->where('i_sisa_akhir','!=',0)
                   // ->where('i_kode_cabang',$request->cabang)
                   ->where('i_pendapatan',$request->jenis_tarif)
-                  ->orWhere('k_nomor',$request->id)
+                  ->orWhere('kd_nomor_invoice',$request->id)
                   ->get();
       }else{
         $temp_1  = DB::table('invoice')
-                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->leftjoin('kwitansi_d','kd_nomor_invoice','=','i_nomor')
                   ->where('i_kode_customer',$request->customer)
                   ->where('i_sisa_akhir','!=',0)
                   ->where('i_statusprint','Printed')
                   ->where('i_kode_cabang',$request->cabang)
                   ->where('i_pendapatan',$request->jenis_tarif)
-                  ->orWhere('k_nomor',$request->id)
+                  ->orWhere('kd_nomor_invoice',$request->id)
                   ->get();
       }
        
 
         if (isset($request->array_edit)) {
             $temp_2  = DB::table('invoice')
-                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->leftjoin('kwitansi_d','kd_nomor_invoice','=','i_nomor')
                   ->whereIn('i_nomor',$request->array_edit)
                   ->get();
             $temp   = array_merge($temp_1,$temp_2);
@@ -237,10 +240,10 @@ class penerimaan_penjualan_Controller extends Controller
             $temp = $temp_1;
         }
         
-
-        if ($request->cabang == '000') {
+        
+        if (Auth::user()->punyaAkses('Kwitansi','cabang')) {
           $temp1_1  = DB::table('invoice')
-                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->leftjoin('kwitansi_d','kd_nomor_invoice','=','i_nomor')
                   ->where('i_statusprint','Printed')
                   ->where('i_kode_customer',$request->customer)
                   ->where('i_sisa_akhir','!=',0)
@@ -248,7 +251,7 @@ class penerimaan_penjualan_Controller extends Controller
                   ->get();
         }else{
           $temp1_1  = DB::table('invoice')
-                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->leftjoin('kwitansi_d','kd_nomor_invoice','=','i_nomor')
                   ->where('i_statusprint','Printed')
                   ->where('i_kode_customer',$request->customer)
                   ->where('i_sisa_akhir','!=',0)
@@ -260,7 +263,7 @@ class penerimaan_penjualan_Controller extends Controller
 
         if (isset($request->array_edit)) {
             $temp1_2  = DB::table('invoice')
-                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->leftjoin('kwitansi_d','kd_nomor_invoice','=','i_nomor')
                   ->whereIn('i_nomor',$request->array_edit)
                   ->get();
             $temp1   = array_merge($temp1_1,$temp1_2);
@@ -271,14 +274,16 @@ class penerimaan_penjualan_Controller extends Controller
         }
 
                   
-        for ($i=0; $i < count($temp1); $i++) { 
-            if ($temp1[$i]->k_nomor != null) {
-                unset($temp[$i]);
-            } 
-        }
+        // for ($i=0; $i < count($temp1); $i++) { 
+        //   if ($temp1[$i]->kd_k_nomor != $request->nota_kwitansi) {
+        //     if ($temp1[$i]->kd_nomor_invoice != null) {
+        //         unset($temp[$i]);
+        //     } 
+        //   }
+        // }
 
+        
         $temp = array_values($temp);
-
 
         if (isset($request->array_simpan)) {
 
@@ -301,11 +306,11 @@ class penerimaan_penjualan_Controller extends Controller
                 for ($a=0; $a < count($request->array_edit); $a++) { 
                     if ($request->array_edit[$a] == $data[$i]->i_nomor) {
                         $data[$i]->i_sisa_pelunasan = $data[$i]->i_sisa_pelunasan+$request->array_harga[$a];
+                        $data[$i]->i_sisa_akhir = $data[$i]->i_sisa_akhir+$request->array_harga[$a];
                     }
                 }
             }
         
-        // return $data;
         $data = collect($data);
         // return $data;
         return Datatables::of($data)
@@ -336,11 +341,11 @@ class penerimaan_penjualan_Controller extends Controller
         for ($i=0; $i < count($data); $i++) { 
             for ($a=0; $a < count($request->array_edit); $a++) { 
                 if ($request->array_edit[$a] == $data[$i]->i_nomor) {
-                    $data[$i]->i_sisa_pelunasan = $data[$i]->i_sisa_akhir+$request->array_harga[$a];
+                    $data[$i]->i_sisa_pelunasan = $data[$i]->i_sisa_pelunasan+$request->array_harga[$a];
+                    $data[$i]->i_sisa_akhir = $data[$i]->i_sisa_akhir+$request->array_harga[$a];
                 }
             }
         }
-
         return response()->json(['data'=>$data]);
         
     }
@@ -566,30 +571,56 @@ class penerimaan_penjualan_Controller extends Controller
                           ]);
           }
 
-          // PIUTANG
-          $akun_temp_total = [];
-          for ($i=0; $i < count($request->i_nomor); $i++) { 
-            $cari_akun = DB::table('invoice')
-                           ->where('i_nomor',$request->i_nomor[$i])
-                           ->first();
-            if ($cari_akun->i_acc_piutang == null) {
-              return response()->json(['status'=>0,'pesan'=>'Terdapat Invoice Yang Tidak Memiliki Akun Piutang']);
-            }
-            $akun_temp[$i] = $cari_akun->i_acc_piutang;
-          } 
-          $akun_temp_fix = array_unique($akun_temp);
-          $akun_temp_total = [];
-
-          for ($i=0; $i < count($akun_temp_fix); $i++) { 
-            for ($a=0; $a < count($akun_temp); $a++) { 
-              if ($akun_temp_fix[$i] == $akun_temp[$a]) {
-                if (!isset($akun_temp_total[$i])) {
-                  $akun_temp_total[$i] = 0;
+          // PIUTANG DAN UANG MUKA
+          if ($request->cb_jenis_pembayaran == 'U') {
+            $cari_uang_muka = DB::table('kwitansi_uang_muka')
+                                ->where('ku_nomor',$nota)
+                                ->get();
+            for ($i=0; $i < count($cari_uang_muka); $i++) { 
+              if ($cari_uang_muka[$i]->ku_kode_akun_acc == null) {
+                return response()->json(['status'=>0,'pesan'=>'Terdapat Invoice Yang Tidak Memiliki Akun Piutang']);
+              }
+              $akun_temp[$i]  = $cari_uang_muka[$i]->ku_kode_akun_acc;
+              $akun_value[$i] = $cari_uang_muka[$i]->ku_jumlah;
+            } 
+            $akun_temp_fix = array_unique($akun_temp);
+            $akun_temp_total = [];
+            for ($i=0; $i < count($akun_temp_fix); $i++) { 
+              for ($a=0; $a < count($akun_temp); $a++) { 
+                if ($akun_temp_fix[$i] == $akun_temp[$a]) {
+                  if (!isset($akun_temp_total[$i])) {
+                    $akun_temp_total[$i] = 0;
+                  }
+                  $akun_temp_total[$i] += $akun_value[$a];
                 }
-                $akun_temp_total[$i] += $request->i_tot_bayar[$a];
+              }
+            }
+          }else if($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'C'){
+            $akun_temp_total = [];
+            for ($i=0; $i < count($request->i_nomor); $i++) { 
+              $cari_akun = DB::table('invoice')
+                             ->where('i_nomor',$request->i_nomor[$i])
+                             ->first();
+              if ($cari_akun->i_acc_piutang == null) {
+                return response()->json(['status'=>0,'pesan'=>'Terdapat Invoice Yang Tidak Memiliki Akun Piutang']);
+              }
+              $akun_temp[$i] = $cari_akun->i_acc_piutang;
+            } 
+            $akun_temp_fix = array_unique($akun_temp);
+            $akun_temp_total = [];
+
+            for ($i=0; $i < count($akun_temp_fix); $i++) { 
+              for ($a=0; $a < count($akun_temp); $a++) { 
+                if ($akun_temp_fix[$i] == $akun_temp[$a]) {
+                  if (!isset($akun_temp_total[$i])) {
+                    $akun_temp_total[$i] = 0;
+                  }
+                  $akun_temp_total[$i] += $request->i_tot_bayar[$a];
+                }
               }
             }
           }
+
           // BIAYA
           $akun_temp_biaya = [];
           for ($i=0; $i < count($request->akun_biaya); $i++) { 
@@ -602,27 +633,24 @@ class penerimaan_penjualan_Controller extends Controller
               }
               $akun_temp_biaya[$i]   = $cari_akun->acc_biaya;
               $akun_temp_penanda[$i] = $request->akun_biaya[$i];
-              $debet[$i]             = $request->i_debet[$i];
-              $kredit[$i]            = $request->i_kredit[$i];
+            }else{
+              $akun_temp_biaya[$i]   = '0';
+              $akun_temp_penanda[$i] = '0';
             }
           } 
           if (isset($akun_temp_biaya)) {
             $akun_temp_fix_penanda = array_unique($akun_temp_penanda);
             $akun_temp_fix_penanda = array_values($akun_temp_fix_penanda);
-            $akun_temp_fix_penanda1 = array_values($akun_temp_penanda);
             $akun_temp_biaya       = array_values($akun_temp_biaya);
-            $debet_fix             = array_values($debet);
-            $kredit_fix            = array_values($kredit);
             $akun_temp_total_biaya = [];
             $akun_temp_fix_biaya = [];
 
-            // dd($akun_temp_biaya);
 
             for ($i=0; $i < count($akun_temp_fix_penanda); $i++) { 
               
-              for ($a=0; $a < count($akun_temp_fix_penanda1); $a++) { 
+              for ($a=0; $a < count($request->akun_biaya); $a++) { 
              
-                if ($akun_temp_fix_penanda[$i] == $akun_temp_fix_penanda1[$a]) {
+                if ($akun_temp_fix_penanda[$i] == $request->akun_biaya[$a]) {
                   $akun_temp_fix_biaya[$i] = $akun_temp_biaya[$a];
                   if (!isset($akun_temp_total_biaya[$i])) {
                     $akun_temp_total_biaya[$i] = 0;
@@ -633,35 +661,77 @@ class penerimaan_penjualan_Controller extends Controller
               }
             }
           }
-          
-
+          // dd($akun_temp_total_biaya);
 
 
           $akun = [];
           $akun_val = [];
           $akun_penanda = [];
-          $cari_akun = DB::table('d_akun')
+          if ($request->cb_jenis_pembayaran == 'U') {
+            for ($i=0; $i < count($request->i_nomor); $i++) { 
+              $cari_akun_um = DB::table('invoice')
+                             ->where('i_nomor',$request->i_nomor[$i])
+                             ->first();
+              if ($cari_akun_um->i_acc_piutang == null) {
+                return response()->json(['status'=>0,'pesan'=>'Terdapat Invoice Yang Tidak Memiliki Akun Piutang']);
+              }
+              $akun_temp_um[$i] = $cari_akun_um ->i_acc_piutang;
+            } 
+            $akun_temp_fix_um = array_unique($akun_temp_um);
+            $akun_temp_um_total = [];
+
+            for ($i=0; $i < count($akun_temp_fix_um); $i++) { 
+              for ($a=0; $a < count($akun_temp_um); $a++) { 
+                if ($akun_temp_fix_um[$i] == $akun_temp_um[$a]) {
+                  if (!isset($akun_temp_um_total[$i])) {
+                    $akun_temp_um_total[$i] = 0;
+                  }
+                  $akun_temp_um_total[$i] += $request->i_tot_bayar[$a];
+                }
+              }
+            }
+            for ($i=0; $i < count($akun_temp_fix_um); $i++) { 
+              array_push($akun, $akun_temp_fix_um[$i]);
+              array_push($akun_val, $akun_temp_um_total[$i]);
+              array_push($akun_penanda,'none');
+            }
+
+          }else{
+            $cari_akun = DB::table('d_akun')
                          ->where('id_akun','LIKE', substr($request->cb_akun_h,0, 4).'%')
                          ->where('kode_cabang',$request->cb_cabang)
                          ->first();
-          array_push($akun, $cari_akun->id_akun);
-          array_push($akun_val, (float)$request->jumlah_bayar);
-          array_push($akun_penanda,'none');
+            array_push($akun, $cari_akun->id_akun);
+            array_push($akun_val, (float)$request->jumlah_bayar);
+            array_push($akun_penanda,'none');
+          }
+          // dd($akun_temp_total);
+          
 
           for ($i=0; $i < count($akun_temp_fix); $i++) { 
             array_push($akun, $akun_temp_fix[$i]);
             array_push($akun_val, $akun_temp_total[$i]);
             array_push($akun_penanda,'none');
           }
+
           for ($i=0; $i < count($akun_temp_fix_biaya); $i++) { 
-            $cari_akun = DB::table('d_akun')
+            if ($akun_temp_fix_biaya[$i] != '0') {
+              $cari_akun = DB::table('d_akun')
                          ->where('id_akun','LIKE', $akun_temp_fix_biaya[$i].'%')
                          ->where('kode_cabang',$request->cb_cabang)
                          ->first();
-            array_push($akun, $cari_akun->id_akun);
-            array_push($akun_val, $akun_temp_total_biaya[$i]);
+              array_push($akun, $cari_akun->id_akun);
+              array_push($akun_val, $akun_temp_total_biaya[$i]);
+            }
           }
           $penanda = array_merge($akun_penanda,$akun_temp_fix_penanda);
+          for ($i=0; $i < count($penanda); $i++) { 
+            if ($penanda[$i] != '0') {
+              $penanda_fix[$i] = $penanda[$i];
+            }
+          }
+          $penanda_fix = array_values($penanda_fix);
+          
           $data_akun = [];
           for ($i=0; $i < count($akun); $i++) { 
 
@@ -707,8 +777,27 @@ class penerimaan_penjualan_Controller extends Controller
                 $data_akun[$i]['jrdt_statusdk'] = 'D';
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }
+            }else if (substr($akun[$i],0, 4)==2103) {
+
+              if ($cari_coa->akun_dka == 'D') {
+                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                $data_akun[$i]['jrdt_detailid'] = $i+1;
+                $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
+                  $data_akun[$i]['jrdt_type']     = null;
+                $data_akun[$i]['jrdt_statusdk'] = 'K';
+                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              }else{
+                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                $data_akun[$i]['jrdt_detailid'] = $i+1;
+                $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
+                  $data_akun[$i]['jrdt_type']     = null;
+                $data_akun[$i]['jrdt_statusdk'] = 'D';
+                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              }
             }else if (substr($akun[$i],0, 1)>=5) {
-              if ($penanda[$i] == 'B3') {
+              if ($penanda_fix[$i] == 'B3') {
                 if ($cari_coa->akun_dka == 'D') {
                   $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                   $data_akun[$i]['jrdt_detailid'] = $i+1;
@@ -747,12 +836,11 @@ class penerimaan_penjualan_Controller extends Controller
               }
             }
           }
-
           if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'U') {
             $jurnal_dt = d_jurnal_dt::insert($data_akun);
           }
           $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
-
+          // dd($lihat);
   
           return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
     });
@@ -877,33 +965,41 @@ class penerimaan_penjualan_Controller extends Controller
         // dd($request->all());
       if (Auth::user()->punyaAkses('Kwitansi','hapus')) {
           return DB::transaction(function() use ($request) {  
-
-          $cari_kwitansi = DB::table('kwitansi')
-                           ->join('kwitansi_d','kd_id','=','k_id')
-                           ->where('k_nomor',$request->nota)
-                           ->get();
-          // dd($cari_kwitansi);
-          
+          // MENGEMBALIKAN UPDATE INVOICE
+          $cari_kwitansi_d = DB::table('kwitansi_d')
+                            ->where('kd_k_nomor',$request->nota)
+                            ->get();
           $invoice_nomor = [];
-          for ($i=0; $i < count($cari_kwitansi); $i++) {
-
-              $cari_invoice = DB::table('invoice')
-                                ->where('i_nomor',$cari_kwitansi[$i]->kd_nomor_invoice)
-                                ->first();
-              $memorial = $cari_kwitansi[$i]->kd_total_bayar - $cari_kwitansi[$i]->kd_memorial;
-
-              $sisa_akhir = $cari_invoice->i_sisa_akhir + $memorial;
-              $pelunasan  = $cari_invoice->i_sisa_pelunasan + $memorial;
+          for ($i=0; $i < count($cari_kwitansi_d); $i++) { 
+            $cari_invoice = DB::table('invoice')
+                              ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                              ->first();
+            
+            $i_sisa_pelunasan = $cari_invoice->i_sisa_pelunasan + $cari_kwitansi_d[$i]->kd_total_bayar;
+            $i_sisa_akhir = $cari_invoice->i_sisa_akhir + $cari_kwitansi_d[$i]->kd_total_bayar;
 
 
+            $update_invoice = DB::table('invoice')
+                                    ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                                    ->update([
+                                      'i_sisa_pelunasan' => $i_sisa_pelunasan,
+                                      'i_sisa_akhir' => $i_sisa_akhir,
+                                    ]);
+
+            $ckd = DB::table('kwitansi_d')
+                            ->where('kd_nomor_invoice',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                            ->get();
+            if ($ckd == null) {
               $update_invoice = DB::table('invoice')
-                                   ->where('i_nomor',$cari_kwitansi[$i]->kd_nomor_invoice)
-                                   ->update([
-                                      'i_sisa_akhir'=>$sisa_akhir,
-                                      'i_sisa_pelunasan'=>$pelunasan
-                                   ]);
-
-              array_push($invoice_nomor, $cari_kwitansi[$i]->kd_nomor_invoice);
+                                    ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                                    ->update([
+                                      'i_status' => 'Released',
+                                    ]);
+            }
+            $cari_invoice = DB::table('invoice')
+                              ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                              ->first();
+            array_push($invoice_nomor, $cari_kwitansi_d[$i]->kd_nomor_invoice);
           }
 
 
@@ -969,6 +1065,8 @@ class penerimaan_penjualan_Controller extends Controller
           return response()->json(['status'=> 2]);
       }
     }
+
+
     public function edit_kwitansi($id)
     {
         $comp = Auth::user()->kode_cabang;
@@ -1000,42 +1098,10 @@ class penerimaan_penjualan_Controller extends Controller
         $akun_bank = DB::table('masterbank')
                   ->get();  
 
-
-        $del = DB::table('kwitansi_uang_muka')
-                  ->where('ku_nomor',$data->k_nomor)
-                  ->where('ku_keterangan','=','OLD')
-                  ->delete();
-
-        for ($i=0; $i < count($data_dt); $i++) { 
-          $cari_um = DB::table('kwitansi_uang_muka')
-                     ->where('ku_nomor',$data_dt[$i]->k_nomor)
-                     ->where('ku_nomor_invoice',$data_dt[$i]->kd_nomor_invoice)
-                     ->get();
-          for ($a=0; $a < count($cari_um); $a++) { 
-            $id = DB::table('kwitansi_uang_muka')
-                  ->max('ku_id');
-            if ($id == null) {
-              $id = 1;
-            }else{
-              $id+=1;
-            }
-            $save = DB::table('kwitansi_uang_muka')
-                  ->insert([
-                      'ku_nomor'           => $cari_um[$a]->ku_nomor,
-                      'ku_id'              => $id,
-                      'ku_nomor_invoice'   => $cari_um[$a]->ku_nomor_invoice,
-                      'ku_kode_akun_acc'   => $cari_um[$a]->ku_kode_akun_acc,
-                      'ku_kode_akun_csf'   => $cari_um[$a]->ku_kode_akun_csf,
-                      'ku_jumlah'          => $cari_um[$a]->ku_jumlah,
-                      'ku_status_um'       => $cari_um[$a]->ku_status_um,
-                      'ku_keterangan'      => 'OLD',
-                      // 'ku_debet'           => ,
-                      // 'ku_kredit'          => ,
-                      'ku_nomor_um'        => $cari_um[$a]->ku_nomor_um,
-                  ]);
-          }
-        }
-        return view('sales.penerimaan_penjualan.edit_kwitansi',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','akun_bank','akun','tgl','id','data_dt','akun_biaya','data_um'));
+        $uang_muka = DB::table("kwitansi_uang_muka")
+                       ->where('ku_nomor',$id)
+                       ->get();
+        return view('sales.penerimaan_penjualan.edit_kwitansi',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','akun_bank','akun','tgl','id','data_dt','akun_biaya','data_um','uang_muka'));
     }
     public function detail_kwitansi($id)
     {
@@ -1074,7 +1140,7 @@ class penerimaan_penjualan_Controller extends Controller
     public function update_kwitansi(request $request)
     {
       return DB::transaction(function() use ($request) { 
-         $tgl = str_replace('/', '-', $request->ed_tanggal);
+          $tgl = str_replace('/', '-', $request->ed_tanggal);
           $tgl = Carbon::parse($tgl)->format('Y-m-d');
 
           $cari_kwitansi = DB::table('kwitansi')
@@ -1153,6 +1219,7 @@ class penerimaan_penjualan_Controller extends Controller
 
             
           }
+
           $cari_invoice = DB::table('invoice')
                               ->whereIn('i_nomor',$request->i_nomor)
                               ->get();
@@ -1253,30 +1320,56 @@ class penerimaan_penjualan_Controller extends Controller
                           ]);
           }
 
-          // PIUTANG
-          $akun_temp_total = [];
-          for ($i=0; $i < count($request->i_nomor); $i++) { 
-            $cari_akun = DB::table('invoice')
-                           ->where('i_nomor',$request->i_nomor[$i])
-                           ->first();
-            if ($cari_akun->i_acc_piutang == null) {
-              return response()->json(['status'=>0,'pesan'=>'Terdapat Invoice Yang Tidak Memiliki Akun Piutang']);
-            }
-            $akun_temp[$i] = $cari_akun->i_acc_piutang;
-          } 
-          $akun_temp_fix = array_unique($akun_temp);
-          $akun_temp_total = [];
-
-          for ($i=0; $i < count($akun_temp_fix); $i++) { 
-            for ($a=0; $a < count($akun_temp); $a++) { 
-              if ($akun_temp_fix[$i] == $akun_temp[$a]) {
-                if (!isset($akun_temp_total[$i])) {
-                  $akun_temp_total[$i] = 0;
+          // PIUTANG DAN UANG MUKA
+          if ($request->cb_jenis_pembayaran == 'U') {
+            $cari_uang_muka = DB::table('kwitansi_uang_muka')
+                                ->where('ku_nomor',$nota)
+                                ->get();
+            for ($i=0; $i < count($cari_uang_muka); $i++) { 
+              if ($cari_uang_muka[$i]->ku_kode_akun_acc == null) {
+                return response()->json(['status'=>0,'pesan'=>'Terdapat Invoice Yang Tidak Memiliki Akun Piutang']);
+              }
+              $akun_temp[$i]  = $cari_uang_muka[$i]->ku_kode_akun_acc;
+              $akun_value[$i] = $cari_uang_muka[$i]->ku_jumlah;
+            } 
+            $akun_temp_fix = array_unique($akun_temp);
+            $akun_temp_total = [];
+            for ($i=0; $i < count($akun_temp_fix); $i++) { 
+              for ($a=0; $a < count($akun_temp); $a++) { 
+                if ($akun_temp_fix[$i] == $akun_temp[$a]) {
+                  if (!isset($akun_temp_total[$i])) {
+                    $akun_temp_total[$i] = 0;
+                  }
+                  $akun_temp_total[$i] += $akun_value[$a];
                 }
-                $akun_temp_total[$i] += $request->i_tot_bayar[$a];
+              }
+            }
+          }else if($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'C'){
+            $akun_temp_total = [];
+            for ($i=0; $i < count($request->i_nomor); $i++) { 
+              $cari_akun = DB::table('invoice')
+                             ->where('i_nomor',$request->i_nomor[$i])
+                             ->first();
+              if ($cari_akun->i_acc_piutang == null) {
+                return response()->json(['status'=>0,'pesan'=>'Terdapat Invoice Yang Tidak Memiliki Akun Piutang']);
+              }
+              $akun_temp[$i] = $cari_akun->i_acc_piutang;
+            } 
+            $akun_temp_fix = array_unique($akun_temp);
+            $akun_temp_total = [];
+
+            for ($i=0; $i < count($akun_temp_fix); $i++) { 
+              for ($a=0; $a < count($akun_temp); $a++) { 
+                if ($akun_temp_fix[$i] == $akun_temp[$a]) {
+                  if (!isset($akun_temp_total[$i])) {
+                    $akun_temp_total[$i] = 0;
+                  }
+                  $akun_temp_total[$i] += $request->i_tot_bayar[$a];
+                }
               }
             }
           }
+
           // BIAYA
           $akun_temp_biaya = [];
           for ($i=0; $i < count($request->akun_biaya); $i++) { 
@@ -1323,19 +1416,53 @@ class penerimaan_penjualan_Controller extends Controller
           $akun = [];
           $akun_val = [];
           $akun_penanda = [];
-          $cari_akun = DB::table('d_akun')
+          if ($request->cb_jenis_pembayaran == 'U') {
+            for ($i=0; $i < count($request->i_nomor); $i++) { 
+              $cari_akun_um = DB::table('invoice')
+                             ->where('i_nomor',$request->i_nomor[$i])
+                             ->first();
+              if ($cari_akun_um->i_acc_piutang == null) {
+                return response()->json(['status'=>0,'pesan'=>'Terdapat Invoice Yang Tidak Memiliki Akun Piutang']);
+              }
+              $akun_temp_um[$i] = $cari_akun_um ->i_acc_piutang;
+            } 
+            $akun_temp_fix_um = array_unique($akun_temp_um);
+            $akun_temp_um_total = [];
+
+            for ($i=0; $i < count($akun_temp_fix_um); $i++) { 
+              for ($a=0; $a < count($akun_temp_um); $a++) { 
+                if ($akun_temp_fix_um[$i] == $akun_temp_um[$a]) {
+                  if (!isset($akun_temp_um_total[$i])) {
+                    $akun_temp_um_total[$i] = 0;
+                  }
+                  $akun_temp_um_total[$i] += $request->i_tot_bayar[$a];
+                }
+              }
+            }
+            for ($i=0; $i < count($akun_temp_fix_um); $i++) { 
+              array_push($akun, $akun_temp_fix_um[$i]);
+              array_push($akun_val, $akun_temp_um_total[$i]);
+              array_push($akun_penanda,'none');
+            }
+
+          }else{
+            $cari_akun = DB::table('d_akun')
                          ->where('id_akun','LIKE', substr($request->cb_akun_h,0, 4).'%')
                          ->where('kode_cabang',$request->cb_cabang)
                          ->first();
-          array_push($akun, $cari_akun->id_akun);
-          array_push($akun_val, (float)$request->jumlah_bayar);
-          array_push($akun_penanda,'none');
+            array_push($akun, $cari_akun->id_akun);
+            array_push($akun_val, (float)$request->jumlah_bayar);
+            array_push($akun_penanda,'none');
+          }
+          // dd($akun_temp_total);
+          
 
           for ($i=0; $i < count($akun_temp_fix); $i++) { 
             array_push($akun, $akun_temp_fix[$i]);
             array_push($akun_val, $akun_temp_total[$i]);
             array_push($akun_penanda,'none');
           }
+
           for ($i=0; $i < count($akun_temp_fix_biaya); $i++) { 
             if ($akun_temp_fix_biaya[$i] != '0') {
               $cari_akun = DB::table('d_akun')
@@ -1381,6 +1508,25 @@ class penerimaan_penjualan_Controller extends Controller
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }
             }else if (substr($akun[$i],0, 2)==13) {
+
+              if ($cari_coa->akun_dka == 'D') {
+                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                $data_akun[$i]['jrdt_detailid'] = $i+1;
+                $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
+                  $data_akun[$i]['jrdt_type']     = null;
+                $data_akun[$i]['jrdt_statusdk'] = 'K';
+                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              }else{
+                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                $data_akun[$i]['jrdt_detailid'] = $i+1;
+                $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
+                  $data_akun[$i]['jrdt_type']     = null;
+                $data_akun[$i]['jrdt_statusdk'] = 'D';
+                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              }
+            }else if (substr($akun[$i],0, 4)==2103) {
 
               if ($cari_coa->akun_dka == 'D') {
                 $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
@@ -1450,228 +1596,7 @@ class penerimaan_penjualan_Controller extends Controller
       });
     }
 
-    public function hapus_um_kwitansi(request $request)
-    { 
-      return DB::transaction(function() use ($request) { 
-            // dd($request->all());
-        
-        if ($request->flag_nota == '0' or $request->flag_nota == '0' or $request->flag_nota == '') {
-          if (isset($request->flag)) {
-            if ($request->flag == 'R') {
-              for ($i=0; $i < count($request->i_nomor); $i++) { 
 
-               $cari_um = DB::table('kwitansi_uang_muka')
-                          ->where('ku_nomor',$request->nota)
-                          ->where('ku_nomor_invoice',$request->i_nomor[$i])
-                          ->get(); 
-
-                if ($cari_um !=null) 
-                {
-                  for ($a=0; $a < count($cari_um); $a++) { 
-                    $cari_um1 = DB::table('uang_muka_penjualan')
-                               ->where('nomor',$cari_um[$a]->ku_nomor_um)
-                               ->first();
-
-                    $update = DB::table('uang_muka_penjualan')
-                              ->where('nomor',$cari_um1->nomor)
-                              ->update([
-                                'sisa_uang_muka'=>$cari_um1->sisa_uang_muka+$cari_um[$a]->ku_jumlah
-                              ]);
-                  }
-                }
-
-               $cari_um = DB::table('kwitansi_uang_muka')
-                          ->where('ku_nomor',$request->nota)
-                          ->where('ku_nomor_invoice',$request->i_nomor[$i])
-                          ->delete();
-              }
-
-            }elseif ($request->flag == 'H'){
-
-              for ($i=0; $i < count($request->i_nomor); $i++) { 
-
-               $cari_um = DB::table('kwitansi_uang_muka')
-                          ->where('ku_nomor',$request->nota)
-                          ->where('ku_nomor_invoice',$request->i_nomor)
-                          ->where('ku_keterangan',null)
-                          ->get(); 
-
-                if ($cari_um !=null) 
-                {
-                  for ($a=0; $a < count($cari_um); $a++) { 
-                    $cari_um1 = DB::table('uang_muka_penjualan')
-                               ->where('nomor',$cari_um[$a]->ku_nomor_um)
-                               ->first();
-
-                    $update = DB::table('uang_muka_penjualan')
-                              ->where('nomor',$cari_um1->nomor)
-                              ->update([
-                                'sisa_uang_muka'=>$cari_um1->sisa_uang_muka+$cari_um[$a]->ku_jumlah
-                              ]);
-                  }
-                }
-
-               $cari_um = DB::table('kwitansi_uang_muka')
-                          ->where('ku_nomor',$request->nota)
-                          ->where('ku_nomor_invoice',$request->i_nomor)
-                          ->where('ku_keterangan',null)
-                          ->delete();
-              }
-            }elseif ($request->flag == 'RE'){
-
-              for ($i=0; $i < count($request->i_nomor); $i++) { 
-                  $cari_kwitansi_um = DB::table('kwitansi_uang_muka')
-                                        ->where('ku_keterangan',null)
-                                        ->where('ku_nomor_invoice',$request->i_nomor[$i])
-                                        ->where('ku_nomor',$request->nota)
-                                        ->get();
-                  for ($a=0; $a < count($cari_kwitansi_um); $a++) {
-
-                      $cari_um = DB::table('uang_muka_penjualan')
-                                   ->where('nomor',$cari_kwitansi_um[$a]->ku_nomor_um)
-                                   ->first();
-                      $hasil   = $cari_um->sisa_uang_muka + $cari_kwitansi_um[$a]->ku_jumlah;
-
-
-                      $update  = DB::table('uang_muka_penjualan')
-                                   ->where('nomor',$cari_kwitansi_um[$a]->ku_nomor_um)
-                                   ->update([
-                                    'sisa_uang_muka'=>$hasil
-                                   ]);
-
-                  }
-
-
-
-                  $cari_kwitansi_um = DB::table('kwitansi_uang_muka')
-                                        ->where('ku_nomor_invoice',$request->i_nomor[$i])
-                                        ->where('ku_nomor',$request->nota)
-                                        ->where('ku_keterangan',null)
-                                        ->delete();
-              }
-
-
-              $cari_invoice = DB::table('kwitansi_d')
-                                        ->where('kd_k_nomor',$request->nota)
-                                        ->get();
-             
-              for ($i=0; $i < count($cari_invoice); $i++) { 
-
-                $cari_kwitansi_um1 = DB::table('kwitansi_uang_muka')
-                                        ->where('ku_nomor',$request->nota)
-                                        ->where('ku_keterangan','OLD')
-                                        ->where('ku_nomor_invoice',$cari_invoice[$i]->kd_nomor_invoice)
-                                        ->get();
-
-                for ($a=0; $a < count($cari_kwitansi_um1); $a++) { 
-
-                  $cari_um1 = DB::table('uang_muka_penjualan')
-                                   ->where('nomor',$cari_kwitansi_um1[$a]->ku_nomor_um)
-                                   ->first();
-
-                  $hasil   = $cari_um1->sisa_uang_muka - $cari_kwitansi_um1[$a]->ku_jumlah;
-
-
-                  $update  = DB::table('uang_muka_penjualan')
-                                   ->where('nomor',$cari_kwitansi_um1[$a]->ku_nomor_um)
-                                   ->update([
-                                    'sisa_uang_muka'=>$hasil
-                                   ]);
-
-                  $update = DB::table('kwitansi_uang_muka')
-                                        ->where('ku_id',$cari_kwitansi_um1[$a]->ku_id)
-                                        ->update([
-                                          'ku_keterangan'=>null
-                                        ]);
-
-                }
-
-              }
-              
-              
-
-              return json_encode('berhasil');
-
-
-
-            }
-
-          }else{
-
-            $cari_um = DB::table('kwitansi_uang_muka')
-                          ->where('ku_nomor',$request->nota)
-                          ->where('ku_nomor_invoice',$request->ed_nomor_invoice)
-                          ->where('ku_keterangan',null)
-                          ->get();
-              for ($i=0; $i < count($cari_um); $i++) { 
-                $cari_um1 = DB::table('uang_muka_penjualan')
-                             ->where('nomor',$cari_um[$i]->ku_nomor_um)
-                             ->first();
-
-                $update = DB::table('uang_muka_penjualan')
-                            ->where('nomor',$cari_um1->nomor)
-                            ->update([
-                              'sisa_uang_muka'=>$cari_um1->sisa_uang_muka+$cari_um[$i]->ku_jumlah
-                            ]);
-              }
-
-               $cari_um = DB::table('kwitansi_uang_muka')
-                          ->where('ku_nomor',$request->nota)
-                          ->where('ku_nomor_invoice',$request->ed_nomor_invoice)
-                          ->where('ku_keterangan',null)
-                          ->delete();
-          }
-        }
-    });
-        
-    }
-
-    public function save_um_kwitansi(request $request)
-    {
-
-
-
-      return DB::transaction(function() use ($request) {  
-
-
-      $this->hapus_um_kwitansi($request);
-        // dd('cari_um');
-        for ($i=0; $i < count($request->m_no_um); $i++) { 
-          $cari_um = DB::table('uang_muka_penjualan')
-                     ->where('nomor',$request->m_no_um[$i])
-                     ->first();
-          $id = DB::table('kwitansi_uang_muka')
-                  ->max('ku_id');
-          if ($id == null) {
-            $id = 1;
-          }else{
-            $id+=1;
-          }
-          $save = DB::table('kwitansi_uang_muka')
-                  ->insert([
-                      'ku_nomor'           => $request->nota,
-                      'ku_id'              => $id,
-                      'ku_nomor_invoice'   => $request->ed_nomor_invoice,
-                      'ku_kode_akun_acc'   => $cari_um->kode_acc,
-                      'ku_kode_akun_csf'   => $cari_um->kode_csf,
-                      'ku_jumlah'          => $request->m_jumlah_bayar_um[$i],
-                      'ku_status_um'       => $cari_um->status_um,
-                      // 'ku_keterangan'      => ,
-                      // 'ku_debet'           => ,
-                      // 'ku_kredit'          => ,
-                      'ku_nomor_um'        => $request->m_no_um[$i],
-                  ]);
-
-          $update = DB::table('uang_muka_penjualan')
-                     ->where('nomor',$request->m_no_um[$i])
-                     ->update([
-                      'sisa_uang_muka'=>$cari_um->sisa_uang_muka - $request->m_jumlah_bayar_um[$i]
-                     ]);
-        }
-
-        return response()->json(['status'=>1]);
-      });
-    }
 
     public function kwitansi_cari_um(request $request)
     {
@@ -1684,6 +1609,99 @@ class penerimaan_penjualan_Controller extends Controller
                 ->get();
 
       return response()->json(['data' => $data]);
+    }
+
+    public function simpan_um_sementara(request $request)
+    {
+      $data = DB::table('uang_muka_penjualan')
+                ->where('kode_customer',$request->customer)
+                ->where('kode_cabang',$request->cabang)
+                ->get();
+      return Response::json(['data'=>$data]);
+    }
+
+    public function simpan_um(request $req)
+    {
+      return DB::transaction(function() use ($req) {  
+        // dd($req->all()); 
+        if ($req->cb_jenis_pembayaran != 'U') {
+          return response()->json(['status'=>2]);
+        }
+        $data = DB::table('kwitansi_uang_muka')
+                      ->where('ku_nomor',$req->nota_kwitansi)
+                      ->get();
+        if ($data != null) {
+          for ($i=0; $i < count($data); $i++) { 
+            $cari_um = DB::table('uang_muka_penjualan')
+                       ->where('nomor',$data[$i]->ku_nomor_um)
+                       ->first();
+
+            $update = DB::table('uang_muka_penjualan')
+                         ->where('nomor',$data[$i]->ku_nomor_um)
+                         ->update([
+                          'sisa_uang_muka'=>$cari_um->sisa_uang_muka + $data[$i]->ku_jumlah
+                         ]);
+          }
+        }
+        $data = DB::table('kwitansi_uang_muka')
+                      ->where('ku_nomor',$req->nota_kwitansi)
+                      ->delete();
+        $invoice_um = $req->invoice_um;
+        $array_index = $req->array_index;
+        $array_invoice = $req->array_invoice;
+        $array_uang_muka = $req->array_uang_muka;
+        for ($i=0; $i < count($array_index); $i++) { 
+          $array_invoice[$i] = str_replace('/', '', $array_invoice[$i]);
+          for ($a=0; $a < count($array_uang_muka); $a++) { 
+            try{
+              $cari_um = DB::table('uang_muka_penjualan')
+                       ->where('nomor',$array_uang_muka[$a]['nomor'])
+                       ->first();
+              $no_um = $array_uang_muka[$a]['nomor'];
+              $jumlah = $invoice_um[$array_index[$i]][$array_invoice[$i]][$no_um]['jumlah'];
+              $id = DB::table('kwitansi_uang_muka')
+                      ->max('ku_id');
+              if ($id == null) {
+                $id = 1;
+              }else{
+                $id+=1;
+              }
+              $save = DB::table('kwitansi_uang_muka')
+                      ->insert([
+                          'ku_nomor'           => $req->nota_kwitansi,
+                          'ku_id'              => $id,
+                          'ku_nomor_invoice'   => $req->array_invoice[$i],
+                          'ku_kode_akun_acc'   => $cari_um->kode_acc,
+                          'ku_kode_akun_csf'   => $cari_um->kode_csf,
+                          'ku_jumlah'          => $jumlah,
+                          'ku_status_um'       => $cari_um->status_um,
+                          // 'ku_keterangan'      => ,
+                          // 'ku_debet'           => ,
+                          // 'ku_kredit'          => ,
+                          'ku_nomor_um'        => $array_uang_muka[$a]['nomor'],
+                      ]);
+
+              $update = DB::table('uang_muka_penjualan')
+                         ->where('nomor',$array_uang_muka[$a]['nomor'])
+                         ->update([
+                          'sisa_uang_muka'=>$cari_um->sisa_uang_muka - $jumlah
+                         ]);
+              
+            }catch(\Exception $e){
+                // dd($e);
+            }
+
+          }          
+        }
+        $data = DB::table('kwitansi_uang_muka')
+                      ->where('ku_nomor',$req->nota_kwitansi)
+                      ->get();
+
+        $update = DB::table('uang_muka_penjualan')
+                         ->get();
+        // dd($update);
+        return response()->json(['status'=>1]);
+      });
     }
 
 

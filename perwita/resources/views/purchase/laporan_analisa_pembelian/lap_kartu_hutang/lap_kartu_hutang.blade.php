@@ -57,23 +57,35 @@
                  
                 {{-- <h3 style="text-align: center"> PT JAWA PRATAMA MANDIRI  <br> JL. KARAH AGUNG NO 45 SURABAYA
                 </h3> --}}
+                <form id="save_data">
                 <div class="col-sm-8">
                   <table class="table" width="80%">
                     <tr>
                       <td>Awal</td>
-                      <td><input type="text" name="" class="form-control datepicker_date"></td>
+                      <td><input type="text" name="min" id="min" class="form-control datepicker_date input-sm"></td>
                     </tr>
                     <tr>
                       <td>Akir</td>
-                      <td><input type="text" name="" class="form-control datepicker_date"></td>
+                      <td><input type="text" name="max" id="max" class="form-control datepicker_date input-sm"></td>
                     </tr>
                     <tr>
-                      <td>Customer</td>
+                      <td>Laporan</td>
                       <td>
-                          <select class="chosen-select-width">
-                              <option>- Pilih -</option>
-                              @foreach ($customer as $element)
-                                <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
+                          <select class="chosen-select-width input-sm" name="laporan" id="laporan">
+                            <option selected value="">- Pilih -</option>
+                            <option value="Rekap per Customer">Rekap per Customer</option>
+                            <option value="Rekap per Customer Detail">Rekap per Customer Detail</option>
+                            <option value="Rekap per akun">Rekap per akun</option>
+                            <option value="Rekap per akun Detail">Rekap per akun Detail</option>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Supplier</td>
+                      <td>
+                          <select class="chosen-select-width" name="supplier" id="supplier">
+                              <option value="">- Pilih -</option>
+                              @foreach ($supplier as $element)
+                                <option value="{{ $element->no_supplier }}">{{ $element->no_supplier }} - {{ $element->nama_supplier }}</option>
                               @endforeach
                           </select>
                       </td>
@@ -81,8 +93,8 @@
                     <tr>
                       <td>Cabang</td>
                       <td>
-                          <select class="chosen-select-width">
-                              <option>- Pilih -</option>
+                          <select class="chosen-select-width input-sm" name="cabang" id="cabang">
+                              <option value="">- Pilih -</option>
                               @foreach ($cabang as $cabang)
                                 <option value="{{ $cabang->kode }}">{{ $cabang->kode }} - {{ $cabang->nama }}</option>
                               @endforeach
@@ -92,8 +104,8 @@
                     <tr>
                       <td>Akun</td>
                       <td>
-                          <select class="chosen-select-width">
-                              <option>- Pilih -</option>
+                          <select class="chosen-select-width input-sm" name="akun" id="akun">
+                              <option value="">- Pilih -</option>
                               @foreach ($akun as $akun)
                                 <option value="{{ $akun->id_akun }}">{{ $akun->id_akun }} - {{ $akun->nama_akun }}</option>
                               @endforeach
@@ -102,6 +114,7 @@
                     </tr>
                   </table>
                 </div>
+                </form>
                   <div class="row"> &nbsp; &nbsp; 
                     <a class="btn btn-info" onclick="cari()">
                       <i class="fa fa-search" aria-hidden="true"></i> Cari </a> 
@@ -123,8 +136,8 @@
                         <th>saldo</th>
                       </tr>
                     </thead>
-                    <tbody>
-                     @foreach ($data['data'] as $index => $element)
+                    <tbody id="drop">
+                    {{--  @foreach ($data['data'] as $index => $element)
                        <tr>
                          <td>{{ $index+1 }}</td>
                          <td>{{ $element->tgl }}</td>
@@ -145,7 +158,7 @@
                          
                          <td>{{ $element->flag }}</td>
                        </tr>
-                     @endforeach
+                     @endforeach --}}
                     </tbody>
                   </table>
                 </div><!-- /.box-body -->
@@ -180,6 +193,50 @@ $('#datatable').DataTable({
             "pageLength": 10,
             "language": dataTableLanguage,
     });
+
+/*  function cari() {
+      $.ajax({
+            type: "GET",
+            data : $('#save_data').serialize(),
+            url : ('{{ route('carikartuhutan_perakun') }}'),
+            success: function(data)
+            {   
+              
+            }
+      })
+  }
+*/
+ function cari(){
+
+  var awal = $('#min').val();
+  var akir = $('#max').val();
+  var customer = $('#customer').val();
+  var akun = $('#akun').val();
+  var cabang = $('#akun').val();
+  var laporan = $('#laporan').val();
+  var supplier = $('#supplier').val();
+
+   if (laporan == 'Rekap per Supplier') {
+      alert('a');
+   }else if (laporan == 'Rekap per Supplier Detail') {
+
+    alert('b');
+   }else if (laporan == 'Rekap per akun') {
+      $.ajax({
+            type: "GET",
+            data : $('#save_data').serialize(),
+            url : ('{{ route('carikartuhutan_perakun') }}'),
+            success: function(data)
+            {   
+                $('#drop').html(data);
+            }
+      })
+   }else if (laporan == 'Rekap per akun Detail') {
+
+    alert('d');
+   }
+     
+ }
 
 </script>
 @endsection

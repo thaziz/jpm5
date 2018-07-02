@@ -143,7 +143,7 @@
                 <tr>
                   <td width="40%" class="text-center">Pilih Cabang</td>
                   <td colspan="3">
-                    <select class="form-control buku_besar select_validate" name="buku_besar_cabang" id="buku_besar_cabang" style="width: 80%;">
+                    <select class="form-control buku_besar select_bukbes_validate" name="buku_besar_cabang" id="buku_besar_cabang" style="width: 80%;">
 
                     </select>
                     &nbsp;&nbsp; <small id="buku_besar_cabang_txt" style="display: none;"><i class="fa fa-hourglass-half"></i></small>
@@ -153,17 +153,17 @@
                 <tr>
                   <td width="20%" class="text-center">Masukkan <span id="state-masuk">Bulan</span></td>
                   <td width="25%">
-                    <input type="text" class="form-control buku_besar form_validate buku_besar_tanggal first" name="d1" placeholder="MM/YYYY" style="width: 100%; cursor: pointer; background: white;" readonly>
+                    <input type="text" class="form-control buku_besar form_bukbes_validate buku_besar_tanggal first" name="d1" placeholder="MM/YYYY" style="width: 100%; cursor: pointer; background: white;" readonly>
 
-                    <input type="text" class="form-control buku_besar form_validate buku_besar_tahun first" name="y1" placeholder="YYYY" style="width: 90%; cursor: pointer; background: white; display: none;" readonly>
+                    <input type="text" class="form-control buku_besar form_bukbes_validate buku_besar_tahun first" name="y1" placeholder="YYYY" style="width: 90%; cursor: pointer; background: white; display: none;" readonly>
 
                   <td class="text-center" style="font-size: 8pt;">
                     s/d
                   </td>
                   <td width="25%">
-                    <input type="text" class="form-control buku_besar form_validate buku_besar_tanggal sampai" name="d2" placeholder="MM/YYYY" style="cursor: pointer; background: white;" readonly>
+                    <input type="text" class="form-control buku_besar form_bukbes_validate buku_besar_tanggal sampai" name="d2" placeholder="MM/YYYY" style="cursor: pointer; background: white;" readonly>
 
-                    <input type="text" class="form-control buku_besar form_validate buku_besar_tahun sampai" name="y2" placeholder="YYYY" style="width: 90%; cursor: pointer; background: white; display: none;" readonly>
+                    <input type="text" class="form-control buku_besar form_bukbes_validate buku_besar_tahun sampai" name="y2" placeholder="YYYY" style="width: 90%; cursor: pointer; background: white; display: none;" readonly>
                   </td>
                   </td>
                 </tr>
@@ -171,7 +171,7 @@
                 <tr>
                   <td width="40%" class="text-center">Kode Akun</td>
                   <td colspan="3">
-                    <select class="form-control buku_besar select_validate" name="akun1" id="akun1" style="width: 35%;">
+                    <select class="form-control buku_besar select_bukbes_validate" name="akun1" id="akun1" style="width: 35%;">
 
                     </select>
                     <small id="buku_besar_akun1_txt"> &nbsp;Pilih Cabang Dahulu</small>
@@ -181,7 +181,7 @@
                 <tr>
                   <td width="40%" class="text-center">Sampai Dengan Akun</td>
                   <td colspan="3">
-                    <select class="form-control buku_besar select_validate" name="akun2" id="akun2" style="width: 35%;">
+                    <select class="form-control buku_besar select_bukbes_validate" name="akun2" id="akun2" style="width: 35%;">
                       
                     </select>
                     <small id="buku_besar_akun2_txt"> &nbsp;Pilih Cabang Dahulu</small>
@@ -512,7 +512,7 @@
 
       function validate_form_buku_besar(){
       a = true;
-      $(".buku_besar.form_validate").each(function(i, e){
+      $(".buku_besar.form_bukbes_validate").each(function(i, e){
         if($(this).val() == "" && $(this).is(":visible")){
           a = false;
           $(this).focus();
@@ -521,7 +521,7 @@
         }
       })
 
-      $(".buku_besar.select_validate").each(function(i, e){
+      $(".buku_besar.select_bukbes_validate").each(function(i, e){
         if($(this).val() == "---"){
           a = false;
           $(this).focus();

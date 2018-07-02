@@ -366,22 +366,14 @@
     
     $(document).on("click","#btn_add",function(){
         $("input[name='crud']").val('N');
-        // $("input[name='ed_kode']").val('');
         $("input[name='ed_kode_old']").val('');
         
         $('input[name="waktu_regular"]').val('');
         $('input[name="tarifkertas_reguler"]').val('');
-        $('input[name="tarif0kg_reguler"]').val('');
-        $('input[name="tarif10kg_reguler"]').val('');
-        $('input[name="tarif20kg_reguler"]').val('');
         //reg
         $('input[name="waktu_express"]').val('');
         $('input[name="tarifkertas_express"]').val('');
-        $('input[name="tarif0kg_express"]').val('');
-        $('input[name="tarif10kg_express"]').val('');
-        $('input[name="tarif20kg_express"]').val('');
-        $('input[name="tarifkgsel_reguler"]').val('');
-        $('input[name="tarifkgsel_express"]').val('');
+      
         $('#hilang').show();
         $("input[name='kodekota']").val('');
 
@@ -397,85 +389,35 @@
         $("input[name='ed_kode']").focus();
     });
 
-    $(document).on( "click",".btnedit", function() {
-        var id=$(this).attr("id");
-        var tujuan = $(this).data('tujuan'); 
+    function edit(ae) {
+      var id=$(this).attr("id");
         var value = {
-          asal : id , tujuan :tujuan 
+          asal : id
         };
+        alert(id);
         $.ajax(
         {
-            url : baseUrl + "/sales/tarif_cabang_kilogram/get_data",
+            url : ('{{ route('get_data_tarif_vendor') }}'),
             type: "GET",
             data : value,
-            dataType:'json',
             success: function(data, textStatus, jqXHR)
-            {
-              console.log(data);
+            { 
+                console.log(data);
                 $("input[name='crud']").val('E');
-                //flag
-                $("input[name='id0']").val(data[0][0].kode);
-                $("input[name='id1']").val(data[0][1].kode);
-                $("input[name='id2']").val(data[0][2].kode);
-                $("input[name='id3']").val(data[0][3].kode);
-                $("input[name='id4']").val(data[0][4].kode);
-                $("input[name='id5']").val(data[0][5].kode);
-                $("input[name='id6']").val(data[0][6].kode);
-                $("input[name='id7']").val(data[0][7].kode);
-                $("input[name='id8']").val(data[0][8].kode);
-                $("input[name='id9']").val(data[0][9].kode);
-                //kode
-                $("input[name='kode0']").val(data[0][0].kode_detail_kilo);
-                $("input[name='kode1']").val(data[0][1].kode_detail_kilo);
-                $("input[name='kode2']").val(data[0][2].kode_detail_kilo);
-                $("input[name='kode3']").val(data[0][3].kode_detail_kilo);
-                $("input[name='kode4']").val(data[0][4].kode_detail_kilo);
-                $("input[name='kode5']").val(data[0][5].kode_detail_kilo);
-                $("input[name='kode6']").val(data[0][6].kode_detail_kilo);
-                $("input[name='kode7']").val(data[0][7].kode_detail_kilo);
-                $("input[name='kode8']").val(data[0][8].kode_detail_kilo);
-                $("input[name='kode9']").val(data[0][9].kode_detail_kilo);
-                //kode detail
-                $("input[name='kode_sama_kilo']").val(data[0][1].kode_sama_kilo);
-                //kode sama
-                $('input[name="waktu_regular"]').val(data[0][0].waktu);
-                $('input[name="tarifkertas_reguler"]').val(data[0][0].harga);
-                $('input[name="tarif0kg_reguler"]').val(data[0][1].harga);
-                $('input[name="tarif10kg_reguler"]').val(data[0][2].harga);
-                $('input[name="tarif20kg_reguler"]').val(data[0][3].harga);
-                $('input[name="tarifkgsel_reguler"]').val(data[0][4].harga);
-                //reg
-                $('input[name="waktu_express"]').val(data[0][5].waktu);
-                $('input[name="tarifkertas_express"]').val(data[0][5].harga);
-                $('input[name="tarif0kg_express"]').val(data[0][6].harga);
-                $('input[name="tarif10kg_express"]').val(data[0][7].harga);
-                $('input[name="tarif20kg_express"]').val(data[0][8].harga);
-                $('input[name="tarifkgsel_express"]').val(data[0][9].harga);
-                //expre
-                $('#hilang').hide();
-                $('#hilang2').show();
-                $("input[name='kodekota']").val(data[0][0].kode_kota);
-                
-
-                $("input[name='ed_kode_old']").val(data.kode);
-                $("select[name='cb_kota_asal']").val(data[0][0].id_kota_asal).trigger('chosen:updated');
-                $("select[name='cb_kota_tujuan']").val(data[0][0].id_kota_tujuan).trigger('chosen:updated');
-                $("select[name='cb_cabang']").val(data[0][0].kode_cabang).trigger('chosen:updated');
-                $("select[name='cb_acc_penjualan']").val(data[0][0].acc_penjualan).trigger('chosen:updated');
-                $("select[name='cb_csf_penjualan']").val(data[0][0].csf_penjualan).trigger('chosen:updated');
-                $("select[name='cb_provinsi_tujuan']").val(data[0][0].id_provinsi_cabkilogram).trigger('chosen:updated');
-                $("#modal").modal('show');
-                $("input[name='ed_kode']").focus();
-                
+                $("select[name='cb_provinsi_tujuan']").val('').trigger('chosen:updated');
+                $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
+                $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
+                $("select[name='cb_acc_penjualan']").val('').trigger('chosen:updated');
+                $("select[name='cb_csf_penjualan']").val('').trigger('chosen:updated');
             },
             error: function(jqXHR, textStatus, errorThrown)
             {
                 swal("Error!", textStatus, "error");
             }
         });
-    });
+    }
+        
   
-  $()
     $(document).on("click","#btnsave",function(){
         $.ajax(
         {

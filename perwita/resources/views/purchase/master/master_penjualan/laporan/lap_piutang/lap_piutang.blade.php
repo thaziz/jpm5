@@ -78,7 +78,7 @@
                         <td>Customer</td>
                         <td>
                           <select class="chosen-select-width" name="customer" id="customer">
-                            <option value="">- Customer -</option>
+                            <option value="">- Pilih -</option>
                             @foreach ($customer as $e)
                               <option value="{{ $e->kode }}">{{ $e->kode }} - {{ $e->nama }}</option>
                             @endforeach
@@ -87,11 +87,23 @@
                       
                         <td>Acc Piutang</td>
                         <td>
-                          <select class="chosen-select-width" name="customer" id="customer">
-                            <option value="">- Acc -</option>
+                          <select class="chosen-select-width" name="akun" id="akun">
+                            <option value="">- Pilih -</option>
                             @foreach ($piutang as $piu)
                               <option value="{{ $piu->id_akun }}">{{ $piu->id_akun }} - {{ $piu->nama_akun }}</option>
                             @endforeach
+                          </select>
+                        </td>
+                      </tr>
+                      <tr>  
+                      <td>Laporan</td>
+                        <td>
+                          <select class="chosen-select-width" name="laporan" id="laporan">
+                            <option value="">- Pilih -</option>
+                            <option value="Rekap per Customer">Rekap per Customer</option>
+                            <option value="Rekap per Customer Detail">Rekap per Customer Detail</option>
+                            <option value="Rekap per akun">Rekap per akun</option>
+                            <option value="Rekap per akun Detail">Rekap per akun Detail</option>
                           </select>
                         </td>
                       </tr>
@@ -234,8 +246,21 @@ Highcharts.chart('container', {
   var awal = $('#min').val();
   var akir = $('#max').val();
   var customer = $('#customer').val();
+  var akun = $('#akun').val();
+  var laporan = $('#laporan').val();
 
+ if (laporan == 'Rekap per Customer') {
+  alert('a');
+ }else if (laporan == 'Rekap per Customer Detail') {
 
+  alert('b');
+ }else if (laporan == 'Rekap per akun') {
+
+  alert('c');
+ }else if (laporan == 'Rekap per akun Detail') {
+
+  alert('d');
+ }
     $.ajax({
       data:$('#search').serialize(),
       type:'get',
@@ -247,38 +272,38 @@ Highcharts.chart('container', {
     })
  }
 
- function pdf(){
+ // function pdf(){
 
-  var awal = $('#min').val();
-  var akir = $('#max').val();
-  var customer = $('#customer').val();
+ //  var awal = $('#min').val();
+ //  var akir = $('#max').val();
+ //  var customer = $('#customer').val();
 
 
 
-    $.ajax({
-      data:{a:awal,b:akir,c:customer},
-      type:'get',
-      url:baseUrl + '/reportpdf_kartupiutang/reportpdf_kartupiutang',
-      success : function(data){
+ //    $.ajax({
+ //      data:{a:awal,b:akir,c:customer},
+ //      type:'get',
+ //      url:baseUrl + '/reportpdf_kartupiutang/reportpdf_kartupiutang',
+ //      success : function(data){
         
-      }
-    })
- }
+ //      }
+ //    })
+ // }
 
- function excel(){
+ // function excel(){
 
-  var awal = $('#min').val();
-  var akir = $('#max').val();
-  var customer = $('#customer').val();
+ //  var awal = $('#min').val();
+ //  var akir = $('#max').val();
+ //  var customer = $('#customer').val();
 
-    $.ajax({
-      data:{a:awal,b:akir,c:customer},
-      type:'get',
-      url:baseUrl + '/reportexcel_kartupiutang/reportpdf_kartupiutang',
-      success : function(data){
+ //    $.ajax({
+ //      data:{a:awal,b:akir,c:customer},
+ //      type:'get',
+ //      url:baseUrl + '/reportexcel_kartupiutang/reportpdf_kartupiutang',
+ //      success : function(data){
         
-      }
-    })
- }
+ //      }
+ //    })
+ // }
 </script>
 @endsection

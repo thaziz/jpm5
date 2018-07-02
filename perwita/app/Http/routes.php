@@ -684,6 +684,8 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
   //LAPORAN KARTU HUTANG
   Route::get('kartuhutang/kartuhutang', 'LaporanPembelianControlle@kartuhutang');
   Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPembelianController@reportkartuhutang');
+      //pencarian
+      Route::get('carikartuhutang/carikartuhutan_perakun', 'LaporanPembelianController@carikartuhutan_perakun')->name('carikartuhutan_perakun');
   Route::get('reportexcelkartuhutang/reportexcelkartuhutang', 'LaporanPembelianController@reportexcelkartuhutang');
   //END OF
 
@@ -1402,19 +1404,26 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller
 
   //index
   Route::get('sales/deliveryorder_paket', 'do_new\do_paketController@index');
-  Route::get('sales/deliveryorder_paket/datatable_deliveryorder_paket', 'do_new\do_paketController@datatable_deliveryorder_paket')->name('datatable_deliveryorder_paket');
+      //datatable
+      Route::get('sales/deliveryorder_paket/datatable_deliveryorder_paket', 'do_new\do_paketController@datatable_deliveryorder_paket')->name('datatable_deliveryorder_paket');
   //create
   Route::get('sales/deliveryorder_paket/create_deliveryorder_paket', 'do_new\do_paketController@create_deliveryorder_paket')->name('create_deliveryorder_paket');
-  Route::get('sales/deliveryorder_paket/cari_nomor_deliveryorder_paket', 'do_new\do_paketController@cari_nomor_deliveryorder_paket')->name('cari_nomor_deliveryorder_paket');
-    //cari kecamatan
-    Route::get('sales/deliveryorder_paket/cari_kecamatan_deliveryorder_paket', 'do_new\do_paketController@cari_kecamatan_deliveryorder_paket')->name('cari_kecamatan_deliveryorder_paket');
-    //cari vendor
-    Route::get('sales/deliveryorder_paket/cari_vendor_deliveryorder_paket', 'do_new\do_paketController@cari_vendor_deliveryorder_paket')->name('cari_vendor_deliveryorder_paket');
-    //replace vendor
-    Route::get('sales/deliveryorder_paket/replace_vendor_deliveryorder_paket', 'do_new\do_paketController@replace_vendor_deliveryorder_paket')->name('replace_vendor_deliveryorder_paket');
-  //simpan data
-  Route::get('sales/deliveryorder_paket/save_deliveryorder_paket', 'do_new\do_paketController@save_deliveryorder_paket')->name('save_deliveryorder_paket');
+      //cari nomor
+      Route::get('sales/deliveryorder_paket/cari_nomor_deliveryorder_paket', 'do_new\do_paketController@cari_nomor_deliveryorder_paket')->name('cari_nomor_deliveryorder_paket');
+      //cari kecamatan
+      Route::get('sales/deliveryorder_paket/cari_kecamatan_deliveryorder_paket', 'do_new\do_paketController@cari_kecamatan_deliveryorder_paket')->name('cari_kecamatan_deliveryorder_paket');
+      //cari vendor
+      Route::get('sales/deliveryorder_paket/cari_vendor_deliveryorder_paket', 'do_new\do_paketController@cari_vendor_deliveryorder_paket')->name('cari_vendor_deliveryorder_paket');
+      //replace vendor
+      Route::get('sales/deliveryorder_paket/replace_vendor_deliveryorder_paket', 'do_new\do_paketController@replace_vendor_deliveryorder_paket')->name('replace_vendor_deliveryorder_paket');
+      //simpan data
+      Route::get('sales/deliveryorder_paket/save_deliveryorder_paket', 'do_new\do_paketController@save_deliveryorder_paket')->name('save_deliveryorder_paket');
+  //Edit
+  Route::get('sales/deliveryorder_paket/{nomor}/edit_deliveryorder_paket', 'do_new\do_paketController@edit_deliveryorder_paket')->name('edit_deliveryorder_paket');
+      //update
+      Route::get('sales/deliveryorder_paket/update_deliveryorder_paket', 'do_new\do_paketController@update_deliveryorder_paket')->name('update_deliveryorder_paket');
 
+//end of do baru
 
 
 // delivery order kargo
@@ -1571,12 +1580,13 @@ Route::get('sales/nota_debet_kredit/hapus_cn_dn', 'sales\nota_debet_kredit_Contr
 
 // uang muka penjualan
 Route::get('sales/uang_muka_penjualan', 'sales\uang_muka_penjualan_Controller@index');
-Route::get('sales/uang_muka_penjualan/nota_uang_muka', 'sales\uang_muka_penjualan_Controller@nota_uang_mukakw');
+Route::get('sales/uang_muka_penjualan/nota_uang_muka', 'sales\uang_muka_penjualan_Controller@nota_uang_muka');
 Route::get('sales/uang_muka_penjualan/tabel', 'sales\uang_muka_penjualan_Controller@table_data');
 Route::get('sales/uang_muka_penjualan/nota_uang_muka', 'sales\uang_muka_penjualan_Controller@nota_uang_muka');
 Route::get('sales/uang_muka_penjualan/get_data', 'sales\uang_muka_penjualan_Controller@get_data');
-Route::post('sales/uang_muka_penjualan/save_data', 'sales\uang_muka_penjualan_Controller@save_data');
-Route::post('sales/uang_muka_penjualan/hapus_data', 'sales\uang_muka_penjualan_Controller@hapus_data');
+Route::get('sales/uang_muka_penjualan/edit', 'sales\uang_muka_penjualan_Controller@edit');
+Route::get('sales/uang_muka_penjualan/save_data', 'sales\uang_muka_penjualan_Controller@save_data');
+Route::get('sales/uang_muka_penjualan/hapus_data', 'sales\uang_muka_penjualan_Controller@hapus_data');
 // end uang muka penjualan
 
 //invoice lain
@@ -1670,6 +1680,8 @@ Route::get('sales/kwitansi_cari_um', 'sales\penerimaan_penjualan_Controller@kwit
 
 Route::get('sales/hapus_um_kwitansi', 'sales\penerimaan_penjualan_Controller@hapus_um_kwitansi');
 Route::get('sales/kwitansi/jurnal', 'sales\penerimaan_penjualan_Controller@jurnal');
+Route::get('sales/kwitansi/simpan_um_sementara', 'sales\penerimaan_penjualan_Controller@simpan_um_sementara');
+Route::get('sales/kwitansi/simpan_um', 'sales\penerimaan_penjualan_Controller@simpan_um');
 
 
 
@@ -2647,15 +2659,15 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
   Route::get('sales/tarif_penerus_sepeda/get_kec', 'tarif\penerus_sepeda_Controller@get_kec');
 
 
-  // tarif cabang koli
+  // tarif cabang VENDOR
   Route::get('sales/tarif_vendor', 'tarif\tarif_vendorController@index');
   Route::get('sales/tarif_vendor/tabel', 'tarif\tarif_vendorController@table_data')->name('tarif_vendor_datatable');
-  Route::get('sales/tarif_vendor/get_data', 'tarif\tarif_vendorController@get_data');
+  Route::get('sales/tarif_vendor/get_data', 'tarif\tarif_vendorController@get_data')->name('get_data_tarif_vendor');
   Route::get('sales/tarif_vendor/save_data', 'tarif\tarif_vendorController@save_data');
   Route::get('sales/tarif_vendor/hapus_data', 'tarif\tarif_vendorController@hapus_data');
   Route::get('sales/tarif_vendor/hapus_data_perkota', 'tarif\tarif_vendorController@hapus_data_perkota');
   Route::get('sales/tarif_vendor/cabang_vendor', 'tarif\tarif_vendorController@cabang_vendor')->name('cabang_vendor');
-  // end tarif cabang koli
+  // end tarif cabang VENDOR
 
   Route::get('master_sales/group_customer','master_sales\grup_customer_Controller@index');
   Route::get('master_sales/group_customer/tabel','master_sales\grup_customer_Controller@table_data');
@@ -3109,6 +3121,7 @@ Route::post('master/master_perusahaan/save_data', 'MasterPerusahaanController@si
 
 
 
+Route::get('test/test', 'LaporanMasterController@testtest');
 
 
 

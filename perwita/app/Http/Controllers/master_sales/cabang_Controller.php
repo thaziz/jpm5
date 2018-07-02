@@ -23,11 +23,11 @@ class cabang_Controller extends Controller
         foreach ($data as $key) {
             // add new button
             $div_1  =   '<div class="btn-group">';
-                              if (Auth::user()->punyaAkses('Cabang','ubah')) {
-                              $div_2  = '<button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" >'.'<i class="fa fa-pencil"></i></button>';
-                              }else{
-                                $div_2 = '';
-                              }
+                              // if (Auth::user()->punyaAkses('Cabang','ubah')) {
+                              // $div_2  = '<button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" >'.'<i class="fa fa-pencil"></i></button>';
+                              // }else{
+                              $div_2 = '';
+                              // }
                               if (Auth::user()->punyaAkses('Cabang','hapus')) {
                               $div_3  = '<button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" >'.
                                         '<i class="fa fa-trash"></i></button>';
@@ -119,6 +119,7 @@ class cabang_Controller extends Controller
             }
 
         }elseif ($crud == 'E') {
+
             $simpan = DB::table('cabang')->where('kode', $request->ed_kode_old)->update($data);
         }
         if($simpan == TRUE){
@@ -133,6 +134,7 @@ class cabang_Controller extends Controller
     }
 
     public function hapus_data (Request $request) {
+         return response()->json($data[, 200][, $headers]);
         $hapus='';
         $id=$request->id;
         $hapus = DB::table('cabang')->where('kode' ,'=', $id)->delete();

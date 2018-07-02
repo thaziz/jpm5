@@ -198,6 +198,8 @@ class posting_pembayaran_Controller extends Controller
         return view('sales.posting_pembayaran.index',compact('data'));
     }
 
+
+
     public function form($nomor=null){  
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
@@ -314,8 +316,10 @@ class posting_pembayaran_Controller extends Controller
         }else{
 
             $data = DB::table('uang_muka_penjualan')
+                  ->join('customer','kode','=','kode_customer')
                   ->whereIn('nomor',$request->nomor)
                   ->get();
+
 
             return response()->json(['data'=>$data]);
         }
@@ -392,6 +396,7 @@ class posting_pembayaran_Controller extends Controller
                                                  ->update([
                                                     'nomor_posting'   => $request->nomor_posting,
                                                     'tgl_posting'     => $request->ed_tanggal,
+                                                    'status'          => 'Approved',
                                                  ]);
                         }
                     }
