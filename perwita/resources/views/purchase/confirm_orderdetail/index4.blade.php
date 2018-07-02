@@ -800,7 +800,7 @@
               }
              },
 			 error : function(){
-				//location.reload();
+				location.reload();
 			 }
 
         })
