@@ -2731,83 +2731,135 @@ class LaporanMasterController extends Controller
    		return view('purchase/master/master_penjualan/laporan/lap_piutang/lap_piutang',compact('data','data_i','data_p','customer','piutang'));
    }
    public function cari_kartupiutang(Request $request){
-   	// dd($request->all());
+   		// dd($request->all());
    		$awal = substr($request->min,-2);
    		$akir = substr($request->max,-2);
-   		$customer = $request->customer;
-   		$akun = $request->akun;
 
-   		if ($customer == null or '') {
-   			$data_i = DB::select("SELECT i_kode_customer,customer.nama as cnama 
+   		//invoice
+   		if ($request->customer != '' || $request->customer != null) {
+			$customer_invoice = " AND i_kode_customer = '".$request->customer."' ";
+		}else{
+			$customer_invoice = '';
+		}
+		if ($request->akun != '' || $request->akun != null) {
+			$akun_invoice = " AND i_acc_piutang = '".$request->akun."' ";
+		}else{
+			$akun_invoice = '';
+		}
+		if ($request->cabang != '' || $request->cabang != null) {
+			$cabang_invoice = " AND i_kode_cabang = '".$request->cabang."' ";
+		}else{
+			$cabang_invoice = '';
+		}
+		//end
+		//cndn
+		if ($request->customer != '' || $request->customer != null) {
+			$customer_cndn = " AND cd_customer = '".$request->customer."' ";
+		}else{
+			$customer_cndn = '';
+		}
+		if ($request->akun != '' || $request->akun != null) {
+			$akun_cndn = " AND cd_acc = '".$request->akun."' ";
+		}else{
+			$akun_cndn = '';
+		}
+		if ($request->cabang != '' || $request->cabang != null) {
+			$cabang_cndn = " AND cd_kode_cabang = '".$request->cabang."' ";
+		}else{
+			$cabang_cndn = '';
+		}
+		//end
+		//Kwitansi
+		if ($request->customer != '' || $request->customer != null) {
+			$customer_kwitansi = " AND k_kode_customer = '".$request->customer."' ";
+		}else{
+			$customer_kwitansi = '';
+		}
+		if ($request->akun != '' || $request->akun != null) {
+			$akun_kwitansi = " AND kwitansi_d.kd_kode_akun_acc = '".$request->akun."' ";
+		}else{
+			$akun_kwitansi = '';
+		}
+		if ($request->cabang != '' || $request->cabang != null) {
+			$cabang_kwitansi = " AND k_kode_cabang = '".$request->cabang."' ";
+		}else{
+			$cabang_kwitansi = '';
+		}
+		//end
+		//posting pemaaran
+		if ($request->customer != '' || $request->customer != null) {
+			$customer_postingbayar = " AND posting_pembayaran_d.kode_customer = '".$request->customer."' ";
+		}else{
+			$customer_postingbayar = '';
+		}
+		if ($request->akun != '' || $request->akun != null) {
+			$akun_postingbayar = " AND posting_pembayaran_d.kode_acc = '".$request->akun."' ";
+		}else{
+			$akun_postingbayar = '';
+		}
+		if ($request->cabang != '' || $request->cabang != null) {
+			$cabang_postingbayar = " AND posting_pembayaran.kode_cabang = '".$request->cabang."' ";
+		}else{
+			$cabang_postingbayar = '';
+		}
+		//end
+
+
+   		// return 'b';
+		$saldo = DB::select("SELECT sum(i_sisa_akhir) as saldo from invoice 
+										where date_part('month',i_tanggal) >= '$awal' 
+			   							and date_part('month',i_tanggal) <= '$akir' 
+										$customer_invoice $akun_invoice $cabang_invoice
+										");
+
+		$data_i = DB::select("SELECT i_kode_customer,customer.nama as cnama 
+										from invoice 
+										join customer on customer.kode = invoice.i_kode_customer 
+										where date_part('month',i_tanggal) >= '$awal' 
+   										and date_part('month',i_tanggal) <= '$akir' 
+										$customer_invoice $akun_invoice $cabang_invoice
+										group by i_kode_customer,customer.nama 
+										order by i_kode_customer");
+
+   		$data_p = DB::select("SELECT i_nomor,i_tanggal,i_keterangan,i_kode_customer 
    										from invoice 
-   										join customer on customer.kode = invoice.i_kode_customer 
-   										group by i_kode_customer,customer.nama 
-   										order by i_kode_customer");
-
-	   		$data_p = DB::select("SELECT i_nomor,i_tanggal,i_keterangan,i_kode_customer 
-	   										from invoice 
-	   										where date_part('month',i_tanggal) >= '$awal' 
-	   										and date_part('month',i_tanggal) <= '$akir' 
-	   										group by i_nomor 
-	   										order by i_nomor");
-	   		
-	   		$data_saldo = DB::select("SELECT sum(i_total_tagihan) as saldo,i_kode_customer
-   										from invoice
    										where date_part('month',i_tanggal) >= '$awal' 
-	   									and date_part('month',i_tanggal) <= '$akir' 
-										group by i_kode_customer,i_acc_piutang
+   										and date_part('month',i_tanggal) <= '$akir' 
+										$customer_invoice $akun_invoice $cabang_invoice
+   										group by i_nomor 
+   										order by i_nomor");
+
+   		$data_invoice = DB::select("SELECT i_tipe as flag,i_nomor as kode,i_kode_customer as customer,i_tanggal as tanggal,
+   										i_keterangan as keterangan,i_total_tagihan as total
+										from invoice 
+										where date_part('month',i_tanggal) >= '$awal' 
+   										and date_part('month',i_tanggal) <= '$akir' 
+										$customer_invoice $akun_invoice $cabang_invoice
+										order by i_kode_customer");
+
+   		$data_cn_dn = DB::select("SELECT cd_jenis,cd_nomor,cd_customer,cd_tanggal,cd_keterangan,cd_total FROM cn_dn_penjualan 
+   										where date_part('month',cd_tanggal) >= '$awal' 
+   										and date_part('month',cd_tanggal) <= '$akir'
+   										$customer_cndn $akun_cndn $cabang_cndn
    										");
 
+   		$data_kwitansi = DB::select("SELECT k_create_by,k_kode_cabang,k_nomor,k_kode_customer,kwitansi_d.kd_kode_akun_acc														,k_tanggal,k_keterangan,k_netto FROM kwitansi 
+   										join kwitansi_d on kwitansi.k_nomor = kwitansi_d.kd_k_nomor
+   										where date_part('month',k_tanggal) >= '$awal' 
+   										and date_part('month',k_tanggal) <= '$akir'
+   										$customer_kwitansi $akun_kwitansi $cabang_kwitansi
+   										");
 
-	   		$a = DB::table('invoice')
-	   			->select('i_tipe as flag','i_nomor as kode','i_kode_customer as cutomer','i_tanggal as tanggal','i_keterangan as keterangan','i_total_tagihan as total');
+   		$data_postingbayar = DB::select("SELECT k_create_by,nomor,k_kode_customer,k_tanggal,k_keterangan,k_netto FROM kwitansi 
+   										join posting_pembayaran_d on posting_pembayaran_d.nomor_penerimaan_penjualan = kwitansi.k_nomor
+   										join posting_pembayaran on posting_pembayaran.nomor = posting_pembayaran_d.nomor_posting_pembayaran
+   										where date_part('month',k_tanggal) >= '$awal' 
+   										and date_part('month',k_tanggal) <= '$akir'
+   										$customer_postingbayar $akun_postingbayar $cabang_postingbayar
+   										");
 
-	   		$b = DB::table('cn_dn_penjualan')
-	   			->select('cd_jenis','cd_nomor','cd_customer','cd_tanggal','cd_keterangan','cd_total');
+   		$data['data'] = array_merge([$saldo,$data_i,$data_p,$data_invoice,$data_cn_dn,$data_kwitansi,$data_postingbayar]);
 
-	   		$c = DB::table('kwitansi')
-	   			->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto');
-
-	   		$d = DB::table('kwitansi')
-	   			->select('k_create_by','nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto')
-	   			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
-	   			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran');
-
-	   		$data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
-   		}else{
-   			// return 'b';
-   			$data_i = DB::select("SELECT i_kode_customer,customer.nama as cnama 
-   										from invoice 
-   										join customer on customer.kode = invoice.i_kode_customer 
-   										where i_kode_customer = '$customer' 
-   										group by i_kode_customer,customer.nama 
-   										order by i_kode_customer");
-
-	   		$data_p = DB::select("SELECT i_nomor,i_tanggal,i_keterangan,i_kode_customer 
-	   										from invoice 
-	   										where i_kode_customer = '$customer' 
-	   										and date_part('month',i_tanggal) >= '$awal' 
-	   										and date_part('month',i_tanggal) <= '$akir' 
-	   										group by i_nomor 
-	   										order by i_nomor");
-	   		
-
-	   		$a = DB::table('invoice')
-	   			->select('i_tipe as flag','i_nomor as kode','i_kode_customer as cutomer','i_tanggal as tanggal','i_keterangan as keterangan','i_total_tagihan as total');
-
-	   		$b = DB::table('cn_dn_penjualan')
-	   			->select('cd_jenis','cd_nomor','cd_customer','cd_tanggal','cd_keterangan','cd_total');
-
-	   		$c = DB::table('kwitansi')
-	   			->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto');
-
-	   		$d = DB::table('kwitansi')
-	   			->select('k_create_by','nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto')
-	   			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
-	   			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran');
-
-	   		$data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
-   		}
    		return $data;
    		
    		return view('purchase/master/master_penjualan/laporan/lap_piutang/ajax_lap_piutang',compact('data','data_i','data_p','customer','data_saldo'));

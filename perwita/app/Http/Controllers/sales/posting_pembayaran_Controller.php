@@ -261,16 +261,21 @@ class posting_pembayaran_Controller extends Controller
     public function cari_kwitansi(request $request)
     {
         // dd($request->all());
+        $akun_bank = DB::table("masterbank")
+                       ->where('mb_id',$request->akun_bank)
+                       ->first();
         $temp = DB::table('kwitansi')
                   ->where('k_kode_cabang',$request->cabang)
                   ->where('k_nomor_posting','=',null)
                   ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
+                  ->where('k_id_bank',$request->akun_bank)
                   ->get();
 
         $temp1 = DB::table('kwitansi')
                   ->where('k_kode_cabang',$request->cabang)
                   ->where('k_nomor_posting','=',null)
                   ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
+                  ->where('k_id_bank',$request->akun_bank)
                   ->get();
 
         if (isset($request->array_simpan)) {

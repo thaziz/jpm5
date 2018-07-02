@@ -123,7 +123,6 @@
                             <tr>
                                 <td style="width:110px;">Jenis Tarif</td>
                                 <td colspan="20" class="jenis_tarif_td">
-
                                     <select  class="form-control jenis_tarif" onchange="nota_tes()" name="jenis_tarif" >
                                         <option value="0">Pilih - Jenis</option>
                                         <option value="PAKET"> PAKET </option>
@@ -187,7 +186,7 @@
                                     <select class="form-control chosen-select-width cb_akun_h" id="cb_akun_h" name="cb_akun_h" >
                                         <option value="0">Pilih - Akun Bank</option>
                                         @foreach($akun_bank as $val)
-                                        <option value="{{$val->mb_kode}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
+                                        <option value="{{$val->mb_id}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
                                         @endforeach
                                     </select>
                                 </td>

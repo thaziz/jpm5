@@ -130,7 +130,12 @@ class uang_muka_penjualan_Controller extends Controller
     public function hapus_data (Request $request) {
         $hapus='';
         $id=$request->id;
+        $cari = DB::table('uang_muka_penjualan')->where('nomor' ,'=', $id)->first();
+        if ($cari->status_um == 'Approved') {
+            return response()->json(['status'=>0]);
+        }
         $hapus = DB::table('uang_muka_penjualan')->where('nomor' ,'=', $id)->delete();
+        $hapus = DB::table('uang_muka_penjualan')->where('nomor' ,'=', $id)->first();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;
