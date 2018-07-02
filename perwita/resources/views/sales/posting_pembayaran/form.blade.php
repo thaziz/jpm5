@@ -128,12 +128,12 @@
                     <div class="col-sm-6">
                         <table class="table table_header2 table-striped table-bordered table-hover">
                         <tbody>
-                            <tr>
+                         {{--    <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor CEK/BG</td>
                                 <td>
                                     <input type="text"  class="form-control input-sm nomor_cek" name="nomor_cek">
                                 </td>
-                            </tr>
+                            </tr> --}}
                             <tr>
                                 <td style="width:110px;">Akun Bank</td>
                                 <td>
@@ -163,6 +163,7 @@
                             <th>Nomor Penerimaan</th>
                             <th>Customer</th>
                             <th>Jumlah</th>
+                            <th>Nomor Cek</th>
                             <th>Keterangan</th>
                             <th>Aksi</th>
                         </tr>
@@ -266,6 +267,7 @@
 <script type="text/javascript">
 // datatable
 var array_simpan = [];
+var nomor = [0];
 
 var table_data = $('#table_data').DataTable({
     paging:false,
@@ -286,6 +288,10 @@ var table_data = $('#table_data').DataTable({
         },
         {
              targets: 4 ,
+             className: 'center'
+        },
+        {
+             targets: 5 ,
              className: 'center'
         },
     ],
@@ -320,14 +326,13 @@ function ganti_nota() {
 
 $('#btn_kwitansi').click(function(){
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
-    console.log(cb_jenis_pembayaran);
     var cabang = $('.cabang').val();
     var akun_bank = $('.akun_bank').val();
-    console.log(cb_jenis_pembayaran);
+    var id = 0;
     if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B') {
         $.ajax({
             url  :baseUrl+'/sales/posting_pembayaran_form/cari_kwitansi',
-            data : {cabang,cb_jenis_pembayaran,array_simpan,akun_bank},
+            data : {id,cabang,cb_jenis_pembayaran,array_simpan,akun_bank,nomor},
             success:function(data){
               $('.kirim').html(data);
               $('#modal').modal('show');
@@ -395,6 +400,12 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembaya
         dataType:'json',
         success:function(data){
             for (var i = 0; i < data.data.length; i++) {
+                if (cb_jenis_pembayaran == 'F') {
+                    var cek = '<input type="text" value="" class="form-control d_cek" name="d_cek[]">';
+                }else{
+                    var cek = '<input readonly type="text" value="" class="form-control d_cek" name="d_cek[]">';
+
+                }
                 table_data.row.add([
                     data.data[i].k_nomor+'<input type="hidden" value="'+data.data[i].k_nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
 
@@ -402,6 +413,8 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembaya
                     '<input type="hidden" value="'+data.data[i].k_kode_akun+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
 
                     accounting.formatMoney(data.data[i].k_netto,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].k_netto+'" class="form-control d_netto" name="d_netto[]">',
+                    cek,
+
                     '<input type="text" class="form-control d_keterangan" placeholder="keterangan..." name="d_keterangan[]">',
 
                     '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
@@ -432,6 +445,11 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembaya
         dataType:'json',
         success:function(data){
             for (var i = 0; i < data.data.length; i++) {
+
+     
+                var cek = '<input readonly type="text" value="" class="form-control d_cek" name="d_cek[]">';
+
+
                 table_data.row.add([
                     data.data[i].nomor+'<input type="hidden" value="'+data.data[i].nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
 
@@ -439,7 +457,7 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembaya
                     '<input type="hidden" value="'+data.data[i].kode_acc+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
 
                     accounting.formatMoney(data.data[i].jumlah,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].jumlah+'" class="form-control d_netto" name="d_netto[]">',
-
+                    cek,
                     '<input type="text" class="form-control d_keterangan" placholder="keterangan..." name="d_keterangan[]">',
 
                     '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
@@ -457,6 +475,7 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembaya
  m_jumlah_kas     = m_jumlah_kas.replace(/[^0-9\-]+/g,"");
 
  var m_keterangan_kas = $('.m_keterangan_kas').val();
+            var cek = '<input readonly type="text" value="" class="form-control d_cek" name="d_cek[]">';
 
             table_data.row.add([
                 'NON KWITANSI'+'<input type="hidden" value="NON KWITANSI" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
@@ -465,6 +484,7 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembaya
                 '<input type="hidden" value="'+m_data_acc+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
 
                 accounting.formatMoney(m_jumlah_kas,"",2,'.',',')+'<input type="hidden" value="'+m_jumlah_kas+'" class="form-control d_netto" name="d_netto[]">',
+                cek,
 
                 '<input type="text" class="form-control d_keterangan" value="'+m_keterangan_kas+'"  placholder="keterangan..." name="d_keterangan[]">',
 
@@ -501,23 +521,49 @@ function hapus_detail(o) {
 }
 
 $('#btnsimpan').click(function(){
-    var temp = 0;
+    var temp  = [];
     var temp1 = 0;
-
-    $('.d_keterangan').each(function(){
+    var temp2 = [];
+    var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
+    table_data.$('.d_keterangan').each(function(){
         if ($(this).val() != '') {
-            temp+=1;
+            temp.push(1);
+        }else{
+            temp.push(0);
         }
-        temp1+=1;
+        temp1=1;
     });
+
+    
     if (temp1 == 0) {
         toastr.warning('Tidak Ada Yang Di Posting');
         return 1;
     }
-    if (temp == 0) {
+
+    var index = temp.indexOf(0);
+    if (index != -1) {
         toastr.warning('Kolom Keterangan Pada Sequence Harus Diisi');
         return 1;
     }
+    if (cb_jenis_pembayaran == 'F') {
+        table_data.$('.d_cek').each(function(){
+            if ($(this).val() != '') {
+                temp2.push(1);
+            }else{
+                temp2.push(0);
+            }
+        });
+
+        var index1 = temp2.indexOf(0);
+        if (index1 != -1) {
+            toastr.warning('Nomor Cek Harus Diisi');
+            return 1;
+        }
+    }
+    
+
+    
+
 
     swal({
         title: "Apakah anda yakin?",
@@ -539,7 +585,7 @@ $('#btnsimpan').click(function(){
 
           $.ajax({
           url:baseUrl + '/sales/posting_pembayaran_form/simpan_posting',
-          type:'get',
+          type:'post',
           dataType:'json',
           data:$('.table_header1 :input').serialize()
                +'&'+$('.table_header2 :input').serialize()

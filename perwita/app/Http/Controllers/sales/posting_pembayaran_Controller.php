@@ -58,6 +58,7 @@ class posting_pembayaran_Controller extends Controller
                         ->addColumn('jumlah_text', function ($data) {
                           return number_format($data->jumlah,2,',','.'  ); 
                         })
+                        
                         ->addColumn('pembayaran', function ($data) {
                           if ($data->jenis_pembayaran == 'C') {
                               $a = 'TRANSFER';
@@ -275,13 +276,20 @@ class posting_pembayaran_Controller extends Controller
                   ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
                   ->where('k_id_bank',$request->akun_bank)
                   ->get();
-
+        
         $temp1 = DB::table('kwitansi')
                   ->where('k_kode_cabang',$request->cabang)
                   ->where('k_nomor_posting','=',null)
                   ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
                   ->where('k_id_bank',$request->akun_bank)
                   ->get();
+        $kwitansi_edit = DB::table('kwitansi')
+                          ->whereIn('k_nomor',$request->nomor)
+                          ->get();
+        $temp = array_merge($temp,$kwitansi_edit);
+        $temp1 = array_merge($temp1,$kwitansi_edit);
+        $temp = array_values($temp);
+        $temp1 = array_values($temp1);
 
         if (isset($request->array_simpan)) {
 
@@ -338,7 +346,6 @@ class posting_pembayaran_Controller extends Controller
     }
     public function simpan_posting(request $request)
     {
-        // dd($request->all());
         return DB::transaction(function() use ($request) {  
 
             
@@ -362,6 +369,7 @@ class posting_pembayaran_Controller extends Controller
                 if ($cari_nota->nomor == $user) {
                   return 'Data Sudah Ada';
                 }else{
+                  
                     $bulan = Carbon::now()->format('m');
                     $tahun = Carbon::now()->format('y');
 
@@ -421,6 +429,7 @@ class posting_pembayaran_Controller extends Controller
                                     'keterangan'=> $request->d_keterangan[$i],
                                     'kode_acc'=> $request->d_kode_akun[$i],
                                     'kode_csf'=> $request->d_kode_akun[$i],
+                                    'nomor_cek' => $request->d_cek[$i]
                                  ]);
 
                 if ($request->cb_jenis_pembayaran != 'U') {

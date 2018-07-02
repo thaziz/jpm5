@@ -26,6 +26,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <a href="../posting_pembayaran" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                    <a class="pull-right jurnal" onclick="lihat_jurnal()" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal</i></a>
 
                 </div>
                 <div class="ibox-content">
@@ -148,18 +149,18 @@
                     <div class="col-sm-6">
                         <table class="table table_header2 table-striped table-bordered table-hover">
                         <tbody>
-                            <tr>
+                         {{--    <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor CEK/BG</td>
                                 <td>
                                     <input type="text" value="{{$data->nomor_cek}}"  class="form-control input-sm nomor_cek" name="nomor_cek">
                                 </td>
-                            </tr>
-                            <tr>
+                            </tr> --}}
+                            <tr class="bank_tr disabled">
                                 <td style="width:110px;">Akun Bank</td>
                                 <td>
-                                    <select class="form-control cb_jenis_pembayaran" name="akun_bank" >
+                                    <select class="form-control akun_bank" name="akun_bank" >
                                         @foreach ($akun as $val)
-                                            <option value="{{$val->mb_id}}">{{$val->mb_nama}}</option>
+                                            <option value="{{$val->mb_id}}">{{$val->mb_id}} - {{$val->mb_nama}}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -183,6 +184,7 @@
                             <th>Nomor Penerimaan</th>
                             <th>Customer</th>
                             <th>Jumlah</th>
+                            <th>nomor Cek</th>
                             <th>Keterangan</th>
                             <th>Aksi</th>
                         </tr>
@@ -229,7 +231,7 @@
                                                <select onchange="m_kode_akun()" class="form-control m_akun_as">
                                                         <option value="0">Pilih - Akun</option>
                                                     @foreach ($akun as $val)
-                                                        <option data-kode_acc="{{$val->mb_kode}}" value="{{$val->mb_id}}">{{$val->mb_accno}}-{{$val->mb_nama}}</option>
+                                                        <option data-kode_acc="{{$val->mb_kode}}" value="{{$val->mb_id}}">{{$val->mb_kode}}-{{$val->mb_nama}}</option>
                                                     @endforeach
                                                </select>
                                                <input type="hidden" class="m_data_acc">
@@ -270,7 +272,24 @@
     </div>
 </div>
 
-
+<div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Jurnal Invoice</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body tabel_jurnal">
+          
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="row" style="padding-bottom: 50px;"></div>
 
@@ -283,15 +302,13 @@
 <script type="text/javascript">
 // datatable
 var array_simpan = [];
+var nomor = [];
 
 var table_data = $('#table_data').DataTable({
     paging:false,
     searching:false,
     columnDefs:[
-        {
-             targets: 3 ,
-             className: 'center'
-        },
+
         {
              targets: 1 ,
              className: 'left'
@@ -301,21 +318,46 @@ var table_data = $('#table_data').DataTable({
              className: 'right'
         },
         {
+             targets: 3 ,
+             className: 'center'
+        },
+        {
              targets: 4 ,
+             className: 'center'
+        },
+        {
+             targets: 5 ,
              className: 'center'
         },
     ],
 });
-$('.m_jumlah_kas').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 
-    
+
+$(document).ready(function(){
+$('.m_jumlah_kas').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+});
+
+
+function ganti_nota() {
+    var cabang = $('.cabang').val();
+      $.ajax({
+        url  :baseUrl+'/sales/posting_pembayaran_form/nomor_posting',
+        data : {cabang},
+        success:function(data){
+          $('.nomor_posting').val(data.nota);
+        }
+      })
+}
+
 $('#btn_kwitansi').click(function(){
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
     var cabang = $('.cabang').val();
+    var akun_bank = $('.akun_bank').val();
+    var id = "{{ $id }}"
     if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B') {
         $.ajax({
             url  :baseUrl+'/sales/posting_pembayaran_form/cari_kwitansi',
-            data : {cabang,cb_jenis_pembayaran,array_simpan},
+            data : {id,cabang,cb_jenis_pembayaran,array_simpan,akun_bank,nomor},
             success:function(data){
               $('.kirim').html(data);
               $('#modal').modal('show');
@@ -325,7 +367,7 @@ $('#btn_kwitansi').click(function(){
     }else if (cb_jenis_pembayaran == 'U') {
         $.ajax({
             url  :baseUrl+'/sales/posting_pembayaran_form/cari_uang_muka',
-            data : {cabang,cb_jenis_pembayaran,array_simpan},
+            data : {cabang,cb_jenis_pembayaran,array_simpan,akun_bank},
             success:function(data){
               $('.kirim').html(data);
               $('#modal').modal('show');
@@ -358,12 +400,12 @@ function hitung() {
     $('.ed_jumlah_text').val(accounting.formatMoney(temp,"",2,'.',','));
     $('.ed_jumlah').val(temp);
 }
-$('.append').click(function(){
+
+$('#append').click(function(){
 
     var cabang = $('.cabang').val();
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
     var nomor = [];
-    console.log(cb_jenis_pembayaran);
 if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B') {
     $('.tanda').each(function(){
         var check = $(this).is(':checked');
@@ -382,6 +424,12 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembaya
         dataType:'json',
         success:function(data){
             for (var i = 0; i < data.data.length; i++) {
+                if (cb_jenis_pembayaran == 'F') {
+                    var cek = '<input type="text" value="" class="form-control d_cek" name="d_cek[]">';
+                }else{
+                    var cek = '<input readonly type="text" value="" class="form-control d_cek" name="d_cek[]">';
+
+                }
                 table_data.row.add([
                     data.data[i].k_nomor+'<input type="hidden" value="'+data.data[i].k_nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
 
@@ -389,6 +437,8 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembaya
                     '<input type="hidden" value="'+data.data[i].k_kode_akun+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
 
                     accounting.formatMoney(data.data[i].k_netto,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].k_netto+'" class="form-control d_netto" name="d_netto[]">',
+                    cek,
+
                     '<input type="text" class="form-control d_keterangan" placeholder="keterangan..." name="d_keterangan[]">',
 
                     '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
@@ -419,6 +469,11 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembaya
         dataType:'json',
         success:function(data){
             for (var i = 0; i < data.data.length; i++) {
+
+     
+                var cek = '<input readonly type="text" value="" class="form-control d_cek" name="d_cek[]">';
+
+
                 table_data.row.add([
                     data.data[i].nomor+'<input type="hidden" value="'+data.data[i].nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
 
@@ -426,7 +481,7 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembaya
                     '<input type="hidden" value="'+data.data[i].kode_acc+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
 
                     accounting.formatMoney(data.data[i].jumlah,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].jumlah+'" class="form-control d_netto" name="d_netto[]">',
-
+                    cek,
                     '<input type="text" class="form-control d_keterangan" placholder="keterangan..." name="d_keterangan[]">',
 
                     '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
@@ -439,12 +494,12 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembaya
         }
     })
 }else{
-    console.log('asd');
  var m_data_acc   =  $('.m_data_acc').val();
  var m_jumlah_kas = $('.m_jumlah_kas').val();
  m_jumlah_kas     = m_jumlah_kas.replace(/[^0-9\-]+/g,"");
 
  var m_keterangan_kas = $('.m_keterangan_kas').val();
+            var cek = '<input readonly type="text" value="" class="form-control d_cek" name="d_cek[]">';
 
             table_data.row.add([
                 'NON KWITANSI'+'<input type="hidden" value="NON KWITANSI" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
@@ -453,58 +508,23 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembaya
                 '<input type="hidden" value="'+m_data_acc+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
 
                 accounting.formatMoney(m_jumlah_kas,"",2,'.',',')+'<input type="hidden" value="'+m_jumlah_kas+'" class="form-control d_netto" name="d_netto[]">',
+                cek,
 
                 '<input type="text" class="form-control d_keterangan" value="'+m_keterangan_kas+'"  placholder="keterangan..." name="d_keterangan[]">',
-               
+
                 '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
             ]).draw();
             $('#modal_kas').modal('hide');
             hitung();
             $('.cb_jenis_pembayaran').addClass('disabled');
             $('.cabang_td').addClass('disabled');
+            $('.bank_tr').addClass('disabled');
 }
 })
-
-@foreach($data_dt as $val)
-
-var nomor_kwi = '{{$val->nomor_penerimaan_penjualan}}';
-@if ($val->kode_customer == 'NON CUSTOMER')
-
-var nama = '{{$val->kode_customer}}';
-var kode = '{{$val->kode_customer}}';
-@else
-var nama = '{{$val->nama}}';
-var kode = '{{$val->kode}}';
-@endif
-
-var kode_akun = '{{$val->kode_acc}}';
-var jumlah = '{{$val->jumlah}}';
-var ket   = '{{$val->keterangan}}';
-var nomor = [];
-
-nomor.push(nomor_kwi);
-array_simpan.push(nomor_kwi);
-
-table_data.row.add([
-    nomor_kwi+'<input type="hidden" value="'+nomor_kwi+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
-
-    nama+'<input type="hidden" value="'+kode+'" class="form-control d_customer" name="d_customer[]">'+
-    '<input type="hidden" value="'+kode_akun+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
-
-    accounting.formatMoney(jumlah,"",2,'.',',')+'<input type="hidden" value="'+jumlah+'" class="form-control d_netto" name="d_netto[]">',
-
-    '<input type="text" value="'+ket+'" class="form-control d_keterangan" placeholder="keterangan..." name="d_keterangan[]">',
-
-    '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
-]).draw();
-
-$('#modal').modal('hide');
-hitung();
-$('.cb_jenis_pembayaran').addClass('disabled');
-$('.cabang_td').addClass('disabled');
-
-@endforeach
-
+function m_kode_akun(argument) {
+   var jenis =  $('.m_akun_as').find(':selected').data('kode_acc');
+   $('.m_data_acc').val(jenis);
+}
 function hapus_detail(o) {
     var par = o.parentNode.parentNode;
     var arr = $(par).find('.d_nomor_kwitansi').val();
@@ -515,39 +535,66 @@ function hapus_detail(o) {
 
     table_data.row(par).remove().draw(false);
 
-    $('.d_nomor_kwitansi').each(function(){
+    table_data.$('.d_nomor_kwitansi').each(function(){
         temp+=1;
     });
     if (temp == 0) {
         $('.cb_jenis_pembayaran').removeClass('disabled');
         $('.cabang_td').removeClass('disabled');
+        $('.bank_tr').removeClass('disabled');
     }
     
 }
 
 $('#btnsimpan').click(function(){
-    var temp = 0;
+    var temp  = [];
     var temp1 = 0;
-    var id = '{{$id}}';
-
-    $('.d_keterangan').each(function(){
+    var temp2 = [];
+    var id    = '{{ $id }}';
+    var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
+    table_data.$('.d_keterangan').each(function(){
         if ($(this).val() != '') {
-            temp+=1;
+            temp.push(1);
+        }else{
+            temp.push(0);
         }
-        temp1+=1;
+        temp1=1;
     });
+
+    
     if (temp1 == 0) {
         toastr.warning('Tidak Ada Yang Di Posting');
         return 1;
     }
-    if (temp == 0) {
+
+    var index = temp.indexOf(0);
+    if (index != -1) {
         toastr.warning('Kolom Keterangan Pada Sequence Harus Diisi');
         return 1;
     }
+    if (cb_jenis_pembayaran == 'F') {
+        table_data.$('.d_cek').each(function(){
+            if ($(this).val() != '') {
+                temp2.push(1);
+            }else{
+                temp2.push(0);
+            }
+        });
+
+        var index1 = temp2.indexOf(0);
+        if (index1 != -1) {
+            toastr.warning('Nomor Cek Harus Diisi');
+            return 1;
+        }
+    }
+    
+
+    
+
 
     swal({
         title: "Apakah anda yakin?",
-        text: "Simpan Data Kwitansi!",
+        text: "Update Data!",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
@@ -580,11 +627,11 @@ $('#btnsimpan').click(function(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                        location.reload();
+                        window.location.href='{{url('sales/posting_pembayaran')}}';
                 });
             }else{
                 $('#nota_kwitansi').val(response.nota);
-                toastr.info('Nomor Posting Telah Dirubah Menjadi '+response.nota);
+                toastr.info('Nomor Kwitansi Telah Dirubah Menjadi '+response.nota);
                 $('#btnsimpan').click();
             }
           },
@@ -601,5 +648,67 @@ $('#btnsimpan').click(function(){
      });
 })
 
+
+
+@foreach($data_dt as $val)
+
+var nomor_kwi = '{{$val->nomor_penerimaan_penjualan}}';
+@if ($val->kode_customer == 'NON CUSTOMER')
+
+var nama = '{{$val->kode_customer}}';
+var kode = '{{$val->kode_customer}}';
+@else
+var nama = '{{$val->nama}}';
+var kode = '{{$val->kode}}';
+@endif
+
+var kode_akun = '{{$val->kode_acc}}';
+var jumlah = '{{$val->jumlah}}';
+var ket   = '{{$val->keterangan}}';
+
+nomor.push(nomor_kwi);
+array_simpan.push(nomor_kwi);
+if ({{ $data->jenis_pembayaran  == 'F' }}) {
+    var cek = '<input type="text" value="'+'{{$val->nomor_cek}}'+'" class="form-control d_cek" name="d_cek[]">';
+}else{
+    var cek = '<input readonly type="text" value="" class="form-control d_cek" name="d_cek[]">';
+
+}
+table_data.row.add([
+    nomor_kwi+'<input type="hidden" value="'+nomor_kwi+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
+
+    nama+'<input type="hidden" value="'+kode+'" class="form-control d_customer" name="d_customer[]">'+
+    '<input type="hidden" value="'+kode_akun+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
+
+    accounting.formatMoney(jumlah,"",2,'.',',')+'<input type="hidden" value="'+jumlah+'" class="form-control d_netto" name="d_netto[]">',
+    cek,
+    '<input type="text" value="'+ket+'" class="form-control d_keterangan" placeholder="keterangan..." name="d_keterangan[]">',
+
+    '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+]).draw();
+
+$('#modal').modal('hide');
+hitung();
+$('.cb_jenis_pembayaran').addClass('disabled');
+$('.cabang_td').addClass('disabled');
+
+@endforeach
+
+function lihat_jurnal(){
+
+        var id = '{{ $id }}';
+        $.ajax({
+            url:baseUrl + '/sales/kwitansi/jurnal',
+            type:'get',
+            data:{id},
+            success:function(data){
+               $('.tabel_jurnal').html(data);
+               $('.modal_jurnal').modal('show');
+            },
+            error:function(data){
+                // location.reload();
+            }
+        }); 
+   }
 </script>
 @endsection

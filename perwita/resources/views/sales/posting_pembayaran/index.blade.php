@@ -146,7 +146,7 @@
 
     }
 
-    function print(id){
+    function ngeprint(id){
         window.location.href = baseUrl + '/sales/posting_pembayaran_print/'+id;
 
     }

@@ -340,53 +340,57 @@
      </tr>
      <tr>
          <td class="right textcenter" valign="top" height="300">
-         <table> 
           @foreach($data_dt as $val)
+         <table> 
          <tr>{{$val->nomor_penerimaan_penjualan}}</tr>
-         @endforeach
          </table>
+         @endforeach
        </td>
        <td class="textcenter right" valign="top" height="300">
-         <table width="100%">
          @foreach($data_dt as $val)
-         <tr>{{$val->nomor_penerimaan_penjualan}}</tr>
-         @endforeach
+         <table width="100%">
+          @if($val->k_tanggal != null)
+         <tr>{{$val->k_tanggal}}</tr>
+         @else
+         <tr>{{$data->tanggal}}</tr>
+         @endif
          </table>
+         @endforeach
        </td>
-        <td class="textleft top right" valign="top" height="300">
-         <table width="100%">
+        <td class="top right" valign="top" height="300">
          @foreach($data_dt as $val)
+         <table width="100%">
          <tr>{{$val->mb_nama}}</tr>
-         @endforeach
          </table>
+         @endforeach
        </td>
        <td class="textright top right" valign="top" height="300">
-         <table width="100%">
           @foreach($data_dt as $val)
+         <table width="100%">
          <tr>{{ number_format($val->jumlah, 2, ",", ".") }}</tr>
-         @endforeach
          </table>
+         @endforeach
        </td>
        <td class="textcenter top right" valign="top" height="300">
-         <table width="100%">
            @foreach($data_dt as $val)
+         <table width="100%">
          <tr>{{$val->kode_csf}}</tr>
-         @endforeach
          </table>
+         @endforeach
        </td>
        <td class="textcenter top right" valign="top" height="300">
-         <table width="100%">
           @foreach($data_dt as $val)
-         <tr>{{$val->kode_acc}}</tr>
-         @endforeach
-         </table>
-       </td>
-         <td class="textleft top right" valign="top" height="300">
          <table width="100%">
-        @foreach($data_dt as $val)
-         <tr>{{$val->keterangan}}</tr>
-         @endforeach
+         <tr>{{$val->kode_acc}}</tr>
          </table>
+         @endforeach
+       </td>
+         <td class=" top right" valign="top" height="300">
+        @foreach($data_dt as $val)
+         <table width="100%">
+         <tr>{{$val->keterangan}}</tr>
+         </table>
+         @endforeach
       </td>
 
      </tr>
