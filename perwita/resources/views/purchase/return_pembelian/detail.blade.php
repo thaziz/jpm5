@@ -463,8 +463,9 @@
                     </div>
                   </div>
                 </div>
-
+<button class="btn btn-info" id="test"> test </button>
 <div class="row" style="padding-bottom: 50px;"></div>
+
 
 
 @endsection
@@ -483,6 +484,17 @@
         $('.kembali').show();
     })
 
+
+    $('#test').click(function(){
+      $.ajax({
+        type : "get",
+        url : baseUrl + '/kartuhutangdetail',
+        dataType : "json",
+        success:function(response){
+          
+        }
+      })
+    })
 
 
      function lihatjurnal($ref,$note){

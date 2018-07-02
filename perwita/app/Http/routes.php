@@ -81,6 +81,10 @@ Route::post('setting/hak_akses/edit_hak_akses', 'setting\hak_akses_Controller@ed
 //***PEMBELIAN
 // Route::get('tes' , 'sales\invoice_Controller@index');
 
+Route::get('kartuhutangrekap' , 'Queryanalisa@kartuhutangrekap');
+Route::get('kartuhutangdetail' , 'Queryanalisa@kartuhutangdetail');
+
+
 
 Route::get('suratpermintaanpembelian' , 'PurchaseController@spp_index');
 Route::post('suratpermintaanpembelian/savesupplier' , 'PurchaseController@savespp');

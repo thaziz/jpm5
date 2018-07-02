@@ -1059,7 +1059,8 @@ class MasterPurchaseController extends Controller
 			$data['item'] = masterItemPurchase::all();
 				$data['kota'] = master_kota::all();
 		$data['provinsi'] = master_provinsi::all();
-		
+		$cabang = $data['supplier'][0]->kodecabang;
+		$data['mastersup'] = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang'");
 
 		return view('purchase/master/master_supplier/detail', compact('data'));
 	}

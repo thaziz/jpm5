@@ -3,7 +3,6 @@
 @section('title', 'dashboard')
 
 @section('content')
-
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Master Supplier </h2>
@@ -223,10 +222,12 @@
                             Acc Hutang Dagang
                           </td>
                           <td> 
-                            <select class="form-control chosen-select-width1 acc_hutangdagang" name="acc_hutangdagang">
-                              <option value=""> Pilih Id Akun
+                            <select class="form-control chosen-select-width1 acc_hutangdagang"   style="width:100%" disabled="">
+                              @foreach($data['mastersup'] as $mstrsup)
+                              <option value="{{$mstrsup->id_akun}}" @if($mstrsup->id_akun == $sup->acc_hutang) selected @endif > {{$mstrsup->id_akun}} - {{$mstrsup->nama_akun}}
                               </option>
-                            </select>
+                              @endforeach
+                            </select> <input type="hidden" class="acchutangdagang" value="{{$sup->acc_hutang}}" name="acc_hutangdagang"> <input type="hidden" class="acccsf" value="{{$sup->acc_csf}}" name="acc_csf">
                           </td>
                         </tr>
                          
@@ -234,9 +235,10 @@
                           <td>
                             Acc CSF
                           </td>
-                          <td> <select class="form-control chosen-select-width1 acc_csf" name="acc_csf">
-                              <option value=""> Pilih Id Akun
+                          <td> <select class="form-control chosen-select-width1 acc_csf" >
+                                 <option value="{{$mstrsup->id_akun}}" @if($mstrsup->id_akun == $sup->acc_hutang) selected @endif > {{$mstrsup->id_akun}} - {{$mstrsup->nama_akun}}
                               </option>
+                              @endforeach
                             </select>
                           </td>
                         </tr>
@@ -578,6 +580,8 @@ $(function(){
     $('#idcabang').attr('disabled', false);
     $('.ubah').attr('readonly' , false);
     $('.ubah').attr('disabled' , false);
+    $('.acc_hutangdagang').attr('disabled' , false);
+    $('.acc_csf').attr('disabled' , false);
 
 
 
@@ -750,7 +754,15 @@ $(function(){
       })
   })
 
+$('.acc_hutangdagang').change(function(){
+  val = $(this).val();
+  $('.acchutangdagang').val(val)
+})
 
+$('.acc_csf').change(function(){
+  val  = $(this).val();
+  $('.acccsf').val(val);
+})
 
 $('.cabang').change(function(){
 
@@ -771,7 +783,7 @@ $('.cabang').change(function(){
               $('.acc_hutangdagang').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
             })
               $('.acc_hutangdagang').trigger("chosen:updated");
-          $('.acc_hutangdagang').trigger("liszt:updated");
+              $('.acc_hutangdagang').trigger("liszt:updated");
 
 
            $('.acc_csf').empty();
@@ -790,7 +802,7 @@ $('.cabang').change(function(){
      })
 
 
-     cabang = $('.cabang').val();
+    /* cabang = $('.cabang').val();
      $.ajax({
       data :  {cabang},
       url : baseUrl + '/mastersupplier/getacchutang',
@@ -821,7 +833,7 @@ $('.cabang').change(function(){
         
 
          }
-     })
+     })*/
 
 
 
