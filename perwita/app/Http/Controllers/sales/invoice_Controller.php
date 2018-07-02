@@ -17,30 +17,6 @@ use File;
 use Illuminate\Support\Facades\Storage;
 class invoice_Controller extends Controller
 {
-    public function table_data_detail (Request $request) {
-        $nomor = strtoupper($request->input('nomor'));
-        $pendapatan = strtoupper($request->input('pendapatan'));
-		if ($pendapatan =='KORAN'){
-			$sql = "   SELECT *,nomor_do ||'-'||id_do AS nomor FROM invoice_d WHERE nomor_invoice='$nomor'  ";
-		}else{
-			$sql = "   SELECT *,nomor_do AS nomor FROM invoice_d WHERE nomor_invoice='$nomor'  ";
-		}
-        $list = DB::select(DB::raw($sql));
-        $data = array();
-        foreach ($list as $r) {
-            $data[] = (array) $r;
-        }
-        $i=0;
-        foreach ($data as $key) {
-            // add new button
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['id'].'" name="'.$data[$i]['nomor_do'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                    </div> ';
-            $i++;
-        }
-        $datax = array('data' => $data);
-        echo json_encode($datax);
-    }
 
     public function datatable_invoice()
     {
@@ -990,7 +966,7 @@ public function simpan_invoice(request $request)
                 if ($ppn_type == 'npkp') {
        
                   $tot_own1 = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/$request->netto_detail * $tot_own;
-                  $tot_subcon1 = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/$request->netto_detail * $tot_subcon1;
+                  $tot_subcon1 = (filter_var($request->ppn,FILTER_SANITIZE_NUMBER_INT)/100)/$request->netto_detail * $tot_subcon;
                   $tot_own -= $tot_own1;
                   $tot_subcon -= $tot_subcon1;
     
@@ -1972,9 +1948,12 @@ public function update_invoice(request $request)
 
         if (!is_dir(storage_path('uploads/invoice/'))) {
           mkdir(storage_path('uploads/invoice/'), 0777, true);
-        }
-
-        $path = storage_path('uploads/invoice');
+        } 
+        $image = $request->file('ed_img');
+      
+        $upload = 'upload/images';
+        $filename = '.jpg';
+        Storage::put('upload/images'.$filename,file_get_contents( $request->file('ed_img')->getRealPath()));
         // return $original_path;
         // Image::make($file)
         //         ->resize(261,null,function ($constraint) {
@@ -1984,8 +1963,8 @@ public function update_invoice(request $request)
         //         ->resize(90, 90)
         //         ->save($thumbnail_path . $file_name);
 
-        Storage::putFileAs('photos', new File($path), 'pajak_'.$request->nomor_pajak.'.'.'jpg');
-
+        Storage::put($path, new File($path), 'pajak_'.$request->nomor_pajak.'.'.'jpg');
+        
         $user = DB::table('invoice')->where('nomor',$id)->update(['i_image_pajak' => $file_name,'i_faktur_pajak'=>$request->nomor_pajak]);
 
         return response()->json(['status'=>1]);

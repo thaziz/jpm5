@@ -25,6 +25,7 @@
         var customer    = '{{$customer}}';
         var id          = '{{$id}}';
         var jenis_tarif = '{{$jenis_tarif}}';
+        var nota_kwitansi = '{{$nota_kwitansi}}';
         var array_simpan = [];
         var array_edit = [];
         var array_harga = [];
@@ -56,7 +57,7 @@
         serverSide: true,
         ajax: {
             url:'{{ route('datatable_detail_invoice') }}',
-            data:{cabang,customer,array_simpan,array_edit,array_harga,id,jenis_tarif}
+            data:{cabang,customer,array_simpan,array_edit,array_harga,id,jenis_tarif,nota_kwitansi}
         },
         columnDefs: [
           {
