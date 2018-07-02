@@ -68,26 +68,43 @@ class Queryanalisa extends Controller
 					->select('fp_idsup')
 					->get();
 
-		$arraysup = array($supplier);
-		$result_supplier = array_unique($arraysup);
-
-	
-		for($j = 0; $j < count($result_supplier); $j++){
-			$idsupplier = $result_supplier[0][$j]->fp_idsup;
-			$data['carisupp'] = DB::select("select idsup , nama_supplier, no_supplier  from  supplier where idsup = '$idsupplier'");
+		$arraysup = [];
+		for($i = 0; $i < count($supplier); $i++){
+			$idsup = $supplier[$i]->fp_idsup;
+			array_push($arraysup , $idsup);
 		}
 
+
+		//unique supplier
+		$result_supplier = array();
+		foreach ($arraysup as &$v) {
+		    if (!isset($result_supplier[$v]))
+		        $result_supplier[$v] =& $v;
+		}
+
+	
+		$array = array_values($result_supplier);
+		
+
+	//	cari data supplier
+		$data['carisupp'] = array();
+		for($j = 0; $j < count($array); $j++){
+			
+						$idsupplier = $array[$j];
+						$carisupp = DB::select("select idsup , nama_supplier, no_supplier  from  supplier where idsup = '$idsupplier'");
+			array_push($data['carisupp'], $carisupp);
+		}
 
 		//return $result_supplier;
 		$data['kartuhutang'] = [];
 		$totalsupplier = 0;
-	
+		//return $data['carisupp'];
 		
-		for($i = 0; $i < count($result_supplier); $i++){
+		for($i = 0; $i < count($array); $i++){
 			
-			$no_supplier = $data['carisupp'][$i]->no_supplier;
+			$no_supplier = $data['carisupp'][$i][0]->no_supplier;
 		//	return $no_supplier;
-			$idsup = $data['carisupp'][$i]->idsup;
+			$idsup = $data['carisupp'][$i][0]->idsup;
 
 			$bbk = DB::select("select bbkd_supplier as supplier,  bbk_nota as nota, bbk_tgl as tgl, bbkd_nominal as nominal ,'K' as flag from bukti_bank_keluar_detail, bukti_bank_keluar where bbkd_idbbk = bbk_id and bbkd_akunhutang LIKE '2101%' and bbkd_supplier = '$no_supplier'");
 
@@ -106,12 +123,13 @@ class Queryanalisa extends Controller
 
 		}
 
-		$totalhutangdebit = 0;
-		$totalhutangkredit = 0;
+	
 		$data['totalhutangkredit'] = [];
 		$data['totalhutangdebit'] = [];
 
 		for($i = 0; $i < count($data['kartuhutang']); $i++){
+				$totalhutangdebit = 0;
+				$totalhutangkredit = 0;
 			for($j = 0; $j < count($data['kartuhutang'][$i]); $j++){
 						if($data['kartuhutang'][$i][$j]->flag == 'D'){
 							$totalhutangdebit = $totalhutangdebit + floatval($data['kartuhutang'][$i][$j]->nominal);
@@ -131,45 +149,68 @@ class Queryanalisa extends Controller
 
 	public function kartuhutangdetail(){
 
-		$supplier = DB::table('faktur_pembelian')
-					->select('fp_idsup')
-					->get();
 
-		$arraysup = array($supplier);
-		$result_supplier = array_unique($arraysup);
+		$tglawal = '2018-06-02';
+		$tglakhir = '2018-07-02';
 
-		//identitas supplier
-		for($j = 0; $j < count($result_supplier); $j++){
-			$idsupplier = $result_supplier[0][$j]->fp_idsup;
-			$data['carisupp'] = DB::select("select idsup , nama_supplier, no_supplier  from  supplier where idsup = '$idsupplier'");
+		$supplier = DB::select("select fp_idsup from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
+
+		$arraysup = [];
+		for($i = 0; $i < count($supplier); $i++){
+			$idsup = $supplier[$i]->fp_idsup;
+			array_push($arraysup , $idsup);
 		}
 
 
+		//unique supplier
+		$result_supplier = array();
+		foreach ($arraysup as &$v) {
+		    if (!isset($result_supplier[$v]))
+		        $result_supplier[$v] =& $v;
+		}
+
+	
+		$array = array_values($result_supplier);
+		
+
+
+	//	cari data supplier
+		$data['carisupp'] = array();
+		for($j = 0; $j < count($array); $j++){
+			
+						$idsupplier = $array[$j];
+						$carisupp = DB::select("select idsup , nama_supplier, no_supplier  from  supplier where idsup = '$idsupplier'");
+			array_push($data['carisupp'], $carisupp);
+		}
 
 		$data['saldoawal'] = [];
-		//mencari semua supplier dgn id unique
-		for($i = 0; $i < count($result_supplier); $i++){
 
-			$no_supplier = $data['carisupp'][$i]->no_supplier;
+		//mencari semua supplier dgn id unique
+		for($i = 0; $i < count($array); $i++){
+
+			$no_supplier = $data['carisupp'][$i][0]->no_supplier;
 		
-			$idsup = $data['carisupp'][$i]->idsup;
+			$idsup = $data['carisupp'][$i][0]->idsup;
 
 
 			//mencari saldo awal
-			$datasaldoawal = DB::select("select * from faktur_pembelian fp_idsup = '$idsup'");
+			$datasaldoawal = DB::select("select * from faktur_pembelian where fp_idsup = '$idsup'");
 
 			//countfpsaldoawal
 			$saldoawal = 0;
 			for($k = 0 ; $k < count($datasaldoawal); $k++){
-				$netto = $datasaldoawal[$i]->fp_netto;
+				$netto = $datasaldoawal[$k]->fp_netto;
 				$saldoawal = $saldoawal + $netto;
 			}
 
 			array_push($data['saldoawal'] , $saldoawal);
-			
-
 		}
 
+		$databaru = DB::select("select * from faktur_pembelian where fp_tgl > '$tglakhir'");
+
+		for($i = 0; $i < count($databaru); $i++){
+			
+		}
 
 		return $data;
 

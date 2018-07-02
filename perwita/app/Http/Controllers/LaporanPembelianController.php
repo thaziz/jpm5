@@ -564,7 +564,6 @@ class LaporanPembelianController extends Controller
 		$bkk = DB::select("select 'K' as flag , bkk_nota as nota,bkk_keterangan as keterangan, bkk_tgl as tgl, bkk_total as kredit from bukti_kas_keluar where bkk_jenisbayar = '2' and bkk_tgl >= '$min' AND bkk_tgl <= '$max' $akun_bkk $supplier_bkk $cabang_bkk ");
 
 		$data['data'] = array_merge($fp, $um, $bkk , $bbk);
-
 		return view('purchase/laporan_analisa_pembelian/lap_kartu_hutang/kartu_hutang/ajax_pencarian_akun',compact('supplier','data','akun','cabang')); 
 
 	}
