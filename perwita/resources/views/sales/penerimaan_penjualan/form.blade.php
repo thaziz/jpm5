@@ -123,7 +123,6 @@
                             <tr>
                                 <td style="width:110px;">Jenis Tarif</td>
                                 <td colspan="20" class="jenis_tarif_td">
-
                                     <select  class="form-control jenis_tarif" onchange="nota_tes()" name="jenis_tarif" >
                                         <option value="0">Pilih - Jenis</option>
                                         <option value="PAKET"> PAKET </option>
