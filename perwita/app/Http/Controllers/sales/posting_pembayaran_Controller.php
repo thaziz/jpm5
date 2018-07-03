@@ -574,9 +574,9 @@ class posting_pembayaran_Controller extends Controller
                 for ($i=0; $i < count($request->d_nomor_kwitansi); $i++) { 
                     $kwitansi = DB::table('kwitansi')
                                   ->where('k_nomor',$request->d_nomor_kwitansi[$i])
-                                  ->get();
-                    array_push($temp_akun_piutang, $kwitansi[$a]->kd_kode_akun_acc);
-                    array_push($temp_nominal_piutang, $kwitansi[$a]->kd_total_bayar);
+                                  ->first();
+                    array_push($temp_akun_piutang, $kwitansi->k_kode_akun);
+                    array_push($temp_nominal_piutang, $kwitansi->k_netto);
                     
                 }
                 $fix_akun_piutang = array_unique($temp_akun_piutang);
@@ -614,7 +614,7 @@ class posting_pembayaran_Controller extends Controller
                             ->where('id_akun',$akun[$i])
                             ->first();
 
-                    if (substr($akun[$i],0, 4)==1001 or substr($akun[$i],0, 4)==1003 or substr($akun[$i],0, 4)==1099 or substr($akun[$i],0, 2)==11) {
+                    if ($i == 0) {
                     
                         if ($cari_coa->akun_dka == 'D') {
                             $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
@@ -633,7 +633,7 @@ class posting_pembayaran_Controller extends Controller
                             $data_akun[$i]['jrdt_statusdk'] = 'K';
                             $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
                         }
-                    }else if (substr($akun[$i],0, 2)==13) {
+                    }else{
 
                         if ($cari_coa->akun_dka == 'D') {
                             $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
@@ -656,7 +656,7 @@ class posting_pembayaran_Controller extends Controller
                 }
             }
 
-            if ($request->cb_jenis_pembayaran == 'F' or $request->cb_jenis_pembayaran == 'C') {
+            if ($request->cb_jenis_pembayaran == 'F' or $request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'T') {
                 $jurnal_dt = d_jurnal_dt::insert($data_akun);
                 $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
             }
