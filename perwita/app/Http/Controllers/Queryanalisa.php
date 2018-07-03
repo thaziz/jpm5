@@ -60,15 +60,18 @@ use Dompdf\Dompdf;
 
 class Queryanalisa extends Controller
 {
+
+
+	//berdasarkan supplier
 	public function kartuhutangrekap(){
 
 		// KARTU HUTANG REKAP BERDASARKAN AKUN
 
 
 		$tglawal = '2018-06-02';
-		$tglakhir = '2018-07-02';
+		$tglakhir = '2018-07-03';
 
-		$supplier = DB::select("select fp_idsup from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
+		$supplier = DB::select("select fp_idsup from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_jenisbayar = '2'");
 
 
 		$arraysup = [];
@@ -89,7 +92,7 @@ class Queryanalisa extends Controller
 	
 		$array = array_values($result_supplier);
 		
-
+		return $array;
 
 
 	//	cari data supplier
