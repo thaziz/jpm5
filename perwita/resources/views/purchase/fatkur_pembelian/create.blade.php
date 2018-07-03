@@ -164,6 +164,8 @@
                             </li>
                             <li  id="tmbhdatasubcon" data-val='SC'><button class="btn btn-default tmbhdatasubcon" data-toggle="tab" href="#tab-5">Pembayaran SUBCON</button>
                             </li>
+                            <li  id="tmbhdatavendor" data-val='SC'><button class="btn btn-default tmbhdatavendor" data-toggle="tab" href="#tab-6">Pembayaran SUBCON</button>
+                            </li>
                         </ul>
                         
                         <!-- KONTEN TANPA PO -->
@@ -1127,6 +1129,11 @@
                              <!-- PANEL SUBCON -->
                              <div id="tab-5" class="tab-pane">
                                 <div class="panel-body subcon" style="width: 100%;margin: 0 auto">
+                                </div>
+                            </div>
+
+                            <div id="tab-6" class="tab-pane">
+                                <div class="panel-body vendor" style="width: 100%;margin: 0 auto">
                                 </div>
                             </div>
                               <!-- modal -->
@@ -7926,6 +7933,12 @@
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
 
+    $(".tmbhdatavendor").removeClass('disabled');
+    $(".save_sc_um").prop('hidden',true);
+    $(".sc_tambah_um").prop('hidden',true);
+    $(".tmbhdatavendor").css('background','none');
+    $(".tmbhdatavendor").css('color','none');
+
     
    })
 
@@ -7960,6 +7973,12 @@ var old_nota =$('.nofaktur1').val();
     $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
+
+    $(".tmbhdatavendor").removeClass('disabled');
+    $(".save_sc_um").prop('hidden',true);
+    $(".sc_tambah_um").prop('hidden',true);
+    $(".tmbhdatavendor").css('background','none');
+    $(".tmbhdatavendor").css('color','none');
    })
 
    $(".tmbhdataitem").on('click',function(e){
@@ -7991,6 +8010,12 @@ var old_nota =$('.nofaktur1').val();
     $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
+
+    $(".tmbhdatavendor").removeClass('disabled');
+    $(".save_sc_um").prop('hidden',true);
+    $(".sc_tambah_um").prop('hidden',true);
+    $(".tmbhdatavendor").css('background','none');
+    $(".tmbhdatavendor").css('color','none');
    })
 
    $(".tmbhdataoutlet").on('click',function(e){
@@ -8030,6 +8055,12 @@ var old_nota =$('.nofaktur1').val();
     $(".sc_tambah_um").prop('hidden',true);
     $(".tmbhdatasubcon").css('background','none');
     $(".tmbhdatasubcon").css('color','none');
+
+    $(".tmbhdatavendor").removeClass('disabled');
+    $(".save_sc_um").prop('hidden',true);
+    $(".sc_tambah_um").prop('hidden',true);
+    $(".tmbhdatavendor").css('background','none');
+    $(".tmbhdatavendor").css('color','none');
    });
 
    $(".tmbhdatasubcon").on('click',function(e){
@@ -8071,8 +8102,61 @@ var old_nota =$('.nofaktur1').val();
     $(".sc_tambah_um").prop('hidden',false);
     $(".tmbhdatasubcon").css('background','grey');
     $(".tmbhdatasubcon").css('color','black');
+
+    $(".tmbhdatavendor").removeClass('disabled');
+    $(".save_sc_um").prop('hidden',true);
+    $(".sc_tambah_um").prop('hidden',true);
+    $(".tmbhdatavendor").css('background','none');
+    $(".tmbhdatavendor").css('color','none');
    });
 
+
+   $(".tmbhdatasubcon").on('click',function(e){
+   var cab = $('.cabang').val();
+
+    e.preventDefault();
+
+    $.ajax({
+      url:baseUrl + '/fakturpembelian/pembayaran_vendor',
+      data:'cab='+cab,
+      type:'get',
+      success:function(response){
+        $('.nofaktur').val(response.nota);
+      }
+    })
+
+    $(".tmbhdatapenerus").removeClass('disabled');
+    $(".save_bp_um").prop('hidden',true);
+    $(".bp_tambah_um").prop('hidden',true);
+    $(".tmbhdatapenerus").css('background','none');
+    $(".tmbhdatapenerus").css('color','none');
+
+    $(".tmbhdatapo").removeClass('disabled');
+    $(".tmbhdatapo").css('background','none');
+    $(".tmbhdatapo").css('color','none');
+
+    $(".tmbhdataitem").removeClass('disabled');
+    $(".tmbhdataitem").css('background','none ');
+    $(".tmbhdataitem").css('color','none');
+
+    $(".tmbhdataoutlet").removeClass('disabled');
+    $(".save_ot_um").prop('hidden',true);
+    $(".ot_tambah_um").prop('hidden',true);
+    $(".tmbhdataoutlet").css('background','none');
+    $(".tmbhdataoutlet").css('color','none');
+
+    $(".tmbhdatasubcon").removeClass('disabled');
+    $(".save_sc_um").prop('hidden',true);
+    $(".sc_tambah_um").prop('hidden',true);
+    $(".tmbhdatasubcon").css('background','none');
+    $(".tmbhdatasubcon").css('color','none');
+
+    $(".tmbhdatavendor").addClass('disabled');
+    $(".save_sc_um").prop('hidden',false);
+    $(".sc_tambah_um").prop('hidden',false);
+    $(".tmbhdatavendor").css('background','grey');
+    $(".tmbhdatavendor").css('color','black');
+   });
 
 $(document).ready(function(){
   $.ajax({

@@ -8,6 +8,9 @@
     .right{
         text-align: right;
         }
+     .center{
+      text-align: center;
+      }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -66,55 +69,12 @@
                                 <th>Jumlah</th>
                                 <th>Memorial</th>
                                 <th>Keterangan </th>
+                                <th>Jenis Pembayaran </th>
                                 <th style="width:8%"> Aksi </th>
                             </tr>
                         </thead>
                         <tbody>
-                          @foreach($data as $val)
-                          <tr>
-                            <td>
-                              <a onclick="detail('{{$val->k_nomor}}')">{{$val->k_nomor}}</a>
-                            </td>
-                            <td>
-                              {{$val->k_tanggal}}
-                            </td>
-                            <td>
-                              {{$val->nama}}
-                            </td>
-                            <td>
-                              {{number_format($val->k_netto, 2, ",", ".")}}
-                            </td>
-                            <td align="right">
-                              {{number_format($val->k_jumlah_memorial, 2, ",", ".")}}
-                            </td>
-                            <td>
-                              {{$val->k_keterangan}}
-                            </td>
-                            <td>
-                              <div class="btn-group">
-                              @if(Auth::user()->punyaAkses('Kwitansi','ubah'))
-                              @if(cek_periode(carbon\carbon::parse($val->k_tanggal)->format('m'),carbon\carbon::parse($val->k_tanggal)->format('Y') ) != 0)
-                                <button type="button" onclick="edit('{{$val->k_nomor}}')" class="btn btn-xs btn-primary">
-                                  <i class="fa fa-pencil"></i>
-                                </button>
-                                @endif
-                              @endif
-                              @if(Auth::user()->punyaAkses('Kwitansi','print'))
-                                <button type="button" onclick="ngeprint('{{$val->k_nomor}}')" class="btn btn-xs btn-warning">
-                                  <i class="fa fa-print"></i>
-                                </button>
-                              @endif
-                              @if(Auth::user()->punyaAkses('Kwitansi','hapus'))
-                              @if(cek_periode(carbon\carbon::parse($val->k_tanggal)->format('m'),carbon\carbon::parse($val->k_tanggal)->format('Y') ) != 0)
-                                <button type="button" onclick="hapus('{{$val->k_nomor}}')" class="btn btn-xs btn-danger">
-                                  <i class="fa fa-trash"></i>
-                                </button>
-                                @endif
-                              @endif
-                              </div>
-                            </td>
-                          </tr>
-                          @endforeach
+                          
                         </tbody>
 
                     </table>
@@ -150,18 +110,45 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $('.tabel_data').DataTable({
-      ordering:false,
-        columnDefs: [  
-          
-                      {
-                         targets: 3,
-                         className: 'right'
-                      },
-
-
-                    ],
-
-    });
+            processing: true,
+            // responsive:true,
+            serverSide: true,
+            ajax: {
+                url:'{{ route("datatable_kwitansi") }}',
+            },
+            columnDefs: [
+              {
+                 targets: 3,
+                 className: 'cssright'
+              },
+              {
+                 targets: 4,
+                 className: 'cssright'
+              },
+              {
+                 targets: 5,
+                 className: 'center'
+              },
+              {
+                 targets:6,
+                 className: 'center'
+              },
+              {
+                 targets:7,
+                 className: 'center'
+              },
+            ],
+            "columns": [
+            { "data": "k_nomor" },
+            { "data": "k_tanggal" },
+            { "data": "customer" },
+            { "data": "jumlah_text"},
+            { "data": "memorial_text" },
+            { "data": "k_keterangan" },
+            { "data": "pembayaran" },
+            { "data": "aksi" },
+            ]
+        });
 });
 
     $(document).on("click","#btn_add_order",function(){
