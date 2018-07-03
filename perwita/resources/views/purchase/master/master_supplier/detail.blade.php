@@ -235,7 +235,9 @@
                           <td>
                             Acc CSF
                           </td>
-                          <td> <select class="form-control chosen-select-width1 acc_csf" >
+                          <td> <select class="form-control chosen-select-width1 acc_csf" disabled="">
+
+                                 @foreach($data['mastersup'] as $mstrsup)
                                  <option value="{{$mstrsup->id_akun}}" @if($mstrsup->id_akun == $sup->acc_hutang) selected @endif > {{$mstrsup->id_akun}} - {{$mstrsup->nama_akun}}
                               </option>
                               @endforeach

@@ -488,7 +488,7 @@
     $('#test').click(function(){
       $.ajax({
         type : "get",
-        url : baseUrl + '/kartuhutangdetail',
+        url : baseUrl + '/kartuhutangrekap',
         dataType : "json",
         success:function(response){
           

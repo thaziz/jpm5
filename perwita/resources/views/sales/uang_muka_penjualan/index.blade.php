@@ -96,6 +96,16 @@
 											<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control col-xs-12 ed_tanggal" name="ed_tanggal" value="{{ $data->tanggal or  date('Y-m-d') }}">
 										</div>
 									</td>
+                  <tr>
+                                <td style="padding-top: 0.4cm">Akun Bank</td>
+                                <td colspan="3" class="akun_bank_td">
+                                    <select class="form-control chosen-select-width cb_akun_h" id="cb_akun_h" name="cb_akun_h" >
+                                        <option value="0">Pilih - Akun Bank</option>
+                                        @foreach($akun_bank as $val)
+                                        <option value="{{$val->mb_id}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Cabang</td>
@@ -247,6 +257,7 @@
                 $('.cb_customer').val('0').trigger('chosen:updated');
                 $('.cb_cabang').val('{{ Auth::user()->kode_cabang}}').trigger('chosen:updated');
                 $('.ed_nomor').val(data.nota);
+                $('#cb_akun_h').val('0');
                 $('.crud').val('N');
                 var now = '{{carbon\carbon::now()->format('Y-m-d')}}';
                 console.log(now);
@@ -274,10 +285,10 @@
                 $('.angka').val(accounting.formatMoney(data.data.jumlah,"",0,'.',','))
                 $('.ed_keterangan').val(data.data.keterangan);
                 $('.ed_tanggal').val(data.data.tanggal);
+                $('#cb_akun_h').val(data.data.id_bank).trigger('chosen:updated');
                 $('.crud').val('E');
                 $('#modal_um').modal('show');
-            },
-            error:function(){
+            }, error:function(){
 
             }
         })
