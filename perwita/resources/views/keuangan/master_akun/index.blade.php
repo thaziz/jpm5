@@ -160,9 +160,9 @@
                                       {{-- <td></td> --}}
                                       <td class="text-center">
 
-                                        <span data-toggle="tooltip" data-placement="top" title="Saldo Awal Bulan Ini {{ number_format($dataAkun->saldo,2) }}">
+                                        {{-- <span data-toggle="tooltip" data-placement="top" title="Saldo Awal Bulan Ini {{ number_format($dataAkun->saldo,2) }}">
                                             <button class="btn btn-xs btn-info editAkun"><i class="fa fa-money fa-fw"></i></button>
-                                        </span>
+                                        </span> --}}
 
                                         <span data-toggle="tooltip" data-placement="top" title="Edit Akun {{ $dataAkun->nama_akun }}">
                                             <button data-parrent="{{ $dataAkun->id_akun }}" data-toggle="modal" data-target="#modal_edit_akun" class="btn btn-xs btn-warning editAkun"><i class="fa fa-pencil-square fa-fw"></i></button>

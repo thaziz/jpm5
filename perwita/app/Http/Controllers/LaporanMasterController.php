@@ -2803,54 +2803,58 @@ class LaporanMasterController extends Controller
 			$cabang_postingbayar = '';
 		}
 		//end
-
-
-   		// return 'b';
-		$saldo = DB::select("SELECT sum(i_sisa_akhir) as saldo from invoice 
+	
+		$saldo_ut = DB::select("SELECT sum(i_sisa_akhir) as saldo from invoice 
 										where date_part('month',i_tanggal) >= '$awal' 
 			   							and date_part('month',i_tanggal) <= '$akir' 
 										$customer_invoice $akun_invoice $cabang_invoice
 										");
+		if (isset($saldo_ut[0]->saldo) == null) {
+			$saldo_ut[0]->saldo = 0;
+		}else{
+			$saldo_ut = $saldo_ut;
+		}
+		
 
-		$data_i = DB::select("SELECT i_kode_customer,customer.nama as cnama 
-										from invoice 
-										join customer on customer.kode = invoice.i_kode_customer 
+		 $data_invoice = DB::select("SELECT 'D' as flag,i_nomor  as kode,i_kode_customer,i_tanggal,i_keterangan,i_sisa_pelunasan
+		 								from invoice 
 										where date_part('month',i_tanggal) >= '$awal' 
-   										and date_part('month',i_tanggal) <= '$akir' 
-										$customer_invoice $akun_invoice $cabang_invoice
-										group by i_kode_customer,customer.nama 
+  										and date_part('month',i_tanggal) <= '$akir' 
+		 								$customer_invoice $akun_invoice $cabang_invoice
 										order by i_kode_customer");
 
-   		$data_p = DB::select("SELECT i_nomor,i_tanggal,i_keterangan,i_kode_customer 
-   										from invoice 
-   										where date_part('month',i_tanggal) >= '$awal' 
-   										and date_part('month',i_tanggal) <= '$akir' 
-										$customer_invoice $akun_invoice $cabang_invoice
-   										group by i_nomor 
-   										order by i_nomor");
+		if (isset($data_invoice[1]) == null) {
+			$data_invoice[] = 0;
+		}else{
+			$data_invoice = $data_invoice;
+		}
 
-   		$data_invoice = DB::select("SELECT i_tipe as flag,i_nomor as kode,i_kode_customer as customer,i_tanggal as tanggal,
-   										i_keterangan as keterangan,i_total_tagihan as total
-										from invoice 
-										where date_part('month',i_tanggal) >= '$awal' 
-   										and date_part('month',i_tanggal) <= '$akir' 
-										$customer_invoice $akun_invoice $cabang_invoice
-										order by i_kode_customer");
-
-   		$data_cn_dn = DB::select("SELECT cd_jenis,cd_nomor,cd_customer,cd_tanggal,cd_keterangan,cd_total FROM cn_dn_penjualan 
-   										where date_part('month',cd_tanggal) >= '$awal' 
+		$data_cn_dn = DB::select("SELECT cd_jenis as flag,cd_nomor as kode,cd_customer,cd_tanggal,cd_keterangan,cd_total FROM cn_dn_penjualan 
+  										where date_part('month',cd_tanggal) >= '$awal' 
    										and date_part('month',cd_tanggal) <= '$akir'
    										$customer_cndn $akun_cndn $cabang_cndn
    										");
+		if (isset($data_cn_dn[2]) == null) {
+			$data_cn_dn[] = 0;
+		}else{
+			$data_cn_dn = $data_cn_dn;
+		}
 
-   		$data_kwitansi = DB::select("SELECT k_create_by,k_kode_cabang,k_nomor,k_kode_customer,kwitansi_d.kd_kode_akun_acc														,k_tanggal,k_keterangan,k_netto FROM kwitansi 
+
+   		$data_kwitansi = DB::select("SELECT 'K' as flag,k_nomor as kode,k_kode_cabang,k_kode_customer,kwitansi_d.kd_kode_akun_acc												,k_tanggal,k_keterangan,k_netto FROM kwitansi 
    										join kwitansi_d on kwitansi.k_nomor = kwitansi_d.kd_k_nomor
    										where date_part('month',k_tanggal) >= '$awal' 
    										and date_part('month',k_tanggal) <= '$akir'
    										$customer_kwitansi $akun_kwitansi $cabang_kwitansi
    										");
+   		
+   		if (isset($data_kwitansi[3]) == null) {
+			$data_kwitansi[] = 0;
+		}else{
+			$data_kwitansi = $data_kwitansi;
+		}
 
-   		$data_postingbayar = DB::select("SELECT k_create_by,nomor,k_kode_customer,k_tanggal,k_keterangan,k_netto FROM kwitansi 
+   		$data_postingbayar = DB::select("SELECT 'K' as flag,nomor as kode,k_kode_customer,k_tanggal,k_keterangan,posting_pembayaran.jumlah,k_netto FROM kwitansi 
    										join posting_pembayaran_d on posting_pembayaran_d.nomor_penerimaan_penjualan = kwitansi.k_nomor
    										join posting_pembayaran on posting_pembayaran.nomor = posting_pembayaran_d.nomor_posting_pembayaran
    										where date_part('month',k_tanggal) >= '$awal' 
@@ -2858,11 +2862,23 @@ class LaporanMasterController extends Controller
    										$customer_postingbayar $akun_postingbayar $cabang_postingbayar
    										");
 
-   		$data['data'] = array_merge([$saldo,$data_i,$data_p,$data_invoice,$data_cn_dn,$data_kwitansi,$data_postingbayar]);
+   		if (isset($data_postingbayar[4]) == null) {
+			$data_postingbayar[] = 0;
+		}else{
+			$data_postingbayar = $data_postingbayar;
+		}
 
-   		return $data;
+   		$data = array_merge($data_invoice,$data_cn_dn,$data_kwitansi,$data_postingbayar);
+
+   		if ($request->customer != '') {
+   			$customer = DB::table('customer')->where('kode','=',$request->customer)->get();
+   		}else{
+   			$customer = DB::table('customer')->get();
+   		}
    		
-   		return view('purchase/master/master_penjualan/laporan/lap_piutang/ajax_lap_piutang',compact('data','data_i','data_p','customer','data_saldo'));
+   		// return $data;
+
+   		return view('purchase/master/master_penjualan/laporan/lap_piutang/ajax_lap_piutang',compact('saldo_ut','data','customer','data_saldo'));
 
    }
    public function rekap_customer(){

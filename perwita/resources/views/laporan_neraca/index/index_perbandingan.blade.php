@@ -57,7 +57,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
       <div class="col-lg-10">
-          <h2> Laporan Neraca </h2>
+          <h2> Laporan Neraca {{ ($_GET['cab'] == "all") ? "Semua Cabang" : "Cabang ".$cabang->nama }}</h2>
           <ol class="breadcrumb">
               <li>
                   <a>Home</a>
