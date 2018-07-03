@@ -88,13 +88,8 @@ class Queryanalisa extends Controller
 		        $result_supplier[$v] =& $v;
 		}
 
-		
-	
 		$array = array_values($result_supplier);
 		
-		return $array;
-
-
 	//	cari data supplier
 		$data['carisupp'] = array();
 		for($j = 0; $j < count($array); $j++){

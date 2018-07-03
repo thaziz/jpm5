@@ -695,6 +695,7 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
   Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPembelianController@reportkartuhutang');
       //pencarian
       Route::get('carikartuhutang/carikartuhutan_perakun', 'LaporanPembelianController@carikartuhutan_perakun')->name('carikartuhutan_perakun');
+      Route::get('carikartuhutang/carikartuhutang_persupplier', 'LaporanPembelianController@carikartuhutang_persupplier')->name('carikartuhutang_persupplier');
   Route::get('reportexcelkartuhutang/reportexcelkartuhutang', 'LaporanPembelianController@reportexcelkartuhutang');
   //END OF
 
