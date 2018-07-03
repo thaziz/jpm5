@@ -555,15 +555,86 @@ class LaporanPembelianController extends Controller
 
 
 
-		$bbk = DB::select("select 'K' as flag,bbk_nota as nota, bbk_tgl as tgl, bbkd_nominal as kredit ,bbk_keterangan as keterangan from bukti_bank_keluar_detail, bukti_bank_keluar where bbkd_idbbk = bbk_id and bbk_tgl >= '$min' AND bbk_tgl <= '$max' $akun_bbk $cabang_bbk $supplier_bbk ");
 
-		$fp = DB::select("select 'D' as flag, fp_nofaktur as nota,fp_keterangan as keterangan, fp_tgl as tgl , fp_netto as debet from faktur_pembelian where fp_jenisbayar = '2' and fp_tgl >= '$min' AND fp_tgl <= '$max' $akun $supplier $cabang ");
+		$supplier = DB::table('faktur_pembelian')
+					->select('fp_idsup')
+					->get();
 
-		$um = DB::select("select 'K' as flag, fp_nofaktur as nota,fp_keterangan as keterangan, fp_tgl as tgl, fp_uangmuka as kredit from faktur_pembelian where fp_jenisbayar = '2' and fp_uangmuka != '0' and fp_tgl >= '$min' AND fp_tgl <= '$max' $akun $supplier $cabang");
+		$arraysup = array($supplier);
+		$result_supplier = array_unique($arraysup);
 
-		$bkk = DB::select("select 'K' as flag , bkk_nota as nota,bkk_keterangan as keterangan, bkk_tgl as tgl, bkk_total as kredit from bukti_kas_keluar where bkk_jenisbayar = '2' and bkk_tgl >= '$min' AND bkk_tgl <= '$max' $akun_bkk $supplier_bkk $cabang_bkk ");
+	
+		for($j = 0; $j < count($result_supplier); $j++){
+			if (isset($result_supplier[0][$j]->fp_idsup)) {
+				$idsupplier = 0;
+			}else{
+				$idsupplier = $result_supplier[0][$j]->fp_idsup;
+			}
+			$data['carisupp'] = DB::select("select idsup , nama_supplier, no_supplier  from  supplier where idsup = '$idsupplier'");
+		}
 
-		$data['data'] = array_merge($fp, $um, $bkk , $bbk);
+
+		//return $result_supplier;
+		$data['kartuhutang'] = [];
+		$totalsupplier = 0;
+	
+		
+		for($i = 0; $i < count($result_supplier); $i++){
+			
+			$no_supplier = $data['carisupp'][$i]->no_supplier;
+		//	return $no_supplier;
+			$idsup = $data['carisupp'][$i]->idsup;
+
+			$bbk = DB::select("select bbkd_supplier as supplier,  bbk_nota as nota, bbk_tgl as tgl, bbkd_nominal as nominal ,'K' as flag from bukti_bank_keluar_detail, bukti_bank_keluar where bbkd_idbbk = bbk_id and bbkd_akunhutang LIKE '2101%' and bbkd_supplier = '$no_supplier'");
+
+
+			$fp = DB::select("select 'D' as flag, fp_nofaktur as nota , fp_idsup, fp_tgl as tgl , fp_netto as nominal from faktur_pembelian where fp_jenisbayar = '2' and fp_idsup = '$idsup' ");
+
+
+			$um = DB::select("select 'K' as flag, fp_idsup as supplier, fp_nofaktur as nota, fp_tgl as tgl, fp_uangmuka as nominal from faktur_pembelian where fp_jenisbayar = '2' and fp_uangmuka != 0.00 and fp_idsup = '$idsup'");
+
+			$bkk = DB::select("select 'K' as flag , bkk_supplier as supplier, bkk_nota as nota, bkk_tgl as tgl, bkk_total as nominal from bukti_kas_keluar where bkk_jenisbayar = '2' and bkk_supplier = '$no_supplier'");
+
+
+			$datas= array_merge($fp, $um, $bkk , $bbk);
+
+			array_push($data['kartuhutang'] , $datas);
+
+		}
+
+		$totalhutangdebit = 0;
+		$totalhutangkredit = 0;
+		$data['totalhutangkredit'] = [];
+		$data['totalhutangdebit'] = [];
+
+		for($i = 0; $i < count($data['kartuhutang']); $i++){
+			for($j = 0; $j < count($data['kartuhutang'][$i]); $j++){
+						if($data['kartuhutang'][$i][$j]->flag == 'D'){
+							$totalhutangdebit = $totalhutangdebit + floatval($data['kartuhutang'][$i][$j]->nominal);
+						}
+						else {
+							$totalhutangkredit = $totalhutangkredit + floatval($data['kartuhutang'][$i][$j]->nominal);
+						}		
+			}
+
+			array_push($data['totalhutangdebit'] , $totalhutangdebit );
+			array_push($data['totalhutangkredit'] , $totalhutangkredit );
+		}
+
+		return json_encode($data);
+
+		
+
+
+		// $bbk = DB::select("select 'K' as flag,bbk_nota as nota, bbk_tgl as tgl, bbkd_nominal as kredit ,bbk_keterangan as keterangan from bukti_bank_keluar_detail, bukti_bank_keluar where bbkd_idbbk = bbk_id and bbk_tgl >= '$min' AND bbk_tgl <= '$max' $akun_bbk $cabang_bbk $supplier_bbk ");
+
+		// $fp = DB::select("select 'D' as flag, fp_nofaktur as nota,fp_keterangan as keterangan, fp_tgl as tgl , fp_netto as debet from faktur_pembelian where fp_jenisbayar = '2' and fp_tgl >= '$min' AND fp_tgl <= '$max' $akun $supplier $cabang ");
+
+		// $um = DB::select("select 'K' as flag, fp_nofaktur as nota,fp_keterangan as keterangan, fp_tgl as tgl, fp_uangmuka as kredit from faktur_pembelian where fp_jenisbayar = '2' and fp_uangmuka != '0' and fp_tgl >= '$min' AND fp_tgl <= '$max' $akun $supplier $cabang");
+
+		// $bkk = DB::select("select 'K' as flag , bkk_nota as nota,bkk_keterangan as keterangan, bkk_tgl as tgl, bkk_total as kredit from bukti_kas_keluar where bkk_jenisbayar = '2' and bkk_tgl >= '$min' AND bkk_tgl <= '$max' $akun_bkk $supplier_bkk $cabang_bkk ");
+
+		// $data['data'] = array_merge($fp, $um, $bkk , $bbk);
 		return view('purchase/laporan_analisa_pembelian/lap_kartu_hutang/kartu_hutang/ajax_pencarian_akun',compact('supplier','data','akun','cabang')); 
 
 	}

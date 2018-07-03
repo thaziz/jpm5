@@ -71,6 +71,7 @@ class Queryanalisa extends Controller
 		$arraysup = array($supplier);
 		$result_supplier = array_unique($arraysup);
 
+		
 	
 		for($j = 0; $j < count($result_supplier); $j++){
 			$idsupplier = $result_supplier[0][$j]->fp_idsup;
