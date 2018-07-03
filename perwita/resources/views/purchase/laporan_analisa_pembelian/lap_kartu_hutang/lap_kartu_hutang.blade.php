@@ -217,7 +217,15 @@ $('#datatable').DataTable({
   var supplier = $('#supplier').val();
 
    if (laporan == 'Rekap per Supplier') {
-      alert('a');
+      $.ajax({
+            type: "GET",
+            data : $('#save_data').serialize(),
+            url : ('{{ route('carikartuhutang_persupplier') }}'),
+            success: function(data)
+            {   
+                $('#drop').html(data);
+            }
+      })
    }else if (laporan == 'Rekap per Supplier Detail') {
 
     alert('b');

@@ -8111,19 +8111,19 @@ var old_nota =$('.nofaktur1').val();
    });
 
 
-   $(".tmbhdatasubcon").on('click',function(e){
+   $(".tmbhdatavendor").on('click',function(e){
    var cab = $('.cabang').val();
 
     e.preventDefault();
 
-    $.ajax({
-      url:baseUrl + '/fakturpembelian/pembayaran_vendor',
-      data:'cab='+cab,
-      type:'get',
-      success:function(response){
-        $('.nofaktur').val(response.nota);
-      }
-    })
+    // $.ajax({
+    //   url:baseUrl + '/fakturpembelian/pembayaran_vendor',
+    //   data:'cab='+cab,
+    //   type:'get',
+    //   success:function(response){
+    //     $('.nofaktur').val(response.nota);
+    //   }
+    // })
 
     $(".tmbhdatapenerus").removeClass('disabled');
     $(".save_bp_um").prop('hidden',true);

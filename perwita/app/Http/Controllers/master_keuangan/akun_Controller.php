@@ -29,11 +29,11 @@ class akun_Controller extends Controller
 
         $data = DB::table("d_akun")
                 ->join("cabang", "cabang.kode", "=", "d_akun.kode_cabang")
-                ->join('d_akun_saldo', 'd_akun_saldo.id_akun', '=', 'd_akun.id_akun')
-                ->where("d_akun_saldo.bulan", date('m'))
-                ->where("d_akun_saldo.tahun", date('Y'))
+                // ->join('d_akun_saldo', 'd_akun_saldo.id_akun', '=', 'd_akun.id_akun')
+                //->where("d_akun_saldo.bulan", date('m'))
+                //->where("d_akun_saldo.tahun", date('Y'))
                 ->where("d_akun.kode_cabang", $_GET["cab"])
-                ->select("d_akun.*", "cabang.nama as nama_cabang", "d_akun_saldo.saldo_akun as saldo")
+                ->select("d_akun.*", "cabang.nama as nama_cabang")
                 ->orderBy("id_akun", "asc")->get();
 
         // return json_encode($data);

@@ -266,7 +266,7 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                         $id3++;
                     }
                     $array_note = [$nota0,$nota1,$nota2];
-                    dd($array_note);
+                    // dd($array_note);
             }else{
 
                     $cari_nota0 = DB::select("SELECT  max(substring(kode,10)) as id from tarif_cabang_dokumen

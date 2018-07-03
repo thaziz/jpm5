@@ -98,14 +98,14 @@ class penerimaan_penjualan_Controller extends Controller
                           if ($data->k_jenis_pembayaran == 'C') {
                               $a = 'TRANSFER';
                           }
-                          if ($data->k_jenis_pembayaran == 'K') {
-                              $a = 'TRANSFER KAS';
+                          if ($data->k_jenis_pembayaran == 'T') {
+                              $a = 'TUNAI';
                           }
                           if ($data->k_jenis_pembayaran == 'L') {
                               $a = 'LAIN-LAIN';
                           }
                           if ($data->k_jenis_pembayaran == 'F') {
-                              $a = 'CHEQUIE/BG';
+                               $a = 'CHEQUE/BG';
                           }
                           if ($data->k_jenis_pembayaran == 'B') {
                               $a = 'NOTA/BIAYA LAIN';
