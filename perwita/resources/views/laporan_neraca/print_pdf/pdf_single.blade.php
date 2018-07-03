@@ -42,9 +42,9 @@
 	<thead>
 		<tr>
 			@if($throttle == "bulan")
-				<td style="text-align: left;">Periode : Bulan {{ date_ind($request->m) }} {{ $request->y }}</td>
+				<td style="text-align: left;">Periode : Bulan {{ date_ind($request->m) }} {{ $request->y }}, {{$cabang->nama}}</td>
 			@elseif($throttle == "tahun")
-				<td style="text-align: left;">Periode : Tahun {{ $request->y }}</td>
+				<td style="text-align: left;">Periode : Tahun {{ $request->y }}, {{$cabang->nama}}</td>
 			@endif
 
 			<td style="text-align: right;">Berdasarkan Desain Neraca Yang Aktif Periode Ini</td>
@@ -96,7 +96,9 @@
 
                               <tr class="{{ $treegrid }} {{ $tree_parrent }}" id="{{ $data_detail_aktiva["nomor_id"] }}">
                                 <td class="lv3">{{ $data_detail_aktiva["nama_referensi"] }}</td>
-                                <td class="money">{{ number_format($data_detail_aktiva["total"], 2) }}</td>
+                                <td class="money">
+                                  {{ ($data_detail_aktiva["total"] >= 0) ? number_format($data_detail_aktiva["total"], 2) : "( ".number_format(str_replace("-", "", $data_detail_aktiva["total"]), 2)." )" }}
+                                </td>
 
                                 <?php $total_aktiva += $data_detail_aktiva["total"]; ?>
                               </tr>
@@ -106,7 +108,9 @@
                       @elseif($data_neraca_aktiva["jenis"] == 3)
                         <tr class="{{ $treegrid }} {{ $tree_parrent }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
                           <td class="{{ $level }}">{{ $data_neraca_aktiva["keterangan"] }}</td>
-                          <td class="money total">{{ number_format($data_neraca_aktiva["total"], 2) }}</td>
+                          <td class="money total">
+                            {{ ($data_neraca_aktiva["total"] >= 0) ? number_format($data_neraca_aktiva["total"], 2) : "( ".number_format(str_replace("-", "", $data_neraca_aktiva["total"]), 2)." )" }}
+                          </td>
                         </tr>
                       @elseif($data_neraca_aktiva["jenis"] == 4)
                         <tr class="{{ $treegrid }} {{ $tree_parrent }}">
@@ -157,9 +161,11 @@
 
                               <tr class="{{ $treegrid }} {{ $tree_parrent }}" id="{{ $data_detail_aktiva["nomor_id"] }}">
                                 <td class="lv3">{{ $data_detail_aktiva["nama_referensi"] }}</td>
-                                <td class="money">{{ number_format($data_detail_aktiva["total"], 2) }}</td>
+                                <td class="money">
+                                  {{ ($data_detail_aktiva["total"] >= 0) ? number_format($data_detail_aktiva["total"], 2) : "( ".number_format(str_replace("-", "", $data_detail_aktiva["total"]), 2)." )" }}
+                                </td>
 
-                                <?php $total_aktiva += $data_detail_aktiva["total"]; ?>
+                                <?php $total_pasiva += $data_detail_aktiva["total"]; ?>
                               </tr>
                             @endif
                           @endforeach
@@ -167,7 +173,9 @@
                       @elseif($data_neraca_aktiva["jenis"] == 3)
                         <tr class="{{ $treegrid }} {{ $tree_parrent }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
                           <td class="{{ $level }}">{{ $data_neraca_aktiva["keterangan"] }}</td>
-                          <td class="money total">{{ number_format($data_neraca_aktiva["total"], 2) }}</td>
+                          <td class="money total">
+                            {{ ($data_neraca_aktiva["total"] >= 0) ? number_format($data_neraca_aktiva["total"], 2) : "( ".number_format(str_replace("-", "", $data_neraca_aktiva["total"]), 2)." )" }}
+                          </td>
                         </tr>
                       @elseif($data_neraca_aktiva["jenis"] == 4)
                         <tr class="{{ $treegrid }} {{ $tree_parrent }}">
@@ -192,7 +200,9 @@
 			<table class="table_neraca" width="100%" style="font-size: 9pt;" border="0">
               <tr>
                 <td style="text-align: center; font-weight: 600;">Total Neraca Aktiva</td>
-                <td class="money">{{ number_format($total_aktiva, 2) }}</td>
+                <td class="money">
+                  {{ ($total_aktiva >= 0) ? number_format($total_aktiva, 2) : "( ".number_format(str_replace("-", "", $total_aktiva), 2)." )" }}
+                </td>
               </tr>
             </table>
 		</td>
@@ -201,7 +211,9 @@
 			<table class="table_neraca" width="100%" style="font-size: 9pt;" border="0">
               <tr>
                 <td style="text-align: center; font-weight: 600;">Total Neraca Pasiva</td>
-                <td class="money">{{ number_format($total_pasiva, 2) }}</td>
+                <td class="money">
+                  {{ ($total_pasiva >= 0) ? number_format($total_pasiva, 2) : "( ".number_format(str_replace("-", "", $total_pasiva), 2)." )" }}
+                </td>
               </tr>
             </table>
 		</td>

@@ -69,10 +69,10 @@
                                 <td>
                                     <select class="form-control cb_jenis_pembayaran" name="cb_jenis_pembayaran" >
                                         <option value="C"> TRANSFER </option>
-                                        <option value="K"> TRANSFER KAS</option>
+                                        <option value="T"> TUNAI/KWITANSI </option>
                                         <option value="L"> LAIN-LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
-                                        <option value="B"> NOTA/BIAYA LAIN</option>
+                                        <option value="B"> NOTA/BIAYA LAIN </option>
                                         <option value="U"> UANG MUKA/DP </option>
                                     </select>
                                 </td>
@@ -137,7 +137,7 @@
                             <tr>
                                 <td style="width:110px;">Akun Bank</td>
                                 <td>
-                                    <select class="form-control akun_bank" name="akun_bank" >
+                                    <select class="form-control akun_bank chosen-select-width" name="akun_bank" >
                                         @foreach ($akun as $val)
                                             <option value="{{$val->mb_id}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
                                         @endforeach
@@ -329,7 +329,7 @@ $('#btn_kwitansi').click(function(){
     var cabang = $('.cabang').val();
     var akun_bank = $('.akun_bank').val();
     var id = 0;
-    if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B') {
+    if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B' || cb_jenis_pembayaran == 'T') {
         $.ajax({
             url  :baseUrl+'/sales/posting_pembayaran_form/cari_kwitansi',
             data : {id,cabang,cb_jenis_pembayaran,array_simpan,akun_bank,nomor},
@@ -382,7 +382,7 @@ $('.append').click(function(){
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
     var nomor = [];
     console.log(cb_jenis_pembayaran);
-if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B') {
+if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B' || cb_jenis_pembayaran == 'T') {
     $('.tanda').each(function(){
         var check = $(this).is(':checked');
         if (check == true) {

@@ -209,7 +209,6 @@
                                       <tr class="{{ $treegrid }} {{ $tree_parrent }}" id="{{ $data_detail_aktiva["nomor_id"] }}">
                                         <td class="lv3">{{ $data_detail_aktiva["nama_referensi"] }}</td>
                                         <td class="money">
-
                                           {{ ($data_detail_aktiva["total"] >= 0) ? number_format($data_detail_aktiva["total"], 2) : "( ".number_format(str_replace("-", "", $data_detail_aktiva["total"]), 2)." )" }}
                                         </td>
 
