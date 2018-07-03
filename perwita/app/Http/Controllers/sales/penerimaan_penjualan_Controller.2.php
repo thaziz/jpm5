@@ -44,6 +44,91 @@ class penerimaan_penjualan_Controller extends Controller
         return view('sales.penerimaan_penjualan.print',compact('head','detail','terbilang','push'));
     }
 
+    public function datatable_kwitansi()
+    {
+        $cabang = auth::user()->kode_cabang;
+        if (Auth::user()->punyaAkses('Kwitansi','all')) {
+            $data = DB::table('kwitansi')
+                      ->join('cabang','kode','=','k_kode_cabang')
+                      ->get();
+        }else{
+            $data = DB::table('kwitansi')
+                      ->join('cabang','kode','=','k_kode_cabang')
+                      ->where('k_kode_cabang',$cabang)
+                      ->get();
+        }
+
+        $data = collect($data);
+        // return $data;
+        return Datatables::of($data)
+                        ->addColumn('aksi', function ($data) {
+
+                            if(Auth::user()->punyaAkses('Kwitansi','ubah')){
+                                if(cek_periode(carbon::parse($data->k_tanggal)->format('m'),carbon::parse($data->k_tanggal)->format('Y') ) != 0){
+                                  $a = '<button type="button" onclick="edit(\''.$data->k_nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
+                                }
+                            }else{
+                              $a = '';
+                            }
+
+                            if(Auth::user()->punyaAkses('Kwitansi','print')){
+                                $b = '<button type="button" onclick="ngeprint(\''.$data->k_nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
+                            }else{
+                              $b = '';
+                            }
+
+
+                            if(Auth::user()->punyaAkses('Kwitansi','hapus')){
+                                if(cek_periode(carbon::parse($data->k_tanggal)->format('m'),carbon::parse($data->k_tanggal)->format('Y') ) != 0){
+                                  $c = '<button type="button" onclick="hapus(\''.$data->k_nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
+                                }
+                            }else{
+                              $c = '';
+                            }
+                            return $a . $b .$c  ;
+                                   
+                        })
+                        ->addColumn('jumlah_text', function ($data) {
+                          return number_format($data->k_jumlah,2,',','.'  ); 
+                        })
+                        ->addColumn('memorial_text', function ($data) {
+                          return number_format($data->k_jumlah_memorial,2,',','.'  ); 
+                        })
+                        ->addColumn('pembayaran', function ($data) {
+                          if ($data->k_jenis_pembayaran == 'C') {
+                              $a = 'TRANSFER';
+                          }
+                          if ($data->k_jenis_pembayaran == 'K') {
+                              $a = 'TRANSFER KAS';
+                          }
+                          if ($data->k_jenis_pembayaran == 'L') {
+                              $a = 'LAIN-LAIN';
+                          }
+                          if ($data->k_jenis_pembayaran == 'F') {
+                              $a = 'CHEQUIE/BG';
+                          }
+                          if ($data->k_jenis_pembayaran == 'B') {
+                              $a = 'NOTA/BIAYA LAIN';
+                          }
+                          if ($data->k_jenis_pembayaran == 'U') {
+                              $a = 'UANG MUKA/DP';
+                          }
+                          return '<label class="label label-warning">'.$a.'</label>';
+                        })
+                        ->addColumn('customer', function ($data) {
+                          $kota = DB::table('customer')
+                                    ->get();
+
+                          for ($i=0; $i < count($kota); $i++) { 
+                            if ($data->k_kode_customer == $kota[$i]->kode) {
+                                return $kota[$i]->nama;
+                            }
+                          }
+                        })
+                        ->addIndexColumn()
+                        ->make(true);
+    }
+
     public function penyebut($nilai=null) {
         $_this = new self;
 		$nilai = abs($nilai);
@@ -557,7 +642,7 @@ class penerimaan_penjualan_Controller extends Controller
                               ->get();
 
           // JURNAL
-          if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'U') {
+          if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'B' or $request->cb_jenis_pembayaran == 'U') {
             $id_jurnal=d_jurnal::max('jr_id')+1;
             $delete = d_jurnal::where('jr_ref',$nota)->delete();
             $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
@@ -595,7 +680,7 @@ class penerimaan_penjualan_Controller extends Controller
                 }
               }
             }
-          }else if($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'C'){
+          }else if($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'B'){
             $akun_temp_total = [];
             for ($i=0; $i < count($request->i_nomor); $i++) { 
               $cari_akun = DB::table('invoice')
@@ -707,7 +792,9 @@ class penerimaan_penjualan_Controller extends Controller
           }
           // dd($akun_temp_total);
           
-          if ($request->cb_jenis_pembayaran != 'F') {
+          if ($request->cb_jenis_pembayaran == 'T' or
+              $request->cb_jenis_pembayaran == 'U' or
+              $request->cb_jenis_pembayaran == 'B') {
             for ($i=0; $i < count($akun_temp_fix); $i++) { 
               array_push($akun, $akun_temp_fix[$i]);
               array_push($akun_val, $akun_temp_total[$i]);
@@ -837,7 +924,7 @@ class penerimaan_penjualan_Controller extends Controller
               }
             }
           }
-          if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'U') {
+          if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'B' or $request->cb_jenis_pembayaran == 'U') {
             $jurnal_dt = d_jurnal_dt::insert($data_akun);
             $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
           }
