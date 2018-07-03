@@ -248,15 +248,12 @@ class ReturnPembelianController extends Controller
 	    					'pbdt_po' => $idpotdkaktif,
 	    				]);
 
-		  DB::delete("DELETE from  pembelian_order where po_id = '$idpo'");
+		  DB::delete("DELETE from  pembelian_order where po_id = '$idpo' and po_statusreturn = 'TIDAK AKTIF'");
 		  $updatepo = DB::table('pembelian_order')
                     ->where('po_id' , $idpotdkaktif)
                     ->update([
                         'po_statusreturn' => 'AKTIF'
                        ]);
-        
-
-	   
 
 	        DB::delete("DELETE from  returnpembelian where rn_id = '$id'");   
 	}
