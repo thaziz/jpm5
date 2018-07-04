@@ -162,9 +162,9 @@
                             </li>
                             <li  id="tmbhdataoutlet" data-val='O'><button class="btn btn-default tmbhdataoutlet" data-toggle="tab" href="#tab-4">Pembayaran Outlet</button>
                             </li>
-                            <li  id="tmbhdatasubcon" data-val='SC'><button class="btn btn-default tmbhdatasubcon" data-toggle="tab" href="#tab-5">Pembayaran SUBCON</button>
+                            <li  id="tmbhdatasubcon" data-val='SC'><button class="btn btn-default tmbhdatasubcon" data-toggle="tab" href="#tab-5">Pembayaran Subcon</button>
                             </li>
-                            <li  id="tmbhdatavendor" data-val='SC'><button class="btn btn-default tmbhdatavendor" data-toggle="tab" href="#tab-6">Pembayaran SUBCON</button>
+                            <li  id="tmbhdatavendor" data-val='P'><button class="btn btn-default tmbhdatavendor" data-toggle="tab" href="#tab-6">Pembayaran Vendor</button>
                             </li>
                         </ul>
                         
@@ -8116,14 +8116,14 @@ var old_nota =$('.nofaktur1').val();
 
     e.preventDefault();
 
-    // $.ajax({
-    //   url:baseUrl + '/fakturpembelian/pembayaran_vendor',
-    //   data:'cab='+cab,
-    //   type:'get',
-    //   success:function(response){
-    //     $('.nofaktur').val(response.nota);
-    //   }
-    // })
+    $.ajax({
+      url:baseUrl + '/fakturpembelian/notapenerusagen',
+      data:'cab='+cab,
+      type:'get',
+      success:function(response){
+        $('.nofaktur').val(response.nota);
+      }
+    })
 
     $(".tmbhdatapenerus").removeClass('disabled');
     $(".save_bp_um").prop('hidden',true);
@@ -8204,6 +8204,19 @@ $(document).ready(function(){
         }
           
        });
+      },
+      error:function(){
+        location.reload();
+      }
+
+    })
+
+
+    $.ajax({
+      url:baseUrl + '/fakturpembelian/getpembayaranvendor',
+      type:'get',
+      success:function(data){
+        $('.vendor').html(data);
       },
       error:function(){
         location.reload();

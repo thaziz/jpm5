@@ -318,7 +318,7 @@ Route::get('fakturpembelian/subcon_save', 'pembayaran_vendor_controller@subcon_s
 Route::get('fakturpembelian/subcon_save', 'pembayaran_vendor_controller@subcon_save');
 Route::get('fakturpembelian/subcon_update', 'pembayaran_vendor_controller@subcon_update');
 Route::get('master_subcon/cari_kontrak', 'pembayaran_vendor_controller@cari_kontrak');
-Route::get('fakturpembelian/getpembayaransubcon', 'pembayaran_vendor_controller@index');
+Route::get('fakturpembelian/getpembayaranvendor', 'pembayaran_vendor_controller@index');
 Route::get('fakturpembelian/cari_subcon', 'pembayaran_vendor_controller@cari_subcon');
 
 
