@@ -11,6 +11,7 @@ use carbon\carbon;
 class cabang_kilogram_Controller extends Controller
 {
     public function table_data () {
+        set_time_limit(600);
         ini_set('memory_limit', '1000M');
         $cabang = Auth::user()->kode_cabang;
 

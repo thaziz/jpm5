@@ -109,19 +109,16 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Data Jurnal Transaksi Cabang {{ $cabang->nama }} Periode {{ date_ind($_GET["date"]) }} {{ $_GET["year"] }}
+                    <h5> Data Jurnal Transaksi Cabang {{ $cabang->nama }} {{-- Periode {{ date_ind($_GET["date"]) }} {{ $_GET["year"] }} --}}
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
-                        <div style="display: inline-block; background: none;">
-                          <button class="btn btn-sm btn-default pilihCabang" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <i class="fa fa-list"></i> &nbsp;Pengaturan Halaman
-                              <span class="caret"></span>
-                          </button>
-                          <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1" style="right: 210px;">
-                            <li><a href="#" data-toggle="modal" data-target="#modal_setting_table"><i class="fa fa-table fa-fw"></i> &nbsp;Pengaturan Tampilan Table</a></li>
-                          </ul>
-                        </div>
+                        <select name="cab" class="select_validate_null" id="pil_cab" style="padding: 5px 5px; border-color: #ccc;border-radius: 3px; color: #666;width: 13em; font-size: 8pt;">
+                          @foreach($cabangs as $cab)
+                            <?php $select = ($cab->kode == $_GET["cab"]) ? "selected" : "" ?>
+                            <option value="{{ $cab->kode }}" {{$select}}>{{ $cab->nama }}</option>
+                          @endforeach
+                        </select> &nbsp;&nbsp;
 
                         <button class="btn btn-sm btn-primary tambahAkun" data-parrent="0" data-toggle="modal" data-target="#modal_tambah_akun">
                           <i class="fa fa-plus"></i> &nbsp;Tambah Data Jurnal Transaksi
@@ -153,7 +150,7 @@
                                 @foreach($data as $dataAkun)
                                   <tr>
                                     <td width="15%" class="text-center">{{ $dataAkun->jr_year }}</td>
-                                    <td width="30%" class="text-center">{{ date("d-m-Y", strtotime($dataAkun->jr_year)) }}</td>
+                                    <td width="30%" class="text-center">{{ date("d-m-Y", strtotime($dataAkun->jr_date)) }}</td>
                                     <td class="text-center">{{ $dataAkun->jr_detail }}</td>
                                     <td class="text-center">{{ $dataAkun->jr_ref }}</td>
                                     <td class="text-center">{{ $dataAkun->jr_note }}</td>
@@ -175,7 +172,7 @@
 
  <!-- modal -->
 <div id="modal_tambah_akun" class="modal">
-  <div class="modal-dialog" style="width: 60%">
+  <div class="modal-dialog" style="width: 80%">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -346,6 +343,11 @@
             }
         } 
       });
+    })
+
+    $('#pil_cab').change(function(evt){
+      evt.preventDefault();
+      window.location = baseUrl + "/keuangan/jurnal_umum?cab="+$(this).val()+"&date={{date('m')}}&year={{date('Y')}}";
     })
 
     $("#submit_setting").click(function(event){

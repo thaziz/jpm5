@@ -221,7 +221,7 @@ class do_paketController extends Controller
     {
     	$vendor = $request->a;
 
-    	$data = DB::table('tarif_vendor')->where('id_tarif_vendor','=',$vendor)->get();
+    	$data = DB::table('tarif_vendor')->join('vendor','vendor.kode','=','tarif_vendor.vendor_id')->where('id_tarif_vendor','=',$vendor)->get();
 
     	return response()->json($data);
 
@@ -352,6 +352,10 @@ class do_paketController extends Controller
                 'kontrak_cus'        => $cus_kon,
                 'kontrak_cus_dt'        => $cus_kon_dt,
                 'tarif_vendor_bol' =>$request->tarif_vendor_bol,
+                'id_tarif_vendor' =>$request->id_tarif_vendor,
+                'nama_tarif_vendor' =>$request->nama_tarif_vendor,
+                'created_at' =>carbon::now(),
+                'created_by' =>auth::user()->m_name,
                 'total_net' => filter_var($request->do_total_h, FILTER_SANITIZE_NUMBER_INT),
       );
     DB::table('delivery_order')->insert($data);
@@ -562,6 +566,10 @@ class do_paketController extends Controller
                 'kontrak_cus'        => $cus_kon,
                 'kontrak_cus_dt'        => $cus_kon_dt,
                 'tarif_vendor_bol' =>$request->tarif_vendor_bol,
+                'id_tarif_vendor' =>$request->id_tarif_vendor,
+                'nama_tarif_vendor' =>$request->nama_tarif_vendor,
+                'updated_at' =>carbon::now(),
+                'updated_by' =>auth::user()->m_name,
                 'total_net' => filter_var($request->do_total_h, FILTER_SANITIZE_NUMBER_INT),
       );
     
