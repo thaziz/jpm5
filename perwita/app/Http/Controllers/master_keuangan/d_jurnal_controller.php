@@ -32,13 +32,13 @@ class d_jurnal_controller extends Controller
                 ->join('d_akun', "d_akun.id_akun", "=", "d_jurnal_dt.jrdt_acc")
                 ->where("d_akun.kode_cabang", $_GET['cab'])
                 ->where(DB::raw("substring(jr_ref, 1,5)"), "TRANS")
-                ->where(DB::raw("date_part('month', jr_date)"), $date)
-                ->where(DB::raw("date_part('year', jr_date)"), $_GET["year"])
-                ->select(DB::raw("distinct d_jurnal.jr_id"), "d_jurnal.*")->get();
+                // ->where(DB::raw("date_part('month', jr_date)"), $date)
+                // ->where(DB::raw("date_part('year', jr_date)"), $_GET["year"])
+                ->select(DB::raw("distinct d_jurnal.jr_id"), "d_jurnal.*")->orderBy("jr_id", "desc")->get();
 
         // return json_encode($data);
 
-        return view("keuangan.jurnal.index")->withData($data)->withCabang($cabang)->withCabangs($cabangs);;
+        return view("keuangan.jurnal.index")->withData($data)->withCabang($cabang)->withCabangs($cabangs);
     }
 
     public function add(){
