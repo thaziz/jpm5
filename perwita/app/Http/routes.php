@@ -698,6 +698,7 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
       //pencarian
       Route::get('carikartuhutang/carikartuhutan_perakun', 'LaporanPembelianController@carikartuhutan_perakun')->name('carikartuhutan_perakun');
       Route::get('carikartuhutang/carikartuhutang_persupplier', 'LaporanPembelianController@carikartuhutang_persupplier')->name('carikartuhutang_persupplier');
+      Route::get('carikartuhutang/carikartuhutang_persupplier_detail', 'LaporanPembelianController@carikartuhutang_persupplier_detail')->name('carikartuhutang_persupplier_detail');
   Route::get('reportexcelkartuhutang/reportexcelkartuhutang', 'LaporanPembelianController@reportexcelkartuhutang');
   //END OF
 

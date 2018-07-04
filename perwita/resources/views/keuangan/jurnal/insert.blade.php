@@ -23,7 +23,7 @@
   <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
     <table border="0" id="form-table" class="col-md-12">
       <tr>
-        <td width="15%" class="text-center">Cabang</td>
+        <td width="10%" class="text-left">Cabang</td>
         <td colspan="2">
           <select name="cabang" class="select_validate form-control chosen-select" id="cabang">
             @foreach($cabangs as $cab)
@@ -34,19 +34,19 @@
       </tr>
 
       <tr>
-        <td width="15%" class="text-center">Nama Transaksi</td>
+        <td width="10%" class="text-left">Nama Transaksi</td>
         <td width="35%" colspan="2">
           <input type="text" class="form_validate form-control" name="jr_detail" placeholder="Masukkan Nama Transaksi" id="jr_detail">
         </td>
 
-        <td width="15%" class="text-center">Tanggal Transaksi</td>
+        <td width="15%" class="text-left">Tanggal Transaksi</td>
         <td colspan="2">
           <input type="text" class="form_validate form-control text-center" name="jr_date" readonly id="jr_date" value="{{date("d-m-Y")}}" readonly>
         </td>
       </tr>
 
       <tr>
-        <td width="15%" class="text-center" style="vertical-align: top;">Catatan</td>
+        <td width="10%" class="text-left" style="vertical-align: top;">Catatan</td>
         <td colspan="2">
           <textarea name="jr_note" class="input-Validity upper form-control form_validate" style="resize: none;height: 100px;" placeholder="Masukkan Catatan Jurnal Disini"></textarea>
         </td>
@@ -77,7 +77,7 @@
             </tr>
 
             <tr>
-              <td width="55%" class="text-left">
+              <td width="65%" class="text-left">
                 <select name="nama_akun_debet[]" class="select_validate form-control chosen-select akun">
                   <option value="---"> -- Pilih Akun Coa</option>
 
@@ -114,7 +114,7 @@
             </tr>
 
             <tr>
-              <td width="55%" class="text-left">
+              <td width="65%" class="text-left">
                 <select name="nama_akun_kredit[]" class="select_validate form-control chosen-select akun">
                   <option value="---"> -- Pilih Akun Coa</option>
 
@@ -248,7 +248,7 @@
 
     $(".add_row").click(function(){
       $print = '<tr>'+
-                  '<td width="55%" class="text-left">'+
+                  '<td width="65%" class="text-left">'+
                     '<select name="nama_akun_'+$(this).data("table")+'[]" class="select_validate form-control chosen-select akun">'+
                         initiate_akun($("#cabang").val())+
                     '</select>'+
@@ -331,7 +331,7 @@
     function initiate_akun(cabang){
       html = "";
       $.each($.grep(akun, function(o){ return o.kode_cabang === cabang }), function(i, n){
-        html = html + '<option value="'+n.id_akun+'">'+n.nama_akun+'</option>';
+        html = html + '<option value="'+n.id_akun+'">'+n.id_akun+' - '+n.nama_akun+'</option>';
       })
 
       return html;
