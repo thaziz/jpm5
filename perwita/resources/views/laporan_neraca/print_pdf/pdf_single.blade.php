@@ -42,9 +42,9 @@
 	<thead>
 		<tr>
 			@if($throttle == "bulan")
-				<td style="text-align: left;">Periode : Bulan {{ date_ind($request->m) }} {{ $request->y }}, {{$cabang->nama}}</td>
+				<td style="text-align: left;">Periode : Bulan {{ $request->m }}/{{ $request->y }}, {{ ($_GET['cab'] == "all") ? "Semua Cabang" : "Cabang ".$cabang->nama }}</td>
 			@elseif($throttle == "tahun")
-				<td style="text-align: left;">Periode : Tahun {{ $request->y }}, {{$cabang->nama}}</td>
+				<td style="text-align: left;">Periode : Tahun {{ $request->m }} dan {{ $request->y }}, {{ ($_GET['cab'] == "all") ? "Semua Cabang" : "Cabang ".$cabang->nama }}</td>
 			@endif
 
 			<td style="text-align: right;">Berdasarkan Desain Neraca Yang Aktif Periode Ini</td>
