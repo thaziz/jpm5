@@ -274,13 +274,13 @@ class Queryanalisa extends Controller
 
 //			$statement = DB::select(DB::raw("SET @saldowawal = '$saldoawal'"));
 
-			$bbk = DB::select("select bbkd_supplier as supplier,  bbk_nota as nota, bbk_tgl as tgl, bbkd_nominal as nominal ,'K' as flag from bukti_bank_keluar_detail, bukti_bank_keluar where bbkd_idbbk = bbk_id and bbkd_akunhutang LIKE '2103%' and bbkd_supplier = '$idsup' and bbk_tgl BETWEEN '$tglawal' and '$tglakhir'");
+			$bbk = DB::select("select bbkd_supplier as supplier,  bbk_nota as nota, bbk_tgl as tgl, bbkd_nominal as nominal ,'K' as flag from bukti_bank_keluar_detail, bukti_bank_keluar where bbkd_idbbk = bbk_id and bbkd_akunhutang LIKE '2102%' and bbkd_supplier = '$idsup' and bbk_tgl BETWEEN '$tglawal' and '$tglakhir'");
 
 
-			$fp = DB::select("select  'D' as flag, fp_nofaktur as nota , fp_idsup as supplier, fp_tgl as tgl , fp_netto as nominal from faktur_pembelian where fp_jenisbayar = '$jenisbayar' and fp_supplier = '$idsup' and fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
+			$fp = DB::select("select  'D' as flag, fp_nofaktur as nota , fp_supplier as supplier, fp_tgl as tgl , fp_netto as nominal from faktur_pembelian where fp_jenisbayar = '$jenisbayar' and fp_supplier = '$idsup' and fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
 
 
-			$um = DB::select("select 'K' as flag, fp_idsup as supplier, fp_nofaktur as nota, fp_tgl as tgl, fp_uangmuka as nominal from faktur_pembelian where fp_jenisbayar = '$jenisbayar' and fp_uangmuka != 0.00 and fp_supplier = '$idsup' and fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
+			$um = DB::select("select 'K' as flag, fp_supplier as supplier, fp_nofaktur as nota, fp_tgl as tgl, fp_uangmuka as nominal from faktur_pembelian where fp_jenisbayar = '$jenisbayar' and fp_uangmuka != 0.00 and fp_supplier = '$idsup' and fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
 
 			$bkk = DB::select("select 'K' as flag , bkk_supplier as supplier, bkk_nota as nota, bkk_tgl as tgl, bkk_total as nominal from bukti_kas_keluar where bkk_jenisbayar = '$jenisbayar' and bkk_supplier = '$idsup' and bkk_tgl BETWEEN '$tglawal' and '$tglakhir'");
 
@@ -383,11 +383,8 @@ class Queryanalisa extends Controller
 			$idsup = $data['carisupp'][$i][0]->idsup;
 			$databaru = DB::select("select * from faktur_pembelian where fp_tgl > '$tglakhir' and fp_idsup = '$idsup'");
 
+			$hutangbaru = DB::select("select 'hutangbaru' as flag,  fp_tgl as tgl, fp_idsup as supplier , fp_nofaktur as nota , fp_netto as nominal from faktur_pembelian where fp_tgl > '$tglakhir' and fp_idsup = '$idsup'");
 			
-				$hutangbaru = DB::select("select 'hutangbaru' as flag,  fp_tgl as tgl, fp_idsup as supplier , fp_nofaktur as nota , fp_netto as nominal from faktur_pembelian where fp_tgl > '$tglakhir' and fp_idsup = '$idsup'");
-			
-
-
 			$datavc = DB::select("select * from v_hutang where v_tgl BETWEEN '$tglawal' and '$tglakhir' and v_supid = '$no_supplier'");
 			
 			$vc = DB::select("select 'VC' as flag, v_tgl as tgl, v_supid as supplier, v_nomorbukti as nota, v_hasil as nominal from v_hutang where v_tgl BETWEEN '$tglawal' and '$tglakhir' and v_supid = '$no_supplier'");
@@ -426,15 +423,23 @@ class Queryanalisa extends Controller
 		$tglakhir = '2018-08-02';
 
 		$akun = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
+		$akunpajak = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_accpph != '' ");
 
 		$data['akunhutang'] = [];
 		for($i = 0; $i < count($akun); $i++){
 			$akunhutang['idakun'] = $akun[$i]->fp_acchutang;
-
 			$subacchutang = substr($akunhutang['idakun'], 0 , 4);
 			$akunhutang['idakun'] = substr($akunhutang['idakun'], 0 , 4);
 			$akunhutang['jenisakun'] = 'HUTANG DAGANG';
 			array_push($data['akunhutang'], $akunhutang);			
+		}
+
+		for($j = 0; $j < count($akunpajak); $j++){
+			$akunhutang['idakun'] = $akunpajak[$j]->fp_accpph;
+			$subacchutang = substr($akunhutang['idakun'], 0,4);
+			$akunhutang['idakun'] = $subacchutang;
+			$akunhutang['jenisakun'] = 'HUTANG PAJAK';
+			array_push($data['akunhutang'] , $akunhutang);
 		}
 
 		$result_supplier = array();
@@ -450,52 +455,49 @@ class Queryanalisa extends Controller
 		$data['akunhutang'] = $values;
 
 		
-		//return $values;
+		
 		$data['hutangsupplier'] = [];
-		for($j = 0; $j < count($values);$j++){
+		for($j = 0; $j < count($data['akunhutang']); $j++){
 			$akunhutangdagang = $values[$j]['idakun'];
-			$hutangsupplier = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$akunhutangdagang%'");
+			$jenishutang = $values[$j]['jenisakun'];
+			if($jenishutang == 'HUTANG DAGANG'){			
+				$hutangsupplier['data'] = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$akunhutangdagang%'");
+				$hutangsupplier['jenis'] = 'HUTANG DAGANG';
+			}
+			else{
+				$hutangsupplier['data'] = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_accpph != ''");
+				$hutangsupplier['jenis'] = 'HUTANG PAJAK';
+			}
 
-		//	return $hutangsupplier;
 			array_push($data['hutangsupplier'] , $hutangsupplier);
 		}
 
-
-		//saldoawalhutang
-		$datapajak = DB::select("select fp_accpph from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_accpph != ''");
-		
-		
-		$saldopajak = 0;
-		for($k = 0; $k < count($datapajak); $k++){
-			$acchutang2 = $datapajak[$k]->fp_accpph;
-			$acchutang = substr($acchutang2 , 0 ,4);
-			$hutangsupplier = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_accpph LIKE '$acchutang%'");
-		
-			$netto = $hutangsupplier[0]->fp_netto;
-			$saldopajak = floatval($saldopajak) +  floatval($netto);
-
-			$akunpph = DB::select("select * from d_akun where id_akun LIKE'$acchutang%'");
-			$idakun2 = $akunpph[0]->id_akun;
-			$idakun['idakun'] = substr($idakun2 , 0 ,4);
-			$idakun['jenisakun'] = 'HUTANG PAJAK';
-			array_push($data['akunhutang'] , $idakun);
-		//	array_push($data['saldoawal'] , $saldopajak);
-			array_push($data['hutangsupplier'] , $hutangsupplier);
-		}
 
 
 		$data['saldoawal'] = [];
+			$data['akun'] = [];
 		for($z =0; $z < count($data['akunhutang']); $z++){		
-			$saldoawal = 0;	
-			for($c = 0 ; $c < count($data['hutangsupplier'][$z]); $c++){
-				$netto =  $data['hutangsupplier'][$z][$c]->fp_netto;
-				$saldoawal = floatval($saldoawal) + floatval($netto);
-			}
+			$saldoawal = 0;
+			
+				for($c = 0 ; $c < count($data['hutangsupplier'][$z]); $c++){
+					$jenis = $data['hutangsupplier'][$z]['jenis'];
+					if($jenis == 'HUTANG DAGANG'){
+						$netto =  $data['hutangsupplier'][$z]['data'][$c]->fp_netto;
+						$saldoawal = floatval($saldoawal) + floatval($netto);
+					}
+					else {
+						$netto =  $data['hutangsupplier'][$z]['data'][$c]->fp_pph;
+						$saldoawal = floatval($saldoawal) + floatval($netto);
+					}
+				}
+			
+
+		
 			array_push($data['saldoawal'] , $saldoawal);
 		}
 
 
-		$data['akun'] = [];
+	
 		//getnamaakun
 		for($i = 0; $i < count($data['akunhutang']); $i++){
 			$akun = $data['akunhutang'][$i]['idakun'];
@@ -508,8 +510,9 @@ class Queryanalisa extends Controller
 			array_push($data['akun'] , $namaakun);
 		}
 
-		//isidetail
-		$data['hutangbaru'] = [];
+		//isidetail		
+		$data['isidetail'] = [];
+
 		for($j = 0; $j < count($data['akunhutang']); $j++){
 			$hutangbaru = 0;
 			$idakun = $data['akunhutang'][$j]['idakun'];
@@ -517,55 +520,160 @@ class Queryanalisa extends Controller
 			$voucherhutang = 0;
 			$cn = 0;
 			$cash = 0;
+			$um = 0;
+			$bg = 0;
+			$dn = 0;
+			$rn = 0;
 			if($jenisakun == 'HUTANG DAGANG'){
 				$datahutangbaru = DB::select("select * from faktur_pembelian where fp_tgl > '$tglakhir' and fp_acchutang LIKE '$idakun%'");
 
 				$datavoucherhutang = DB::select("select * from v_hutang , v_hutangd where v_tgl BETWEEN '$tglawal' and '$tglakhir' and vd_id = v_id and vd_acc LIKE '$idakun%'");
 
-				for($m = 0; $m < count($datahutangbaru); $m++){
-					$netto = $datahutangbaru[$m]->fp_netto;
-					$datas['hutangbaru'] = floatval($hutangbaru) + floatval($netto); 
+				if(count($datahutangbaru) != 0){
+					for($m = 0; $m < count($datahutangbaru); $m++){
+						$netto = $datahutangbaru[$m]->fp_netto;
+						$hutangbaru = floatval($hutangbaru) + floatval($netto); 						
+					}
+
 					$datas['flag'] = 'hutangbaru';
+					$datas['isi']['hutangbaru'] = $hutangbaru;
+				}
+				else {
+					$datas['flag'] = 'hutangbaru';
+					$datas['isi']['hutangbaru'] = 0;
 				}
 
-				for($m = 0; $m < count($datavoucherhutang); $m++){
-					$netto = $datavoucherhutang[$m]->vd_nominal;
-					$datas['voucherhutang'] = floatval($voucherhutang) + floatval($voucherhutang);
+				if(count($datavoucherhutang) != 0){
+								for($m = 0; $m < count($datavoucherhutang); $m++){
+									$netto = $datavoucherhutang[$m]->vd_nominal;
+									$voucherhutang = floatval($voucherhutang) + floatval($netto);
+									
+								}
 					$datas['flag'] = 'voucherhutang';
+					$datas['isi']['voucherhutang'] = $voucherhutang;
 				}
+				else {
+					$datas['flag'] = 'voucherhutang';
+					$datas['isi']['voucherhutang'] = 0;
+				}
+
+
 
 				$datacn = DB::select("select * from cndnpembelian where cndn_acchutangdagang LIKE '$idakun%' and cndn_tgl BETWEEN '$tglawal' and '$tglakhir' and cndn_jeniscndn = 'K'");
 
-				for($m = 0; $m < count($datacn); $m++){
-					$bruto = $datacn[$m]->cndn_bruto;
-					$datas['creditnota'] = floatval($bruto) + floatval($cn);
+				if(count($datacn) != 0 ){
+								for($m = 0; $m < count($datacn); $m++){
+									$bruto = $datacn[$m]->cndn_bruto;
+									$cn= floatval($bruto) + floatval($cn);
+									
+								}
 					$datas['flag'] = 'creditnota';
+					$datas['isi']['creditnota'] = $cn;
+				}
+				else {
+					$datas['flag'] = 'creditnota';
+					$datas['isi']['creditnota'] = 0;
 				}
 
-				$cash = DB::select("select 'CASH' as flag, bkk_tgl as tgl, bkk_supplier as supplier , bkk_nota as nota, bkk_total as nominal from bukti_kas_keluar where bkk_tgl BETWEEN '$tglawal' and '$tglakhir' and bkk_akun_hutang LIKE '$idakun%'");
+				$datacash = DB::select("select 'CASH' as flag, bkk_tgl as tgl, bkk_supplier as supplier , bkk_nota as nota, bkk_total as nominal from bukti_kas_keluar where bkk_tgl BETWEEN '$tglawal' and '$tglakhir' and bkk_akun_hutang LIKE '$idakun%'");
 
-				for($m = 0 ; $m < count($cash); $m++){
-					$netto = $cash[$m]->bkk_total;
-					$datas['cash'] = floatval($netto) + floatval($netto);
+
+				if(count($datacash) != 0) {
+					for($m = 0 ; $m < count($datacash); $m++){
+						$netto = $datacash[$m]->nominal;
+						$cash = floatval($cash) + floatval($netto);
+					}
 					$datas['flag'] = 'cash';
+					$datas['isi']['cash'] = $cash;
 				}
-			
+				else {
+						$datas['flag'] = 'cash';
+						$datas['isi']['cash'] = 0;
+				}
+				$dataum = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$idakun%' and fp_uangmuka != 0.00");
 
+				if(count($dataum) != 0){
+								for($m = 0; $m < count($dataum); $m++){
+									$netto = $dataum[$m]->fp_uangmuka;
+									$um = floatval($um) + floatval($netto);
+									
+								}
+					$datas['flag'] = 'uangmuka';
+					$datas['isi']['uangmuka'] = $um;
+				
+				}
+				else {
+					$datas['flag'] = 'uangmuka';
+					$datas['isi']['uangmuka'] = 0;
+				}	
+				
+				$databg = DB::select("select bbkd_supplier as supplier,  bbk_nota as nota, bbk_tgl as tgl, bbkd_nominal as nominal ,'K' as flag from bukti_bank_keluar_detail, bukti_bank_keluar where bbkd_idbbk = bbk_id and bbkd_akunhutang LIKE '$idakun%' and bbk_tgl BETWEEN '$tglawal' and '$tglakhir'");
+
+				if(count($databg) != 0){
+								for($m = 0; $m < count($databg); $m++){
+				
+									$netto = $databg[$m]->nominal;
+									$bg = floatval($bg) + floatval($netto);
+								}
+						$datas['flag'] = 'bg';
+						$datas['isi']['bg'] = $bg;
+				}
+				else {
+
+					$datas['flag'] = 'bg';
+					$datas['isi']['bg'] = $bg;
+				}
+
+				$returnbeli = DB::select("select  rn_supplier as supplier, rn_nota as nota, rn_tgl as tgl, rn_totalreturn as nominal from returnpembelian where rn_tgl BETWEEN '$tglawal' and '$tglakhir'");
+
+				if(count($returnbeli) != 0){
+					for($m = 0; $m < count($returnbeli); $m++){
+	
+						$netto = $returnbeli[$m]->nominal;
+						$rn = floatval($rn) + floatval($netto);
+					}
+					$datas['flag'] = 'rn';
+					$datas['isi']['rn'] = $rn;
+				}
+				else {
+					$datas['flag'] = 'rn';
+					$datas['isi']['rn'] = $rn;
+				}
+
+
+				$datadn = DB::select("select * from cndnpembelian where cndn_acchutangdagang LIKE '$idakun%' and cndn_tgl BETWEEN '$tglawal' and '$tglakhir' and cndn_jeniscndn = 'D'");
+
+				if(count($datadn) != 0 ){
+								for($m = 0; $m < count($datadn); $m++){
+									$bruto = $datadn[$m]->cndn_bruto;
+									$dn= floatval($bruto) + floatval($dn);
+									
+								}
+					$datas['flag'] = 'debitnota';
+					$datas['isi']['debitnota'] = $dn;
+				}
+				else {
+					$datas['flag'] = 'debitnota';
+					$datas['isi']['debitnota'] = 0;
+				}
+
+				$datas['isi']['saldoakhir'] = floatval($data['saldoawal'][$j]) + floatval($hutangbaru) + (floatval($cash) + floatval($um) + floatval($bg) + floatval($rn) + floatval($dn)) - (floatval($voucherhutang) + floatval($cn));
 			
 			}
+
 
 			else if($jenisakun == 'HUTANG PAJAK'){
 				$datahutangbaru = DB::select("select * from faktur_pembelian where fp_tgl > '$tglakhir' and fp_accpph LIKE '$idakun%'");
-
+/*
 				for($m = 0; $m < count($datahutangbaru); $m++){
 					$netto = $datahutangbaru[$m]->fp_pph;
 					$hutangbaru = floatval($hutangbaru) + floatval($netto);
-				}
-
+				}*/
+				$datas = '2';
 			}
 
-			array_push($data['hutangbaru'] , $hutangbaru);
-
+			
+			array_push($data['isidetail'] , $datas);
 		}
 
 		return $data;
