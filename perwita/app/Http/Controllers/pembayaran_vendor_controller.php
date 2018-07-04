@@ -21,10 +21,13 @@ class pembayaran_vendor_controller extends Controller
 				  ->get();
 
 		$vendor = DB::table('vendor')
-					->get();
+					->get();	
 
 		$kota   = DB::table('kota')
 				->get();
-		return view('purchase/pembayaran_vendor/create_vendor',compact('date','kota','vendor','akun'));
+
+		$tanggal = carbon::now()->format('d/m/Y');
+
+		return view('purchase/pembayaran_vendor/create_vendor',compact('date','kota','vendor','akun','tanggal'));
     }
 }

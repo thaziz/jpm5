@@ -250,7 +250,7 @@ class BiayaPenerusController extends Controller
 							 ->first();
 				$tgl         = str_replace('/', '-', $request->tgl_biaya_head);		 
 				$tgl 		 = Carbon::parse($tgl)->format('Y-m-d');
-				$jt         = str_replace('/', '-', $request->jatuh_tempo);		 
+				$jt          = str_replace('/', '-', $request->jatuh_tempo);		 
 				$jt 		 = Carbon::parse($jt)->format('Y-m-d');
 				$total_biaya = array_sum($request->bayar_biaya);
 
