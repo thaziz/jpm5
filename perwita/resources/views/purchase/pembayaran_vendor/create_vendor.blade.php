@@ -1,4 +1,4 @@
-
+{{-- 
 <div class="col-sm-12 header_biaya"  >
 	{{ csrf_field() }}
 <form>
@@ -1242,3 +1242,4 @@ $('.save_sc_um').click(function(){
      window.open('{{url('fakturpembelian/detailbiayapenerus')}}'+'/'+idfaktur);
   }
 </script>
+ --}}

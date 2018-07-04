@@ -110,7 +110,7 @@
                                 <td style="width:110px;">Jenis Pembayaran</td>
                                 <td colspan="20" class="jenis_pembayaran_td">
 
-                                    <select  class="form-control cb_jenis_pembayaran" onchange="nota_tes()" name="cb_jenis_pembayaran" >
+                                    <select  class="form-control  cb_jenis_pembayaran" onchange="nota_tes()" name="cb_jenis_pembayaran" >
                                         <option value="0">Pilih - Pembayaran</option>
                                         <option value="T"> TUNAI/CASH </option>
                                         <option value="C"> TRANSFER </option>
