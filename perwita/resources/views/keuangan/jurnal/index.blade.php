@@ -172,7 +172,7 @@
 
  <!-- modal -->
 <div id="modal_tambah_akun" class="modal">
-  <div class="modal-dialog" style="width: 60%">
+  <div class="modal-dialog" style="width: 80%">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
