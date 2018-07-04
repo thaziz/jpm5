@@ -62,19 +62,19 @@
                   <table class="table" width="80%">
                     <tr>
                       <td>Awal</td>
-                      <td><input type="text" name="min" id="min" class="form-control datepicker_date input-sm"></td>
+                      <td><input type="text" name="min" id="min" class="form-control datepicker_date input-sm" value="2018-07-01"></td>
                     </tr>
                     <tr>
                       <td>Akir</td>
-                      <td><input type="text" name="max" id="max" class="form-control datepicker_date input-sm"></td>
+                      <td><input type="text" name="max" id="max" class="form-control datepicker_date input-sm" value="2018-07-31"></td>
                     </tr>
                     <tr>
                       <td>Laporan</td>
                       <td>
                           <select class="chosen-select-width input-sm" name="laporan" id="laporan">
-                            <option selected value="">- Pilih -</option>
-                            <option value="Rekap per Customer">Rekap per Customer</option>
-                            <option value="Rekap per Customer Detail">Rekap per Customer Detail</option>
+                            <option  value="">- Pilih -</option>
+                            <option selected value="Rekap per Supplier">Rekap per Supplier</option>
+                            <option value="Rekap per Supplier Detail">Rekap per Supplier Detail</option>
                             <option value="Rekap per akun">Rekap per akun</option>
                             <option value="Rekap per akun Detail">Rekap per akun Detail</option>
                       </td>
@@ -85,7 +85,7 @@
                           <select class="chosen-select-width" name="supplier" id="supplier">
                               <option value="">- Pilih -</option>
                               @foreach ($supplier as $element)
-                                <option value="{{ $element->no_supplier }}">{{ $element->no_supplier }} - {{ $element->nama_supplier }}</option>
+                                <option value="{{ $element->no_supplier }}" data-name="{{ $element->nama_supplier }}" data-id="{{ $element->idsup }}">{{ $element->no_supplier }} - {{ $element->nama_supplier }}</option>
                               @endforeach
                           </select>
                       </td>
@@ -112,6 +112,8 @@
                           </select>
                       </td>
                     </tr>
+                    <input type="hidden" name="supplier_name" id="supplier_name">
+                    <input type="hidden" name="supplier_id" id="supplier_id">
                   </table>
                 </div>
                 </form>
@@ -185,14 +187,19 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-     
-$('#datatable').DataTable({
-            responsive: true,
-            searching: true,
-            //paging: false,
-            "pageLength": 10,
-            "language": dataTableLanguage,
-    });
+
+$('#supplier').change(function(){
+  $('#supplier_name').val($(this).find(':selected').data('name'));
+  $('#supplier_id').val($(this).find(':selected').data('id'));
+
+})
+// $('#datatable').DataTable({
+//             responsive: true,
+//             searching: true,
+//             //paging: false,
+//             "pageLength": 10,
+//             "language": dataTableLanguage,
+//     });
 
 /*  function cari() {
       $.ajax({
@@ -223,12 +230,35 @@ $('#datatable').DataTable({
             url : ('{{ route('carikartuhutang_persupplier') }}'),
             success: function(data)
             {   
+
+                $('#drop').html(data);
+                                
+                $('.saldo').each(function(i){
+                   var saldo_index = $('.saldo_'+i).val()*1;
+
+                   $('.debet_'+i).each(function(a){ 
+                      saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+a).val());
+                      var parent = $(this).parents('tr');
+                      $(parent).find('.total').text(saldo_index);
+                   })                   
+
+                    $('.grand_'+i).text(saldo_index);
+                })
+
+            }
+      })
+
+
+   }else if (laporan == 'Rekap per Supplier Detail') {
+     $.ajax({
+            type: "GET",
+            data : $('#save_data').serialize(),
+            url : ('{{ route('carikartuhutang_persupplier_detail') }}'),
+            success: function(data)
+            {   
                 $('#drop').html(data);
             }
       })
-   }else if (laporan == 'Rekap per Supplier Detail') {
-
-    alert('b');
    }else if (laporan == 'Rekap per akun') {
       $.ajax({
             type: "GET",
