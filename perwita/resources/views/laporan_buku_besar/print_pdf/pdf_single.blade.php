@@ -49,13 +49,12 @@
 	</thead>
 </table>
 
+<?php $urt = 0; ?>
 
-
-@foreach($data as $data_akun)
-	
-	<?php $saldo = $saldo_awal[$data_akun->akun]; ?>
-
-	<table width="100%" border="0" style="font-size: 9pt; margin-top: 10px;">
+@foreach($time as $data_time)
+ @foreach($data as $data_akun)
+    <?php $mt = ($urt == 0) ? "m-t" : "m-t-lg"; $saldo = $saldo_awal[$data_time->time."/".$data_akun->akun]; ?>
+     <table width="100%" border="0" style="font-size: 9pt; margin-top: 10px;">
 		<thead>
 			<tr>
 				<td style="text-align: right; font-weight: 400; padding: 7px 20px 0px 0px; border-top: 1px solid #efefef;">Nama Perkiraan : {{ $data_akun->akun }} {{ $data_akun->main_name }}</td>
@@ -89,42 +88,53 @@
 			@foreach($grap as $data_grap)
               @if($data_grap->acc == $data_akun->akun)
 
-                <?php 
-                  $debet = 0; $kredit = 0;
-
-                  $saldo += $data_grap->jrdt_value;
-
-                  if($data_grap->jrdt_statusdk == "D")
-                    $debet = str_replace("-", "", $data_grap->jrdt_value);
+                <?php
+                  if($throttle == "Bulan")
+                    $cek = date("n-Y", strtotime($data_grap->jr_date)) == $data_time->time;
                   else
-                    $kredit = str_replace("-", "", $data_grap->jrdt_value);
-
+                    $cek = date("Y", strtotime($data_grap->jr_date)) == $data_time->time;
                 ?>
 
-            	<tr>
-                  <td style="text-align: center;">{{ date("d-m-Y", strtotime($data_grap->jr_date)) }}</td>
-                  <td style="text-align: center;">{{ $data_grap->jr_ref }}</td>
-                  <td>{{ $data_grap->jr_note }}</td>
-                  <td class="money">{{ number_format($debet, 2) }}</td>
-                  <td class="money">{{ number_format($kredit, 2) }}</td>
-                  <td class="money">{{ number_format($saldo, 2) }}</td>
-                </tr>
+                @if($data_grap->acc == $data_akun->akun && $cek)
+
+                  <?php 
+                    $debet = 0; $kredit = 0;
+
+                    $saldo += $data_grap->jrdt_value;
+
+                    if($data_grap->jrdt_statusdk == "D")
+                      $debet = str_replace("-", "", $data_grap->jrdt_value);
+                    else
+                      $kredit = str_replace("-", "", $data_grap->jrdt_value);
+
+                  ?>
+
+                  <tr>
+                    <td class="text-center">{{ date("d-m-Y", strtotime($data_grap->jr_date)) }}</td>
+                    <td class="text-center">{{ $data_grap->jr_ref }}</td>
+                    <td>{{ $data_grap->jr_note }}</td>
+                    <td class="money">{{ number_format($debet, 2) }}</td>
+                    <td class="money">{{ number_format($kredit, 2) }}</td>
+                    <td class="money">{{ number_format($saldo, 2) }}</td>
+                  </tr>
+                @endif
 			  @endif
 			@endforeach
 		</tbody>
 	</table>
-	
+
 	<table width="100%" border="0" style="font-size: 7pt; margin-top: 0px;">
 		<thead>
 			<tr>
-				@if($throttle == "bulan")
-					<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Bulan {{ date_ind($request->m) }} {{ $request->y }}</td>
-				@elseif($throttle == "tahun")
+				@if($throttle == "Bulan")
+					<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Bulan {{ date_ind(explode('-', $data_time->time)[0]) }} {{ explode('-', $data_time->time)[1] }}</td>
+				@elseif($throttle == "Tahun")
 					<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Tahun {{ $request->y }}</td>
 				@endif
 			</tr>
 		</thead>
 	</table>
 
-	<div class="page_break"></div>
+	<div style="page-break-before: always;"></div>
+  @endforeach
 @endforeach
