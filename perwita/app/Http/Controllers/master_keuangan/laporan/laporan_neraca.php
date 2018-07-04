@@ -205,10 +205,6 @@ class laporan_neraca extends Controller
       $m2 = (substr(explode("/", $request->y)[0], 0, 1) == 0) ? substr(explode("/", $request->y)[0], 1, 1) : explode("/", $request->y)[0]; $y2 = explode("/", $request->y)[1];
     }
 
-
-    $date = 
-
-
     // Mengambil Data 1
 
       $data_neraca_1 = []; $no = 0; $data_detail_1 = []; $no_detail = 0;

@@ -83,6 +83,8 @@ Route::post('setting/hak_akses/edit_hak_akses', 'setting\hak_akses_Controller@ed
 
 Route::get('kartuhutangrekap' , 'Queryanalisa@kartuhutangrekap');
 Route::get('kartuhutangdetail' , 'Queryanalisa@kartuhutangdetail');
+Route::get('rekapmutasihutang' , 'Queryanalisa@rekapmutasihutang');
+Route::get('kartuhutangrekappihakketiga' , 'Queryanalisa@kartuhutangrekappihakketiga');
 
 
 
@@ -318,7 +320,7 @@ Route::get('fakturpembelian/subcon_save', 'pembayaran_vendor_controller@subcon_s
 Route::get('fakturpembelian/subcon_save', 'pembayaran_vendor_controller@subcon_save');
 Route::get('fakturpembelian/subcon_update', 'pembayaran_vendor_controller@subcon_update');
 Route::get('master_subcon/cari_kontrak', 'pembayaran_vendor_controller@cari_kontrak');
-Route::get('fakturpembelian/getpembayaransubcon', 'pembayaran_vendor_controller@getpembayaransubcon')->name('getpembayaransubcon');
+Route::get('fakturpembelian/getpembayaransubcon', 'pembayaran_vendor_controller@index');
 Route::get('fakturpembelian/cari_subcon', 'pembayaran_vendor_controller@cari_subcon');
 
 

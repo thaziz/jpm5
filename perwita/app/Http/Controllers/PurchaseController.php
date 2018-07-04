@@ -4814,6 +4814,16 @@ public function purchase_order() {
 					$fatkurpembeliand->fp_jenispph = $jenispph;
 					$fatkurpembeliand->fp_pph = $hasilpph;
 					$fatkurpembeliand->fp_nilaipph = $request->inputpph;
+
+					$datapph = DB::select("select * from pajak where id = '$jenispph'");
+					$kodepajak2 = $datapph[0]->acc1;
+					$kodepajak = substr($kodepajak2, 0,4);
+
+					$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$kodepajak%' and kode_cabang = '$datacomp2'");
+					if(count($datakun2) != 0){
+						$acchutang = $datakun2[0]->id_akun;
+						$fatkurpembeliand->fp_accpph = $acchutang;
+					}
 				}
 
 				$fatkurpembeliand->fp_netto = $netto;
@@ -5862,6 +5872,17 @@ public function purchase_order() {
 					$fatkurpembelian->fp_jenispph = $jenispph;
 					$fatkurpembelian->fp_pph = $hasilpph;
 					$fatkurpembelian->fp_nilaipph = $request->inputpph;
+
+					$datapph = DB::select("select * from pajak where id = '$jenispph'");
+					$kodepajak2 = $datapph[0]->acc1;
+					$kodepajak = substr($kodepajak2, 0,4);
+					if($kodepajak != ''){
+					$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$kodepajak%' and kode_cabang = '$cabang'");
+					if(count($datakun2) != 0){
+						$accpph = $datakun2[0]->id_akun;
+						$fatkurpembelian->fp_accpph = $accpph;
+					}
+					}
 				}
 			
 
@@ -5900,7 +5921,7 @@ public function purchase_order() {
 				$fatkurpembelian->fp_edit = 'ALLOWED';
 				$fatkurpembelian->fp_sisapelunasan = $netto;
 				$fatkurpembelian->fp_acchutang = $acchutang;
-				$fatkurpembelian->fp_accpph = '212121';
+		//		$fatkurpembelian->fp_accpph = '212121';
 				$fatkurpembelian->created_by = $request->username;
 				$fatkurpembelian->updated_by = $request->username;
 

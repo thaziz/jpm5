@@ -470,7 +470,11 @@
                 <td width="30%" class="text-center">Pilih Cabang</td>
                 <td colspan="2">
                     <select name="cab" class="select_validate_null form-control" id="group_laba_rugi">
-                      <option value="all">SEMUA CABANG</option>
+                      
+                      @if(Session::get("cabang") == '000')
+                        <option value="all">SEMUA CABANG</option>
+                      @endif
+
                       @foreach($cabangs as $cab)
                         <?php $select = ($cab->kode == $_GET["cab"]) ? "selected" : "" ?>
                         <option value="{{ $cab->kode }}" {{$select}}>{{ $cab->nama }}</option>
@@ -655,7 +659,7 @@
 
    $("#submit_setting").click(function(event){
       event.preventDefault();
-      form = $("#table_setting_form"); $(this).attr("disabled", true); $(this).text("Mengubah Tampilan Table ...");
+      form = $("#table_setting_form"); $(this).attr("disabled", true); $(this).text("Mengubah Tampilan Neraca ...");
 
       tampil = $("#tampil").val();
 

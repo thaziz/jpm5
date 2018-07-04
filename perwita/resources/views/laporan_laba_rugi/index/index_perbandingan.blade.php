@@ -57,7 +57,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
       <div class="col-lg-10">
-          <h2> Laporan Laba Rugi </h2>
+          <h2> Laporan Laba Rugi {{ ($_GET['cab'] == "all") ? "Semua Cabang" : "Cabang ".$cabang->nama }}</h2>
           <ol class="breadcrumb">
               <li>
                   <a>Home</a>
@@ -71,46 +71,7 @@
 
           </ol>
       </div>
-
-      <div class="col-lg-12" style="border: 1px solid #eee; margin-top: 15px;">
-        <table border="0" id="form-table" class="col-md-10">
-        <tr>
-          <td width="10%" class="text-center">Tampilkan : </td>
-          <td width="15%">
-            <select class="form-control" style="width:90%; height: 30px" id="tampil">
-                <option value="bulan">Laba Rugi Bulan</option>
-                <option value="tahun">Laba Rugi Tahun</option>
-                <option value="p_bulan">Perbandingan Bulan</option>
-                <option value="p_tahun">Perbandingan Tahun</option>
-              </select>
-          </td>
-
-          <td width="10%">
-            <input class="form-control text-center date" style="width:90%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="bulan" placeholder="Pilih Bulan">
-
-            <input class="form-control text-center date_year" style="width:90%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="bulan_1" placeholder="Pilih Bulan Ke-1">
-
-            <input class="form-control text-center year" style="width:90%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="tahun_1" placeholder="Pilih Tahun Ke-1">
-
-          </td>
-
-          <td width="10%">
-            <input class="form-control text-center year" style="width:90%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="tahun" placeholder="Pilih Tahun">
-
-            <input class="form-control text-center date_year" style="width:90%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="bulan_2" placeholder="Pilih Bulan Ke-2">
-
-            <input class="form-control text-center year" style="width:90%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="tahun_2" placeholder="Pilih Tahun Ke-2">
-          </td>
-
-          <td width="15%" class="text-left">
-            <button class="btn btn-success btn-sm" id="set" style="font-size: 8pt;"> Terapkan</button>
-          </td>
-          
-        </tr>
-
-      </table>
-    </div>
-  </div>
+</div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -120,7 +81,17 @@
                       <h5 id="title_in"></h5>
 
                     <div class="ibox-tools">
-                        <a href="{{ route("laba_rugi.pdf_perbandingan", $throttle."?m=".$request["m"]."&y=".$request["y"]) }}" target="_blank">
+                        <div style="display: inline-block; background: none;">
+                          <button class="btn btn-sm btn-default pilihCabang" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <i class="fa fa-list"></i> &nbsp;Pengaturan Halaman
+                              <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1" style="right: 95px;">
+                            <li><a href="#" data-toggle="modal" data-target="#modal_setting_table"><i class="fa fa-table fa-fw"></i> &nbsp;Pengaturan Tampilan Laba Rugi</a></li>
+                          </ul>
+                        </div>
+
+                        <a href="{{ route("laba_rugi.pdf_perbandingan", $throttle."?cab=".$_GET["cab"]."&m=".$request["m"]."&y=".$request["y"]) }}" target="_blank">
                           <button class="btn btn-sm btn-primary" style="font-size: 8pt;">
                             <i class="fa fa-file-pdf-o"></i> &nbsp;Cetak PDF
                           </button>
@@ -351,6 +322,86 @@
     </div>
 </div>
 
+<!-- modal -->
+<div id="modal_setting_table" class="modal">
+  <div class="modal-dialog" style="width: 30%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Setting Tampilan Neraca</h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <form id="table_setting_form">
+          <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+            <table border="0" id="form-table" class="col-md-12">
+              <tr>
+                <td width="30%" class="text-center">Pilih Cabang</td>
+                <td colspan="2">
+                    <select name="cab" class="select_validate_null form-control" id="group_laba_rugi">
+                      @if(Session::get("cabang") == '000')
+                        <option value="all">SEMUA CABANG</option>
+                      @endif
+
+                      @foreach($cabangs as $cab)
+                        <?php $select = ($cab->kode == $_GET["cab"]) ? "selected" : "" ?>
+                        <option value="{{ $cab->kode }}" {{$select}}>{{ $cab->nama }}</option>
+                      @endforeach
+                    </select>
+                </td>
+              </tr>
+
+              <tr>
+                <td width="30%" class="text-center">Jenis Laba Rugi</td>
+                <td colspan="2">
+                    <select class="form-control" style="width:90%; height: 30px" id="tampil">
+                      <option value="bulan">Laba Rugi Bulan</option>
+                      <option value="tahun">Laba Rugi Tahun</option>
+                      <option value="p_bulan">Perbandingan Bulan</option>
+                      <option value="p_tahun">Perbandingan Tahun</option>
+                    </select>
+                </td>
+              </tr>
+
+              <tr>
+                <td width="30%" class="text-center"></td>
+                <td>
+
+                    <input class="form-control text-center date" style="width:90%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="bulan" placeholder="Pilih Bulan">
+
+                    <input class="form-control text-center date_year" style="width:90%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="bulan_1" placeholder="Bulan Ke-1">
+
+                    <input class="form-control text-center year" style="width:90%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="tahun_1" placeholder="Tahun Ke-1">
+
+                </td>
+
+                <td>
+
+                    <input class="form-control text-center year" style="width:80%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="tahun" placeholder="Pilih Tahun">
+
+                    <input class="form-control text-center date_year" style="width:80%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="bulan_2" placeholder="Bulan Ke-2">
+
+                    <input class="form-control text-center year" style="width:80%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="tahun_2" placeholder="Tahun Ke-2">
+
+                </td>
+
+              </tr>
+            </table>
+          </div>
+          </form>
+
+          <div class="col-md-12 m-t" style="border-top: 1px solid #eee; padding: 10px 10px 0px 0px;">
+            <button class="btn btn-primary btn-sm pull-right" id="submit_setting">Submit</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+  <!-- modal -->
+
 @endsection
 
 
@@ -475,42 +526,95 @@
 
    })
 
-   $("#set").click(function(evt){
-      evt.stopImmediatePropagation();
-      evt.preventDefault();
+   $("#submit_setting").click(function(event){
+      event.preventDefault();
+      form = $("#table_setting_form"); $(this).attr("disabled", true); $(this).text("Mengubah Tampilan Laba Rugi ...");
 
       tampil = $("#tampil").val();
 
       if(tampil == "bulan"){
+
+        data = $("#tampil").val()+"?"+form.serialize()+"&m="+$("#bulan").val()+"&y="+$("#tahun").val();
+
         if($("#bulan").val() == "" || $("#tahun").val() == ""){
           toastr.warning('Bulan Dan Tahun Tidak Boleh Kosong');
+          $(this).removeAttr("disabled"); $(this).text("Submit");
           return false;
         }else{
-          window.location = baseUrl+"/master_keuangan/laba_rugi/single/"+$("#tampil").val()+"?m="+$("#bulan").val()+"&y="+$("#tahun").val();
+          window.location = baseUrl+"/master_keuangan/laba_rugi/single/"+data;
         }
       }else if(tampil == "tahun"){
+
+        data = $("#tampil").val()+"?"+form.serialize()+"&m="+$("#bulan").val()+"&y="+$("#tahun").val();
+
         if($("#bulan").val() == "" || $("#tahun").val() == ""){
           toastr.warning('Tahun Tidak Boleh Kosong');
+          $(this).removeAttr("disabled"); $(this).text("Submit");
           return false;
         }else{
-          window.location = baseUrl+"/master_keuangan/laba_rugi/single/"+$("#tampil").val()+"?m="+$("#bulan").val()+"&y="+$("#tahun").val();
+          window.location = baseUrl+"/master_keuangan/laba_rugi/single/"+data;
         }
       }else if(tampil == "p_bulan"){
+
+        data = $("#tampil").val()+"?"+form.serialize()+"&m="+$("#bulan_1").val()+"&y="+$("#bulan_2").val();
+
         if($("#bulan_1").val() == "" || $("#bulan_2").val() == ""){
           toastr.warning('Bulan Tidak Boleh Ada Yang Kosong');
+          $(this).removeAttr("disabled"); $(this).text("Submit");
           return false;
         }else{
-          window.location = baseUrl+"/master_keuangan/laba_rugi/perbandingan/"+$("#tampil").val()+"?m="+$("#bulan_1").val()+"&y="+$("#bulan_2").val();
+          window.location =baseUrl+"/master_keuangan/laba_rugi/perbandingan/"+data;
         }
       }else if(tampil == "p_tahun"){
+
+        data = $("#tampil").val()+"?"+form.serialize()+"&m="+$("#tahun_1").val()+"&y="+$("#tahun_2").val();
+
         if($("#tahun_1").val() == "" || $("#tahun_2").val() == ""){
           toastr.warning('Tahun Tidak Boleh Ada Yang Kosong');
+          $(this).removeAttr("disabled"); $(this).text("Submit");
           return false;
         }else{
-          window.location = baseUrl+"/master_keuangan/laba_rugi/perbandingan/"+$("#tampil").val()+"?m="+$("#tahun_1").val()+"&y="+$("#tahun_2").val();
+          window.location = baseUrl+"/master_keuangan/laba_rugi/perbandingan/"+data;
         }
       }
-   })
+    })
+
+   // $("#set").click(function(evt){
+   //    evt.stopImmediatePropagation();
+   //    evt.preventDefault();
+
+   //    tampil = $("#tampil").val();
+
+   //    if(tampil == "bulan"){
+   //      if($("#bulan").val() == "" || $("#tahun").val() == ""){
+   //        toastr.warning('Bulan Dan Tahun Tidak Boleh Kosong');
+   //        return false;
+   //      }else{
+   //        window.location = baseUrl+"/master_keuangan/laba_rugi/single/"+$("#tampil").val()+"?m="+$("#bulan").val()+"&y="+$("#tahun").val();
+   //      }
+   //    }else if(tampil == "tahun"){
+   //      if($("#bulan").val() == "" || $("#tahun").val() == ""){
+   //        toastr.warning('Tahun Tidak Boleh Kosong');
+   //        return false;
+   //      }else{
+   //        window.location = baseUrl+"/master_keuangan/laba_rugi/single/"+$("#tampil").val()+"?m="+$("#bulan").val()+"&y="+$("#tahun").val();
+   //      }
+   //    }else if(tampil == "p_bulan"){
+   //      if($("#bulan_1").val() == "" || $("#bulan_2").val() == ""){
+   //        toastr.warning('Bulan Tidak Boleh Ada Yang Kosong');
+   //        return false;
+   //      }else{
+   //        window.location = baseUrl+"/master_keuangan/laba_rugi/perbandingan/"+$("#tampil").val()+"?m="+$("#bulan_1").val()+"&y="+$("#bulan_2").val();
+   //      }
+   //    }else if(tampil == "p_tahun"){
+   //      if($("#tahun_1").val() == "" || $("#tahun_2").val() == ""){
+   //        toastr.warning('Tahun Tidak Boleh Ada Yang Kosong');
+   //        return false;
+   //      }else{
+   //        window.location = baseUrl+"/master_keuangan/laba_rugi/perbandingan/"+$("#tampil").val()+"?m="+$("#tahun_1").val()+"&y="+$("#tahun_2").val();
+   //      }
+   //    }
+   // })
 
   })
 
