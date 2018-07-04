@@ -46,6 +46,9 @@
   .modal {
   overflow-y:auto;
 }
+  .full{
+    width: 100% !important;
+  }
 </style>
 <link href="{{asset('assets/css/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css')}}" rel="stylesheet">
 
@@ -104,7 +107,7 @@
                            <tr>
                             <td> Cabang </td>
                             @if(Auth::user()->punyaAkses('Faktur Pembelian','cabang'))
-                            <td>  
+                            <td class="cabang_td">  
                             <select class="form-control chosen-select-width cabang" name="cabang">
                                 @foreach($data['cabang'] as $cabang)
                               <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
@@ -753,7 +756,7 @@
                   </div>
 				  
 					    <!-- FORM BAYAR UANG MUKA -->
-                            <div class="modal fade" id="bayaruangmuka" tabindex="-1" role="dialog"  aria-hidden="true">
+                <div class="modal fade" id="bayaruangmuka" tabindex="-1" role="dialog"  aria-hidden="true">
 							  <form method="post" action="{{url('fakturpembelian/bayaruangmuka')}}" enctype="multipart/form-data" class="form-horizontal" id="form_hasilum">  
                                 <div class="modal-dialog" style="min-width: 1200px !important; min-height: 800px">
                                  
@@ -1524,6 +1527,11 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+
+{{--  --}}
+{{-- MODAL VENDOR --}}
+@include('purchase.pembayaran_vendor.modal_do_vendor')
+<!--  MODAL TT PENERUS  -->
 <div id="modal_show_um" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document" style="width: 1200px">
     <div class="modal-content">
@@ -1536,10 +1544,7 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-{{--  --}}
 
-
-<!--  MODAL TT PENERUS  -->
 
 <div class="modal fade" id="modal_tt_penerus" tabindex="-1" role="dialog"  aria-hidden="true">
   <div class="modal-dialog" role="document" style="min-width: 800px !important; min-height: 800px">

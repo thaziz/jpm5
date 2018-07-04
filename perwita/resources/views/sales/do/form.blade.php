@@ -118,7 +118,7 @@
                                                         <select class="chosen-select-width replace_deskripsi"  name="cb_kota_asal" style="width:100%" >
                                                             <option value=""></option>
                                                         @foreach ($kota as $row)
-                                                            <option value="{{ $row->id }}" data-nama="{{ $row->nama }}"> {{ $row->nama }} </option>
+                                                            <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
                                                         @endforeach
                                                         </select>
                                                     </td>
@@ -129,7 +129,7 @@
                                                         <select class="chosen-select-width replace_deskripsi" id="kota" onchange="getKecamatan()" name="cb_kota_tujuan" style="width:100%" >
                                                             <option value=""></option>
                                                         @foreach ($kota as $row)
-                                                            <option value="{{ $row->id }}" data-nama="{{ $row->nama }}"> {{ $row->nama }} </option>
+                                                            <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
                                                         @endforeach
                                                         </select>
                                                     </td>
