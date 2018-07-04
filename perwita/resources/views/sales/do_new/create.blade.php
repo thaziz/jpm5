@@ -292,6 +292,10 @@
 
 
                                     <input type="hidden" name="tarif_vendor_bol" id="tarif_vendor_bol">
+                                    <input type="hidden" name="id_tarif_vendor" id="id_tarif_vendor">
+                                    <input type="hidden" name="nama_tarif_vendor" id="nama_tarif_vendor">
+
+
 
 
                                     {{-- END OF HIDDEN --}}
@@ -1018,6 +1022,9 @@ function hitung() {
 
                 $("input[name='do_tarif_dasar']").val(accounting.formatMoney(data[0].tarif_vendor,"",0,'.',','));
                 hitung();
+
+                $('#id_tarif_vendor').val(data[0].kode);
+                $('#nama_tarif_vendor').val(data[0].nama);
             }
         });
         
