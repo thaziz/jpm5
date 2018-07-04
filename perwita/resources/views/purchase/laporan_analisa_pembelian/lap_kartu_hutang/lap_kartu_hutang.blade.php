@@ -236,9 +236,9 @@ $('#supplier').change(function(){
                    $('.debet_'+i).each(function(a){ 
                       saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+i).eq(a).val());
                       var parent = $(this).parents('tr');
-                      $(parent).find('.total').text(saldo_index);
+                      $(parent).find('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
                    })    
-                   $('.grand_'+i).text(saldo_index);
+                   $('.grand_'+i).text(accounting.formatMoney(saldo_index,"",0,'.',','));
                 })
             }
       })
