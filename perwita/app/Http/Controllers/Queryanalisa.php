@@ -316,13 +316,14 @@ class Queryanalisa extends Controller
 
 	}
 
+	//per supplier
 	public function kartuhutangdetail(){
 
 
 		$tglawal = '2018-06-02';
 		$tglakhir = '2018-07-02';
 
-		$supplier = DB::select("select fp_idsup from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
+		$supplier = DB::select("select fp_idsup from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_jenisbayar = '2'");
 
 		$arraysup = [];
 		for($i = 0; $i < count($supplier); $i++){
@@ -403,8 +404,8 @@ class Queryanalisa extends Controller
 
 			$datacash = DB::select("select * from bukti_kas_keluar where bkk_tgl BETWEEN '$tglakhir' and '$tglawal' and bkk_supplier = '$no_supplier'");
 			
-				$cash = DB::select("select 'CASH' as flag, bkk_tgl as tgl, bkk_supplier as supplier , bkk_nota as nota, bkk_total as nominal from bukti_kas_keluar where bkk_tgl BETWEEN '$tglawal' and '$tglakhir' and bkk_supplier = '$no_supplier'");
-			
+			$cash = DB::select("select bbkd_supplier as supplier,  bbk_nota as nota, bbk_tgl as tgl, bbkd_nominal as nominal ,'K' as flag from bukti_bank_keluar_detail, bukti_bank_keluar where bbkd_idbbk = bbk_id and bbkd_supplier = '$idsup' and bbk_tgl BETWEEN '$tglawal' and '$tglakhir'");
+
 
 			$bkk = DB::select("select 'BG' as flag , bkk_supplier as supplier, bkk_nota as nota, bkk_tgl as tgl, bkk_total as nominal from bukti_kas_keluar where bkk_jenisbayar = '2' and bkk_supplier = '$no_supplier' and bkk_tgl BETWEEN '$tglawal' and '$tglakhir'");
 
@@ -544,13 +545,15 @@ class Queryanalisa extends Controller
 				$cash = DB::select("select 'CASH' as flag, bkk_tgl as tgl, bkk_supplier as supplier , bkk_nota as nota, bkk_total as nominal from bukti_kas_keluar where bkk_tgl BETWEEN '$tglawal' and '$tglakhir' and bkk_akun_hutang LIKE '$idakun%'");
 
 				for($m = 0 ; $m < count($cash); $m++){
-					$
+					$netto = $cash[$m]->bkk_total;
+					$datas['cash'] = floatval($netto) + floatval($netto);
+					$datas['flag'] = 'cash';
 				}
 			
 
-			$bkk = DB::select("select 'BG' as flag , bkk_supplier as supplier, bkk_nota as nota, bkk_tgl as tgl, bkk_total as nominal from bukti_kas_keluar where bkk_jenisbayar = '2' and bkk_supplier = '$no_supplier' and bkk_tgl BETWEEN '$tglawal' and '$tglakhir'");
-
+			
 			}
+
 			else if($jenisakun == 'HUTANG PAJAK'){
 				$datahutangbaru = DB::select("select * from faktur_pembelian where fp_tgl > '$tglakhir' and fp_accpph LIKE '$idakun%'");
 
