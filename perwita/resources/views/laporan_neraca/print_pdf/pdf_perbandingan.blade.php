@@ -44,7 +44,7 @@
 	<thead>
 		<tr>
 			@if($throttle == "p_bulan")
-				<td style="text-align: left;">Periode : Bulan {{ $request->m }} Dan {{ $request->y }}, {{ ($_GET['cab'] == "all") ? "Semua Cabang" : "Cabang ".$cabang->nama }}</td>
+				<td style="text-align: left;">Periode : Bulan {{ $request->m }}/{{ $request->y }}, {{ ($_GET['cab'] == "all") ? "Semua Cabang" : "Cabang ".$cabang->nama }}</td>
 			@elseif($throttle == "p_tahun")
 				<td style="text-align: left;">Periode : Tahun {{ $request->m }} dan {{ $request->y }}, {{ ($_GET['cab'] == "all") ? "Semua Cabang" : "Cabang ".$cabang->nama }}</td>
 			@endif
