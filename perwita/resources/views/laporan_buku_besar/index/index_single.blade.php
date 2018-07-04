@@ -112,7 +112,7 @@
                     <h5 id="title_in"></h5>
 
                     <div class="ibox-tools">
-                        <a href="{{ route("buku_besar.pdf_single", $throttle."?m=".$request["m"]."&y=".$request["y"]) }}" target="_blank">
+                        <a href="{{ route("buku_besar.pdf_single", $throttle."?buku_besar_cabang=".$request->buku_besar_cabang."&d1=".$request->d1."&y1=".$request->y1."&d2=".$request->d2."&y2=".$request->y2."&akun1=".$request->akun1."&akun2=".$request->akun2."&akun_lawan=".$request->akun_lawan) }}" target="_blank">
                           <button class="btn btn-sm btn-primary" style="font-size: 8pt;">
                             <i class="fa fa-file-pdf-o"></i> &nbsp;Cetak PDF
                           </button>
