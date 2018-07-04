@@ -230,25 +230,16 @@ $('#supplier').change(function(){
             url : ('{{ route('carikartuhutang_persupplier') }}'),
             success: function(data)
             {   
-
                 $('#drop').html(data);
-                                
                 $('.saldo').each(function(i){
                    var saldo_index = $('.saldo_'+i).val();
-
                    $('.debet_'+i).each(function(a){ 
-                      console.log(saldo_index);
                       saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+i).eq(a).val());
-                      console.log('debet '+$(this).val());
-                      console.log('kredit '+$('.kredit_'+i).val());
                       var parent = $(this).parents('tr');
                       $(parent).find('.total').text(saldo_index);
                    })    
-
-
-                    $('.grand_'+i).text(saldo_index);
+                   $('.grand_'+i).text(saldo_index);
                 })
-
             }
       })
 
