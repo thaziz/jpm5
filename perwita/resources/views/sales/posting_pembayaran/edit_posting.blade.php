@@ -104,9 +104,9 @@
                                             <option value="F"> CHEQUE/BG </option>
                                             <option value="B"> NOTA/BIAYA LAIN</option>
                                             <option selected="" value="U"> UANG MUKA/DP </option>
-                                        @elseif($data->jenis_pembayaran == 'K')
+                                        @elseif($data->jenis_pembayaran == 'T')
                                             <option value="C"> TRANSFER </option>
-                                            <option selected="" value="K"> TRANSFER KAS</option>
+                                            <option selected="" value="T"> TUNAI/KWITANSI</option>
                                             <option value="L"> LAIN-LAIN </option>
                                             <option value="F"> CHEQUE/BG </option>
                                             <option value="B"> NOTA/BIAYA LAIN</option>
@@ -648,6 +648,22 @@ $('#btnsimpan').click(function(){
      });
 })
 
+function lihat_jurnal(){
+
+        var id = '{{ $id }}';
+        $.ajax({
+            url:baseUrl + '/sales/kwitansi/jurnal',
+            type:'get',
+            data:{id},
+            success:function(data){
+               $('.tabel_jurnal').html(data);
+               $('.modal_jurnal').modal('show');
+            },
+            error:function(data){
+                // location.reload();
+            }
+        }); 
+   }
 
 
 @foreach($data_dt as $val)
@@ -668,11 +684,10 @@ var ket   = '{{$val->keterangan}}';
 
 nomor.push(nomor_kwi);
 array_simpan.push(nomor_kwi);
-if ({{ $data->jenis_pembayaran  == 'F' }}) {
+if ('{{ $data->jenis_pembayaran  == 'F' }}') {
     var cek = '<input type="text" value="'+'{{$val->nomor_cek}}'+'" class="form-control d_cek" name="d_cek[]">';
 }else{
     var cek = '<input readonly type="text" value="" class="form-control d_cek" name="d_cek[]">';
-
 }
 table_data.row.add([
     nomor_kwi+'<input type="hidden" value="'+nomor_kwi+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
@@ -694,21 +709,5 @@ $('.cabang_td').addClass('disabled');
 
 @endforeach
 
-function lihat_jurnal(){
-
-        var id = '{{ $id }}';
-        $.ajax({
-            url:baseUrl + '/sales/kwitansi/jurnal',
-            type:'get',
-            data:{id},
-            success:function(data){
-               $('.tabel_jurnal').html(data);
-               $('.modal_jurnal').modal('show');
-            },
-            error:function(data){
-                // location.reload();
-            }
-        }); 
-   }
 </script>
 @endsection

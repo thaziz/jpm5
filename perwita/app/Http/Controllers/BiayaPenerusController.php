@@ -297,6 +297,15 @@ class BiayaPenerusController extends Controller
 						$id+=1;
 					}
 
+
+					$akun_hutang = DB::table('d_akun')
+										  ->where('id_akun','like','2102' . '%')
+										  ->where('kode_cabang',$request->cabang)
+										  ->first();
+
+
+					
+
 					$total_biaya =  array_sum($request->bayar_biaya);
 					$count 		 = count($request->no_do);
 					$save_data = DB::table('faktur_pembelian')
@@ -318,7 +327,7 @@ class BiayaPenerusController extends Controller
 									  'fp_edit'  			=> 'ALLOWED',
 									  'fp_sisapelunasan' 	=> $total_biaya,
 									  'fp_supplier'  		=> $request->nama_kontak2,
-									  'fp_acchutang'  		=> $request->acc_penjualan_penerus,
+									  'fp_acchutang'  		=> $akun_hutang->id_akun,
 									  'created_by'  		=> Auth::user()->m_username,
 									  'updated_by'  		=> Auth::user()->m_username,
 								   ]);	
@@ -344,7 +353,7 @@ class BiayaPenerusController extends Controller
 									  'updated_at' 		 => carbon::now(),
 									  'created_at' 		 => carbon::now(),
 									  'bp_total_penerus' => $total_biaya,
-									  'bp_akun_agen'	 => $request->acc_penjualan_penerus,
+									  'bp_akun_agen'	 => $akun_hutang->id_akun,
 									]);
 
 					
@@ -363,8 +372,13 @@ class BiayaPenerusController extends Controller
 									 ->where("nomor",$request->no_do[$i])
 									 ->first();
 
+						$akun_biaya = DB::table('d_akun')
+										  ->where('id_akun','like','5315' . '%')
+										  ->where('kode_cabang',$cari_do->kode_cabang)
+										  ->first();
+
 						$save_dt = DB::table('biaya_penerus_dt')
-									 ->insert([
+									->insert([
 										  'bpd_id'  		=> $id_bpd,
 										  'bpd_bpid' 		=> $id_bp,
 										  'bpd_bpdetail'	=> $i+1,
@@ -373,13 +387,13 @@ class BiayaPenerusController extends Controller
 										  'bpd_akun_biaya'  => $request->kode_biaya[$i],
 										  'bpd_debit' 	   	=> $request->DEBET_biaya[$i],
 										  'bpd_memo'  	  	=> $request->ket_biaya[$i],
-										  'bpd_akun_hutang' => $request->acc_penjualan_penerus,
+										  'bpd_akun_hutang' => $akun_biaya->id_akun,
 										  'created_at'      => carbon::now(), 
 										  'updated_at' 	   	=> carbon::now(),
 										  'bpd_status' 	    => $status[$i],
 										  'bpd_nominal'	    => $request->bayar_biaya[$i],
 										  'bpd_tarif_resi'  => $request->do_harga[$i]
-									 ]);
+									]);
 					}	
 
 					$cari_dt=DB::table('biaya_penerus_dt')		
@@ -443,7 +457,7 @@ class BiayaPenerusController extends Controller
 
 					$akun 	  = [];
 					$akun_val = [];
-					array_push($akun, $request->acc_penjualan_penerus);
+					array_push($akun,$akun_hutang->id_akun);
 					array_push($akun_val, $total_biaya);
 					for ($i=0; $i < count($jurnal); $i++) { 
 
@@ -927,6 +941,14 @@ class BiayaPenerusController extends Controller
 					if ($um !=null) {
 						$total_biaya -=$um->umfp_totalbiaya ;
 					}
+
+					$akun_hutang = DB::table('d_akun')
+										  ->where('id_akun','like','2102' . '%')
+										  ->where('kode_cabang',$request->cabang)
+										  ->first();
+
+
+					
 					$count 		 = count($request->no_do);
 					$save_data = DB::table('faktur_pembelian')
 								   ->where('fp_nofaktur',$request->nofaktur)
@@ -946,7 +968,7 @@ class BiayaPenerusController extends Controller
 									  'fp_edit'  			=> 'ALLOWED',
 									  'fp_sisapelunasan' 	=> $total_biaya,
 									  'fp_supplier'  		=> $request->nama_kontak2,
-									  'fp_acchutang'  		=> $request->acc_penjualan_penerus,
+									  'fp_acchutang'  		=> $akun_hutang->id_akun,
 									  'updated_by'  		=> Auth::user()->m_username,
 								   ]);	
 
@@ -963,7 +985,7 @@ class BiayaPenerusController extends Controller
 									  'updated_at' 		 => carbon::now(),
 									  'created_at' 		 => carbon::now(),
 									  'bp_total_penerus' => $total_biaya,
-									  'bp_akun_agen'	 => $request->acc_penjualan_penerus,
+									  'bp_akun_agen'	 => $akun_hutang->id_akun,
 									]);
 
 					$cari_bp = DB::table("biaya_penerus")
@@ -990,6 +1012,11 @@ class BiayaPenerusController extends Controller
 							$id_bpd +=1;
 						}
 
+						$akun_biaya = DB::table('d_akun')
+										  ->where('id_akun','like','5315' . '%')
+										  ->where('kode_cabang',$cari_do->kode_cabang)
+										  ->first();
+						// dd($akun_biaya);
 						$save_dt = DB::table('biaya_penerus_dt')
 									 ->insert([
 										  'bpd_id' 			=> $id_bpd,
@@ -1000,7 +1027,7 @@ class BiayaPenerusController extends Controller
 										  'bpd_akun_biaya'  => $request->kode_biaya[$i],
 										  'bpd_debit' 	   	=> $request->DEBET_biaya[$i],
 										  'bpd_memo'  	  	=> $request->ket_biaya[$i],
-										  'bpd_akun_hutang' => $request->acc_penjualan_penerus,
+										  'bpd_akun_hutang' => $akun_biaya->id_akun,
 										  'created_at'      => carbon::now(), 
 										  'updated_at' 	   	=> carbon::now(),
 										  'bpd_status' 	    => $status[$i],
@@ -1077,7 +1104,7 @@ class BiayaPenerusController extends Controller
 
 					$akun 	  = [];
 					$akun_val = [];
-					array_push($akun, $request->acc_penjualan_penerus);
+					array_push($akun, $akun_hutang->id_akun);
 					array_push($akun_val, $total_biaya);
 					for ($i=0; $i < count($jurnal); $i++) { 
 

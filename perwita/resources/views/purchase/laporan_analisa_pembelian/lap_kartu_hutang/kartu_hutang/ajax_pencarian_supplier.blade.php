@@ -8,9 +8,10 @@
          <tr>
             <td></td>
             <td>{{ $date }}</td>
-            <td colspan="5" align="right" >
+            <td>Saldo Awal</td>
+            <td colspan="4" align="right" >
             <input type="hidden" value="{{ $data['saldoawal'][$index] }}" name="" class="saldo saldo_{{ $index }}">
-            {{ $data['saldoawal'][$index] }}</td>
+            {{ number_format($data['saldoawal'][$index],0,'.','.') }}</td>
         </tr>
       @foreach($data['kartuhutang'] as $index1 => $element1)
         @foreach($data['kartuhutang'][$index1] as $index2 => $element2)
@@ -21,35 +22,35 @@
                <td>{{ $data['kartuhutang'][$index][$index2]->nota }}</td>
                <td>{{ $data['kartuhutang'][$index][$index2]->keterangan }}</td>
                @if ($data['kartuhutang'][$index][$index2]->flag == 'D')
-                <td>
+                <td align="right">
                   <input type="hidden" value="{{ $data['kartuhutang'][$index][$index2]->nominal }}" name="" class="debet debet_{{ $index }}">
-                  {{ $data['kartuhutang'][$index][$index2]->nominal }}
+                  {{ number_format($data['kartuhutang'][$index][$index2]->nominal,0,'.','.') }}
                 </td>
-                <td>
+                <td align="right">
                    <input type="hidden" value="0" name="" class="kredit kredit_{{ $index }}">
                    0
                 </td>
                @else
-                 <td>
+                 <td align="right">
                   <input type="hidden" value="0" name="" class="debet debet_{{ $index }}">
                   0
                  </td>
-                 <td>
+                 <td align="right">
                   <input type="hidden" value="{{ $data['kartuhutang'][$index][$index2]->nominal }}" name="" class="kredit kredit_{{ $index }}">
-                  {{ $data['kartuhutang'][$index][$index2]->nominal }}
+                  {{ number_format($data['kartuhutang'][$index][$index2]->nominal,0,'.','.') }}
                 </td>
                @endif
               
-                <td class="total"></td>
+                <td class="total" align="right"></td>
               </tr>
           @endif
         @endforeach
       @endforeach
       <tr>
         <td colspan="4">Grand Total :</td>
-        <td>{{ $data['totalhutangdebit'][$index] }}</td>
-        <td>{{ $data['totalhutangkredit'][$index] }}</td>
-        <td class="grand grand_{{ $index }}"></td>
+        <td align="right">{{ number_format($data['totalhutangdebit'][$index],0,'.','.') }}</td>
+        <td align="right">{{ number_format($data['totalhutangkredit'][$index],0,'.','.') }}</td>
+        <td align="right" class="grand grand_{{ $index }}"></td>
       </tr>
    @endforeach
 </table>

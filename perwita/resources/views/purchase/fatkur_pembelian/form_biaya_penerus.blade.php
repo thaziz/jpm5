@@ -97,7 +97,7 @@
  			</select>
  		</td>
 	  </tr>
-    <tr>
+{{--     <tr>
       <td style="width: 100px ;">Akun</td>
       <td width="10">:</td>
       <td class="disabled">
@@ -108,7 +108,7 @@
           @endforeach
         </select>
       </td>
-    </tr>
+    </tr> --}}
 	  <tr>
 	 	<td style="width: 100px">Memo</td>
 	 	<td width="10">:</td>
