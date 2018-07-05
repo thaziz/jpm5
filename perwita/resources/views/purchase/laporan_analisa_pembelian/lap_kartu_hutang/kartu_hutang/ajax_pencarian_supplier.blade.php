@@ -1,6 +1,15 @@
 {{-- @include('partials._scripts') --}}
 
-<table>
+<table class="table table-bordered table-striped" >
+  <tr>
+    <th>No.</th>
+    <th>Tanggal</th>
+    <th>No bukti</th>
+    <th>Keterangan</th>
+    <th>debet</th>
+    <th>kredit</th>
+    <th>saldo</th>
+  </tr>
    @foreach ($data['carisupp'] as $index => $element)
      <tr>
        <td colspan="7" >Supplier : [{{ $data['carisupp'][$index][0]->no_supplier }}] {{ $data['carisupp'][$index][0]->nama_supplier }} </td>

@@ -126,19 +126,14 @@
                     <a class="btn btn-info" onclick="cetak()">
                       <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> 
                   </div>
-                  <table id="datatable" class="table table-bordered table-striped">
+                  <div id="drop">
+                    
+                  </div>
+                  <table id="datatable" class="table table-bordered table-striped" >
                     <thead>
-                      <tr>
-                        <th>No.</th>
-                        <th>Tanggal</th>
-                        <th>No bukti</th>
-                        <th>Keterangan</th>
-                        <th>debet</th>
-                        <th>kredit</th>
-                        <th>saldo</th>
-                      </tr>
+                      
                     </thead>
-                    <tbody id="drop">
+                    <tbody >
                     {{--  @foreach ($data['data'] as $index => $element)
                        <tr>
                          <td>{{ $index+1 }}</td>
@@ -258,7 +253,7 @@ $('#supplier').change(function(){
       $.ajax({
             type: "GET",
             data : $('#save_data').serialize(),
-            url : ('{{ route('carikartuhutan_perakun') }}'),
+            url : ('{{ route('carikartuhutang_perakun') }}'),
             success: function(data)
             {   
                 $('#drop').html(data);
