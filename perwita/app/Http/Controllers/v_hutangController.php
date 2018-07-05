@@ -102,6 +102,15 @@ class v_hutangController extends Controller
        // return json_encode('tdk kosong');
        }
 
+          $nosupplier = $request->suppilername;
+
+          $datasupplier = DB::select("select * from supplier where no_supplier = '$nosupplier'");
+          $acchutangsup = $datasupplier[0]->acc_hutang;
+
+          $subacchutang = substr($acchutangsup, 0 , 4);
+          $datakun = DB::select("select * from d_akun where id_akun LIKE '$subacchutang%' and  kode_cabang = '$comp'");
+          $acchutangsupplier = $datakun[0]->id_akun;
+
        $total = str_replace("," , "" , $request->hasil);
 
         $store1 = new v_hutang;
@@ -113,8 +122,9 @@ class v_hutangController extends Controller
         $store1->v_keterangan =$request->ket;
         $store1->v_hasil =$total;
         $store1->v_pelunasan =$total;
-        $store1->v_akunhutang = $dataakunitem;
+   //     $store1->v_akunhutang = $dataakunitem;
         $store1->vc_comp = $request->cabang;
+        $store1->v_acchutang = $acchutangsupplier;
      //   return json_encode($request->suppilername);
        $store1->save();
 
@@ -167,7 +177,7 @@ class v_hutangController extends Controller
           $subacchutang = substr($acchutangsup, 0 , 4);
           $datakun = DB::select("select * from d_akun where id_akun LIKE '$subacchutang%' and  kode_cabang = '$comp'");
           $acchutangsupplier = $datakun[0]->id_akun;
-          $akundka = $dataakun[0]->akun_dka;
+          $akundka = $datakun[0]->akun_dka;
 
         $lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
         if(isset($lastidjurnal)) {

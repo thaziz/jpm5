@@ -6494,8 +6494,8 @@ public function purchase_order() {
 
 		$bulan = Carbon::now()->format('m');
         $tahun = Carbon::now()->format('y');
-
-    //   return $bulan . $tahun;
+        
+    /*  return $bulan . $tahun;*/
 		if($flag == ''){
 				$faktur = DB::select("select * from faktur_pembelian where  to_char(fp_tgl, 'MM') = '$bulan' and to_char(fp_tgl, 'YY') = '$tahun' and fp_comp = '$cabang' and fp_nofaktur LIKE '%/I-%' order by fp_idfaktur desc limit 1");
 
