@@ -250,7 +250,7 @@ class BiayaPenerusController extends Controller
 							 ->first();
 				$tgl         = str_replace('/', '-', $request->tgl_biaya_head);		 
 				$tgl 		 = Carbon::parse($tgl)->format('Y-m-d');
-				$jt         = str_replace('/', '-', $request->jatuh_tempo);		 
+				$jt          = str_replace('/', '-', $request->jatuh_tempo);		 
 				$jt 		 = Carbon::parse($jt)->format('Y-m-d');
 				$total_biaya = array_sum($request->bayar_biaya);
 
@@ -297,6 +297,15 @@ class BiayaPenerusController extends Controller
 						$id+=1;
 					}
 
+
+					$akun_hutang = DB::table('d_akun')
+										  ->where('id_akun','like','2102' . '%')
+										  ->where('kode_cabang',$request->cabang)
+										  ->first();
+
+
+					
+
 					$total_biaya =  array_sum($request->bayar_biaya);
 					$count 		 = count($request->no_do);
 					$save_data = DB::table('faktur_pembelian')
@@ -318,9 +327,9 @@ class BiayaPenerusController extends Controller
 									  'fp_edit'  			=> 'ALLOWED',
 									  'fp_sisapelunasan' 	=> $total_biaya,
 									  'fp_supplier'  		=> $request->nama_kontak2,
-									  'fp_acchutang'  		=> $request->acc_penjualan_penerus,
-									  'created_by'  		=> Auth::user()->m_username,
-									  'updated_by'  		=> Auth::user()->m_username,
+									  'fp_acchutang'  		=> $akun_hutang->id_akun,
+									  'created_by'  		=> Auth::user()->m_name,
+									  'updated_by'  		=> Auth::user()->m_name,
 								   ]);	
 
 					$id_bp = DB::table('biaya_penerus')
@@ -344,7 +353,7 @@ class BiayaPenerusController extends Controller
 									  'updated_at' 		 => carbon::now(),
 									  'created_at' 		 => carbon::now(),
 									  'bp_total_penerus' => $total_biaya,
-									  'bp_akun_agen'	 => $request->acc_penjualan_penerus,
+									  'bp_akun_agen'	 => $akun_hutang->id_akun,
 									]);
 
 					
@@ -363,23 +372,28 @@ class BiayaPenerusController extends Controller
 									 ->where("nomor",$request->no_do[$i])
 									 ->first();
 
+						$akun_biaya = DB::table('d_akun')
+										  ->where('id_akun','like','5315' . '%')
+										  ->where('kode_cabang',$cari_do->kode_cabang)
+										  ->first();
+
 						$save_dt = DB::table('biaya_penerus_dt')
-									 ->insert([
+									->insert([
 										  'bpd_id'  		=> $id_bpd,
 										  'bpd_bpid' 		=> $id_bp,
 										  'bpd_bpdetail'	=> $i+1,
 										  'bpd_pod' 		=> $request->no_do[$i],
 										  'bpd_tgl'  		=> $cari_do->tanggal,
-										  'bpd_akun_biaya'  => $request->kode_biaya[$i],
+										  'bpd_akun_biaya'  => $akun_biaya->id_akun,
 										  'bpd_debit' 	   	=> $request->DEBET_biaya[$i],
 										  'bpd_memo'  	  	=> $request->ket_biaya[$i],
-										  'bpd_akun_hutang' => $request->acc_penjualan_penerus,
+										  'bpd_akun_hutang' => $akun_hutang->id_akun,
 										  'created_at'      => carbon::now(), 
 										  'updated_at' 	   	=> carbon::now(),
 										  'bpd_status' 	    => $status[$i],
 										  'bpd_nominal'	    => $request->bayar_biaya[$i],
 										  'bpd_tarif_resi'  => $request->do_harga[$i]
-									 ]);
+									]);
 					}	
 
 					$cari_dt=DB::table('biaya_penerus_dt')		
@@ -443,7 +457,7 @@ class BiayaPenerusController extends Controller
 
 					$akun 	  = [];
 					$akun_val = [];
-					array_push($akun, $request->acc_penjualan_penerus);
+					array_push($akun,$akun_hutang->id_akun);
 					array_push($akun_val, $total_biaya);
 					for ($i=0; $i < count($jurnal); $i++) { 
 
@@ -581,14 +595,14 @@ class BiayaPenerusController extends Controller
 				$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
 					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
 					   inner join fpg_dt on fpgdt_idfpg = idfpg
-					   inner join d_uangmuka on um_supplier = fpg_agen
+					   inner join d_uangmuka on um_nomorbukti = fpgdt_nofaktur
 					   where fpgb_posting = 'DONE'
 					   and fpg_agen = '$bp->fp_supplier'");
 
 
 				$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
 								   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
-								   inner join d_uangmuka on um_supplier = bkk_supplier
+								   inner join d_uangmuka on um_nomorbukti = bkkd_ref
 								   where bkk_supplier = '$bp->fp_supplier'");
 
 				$data = [];
@@ -665,14 +679,14 @@ class BiayaPenerusController extends Controller
 		       	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
 					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
 					   inner join fpg_dt on fpgdt_idfpg = idfpg
-					   inner join d_uangmuka on um_supplier = fpg_agen
+					   inner join d_uangmuka on um_nomorbukti = fpgdt_nofaktur
 					   where fpgb_posting = 'DONE'
 					   and fpg_agen = '$data->fp_supplier'");
 
 
 				$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
 								   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
-								   inner join d_uangmuka on um_supplier = bkk_supplier
+								   inner join d_uangmuka on um_nomorbukti = bkkd_ref
 								   where bkk_supplier = '$data->fp_supplier'");
 
 				
@@ -745,14 +759,14 @@ class BiayaPenerusController extends Controller
 		       	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
 					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
 					   inner join fpg_dt on fpgdt_idfpg = idfpg
-					   inner join d_uangmuka on um_supplier = fpg_agen
+					   inner join d_uangmuka on um_nomorbukti = fpgdt_nofaktur
 					   where fpgb_posting = 'DONE'
 					   and fpg_agen = '$data->fp_supplier'");
 
 
 				$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
 								   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
-								   inner join d_uangmuka on um_supplier = bkk_supplier
+								   inner join d_uangmuka on um_nomorbukti = bkkd_ref
 								   where bkk_supplier = '$data->fp_supplier'");
 
 				
@@ -927,6 +941,14 @@ class BiayaPenerusController extends Controller
 					if ($um !=null) {
 						$total_biaya -=$um->umfp_totalbiaya ;
 					}
+
+					$akun_hutang = DB::table('d_akun')
+										  ->where('id_akun','like','2102' . '%')
+										  ->where('kode_cabang',$request->cabang)
+										  ->first();
+
+
+					
 					$count 		 = count($request->no_do);
 					$save_data = DB::table('faktur_pembelian')
 								   ->where('fp_nofaktur',$request->nofaktur)
@@ -946,8 +968,8 @@ class BiayaPenerusController extends Controller
 									  'fp_edit'  			=> 'ALLOWED',
 									  'fp_sisapelunasan' 	=> $total_biaya,
 									  'fp_supplier'  		=> $request->nama_kontak2,
-									  'fp_acchutang'  		=> $request->acc_penjualan_penerus,
-									  'updated_by'  		=> Auth::user()->m_username,
+									  'fp_acchutang'  		=> $akun_hutang->id_akun,
+									  'updated_by'  		=> Auth::user()->m_name,
 								   ]);	
 
 				
@@ -963,7 +985,7 @@ class BiayaPenerusController extends Controller
 									  'updated_at' 		 => carbon::now(),
 									  'created_at' 		 => carbon::now(),
 									  'bp_total_penerus' => $total_biaya,
-									  'bp_akun_agen'	 => $request->acc_penjualan_penerus,
+									  'bp_akun_agen'	 => $akun_hutang->id_akun,
 									]);
 
 					$cari_bp = DB::table("biaya_penerus")
@@ -990,6 +1012,11 @@ class BiayaPenerusController extends Controller
 							$id_bpd +=1;
 						}
 
+						$akun_biaya = DB::table('d_akun')
+										  ->where('id_akun','like','5315' . '%')
+										  ->where('kode_cabang',$cari_do->kode_cabang)
+										  ->first();
+						// dd($akun_biaya);
 						$save_dt = DB::table('biaya_penerus_dt')
 									 ->insert([
 										  'bpd_id' 			=> $id_bpd,
@@ -997,16 +1024,17 @@ class BiayaPenerusController extends Controller
 										  'bpd_bpdetail'	=> $i+1,
 										  'bpd_pod' 		=> $request->no_do[$i],
 										  'bpd_tgl'  		=> $cari_do->tanggal,
-										  'bpd_akun_biaya'  => $request->kode_biaya[$i],
+										  'bpd_akun_biaya'  => $akun_biaya->id_akun,
 										  'bpd_debit' 	   	=> $request->DEBET_biaya[$i],
 										  'bpd_memo'  	  	=> $request->ket_biaya[$i],
-										  'bpd_akun_hutang' => $request->acc_penjualan_penerus,
+										  'bpd_akun_hutang' => $akun_hutang->id_akun,
 										  'created_at'      => carbon::now(), 
 										  'updated_at' 	   	=> carbon::now(),
 										  'bpd_status' 	    => $status[$i],
 										  'bpd_nominal'	    => $request->bayar_biaya[$i],
 										  'bpd_tarif_resi'  => $request->do_harga[$i]
 									 ]);
+
 					}	
 					// JURNAL
 					
@@ -1077,7 +1105,7 @@ class BiayaPenerusController extends Controller
 
 					$akun 	  = [];
 					$akun_val = [];
-					array_push($akun, $request->acc_penjualan_penerus);
+					array_push($akun, $akun_hutang->id_akun);
 					array_push($akun_val, $total_biaya);
 					for ($i=0; $i < count($jurnal); $i++) { 
 
@@ -1916,8 +1944,8 @@ class BiayaPenerusController extends Controller
 								'fp_jatuhtempo'		=> carbon::parse(str_replace('/', '-', $request->jatuh_tempo_outlet))->format('Y-m-d'),
 								'fp_idtt'			=> $cari_tt[0]->tt_idform,
 								'fp_acchutang'      => $akun_hutang,
-								'created_by'  		=> Auth::user()->m_username,
-								'updated_by'  		=> Auth::user()->m_username,
+								'created_by'  		=> Auth::user()->m_name,
+								'updated_by'  		=> Auth::user()->m_name,
 								]);
 
 			
@@ -2177,7 +2205,7 @@ class BiayaPenerusController extends Controller
 								'fp_jatuhtempo'		=> carbon::parse(str_replace('/', '-', $request->jatuh_tempo_outlet))->format('Y-m-d'),
 								'fp_idtt'			=> $cari_tt->tt_idform,
 								'fp_acchutang'      => $akun_hutang,
-								'updated_by'  		=> Auth::user()->m_username,
+								'updated_by'  		=> Auth::user()->m_name,
 							]);
 
 			$update_pot = DB::table('pembayaran_outlet')
@@ -2639,8 +2667,8 @@ class BiayaPenerusController extends Controller
 						'fp_jatuhtempo'		=> carbon::parse(str_replace('/', '-', $request->tempo_subcon))->format('Y-m-d'),
 						'fp_idtt'			=> $cari_tt->tt_idform,
 						'fp_acchutang'		=> $akun_hutang->id_akun,
-						'created_by'  		=> Auth::user()->m_username,
-						'updated_by'  		=> Auth::user()->m_username,
+						'created_by'  		=> Auth::user()->m_name,
+						'updated_by'  		=> Auth::user()->m_name,
 					]);
 
 			$id_pb = DB::table('pembayaran_subcon')
@@ -2912,8 +2940,8 @@ class BiayaPenerusController extends Controller
 						'fp_jatuhtempo'		=> carbon::parse(str_replace('/', '-', $request->tempo_subcon))->format('Y-m-d'),
 						'fp_idtt'			=> $cari_tt->tt_idform,
 						'fp_acchutang'		=> $akun_hutang->id_akun,
-						'created_by'  		=> Auth::user()->m_username,
-						'updated_by'  		=> Auth::user()->m_username,
+						'created_by'  		=> Auth::user()->m_name,
+						'updated_by'  		=> Auth::user()->m_name,
 					]);
 
 		
@@ -3319,14 +3347,15 @@ public function biaya_penerus_um(request $req)
 	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
 					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
 					   inner join fpg_dt on fpgdt_idfpg = idfpg
-					   inner join d_uangmuka on um_supplier = fpg_agen
+					   inner join d_uangmuka on um_nomorbukti = fpgdt_nofaktur
 					   where fpgb_posting = 'DONE'
 					   and fpg_agen = '$req->sup'");
 
 
+
 	$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
 					   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
-					   inner join d_uangmuka on um_supplier = bkk_supplier
+					   inner join d_uangmuka on um_nomorbukti = bkkd_ref
 					   where bkk_supplier = '$req->sup'");
 
 	$data = [];
@@ -3364,19 +3393,23 @@ public function biaya_penerus_um(request $req)
 
 	return view('purchase.fatkur_pembelian.biaya_penerus_um_modal',compact('data'));
 }
+
+
+
+
 public function pilih_um(request $req)
 {
 	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
 					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
 					   inner join fpg_dt on fpgdt_idfpg = idfpg
-					   inner join d_uangmuka on um_supplier = fpg_agen
+					   inner join d_uangmuka on um_nomorbukti = fpgdt_nofaktur
 					   where fpgb_posting = 'DONE'
 					   and fpg_agen = '$req->sup'");
 
 
 	$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
 					   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
-					   inner join d_uangmuka on um_supplier = bkk_supplier
+					   inner join d_uangmuka on um_nomorbukti = bkkd_ref
 					   where bkk_supplier = '$req->sup'");
 
 	$data = [];
@@ -3417,14 +3450,14 @@ public function append_um(request $req)
 	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
 					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
 					   inner join fpg_dt on fpgdt_idfpg = idfpg
-					   inner join d_uangmuka on um_supplier = fpg_agen
+					   inner join d_uangmuka on um_nomorbukti = fpgdt_nofaktur
 					   where fpgb_posting = 'DONE'
 					   and fpg_agen = '$req->sup'");
 
 
 	$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
 					   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
-					   inner join d_uangmuka on um_supplier = bkk_supplier
+					   inner join d_uangmuka on um_nomorbukti = bkkd_ref
 					   where bkk_supplier = '$req->sup'");
 
 	$data = [];
@@ -3696,14 +3729,14 @@ public function outlet_um(request $req)
 	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
 					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
 					   inner join fpg_dt on fpgdt_idfpg = idfpg
-					   inner join d_uangmuka on um_supplier = fpg_agen
+					   inner join d_uangmuka on um_nomorbukti = fpgdt_nofaktur
 					   where fpgb_posting = 'DONE'
 					   and fpg_agen = '$req->sup'");
 
 
 	$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
 					   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
-					   inner join d_uangmuka on um_supplier = bkk_supplier
+					   inner join d_uangmuka on um_nomorbukti = bkkd_ref
 					   where bkk_supplier = '$req->sup'");
 
 	$data = [];
@@ -3747,14 +3780,14 @@ public function subcon_um(request $req)
 	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
 					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
 					   inner join fpg_dt on fpgdt_idfpg = idfpg
-					   inner join d_uangmuka on um_supplier = fpg_agen
+					   inner join d_uangmuka on um_nomorbukti = fpgdt_nofaktur
 					   where fpgb_posting = 'DONE'
 					   and fpg_agen = '$req->sup'");
 
 
 	$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
 					   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
-					   inner join d_uangmuka on um_supplier = bkk_supplier
+					   inner join d_uangmuka on um_nomorbukti = bkkd_ref
 					   where bkk_supplier = '$req->sup'");
 
 	$data = [];

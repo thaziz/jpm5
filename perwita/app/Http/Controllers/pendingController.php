@@ -200,6 +200,10 @@ class pendingController extends Controller
 
 				$id_jurnal=d_jurnal::max('jr_id')+1;
 				// dd($id_jurnal);
+
+				$delete_jurnal = DB::table('d_jurnal')
+							   ->where('jr_ref',$request->no_trans)
+							   ->delete();
 				$jenis_bayar = DB::table('jenisbayar')
 								 ->where('idjenisbayar',6)
 								 ->first();

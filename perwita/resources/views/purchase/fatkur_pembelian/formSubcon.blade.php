@@ -1010,7 +1010,7 @@ var array_um2 = [0];
 $('.sc_nomor_um').focus(function(){
   var sup = $('.nama_sc').val();
   if (sup == '0') {
-    toastr.warning('Agen/Vendor Harus Diisi');
+    toastr.warning('Subcon Harus Diisi');
     return false;
   }
 

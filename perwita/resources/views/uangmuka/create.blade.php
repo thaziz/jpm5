@@ -100,7 +100,7 @@
                         </div>
                         <div class="col-sm-4">
                           <label>Agen/Supplier/Subcon :</label>
-                       <select class="form-control" name="suppliering" id="suppliering" onchange="change_sup()">
+                       <select class="form-control" name="suppliering" id="suppliering" onchange="change_sup()" required="">
                         <option value="" selected="" disabled="">--Pilih Terlebih dahulu--</option>
                          <option value="supplier">Supplier</option>
                          <option value="agen">Agen</option>
