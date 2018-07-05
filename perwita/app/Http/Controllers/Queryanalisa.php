@@ -722,22 +722,102 @@ class Queryanalisa extends Controller
 
 	//detail akun 
 	public function detailmutasihutang(){
-		$akun = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
+		$tglawal = '2018-06-02';
+		$tglakhir = '2018-08-02';
 
-		$akunhutang = [];
-		for($i = 0; $i < count($akun); $i++){
-			$akunhutang = $akun[$i]->fp_acchutang;
-			$subacchutang = substr($acchutangdagang, 0 , 4);
+		$idakun = '2101';
 
-			array_push($akunhutang, $subacchutang);			
+		$datafp = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$idakun%'");
+
+		$datavc = DB::select("select * from v_hutang where v_tgl BETWEEN '$tglawal' and '$tglakhir' and v_acchutang LIKE '$idakun%'");
+
+
+
+		$nosupplier = [];
+		if($idakun == '2101'){
+				if(count($datafp) != 0){
+					for($g = 1; $g < count($datafp); $g++){
+						$idsup = $datafp[$g]->fp_idsup;
+
+						$datasupplier = DB::select("select * from supplier where idsup = '$idsup'");
+						
+						$no_supplier1['no_supplier'] = $datasupplier[0]->no_supplier;
+						$no_supplier1['nama'] = $datasupplier[0]->nama_supplier;
+						array_push($nosupplier , $no_supplier1);
+					}
+				}
+
+				if(count($datavc) != 0){
+					for($j = 0; $j < count($datavc); $j++){
+						$idsup = $datavc[$j]->v_supid;
+						$datasupplier = DB::select("select * from supplier where no_supplier = '$idsup'");
+						
+						$no_supplier1['no_supplier'] = $datasupplier[0]->no_supplier;
+						$no_supplier1['nama'] = $datasupplier[0]->nama_supplier;
+						array_push($nosupplier , $no_supplier1);
+					}
+				}
+		}
+		else {
+			if(count($datafp) != 0){
+						for($g = 0; $g < count($datafp); $g++){
+							$idsup = $datafp[$g]->fp_supplier;
+
+							$datasupplier = DB::select("select * from supplier where no_supplier = '$idsup'");
+							$datacustomer = DB::select("select * from agen where kode = '$idsup'");
+							$datavendor = DB::select("select * from vendor where kode = '$idsup'");
+							$datasubcon = DB::select("select * from subcon where kode = '$idsup'");
+							if(count($datacustomer) != 0){
+								$no_supplier['no_supplier'] = $datasupplier[0]->kode;
+								$no_supplier['nama'] = $datasupplier[0]->nama;
+
+							}
+							else if(count($datasupplier) != 0){
+								$no_supplier['no_supplier'] = $datasupplier[0]->no_supplier;
+								$no_supplier['nama'] = $datasupplier[0]->nama_supplier;
+							}
+							else if(count($datavendor) != 0){
+								$no_supplier['no_supplier'] = $datasupplier[0]->kode;
+								$no_supplier['nama'] = $datasupplier[0]->nama;
+							}
+							else if(count($datasubcon) !=0){
+								$no_supplier['no_supplier'] = $datasupplier[0]->kode;
+								$no_supplier['nama'] = $datasupplier[0]->nama;
+							}
+							array_push($nosupplier , $no_supplier);
+						}
+			}
+
+			if(count($datavc) != 0){
+						for($j = 0; $j < count($datavc); $j++){
+							$idsup = $datavc[$j]->v_supid;
+							$datasupplier = DB::select("select * from supplier where no_supplier = '$idsup'");
+							$no_supplier['no_supplier'] = $datasupplier[0]->no_supplier;
+							$no_supplier['nama'] = $datasupplier[0]->nama_supplier;
+							array_push($nosupplier , $no_supplier);
+						}
+					}
 		}
 
-		$arrayuniq = array_unique($akunhutang);
-		$values = array_values($arrayuniq);
 
-		for($j = 0; $j < count($values);$j++){
-			$akunhutangdagang = $values[$j];
-			$hutangsupplier = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE 'akunhutangdagang%' and fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
+		$result_supplier = array();
+		foreach ($nosupplier as &$v) {
+		    if (!isset($result_supplier[$v['no_supplier']]))
+		        $result_supplier[$v['no_supplier']] =& $v;
 		}
+
+		$values = array_values($result_supplier);
+
+		
+		//menghitung saldo awal
+		for($key = 0; $key < count($values); $key++){
+			$datafp = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$idakun%'");
+
+			$datavc = DB::select("select * from v_hutang where v_tgl BETWEEN '$tglawal' and '$tglakhir' and v_acchutang LIKE '$idakun%'");
+		}
+
+		return $values;
+
+
 	}
 }

@@ -84,7 +84,8 @@ Route::post('setting/hak_akses/edit_hak_akses', 'setting\hak_akses_Controller@ed
 Route::get('kartuhutangrekap' , 'Queryanalisa@kartuhutangrekap');
 Route::get('kartuhutangdetail' , 'Queryanalisa@kartuhutangdetail');
 Route::get('rekapmutasihutang' , 'Queryanalisa@rekapmutasihutang');
-Route::get('kartuhutangrekappihakketiga' , 'Queryanalisa@kartuhutangrekappihakketiga');
+Route::get('rekapmutasihutang' , 'Queryanalisa@rekapmutasihutang');
+Route::get('detailmutasihutang' , 'Queryanalisa@detailmutasihutang');
 
 
 
