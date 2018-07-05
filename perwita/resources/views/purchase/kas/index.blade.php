@@ -82,7 +82,7 @@
                         <td>{{$val->bpk_nota}}</td>
                         <td>{{$val->bpk_tanggal}}</td>
                         <td>{{$val->nama}}</td>
-                        <td align="center">{{"Rp " . number_format($val->bpk_tarif_penerus,2,",",".")}}</td>
+                        <td align="center">{{"Rp " . number_format(round($val->bpk_tarif_penerus),2,",",".")}}</td>
                         <td align="left" style="width: 9%">
                           @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','print'))
                             <a class="fa asw fa-print" align="center"  title="edit" href="{{route('detailkas', ['id' => $val->bpk_id])}}"> detail</a><br>
