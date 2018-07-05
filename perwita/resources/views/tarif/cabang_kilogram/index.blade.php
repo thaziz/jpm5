@@ -379,6 +379,8 @@
             "lengthChange": true,
             "searching": true,
             "ordering": false,
+            processing: true,
+            serverSide: true,
             "info": false,
             "responsive": true,
             "autoWidth": false,
@@ -398,7 +400,7 @@
             { "data": "cabang", },
             { "data": "waktu", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "keterangan" },
-            { "data": "button" },
+            { "data": "aksi" },
             ]
         });
         var config = {

@@ -31,6 +31,6 @@
       </table>
 <script type="text/javascript">
   var tabel_patty = $('.tabel_patty_cash').DataTable({
-    'searching':false
+    'searching':true
   })
 </script>
