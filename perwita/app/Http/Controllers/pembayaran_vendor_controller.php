@@ -340,7 +340,6 @@ class pembayaran_vendor_controller extends Controller
 	public function save_vendor_um(request $req)
 	{
 	   	return DB::transaction(function() use ($req) {  
-			// dd($req->all());
 			$id = DB::table('uangmukapembelian_fp')
 					->max('umfp_id')+1;
 			
@@ -416,6 +415,12 @@ class pembayaran_vendor_controller extends Controller
 
 						$flag = $bkk->bkk_flag;
 					}
+
+					$cari_bkkd = DB::table('bukti_kas_keluar_detail')
+									->where('bkkd_bkk_id',$bkk->bkk_id)
+									->where('bkkd_ref',$req->tb_um_um[$i])
+									->first();
+					// dd($cari_bkkd);
 
 					$save_dt = DB::table('uangmukapembeliandt_fp')
 								  ->insert([

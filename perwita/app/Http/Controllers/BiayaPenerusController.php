@@ -3498,10 +3498,11 @@ public function save_bp_um(request $req)
 		// dd($req->all());
 		$id = DB::table('uangmukapembelian_fp')
 				->max('umfp_id')+1;
-		
 		$pending = DB::table('faktur_pembelian')
 					 ->where('fp_nofaktur',$req->nofaktur)
 					 ->first();
+
+					 
 		if ($pending == null) {
 			return response()->json(['status'=>0]);
 		}
