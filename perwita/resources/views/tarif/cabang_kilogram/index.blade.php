@@ -135,6 +135,10 @@
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_kode_old" class="form-control" >
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
+                                        <input type="hidden" class="form-control" name="asal_old" class="form-control" >
+                                        <input type="hidden" class="form-control" name="tujuan_old" class="form-control" >
+                                        <input type="hidden" class="form-control" name="provinsi_old" class="form-control" >
+                                        <input type="hidden" class="form-control" name="cabang_old" class="form-control" >
                                     </td>
                                 </tr>
                                  @if(Auth::user()->punyaAkses('Tarif Cabang Kilogram','cabang'))
@@ -458,6 +462,7 @@
                 $("input[name='crud']").val('E');
                 //kode sama
                 $('input[name="waktu_regular"]').val(data[0][0].waktu);
+                $('input[name="waktu_regular"]').val(data[0][0].waktu);
                 $('input[name="tarifkertas_reguler"]').val(data[0][0].harga);
                 $('input[name="tarif0kg_reguler"]').val(data[0][1].harga);
                 $('input[name="tarif10kg_reguler"]').val(data[0][2].harga);
@@ -474,6 +479,13 @@
                 $('input[name="tarifkgsel_express"]').val(data[0][9].harga);
                 $('input[name="berat_minimum_ex"]').val(data[0][5].berat_minimum);
                 //expre
+                $('input[name="asal_old"]').val(data[0][0].id_kota_asal);
+                $('input[name="tujuan_old"]').val(data[0][0].id_kota_tujuan);
+                $('input[name="provinsi_old"]').val(data[0][0].id_provinsi_cabkilogram);
+                $('input[name="cabang_old"]').val(data[0][0].kode_cabang);
+
+
+
                 $('#hilang').hide();
                 $('#hilang2').show();
                 $("input[name='kodekota']").val(data[0][0].kode_kota);
@@ -500,14 +512,14 @@
     $(document).on("click","#btnsave",function(){
         $.ajax(
         {
-            url : baseUrl + "/sales/tarif_cabang_kilogram/update_data",
+            url : baseUrl + "/sales/tarif_cabang_kilogram/save_data",
             type: "get",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
             {
                 if(data.crud == 'N'){
-                    if(data.result == 1){
+                    if(data.status == 1){
                         var table = $('#table_data').DataTable();
                         table.ajax.reload( null, false );
                         $("#modal").modal('hide');
@@ -516,7 +528,7 @@
                         alert("Gagal menyimpan data!");
                     }
                 }else if(data.crud == 'E'){
-                    if(data.result == 1){
+                    if(data.status == 1){
                         //$.notify('Successfull update data');
                         var table = $('#table_data').DataTable();
                         table.ajax.reload( null, false );

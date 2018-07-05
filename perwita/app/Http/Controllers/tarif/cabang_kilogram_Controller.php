@@ -8,7 +8,7 @@ use App\Http\Requests;
 use Auth;
 use carbon\carbon;
 use Yajra\Datatables\Datatables;
-
+use Exception;
 class cabang_kilogram_Controller extends Controller
 {
     public function table_data () {
@@ -119,7 +119,7 @@ class cabang_kilogram_Controller extends Controller
     public function get_data (Request $request) {
         $asal = $request->asal;
         $tujuan = $request->tujuan;
-         $sql = "    SELECT t.kode_cabang,k.kode_kota,t.crud,t.id_provinsi_cabkilogram,t.kode_detail_kilo,t.kode_sama_kilo,t.kode,t.acc_penjualan,t.csf_penjualan, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan ,p.nama provinsi 
+         $sql = "    SELECT t.kode_cabang,k.kode_kota,t.crud,t.id_provinsi_cabkilogram,t.kode_detail_kilo,t.kode_sama_kilo,t.kode,t.acc_penjualan,t.csf_penjualan, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan ,p.nama provinsi,t.berat_minimum
                     FROM tarif_cabang_kilogram t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
@@ -135,10 +135,25 @@ class cabang_kilogram_Controller extends Controller
   
     public function save_data (Request $req) {
       return DB::transaction(function() use ($req) {  
+        // dd($req->all());
+        if ($req->crud == 'E') {
+          $this->update_data($req);
+          return response()->json(['status'=>1,'crud'=>'E']);
+        }
+        $cabang = $req->cb_cabang;
         $provinsi = DB::table('kota')   
                       ->where('id_provinsi',$req->cb_provinsi_tujuan)
                       ->get();
-        $cabang = $req->cb_cabang;
+
+        $validator = DB::table('tarif_cabang_kilogram')   
+                      ->where('kode_cabang',$cabang)
+                      ->where('id_kota_asal',$req->cb_kota_asal)
+                      ->where('id_provinsi_cabkilogram',$req->cb_provinsi_tujuan)
+                      ->where('crud','E')
+                      ->get();
+
+        
+
         $reguler = array(
                     '0'     => $req->tarifkertas_reguler,
                     '1'     => $req->tarif0kg_reguler,
@@ -172,24 +187,96 @@ class cabang_kilogram_Controller extends Controller
                   );
         $jenis       = ['KGR','KGE'];
         $jenis_all   = ['REGULER','EXPRESS'];
+        $berat_min   = [$req->berat_minimum_reg,$req->berat_minimum_ex];
         $jenis_waktu = [$req->waktu_regular,$req->waktu_express];
 
         $all_harga      = [$reguler,$express];
         $all_keterangan = [$keterangan_reguler,$keterangan_express];
         // dd($all);
-        $nomor_reguler = DB::table('tarif_cabang_kilogram')
-                           ->where('kode_cabang',$cabang)
-                           ->where('id_kota_asal',$req->cb_kota_asal)
-                           ->where('jenis','REGULER')
-                           ->max('kode_detail_kilo')+1;
 
-        $nomor_express = DB::table('tarif_cabang_kilogram')
-                           ->where('kode_cabang',$cabang)
-                           ->where('id_kota_asal',$req->cb_kota_asal)
-                           ->where('jenis','EXPRESS')
-                           ->max('kode_detail_kilo')+1;
+        if (isset($req->cb_provinsi_tujuan)) {
+          $delete    = DB::table('tarif_cabang_kilogram')   
+                      ->where('kode_cabang',$cabang)
+                      ->where('id_kota_asal',$req->cb_kota_asal)
+                      ->where('id_provinsi_cabkilogram',$req->cb_provinsi_tujuan)
+                      ->where('crud','N')
+                      ->delete();
+
+        }else if (isset($req->cb_kota_tujuan)){
+          $delete    = DB::table('tarif_cabang_kilogram')   
+                      ->where('kode_cabang',$cabang)
+                      ->where('id_kota_asal',$req->cb_kota_asal)
+                      ->where('id_kota_tujuan',$req->cb_kota_tujuan)
+                      ->where('crud','N')
+                      ->delete();
+                      
+          for ($i=0; $i < count($jenis); $i++) { 
+
+            $index = DB::table('tarif_cabang_kilogram')
+                             ->where('kode_cabang',$cabang)
+                             ->where('id_kota_asal',$req->cb_kota_asal)
+                             ->where('jenis',$jenis_all[$i])
+                             ->max('kode_detail_kilo')+1;
+            for ($a=0; $a < count($all_harga[$i]); $a++) { 
+              $index_fix = str_pad($index, 8,'0',STR_PAD_LEFT);
+              $nota = $req->kodekota.'/'. $jenis[$i].$index_fix;
+              $cari_provinsi = DB::table('kota')
+                                 ->where('id',$req->cb_kota_tujuan)
+                                 ->first();
+              $save = array(
+                    'kode'                    => $nota,
+                    'kode_sama_kilo'          => 0,
+                    'kode_detail_kilo'        => $index,
+                    'keterangan'              => $all_keterangan[$i][$a],
+                    'harga'                   => $all_harga[$i][$a],
+                    'id_provinsi_cabkilogram' => $cari_provinsi->id_provinsi,
+                    'waktu'                   => $jenis_waktu[$i],
+                    'jenis'                   => $jenis_all[$i],
+                    'id_kota_asal'            => $req->cb_kota_asal,
+                    'id_kota_tujuan'          => $req->cb_kota_tujuan,
+                    'kode_cabang'             => $req->cb_cabang,
+                    'acc_penjualan'           => strtoupper($req->cb_acc_penjualan),
+                    'csf_penjualan'           => strtoupper($req->cb_csf_penjualan),
+                    'berat_minimum'           => $berat_min[$i],
+                    'crud'                    => strtoupper('N'),
+              );
+
+              $save_data = [1];
+              for ($b=0; $b < count($validator); $b++) { 
+                if ($validator[$b]->id_kota_asal == $save['id_kota_asal'] and
+                    $validator[$b]->id_kota_tujuan == $save['id_kota_tujuan'] and
+                    $validator[$b]->kode_cabang == $save['kode_cabang'] and
+                    $validator[$b]->id_provinsi_cabkilogram == $save['id_provinsi_cabkilogram'] and
+                    $validator[$b]->keterangan == $save['keterangan']) {
+                    array_push($save_data, 0);
+                    break;
+                }else{
+                  array_push($save_data, 1);
+                }
+              }
+              if (in_array(0, $save_data)) {
+            // dd($save);
+                $save_data = 'TIDAK';
+              }else{
+                $save_data = 'YA';
+              }
+
+              if ($save_data == 'YA') {
+                $save = DB::table('tarif_cabang_kilogram')->insert($save);
+              }else{
+                // dd($save);
+              }
+
+              $index++;
+            }
+          }
+
+          return response()->json(['status'=>1,'crud'=>'N']);
+        }
 
         // SBY/KGR00100424
+
+        // dd($validator);
         for ($i=0; $i < count($jenis); $i++) { 
 
           $index = DB::table('tarif_cabang_kilogram')
@@ -211,35 +298,188 @@ class cabang_kilogram_Controller extends Controller
                     'harga'                   => $all_harga[$i][$a],
                     'id_provinsi_cabkilogram' => $req->cb_provinsi_tujuan,
                     'waktu'                   => $jenis_waktu[$i],
-                    'jenis'                   => $jenis_waktu[$i],
+                    'jenis'                   => $jenis_all[$i],
                     'id_kota_asal'            => $req->cb_kota_asal,
                     'id_kota_tujuan'          => $provinsi[$c]->id,
                     'kode_cabang'             => $req->cb_cabang,
                     'acc_penjualan'           => strtoupper($req->cb_acc_penjualan),
                     'csf_penjualan'           => strtoupper($req->cb_csf_penjualan),
+                    'berat_minimum'           => $berat_min[$i],
                     'crud'                    => strtoupper('N'),
               );
-              $save = DB::table('tarif_cabang_kilogram')->insert($save);
+              $save_data = [1];
+              for ($b=0; $b < count($validator); $b++) { 
+                if ($validator[$b]->id_kota_asal == $save['id_kota_asal'] and
+                    $validator[$b]->id_kota_tujuan == $save['id_kota_tujuan'] and
+                    $validator[$b]->kode_cabang == $save['kode_cabang'] and
+                    $validator[$b]->id_provinsi_cabkilogram == $save['id_provinsi_cabkilogram'] and
+                    $validator[$b]->keterangan == $save['keterangan']) {
+                    array_push($save_data, 0);
+                    break;
+                }else{
+                  array_push($save_data, 1);
+                }
+              }
+              if (in_array(0, $save_data)) {
+            // dd($save);
+                $save_data = 'TIDAK';
+              }else{
+                $save_data = 'YA';
+              }
+              if ($save_data == 'YA') {
+                $save = DB::table('tarif_cabang_kilogram')->insert($save);
+              }else{
+                // dd($save);
+              }
+
               $index++;
             }
 
           }
         }
+
+
         $save = DB::table('tarif_cabang_kilogram')
                   ->where('kode_cabang',$cabang)
                   ->where('id_kota_asal',$req->cb_kota_asal)
                   ->where('id_provinsi_cabkilogram',$req->cb_provinsi_tujuan)
                   ->get();
 
-
-        return response()->json(['status'=>1]);
+        return response()->json(['status'=>1,'crud'=>'N']);
       }); 
     }
 
     public function update_data(request $req)
     {
       return DB::transaction(function() use ($req) {  
-        dd($req->all());
+        // dd($req->all());
+
+        $cabang = $req->cb_cabang;
+        $provinsi = DB::table('kota')   
+                      ->where('id_provinsi',$req->cb_provinsi_tujuan)
+                      ->get();
+
+        $validator = DB::table('tarif_cabang_kilogram')   
+                      ->where('kode_cabang',$cabang)
+                      ->where('id_kota_asal',$req->cb_kota_asal)
+                      ->where('id_provinsi_cabkilogram',$req->cb_provinsi_tujuan)
+                      ->where('crud','E')
+                      ->get();
+
+        
+
+        $reguler = array(
+                    '0'     => $req->tarifkertas_reguler,
+                    '1'     => $req->tarif0kg_reguler,
+                    '2'     => $req->tarif10kg_reguler,
+                    '3'     => $req->tarif20kg_reguler,
+                    '4'     => $req->tarifkgsel_reguler,
+                  );
+
+        $keterangan_reguler = array(
+                    '0'     =>'Tarif Kertas / Kg',
+                    '1'     =>'Tarif <= 10 Kg',
+                    '2'     =>'Tarif Kg selanjutnya <= 10 Kg',
+                    '3'     =>'Tarif <= 20 Kg',
+                    '4'     =>'Tarif Kg selanjutnya <= 20 Kg',
+                  );
+
+        $keterangan_express = array(
+                    '0'     =>'Tarif Kertas / Kg',
+                    '1'     =>'Tarif <= 10 Kg',
+                    '2'     =>'Tarif Kg selanjutnya <= 10 Kg',
+                    '3'     =>'Tarif <= 20 Kg',
+                    '4'     =>'Tarif Kg selanjutnya <= 20 Kg',
+                  );
+
+        $express = array(
+                    '0'     => $req->tarifkertas_express,
+                    '1'     => $req->tarif0kg_express,
+                    '2'     => $req->tarif10kg_express,
+                    '3'     => $req->tarif20kg_express,
+                    '4'     => $req->tarifkgsel_express,
+                  );
+        $jenis       = ['KGR','KGE'];
+        $jenis_all   = ['REGULER','EXPRESS'];
+        $kode        = [$req->id_reguler,$req->id_express];
+        $berat_min   = [$req->berat_minimum_reg,$req->berat_minimum_ex];
+        $jenis_waktu = [$req->waktu_regular,$req->waktu_express];
+
+        $all_harga      = [$reguler,$express];
+        $all_keterangan = [$keterangan_reguler,$keterangan_express];
+
+          for ($i=0; $i < count($jenis); $i++) { 
+
+            $index = DB::table('tarif_cabang_kilogram')
+                             ->where('kode_cabang',$cabang)
+                             ->where('id_kota_asal',$req->cb_kota_asal)
+                             ->where('jenis',$jenis_all[$i])
+                             ->max('kode_detail_kilo')+1;
+
+            for ($a=0; $a < count($all_harga[$i]); $a++) { 
+
+              $kodex    = DB::table('tarif_cabang_kilogram')   
+                             ->where('id_kota_asal',$req->asal_old)
+                             ->where('id_kota_tujuan',$req->tujuan_old)
+                             ->where('id_provinsi_cabkilogram',$req->provinsi_old)
+                             ->where('kode_cabang',$req->cabang_old)
+                             ->first();
+              try{
+                $kodekota = DB::table('kota')
+                            ->where('id',$kodex->id_kota_asal)
+                            ->first();
+                $kodekota = $kodekota->kode_kota;
+              }catch(Exception $e){
+                $kodekota = '0';
+              }
+              
+              if ($req->kodekota == $kodekota) {
+                $nota = $kode[$i];
+
+              }else  if ($req->kodekota != $kodekota){
+
+                $index_fix = str_pad($index, 8,'0',STR_PAD_LEFT);
+
+                $nota = $req->kodekota .'/'. $jenis[$i].$index_fix;
+
+                $delete    = DB::table('tarif_cabang_kilogram')   
+                             ->where('id_kota_asal',$req->asal_old)
+                             ->where('id_kota_tujuan',$req->tujuan_old)
+                             ->where('id_provinsi_cabkilogram',$req->provinsi_old)
+                             ->where('kode_cabang',$req->cabang_old)
+                             ->delete();
+              
+              }
+              $cari_provinsi = DB::table('kota')
+                                 ->where('id',$req->cb_kota_tujuan)
+                                 ->first();
+              $save = array(
+                    'kode'                    => $nota,
+                    'kode_sama_kilo'          => 0,
+                    'kode_detail_kilo'        => $index,
+                    'keterangan'              => $all_keterangan[$i][$a],
+                    'harga'                   => $all_harga[$i][$a],
+                    'id_provinsi_cabkilogram' => $cari_provinsi->id_provinsi,
+                    'waktu'                   => $jenis_waktu[$i],
+                    'jenis'                   => $jenis_all[$i],
+                    'id_kota_asal'            => $req->cb_kota_asal,
+                    'id_kota_tujuan'          => $req->cb_kota_tujuan,
+                    'kode_cabang'             => $req->cb_cabang,
+                    'acc_penjualan'           => strtoupper($req->cb_acc_penjualan),
+                    'csf_penjualan'           => strtoupper($req->cb_csf_penjualan),
+                    'berat_minimum'           => $berat_min[$i],
+                    'crud'                    => strtoupper('E'),
+              );
+
+          
+              $save = DB::table('tarif_cabang_kilogram')->insert($save);
+          
+
+              $index++;
+            }
+          }
+
+          return response()->json(['status'=>1,'crud'=>'E']);
         
       });
     }
