@@ -106,6 +106,16 @@
                             <option value="Rekap per akun Detail">Rekap per akun Detail</option>
                           </select>
                         </td>
+
+                       <td>Cabang</td>
+                        <td>
+                          <select class="chosen-select-width" name="cabang" id="cabang">
+                            <option value="">- Pilih -</option>
+                            @foreach ($cabang as $cab)
+                              <option value="{{ $cab->kode }}">{{ $cab->kode }} - {{ $cab->nama }}</option>
+                            @endforeach
+                          </select>
+                        </td>
                       </tr>
                       <br>
                       </table>

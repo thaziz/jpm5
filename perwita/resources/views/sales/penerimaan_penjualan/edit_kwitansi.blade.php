@@ -111,7 +111,7 @@
                             <tr>
                                 <td style="width:110px;">Jenis Pembayaran</td>
                                 <td colspan="20" class="jenis_pembayaran_td">
-                                    <select  class="form-control cb_jenis_pembayaran" onchange="nota_tes()" name="cb_jenis_pembayaran" >
+                                    <select  class="form-control cb_jenis_pembayaran " onchange="nota_tes()" name="cb_jenis_pembayaran" >
                                         @if($data->k_jenis_pembayaran == 'T')
                                             <option value="0">Pilih - Pembayaran</option>
                                             <option selected="" value="T"> TUNAI/CASH </option>

@@ -63,8 +63,8 @@ class posting_pembayaran_Controller extends Controller
                           if ($data->jenis_pembayaran == 'C') {
                               $a = 'TRANSFER';
                           }
-                          if ($data->jenis_pembayaran == 'K') {
-                              $a = 'TRANSFER KAS';
+                          if ($data->jenis_pembayaran == 'T') {
+                              $a = 'TUNAI/KWITANSI';
                           }
                           if ($data->jenis_pembayaran == 'L') {
                               $a = 'LAIN-LAIN';
