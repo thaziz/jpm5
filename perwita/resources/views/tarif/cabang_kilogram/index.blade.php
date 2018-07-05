@@ -255,10 +255,15 @@
                                       <td class="pad">Tarif Kg selanjutnya</td>
                                       <td class="pad"><input type="text" name="tarifkgsel_reguler"></td>
                                   </tr>
+                                  <tr>
+                                      <td class="pad">Berat Minimum</td>
+                                      <td class="pad"><input type="text" name="berat_minimum_reg"></td>
+                                  </tr>
+
 
                               </tbody>
                           </table> 
-                          <table class="table-striped table-bordered" style="margin-left: 45%;margin-top: -323px;position: fixed;" width="48%"> 
+                          <table class="table-striped table-bordered" style="margin-left: 45%;margin-top: -366px;position: fixed;" width="48%"> 
                               <thead>
                                   <tr>
                                       <th style="padding: 7px; text-align: center;"  colspan="2">EXPRESS</th>
@@ -293,6 +298,10 @@
                                   <tr>
                                       <td class="pad">Tarif Kg selanjutnya</td>
                                       <td class="pad"><input type="text" name="tarifkgsel_express"></td>
+                                  </tr>
+                                  <tr>
+                                      <td class="pad">Berat Minimum</td>
+                                      <td class="pad"><input type="text" name="berat_minimum_ex"></td>
                                   </tr>
                               </tbody>
                           </table>

@@ -135,11 +135,34 @@ class cabang_kilogram_Controller extends Controller
   
     public function save_data (Request $req) {
       return DB::transaction(function() use ($req) {  
+
+        dd($req->all()); 
         $provinsi = DB::table('kota')   
                       ->where('id_provinsi',$req->cb_provinsi_tujuan)
                       ->get();
-        dd($provinsi);
+        $cabang = $req->cb_cabang;
+        $reguler = array(
+                    'tarif_per_kilo'=>$req->tarifkertas_reguler,
+                    'tarif_10_kilo'=>$req->tarif0kg_reguler,
+                    'tarif_set_10_kilo'=>$req->tarif10kg_reguler,
+                    'tarif_20_kilo'=>$req->tarif20kg_reguler,
+                    'tarif_set_20_kilo'=>$req->tarifkgsel_reguler,
+                  );
 
+        $reguler = array(
+                    'tarif_per_kilo'=>$req->tarifkertas_express,
+                    'tarif_10_kilo'=>$req->tarif0kg_express,
+                    'tarif_set_10_kilo'=>$req->tarif10kg_express,
+                    'tarif_20_kilo'=>$req->tarif20kg_express,
+                    'tarif_set_20_kilo'=>$req->tarifkgsel_express,
+                  );
+        $jenis   = ['KGR','KGE'];
+
+
+        $nomor_reguler = DB::table('tarif_cabang_kilogram')
+                           ->where('kode_cabang',$cabang)
+
+        dd($reguler);
 
 
       }); 
