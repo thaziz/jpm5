@@ -300,7 +300,7 @@ class penerimaan_penjualan_Controller extends Controller
                   ->where('i_pendapatan',$request->jenis_tarif)
                   // ->orWhere('kd_nomor_invoice',$request->id)
                   ->get();
-        // $temp_1 = array_map("unserialize",$temp_1);
+        // $temp_1 = array_map("unserialize",array_unique($temp_1),"serialize");
       }else{
         $temp_1  = DB::table('invoice')
                   // ->leftjoin('kwitansi_d','kd_nomor_invoice','=','i_nomor')

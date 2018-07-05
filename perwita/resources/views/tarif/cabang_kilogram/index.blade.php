@@ -463,6 +463,8 @@
                 $('input[name="tarif10kg_reguler"]').val(data[0][2].harga);
                 $('input[name="tarif20kg_reguler"]').val(data[0][3].harga);
                 $('input[name="tarifkgsel_reguler"]').val(data[0][4].harga);
+                $('input[name="tarifkgsel_reguler"]').val(data[0][4].harga);
+                $('input[name="berat_minimum_reg"]').val(data[0][4].berat_minimum);
                 //reg
                 $('input[name="waktu_express"]').val(data[0][5].waktu);
                 $('input[name="tarifkertas_express"]').val(data[0][5].harga);
@@ -470,6 +472,7 @@
                 $('input[name="tarif10kg_express"]').val(data[0][7].harga);
                 $('input[name="tarif20kg_express"]').val(data[0][8].harga);
                 $('input[name="tarifkgsel_express"]').val(data[0][9].harga);
+                $('input[name="berat_minimum_ex"]').val(data[0][5].berat_minimum);
                 //expre
                 $('#hilang').hide();
                 $('#hilang2').show();
@@ -497,7 +500,7 @@
     $(document).on("click","#btnsave",function(){
         $.ajax(
         {
-            url : baseUrl + "/sales/tarif_cabang_kilogram/save_data",
+            url : baseUrl + "/sales/tarif_cabang_kilogram/update_data",
             type: "get",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
