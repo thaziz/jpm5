@@ -298,34 +298,6 @@
                           </table>
                           
                           <input type="hidden" name="kodekota" id="kodekota">
-                          {{-- KODE utama  --}}
-                          <input type="hidden" name="id0">
-                          <input type="hidden" name="id1">
-                          <input type="hidden" name="id2">
-                          <input type="hidden" name="id3">
-                          <input type="hidden" name="id4">
-                          <input type="hidden" name="id5">
-                          <input type="hidden" name="id6">
-                          <input type="hidden" name="id7">
-
-                          <input type="hidden" name="id8">
-                          <input type="hidden" name="id9">
-
-                          {{-- KODE DETAIL --}}
-                          <input type="hidden" name="kode0">
-                          <input type="hidden" name="kode1">
-                          <input type="hidden" name="kode2">
-                          <input type="hidden" name="kode3">
-                          <input type="hidden" name="kode4">
-                          <input type="hidden" name="kode5">
-                          <input type="hidden" name="kode6">
-                          <input type="hidden" name="kode7">
-
-                          <input type="hidden" name="kode8">
-                          <input type="hidden" name="kode9">
-
-                          {{-- KODE SAMA KILO --}}
-                          <input type="hidden" name="kode_sama_kilo">
                         </form>
                       </div>
                       <div class="modal-footer">
@@ -475,30 +447,6 @@
             {
               console.log(data);
                 $("input[name='crud']").val('E');
-                //flag
-                $("input[name='id0']").val(data[0][0].kode);
-                $("input[name='id1']").val(data[0][1].kode);
-                $("input[name='id2']").val(data[0][2].kode);
-                $("input[name='id3']").val(data[0][3].kode);
-                $("input[name='id4']").val(data[0][4].kode);
-                $("input[name='id5']").val(data[0][5].kode);
-                $("input[name='id6']").val(data[0][6].kode);
-                $("input[name='id7']").val(data[0][7].kode);
-                $("input[name='id8']").val(data[0][8].kode);
-                $("input[name='id9']").val(data[0][9].kode);
-                //kode
-                $("input[name='kode0']").val(data[0][0].kode_detail_kilo);
-                $("input[name='kode1']").val(data[0][1].kode_detail_kilo);
-                $("input[name='kode2']").val(data[0][2].kode_detail_kilo);
-                $("input[name='kode3']").val(data[0][3].kode_detail_kilo);
-                $("input[name='kode4']").val(data[0][4].kode_detail_kilo);
-                $("input[name='kode5']").val(data[0][5].kode_detail_kilo);
-                $("input[name='kode6']").val(data[0][6].kode_detail_kilo);
-                $("input[name='kode7']").val(data[0][7].kode_detail_kilo);
-                $("input[name='kode8']").val(data[0][8].kode_detail_kilo);
-                $("input[name='kode9']").val(data[0][9].kode_detail_kilo);
-                //kode detail
-                $("input[name='kode_sama_kilo']").val(data[0][1].kode_sama_kilo);
                 //kode sama
                 $('input[name="waktu_regular"]').val(data[0][0].waktu);
                 $('input[name="tarifkertas_reguler"]').val(data[0][0].harga);

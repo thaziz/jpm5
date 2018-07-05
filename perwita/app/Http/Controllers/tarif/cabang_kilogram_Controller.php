@@ -135,7 +135,13 @@ class cabang_kilogram_Controller extends Controller
   
     public function save_data (Request $req) {
       return DB::transaction(function() use ($req) {  
-        dd($req->all());
+        $provinsi = DB::table('kota')   
+                      ->where('id_provinsi',$req->cb_provinsi_tujuan)
+                      ->get();
+        dd($provinsi);
+
+
+
       }); 
     }
 
