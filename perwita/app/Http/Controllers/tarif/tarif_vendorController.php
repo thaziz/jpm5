@@ -48,7 +48,10 @@ class tarif_VendorController extends Controller
                                   '</div>';
 
 
-
+                        $asal = '<input type="hidden" class="asal" value="'.$data->id_kota_asal_vendor.'">';
+                        $tujuan = '<input type="hidden" class="tujuan" value="'.$data->id_kota_tujuan_vendor.'">';
+                        $cabang = '<input type="hidden" class="cabang" value="'.$data->cabang_vendor.'">';
+                        $vendor = '<input type="hidden" class="vendor_id" value="'.$data->vendor_id.'">';
 
                         $data1 = DB::table("tarif_vendor")
                               ->where('id_kota_asal_vendor',$data->id_kota_asal_vendor)
@@ -65,9 +68,20 @@ class tarif_VendorController extends Controller
                         } 
                         $a = implode('', $a);
                         $b = implode('', $b);
-                        return $c.$a .$b;
+                        return $c.$a .$b. $asal.$tujuan.$cabang.$vendor;
                 })
-
+                        ->addColumn('active', function ($data) {
+                          if (Auth::user()->punyaAkses('Verifikasi','aktif')) {
+                            if($data->status == 'ya'){
+                              return '<input checked type="checkbox" onchange="check(this)" class="form-control check">';
+                            }else{
+                              return '<input type="checkbox" onchange="check(this)" class="form-control check">';
+                            }
+                          }else{
+                              return '-';
+                          }
+                           
+                        })
         ->make(true);
 
     }
@@ -208,6 +222,42 @@ class tarif_VendorController extends Controller
         $vendor = DB::table('vendor')->get();
         $cabang = DB::select(DB::raw(" SELECT kode,nama FROM cabang ORDER BY kode ASC "));
         return view('tarif.tarif_vendor.index',compact('kota','zona','cabang','prov','akun','vendor'));
+    }
+
+    public function check_kontrak_vendor(request $request)
+    {
+        // dd($request->all());
+      // return dd($request->all());
+
+        if ($request->check == 'true') {
+         // return $request->check;
+
+            $data_dt = DB::table('tarif_vendor')
+                ->where('id_kota_asal_vendor',$request->asal)
+                ->where('id_kota_tujuan_vendor',$request->tujuan)
+                ->where('cabang_vendor',$request->cabang)
+                ->where('vendor_id',$request->vendor_id)
+                ->where('jenis',$request->jenis)
+                ->update([
+                  'status' => 'ya' 
+                ]);
+
+             
+             return json_encode('success 1');
+
+        }else{
+
+           $data_dt = DB::table('tarif_vendor')
+                ->where('id_kota_asal_vendor',$request->asal)
+                ->where('id_kota_tujuan_vendor',$request->tujuan)
+                ->where('cabang_vendor',$request->cabang)
+                ->where('vendor_id',$request->vendor_id)
+                ->where('jenis',$request->jenis)
+                ->update([
+                  'status' => 'tidak' 
+                ]);
+             return json_encode('success 2');
+        }
     }
 
 }

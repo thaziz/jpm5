@@ -2691,6 +2691,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
   Route::get('sales/tarif_vendor/hapus_data', 'tarif\tarif_vendorController@hapus_data');
   Route::get('sales/tarif_vendor/hapus_data_perkota', 'tarif\tarif_vendorController@hapus_data_perkota');
   Route::get('sales/tarif_vendor/cabang_vendor', 'tarif\tarif_vendorController@cabang_vendor')->name('cabang_vendor');
+  Route::get('sales/tarif_vendor/check_kontrak_vendor', 'tarif\tarif_vendorController@check_kontrak_vendor')->name('check_kontrak_vendor');
   // end tarif cabang VENDOR
 
   Route::get('master_sales/group_customer','master_sales\grup_customer_Controller@index');

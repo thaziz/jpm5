@@ -15,6 +15,9 @@
     .pad{
         padding: 10px;
     }
+    .center{
+        text-align: center;
+    }
      .btn-purple{
       background-color: purple;
     }
@@ -87,6 +90,9 @@
                                 <th> Vendor </th>
                                 <th> jenis </th>
                                 <th> Waktu </th>
+                                @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
+                                <th>Active</th>
+                                @endif
                                 <th style="width:80px"> Aksi </th>
                             </tr>
                         </thead>
@@ -298,15 +304,27 @@
 
                   {
                      targets: 1 ,
-                     className: 'asal left'
+                     className: ' left'
                   },
                   {
                      targets: 2 ,
-                     className: 'tujuan right'
+                     className: ' right'
                   },
                   {
                      targets: 5 ,
-                     className: 'tujuan right'
+                     className: ' right'
+                  },
+                  {
+                     targets: 8 ,
+                     className: 'center '
+                  },
+                   {
+                     targets: 6 ,
+                     className: 'center jenis'
+                  },
+                  {
+                     targets: 9 ,
+                     className: 'center'
                   },
 
                   
@@ -321,6 +339,7 @@
             { "data": "vendor_id" },
             { "data": "jenis" },
             { "data": "waktu_vendor" ,render: $.fn.dataTable.render.number( '.', '.', 0, '' ) },
+            { "data": "active"},
             { 'data': 'button' },
             ]
       });
@@ -497,7 +516,43 @@
     }
   
   
-    
+    function check(p) {
+
+    var par    = $(p).parents('tr');
+    var asal = $(par).find('.asal').val();
+    var tujuan = $(par).find('.tujuan').val();
+    var vendor_id = $(par).find('.vendor_id').val();
+    var jenis = $(par).find('.jenis').text();
+    var cabang = $(par).find('.cabang').val();
+    var check  = $(par).find('.check').is(':checked');
+
+    $.ajax({
+      url:baseUrl + '/sales/tarif_vendor/check_kontrak_vendor',
+      data:{asal,tujuan,vendor_id,jenis,check,cabang},
+      type:'get',
+      success:function(data){
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Diupdate",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload(null,false);
+                  });
+      },
+      error:function(data){
+
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+}
 
 </script>
 @endsection
