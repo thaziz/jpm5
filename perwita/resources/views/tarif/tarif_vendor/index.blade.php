@@ -433,18 +433,18 @@
             success: function(data, textStatus, jqXHR)
             {
                 if(data.crud == 'N'){
-                    if(data.result == 1){
+                    if(data.status == 1){
                         var table = $('#table_data').DataTable();
-                        table.ajax.reload( null, false );
+                        table.ajax.reload();
                         $("#modal").modal('hide');
                         $("#btn_add").focus();
                     }else{
                         alert("Gagal menyimpan data!");
                     }
                 }else if(data.crud == 'E'){
-                    if(data.result == 1){
+                    if(data.status == 1){
                         var table = $('#table_data').DataTable();
-                        table.ajax.reload( null, false );
+                        table.ajax.reload();
                         $("#modal").modal('hide');
                         $("#btn_add").focus();
                     }else{

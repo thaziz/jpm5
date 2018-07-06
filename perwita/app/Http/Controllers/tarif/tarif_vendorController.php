@@ -163,7 +163,6 @@ class tarif_VendorController extends Controller
         }
         if($simpan == TRUE){
             
-
             $data = ['kontrak'=>url('sales/tarif_vendor'),'status'=>'Tarif Vendor'];
 
             Mail::send('email.email', $data, function ($mail)
@@ -179,10 +178,10 @@ class tarif_VendorController extends Controller
              
                   $mail->subject('KONTRAK VERIFIKASI');
             });
-            return response()->json(['status'=>1]);
+            return response()->json(['status'=>1,'crud'=>'N']);
         }else{
             
-            return response()->json(['status'=>0]);
+            return response()->json(['status'=>0,'crud'=>'N']);
         }
     }
 
