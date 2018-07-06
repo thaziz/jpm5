@@ -1,127 +1,3 @@
-{{-- @include('layouts._head')
-<!DOCTYPE html>
-<html>
-<head>
-<title></title>
-<style type="text/css">
-	.bg_utama{
-		background-color: #fff0f0;
-		height: 600px;
-	}
-	.bg_header{
-		background-color: #22436c;
-		height: 100px;
-		color: white;
-	}
-	.company{
-		font-weight: bold;
-		font-family: georgia;
-		font-size: 40px;
-		color: red;
-		/*margin-top: -4%;*/
-	}
-	.img{
-		margin-left: 42%;
-	}
-	.isi{
-		margin-top: 3%;
-		/*margin-left: 40%;*/
-		margin-bottom: 4%;
-		margin: auto;
-		border: none;
-		background-color: #fff0f0;
-		font-size: 15px;
-		font-family: calibri;
-	}
-	.greet{
-		margin-top: 5%;
-		/*margin-left: 35%;*/
-		margin: auto;
-
-		width: 700px;
-	}
-	.regard{
-		margin-top: 3%;
-		/*margin-left: 40%;*/
-		margin-bottom: 4%;
-		margin: auto;
-		font-size: 17px;
-		font-family: calibri;
-	}
-	p{
-		font-size: 17px;
-		font-color:#909090;
-	}
-	.bg_footer{
-		background-color: #22436c;
-		height: 40px;
-		color: white;
-
-	}
-	.foot{
-		margin-left: 30%;
-		padding-top: 0.5%;
-	}
-	
-</style>
-</head>
-<body class="bg_utama">
-	
-	<div class="bg_header">
-		<a href="https://brilliantpare.com/en/home/"><img src="https://image.ibb.co/eggFGd/icon.png" alt="icon" border="0" width="95px" style="margin-left: 47%" height="95px" ></a>
-	</div>
-	
-	<div class="greet" >
-		<b><p>HELLO!</b></p>
-		
-		<p>You Receive This Message Cause Someone Registered on https://brilliantpare.com/</p>
-
-	</div>
-	
-
-	<table class="isi" width="30%">
-		<tr>
-			<td width="30%" >Name</td>
-			<td width="15%" align="center">:</td>
-			<th align="left">{{ $name }}</th>
-		</tr>
-		<tr>
-			<td >Email</td>
-			<td align="center">:</td>
-			<th align="left" >{{ $email }}</th>
-		</tr>
-		<tr>
-			<td >Password</td>
-			<td align="center">:</td>
-			<th align="left" >{{ $password }}</th>
-		</tr>
-		<tr>
-			<td >Created at</td>
-			<td align="center">:</td>
-			<th align="left" >{{ date("d F Y", strtotime($date)) }}</th>
-		</tr>
-	</table>
-
-	<div class="greet">
-		<p><b>Regards,</b></p>
-		
-		<p>Brilliant Dev</p>
-
-	</div>	
-
-	<div class="bg_footer">	
-		<p class="foot"> © Copyright Brilliant Indonesia Group 2018. All right reserved.</p>
-	</div>
-	
-</body>
-</html>
-
-	
-
- --}}
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -483,7 +359,7 @@
     		<table class="outer-table">
     			<tr>
     				<td class="header">
-    					<p><a href="index.html#"><img src="https://image.ibb.co/hU8pgd/icon.png" alt="icon" border="0" class="logo">{{-- BRILLIANT ENGLISH COURSE --}}</a></p>
+    					<p><a href="index.html#"><img src="{{ asset('perwita/storage/app/upload/images.jpg') }}" alt="icon" border="0" class="logo">{{-- BRILLIANT ENGLISH COURSE --}}</a></p>
     				</td>
     			</tr> <!--- End Header -->
             </table> <!--- End Outer Table -->
@@ -494,35 +370,11 @@
     					<table width="100%">
     						<tr>
     							<td class="inner-td">
-	    							 <p class="h2">MEMBER PROFILE</p>
-	    							 <p class="center">Hy, You got this message because you have already became membership of <b>Brilliant English Course</b>. Here your Personal Data <br><b>Do not tell Everyone </b></p>
-    							 	  <br>
-	    								<table class="data">
-    										<tr>
-    											<td width="40%">Name</td>
-    											<td width="10%">:</td>
-    											<td>{{ $name }}</td>
-
-    										</tr>
-    										<tr>
-    											<td>Email</td>
-    											<td>:</td>
-    											<td>{{ $email }}</td>
-    										</tr>
-    										<tr>
-    											<td>Password</td>
-    											<td>:</td>
-    											<td>{{ $password }}</td>
-    										</tr>
-    										<tr>
-    											<td>Sign up Date</td>
-    											<td>:</td>
-    											<td>{{ date("d F Y", strtotime($date)) }}</td>
-    										</tr>
-    									</table>
-    							 	  <br>
+	    							 <p class="h2">Keuangan</p>
+	    							 <p class="center">Hai, Kamu Memiliki Notifikasi</p>
+	    							 <br><p>Terdapat Kontrak {{$status}} Yang Membutuhkan Persetujuan.</p><br>
     								<p class="button-holder-center">
-    									<a class="btn" href="#">Learn more</a>
+    									<a class="btn" href="{{$kontrak}}">Click Here</a>
     								</p>
     							</td>
     						</tr>
@@ -545,7 +397,7 @@
     					<table width="100%">
     						<tr>
     							<td class="footer">
-    								<p class="footer">Brilliant Indonesia Group 2018. All right reserved.<br>&copy; ESSENSI CREATIVE, 2017.<br></p>
+    								<p class="footer">PT Jawa Pratama Mandiri.<br>&copy; Alamraya Sebar Barokah, 2018.<br></p>
     							</td>
     						</tr>
     					</table>

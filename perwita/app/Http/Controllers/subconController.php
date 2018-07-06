@@ -247,7 +247,7 @@ class subconController extends Controller
 
          $data = ['kontrak'=>url('master_sales/edit_kontrak/'.$request->id),'status'=>'Customer'];
 
-        Mail::send('hello', $data, function ($mail)
+        Mail::send('email.email', $data, function ($mail)
             {
               // Email dikirimkan ke address "momo@deviluke.com" 
               // dengan nama penerima "Momo Velia Deviluke"
