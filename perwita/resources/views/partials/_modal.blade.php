@@ -80,12 +80,12 @@
                 <tr>
                   <td width="20%" class="text-center">Masukkan Tanggal</td>
                   <td width="25%">
-                    <input type="text" class="form-control tanggal" name="tanggal" placeholder="MM/YYYY" style="width: 100%; cursor: pointer; background: white;" readonly>
+                    <input type="text" class="form-control tanggal_register" name="tanggal" placeholder="MM/YYYY" style="width: 100%; cursor: pointer; background: white;" readonly>
                   <td class="text-center" style="font-size: 8pt;">
                     s/d
                   </td>
                   <td width="25%">
-                    <input type="text" class="form-control sampai" name="sampai" placeholder="MM/YYYY" style="cursor: pointer; background: white;" readonly>
+                    <input type="text" class="form-control sampai_register" name="sampai" placeholder="MM/YYYY" style="cursor: pointer; background: white;" readonly>
                   </td>
                   </td>
                 </tr>
@@ -274,20 +274,20 @@
         minViewMode: "months"
     });
 
-    // $('.sampai').datepicker( {
-    //     format: "mm/yyyy",
-    //     viewMode: "months", 
-    //     minViewMode: "months"
-    // })
+    $('.sampai_register').datepicker( {
+        format: "mm/yyyy",
+        viewMode: "months", 
+        minViewMode: "months"
+    })
 
-    // $('.tanggal').datepicker( {
-    //     format: "mm/yyyy",
-    //     viewMode: "months", 
-    //     minViewMode: "months"
-    // }).on("changeDate", function(){
-    //     $('.sampai').val("");
-    //     $('.sampai').datepicker("setStartDate", $(this).val());
-    // });
+    $('.tanggal_register').datepicker( {
+        format: "mm/yyyy",
+        viewMode: "months", 
+        minViewMode: "months"
+    }).on("changeDate", function(){
+        $('.sampai_register').val("");
+        $('.sampai_register').datepicker("setStartDate", $(this).val());
+    });
 
      $("#save").click(function(evt){
         evt.preventDefault();

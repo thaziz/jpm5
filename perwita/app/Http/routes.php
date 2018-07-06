@@ -2591,6 +2591,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
   Route::get('sales/tarif_cabang_kilogram/tabel', 'tarif\cabang_kilogram_Controller@table_data');
   Route::get('sales/tarif_cabang_kilogram/get_data', 'tarif\cabang_kilogram_Controller@get_data');
   Route::get('sales/tarif_cabang_kilogram/save_data', 'tarif\cabang_kilogram_Controller@save_data');
+  Route::get('sales/tarif_cabang_kilogram/update_data', 'tarif\cabang_kilogram_Controller@update_data');
   Route::get('sales/tarif_cabang_kilogram/hapus_data', 'tarif\cabang_kilogram_Controller@hapus_data');
   Route::get('sales/tarif_cabang_kilogram/hapus_data_perkota', 'tarif\cabang_kilogram_Controller@hapus_data_perkota');
   // end tarif cabang kilogram
