@@ -162,8 +162,7 @@ class tarif_VendorController extends Controller
             }
         }
         if($simpan == TRUE){
-            $result['error']='';
-            $result['result']=1;
+            
 
             $data = ['kontrak'=>url('sales/tarif_vendor'),'status'=>'Tarif Vendor'];
 
@@ -180,12 +179,11 @@ class tarif_VendorController extends Controller
              
                   $mail->subject('KONTRAK VERIFIKASI');
             });
+            return response()->json(['status'=>1]);
         }else{
-            $result['error']=$data;
-            $result['result']=0;
+            
+            return response()->json(['status'=>0]);
         }
-        $result['crud']=$crud;
-        echo json_encode($result);
     }
 
     public function hapus_data (Request $request) {
