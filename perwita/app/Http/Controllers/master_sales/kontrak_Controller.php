@@ -286,7 +286,7 @@ class kontrak_Controller extends Controller
               $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
          
               $mail->subject('KONTRAK VERIFIKASI');
-            });
+        });
 
         if ($request->id_detail == 0) {
           $save_detail = DB::table('kontrak_customer_d')

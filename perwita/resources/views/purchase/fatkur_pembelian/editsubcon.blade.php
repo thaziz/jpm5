@@ -780,7 +780,7 @@ No Faktur
                 </tr>
                 </thead>
                 <tbody>
-              
+                  
                </tbody>
             </table>
           </div>

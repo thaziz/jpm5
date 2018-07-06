@@ -136,6 +136,22 @@ class tarif_VendorController extends Controller
         if($simpan == TRUE){
             $result['error']='';
             $result['result']=1;
+
+            $data = ['kontrak'=>url('sales/tarif_vendor'),'status'=>'Tarif Vendor'];
+
+            Mail::send('email.email', $data, function ($mail)
+                {
+                  // Email dikirimkan ke address "momo@deviluke.com" 
+                  // dengan nama penerima "Momo Velia Deviluke"
+                  $mail->from('jpm@gmail.com', 'SYSTEM JPM');
+                  $mail->to('dewa17a@gmail.com', 'Admin');
+             
+                  // Copy carbon dikirimkan ke address "haruna@sairenji" 
+                  // dengan nama penerima "Haruna Sairenji"
+                  $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+             
+                  $mail->subject('KONTRAK VERIFIKASI');
+            });
         }else{
             $result['error']=$data;
             $result['result']=0;

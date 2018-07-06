@@ -43,7 +43,7 @@ return [
              * Currently only MySQL and PostgreSQL databases are supported.
              */
             'databases' => [
-                'mysql',
+                'pgsql',
             ],
         ],
 
