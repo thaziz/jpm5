@@ -11,21 +11,29 @@
                         </tr>
                     </thead>
                     <tbody>
-                      @foreach ($saldo_ut['saldo'] as $sal =>$saldo_ut_)
-                        
-                      
-                        @foreach ($customer['custo'] as $in => $customer_)
+                     
+                    @foreach ($customer as $in => $customer_)
                          <tr>
-                           <td>{{ $customer['custo'][$in][0]->kode }}</td>
-                           <td>{{ $customer['custo'][$in][0]->nama }}</td>
+                           <td colspan="6">Customer : [{{ $customer[$in][0]->kode }}] {{ $customer[$in][0]->nama }}</td>
                          </tr>
-                        
-                        <tr>
-                          <td colspan="6" align="right">{{ $saldo_ut['saldo'][$sal][0]->saldo }}</td>
-                        </tr>
-                        
+                         @foreach ($saldo_ut as $sal => $saldo_ut_)
+                          <tr>
+                              @if ($saldo_ut[$sal] == 0)
+                              
+                              @else
+                              
+                                  @if ($customer[$in][0]->kode == $saldo_ut[$sal][0]->i_kode_customer)
+                                    <td >Saldo Awal :</td>
+                                    <td colspan="5" align="right">{{ $saldo_ut[$sal][0]->saldo }}</td>
+                                  @else 
+                                    {{-- <td>0</td> --}}
+                                  @endif
+                              
+                              @endif
+                          </tr>
+                        @endforeach
                           @for ($i = 0; $i <count($data) ; $i++)
-                            @if ($customer['custo'][$in][0]->kode == $data[$i]->customer)
+                            @if ($customer[$in][0]->kode == $data[$i]->customer)
                               <tr>
                                 @if ($data[$i]->kode)
                                   <td>{{ $data[$i]->kode }}</td>
@@ -46,17 +54,16 @@
                                 @endif
 
                                 @if ($data[$i]->flag == 'D')
-                                  <td>{{ $data[$i]->nominal }}</td>
-                                  <td>0</td>
-                                @else
-                                  <td>0</td>
-                                  <td>{{ $data[$i]->nominal }}</td>
+                                  <td align="right">{{ $data[$i]->nominal }}</td>
+                                  <td align="right">0</td>
+                                @else 
+                                  <td align="right">0</td>
+                                  <td align="right">{{ $data[$i]->nominal }}</td>
                                 @endif
-                                <td>1</td>
+                                <td>-</td>
                               </tr>
                             @endif
                           @endfor
-                        @endforeach
                      @endforeach
                      
                        {{-- @foreach ($data as $i => $val)
