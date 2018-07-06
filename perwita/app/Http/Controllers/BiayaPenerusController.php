@@ -565,6 +565,7 @@ class BiayaPenerusController extends Controller
 				$date = Carbon::parse($bp->fp_tgl)->format('d/m/Y');
 
 				$bpd = DB::table('biaya_penerus_dt')
+						  ->join('delivery_order','bpd_pod','=','nomor')
 						  ->where('bpd_bpid',$bp->bp_id)
 						  ->get();
 
@@ -618,10 +619,11 @@ class BiayaPenerusController extends Controller
 					}
 				}
 				// return $um;
-				if ($bp->bp_tipe_vendor) {
-					# code...
+				if ($bp->bp_tipe_vendor == "AGEN") {
+					return view('purchase/fatkur_pembelian/edit_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um'));
+				}else{
+					return view('purchase/pembayaran_vendor/edit_vendor',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um'));
 				}
-				return view('purchase/fatkur_pembelian/edit_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um'));
 
 			} elseif ($cari_fp->fp_jenisbayar == 7){
 
