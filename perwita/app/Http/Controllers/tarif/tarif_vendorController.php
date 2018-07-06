@@ -8,6 +8,7 @@ use App\Http\Requests;
 use Carbon\carbon;
 use Yajra\Datatables\Datatables;
 use Auth;
+use Mail;
 
 class tarif_VendorController extends Controller
 {
@@ -38,13 +39,34 @@ class tarif_VendorController extends Controller
         // echo json_encode($datax);
         return Datatables::of($data)
         ->addColumn('button', function ($data) {
-                          return  '<div class="btn-group">'.
+                           $c =  '<div class="btn-group">'.
                                    '<button type="button" onclick="edit(this)" class="btn btn-info btn-sm" title="edit" id="'.$data->id_tarif_sama.'">'.
                                    '<label class="fa fa-pencil"></label></button>'.
                                    '<button type="button" onclick="hapus(this)" class="btn btn-danger btn-sm" title="hapus" id="'.$data->id_tarif_sama.'">'.
                                    '<label class="fa fa-trash"></label></button>'.
                                   '</div>';
+
+
+
+
+                        $data1 = DB::table("tarif_vendor")
+                              ->where('id_kota_asal_vendor',$data->id_kota_asal_vendor)
+                              ->where('id_kota_tujuan_vendor',$data->id_kota_tujuan_vendor)
+                              ->where('cabang_vendor',$data->cabang_vendor)
+                              ->where('vendor_id',$data->vendor_id)
+                              ->get();
+                        for ($i=0; $i < count($data1); $i++) { 
+                            $a[$i]= '<input type="hidden" class="waktu_'.$data1[$i]->jenis.'" value="'.$data1[$i]->waktu_vendor.'">';
+                        } 
+
+                        for ($i=0; $i < count($data1); $i++) { 
+                            $b[$i] = '<input type="hidden" class="tarif_'.$data1[$i]->jenis.'" value="'.$data1[$i]->waktu_vendor.'">';
+                        } 
+                        $a = implode('', $a);
+                        $b = implode('', $b);
+                        return $c.$a .$b;
                 })
+
         ->make(true);
 
     }
@@ -141,6 +163,22 @@ class tarif_VendorController extends Controller
         if($simpan == TRUE){
             $result['error']='';
             $result['result']=1;
+
+            $data = ['kontrak'=>url('sales/tarif_vendor'),'status'=>'Tarif Vendor'];
+
+            Mail::send('email.email', $data, function ($mail)
+                {
+                  // Email dikirimkan ke address "momo@deviluke.com" 
+                  // dengan nama penerima "Momo Velia Deviluke"
+                  $mail->from('jpm@gmail.com', 'SYSTEM JPM');
+                  $mail->to('dewa17a@gmail.com', 'Admin');
+             
+                  // Copy carbon dikirimkan ke address "haruna@sairenji" 
+                  // dengan nama penerima "Haruna Sairenji"
+                  $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+             
+                  $mail->subject('KONTRAK VERIFIKASI');
+            });
         }else{
             $result['error']=$data;
             $result['result']=0;
