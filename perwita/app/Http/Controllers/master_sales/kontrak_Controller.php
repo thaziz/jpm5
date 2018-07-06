@@ -272,7 +272,7 @@ class kontrak_Controller extends Controller
                             'kcd_grup'          => $request->grup_item_modal,
                         );
 
-         $data = ['kontrak'=>url('master_sales/edit_kontrak/'.$request->id),'status'=>'Customer'];
+         $data = ['kontrak'=>url('master_sales/edit_kontrak/'.$id),'status'=>'Customer'];
 
         Mail::send('email.email', $data, function ($mail)
             {
