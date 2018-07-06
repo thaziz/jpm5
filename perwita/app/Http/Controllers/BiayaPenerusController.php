@@ -535,11 +535,6 @@ class BiayaPenerusController extends Controller
 		}
 		public function edit($id){
 			if (Auth::user()->punyaAKses('Faktur Pembelian','ubah')) {
-
-
-
-
-
 			$cari_fp = DB::table('faktur_pembelian')
 						 ->where('fp_idfaktur',$id)
 						 ->first();
@@ -623,6 +618,9 @@ class BiayaPenerusController extends Controller
 					}
 				}
 				// return $um;
+				if ($bp->bp_tipe_vendor) {
+					# code...
+				}
 				return view('purchase/fatkur_pembelian/edit_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um'));
 
 			} elseif ($cari_fp->fp_jenisbayar == 7){
