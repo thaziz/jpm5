@@ -20,6 +20,7 @@ class tarif_VendorController extends Controller
             $list = DB::table('tarif_vendor')
                             ->select('tarif_vendor.*','cabang.nama as cabang')
                             ->leftjoin('cabang','cabang.kode','=','tarif_vendor.cabang_vendor')
+                            ->leftjoin('vendor','vendor.kode','=','tarif_vendor.vendor_id')
                             ->leftjoin('kota as k1','k1.id','=','tarif_vendor.id_kota_asal_vendor')
                             ->leftjoin('kota as k2','k2.id','=','tarif_vendor.id_kota_tujuan_vendor')
                             ->get();
@@ -27,13 +28,14 @@ class tarif_VendorController extends Controller
             $list = DB::table('tarif_vendor')->select('tarif_vendor.*','cabang.*')
                             ->select('tarif_vendor.*','k1.nama as asal','k2.nama as tujuan','cabang.nama as nama_cab')
                             ->leftjoin('cabang','cabang.kode','=','tarif_vendor.cabang_vendor')
+                            ->leftjoin('vendor','vendor.kode','=','tarif_vendor.vendor_id')
                             ->leftjoin('kota as k1','k1.id','=','tarif_vendor.id_kota_asal_vendor')
                             ->leftjoin('kota as k2','k2.id','=','tarif_vendor.id_kota_tujuan_vendor')/*->where('cabang_vendor',$cabang)*/
                             ->get();
         }
 
 
-        $data = collect($list);
+        return $data = collect($list);
         // echo json_encode($datax);
         return Datatables::of($data)
         ->addColumn('button', function ($data) {
@@ -71,7 +73,7 @@ class tarif_VendorController extends Controller
 
     public function cabang_vendor(Request $request)
     {
-        return 'a';
+
     }
     public function get_data (Request $request) {
         $id =$request->input('id');
@@ -96,6 +98,7 @@ class tarif_VendorController extends Controller
                     }else{
                         $id_sama +=1 ;
                     }   
+        $jenis = ['REGULER','EXPRESS'];
         // return Carbon::now();
         if ($crud == 'N') {
             // return $waktu;
@@ -118,8 +121,9 @@ class tarif_VendorController extends Controller
                     'csf_vendor' => $request->cb_csf_penjualan,
                     'waktu_vendor' => $waktu[$i],
                     'tarif_vendor' => $tarif[$i],
-                    // 'created_at' => Carbon::now(),
-                    // 'created_by' => auth::user()->m_name,
+                    'created_at' => Carbon::now(),
+                    'jenis' => $jenis[$i],
+                    'created_by' => auth::user()->m_name,
                 );
                 
                 $simpan = DB::table('tarif_vendor')->insert($data[$i]);
@@ -147,6 +151,7 @@ class tarif_VendorController extends Controller
                     'waktu_vendor' => $waktu[$i],
                     'tarif_vendor' => $tarif[$i],
                     'created_at' => Carbon::now(),
+                    'jenis' => $jenis[$i],
                     'created_by' => auth::user()->m_name,
                 );
                 

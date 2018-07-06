@@ -2937,6 +2937,10 @@ Route::get('sales/laporan','laporanutamaController@seluruhlaporan');
 
 Route::get('logout', 'mMemberController@logout');
 
+//mutasi piutang
+Route::get('laporan_pembelian/mutasi_hutang', 'laporan_pembelian\mutasi_hutang_Controller@index');
+Route::get('laporan_pembelian/mutasi_hutang/tampil_data', 'laporan_pembelian\mutasi_hutang_Controller@tampil_mutasi_hutang');
+// end mutasi piutang
 
 // //pembelian
 // Route::get('reportbayarkas/reportbayarkas', 'LaporanPurchaseController@reportbayarkas');
