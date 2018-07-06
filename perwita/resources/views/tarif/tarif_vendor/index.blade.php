@@ -474,11 +474,11 @@
             success: function(data, textStatus, jqXHR)
             {
                 var data = jQuery.parseJSON(data);
-                if(data.result ==1){
+                if(data.status ==1){
                     var table = $('#table_data').DataTable();
                     table.ajax.reload();
                 }else{
-                    swal("Error","Data tidak bisa hapus : "+data.error,"error");
+                  toastr.warning('terjadi kesalahan');
                 }
 
             },
