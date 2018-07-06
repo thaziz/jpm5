@@ -37,7 +37,7 @@
 	    padding: 0;
 	}
 	.header {
-	    background-color: #22436c;
+	    background-color: #ffffff;
 	    border-bottom: 3px solid #81B9C3;
 	}
 	p {
