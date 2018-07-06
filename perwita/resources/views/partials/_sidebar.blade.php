@@ -2292,8 +2292,8 @@
                             Request::is('penerimaanbarang/penerimaanbarang/penerimaanbarang') ? 'active' : '' || 
                             Request::is('penerimaanbarang/penerimaanbarang/penerimaanbarang/*') ? 'active' : ''||
                             /* kartu piutang */
-                            Request::is('reportmutasihutang/reportmutasihutang') ? 'active' : '' || 
-                            Request::is('reportmutasihutang/reportmutasihutang/*') ? 'active' : ''||
+                            Request::is('laporan_pembelian/mutasi_hutang') ? 'active' : '' || 
+                            Request::is('laporan_pembelian/mutasi_hutang/*') ? 'active' : ''||
                             /*   */
                             Request::is('reportfakturpelunasan/reportfakturpelunasan') ? 'active' : '' || 
                             Request::is('reportfakturpelunasan/reportfakturpelunasan/*') ? 'active' : ''||
@@ -2651,8 +2651,8 @@
                             Request::is('penerimaanbarang/penerimaanbarang/penerimaanbarang') ? 'active' : '' || 
                             Request::is('penerimaanbarang/penerimaanbarang/penerimaanbarang/*') ? 'active' : ''||
                             /* kartu piutang */
-                            Request::is('reportmutasihutang/reportmutasihutang') ? 'active' : '' || 
-                            Request::is('reportmutasihutang/reportmutasihutang/*') ? 'active' : ''||
+                            Request::is('laporan_pembelian/mutasi_hutang') ? 'active' : '' || 
+                            Request::is('laporan_pembelian/mutasi_hutang/*') ? 'active' : ''||
                             /*   */
                             Request::is('reportfakturpelunasan/reportfakturpelunasan') ? 'active' : '' || 
                             Request::is('reportfakturpelunasan/reportfakturpelunasan/*') ? 'active' : ''||
@@ -2718,8 +2718,8 @@
                             Request::is('penerimaanbarang/penerimaanbarang/penerimaanbarang') ? 'active' : '' || 
                             Request::is('penerimaanbarang/penerimaanbarang/penerimaanbarang/*') ? 'active' : ''||
                             /* kartu piutang */
-                            Request::is('reportmutasihutang/reportmutasihutang') ? 'active' : '' || 
-                            Request::is('reportmutasihutang/reportmutasihutang/*') ? 'active' : ''||
+                            Request::is('laporan_pembelian/mutasi_hutang') ? 'active' : '' || 
+                            Request::is('laporan_pembelian/mutasi_hutang/*') ? 'active' : ''||
                             /*   */
                             Request::is('reportfakturpelunasan/reportfakturpelunasan') ? 'active' : '' || 
                             Request::is('reportfakturpelunasan/reportfakturpelunasan/*') ? 'active' : ''||
@@ -2789,8 +2789,8 @@
                                 Request::is('reportkartuhutang/reportkartuhutang') ? 'active' : '' || 
                                 Request::is('reportkartuhutang/reportkartuhutang/*') ? 'active' : '' || 
                                 //kartu mutasi hutang
-                                Request::is('reportmutasihutang/reportmutasihutang') ? 'active' : '' || 
-                                Request::is('reportmutasihutang/reportmutasihutang/*') ? 'active' : ''||
+                                Request::is('laporan_pembelian/mutasi_hutang') ? 'active' : '' || 
+                                Request::is('laporan_pembelian/mutasi_hutang/*') ? 'active' : ''||
                                 //faktur pelunasan
                                 Request::is('reportfakturpelunasan/reportfakturpelunasan') ? 'active' : '' || 
                                 Request::is('reportfakturpelunasan/reportfakturpelunasan/*') ? 'active' : ''||
@@ -2817,8 +2817,8 @@
                                             </li>
 
                                             <li >
-                                                <a class="sidebar master-perusahaan {{Request::is('reportmutasihutang/reportmutasihutang') ? 'active' : '' || 
-                                                    Request::is('reportmutasihutang/reportmutasihutang/*') ? 'active' : ''}}" href="{{ url('reportmutasihutang/reportmutasihutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Mutasi Hutang </a>
+                                                <a class="sidebar master-perusahaan {{Request::is('laporan_pembelian/mutasi_hutang') ? 'active' : '' || 
+                                                    Request::is('laporan_pembelian/mutasi_hutang/*') ? 'active' : ''}}" href="{{ url('laporan_pembelian/mutasi_hutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Mutasi Hutang </a>
                                             </li>
                                             <li >
                                                 <a class="sidebar master-perusahaan {{Request::is('reportfakturpelunasan/reportfakturpelunasan') ? 'active' : '' || 

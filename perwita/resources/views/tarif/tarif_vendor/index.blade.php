@@ -84,6 +84,7 @@
                                 <th> Tujuan </th>
                                 <th> Tarif </th>
                                 <th> Cabang </th>
+                                <th> Vendor </th>
                                 <th> jenis </th>
                                 <th> Waktu </th>
                                 <th style="width:80px"> Aksi </th>
@@ -296,13 +297,14 @@
              columnDefs: [
 
                   {
-                     targets: 0 ,
-                     className: 'd_id left'
+                     targets: 1 ,
+                     className: 'asal left'
                   },
                   {
-                     targets: 3 ,
-                     className: 'right'
+                     targets: 2 ,
+                     className: 'tujuan right'
                   },
+
                   
 
                 ],
@@ -391,15 +393,13 @@
 
     function edit(ae) {
       var id=$(this).attr("id");
-        var value = {
-          asal : id
-        };
+         
         alert(id);
         $.ajax(
         {
             url : ('{{ route('get_data_tarif_vendor') }}'),
             type: "GET",
-            data : value,
+            data :  {asal : id},
             success: function(data, textStatus, jqXHR)
             { 
                 console.log(data);
