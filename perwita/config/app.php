@@ -135,7 +135,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,        
         Anouar\Fpdf\FpdfServiceProvider::class,
-        Spatie\Backup\BackupServiceProvider::class,
+        // Spatie\Backup\BackupServiceProvider::class,
         /*
          * Application Service Providers...
          */
