@@ -476,7 +476,7 @@
                 var data = jQuery.parseJSON(data);
                 if(data.result ==1){
                     var table = $('#table_data').DataTable();
-                    table.ajax.reload( null, false );
+                    table.ajax.reload();
                 }else{
                     swal("Error","Data tidak bisa hapus : "+data.error,"error");
                 }
