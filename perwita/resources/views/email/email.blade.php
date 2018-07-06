@@ -370,9 +370,9 @@
     					<table width="100%">
     						<tr>
     							<td class="inner-td">
-	    							 <p class="h2">Keuangan</p>
+	    							 <p class="h2">Finance</p>
 	    							 <p class="center">Hai, Kamu Memiliki Notifikasi</p>
-	    							 <br><p>Terdapat Kontrak {{$status}} Yang Membutuhkan Persetujuan.</p><br>
+	    							 <br><p class="center">Terdapat Kontrak {{$status}} Yang Membutuhkan Persetujuan.</p><br>
     								<p class="button-holder-center">
     									<a class="btn" href="{{$kontrak}}">Click Here</a>
     								</p>
