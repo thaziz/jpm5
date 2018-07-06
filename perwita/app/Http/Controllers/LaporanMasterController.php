@@ -2842,10 +2842,6 @@ class LaporanMasterController extends Controller
    		
 
    		$data = array_merge($data_invoice,$data_cn_dn,$data_kwitansi,$data_postingbayar);
-   		// return $data;
-   		// return $data[1]->customer;
-   		// return $cari_cus = $data;
-   		// return count($data);
 		
    		if ($request->customer != '') {
    			$customer = DB::table('customer')->select('kode','nama')->where('kode','=',$request->customer)->get();
@@ -2856,25 +2852,44 @@ class LaporanMasterController extends Controller
 										$customer_invoice $akun_invoice $cabang_invoice
 										");
    		}else{
-   			for ($i=0; $i <count($data) ; $i++) { 
-				$customer['custo'][$i] = DB::table('customer')->select('kode','nama')->where('kode','=',$data[$i]->customer)->groupBy('kode')->get();
+   			$dt = array_map("unserialize", array_unique(array_map("serialize", $data)));
+ 	  		$dt = array_values($dt);
+ 	  		// return $dt[0]->flag;
+
+   			for ($i=0; $i <count($dt) ; $i++) { 
+
+				$customer[$i] = DB::table('customer')->select('kode','nama')->where('kode','=',$dt[$i]->customer)->groupBy('kode')->get();
 
 				
  	  		}
- 	  		for ($i=0; $i <count($data) ; $i++) { 
- 	  			$dt = $data[$i]->customer;
- 	  			array_values($dt);
- 	  			$saldo_ut['saldo'][$i] = DB::select("SELECT sum(i_sisa_akhir) as saldo,i_kode_customer from invoice 
+ 	  		// return $customer;
+ 	  		
+ 	  		
+ 	  		for ($i=0; $i <count($dt) ; $i++) { 
+ 	  			$dtt = $dt[$i]->customer;
+ 	  			$saldo_ut[$i] = DB::select("SELECT sum(i_sisa_akhir) as saldo,i_kode_customer,'D' as flag from invoice 
 										where date_part('month',i_tanggal) >= '$awal' 
 			   							and date_part('month',i_tanggal) <= '$akir' 
-			   							and i_kode_customer = '$dt'
+			   							and i_kode_customer = '$dtt'
 										$customer_invoice $akun_invoice $cabang_invoice
 										group by(i_kode_customer )
-										");
-
+									");
+				if ($saldo_ut[$i] == null) {
+					// $var = new stdClass();
+					// $saldo_ut[$i]=$var;
+					$saldo_ut[$i] = 0;
+					// $saldo_ut[$i][0]['saldo'] = '0';
+					// $saldo_ut[$i][0]['flag'] = '-';
+					// $saldo_ut[$i][0]->saldo = '0';
+				}else{
+					$saldo_ut= $saldo_ut;
+				}
  	  		}
    		}
-   		return $saldo_ut;
+   		// return $saldo_ut;
+   		// $data = array_merge($data,$saldo_ut);
+		// array_push($saldo_ut , $data);
+   		// return $data;
    		
 
    		return view('purchase/master/master_penjualan/laporan/lap_piutang/ajax_lap_piutang',compact('saldo_ut','data','customer','data_saldo'));

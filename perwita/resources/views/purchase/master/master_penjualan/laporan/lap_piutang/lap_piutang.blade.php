@@ -269,7 +269,7 @@ Highcharts.chart('container', {
   alert('c');
  }else if (laporan == 'Rekap per akun Detail') {
 
-  alert('d');
+  // alert('d');
  }
     $.ajax({
       data:$('#search').serialize(),
