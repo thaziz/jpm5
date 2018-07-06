@@ -4785,6 +4785,10 @@ public function purchase_order() {
 					$request->diskon = 0;
 				}
 
+
+				$datasupplier = DB::select("select * from supplier where idsup = '$idsup'");
+				$kodesupplier2 = $datasupplier[0]->no_supplier;
+
 				$fatkurpembeliand = new fakturpembelian();
 				$fatkurpembeliand->fp_idfaktur = $idfaktur; 
 				$fatkurpembeliand->fp_nofaktur = $nofaktur;
@@ -4840,7 +4844,7 @@ public function purchase_order() {
 				$fatkurpembeliand->fp_acchutang = $request->acchutangdagang;
 				$fatkurpembeliand->created_by = $request->username;
 				$fatkurpembeliand->updated_by = $request->username;
-				//$fatkurpembelian->fp_accpph = $request->accPph;
+				$fatkurpembelian->fp_supplier = $kodesupplier2 ;
 				$fatkurpembeliand->save();
 
 
@@ -5908,6 +5912,7 @@ public function purchase_order() {
 				$comp = $request->cabang;
 
 				$dataacchutang = DB::select("select * from supplier where idsup = '$idsup'");
+				$nosupplier = $dataacchutang[0]->no_supplier;
 				$acchutangdagang = $dataacchutang[0]->acc_hutang;
 				$subacchutang = substr($acchutangdagang, 0 , 4);
 				$datakun = DB::select("select * from d_akun where id_akun LIKE '$subacchutang%' and  kode_cabang = '$comp'");
@@ -5921,7 +5926,7 @@ public function purchase_order() {
 				$fatkurpembelian->fp_edit = 'ALLOWED';
 				$fatkurpembelian->fp_sisapelunasan = $netto;
 				$fatkurpembelian->fp_acchutang = $acchutang;
-		//		$fatkurpembelian->fp_accpph = '212121';
+				$fatkurpembelian->fp_supplier = $nosupplier;
 				$fatkurpembelian->created_by = $request->username;
 				$fatkurpembelian->updated_by = $request->username;
 
@@ -6494,8 +6499,8 @@ public function purchase_order() {
 
 		$bulan = Carbon::now()->format('m');
         $tahun = Carbon::now()->format('y');
-
-    //   return $bulan . $tahun;
+        
+    /*  return $bulan . $tahun;*/
 		if($flag == ''){
 				$faktur = DB::select("select * from faktur_pembelian where  to_char(fp_tgl, 'MM') = '$bulan' and to_char(fp_tgl, 'YY') = '$tahun' and fp_comp = '$cabang' and fp_nofaktur LIKE '%/I-%' order by fp_idfaktur desc limit 1");
 

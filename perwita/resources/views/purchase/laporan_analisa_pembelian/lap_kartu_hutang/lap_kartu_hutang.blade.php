@@ -200,7 +200,7 @@ $('#supplier').change(function(){
       $.ajax({
             type: "GET",
             data : $('#save_data').serialize(),
-            url : ('{{ route('carikartuhutan_perakun') }}'),
+            url : ('{{ route('carikartuhutang_perakun') }}'),
             success: function(data)
             {   
               
@@ -247,6 +247,41 @@ $('#supplier').change(function(){
             success: function(data)
             {   
                 $('#drop').html(data);
+                $('.saldo').each(function(i){
+                   var saldo_index = $('.saldo_'+i).val();
+                  
+                   $('.hutangbaru_'+i).each(function(a){ 
+                      saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) 
+                      + parseFloat($('.vc_'+i).val())
+                      + parseFloat($('.cn_'+i).val())
+                      - parseFloat($('.k_'+i).val())
+                      - parseFloat($('.bg_'+i).val())
+                      - parseFloat($('.rn_'+i).val())
+                      - parseFloat($('.dn_'+i).val());
+                      var parent = $(this).parents('tr');
+                      $(parent).find('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
+                   })    
+                   var hutangbaru = 0;
+                   $('.hutangbaru_'+i).each(function(h){
+                       hutangbaru += parseFloat($(this).val());
+                   })
+
+                   var vc = 0;
+                   $('.vc_'+i).each(function(l){
+                       vc += parseFloat($('.vc_'+i).val());
+                   })
+
+                   var cn = 0;
+                   $('.cn_'+i).each(function(l){
+                       cn += parseFloat($('.cn_'+i).val());
+                   })
+
+
+                   $('.hut_baru_'+i).text(accounting.formatMoney(hutangbaru,"",0,'.',','));
+                   $('.hut_voc_'+i).text(accounting.formatMoney(vc,"",0,'.',','));
+                   $('.not_kredit_'+i).text(accounting.formatMoney(cn,"",0,'.',','));
+                   $('.grand_'+i).text(accounting.formatMoney(saldo_index,"",0,'.',','));
+                })
             }
       })
    }else if (laporan == 'Rekap per akun') {

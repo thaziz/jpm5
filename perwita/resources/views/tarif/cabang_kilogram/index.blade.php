@@ -135,6 +135,10 @@
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_kode_old" class="form-control" >
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
+                                        <input type="hidden" class="form-control" name="asal_old" class="form-control" >
+                                        <input type="hidden" class="form-control" name="tujuan_old" class="form-control" >
+                                        <input type="hidden" class="form-control" name="provinsi_old" class="form-control" >
+                                        <input type="hidden" class="form-control" name="cabang_old" class="form-control" >
                                     </td>
                                 </tr>
                                  @if(Auth::user()->punyaAkses('Tarif Cabang Kilogram','cabang'))
@@ -255,10 +259,15 @@
                                       <td class="pad">Tarif Kg selanjutnya</td>
                                       <td class="pad"><input type="text" name="tarifkgsel_reguler"></td>
                                   </tr>
+                                  <tr>
+                                      <td class="pad">Berat Minimum</td>
+                                      <td class="pad"><input type="text" name="berat_minimum_reg"></td>
+                                  </tr>
+
 
                               </tbody>
                           </table> 
-                          <table class="table-striped table-bordered" style="margin-left: 45%;margin-top: -323px;position: fixed;" width="48%"> 
+                          <table class="table-striped table-bordered" style="margin-left: 45%;margin-top: -366px;position: fixed;" width="48%"> 
                               <thead>
                                   <tr>
                                       <th style="padding: 7px; text-align: center;"  colspan="2">EXPRESS</th>
@@ -294,38 +303,14 @@
                                       <td class="pad">Tarif Kg selanjutnya</td>
                                       <td class="pad"><input type="text" name="tarifkgsel_express"></td>
                                   </tr>
+                                  <tr>
+                                      <td class="pad">Berat Minimum</td>
+                                      <td class="pad"><input type="text" name="berat_minimum_ex"></td>
+                                  </tr>
                               </tbody>
                           </table>
                           
                           <input type="hidden" name="kodekota" id="kodekota">
-                          {{-- KODE utama  --}}
-                          <input type="hidden" name="id0">
-                          <input type="hidden" name="id1">
-                          <input type="hidden" name="id2">
-                          <input type="hidden" name="id3">
-                          <input type="hidden" name="id4">
-                          <input type="hidden" name="id5">
-                          <input type="hidden" name="id6">
-                          <input type="hidden" name="id7">
-
-                          <input type="hidden" name="id8">
-                          <input type="hidden" name="id9">
-
-                          {{-- KODE DETAIL --}}
-                          <input type="hidden" name="kode0">
-                          <input type="hidden" name="kode1">
-                          <input type="hidden" name="kode2">
-                          <input type="hidden" name="kode3">
-                          <input type="hidden" name="kode4">
-                          <input type="hidden" name="kode5">
-                          <input type="hidden" name="kode6">
-                          <input type="hidden" name="kode7">
-
-                          <input type="hidden" name="kode8">
-                          <input type="hidden" name="kode9">
-
-                          {{-- KODE SAMA KILO --}}
-                          <input type="hidden" name="kode_sama_kilo">
                         </form>
                       </div>
                       <div class="modal-footer">
@@ -379,6 +364,8 @@
             "lengthChange": true,
             "searching": true,
             "ordering": false,
+            processing: true,
+            serverSide: true,
             "info": false,
             "responsive": true,
             "autoWidth": false,
@@ -398,7 +385,7 @@
             { "data": "cabang", },
             { "data": "waktu", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "keterangan" },
-            { "data": "button" },
+            { "data": "aksi" },
             ]
         });
         var config = {
@@ -473,37 +460,16 @@
             {
               console.log(data);
                 $("input[name='crud']").val('E');
-                //flag
-                $("input[name='id0']").val(data[0][0].kode);
-                $("input[name='id1']").val(data[0][1].kode);
-                $("input[name='id2']").val(data[0][2].kode);
-                $("input[name='id3']").val(data[0][3].kode);
-                $("input[name='id4']").val(data[0][4].kode);
-                $("input[name='id5']").val(data[0][5].kode);
-                $("input[name='id6']").val(data[0][6].kode);
-                $("input[name='id7']").val(data[0][7].kode);
-                $("input[name='id8']").val(data[0][8].kode);
-                $("input[name='id9']").val(data[0][9].kode);
-                //kode
-                $("input[name='kode0']").val(data[0][0].kode_detail_kilo);
-                $("input[name='kode1']").val(data[0][1].kode_detail_kilo);
-                $("input[name='kode2']").val(data[0][2].kode_detail_kilo);
-                $("input[name='kode3']").val(data[0][3].kode_detail_kilo);
-                $("input[name='kode4']").val(data[0][4].kode_detail_kilo);
-                $("input[name='kode5']").val(data[0][5].kode_detail_kilo);
-                $("input[name='kode6']").val(data[0][6].kode_detail_kilo);
-                $("input[name='kode7']").val(data[0][7].kode_detail_kilo);
-                $("input[name='kode8']").val(data[0][8].kode_detail_kilo);
-                $("input[name='kode9']").val(data[0][9].kode_detail_kilo);
-                //kode detail
-                $("input[name='kode_sama_kilo']").val(data[0][1].kode_sama_kilo);
                 //kode sama
+                $('input[name="waktu_regular"]').val(data[0][0].waktu);
                 $('input[name="waktu_regular"]').val(data[0][0].waktu);
                 $('input[name="tarifkertas_reguler"]').val(data[0][0].harga);
                 $('input[name="tarif0kg_reguler"]').val(data[0][1].harga);
                 $('input[name="tarif10kg_reguler"]').val(data[0][2].harga);
                 $('input[name="tarif20kg_reguler"]').val(data[0][3].harga);
                 $('input[name="tarifkgsel_reguler"]').val(data[0][4].harga);
+                $('input[name="tarifkgsel_reguler"]').val(data[0][4].harga);
+                $('input[name="berat_minimum_reg"]').val(data[0][4].berat_minimum);
                 //reg
                 $('input[name="waktu_express"]').val(data[0][5].waktu);
                 $('input[name="tarifkertas_express"]').val(data[0][5].harga);
@@ -511,7 +477,15 @@
                 $('input[name="tarif10kg_express"]').val(data[0][7].harga);
                 $('input[name="tarif20kg_express"]').val(data[0][8].harga);
                 $('input[name="tarifkgsel_express"]').val(data[0][9].harga);
+                $('input[name="berat_minimum_ex"]').val(data[0][5].berat_minimum);
                 //expre
+                $('input[name="asal_old"]').val(data[0][0].id_kota_asal);
+                $('input[name="tujuan_old"]').val(data[0][0].id_kota_tujuan);
+                $('input[name="provinsi_old"]').val(data[0][0].id_provinsi_cabkilogram);
+                $('input[name="cabang_old"]').val(data[0][0].kode_cabang);
+
+
+
                 $('#hilang').hide();
                 $('#hilang2').show();
                 $("input[name='kodekota']").val(data[0][0].kode_kota);
@@ -545,7 +519,7 @@
             success: function(data, textStatus, jqXHR)
             {
                 if(data.crud == 'N'){
-                    if(data.result == 1){
+                    if(data.status == 1){
                         var table = $('#table_data').DataTable();
                         table.ajax.reload( null, false );
                         $("#modal").modal('hide');
@@ -554,7 +528,7 @@
                         alert("Gagal menyimpan data!");
                     }
                 }else if(data.crud == 'E'){
-                    if(data.result == 1){
+                    if(data.status == 1){
                         //$.notify('Successfull update data');
                         var table = $('#table_data').DataTable();
                         table.ajax.reload( null, false );
