@@ -304,6 +304,10 @@
                      targets: 2 ,
                      className: 'tujuan right'
                   },
+                  {
+                     targets: 5 ,
+                     className: 'tujuan right'
+                  },
 
                   
 
@@ -314,6 +318,7 @@
             { "data": "tujuan" },
             { "data": "tarif_vendor" ,render: $.fn.dataTable.render.number( '.', '.', 0, '' ) },
             { "data": "nama_cab" },
+            { "data": "vendor_id" },
             { "data": "jenis" },
             { "data": "waktu_vendor" ,render: $.fn.dataTable.render.number( '.', '.', 0, '' ) },
             { 'data': 'button' },

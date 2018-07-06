@@ -18,24 +18,25 @@ class tarif_VendorController extends Controller
 
         if (Auth::user()->punyaAkses('Tarif Penerus Vendor','all')) {
             $list = DB::table('tarif_vendor')
-                            ->select('tarif_vendor.*','cabang.nama as cabang')
+                            ->select('tarif_vendor.*','cabang.nama as cabang','vendor.*')
                             ->leftjoin('cabang','cabang.kode','=','tarif_vendor.cabang_vendor')
-                            ->leftjoin('vendor','vendor.kode','=','tarif_vendor.vendor_id')
                             ->leftjoin('kota as k1','k1.id','=','tarif_vendor.id_kota_asal_vendor')
                             ->leftjoin('kota as k2','k2.id','=','tarif_vendor.id_kota_tujuan_vendor')
+                            ->leftjoin('vendor','vendor.kode','=','tarif_vendor.vendor_id')
                             ->get();
         }else{
-            $list = DB::table('tarif_vendor')->select('tarif_vendor.*','cabang.*')
+            $list = DB::table('tarif_vendor')->select('tarif_vendor.*','cabang.*','vendor.*')
                             ->select('tarif_vendor.*','k1.nama as asal','k2.nama as tujuan','cabang.nama as nama_cab')
                             ->leftjoin('cabang','cabang.kode','=','tarif_vendor.cabang_vendor')
-                            ->leftjoin('vendor','vendor.kode','=','tarif_vendor.vendor_id')
                             ->leftjoin('kota as k1','k1.id','=','tarif_vendor.id_kota_asal_vendor')
-                            ->leftjoin('kota as k2','k2.id','=','tarif_vendor.id_kota_tujuan_vendor')/*->where('cabang_vendor',$cabang)*/
+                            ->leftjoin('kota as k2','k2.id','=','tarif_vendor.id_kota_tujuan_vendor')
+                            ->leftjoin('vendor','vendor.kode','=','tarif_vendor.vendor_id')
+                            ->where('tarif_vendor.cabang_vendor',$cabang)
                             ->get();
         }
 
 
-        return $data = collect($list);
+        $data = collect($list);
         // echo json_encode($datax);
         return Datatables::of($data)
         ->addColumn('button', function ($data) {
