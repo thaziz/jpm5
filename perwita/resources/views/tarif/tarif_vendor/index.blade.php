@@ -256,8 +256,12 @@
                               </tbody>
                           </table>
                     
+                          {{-- HIDDEN --}}
 
-                          {{-- KODE SAMA KILO --}}
+                          <input type="hidden" name="id_tarif_vendor_reg">
+                          <input type="hidden" name="id_tarif_vendor_ex">
+
+                          {{--  --}}
                         </form>
                       </div>
                       <div class="modal-footer">
@@ -415,24 +419,40 @@
         $("input[name='ed_kode']").focus();
     });
 
-    function edit(ae) {
-      var id=$(this).attr("id");
-         
-        alert(id);
+    function edit(p) {
+      var par    = $(p).parents('tr');
+      var asal = $(par).find('.asal').val();
+      var tujuan = $(par).find('.tujuan').val();
+      var vendor_id = $(par).find('.vendor_id').val();
+      var jenis = $(par).find('.jenis').text();
+      var cabang = $(par).find('.cabang').val();
+
         $.ajax(
         {
             url : ('{{ route('get_data_tarif_vendor') }}'),
             type: "GET",
-            data :  {asal : id},
+            data :  {asal,tujuan,vendor_id,jenis,cabang},
             success: function(data, textStatus, jqXHR)
             { 
                 console.log(data);
                 $("input[name='crud']").val('E');
-                $("select[name='cb_provinsi_tujuan']").val('').trigger('chosen:updated');
-                $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
-                $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
-                $("select[name='cb_acc_penjualan']").val('').trigger('chosen:updated');
-                $("select[name='cb_csf_penjualan']").val('').trigger('chosen:updated');
+                $("input[name='waktu_regular']").val(data[0].waktu_vendor);
+                $("input[name='waktu_express']").val(data[1].waktu_vendor);
+                
+                $("input[name='tarifkertas_reguler']").val(data[0].tarif_vendor);
+                $("input[name='tarifkertas_express']").val(data[1].tarif_vendor);
+
+                $("input[name='id_tarif_vendor_reg']").val(data[0].id_tarif_vendor);
+                $("input[name='id_tarif_vendor_ex']").val(data[1].id_tarif_vendor);
+
+                $("#modal").modal("show");
+
+                $("select[name='cb_cabang']").val(data[0].cabang_vendor).trigger('chosen:updated');
+                $("select[name='cb_kota_asal']").val(data[0].id_kota_asal_vendor).trigger('chosen:updated');
+                $("select[name='cb_kota_tujuan']").val(data[0].id_kota_tujuan_vendor).trigger('chosen:updated');
+                $("select[name='cb_vendor']").val(data[0].vendor_id).trigger('chosen:updated');
+                $("select[name='cb_acc_penjualan']").val(data[0].acc_vendor).trigger('chosen:updated');
+                $("select[name='cb_csf_penjualan']").val(data[0].csf_vendor).trigger('chosen:updated');
             },
             error: function(jqXHR, textStatus, errorThrown)
             {
