@@ -395,6 +395,7 @@ Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
 Route::get('ikhtisar_kas/create', 'ikhtisarController@create');
 Route::get('ikhtisar_kas/nota', 'ikhtisarController@nota');
 Route::get('ikhtisar_kas/cari_patty', 'ikhtisarController@cari_patty');
+Route::get('ikhtisar_kas/tes', 'ikhtisarController@tes');
 Route::get('ikhtisar_kas/simpan', 'ikhtisarController@simpan');
 Route::get('ikhtisar_kas/edit/{id}', 'ikhtisarController@edit');
 Route::get('ikhtisar_kas/update', 'ikhtisarController@update');
