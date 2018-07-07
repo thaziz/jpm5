@@ -171,11 +171,11 @@ class tarif_VendorController extends Controller
                   // Email dikirimkan ke address "momo@deviluke.com" 
                   // dengan nama penerima "Momo Velia Deviluke"
                   $mail->from('jpm@gmail.com', 'SYSTEM JPM');
-                  $mail->to('dewa17a@gmail.com', 'Admin');
+                  $mail->to('denyprasetyo41@gmail.com', 'Admin');
              
                   // Copy carbon dikirimkan ke address "haruna@sairenji" 
                   // dengan nama penerima "Haruna Sairenji"
-                  $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+                  $mail->cc('denyprasetyo41@gmail.com', 'ADMIN JPM');
              
                   $mail->subject('KONTRAK VERIFIKASI');
             });
