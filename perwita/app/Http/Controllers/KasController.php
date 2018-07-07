@@ -245,7 +245,7 @@ class KasController extends Controller
 						}
 						$terbayar = array_sum($terbayar);
 						if ($terbayar > $tarif_shuttle) {
-							unset($resi[$i]);
+							// unset($resi[$i]);
 						}
 
 					}elseif ($jenis_biaya == '4' or $jenis_biaya == '7'){
@@ -257,11 +257,11 @@ class KasController extends Controller
 											   ->get();
 
 						if ($cari_resi_lintas != null) {
-							unset($resi[$i]);
+							// unset($resi[$i]);
 						}
 
 					}else{
-						unset($resi[$i]);
+						// unset($resi[$i]);
 					}
 				}					
 			}
@@ -1519,7 +1519,7 @@ class KasController extends Controller
 						}
 						$terbayar = array_sum($terbayar);
 						if ($terbayar > $tarif_shuttle) {
-							unset($resi[$i]);
+							// unset($resi[$i]);
 						}
 
 					}elseif ($jenis_biaya == '4' or $jenis_biaya == '7'){
@@ -1531,11 +1531,11 @@ class KasController extends Controller
 											   ->get();
 
 						if ($cari_resi_lintas != null) {
-							unset($resi[$i]);
+							// unset($resi[$i]);
 						}
 
 					}else{
-						unset($resi[$i]);
+						// unset($resi[$i]);
 					}
 				}					
 			}

@@ -15,6 +15,9 @@
     .pad{
         padding: 10px;
     }
+    .center{
+        text-align: center;
+    }
      .btn-purple{
       background-color: purple;
     }
@@ -84,8 +87,12 @@
                                 <th> Tujuan </th>
                                 <th> Tarif </th>
                                 <th> Cabang </th>
+                                <th> Vendor </th>
                                 <th> jenis </th>
                                 <th> Waktu </th>
+                                @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
+                                <th>Active</th>
+                                @endif
                                 <th style="width:80px"> Aksi </th>
                             </tr>
                         </thead>
@@ -296,13 +303,30 @@
              columnDefs: [
 
                   {
-                     targets: 0 ,
-                     className: 'd_id left'
+                     targets: 1 ,
+                     className: ' left'
                   },
                   {
-                     targets: 3 ,
-                     className: 'right'
+                     targets: 2 ,
+                     className: ' right'
                   },
+                  {
+                     targets: 5 ,
+                     className: ' right'
+                  },
+                  {
+                     targets: 8 ,
+                     className: 'center '
+                  },
+                   {
+                     targets: 6 ,
+                     className: 'center jenis'
+                  },
+                  {
+                     targets: 9 ,
+                     className: 'center'
+                  },
+
                   
 
                 ],
@@ -312,8 +336,10 @@
             { "data": "tujuan" },
             { "data": "tarif_vendor" ,render: $.fn.dataTable.render.number( '.', '.', 0, '' ) },
             { "data": "nama_cab" },
+            { "data": "vendor_id" },
             { "data": "jenis" },
             { "data": "waktu_vendor" ,render: $.fn.dataTable.render.number( '.', '.', 0, '' ) },
+            { "data": "active"},
             { 'data': 'button' },
             ]
       });
@@ -391,15 +417,13 @@
 
     function edit(ae) {
       var id=$(this).attr("id");
-        var value = {
-          asal : id
-        };
+         
         alert(id);
         $.ajax(
         {
             url : ('{{ route('get_data_tarif_vendor') }}'),
             type: "GET",
-            data : value,
+            data :  {asal : id},
             success: function(data, textStatus, jqXHR)
             { 
                 console.log(data);
@@ -428,18 +452,18 @@
             success: function(data, textStatus, jqXHR)
             {
                 if(data.crud == 'N'){
-                    if(data.result == 1){
+                    if(data.status == 1){
                         var table = $('#table_data').DataTable();
-                        table.ajax.reload( null, false );
+                        table.ajax.reload();
                         $("#modal").modal('hide');
                         $("#btn_add").focus();
                     }else{
                         alert("Gagal menyimpan data!");
                     }
                 }else if(data.crud == 'E'){
-                    if(data.result == 1){
+                    if(data.status == 1){
                         var table = $('#table_data').DataTable();
-                        table.ajax.reload( null, false );
+                        table.ajax.reload();
                         $("#modal").modal('hide');
                         $("#btn_add").focus();
                     }else{
@@ -474,11 +498,11 @@
             success: function(data, textStatus, jqXHR)
             {
                 var data = jQuery.parseJSON(data);
-                if(data.result ==1){
+                if(data.status ==1){
                     var table = $('#table_data').DataTable();
-                    table.ajax.reload( null, false );
+                    table.ajax.reload();
                 }else{
-                    swal("Error","Data tidak bisa hapus : "+data.error,"error");
+                  toastr.warning('terjadi kesalahan');
                 }
 
             },
@@ -492,7 +516,43 @@
     }
   
   
-    
+    function check(p) {
+
+    var par    = $(p).parents('tr');
+    var asal = $(par).find('.asal').val();
+    var tujuan = $(par).find('.tujuan').val();
+    var vendor_id = $(par).find('.vendor_id').val();
+    var jenis = $(par).find('.jenis').text();
+    var cabang = $(par).find('.cabang').val();
+    var check  = $(par).find('.check').is(':checked');
+
+    $.ajax({
+      url:baseUrl + '/sales/tarif_vendor/check_kontrak_vendor',
+      data:{asal,tujuan,vendor_id,jenis,check,cabang},
+      type:'get',
+      success:function(data){
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Diupdate",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload(null,false);
+                  });
+      },
+      error:function(data){
+
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+}
 
 </script>
 @endsection

@@ -2691,6 +2691,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
   Route::get('sales/tarif_vendor/hapus_data', 'tarif\tarif_vendorController@hapus_data');
   Route::get('sales/tarif_vendor/hapus_data_perkota', 'tarif\tarif_vendorController@hapus_data_perkota');
   Route::get('sales/tarif_vendor/cabang_vendor', 'tarif\tarif_vendorController@cabang_vendor')->name('cabang_vendor');
+  Route::get('sales/tarif_vendor/check_kontrak_vendor', 'tarif\tarif_vendorController@check_kontrak_vendor')->name('check_kontrak_vendor');
   // end tarif cabang VENDOR
 
   Route::get('master_sales/group_customer','master_sales\grup_customer_Controller@index');
@@ -2937,6 +2938,10 @@ Route::get('sales/laporan','laporanutamaController@seluruhlaporan');
 
 Route::get('logout', 'mMemberController@logout');
 
+//mutasi piutang
+Route::get('laporan_pembelian/mutasi_hutang', 'laporan_pembelian\mutasi_hutang_Controller@index');
+Route::get('laporan_pembelian/mutasi_hutang/tampil_data', 'laporan_pembelian\mutasi_hutang_Controller@tampil_mutasi_hutang');
+// end mutasi piutang
 
 // //pembelian
 // Route::get('reportbayarkas/reportbayarkas', 'LaporanPurchaseController@reportbayarkas');

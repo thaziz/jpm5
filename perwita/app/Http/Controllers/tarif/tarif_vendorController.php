@@ -8,6 +8,7 @@ use App\Http\Requests;
 use Carbon\carbon;
 use Yajra\Datatables\Datatables;
 use Auth;
+use Mail;
 
 class tarif_VendorController extends Controller
 {
@@ -17,17 +18,20 @@ class tarif_VendorController extends Controller
 
         if (Auth::user()->punyaAkses('Tarif Penerus Vendor','all')) {
             $list = DB::table('tarif_vendor')
-                            ->select('tarif_vendor.*','cabang.nama as cabang')
+                            ->select('tarif_vendor.*','cabang.nama as cabang','vendor.*')
                             ->leftjoin('cabang','cabang.kode','=','tarif_vendor.cabang_vendor')
                             ->leftjoin('kota as k1','k1.id','=','tarif_vendor.id_kota_asal_vendor')
                             ->leftjoin('kota as k2','k2.id','=','tarif_vendor.id_kota_tujuan_vendor')
+                            ->leftjoin('vendor','vendor.kode','=','tarif_vendor.vendor_id')
                             ->get();
         }else{
-            $list = DB::table('tarif_vendor')->select('tarif_vendor.*','cabang.*')
+            $list = DB::table('tarif_vendor')->select('tarif_vendor.*','cabang.*','vendor.*')
                             ->select('tarif_vendor.*','k1.nama as asal','k2.nama as tujuan','cabang.nama as nama_cab')
                             ->leftjoin('cabang','cabang.kode','=','tarif_vendor.cabang_vendor')
                             ->leftjoin('kota as k1','k1.id','=','tarif_vendor.id_kota_asal_vendor')
-                            ->leftjoin('kota as k2','k2.id','=','tarif_vendor.id_kota_tujuan_vendor')/*->where('cabang_vendor',$cabang)*/
+                            ->leftjoin('kota as k2','k2.id','=','tarif_vendor.id_kota_tujuan_vendor')
+                            ->leftjoin('vendor','vendor.kode','=','tarif_vendor.vendor_id')
+                            ->where('tarif_vendor.cabang_vendor',$cabang)
                             ->get();
         }
 
@@ -36,20 +40,55 @@ class tarif_VendorController extends Controller
         // echo json_encode($datax);
         return Datatables::of($data)
         ->addColumn('button', function ($data) {
-                          return  '<div class="btn-group">'.
+                           $c =  '<div class="btn-group">'.
                                    '<button type="button" onclick="edit(this)" class="btn btn-info btn-sm" title="edit" id="'.$data->id_tarif_sama.'">'.
                                    '<label class="fa fa-pencil"></label></button>'.
                                    '<button type="button" onclick="hapus(this)" class="btn btn-danger btn-sm" title="hapus" id="'.$data->id_tarif_sama.'">'.
                                    '<label class="fa fa-trash"></label></button>'.
                                   '</div>';
+
+
+                        $asal = '<input type="hidden" class="asal" value="'.$data->id_kota_asal_vendor.'">';
+                        $tujuan = '<input type="hidden" class="tujuan" value="'.$data->id_kota_tujuan_vendor.'">';
+                        $cabang = '<input type="hidden" class="cabang" value="'.$data->cabang_vendor.'">';
+                        $vendor = '<input type="hidden" class="vendor_id" value="'.$data->vendor_id.'">';
+
+                        $data1 = DB::table("tarif_vendor")
+                              ->where('id_kota_asal_vendor',$data->id_kota_asal_vendor)
+                              ->where('id_kota_tujuan_vendor',$data->id_kota_tujuan_vendor)
+                              ->where('cabang_vendor',$data->cabang_vendor)
+                              ->where('vendor_id',$data->vendor_id)
+                              ->get();
+                        for ($i=0; $i < count($data1); $i++) { 
+                            $a[$i]= '<input type="hidden" class="waktu_'.$data1[$i]->jenis.'" value="'.$data1[$i]->waktu_vendor.'">';
+                        } 
+
+                        for ($i=0; $i < count($data1); $i++) { 
+                            $b[$i] = '<input type="hidden" class="tarif_'.$data1[$i]->jenis.'" value="'.$data1[$i]->waktu_vendor.'">';
+                        } 
+                        $a = implode('', $a);
+                        $b = implode('', $b);
+                        return $c.$a .$b. $asal.$tujuan.$cabang.$vendor;
                 })
+                        ->addColumn('active', function ($data) {
+                          if (Auth::user()->punyaAkses('Verifikasi','aktif')) {
+                            if($data->status == 'ya'){
+                              return '<input checked type="checkbox" onchange="check(this)" class="form-control check">';
+                            }else{
+                              return '<input type="checkbox" onchange="check(this)" class="form-control check">';
+                            }
+                          }else{
+                              return '-';
+                          }
+                           
+                        })
         ->make(true);
 
     }
 
     public function cabang_vendor(Request $request)
     {
-        return 'a';
+
     }
     public function get_data (Request $request) {
         $id =$request->input('id');
@@ -74,6 +113,7 @@ class tarif_VendorController extends Controller
                     }else{
                         $id_sama +=1 ;
                     }   
+        $jenis = ['REGULER','EXPRESS'];
         // return Carbon::now();
         if ($crud == 'N') {
             // return $waktu;
@@ -96,8 +136,9 @@ class tarif_VendorController extends Controller
                     'csf_vendor' => $request->cb_csf_penjualan,
                     'waktu_vendor' => $waktu[$i],
                     'tarif_vendor' => $tarif[$i],
-                    // 'created_at' => Carbon::now(),
-                    // 'created_by' => auth::user()->m_name,
+                    'created_at' => Carbon::now(),
+                    'jenis' => $jenis[$i],
+                    'created_by' => auth::user()->m_name,
                 );
                 
                 $simpan = DB::table('tarif_vendor')->insert($data[$i]);
@@ -125,6 +166,7 @@ class tarif_VendorController extends Controller
                     'waktu_vendor' => $waktu[$i],
                     'tarif_vendor' => $tarif[$i],
                     'created_at' => Carbon::now(),
+                    'jenis' => $jenis[$i],
                     'created_by' => auth::user()->m_name,
                 );
                 
@@ -134,14 +176,27 @@ class tarif_VendorController extends Controller
             }
         }
         if($simpan == TRUE){
-            $result['error']='';
-            $result['result']=1;
+            
+            $data = ['kontrak'=>url('sales/tarif_vendor'),'status'=>'Tarif Vendor'];
+
+            Mail::send('email.email', $data, function ($mail)
+                {
+                  // Email dikirimkan ke address "momo@deviluke.com" 
+                  // dengan nama penerima "Momo Velia Deviluke"
+                  $mail->from('jpm@gmail.com', 'SYSTEM JPM');
+                  $mail->to('dewa17a@gmail.com', 'Admin');
+             
+                  // Copy carbon dikirimkan ke address "haruna@sairenji" 
+                  // dengan nama penerima "Haruna Sairenji"
+                  $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+             
+                  $mail->subject('KONTRAK VERIFIKASI');
+            });
+            return response()->json(['status'=>1,'crud'=>'N']);
         }else{
-            $result['error']=$data;
-            $result['result']=0;
+            
+            return response()->json(['status'=>0,'crud'=>'N']);
         }
-        $result['crud']=$crud;
-        echo json_encode($result);
     }
 
     public function hapus_data (Request $request) {
@@ -167,6 +222,42 @@ class tarif_VendorController extends Controller
         $vendor = DB::table('vendor')->get();
         $cabang = DB::select(DB::raw(" SELECT kode,nama FROM cabang ORDER BY kode ASC "));
         return view('tarif.tarif_vendor.index',compact('kota','zona','cabang','prov','akun','vendor'));
+    }
+
+    public function check_kontrak_vendor(request $request)
+    {
+        // dd($request->all());
+      // return dd($request->all());
+
+        if ($request->check == 'true') {
+         // return $request->check;
+
+            $data_dt = DB::table('tarif_vendor')
+                ->where('id_kota_asal_vendor',$request->asal)
+                ->where('id_kota_tujuan_vendor',$request->tujuan)
+                ->where('cabang_vendor',$request->cabang)
+                ->where('vendor_id',$request->vendor_id)
+                ->where('jenis',$request->jenis)
+                ->update([
+                  'status' => 'ya' 
+                ]);
+
+             
+             return json_encode('success 1');
+
+        }else{
+
+           $data_dt = DB::table('tarif_vendor')
+                ->where('id_kota_asal_vendor',$request->asal)
+                ->where('id_kota_tujuan_vendor',$request->tujuan)
+                ->where('cabang_vendor',$request->cabang)
+                ->where('vendor_id',$request->vendor_id)
+                ->where('jenis',$request->jenis)
+                ->update([
+                  'status' => 'tidak' 
+                ]);
+             return json_encode('success 2');
+        }
     }
 
 }
