@@ -59,12 +59,16 @@
                             <a href="{{ url('setting/hak_akses')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Hak Akses</a>
                         </li>
                         @endif
+
+
                         
                         @if(Auth::user()->PunyaAkses('Pengguna','aktif'))
                          <li class="sidebar {{Request::is('setting/pengguna') ? 'active' : '' || Request::is('setting/pengguna/*') ? 'active' : '' }} ">
                             <a href="{{ url('setting/pengguna')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pengguna</a>
                         </li>
                         @endif
+
+
                        <!--   <li class="sidebar {{Request::is('setting/groupbaru') ? 'active' : '' || Request::is('setting/groupbaru/*') ? 'active' : '' }} ">
                             <a href="{{ url('setting/groupbaru')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Group Baru </a>
                         </li> -->
@@ -92,6 +96,13 @@
                             </ul>
                         </li>
 
+                        @endif
+
+
+                         @if(Auth::user()->PunyaAkses('Synchonize Jurnal','aktif'))
+                        <li class="sidebar {{Request::is('setting/sync_jurnal') ? 'active' : '' || Request::is('setting/sync_jurnal/*') ? 'active' : '' }} ">
+                            <a href="{{ url('setting/sync_jurnal')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Synchonize Jurnal</a>
+                        </li>
                         @endif
 
                     </ul>
