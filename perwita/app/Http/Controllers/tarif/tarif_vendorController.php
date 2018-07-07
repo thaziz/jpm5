@@ -91,9 +91,19 @@ class tarif_VendorController extends Controller
 
     }
     public function get_data (Request $request) {
-        $id =$request->input('id');
-        $data = DB::table('tarif_vendor')->where('id', $id)->first();
-        echo json_encode($data);
+        $asal = $request->asal;
+        $tujuan = $request->tujuan;
+        $vendor = $request->vendor_id;
+        $cabang = $request->cabang;
+        
+        $data = DB::table('tarif_vendor')
+                        ->where('id_kota_asal_vendor','=',$asal)
+                        ->where('id_kota_tujuan_vendor','=',$tujuan)
+                        ->where('vendor_id','=',$vendor)
+                        ->where('cabang_vendor','=',$cabang)
+                        ->get();
+
+        return response()->json($data);
     }
 
     public function save_data (Request $request) {
@@ -105,8 +115,14 @@ class tarif_VendorController extends Controller
         }
         $waktu = [$request->waktu_regular,$request->waktu_express];
         $tarif = [$request->tarifkertas_reguler,$request->tarifkertas_express];
+        $id_old = [$request->id_tarif_vendor_reg,$request->id_tarif_vendor_ex];
         // return $waktu;
         
+        $asal = $request->asal;
+        $tujuan = $request->tujuan;
+        $vendor = $request->vendor_id;
+        $cabang = $request->cabang;
+
         $id_sama = DB::table('tarif_vendor')->max('id_tarif_sama');
                     if ($id_sama == null) {
                         $id_sama = 1 ;
@@ -146,6 +162,7 @@ class tarif_VendorController extends Controller
             // return $data;
             }
         }elseif ($crud == 'E') {
+
             for ($i=0; $i <count($waktu) ; $i++) { 
                 $id = DB::table('tarif_vendor')->max('id_tarif_vendor');
                     if ($id == null) {
@@ -155,7 +172,7 @@ class tarif_VendorController extends Controller
                     }
 
                 $data[$i] = array(
-                    'id_tarif_vendor' => $id,
+                    'id_tarif_vendor' => $id_old[$i],
                     'id_tarif_sama' => $id_sama,
                     'id_kota_asal_vendor' => $request->cb_kota_asal,
                     'id_kota_tujuan_vendor' => $request->cb_kota_tujuan,
@@ -170,7 +187,7 @@ class tarif_VendorController extends Controller
                     'created_by' => auth::user()->m_name,
                 );
                 
-                $simpan = DB::table('tarif_vendor')->where('id', $request->ed_id)->update($data[$i]);
+                $simpan = DB::table('tarif_vendor')->where('id_tarif_vendor','=',$id_old[$i])->update($data[$i]);
 
             // return $data;
             }
