@@ -110,50 +110,50 @@ class ikhtisarController extends Controller
 
 	public function tes()
 	{
-		$bkk = DB::table('bukti_kas_keluar')
-				 ->orderBy('bkk_id','ASC')
-				 ->get();
+		// $bkk = DB::table('bukti_kas_keluar')
+		// 		 ->orderBy('bkk_id','ASC')
+		// 		 ->get();
 		
 
-		$bulan= [];
-		$tahun= [];
-		$cab= [];
-		for ($i=0; $i < count($bkk); $i++) { 
-			$bulan[$i] = carbon::parse($bkk[$i]->bkk_tgl)->format('m');
-		    $tahun[$i] = carbon::parse($bkk[$i]->bkk_tgl)->format('y');
-		    $cab[$i] = $bkk[$i]->bkk_comp;
-		}
-		$bulan = array_unique($bulan);
-		$tahun = array_unique($tahun);
-		$bulan = array_values($bulan);
-		$tahun = array_values($tahun);
-		$cab   = array_unique($cab);
-		$cab   = array_values($cab);
+		// $bulan= [];
+		// $tahun= [];
+		// $cab= [];
+		// for ($i=0; $i < count($bkk); $i++) { 
+		// 	$bulan[$i] = carbon::parse($bkk[$i]->bkk_tgl)->format('m');
+		//     $tahun[$i] = carbon::parse($bkk[$i]->bkk_tgl)->format('y');
+		//     $cab[$i] = $bkk[$i]->bkk_comp;
+		// }
+		// $bulan = array_unique($bulan);
+		// $tahun = array_unique($tahun);
+		// $bulan = array_values($bulan);
+		// $tahun = array_values($tahun);
+		// $cab   = array_unique($cab);
+		// $cab   = array_values($cab);
 
 
-		for ($i=0; $i < count($tahun); $i++) { 
-			for ($a=0; $a < count($bulan); $a++) { 
-				for ($d=0; $d < count($cab); $d++) { 
-					$index = 1;
-					for ($c=0; $c < count($bkk); $c++) { 
-						$bln = carbon::parse($bkk[$c]->bkk_tgl)->format('m');
-						$thn = carbon::parse($bkk[$c]->bkk_tgl)->format('y');
-		    			$cabang = $bkk[$c]->bkk_comp;
+		// for ($i=0; $i < count($tahun); $i++) { 
+		// 	for ($a=0; $a < count($bulan); $a++) { 
+		// 		for ($d=0; $d < count($cab); $d++) { 
+		// 			$index = 1;
+		// 			for ($c=0; $c < count($bkk); $c++) { 
+		// 				$bln = carbon::parse($bkk[$c]->bkk_tgl)->format('m');
+		// 				$thn = carbon::parse($bkk[$c]->bkk_tgl)->format('y');
+		//     			$cabang = $bkk[$c]->bkk_comp;
 
-						if ($thn == $tahun[$i] and $bln == $bulan[$a] and $cabang == $cab[$d]) {
-							$index = str_pad($index, 3, '0', STR_PAD_LEFT);
-							$nota = 'BKK' . $bln  . $thn. '/' . $cabang . '/' .$index;
-							$update = DB::table('bukti_kas_keluar')
-										->where('bkk_id',$bkk[$c]->bkk_id)
-										->update(['bkk_nota'=>$nota]);
+		// 				if ($thn == $tahun[$i] and $bln == $bulan[$a] and $cabang == $cab[$d]) {
+		// 					$index = str_pad($index, 3, '0', STR_PAD_LEFT);
+		// 					$nota = 'BKK' . $bln  . $thn. '/' . $cabang . '/' .$index;
+		// 					$update = DB::table('bukti_kas_keluar')
+		// 								->where('bkk_id',$bkk[$c]->bkk_id)
+		// 								->update(['bkk_nota'=>$nota]);
 
 
-							$index++;
-						}
-					}
-				}
-			}
-		}
+		// 					$index++;
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
 
 	}
 
