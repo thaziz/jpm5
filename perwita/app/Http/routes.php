@@ -404,6 +404,7 @@ Route::get('ikhtisar_kas/edit/{id}', 'ikhtisarController@edit');
 Route::get('ikhtisar_kas/update', 'ikhtisarController@update');
 Route::get('ikhtisar_kas/hapus/{id}', 'ikhtisarController@hapus');
 Route::get('ikhtisar_kas/print/{id}', 'ikhtisarController@cetak');
+Route::get('ikhtisar_kas/datatable_ikhtisar', 'ikhtisarController@datatable_ikhtisar')->name('datatable_ikhtisar');
 
 
 

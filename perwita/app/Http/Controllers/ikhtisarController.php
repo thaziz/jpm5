@@ -19,6 +19,7 @@ use Auth;
 use App\d_jurnal;
 use App\d_jurnal_dt;
 // use Datatables;
+use Yajra\Datatables\Datatables;
 
 
 class ikhtisarController extends Controller
@@ -41,57 +42,122 @@ class ikhtisarController extends Controller
 	}
 
 	public function kekata($x) {
-    $x = abs($x);
-    $angka = array("", "satu", "dua", "tiga", "empat", "lima",
-    "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
-    $temp = "";
-    if ($x <12) {
-        $temp = " ". $angka[$x];
-    } else if ($x <20) {
-        $temp = $this->kekata($x - 10). " belas";
-    } else if ($x <100) {
-        $temp = $this->kekata($x/10)." puluh". $this->kekata($x % 10);
-    } else if ($x <200) {
-        $temp = " seratus" . $this->kekata($x - 100);
-    } else if ($x <1000) {
-        $temp = $this->kekata($x/100) . " ratus" . $this->kekata($x % 100);
-    } else if ($x <2000) {
-        $temp = " seribu" . $this->kekata($x - 1000);
-    } else if ($x <1000000) {
-        $temp = $this->kekata($x/1000) . " ribu" . $this->kekata($x % 1000);
-    } else if ($x <1000000000) {
-        $temp = $this->kekata($x/1000000) . " juta" . $this->kekata($x % 1000000);
-    } else if ($x <1000000000000) {
-        $temp = $this->kekata($x/1000000000) . " milyar" . $this->kekata(fmod($x,1000000000));
-    } else if ($x <1000000000000000) {
-        $temp = $this->kekata($x/1000000000000) . " trilyun" . $this->kekata(fmod($x,1000000000000));
-    }     
-        return $temp;
-}
+	    $x = abs($x);
+	    $angka = array("", "satu", "dua", "tiga", "empat", "lima",
+	    "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+	    $temp = "";
+	    if ($x <12) {
+	        $temp = " ". $angka[$x];
+	    } else if ($x <20) {
+	        $temp = $this->kekata($x - 10). " belas";
+	    } else if ($x <100) {
+	        $temp = $this->kekata($x/10)." puluh". $this->kekata($x % 10);
+	    } else if ($x <200) {
+	        $temp = " seratus" . $this->kekata($x - 100);
+	    } else if ($x <1000) {
+	        $temp = $this->kekata($x/100) . " ratus" . $this->kekata($x % 100);
+	    } else if ($x <2000) {
+	        $temp = " seribu" . $this->kekata($x - 1000);
+	    } else if ($x <1000000) {
+	        $temp = $this->kekata($x/1000) . " ribu" . $this->kekata($x % 1000);
+	    } else if ($x <1000000000) {
+	        $temp = $this->kekata($x/1000000) . " juta" . $this->kekata($x % 1000000);
+	    } else if ($x <1000000000000) {
+	        $temp = $this->kekata($x/1000000000) . " milyar" . $this->kekata(fmod($x,1000000000));
+	    } else if ($x <1000000000000000) {
+	        $temp = $this->kekata($x/1000000000000) . " trilyun" . $this->kekata(fmod($x,1000000000000));
+	    }     
+	        return $temp;
+	}
  
  
 	public function terbilang($x, $style=4) {
-    if($x<0) {
-        $hasil = "minus ". trim($this->kekata($x));
-    } else {
-        $hasil = trim($this->kekata($x));
-    }     
-    switch ($style) {
-        case 1:
-            $hasil = strtoupper($hasil);
-            break;
-        case 2:
-            $hasil = strtolower($hasil);
-            break;
-        case 3:
-            $hasil = ucwords($hasil);
-            break;
-        default:
-            $hasil = ucfirst($hasil);
-            break;
-    }     
-    return $hasil;
-}
+	    if($x<0) {
+	        $hasil = "minus ". trim($this->kekata($x));
+	    } else {
+	        $hasil = trim($this->kekata($x));
+	    }     
+	    switch ($style) {
+	        case 1:
+	            $hasil = strtoupper($hasil);
+	            break;
+	        case 2:
+	            $hasil = strtolower($hasil);
+	            break;
+	        case 3:
+	            $hasil = ucwords($hasil);
+	            break;
+	        default:
+	            $hasil = ucfirst($hasil);
+	            break;
+	    }     
+	    return $hasil;
+	}
+
+	public function datatable_ikhtisar()
+    {
+        $cabang = auth::user()->kode_cabang;
+        if (Auth::user()->punyaAkses('Ikhtisar Kas','all')) {
+            $data = DB::table('ikhtisar_kas')
+                      ->join('cabang','kode','=','ik_comp')
+                      ->get();
+        }else{
+            $data = DB::table('ikhtisar_kas')
+                      ->join('cabang','kode','=','ik_comp')
+                      ->where('ik_comp',$cabang)
+                      ->get();
+        }
+
+        $data = collect($data);
+        // return $data;
+        return Datatables::of($data)
+            ->addColumn('aksi', function ($data) {
+
+                if(Auth::user()->punyaAkses('Ikhtisar Kas','ubah')){
+                    if(cek_periode(carbon::parse($data->created_at)->format('m'),carbon::parse($data->created_at)->format('Y') ) != 0){
+                      $a = '<a title="Edit" class="btn btn-success" href='.url('ikhtisar_kas/edit').'/'.$data->ik_id.'><i class="fa fa-arrow-right" aria-hidden="true"></i></a>';
+                    }
+                }else{
+                  $a = '';
+                }
+
+                
+
+                $c = '';
+                if(Auth::user()->punyaAkses('Ikhtisar Kas','hapus')){
+                	if ($data->ik_status == 'Released' ) {
+                		if(cek_periode(carbon::parse($data->created_at)->format('m'),carbon::parse($data->created_at)->format('Y') ) != 0){
+	                      $c = '<a title="Hapus" class="btn btn-success" onclick="hapus(\''.$data->ik_id.'\')">
+	                              <i class="fa fa-trash" aria-hidden="true"></i></a>';
+	                    }
+                	}
+                    
+                }
+                return $a.$c  ;
+                       
+            })->addColumn('print', function ($data) {
+
+                if(Auth::user()->punyaAkses('Ikhtisar Kas','print')){
+                   return $b = '<a title="Print" class="" href=url(ikhtisar_kas/print/'.$data->ik_id.')>
+                          <i class="fa fa-print" aria-hidden="true">&nbsp; Print</i>';
+                }else{
+                  return $b = '-';
+                }
+            })->addColumn('tanggal', function ($data) {
+
+                return carbon::parse($data->created_at)->format('d/m/Y');
+            })->addColumn('editing', function ($data) {
+
+                if ($data->ik_edit == 'UNALLOWED') {
+                	return '<input type="checkbox" class="editing" checked>';
+                }else{
+                	return '<input type="checkbox" class="editing" >';
+                }
+            })
+            ->addIndexColumn()
+            ->make(true);
+
+    }
 	public function create(){
 
 		$second = Carbon::now()->format('d/m/Y');
@@ -353,8 +419,12 @@ class ikhtisarController extends Controller
 							->join('jenisbayar','idjenisbayar','=','pc_ref')
 							->leftjoin('ikhtisar_kas_detail','pc_id','=','ikd_pc_id')
 							->join('d_akun','id_akun','=','pc_akun_kas')
+							->where('pc_tgl','>=',$start)
+							->where('pc_tgl','<=',$end)
 							->where('ikd_pc_id','=',null)
+							->where('pc_debet','=',0)
 							->where('pc_comp','=',$request->cabang)
+							->orderBy('pc_no_trans','ASC')
 							->take(5000)
 							->get();
 
@@ -368,7 +438,9 @@ class ikhtisarController extends Controller
 							->leftjoin('ikhtisar_kas_detail','pc_id','=','ikd_pc_id')
 							->join('d_akun','id_akun','=','pc_akun_kas')
 							->where('ikd_pc_id','=',null)
+							->where('pc_debet','=',0)
 							->where('pc_comp','=',$request->cabang)
+							->orderBy('pc_no_trans','ASC')
 							->take(5000)
 							->get();
 
@@ -618,7 +690,9 @@ class ikhtisarController extends Controller
 			$cari = DB::table('ikhtisar_kas_detail')
 					  ->where('ikd_ik_id',$id)
 					  ->get();
-
+			if ($cari) {
+				# code...
+			}
 			for ($i=0; $i < count($cari); $i++) { 
 
 				$update = DB::table('patty_cash')
@@ -627,6 +701,7 @@ class ikhtisarController extends Controller
 								   		'pc_reim'       => 'UNRELEASED',
 								   		'updated_at'	=> Carbon::now()
 									]);
+
 				$cari_bp = DB::table('patty_cash')
 								->where('pc_id',(int)$cari[$i]->ikd_pc_id)
 								->first();
