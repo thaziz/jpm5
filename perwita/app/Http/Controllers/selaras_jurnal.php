@@ -62,6 +62,31 @@ class selaras_jurnal  extends Controller
                                ->where('jr_ref',$bpk[$i]->bpk_nota)
                                ->delete();
                 // //JURNAL
+                $delete_patty = DB::table('patty_cash')
+	                               ->where('pc_no_trans',$bpk[$i]->bpk_nota)
+	                               ->delete();
+                $cari_id_pc = DB::table('patty_cash')
+	                                 ->max('pc_id')+1;
+
+                $save_patty = DB::table('patty_cash')
+                       ->insert([
+                            'pc_id'           => $cari_id_pc,
+                            'pc_tgl'          => Carbon::now(),
+                            'pc_ref'          => 10,
+                            'pc_akun'         => $bpk[$i]->bpk_kode_akun,
+                            'pc_akun_kas'     => $bpk[$i]->bpk_kode_akun,
+                            'pc_keterangan'   => $bpk[$i]->bpk_keterangan,
+                            'pc_asal_comp'    => $bpk[$i]->bpk_comp,
+                            'pc_comp'         => $bpk[$i]->bpk_comp,
+                            'pc_edit'         => 'UNALLOWED',
+                            'pc_reim'         => 'UNRELEASED',
+                            'pc_debet'        => $bpk[$i]->bpk_tarif_penerus,
+                            'pc_user'         => $bpk[$i]->created_by,
+                            'pc_no_trans'     => $bpk[$i]->bpk_nota,
+                            'pc_kredit'       => 0,
+                            'created_at'      => Carbon::now(),
+                            'updated_at'      => Carbon::now()
+                ]);
                 $id_jurnal=d_jurnal::max('jr_id')+1;
 
                 $jenis_bayar = DB::table('jenisbayar')
@@ -89,12 +114,14 @@ class selaras_jurnal  extends Controller
                     $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
                     $data_akun[0]['jrdt_value']     = -$bpk[$i]->bpk_tarif_penerus;
                     $data_akun[0]['jrdt_statusdk'] = 'K';
+                	$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
                 }else{
                     $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
                     $data_akun[0]['jrdt_detailid']  = 1;
                     $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
                     $data_akun[0]['jrdt_value']     = -$bpk[$i]->bpk_tarif_penerus;
                     $data_akun[0]['jrdt_statusdk'] = 'D';
+                	$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
                 }
                 
                 $jurnal_dt = d_jurnal_dt::insert($data_akun);
@@ -128,7 +155,7 @@ class selaras_jurnal  extends Controller
                                 'pc_tgl'          => Carbon::now(),
                                 'pc_ref'          => 10,
                                 'pc_akun'         => $cari_akun->id_akun,
-                                'pc_akun_kas'     => $bpk[$i]->bpk_acc_biaya,
+                                'pc_akun_kas'     => $bpk[$i]->bpk_kode_akun,
                                 'pc_keterangan'   => $bpk[$i]->bpk_keterangan,
                                 'pc_asal_comp'    => $filter_comp[$bpk[$i]->bpk_nota][$a],
                                 'pc_comp'         => $bpk[$i]->bpk_comp,
@@ -154,13 +181,15 @@ class selaras_jurnal  extends Controller
                         $data_akun[0]['jrdt_detailid']  = $dt;
                         $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
                         $data_akun[0]['jrdt_value']     = -$harga;
-                        $data_akun[0]['jrdt_statusdk'] = 'D';
+                        $data_akun[0]['jrdt_statusdk']  = 'D';
+                		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
                     }else{
                         $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
                         $data_akun[0]['jrdt_detailid']  = $dt;
                         $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
                         $data_akun[0]['jrdt_value']     = -$harga;
-                        $data_akun[0]['jrdt_statusdk'] = 'k';
+                        $data_akun[0]['jrdt_statusdk']  = 'k';
+                		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
                     }
                     
                     $jurnal_dt = d_jurnal_dt::insert($data_akun);
@@ -227,7 +256,33 @@ class selaras_jurnal  extends Controller
                     $delete_jurnal = DB::table('d_jurnal')
 	                               ->where('jr_ref',$bkk[$i]->bkk_nota)
 	                               ->delete();
+	                $delete_patty = DB::table('patty_cash')
+	                               ->where('pc_no_trans',$bkk[$i]->bkk_nota)
+	                               ->delete();
 	                // //JURNAL
+
+	                $cari_id_pc = DB::table('patty_cash')
+	                                 ->max('pc_id')+1;
+
+                    $save_patty = DB::table('patty_cash')
+                           ->insert([
+                                'pc_id'           => $cari_id_pc,
+                                'pc_tgl'          => Carbon::now(),
+                                'pc_ref'          => 10,
+                                'pc_akun'         => $bkk[$i]->bkk_akun_kas,
+                                'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
+                                'pc_keterangan'   => $bkk[$i]->bkk_keterangan,
+                                'pc_asal_comp'    => $bkk[$i]->bkk_comp,
+                                'pc_comp'         => $bkk[$i]->bkk_comp,
+                                'pc_edit'         => 'UNALLOWED',
+                                'pc_reim'         => 'UNRELEASED',
+                                'pc_debet'        => $bkk[$i]->bkk_total,
+                                'pc_user'         => $bkk[$i]->created_by,
+                                'pc_no_trans'     => $bkk[$i]->bkk_nota,
+                                'pc_kredit'       => 0,
+                                'created_at'      => Carbon::now(),
+                                'updated_at'      => Carbon::now()
+                    ]);
 	                $id_jurnal=d_jurnal::max('jr_id')+1;
 
 	                $jenis_bayar = DB::table('jenisbayar')
@@ -255,12 +310,16 @@ class selaras_jurnal  extends Controller
 	                    $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                    $data_akun[0]['jrdt_value']     = -$bkk[$i]->bkk_total;
 	                    $data_akun[0]['jrdt_statusdk'] = 'K';
+              	  		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                }else{
 	                    $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                    $data_akun[0]['jrdt_detailid']  = 1;
 	                    $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                    $data_akun[0]['jrdt_value']     = -$bkk[$i]->bkk_total;
 	                    $data_akun[0]['jrdt_statusdk'] = 'D';
+              	  		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                }
 	                
 	                $jurnal_dt = d_jurnal_dt::insert($data_akun);
@@ -336,12 +395,16 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'D';
+                			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                    }else{
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'K';
+                			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                    }
 	                    
 	                    $jurnal_dt = d_jurnal_dt::insert($data_akun);
@@ -397,7 +460,33 @@ class selaras_jurnal  extends Controller
                     $delete_jurnal = DB::table('d_jurnal')
 	                               ->where('jr_ref',$bkk[$i]->bkk_nota)
 	                               ->delete();
+	                $delete_patty = DB::table('patty_cash')
+	                               ->where('pc_no_trans',$bkk[$i]->bkk_nota)
+	                               ->delete();
 	                // //JURNAL
+
+	                $cari_id_pc = DB::table('patty_cash')
+	                                 ->max('pc_id')+1;
+
+                    $save_patty = DB::table('patty_cash')
+                           ->insert([
+                                'pc_id'           => $cari_id_pc,
+                                'pc_tgl'          => Carbon::now(),
+                                'pc_ref'          => 10,
+                                'pc_akun'         => $bkk[$i]->bkk_akun_kas,
+                                'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
+                                'pc_keterangan'   => $bkk[$i]->bkk_keterangan,
+                                'pc_asal_comp'    => $bkk[$i]->bkk_comp,
+                                'pc_comp'         => $bkk[$i]->bkk_comp,
+                                'pc_edit'         => 'UNALLOWED',
+                                'pc_reim'         => 'UNRELEASED',
+                                'pc_debet'        => $bkk[$i]->bkk_total,
+                                'pc_user'         => $bkk[$i]->created_by,
+                                'pc_no_trans'     => $bkk[$i]->bkk_nota,
+                                'pc_kredit'       => 0,
+                                'created_at'      => Carbon::now(),
+                                'updated_at'      => Carbon::now()
+                    ]);
 	                $id_jurnal=d_jurnal::max('jr_id')+1;
 
 	                $jenis_bayar = DB::table('jenisbayar')
@@ -425,12 +514,16 @@ class selaras_jurnal  extends Controller
 	                    $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                    $data_akun[0]['jrdt_value']     = -$bkk[$i]->bkk_total;
 	                    $data_akun[0]['jrdt_statusdk'] = 'K';
+              	  		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                }else{
 	                    $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                    $data_akun[0]['jrdt_detailid']  = 1;
 	                    $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                    $data_akun[0]['jrdt_value']     = -$bkk[$i]->bkk_total;
 	                    $data_akun[0]['jrdt_statusdk'] = 'D';
+              	  		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                }
 	                
 	                $jurnal_dt = d_jurnal_dt::insert($data_akun);
@@ -506,12 +599,16 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'K';
+                			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                    }else{
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'D';
+                			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                    }
 	                    
 	                    $jurnal_dt = d_jurnal_dt::insert($data_akun);
@@ -540,7 +637,33 @@ class selaras_jurnal  extends Controller
                     $delete_jurnal = DB::table('d_jurnal')
 	                               ->where('jr_ref',$bkk[$i]->bkk_nota)
 	                               ->delete();
+	                $delete_patty = DB::table('patty_cash')
+	                               ->where('pc_no_trans',$bkk[$i]->bkk_nota)
+	                               ->delete();
 	                // //JURNAL
+
+	                $cari_id_pc = DB::table('patty_cash')
+	                                 ->max('pc_id')+1;
+
+                    $save_patty = DB::table('patty_cash')
+                           ->insert([
+                                'pc_id'           => $cari_id_pc,
+                                'pc_tgl'          => Carbon::now(),
+                                'pc_ref'          => 10,
+                                'pc_akun'         => $bkk[$i]->bkk_akun_kas,
+                                'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
+                                'pc_keterangan'   => $bkk[$i]->bkk_keterangan,
+                                'pc_asal_comp'    => $bkk[$i]->bkk_comp,
+                                'pc_comp'         => $bkk[$i]->bkk_comp,
+                                'pc_edit'         => 'UNALLOWED',
+                                'pc_reim'         => 'UNRELEASED',
+                                'pc_debet'        => $bkk[$i]->bkk_total,
+                                'pc_user'         => $bkk[$i]->created_by,
+                                'pc_no_trans'     => $bkk[$i]->bkk_nota,
+                                'pc_kredit'       => 0,
+                                'created_at'      => Carbon::now(),
+                                'updated_at'      => Carbon::now()
+                    ]);
 	                $id_jurnal=d_jurnal::max('jr_id')+1;
 
 	                $jenis_bayar = DB::table('jenisbayar')
@@ -568,12 +691,16 @@ class selaras_jurnal  extends Controller
 	                    $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                    $data_akun[0]['jrdt_value']     = -$bkk[$i]->bkk_total;
 	                    $data_akun[0]['jrdt_statusdk'] = 'K';
+              	  		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                }else{
 	                    $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                    $data_akun[0]['jrdt_detailid']  = 1;
 	                    $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                    $data_akun[0]['jrdt_value']     = -$bkk[$i]->bkk_total;
 	                    $data_akun[0]['jrdt_statusdk'] = 'D';
+              	  		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                }
 	                
 	                $jurnal_dt = d_jurnal_dt::insert($data_akun);
@@ -649,12 +776,16 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'K';
+                			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                    }else{
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'D';
+                			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                    }
 	                    
 	                    $jurnal_dt = d_jurnal_dt::insert($data_akun);
@@ -678,7 +809,33 @@ class selaras_jurnal  extends Controller
 	                $delete_jurnal = DB::table('d_jurnal')
 	                               ->where('jr_ref',$bkk[$i]->bkk_nota)
 	                               ->delete();
+	                $delete_patty = DB::table('patty_cash')
+	                               ->where('pc_no_trans',$bkk[$i]->bkk_nota)
+	                               ->delete();
 	                // //JURNAL
+
+	                $cari_id_pc = DB::table('patty_cash')
+	                                 ->max('pc_id')+1;
+
+                    $save_patty = DB::table('patty_cash')
+                           ->insert([
+                                'pc_id'           => $cari_id_pc,
+                                'pc_tgl'          => Carbon::now(),
+                                'pc_ref'          => 10,
+                                'pc_akun'         => $bkk[$i]->bkk_akun_kas,
+                                'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
+                                'pc_keterangan'   => $bkk[$i]->bkk_keterangan,
+                                'pc_asal_comp'    => $bkk[$i]->bkk_comp,
+                                'pc_comp'         => $bkk[$i]->bkk_comp,
+                                'pc_edit'         => 'UNALLOWED',
+                                'pc_reim'         => 'UNRELEASED',
+                                'pc_debet'        => $bkk[$i]->bkk_total,
+                                'pc_user'         => $bkk[$i]->created_by,
+                                'pc_no_trans'     => $bkk[$i]->bkk_nota,
+                                'pc_kredit'       => 0,
+                                'created_at'      => Carbon::now(),
+                                'updated_at'      => Carbon::now()
+                    ]);
 	                $id_jurnal=d_jurnal::max('jr_id')+1;
 
 	                $jenis_bayar = DB::table('jenisbayar')
@@ -706,12 +863,16 @@ class selaras_jurnal  extends Controller
 	                    $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                    $data_akun[0]['jrdt_value']     = -$bkk[$i]->bkk_total;
 	                    $data_akun[0]['jrdt_statusdk'] = 'K';
+              	  		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                }else{
 	                    $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                    $data_akun[0]['jrdt_detailid']  = 1;
 	                    $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                    $data_akun[0]['jrdt_value']     = -$bkk[$i]->bkk_total;
 	                    $data_akun[0]['jrdt_statusdk'] = 'D';
+              	  		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                }
 	                
 	                $jurnal_dt = d_jurnal_dt::insert($data_akun);
@@ -730,43 +891,48 @@ class selaras_jurnal  extends Controller
 	                // }
 	                $filter_comp[$bkk[$i]->bkk_nota] = array_map("unserialize", array_unique( array_map( 'serialize', $filter_comp[$bkk[$i]->bkk_nota] ) ));
 	                $filter_comp[$bkk[$i]->bkk_nota] = array_values($filter_comp[$bkk[$i]->bkk_nota]);
+	                // SAVE PATTY_CASH
+	                for ($b=0; $b < count($detail); $b++) { 
+                    	$cari_id_pc = DB::table('patty_cash')
+                                 ->max('pc_id')+1;
+	                    $cari_akun = DB::table('d_akun')
+	                                   ->where('id_akun','like',substr($detail[$b]->bkkd_akun,0, 4).'%')
+	                                   ->where('kode_cabang',$bkk[$i]->bkk_comp)
+	                                   ->first();
 
+	                    $save_patty = DB::table('patty_cash')
+	                           ->insert([
+	                                'pc_id'           => $cari_id_pc,
+	                                'pc_tgl'          => Carbon::now(),
+	                                'pc_ref'          => 10,
+	                                'pc_akun'         => $cari_akun->id_akun,
+	                                'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
+	                                'pc_keterangan'   => $detail[$b]->bkkd_keterangan,
+	                                'pc_asal_comp'    => $bkk[$i]->bkk_comp,
+	                                'pc_comp'         => $bkk[$i]->bkk_comp,
+	                                'pc_edit'         => 'UNALLOWED',
+	                                'pc_reim'         => 'UNRELEASED',
+	                                'pc_debet'        => 0,
+	                                'pc_user'         => $bkk[$i]->created_by,
+	                                'pc_no_trans'     => $bkk[$i]->bkk_nota,
+	                                'pc_kredit'       => $detail[$b]->bkkd_total,
+	                                'created_at'      => Carbon::now(),
+	                                'updated_at'      => Carbon::now()
+	                    ]);
+                        
+                    }
+                    // SAVE JURNAL DETAIL
 	                for ($a=0; $a < count($filter_comp[$bkk[$i]->bkk_nota]); $a++) { 
                     	$harga = 0;
-
+                    	$in = 1;
 	                    for ($b=0; $b < count($detail); $b++) { 
-
-	                    	$cari_id_pc = DB::table('patty_cash')
-	                                 ->max('pc_id')+1;
-		                    $cari_akun = DB::table('d_akun')
-		                                   ->where('id_akun','like',substr($filter_comp[$bkk[$i]->bkk_nota][$a],0, 4).'%')
-		                                   ->where('kode_cabang',$bkk[$i]->bkk_comp)
-		                                   ->first();
-
-		                    $save_patty = DB::table('patty_cash')
-		                           ->insert([
-		                                'pc_id'           => $cari_id_pc,
-		                                'pc_tgl'          => Carbon::now(),
-		                                'pc_ref'          => 10,
-		                                'pc_akun'         => $cari_akun->id_akun,
-		                                'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
-		                                'pc_keterangan'   => $detail[$b]->bkkd_keterangan,
-		                                'pc_asal_comp'    => $bkk[$i]->bkk_comp,
-		                                'pc_comp'         => $bkk[$i]->bkk_comp,
-		                                'pc_edit'         => 'UNALLOWED',
-		                                'pc_reim'         => 'UNRELEASED',
-		                                'pc_debet'        => 0,
-		                                'pc_user'         => $bkk[$i]->created_by,
-		                                'pc_no_trans'     => $bkk[$i]->bkk_nota,
-		                                'pc_kredit'       => $detail[$b]->bkkd_total,
-		                                'created_at'      => Carbon::now(),
-		                                'updated_at'      => Carbon::now()
-		                    ]);
 	                        if ($filter_comp[$bkk[$i]->bkk_nota][$a] == $detail[$b]->bkkd_akun and
 	                            $bkk[$i]->bkk_nota == $detail[$b]->bkk_nota) {
 	                            $harga+=$detail[$b]->bkkd_total;
 	                        }
+	                        $in++;
 	                    }
+
 	                    
 	                    $cari_akun = DB::table('d_akun')
 	                                   ->where('id_akun','like',substr($filter_comp[$bkk[$i]->bkk_nota][$a],0, 4).'%')
@@ -784,13 +950,17 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                        $data_akun[0]['jrdt_value']     = -$harga;
-	                        $data_akun[0]['jrdt_statusdk'] = 'D';
+	                        $data_akun[0]['jrdt_statusdk']  = 'D';
+                			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                    }else{
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'K';
+                			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                    }
 	                    
 	                    $jurnal_dt = d_jurnal_dt::insert($data_akun);
@@ -818,7 +988,33 @@ class selaras_jurnal  extends Controller
                     $delete_jurnal = DB::table('d_jurnal')
 	                               ->where('jr_ref',$bkk[$i]->bkk_nota)
 	                               ->delete();
+	                $delete_patty = DB::table('patty_cash')
+	                               ->where('pc_no_trans',$bkk[$i]->bkk_nota)
+	                               ->delete();
 	                // //JURNAL
+
+	                $cari_id_pc = DB::table('patty_cash')
+	                                 ->max('pc_id')+1;
+
+                    $save_patty = DB::table('patty_cash')
+                           ->insert([
+                                'pc_id'           => $cari_id_pc,
+                                'pc_tgl'          => Carbon::now(),
+                                'pc_ref'          => 10,
+                                'pc_akun'         => $bkk[$i]->bkk_akun_kas,
+                                'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
+                                'pc_keterangan'   => $bkk[$i]->bkk_keterangan,
+                                'pc_asal_comp'    => $bkk[$i]->bkk_comp,
+                                'pc_comp'         => $bkk[$i]->bkk_comp,
+                                'pc_edit'         => 'UNALLOWED',
+                                'pc_reim'         => 'UNRELEASED',
+                                'pc_debet'        => $bkk[$i]->bkk_total,
+                                'pc_user'         => $bkk[$i]->created_by,
+                                'pc_no_trans'     => $bkk[$i]->bkk_nota,
+                                'pc_kredit'       => 0,
+                                'created_at'      => Carbon::now(),
+                                'updated_at'      => Carbon::now()
+                    ]);
 	                $id_jurnal=d_jurnal::max('jr_id')+1;
 
 	                $jenis_bayar = DB::table('jenisbayar')
@@ -846,12 +1042,16 @@ class selaras_jurnal  extends Controller
 	                    $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                    $data_akun[0]['jrdt_value']     = -$bkk[$i]->bkk_total;
 	                    $data_akun[0]['jrdt_statusdk'] = 'K';
+              	  		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                }else{
 	                    $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                    $data_akun[0]['jrdt_detailid']  = 1;
 	                    $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                    $data_akun[0]['jrdt_value']     = -$bkk[$i]->bkk_total;
 	                    $data_akun[0]['jrdt_statusdk'] = 'D';
+              	  		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                }
 	                
 	                $jurnal_dt = d_jurnal_dt::insert($data_akun);
@@ -927,12 +1127,16 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'K';
+                			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                    }else{
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
 	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'D';
+                			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+
 	                    }
 	                    
 	                    $jurnal_dt = d_jurnal_dt::insert($data_akun);
