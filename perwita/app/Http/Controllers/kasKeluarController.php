@@ -2858,15 +2858,11 @@ class kasKeluarController extends Controller
 	}
 
 	public function cari_patty(request $request){
-		// dd($request);
 
-		// "rangepicker" => "16/12/2017 - 15/01/2018"
-	 //      "jenisbayar" => "8"
-	 //      "akun_kas" => "100111001"
-    	
-		if (isset($request->akun_kas)) {
-			// return 'asd';
-				$tgl = explode('-',$request->rangepicker);
+		// dd($request->all());
+		if (isset($request->rangepicker)) {
+
+			$tgl = explode('-',$request->rangepicker);
 					$tgl[0] = str_replace('/', '-', $tgl[0]);
 					$tgl[1] = str_replace('/', '-', $tgl[1]);
 					$tgl[0] = str_replace(' ', '', $tgl[0]);
@@ -2874,55 +2870,58 @@ class kasKeluarController extends Controller
 					$start  = Carbon::parse($tgl[0])->format('Y-m-d');
 					$end    = Carbon::parse($tgl[1])->format('Y-m-d');
 
-				$bkk = DB::table('bukti_kas_keluar')
-					 ->select('bkk_nota as nota','created_by')	
-					 ->get();
 
-				$bpk = DB::table('biaya_penerus_kas')
-					 ->select('bpk_nota as nota','created_by')	
-					 ->get();
 
-				$all = array_merge($bkk,$bpk);
-				$arr = [];
-				for ($i=0; $i < count($all); $i++) { 
-					$arr[$i] = $all[$i]->nota;
-				}
-				
-				$data= DB::table('d_jurnal')
-						 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
-						 ->join('d_akun','jrdt_acc','=','id_akun')
-						 ->select('jr_ref','jr_date','jrdt_acc','jrdt_detail','jr_ref','jrdt_value','jrdt_statusdk')
-						 ->whereIn('jr_ref',$arr)
-						 ->orderBy('jr_ref','jrdt_detailid','ASC')
-						 ->get();
+			$patty = DB::table('patty_cash')
+							->join('jenisbayar','idjenisbayar','=','pc_ref')
+							->join('d_akun','id_akun','=','pc_akun_kas')
+							->where('pc_tgl','>=',$start)
+							->where('pc_tgl','<=',$end)
+							->orderBy('pc_no_trans','ASC')
+							->take(5000)
+							->get();
+			$nomor = DB::table('patty_cash')
+							->join('jenisbayar','idjenisbayar','=','pc_ref')
+							->select('pc_no_trans')
+							// ->where('pc_tgl','>=',$start)
+							// ->where('pc_tgl','<=',$end)
+							->orderBy('pc_no_trans','ASC')
+							->take(5000)
+							->get();
 
-				$d = [];
-				$k = [];
-				for ($i=0; $i < count($data); $i++) { 
-					for ($a=0; $a < count($all); $a++) { 
-						if ($all[$a]->nota == $data[$i]->jr_ref) {
-							$data[$i]->created_by = $all[$a]->created_by;
-						}
-					}
-					if ($data[$i]->jrdt_value < 0) {
-						$data[$i]->jrdt_value *= -1;
-					}
-				}
+			$cari = array_map("unserialize", array_unique( array_map( 'serialize', $nomor ) ));
+			$cari = array_values($cari);
+			$tes=[];
+			for ($i=0; $i < count($cari); $i++) { 
+				$tes[$i] = $cari[$i];
+			}
+			$cari = DB::table('patty_cash')
+							->join('jenisbayar','idjenisbayar','=','pc_ref')
+							->leftjoin('ikhtisar_kas_detail','pc_id','=','ikd_pc_id')
+							->join('d_akun','id_akun','=','pc_akun_kas')
+							->where('ikd_pc_id','=',null)
+							->where('pc_akun_kas','=',$request->akun_kas)
+							->take(5000)
+							->get();
 
-				for ($i=0; $i < count($data); $i++) { 
-					if ($data[$i]->jrdt_statusdk == 'D') {
-						$d[$i] = $data[$i]->jrdt_value;
-					}elseif ($data[$i]->jrdt_statusdk == 'K') {
-						$k[$i] = $data[$i]->jrdt_value;
-					}
-				}
-				$d = array_values($d);
-				$k = array_values($k);
+			$akun = DB::table('d_akun')
+						  ->get();
+		return view('purchase.laporan.table_patty',compact('cari','akun'));
 
-				$d = array_sum($d);
-				$k = array_sum($k);
-				// dd($d);
-				return view('purchase/laporan/table_patty',compact('data','akun','d','k'));
+		}else{
+			$cari = DB::table('patty_cash')
+							->join('jenisbayar','idjenisbayar','=','pc_ref')
+							->leftjoin('ikhtisar_kas_detail','pc_id','=','ikd_pc_id')
+							->join('d_akun','id_akun','=','pc_akun_kas')
+							->where('ikd_pc_id','=',null)
+							->where('pc_comp','=',$request->cabang)
+							->take(5000)
+							->get();
+
+			$akun = DB::table('d_akun')
+						  ->get();
+		return view('purchase.laporan.table_patty',compact('cari','akun'));
+
 		}
 	}
 }

@@ -8,28 +8,27 @@
             <th>Tanggal</th>
             <th>Ref</th>
             <th>Akun Biaya</th>
-            <th>Nama Akun</th>
+            <th>Catatan</th>
             <th>Debet</th>
             <th>Kredit</th>
             <th>User ID</th>
             </tr>
           </thead> 
           <tbody class="">
-            @foreach($data as $data)
+            @foreach($cari as $val)
             <tr>
-              <td>{{ $data->jr_ref }}</td>
-              <td><?php echo date('d/m/Y',strtotime($data->jr_date));?></td>
-              
-              <td>{{$data->jr_ref}}</td>
-              <td>{{$data->jrdt_acc}}</td>
-              
-              <td>{{$data->jrdt_detail}}</td>
-
-              <td align="right">@if($data->jrdt_statusdk == 'D'){{ number_format($data->jrdt_value, 2, ",", ".") }}  @endif</td>
-              <td align="right">@if($data->jrdt_statusdk == 'K'){{ number_format($data->jrdt_value, 2, ",", ".") }}  @endif</td>
-              <td>{{$data->created_by}}</td>
+              <td>{{$val->pc_no_trans}}</td>
+              <td><?php echo date('d/m/Y',strtotime($val->pc_tgl));?></td>
+              <td>{{$val->jenisbayar}}</td>
+              <td>{{$val->pc_akun}}</td>
+              <td>{{$val->pc_keterangan}}</td>
+              <td align="right">{{ number_format($val->pc_debet,0,'','.')}}</td>
+              <td align="right">{{ number_format($val->pc_kredit,0,'','.')}}</td>
+              <td>{{$val->pc_user}}</td>
             </tr>
             @endforeach
+           
+            
           </tbody>    
       </table>
 <script type="text/javascript">
