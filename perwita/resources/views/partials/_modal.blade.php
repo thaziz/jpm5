@@ -71,9 +71,9 @@
                   <td width="40%" class="text-center">Pilih Jenis Laporan</td>
                   <td colspan="3">
                     <select class="form-control" name="jenis" id="jenis" style="width: 95%;" required>
-                      <option value="1">Jurnal Kas</option>
-                      <option value="2">Jurnal Bank</option>
-                      <option value="3">Jurnal Memorial</option>
+                      <option value="kas">Jurnal Kas</option>
+                      <option value="bank">Jurnal Bank</option>
+                      <option value="memorial">Jurnal Memorial</option>
                     </select>
                   </td>
                 </tr>
@@ -94,9 +94,9 @@
                 <tr>
                   <td width="40%" class="text-center">Dengan Nama Perkiraan</td>
                   <td colspan="3">
-                    <select class="form-control" name="jenis" id="jenis" style="width: 30%;">
+                    <select class="form-control" name="nama_perkiraan" id="jenis" style="width: 30%;">
                       <option value="1">Ya</option>
-                      <option value="2">Tidak</option>
+                      <option value="0">Tidak</option>
                     </select>
                   </td>
                 </tr>

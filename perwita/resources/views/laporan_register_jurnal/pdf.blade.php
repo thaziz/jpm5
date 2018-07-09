@@ -29,7 +29,7 @@
 <table width="100%" border="0" style="font-size: 10pt; border-bottom: 1px solid #333;">
 	<thead>
 		<tr>
-			<th style="text-align: left;">Laporan Register Jurnal</th>
+			<th style="text-align: left;">Laporan Register Jurnal {{ ucfirst($request->jenis) }}</th>
 			<th style="text-align: right;">PT. Jawa Pratama Mandiri</th>
 		</tr>
 	</thead>
@@ -38,7 +38,7 @@
 <table width="100%" border="0" style="font-size: 8pt;">
 	<thead>
 		<tr>
-			<td style="text-align: left;">Periode : Bulan </td>
+			<td style="text-align: left;">Periode : Bulan {{ $request->tanggal }} s/d {{ $request->sampai }}</td>
 			<td style="text-align: right;"></td>
 		</tr>
 	</thead>
