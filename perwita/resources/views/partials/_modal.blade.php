@@ -63,13 +63,14 @@
 
       <div class="modal-body" style="padding: 10px;">
         <div class="row">
-          <form role="form" class="form-inline">
+          <form role="form" class="form-inline" id="form-register-jurnal" method="POST" action="{{ route("register_jurnal.index_single") }}" target="_blank">
+            <input type="hidden" value="{{ csrf_token() }}" name="_token" readonly>
               <table border="0" id="form-table" class="col-md-12">
 
                 <tr>
                   <td width="40%" class="text-center">Pilih Jenis Laporan</td>
                   <td colspan="3">
-                    <select class="form-control" name="jenis" id="jenis" style="width: 95%;">
+                    <select class="form-control" name="jenis" id="jenis" style="width: 95%;" required>
                       <option value="1">Jurnal Kas</option>
                       <option value="2">Jurnal Bank</option>
                       <option value="3">Jurnal Memorial</option>
@@ -80,12 +81,12 @@
                 <tr>
                   <td width="20%" class="text-center">Masukkan Tanggal</td>
                   <td width="25%">
-                    <input type="text" class="form-control tanggal_register" name="tanggal" placeholder="MM/YYYY" style="width: 100%; cursor: pointer; background: white;" readonly>
-                  <td class="text-center" style="font-size: 8pt;">
+                    <input type="text" class="form-control tanggal_register register_validate" name="tanggal" placeholder="MM/YYYY" style="width: 100%; cursor: pointer; background: white;" readonly>
+                  <td class="text-center" style="font-size: 8pt;" required>
                     s/d
                   </td>
                   <td width="25%">
-                    <input type="text" class="form-control sampai_register" name="sampai" placeholder="MM/YYYY" style="cursor: pointer; background: white;" readonly>
+                    <input type="text" class="form-control sampai_register register_validate" name="sampai" placeholder="MM/YYYY" style="cursor: pointer; background: white;" readonly required>
                   </td>
                   </td>
                 </tr>
@@ -106,7 +107,7 @@
       </div>
 
       <div class="modal-footer">
-          <button class="btn btn-primary btn-sm" id="save" >Proses</button>
+          <button class="btn btn-primary btn-sm" id="save_register" >Proses</button>
       </div>
     </div>
   </div>
@@ -288,6 +289,15 @@
         $('.sampai_register').val("");
         $('.sampai_register').datepicker("setStartDate", $(this).val());
     });
+
+    $('#save_register').click(function(event){
+      event.preventDefault();
+
+      if(validate_form_register()){
+        $("#form-register-jurnal").submit();
+      }
+      
+    })
 
      $("#save").click(function(evt){
         evt.preventDefault();
@@ -511,27 +521,50 @@
       })
 
       function validate_form_buku_besar(){
-      a = true;
-      $(".buku_besar.form_bukbes_validate").each(function(i, e){
-        if($(this).val() == "" && $(this).is(":visible")){
-          a = false;
-          $(this).focus();
-          toastr.warning('Harap Lengkapi Data Diatas');
-          return false;
-        }
-      })
+        a = true;
+        $(".buku_besar.form_bukbes_validate").each(function(i, e){
+          if($(this).val() == "" && $(this).is(":visible")){
+            a = false;
+            $(this).focus();
+            toastr.warning('Harap Lengkapi Data Diatas');
+            return false;
+          }
+        })
 
-      $(".buku_besar.select_bukbes_validate").each(function(i, e){
-        if($(this).val() == "---"){
-          a = false;
-          $(this).focus();
-          toastr.warning('Harap Lengkapi Data Diatas');
-          return false;
-        }
-      })
+        $(".buku_besar.select_bukbes_validate").each(function(i, e){
+          if($(this).val() == "---"){
+            a = false;
+            $(this).focus();
+            toastr.warning('Harap Lengkapi Data Diatas');
+            return false;
+          }
+        })
 
-      return a;
-    }
+        return a;
+      }
+
+      function validate_form_register(){
+        a = true;
+        $(".register_validate").each(function(i, e){
+          if($(this).val() == "" && $(this).is(":visible")){
+            a = false;
+            $(this).focus();
+            toastr.warning('Harap Lengkapi Data Diatas');
+            return false;
+          }
+        })
+
+        $(".register_validate_select").each(function(i, e){
+          if($(this).val() == "---"){
+            a = false;
+            $(this).focus();
+            toastr.warning('Harap Lengkapi Data Diatas');
+            return false;
+          }
+        })
+
+        return a;
+      }
 
       
 
