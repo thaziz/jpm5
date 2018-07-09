@@ -874,7 +874,36 @@ class BiayaPenerusController extends Controller
 					 	->where('umfp_nofaktur',$cari->fp_nofaktur)
 					    ->delete();
 
+			if ($cari->fp_jenisbayar == 6) {
 
+				$delete = DB::table('biaya_penerus')
+		 				->where('bp_faktur',$cari->fp_nofaktur)
+		 				->delete();
+			}elseif ($cari->fp_jenisbayar == 7){
+				$pot = DB::table('pembayaran_outlet')
+		 				->where('pot_faktur',$cari->fp_nofaktur)
+		 				->first();
+
+		 		$delete = DB::table('pembayaran_outlet_dt')
+		 				->where('potd_potid',$pot->pot_id)
+		 				->delete();
+
+		 		$pot = DB::table('pembayaran_outlet')
+		 				->where('pot_faktur',$cari->fp_nofaktur)
+		 				->delete();
+			}elseif ($cari->fp_jenisbayar == 9){
+				$pot = DB::table('pembayaran_subcon')
+		 				->where('pb_faktur',$cari->fp_nofaktur)
+		 				->first();
+
+		 		$delete = DB::table('pembayaran_subcon_dt')
+		 				->where('pbd_pb_id',$pot->pb_id)
+		 				->delete();
+
+		 		$pot = DB::table('pembayaran_subcon')
+		 				->where('pb_faktur',$cari->fp_nofaktur)
+		 				->first();
+			}
 		 	$delete = DB::table('faktur_pembelian')
 		 				->where('fp_idfaktur',$id)
 		 				->delete();

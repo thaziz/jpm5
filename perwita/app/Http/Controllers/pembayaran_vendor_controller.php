@@ -52,6 +52,36 @@ class pembayaran_vendor_controller extends Controller
 
     }
 
+    public function cari_do_vendor_edit(request $req)
+    {	
+    	// dd($req->all());
+    	for ($i=0; $i < count($req->array_simpan); $i++) { 
+    		$valid[$i] = $req->array_simpan[$i];
+    	}
+    	return$data = DB::table("delivery_order")
+    			  ->leftjoin('biaya_penerus_dt','nomor','=','bpd_pod')
+    			  ->where('kode_cabang',$req->cabang)
+    			  ->where('id_tarif_vendor',$req->nama_vendor)
+    			  ->where('bpd_pod',null)
+    			  ->get();
+
+    	$data1 = DB::table("delivery_order")
+    			  ->leftjoin('biaya_penerus_dt','nomor','=','bpd_pod')
+    			  ->where('bpd_bpid',$req->id)
+    			  ->get();
+
+    	$temp = array_merge($data,$data1);
+    	return $temp;
+
+
+
+    	
+
+
+		return view('purchase/pembayaran_vendor/tabel_do_vendor',compact('data'));
+
+    }
+
     public function append_vendor(request $req)
     {
     	// dd($req->all());
