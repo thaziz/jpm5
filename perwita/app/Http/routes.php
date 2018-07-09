@@ -1408,7 +1408,7 @@ Route::get('sales/cari_modaldeliveryorder_koli', 'sales\do_Controller@cari_modal
 Route::get('sales/tarif_penerus_koli_indentdo/save_data', 'sales\do_Controller@tarif_penerus_koli_indentdo');
 
 Route::get('sales/cari_modaldeliveryorder_sepeda', 'sales\do_Controller@cari_modaldeliveryorder_sepeda');
-Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller@tarif_penerus_sepeda_indentdo');
+// Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller@tarif_penerus_sepeda_indentdo');
 //end delivery order
 
 
@@ -1432,6 +1432,8 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller
       Route::get('sales/deliveryorder_paket/cari_nomor_deliveryorder_paket', 'do_new\do_paketController@cari_nomor_deliveryorder_paket')->name('cari_nomor_deliveryorder_paket');
       //cari kecamatan
       Route::get('sales/deliveryorder_paket/cari_kecamatan_deliveryorder_paket', 'do_new\do_paketController@cari_kecamatan_deliveryorder_paket')->name('cari_kecamatan_deliveryorder_paket');
+      //cari harga do reguler / tanpa vendor / kontrak
+      Route::get('sales/deliveryorder_paket/cari_harga_reguler_deliveryorder_paket', 'do_new\do_paketController@cari_harga_reguler_deliveryorder_paket')->name('cari_harga_reguler_deliveryorder_paket');
       //cari vendor
       Route::get('sales/deliveryorder_paket/cari_vendor_deliveryorder_paket', 'do_new\do_paketController@cari_vendor_deliveryorder_paket')->name('cari_vendor_deliveryorder_paket');
       //replace vendor
@@ -2940,7 +2942,7 @@ Route::get('logout', 'mMemberController@logout');
 
 //mutasi piutang
 Route::get('laporan_pembelian/mutasi_hutang', 'laporan_pembelian\mutasi_hutang_Controller@index');
-Route::get('laporan_pembelian/mutasi_hutang/tampil_data', 'laporan_pembelian\mutasi_hutang_Controller@tampil_mutasi_hutang');
+Route::get('laporan_pembelian/mutasi_hutang/cari_ajax_mutasi_hutang', 'laporan_pembelian\mutasi_hutang_Controller@cari_ajax_mutasi_hutang')->name('cari_ajax_mutasi_hutang');
 // end mutasi piutang
 
 // //pembelian

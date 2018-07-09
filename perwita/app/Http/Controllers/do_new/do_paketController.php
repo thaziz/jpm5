@@ -131,13 +131,24 @@ class do_paketController extends Controller
         $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");
         $angkutan = DB::select(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC ");
         $authe = Auth::user()->kode_cabang; 
+
+
+        $kec = null;
+        $do = null;
+        $do_dt = null;
+
+        $do = null;
+        $jml_detail = 0;
+        
+
+
         if ($authe == '000') {
             $cabang = DB::select(" select kode, nama, (select dc_diskon from d_disc_cabang x where dc_cabang = y.kode and dc_jenis = 'PAKET') diskon from cabang y group by kode order by kode asc ");
         }else{
             $cabang = DB::select(" select kode, nama, (select dc_diskon from d_disc_cabang x where dc_cabang = y.kode and dc_jenis = 'PAKET') diskon from cabang y where kode = '$authe' group by kode order by kode asc ");
         }
 
-        return view('sales.do_new.create', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data','cus'));
+        return view('sales.do_new.create', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data','cus','do_dt'));
    }
 
 //CARI NOMOR DO PAKET
@@ -197,6 +208,7 @@ class do_paketController extends Controller
                 ->where('id_kota_asal_vendor','=',$asal)
                 ->where('id_kota_tujuan_vendor','=',$tujuan)
                 ->where('tarif_vendor.cabang_vendor','=',$cabang)
+                ->where('status','=','ya')
                 ->get();
       }else{
         $vendor = DB::table('tarif_vendor')
@@ -208,12 +220,444 @@ class do_paketController extends Controller
                 ->where('id_kota_tujuan_vendor','=',$tujuan)
                 ->where('tarif_vendor.cabang_vendor','=',$cabang)
                 ->where('jenis','=',$jenis)
+                ->where('status','=','ya')
                 ->get();
       }
 
     	
     	// return $vendor;
     	return view('sales.do_new.ajax_modal_vendor',compact('vendor'));
+    }
+
+
+//CARI HARGA REGULER DO PAKET TANPA VENDOR DAN TANPA KONTRAK
+    public function cari_harga_reguler_deliveryorder_paket(Request $request)
+    {
+        // dd($request->all());
+        $asal = $request->input('asal');
+        $tujuan = $request->input('tujuan');
+        $kecamatan = $request->input('kecamatan');
+        $pendapatan = $request->input('pendapatan');
+        $tipe = $request->input('tipe');
+        $jenis = $request->input('jenis');
+        $angkutan = $request->input('angkutan');
+        $cabang = $request->input('cabang');
+        $biaya_penerus = null;
+
+//============= DOKUMEN START =============================================\\
+        if ($tipe == 'DOKUMEN') {
+            //cari tarif zona
+            $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_dokumen WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND kode_cabang='$cabang'";
+            $data = collect(DB::select($sql));
+
+            //kondisi jika express dan reguler
+            if ($jenis == 'EXPRESS'){
+                $sql_biaya_penerus = "SELECT harga_zona as harga FROM tarif_penerus_dokumen join zona on id_zona = tarif_express WHERE type='$tipe' and id_kota='$tujuan' and id_kecamatan='$kecamatan'";
+                $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
+            }else if($jenis == 'REGULER'){
+                $sql_biaya_penerus = "SELECT harga_zona as harga FROM tarif_penerus_dokumen join zona on id_zona = tarif_reguler WHERE type='$tipe' and id_kota='$tujuan' and id_kecamatan='$kecamatan'";
+                $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
+            }
+
+            //jika kosong
+            if ($biaya_penerus == null){
+                $sql_biaya_penerus = "SELECT harga FROM tarif_penerus_default WHERE jenis='$jenis' AND tipe_kiriman='$tipe' AND cabang_default='$cabang'";
+                $biaya_penerus_default = collect(DB::select($sql_biaya_penerus))->first();
+            }
+
+            //output
+            if (count($data) > 0) {
+                $harga = collect(\DB::select($sql))->first();
+                if ( isset($biaya_penerus->harga) == null || isset($biaya_penerus->harga) == 0 ) {
+                    $result['biaya_penerus'] = 0;
+                }else{
+                    $result['biaya_penerus'] = $biaya_penerus->harga;
+                }
+                $result['harga'] = $harga->harga;
+                $result['acc_penjualan'] = $data[0]->acc_penjualan;
+                $result['jumlah_data'] = count($biaya_penerus);
+                return response()->json([
+                    'biaya_penerus' => $result['biaya_penerus'],
+                    'harga' => $harga->harga,
+                    'tipe' => $tipe,
+                    'acc_penjualan' => $data[0]->acc_penjualan,
+                    'jumlah_data' => $result['jumlah_data'],
+                ]);
+            }
+            else{
+                return response()->json([
+                    'status' => 'kosong'
+                ]);
+            }
+        }
+//============= KILOGRAM START =================================================\\
+        elseif ($tipe == 'KILOGRAM'){
+            // dd($request->all());
+            $berat = $request->berat;
+            
+            if ($berat == 0) {
+                $berat = 1;
+            }else{
+                $berat = $request->berat;
+            }
+
+            $tarif = null;
+            $biaya_penerus = null;
+            if ($berat < 10){
+                $tarif = DB::table('tarif_cabang_kilogram')
+                        ->select('acc_penjualan', DB::raw('(harga * '.$berat.') as harga'),'berat_minimum')
+                        ->where('jenis', '=', $jenis)
+                        ->where('id_kota_asal', '=', $asal)
+                        ->where('id_kota_tujuan', '=', $tujuan)
+                        ->where('keterangan', '=', 'Tarif Kertas / Kg')
+                        ->where('kode_cabang', '=', $cabang)
+                        ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_10express_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_10reguler_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                }
+
+            } elseif ($berat == 10){
+                $tarif = DB::table('tarif_cabang_kilogram')
+                    ->select('acc_penjualan', 'harga','berat_minimum')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif <= 10 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_10express_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_10reguler_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                }
+
+                
+
+            } elseif ($berat > 10 && $berat < 20){
+                $tarifAwal = DB::table('tarif_cabang_kilogram')
+                    ->select('harga','berat_minimum')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif <= 10 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if (count($tarifAwal) > 0){
+                    $tarifAwal = $tarifAwal[0]->harga;
+                } else {
+                    return response()->json([
+                        'status' => 'kosong'
+                    ]);
+                }
+
+                $tarif = DB::table('tarif_cabang_kilogram')
+                    ->select('acc_penjualan', DB::raw('('.$tarifAwal.' + (harga * ('.$berat.' - 10))) as harga'),'berat_minimum')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 10 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_20express_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_20reguler_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                }
+
+            }elseif ($berat == 20){
+                $tarif = DB::table('tarif_cabang_kilogram')
+                    ->select('acc_penjualan', 'harga','berat_minimum')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif <= 20 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_20express_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_20reguler_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                }
+
+            }elseif ($berat > 20){
+                $tarifAwal = DB::table('tarif_cabang_kilogram')
+                    ->select('harga','berat_minimum')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif <= 20 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if (count($tarifAwal) > 0){
+                    $tarifAwal = $tarifAwal[0]->harga;
+                } else {
+                    return response()->json([
+                        'status' => 'kosong'
+                    ]);
+                }
+
+                $tarif = DB::table('tarif_cabang_kilogram')
+                    ->select('acc_penjualan', DB::raw('('.$tarifAwal.' + (harga * ('.$berat.' - 20))) as harga'),'berat_minimum')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 20 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_20express_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_20reguler_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                }
+
+            }
+
+            if (isset($tarif[0]->berat_minimum) == 0 || isset($tarif[0]->berat_minimum) == null) {
+                $berat_minimum = 0;
+            }else{
+                $berat_minimum = $tarif[0]->berat_minimum;
+            }
+            if ($tarif != null) {
+                if (count($biaya_penerus) < 1){
+                    $biaya_penerus = DB::table('tarif_penerus_default')
+                        ->select('harga as tarif_penerus')
+                        ->where('jenis', '=', $jenis)
+                        ->where('tipe_kiriman', '=', 'KILOGRAM')
+                        ->get();
+
+                    if (count($biaya_penerus) < 1){
+                        $biaya_penerus = 0;
+                    } else {
+                      $biaya_penerus = $biaya_penerus[0]->tarif_penerus;
+                    }
+                } else {
+                    $biaya_penerus = $biaya_penerus[0]->tarif_penerus;
+                }
+                // return $tarif;
+                return response()->json([
+                    'biaya_penerus' => $biaya_penerus,
+                    'harga' => $tarif[0]->harga,
+                    'acc_penjualan' => $tarif[0]->acc_penjualan,
+                    'tipe' => $tipe,
+                    'batas' => $berat_minimum,
+                ]);
+            }
+            else{
+                return response()->json([
+                    'status' => 'kosong'
+                ]);
+            }
+        }
+//============= KOLI START =====================================================\\
+        elseif ($tipe == 'KOLI'){
+            //dd($request);
+            $berat = $request->berat;
+            $koli = $request->koli;
+            $tarif = null;
+            $biaya_penerus = null;
+            if ($berat < 10){
+                $tarif = DB::table('tarif_cabang_koli')
+                    ->select('acc_penjualan', 'harga')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Koli < 10 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_10express_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_10reguler_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->get();
+                }
+            } elseif ($berat < 20){
+                $tarif = DB::table('tarif_cabang_koli')
+                    ->select('acc_penjualan', 'harga')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Koli < 20 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_20express_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_20reguler_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
+                        ->get();
+                }
+            } elseif ($berat <= 30){
+                $tarif = DB::table('tarif_cabang_koli')
+                    ->select('acc_penjualan', 'harga')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Koli < 30 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_30express_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_30reguler_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
+                        ->get();
+                }
+            } elseif ($berat > 30){
+                $tarif = DB::table('tarif_cabang_koli')
+                    ->select('acc_penjualan', 'harga')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Koli > 30 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_>30express_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_>30reguler_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
+                        ->get();
+                }
+            }
+            // return $request->berat;
+            // return $jenis;
+            // return $tarif;
+            // return count($biaya_penerus);
+
+            if ($tarif != null) {
+                if (count($biaya_penerus) < 1){
+                    $biaya_penerus = DB::table('tarif_penerus_default')
+                        ->select('harga as tarif_penerus')
+                        ->where('jenis', '=', $jenis)
+                        ->where('tipe_kiriman', '=', 'KOLI')
+                        ->get();
+
+                            // return count($biaya_penerus);
+
+                    if (count($biaya_penerus) < 1){
+                        $biaya_penerus = 0;
+                    } else {
+                        $biaya_penerus = $biaya_penerus[0]->tarif_penerus;
+                    }
+                } else {
+                        // return count($biaya_penerus);
+                    $biaya_penerus = $biaya_penerus[0]->tarif_penerus;
+                }
+                // return $tipe;
+                // return count($biaya_penerus);
+                // return $biaya_penerus;
+                return response()->json([
+                    'biaya_penerus' => $biaya_penerus,
+                    'harga' => $tarif[0]->harga,
+                    'acc_penjualan' => $tarif[0]->acc_penjualan,
+                    'tipe' => $tipe,
+                    'jenis' => $jenis,
+                ]);
+            }
+            else{
+                return response()->json([
+                    'status' => 'kosong'
+                ]);
+            }
+        }
+//============= SEPEDA START ===================================================\\
+
+
+        
     }
 
 //REPLACE HARGA VENDOR
@@ -361,6 +805,7 @@ class do_paketController extends Controller
     DB::table('delivery_order')->insert($data);
     //end save do
 
+
     //simpan update status status 
     $increment = DB::table('u_s_order_do')->max('id');
 
@@ -379,6 +824,105 @@ class do_paketController extends Controller
         'id'=>$increment,
     );
     $simpan = DB::table('u_s_order_do')->insert($data1);
+
+    // $totalJurnal = $this->formatRP($request->ed_tarif_dasar) + $this->formatRP($request->ed_tarif_penerus) + $this->formatRP($request->ed_biaya_tambahan) - $this->formatRP($request->ed_diskon_h) + $this->formatRP($request->ed_biaya_komisi);
+    
+    // //auto number
+
+    // if ($data['nomor'] == '') {
+    //     $tanggal = strtoupper($request->ed_tanggal);
+    //     $kode_cabang = strtoupper($request->cb_cabang);
+    //     $tanggal = date_create($tanggal);
+    //     $tanggal = date_format($tanggal, 'ym');
+    //     $sql = "SELECT CAST(MAX(SUBSTRING (nomor FROM '....$')) AS INTEGER) + 1 nomor
+    //             FROM delivery_order WHERE to_char(tanggal, 'YYMM')='$tanggal' AND kode_cabang='$kode_cabang' AND jenis='PAKET'
+    //             AND nomor LIKE '%PAK" . $kode_cabang . $tanggal . "%' ";
+    //     $list = collect(\DB::select($sql))->first();
+    //     if ($list->nomor == '') {
+    //         //$data['nomor']='SJT-'.$kode_cabang.'-'.$tanggal.'-00001';
+    //         $data['nomor'] = 'PAK' . $kode_cabang . $tanggal . '00001';
+    //     } else {
+    //         $kode = substr_replace('00000', $list->nomor, -strlen($list->nomor));
+    //         $data['nomor'] = 'PAK' . $kode_cabang . $tanggal . $kode;
+    //     }
+    // }
+    // // end auto number
+    // //====== untuk non customer
+    // if ($request->cb_customer == 'CS/001') {
+    //     //$cabang=substr($request->cb_cabang,1);
+    //     $valueJurnal = filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT);
+
+    //     $cabang = $request->cb_cabang;
+    //     $akunKas = master_akun::
+    //     select('id_akun', 'nama_akun')
+    //         ->where('id_akun', 'like', '1003%')
+    //         ->where('kode_cabang', $cabang)
+    //         ->orderBy('id_akun')
+    //         ->first();
+
+    //     $akunDana = master_akun::
+    //     select('id_akun', 'nama_akun')
+    //         ->where('id_akun', 'like', '%2001%')
+    //         ->where('kode_cabang', $cabang)
+    //         ->orderBy('id_akun')
+    //         ->first();
+
+
+    //     if (count($akunKas) == 0) {
+    //         $dataInfo = ['status' => 'gagal', 'info' => 'Akun Kas Untuk Cabang Belum Tersedia'];
+    //         return json_encode($dataInfo);
+
+    //     } else if (count($akunDana) == 0) {
+    //         $dataInfo = ['status' => 'gagal', 'info' => 'Akun Dana Untuk Cabang Belum Tersedia'];
+    //         return json_encode($dataInfo);
+    //     }
+
+
+    //     $akun[0]['id_akun'] = $akunKas->id_akun;
+    //     $akun[0]['value'] = $valueJurnal;
+    //     $akun[0]['dk'] = 'D';
+
+
+    //     $akun[1]['id_akun'] = $akunDana->id_akun;
+    //     $akun[1]['value'] = $valueJurnal;
+    //     $akun[1]['dk'] = 'K';
+
+
+    //     $nomor = $data['nomor'];
+
+    //     $id_jurnal = d_jurnal::max('jr_id') + 1;
+    //     foreach ($akun as $key => $detailData) {
+    //         $id_jrdt = $key;
+    //         $jurnal_dt[$key]['jrdt_jurnal'] = $id_jurnal;
+    //         $jurnal_dt[$key]['jrdt_detailid'] = $id_jrdt + 1;
+    //         $jurnal_dt[$key]['jrdt_acc'] = $detailData['id_akun'];
+    //         $jurnal_dt[$key]['jrdt_value'] = $detailData['value'];
+    //         $jurnal_dt[$key]['jrdt_statusdk'] = $detailData['dk'];
+    //     }
+
+    //     d_jurnal::create([
+    //         'jr_id' => $id_jurnal,
+    //         'jr_year' => date('Y', strtotime($request->ed_tanggal)),
+    //         'jr_date' => date('Y-m-d', strtotime($request->ed_tanggal)),
+    //         'jr_detail' => 'DELIVERY ORDER' . ' ' . $request->type_kiriman,
+    //         'jr_ref' => $nomor,
+    //         'jr_note' => 'DELIVERY ORDER',
+    //     ]);
+    //     d_jurnal_dt::insert($jurnal_dt);
+
+    // }
+    
+    if ($data['kode_satuan'] == "SEPEDA"){
+        for ($i = 0; $i < $jml_unit; $i++){
+            $dt = new do_dt();
+            $dt->id_do = $data['nomor'];
+            $dt->id_do_dt = $i + 1;
+            $dt->berat = $request->cb_berat_unit[$i];
+            $dt->jenis = $request->cb_jenis_unit[$i];
+            $dt->save();
+        }
+    }
+
 
     return response()->json(['status'=>'sukses']);
 
@@ -582,7 +1126,13 @@ class do_paketController extends Controller
           
     }
 
+    public function formatRP($nilai)
+    {
+        $nilai = str_replace(['Rp', '\\', '.', ' '], '', $nilai);
+        $nilai = str_replace(',', '.', $nilai);
+        return (float)$nilai;
 
+    }
 
 
 }

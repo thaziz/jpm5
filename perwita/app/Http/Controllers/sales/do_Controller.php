@@ -1073,7 +1073,7 @@ class do_Controller extends Controller
 
     public function cari_harga(Request $request)
     {
-        //dd($request);
+        // dd($request);
         $asal = $request->input('asal');
         $tujuan = $request->input('tujuan');
         $kecamatan = $request->input('kecamatan');
@@ -1166,7 +1166,7 @@ class do_Controller extends Controller
             $biaya_penerus = null;
             if ($berat < 10){
                 $tarif = DB::table('tarif_cabang_kilogram')
-                    ->select('acc_penjualan', DB::raw('(harga * '.$berat.') as harga'))
+                    ->select('acc_penjualan', DB::raw('(harga * '.$berat.') as harga'),'berat_minimum')
                     ->where('jenis', '=', $jenis)
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
@@ -1192,7 +1192,7 @@ class do_Controller extends Controller
 
             } elseif ($berat == 10){
                 $tarif = DB::table('tarif_cabang_kilogram')
-                    ->select('acc_penjualan', 'harga')
+                    ->select('acc_penjualan', 'harga','berat_minimum')
                     ->where('jenis', '=', $jenis)
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
@@ -1216,9 +1216,11 @@ class do_Controller extends Controller
                         ->get();
                 }
 
+                
+
             } elseif ($berat > 10 && $berat < 20){
                 $tarifAwal = DB::table('tarif_cabang_kilogram')
-                    ->select('harga')
+                    ->select('harga','berat_minimum')
                     ->where('jenis', '=', $jenis)
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
@@ -1235,7 +1237,7 @@ class do_Controller extends Controller
                 }
 
                 $tarif = DB::table('tarif_cabang_kilogram')
-                    ->select('acc_penjualan', DB::raw('('.$tarifAwal.' + (harga * ('.$berat.' - 10))) as harga'))
+                    ->select('acc_penjualan', DB::raw('('.$tarifAwal.' + (harga * ('.$berat.' - 10))) as harga'),'berat_minimum')
                     ->where('jenis', '=', $jenis)
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
@@ -1261,7 +1263,7 @@ class do_Controller extends Controller
 
             } elseif ($berat == 20){
                 $tarif = DB::table('tarif_cabang_kilogram')
-                    ->select('acc_penjualan', 'harga')
+                    ->select('acc_penjualan', 'harga','berat_minimum')
                     ->where('jenis', '=', $jenis)
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
@@ -1287,7 +1289,7 @@ class do_Controller extends Controller
 
             } elseif ($berat > 20){
                 $tarifAwal = DB::table('tarif_cabang_kilogram')
-                    ->select('harga')
+                    ->select('harga','berat_minimum')
                     ->where('jenis', '=', $jenis)
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
@@ -1304,7 +1306,7 @@ class do_Controller extends Controller
                 }
 
                 $tarif = DB::table('tarif_cabang_kilogram')
-                    ->select('acc_penjualan', DB::raw('('.$tarifAwal.' + (harga * ('.$berat.' - 20))) as harga'))
+                    ->select('acc_penjualan', DB::raw('('.$tarifAwal.' + (harga * ('.$berat.' - 20))) as harga'),'berat_minimum')
                     ->where('jenis', '=', $jenis)
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
@@ -1329,7 +1331,11 @@ class do_Controller extends Controller
                 }
 
             }
-
+            if (isset($tarif[0]->berat_minimum) == 0 || isset($tarif[0]->berat_minimum) == null) {
+                $berat_minimum = 0;
+            }else{
+                $berat_minimum = $tarif[0]->berat_minimum;
+            }
             if ($tarif != null) {
                 if (count($biaya_penerus) < 1){
                     $biaya_penerus = DB::table('tarif_penerus_default')
@@ -1354,6 +1360,7 @@ class do_Controller extends Controller
                     'acc_penjualan' => $tarif[0]->acc_penjualan,
                     'create_indent' => 1,
                     'tipe' => $tipe,
+                    'batas' => $berat_minimum,
                 ]);
             }
             else{
