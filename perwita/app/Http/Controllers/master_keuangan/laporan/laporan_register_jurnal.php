@@ -17,8 +17,10 @@ class laporan_register_jurnal extends Controller
 {
     // register jurnal pdf start
 
-    public function print_pdf_register_single(Request $Request, $throttle){
-    	return "okee";
+    public function print_pdf_register_single(Request $Request){
+    	$pdf = PDF::loadView('laporan_register_jurnal.pdf')->setPaper('A4','potrait');
+
+    	return $pdf->stream('Laporan_Register_Jurnal.pdf');
     }
 
     // register jurnal pdf end

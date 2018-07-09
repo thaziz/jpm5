@@ -281,6 +281,29 @@ class kasKeluarController extends Controller
 	  				'created_by' 		=> Auth::user()->m_name,
 			  	]);
 
+			$id_pt = DB::table('patty_cash')
+					   ->max('pc_id')+1;	
+
+			$patty_cash = DB::table('patty_cash')
+						->insert([
+							'pc_id'			=> $id_pt,
+							'pc_ref'  		=> $req->jenis_bayar,
+							'pc_akun'  		=> $req->kas,
+							'pc_keterangan' => strtoupper($req->keterangan_head),
+							'pc_debet' 		=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
+							'pc_kredit' 	=> 0,
+							'updated_at' 	=> carbon::now(),
+							'created_at' 	=> carbon::now(),
+							'pc_akun_kas' 	=> $req->kas,
+							'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+							'pc_user'  		=> Auth::user()->m_name,
+							'pc_comp' 		=> $req->cabang,
+							'pc_asal_comp'	=> $req->cabang,
+							'pc_no_trans' 	=> $nota,
+							'pc_edit'  		=> 'UNALLOWED',
+							'pc_reim'  		=> 'UNRELEASED',
+						]);	
+
 			for ($i=0; $i < count($req->pt_seq); $i++) {
 
 				$id_dt = DB::table('bukti_kas_keluar_detail')
@@ -323,6 +346,7 @@ class kasKeluarController extends Controller
 								'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
 								'pc_user'  		=> Auth::user()->m_name,
 								'pc_comp' 		=> $req->cabang,
+								'pc_asal_comp'	=> $req->cabang,
 								'pc_no_trans' 	=> $nota,
 								'pc_edit'  		=> 'UNALLOWED',
 								'pc_reim'  		=> 'UNRELEASED',
@@ -455,6 +479,28 @@ class kasKeluarController extends Controller
 						->where('pc_no_trans',$nota)
 						->delete();
 
+			$id_pt = DB::table('patty_cash')
+					   ->max('pc_id')+1;	
+
+			$patty_cash = DB::table('patty_cash')
+						->insert([
+							'pc_id'			=> $id_pt,
+							'pc_ref'  		=> $req->jenis_bayar,
+							'pc_akun'  		=> $req->kas,
+							'pc_keterangan' => strtoupper($req->keterangan_head),
+							'pc_debet' 		=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
+							'pc_kredit' 	=> 0,
+							'updated_at' 	=> carbon::now(),
+							'created_at' 	=> carbon::now(),
+							'pc_akun_kas' 	=> $req->kas,
+							'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+							'pc_user'  		=> Auth::user()->m_name,
+							'pc_comp' 		=> $req->cabang,
+							'pc_asal_comp'	=> $req->cabang,
+							'pc_no_trans' 	=> $nota,
+							'pc_edit'  		=> 'UNALLOWED',
+							'pc_reim'  		=> 'UNRELEASED',
+						]);	
 			for ($i=0; $i < count($req->pt_seq); $i++) {
 
 				$id_dt = DB::table('bukti_kas_keluar_detail')
@@ -498,6 +544,7 @@ class kasKeluarController extends Controller
 								'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
 								'pc_user'  		=> Auth::user()->m_name,
 								'pc_comp' 		=> $req->cabang,
+								'pc_asal_comp'	=> $req->cabang,
 								'pc_no_trans' 	=> $nota,
 								'pc_edit'  		=> 'UNALLOWED',
 								'pc_reim'  		=> 'UNRELEASED',
@@ -1102,7 +1149,7 @@ class kasKeluarController extends Controller
 					$id_dt += 1;
 				}
 				if ($req->jenis_bayar == 4) {
-					$sisa_um = filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT);
+					$sisa_um = filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT);
 				}else{
 					$sisa_um = 0;
 				}
@@ -1114,7 +1161,7 @@ class kasKeluarController extends Controller
 					'bkkd_bkk_dt'  		=> $i+1,
 					'bkkd_keterangan' 	=> strtoupper($req->fp_keterangan[$i]),
 					'bkkd_akun'  		=> $req->hutang,
-					'bkkd_total' 		=> filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT),
+					'bkkd_total' 		=> filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT),
 					'bkkd_debit' 		=> 'DEBET',
 					'updated_at'		=> carbon::now(),
 					'created_at' 		=> carbon::now(),
@@ -1123,6 +1170,30 @@ class kasKeluarController extends Controller
 					'bkkd_sisaum'    	=> $sisa_um,
 					]);
 
+				$id_pt = DB::table('patty_cash')
+					   ->max('pc_id')+1;	
+
+				$patty_cash = DB::table('patty_cash')
+							->insert([
+								'pc_id'			=> $id_pt,
+								'pc_ref'  		=> $req->jenis_bayar,
+								'pc_akun'  		=> $req->kas,
+								'pc_keterangan' => strtoupper($req->keterangan_head),
+								'pc_debet' 		=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
+								'pc_kredit' 	=> 0,
+								'updated_at' 	=> carbon::now(),
+								'created_at' 	=> carbon::now(),
+								'pc_akun_kas' 	=> $req->kas,
+								'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+								'pc_user'  		=> Auth::user()->m_name,
+								'pc_comp' 		=> $req->cabang,
+								'pc_asal_comp'	=> $req->cabang,
+								'pc_no_trans' 	=> $nota,
+								'pc_edit'  		=> 'UNALLOWED',
+								'pc_reim'  		=> 'UNRELEASED',
+							]);	
+
+
 				if ($req->jenis_bayar == 2 or $req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
 					$cari_faktur = DB::table('faktur_pembelian')
 									 ->where('fp_nofaktur',$req->fp_faktur[$i])
@@ -1130,7 +1201,7 @@ class kasKeluarController extends Controller
 					$update_faktur =DB::table('faktur_pembelian')
 									  ->where('fp_nofaktur',$req->fp_faktur[$i])
 									  ->update([
-									  	'fp_sisapelunasan' => $cari_faktur->fp_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
+									  	'fp_sisapelunasan' => $cari_faktur->fp_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT)
 									  ]);
 				}elseif ($req->jenis_bayar == 3) {
 					$cari_faktur = DB::table('v_hutang')
@@ -1139,7 +1210,7 @@ class kasKeluarController extends Controller
 					$update_faktur =DB::table('v_hutang')
 									  ->where('v_nomorbukti',$req->fp_faktur[$i])
 									  ->update([
-									  	'v_pelunasan' => $cari_faktur->v_pelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
+									  	'v_pelunasan' => $cari_faktur->v_pelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT)
 									  ]);
 				}else{
 					$cari_faktur = DB::table('d_uangmuka')
@@ -1148,8 +1219,8 @@ class kasKeluarController extends Controller
 					$update_faktur =DB::table('d_uangmuka')
 									  ->where('um_nomorbukti',$req->fp_faktur[$i])
 									  ->update([
-									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT),
-									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai + filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
+									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT),
+									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai + filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT)
 									  ]);
 				}
 				
@@ -1157,32 +1228,7 @@ class kasKeluarController extends Controller
 			}
 
 
-			$id_pt = DB::table('patty_cash')
-						   ->max('pc_id');
-				if ($id_pt == null) {
-					$id_pt = 1;
-				}else{
-					$id_pt += 1;
-				}
-
-			$patty_cash = DB::table('patty_cash')
-							->insert([
-								'pc_id'  		=> $id_pt,
-								'pc_ref'  		=> $req->jenis_bayar,
-								'pc_akun'  		=> $req->hutang,
-								'pc_keterangan' => strtoupper($req->keterangan_head),
-								'pc_debet' 		=> 0,
-								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
-								'updated_at' 	=> carbon::now(),
-								'created_at' 	=> carbon::now(),
-								'pc_akun_kas' 	=> $req->kas,
-								'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
-								'pc_user'  		=> Auth::user()->m_name,
-								'pc_comp' 		=> $req->cabang,
-								'pc_no_trans' 	=> $nota,
-								'pc_edit'  		=> 'UNALLOWED',
-								'pc_reim'  		=> 'UNRELEASED',
-							]);	
+		
 			// //JURNAL
 			$id_jurnal=d_jurnal::max('jr_id')+1;
 			// dd($id_jurnal);
@@ -1206,11 +1252,11 @@ class kasKeluarController extends Controller
 				$akun_val = [];
 				$jumlah   = [];
 				array_push($akun, $req->kas);
-				array_push($akun, '2101');
+				array_push($akun, '2102');
 				array_push($akun_val, filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100);
 
 				for ($i=0; $i < count($req->fp_pelunasan); $i++) { 
-					array_push($jumlah, filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT));
+					array_push($jumlah, filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT));
 				}
 
 				$jumlah = array_sum($jumlah);
@@ -1231,14 +1277,16 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
 						}
 					}else if (substr($akun[$i],0, 1)>1) {
 
@@ -1246,16 +1294,46 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
 						}
 					}
+
+					$id_pt = DB::table('patty_cash')
+						   ->max('pc_id');
+						if ($id_pt == null) {
+							$id_pt = 1;
+						}else{
+							$id_pt += 1;
+						}
+
+					$patty_cash = DB::table('patty_cash')
+									->insert([
+										'pc_id'  		=> $id_pt,
+										'pc_ref'  		=> $req->jenis_bayar,
+										'pc_akun'  		=> $cari_coa->id_akun,
+										'pc_keterangan' => strtoupper($req->keterangan_head),
+										'pc_debet' 		=> 0,
+										'pc_kredit' 	=> filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT),
+										'updated_at' 	=> carbon::now(),
+										'created_at' 	=> carbon::now(),
+										'pc_akun_kas' 	=> $req->kas,
+										'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+										'pc_user'  		=> Auth::user()->m_name,
+										'pc_comp' 		=> $req->cabang,
+										'pc_asal_comp'	=> $req->cabang,
+										'pc_no_trans' 	=> $nota,
+										'pc_edit'  		=> 'UNALLOWED',
+										'pc_reim'  		=> 'UNRELEASED',
+									]);	
 				}
 			}elseif ($req->jenis_bayar == 4) {
 				$akun 	  = [];
@@ -1288,14 +1366,16 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
 						}
 					}else if (substr($akun[$i],0, 2) == 14) {
 
@@ -1303,16 +1383,46 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
 						}
 					}
+
+					$id_pt = DB::table('patty_cash')
+						   ->max('pc_id');
+						if ($id_pt == null) {
+							$id_pt = 1;
+						}else{
+							$id_pt += 1;
+						}
+
+					$patty_cash = DB::table('patty_cash')
+									->insert([
+										'pc_id'  		=> $id_pt,
+										'pc_ref'  		=> $req->jenis_bayar,
+										'pc_akun'  		=> $cari_coa->id_akun,
+										'pc_keterangan' => strtoupper($req->keterangan_head),
+										'pc_debet' 		=> 0,
+										'pc_kredit' 	=> filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT),
+										'updated_at' 	=> carbon::now(),
+										'created_at' 	=> carbon::now(),
+										'pc_akun_kas' 	=> $req->kas,
+										'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+										'pc_user'  		=> Auth::user()->m_name,
+										'pc_comp' 		=> $req->cabang,
+										'pc_asal_comp'	=> $req->cabang,
+										'pc_no_trans' 	=> $nota,
+										'pc_edit'  		=> 'UNALLOWED',
+										'pc_reim'  		=> 'UNRELEASED',
+									]);	
 				}
 				
 			}
@@ -2310,7 +2420,28 @@ class kasKeluarController extends Controller
 					'updated_by' 		=> Auth::user()->m_name,
 			  	]);
 
-			
+			$id_pt = DB::table('patty_cash')
+					   ->max('pc_id')+1;	
+
+			$patty_cash = DB::table('patty_cash')
+						->insert([
+							'pc_id'			=> $id_pt,
+							'pc_ref'  		=> $req->jenis_bayar,
+							'pc_akun'  		=> $req->kas,
+							'pc_keterangan' => strtoupper($req->keterangan_head),
+							'pc_debet' 		=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
+							'pc_kredit' 	=> 0,
+							'updated_at' 	=> carbon::now(),
+							'created_at' 	=> carbon::now(),
+							'pc_akun_kas' 	=> $req->kas,
+							'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+							'pc_user'  		=> Auth::user()->m_name,
+							'pc_comp' 		=> $req->cabang,
+							'pc_asal_comp'	=> $req->cabang,
+							'pc_no_trans' 	=> $nota,
+							'pc_edit'  		=> 'UNALLOWED',
+							'pc_reim'  		=> 'UNRELEASED',
+						]);	
 
 			for ($i=0; $i < count($req->fp_faktur); $i++) {
 
@@ -2323,7 +2454,7 @@ class kasKeluarController extends Controller
 				}
 
 				if ($req->jenis_bayar == 4) {
-					$sisa_um = filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT);
+					$sisa_um = filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT);
 				}else{
 					$sisa_um = 0;
 				}
@@ -2335,7 +2466,7 @@ class kasKeluarController extends Controller
 					'bkkd_bkk_dt'  		=> $i+1,
 					'bkkd_keterangan' 	=> strtoupper($req->fp_keterangan[$i]),
 					'bkkd_akun'  		=> $req->hutang,
-					'bkkd_total' 		=> filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT),
+					'bkkd_total' 		=> filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT),
 					'bkkd_debit' 		=> 'DEBET',
 					'updated_at'		=> carbon::now(),
 					'created_at' 		=> carbon::now(),
@@ -2351,7 +2482,7 @@ class kasKeluarController extends Controller
 					$update_faktur =DB::table('faktur_pembelian')
 									  ->where('fp_nofaktur',$req->fp_faktur[$i])
 									  ->update([
-									  	'fp_sisapelunasan' => $cari_faktur->fp_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
+									  	'fp_sisapelunasan' => $cari_faktur->fp_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT)
 									  ]);
 				}elseif ($req->jenis_bayar == 3) {
 					$cari_faktur = DB::table('v_hutang')
@@ -2360,7 +2491,7 @@ class kasKeluarController extends Controller
 					$update_faktur =DB::table('v_hutang')
 									  ->where('v_nomorbukti',$req->fp_faktur[$i])
 									  ->update([
-									  	'v_pelunasan' => $cari_faktur->v_pelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
+									  	'v_pelunasan' => $cari_faktur->v_pelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT)
 									  ]);
 				}else{
 					$cari_faktur = DB::table('d_uangmuka')
@@ -2369,8 +2500,8 @@ class kasKeluarController extends Controller
 							$update_faktur =DB::table('d_uangmuka')
 									  ->where('um_nomorbukti',$req->fp_faktur[$i])
 									  ->update([
-									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT),
-									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai + filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
+									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT),
+									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai + filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT)
 									  ]);
 				}
 				
@@ -2380,23 +2511,7 @@ class kasKeluarController extends Controller
 
 			
 
-			$patty_cash = DB::table('patty_cash')
-							->where('pc_no_trans',$nota)
-							->update([
-								'pc_ref'  		=> $req->jenis_bayar,
-								'pc_akun'  		=> $req->hutang,
-								'pc_keterangan' => strtoupper($req->keterangan_head),
-								'pc_debet' 		=> 0,
-								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
-								'updated_at' 	=> carbon::now(),
-								'pc_akun_kas' 	=> $req->kas,
-								'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
-								'pc_user'  		=> Auth::user()->m_name,
-								'pc_comp' 		=> $req->cabang,
-								'pc_no_trans' 	=> $nota,
-								'pc_edit'  		=> 'UNALLOWED',
-								'pc_reim'  		=> 'UNRELEASED',
-							]);	
+
 			// //JURNAL
 
 			$delete_jurnal = DB::table('d_jurnal')
@@ -2425,11 +2540,11 @@ class kasKeluarController extends Controller
 				$akun_val = [];
 				$jumlah   = [];
 				array_push($akun, $req->kas);
-				array_push($akun, '2101');
+				array_push($akun, '2102');
 				array_push($akun_val, filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100);
 
 				for ($i=0; $i < count($req->fp_pelunasan); $i++) { 
-					array_push($jumlah, filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT));
+					array_push($jumlah, filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT));
 				}
 
 				$jumlah = array_sum($jumlah);
@@ -2450,13 +2565,13 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
 						}
 					}else if (substr($akun[$i],0, 1)>1) {
@@ -2465,16 +2580,45 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
 						}
 					}
+
+
+					$id_pt = DB::table('patty_cash')
+						   ->max('pc_id');
+						if ($id_pt == null) {
+							$id_pt = 1;
+						}else{
+							$id_pt += 1;
+						}
+
+					$patty_cash = DB::table('patty_cash')
+									->insert([
+										'pc_id'  		=> $id_pt,
+										'pc_ref'  		=> $req->jenis_bayar,
+										'pc_akun'  		=> $cari_coa->id_akun,
+										'pc_keterangan' => strtoupper($req->keterangan_head),
+										'pc_debet' 		=> 0,
+										'pc_kredit' 	=> filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT),
+										'updated_at' 	=> carbon::now(),
+										'created_at' 	=> carbon::now(),
+										'pc_akun_kas' 	=> $req->kas,
+										'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+										'pc_user'  		=> Auth::user()->m_name,
+										'pc_comp' 		=> $req->cabang,
+										'pc_asal_comp'	=> $req->cabang,
+										'pc_no_trans' 	=> $nota,
+										'pc_edit'  		=> 'UNALLOWED',
+										'pc_reim'  		=> 'UNRELEASED',
+									]);	
 				}
 			}elseif ($req->jenis_bayar == 4) {
 				$akun 	  = [];
@@ -2487,7 +2631,7 @@ class kasKeluarController extends Controller
 				array_push($akun_val, filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100);
 
 				for ($i=0; $i < count($req->fp_pelunasan); $i++) { 
-					array_push($jumlah, filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT));
+					array_push($jumlah, filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT));
 				}
 
 				$jumlah = array_sum($jumlah);
@@ -2507,13 +2651,13 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
 						}
 					}else if (substr($akun[$i],0, 2) == 14) {
@@ -2522,16 +2666,44 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
 						}
 					}
+
+					$id_pt = DB::table('patty_cash')
+						   ->max('pc_id');
+						if ($id_pt == null) {
+							$id_pt = 1;
+						}else{
+							$id_pt += 1;
+						}
+
+					$patty_cash = DB::table('patty_cash')
+									->insert([
+										'pc_id'  		=> $id_pt,
+										'pc_ref'  		=> $req->jenis_bayar,
+										'pc_akun'  		=> $cari_coa->id_akun,
+										'pc_keterangan' => strtoupper($req->keterangan_head),
+										'pc_debet' 		=> 0,
+										'pc_kredit' 	=> filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT),
+										'updated_at' 	=> carbon::now(),
+										'created_at' 	=> carbon::now(),
+										'pc_akun_kas' 	=> $req->kas,
+										'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+										'pc_user'  		=> Auth::user()->m_name,
+										'pc_comp' 		=> $req->cabang,
+										'pc_asal_comp'	=> $req->cabang,
+										'pc_no_trans' 	=> $nota,
+										'pc_edit'  		=> 'UNALLOWED',
+										'pc_reim'  		=> 'UNRELEASED',
+									]);	
 				}
 				
 			}
@@ -2686,15 +2858,11 @@ class kasKeluarController extends Controller
 	}
 
 	public function cari_patty(request $request){
-		// dd($request);
 
-		// "rangepicker" => "16/12/2017 - 15/01/2018"
-	 //      "jenisbayar" => "8"
-	 //      "akun_kas" => "100111001"
-    	
-		if (isset($request->akun_kas)) {
-			// return 'asd';
-				$tgl = explode('-',$request->rangepicker);
+		// dd($request->all());
+		if (isset($request->rangepicker)) {
+
+			$tgl = explode('-',$request->rangepicker);
 					$tgl[0] = str_replace('/', '-', $tgl[0]);
 					$tgl[1] = str_replace('/', '-', $tgl[1]);
 					$tgl[0] = str_replace(' ', '', $tgl[0]);
@@ -2702,51 +2870,58 @@ class kasKeluarController extends Controller
 					$start  = Carbon::parse($tgl[0])->format('Y-m-d');
 					$end    = Carbon::parse($tgl[1])->format('Y-m-d');
 
-				$tgl;
-				$count = 0;
-				if ($request->rangepicker != '') {
-					$count += 1;
-				}
-				if ($request->jenisbayar != '') {
-					$count += 1;
-				}
-				if ($request->akun_kas != '') {
-					$count += 1;
-				}
 
 
-				if ($count == 3) {
-					
-
-				$cari = DB::table('patty_cash')
+			$patty = DB::table('patty_cash')
 							->join('jenisbayar','idjenisbayar','=','pc_ref')
 							->join('d_akun','id_akun','=','pc_akun_kas')
-							->where('pc_ref','=',$request->jenisbayar)
-							->where('pc_akun_kas','=',$request->akun_kas)
 							->where('pc_tgl','>=',$start)
 							->where('pc_tgl','<=',$end)
-							->take(1000)
+							->orderBy('pc_no_trans','ASC')
+							->take(5000)
 							->get();
-				$akun = DB::table('d_akun')
-						  ->get();
-
-				return view('purchase/laporan/table_patty',compact('cari','akun'));
-				}else{
-					Response()->json(['status'=>2]);
-				}
-		}else{
-			// return 'asd';
-				$cari = DB::table('patty_cash')
+			$nomor = DB::table('patty_cash')
 							->join('jenisbayar','idjenisbayar','=','pc_ref')
-							->join('d_akun','id_akun','=','pc_akun_kas')
-							->take(1000)
+							->select('pc_no_trans')
+							// ->where('pc_tgl','>=',$start)
+							// ->where('pc_tgl','<=',$end)
+							->orderBy('pc_no_trans','ASC')
+							->take(5000)
 							->get();
-				$akun = DB::table('d_akun')
+
+			$cari = array_map("unserialize", array_unique( array_map( 'serialize', $nomor ) ));
+			$cari = array_values($cari);
+			$tes=[];
+			for ($i=0; $i < count($cari); $i++) { 
+				$tes[$i] = $cari[$i];
+			}
+			$cari = DB::table('patty_cash')
+							->join('jenisbayar','idjenisbayar','=','pc_ref')
+							->leftjoin('ikhtisar_kas_detail','pc_id','=','ikd_pc_id')
+							->join('d_akun','id_akun','=','pc_akun_kas')
+							->where('ikd_pc_id','=',null)
+							->where('pc_akun_kas','=',$request->akun_kas)
+							->take(5000)
+							->get();
+
+			$akun = DB::table('d_akun')
 						  ->get();
+		return view('purchase.laporan.table_patty',compact('cari','akun'));
 
-				return view('purchase/laporan/table_patty',compact('cari','akun'));
+		}else{
+			$cari = DB::table('patty_cash')
+							->join('jenisbayar','idjenisbayar','=','pc_ref')
+							->leftjoin('ikhtisar_kas_detail','pc_id','=','ikd_pc_id')
+							->join('d_akun','id_akun','=','pc_akun_kas')
+							->where('ikd_pc_id','=',null)
+							->where('pc_comp','=',$request->cabang)
+							->take(5000)
+							->get();
+
+			$akun = DB::table('d_akun')
+						  ->get();
+		return view('purchase.laporan.table_patty',compact('cari','akun'));
+
 		}
-
-
 	}
 }

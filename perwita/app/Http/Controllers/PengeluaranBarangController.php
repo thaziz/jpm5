@@ -15,7 +15,7 @@ use Response;
 Use Carbon\Carbon;
 use Session;
 use Mail;
-
+use Auth;
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 // use Datatables;
@@ -92,118 +92,121 @@ class PengeluaranBarangController extends Controller
 
 	public function save_pengeluaran(request $request){
 		// dd($request);
-		$valid = 0;
-		if ($request->keperluan != '') {
-			$valid += 1;
-		}
+   		return DB::transaction(function() use ($request) {  
 
-		if ($request->peminta != '') {
-			$valid += 1;
-		}
-
-		$array_table=[];
-		$valid_table = 1;
-		for ($i=0; $i < count($request->nama_barang); $i++) { 
-			$array_table[$i] = $request->nama_barang[$i];
-		}
-
-		if (in_array('0', $array_table)) {
-			$valid_table = 0;
-		}
-		// return $valid_table;
-		if ($valid == 2 && $valid_table == 1) {
-			
-			$tgl = str_replace('/', '-', $request->tgl);
-			$tgl = Carbon::parse($tgl)->format('Y-m-d');
-
-			$cari_id = DB::table('pengeluaran_barang')
-						 ->max('pb_id');
-
-			if ($cari_id == null) {
-				$cari_id = 1;
-			}else{
-				$cari_id += 1;
+			$valid = 0;
+			if ($request->keperluan != '') {
+				$valid += 1;
 			}
-			$save = DB::table('pengeluaran_barang')
-						->insert([
-							'pb_id' 	   		=> $cari_id,
-							'pb_nota' 	   		=> $request->no_sppb,
-							'pb_tgl'	   		=> $tgl,
-							'pb_keperluan' 		=> $request->keperluan,
-							'pb_peminta'   		=> $request->cabang_peminta,
-							'pb_nama_peminta'   => $request->peminta,
-							'created_at'   		=> Carbon::now(),
-							'updated_at'   		=> Carbon::now(),
-							'pb_status'   		=> 'Released',
-							'pb_comp'			=> $request->cabang,
-							'pb_jenis_keluar'	=> $request->jp
-						]);
 
+			if ($request->peminta != '') {
+				$valid += 1;
+			}
 
+			$array_table=[];
+			$valid_table = 1;
 			for ($i=0; $i < count($request->nama_barang); $i++) { 
-
-				$cari_id_dt = DB::table('pengeluaran_barang_dt')
-						 ->max('pbd_id');
-
-				if ($cari_id_dt == null) {
-					$cari_id_dt = 1;
-				}else{
-					$cari_id_dt += 1;
-				}
-
-				$kodeitem = $request->nama_barang[$i];
-				$cabang = $request->cabang;
-
-				$dataitem = DB::select("select * from masteritem where kode_item = '$kodeitem'");
-				$accpersediaan2 = $dataitem[0]->acc_persediaan;
-
-				$accpersediaan = substr($accpersediaan2, 0,4);
-				$jenisitem = substr($kodeitem, 0,1);
-
-
-				$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan%' and kode_cabang = '$cabang'");
-
-				$akunpersediaan = $datakun2[0]->id_akun;
-
-				if($jenisitem == 'P'){
-					$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
-				}
-				else if($jenisitem == 'S'){
-					$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
-				}
-				else if($jenisitem == 'A'){
-					$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
-				}
-				else if($jenisitem == 'C'){
-					$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
-				}
-				else {
-					$akunbiaya = DB::select("select * from d_akun where kode_cabang = '$cabang' ");
-				}
-
-				$akunbiaya2 = $akunbiaya[0]->id_akun;
-
-				if ($request->stock_gudang[$i] != 0) {
-					$save_dt = DB::table('pengeluaran_barang_dt')
-								 ->insert([
-								 	'pbd_id'	 		=> $cari_id_dt,
-								 	'pbd_pb_id'	 		=> $cari_id,
-								 	'pbd_pb_dt'	 		=> $i+1,
-								 	'pbd_nama_barang'	=> $request->nama_barang[$i],
-								 	'pbd_jumlah_barang' => $request->diminta[$i],
-								 	'pbd_nopol' 		=> $request->nopol[$i],
-								 	'pbd_akunhutangpersediaan' => $akunpersediaan,
-								 	'pbd_akunhutangbiaya' => $akunbiaya2,
-								 ]);
-				}
-				
+				$array_table[$i] = $request->nama_barang[$i];
 			}
 
-			return response()->json(['status' => 1,
-									 'id'	  => $cari_id]);
-		}else{
-			return response()->json(['status' => 0]);			
-		}
+			if (in_array('0', $array_table)) {
+				$valid_table = 0;
+			}
+			// return $valid_table;
+			if ($valid == 2 && $valid_table == 1) {
+				
+				$tgl = str_replace('/', '-', $request->tgl);
+				$tgl = Carbon::parse($tgl)->format('Y-m-d');
+
+				$cari_id = DB::table('pengeluaran_barang')
+							 ->max('pb_id');
+
+				if ($cari_id == null) {
+					$cari_id = 1;
+				}else{
+					$cari_id += 1;
+				}
+				$save = DB::table('pengeluaran_barang')
+							->insert([
+								'pb_id' 	   		=> $cari_id,
+								'pb_nota' 	   		=> $request->no_sppb,
+								'pb_tgl'	   		=> $tgl,
+								'pb_keperluan' 		=> $request->keperluan,
+								'pb_peminta'   		=> $request->cabang_peminta,
+								'pb_nama_peminta'   => $request->peminta,
+								'created_at'   		=> Carbon::now(),
+								'updated_at'   		=> Carbon::now(),
+								'pb_status'   		=> 'Released',
+								'pb_comp'			=> $request->cabang,
+								'pb_jenis_keluar'	=> $request->jp
+							]);
+
+
+				for ($i=0; $i < count($request->nama_barang); $i++) { 
+
+					$cari_id_dt = DB::table('pengeluaran_barang_dt')
+							 ->max('pbd_id');
+
+					if ($cari_id_dt == null) {
+						$cari_id_dt = 1;
+					}else{
+						$cari_id_dt += 1;
+					}
+
+					$kodeitem = $request->nama_barang[$i];
+					$cabang = $request->cabang;
+
+					$dataitem = DB::select("select * from masteritem where kode_item = '$kodeitem'");
+					$accpersediaan2 = $dataitem[0]->acc_persediaan;
+
+					$accpersediaan = substr($accpersediaan2, 0,4);
+					$jenisitem = substr($kodeitem, 0,1);
+
+
+					$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan%' and kode_cabang = '$cabang'");
+
+					$akunpersediaan = $datakun2[0]->id_akun;
+
+					if($jenisitem == 'P'){
+						$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
+					}
+					else if($jenisitem == 'S'){
+						$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
+					}
+					else if($jenisitem == 'A'){
+						$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
+					}
+					else if($jenisitem == 'C'){
+						$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
+					}
+					else {
+						$akunbiaya = DB::select("select * from d_akun where kode_cabang = '$cabang' ");
+					}
+
+					$akunbiaya2 = $akunbiaya[0]->id_akun;
+
+					if ($request->stock_gudang[$i] != 0) {
+						$save_dt = DB::table('pengeluaran_barang_dt')
+									 ->insert([
+									 	'pbd_id'	 		=> $cari_id_dt,
+									 	'pbd_pb_id'	 		=> $cari_id,
+									 	'pbd_pb_dt'	 		=> $i+1,
+									 	'pbd_nama_barang'	=> $request->nama_barang[$i],
+									 	'pbd_jumlah_barang' => $request->diminta[$i],
+									 	'pbd_nopol' 		=> $request->nopol[$i],
+									 	'pbd_akunhutangpersediaan' => $akunpersediaan,
+									 	'pbd_akunhutangbiaya' => $akunbiaya2,
+									 ]);
+					}
+					
+				}
+
+				return response()->json(['status' => 1,
+										 'id'	  => $cari_id]);
+			}else{
+				return response()->json(['status' => 0]);			
+			}
+		});
 	}
 
 	public function hapus($id){
@@ -359,6 +362,9 @@ class PengeluaranBarangController extends Controller
 			}else{
 				$cari_id_pbg += 1;
 			}
+			if ($request->jumlah_setuju[$i] == '') {
+				$request->jumlah_setuju[$i] = 0;
+			}
 			$create_pbg = DB::table('pengeluaran_barang_gudang')
 						->insert([
 							'pbg_pbd_id' 	  => $request->pbd_id[$i],
@@ -478,6 +484,8 @@ class PengeluaranBarangController extends Controller
 												'sm_spptb'		=> $data->pb_nota,
 												'created_at'	=> Carbon::now(),
 												'updated_at'	=> Carbon::now(),
+												'created_by'	=> Auth::user()->m_name,
+												'updated_by'	=> Auth::user()->m_name,
 												'sm_po'			=> $cari_id_pbg,
 												'sm_id_gudang'	=> $request->nama_gudang[$i],
 												'sm_sisa'		=> 0,
@@ -498,8 +506,9 @@ class PengeluaranBarangController extends Controller
 												'psm_pb_id' => $request->id,
 												'psm_harga' => $cari_sm_use->sm_hpp,
 												'psm_sm_id' => $cari_id_sm,
-												'psm_qty'   => $cari_sm_use->sm_use,
+												'psm_qty'   => $sm_use_new,
 												'psm_item'  => $cari_sm_use->sm_item,
+												'psm_total' => $cari_sm_use->sm_hpp * $cari_sm_use->sm_use,
 												'psm_sm_po' => $cari_sm[$a]->sm_po
 											]);
 
