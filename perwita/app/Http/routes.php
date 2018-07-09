@@ -2027,6 +2027,16 @@ Route::get('master_keuangan/buku_besar/pdf/single/{throtle}', [
 // buku besar
 
 
+// register jurnal
+  
+  Route::post('master_keuangan/register_jurnal/single', [
+    'uses' => 'master_keuangan\laporan\laporan_register_jurnal@print_pdf_register_single',
+    'as'   => 'register_jurnal.index_single'
+  ]);
+
+// end register jurnal
+
+
 //kelompok akun
 Route::get('master_keuangan/kelompok_akun', 'master_keuangan\kelompok_akun_Controller@index');
 Route::get('master_keuangan/kelompok_akun/tabel', 'master_keuangan\kelompok_akun_Controller@table_data');
