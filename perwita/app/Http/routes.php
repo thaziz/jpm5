@@ -331,6 +331,7 @@ Route::get('fakturpembelian/append_vendor', 'pembayaran_vendor_controller@append
 Route::get('fakturpembelian/save_vendor', 'pembayaran_vendor_controller@save_vendor');
 Route::get('fakturpembelian/vendor_um', 'pembayaran_vendor_controller@vendor_um');
 Route::post('fakturpembelian/save_vendor_um', 'pembayaran_vendor_controller@save_vendor_um');
+Route::get('fakturpembelian/cari_do_vendor_edit', 'pembayaran_vendor_controller@cari_do_vendor_edit');
 
 
 //BIAYA PENERUS KAS

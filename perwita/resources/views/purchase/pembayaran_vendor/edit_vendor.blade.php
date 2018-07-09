@@ -84,12 +84,42 @@
               <table class="table table_vendor">
                 {{ csrf_field() }}
                 <tr>
+                  <td> Cabang </td>
+                  @if(Auth::user()->punyaAkses('Faktur Pembelian','cabang'))
+                  <td class="cabang_td">  
+                    <select class="form-control chosen-select-width cabang" name="cabang">
+                    @foreach($cabang as $cabang)
+                      <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
+                    @endforeach
+                    </select>
+                  </td>
+                  @else
+                  <td class="disabled"> 
+                    <select class="form-control chosen-select-width disabled cabang" name="cabang">
+                  @foreach($cabang as $cabang)
+                      <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
+                  @endforeach
+                    </select> 
+                  </td>
+                  @endif
+                </tr>
+                <tr>
+                  <td width="150px">
+                    No Faktur
+                  </td>
+                  <td>
+                  <input type="text" value="{{$bp->fp_nofaktur}}" class="form-control nofaktur" name="nofaktur" required="" readonly="">
+                  <input type="hidden" value="{{$bp->fp_idfaktur}}" class="form-control idfaktur" name="idfaktur" required="" readonly="">
+                  <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                  </td>
+                </tr>
+                <tr>
                   <td>Tanggal</td>
-                  <td><input type="text" readonly="" value="{{$bp->fp_tgl}}" class="form-control tanggal_vendor" name="tanggal_vendor"></td>
+                  <td><input type="text" readonly="" value="{{carbon\carbon::parse($bp->fp_tgl)->format('d/m/Y')}}" class="form-control tanggal_vendor tgl" name="tanggal_vendor"></td>
                 </tr>
                 <tr>
                   <td>Jatuh Tempo</td>
-                  <td><input type="text" readonly="" value="{{$bp->fp_jatuhtempo}}" class="form-control jatuh_tempo_vendor" name="jatuh_tempo_vendor"></td>
+                  <td><input type="text" readonly="" value="{{carbon\carbon::parse($bp->fp_jatuhtempo)->format('d/m/Y')}}" class="form-control jatuh_tempo_vendor" name="jatuh_tempo_vendor"></td>
                 </tr>
                 <tr>
                   <td>Status</td>
@@ -97,22 +127,22 @@
                 </tr>
                 <tr>
                   <td>Vendor</td>
-                  <td class="nama_vendor_td">
+                  <td class="disabled">
                     <select class="form-control chosen-select-width-vendor nama_vendor_baru nama_vendor" name="nama_vendor">
                       <option value="0">Pilih - Vendor</option>
                       @foreach ($vendor as $val)
-                        <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                        <option @if($bp->fp_supplier == $val->kode) selected="" @endif value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                       @endforeach
                     </select>
                   </td>
                 </tr>
                 <tr>
                   <td>No Invoice</td>
-                  <td><input type="text" class="form-control no_invoice" name="no_invoice"></td>
+                  <td><input type="text" value="{{$bp->fp_noinvoice}}" class="form-control no_invoice" name="no_invoice"></td>
                 </tr>
                 <tr>
                   <td>Keterangan</td>
-                  <td><input type="text" class="form-control keterangan" name="Keterangan_biaya"></td>
+                  <td><input type="text" value="{{$bp->fp_keterangan}}" class="form-control keterangan" name="Keterangan_biaya"></td>
                 </tr>
                 <tr>
                   <td>Total Biaya</td>
@@ -121,9 +151,9 @@
                 <tr>
                   <td colspan="2">
                     <button type="button" class="btn btn-primary tambah_data_vendor" ><i class="fa fa-plus"> Tambah Data</i></button>
-                    <button type="button" class="btn btn-success simpan_data_vendor disabled" ><i class="fa fa-save"> Simpan Data</i></button>
+                    <button type="button" class="btn btn-success simpan_data_vendor disabled" ><i class="fa fa-save"> Update Data</i></button>
                     <button type="button" class="btn btn-warning tt_vendor" ><i class="fa fa-book"> Form Tanda Terima</i></button>
-                    <button type="button"  class="btn btn-primary uang_muka_vendor disabled" ><i class="fa fa-money"> Uang Muka</i></button>
+                    <button type="button"  class="btn btn-primary uang_muka_vendor" ><i class="fa fa-money"> Uang Muka</i></button>
                     <button type="button" onclick="print_penerus()"  class="btn btn-danger pull-right print_vendor" ><i class="fa fa-print"></i></button>
                   </td>
                 </tr>
@@ -167,6 +197,9 @@ $('.tangal_vendor').datepicker({
   format:'dd/mm/yyyy'
 });
 
+$('.tgl').datepicker({
+  format:'dd/mm/yyyy'
+});
 $('.jatuh_tempo_vendor').datepicker({
   format:'dd/mm/yyyy'
 });
@@ -210,9 +243,10 @@ for (var selector in config_vendor) {
 $('.tambah_data_vendor').click(function(){
   var nama_vendor = $('.nama_vendor').val();
   var cabang    = $('.cabang').val();
+  var id    = {{$id}};
   $.ajax({
-      url : baseUrl + '/fakturpembelian/cari_do_vendor',
-      data : {cabang,nama_vendor,array_simpan},
+      url : baseUrl + '/fakturpembelian/cari_do_vendor_edit',
+      data : {id,cabang,nama_vendor,array_simpan},
       type : "get",
       success : function(response){
       $('.vendor_div').html(response);
