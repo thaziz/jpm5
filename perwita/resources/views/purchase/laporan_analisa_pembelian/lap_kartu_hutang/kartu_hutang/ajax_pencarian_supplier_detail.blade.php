@@ -117,10 +117,10 @@
       <th  align="right" class="hut_baru hut_baru_{{ $is }}"></th>
       <th  align="right" class="hut_voc hut_voc_{{ $is }}"></th>
       <th  align="right" class="not_kredit not_kredit_{{ $is }}"></th>
-      <th  align="right" ></th>
-      <th  align="right" ></th>
-      <th  align="right" ></th>
-      <th  align="right" ></th>
+      <th  align="right" class="b_cash b_cash_{{ $is }}"></th>
+      <th  align="right" class="cek_bg cek_bg_{{ $is }}"></th>
+      <th  align="right" class="return_beli return_beli_{{ $is }}"></th>
+      <th  align="right" class="no_debet no_debet_{{ $is }}"></th>
       <th  align="right" class="grand grand_{{ $is }}"></th>
   </tr>
   @endforeach

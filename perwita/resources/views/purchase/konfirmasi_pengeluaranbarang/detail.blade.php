@@ -167,11 +167,19 @@ margin-right: 80px;
                                     <td align="center"><span class="jumlah_digudang">{{$jumlah[$i][$a]['qty']}}</span></td>
                                     <td align="center">
                                       @if($gudang[$i][$a]['mg_namagudang'] != 'null')
-                                      <input type="text" value="" class="jumlah_setuju form-control" style="width: 50px"  name="jumlah_setuju[]">
+                                      <input
+                                      @if($jumlah[$i][$a]['qty'] == 0)
+                                      readonly=""
+                                      @endif
+                                       type="text" value="0" class="jumlah_setuju form-control" style="width: 50px"  name="jumlah_setuju[]">
                                       <input type="hidden" value="{{$gudang[$i][$a]['sg_id']}}" class="form-control" style="width: 50px"  name="sg_id[]">
                                       @else
-                                      <input type="text" class="jumlah_setuju form-control" style="width: 50px" value="" readonly=""  name="jumlah_setuju[]">
-                                      <input type="hidden" value="0" class="form-control" style="width: 50px"  name="sg_id[]">
+                                      <input 
+                                      @if($jumlah[$i][$a]['qty'] == 0)
+                                      readonly=""
+                                      @endif
+                                       type="text" class="jumlah_setuju form-control" style="width: 50px" value="0" readonly=""  name="jumlah_setuju[]">
+                                      <input type="hidden" value="" class="form-control" style="width: 50px"  name="sg_id[]">
                                       @endif
                                     </td>
                                   </tr>
@@ -216,7 +224,12 @@ margin-right: 80px;
 @section('extra_scripts')
 <script type="text/javascript">
   
-
+$('.jumlah_setuju').maskMoney({
+    precision : 0,
+    thousands:'.',
+    allowZero:true,
+    defaultZero: true
+});
 
     $('.date').datepicker({
         autoclose: true,

@@ -206,11 +206,11 @@ $('.append_vendor').click(function(){
       	$('.nama_vendor_td').addClass('disabled');
       	$('.cabang_td').addClass('disabled');
       	$('.v_tarif_vendor').maskMoney({
-		    precision : 0,
-		    thousands:'.',
-		    allowZero:true,
-		    defaultZero: true
-		});
+    		    precision : 0,
+    		    thousands:'.',
+    		    allowZero:true,
+    		    defaultZero: true
+    		});
 		$('#modal_show_vendor').modal('hide');
       },error:function(){
         toastr.warning('Terjadi Kesalahan');

@@ -8,7 +8,6 @@
             <th>Tanggal</th>
             <th>Ref</th>
             <th>Akun Biaya</th>
-            <th>Nama Akun</th>
             <th>Catatan</th>
             <th>Debet</th>
             <th>Kredit</th>
@@ -20,14 +19,10 @@
             <tr>
               <td>{{$val->pc_no_trans}}</td>
               <td><?php echo date('d/m/Y',strtotime($val->pc_tgl));?></td>
-              
               <td>{{$val->jenisbayar}}</td>
               <td>{{$val->pc_akun}}</td>
-              
-              <td>{{$val->nama_akun}}</td>
-
               <td>{{$val->pc_keterangan}}</td>
-              <td align="right">0</td>
+              <td align="right">{{ number_format($val->pc_debet,0,'','.')}}</td>
               <td align="right">{{ number_format($val->pc_kredit,0,'','.')}}</td>
               <td>{{$val->pc_user}}</td>
             </tr>

@@ -75,7 +75,10 @@ Route::post('setting/hak_akses/save_data', 'setting\hak_akses_Controller@save_da
 Route::post('setting/hak_akses/hapus_data', 'setting\hak_akses_Controller@hapus_data');
 Route::post('setting/hak_akses/edit_hak_akses', 'setting\hak_akses_Controller@edit_hak_akses');
 // end hak_akses
-
+// synchronize jurnal
+Route::get('setting/sync_jurnal', 'selaras_jurnal@sync_jurnal');
+Route::get('setting/sync_jurnal/biaya_penerus_kas', 'selaras_jurnal@biaya_penerus_kas');
+Route::get('setting/sync_jurnal/bukti_kas_keluar', 'selaras_jurnal@bukti_kas_keluar');
 
 //***PEMBELIAN
 //***PEMBELIAN
@@ -395,11 +398,13 @@ Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
 Route::get('ikhtisar_kas/create', 'ikhtisarController@create');
 Route::get('ikhtisar_kas/nota', 'ikhtisarController@nota');
 Route::get('ikhtisar_kas/cari_patty', 'ikhtisarController@cari_patty');
+Route::get('ikhtisar_kas/tes', 'ikhtisarController@tes');
 Route::get('ikhtisar_kas/simpan', 'ikhtisarController@simpan');
 Route::get('ikhtisar_kas/edit/{id}', 'ikhtisarController@edit');
 Route::get('ikhtisar_kas/update', 'ikhtisarController@update');
 Route::get('ikhtisar_kas/hapus/{id}', 'ikhtisarController@hapus');
 Route::get('ikhtisar_kas/print/{id}', 'ikhtisarController@cetak');
+Route::get('ikhtisar_kas/datatable_ikhtisar', 'ikhtisarController@datatable_ikhtisar')->name('datatable_ikhtisar');
 
 
 
@@ -2701,6 +2706,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
   Route::get('sales/tarif_vendor/hapus_data', 'tarif\tarif_vendorController@hapus_data');
   Route::get('sales/tarif_vendor/hapus_data_perkota', 'tarif\tarif_vendorController@hapus_data_perkota');
   Route::get('sales/tarif_vendor/cabang_vendor', 'tarif\tarif_vendorController@cabang_vendor')->name('cabang_vendor');
+  Route::get('sales/tarif_vendor/check_kontrak_vendor', 'tarif\tarif_vendorController@check_kontrak_vendor')->name('check_kontrak_vendor');
   // end tarif cabang VENDOR
 
   Route::get('master_sales/group_customer','master_sales\grup_customer_Controller@index');
@@ -2947,6 +2953,10 @@ Route::get('sales/laporan','laporanutamaController@seluruhlaporan');
 
 Route::get('logout', 'mMemberController@logout');
 
+//mutasi piutang
+Route::get('laporan_pembelian/mutasi_hutang', 'laporan_pembelian\mutasi_hutang_Controller@index');
+Route::get('laporan_pembelian/mutasi_hutang/tampil_data', 'laporan_pembelian\mutasi_hutang_Controller@tampil_mutasi_hutang');
+// end mutasi piutang
 
 // //pembelian
 // Route::get('reportbayarkas/reportbayarkas', 'LaporanPurchaseController@reportbayarkas');

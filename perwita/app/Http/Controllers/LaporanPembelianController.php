@@ -1063,7 +1063,12 @@ class LaporanPembelianController extends Controller
 	}
 
 
-	//-----
+	//-- LAPORAN MUTASI HUTANG
+
+
+ 	
+
+	//-- END LAPORAN
 
 
 
