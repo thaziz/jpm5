@@ -310,7 +310,7 @@ Route::get('fakturpembelian/pilih_kontrak', 'BiayaPenerusController@pilih_kontra
 Route::get('fakturpembelian/pilih_kontrak_all', 'BiayaPenerusController@pilih_kontrak_all');
 Route::get('fakturpembelian/caripodsubcon', 'BiayaPenerusController@caripodsubcon');
 Route::get('fakturpembelian/subcon_save', 'BiayaPenerusController@subcon_save');
-Route::get('fakturpembelian/subcon_save', 'BiayaPenerusController@subcon_save');
+Route::post('fakturpembelian/subcon_save', 'BiayaPenerusController@subcon_save');
 Route::get('fakturpembelian/subcon_update', 'BiayaPenerusController@subcon_update');
 Route::get('master_subcon/cari_kontrak', 'BiayaPenerusController@cari_kontrak');
 Route::get('fakturpembelian/getpembayaransubcon', 'BiayaPenerusController@getpembayaransubcon')->name('getpembayaransubcon');

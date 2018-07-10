@@ -878,7 +878,7 @@ function save_subcon(){
 		data:subcon.$('input').serialize()
 			 +'&'+$('.head1 :input').serialize()
 			 +'&'+$('.head_subcon :input').serialize(),
-		type:'GET',
+		type:'post',
       success:function(response){
 
 
