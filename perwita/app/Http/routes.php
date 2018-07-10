@@ -1184,6 +1184,7 @@ Route::get('master_sales/customer/tabel', 'master_sales\customer_Controller@tabl
 Route::get('master_sales/customer/get_data', 'master_sales\customer_Controller@get_data');
 Route::get('master_sales/customer/save_data', 'master_sales\customer_Controller@save_data');
 Route::post('master_sales/customer/hapus_data', 'master_sales\customer_Controller@hapus_data');
+Route::get('master_sales/customer/check_status', 'master_sales\customer_Controller@check_status');
 // end customer
 
 
@@ -2955,10 +2956,11 @@ Route::get('sales/laporan','laporanutamaController@seluruhlaporan');
 
 Route::get('logout', 'mMemberController@logout');
 
-//mutasi piutang
+//mutasi hutang
 Route::get('laporan_pembelian/mutasi_hutang', 'laporan_pembelian\mutasi_hutang_Controller@index');
 Route::get('laporan_pembelian/mutasi_hutang/cari_ajax_mutasi_hutang', 'laporan_pembelian\mutasi_hutang_Controller@cari_ajax_mutasi_hutang')->name('cari_ajax_mutasi_hutang');
-// end mutasi piutang
+Route::get('laporan_pembelian/mutasi_hutang/cari_ajax_mutasi_hutang_detail', 'laporan_pembelian\mutasi_hutang_Controller@cari_ajax_mutasi_hutang_detail')->name('cari_ajax_mutasi_hutang_detail');
+// end mutasi hutang
 
 // //pembelian
 // Route::get('reportbayarkas/reportbayarkas', 'LaporanPurchaseController@reportbayarkas');

@@ -100,6 +100,7 @@
                         <td>
                           <select class="chosen-select-width" name="laporan" id="laporan" style="pointer-events: none">
                             <option value="mutasi" selected="">Mutasi Hutang</option>
+                            <option value="mutasi_detail" selected="">Mutasi Hutang Detail</option>
                           </select>
                         </td>
 
@@ -231,18 +232,23 @@
   var akun = $('#akun').val();
   var laporan = $('#laporan').val();
 
- if (laporan == 'Rekap per supplier') {
-  alert('a');
- }else if (laporan == 'Rekap per supplier Detail') {
+if (laporan == 'mutasi_detail') {
+   
+    $.ajax({
+      data:$('#search').serialize(),
+      type:'get',
+      url:("{{ route('cari_ajax_mutasi_hutang_detail') }}"),
+      success : function(data){
+         
+        $('#disini').html(data);
+        $('#container').hide();
 
-  alert('b');
- }else if (laporan == 'Rekap per akun') {
+             
+      }
+    });
 
-  alert('c');
- }else if (laporan == 'Rekap per akun Detail') {
 
-  // alert('d');
- }
+ }else if (laporan == 'mutasi') {
     $.ajax({
       data:$('#search').serialize(),
       type:'get',
@@ -350,12 +356,9 @@
             sisaum += hasil_sisaum;
           })
           $('.output_sisaum').text(accounting.formatMoney(sisaum,"",0,'.',','));
-
-          
-
-
-      } 
-    })
+        } 
+      })
+    }
  }
 
 

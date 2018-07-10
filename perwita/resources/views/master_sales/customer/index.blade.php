@@ -77,6 +77,7 @@
                                 <th> Alamat </th>
                                 <th> Kota </th>
                                 <th> Telpon </th>
+                                <th> Status </th>
                                 <th> Aksi </th>
                             </tr>
                         </thead>
@@ -248,7 +249,7 @@
                                         <select class="select2_single form-control"  name="status_pic"   style="width: 100% !important;">
                                             <option>Pilih - Status</option>
                                             <option value="AKTIF">Aktif</option>
-                                            <option value="NON-AKTID">Non-aktif</option>    
+                                            <option value="NON-AKTIF">Non-aktif</option>    
                                         </select>
                                     </td>
                                 </tr>
@@ -361,25 +362,21 @@
 <script type="text/javascript">
     $(document).ready( function () {
         $('#table_data').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": false,
-            "responsive": true,
-            "autoWidth": false,
-            "pageLength": 10,
-            "retrieve" : true,
-            "ajax": {
-              "url" :  baseUrl + "/master_sales/customer/tabel",
-              "type": "GET"
+            processing: true,
+            // responsive:true,
+            serverSide: true,
+            ajax: {
+                url:baseUrl + "/master_sales/customer/tabel",
+                "type": "GET"
             },
+            
             "columns": [
             { "data": "kode" },
             { "data": "nama" },
             { "data": "alamat" },
             { "data": "kota" },
             { "data": "telpon" },
+            { "data": "active" },
             { "data": "button" },
             ]
         });
@@ -516,209 +513,47 @@
      
         if ($nama_member == '' || $nama_member == null) 
         {
-            Command: toastr["warning"]("Nama Member Tidak boleh kosong", "Peringatan")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
+            toastr.error("Nama Member Tidak boleh kosong", "Peringatan !")
             return false;
         }
         if ($alamat_member == '' || $alamat_member == null) 
         {
-            Command: toastr["warning"]("Alamat Member Tidak boleh kosong", "Peringatan")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
+            toastr.error("Alamat Member Tidak boleh kosong", "Peringatan !")
             return false;
         }
         if ($plafon == '' || $plafon == null) 
         {
-            Command: toastr["warning"]("Plafon Tidak boleh kosong", "Peringatan")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
+            toastr.error("Plafon Tidak boleh kosong", "Peringatan !")
             return false;
         }
         if ($nama_pic == '' || $nama_pic == null) 
         {
-            Command: toastr["warning"]("Nama PIC Tidak boleh kosong", "Peringatan")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
+            toastr.error("Nama PIC Tidak boleh kosong", "Peringatan !")
             return false;
         }
         if ($alamat_pic == '' || $alamat_pic == null) 
         {
-            Command: toastr["warning"]("Alamat PIC Tidak boleh kosong", "Peringatan")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
+            toastr.error("Alamat PIC Tidak boleh kosong", "Peringatan !")
             return false;
         }
         if ($ed_acc_piutang == '' || $ed_acc_piutang == null) 
         {
-            Command: toastr["warning"]("Akun Piutang Tidak boleh kosong", "Peringatan")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
+            toastr.error("Akun Piutang Tidak boleh kosong", "Peringatan !")
             return false;
         }
          if ($ed_csf_piutang == '' || $ed_csf_piutang == null) 
-        {
-            Command: toastr["warning"]("Csf Piutang Tidak boleh kosong", "Peringatan")
-            
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
+        {            
+            toastr.error("Csf Piutang Tidak boleh kosong", "Peringatan !")
             return false;
         }
         if ($nama_pajak == '' || $nama_pajak == null) 
         {
-            Command: toastr["warning"]("Nama Pajak Tidak boleh kosong", "Peringatan")
-            
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
+            toastr.error("Nama Pajak Tidak boleh kosong", "Peringatan !")
             return false;
         }
         if ($alamat_pajak == '' || $alamat_pajak == null) 
         {
-            Command: toastr["warning"]("Alamat Pajak Tidak boleh kosong", "Peringatan")
-            
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
+            toastr.error("Alamat Pajak Tidak boleh kosong", "Peringatan !")
             return false;
         }
         
@@ -761,6 +596,40 @@
             }
         });
     });
+
+
+    function check(p) {
+
+    var par     = $(p).parents('tr');
+    var kode    = $(par).find('.kode').val();
+    var check   = $(par).find('.check').is(':checked');
+
+    $.ajax({
+      url:baseUrl + '/master_sales/customer/check_status',
+      data:{kode,check},
+      type:'get',
+      success:function(data){
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Diupdate",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload(null,false);
+                  });
+      },
+      error:function(data){
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+        });
+      }
+    });
+    }
 
     $(document).on( "click",".btndelete", function() {
         var name = $(this).attr("name");

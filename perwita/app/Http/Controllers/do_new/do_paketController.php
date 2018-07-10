@@ -195,38 +195,99 @@ class do_paketController extends Controller
     public function cari_vendor_deliveryorder_paket(Request $request)
     {
         // dd($request->all());
-    	$asal = $request->a;
+      $asal = $request->a;
       $tujuan = $request->b;
       $cabang = $request->c;
       $jenis = $request->d;
-      if ($jenis == '' || $jenis == null) {
-        $vendor = DB::table('tarif_vendor')
-                ->select('vendor.nama','jenis','tujuan.nama as tuj','asal.nama as as','id_tarif_vendor','id_kota_asal_vendor','id_kota_tujuan_vendor','tarif_vendor.cabang_vendor','kode','tarif_vendor','waktu_vendor')
-                ->leftjoin('vendor','tarif_vendor.vendor_id','=','vendor.kode')
-                ->leftjoin('kota as asal','tarif_vendor.id_kota_asal_vendor','=','asal.id')
-                ->leftjoin('kota as tujuan','tarif_vendor.id_kota_tujuan_vendor','=','tujuan.id')
-                ->where('id_kota_asal_vendor','=',$asal)
-                ->where('id_kota_tujuan_vendor','=',$tujuan)
-                ->where('tarif_vendor.cabang_vendor','=',$cabang)
-                ->where('status','=','ya')
-                ->get();
-      }else{
-        $vendor = DB::table('tarif_vendor')
-                ->select('vendor.nama','jenis','tujuan.nama as tuj','asal.nama as as','id_tarif_vendor','id_kota_asal_vendor','id_kota_tujuan_vendor','tarif_vendor.cabang_vendor','kode','tarif_vendor','waktu_vendor')
-                ->leftjoin('vendor','tarif_vendor.vendor_id','=','vendor.kode')
-                ->leftjoin('kota as asal','tarif_vendor.id_kota_asal_vendor','=','asal.id')
-                ->leftjoin('kota as tujuan','tarif_vendor.id_kota_tujuan_vendor','=','tujuan.id')
-                ->where('id_kota_asal_vendor','=',$asal)
-                ->where('id_kota_tujuan_vendor','=',$tujuan)
-                ->where('tarif_vendor.cabang_vendor','=',$cabang)
-                ->where('jenis','=',$jenis)
-                ->where('status','=','ya')
-                ->get();
-      }
+      $type = $request->e;
+      $berat = $request->f;
 
-    	
+      //jenis jika kosong
+      if ($jenis != '' || $jenis != null ) {
+          $jenis_sql = "and tarif_vendor.jenis = '$request->d'";
+      }else{
+          $jenis_sql = '';
+      }        
+
+      if ($type == 'DOKUMEN') {
+         $vendor = DB::select("SELECT vendor.nama,jenis,tujuan.nama as tuj,asal.nama as as,id_tarif_vendor,id_kota_asal_vendor,id_kota_tujuan_vendor,
+                                    tarif_vendor.cabang_vendor,kode,tarif_dokumen as tarif_vendor,waktu_vendor,tarif_vendor.status from tarif_vendor 
+                                        left join vendor on tarif_vendor.vendor_id = vendor.kode
+                                        left join kota as asal on tarif_vendor.id_kota_asal_vendor = asal.id
+                                        left join kota as tujuan on tarif_vendor.id_kota_tujuan_vendor = tujuan.id
+                                        where id_kota_asal_vendor = $asal
+                                        and id_kota_tujuan_vendor = $tujuan
+                                        and tarif_vendor.cabang_vendor = '$cabang'
+                                        and tarif_vendor.status = 'ya'
+                                        $jenis_sql
+                                    ");
+      }else if($type == 'KILOGRAM'){
+        if ($berat < 10) {
+            $vendor = DB::select("SELECT vendor.nama,jenis,tujuan.nama as tuj,asal.nama as as,id_tarif_vendor,id_kota_asal_vendor,id_kota_tujuan_vendor,
+                                        tarif_vendor.cabang_vendor,kode,(tarif_vendor*$berat) as tarif_vendor,waktu_vendor,tarif_vendor.status from tarif_vendor 
+                                            left join vendor on tarif_vendor.vendor_id = vendor.kode
+                                            left join kota as asal on tarif_vendor.id_kota_asal_vendor = asal.id
+                                            left join kota as tujuan on tarif_vendor.id_kota_tujuan_vendor = tujuan.id
+                                            where id_kota_asal_vendor = $asal
+                                            and id_kota_tujuan_vendor = $tujuan
+                                            and tarif_vendor.cabang_vendor = '$cabang'
+                                            and tarif_vendor.status = 'ya'
+                                            and keterangan = 'Tarif Kertas / Kg'
+                                            $jenis_sql
+                                    ");
+        }else if($berat == 10){
+            $vendor = DB::select("SELECT vendor.nama,jenis,tujuan.nama as tuj,asal.nama as as,id_tarif_vendor,id_kota_asal_vendor,id_kota_tujuan_vendor,
+                                        tarif_vendor.cabang_vendor,kode,tarif_vendor,waktu_vendor,tarif_vendor.status from tarif_vendor 
+                                            left join vendor on tarif_vendor.vendor_id = vendor.kode
+                                            left join kota as asal on tarif_vendor.id_kota_asal_vendor = asal.id
+                                            left join kota as tujuan on tarif_vendor.id_kota_tujuan_vendor = tujuan.id
+                                            where id_kota_asal_vendor = $asal
+                                            and id_kota_tujuan_vendor = $tujuan
+                                            and tarif_vendor.cabang_vendor = '$cabang'
+                                            and tarif_vendor.status = 'ya'
+                                            and keterangan = 'Tarif <= 10 Kg'
+                                            $jenis_sql
+                                    ");
+        }else if ($berat > 10) {
+            $cari_vendor10kg = DB::select("SELECT tarif_vendor from tarif_vendor 
+                                            left join vendor on tarif_vendor.vendor_id = vendor.kode
+                                            left join kota as asal on tarif_vendor.id_kota_asal_vendor = asal.id
+                                            left join kota as tujuan on tarif_vendor.id_kota_tujuan_vendor = tujuan.id
+                                            where id_kota_asal_vendor = $asal
+                                            and id_kota_tujuan_vendor = $tujuan
+                                            and tarif_vendor.cabang_vendor = '$cabang'
+                                            and tarif_vendor.status = 'ya'
+                                            and keterangan = 'Tarif <= 10 Kg'
+                                            $jenis_sql
+                                    ");
+
+            $vendor = DB::select("SELECT vendor.nama,jenis,tujuan.nama as tuj,asal.nama as as,id_tarif_vendor,id_kota_asal_vendor,id_kota_tujuan_vendor,
+                                            tarif_vendor.cabang_vendor,kode,((tarif_vendor*($berat-10))+".$cari_vendor10kg[0]->tarif_vendor.") as tarif_vendor,waktu_vendor,tarif_vendor.status from tarif_vendor 
+                                            left join vendor on tarif_vendor.vendor_id = vendor.kode
+                                            left join kota as asal on tarif_vendor.id_kota_asal_vendor = asal.id
+                                            left join kota as tujuan on tarif_vendor.id_kota_tujuan_vendor = tujuan.id
+                                            where id_kota_asal_vendor = $asal
+                                            and id_kota_tujuan_vendor = $tujuan
+                                            and tarif_vendor.cabang_vendor = '$cabang'
+                                            and tarif_vendor.status = 'ya'
+                                            and keterangan = 'Tarif Kg selanjutnya <= 10 Kg'
+                                            $jenis_sql
+                                    ");
+
+        }
+      }
     	// return $vendor;
     	return view('sales.do_new.ajax_modal_vendor',compact('vendor'));
+    }
+//REPLACE HARGA VENDOR
+    public function replace_vendor_deliveryorder_paket(Request $request)
+    {
+        $vendor = $request->a;
+
+        $data = DB::table('tarif_vendor')->join('vendor','vendor.kode','=','tarif_vendor.vendor_id')->where('id_tarif_vendor','=',$vendor)->get();
+
+        return response()->json($data);
+
     }
 
 
@@ -613,11 +674,7 @@ class do_paketController extends Controller
                         ->get();
                 }
             }
-            // return $request->berat;
-            // return $jenis;
-            // return $tarif;
-            // return count($biaya_penerus);
-
+    
             if ($tarif != null) {
                 if (count($biaya_penerus) < 1){
                     $biaya_penerus = DB::table('tarif_penerus_default')
@@ -626,20 +683,15 @@ class do_paketController extends Controller
                         ->where('tipe_kiriman', '=', 'KOLI')
                         ->get();
 
-                            // return count($biaya_penerus);
-
                     if (count($biaya_penerus) < 1){
                         $biaya_penerus = 0;
                     } else {
                         $biaya_penerus = $biaya_penerus[0]->tarif_penerus;
                     }
                 } else {
-                        // return count($biaya_penerus);
                     $biaya_penerus = $biaya_penerus[0]->tarif_penerus;
                 }
-                // return $tipe;
-                // return count($biaya_penerus);
-                // return $biaya_penerus;
+            
                 return response()->json([
                     'biaya_penerus' => $biaya_penerus,
                     'harga' => $tarif[0]->harga,
@@ -655,277 +707,486 @@ class do_paketController extends Controller
             }
         }
 //============= SEPEDA START ===================================================\\
+        elseif ($tipe == 'SEPEDA'){
 
+            $jenisSepeda = $request->sepeda;
+            $beratSepeda = $request->berat_sepeda;
+            $totalHarga = null;
+            $biaya_penerus = null;
+            $acc_penjualan = null;
+
+            for ($i = 0; $i < count($jenisSepeda); $i++){
+
+                if ($jenisSepeda[$i] == 'SEPEDA'){
+                    $tarif = DB::table('tarif_cabang_sepeda')
+                        ->select('harga', 'acc_penjualan')
+                        ->where('id_kota_asal', '=', $asal)
+                        ->where('id_kota_tujuan', '=', $tujuan)
+                        ->where('kode_cabang', '=', $cabang)
+                        ->where('jenis', '=', 'sepeda_pancal')
+                        ->get();
+
+                    $penerus = DB::table('tarif_penerus_sepeda')
+                        ->join('zona', 'id_zona', '=', 'sepeda')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_sepeda', '=', $tujuan)
+                        ->where('id_kecamatan_sepeda', '=', $kecamatan)
+                        ->get();
+
+                    if (count($penerus) < 1){
+                        $penerus = DB::table('tarif_penerus_default')
+                            ->select('harga as tarif_penerus')
+                            ->where('jenis', '=', 'REGULER')
+                            ->where('tipe_kiriman', '=', 'SEPEDA')
+                            ->get();
+
+                        if (count($penerus) < 1){
+                            $penerus = 0;
+                        } else {
+                            $penerus = $penerus[0]->tarif_penerus;
+                        }
+                    }
+                    // return $penerus; 
+
+                    if ($tarif != null) {
+                        $totalHarga = $totalHarga + $tarif[0]->harga;
+                            if ($penerus != null) {
+                                $biaya_penerus = $biaya_penerus + $penerus[0]->tarif_penerus;
+                            }else{
+                                $biaya_penerus = $biaya_penerus + $penerus;
+                            }
+                        $acc_penjualan = $tarif[0]->acc_penjualan;
+                    }
+                    else{
+                        return response()->json([
+                            'status' => 'kosong'
+                        ]);
+                    }
+                } elseif ($jenisSepeda[$i] == 'SPORT'){
+                    $tarif = DB::table('tarif_cabang_sepeda')
+                        ->select('harga', 'acc_penjualan')
+                        ->where('id_kota_asal', '=', $asal)
+                        ->where('id_kota_tujuan', '=', $tujuan)
+                        ->where('kode_cabang', '=', $cabang)
+                        ->where('jenis', '=', 'laki_sport')
+                        ->get();
+
+                    $penerus = DB::table('tarif_penerus_sepeda')
+                        ->join('zona', 'id_zona', '=', 'sport')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_sepeda', '=', $tujuan)
+                        ->where('id_kecamatan_sepeda', '=', $kecamatan)
+                        ->get();
+
+                    if (count($penerus) < 1){
+                        $penerus = DB::table('tarif_penerus_default')
+                            ->select('harga as tarif_penerus')
+                            ->where('jenis', '=', 'REGULER')
+                            ->where('tipe_kiriman', '=', 'SEPEDA')
+                            ->get();
+
+                        if (count($penerus) < 1){
+                            $penerus = 0;
+                        } else {
+                            $penerus = $penerus[0]->tarif_penerus;
+                        }
+                    } else {
+                        $penerus = $penerus[0]->tarif_penerus;
+                    }
+
+                    if ($tarif != null) {
+                        $totalHarga = $totalHarga + $tarif[0]->harga;
+                        $biaya_penerus = $biaya_penerus + $penerus;
+                        $acc_penjualan = $tarif[0]->acc_penjualan;
+                    }
+                    else{
+                        return response()->json([
+                            'status' => 'kosong'
+                        ]);
+                    }
+                } elseif ($jenisSepeda[$i] == 'BETIC'){
+                    $tarif = DB::table('tarif_cabang_sepeda')
+                        ->select('harga', 'acc_penjualan')
+                        ->where('id_kota_asal', '=', $asal)
+                        ->where('id_kota_tujuan', '=', $tujuan)
+                        ->where('kode_cabang', '=', $cabang)
+                        ->where('jenis', '=', 'bebek_matik')
+                        ->get();
+
+                     $penerus = DB::table('tarif_penerus_sepeda')
+                        ->join('zona', 'id_zona', '=', 'matik')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_sepeda', '=', $tujuan)
+                        ->where('id_kecamatan_sepeda', '=', $kecamatan)
+                        ->get();
+
+                        
+                    if (count($penerus) < 1){
+                        $penerus = DB::table('tarif_penerus_default')
+                            ->select('harga as tarif_penerus')
+                            ->where('jenis', '=', 'REGULER')
+                            ->where('tipe_kiriman', '=', 'SEPEDA')
+                            ->get();
+
+                        if (count($penerus) < 1){
+                            $penerus = 0;
+                        } else {
+                            $penerus = $penerus[0]->tarif_penerus;
+                        }
+                    } else {
+                        $penerus = $penerus[0]->tarif_penerus;
+                    }
+
+                    if ($tarif != null) {
+                        $totalHarga = $totalHarga + $tarif[0]->harga;
+                        $biaya_penerus = $biaya_penerus + $penerus;
+                        $acc_penjualan = $tarif[0]->acc_penjualan;
+                    }
+                    else{
+                        return response()->json([
+                            'status' => 'kosong'
+                        ]);
+                    }
+                } elseif ($jenisSepeda[$i] == 'MOGE'){
+                    $tarif = DB::table('tarif_cabang_sepeda')
+                        ->select('harga', 'acc_penjualan')
+                        ->where('id_kota_asal', '=', $asal)
+                        ->where('id_kota_tujuan', '=', $tujuan)
+                        ->where('kode_cabang', '=', $cabang)
+                        ->where('jenis', '=', 'moge')
+                        ->get();
+
+                    $penerus = DB::table('tarif_penerus_sepeda')
+                        ->join('zona', 'id_zona', '=', 'moge')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_sepeda', '=', $tujuan)
+                        ->where('id_kecamatan_sepeda', '=', $kecamatan)
+                        ->get();
+
+                    if (count($penerus) < 1){
+                        $penerus = DB::table('tarif_penerus_default')
+                            ->select('harga as tarif_penerus')
+                            ->where('jenis', '=', 'REGULER')
+                            ->where('tipe_kiriman', '=', 'SEPEDA')
+                            ->get();
+
+                        if (count($penerus) < 1){
+                            $penerus = 0;
+                        } else {
+                            $penerus = $penerus[0]->tarif_penerus;
+                        }
+                    } else {
+                        $penerus = $penerus[0]->tarif_penerus;
+                    }
+
+                    if ($tarif != null) {
+                        $totalHarga = $totalHarga + $tarif[0]->harga;
+                        $biaya_penerus = $biaya_penerus + $penerus;
+                        $acc_penjualan = $tarif[0]->acc_penjualan;
+
+                    }
+                    else{
+                        return response()->json([
+                            'status' => 'kosong'
+                        ]);
+                    }
+                }
+            }
+
+            if ($biaya_penerus == null) {
+                $penerus = DB::table('tarif_penerus_default')
+                    ->select('harga')
+                    ->where('jenis', '=', 'REGULER')
+                    ->where('tipe_kiriman', '=', $tipe)
+                    ->where('cabang_default')
+                    ->get();
+
+                if (count($penerus) > 0){
+                    $biaya_penerus = $penerus[0]->harga;
+                } else {
+                    $biaya_penerus = 0;
+                }
+            }
+            return response()->json([
+                'biaya_penerus' => $biaya_penerus,
+                'harga' => $totalHarga,
+                'acc_penjualan' => $acc_penjualan,
+                'tipe' => $tipe,
+                'jenis' => $jenisSepeda,
+
+            ]);
+        }
 
         
     }
 
-//REPLACE HARGA VENDOR
-    public function replace_vendor_deliveryorder_paket(Request $request)
-    {
-    	$vendor = $request->a;
 
-    	$data = DB::table('tarif_vendor')->join('vendor','vendor.kode','=','tarif_vendor.vendor_id')->where('id_tarif_vendor','=',$vendor)->get();
-
-    	return response()->json($data);
-
-    }
 
 //SAVE DATA
     public function save_deliveryorder_paket(Request $request)
     {
-      // dd($request->all());
-      $simpan = '';
+      DB::beginTransaction();
+      try {
+          $simpan = '';
 
-      $kota_asal = $request->do_kota_asal;
-      $jumlah = 1;
-      $jml_unit = null;
-      if ($request->type_kiriman == 'KILOGRAM' || $request->type_kiriman == 'KERTAS') {
-          $jumlah = filter_var($request->do_berat, FILTER_SANITIZE_NUMBER_INT);
-          $kode_satuan = 'KG';
-      } else if ($request->type_kiriman == 'KOLI') {
-          $jumlah = filter_var($request->do_koli, FILTER_SANITIZE_NUMBER_INT);
-          $kode_satuan = 'KOLI';
-      } else if ($request->type_kiriman == 'KARGO PAKET' || $request->type_kiriman == 'KARGO KERTAS') {
-          $kode_satuan = 'KARGO';
-      } else if ($request->type_kiriman == 'DOKUMEN') {
-          $kode_satuan = 'DOKUMEN';
-      } else if ($request->type_kiriman == 'SEPEDA') {
-          $kode_satuan = 'SEPEDA';
-      }
+          $kota_asal = $request->do_kota_asal;
+          $jumlah = 1;
+          $jml_unit = null;
+          if ($request->type_kiriman == 'KILOGRAM' || $request->type_kiriman == 'KERTAS') {
+              $jumlah = filter_var($request->do_berat, FILTER_SANITIZE_NUMBER_INT);
+              $kode_satuan = 'KG';
+          } else if ($request->type_kiriman == 'KOLI') {
+              $jumlah = filter_var($request->do_koli, FILTER_SANITIZE_NUMBER_INT);
+              $kode_satuan = 'KOLI';
+          } else if ($request->type_kiriman == 'KARGO PAKET' || $request->type_kiriman == 'KARGO KERTAS') {
+              $kode_satuan = 'KARGO';
+          } else if ($request->type_kiriman == 'DOKUMEN') {
+              $kode_satuan = 'DOKUMEN';
+          } else if ($request->type_kiriman == 'SEPEDA') {
+              $kode_satuan = 'SEPEDA';
+          }
 
-      $select_akun = DB::table('d_akun')
-                   ->where('id_akun','like','1303'.'%')
-                   ->where('kode_cabang',$request->do_cabang)
-                   ->first();
+          $select_akun = DB::table('d_akun')
+                       ->where('id_akun','like','1303'.'%')
+                       ->where('kode_cabang',$request->do_cabang)
+                       ->first();
 
-      if ($select_akun == null) {
-          $dataInfo = ['status' => 'gagal', 'info' => 'Akun Piutang Pada Cabang Ini Belum Tersedia'];
-          return json_encode($dataInfo);
-      }else{
-        $akun_piutang = $select_akun->id_akun;
-      }
-      //cek nama username/user
-      $namanama  = Auth::user()->m_nama;
-      if ($namanama == null) {
+          if ($select_akun == null) {
+              $dataInfo = ['status' => 'gagal', 'info' => 'Akun Piutang Pada Cabang Ini Belum Tersedia'];
+              return json_encode($dataInfo);
+          }else{
+            $akun_piutang = $select_akun->id_akun;
+          }
+          //cek nama username/user
           $namanama  = Auth::user()->m_nama;
-      }else{
-          $namanama  = Auth::user()->m_username;
-      }
+          if ($namanama == null) {
+              $namanama  = Auth::user()->m_nama;
+          }else{
+              $namanama  = Auth::user()->m_username;
+          }
 
-      if ($request->kontrak_tr == '') {
-          $bol_kon = false;
-      }else{
-          $bol_kon = $request->kontrak_tr;
-      }
-      if ($request->kontrak_cus == '') {
-          $cus_kon = 0;
-      }else{
-          $cus_kon = $request->kontrak_cus;
-      }
-      if ($request->kontrak_cus_dt == '') {
-          $cus_kon_dt = 0;
-      }else{
-          $cus_kon_dt = $request->kontrak_cus_dt;
-      }
+          if ($request->kontrak_tr == '') {
+              $bol_kon = false;
+          }else{
+              $bol_kon = $request->kontrak_tr;
+          }
+          if ($request->kontrak_cus == '') {
+              $cus_kon = 0;
+          }else{
+              $cus_kon = $request->kontrak_cus;
+          }
+          if ($request->kontrak_cus_dt == '') {
+              $cus_kon_dt = 0;
+          }else{
+              $cus_kon_dt = $request->kontrak_cus_dt;
+          }
 
-      if ($request->do_jenis_ppn == 2) {
-          $ppn_value = $request->do_jml_ppn;
-          $ppn_bol = true;
-      }else{
-          $ppn_value = 0;
-          $ppn_bol = false;
-      }
+          if ($request->do_jenis_ppn == 2) {
+              $ppn_value = $request->do_jml_ppn;
+              $ppn_bol = true;
+          }else{
+              $ppn_value = 0;
+              $ppn_bol = false;
+          }
 
-      $data = array(
-                'nomor' => strtoupper($request->do_nomor),
-                'tanggal' => $request->do_tanggal,
-                'catatan_admin' => '-',
-                'id_kota_asal' => $request->do_kota_asal,
-                'id_kota_tujuan' => $request->do_kota_tujuan,
-                'id_kecamatan_tujuan' => $request->do_kecamatan_tujuan,
-                'pendapatan' => $request->pendapatan,
-                'type_kiriman' => $request->type_kiriman,
-                'jenis_pengiriman' => $request->jenis_kiriman,
-                'kode_tipe_angkutan' => $request->do_angkutan,
-                'no_surat_jalan' => strtoupper($request->do_surat_jalan),
-                'nopol' => strtoupper($request->do_nopol),
-                'lebar' => filter_var($request->do_lebar, FILTER_SANITIZE_NUMBER_INT),
-                'panjang' => filter_var($request->do_panjang, FILTER_SANITIZE_NUMBER_INT),
-                'tinggi' => filter_var($request->do_tinggi, FILTER_SANITIZE_NUMBER_INT),
-                'berat' => filter_var($request->do_berat, FILTER_SANITIZE_NUMBER_INT),
-                'koli' => filter_var($request->do_koli, FILTER_SANITIZE_NUMBER_INT),
-                'kode_outlet' => $request->do_outlet,
-                'kode_cabang' => $request->do_cabang,
-                'tarif_dasar' => filter_var($request->do_tarif_dasar, FILTER_SANITIZE_NUMBER_INT),
-                'tarif_penerus' => filter_var($request->do_tarif_penerus, FILTER_SANITIZE_NUMBER_INT),
-                'biaya_tambahan' => filter_var($request->do_biaya_tambahan, FILTER_SANITIZE_NUMBER_INT),
-                'biaya_komisi' => filter_var($request->do_biaya_komisi, FILTER_SANITIZE_NUMBER_INT),
-                'kode_customer' => $request->do_customer,
-                'kode_marketing' => $request->do_marketing,
-                'ppn_val' => filter_var($ppn_value, FILTER_SANITIZE_NUMBER_INT),
-                'ppn' => $ppn_bol,
-                'company_name_pengirim' => strtoupper($request->do_company_name_pengirim),
-                'nama_pengirim' => strtoupper($request->do_nama_pengirim),
-                'alamat_pengirim' => strtoupper($request->do_alamat_pengirim),
-                'kode_pos_pengirim' => strtoupper($request->do_kode_pos_pengirim),
-                'telpon_pengirim' => strtoupper($request->do_telpon_pengirim),
-                'company_name_penerima' => strtoupper($request->do_company_name_penerima),
-                'nama_penerima' => strtoupper($request->do_nama_penerima),
-                'alamat_penerima' => strtoupper($request->do_alamat_penerima),
-                'kode_pos_penerima' => strtoupper($request->do_kode_pos_penerima),
-                'telpon_penerima' => strtoupper($request->do_telpon_penerima),
-                'instruksi' => strtoupper($request->do_instruksi),
-                'deskripsi' => strtoupper($request->do_deskripsi),
-                'jenis_pembayaran' => strtoupper($request->do_jenis_pembayaran),
-                'total' => filter_var($request->do_tarif_dasar, FILTER_SANITIZE_NUMBER_INT),
-                'diskon' => filter_var($request->do_diskon_v, FILTER_SANITIZE_NUMBER_INT),
-                'diskon_value' => filter_var($request->do_diskon_p, FILTER_SANITIZE_NUMBER_INT),
-                'jenis' => 'PAKET',
-                'kode_satuan' => $kode_satuan,
-                'jumlah' => $jumlah,
-                'jenis_ppn' => $request->do_jenis_ppn,
-                'acc_penjualan' => $request->acc_penjualan,
-                'acc_piutang_do'        => $akun_piutang,
-                'csf_piutang_do'        => $akun_piutang,
-                'created_by'        => $namanama,
-                'updated_by'        => $namanama,
-                'total_vendo'        => filter_var($request->do_vendor, FILTER_SANITIZE_NUMBER_INT),
-                'total_dpp'        => filter_var($request->do_dpp, FILTER_SANITIZE_NUMBER_INT),
-                'kontrak'        =>  $bol_kon,
-                'kontrak_cus'        => $cus_kon,
-                'kontrak_cus_dt'        => $cus_kon_dt,
-                'tarif_vendor_bol' =>$request->tarif_vendor_bol,
-                'id_tarif_vendor' =>$request->id_tarif_vendor,
-                'nama_tarif_vendor' =>$request->nama_tarif_vendor,
-                'created_at' =>carbon::now(),
-                'created_by' =>auth::user()->m_name,
-                'total_net' => filter_var($request->do_total_h, FILTER_SANITIZE_NUMBER_INT),
-      );
-    DB::table('delivery_order')->insert($data);
-    //end save do
-
-
-    //simpan update status status 
-    $increment = DB::table('u_s_order_do')->max('id');
-
-    if ($increment == 0) {
-        $increment = 1;
-    }else{
-        $increment += 1;
-    }
-
-    $data1 = array(
-        'no_do' => strtoupper($request->do_nomor),
-        'status' => 'MANIFESTED',
-        'nama' => strtoupper($request->do_nama_pengirim),
-        'catatan' => '-',
-        'asal_barang' => $request->do_kota_asal,
-        'id'=>$increment,
-    );
-    $simpan = DB::table('u_s_order_do')->insert($data1);
-
-    // $totalJurnal = $this->formatRP($request->ed_tarif_dasar) + $this->formatRP($request->ed_tarif_penerus) + $this->formatRP($request->ed_biaya_tambahan) - $this->formatRP($request->ed_diskon_h) + $this->formatRP($request->ed_biaya_komisi);
-    
-    // //auto number
-
-    // if ($data['nomor'] == '') {
-    //     $tanggal = strtoupper($request->ed_tanggal);
-    //     $kode_cabang = strtoupper($request->cb_cabang);
-    //     $tanggal = date_create($tanggal);
-    //     $tanggal = date_format($tanggal, 'ym');
-    //     $sql = "SELECT CAST(MAX(SUBSTRING (nomor FROM '....$')) AS INTEGER) + 1 nomor
-    //             FROM delivery_order WHERE to_char(tanggal, 'YYMM')='$tanggal' AND kode_cabang='$kode_cabang' AND jenis='PAKET'
-    //             AND nomor LIKE '%PAK" . $kode_cabang . $tanggal . "%' ";
-    //     $list = collect(\DB::select($sql))->first();
-    //     if ($list->nomor == '') {
-    //         //$data['nomor']='SJT-'.$kode_cabang.'-'.$tanggal.'-00001';
-    //         $data['nomor'] = 'PAK' . $kode_cabang . $tanggal . '00001';
-    //     } else {
-    //         $kode = substr_replace('00000', $list->nomor, -strlen($list->nomor));
-    //         $data['nomor'] = 'PAK' . $kode_cabang . $tanggal . $kode;
-    //     }
-    // }
-    // // end auto number
-    // //====== untuk non customer
-    // if ($request->cb_customer == 'CS/001') {
-    //     //$cabang=substr($request->cb_cabang,1);
-    //     $valueJurnal = filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT);
-
-    //     $cabang = $request->cb_cabang;
-    //     $akunKas = master_akun::
-    //     select('id_akun', 'nama_akun')
-    //         ->where('id_akun', 'like', '1003%')
-    //         ->where('kode_cabang', $cabang)
-    //         ->orderBy('id_akun')
-    //         ->first();
-
-    //     $akunDana = master_akun::
-    //     select('id_akun', 'nama_akun')
-    //         ->where('id_akun', 'like', '%2001%')
-    //         ->where('kode_cabang', $cabang)
-    //         ->orderBy('id_akun')
-    //         ->first();
+          $data = array(
+                    'nomor' => strtoupper($request->do_nomor),
+                    'tanggal' => $request->do_tanggal,
+                    'catatan_admin' => '-',
+                    'id_kota_asal' => $request->do_kota_asal,
+                    'id_kota_tujuan' => $request->do_kota_tujuan,
+                    'id_kecamatan_tujuan' => $request->do_kecamatan_tujuan,
+                    'pendapatan' => $request->pendapatan,
+                    'type_kiriman' => $request->type_kiriman,
+                    'jenis_pengiriman' => $request->jenis_kiriman,
+                    'kode_tipe_angkutan' => $request->do_angkutan,
+                    'no_surat_jalan' => strtoupper($request->do_surat_jalan),
+                    'nopol' => strtoupper($request->do_nopol),
+                    'lebar' => filter_var($request->do_lebar, FILTER_SANITIZE_NUMBER_INT),
+                    'panjang' => filter_var($request->do_panjang, FILTER_SANITIZE_NUMBER_INT),
+                    'tinggi' => filter_var($request->do_tinggi, FILTER_SANITIZE_NUMBER_INT),
+                    'berat' => filter_var($request->do_berat, FILTER_SANITIZE_NUMBER_INT),
+                    'koli' => filter_var($request->do_koli, FILTER_SANITIZE_NUMBER_INT),
+                    'kode_outlet' => $request->do_outlet,
+                    'kode_cabang' => $request->do_cabang,
+                    'tarif_dasar' => filter_var($request->do_tarif_dasar, FILTER_SANITIZE_NUMBER_INT),
+                    'tarif_penerus' => filter_var($request->do_tarif_penerus, FILTER_SANITIZE_NUMBER_INT),
+                    'biaya_tambahan' => filter_var($request->do_biaya_tambahan, FILTER_SANITIZE_NUMBER_INT),
+                    'biaya_komisi' => filter_var($request->do_biaya_komisi, FILTER_SANITIZE_NUMBER_INT),
+                    'kode_customer' => $request->do_customer,
+                    'kode_marketing' => $request->do_marketing,
+                    'ppn_val' => filter_var($ppn_value, FILTER_SANITIZE_NUMBER_INT),
+                    'ppn' => $ppn_bol,
+                    'company_name_pengirim' => strtoupper($request->do_company_name_pengirim),
+                    'nama_pengirim' => strtoupper($request->do_nama_pengirim),
+                    'alamat_pengirim' => strtoupper($request->do_alamat_pengirim),
+                    'kode_pos_pengirim' => strtoupper($request->do_kode_pos_pengirim),
+                    'telpon_pengirim' => strtoupper($request->do_telpon_pengirim),
+                    'company_name_penerima' => strtoupper($request->do_company_name_penerima),
+                    'nama_penerima' => strtoupper($request->do_nama_penerima),
+                    'alamat_penerima' => strtoupper($request->do_alamat_penerima),
+                    'kode_pos_penerima' => strtoupper($request->do_kode_pos_penerima),
+                    'telpon_penerima' => strtoupper($request->do_telpon_penerima),
+                    'instruksi' => strtoupper($request->do_instruksi),
+                    'deskripsi' => strtoupper($request->do_deskripsi),
+                    'jenis_pembayaran' => strtoupper($request->do_jenis_pembayaran),
+                    'total' => filter_var($request->do_tarif_dasar, FILTER_SANITIZE_NUMBER_INT),
+                    'diskon' => filter_var($request->do_diskon_v, FILTER_SANITIZE_NUMBER_INT),
+                    'diskon_value' => filter_var($request->do_diskon_p, FILTER_SANITIZE_NUMBER_INT),
+                    'jenis' => 'PAKET',
+                    'kode_satuan' => $kode_satuan,
+                    'jumlah' => $jumlah,
+                    'jenis_ppn' => $request->do_jenis_ppn,
+                    'acc_penjualan' => $request->acc_penjualan,
+                    'acc_piutang_do'        => $akun_piutang,
+                    'csf_piutang_do'        => $akun_piutang,
+                    'created_by'        => $namanama,
+                    'updated_by'        => $namanama,
+                    'total_vendo'        => filter_var($request->do_vendor, FILTER_SANITIZE_NUMBER_INT),
+                    'total_dpp'        => filter_var($request->do_dpp, FILTER_SANITIZE_NUMBER_INT),
+                    'kontrak'        =>  $bol_kon,
+                    'kontrak_cus'        => $cus_kon,
+                    'kontrak_cus_dt'        => $cus_kon_dt,
+                    'tarif_vendor_bol' =>$request->tarif_vendor_bol,
+                    'id_tarif_vendor' =>$request->id_tarif_vendor,
+                    'nama_tarif_vendor' =>$request->nama_tarif_vendor,
+                    'created_at' =>carbon::now(),
+                    'created_by' =>auth::user()->m_name,
+                    'total_net' => filter_var($request->do_total_h, FILTER_SANITIZE_NUMBER_INT),
+          );
+        DB::table('delivery_order')->insert($data);
+        //end save do
 
 
-    //     if (count($akunKas) == 0) {
-    //         $dataInfo = ['status' => 'gagal', 'info' => 'Akun Kas Untuk Cabang Belum Tersedia'];
-    //         return json_encode($dataInfo);
+        //simpan update status status 
+        $increment = DB::table('u_s_order_do')->max('id');
 
-    //     } else if (count($akunDana) == 0) {
-    //         $dataInfo = ['status' => 'gagal', 'info' => 'Akun Dana Untuk Cabang Belum Tersedia'];
-    //         return json_encode($dataInfo);
-    //     }
-
-
-    //     $akun[0]['id_akun'] = $akunKas->id_akun;
-    //     $akun[0]['value'] = $valueJurnal;
-    //     $akun[0]['dk'] = 'D';
-
-
-    //     $akun[1]['id_akun'] = $akunDana->id_akun;
-    //     $akun[1]['value'] = $valueJurnal;
-    //     $akun[1]['dk'] = 'K';
-
-
-    //     $nomor = $data['nomor'];
-
-    //     $id_jurnal = d_jurnal::max('jr_id') + 1;
-    //     foreach ($akun as $key => $detailData) {
-    //         $id_jrdt = $key;
-    //         $jurnal_dt[$key]['jrdt_jurnal'] = $id_jurnal;
-    //         $jurnal_dt[$key]['jrdt_detailid'] = $id_jrdt + 1;
-    //         $jurnal_dt[$key]['jrdt_acc'] = $detailData['id_akun'];
-    //         $jurnal_dt[$key]['jrdt_value'] = $detailData['value'];
-    //         $jurnal_dt[$key]['jrdt_statusdk'] = $detailData['dk'];
-    //     }
-
-    //     d_jurnal::create([
-    //         'jr_id' => $id_jurnal,
-    //         'jr_year' => date('Y', strtotime($request->ed_tanggal)),
-    //         'jr_date' => date('Y-m-d', strtotime($request->ed_tanggal)),
-    //         'jr_detail' => 'DELIVERY ORDER' . ' ' . $request->type_kiriman,
-    //         'jr_ref' => $nomor,
-    //         'jr_note' => 'DELIVERY ORDER',
-    //     ]);
-    //     d_jurnal_dt::insert($jurnal_dt);
-
-    // }
-    
-    if ($data['kode_satuan'] == "SEPEDA"){
-        for ($i = 0; $i < $jml_unit; $i++){
-            $dt = new do_dt();
-            $dt->id_do = $data['nomor'];
-            $dt->id_do_dt = $i + 1;
-            $dt->berat = $request->cb_berat_unit[$i];
-            $dt->jenis = $request->cb_jenis_unit[$i];
-            $dt->save();
+        if ($increment == 0) {
+            $increment = 1;
+        }else{
+            $increment += 1;
         }
+
+        $data1 = array(
+            'no_do' => strtoupper($request->do_nomor),
+            'status' => 'MANIFESTED',
+            'nama' => strtoupper($request->do_nama_pengirim),
+            'catatan' => '-',
+            'asal_barang' => $request->do_kota_asal,
+            'id'=>$increment,
+        );
+        $simpan = DB::table('u_s_order_do')->insert($data1);
+
+        // $totalJurnal = $this->formatRP($request->ed_tarif_dasar) + $this->formatRP($request->ed_tarif_penerus) + $this->formatRP($request->ed_biaya_tambahan) - $this->formatRP($request->ed_diskon_h) + $this->formatRP($request->ed_biaya_komisi);
+        
+        // //auto number
+
+        // if ($data['nomor'] == '') {
+        //     $tanggal = strtoupper($request->ed_tanggal);
+        //     $kode_cabang = strtoupper($request->cb_cabang);
+        //     $tanggal = date_create($tanggal);
+        //     $tanggal = date_format($tanggal, 'ym');
+        //     $sql = "SELECT CAST(MAX(SUBSTRING (nomor FROM '....$')) AS INTEGER) + 1 nomor
+        //             FROM delivery_order WHERE to_char(tanggal, 'YYMM')='$tanggal' AND kode_cabang='$kode_cabang' AND jenis='PAKET'
+        //             AND nomor LIKE '%PAK" . $kode_cabang . $tanggal . "%' ";
+        //     $list = collect(\DB::select($sql))->first();
+        //     if ($list->nomor == '') {
+        //         //$data['nomor']='SJT-'.$kode_cabang.'-'.$tanggal.'-00001';
+        //         $data['nomor'] = 'PAK' . $kode_cabang . $tanggal . '00001';
+        //     } else {
+        //         $kode = substr_replace('00000', $list->nomor, -strlen($list->nomor));
+        //         $data['nomor'] = 'PAK' . $kode_cabang . $tanggal . $kode;
+        //     }
+        // }
+        // // end auto number
+        // //====== untuk non customer
+        // if ($request->cb_customer == 'CS/001') {
+        //     //$cabang=substr($request->cb_cabang,1);
+        //     $valueJurnal = filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT);
+
+        //     $cabang = $request->cb_cabang;
+        //     $akunKas = master_akun::
+        //     select('id_akun', 'nama_akun')
+        //         ->where('id_akun', 'like', '1003%')
+        //         ->where('kode_cabang', $cabang)
+        //         ->orderBy('id_akun')
+        //         ->first();
+
+        //     $akunDana = master_akun::
+        //     select('id_akun', 'nama_akun')
+        //         ->where('id_akun', 'like', '%2001%')
+        //         ->where('kode_cabang', $cabang)
+        //         ->orderBy('id_akun')
+        //         ->first();
+
+
+        //     if (count($akunKas) == 0) {
+        //         $dataInfo = ['status' => 'gagal', 'info' => 'Akun Kas Untuk Cabang Belum Tersedia'];
+        //         return json_encode($dataInfo);
+
+        //     } else if (count($akunDana) == 0) {
+        //         $dataInfo = ['status' => 'gagal', 'info' => 'Akun Dana Untuk Cabang Belum Tersedia'];
+        //         return json_encode($dataInfo);
+        //     }
+
+
+        //     $akun[0]['id_akun'] = $akunKas->id_akun;
+        //     $akun[0]['value'] = $valueJurnal;
+        //     $akun[0]['dk'] = 'D';
+
+
+        //     $akun[1]['id_akun'] = $akunDana->id_akun;
+        //     $akun[1]['value'] = $valueJurnal;
+        //     $akun[1]['dk'] = 'K';
+
+
+        //     $nomor = $data['nomor'];
+
+        //     $id_jurnal = d_jurnal::max('jr_id') + 1;
+        //     foreach ($akun as $key => $detailData) {
+        //         $id_jrdt = $key;
+        //         $jurnal_dt[$key]['jrdt_jurnal'] = $id_jurnal;
+        //         $jurnal_dt[$key]['jrdt_detailid'] = $id_jrdt + 1;
+        //         $jurnal_dt[$key]['jrdt_acc'] = $detailData['id_akun'];
+        //         $jurnal_dt[$key]['jrdt_value'] = $detailData['value'];
+        //         $jurnal_dt[$key]['jrdt_statusdk'] = $detailData['dk'];
+        //     }
+
+        //     d_jurnal::create([
+        //         'jr_id' => $id_jurnal,
+        //         'jr_year' => date('Y', strtotime($request->ed_tanggal)),
+        //         'jr_date' => date('Y-m-d', strtotime($request->ed_tanggal)),
+        //         'jr_detail' => 'DELIVERY ORDER' . ' ' . $request->type_kiriman,
+        //         'jr_ref' => $nomor,
+        //         'jr_note' => 'DELIVERY ORDER',
+        //     ]);
+        //     d_jurnal_dt::insert($jurnal_dt);
+
+        // }
+
+            if ($data['kode_satuan'] == "SEPEDA"){
+                $data['jenis_pengiriman'] = 'REGULER';
+                $jml_unit = $request->cb_jml_unit;
+            }
+        
+         if ($data['kode_satuan'] == "SEPEDA"){
+            for ($i = 0; $i < $jml_unit; $i++){
+                $dt = new do_dt();
+                $dt->id_do = $request->do_nomor;
+                $dt->id_do_dt = $i + 1;
+                $dt->berat = $request->cb_berat_unit[$i];
+                $dt->jenis = $request->cb_jenis_unit[$i];
+                $dt->save();
+            }
+         }
+
+
+        return response()->json(['status'=>'sukses']);
+    }catch (\Exception $e) {
+        dd($jml_unit);
+        DB::rollback();
+        return response()->json(['status'=>'gagal']);
     }
-
-
-    return response()->json(['status'=>'sukses']);
-
 
     }
 

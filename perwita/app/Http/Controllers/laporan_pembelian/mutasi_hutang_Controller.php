@@ -10,6 +10,7 @@ use PDF;
 use Auth;
 use Carbon\carbon;
 use Yajra\Datatables\Datatables;    
+use Exception;
 class mutasi_hutang_Controller extends Controller
 {
   
@@ -21,7 +22,7 @@ class mutasi_hutang_Controller extends Controller
         return view('purchase/laporan_analisa_pembelian/lap_mutasi_hutang/lap_mutasi_hutang',compact('supplier','piutang','cabang'));
 	}
 	public function cari_ajax_mutasi_hutang(Request $request){
-		dd($request->all());
+		// dd($request->all());
 		//untuk bbk
 		if ($request->akun != '' || $request->akun != null) {
 			$akun_bbk = " AND bbkd_akunhutang = '".$request->akun."' ";
@@ -375,5 +376,114 @@ class mutasi_hutang_Controller extends Controller
 		// return $data;
         return view('purchase/laporan_analisa_pembelian/lap_mutasi_hutang/ajax_mutasi_hutang/ajax_mutasi_hutang',compact('data'));
 	}
+
+
+	public function cari_ajax_mutasi_hutang_detail(Request $request)
+	{
+		// dd($request->all());
+		$tglawal = $request->min;
+		$tglakhir = $request->max;
+
+		$idakun = '2101';
+
+		$datafp = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$idakun%'");
+
+		$datavc = DB::select("select * from v_hutang where v_tgl BETWEEN '$tglawal' and '$tglakhir' and v_acchutang LIKE '$idakun%'");
+
+
+
+		$nosupplier = [];
+		if($idakun == '2101'){
+				if(count($datafp) != 0){
+					for($g = 1; $g < count($datafp); $g++){
+						$idsup = $datafp[$g]->fp_idsup;
+						try{
+							$datasupplier = DB::select("select * from supplier where idsup = '$idsup'");
+						}catch(Exception $e){
+							return dd($datafp[$g]);
+						}
+						
+						$no_supplier1['no_supplier'] = $datasupplier[0]->no_supplier;
+						$no_supplier1['nama'] = $datasupplier[0]->nama_supplier;
+						array_push($nosupplier , $no_supplier1);
+					}
+				}
+
+				if(count($datavc) != 0){
+					for($j = 0; $j < count($datavc); $j++){
+						$idsup = $datavc[$j]->v_supid;
+						$datasupplier = DB::select("select * from supplier where no_supplier = '$idsup'");
+						
+						$no_supplier1['no_supplier'] = $datasupplier[0]->no_supplier;
+						$no_supplier1['nama'] = $datasupplier[0]->nama_supplier;
+						array_push($nosupplier , $no_supplier1);
+					}
+				}
+
+		}
+		else {
+			if(count($datafp) != 0){
+						for($g = 0; $g < count($datafp); $g++){
+							$idsup = $datafp[$g]->fp_supplier;
+
+							$datasupplier = DB::select("select * from supplier where no_supplier = '$idsup'");
+							$datacustomer = DB::select("select * from agen where kode = '$idsup'");
+							$datavendor = DB::select("select * from vendor where kode = '$idsup'");
+							$datasubcon = DB::select("select * from subcon where kode = '$idsup'");
+							if(count($datacustomer) != 0){
+								$no_supplier['no_supplier'] = $datasupplier[0]->kode;
+								$no_supplier['nama'] = $datasupplier[0]->nama;
+
+							}
+							else if(count($datasupplier) != 0){
+								$no_supplier['no_supplier'] = $datasupplier[0]->no_supplier;
+								$no_supplier['nama'] = $datasupplier[0]->nama_supplier;
+							}
+							else if(count($datavendor) != 0){
+								$no_supplier['no_supplier'] = $datasupplier[0]->kode;
+								$no_supplier['nama'] = $datasupplier[0]->nama;
+							}
+							else if(count($datasubcon) !=0){
+								$no_supplier['no_supplier'] = $datasupplier[0]->kode;
+								$no_supplier['nama'] = $datasupplier[0]->nama;
+							}
+							array_push($nosupplier , $no_supplier);
+						}
+			}
+
+			if(count($datavc) != 0){
+						for($j = 0; $j < count($datavc); $j++){
+							$idsup = $datavc[$j]->v_supid;
+							$datasupplier = DB::select("select * from supplier where no_supplier = '$idsup'");
+							$no_supplier['no_supplier'] = $datasupplier[0]->no_supplier;
+							$no_supplier['nama'] = $datasupplier[0]->nama_supplier;
+							array_push($nosupplier , $no_supplier);
+						}
+					}
+		}
+
+
+		$result_supplier = array();
+		foreach ($nosupplier as &$v) {
+		    if (!isset($result_supplier[$v['no_supplier']]))
+		        $result_supplier[$v['no_supplier']] =& $v;
+		}
+
+		$values = array_values($result_supplier);
+
+		
+		//menghitung saldo awal
+		for($key = 0; $key < count($values); $key++){
+			$datafp = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$idakun%'");
+
+			$datavc = DB::select("select * from v_hutang where v_tgl BETWEEN '$tglawal' and '$tglakhir' and v_acchutang LIKE '$idakun%'");
+		}
+
+		return $values;
+
+
+	}
+
+
 
 }

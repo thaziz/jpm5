@@ -559,7 +559,8 @@
                          Request::is('sales/tarif_cabang_dokumen/*') ? 'active' : ''}} "><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Dokumen</a>
                         </li>
                         @endif
-                        @if(Auth::user()->PunyaAkses('Tarif Penerus Kilogram','aktif'))
+
+                        @if(Auth::user()->PunyaAkses('Tarif Cabang Kilogram','aktif'))
                         <li>
                             <a class="sidebar master-perusahaan 
 
@@ -567,6 +568,7 @@
                          Request::is('sales/tarif_cabang_kilogram/*') ? 'active' : ''}}" href="{{ url('sales/tarif_cabang_kilogram')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Kilogram</a>
                         </li>
                         @endif
+                        
                         @if(Auth::user()->PunyaAkses('Tarif Cabang Koli','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 

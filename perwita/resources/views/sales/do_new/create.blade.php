@@ -215,7 +215,7 @@
                                                 <tr id="jml_unit">
                                                     <td style="padding-top: 0.4cm">Jumlah Unit</td>
                                                     <td colspan="5">
-                                                        <input type="text" class="form-control jmlunit" onkeyup="setJml()" value="0" name="do_jml_unit" style="text-align:right" >
+                                                        <input type="text" class="form-control jmlunit" id="jml_unit" onkeyup="setJml()" value="0" name="do_jml_unit" style="text-align:right" >
                                                     </td>
                                                 </tr>
                                                 
@@ -1010,12 +1010,14 @@ function hitung() {
             var tujuan = $('#do_kota_tujuan').find(':selected').val();
             var cabang = $('#do_cabang').find(':selected').val();
             var jenis = $('#jenis_kiriman').find(':selected').val();
+            var tipe = $('#type_kiriman').find(':selected').val();
+            var berat = $('#do_berat').val();
 
             if ($('.cek_vendor_ya').is(":checked") == true) {
                 $('.do_tarif_penerus').hide();
                 $.ajax({
                 type: "GET",
-                data : {a:asal,b:tujuan,c:cabang,d:jenis},
+                data : {a:asal,b:tujuan,c:cabang,d:jenis,e:tipe,f:berat},
                 url : ('{{ route('cari_vendor_deliveryorder_paket') }}'),
                 success: function(data){   
                     $('#drop').html(data);
@@ -1040,33 +1042,33 @@ function hitung() {
 
 
 //PILIH VENDOR
- function Pilih_vendor(a){
+    function Pilih_vendor(a){
+        //field
         var id_vendor = $(a).find('.id_vendor').val();
+        var vendor_nama = $(a).find('.vendor_nama').val();
+        var vendor_tarif = $(a).find('.tarif_vendor').val();
+        //checklist
+        $("input[name='do_vendor']").prop('readonly',true);
+        $("input[name='do_dpp']").prop('readonly',true);
+        $("input[name='vendor_tarif']").prop('checked'  ,true);
 
-         $.ajax({
-            data: {a:id_vendor},
-            url:('{{ route('replace_vendor_deliveryorder_paket') }}'),
-            type:'get',
-            success:function(data){
-                $("input[name='do_vendor']").prop('readonly',true);
-                $("input[name='do_dpp']").prop('readonly',true);
-                $("input[name='vendor_tarif']").prop('checked'  ,true);
-                $("#modal_vendor").modal("hide");
-                
-
-                if ($('.vendor_tarif').is(':checked') == true) {
-                    $("input[name='do_vendor']").val(accounting.formatMoney(data[0].tarif_vendor,"",0,'.',','));
-                }
-
-                $("input[name='do_tarif_dasar']").val(accounting.formatMoney(data[0].tarif_vendor,"",0,'.',','));
-                hitung();
-
-                $('#id_tarif_vendor').val(data[0].kode);
-                $('#nama_tarif_vendor').val(data[0].nama);
-            }
-        });
+        //hiding
+        $("#modal_vendor").modal("hide");
         
+
+        if ($('.vendor_tarif').is(':checked') == true) {
+            $("input[name='do_vendor']").val(accounting.formatMoney(vendor_tarif,"",0,'.',','));
+        }
+
+        $("input[name='do_tarif_dasar']").val(accounting.formatMoney(vendor_tarif,"",0,'.',','));
+        hitung();
+
+        $('#id_tarif_vendor').val(id_vendor);
+        $('#nama_tarif_vendor').val(vendor_nama);
     }
+        
+        
+    
     
 //SET PPN / CHNGE PPN / GANTI PPN
     function setJmlPPN(){
@@ -1475,6 +1477,17 @@ function hitung() {
 
 // END FORM PER 1 
 
+
+//FORM DO KOLOM  KE 1 TTG SEPEDA
+    function setJml(){
+        var jumlah = $('.jmlunit').val();
+        $('.jenis_unit').remove();
+        var jenis = '<tr id="jenis_unit" class="jenis_unit"><td style="padding-top: 0.4cm">Jenis Unit</td><td colspan="2" class="jenisunit"><select class="form-control jns_unit" name="cb_jenis_unit[]" ><option value="SEPEDA">SEPEDA</option><option value="SPORT">MOTOR SPORT</option><option value="BETIC">MOTOR BEBEK/MATIC</option><option value="MOGE">MOGE</option></select></td><td style="padding-top: 0.4cm">Berat Unit</td><td colspan="2"><input type="text" class="form-control beratunit" name="cb_berat_unit[]" style="text-align:right" ></td></tr>';
+        for (var i = 0; i < jumlah; i++) {
+            $(jenis).insertAfter('#jml_unit');
+        }
+
+    }
 
 
 </script>
