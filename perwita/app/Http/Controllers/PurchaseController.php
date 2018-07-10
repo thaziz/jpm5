@@ -4664,7 +4664,7 @@ public function purchase_order() {
 		                    (select j.jr_id from d_jurnal j where jr_ref='$jurnalRef' and jr_detail = 'UANG MUKA PEMBELIAN FP')"));
 		}
 
-		/*dd($dataumfp);*/
+	/*	dd($data);*/
 		return view('purchase/fatkur_pembelian/detail', compact('data','jurnal_dt', 'jurnal_um', 'dataumfp'));
 	}	
 
@@ -4711,6 +4711,7 @@ public function purchase_order() {
 		$variable = $request->supplier_po;
 		$data = explode(",", $variable);
 		$idsup = $data[0];
+		$kodesupplier2 = $data[4];
 		$netto = str_replace(',', '', $request->nettohutang_po);
 		$nofaktur = $request->no_faktur;
 		$cabang = $request->cabang;
@@ -4741,7 +4742,6 @@ public function purchase_order() {
 				}
 
 			$tandaterima = new tandaterima();
-
 			$tandaterima->tt_idform = $idtt;
 			$tandaterima->tt_tgl = $request->tgl_po;
 			$tandaterima->tt_idsupplier =$idsup;
@@ -4750,11 +4750,10 @@ public function purchase_order() {
 			$tandaterima->tt_suratperan = $request->suratperan;
 			$tandaterima->tt_suratjalanasli = $request->suratjalanasli;
 			$tandaterima->tt_noform = $request->notandaterima2;
+			$tandaterima->tt_lainlain = $request->lainlain_tt2;
 			$tandaterima->tt_tglkembali = $request->jatuhtempo_po;
 			$tandaterima->tt_idcabang = $cabang;
 			$tandaterima->tt_nofp = $nofaktur;
-			$tandaterima->tt_lainlain = $request->lainlain_tt2;
-
 			$tandaterima->save();
 
 
@@ -4785,10 +4784,24 @@ public function purchase_order() {
 					$request->diskon = 0;
 				}
 
+				$datafp = DB::select("select * from faktur_pembelian where fp_nofaktur = '$nofaktur'");
+				if(count($datafp) != 0){
+						$explode = explode("/", $datafp[0]->fp_nofaktur);
+						$idfaktur3 = $explode[2];
+						$string = explode("-", $idfaktur3);
+						$idfaktur2 = $string[1];
+						$idfakturss = (int)$idfaktur2 + 1;
+						$akhirfaktur = str_pad($idfakturss, 3, '0', STR_PAD_LEFT);
+						$nofaktur = $explode[0] .'/' . $explode[1] . '/'  . $string[0] . '-' . $akhirfaktur;
+				}
+				else {
+					$nofaktur = $nofaktur;
+				}
 
-				$datasupplier = DB::select("select * from supplier where idsup = '$idsup'");
+
+				/*$datasupplier = DB::select("select * from supplier where idsup = '$idsup'");
 				$kodesupplier2 = $datasupplier[0]->no_supplier;
-
+*/
 				$fatkurpembeliand = new fakturpembelian();
 				$fatkurpembeliand->fp_idfaktur = $idfaktur; 
 				$fatkurpembeliand->fp_nofaktur = $nofaktur;
@@ -4823,7 +4836,7 @@ public function purchase_order() {
 					$kodepajak2 = $datapph[0]->acc1;
 					$kodepajak = substr($kodepajak2, 0,4);
 
-					$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$kodepajak%' and kode_cabang = '$datacomp2'");
+					$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$kodepajak%' and kode_cabang = '$cabang'");
 					if(count($datakun2) != 0){
 						$acchutang = $datakun2[0]->id_akun;
 						$fatkurpembeliand->fp_accpph = $acchutang;
@@ -4844,7 +4857,7 @@ public function purchase_order() {
 				$fatkurpembeliand->fp_acchutang = $request->acchutangdagang;
 				$fatkurpembeliand->created_by = $request->username;
 				$fatkurpembeliand->updated_by = $request->username;
-				$fatkurpembelian->fp_supplier = $kodesupplier2 ;
+				$fatkurpembeliand->fp_supplier = $kodesupplier2 ;
 				$fatkurpembeliand->save();
 
 
@@ -5618,10 +5631,6 @@ public function purchase_order() {
 		    		}	
 
 			}
-
-			
-
-
 		return json_encode($idfaktur);
 
 		});
@@ -5839,6 +5848,21 @@ public function purchase_order() {
 
 			/*	$tgl = date_format($request->tglitem , "yyyy-m-d");
 				$jatuhtempo - date_format($request->jatuhtempo, "yyyy-m-d");*/
+
+
+				$datafp = DB::select("select * from faktur_pembelian where fp_nofaktur = '$nofaktur'");
+				if(count($datafp) != 0){
+						$explode = explode("/", $datafp[0]->fp_nofaktur);
+						$idfaktur3 = $explode[2];
+						$string = explode("-", $idfaktur3);
+						$idfaktur2 = $string[1];
+						$idfakturss = (int)$idfaktur2 + 1;
+						$akhirfaktur = str_pad($idfakturss, 3, '0', STR_PAD_LEFT);
+						$nofaktur = $explode[0] .'/' . $explode[1] . '/'  . $string[0] . '-' . $akhirfaktur;
+				}
+				else {
+					$nofaktur = $nofaktur;
+				}
 
 
 				$fatkurpembelian = new fakturpembelian();
@@ -9813,7 +9837,9 @@ public function kekata($x) {
 					$explode = explode(",", $request->kodebayar);
 
 					$kodesupplier = $explode[0];
+					$datasupplier = DB::select("select * from supplier where idsup = '$kodesupplier'");
 					$formfpg->fpg_supplier = $kodesupplier;
+					$formfpg->fpg_agen = $datasupplier[0]->no_supplier;
 				}
 				else if($request->jenisbayar == 6 || $request->jenisbayar== 7 || $request->jenisbayar == 9 || $request->jenisbayar == 4 || $request->jenisbayar == 1 || $request->jenisbayar == 3 ){
 					

@@ -976,10 +976,6 @@ class MasterPurchaseController extends Controller
 		$mastersupplier->plafon = $replaceplafon;
 		$mastersupplier->currency = strtoupper($request->matauang);
 		$mastersupplier->pajak_npwp = strtoupper($request->npwp);
-		$mastersupplier->ppn =strtoupper( $request->pajak_ppn);
-		$mastersupplier->pph23 = strtoupper($request->pajak_pph);
-		$mastersupplier->pph26 = strtoupper($request->pajak_26);
-		$mastersupplier->noseri_pajak = strtoupper($request->seripajak);
 		$mastersupplier->kodepos = strtoupper($request->kodepos);
 		$mastersupplier->idcabang = strtoupper($request->cabang);
 		$mastersupplier->status = strtoupper($status);
@@ -988,6 +984,7 @@ class MasterPurchaseController extends Controller
 		$mastersupplier->acc_hutang = $request->acc_hutangdagang;
 		$mastersupplier->acc_csf = $request->acc_csf;
 		$mastersupplier->active = $statusactive;
+		$mastersupplier->nik = $request->nik;
 		if($request->kontrak == 'YA') {
 			$mastersupplier->no_kontrak = strtoupper($request->nokontrak);
 		}
