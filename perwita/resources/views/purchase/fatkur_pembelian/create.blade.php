@@ -131,7 +131,7 @@
                           No Faktur
                             </td>
                             <td>
-                               <input type="text" class="form-control nofaktur" name="nofaktur" required="" readonly="">
+                               <input type="text" class="form-control nofaktur" name="nofaktur" required="">
                                <input type="hidden" class="form-control idfaktur" name="idfaktur" required="" readonly="">
                             
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -392,17 +392,14 @@
                             <td>  <div class='col-xs-3'> Rp </div> <div class='col-xs-9'> <input type='text' class='form-control dpp' readonly="" name='dpp' style="text-align: right">  <input type='hidden' class='form-control dpp2' readonly="" style="text-align: right"></div> </td>
                           </tr>
 
-                           <tr>
-                             <td> Jenis PPn </td> 
-                             <td> <div class='col-xs-4'> <select class='form-control jenisppn' name="jenisppn" style="width:100px"> <option value='T'> Tanpa </option> <option value='E'> Exclude </option> <option value="I"> Include </option>  </select>     </div>
-                             <div clas="col-xs-8">  <button type="button" class="btn btn-sm btn-primary" id="createmodal" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button>  </div> 
-                                     
+                           <tr> 
+                              <td> <button type="button" class="btn btn-sm btn-primary" id="createmodal" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button>      
                               </td>
                           </tr>
 
                           <tr>
                             <td> PPn % </td>
-                            <td > <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputppn" name="inputppn"> </div>  <div class="col-md-8"> <input style='text-align: right' type="text" class="form-control hasilppn" readonly="" name="hasilppn"> </div>  </div> </td>
+                            <td > <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputppn" name="inputppn"> </div>  <div class="col-md-8"> <input style='text-align: right' type="text" class="form-control hasilppn" name="hasilppn"> </div>  </div> </td>
                           </tr>
 
                           <tr>
@@ -412,7 +409,7 @@
                               </option>
 
                                @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}' data-acc="{{$pajak->acc1}}"> {{$pajak->nama}}</option> @endforeach </select> </td>
-                              <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputpph" readonly="" name="inputpph"> </div> <div class="col-md-8"> <input type="text" class="form-control hasilpph" style='text-align: right' readonly="" name='hasilpph'> </div> </div> </td>
+                              <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputpph" readonly="" name="inputpph"> </div> <div class="col-md-8"> <input type="text" class="form-control hasilpph" style='text-align: right'  name='hasilpph'> </div> </div> </td>
                           </tr>
 
                          
@@ -455,123 +452,8 @@
 
                         </table>
 
-                          <!-- FORM TANA TERIMA -->
-                              <div class="modal fade" id="myModal_TT" tabindex="-1" role="dialog"  aria-hidden="true">
-                                <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
-                                        <span aria-hidden="true">&times;</span>
-                                        <span class="sr-only">Close</span>
-                                      </button>                     
-                                      <h4 class="modal-title" style="text-align: center;"> 
-                                       </h4>     
-                                    </div>
-                                                  
-                                    <div class="modal-body">              
-                                    <table class="table table-stripped tabel_tt">
-                                      <tr>
-                                        <td width="150px">
-                                          No Tanda Terima 
-                                        </td>
-                                        <td>
-                                          <input type="text" name="nota_tt" class="input-sm form-control notandaterima" readonly="">
-                                          <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td> Tanggal </td>
-                                        <td>
-                                           <div class="input-group date">
-                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="" readonly="" name="tgl_tt">
-                                          </div>
-                                        </td>
-                                      </tr>
-                                     
-                                      <tr>
-                                        <td> Supplier </td>
-                                        <td> <input type='text' class="form-control supplier_tt" value="" name="supplier_tt" readonly=""></td>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td colspan="2">
-                                           <div class="row">
-                                              <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="Kwitansi" type="checkbox" checked="" name="kwitansi">
-                                                      <label for="Kwitansi">
-                                                          Kwitansi / Invoice / No
-                                                      </label>
-                                                </div> 
-                                              </div>
-                                              <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="FakturPajak" type="checkbox" checked="" name="faktur_pajak">
-                                                      <label for="FakturPajak">
-                                                          Faktur Pajak
-                                                      </label>
-                                                </div> 
-                                              </div>
-
-                                              <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="SuratPerananAsli" type="checkbox" checked="" name="surat_peranan">
-                                                      <label for="SuratPerananAsli">
-                                                          Surat Peranan Asli
-                                                      </label>
-                                                </div> 
-                                              </div>
-
-                                               <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="SuratJalanAsli" type="checkbox" checked="" name="surat_jalan">
-                                                      <label for="SuratJalanAsli">
-                                                         Surat Jalan Asli
-                                                      </label>
-                                                </div> 
-                                              </div>
-                                            </div>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>
-                                         Lain Lain
-                                        </td>
-                                        <td>
-                                        
-                                          <input type="text" class="form-control lainlain_tt" name="lainlain">
-                                        </td>
-                                      </tr>
-
-                                      <tr>
-                                        <td> Tanggal Kembali </td>
-                                        <td>   <div class="input-group">
-                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali">
-                                          </div> </td>
-                                      </tr>
-
-                                      <tr>
-                                        <td>
-                                         Total di Terima
-                                        </td>
-                                        <td> <div class="row"> <div class="col-sm-3"> <label class="col-sm-3 label-control"> Rp </label> </div> <div class="col-sm-9"> <input type="text" class="form-control totalterima_tt" name="total_diterima" style="text-align:right;" readonly=""></div> </div> </td>
-                                      </tr>
-                                     
-                                       </table>                           
-                                               
-                                         </div>
-
-                                      <div class="modal-footer">
-                                          <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-                                          <button type="button" class="btn btn-primary " id="buttonsimpan_tt">
-                                            Simpan
-                                          </button>
-                                         
-                                      </div>
-                                      
-                                  </div>
-                                </div>
-                             </div> 
+                       
+                             
 
                            
 
@@ -595,10 +477,7 @@
                                           <div class="col-sm-6">
                                             <table class='table'>
                                               <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                            <tr>
-                                              <td style="width:120px"> Jenis PPn </td>
-                                              <th> <input type='text' class='input-sm form-control jenisppn_faktur' name='jenisppn_faktur' readonly=""> </th>
-                                            </tr>
+                                         
 
                                               <tr> 
                                                 <td> No Faktur Pajak </td>
@@ -754,7 +633,128 @@
                  
                   </div>
                   </div>
-				  
+				    
+              <!-- FORM TANDA TERIMA -->
+                <form id="form_hasiltt">  
+               <div class="modal fade" id="myModal_TT" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span>
+                                        <span class="sr-only">Close</span>
+                                      </button>                     
+                                      <h4 class="modal-title" style="text-align: center;"> 
+                                       </h4>     
+                                    </div>
+                                                  
+                                    <div class="modal-body">              
+                                    <table class="table table-stripped tabel_tt">
+                                      <tr>
+                                        <td width="150px">
+                                          No Tanda Terima 
+                                        </td>
+                                        <td>
+                                          <input type="text" name="nota_tt" class="input-sm form-control notandaterima" readonly="">
+                                          <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td> Tanggal </td>
+                                        <td>
+                                           <div class="input-group date">
+                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="" readonly="" name="tgl_tt">
+                                          </div>
+                                        </td>
+                                      </tr>
+                                     
+                                      <tr>
+                                        <td> Supplier </td>
+                                        <td> <input type='text' class="form-control supplier_tt" value="" name="supplier_tt" readonly=""></td>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td colspan="2">
+                                           <div class="row">
+                                              <div class="col-sm-3"> 
+                                                <div class="checkbox checkbox-info checkbox-circle">
+                                                    <input id="Kwitansi" type="checkbox" checked="" name="kwitansi">
+                                                      <label for="Kwitansi">
+                                                          Kwitansi / Invoice / No
+                                                      </label>
+                                                </div> 
+                                              </div>
+                                              <div class="col-sm-3"> 
+                                                <div class="checkbox checkbox-info checkbox-circle">
+                                                    <input id="FakturPajak" type="checkbox" checked="" name="faktur_pajak">
+                                                      <label for="FakturPajak">
+                                                          Faktur Pajak
+                                                      </label>
+                                                </div> 
+                                              </div>
+
+                                              <div class="col-sm-3"> 
+                                                <div class="checkbox checkbox-info checkbox-circle">
+                                                    <input id="SuratPerananAsli" type="checkbox" checked="" name="surat_peranan">
+                                                      <label for="SuratPerananAsli">
+                                                          Surat Peranan Asli
+                                                      </label>
+                                                </div> 
+                                              </div>
+
+                                               <div class="col-sm-3"> 
+                                                <div class="checkbox checkbox-info checkbox-circle">
+                                                    <input id="SuratJalanAsli" type="checkbox" checked="" name="surat_jalan">
+                                                      <label for="SuratJalanAsli">
+                                                         Surat Jalan Asli
+                                                      </label>
+                                                </div> 
+                                              </div>
+                                            </div>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                         Lain Lain
+                                        </td>
+                                        <td>
+                                          <input type="text" class="form-control lainlain_tt" name="lainlain">
+                                        </td>
+                                      </tr>
+
+                                      <tr>
+                                        <td> Tanggal Kembali </td>
+                                        <td>   <div class="input-group">
+                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali">
+                                          </div> </td>
+                                      </tr>
+
+                                      <tr>
+                                        <td>
+                                         Total di Terima
+                                        </td>
+                                        <td> <div class="row"> <div class="col-sm-3"> <label class="col-sm-3 label-control"> Rp </label> </div> <div class="col-sm-9"> <input type="text" class="form-control totalterima_tt" name="total_diterima" style="text-align:right;" readonly=""></div> </div> </td>
+                                      </tr>
+                                     
+                                       </table>                           
+                                               
+                                         </div>
+
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
+                                          <button type="button" class="btn btn-primary " id="buttonsimpan_tt">
+                                            Simpan
+                                          </button>
+                                         
+                                      </div>
+                                      
+                                  </div>
+                                </div>
+                             </div> 
+                    </form>
+              <!-- END TANDA TERIMA --> 
+
+
 					    <!-- FORM BAYAR UANG MUKA -->
                 <div class="modal fade" id="bayaruangmuka" tabindex="-1" role="dialog"  aria-hidden="true">
 							  <form method="post" action="{{url('fakturpembelian/bayaruangmuka')}}" enctype="multipart/form-data" class="form-horizontal" id="form_hasilum">  
@@ -1027,19 +1027,18 @@
                                                </td>
                                             </tr>
                                             <tr>
-
-
-                                              <td> Jenis PPn </td>
-                                              <td>  <div class="col-xs-4">  <select class='form-control jenisppn_po' name="jenisppn_po"> <option value='T'> Tanpa </option> <option value='E'> Exclude </option> <option value="I"> Include </option>  </select> </div> <div class="col-xs-6"> &nbsp;  <button type="button" class="btn btn-primary btn-sm" id="createmodal_pajakpo" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button> </div> </td>
-                                            </tr>
-                                            <tr>
                                               <td> DPP </td>
                                               <td> <div class="row"> <div class='col-md-3'> Rp </div> <div class='col-md-9'> <input type='text' class='form-control dpp_po' readonly="" name='dpp_po' style="text-align: right">  <input type='hidden' class='form-control dpp_po2' readonly=""  style="text-align: right">
                                               </div> </div> </td>
                                             </tr>
+
+                                            <tr>
+                                              <td>   <button type="button" class="btn btn-primary btn-sm" id="createmodal_pajakpo" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button>  </td>
+                                            </tr>
+                                            
                                             <tr>
                                               <td> PPn % </td>
-                                              <td> <div class="row">  <div class="col-md-3"> <input type="text" class="form-control inputppn_po" name="inputppn_po"> </div>  <div class="col-md-9"> <input type="text" class="form-control hasilppn_po" readonly=""  style="text-align: right" name="hasilppn_po"> </div> </div>  </td>
+                                              <td> <div class="row">  <div class="col-md-3"> <input type="text" class="form-control inputppn_po" name="inputppn_po"> </div>  <div class="col-md-9"> <input type="text" class="form-control hasilppn_po"   style="text-align: right" name="hasilppn_po"> </div> </div>  </td>
                                             </tr>
 
                                             <tr>
@@ -1047,7 +1046,7 @@
                                                   <option value=""> Pilih Pajak PPH </option>
                                                    @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}'> {{$pajak->nama}}</option> @endforeach </select> </td>
 
-                              <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputpph_po" readonly="" name="inputpph"> </div> <div class="col-md-8"> <input type="text" class="form-control hasilpph_po" style='text-align: right' readonly="" name='hasilpph_po'> </div> </div> </td>
+                              <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputpph_po" readonly="" name="inputpph"> </div> <div class="col-md-8"> <input type="text" class="form-control hasilpph_po" style='text-align: right' name='hasilpph_po'> </div> </div> </td>
                                             </tr>
 
                                           <!--   <tr>
@@ -1107,8 +1106,8 @@
 
 
                                           <!-- TT -->
-                                           <input type='hidden' name='lainlain_tt2' class='lainlain_tt2'>
-                                           <!-- <input type='text' name='notandaterima2' class='notandaterima2'> -->
+                                           <input type='text' name='lainlain_tt2' class='lainlain_tt2'><!-- 
+                                           <input type='hidden' name='notandaterima2' class='notandaterima2'> -->
 
                                         
 
@@ -1691,7 +1690,7 @@
         $('.pajakpph').attr('disabled' , false);
         $('.disc_item').attr('readonly', false);
         $('.tbmh-data-item').attr('disabled' , false);
-        $('.jenisppn').attr('disabled', true);
+        //$('.jenisppn').attr('disabled', true);
         $('#myModal2').modal("toggle" );
          $('.inputfakturpajakmasukan').val('edit');
   })
@@ -2094,7 +2093,7 @@
   //                console.log('year' + year);
                   year2 = tahun.substring(2);
                   //year2 ="Anafaradina";
-                   nofaktur = 'FP' + month + year2 + '/' + cabang + '/' + a + '-' + response.data ;
+                   nofaktur = 'FB' + month + year2 + '/' + cabang + '/' + a + '-' + response.data ;
                   $('.aslinofaktur').val(nofaktur);
                   $('.nofaktur').val(nofaktur);
                   $('.no_faktur').val(nofaktur);
@@ -2513,7 +2512,7 @@
   //                console.log('year' + year);
                   year2 = tahun.substring(2);
                   //year2 ="Anafaradina";
-                   nofaktur = 'FP' + month + year2 + '/' + cabang + '/' + a + '-' + response.data ;
+                   nofaktur = 'FB' + month + year2 + '/' + cabang + '/' + a + '-' + response.data ;
                   $('.aslinofaktur').val(nofaktur);
                   $('.nofaktur').val(nofaktur);
                   $('.no_faktur').val(nofaktur);
@@ -2524,9 +2523,192 @@
           },
         })
     })
+
+    $('.hasilppn').change(function(){
+      val = $(this).val();    
+      val = accounting.formatMoney(val, "", 2, ",",'.');
+      $(this).val(val);
+
+      pph = $('.hasilpph').val();
+      if(pph != ''){
+        dpp = $('.dpp').val();
+        hasilpph = pph.replace(/,/g,'');
+        hasildpp = dpp.replace(/,/g,'');
+        hasilppn = val.replace(/,/g,'');
+
+        hasilnetto = parseFloat(parseFloat(hasildpp) + parseFloat(hasilppn) - parseFloat(hasilpph)).toFixed(2);
+        $('.nettohutang').val(addCommas(hasilnetto));
+        totaljumlah2 = $('.totaljumlah').val();
+              //    alert(totaljumlah2);
+        if(totaljumlah2 != ''){
+          totaljumlah = totaljumlah2.replace(/,/g,'');
+          hslselisihum = parseFloat(parseFloat(hasilnetto) - parseFloat(totaljumlah)).toFixed(2);
+          $('.sisahutang').val(addCommas(hslselisihum));
+        }
+        else {
+          $('.sisahutang').val(addCommas(hasilnetto));
+        }
+      }
+      else {
+        dpp = $('.dpp').val();
+        hasildpp = dpp.replace(/,/g,'');
+        hasilppn = val.replace(/,/g,'');
+        hasilnetto = parseFloat(parseFloat(hasildpp) + parseFloat(hasilppn)).toFixed(2);
+        totaljumlah2 = $('.totaljumlah').val();
+              //    alert(totaljumlah2);
+        $('.nettohutang').val(addCommas(hasilnetto));
+        if(totaljumlah2 != ''){
+          totaljumlah = totaljumlah2.replace(/,/g,'');
+          hslselisihum = parseFloat(parseFloat(hasilnetto) - parseFloat(totaljumlah)).toFixed(2);
+          $('.sisahutang').val(addCommas(hslselisihum));
+        }
+        else {
+          $('.sisahutang').val(addCommas(hasilnetto));
+        }
+      }
+
+
+    })
+
+    $('.hasilppn_po').change(function(){
+      val = $(this).val();
+      val = accounting.formatMoney(val, "", 2, ",",'.');
+      $(this).val(val);
+
+
+      pph = $('.hasilpph_po').val();
+      if(pph != ''){
+        dpp = $('.dpp_po').val();
+        hasilpph = pph.replace(/,/g,'');
+        hasildpp = dpp.replace(/,/g,'');
+        hasilppn = val.replace(/,/g,'');
+
+        hasilnetto = parseFloat(parseFloat(hasildpp) + parseFloat(hasilppn) - parseFloat(hasilpph)).toFixed(2);
+        $('.nettohutang_po').val(addCommas(hasilnetto));
+        totaljumlah2 = $('.totaljumlah').val();
+              //    alert(totaljumlah2);
+        if(totaljumlah2 != ''){
+          totaljumlah = totaljumlah2.replace(/,/g,'');
+          hslselisihum = parseFloat(parseFloat(hasilnetto) - parseFloat(totaljumlah)).toFixed(2);
+          $('.sisahutang_po').val(addCommas(hslselisihum));
+        }
+        else {
+          $('.sisahutang_po').val(addCommas(hasilnetto));
+        }
+      }
+      else {
+        dpp = $('.dpp_po').val();
+        hasildpp = dpp.replace(/,/g,'');
+        hasilppn = val.replace(/,/g,'');
+        hasilnetto = parseFloat(parseFloat(hasildpp) + parseFloat(hasilppn)).toFixed(2);
+        totaljumlah2 = $('.totaljumlah').val();
+              //    alert(totaljumlah2);
+        $('.nettohutang_po').val(addCommas(hasilnetto));
+        if(totaljumlah2 != ''){
+          totaljumlah = totaljumlah2.replace(/,/g,'');
+          hslselisihum = parseFloat(parseFloat(hasilnetto) - parseFloat(totaljumlah)).toFixed(2);
+          $('.sisahutang_po').val(addCommas(hslselisihum));
+        }
+        else {
+          $('.sisahutang_po').val(addCommas(hasilnetto));
+        }
+      }
+
+    })
+
+    $('.hasilpph').change(function(){
+      val = $(this).val();
+      val = accounting.formatMoney(val, "", 2, ",",'.');
+      $(this).val(val);
+
+      ppn = $('.hasilppn').val();
+      if(ppn != ''){
+        dpp = $('.dpp').val();
+        hasildpp = dpp.replace(/,/g,'');
+        hasilppn = ppn.replace(/,/g,'');
+        hasilpph = val.replace(/,/g,'');
+
+        hasilnetto = parseFloat(parseFloat(hasildpp) + parseFloat(hasilppn) - parseFloat(hasilpph)).toFixed(2);
+        $('.nettohutang').val(addCommas(hasilnetto));
+        totaljumlah2 = $('.totaljumlah').val();
+              //    alert(totaljumlah2);
+        if(totaljumlah2 != ''){
+          totaljumlah = totaljumlah2.replace(/,/g,'');
+          hslselisihum = parseFloat(parseFloat(hasilnetto) - parseFloat(totaljumlah)).toFixed(2);
+          $('.sisahutang').val(addCommas(hslselisihum));
+        }
+        else {
+          $('.sisahutang').val(addCommas(hasilnetto));
+        }
+      }else {
+        dpp = $('.dpp').val();
+        hasildpp = dpp.replace(/,/g,'');
+        hasilpph = val.replace(/,/g,'');
+
+        hasilnetto = parseFloat(parseFloat(hasildpp) - parseFloat(hasilpph)).toFixed(2);
+        $('.nettohutang').val(addCommas(hasilnetto));
+
+        totaljumlah2 = $('.totaljumlah').val();
+        if(totaljumlah2 != ''){
+          totaljumlah = totaljumlah2.replace(/,/g,'');
+          hslselisihum = parseFloat(parseFloat(hasilnetto) - parseFloat(totaljumlah)).toFixed(2);
+          $('.sisahutang').val(addCommas(hslselisihum));
+        }
+        else {
+          $('.sisahutang').val(addCommas(hasilnetto));
+        }
+
+      }
+
+    })
+
+    $('.hasilpph_po').change(function(){
+      val = $(this).val();
+      val = accounting.formatMoney(val, "", 2, ",",'.');
+      $(this).val(val);
+      ppn = $('.hasilppn_po').val();
+
+      if(ppn != ''){
+        dpp = $('.dpp_po').val();
+        hasildpp = dpp.replace(/,/g,'');
+        hasilppn = ppn.replace(/,/g,'');
+        hasilpph = val.replace(/,/g,'');
+
+        hasilnetto = parseFloat(parseFloat(hasildpp) + parseFloat(hasilppn) - parseFloat(hasilpph)).toFixed(2);
+        $('.nettohutang_po').val(addCommas(hasilnetto))
+        totaljumlah2 = $('.totaljumlah').val();
+              //    alert(totaljumlah2);
+        if(totaljumlah2 != ''){
+          totaljumlah = totaljumlah2.replace(/,/g,'');
+          hslselisihum = parseFloat(parseFloat(hasilnetto) - parseFloat(totaljumlah)).toFixed(2);
+          $('.sisahutang_po').val(addCommas(hslselisihum));
+        }
+        else {
+          $('.sisahutang_po').val(addCommas(hasilnetto));
+        }
+      }else {
+        dpp = $('.dpp').val();
+        hasildpp = dpp.replace(/,/g,'');
+        hasilpph = val.replace(/,/g,'');
+
+        hasilnetto = parseFloat(parseFloat(hasildpp) - parseFloat(hasilpph)).toFixed(2);
+        $('.nettohutang_po').val(addCommas(hasilnetto))
+        totaljumlah2 = $('.totaljumlah').val();
+
+        if(totaljumlah2 != ''){
+          totaljumlah = totaljumlah2.replace(/,/g,'');
+          hslselisihum = parseFloat(parseFloat(hasilnetto) - parseFloat(totaljumlah)).toFixed(2);
+          $('.sisahutang_po').val(addCommas(hslselisihum));
+        }
+        else {
+          $('.sisahutang_po').val(addCommas(hasilnetto));
+        }
+      }
+    })
+
     //jenisitem di dataitem
      //jenisitem di dataitem
-    $('.jenisppn').change(function(){
+    /*$('.jenisppn').change(function(){
     
         pph = $('.hasilpph').val();
         inputppn = $('.inputppn').val();
@@ -3117,7 +3299,7 @@
 
             }
       }
-    })
+    })*/
 
 
 
@@ -3151,21 +3333,17 @@
         inputppn = $('.inputppn').val();
         replacepph = pph.replace(/,/g,'');
         replaceppn = ppn.replace(/,/g,'');
-        jenisppn = $('.jenisppn').val();
+      
         numeric2 = dpp.replace(/,/g,'');
 
-      if(val == ''){ // PPH KOSONG
-          toastr.info('silahkan pilih pajak pphh :)');
-          
-          if($('.hasilppn').val() != '') { //ppn  tidak kosong
-             hasilpph = 0;
-          if($('.jenisppn').val() == 'E'){
-          
-             ppn = $('.hasilppn').val();
+      if(val == ''){ // PPH KOSONGs
+
+           ppn = $('.hasilppn').val();
+            if(ppn != ''){
              hasilppn = ppn.replace(/,/g,'');
              pph = addCommas(hasiltarif2);
             
-             hasilnetto = parseFloat(parseFloat(hsldpp)+parseFloat(hasilppn) - parseFloat(hasilpph)); 
+             hasilnetto = parseFloat(parseFloat(hsldpp)+parseFloat(hasilppn)); 
              hsl = hasilnetto.toFixed(2);
              $('.nettohutang').val(addCommas(hsl));
            //  $('.sisahutang').val(addCommas(hsl));
@@ -3180,171 +3358,69 @@
               else {
                 $('.sisahutang').val(addCommas(hsl));
               }
-          }
-
-         else if(jenisppn == 'I'){ 
+            }else {
+               hasilppn = ppn.replace(/,/g,'');
+               pph = addCommas(hasiltarif2);
               
-            hargadpp = parseFloat((parseFloat(hsldpp) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                         
-            $('.dpp').val(addCommas(hargadpp));
-            subtotal = $('.dpp').val();
-            subharga = subtotal.replace(/,/g, '');
-            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-     
-            $('.hasilppn').val(addCommas(hargappn));
+               hasilnetto = parseFloat(parseFloat(hsldpp)); 
+               hsl = hasilnetto.toFixed(2);
+               $('.nettohutang').val(addCommas(hsl));
+             //  $('.sisahutang').val(addCommas(hsl));
+            
+               totaljumlah2 = $('.totaljumlah').val();
+            //    alert(totaljumlah2);
+                if(totaljumlah2 != ''){
+                  totaljumlah = totaljumlah2.replace(/,/g,'');
+                  hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                  $('.sisahutang').val(addCommas(hslselisihum));
+                }
+                else {
+                  $('.sisahutang').val(addCommas(hsl));
+                }
+            }
 
-            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-            $('.nettohutang').val(addCommas(total));                 
-            //$('.sisahutang').val(addCommas(total)); 
 
-             totaljumlah2 = $('.totaljumlah').val();
-          //    alert(totaljumlah2);
-              if(totaljumlah2 != ''){
-                totaljumlah = totaljumlah2.replace(/,/g,'');
-                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                $('.sisahutang').val(addCommas(hslselisihum));
-              }
-              else {
-                $('.sisahutang').val(addCommas(total));
-              }
-
-        }
-        else {
-       
-          $('.inputppn').val('');
-          $('.hasilppn').val('');
-          hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasilpph));
-          netto2 = hslnetto.toFixed(2);
-          $('.nettohutang').val(addCommas(netto2));
-          //$('.sisahutang').addCommas(netto2);
-
-          totaljumlah2 = $('.totaljumlah').val();
-          //    alert(totaljumlah2);
-          if(totaljumlah2 != ''){
-            totaljumlah = totaljumlah2.replace(/,/g,'');
-            hslselisihum = parseFloat(parseFloat(netto2) - parseFloat(totaljumlah)).toFixed(2);
-            $('.sisahutang').val(addCommas(hslselisihum));
-          }
-          else {
-            $('.sisahutang').val(addCommas(netto2));
-          }
-
-        }
-      } // end ppn tdk kosong
-      else {
-
-          hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasilpph));
-          netto2 = hslnetto.toFixed(2);
-          $('.nettohutang').val(addCommas(netto2));
-         // $('.sisahutang').val(addCommas(netto2));
-          
-          totaljumlah2 = $('.totaljumlah').val();
-          //    alert(totaljumlah2);
-          if(totaljumlah2 != ''){
-            totaljumlah = totaljumlah2.replace(/,/g,'');
-            hslselisihum = parseFloat(parseFloat(netto2) - parseFloat(totaljumlah)).toFixed(2);
-            $('.sisahutang').val(addCommas(hslselisihum));
-          }
-          else {
-            $('.sisahutang').val(addCommas(netto2));
-          }
       }
-      } // PPH ADA NILAI NYA
       else {
-      if($('.hasilppn').val() != '') { //ppn  tidak kosong
-          if($('.jenisppn').val() == 'E'){
-          
-             ppn = $('.hasilppn').val();
-             hasilppn = ppn.replace(/,/g,'');
-             pph = addCommas(hasiltarif2);
-             hasilpph = pph.replace(/,/g,'');
-             hasilnetto = parseFloat(parseFloat(hsldpp)+parseFloat(hasilppn) - parseFloat(hasilpph)); 
-             hsl = hasilnetto.toFixed(2);
-             $('.nettohutang').val(addCommas(hsl));
-           //  $('.sisahutang').val(addCommas(hsl));
-          
-             totaljumlah2 = $('.totaljumlah').val();
-          //    alert(totaljumlah2);
-              if(totaljumlah2 != ''){
-                totaljumlah = totaljumlah2.replace(/,/g,'');
-                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                $('.sisahutang').val(addCommas(hslselisihum));
-              }
-              else {
-                $('.sisahutang').val(addCommas(hsl));
-              }
-          }
-
-         else if(jenisppn == 'I'){ 
+            ppn = $('.hasilppn').val();
+            if(ppn != ''){
+              hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasiltarif2) + parseFloat(replaceppn));
+              netto2 = hslnetto.toFixed(2);
+              $('.nettohutang').val(addCommas(netto2));
+             // $('.sisahutang').val(addCommas(netto2));
               
-            hargadpp = parseFloat((parseFloat(hsldpp) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                         
-            $('.dpp').val(addCommas(hargadpp));
-            subtotal = $('.dpp').val();
-            subharga = subtotal.replace(/,/g, '');
-            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-     
-            $('.hasilppn').val(addCommas(hargappn));
-
-            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-            $('.nettohutang').val(addCommas(total));                 
-            //$('.sisahutang').val(addCommas(total)); 
-
-             totaljumlah2 = $('.totaljumlah').val();
-          //    alert(totaljumlah2);
+              totaljumlah2 = $('.totaljumlah').val();
+              //    alert(totaljumlah2);
               if(totaljumlah2 != ''){
                 totaljumlah = totaljumlah2.replace(/,/g,'');
-                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
+                hslselisihum = parseFloat(parseFloat(netto2) - parseFloat(totaljumlah)).toFixed(2);
                 $('.sisahutang').val(addCommas(hslselisihum));
               }
               else {
-                $('.sisahutang').val(addCommas(total));
+                $('.sisahutang').val(addCommas(netto2));
               }
 
+            }
+            else {              
+              hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasiltarif2));
+              netto2 = hslnetto.toFixed(2);
+              $('.nettohutang').val(addCommas(netto2));
+             // $('.sisahutang').val(addCommas(netto2));
+              
+              totaljumlah2 = $('.totaljumlah').val();
+              //    alert(totaljumlah2);
+              if(totaljumlah2 != ''){
+                totaljumlah = totaljumlah2.replace(/,/g,'');
+                hslselisihum = parseFloat(parseFloat(netto2) - parseFloat(totaljumlah)).toFixed(2);
+                $('.sisahutang').val(addCommas(hslselisihum));
+              }
+              else {
+                $('.sisahutang').val(addCommas(netto2));
+              }
+
+            }
         }
-        else {
-       
-          $('.inputppn').val('');
-          $('.hasilppn').val('');
-          hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasiltarif2));
-          netto2 = hslnetto.toFixed(2);
-          $('.nettohutang').val(addCommas(netto2));
-          //$('.sisahutang').addCommas(netto2);
-
-          totaljumlah2 = $('.totaljumlah').val();
-          //    alert(totaljumlah2);
-          if(totaljumlah2 != ''){
-            totaljumlah = totaljumlah2.replace(/,/g,'');
-            hslselisihum = parseFloat(parseFloat(netto2) - parseFloat(totaljumlah)).toFixed(2);
-            $('.sisahutang').val(addCommas(hslselisihum));
-          }
-          else {
-            $('.sisahutang').val(addCommas(netto2));
-          }
-
-        }
-      }
-      else {
-     
-          hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasiltarif2));
-          netto2 = hslnetto.toFixed(2);
-          $('.nettohutang').val(addCommas(netto2));
-         // $('.sisahutang').val(addCommas(netto2));
-          
-          totaljumlah2 = $('.totaljumlah').val();
-          //    alert(totaljumlah2);
-          if(totaljumlah2 != ''){
-            totaljumlah = totaljumlah2.replace(/,/g,'');
-            hslselisihum = parseFloat(parseFloat(netto2) - parseFloat(totaljumlah)).toFixed(2);
-            $('.sisahutang').val(addCommas(hslselisihum));
-          }
-          else {
-            $('.sisahutang').val(addCommas(netto2));
-          }
-
-
-        }
-      }
+      
     })
 
 
@@ -3353,30 +3429,26 @@
       var string = val.split(",");
       var tarif = string[1];
       $('.inputpph_po').val(tarif);
-
       var dpp = $('.dpp_po2').val();
       hsldpp =  dpp.replace(/,/g, '');
 
-    
-     
       //////
         pph = $('.hasilpph_po').val();      
         ppn = $('.hasilppn_po').val();
         replacepph = pph.replace(/,/g,'');
         replaceppn = ppn.replace(/,/g,'');
-        jenisppn = $('.jenisppn_po').val();
+      
         numeric2 = dpp.replace(/,/g,'');
 
       if(val == '' || tarif == '0'){
     
          if($('.hasilppn_po').val() != '') { //ppn  tidak kosong
-          if($('.jenisppn_po').val() == 'E'){
              $('.hasilpph_po').val('');
              ppn = $('.hasilppn_po').val();
              hasilppn = ppn.replace(/,/g,'');
            //  pph = addCommas(hasiltarif2);
              hasilpph = 0;
-             hasilnetto = parseFloat(parseFloat(hsldpp)+parseFloat(hasilppn) - parseFloat(hasilpph)); 
+             hasilnetto = parseFloat(parseFloat(hsldpp)+parseFloat(hasilppn)); 
              hsl = hasilnetto.toFixed(2);
              $('.nettohutang_po').val(addCommas(hsl));
 
@@ -3391,55 +3463,7 @@
                 //alert(hsl);
                 $('.sisahutang_po').val(addCommas(hsl));
               }
-          }
-
-         else if(jenisppn == 'I'){ 
-             $('.hasilpph_po').val(''); 
-             hargadpp = parseFloat((parseFloat(dpphasil) * 100) / (100 + parseFloat($this))).toFixed(2) ; 
-                           
-              $('.dpp_po').val(addCommas(hargadpp));
-              subtotal = $('.dpp_po').val();
-              subharga = subtotal.replace(/,/g, '');
-              hargappn = parseFloat((parseFloat($this) / 100) *  parseFloat(subharga)).toFixed(2);
-       
-              $('.hasilppn_po').val(addCommas(hargappn));
-
-              total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-              $('.nettohutang_po').val(addCommas(total));
-
-              totaljumlah2 = $('.totaljumlah').val();
-          //    alert(totaljumlah2);
-              if(totaljumlah2 != ''){
-                totaljumlah = totaljumlah2.replace(/,/g,'');
-                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                $('.sisahutang_po').val(addCommas(hslselisihum));
-              }
-              else {
-                $('.sisahutang_po').val(addCommas(total));
-              }
-
-        }
-        else {
-          $('.hasilpph_po').val('');
-          $('.inputppn_po').val('');
-          $('.hasilppn_po').val('');
-          hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasiltarif2));
-          netto2 = hslnetto.toFixed(2);
-          $('.nettohutang_po').addCommas(netto2);
-
-           totaljumlah2 = $('.totaljumlah').val();
-          //    alert(totaljumlah2);
-              if(totaljumlah2 != ''){
-                totaljumlah = totaljumlah2.replace(/,/g,'');
-                hslselisihum = parseFloat(parseFloat(netto2) - parseFloat(totaljumlah)).toFixed(2);
-                $('.sisahutang_po').val(addCommas(hslselisihum));
-              }
-              else {
-                $('.sisahutang_po').val(addCommas(netto2));
-              }
-
-        }
-      } // jika ppn tdk kosong kosong
+         } // jika ppn tdk kosong kosong
       else {
            $('.hasilpph_po').val('');
           $('.inputppn_po').val('');
@@ -3471,9 +3495,7 @@
 
 
          if($('.hasilppn_po').val() != '') { //ppn  tidak kosong
-          if($('.jenisppn_po').val() == 'E'){
-        
-             ppn = $('.hasilppn_po').val();
+            ppn = $('.hasilppn_po').val();
              hasilppn = ppn.replace(/,/g,'');
              pph = addCommas(hasiltarif2);
              hasilpph = pph.replace(/,/g,'');
@@ -3492,55 +3514,7 @@
                 //alert(hsl);
                 $('.sisahutang_po').val(addCommas(hsl));
               }
-          }
-
-         else if(jenisppn == 'I'){ 
-              
-             hargadpp = parseFloat((parseFloat(dpphasil) * 100) / (100 + parseFloat($this))).toFixed(2) ; 
-                           
-              $('.dpp_po').val(addCommas(hargadpp));
-              subtotal = $('.dpp_po').val();
-              subharga = subtotal.replace(/,/g, '');
-              hargappn = parseFloat((parseFloat($this) / 100) *  parseFloat(subharga)).toFixed(2);
-       
-              $('.hasilppn_po').val(addCommas(hargappn));
-
-              total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-              $('.nettohutang_po').val(addCommas(total));
-
-              totaljumlah2 = $('.totaljumlah').val();
-          //    alert(totaljumlah2);
-              if(totaljumlah2 != ''){
-                totaljumlah = totaljumlah2.replace(/,/g,'');
-                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                $('.sisahutang_po').val(addCommas(hslselisihum));
-              }
-              else {
-                $('.sisahutang_po').val(addCommas(total));
-              }
-
         }
-        else {
-       
-          $('.inputppn_po').val('');
-          $('.hasilppn_po').val('');
-          hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasiltarif2));
-          netto2 = hslnetto.toFixed(2);
-          $('.nettohutang_po').addCommas(netto2);
-
-           totaljumlah2 = $('.totaljumlah').val();
-          //    alert(totaljumlah2);
-              if(totaljumlah2 != ''){
-                totaljumlah = totaljumlah2.replace(/,/g,'');
-                hslselisihum = parseFloat(parseFloat(netto2) - parseFloat(totaljumlah)).toFixed(2);
-                $('.sisahutang_po').val(addCommas(hslselisihum));
-              }
-              else {
-                $('.sisahutang_po').val(addCommas(netto2));
-              }
-
-        }
-      }
       else {
      
           hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasiltarif2));
@@ -3616,18 +3590,16 @@
         
         pph = $('.hasilpph').val();
         ppn = $('.hasilppn').val();
-        jenisppn = $('.jenisppn').val();
-        inputppn = $('.inputppn').val();
+    /*    jenisppn = $('.jenisppn').val();*/
+      /*  inputppn = $('.inputppn').val();*/
         replacepph = pph.replace(/,/g,'');
         replaceppn = ppn.replace(/,/g,'');
 
 
         if(pph != '' & ppn != '') { // JIKA PPH DAN PPN TIDAK KOSONG
           //alert('pph tidak kosong dan ppn tidak kosong');
-          jenisppn = $('.jenisppn').val();
-          if(jenisppn == 'E') {
-            //alert('jenisppn E');
-            hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
+        
+          hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
             hsl = hasilnetto.toFixed(2);
             $('.nettohutang').val(addCommas(hsl));
             $('.dpp').val(addCommas(numeric2));
@@ -3641,54 +3613,6 @@
             else {
               $('.sisahutang').val(addCommas(hsl));
             }
-
-          }
-          else if(jenisppn == 'I') {
-           // alert('jenisppn I');
-            hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-        
-
-            $('.dpp').val(addCommas(hargadpp));
-            $('.dpp2').val(addCommas(hargadpp));
-            subtotal = $('.dpp').val();
-            subharga = subtotal.replace(/,/g, '');
-            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-     
-            $('.hasilppn').val(addCommas(hargappn));
-
-            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-            $('.nettohutang').val(addCommas(total));
-
-            totaljumlah2 = $('.totaljumlah').val();
-            if(totaljumlah2 != ''){
-              totaljumlah = totaljumlah.replace(/,/g,'');
-              hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-              $('.sisahutang').val(addCommas(hslselisihum));
-            }
-            else {
-              $('.sisahutang').val(addCommas(total));
-            }
-   
-          }
-          else {
-           // alert('jenisppn T');
-              hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-              hsl = hasilnetto.toFixed(2);
-              $('.nettohutang').val(addCommas(hsl));
-             // $('.sisahutang').val(addCommas(hsl));
-              $('.dpp').val(addCommas(numeric2));
-
-                 totaljumlah2 = $('.totaljumlah').val();
-                //    alert(totaljumlah2);
-                    if(totaljumlah2 != ''){
-                      totaljumlah = totaljumlah2.replace(/,/g,'');
-                      hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                      $('.sisahutang').val(addCommas(hslselisihum));
-                    }
-                    else {
-                      $('.sisahutang').val(addCommas(hsl));
-                    }
-          }
         }
         else if(pph != ''){ // JIKA PPH TIDAK KOSONG
          //alert('pph tidak kosong');
@@ -3713,8 +3637,6 @@
           }
           else{
           //  alert('ppn tdk kosong');
-            if(jenisppn == 'E') {
-            
               hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
               hsl = hasilnetto.toFixed(2);
               $('.nettohutang').val(addCommas(hsl));
@@ -3731,65 +3653,13 @@
                   else {
                     $('.sisahutang').val(addCommas(hsl));
                   }
-
             }
-            else if(jenisppn == 'I'){
-           
-              hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-             
-
-              $('.dpp').val(addCommas(hargadpp));
-              $('.dpp2').val(addCommas(hargadpp));
-              subtotal = $('.dpp').val();
-              subharga = subtotal.replace(/,/g, '');
-              hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-              
-              $('.hasilppn').val(addCommas(hargappn));
-
-              total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-              $('.nettohutang').val(addCommas(total));
-             // $('.sisahutang').val(addCommas(total));
-
-              totaljumlah2 = $('.totaljumlah').val();
-              //    alert(totaljumlah2);
-              if(totaljumlah2 != ''){
-                totaljumlah = totaljumlah2.replace(/,/g,'');
-                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                $('.sisahutang').val(addCommas(hslselisihum));
-              }
-              else {
-                $('.sisahutang').val(addCommas(total));
-              }
-            }
-            else if(jenisppn == 'T'){               
-                total = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)).toFixed(2);
-                $('.nettohutang').val(addCommas(total));
-               // $('.sisahutang').val(addCommas(total));
-                $('.inputppn').val('');
-                $('.hasilppn').val(''); 
-                $('.dpp').val(addCommas(numeric2));  
-
-                totaljumlah2 = $('.totaljumlah').val();
-                //    alert(totaljumlah2);
-                if(totaljumlah2 != ''){
-                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                  hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                  $('.sisahutang').val(addCommas(hslselisihum));
-                }
-                else {
-                  $('.sisahutang').val(addCommas(total));
-                }  
-
-
-            }
-          }
+          
         }
         else if(ppn != '') { // PPN tidak kosong      
          //alert('ppn tdk kosong');
           if(pph == ''){ //PPH KOSONG && PPN ADA
            // alert('pph kosong');
-              if(jenisppn == 'E'){
-           //   alert('e');
                 hasil = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn));
                 hsl = hasil.toFixed(2);
                 $('.nettohutang').val(addCommas(hsl));
@@ -3806,56 +3676,8 @@
                 else {
                   $('.sisahutang').val(addCommas(hsl));
                 } 
-              }
-              else if(jenisppn == 'I'){
-         
-                hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-              
-                $('.dpp').val(addCommas(hargadpp));
-                $('.dpp2').val(addCommas(hargadpp));
-                subtotal = $('.dpp').val();
-                subharga = subtotal.replace(/,/g, '');
-                hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-             
-                $('.hasilppn').val(addCommas(hargappn));
-
-                total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
-                $('.nettohutang').val(addCommas(total));
-              //  $('.sisahutang').val(addCommas(total));
-                 totaljumlah2 = $('.totaljumlah').val();
-                //    alert(totaljumlah2);
-                if(totaljumlah2 != ''){
-                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                  hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                  $('.sisahutang').val(addCommas(hslselisihum));
-                }
-                else {
-                  $('.sisahutang').val(addCommas(total));
-                } 
-
-              }
-              else {             
-                $('.hasilppn').val('');
-                $('.nettohutang').val(addCommas(numeric2));
-              //  $('.sisahutang').val(addCommas(numeric2));
-                $('.dpp').val(addCommas(numeric2));
-
-                totaljumlah2 = $('.totaljumlah').val();
-                //    alert(totaljumlah2);
-                if(totaljumlah2 != ''){
-                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                  hslselisihum = parseFloat(parseFloat(numeric2) - parseFloat(totaljumlah)).toFixed(2);
-                  $('.sisahutang').val(addCommas(hslselisihum));
-                }
-                else {
-                  $('.sisahutang').val(addCommas(numeric2));
-                } 
-
-              }
           }
           else{          
-             if(jenisppn == 'E') { //PPN ADA PPH TIDAK KOSONG
-           
               hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
               hsl = hasilnetto.toFixed(2);
               $('.nettohutang').val(addCommas(hsl));
@@ -3872,58 +3694,6 @@
                 else {
                   $('.sisahutang').val(addCommas(hsl));
                 } 
-
-            }
-            else if (jenisppn == 'I'){
-              
-              hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-          
-
-              $('.dpp').val(addCommas(hargadpp));
-              $('.dpp2').val(addCommas(hargadpp));
-              subtotal = $('.dpp').val();
-              subharga = subtotal.replace(/,/g, '');
-              hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-       
-              $('.hasilppn').val(addCommas(hargappn));
-
-              total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-              $('.nettohutang').val(addCommas(total));
-            //  $('.sisahutang').val(addCommas(total));
-
-               totaljumlah2 = $('.totaljumlah').val();
-                //    alert(totaljumlah2);
-                if(totaljumlah2 != ''){
-                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                  hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                  $('.sisahutang').val(addCommas(hslselisihum));
-                }
-                else {
-                  $('.sisahutang').val(addCommas(total));
-                }  
-
-            }
-            else {
-              total = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)).toFixed(2);
-              $('.nettohutang').val(addCommas(total));
-            //  $('.sisahutang').val(addCommas(total));
-              $('.inputppn').val('');
-              $('.hasilppn').val('');
-              $('.dpp').val(addCommas(numeric2));
-
-               totaljumlah2 = $('.totaljumlah').val();
-                //    alert(totaljumlah2);
-                if(totaljumlah2 != ''){
-                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                  hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                  $('.sisahutang').val(addCommas(hslselisihum));
-                }
-                else {
-                  $('.sisahutang').val(addCommas(total));
-                } 
-
-
-            }
           }
         }
         else {
@@ -4550,12 +4320,12 @@
                   jenisppn = $('.jenisppn').val();
                   ppn = $('.hasilppn').val(); 
 
-                  if(inputppn != '') {
+                  /*if(inputppn != '') {
                      hasilppn = parseFloat((inputppn / 100) * numeric2);
                      hasilppn2 =   hasilppn.toFixed(2);
                      ppn2 = $('.hasilppn').val(addCommas(hasilppn2)); 
                      ppn = $('.hasilppn').val(); 
-                  }
+                  }*/
 
                   pph = $('.hasilpph').val();
 
@@ -4574,80 +4344,35 @@
 
                      if(pph != 0 & ppn != '') { 
                      // alert('pph ada ppn ada');//PPH  ADA DAN PPN  ADA
-                         jenisppn = $('.jenisppn').val();
-                        if(jenisppn == 'E') {          
-                          hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
-                          hsl = hasilnetto.toFixed(2);
-                          $('.nettohutang').val(addCommas(hsl));
+                         hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)).toFixed(2); 
+                       //   hsl = hasilnetto.toFixed(2);
+                          $('.nettohutang').val(addCommas(hasilnetto));
                          // $('.sisahutang').val(addCommas(hsl));
                           totaljumlah2 = $('.totaljumlah').val();
+                          totaljumlah = totaljumlah2.replace(/,/g,'');
                           //    alert(totaljumlah2);
                               if(totaljumlah2 != ''){
                                 totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                hslselisihum = parseFloat(parseFloat(hasilnetto) - parseFloat(totaljumlah)).toFixed(2);
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(hsl);
+                                $('.sisahutang').val(addCommas(hasilnetto));
                               }
 
                           $('.dpp').val(addCommas(numeric2));
-                        }
-                        else if(jenisppn == 'I'){
-                            hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                            $('.dpp').val(addCommas(hargadpp));
-                            subtotal = $('.dpp').val();
-                            subtotal = $('.dpp').val();
-                            subharga = subtotal.replace(/,/g, '');
-                            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                     
-                            $('.hasilppn').val(addCommas(hargappn));
-
-                            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                            $('.nettohutang').val(addCommas(total));                     
-                          //  $('.sisahutang').val(addCommas(total));
-
-                             totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(total);
-                              }
-
-                        }
-                        else {
-
-                            hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                            hsl = hasilnetto.toFixed(2);
-                            $('.nettohutang').val(addCommas(hsl));
-                      //      $('.sisahutang').val(addCommas(hsl));
-                            $('.dpp').val(addCommas(numeric2));
-                          
-                               totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(hsl);
-                              }
-                        }
                       }
                       else if(pph != 0){ //PPH TIDAK KOSONG            
                      //   alert('pph tdk kosong');
                         if(ppn == '') { //PPN KOSONG          
-                          hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph));
-                          $('.nettohutang').val(hasil);
+                          hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)).toFixed(2);
+                          $('.nettohutang').val(addCommas(hasil));
                           //$('.sisahutang').val(hasil);
                           $('.dpp').val(addCommas(numeric2));
                         
                            totaljumlah2 = $('.totaljumlah').val();
+                           totaljumlah = totaljumlah2.replace(/,/g,'');
+
                           //    alert(totaljumlah2);
                               if(totaljumlah2 != ''){
                                 totaljumlah = totaljumlah2.replace(/,/g,'');
@@ -4655,14 +4380,11 @@
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(hasil);
+                                $('.sisahutang').val(addCommas(hasil));
                               }
 
                         }
                         else{ //PPN TIDAK KOSONG            
-                            jenisppn = $('.jenisppn').val();
-                          if(jenisppn == 'E') {
-                          
                             hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
@@ -4670,6 +4392,8 @@
                             $('.dpp').val(addCommas(numeric2));
                             
                               totaljumlah2 = $('.totaljumlah').val();
+                               totaljumlah = totaljumlah2.replace(/,/g,'');
+
                           //    alert(totaljumlah2);
                               if(totaljumlah2 != ''){
                                 totaljumlah = totaljumlah2.replace(/,/g,'');
@@ -4677,56 +4401,8 @@
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(hsl);
+                                $('.sisahutang').val(addCommas(hsl));
                               }
-
-                          }
-                          else if(jenisppn == 'I'){ //PPN TIDAK KOSONG && PPH TIDAK KOSONG
-
-                             hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                         
-                            $('.dpp').val(addCommas(hargadpp));
-                            subtotal = $('.dpp').val();
-                            subharga = subtotal.replace(/,/g, '');
-                            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                     
-                            $('.hasilppn').val(addCommas(hargappn));
-
-                            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                            $('.nettohutang').val(addCommas(total));
-                        //    $('.sisahutang').val(addCommas(total)); 
-
-                             totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(total);
-                              }
-
-
-                          }
-                          else {
-                            hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                            hsl = hasilnetto.toFixed(2);
-                            $('.nettohutang').val(addCommas(hsl));
-                          //  $('.sisahutang').val(addCommas(hsl));
-                            $('.dpp').val(addCommas(numeric2));
-                          
-                             totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(total);
-                              }
-                          }
                         }
                       }
                       else if(ppn != '') { //PPN TIDAK KOSONG   
@@ -4734,8 +4410,6 @@
                         jenisppn = $('.jenisppn').val();
                         if(pph == 0){ //PPN TIDAK KOSONG PPH KOSONG
                     //    alert('pph kosong');
-                            if(jenisppn == 'E'){   
-                      //      alert('E');          
                               hasil = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn));
                               hsl = hasil.toFixed(2);
                         /*      alert(parseFloat(numeric2));
@@ -4746,6 +4420,8 @@
                               $('.dpp').val(addCommas(numeric2));
 
                               totaljumlah2 = $('.totaljumlah').val();
+                              totaljumlah = totaljumlah2.replace(/,/g,'');
+
                           //    alert(totaljumlah2);
                               if(totaljumlah2 != ''){
                                 totaljumlah = totaljumlah2.replace(/,/g,'');
@@ -4753,66 +4429,18 @@
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(total);
+                                $('.sisahutang').val(addCommas(total));
                               }
-
-                            }
-                            else if(jenisppn == 'I'){
-                         
-                                hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                $('.dpp').val(addCommas(hargadpp));
-                                subtotal = $('.dpp').val();
-                                subharga = subtotal.replace(/,/g, '');
-                                hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                         
-                                $('.hasilppn').val(addCommas(hargappn));
-                                total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
-                                $('.nettohutang').val(addCommas(total));
-                                //$('.sisahutang').val(addCommas(total));
-                                
-                                totaljumlah2 = $('.totaljumlah').val();
-                            //    alert(totaljumlah2);
-                                if(totaljumlah2 != ''){
-                                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                                  hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                                  $('.sisahutang').val(addCommas(hslselisihum));
-                                }
-                                else {
-                                  $('.sisahutang').val(total);
-                                }
-
-                            }
-                            else {
-                       
-                              hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
-                              hsl = hasilnetto.toFixed(2);
-                              $('.nettohutang').val(addCommas(hsl));
-                             // $('.sisahutang').val(addCommas(hsl));
-                              $('.dpp').val(addCommas(numeric2));
-
-                              totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(hsl);
-                              }
-
-                            }
                         }
                         else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
-                       
-                          jenisppn = $('.jenisppn').val();
-                          if(jenisppn == 'E') {          
-                            hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
+                           hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
                             //$('.sisahutang').val(addCommas(hsl));
-                            
+                              
                              totaljumlah2 = $('.totaljumlah').val();
+                             totaljumlah = totaljumlah2.replace(/,/g,'');
+
                           //    alert(totaljumlah2);
                               if(totaljumlah2 != ''){
                                 totaljumlah = totaljumlah2.replace(/,/g,'');
@@ -4820,70 +4448,26 @@
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(hsl);
+                                $('.sisahutang').val(addCommas(hsl));
                               }
 
                             $('.dpp').val(addCommas(numeric2));
-                          }
-                          else if(jenisppn == 'I'){
-                                hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                         
-                                $('.dpp').val(addCommas(hargadpp));
-                                subtotal = $('.dpp').val();
-                                subharga = subtotal.replace(/,/g, '');
-                                hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                         
-                                $('.hasilppn').val(addCommas(hargappn));
-
-                                total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                                $('.nettohutang').val(addCommas(total)); 
-                               // $('.sisahutang').val(addCommas(total)); 
-                                
-                                totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(total);
-                              }
-                          }
-                          else {
-
-                              hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                              hsl = hasilnetto.toFixed(2);
-                              $('.nettohutang').val(addCommas(hsl));
-                             // $('.sisahutang').val(addCommas(hsl));
-                              $('.dpp').val(addCommas(numeric2));
-                              
-                               totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(hsl);
-                              }
-
-                          }
                         }
                       } 
                       else {
                           $('.nettohutang').val(addCommas(numeric2));
                         //  $('.sisahutang').val(addCommas(numeric2));
                           $('.dpp').val(addCommas(numeric2));
-                      
+                          totaljumlah2 = $('.totaljumlah').val();
+                           totaljumlah = totaljumlah2.replace(/,/g,'');
+                        
                           if(totaljumlah2 != ''){
                                 totaljumlah = totaljumlah2.replace(/,/g,'');
                                 hslselisihum = parseFloat(parseFloat(numeric2) - parseFloat(totaljumlah)).toFixed(2);
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(numeric2);
+                                $('.sisahutang').val(addCommas(numeric2));
                               } 
                       }
                  })
@@ -4958,13 +4542,13 @@
                   inputppn = $('.inputppn').val();
                   jenisppn = $('.jenisppn').val();
                   ppn = $('.hasilppn').val(); 
-
+/*
                   if(inputppn != '') {
                      hasilppn = parseFloat((inputppn / 100) * numeric2);
                      hasilppn2 =   hasilppn.toFixed(2);
                      ppn2 = $('.hasilppn').val(addCommas(hasilppn2)); 
                      ppn = $('.hasilppn').val(); 
-                  }
+                  }*/
 
                   pph = $('.hasilpph').val();
 
@@ -4983,13 +4567,13 @@
 
                      if(pph != 0 & ppn != '') { 
                      // alert('pph ada ppn ada');//PPH  ADA DAN PPN  ADA
-                         jenisppn = $('.jenisppn').val();
-                        if(jenisppn == 'E') {          
-                          hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
+                        hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                           hsl = hasilnetto.toFixed(2);
                           $('.nettohutang').val(addCommas(hsl));
 
                            totaljumlah2 = $('.totaljumlah').val();
+                           totaljumlah = totaljumlah2.replace(/,/g,'');
+                            
                           //    alert(totaljumlah2);
                               if(totaljumlah2 != ''){
                                 totaljumlah = totaljumlah2.replace(/,/g,'');
@@ -4997,66 +4581,23 @@
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(hsl);
+                                $('.sisahutang').val(addCommas(hsl));
                               }
 
 
                          // $('.sisahutang').val(addCommas(hsl));
                           $('.dpp').val(addCommas(numeric2));
-                        }
-                        else if(jenisppn == 'I'){
-                            hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                            $('.dpp').val(addCommas(hargadpp));
-                            subtotal = $('.dpp').val();
-                            subtotal = $('.dpp').val();
-                            subharga = subtotal.replace(/,/g, '');
-                            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                     
-                            $('.hasilppn').val(addCommas(hargappn));
-
-                            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                            $('.nettohutang').val(addCommas(total));                     
-                             totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(hasilnetto) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(hasilnetto);
-                              }                     
-                        }
-                        else {
-
-                            hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                            hsl = hasilnetto.toFixed(2);
-                            $('.nettohutang').val(addCommas(hsl));
-                            //$('.sisahutang').val(addCommas(hsl));
-                            
-                             totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(hsl);
-                              }
-
-                            $('.dpp').val(addCommas(numeric2));
-                            
-                        }
                       }
                       else if(pph != 0){ //PPH TIDAK KOSONG            
                      //   alert('pph tdk kosong');
                         if(ppn == '') { //PPN KOSONG          
-                          hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph));
-                          $('.nettohutang').val(hasil);
+                          hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)).toFixed(2);
+                          $('.nettohutang').val(addCommas(hasil));
                           //$('.sisahutang').val(hasil);
                           
                            totaljumlah2 = $('.totaljumlah').val();
+                           totaljumlah = totaljumlah2.replace(/,/g,'');
+
                           //    alert(totaljumlah2);
                               if(totaljumlah2 != ''){
                                 totaljumlah = totaljumlah2.replace(/,/g,'');
@@ -5064,68 +4605,20 @@
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(hasil);
+                                $('.sisahutang').val(addCommas(hasil));
                               }
 
                             $('.dpp').val(addCommas(numeric2));
                         }
                         else{ //PPN TIDAK KOSONG            
-                            jenisppn = $('.jenisppn').val();
-                          if(jenisppn == 'E') {
-                          
                             hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
                             //$('.sisahutang').val(addCommas(hsl));
                             
-                             totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(hsl);
-                              }
-
-                            $('.dpp').val(addCommas(numeric2));
-                          }
-                          else if(jenisppn == 'I'){ //PPN TIDAK KOSONG && PPH TIDAK KOSONG
-
-                             hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                         
-                            $('.dpp').val(addCommas(hargadpp));
-                            subtotal = $('.dpp').val();
-                            subharga = subtotal.replace(/,/g, '');
-                            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                     
-                            $('.hasilppn').val(addCommas(hargappn));
-
-                            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                            $('.nettohutang').val(addCommas(total));
-                           // $('.sisahutang').val(addCommas(total));
-
                             totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(total);
-                              }
+                            totaljumlah = totaljumlah2.replace(/,/g,'');
 
-
-                          }
-                          else {
-                            hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                            hsl = hasilnetto.toFixed(2);
-                            $('.nettohutang').val(addCommas(hsl));
-                            //$('.sisahutang').val(addCommas(hsl));
-                            
-                             totaljumlah2 = $('.totaljumlah').val();
                           //    alert(totaljumlah2);
                               if(totaljumlah2 != ''){
                                 totaljumlah = totaljumlah2.replace(/,/g,'');
@@ -5133,11 +4626,10 @@
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(hsl);
+                                $('.sisahutang').val(addCommas(hsl));
                               }
 
                             $('.dpp').val(addCommas(numeric2));
-                          }
                         }
                       }
                       else if(ppn != '') { //PPN TIDAK KOSONG   
@@ -5145,9 +4637,7 @@
                         jenisppn = $('.jenisppn').val();
                         if(pph == 0){ //PPN TIDAK KOSONG PPH KOSONG
                     //    alert('pph kosong');
-                            if(jenisppn == 'E'){   
-                      //      alert('E');          
-                              hasil = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn));
+                            hasil = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn));
                               hsl = hasil.toFixed(2);
                         /*      alert(parseFloat(numeric2));
                               alert(parseFloat(replaceppn));
@@ -5164,68 +4654,19 @@
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(hsl);
+                                $('.sisahutang').val(addCommas(hsl));
                               }
-
-
-                            }
-                            else if(jenisppn == 'I'){
-                         
-                                hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                $('.dpp').val(addCommas(hargadpp));
-                                subtotal = $('.dpp').val();
-                                subharga = subtotal.replace(/,/g, '');
-                                hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                         
-                                $('.hasilppn').val(addCommas(hargappn));
-                                total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
-                                $('.nettohutang').val(addCommas(total));
-                              //  $('.sisahutang').val(addCommas(total));
-                              
-                                totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(total);
-                              }
-
-                            }
-                            else {
-                       
-                              hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
-                              hsl = hasilnetto.toFixed(2);
-                              $('.nettohutang').val(addCommas(hsl));
-                              //$('.sisahutang').val(addCommas(hsl));
-                              $('.dpp').val(addCommas(numeric2));
-                              
-                              totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(hsl);
-                              }
-
-                            }
                         }
                         else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
-                       
-                          jenisppn = $('.jenisppn').val();
-                          if(jenisppn == 'E') {          
-                            hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
+                           hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
                            // $('.sisahutang').val(addCommas(hsl));
                             $('.dpp').val(addCommas(numeric2));
 
                             totaljumlah2 = $('.totaljumlah').val();
+                            totaljumlah = totaljumlah2.replace(/,/g,'');
+
                           //    alert(totaljumlah2);
                               if(totaljumlah2 != ''){
                                 totaljumlah = totaljumlah2.replace(/,/g,'');
@@ -5233,57 +4674,8 @@
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(hsl);
+                                $('.sisahutang').val(addCommas(hsl));
                               }
-
-
-                          }
-                          else if(jenisppn == 'I'){
-                                hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                         
-                                $('.dpp').val(addCommas(hargadpp));
-                                subtotal = $('.dpp').val();
-                                subharga = subtotal.replace(/,/g, '');
-                                hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                         
-                                $('.hasilppn').val(addCommas(hargappn));
-
-                                total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                                $('.nettohutang').val(addCommas(total)); 
-                               // $('.sisahutang').val(addCommas(total)); 
-                                
-                                totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(total);
-                              }
-
-                          }
-                          else {
-
-                              hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                              hsl = hasilnetto.toFixed(2);
-                              $('.nettohutang').val(addCommas(hsl));
-                              //$('.sisahutang').val(addCommas(hsl));
-                              $('.dpp').val(addCommas(numeric2));
-
-                               totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(hsl);
-                              }
-                          
-                          }
                         }
                       } 
                       else {
@@ -5291,6 +4683,8 @@
                          // $('.sisahutang').val(addCommas(numeric2));
                           
                            totaljumlah2 = $('.totaljumlah').val();
+                           totaljumlah = totaljumlah2.replace(/,/g,'');
+
                           //    alert(totaljumlah2);
                               if(totaljumlah2 != ''){
                                 totaljumlah = totaljumlah2.replace(/,/g,'');
@@ -5298,7 +4692,7 @@
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(numeric2);
+                                $('.sisahutang').val(addCommas(numeric2));
                               }
 
                           $('.dpp').val(addCommas(numeric2));
@@ -5372,12 +4766,12 @@
                   jenisppn = $('.jenisppn').val();
                   ppn = $('.hasilppn').val(); 
 
-                  if(inputppn != '') {
+                 /* if(inputppn != '') {
                      hasilppn = parseFloat((inputppn / 100) * numeric2);
                      hasilppn2 =   hasilppn.toFixed(2);
                      ppn2 = $('.hasilppn').val(addCommas(hasilppn2)); 
                      ppn = $('.hasilppn').val(); 
-                  }
+                  }*/
 
                   pph = $('.hasilpph').val();
 
@@ -5396,71 +4790,24 @@
 
                      if(pph != 0 & ppn != '') { 
                      // alert('pph ada ppn ada');//PPH  ADA DAN PPN  ADA
-                         jenisppn = $('.jenisppn').val();
-                        if(jenisppn == 'E') {          
-                          hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
+                       
+                       hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                           hsl = hasilnetto.toFixed(2);
                           $('.nettohutang').val(addCommas(hsl));
                          // $('.sisahutang').val(addCommas(hsl));
                           $('.dpp').val(addCommas(numeric2));
-
                             totaljumlah2 = $('.totaljumlah').val();
                           //    alert(totaljumlah2);
+                             totaljumlah = totaljumlah2.replace(/,/g,'');
+
                               if(totaljumlah2 != ''){
                                 totaljumlah = totaljumlah2.replace(/,/g,'');
                                 hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(hsl);
+                                $('.sisahutang').val(addCommas(hsl));
                               } 
-
-                        }
-                        else if(jenisppn == 'I'){
-                            hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                            $('.dpp').val(addCommas(hargadpp));
-                            subtotal = $('.dpp').val();
-                            subtotal = $('.dpp').val();
-                            subharga = subtotal.replace(/,/g, '');
-                            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                     
-                            $('.hasilppn').val(addCommas(hargappn));
-                            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                            $('.nettohutang').val(addCommas(total));                     
-                           // $('.sisahutang').val(addCommas(total));
-
-                             totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(total);
-                              } 
-
-                        }
-                        else {
-
-                            hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                            hsl = hasilnetto.toFixed(2);
-                            $('.nettohutang').val(addCommas(hsl));
-                          //  $('.sisahutang').val(addCommas(hsl));
-                            $('.dpp').val(addCommas(numeric2));
-                            
-                              totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(hsl);
-                              } 
-
-                        }
                       }
                       else if(pph != 0){ //PPH TIDAK KOSONG            
                      //   alert('pph tdk kosong');
@@ -5471,6 +4818,8 @@
                            $('.dpp').val(addCommas(numeric2));
                           
                              totaljumlah2 = $('.totaljumlah').val();
+                             totaljumlah = totaljumlah2.replace(/,/g,'');
+
                           //    alert(totaljumlah2);
                               if(totaljumlah2 != ''){
                                 totaljumlah = totaljumlah2.replace(/,/g,'');
@@ -5478,13 +4827,10 @@
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(hasil);
+                                $('.sisahutang').val(addCommas(hasil));
                               } 
                         }
                         else{ //PPN TIDAK KOSONG            
-                            jenisppn = $('.jenisppn').val();
-                          if(jenisppn == 'E') {
-                          
                             hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
@@ -5499,56 +4845,8 @@
                                 $('.sisahutang').val(addCommas(hslselisihum));
                               }
                               else {
-                                $('.sisahutang').val(hsl);
+                                $('.sisahutang').val(addCommas(hsl));
                               } 
-
-                          }
-                          else if(jenisppn == 'I'){ //PPN TIDAK KOSONG && PPH TIDAK KOSONG
-
-                             hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                         
-                            $('.dpp').val(addCommas(hargadpp));
-                            subtotal = $('.dpp').val();
-                            subharga = subtotal.replace(/,/g, '');
-                            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                     
-                            $('.hasilppn').val(addCommas(hargappn));
-
-                            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                            $('.nettohutang').val(addCommas(total));
-                            //$('.sisahutang').val(addCommas(total)); 
-
-                            totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(total);
-                              } 
-
-                          }
-                          else {
-                            hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                            hsl = hasilnetto.toFixed(2);
-                            $('.nettohutang').val(addCommas(hsl));
-                           // $('.sisahutang').val(addCommas(hsl));
-                            $('.dpp').val(addCommas(numeric2));
-                            
-                            totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                              if(totaljumlah2 != ''){
-                                totaljumlah = totaljumlah2.replace(/,/g,'');
-                                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                $('.sisahutang').val(addCommas(hslselisihum));
-                              }
-                              else {
-                                $('.sisahutang').val(hsl);
-                              } 
-
-                          }
                         }
                       }
                       else if(ppn != '') { //PPN TIDAK KOSONG   
@@ -5556,9 +4854,7 @@
                         jenisppn = $('.jenisppn').val();
                         if(pph == 0){ //PPN TIDAK KOSONG PPH KOSONG
                     //    alert('pph kosong');
-                            if(jenisppn == 'E'){   
-                      //      alert('E');          
-                              hasil = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn));
+                           hasil = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn));
                               hsl = hasil.toFixed(2);
                         /*      alert(parseFloat(numeric2));
                               alert(parseFloat(replaceppn));
@@ -5568,65 +4864,19 @@
                                $('.dpp').val(addCommas(numeric2));
                             
                                totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                                if(totaljumlah2 != ''){
-                                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                                  hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                  $('.sisahutang').val(addCommas(hslselisihum));
-                                }
-                                else {
-                                  $('.sisahutang').val(hsl);
-                                } 
-                            }
-                            else if(jenisppn == 'I'){
-                         
-                                hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                $('.dpp').val(addCommas(hargadpp));
-                                subtotal = $('.dpp').val();
-                                subharga = subtotal.replace(/,/g, '');
-                                hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                         
-                                $('.hasilppn').val(addCommas(hargappn));
-                                total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
-                                $('.nettohutang').val(addCommas(total));
-                               // $('.sisahutang').val(addCommas(total));
-                            
-                                 totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                                if(totaljumlah2 != ''){
-                                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                                  hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                                  $('.sisahutang').val(addCommas(hslselisihum));
-                                }
-                                else {
-                                  $('.sisahutang').val(total);
-                                } 
-                            }
-                            else {
-                       
-                              hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
-                              hsl = hasilnetto.toFixed(2);
-                              $('.nettohutang').val(addCommas(hsl));
-                             // $('.sisahutang').val(addCommas(hsl));
-                              $('.dpp').val(addCommas(numeric2));
-                              
-                              totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                                if(totaljumlah2 != ''){
-                                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                                  hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                  $('.sisahutang').val(addCommas(hslselisihum));
-                                }
-                                else {
-                                  $('.sisahutang').val(hsl);
-                                } 
+                               totaljumlah = totaljumlah2.replace(/,/g,'');
 
-                            }
+                          //    alert(totaljumlah2);
+                                if(totaljumlah2 != ''){
+                                  totaljumlah = totaljumlah2.replace(/,/g,'');
+                                  hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
+                                  $('.sisahutang').val(addCommas(hslselisihum));
+                                }
+                                else {
+                                  $('.sisahutang').val(addCommas(hsl));
+                                } 
                         }
                         else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
-                       
-                          jenisppn = $('.jenisppn').val();
-                          if(jenisppn == 'E') {          
                             hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
@@ -5641,55 +4891,8 @@
                                   $('.sisahutang').val(addCommas(hslselisihum));
                                 }
                                 else {
-                                  $('.sisahutang').val(hsl);
+                                  $('.sisahutang').val(addCommas(hsl));
                                 } 
-
-                          }
-                          else if(jenisppn == 'I'){
-                                hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                         
-                                $('.dpp').val(addCommas(hargadpp));
-                                subtotal = $('.dpp').val();
-                                subharga = subtotal.replace(/,/g, '');
-                                hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                         
-                                $('.hasilppn').val(addCommas(hargappn));
-
-                                total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                                $('.nettohutang').val(addCommas(total)); 
-                               // $('.sisahutang').val(addCommas(total)); 
-                          
-                               totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                                if(totaljumlah2 != ''){
-                                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                                  hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                                  $('.sisahutang').val(addCommas(hslselisihum));
-                                }
-                                else {
-                                  $('.sisahutang').val(total);
-                                } 
-
-                          }
-                          else {
-
-                              hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                              hsl = hasilnetto.toFixed(2);
-                              $('.nettohutang').val(addCommas(hsl));
-                              //$('.sisahutang').val(addCommas(hsl));
-                              $('.dpp').val(addCommas(numeric2));
-                              
-                               totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                                if(totaljumlah2 != ''){
-                                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                                  hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                  $('.sisahutang').val(addCommas(hslselisihum));
-                                }
-                                else {
-                                  $('.sisahutang').val(hsl);
-                                } 
-                          }
                         }
                       } 
                       else {
@@ -5704,7 +4907,7 @@
                             $('.sisahutang').val(addCommas(hslselisihum));
                           }
                           else {
-                            $('.sisahutang').val(numeric2);
+                            $('.sisahutang').val(addCommas(numeric2));
                           } 
                       }
 
@@ -5728,8 +4931,7 @@
 
                     $('.biayaitem' + id).val(addCommas(hsltotalbiaya)); 
 
-
-                     $('.biayaitem' + id).val(addCommas(hsltotalbiaya)); 
+                    $('.biayaitem' + id).val(addCommas(hsltotalbiaya)); 
 
                    $('.biayaitem').each(function(){
                       val2 = $(this).val();
@@ -5769,12 +4971,12 @@
                   jenisppn = $('.jenisppn').val();
                   ppn = $('.hasilppn').val(); 
 
-                  if(inputppn != '') {
+                /*  if(inputppn != '') {
                      hasilppn = parseFloat((inputppn / 100) * numeric2);
                      hasilppn2 =   hasilppn.toFixed(2);
                      ppn2 = $('.hasilppn').val(addCommas(hasilppn2)); 
                      ppn = $('.hasilppn').val(); 
-                  }
+                  }*/
 
                   pph = $('.hasilpph').val();
 
@@ -5793,9 +4995,7 @@
 
                      if(pph != 0 & ppn != '') { 
                      // alert('pph ada ppn ada');//PPH  ADA DAN PPN  ADA
-                         jenisppn = $('.jenisppn').val();
-                        if(jenisppn == 'E') {          
-                          hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
+                       hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                           hsl = hasilnetto.toFixed(2);
                           $('.nettohutang').val(addCommas(hsl));
                         //  $('.sisahutang').val(addCommas(hsl));
@@ -5809,62 +5009,14 @@
                             $('.sisahutang').val(addCommas(hslselisihum));
                           }
                           else {
-                            $('.sisahutang').val(hsl);
-                          } 
-
-                        }
-                        else if(jenisppn == 'I'){
-                            hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                            $('.dpp').val(addCommas(hargadpp));
-                            subtotal = $('.dpp').val();
-                            subtotal = $('.dpp').val();
-                            subharga = subtotal.replace(/,/g, '');
-                            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                     
-                            $('.hasilppn').val(addCommas(hargappn));
-
-                            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                            $('.nettohutang').val(addCommas(total));                     
-                           // $('.sisahutang').val(addCommas(total));                     
-                            
-                            totaljumlah2 = $('.totaljumlah').val();
-                          //    alert(totaljumlah2);
-                          if(totaljumlah2 != ''){
-                            totaljumlah = totaljumlah2.replace(/,/g,'');
-                            hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                            $('.sisahutang').val(addCommas(hslselisihum));
-                          }
-                          else {
-                            $('.sisahutang').val(total);
-                          } 
-
-                        }
-                        else {
-
-                            hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                            hsl = hasilnetto.toFixed(2);
-                            $('.nettohutang').val(addCommas(hsl));
-                           // $('.sisahutang').val(addCommas(hsl));
-                            $('.dpp').val(addCommas(numeric2));
-                            
-                            totaljumlah2 = $('.totaljumlah').val();
-                            //    alert(totaljumlah2);
-                            if(totaljumlah2 != ''){
-                              totaljumlah = totaljumlah2.replace(/,/g,'');
-                              hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                              $('.sisahutang').val(addCommas(hslselisihum));
-                            }
-                            else {
-                              $('.sisahutang').val(hsl);
-                            } 
-
-                        } 
+                            $('.sisahutang').val(addCommas(hsl));
+                          }   
                       }
                       else if(pph != 0){ //PPH TIDAK KOSONG            
                      //   alert('pph tdk kosong');
                         if(ppn == '') { //PPN KOSONG          
-                          hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph));
-                          $('.nettohutang').val(hasil);
+                          hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)).toFixed(2);
+                          $('.nettohutang').val(addCommas(hasil));
                          // $('.sisahutang').val(hasil);
                           $('.dpp').val(addCommas(numeric2));
                         
@@ -5876,15 +5028,12 @@
                               $('.sisahutang').val(addCommas(hslselisihum));
                             }
                             else {
-                              $('.sisahutang').val(hasil);
+                              $('.sisahutang').val(addCommas(hasil));
                             } 
 
                         }
                         else{ //PPN TIDAK KOSONG            
-                            jenisppn = $('.jenisppn').val();
-                          if(jenisppn == 'E') {
-                          
-                            hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
+                           hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
                             //$('.sisahutang').val(addCommas(hsl));
@@ -5897,57 +5046,10 @@
                               $('.sisahutang').val(addCommas(hslselisihum));
                             }
                             else {
-                              $('.sisahutang').val(hsl);
+                              $('.sisahutang').val(addCommas(hsl));
                             } 
 
                             $('.dpp').val(addCommas(numeric2));
-                          }
-                          else if(jenisppn == 'I'){ //PPN TIDAK KOSONG && PPH TIDAK KOSONG
-
-                             hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                         
-                            $('.dpp').val(addCommas(hargadpp));
-                            subtotal = $('.dpp').val();
-                            subharga = subtotal.replace(/,/g, '');
-                            hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                     
-                            $('.hasilppn').val(addCommas(hargappn));
-
-                            total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                            $('.nettohutang').val(addCommas(total));
-                            //$('.sisahutang').val(addCommas(total));
-
-                             totaljumlah2 = $('.totaljumlah').val();
-                            //    alert(totaljumlah2);
-                            if(totaljumlah2 != ''){
-                              totaljumlah = totaljumlah2.replace(/,/g,'');
-                              hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                              $('.sisahutang').val(addCommas(hslselisihum));
-                            }
-                            else {
-                              $('.sisahutang').val(total);
-                            } 
-
-                          }
-                          else {
-                            hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                            hsl = hasilnetto.toFixed(2);
-                            $('.nettohutang').val(addCommas(hsl));
-                           // $('.sisahutang').val(addCommas(hsl));
-                            $('.dpp').val(addCommas(numeric2));
-                            
-                             totaljumlah2 = $('.totaljumlah').val();
-                            //    alert(totaljumlah2);
-                            if(totaljumlah2 != ''){
-                              totaljumlah = totaljumlah2.replace(/,/g,'');
-                              hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                              $('.sisahutang').val(addCommas(hslselisihum));
-                            }
-                            else {
-                              $('.sisahutang').val(hsl);
-                            } 
-
-                          }
                         }
                       }
                       else if(ppn != '') { //PPN TIDAK KOSONG   
@@ -5955,79 +5057,7 @@
                         jenisppn = $('.jenisppn').val();
                         if(pph == 0){ //PPN TIDAK KOSONG PPH KOSONG
                     //    alert('pph kosong');
-                            if(jenisppn == 'E'){   
-                      //      alert('E');          
-                              hasil = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn));
-                              hsl = hasil.toFixed(2);
-                        /*      alert(parseFloat(numeric2));
-                              alert(parseFloat(replaceppn));
-                              alert(parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)));*/
-                              $('.nettohutang').val(addCommas(hsl));
-                             // $('.sisahutang').val(addCommas(hsl));
-                              $('.dpp').val(addCommas(numeric2));
-                            
-                                totaljumlah2 = $('.totaljumlah').val();
-                            //    alert(totaljumlah2);
-                            if(totaljumlah2 != ''){
-                              totaljumlah = totaljumlah2.replace(/,/g,'');
-                              hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                              $('.sisahutang').val(addCommas(hslselisihum));
-                            }
-                            else {
-                              $('.sisahutang').val(hsl);
-                            } 
-
-                            }
-                            else if(jenisppn == 'I'){
-                         
-                                hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                $('.dpp').val(addCommas(hargadpp));
-                                subtotal = $('.dpp').val();
-                                subharga = subtotal.replace(/,/g, '');
-                                hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                         
-                                $('.hasilppn').val(addCommas(hargappn));
-                                total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
-                                $('.nettohutang').val(addCommas(total));
-                                //$('.sisahutang').val(addCommas(total));
-                            
-                                 totaljumlah2 = $('.totaljumlah').val();
-                                //    alert(totaljumlah2);
-                                if(totaljumlah2 != ''){
-                                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                                  hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                                  $('.sisahutang').val(addCommas(hslselisihum));
-                                }
-                                else {
-                                  $('.sisahutang').val(total);
-                                }
-                            }
-                            else {
-                       
-                              hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
-                              hsl = hasilnetto.toFixed(2);
-                              $('.nettohutang').val(addCommas(hsl));
-                            //  $('.sisahutang').val(addCommas(hsl));
-                              $('.dpp').val(addCommas(numeric2));
-
-                                totaljumlah2 = $('.totaljumlah').val();
-                                //    alert(totaljumlah2);
-                                if(totaljumlah2 != ''){
-                                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                                  hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                  $('.sisahutang').val(addCommas(hslselisihum));
-                                }
-                                else {
-                                  $('.sisahutang').val(hsl);
-                                }
-
-                            }
-                        }
-                        else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
-                       
-                          jenisppn = $('.jenisppn').val();
-                          if(jenisppn == 'E') {          
-                            hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
+                           hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                             hsl = hasilnetto.toFixed(2);
                             $('.nettohutang').val(addCommas(hsl));
                             //$('.sisahutang').val(addCommas(hsl));
@@ -6041,55 +5071,8 @@
                               $('.sisahutang').val(addCommas(hslselisihum));
                             }
                             else {
-                              $('.sisahutang').val(hsl);
+                              $('.sisahutang').val(addCommas(hsl));
                             }
-                          }
-                          else if(jenisppn == 'I'){
-                                hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                         
-                                $('.dpp').val(addCommas(hargadpp));
-                                subtotal = $('.dpp').val();
-                                subharga = subtotal.replace(/,/g, '');
-                                hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                         
-                                $('.hasilppn').val(addCommas(hargappn));
-
-                                total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                                $('.nettohutang').val(addCommas(total)); 
-                             //   $('.sisahutang').val(addCommas(total)); 
-                                
-                                totaljumlah2 = $('.totaljumlah').val();
-                                //    alert(totaljumlah2);
-                                if(totaljumlah2 != ''){
-                                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                                  hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                                  $('.sisahutang').val(addCommas(hslselisihum));
-                                }
-                                else {
-                                  $('.sisahutang').val(total);
-                                }
-
-                          }
-                          else {
-
-                              hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                              hsl = hasilnetto.toFixed(2);
-                              $('.nettohutang').val(addCommas(hsl));
-                              //$('.sisahutang').val(addCommas(hsl));
-                              $('.dpp').val(addCommas(numeric2));
-
-                              totaljumlah2 = $('.totaljumlah').val();
-                                //    alert(totaljumlah2);
-                                if(totaljumlah2 != ''){
-                                  totaljumlah = totaljumlah2.replace(/,/g,'');
-                                  hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                                  $('.sisahutang').val(addCommas(hslselisihum));
-                                }
-                                else {
-                                  $('.sisahutang').val(hsl);
-                                }
-                          
-                          }
                         }
                       } 
                       else {
@@ -6105,7 +5088,7 @@
                             $('.sisahutang').val(addCommas(numeric2));
                           }
                           else {
-                            $('.sisahutang').val(numeric2);
+                            $('.sisahutang').val(addCommas(numeric2));
                           }
                       }
 
@@ -6163,12 +5146,12 @@
               jenisppn = $('.jenisppn').val();
               ppn = $('.hasilppn').val(); 
 
-              if(inputppn != '') {
+            /*  if(inputppn != '') {
                  hasilppn = parseFloat((inputppn / 100) * numeric2);
                  hasilppn2 =   hasilppn.toFixed(2);
                  ppn2 = $('.hasilppn').val(addCommas(hasilppn2)); 
                  ppn = $('.hasilppn').val(); 
-              }
+              }*/
 
               pph = $('.hasilpph').val();
 
@@ -6188,82 +5171,57 @@
 
                if(pph != 0 & ppn != '') { 
                // alert('pph ada ppn ada');//PPH  ADA DAN PPN  ADA
-                   jenisppn = $('.jenisppn').val();
-                  if(jenisppn == 'E') {          
                     hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
                     hsl = hasilnetto.toFixed(2);
                     $('.nettohutang').val(addCommas(hsl));
                     $('.sisahutang').val(addCommas(hsl));
                     $('.dpp').val(addCommas(numeric2));
-                  }
-                  else if(jenisppn == 'I'){
-                      hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                      $('.dpp').val(addCommas(hargadpp));
-                      subtotal = $('.dpp').val();
-                      subharga = subtotal.replace(/,/g, '');
-                      hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-               
-                      $('.hasilppn').val(addCommas(hargappn));
 
-                      total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                      $('.nettohutang').val(addCommas(total));                     
-                      $('.sisahutang').val(addCommas(total));                     
-                  }
-                  else {
+                     totaljumlah2 = $('.totaljumlah').val();
+ 
+                      if(totaljumlah2 != ''){
+                        totaljumlah = totaljumlah2.replace(/,/g,'');
+                        hslselisihum = parseFloat(parseFloat(hasilnetto) - parseFloat(totaljumlah)).toFixed(2);
+                        $('.sisahutang').val(addCommas(hslselisihum));
+                      }
+                      else {
+                        $('.sisahutang').val(numeric2);
+                      }
 
-                      hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                      hsl = hasilnetto.toFixed(2);
-                       $('.inputppn').val('');
-                       $('.hasilppn').val('');
-                      $('.nettohutang').val(addCommas(hsl));
-                      $('.sisahutang').val(addCommas(hsl));
-                      $('.dpp').val(addCommas(numeric2));
-                  
-                  }
                 }
                 else if(pph != 0){ //PPH TIDAK KOSONG            
                  // alert('pph tdk kosong');
                   if(ppn == '') { //PPN KOSONG          
-                    hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph));
-                    $('.nettohutang').val(hasil);
-                    $('.sisahutang').val(hasil);
-                      $('.dpp').val(addCommas(numeric2));
+                    hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)).toFixed(2);
+                    $('.nettohutang').val(addCommas(hasil));
+                    $('.sisahutang').val(addCommas(hasil));
+                    $('.dpp').val(addCommas(numeric2));
+
+                     if(totaljumlah2 != ''){
+                        totaljumlah = totaljumlah2.replace(/,/g,'');
+                        hslselisihum = parseFloat(parseFloat(hasil) - parseFloat(totaljumlah)).toFixed(2);
+                        $('.sisahutang').val(addCommas(hslselisihum));
+                      }
+                      else {
+                        $('.sisahutang').val(numeric2);
+                      }
                   }
                   else{ //PPN TIDAK KOSONG            
-                      jenisppn = $('.jenisppn').val();
-                    if(jenisppn == 'E') {
-                    
-                      hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
-                      hsl = hasilnetto.toFixed(2);
-                      $('.nettohutang').val(addCommas(hsl));
-                      $('.sisahutang').val(addCommas(hsl));
-                       $('.dpp').val(addCommas(numeric2));
-                    }
-                    else if(jenisppn == 'I'){ //PPN TIDAK KOSONG && PPH TIDAK KOSONG
-
-                       hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                   
-                      $('.dpp').val(addCommas(hargadpp));
-                      subtotal = $('.dpp').val();
-                      subharga = subtotal.replace(/,/g, '');
-                      hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-               
-                      $('.hasilppn').val(addCommas(hargappn));
-
-                      total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                      $('.nettohutang').val(addCommas(total));
-                      $('.sisahutang').val(addCommas(total));
-
-                    }
-                    else {
-                      hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                      hsl = hasilnetto.toFixed(2);
-                       $('.inputppn').val('');
-                      $('.hasilppn').val('');
-                      $('.nettohutang').val(addCommas(hsl));
-                      $('.sisahutang').val(addCommas(hsl));
+                      hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)).toFixed(2); 
+                 //     hsl = hasilnetto.toFixed(2);
+                      $('.nettohutang').val(addCommas(hasilnetto));
+                      $('.sisahutang').val(addCommas(hasilnetto));
                       $('.dpp').val(addCommas(numeric2));
-                    }
+
+
+                     if(totaljumlah2 != ''){
+                        totaljumlah = totaljumlah2.replace(/,/g,'');
+                        hslselisihum = parseFloat(parseFloat(hasilnetto) - parseFloat(totaljumlah)).toFixed(2);
+                        $('.sisahutang').val(addCommas(hslselisihum));
+                      }
+                      else {
+                        $('.sisahutang').val(numeric2);
+                      }
                   }
                 }
                 else if(ppn != '') { //PPN TIDAK KOSONG   
@@ -6271,84 +5229,61 @@
                   jenisppn = $('.jenisppn').val();
                   if(pph == 0){ //PPN TIDAK KOSONG PPH KOSONG
                 //  alert('pph kosong');
-                      if(jenisppn == 'E'){   
-                      //alert('E');          
-                        hasil = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn));
-                        hsl = hasil.toFixed(2);
+                        hasil = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)).toFixed(2);
+                       // hsl = hasil.toFixed(2);
                        // alert(parseFloat(numeric2));
                         //alert(parseFloat(replaceppn));
                         //alert(parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)));
-                        $('.nettohutang').val(addCommas(hsl));
-                        $('.sisahutang').val(addCommas(hsl));
-                          $('.dpp').val(addCommas(numeric2));
-                      }
-                      else if(jenisppn == 'I'){
-                   
-                          hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                          $('.dpp').val(addCommas(hargadpp));
-                          subtotal = $('.dpp').val();
-                          subharga = subtotal.replace(/,/g, '');
-                          hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                   
-                          $('.hasilppn').val(addCommas(hargappn));
-                          total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
-                          $('.nettohutang').val(addCommas(total));
-                          $('.sisahutang').val(addCommas(total));
-                      }
-                      else {
-                 
-                        hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
-                        hsl = hasilnetto.toFixed(2);
-                         $('.inputppn').val('');
-                         $('.hasilppn').val('');
-                        $('.nettohutang').val(addCommas(hsl));
-                        $('.sisahutang').val(addCommas(hsl));
-                          $('.dpp').val(addCommas(numeric2));
-                      }
+                        $('.nettohutang').val(addCommas(hasil));
+                        $('.sisahutang').val(addCommas(hasil));
+                        $('.dpp').val(addCommas(numeric2));
+
+                        totaljumlah2 = $('.totaljumlah').val();
+                         if(totaljumlah2 != ''){
+                            totaljumlah = totaljumlah2.replace(/,/g,'');
+                            hslselisihum = parseFloat(parseFloat(hasil) - parseFloat(totaljumlah)).toFixed(2);
+                            $('.sisahutang').val(addCommas(hslselisihum));
+                          }
+                          else {
+                            $('.sisahutang').val(numeric2);
+                          }
+
                   }
                   else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
-                 
-                    jenisppn = $('.jenisppn').val();
-                    if(jenisppn == 'E') {          
-                      hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
-                      hsl = hasilnetto.toFixed(2);
-                      $('.nettohutang').val(addCommas(hsl));
-                      $('.sisahutang').val(addCommas(hsl));
-                        $('.dpp').val(addCommas(numeric2));
-                    }
-                    else if(jenisppn == 'I'){
-                          hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                                   
-                          $('.dpp').val(addCommas(hargadpp));
-                          subtotal = $('.dpp').val();
-                          subharga = subtotal.replace(/,/g, '');
-                          hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-                   
-                          $('.hasilppn').val(addCommas(hargappn));
+                     hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)).toFixed(2); 
+//                      hsl = hasilnetto.toFixed(2);
+                      $('.nettohutang').val(addCommas(hasilnetto));
+                      $('.sisahutang').val(addCommas(hasilnetto));
+                      $('.dpp').val(addCommas(numeric2));
 
-                          total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                          $('.nettohutang').val(addCommas(total)); 
-                          $('.sisahutang').val(addCommas(total)); 
-                    }
-                    else {
-
-                        hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                        hsl = hasilnetto.toFixed(2);
-                         $('.inputppn').val('');
-                         $('.hasilppn').val('');
-                        $('.nettohutang').val(addCommas(hsl));
-                        $('.sisahutang').val(addCommas(hsl));
-                        $('.dpp').val(addCommas(numeric2));
-                    
-                    }
+                       totaljumlah2 = $('.totaljumlah').val();
+                         if(totaljumlah2 != ''){
+                            totaljumlah = totaljumlah2.replace(/,/g,'');
+                            hslselisihum = parseFloat(parseFloat(hasilnetto) - parseFloat(totaljumlah)).toFixed(2);
+                            $('.sisahutang').val(addCommas(hslselisihum));
+                          }
+                          else {
+                            $('.sisahutang').val(numeric2);
+                          }
                   }
                 } 
                 else {
                     $('.nettohutang').val(addCommas(numeric2));
                     $('.sisahutang').val(addCommas(numeric2));
                     $('.dpp').val(addCommas(numeric2));
-                     $('.inputppn').val('');
-                     $('.hasilppn').val('');
+                    $('.inputppn').val('');
+                    $('.hasilppn').val('');
+
+                     totaljumlah2 = $('.totaljumlah').val();
+                         if(totaljumlah2 != ''){
+                            totaljumlah = totaljumlah2.replace(/,/g,'');
+                            hslselisihum = parseFloat(parseFloat(numeric2) - parseFloat(totaljumlah)).toFixed(2);
+                            $('.sisahutang').val(addCommas(hslselisihum));
+                          }
+                          else {
+                            $('.sisahutang').val(numeric2);
+                          }
+
                 }// END PPN
           
           parent.remove();
@@ -7559,13 +6494,13 @@
         $('.sisahutang_po').val(numeric2);
       }
 
-        inputppn = $('.inputppn_po').val();
+       /* inputppn = $('.inputppn_po').val();
         if(inputppn != ''){
           hasilppn1 = parseFloat((inputppn / 100) * numeric2);
           hasilppn2 =   hasilppn1.toFixed(2);
           $('.hasilppn_po').val(addCommas(hasilppn2));
         }
-
+*/
         pph = $('.hasilpph_po').val();
        // alert(pph);
         ppn = $('.hasilppn_po').val();       
@@ -7573,10 +6508,7 @@
         replaceppn = ppn.replace(/,/g,'');
 
         if(pph != '' & ppn != '') { //PPH  ADA DAN PPN  ADA
-        
-          jenisppn = $('.jenisppn_po').val();
-          if(jenisppn == 'E') {          
-            hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
+           hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
             hsl = hasilnetto.toFixed(2);
             $('.nettohutang_po').val(addCommas(hsl));
             $('.dpp_po').val(addCommas(numeric2));
@@ -7591,55 +6523,6 @@
             else {
               $('.sisahutang_po').val(numeric2);
             }
-
-
-          }
-          else if(jenisppn == 'I'){
-
-               hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                            
-            
-              $('.dpp_po').val(addCommas(hargadpp));
-              subtotal = $('.dpp_po').val();
-              subharga = subtotal.replace(/,/g, '');
-              hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-       
-              $('.hasilppn_po').val(addCommas(hargappn));
-
-              total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-              $('.nettohutang_po').val(addCommas(total));
-
-               totaljumlah2 = $('.totaljumlah').val();
-          //    alert(totaljumlah2);
-              if(totaljumlah2 != ''){
-                totaljumlah = totaljumlah2.replace(/,/g,'');
-                hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                $('.sisahutang_po').val(addCommas(hslselisihum));
-              }
-              else {
-                $('.sisahutang_po').val(total);
-              }
-          }
-          else {
-
-              hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-              hsl = hasilnetto.toFixed(2);
-              $('.nettohutang_po').val(addCommas(hsl));
-              $('.dpp_po').val(addCommas(numeric2));
-
-              totaljumlah2 = $('.totaljumlah').val();
-          //    alert(totaljumlah2);
-              if(totaljumlah2 != ''){
-                totaljumlah = totaljumlah2.replace(/,/g,'');
-                hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                $('.sisahutang_po').val(addCommas(hslselisihum));
-              }
-              else {
-                $('.sisahutang_po').val(hsl);
-              }
-
-          
-          }
         }
         else if(pph != ''){ //PPH TIDAK KOSONG
      
@@ -7660,10 +6543,7 @@
 
           }
           else{ //PPN TIDAK KOSONG            
-              jenisppn = $('.jenisppn_po').val();
-            if(jenisppn == 'E') {
-            
-              hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
+             hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
               hsl = hasilnetto.toFixed(2);
               $('.nettohutang_po').val(addCommas(hsl));
               $('.dpp_po').val(addCommas(numeric2));
@@ -7677,59 +6557,13 @@
                 else {
                   $('.sisahutang_po').val(hsl);
                 }
-            }
-            else if(jenisppn == 'I'){ //PPN TIDAK KOSONG && PPH TIDAK KOSONG
-
-               hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                           
-              $('.dpp_po').val(addCommas(hargadpp));
-              subtotal = $('.dpp_po').val();
-              subharga = subtotal.replace(/,/g, '');
-              hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-       
-              $('.hasilppn_po').val(addCommas(hargappn));
-
-              total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-              $('.nettohutang_po').val(addCommas(total));
-
-                totaljumlah2 = $('.totaljumlah').val();
-                if(totaljumlah2 != '' ){
-                    totaljumlah = totaljumlah2.replace(/,/g,'');
-                    hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                    $('.sisahutang_po').val(addCommas(hslselisihum));
-                }
-                else {
-                  $('.sisahutang_po').val(total);
-                }
-
-            
-            }
-            else {
-              hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-              hsl = hasilnetto.toFixed(2);
-              $('.nettohutang_po').val(addCommas(hsl));
-              $('.dpp_po').val(addCommas(numeric2));
-
-               totaljumlah2 = $('.totaljumlah').val();
-                if(totaljumlah2 != ''){
-                    totaljumlah = totaljumlah2.replace(/,/g,'');
-                    hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                    $('.sisahutang_po').val(addCommas(hslselisihum));
-                }
-                else {
-                  $('.sisahutang_po').val(hsl);
-                }
-
-            }
           }
         }
         else if(ppn != '') { //PPN TIDAK KOSONG
     
           jenisppn = $('.jenisppn_po').val();
           if(pph == ''){ //PPN TIDAK KOSONG PPH KOSONG
-        
-              if(jenisppn == 'E'){             
-                hasil = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn));
+               hasil = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn));
                 hsl = hasil.toFixed(2);
                 $('.nettohutang_po').val(addCommas(hsl));
                 $('.dpp_po').val(addCommas(numeric2));
@@ -7743,55 +6577,9 @@
                 else {
                   $('.sisahutang_po').val(hsl);
                 }
-
-              }
-              else if(jenisppn == 'I'){
-           
-                  hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                  $('.dpp_po').val(addCommas(hargadpp));
-                  subtotal = $('.dpp_po').val();
-                  subharga = subtotal.replace(/,/g, '');
-                  hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-           
-                  $('.hasilppn_po').val(addCommas(hargappn));
-                  total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
-                  $('.nettohutang_po').val(addCommas(total));
-
-                  totaljumlah2 = $('.totaljumlah').val();
-                  if(totaljumlah2 != ''){
-                      totaljumlah = totaljumlah2.replace(/,/g,'');
-                      hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                      $('.sisahutang_po').val(addCommas(hslselisihum));
-                  }
-                  else {
-                    $('.sisahutang_po').val(total);
-                  }
-
-              }
-              else {
-         
-                hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
-                hsl = hasilnetto.toFixed(2);
-                $('.nettohutang_po').val(addCommas(hsl));
-                $('.dpp_po').val(addCommas(numeric2));
-                
-                totaljumlah2 = $('.totaljumlah').val();
-                  if(totaljumlah2 != '' ){
-                      totaljumlah = totaljumlah2.replace(/,/g,'');
-                      hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                      $('.sisahutang_po').val(addCommas(hslselisihum));
-                  }
-                  else {
-                    $('.sisahutang_po').val(hsl);
-                  }
-
-              }
           }
           else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
-         
-            jenisppn = $('.jenisppn_po').val();
-            if(jenisppn == 'E') {          
-              hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
+             hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
               hsl = hasilnetto.toFixed(2);
               $('.nettohutang_po').val(addCommas(hsl));
               $('.dpp_po').val(addCommas(numeric2));
@@ -7805,49 +6593,6 @@
                   else {
                     $('.sisahutang_po').val(hsl);
                   }
-
-            }
-            else if(jenisppn == 'I'){
-                  hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
-                           
-                  $('.dpp_po').val(addCommas(hargadpp));
-                  subtotal = $('.dpp_po').val();
-                  subharga = subtotal.replace(/,/g, '');
-                  hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
-           
-                  $('.hasilppn_po').val(addCommas(hargappn));
-
-                  total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
-                  $('.nettohutang_po').val(addCommas(total));
-
-                  totaljumlah2 = $('.totaljumlah').val();
-                  if(totaljumlah2 != ''){
-                      totaljumlah = totaljumlah2.replace(/,/g,'');
-                      hslselisihum = parseFloat(parseFloat(total) - parseFloat(totaljumlah)).toFixed(2);
-                      $('.sisahutang_po').val(addCommas(hslselisihum));
-                  }
-                  else {
-                    $('.sisahutang_po').val(total);
-                  }
-
-            }
-            else {
-
-                hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
-                hsl = hasilnetto.toFixed(2);
-                $('.nettohutang_po').val(addCommas(hsl));
-                $('.dpp_po').val(addCommas(numeric2));
-                
-               totaljumlah2 = $('.totaljumlah').val();
-                if(totaljumlah2 != ''){
-                    totaljumlah = totaljumlah2.replace(/,/g,'');
-                    hslselisihum = parseFloat(parseFloat(hsl) - parseFloat(totaljumlah)).toFixed(2);
-                    $('.sisahutang_po').val(addCommas(hslselisihum));
-                }
-                else {
-                  $('.sisahutang_po').val(hsl);
-                }
-            }
           }
         } 
         else {
@@ -8266,7 +7011,7 @@ $('#tmbhdataitem').click(function(){
   //                console.log('year' + year);
                   year2 = tahun.substring(2);
                   //year2 ="Anafaradina";
-                   nofaktur = 'FP' + month + year2 + '/' + cabang + '/' + a + '-' + response.data ;
+                   nofaktur = 'FB' + month + year2 + '/' + cabang + '/' + a + '-' + response.data ;
                   $('.aslinofaktur').val(nofaktur);
                   $('.nofaktur').val(nofaktur);
                   $('.no_faktur').val(nofaktur);
@@ -8312,7 +7057,7 @@ $('#tmbhdataitem').click(function(){
   //                console.log('year' + year);
                   year2 = tahun.substring(2);
                   //year2 ="Anafaradina";
-                   nofaktur = 'FP' + month + year2 + '/' + cabang + '/' + 'PO' + '-' + response.data ;
+                   nofaktur = 'FB' + month + year2 + '/' + cabang + '/' + 'PO' + '-' + response.data ;
                   $('.aslinofaktur').val(nofaktur);
                   $('.nofaktur').val(nofaktur);
                   $('.no_faktur').val(nofaktur);

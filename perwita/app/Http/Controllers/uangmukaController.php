@@ -207,6 +207,8 @@ class uangmukaController extends Controller
 	$simpan->um_comp=$request->cabang;
 	$simpan->um_sisapelunasan=$request->jumlah;
 	$simpan->um_akunhutang = $dataakunitem;
+	$simpan->created_by = $request->username;
+	$simpan->updated_by = $request->username;
 	$simpan->save();
 
 	return json_encode('sukses');
