@@ -12,7 +12,7 @@
     @foreach($data as $val)
     <tr onclick="pilih_um(this)">
       <td><input type="hidden" class="nomor_trans" value="{{$val->nomor}}">{{$val->nomor}}</td>
-      <td><input type="hidden" class="nomor_trans" value="{{$val->um_nomorbukti}}">{{$val->um_nomorbukti}}</td>
+      <td><input type="hidden" class="nomor_um" value="{{$val->um_nomorbukti}}">{{$val->um_nomorbukti}}</td>
       <td>{{$val->um_tgl}}</td>
       <td>{{$val->um_supplier}}</td>
       <td>{{$val->um_keterangan}}</td>

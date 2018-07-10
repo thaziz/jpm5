@@ -3584,6 +3584,7 @@ public function save_bp_um(request $req)
 
 					$flag = $fpg->fpg_flag;
 
+					$jumlah_um = $cari_fpgdt->fpgdt_pelunasan;
 				}else{
 
 					$bkk = DB::table('bukti_kas_keluar')
@@ -3603,6 +3604,7 @@ public function save_bp_um(request $req)
 									]);
 
 					$flag = $bkk->bkk_flag;
+					$jumlah_um = $cari_bkkd->bkkd_total;
 				}
 
 				$save_dt = DB::table('uangmukapembeliandt_fp')
@@ -3983,6 +3985,7 @@ public function update_bp_um(request $req)
 
 					$flag = $fpg->fpg_flag;
 
+					$jumlah_um = $cari_fpgdt->fpgdt_pelunasan;
 				}else{
 
 					$bkk = DB::table('bukti_kas_keluar')
@@ -4002,6 +4005,7 @@ public function update_bp_um(request $req)
 									]);
 
 					$flag = $bkk->bkk_flag;
+					$jumlah_um = $cari_bkkd->bkkd_total;
 				}
 
 				$save_dt = DB::table('uangmukapembeliandt_fp')

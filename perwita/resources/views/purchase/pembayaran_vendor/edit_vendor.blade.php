@@ -855,7 +855,7 @@ $('.save_vendor_um').click(function(){
   var um_keterangan   = '{{$val->umfpdt_keterangan}}';
   console.log(nofaktur);
 
-  datatable2.row.add([
+  vendor_tabel_detail_um.row.add([
             '<p class="tb_faktur_um_text">'+nofaktur+'</p>'+
             '<input type="hidden" class="tb_faktur_um_'+id_um+' tb_faktur_um" value="'+id_um+'">',
 
@@ -885,7 +885,7 @@ $('.save_vendor_um').click(function(){
     array_um1.push(nomor);
     array_um2.push(um_nomorbukti);
     hitung_um();
-    $('.bp_tabel_um :input').val('');
+    $('.vendor_tabel_detail_um :input').val('');
 @endforeach
 
 
