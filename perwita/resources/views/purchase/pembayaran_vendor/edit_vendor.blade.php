@@ -428,7 +428,7 @@ $('.simpan_vendor_tt').click(function(){
         url:baseUrl + '/fakturpembelian/simpan_tt',
         type:'get',
         dataType:'json',
-        data:$('.tabel_tt_vendor :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.form_vendor :input').serialize()+'&cabang='+cabang,
+        data:$('.tabel_tt_vendor :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.form_vendor :input').serialize()+'&'+$('.head1 :input').serialize()+'&cabang='+cabang,
         success:function(response){
               swal({
                   title: "Berhasil!",
@@ -486,7 +486,7 @@ $('.simpan_data_vendor').click(function(){
                 }
             });
           $.ajax({
-          url:baseUrl + '/fakturpembelian/save_vendor',
+          url:baseUrl + '/fakturpembelian/update_vendor',
           type:'get',
           data:$('.head1 :input').serialize()
               +'&'+$('.table_vendor :input').serialize()
@@ -741,7 +741,7 @@ $('.save_vendor_um').click(function(){
               }
           });
         $.ajax({
-        url:baseUrl + '/fakturpembelian/save_vendor_um',
+        url:baseUrl + '/fakturpembelian/update_vendor_um',
         type:'post',
         data:$('.head1 :input').serialize()
               +'&'+$('.table_vendor :input').serialize()

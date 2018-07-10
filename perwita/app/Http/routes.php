@@ -322,8 +322,9 @@ Route::get('fakturpembelian/getpembayaranvendor', 'pembayaran_vendor_controller@
 Route::get('fakturpembelian/cari_do_vendor', 'pembayaran_vendor_controller@cari_do_vendor');
 Route::get('fakturpembelian/append_vendor', 'pembayaran_vendor_controller@append_vendor');
 Route::get('fakturpembelian/save_vendor', 'pembayaran_vendor_controller@save_vendor');
-Route::get('fakturpembelian/vendor_um', 'pembayaran_vendor_controller@vendor_um');
+Route::get('fakturpembelian/update_vendor', 'pembayaran_vendor_controller@update_vendor');
 Route::post('fakturpembelian/save_vendor_um', 'pembayaran_vendor_controller@save_vendor_um');
+Route::post('fakturpembelian/update_vendor_um', 'pembayaran_vendor_controller@update_vendor_um');
 Route::get('fakturpembelian/cari_do_vendor_edit', 'pembayaran_vendor_controller@cari_do_vendor_edit');
 
 

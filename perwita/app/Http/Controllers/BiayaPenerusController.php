@@ -1386,7 +1386,7 @@ class BiayaPenerusController extends Controller
 				$idfaktur = '001';
 			}
 
-			$nota = 'FP' . $month . $year . '/' . $request->cab . '/O-' .  $idfaktur;
+			$nota = 'FB' . $month . $year . '/' . $request->cab . '/O-' .  $idfaktur;
 			/*dd($data['nofp']);*/
 
 			return response()->json(['nota' => $nota]);
@@ -1416,7 +1416,7 @@ class BiayaPenerusController extends Controller
 				$idfaktur = '001';
 			}
 
-			$nota = 'FP' . $month . $year . '/' . $request->cab . '/P-' .  $idfaktur;
+			$nota = 'FB' . $month . $year . '/' . $request->cab . '/P-' .  $idfaktur;
 			/*dd($data['nofp']);*/
 
 			return response()->json(['nota' => $nota]);
@@ -1443,7 +1443,7 @@ class BiayaPenerusController extends Controller
 				$idfaktur = '001';
 			}
 
-			$nota = 'FP' . $month . $year . '/' . $request->cab . '/SC-' .  $idfaktur;
+			$nota = 'FB' . $month . $year . '/' . $request->cab . '/SC-' .  $idfaktur;
 			/*dd($data['nofp']);*/
 
 			return response()->json(['nota' => $nota]);
@@ -3612,7 +3612,7 @@ public function save_bp_um(request $req)
 							  	'umfpdt_id' 		   => $dt,
 								'umfpdt_transaksibank' => $req->tb_transaksi_um[$i],
 								'umfpdt_tgl' 		   => $um->um_tgl,
-								'umfpdt_jumlahum'  	   => $um->um_jumlah,
+								'umfpdt_jumlahum'  	   => $jumlah_um,
 								'umfpdt_dibayar'   	   => $req->tb_bayar_um[$i],
 								'umfpdt_keterangan'    => $um->um_keterangan,
 								'umfpdt_idfp' 		   => $req->idfaktur,
@@ -4013,7 +4013,7 @@ public function update_bp_um(request $req)
 							  	'umfpdt_id' 		   => $dt,
 								'umfpdt_transaksibank' => $req->tb_transaksi_um[$i],
 								'umfpdt_tgl' 		   => $um->um_tgl,
-								'umfpdt_jumlahum'  	   => $um->um_jumlah,
+								'umfpdt_jumlahum'  	   => $jumlah_um,
 								'umfpdt_dibayar'   	   => $req->tb_bayar_um[$i],
 								'umfpdt_keterangan'    => $um->um_keterangan,
 								'umfpdt_idfp' 		   => $req->idfaktur,
