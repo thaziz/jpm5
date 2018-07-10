@@ -1,121 +1,76 @@
-  
-                <table id="addColumn" class="table table-bordered table-striped" width="100%" >
-                    <thead>
-                        <tr>
-                            <th width="10%"> Kode</th>
-                            <th width="10%"> Tgl </th>
-                            <th width="10%"> Keterangan </th>
-                            <th width="10%"> Debet(+) </th>
-                            <th width="10%"> Kredit(-) </th>
-                            <th width="10%"> saldo </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                     
-                    @foreach ($customer as $in => $customer_)
-                         <tr>
-                           <td colspan="6">Customer : [{{ $customer[$in][0]->kode }}] {{ $customer[$in][0]->nama }}</td>
-                         </tr>
-                         @foreach ($saldo_ut as $sal => $saldo_ut_)
-                          <tr>
-                              @if ($saldo_ut[$sal] == 0)
-                              
-                              @else
-                              
-                                  @if ($customer[$in][0]->kode == $saldo_ut[$sal][0]->i_kode_customer)
-                                    <td >Saldo Awal :</td>
-                                    <td colspan="5" align="right">{{ $saldo_ut[$sal][0]->saldo }}</td>
-                                  @else 
-                                    {{-- <td>0</td> --}}
-                                  @endif
-                              
-                              @endif
-                          </tr>
-                        @endforeach
-                          @for ($i = 0; $i <count($data) ; $i++)
-                            @if ($customer[$in][0]->kode == $data[$i]->customer)
-                              <tr>
-                                @if ($data[$i]->kode)
-                                  <td>{{ $data[$i]->kode }}</td>
-                                @else
-                                  <td>0</td>
-                                @endif
-
-                                @if ($data[$i]->tanggal)
-                                  <td>{{ $data[$i]->tanggal }}</td>
-                                @else
-                                  <td>-</td>
-                                @endif
-
-                                @if ($data[$i]->keterangan)
-                                  <td>{{ $data[$i]->keterangan }}</td>
-                                @else
-                                  <td>-</td>
-                                @endif
-
-                                @if ($data[$i]->flag == 'D')
-                                  <td align="right">{{ $data[$i]->nominal }}</td>
-                                  <td align="right">0</td>
-                                @else 
-                                  <td align="right">0</td>
-                                  <td align="right">{{ $data[$i]->nominal }}</td>
-                                @endif
-                                <td>-</td>
-                              </tr>
-                            @endif
-                          @endfor
-                     @endforeach
-                     
-                       {{-- @foreach ($data as $i => $val)
-                          <tr>
-                            <td>{{ $i+1 }}</td>
-                            <td>{{ $data[$i]['kode'] }}</td>
-                          </tr>
-                       @endforeach --}}
-
-                     {{-- @foreach ($data as $index => $data_)
-                       <tr>
-                         
-                       </tr>
-                     @endforeach --}}
-                    <tr>
-                          <th colspan="3" align="right">total</th>
-                          <td><input type="text" id="total_debet_ajax" readonly="" name="" style="text-align: right;font-weight: bold;border: none;"></td>
-                          <td><input type="text" id="total_kredit_ajax" readonly="" name="" style="text-align: right;font-weight: bold;border: none;"></td>
-                          <td><input type="text" id="total_total_ajax" readonly="" name="" style="text-align: right;font-weight: bold;border: none;"></td>
-                        </tr>
-                    </tbody>
-
-                  </table>
-                   <script type="text/javascript" src="{{ asset('assets/plugins/jquery-1.12.3.min.js') }}"></script>
-                   <script src="{{ asset('assets/vendors/money/dist/jquery.maskMoney.js') }}"></script>
-                   <script src="{{ asset('assets/vendors/accounting/accounting.min.js') }}"></script>
-                   <script src="{{ asset('assets/vendors/jquery-ui/jquery-ui.min.js') }}"></script>
-                  <script type="text/javascript">                                   
-                  // saldo = 0;
-                  // $('.debet').each(function(){
-                  //   var par = $(this).parents('tr');
-                  //   var kredit = $(par).find('.kredit').val();
-                  //   var hasil = $(this).val() - kredit;
-                  //   saldo += hasil;
-                  //   console.log(saldo);
-                  //   $(par).find('.saldo').val(accounting.formatMoney(saldo,"",0,'.',','));
-                  // })
-                  // $('#total_total_ajax').val(accounting.formatMoney(saldo,"",0,'.',','));
-                  // var awal = 0;
-                  //   $('.debet').each(function(){
-                  //   var total = parseInt($(this).val());
-                  //   awal += total;
-                  //   // console.log(awal);
-                  //   });
-                  //   $('#total_debet_ajax').val(accounting.formatMoney(awal,"",0,'.',','));
-
-                  // var kred = 0;
-                  //   $('.kredit').each(function(){
-                  //   var total = parseInt($(this).val());
-                  //   kred += total;
-                  //   // console.log(kred);
-                  // });
-                  // $('#total_kredit_ajax').val(accounting.formatMoney(kred,"",0,'.',','));
-                  
-                  </script>
+<table class="table table-bordered">
+  <tr>
+      <th rowspan="2">No</th>
+      <th colspan="2" align="center">Kode Account</th>
+      <th rowspan="2">Saldo awal</th>
+      <th colspan="3" align="center">Mutasi kredit</th>
+      <th colspan="5" align="center">Mutasi Debet</th>
+      <th rowspan="2">Saldo akir</th>
+      <th rowspan="2">Sisa uang muka</th>
+  </tr>
+  <tr>
+      <th>Kode</th>
+      <th>Nama</th>
+      <th>Hutang baru</th>
+      <th>Hutang Voucher</th>
+      <th>Nota kredit</th>
+      <th>byr cash</th>
+      <th>byr uangmuka </th>
+      <th>cek BG/Trans</th>
+      <th>retur beli</th>
+      <th>Nota debet</th>
+  </tr>
+  @foreach ($data['akun'] as $ah => $element)
+    <tr>
+        <td>{{ $ah+1 }}</td>
+        <td>{{ $data['akun'][$ah]['id_akun'] }}</td>
+        <td>{{ $data['akun'][$ah]['nama_akun'] }}</td>
+        <td><input type="hidden" name="" class="saldoawal" value="{{ $data['hutangsupplier'][$ah]['saldoawal'] }}">
+        {{ $data['hutangsupplier'][$ah]['saldoawal'] }}</td>
+        
+        <td><input type="hidden" name="" class="hutangbaru" value="{{ $data['isidetail'][$ah]['isi']['hutangbaru'] }}">
+        {{ $data['isidetail'][$ah]['isi']['hutangbaru'] }}</td>
+        
+        <td><input type="hidden" name="" class="voucherhutang" value="{{ $data['isidetail'][$ah]['isi']['voucherhutang'] }}">
+        {{ $data['isidetail'][$ah]['isi']['voucherhutang'] }}</td>
+        
+        <td><input type="hidden" name="" class="creditnota" value="{{ $data['isidetail'][$ah]['isi']['creditnota'] }}">
+        {{ $data['isidetail'][$ah]['isi']['creditnota'] }}</td>
+        
+        <td><input type="hidden" name="" class="cash" value="{{ $data['isidetail'][$ah]['isi']['cash'] }}">
+        {{ $data['isidetail'][$ah]['isi']['cash'] }}</td>
+        
+        <td><input type="hidden" name="" class="uangmuka" value="{{ $data['isidetail'][$ah]['isi']['uangmuka'] }}">
+        {{ $data['isidetail'][$ah]['isi']['uangmuka'] }}</td>
+        
+        <td><input type="hidden" name="" class="bg" value="{{ $data['isidetail'][$ah]['isi']['bg'] }}">
+        {{ $data['isidetail'][$ah]['isi']['bg'] }}</td>
+        
+        <td><input type="hidden" name="" class="rn" value="{{ $data['isidetail'][$ah]['isi']['rn'] }}">
+        {{ $data['isidetail'][$ah]['isi']['rn'] }}</td>
+        
+        <td><input type="hidden" name="" class="debitnota" value="{{ $data['isidetail'][$ah]['isi']['debitnota'] }}">
+        {{ $data['isidetail'][$ah]['isi']['debitnota'] }}</td>
+        
+        <td><input type="hidden" name="" class="saldoakhir" value="{{ $data['isidetail'][$ah]['isi']['saldoakhir'] }}">
+        {{ $data['isidetail'][$ah]['isi']['saldoakhir'] }}</td>
+        
+        <td><input type="hidden" name="" class="sisaum" value="{{ $data['isidetail'][$ah]['isi']['sisaum'] }}">
+        {{ $data['isidetail'][$ah]['isi']['sisaum'] }}</td>
+    </tr>  
+  @endforeach
+  <tr>
+    <td colspan="3">sub Total :</td>
+    <td class="output_saldoawal"></td>
+    <td class="output_hutangbaru"></td>
+    <td class="output_voucherhutang"></td>
+    <td class="output_creditnota"></td>
+    <td class="output_cash"></td>
+    <td class="output_uangmuka"></td>
+    <td class="output_bg"></td>
+    <td class="output_rn"></td>
+    <td class="output_debitnota"></td>
+    <td class="output_saldoakhir"></td>
+    <td class="output_sisaum"></td>
+  </tr>
+</table>

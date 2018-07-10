@@ -125,6 +125,8 @@ class v_hutangController extends Controller
    //     $store1->v_akunhutang = $dataakunitem;
         $store1->vc_comp = $request->cabang;
         $store1->v_acchutang = $acchutangsupplier;
+        $store1->created_by = $request->username;
+        $store1->updated_by = $request->username;
      //   return json_encode($request->suppilername);
        $store1->save();
 

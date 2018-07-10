@@ -976,10 +976,6 @@ class MasterPurchaseController extends Controller
 		$mastersupplier->plafon = $replaceplafon;
 		$mastersupplier->currency = strtoupper($request->matauang);
 		$mastersupplier->pajak_npwp = strtoupper($request->npwp);
-		$mastersupplier->ppn =strtoupper( $request->pajak_ppn);
-		$mastersupplier->pph23 = strtoupper($request->pajak_pph);
-		$mastersupplier->pph26 = strtoupper($request->pajak_26);
-		$mastersupplier->noseri_pajak = strtoupper($request->seripajak);
 		$mastersupplier->kodepos = strtoupper($request->kodepos);
 		$mastersupplier->idcabang = strtoupper($request->cabang);
 		$mastersupplier->status = strtoupper($status);
@@ -988,6 +984,7 @@ class MasterPurchaseController extends Controller
 		$mastersupplier->acc_hutang = $request->acc_hutangdagang;
 		$mastersupplier->acc_csf = $request->acc_csf;
 		$mastersupplier->active = $statusactive;
+		$mastersupplier->nik = $request->nik;
 		if($request->kontrak == 'YA') {
 			$mastersupplier->no_kontrak = strtoupper($request->nokontrak);
 		}
@@ -1496,7 +1493,7 @@ class MasterPurchaseController extends Controller
 		return view('purchase/master/master_activa/edit')->withData($data);
 	}
 
-	public function simpan_master_aktiva(Request $request){
+	public function aktiva_save(Request $request){
 		// return json_encode($request->all());
 		$response = [
 			"status"	=> "sukses",
@@ -1558,7 +1555,7 @@ class MasterPurchaseController extends Controller
 		return redirect(url("masteractiva/masteractiva/".Session::get("cabang")));
 	}
 
-	public function ask_kode_master_aktiva($cabang){
+	public function ask_kode_activa($cabang){
 		$data = DB::table("d_master_aktiva")
 				->select(DB::raw("max(to_number(substring(id, 6), '99G999D9S')) as id"))
 				->where("kode_cabang", $cabang)->first();

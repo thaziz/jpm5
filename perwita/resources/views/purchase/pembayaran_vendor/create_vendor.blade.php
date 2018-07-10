@@ -51,6 +51,17 @@
 			</table>
 		</form>
 	</div>
+  <div class="col-sm-6">
+      <h3>Petunjuk Pengisian :</h3>
+      <ol>
+        <li>Pilih vendor terlebih dahulu</li>
+
+        <li>Isi invoice bila ada, dan keterangan</li>
+        <li>Klik <label class="label label-primary"><i class="fa fa-plus"> Tambah Data</i></label> untuk menambahkan delivery order sesuai vendor</li>
+        <li>Setelah selesai semua, klik <label class="label label-warning"><i class="fa fa-book"> Form Tanda Terima</i></label> untuk membuat form tanda terima</li>
+        <li>Tombol <label class="label label-success"><i class="fa fa-save"> Simpan Data</i></label> akan terbuka setelah membuat form tanda terima, lalu klik simpan untuk menyimpan data</li>
+      </li>
+  </div>
 </div>
 <div class="col-sm-12">
 	<table class="table table-bordered table-hover table_do_vendor">
@@ -275,7 +286,7 @@ $('.simpan_vendor_tt').click(function(){
 	      url:baseUrl + '/fakturpembelian/simpan_tt',
 	      type:'get',
 	      dataType:'json',
-	      data:$('.tabel_tt_vendor :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head_subcon :input').serialize()+'&cabang='+cabang,
+	      data:$('.tabel_tt_vendor :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head_subcon :input').serialize()+'&'+$('.head1 :input').serialize()+'&cabang='+cabang,
 	      success:function(response){
 	            swal({
 	                title: "Berhasil!",

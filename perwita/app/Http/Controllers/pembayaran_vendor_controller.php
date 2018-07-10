@@ -52,6 +52,40 @@ class pembayaran_vendor_controller extends Controller
 
     }
 
+    public function cari_do_vendor_edit(request $req)
+    {	
+    	// dd($req->all());
+    	for ($i=0; $i < count($req->array_simpan); $i++) { 
+    		$valid[$i] = $req->array_simpan[$i];
+    	}
+    	$data = DB::table("delivery_order")
+    			  ->leftjoin('biaya_penerus_dt','nomor','=','bpd_pod')
+    			  ->where('kode_cabang',$req->cabang)
+    			  ->where('id_tarif_vendor',$req->nama_vendor)
+    			  ->where('bpd_pod',null)
+    			  ->get();
+
+    	$data1 = DB::table("delivery_order")
+    			  ->leftjoin('biaya_penerus_dt','nomor','=','bpd_pod')
+    			  ->where('bpd_bpid',$req->id)
+    			  ->get();
+
+    	$temp = array_merge($data,$data1);
+    	$temp1 = array_merge($data,$data1);
+
+    	for ($i=0; $i < count($temp1); $i++) { 
+    		for ($a=0; $a < count($req->array_simpan); $a++) { 
+    			if ($req->array_simpan[$a] == $temp1[$i]->nomor) {
+    				unset($temp[$i]);
+    			}
+    		}
+    	}
+    	$data = $temp;
+
+		return view('purchase/pembayaran_vendor/tabel_do_vendor',compact('data'));
+
+    }
+
     public function append_vendor(request $req)
     {
     	// dd($req->all());
@@ -395,6 +429,7 @@ class pembayaran_vendor_controller extends Controller
 
 						$flag = $fpg->fpg_flag;
 
+						$jumlah_um = $cari_fpgdt->fpgdt_pelunasan;
 					}else{
 
 						$bkk = DB::table('bukti_kas_keluar')
@@ -414,6 +449,7 @@ class pembayaran_vendor_controller extends Controller
 										]);
 
 						$flag = $bkk->bkk_flag;
+						$jumlah_um = $cari_bkkd->bkkd_total;
 					}
 
 					$cari_bkkd = DB::table('bukti_kas_keluar_detail')
@@ -427,7 +463,7 @@ class pembayaran_vendor_controller extends Controller
 								  	'umfpdt_id' 		   => $dt,
 									'umfpdt_transaksibank' => $req->tb_transaksi_um[$i],
 									'umfpdt_tgl' 		   => $um->um_tgl,
-									'umfpdt_jumlahum'  	   => $um->um_jumlah,
+									'umfpdt_jumlahum'  	   => $jumlah_um,
 									'umfpdt_dibayar'   	   => $req->tb_bayar_um[$i],
 									'umfpdt_keterangan'    => $um->um_keterangan,
 									'umfpdt_idfp' 		   => $req->idfaktur,
@@ -574,7 +610,7 @@ class pembayaran_vendor_controller extends Controller
 	}
 
 
-	public function update_bp_um(request $req)
+	public function update_vendor_um(request $req)
 	{
 		// dd($req->all());
 	   	return DB::transaction(function() use ($req) {  
@@ -696,6 +732,7 @@ class pembayaran_vendor_controller extends Controller
 
 						$flag = $fpg->fpg_flag;
 
+						$jumlah_um = $cari_fpgdt->fpgdt_pelunasan;
 					}else{
 
 						$bkk = DB::table('bukti_kas_keluar')
@@ -715,6 +752,7 @@ class pembayaran_vendor_controller extends Controller
 										]);
 
 						$flag = $bkk->bkk_flag;
+						$jumlah_um = $cari_bkkd->bkkd_total;
 					}
 
 					$save_dt = DB::table('uangmukapembeliandt_fp')
@@ -722,7 +760,7 @@ class pembayaran_vendor_controller extends Controller
 								  	'umfpdt_id' 		   => $dt,
 									'umfpdt_transaksibank' => $req->tb_transaksi_um[$i],
 									'umfpdt_tgl' 		   => $um->um_tgl,
-									'umfpdt_jumlahum'  	   => $um->um_jumlah,
+									'umfpdt_jumlahum'  	   => $jumlah_um,
 									'umfpdt_dibayar'   	   => $req->tb_bayar_um[$i],
 									'umfpdt_keterangan'    => $um->um_keterangan,
 									'umfpdt_idfp' 		   => $req->idfaktur,
@@ -880,6 +918,228 @@ class pembayaran_vendor_controller extends Controller
 			}
 		});
 	}
+
+	 public function update_vendor(request $req)
+    {
+   		return DB::transaction(function() use ($req) {  
+
+   			// dd($req->all());
+
+   			$akun_hutang = DB::table('d_akun')
+							  ->where('id_akun','like','2102' . '%')
+							  ->where('kode_cabang',$req->cabang)
+							  ->first();
+
+
+			$save_data = DB::table('faktur_pembelian')
+						   ->where('fp_nofaktur',$req->nofaktur)
+						   ->update([
+							  'fp_tgl'        		=> carbon::parse(str_replace('/','-',$req->tanggal_vendor))->format('Y-m-d'),
+							  'fp_keterangan' 		=> $req->Keterangan_biaya,
+							  'fp_noinvoice'  		=> $req->no_invoice,
+							  'fp_jatuhtempo' 		=> carbon::parse(str_replace('/','-',$req->jatuh_tempo_vendor))->format('Y-m-d'),
+							  'updated_at'    		=> carbon::now(),
+							  'fp_jumlah'     		=> filter_var($req->total,FILTER_SANITIZE_NUMBER_INT),
+							  'fp_netto' 	  		=> filter_var($req->total,FILTER_SANITIZE_NUMBER_INT),
+							  'fp_comp'  	  		=> $req->cabang,
+							  'fp_pending_status'	=> 'APPROVED',
+							  'fp_status'  			=> 'Released',  
+							  'fp_jenisbayar' 		=> '6',
+							  'fp_edit'  			=> 'ALLOWED',
+							  'fp_sisapelunasan' 	=> filter_var($req->total,FILTER_SANITIZE_NUMBER_INT),
+							  'fp_supplier'  		=> $req->nama_vendor,
+							  'fp_acchutang'  		=> $akun_hutang->id_akun,
+							  'updated_by'  		=> Auth::user()->m_name,
+						   ]);	
+			
+		
+
+			$save_data1 = DB::table('biaya_penerus')
+							->where('bp_faktur',$req->nofaktur)
+							->update([
+							  'bp_tipe_vendor' 	 => 'VENDOR',
+							  'bp_kode_vendor' 	 => $req->nama_vendor,
+							  'bp_keterangan' 	 => $req->Keterangan_biaya,
+							  'bp_invoice'		 => $req->no_invoice,
+							  'bp_status'		 => 'APPROVED',
+							  'updated_at' 		 => carbon::now(),
+							  'bp_total_penerus' => filter_var($req->total,FILTER_SANITIZE_NUMBER_INT),
+							  'bp_akun_agen'	 => $akun_hutang->id_akun,
+							]);
+			$cari_bp = DB::table('biaya_penerus')
+						 ->where('bp_faktur',$req->nofaktur)
+						 ->first();
+			$delete = DB::table('biaya_penerus_dt')
+						->where('bpd_bpid',$cari_bp->bp_id)
+						->delete();
+			for ($i=0; $i < count($req->v_nomor_do); $i++) { 
+
+				$id_bpd = DB::table('biaya_penerus_dt')
+					 		->max('bpd_id')+1;
+
+				$cari_do = DB::table("delivery_order")
+							 ->where("nomor",$req->v_nomor_do[$i])
+							 ->first();
+
+				$akun_biaya = DB::table('d_akun')
+								  ->where('id_akun','like','5315' . '%')
+								  ->where('kode_cabang',$cari_do->kode_cabang)
+								  ->first();
+
+				$save_dt = DB::table('biaya_penerus_dt')
+							 ->insert([
+								  'bpd_id'  		=> $id_bpd,
+								  'bpd_bpid' 		=> $cari_bp->bp_id,
+								  'bpd_bpdetail'	=> $i+1,
+								  'bpd_pod' 		=> $req->v_nomor_do[$i],
+								  'bpd_tgl'  		=> $cari_do->tanggal,
+								  'bpd_akun_biaya'  => $akun_biaya->id_akun,
+								  'bpd_debit' 	   	=> 'DEBET',
+								  'bpd_memo'  	  	=> $req->v_keterangan[$i],
+								  'bpd_akun_hutang' => $akun_biaya->id_akun,
+								  'created_at'      => carbon::now(), 
+								  'updated_at' 	   	=> carbon::now(),
+								  'bpd_status' 	    => 'APPROVED',
+								  'bpd_nominal'	    => filter_var($req->v_tarif_vendor[$i],FILTER_SANITIZE_NUMBER_INT),
+								  'bpd_tarif_resi'  => $cari_do->total_vendo
+							]);
+			}
+
+			$cari_dt=DB::table('biaya_penerus_dt')		
+						 ->join('delivery_order','bpd_pod','=','nomor')
+						 ->where('bpd_bpid',$cari_bp->bp_id)
+						 ->get();
+
+
+			for ($i=0; $i < count($cari_dt); $i++) { 
+
+				$cari_asal_2[$i] = $cari_dt[$i]->kode_cabang; 
+			}
+			if (isset($cari_asal_2)) {
+			    $unik_asal = array_unique($cari_asal_2);
+			    $unik_asal = array_values($unik_asal);
+
+			    // return $unik_asal;
+			    for ($i=0; $i < count($unik_asal); $i++) { 
+					for ($a=0; $a < count($cari_dt); $a++) { 
+						if($cari_dt[$a]->kode_cabang==$unik_asal[$i]){
+							${$unik_asal[$i]}[$a] = $cari_dt[$a]->bpd_nominal;
+						}
+					}
+				}
+
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					${'total'.$unik_asal[$i]} = array_sum(${$unik_asal[$i]});
+				}
+				// $harga_array = [];
+				for ($i=0; $i < count($unik_asal); $i++) { 
+					 $harga_array[$i] = ${'total'.$unik_asal[$i]};
+				}
+				for ($i=0; $i < count($harga_array); $i++) { 
+					 $jurnal[$i]['harga'] = round($harga_array[$i],2);
+					 $jurnal[$i]['asal'] = $unik_asal[$i];
+
+				}
+
+
+			}
+
+			$delete_jurnal = DB::table('d_jurnal')
+					   ->where('jr_ref',$req->nofaktur)
+					   ->delete();
+
+			$id_jurnal=d_jurnal::max('jr_id')+1;
+
+			$jenis_bayar = DB::table('jenisbayar')
+							 ->where('idjenisbayar',6)
+							 ->first();
+
+
+			$save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
+									'jr_year'   => carbon::parse(str_replace('/', '-', $req->tanggal_vendor))->format('Y'),
+									'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal_vendor))->format('Y-m-d'),
+									'jr_detail' => $jenis_bayar->jenisbayar,
+									'jr_ref'  	=> $req->nofaktur,
+									'jr_note'  	=> 'BIAYA PENERUS HUTANG',
+									'jr_insert' => carbon::now(),
+									'jr_update' => carbon::now(),
+									]);
+			
+
+
+			$akun 	  = [];
+			$akun_val = [];
+			array_push($akun, $akun_hutang->id_akun);
+			array_push($akun_val, filter_var($req->total,FILTER_SANITIZE_NUMBER_INT));
+
+			for ($i=0; $i < count($jurnal); $i++) { 
+
+				$id_akun = DB::table('d_akun')
+								  ->where('id_akun','like','5315' . '%')
+								  ->where('kode_cabang',$jurnal[$i]['asal'])
+								  ->first();
+
+				if ($id_akun == null) {
+					$id_akun = DB::table('d_akun')
+								  ->where('id_akun','like','5315%')
+								  ->where('kode_cabang','000')
+								  ->first();
+				}
+				array_push($akun, $id_akun->id_akun);
+				array_push($akun_val, $jurnal[$i]['harga']);
+			}
+
+			$data_akun = [];
+			for ($i=0; $i < count($akun); $i++) { 
+
+				$cari_coa = DB::table('d_akun')
+								  ->where('id_akun',$akun[$i])
+								  ->first();
+
+				if (substr($akun[$i],0, 1)==2) {
+					
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->Keterangan_biaya);
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->Keterangan_biaya);
+					}
+				}else if (substr($akun[$i],0, 1)>2) {
+
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->Keterangan_biaya);
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->Keterangan_biaya);
+					}
+				}
+			}
+			$jurnal_dt = d_jurnal_dt::insert($data_akun);
+			
+			$lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
+			// dd($lihat);
+			return response()->json(['status'=>1,'id'=>$cari_bp->bp_id]);
+    	});
+    }
+
 }
 
 

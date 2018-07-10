@@ -763,7 +763,7 @@ public function simpan_invoice(request $request)
           }
 
 
-          // //JURNAL
+          // //JURNALv
           $id_jurnal=d_jurnal::max('jr_id')+1;
           // dd($id_jurnal);
           $delete = d_jurnal::where('jr_ref',$nota)->delete();
