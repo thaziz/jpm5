@@ -17,8 +17,8 @@ class tarif_VendorController extends Controller
         $cabang = Auth::user()->kode_cabang;
 
         if (Auth::user()->punyaAkses('Tarif Penerus Vendor','all')) {
-            $list = DB::table('tarif_vendor')
-                            ->select('tarif_vendor.*','cabang.nama as cabang','vendor.*')
+            $list = DB::table('tarif_vendor')->select('tarif_vendor.*','cabang.*','vendor.*')
+                            ->select('tarif_vendor.*','k1.nama as asal','k2.nama as tujuan','cabang.nama as nama_cab')
                             ->leftjoin('cabang','cabang.kode','=','tarif_vendor.cabang_vendor')
                             ->leftjoin('kota as k1','k1.id','=','tarif_vendor.id_kota_asal_vendor')
                             ->leftjoin('kota as k2','k2.id','=','tarif_vendor.id_kota_tujuan_vendor')
@@ -40,7 +40,7 @@ class tarif_VendorController extends Controller
         // echo json_encode($datax);
         return Datatables::of($data)
         ->addColumn('button', function ($data) {
-                           $c =  '<div class="btn-group">'.
+                        $c =  '<div class="btn-group">'.
                                    '<button type="button" onclick="edit(this)" class="btn btn-info btn-sm" title="edit" id="'.$data->id_tarif_sama.'">'.
                                    '<label class="fa fa-pencil"></label></button>'.
                                    '<button type="button" onclick="hapus(this)" class="btn btn-danger btn-sm" title="hapus" id="'.$data->id_tarif_sama.'">'.
@@ -48,7 +48,7 @@ class tarif_VendorController extends Controller
                                   '</div>';
 
 
-                        $asal = '<input type="hidden" class="asal" value="'.$data->id_kota_asal_vendor.'">';
+                        $asal   = '<input type="hidden" class="asal" value="'.$data->id_kota_asal_vendor.'">';
                         $tujuan = '<input type="hidden" class="tujuan" value="'.$data->id_kota_tujuan_vendor.'">';
                         $cabang = '<input type="hidden" class="cabang" value="'.$data->cabang_vendor.'">';
                         $vendor = '<input type="hidden" class="vendor_id" value="'.$data->vendor_id.'">';
@@ -59,13 +59,14 @@ class tarif_VendorController extends Controller
                               ->where('cabang_vendor',$data->cabang_vendor)
                               ->where('vendor_id',$data->vendor_id)
                               ->get();
+
                         for ($i=0; $i < count($data1); $i++) { 
                             $a[$i]= '<input type="hidden" class="waktu_'.$data1[$i]->jenis.'" value="'.$data1[$i]->waktu_vendor.'">';
                         } 
-
                         for ($i=0; $i < count($data1); $i++) { 
                             $b[$i] = '<input type="hidden" class="tarif_'.$data1[$i]->jenis.'" value="'.$data1[$i]->waktu_vendor.'">';
                         } 
+
                         $a = implode('', $a);
                         $b = implode('', $b);
                         return $c.$a .$b. $asal.$tujuan.$cabang.$vendor;
@@ -113,9 +114,48 @@ class tarif_VendorController extends Controller
         if ($request->cb_keterangan == null ) {
             $request->cb_keterangan = ' - ';
         }
-        $waktu = [$request->waktu_regular,$request->waktu_express];
-        $tarif = [$request->tarifkertas_reguler,$request->tarifkertas_express];
-        $id_old = [$request->id_tarif_vendor_reg,$request->id_tarif_vendor_ex];
+        $id_old                   = [   $request->id_tarif_vendor_reg,
+                                        $request->id_tarif_vendor_reg_1,
+                                        $request->id_tarif_vendor_reg_2,
+                                        $request->id_tarif_vendor_ex,
+                                        $request->id_tarif_vendor_ex_1,
+                                        $request->id_tarif_vendor_ex_2,];
+
+        $waktu                    = [   $request->waktu_regular,
+                                        $request->waktu_regular,
+                                        $request->waktu_regular,
+                                        $request->waktu_express,
+                                        $request->waktu_express,
+                                        $request->waktu_express,];
+
+        $tarif                    = [   $request->tarifkertas_reguler,
+                                        $request->tarif10kg_reguler,
+                                        $request->tarifsel_reguler,
+                                        $request->tarifkertas_express,
+                                        $request->tarif10kg_express,
+                                        $request->tarifsel_express,];
+
+        
+        $berat_minimum            = [   $request->berat_minimum_reg,
+                                        $request->berat_minimum_reg,
+                                        $request->berat_minimum_reg,
+                                        $request->berat_minimum_ex,
+                                        $request->berat_minimum_ex,
+                                        $request->berat_minimum_ex,];
+        
+        $keterangan               = [   'Tarif Kertas / Kg',
+                                        'Tarif <= 10 Kg',
+                                        'Tarif Kg selanjutnya <= 10 Kg',
+                                        'Tarif Kertas / Kg',
+                                        'Tarif <= 10 Kg',
+                                        'Tarif Kg selanjutnya <= 10 Kg',];
+
+        $jenis                    = [   'REGULER',
+                                        'REGULER',
+                                        'REGULER',
+                                        'EXPRESS',
+                                        'EXPRESS',
+                                        'EXPRESS'];
         // return $waktu;
         
         $asal = $request->asal;
@@ -129,11 +169,10 @@ class tarif_VendorController extends Controller
                     }else{
                         $id_sama +=1 ;
                     }   
-        $jenis = ['REGULER','EXPRESS'];
         // return Carbon::now();
         if ($crud == 'N') {
             // return $waktu;
-            for ($i=0; $i <count($waktu) ; $i++) { 
+            for ($i=0; $i <count($tarif) ; $i++) { 
                 $id = DB::table('tarif_vendor')->max('id_tarif_vendor');
                     if ($id == null) {
                         $id = 1 ;
@@ -152,8 +191,11 @@ class tarif_VendorController extends Controller
                     'csf_vendor' => $request->cb_csf_penjualan,
                     'waktu_vendor' => $waktu[$i],
                     'tarif_vendor' => $tarif[$i],
+                    'berat_minimum' => $berat_minimum[$i],
+                    'tarif_dokumen' => $request->tarif_dokumen,
                     'created_at' => Carbon::now(),
                     'jenis' => $jenis[$i],
+                    'keterangan' => $keterangan[$i],
                     'created_by' => auth::user()->m_name,
                 );
                 
@@ -163,7 +205,7 @@ class tarif_VendorController extends Controller
             }
         }elseif ($crud == 'E') {
 
-            for ($i=0; $i <count($waktu) ; $i++) { 
+            for ($i=0; $i <count($tarif) ; $i++) { 
                 $id = DB::table('tarif_vendor')->max('id_tarif_vendor');
                     if ($id == null) {
                         $id = 1 ;
@@ -182,9 +224,12 @@ class tarif_VendorController extends Controller
                     'csf_vendor' => $request->cb_csf_penjualan,
                     'waktu_vendor' => $waktu[$i],
                     'tarif_vendor' => $tarif[$i],
-                    'created_at' => Carbon::now(),
+                    'berat_minimum' => $berat_minimum[$i],
+                    'tarif_dokumen' => $request->tarif_dokumen,
+                    'updated_at' => Carbon::now(),
                     'jenis' => $jenis[$i],
-                    'created_by' => auth::user()->m_name,
+                    'keterangan' => $keterangan[$i],
+                    'updated_by' => auth::user()->m_name,
                 );
                 
                 $simpan = DB::table('tarif_vendor')->where('id_tarif_vendor','=',$id_old[$i])->update($data[$i]);
@@ -201,17 +246,17 @@ class tarif_VendorController extends Controller
                   // Email dikirimkan ke address "momo@deviluke.com" 
                   // dengan nama penerima "Momo Velia Deviluke"
                   $mail->from('jpm@gmail.com', 'SYSTEM JPM');
+
                   $mail->to('puspitadury1987@gmail.com', 'Admin');
              
                   // Copy carbon dikirimkan ke address "haruna@sairenji" 
                   // dengan nama penerima "Haruna Sairenji"
                   $mail->cc('puspitadury1987@gmail.com', 'ADMIN JPM');
-             
+                  
                   $mail->subject('KONTRAK VERIFIKASI');
             });
             return response()->json(['status'=>1,'crud'=>'N']);
         }else{
-            
             return response()->json(['status'=>0,'crud'=>'N']);
         }
     }
