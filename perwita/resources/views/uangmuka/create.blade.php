@@ -80,6 +80,7 @@
                           </div>
                           </div>
 
+                          <input type="hidden" name="username" value="{{Auth::user()->m_name}}">
                     
 
                         <div class="form-group">

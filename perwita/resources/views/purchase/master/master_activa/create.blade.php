@@ -16,7 +16,7 @@
 
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2>Master Activa</h2>
+                    <h2>Golongan Activa</h2>
                     <ol class="breadcrumb">
                         <li>
                             <a href="index-2.html">Home</a>
@@ -28,7 +28,7 @@
                           <a> Master Purchase</a>
                         </li>
                         <li class="active">
-                            <strong>Create Master Activa</strong>
+                            <strong>Create Golongan Activa</strong>
                         </li>
 
                     </ol>
@@ -61,7 +61,7 @@
                     <input type="hidden" readonly value="{{ csrf_token() }}" name="_token"> 
                   <div class="box-body">
                        <div class="row">
-                          <div class="col-xs-6">
+                          <div class="col-xs-7">
 
                           <table border="0">
 
@@ -69,7 +69,7 @@
                             <td width="150px">
                            Untuk Cabang
                             </td>
-                            <td>
+                            <td width="50%">
                                <select name="cabang" class="form-control chosen-select select_validate" id="cab" required>
                                   <option value="---">- Pilih Cabang</option>
                                   @foreach ($cab as $cabang)
@@ -106,6 +106,42 @@
                           <tr>
                           <td>
                           &nbsp;
+                          </td>
+                          </tr>
+
+                          <tr>
+                            <td>ACC Debet </td>
+                            <td>
+                              <select name="acc_debet" class="form-control chosen-select select_validate" id="acc_debet" required>
+                                  <option value="---">- Pilih ACC</option>
+                                  @foreach ($akun as $data_akun)
+                                    <option value="{{ $data_akun->id_akun }}">{{ $data_akun->nama_akun }}</option>
+                                  @endforeach
+                                </select>
+                            </td>
+                          </tr>
+
+                          <tr>
+                          <td>
+                            &nbsp;
+                          </td>
+                          </tr>
+
+                          <tr>
+                            <td>CSF Kredit</td>
+                            <td>
+                              <select name="csf_kredit" class="form-control chosen-select select_validate" id="csf_kredit" required>
+                                  <option value="---">- Pilih CSF</option>
+                                  @foreach ($akun as $data_akun2)
+                                    <option value="{{ $data_akun2->id_akun }}">{{ $data_akun2->nama_akun }}</option>
+                                  @endforeach
+                                </select>
+                            </td>
+                          </tr>
+
+                          <tr>
+                          <td>
+                            &nbsp;
                           </td>
                           </tr>
 
@@ -148,49 +184,13 @@
                           </td>
                           </tr>
 
-                          <tr>
-                            <td>ACC Debet </td>
-                            <td>
-                              <select name="acc_debet" class="form-control chosen-select select_validate" id="acc_debet" required>
-                                  <option value="---">- Pilih ACC</option>
-                                  @foreach ($akun as $data_akun)
-                                    <option value="{{ $data_akun->id_akun }}">{{ $data_akun->nama_akun }}</option>
-                                  @endforeach
-                                </select>
-                            </td>
-                          </tr>
-
-                          <tr>
-                          <td>
-                            &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
-                            <td>CSF Kredit</td>
-                            <td>
-                              <select name="csf_kredit" class="form-control chosen-select select_validate" id="csf_kredit" required>
-                                  <option value="---">- Pilih CSF</option>
-                                  @foreach ($akun as $data_akun2)
-                                    <option value="{{ $data_akun2->id_akun }}">{{ $data_akun2->nama_akun }}</option>
-                                  @endforeach
-                                </select>
-                            </td>
-                          </tr>
-
-                          <tr>
-                          <td>
-                            &nbsp;
-                          </td>
-                          </tr>
-
                           </table>
 
                          </div>
 
-                         <div class="col-xs-6">
+                         <div class="col-xs-5">
 
-                          <table border="0">
+                           <table border="0">
 
                           <tr>
                             <td>Keterangan </td>
@@ -287,7 +287,7 @@
                 <div class="box-footer">
                   <div class="pull-right">
                   
-                    <a class="btn btn-warning btn-sm" href={{url('masteractiva/masteractiva/'.Session::get("cabang"))}}  style="font-size: 8pt;"> Kembali </a>
+                    <a class="btn btn-warning btn-sm" href={{url('golonganactiva/golonganactiva/'.Session::get("cabang"))}}  style="font-size: 8pt;"> Kembali </a>
                       <button type="button" id="submit" name="submit" class="btn btn-success btn-sm" style="font-size: 8pt;">Simpan</button>
                     
                     </div>
@@ -344,7 +344,7 @@
 
         info = $("#kode_info");
 
-        info.text("Sedang Membuat Kode...")
+        info.text("Membuat Kode...")
         info.css("display", "");
 
         if($("#cab").val() == "---"){
@@ -354,7 +354,7 @@
           return false;
         }
 
-        $.ajax(baseUrl+"/master_aktiva/ask_kode_master_aktiva/"+$("#cab").val(),{
+        $.ajax(baseUrl+"/masteractiva/ask_kode/"+$("#cab").val(),{
           type: "get",
           dataType: 'json',
           success: function(response){
@@ -363,10 +363,10 @@
           },
           error: function(request, status, err) {
               if (status == "timeout") {
-                info.text("Waktu Habis. Coba Lagi");
+                info.text("Waktu Habis");
                 setTimeout(function(){ info.fadeOut(1000,"linear"); }, 1000);
               } else {
-                info.text("Internal Error, Coba Lagi");
+                info.text("Internal Error");
                 setTimeout(function(){ info.fadeOut(1000,"linear"); }, 1000);
               }
 
@@ -540,3 +540,4 @@
 
   </script>
 @endsection
+

@@ -64,7 +64,7 @@
                          <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
                           <label> Cabang  </label>
-                          @if(Auth::user()->punyaAkses('Uang Muka','cabang'))
+                          @if(Auth::user()->punyaAkses('Voucher Hutang','cabang'))
                             <select class="form-control chosen-select-width cabang" name="cabang">
                                 @foreach($cabang as $cabang)
                               <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
@@ -85,7 +85,8 @@
                          <div class="col-sm-8 col-sm-offset-2">
                           <label>Nomor Bukti :</label>
                           <input type="text" name="nobukti" class="form-control bukti a" style="text-transform: uppercase"   readonly="">
-                         
+                          <input type="hidden" name="username" value="{{Auth::user()->m_name}}">
+
                         </div>
                         </div> 
                         <p></p>

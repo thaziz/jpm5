@@ -89,6 +89,7 @@ Route::get('kartuhutangdetail' , 'Queryanalisa@kartuhutangdetail');
 Route::get('rekapmutasihutang' , 'Queryanalisa@rekapmutasihutang');
 Route::get('rekapmutasihutang' , 'Queryanalisa@rekapmutasihutang');
 Route::get('detailmutasihutang' , 'Queryanalisa@detailmutasihutang');
+Route::get('rekapanalisahutang' , 'Queryanalisa@rekapanalisahutang');
 
 
 
@@ -601,6 +602,9 @@ Route::get('masteractiva/detailmasteractiva', 'MasterPurchaseController@detailma
 Route::get('masteractiva/detailgarislurusmasteractiva', 'MasterPurchaseController@detailgarislurusmasteractiva');
 Route::get('masteractiva/detailsaldomenurunmasteractiva', 'MasterPurchaseController@detailsaldomenurunmasteractiva');
 Route::get('masteractiva/createmasteractiva', 'MasterPurchaseController@createmasteractiva');
+Route::get('masteractiva/ask_kode/{cabang}', 'MasterPurchaseController@ask_kode_activa');
+
+Route::post('master_aktiva/simpan', 'MasterPurchaseController@aktiva_save');
 
 // end master aktiva
 
