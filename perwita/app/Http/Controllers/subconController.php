@@ -245,21 +245,21 @@ class subconController extends Controller
                           ->update($data_dt);
         }
 
-         // $data = ['kontrak'=>url('master_sales/edit_kontrak/'.$request->id),'status'=>'Customer'];
+        $data = ['kontrak'=>url('master_sales/edit_kontrak/'.$id),'status'=>'Customer'];
 
-        // Mail::send('hello', $data, function ($mail)
-        //     {
-        //       // Email dikirimkan ke address "momo@deviluke.com" 
-        //       // dengan nama penerima "Momo Velia Deviluke"
-        //       $mail->from('jpm@gmail.com', 'SYSTEM JPM');
-        //       $mail->to('dewa17a@gmail.com', 'Admin');
+        Mail::send('email.email', $data, function ($mail)
+            {
+              // Email dikirimkan ke address "momo@deviluke.com" 
+              // dengan nama penerima "Momo Velia Deviluke"
+              $mail->from('jpm@gmail.com', 'SYSTEM JPM');
+              $mail->to('puspitadury1987@gmail.com', 'Admin');
          
-        //       // Copy carbon dikirimkan ke address "haruna@sairenji" 
-        //       // dengan nama penerima "Haruna Sairenji"
-        //       $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+              // Copy carbon dikirimkan ke address "haruna@sairenji" 
+              // dengan nama penerima "Haruna Sairenji"
+              $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
          
-        //       $mail->subject('KONTRAK VERIFIKASI');
-        //     });
+              $mail->subject('KONTRAK VERIFIKASI');
+            });
 
         
 

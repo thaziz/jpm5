@@ -56,7 +56,7 @@
                   <form class="form-horizontal" id="search" action="post" method="POST">
                   <div class="box-body">
                     <table class="table datatable ">
-                        <tr>
+                      <tr>
                         <td> Dimulai : </td> 
                         <td> 
                           <div class="input-group">

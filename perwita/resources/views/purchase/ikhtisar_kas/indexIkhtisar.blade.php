@@ -15,6 +15,15 @@
   .asw:hover{
     color: red;
   }
+  .center{
+    text-align: center;
+  }
+  .right{
+    text-align: right;
+  }
+  .left{
+    text-align: left;
+  }
 </style>
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
@@ -140,13 +149,43 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-     tableDetail = $('.tbl-penerimabarang').DataTable({
-            responsive: true,
-            searching: true,
-            //paging: false,
-            "pageLength": 10,
-            "language": dataTableLanguage,
-    });
+    $('.tbl-penerimabarang').DataTable({
+            processing: true,
+            // responsive:true,
+            serverSide: true,
+            ajax: {
+                url:'{{ route("datatable_ikhtisar") }}',
+            },
+            columnDefs: [
+              {
+                 targets: 4,
+                 className: 'right'
+              },
+              {
+                 targets: 6,
+                 className: 'center'
+              },
+              {
+                 targets:7,
+                 className: 'center'
+              },
+              {
+                 targets:8,
+                 className: 'center'
+              },
+            ],
+            "columns": [
+            { "data": "ik_nota" },
+            { "data": "tanggal" },
+            { "data": "nama" },
+            { "data": "ik_keterangan" },
+            { "data": "ik_total",render: $.fn.dataTable.render.number( '.', '.', 0, '' ) },
+            { "data": "print"},
+            { "data": "ik_status" },
+            { "data": "editing" },
+            { "data": "aksi" },
+            ]
+      });
 
     $('.date').datepicker({
         autoclose: true,

@@ -14,7 +14,7 @@
   <tr>
     <th>Hutang Baru</th>
     <th>Hutang Voucher</th>
-    <th>Hutang Kredit</th>
+    <th>Nota Kredit</th>
 
     <th>Bayar cash</th>
     <th>Cek BG/Transfer</th>
@@ -27,88 +27,104 @@
     </tr>
   @endforeach
   @foreach ($data['saldoawal'] as $s => $saldo)
-    <tr>
-      <th>1</th>
-      <th>tgl</th>
-      <th>Saldo AWal :</th>
-      <th>0</th>
-      <th>0</th>
-      <th>0</th>
-      <th>0</th>
-      <th>0</th>
-      <th>0</th>
-      <th>0</th>
-      <th>0</th>
-      <th >{{ $data['saldoawal'][0] }}</th>
+    <tr align="right">
+      <th align="right">1</th>
+      <th align="right">-</th>
+      <th align="right">Saldo Awal :</th>
+      <th align="right">-</th>
+      <th align="right">0</th>
+      <th align="right">0</th>
+      <th align="right">0</th>
+      <th align="right">0</th>
+      <th align="right">0</th>
+      <th align="right">0</th>
+      <th align="right">0</th>
+      <th align="right" ><input type="hidden" value="{{ $data['saldoawal'][$s] }}" name="" class="saldo saldo_{{ $s }}">
+      {{ $data['saldoawal'][0] }}</th>
     </tr>
   @endforeach
   @foreach ($data['isidetail'] as $is => $isi)
     @foreach ($data['isidetail'][$is] as $isdt => $is_det)
-      <tr>  
+      <tr align="right">  
+        <td> {{ $is+1 }}</td>
+        <td>{{ $data['isidetail'][$is][$isdt]->tgl }}</td>
+        <td>{{ $data['isidetail'][$is][$isdt]->nota }}</td>
+        <td>{{ $data['isidetail'][$is][$isdt]->keterangan }}</td>
+        {{-- hutangbaru --}}
+        @if ($data['isidetail'][$is][$isdt]->flag == 'hutangbaru' )
+          <td><input type="hidden" class="hutangbaru hutangbaru_{{ $is }}" value="{{  $data['isidetail'][$is][$isdt]->nominal }}">
+            {{ $data['isidetail'][$is][$isdt]->nominal }}</td>
+        @else
+          <td><input type="hidden" class="hutangbaru hutangbaru_{{ $is }}" value="0">
+          0</td>
+        @endif
+        {{-- voucher --}}
+        @if ($data['isidetail'][$is][$isdt]->flag == 'VC' )
+          <td><input type="hidden" class="vc vc_{{ $is }}" value="{{  $data['isidetail'][$is][$isdt]->nominal }}">
+            {{ $data['isidetail'][$is][$isdt]->nominal }}</td>
+        @else
+          <td><input type="hidden" class="vc vc_{{ $is }}" value="0">
+          0</td>
+        @endif
+        {{-- NOTA KREDIT --}}
+        @if ($data['isidetail'][$is][$isdt]->flag == 'CN' )
+          <td><input type="hidden" class="cn cn_{{ $is }}" value="{{  $data['isidetail'][$is][$isdt]->nominal }}">
+            {{ $data['isidetail'][$is][$isdt]->nominal }}</td>
+        @else
+          <td><input type="hidden" class="cn cn_{{ $is }}" value="0">
+          0</td>
+        @endif
+        {{-- byr cash --}}
+        @if ($data['isidetail'][$is][$isdt]->flag == 'K' )
+          <td><input type="hidden" class="k k_{{ $is }}" value="{{  $data['isidetail'][$is][$isdt]->nominal }}">
+            {{ $data['isidetail'][$is][$isdt]->nominal }}</td>
+        @else
+          <td><input type="hidden" class="k k_{{ $is }}" value="0">
+          0</td>
+        @endif
+        {{-- cek bg/tranfre --}}
+        @if ($data['isidetail'][$is][$isdt]->flag == 'BG' )
+          <td><input type="hidden" class="bg bg_{{ $is }}" value="{{  $data['isidetail'][$is][$isdt]->nominal }}">
+            {{ $data['isidetail'][$is][$isdt]->nominal }}</td>
+        @else
+          <td><input type="hidden" class="bg bg_{{ $is }}" value="0">
+          0</td>
+        @endif
+        {{-- return beli --}}
+        @if ($data['isidetail'][$is][$isdt]->flag == 'RN' )
+          <td><input type="hidden" class="rn rn_{{ $is }}" value="{{  $data['isidetail'][$is][$isdt]->nominal }}">
+            {{ $data['isidetail'][$is][$isdt]->nominal }}</td>
+        @else
+          <td><input type="hidden" class="rn rn_{{ $is }}" value="0">
+          0</td>
+        @endif
+        {{-- nota debet --}}
+        @if ($data['isidetail'][$is][$isdt]->flag == 'DN' )
+          <td><input type="hidden" class="dn dn_{{ $is }}" value="{{  $data['isidetail'][$is][$isdt]->nominal }}">
+            {{ $data['isidetail'][$is][$isdt]->nominal }}</td>
+        @else
+          <td><input type="hidden" class="dn dn_{{ $is }}" value="0">
+          0</td>
+        @endif
+        
+        <th class="total"></th>
       </tr>
-      <td> 1</td>
-      <td>{{ $data['isidetail'][$is][$isdt]->nominal }}</td>
-      <td>{{ $data['isidetail'][$is][$isdt]->tgl }}</td>
-      <td>{{ $data['isidetail'][$is][$isdt]->nota }}</td>
-      {{-- hutangbaru --}}
-      @if ($data['isidetail'][$is][$isdt]->flag == 'hutangbaru' )
-        <td>{{ $data['isidetail'][$is][$isdt]->nominal }}</td>
-      @else
-        <td>0</td>
-      @endif
-      {{-- voucher --}}
-      @if ($data['isidetail'][$is][$isdt]->flag == 'VC' )
-        <td>{{ $data['isidetail'][$is][$isdt]->nominal }}</td>
-      @else
-        <td>0</td>
-      @endif
-      {{-- hutangkredit --}}
-      @if ($data['isidetail'][$is][$isdt]->flag == 'VC' )
-        <td>{{ $data['isidetail'][$is][$isdt]->nominal }}</td>
-      @else
-        <td>0</td>
-      @endif
-      {{-- byr cash --}}
-      @if ($data['isidetail'][$is][$isdt]->flag == 'VC' )
-        <td>{{ $data['isidetail'][$is][$isdt]->nominal }}</td>
-      @else
-        <td>0</td>
-      @endif
-      {{-- cek bg/tranfre --}}
-      @if ($data['isidetail'][$is][$isdt]->flag == 'VC' )
-        <td>{{ $data['isidetail'][$is][$isdt]->nominal }}</td>
-      @else
-        <td>0</td>
-      @endif
-      {{-- return beli --}}
-      @if ($data['isidetail'][$is][$isdt]->flag == 'VC' )
-        <td>{{ $data['isidetail'][$is][$isdt]->nominal }}</td>
-      @else
-        <td>0</td>
-      @endif
-      {{-- nota debet --}}
-      @if ($data['isidetail'][$is][$isdt]->flag == 'VC' )
-        <td>{{ $data['isidetail'][$is][$isdt]->nominal }}</td>
-      @else
-        <td>0</td>
-      @endif
-      <th ></th>
       
     @endforeach
   <tr>
-      <th colspan="3">Total :</th>
-      <th ></th>
-      <th ></th>
-      <th ></th>
-      <th ></th>
-      <th ></th>
-      <th ></th>
-      <th ></th>
-      <th ></th>
-      <th ></th>
+      <th  align="right" colspan="3">Total :</th>
+      <th  align="right" ></th>
+      <th  align="right" class="hut_baru hut_baru_{{ $is }}"></th>
+      <th  align="right" class="hut_voc hut_voc_{{ $is }}"></th>
+      <th  align="right" class="not_kredit not_kredit_{{ $is }}"></th>
+      <th  align="right" class="b_cash b_cash_{{ $is }}"></th>
+      <th  align="right" class="cek_bg cek_bg_{{ $is }}"></th>
+      <th  align="right" class="return_beli return_beli_{{ $is }}"></th>
+      <th  align="right" class="no_debet no_debet_{{ $is }}"></th>
+      <th  align="right" class="grand grand_{{ $is }}"></th>
   </tr>
   @endforeach
-  <tr> 
+  <tr align="right"> 
     <th colspan="3">Grand Total :</th>
     <th ></th> 
     <th ></th> 

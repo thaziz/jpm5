@@ -1,5 +1,5 @@
 <?php
-
+ 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -245,7 +245,7 @@ class KasController extends Controller
 						}
 						$terbayar = array_sum($terbayar);
 						if ($terbayar > $tarif_shuttle) {
-							unset($resi[$i]);
+							// unset($resi[$i]);
 						}
 
 					}elseif ($jenis_biaya == '4' or $jenis_biaya == '7'){
@@ -257,11 +257,11 @@ class KasController extends Controller
 											   ->get();
 
 						if ($cari_resi_lintas != null) {
-							unset($resi[$i]);
+							// unset($resi[$i]);
 						}
 
 					}else{
-						unset($resi[$i]);
+						// unset($resi[$i]);
 					}
 				}					
 			}
@@ -674,7 +674,8 @@ class KasController extends Controller
 					   		'pc_akun' 		  => $acc->id_akun,
 					   		'pc_akun_kas' 	  => $request->nama_kas,
 					   		'pc_keterangan'	  => $request->note,
-					   		'pc_comp'  	  	  => $jurnal[$i]['asal'],
+					   		'pc_asal_comp' 	  => $jurnal[$i]['asal'],
+					   		'pc_comp'  	  	  => $request->cabang,
 					   		'pc_edit'  	  	  => 'UNALLOWED',
 					   		'pc_reim'  	  	  => 'UNRELEASED',
 					   		'pc_debet'  	  => 0,
@@ -1153,7 +1154,8 @@ class KasController extends Controller
 					   		'pc_akun' 		  => $acc->id_akun,
 					   		'pc_akun_kas' 	  => $request->nama_kas,
 					   		'pc_keterangan'	  => $request->note,
-					   		'pc_comp'  	  	  => $jurnal[$i]['asal'],
+					   		'pc_asal_comp' 	  => $jurnal[$i]['asal'],
+					   		'pc_comp'  	  	  => $request->cabang,
 					   		'pc_edit'  	  	  => 'UNALLOWED',
 					   		'pc_reim'  	  	  => 'UNRELEASED',
 					   		'pc_debet'  	  => 0,
@@ -1519,7 +1521,7 @@ class KasController extends Controller
 						}
 						$terbayar = array_sum($terbayar);
 						if ($terbayar > $tarif_shuttle) {
-							unset($resi[$i]);
+							// unset($resi[$i]);
 						}
 
 					}elseif ($jenis_biaya == '4' or $jenis_biaya == '7'){
@@ -1531,11 +1533,11 @@ class KasController extends Controller
 											   ->get();
 
 						if ($cari_resi_lintas != null) {
-							unset($resi[$i]);
+							// unset($resi[$i]);
 						}
 
 					}else{
-						unset($resi[$i]);
+						// unset($resi[$i]);
 					}
 				}					
 			}
