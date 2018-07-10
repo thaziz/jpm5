@@ -58,7 +58,7 @@ class pembayaran_vendor_controller extends Controller
     	for ($i=0; $i < count($req->array_simpan); $i++) { 
     		$valid[$i] = $req->array_simpan[$i];
     	}
-    	return$data = DB::table("delivery_order")
+    	$data = DB::table("delivery_order")
     			  ->leftjoin('biaya_penerus_dt','nomor','=','bpd_pod')
     			  ->where('kode_cabang',$req->cabang)
     			  ->where('id_tarif_vendor',$req->nama_vendor)
@@ -71,12 +71,16 @@ class pembayaran_vendor_controller extends Controller
     			  ->get();
 
     	$temp = array_merge($data,$data1);
-    	return $temp;
+    	$temp1 = array_merge($data,$data1);
 
-
-
-    	
-
+    	for ($i=0; $i < count($temp1); $i++) { 
+    		for ($a=0; $a < count($req->array_simpan); $a++) { 
+    			if ($req->array_simpan[$a] == $temp[$i]->nomor) {
+    				unset($temp[$i]);
+    			}
+    		}
+    	}
+    	$data = $temp;
 
 		return view('purchase/pembayaran_vendor/tabel_do_vendor',compact('data'));
 

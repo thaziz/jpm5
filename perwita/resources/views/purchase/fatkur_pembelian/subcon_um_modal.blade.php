@@ -10,17 +10,17 @@
   </thead>
   <tbody>
     @foreach($data as $val)
-    <tr onclick="pilih_um('{{$val->nomor}}')">
-      <td>{{$val->nomor}}</td>
-      <td>{{$val->um_nomorbukti}}</td>
+    <tr onclick="pilih_um(this)">
+      <td><input type="hidden" class="nomor_trans" value="{{$val->nomor}}">{{$val->nomor}}</td>
+      <td><input type="hidden" class="nomor_trans" value="{{$val->um_nomorbukti}}">{{$val->um_nomorbukti}}</td>
       <td>{{$val->um_tgl}}</td>
       <td>{{$val->um_supplier}}</td>
       <td>{{$val->um_keterangan}}</td>
       <td>{{number_format($val->total_um,2,",",".")}}</td>
       <td>{{number_format($val->sisa_um,2,",",".")}}</td>
     </tr>
-  </tbody>
   @endforeach
+  </tbody>
 </table>
 
 
@@ -35,14 +35,16 @@
           
     });
 
-  function pilih_um(a) {
-    var nota = a;
-    var sup = $('.nama_sc').val();
-    var id = $('.nofaktur').val();
-    $.ajax({
-      url:baseUrl +'/fakturpembelian/biaya_penerus/pilih_um',
-      data: {nota,sup,id},
-      dataType:'json',
+  function pilih_um(par) {
+      var nomor_trans = $(par).find('.nomor_trans').val();
+      var nomor_um = $(par).find('.nomor_um').val();
+      var sup = $('.nama_vendor').val();
+      var id  = $('.nofaktur').val();
+      console.log(sup);
+      $.ajax({
+        url:baseUrl +'/fakturpembelian/biaya_penerus/pilih_um',
+        data: {nomor_trans,nomor_um,sup,id},
+        dataType:'json',
       success:function(data){
         $('.sc_nomor_um').val(data.data.nomor);
         $('.sc_tanggal_um').val(data.data.um_tgl);

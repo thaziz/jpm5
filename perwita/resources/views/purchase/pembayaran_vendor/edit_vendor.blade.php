@@ -11,7 +11,7 @@
   th{
     text-align: center !important;
   }
-  .tengah{
+  .center{
     text-align: center;
   }
   .kecil{
@@ -185,6 +185,19 @@
 </div>
 
 @include('purchase.pembayaran_vendor.modal_do_vendor')
+`
+<div id="modal_show_um" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document" style="width: 1200px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Pilih Uang Muka</h4>
+      </div>
+      <div class="modal-body bp_div_um">
+        
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 @endsection
 
@@ -193,6 +206,7 @@
 {{-- GLOBAL VARIABLE --}}
 var index_vendor = 1;
 var array_simpan = [0];
+
 $('.tangal_vendor').datepicker({
   format:'dd/mm/yyyy'
 });
@@ -200,6 +214,7 @@ $('.tangal_vendor').datepicker({
 $('.tgl').datepicker({
   format:'dd/mm/yyyy'
 });
+
 $('.jatuh_tempo_vendor').datepicker({
   format:'dd/mm/yyyy'
 });
@@ -255,26 +270,42 @@ $('.tambah_data_vendor').click(function(){
     }) 
 })
 $('.tt_vendor').click(function(){
-  var cabang = $('.cabang').val();
-  var cabang = $('.cabang').val();
-    $.ajax({
-      url:baseUrl +'/fakturpembelian/nota_tt',
-      data: {cabang},
-      dataType:'json',
-      success:function(data){
-        $('.notandaterima').val(data.nota);
-        var agen_vendor = $('.nama_vendor').val();
-        var jatuh_tempo = $('.jatuh_tempo_vendor').val();
-        var total_jml   = $('.total_vendor').val();
-        total_jml       = total_jml.replace(/[^0-9\-]+/g,"")*1;
-        $('.supplier_tt').val(agen_vendor);
-        $('.jatuhtempo_tt').val(jatuh_tempo);
-        $('.totalterima_tt_vendor').val(accounting.formatMoney(total_jml, "Rp ", 2, ".",','));
+
+    $('.notandaterima').val('{{$form_tt->tt_noform}}');
+
+    if ('{{$form_tt->tt_kwitansi}}' == 'ADA') {
+      $('#Kwitansi').prop('checked',true);
+    }else{
+      $('#Kwitansi').prop('checked',false);
+    }
+
+    if ('{{$form_tt->tt_suratperan}}' == 'ADA') {
+      $('#SuratPerananAsli').prop('checked',true);
+    }else{
+      $('#SuratPerananAsli').prop('checked',false);
+    }
+
+    if ('{{$form_tt->tt_suratjalanasli}}' == 'ADA') {
+      $('#SuratJalanAsli').prop('checked',true);
+    }else{
+      $('#SuratJalanAsli').prop('checked',false);
+    }
+
+    if ('{{$form_tt->tt_faktur}}' == 'ADA') {
+      $('#FakturPajak').prop('checked',true);
+    }else{
+      $('#FakturPajak').prop('checked',false);
+    }
+    $('.lain_penerus').val('{{$form_tt->tt_lainlain}}');
+
+    var agen_vendor = $('.nama_vendor').val();
+    var jatuh_tempo = $('.jatuh_tempo_vendor').val();
+    var total_jml   = $('.total_vendor').val();
+    total_jml       = total_jml.replace(/[^0-9\-]+/g,"")*1;
+    $('.supplier_tt').val(agen_vendor);
+    $('.jatuhtempo_tt').val(jatuh_tempo);
+    $('.totalterima_tt_vendor').val(accounting.formatMoney(total_jml, "Rp ", 2, ".",','));
     $('#modal_tt_vendor').modal('show');
-      },error:function(){
-        toastr.warning('Terjadi Kesalahan');
-      }
-    })
 })
 
 $('.append_vendor').click(function(){
@@ -397,7 +428,7 @@ $('.simpan_vendor_tt').click(function(){
         url:baseUrl + '/fakturpembelian/simpan_tt',
         type:'get',
         dataType:'json',
-        data:$('.tabel_tt_vendor :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head_subcon :input').serialize()+'&cabang='+cabang,
+        data:$('.tabel_tt_vendor :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.form_vendor :input').serialize()+'&cabang='+cabang,
         success:function(response){
               swal({
                   title: "Berhasil!",
@@ -507,6 +538,7 @@ $('.vendor_dibayar_um').maskMoney({
     });
 var vendor_tabel_detail_um = $('.vendor_tabel_detail_um').DataTable();
 $('.uang_muka_vendor').click(function(){
+  $('.save_vendor_um').removeClass('disabled');
   $('#modal_um_vendor').modal('show');
 })
 

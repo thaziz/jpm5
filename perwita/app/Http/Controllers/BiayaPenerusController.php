@@ -583,6 +583,8 @@ class BiayaPenerusController extends Controller
 				$form_tt = DB::table('form_tt')
 							 ->where('tt_nofp',$cari_fp->fp_nofaktur)
 							 ->first();
+
+				// dd()
 				$cabang = DB::table("cabang")
 							->get();
 				
@@ -3466,10 +3468,11 @@ public function pilih_um(request $req)
 	}
 
 	for ($i=0; $i < count($data); $i++) { 
-		if ($data[$i]->nomor == $req->nota) {
+		if ($data[$i]->nomor == $req->nomor_trans and $data[$i]->um_nomorbukti == $req->nomor_um) {
 			$head = $data[$i];
 		}
 	}
+	// return $req->nomor_um;
 	return response()->json(['data'=>$head]);
 }
 
