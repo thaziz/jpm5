@@ -279,7 +279,7 @@ class kontrak_Controller extends Controller
               // Email dikirimkan ke address "momo@deviluke.com" 
               // dengan nama penerima "Momo Velia Deviluke"
               $mail->from('jpm@gmail.com', 'SYSTEM JPM');
-              $mail->to('dewa17a@gmail.com', 'Admin');
+              $mail->to('puspitadury1987@gmail.com', 'Admin');
          
               // Copy carbon dikirimkan ke address "haruna@sairenji" 
               // dengan nama penerima "Haruna Sairenji"

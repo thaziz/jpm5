@@ -11,7 +11,7 @@
   th{
     text-align: center !important;
   }
-  .tengah{
+  .center{
     text-align: center;
   }
   .kecil{
@@ -84,12 +84,42 @@
               <table class="table table_vendor">
                 {{ csrf_field() }}
                 <tr>
+                  <td> Cabang </td>
+                  @if(Auth::user()->punyaAkses('Faktur Pembelian','cabang'))
+                  <td class="cabang_td">  
+                    <select class="form-control chosen-select-width cabang" name="cabang">
+                    @foreach($cabang as $cabang)
+                      <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
+                    @endforeach
+                    </select>
+                  </td>
+                  @else
+                  <td class="disabled"> 
+                    <select class="form-control chosen-select-width disabled cabang" name="cabang">
+                  @foreach($cabang as $cabang)
+                      <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
+                  @endforeach
+                    </select> 
+                  </td>
+                  @endif
+                </tr>
+                <tr>
+                  <td width="150px">
+                    No Faktur
+                  </td>
+                  <td>
+                  <input type="text" value="{{$bp->fp_nofaktur}}" class="form-control nofaktur" name="nofaktur" required="" readonly="">
+                  <input type="hidden" value="{{$bp->fp_idfaktur}}" class="form-control idfaktur" name="idfaktur" required="" readonly="">
+                  <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                  </td>
+                </tr>
+                <tr>
                   <td>Tanggal</td>
-                  <td><input type="text" readonly="" value="{{$bp->fp_tgl}}" class="form-control tanggal_vendor" name="tanggal_vendor"></td>
+                  <td><input type="text" readonly="" value="{{carbon\carbon::parse($bp->fp_tgl)->format('d/m/Y')}}" class="form-control tanggal_vendor tgl" name="tanggal_vendor"></td>
                 </tr>
                 <tr>
                   <td>Jatuh Tempo</td>
-                  <td><input type="text" readonly="" value="{{$bp->fp_jatuhtempo}}" class="form-control jatuh_tempo_vendor" name="jatuh_tempo_vendor"></td>
+                  <td><input type="text" readonly="" value="{{carbon\carbon::parse($bp->fp_jatuhtempo)->format('d/m/Y')}}" class="form-control jatuh_tempo_vendor" name="jatuh_tempo_vendor"></td>
                 </tr>
                 <tr>
                   <td>Status</td>
@@ -97,22 +127,22 @@
                 </tr>
                 <tr>
                   <td>Vendor</td>
-                  <td class="nama_vendor_td">
+                  <td class="disabled">
                     <select class="form-control chosen-select-width-vendor nama_vendor_baru nama_vendor" name="nama_vendor">
                       <option value="0">Pilih - Vendor</option>
                       @foreach ($vendor as $val)
-                        <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                        <option @if($bp->fp_supplier == $val->kode) selected="" @endif value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                       @endforeach
                     </select>
                   </td>
                 </tr>
                 <tr>
                   <td>No Invoice</td>
-                  <td><input type="text" class="form-control no_invoice" name="no_invoice"></td>
+                  <td><input type="text" value="{{$bp->fp_noinvoice}}" class="form-control no_invoice" name="no_invoice"></td>
                 </tr>
                 <tr>
                   <td>Keterangan</td>
-                  <td><input type="text" class="form-control keterangan" name="Keterangan_biaya"></td>
+                  <td><input type="text" value="{{$bp->fp_keterangan}}" class="form-control keterangan" name="Keterangan_biaya"></td>
                 </tr>
                 <tr>
                   <td>Total Biaya</td>
@@ -121,9 +151,9 @@
                 <tr>
                   <td colspan="2">
                     <button type="button" class="btn btn-primary tambah_data_vendor" ><i class="fa fa-plus"> Tambah Data</i></button>
-                    <button type="button" class="btn btn-success simpan_data_vendor disabled" ><i class="fa fa-save"> Simpan Data</i></button>
+                    <button type="button" class="btn btn-success simpan_data_vendor disabled" ><i class="fa fa-save"> Update Data</i></button>
                     <button type="button" class="btn btn-warning tt_vendor" ><i class="fa fa-book"> Form Tanda Terima</i></button>
-                    <button type="button"  class="btn btn-primary uang_muka_vendor disabled" ><i class="fa fa-money"> Uang Muka</i></button>
+                    <button type="button"  class="btn btn-primary uang_muka_vendor" ><i class="fa fa-money"> Uang Muka</i></button>
                     <button type="button" onclick="print_penerus()"  class="btn btn-danger pull-right print_vendor" ><i class="fa fa-print"></i></button>
                   </td>
                 </tr>
@@ -155,6 +185,19 @@
 </div>
 
 @include('purchase.pembayaran_vendor.modal_do_vendor')
+`
+<div id="modal_show_um" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document" style="width: 1200px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Pilih Uang Muka</h4>
+      </div>
+      <div class="modal-body bp_div_um">
+        
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 @endsection
 
@@ -163,7 +206,12 @@
 {{-- GLOBAL VARIABLE --}}
 var index_vendor = 1;
 var array_simpan = [0];
+
 $('.tangal_vendor').datepicker({
+  format:'dd/mm/yyyy'
+});
+
+$('.tgl').datepicker({
   format:'dd/mm/yyyy'
 });
 
@@ -210,9 +258,10 @@ for (var selector in config_vendor) {
 $('.tambah_data_vendor').click(function(){
   var nama_vendor = $('.nama_vendor').val();
   var cabang    = $('.cabang').val();
+  var id    = {{$id}};
   $.ajax({
-      url : baseUrl + '/fakturpembelian/cari_do_vendor',
-      data : {cabang,nama_vendor,array_simpan},
+      url : baseUrl + '/fakturpembelian/cari_do_vendor_edit',
+      data : {id,cabang,nama_vendor,array_simpan},
       type : "get",
       success : function(response){
       $('.vendor_div').html(response);
@@ -221,26 +270,42 @@ $('.tambah_data_vendor').click(function(){
     }) 
 })
 $('.tt_vendor').click(function(){
-  var cabang = $('.cabang').val();
-  var cabang = $('.cabang').val();
-    $.ajax({
-      url:baseUrl +'/fakturpembelian/nota_tt',
-      data: {cabang},
-      dataType:'json',
-      success:function(data){
-        $('.notandaterima').val(data.nota);
-        var agen_vendor = $('.nama_vendor').val();
-        var jatuh_tempo = $('.jatuh_tempo_vendor').val();
-        var total_jml   = $('.total_vendor').val();
-        total_jml       = total_jml.replace(/[^0-9\-]+/g,"")*1;
-        $('.supplier_tt').val(agen_vendor);
-        $('.jatuhtempo_tt').val(jatuh_tempo);
-        $('.totalterima_tt_vendor').val(accounting.formatMoney(total_jml, "Rp ", 2, ".",','));
+
+    $('.notandaterima').val('{{$form_tt->tt_noform}}');
+
+    if ('{{$form_tt->tt_kwitansi}}' == 'ADA') {
+      $('#Kwitansi').prop('checked',true);
+    }else{
+      $('#Kwitansi').prop('checked',false);
+    }
+
+    if ('{{$form_tt->tt_suratperan}}' == 'ADA') {
+      $('#SuratPerananAsli').prop('checked',true);
+    }else{
+      $('#SuratPerananAsli').prop('checked',false);
+    }
+
+    if ('{{$form_tt->tt_suratjalanasli}}' == 'ADA') {
+      $('#SuratJalanAsli').prop('checked',true);
+    }else{
+      $('#SuratJalanAsli').prop('checked',false);
+    }
+
+    if ('{{$form_tt->tt_faktur}}' == 'ADA') {
+      $('#FakturPajak').prop('checked',true);
+    }else{
+      $('#FakturPajak').prop('checked',false);
+    }
+    $('.lain_penerus').val('{{$form_tt->tt_lainlain}}');
+
+    var agen_vendor = $('.nama_vendor').val();
+    var jatuh_tempo = $('.jatuh_tempo_vendor').val();
+    var total_jml   = $('.total_vendor').val();
+    total_jml       = total_jml.replace(/[^0-9\-]+/g,"")*1;
+    $('.supplier_tt').val(agen_vendor);
+    $('.jatuhtempo_tt').val(jatuh_tempo);
+    $('.totalterima_tt_vendor').val(accounting.formatMoney(total_jml, "Rp ", 2, ".",','));
     $('#modal_tt_vendor').modal('show');
-      },error:function(){
-        toastr.warning('Terjadi Kesalahan');
-      }
-    })
 })
 
 $('.append_vendor').click(function(){
@@ -363,7 +428,7 @@ $('.simpan_vendor_tt').click(function(){
         url:baseUrl + '/fakturpembelian/simpan_tt',
         type:'get',
         dataType:'json',
-        data:$('.tabel_tt_vendor :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head_subcon :input').serialize()+'&cabang='+cabang,
+        data:$('.tabel_tt_vendor :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.form_vendor :input').serialize()+'&'+$('.head1 :input').serialize()+'&cabang='+cabang,
         success:function(response){
               swal({
                   title: "Berhasil!",
@@ -421,7 +486,7 @@ $('.simpan_data_vendor').click(function(){
                 }
             });
           $.ajax({
-          url:baseUrl + '/fakturpembelian/save_vendor',
+          url:baseUrl + '/fakturpembelian/update_vendor',
           type:'get',
           data:$('.head1 :input').serialize()
               +'&'+$('.table_vendor :input').serialize()
@@ -473,6 +538,7 @@ $('.vendor_dibayar_um').maskMoney({
     });
 var vendor_tabel_detail_um = $('.vendor_tabel_detail_um').DataTable();
 $('.uang_muka_vendor').click(function(){
+  $('.save_vendor_um').removeClass('disabled');
   $('#modal_um_vendor').modal('show');
 })
 
@@ -636,7 +702,7 @@ function hapus_um_vendor(a) {
 
   vendor_tabel_detail_um.row(par).remove().draw(false);
 
-  hitung_um();
+  hitung_um_vendor();
 }
 
 
@@ -675,7 +741,7 @@ $('.save_vendor_um').click(function(){
               }
           });
         $.ajax({
-        url:baseUrl + '/fakturpembelian/save_vendor_um',
+        url:baseUrl + '/fakturpembelian/update_vendor_um',
         type:'post',
         data:$('.head1 :input').serialize()
               +'&'+$('.table_vendor :input').serialize()
@@ -789,7 +855,7 @@ $('.save_vendor_um').click(function(){
   var um_keterangan   = '{{$val->umfpdt_keterangan}}';
   console.log(nofaktur);
 
-  datatable2.row.add([
+  vendor_tabel_detail_um.row.add([
             '<p class="tb_faktur_um_text">'+nofaktur+'</p>'+
             '<input type="hidden" class="tb_faktur_um_'+id_um+' tb_faktur_um" value="'+id_um+'">',
 
@@ -818,8 +884,8 @@ $('.save_vendor_um').click(function(){
     id_um++;
     array_um1.push(nomor);
     array_um2.push(um_nomorbukti);
-    hitung_um();
-    $('.bp_tabel_um :input').val('');
+    hitung_um_vendor();
+    $('.vendor_tabel_detail_um :input').val('');
 @endforeach
 
 

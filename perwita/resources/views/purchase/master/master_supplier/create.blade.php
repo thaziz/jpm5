@@ -249,7 +249,7 @@
                          </table>
                          </div>
 
-                          <div class="col-xs-12" class="pajak">
+                          <div class="col-xs-10" class="pajak">
                           <hr>
                           <h4>  Informasi Pajak Supplier </h4>
                           <hr>
@@ -259,6 +259,11 @@
                             <td>
                                <input type="text" class="input-sm form-control pajak isipajak" name="npwp">
                             </td>
+                          </tr>
+
+                          <tr>
+                            <td> NIK </td>
+                            <td> <input type="number" class="form-control" name="nik"></td>
                           </tr>
 
                         <tr>
@@ -273,51 +278,9 @@
                         </tr>
 
                         <tr>
-                           <td class="pajak"> Alamat </td>
-                          <td> <input type="text" class="form-control input-sm pajak isipajak" name="alamatpajak"></td>
-                        
+                           <td class="pajak"> Alamat Lengkap </td>
+                          <td> <input type="text" class="form-control input-sm pajak isipajak" name="alamatpajak"></td>                       
                         </tr>
-                          <tr class="pajak">
-                            <td style="width:100px">
-                               No Seri Pajak Supplier 
-                            </td>
-                         
-                            <td>
-                               <input type="number" class="form-control pajak isipajak" name="seripajak">
-                            </td>
-                            
-
-                              <td style="width:200px">  
-                                <div class="checkbox checkbox-info checkbox-circle">
-                                  <input id="checkbox7" type="checkbox" name="pajak_ppn">
-                                    <label for="checkbox7">
-                                      PPn Masukan
-                                    </label>
-                                </div> 
-                            </td>
-
-                     
-                            <td style="width:200px">
-                              <div class="checkbox checkbox-info checkbox-circle">
-                                  <input id="checkbox8" type="checkbox" name="pajak_pph">
-                                    <label for="checkbox8">
-                                      PPh Pasal 23
-                                    </label>
-                                </div>
-                            </td>
-                      
-                            <td style="width:200px">
-                                <div class="checkbox checkbox-info checkbox-circle">
-                                  <input id="checkbox9" type="checkbox" name="pajak_26">
-                                    <label for="checkbox9">
-                                      PPh Pasal 26
-                                    </label>
-                                </div>
-                            </td>
-                         </tr>
-                   
-
-                      
 
                           </table>
                          </div>

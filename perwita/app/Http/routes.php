@@ -89,6 +89,7 @@ Route::get('kartuhutangdetail' , 'Queryanalisa@kartuhutangdetail');
 Route::get('rekapmutasihutang' , 'Queryanalisa@rekapmutasihutang');
 Route::get('rekapmutasihutang' , 'Queryanalisa@rekapmutasihutang');
 Route::get('detailmutasihutang' , 'Queryanalisa@detailmutasihutang');
+Route::get('rekapanalisahutang' , 'Queryanalisa@rekapanalisahutang');
 
 
 
@@ -309,7 +310,7 @@ Route::get('fakturpembelian/pilih_kontrak', 'BiayaPenerusController@pilih_kontra
 Route::get('fakturpembelian/pilih_kontrak_all', 'BiayaPenerusController@pilih_kontrak_all');
 Route::get('fakturpembelian/caripodsubcon', 'BiayaPenerusController@caripodsubcon');
 Route::get('fakturpembelian/subcon_save', 'BiayaPenerusController@subcon_save');
-Route::get('fakturpembelian/subcon_save', 'BiayaPenerusController@subcon_save');
+Route::post('fakturpembelian/subcon_save', 'BiayaPenerusController@subcon_save');
 Route::get('fakturpembelian/subcon_update', 'BiayaPenerusController@subcon_update');
 Route::get('master_subcon/cari_kontrak', 'BiayaPenerusController@cari_kontrak');
 Route::get('fakturpembelian/getpembayaransubcon', 'BiayaPenerusController@getpembayaransubcon')->name('getpembayaransubcon');
@@ -317,20 +318,14 @@ Route::get('fakturpembelian/cari_subcon', 'BiayaPenerusController@cari_subcon');
 
 // PEMBAYARAN VENDOR
 
-Route::get('fakturpembelian/pilih_kontrak', 'pembayaran_vendor_controller@pilih_kontrak');
-Route::get('fakturpembelian/pilih_kontrak_all', 'pembayaran_vendor_controller@pilih_kontrak_all');
-Route::get('fakturpembelian/caripodsubcon', 'pembayaran_vendor_controller@caripodsubcon');
-Route::get('fakturpembelian/subcon_save', 'pembayaran_vendor_controller@subcon_save');
-Route::get('fakturpembelian/subcon_save', 'pembayaran_vendor_controller@subcon_save');
-Route::get('fakturpembelian/subcon_update', 'pembayaran_vendor_controller@subcon_update');
-Route::get('master_subcon/cari_kontrak', 'pembayaran_vendor_controller@cari_kontrak');
 Route::get('fakturpembelian/getpembayaranvendor', 'pembayaran_vendor_controller@index');
-Route::get('fakturpembelian/cari_subcon', 'pembayaran_vendor_controller@cari_subcon');
 Route::get('fakturpembelian/cari_do_vendor', 'pembayaran_vendor_controller@cari_do_vendor');
 Route::get('fakturpembelian/append_vendor', 'pembayaran_vendor_controller@append_vendor');
 Route::get('fakturpembelian/save_vendor', 'pembayaran_vendor_controller@save_vendor');
-Route::get('fakturpembelian/vendor_um', 'pembayaran_vendor_controller@vendor_um');
+Route::get('fakturpembelian/update_vendor', 'pembayaran_vendor_controller@update_vendor');
 Route::post('fakturpembelian/save_vendor_um', 'pembayaran_vendor_controller@save_vendor_um');
+Route::post('fakturpembelian/update_vendor_um', 'pembayaran_vendor_controller@update_vendor_um');
+Route::get('fakturpembelian/cari_do_vendor_edit', 'pembayaran_vendor_controller@cari_do_vendor_edit');
 
 
 //BIAYA PENERUS KAS
@@ -608,6 +603,9 @@ Route::get('masteractiva/detailmasteractiva', 'MasterPurchaseController@detailma
 Route::get('masteractiva/detailgarislurusmasteractiva', 'MasterPurchaseController@detailgarislurusmasteractiva');
 Route::get('masteractiva/detailsaldomenurunmasteractiva', 'MasterPurchaseController@detailsaldomenurunmasteractiva');
 Route::get('masteractiva/createmasteractiva', 'MasterPurchaseController@createmasteractiva');
+Route::get('masteractiva/ask_kode/{cabang}', 'MasterPurchaseController@ask_kode_activa');
+
+Route::post('master_aktiva/simpan', 'MasterPurchaseController@aktiva_save');
 
 // end master aktiva
 

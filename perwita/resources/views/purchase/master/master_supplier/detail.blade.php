@@ -303,7 +303,7 @@
 
                           
 
-                      <div class="col-xs-12" class="pajak">
+                      <div class="col-xs-10" class="pajak">
                         <hr>
                         <b>  Informasi Pajak Supplier </b>
                          <hr>
@@ -316,6 +316,12 @@
                                 <input type="text" class="form-control npwp input-sm pajak isipajak" name="npwp" value="{{$sup->pajak_npwp}}" readonly="">
                             </td>
                           </tr>
+
+                          <tr>
+                            <td> NIK </td>
+                            <td>  <input type="text" class="form-control" value="{{$sup->nik}}"></td>
+                          </tr>
+
 
                           <tr>
                             <td class="pajak"> Nama </td>
@@ -334,53 +340,7 @@
                           
                           </tr>
 
-                          <tr>
-                            <td width="200px" class="pajak">
-                               No Seri Pajak Supplier 
-                            </td>
-                            <td class="pajak">
-                                 <input type="text" class="form-control seripajak pajak isipajak" name="noseri" value="{{$sup->noseri_pajak}}" readonly="">
-                               
-                          
-                                 <td class="pajak">  <div class='checkbox checkbox-info checkbox-circle'>
-                                  @if($sup->ppn != '') 
-                                  <input id='pajak_ppn' type='checkbox' name='pajak_ppn' checked="" disabled="">
-                                  @else 
-                                   <input id='pajak_ppn' type='checkbox' name='pajak_ppn'>
-                                   @endif
-                                    <label for='pajak_ppn'>
-                                      PPn Masukan
-                                    </label>
-                                </div> </td>
-                            
-                             
-
-                             
-                                 <td class="pajak"> 
-                                  <div class="checkbox checkbox-info checkbox-circle">
-                                    @if($sup->pph23 != '') 
-                                     <input id="pajak_pph" type="checkbox" name="pajak_pph" checked="" disabled="">
-                                    @else
-                                      <input id="pajak_pph" type="checkbox" name="pajak_pph" disabled="">
-                                    @endif
-                                    <label for="pajak_pph">
-                                      PPh Pasal 23
-                                    </label>
-                                </div>
-
-                                <td class="pajak">
-                                <div class="checkbox checkbox-info checkbox-circle">
-                                   @if($sup->pph26 != '')
-                                  <input id="pajak_26" type="checkbox" name="pajak_26" checked="" disabled="">
-                                  @else
-                                   <input id="pajak_26" type="checkbox" name="pajak_26"  disabled="">
-                                  @endif
-                                    <label for="pajak_26">
-                                      PPh Pasal 26
-                                    </label>
-                                </div>
-
-                                </td>
+                         
                           
                            <tr>                           
                             <td>

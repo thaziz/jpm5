@@ -246,11 +246,13 @@ class tarif_VendorController extends Controller
                   // Email dikirimkan ke address "momo@deviluke.com" 
                   // dengan nama penerima "Momo Velia Deviluke"
                   $mail->from('jpm@gmail.com', 'SYSTEM JPM');
-                  $mail->to('dewa17a@gmail.com', 'Admin');
+
+                  $mail->to('puspitadury1987@gmail.com', 'Admin');
              
                   // Copy carbon dikirimkan ke address "haruna@sairenji" 
                   // dengan nama penerima "Haruna Sairenji"
-                  $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+                  $mail->cc('puspitadury1987@gmail.com', 'ADMIN JPM');
+                  
                   $mail->subject('KONTRAK VERIFIKASI');
             });
             return response()->json(['status'=>1,'crud'=>'N']);
@@ -303,11 +305,11 @@ class tarif_VendorController extends Controller
                 ]);
 
              
-             return json_encode('success 1');
+            return json_encode('success 1');
 
         }else{
 
-           $data_dt = DB::table('tarif_vendor')
+            $data_dt = DB::table('tarif_vendor')
                 ->where('id_kota_asal_vendor',$request->asal)
                 ->where('id_kota_tujuan_vendor',$request->tujuan)
                 ->where('cabang_vendor',$request->cabang)
@@ -316,7 +318,7 @@ class tarif_VendorController extends Controller
                 ->update([
                   'status' => 'tidak' 
                 ]);
-             return json_encode('success 2');
+            return json_encode('success 2');
         }
     }
 

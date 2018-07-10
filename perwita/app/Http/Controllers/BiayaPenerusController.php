@@ -583,6 +583,8 @@ class BiayaPenerusController extends Controller
 				$form_tt = DB::table('form_tt')
 							 ->where('tt_nofp',$cari_fp->fp_nofaktur)
 							 ->first();
+
+				// dd()
 				$cabang = DB::table("cabang")
 							->get();
 				
@@ -874,7 +876,36 @@ class BiayaPenerusController extends Controller
 					 	->where('umfp_nofaktur',$cari->fp_nofaktur)
 					    ->delete();
 
+			if ($cari->fp_jenisbayar == 6) {
 
+				$delete = DB::table('biaya_penerus')
+		 				->where('bp_faktur',$cari->fp_nofaktur)
+		 				->delete();
+			}elseif ($cari->fp_jenisbayar == 7){
+				$pot = DB::table('pembayaran_outlet')
+		 				->where('pot_faktur',$cari->fp_nofaktur)
+		 				->first();
+
+		 		$delete = DB::table('pembayaran_outlet_dt')
+		 				->where('potd_potid',$pot->pot_id)
+		 				->delete();
+
+		 		$pot = DB::table('pembayaran_outlet')
+		 				->where('pot_faktur',$cari->fp_nofaktur)
+		 				->delete();
+			}elseif ($cari->fp_jenisbayar == 9){
+				$pot = DB::table('pembayaran_subcon')
+		 				->where('pb_faktur',$cari->fp_nofaktur)
+		 				->first();
+
+		 		$delete = DB::table('pembayaran_subcon_dt')
+		 				->where('pbd_pb_id',$pot->pb_id)
+		 				->delete();
+
+		 		$pot = DB::table('pembayaran_subcon')
+		 				->where('pb_faktur',$cari->fp_nofaktur)
+		 				->first();
+			}
 		 	$delete = DB::table('faktur_pembelian')
 		 				->where('fp_idfaktur',$id)
 		 				->delete();
@@ -1355,7 +1386,7 @@ class BiayaPenerusController extends Controller
 				$idfaktur = '001';
 			}
 
-			$nota = 'FP' . $month . $year . '/' . $request->cab . '/O-' .  $idfaktur;
+			$nota = 'FB' . $month . $year . '/' . $request->cab . '/O-' .  $idfaktur;
 			/*dd($data['nofp']);*/
 
 			return response()->json(['nota' => $nota]);
@@ -1385,7 +1416,7 @@ class BiayaPenerusController extends Controller
 				$idfaktur = '001';
 			}
 
-			$nota = 'FP' . $month . $year . '/' . $request->cab . '/P-' .  $idfaktur;
+			$nota = 'FB' . $month . $year . '/' . $request->cab . '/P-' .  $idfaktur;
 			/*dd($data['nofp']);*/
 
 			return response()->json(['nota' => $nota]);
@@ -1412,7 +1443,7 @@ class BiayaPenerusController extends Controller
 				$idfaktur = '001';
 			}
 
-			$nota = 'FP' . $month . $year . '/' . $request->cab . '/SC-' .  $idfaktur;
+			$nota = 'FB' . $month . $year . '/' . $request->cab . '/SC-' .  $idfaktur;
 			/*dd($data['nofp']);*/
 
 			return response()->json(['nota' => $nota]);
@@ -3437,10 +3468,11 @@ public function pilih_um(request $req)
 	}
 
 	for ($i=0; $i < count($data); $i++) { 
-		if ($data[$i]->nomor == $req->nota) {
+		if ($data[$i]->nomor == $req->nomor_trans and $data[$i]->um_nomorbukti == $req->nomor_um) {
 			$head = $data[$i];
 		}
 	}
+	// return $req->nomor_um;
 	return response()->json(['data'=>$head]);
 }
 
@@ -3552,6 +3584,7 @@ public function save_bp_um(request $req)
 
 					$flag = $fpg->fpg_flag;
 
+					$jumlah_um = $cari_fpgdt->fpgdt_pelunasan;
 				}else{
 
 					$bkk = DB::table('bukti_kas_keluar')
@@ -3571,6 +3604,7 @@ public function save_bp_um(request $req)
 									]);
 
 					$flag = $bkk->bkk_flag;
+					$jumlah_um = $cari_bkkd->bkkd_total;
 				}
 
 				$save_dt = DB::table('uangmukapembeliandt_fp')
@@ -3578,7 +3612,7 @@ public function save_bp_um(request $req)
 							  	'umfpdt_id' 		   => $dt,
 								'umfpdt_transaksibank' => $req->tb_transaksi_um[$i],
 								'umfpdt_tgl' 		   => $um->um_tgl,
-								'umfpdt_jumlahum'  	   => $um->um_jumlah,
+								'umfpdt_jumlahum'  	   => $jumlah_um,
 								'umfpdt_dibayar'   	   => $req->tb_bayar_um[$i],
 								'umfpdt_keterangan'    => $um->um_keterangan,
 								'umfpdt_idfp' 		   => $req->idfaktur,
@@ -3951,6 +3985,7 @@ public function update_bp_um(request $req)
 
 					$flag = $fpg->fpg_flag;
 
+					$jumlah_um = $cari_fpgdt->fpgdt_pelunasan;
 				}else{
 
 					$bkk = DB::table('bukti_kas_keluar')
@@ -3970,6 +4005,7 @@ public function update_bp_um(request $req)
 									]);
 
 					$flag = $bkk->bkk_flag;
+					$jumlah_um = $cari_bkkd->bkkd_total;
 				}
 
 				$save_dt = DB::table('uangmukapembeliandt_fp')
@@ -3977,7 +4013,7 @@ public function update_bp_um(request $req)
 							  	'umfpdt_id' 		   => $dt,
 								'umfpdt_transaksibank' => $req->tb_transaksi_um[$i],
 								'umfpdt_tgl' 		   => $um->um_tgl,
-								'umfpdt_jumlahum'  	   => $um->um_jumlah,
+								'umfpdt_jumlahum'  	   => $jumlah_um,
 								'umfpdt_dibayar'   	   => $req->tb_bayar_um[$i],
 								'umfpdt_keterangan'    => $um->um_keterangan,
 								'umfpdt_idfp' 		   => $req->idfaktur,
