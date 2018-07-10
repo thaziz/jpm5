@@ -275,17 +275,9 @@
         minViewMode: "months"
     });
 
-    $('.sampai_register').datepicker( {
-        format: "mm/yyyy",
-        viewMode: "months", 
-        minViewMode: "months"
-    })
+    $('.sampai_register').datepicker()
 
-    $('.tanggal_register').datepicker( {
-        format: "mm/yyyy",
-        viewMode: "months", 
-        minViewMode: "months"
-    }).on("changeDate", function(){
+    $('.tanggal_register').datepicker().on("changeDate", function(){
         $('.sampai_register').val("");
         $('.sampai_register').datepicker("setStartDate", $(this).val());
     });
