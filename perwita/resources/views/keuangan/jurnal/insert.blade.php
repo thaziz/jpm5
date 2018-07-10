@@ -160,7 +160,7 @@
 
     akun = {!! $akun !!};
 
-    $(".chosen-select.akun").html(initiate_akun('{{$cabang->kode}}'));
+    $(".chosen-select.akun").html(initiate_akun($("#cabang").val()));
     $('.chosen-select.akun').trigger("chosen:updated");
 
     $.fn.maskFunc = function(){
