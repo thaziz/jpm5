@@ -702,7 +702,7 @@ function hapus_um_vendor(a) {
 
   vendor_tabel_detail_um.row(par).remove().draw(false);
 
-  hitung_um();
+  hitung_um_vendor();
 }
 
 
@@ -884,7 +884,7 @@ $('.save_vendor_um').click(function(){
     id_um++;
     array_um1.push(nomor);
     array_um2.push(um_nomorbukti);
-    hitung_um();
+    hitung_um_vendor();
     $('.vendor_tabel_detail_um :input').val('');
 @endforeach
 

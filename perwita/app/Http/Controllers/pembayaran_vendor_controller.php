@@ -75,7 +75,7 @@ class pembayaran_vendor_controller extends Controller
 
     	for ($i=0; $i < count($temp1); $i++) { 
     		for ($a=0; $a < count($req->array_simpan); $a++) { 
-    			if ($req->array_simpan[$a] == $temp[$i]->nomor) {
+    			if ($req->array_simpan[$a] == $temp1[$i]->nomor) {
     				unset($temp[$i]);
     			}
     		}
