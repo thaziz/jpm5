@@ -134,7 +134,7 @@ class cabang_Controller extends Controller
     }
 
     public function hapus_data (Request $request) {
-         return response()->json($data[, 200][, $headers]);
+        
         $hapus='';
         $id=$request->id;
         $hapus = DB::table('cabang')->where('kode' ,'=', $id)->delete();
