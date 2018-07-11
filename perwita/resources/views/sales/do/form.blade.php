@@ -2076,7 +2076,7 @@
                             if (data.tipe == 'KILOGRAM') {
                                 if (data.batas != 0 || data.batas != null) {
                                     toastr.info('Berat minimum adalah '+'<b style="color:red">'+data.batas+'</b>'+' KG','Pemberitahuan!')
-                                    if (berat_minimum_field < data.batas) {
+                                    if (berat_minimum < data.batas) {
                                         //hitung hasil dari pencarian
                                         var hitung_berat = parseFloat(data.batas)*parseFloat(data.harga);
                                         //replace berat dan tarif dasar

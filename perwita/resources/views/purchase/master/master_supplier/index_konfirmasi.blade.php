@@ -74,7 +74,7 @@
                     <thead>
                      <tr>
                         <th style="width:10px">Kode Supplier</th>
-                        <th> Nama Supplier </th>
+                        <th style="width:200px"> Nama Supplier </th>
                         <th> Alamat </th>
                         <th> Kota </th>
                     
@@ -99,7 +99,7 @@
                     @foreach($data['supp'] as $sp)
                     <tr>
                       <td> {{$sp->no_supplier}} </td>
-                      <td style="width:5%"> {{$sp->nama_supplier}} </td>
+                      <td> {{$sp->nama_supplier}} </td>
                       <td> {{$sp->alamat}} </td>
                       <td> {{$sp->nama2}} </td>
                

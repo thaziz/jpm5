@@ -1427,7 +1427,7 @@
                           $('.pelunasan').attr('readonly' , false);
                           $('.jmlhfaktur').val(addCommas(data.faktur[0][0].v_hasil));
                            $('.cabangfaktur').val(data.faktur[0][0].vc_comp);
-                           $('.hutangdagang').val(data.faktur[0][0].v_akunhutang);
+                           $('.hutangdagang').val(data.faktur[0][0].v_acchutang);
 
 
                      //LOOPING DATA NO FAKTUR 
@@ -1690,7 +1690,7 @@
                     pelunasan = $('.pelunasan' + id).val();
                     hslpelunasan =  pelunasan.replace(/,/g, '');
                     totalbayar = $('.totbayar').val();
-
+                    //alert(totalbayar);
                     if(totalbayar != ''){
                       hsltotalbayar = totalbayar.replace(/,/g, '');
                       $('tr.data'+nmrfaktur).show();
@@ -1700,7 +1700,12 @@
 
                       dikurangi = parseInt(hsltotalbayar) - parseInt(hslpelunasan);
                       dikurangi = dikurangi.toFixed(2);
-                      $('.sisafaktur').val('');
+                      
+                      $('.totbayar').val(addCommas(dikurangi));
+                      $('.nominal').val(addCommas(dikurangi));
+                    }
+
+                    $('.sisafaktur').val('');
                       $('.sisatrbyr').val('');
                       $('.jmlhfaktur').val('');
                       $('.pelunasan').val('');
@@ -1715,9 +1720,7 @@
                       $('.sisafaktur').val('');
 
 
-                      $('.totbayar').val(addCommas(dikurangi));
-                      $('.nominal').val(addCommas(dikurangi));
-                    }
+                    //alert('test');
                      parentbayar = $('.bayar'+idfaktur);
                     parent.remove();
                     parentbayar.remove();

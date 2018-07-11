@@ -14,7 +14,7 @@ use Auth;
 use Yajra\Datatables\Datatables;
 // use Intervention\Image\ImageManagerStatic as Image;
 use File;
-use Illuminate\Support\Facades\Storage;
+use Storage;
 class invoice_Controller extends Controller
 {
 
@@ -73,7 +73,11 @@ class invoice_Controller extends Controller
                           }
                         })
                         ->addColumn('faktur_pajak', function ($data) {
-                          return '<button class="btn btn-primary" onclick="faktur_pajak(\''.$data->i_nomor.'\')">Tambah Faktur Pajak</button>';
+                          if ($data->i_faktur_pajak == null) {
+                            return '<button class="btn btn-danger" onclick="faktur_pajak(\''.$data->i_nomor.'\')">Tambah Faktur Pajak</button>';
+                          }else{
+                            return '<button class="btn btn-primary" onclick="faktur_pajak(\''.$data->i_nomor.'\')">Tambah Faktur Pajak</button>';
+                          }
                         })
                         ->addColumn('cabang', function ($data) {
                           $kota = DB::table('cabang')
@@ -1208,14 +1212,14 @@ public function simpan_invoice(request $request)
                 $data_akun[$i]['jrdt_detailid'] = $i+1;
                 $data_akun[$i]['jrdt_acc']      = $akun[$i];
                 $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'K';
+                $data_akun[$i]['jrdt_statusdk'] = 'D';
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }else{
                 $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                 $data_akun[$i]['jrdt_detailid'] = $i+1;
                 $data_akun[$i]['jrdt_acc']      = $akun[$i];
                 $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'D';
+                $data_akun[$i]['jrdt_statusdk'] = 'K';
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }
             }
@@ -1938,38 +1942,32 @@ public function update_invoice(request $request)
 
     public function pajak_invoice(request $request)
     {
-      // dd($request->file('files'));
-
-
       $file = $request->file('files');
       $id = $request->invoice;
       if ($file != null) {
 
-        $file_name = 'pajak'.'_' . $id . '.' . $file->getClientOriginalExtension();
+        $id = str_replace('/', '-', $id);
+        $filename = 'invoice/faktur_pajak_'.$id.'.pdf';
 
-        if (!is_dir(storage_path('uploads/invoice/'))) {
-          mkdir(storage_path('uploads/invoice/'), 0777, true);
-        } 
-        $image = $request->file('ed_img');
-      
-        $upload = 'upload/images';
-        $filename = '.jpg';
-        Storage::put('upload/images'.$filename,file_get_contents( $request->file('ed_img')->getRealPath()));
-        // return $original_path;
-        // Image::make($file)
-        //         ->resize(261,null,function ($constraint) {
-        //           $constraint->aspectRatio();
-        //            })
-        //         ->save($original_path . $file_name)
-        //         ->resize(90, 90)
-        //         ->save($thumbnail_path . $file_name);
-
-        Storage::put($path, new File($path), 'pajak_'.$request->nomor_pajak.'.'.'jpg');
+        $save = DB::table('invoice')
+                  ->where('i_nomor',$request->invoice)
+                  ->update(['i_image_pajak' => 'faktur_pajak_'.$id.'.pdf','i_faktur_pajak'=>$request->nomor_pajak]);
         
-        $user = DB::table('invoice')->where('nomor',$id)->update(['i_image_pajak' => $file_name,'i_faktur_pajak'=>$request->nomor_pajak]);
+
+        Storage::put($filename,file_get_contents($request->file('files')));
+    
 
         return response()->json(['status'=>1]);
       }
+    }
+
+    public function cari_faktur_pajak(request $req)
+    {
+        $data = DB::table('invoice')
+                  ->where('i_nomor',$req->nomor)
+                  ->first();
+        $storage = url('storage/app/invoice').'/'.$data->i_image_pajak;
+        return response()->json(['data'=>$data,'img'=>$storage]);
     }
 
 }

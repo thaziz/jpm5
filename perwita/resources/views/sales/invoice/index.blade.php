@@ -8,6 +8,30 @@
 <style type="text/css">
     .cssright { text-align: right; }
     .center { text-align: center; }
+    .borderless td, .borderless th {
+    border: none;
+}
+/****** IGNORE ******/
+
+
+
+
+
+/****** CODE ******/
+
+.file-upload{display:block;text-align:center;font-family: Helvetica, Arial, sans-serif;font-size: 12px;}
+.file-upload .file-select{display:block;border: 2px solid #dce4ec;color: #34495e;cursor:pointer;height:40px;line-height:40px;text-align:left;background:#FFFFFF;overflow:hidden;position:relative;}
+.file-upload .file-select .file-select-button{background:#dce4ec;padding:0 10px;display:inline-block;height:40px;line-height:40px;}
+.file-upload .file-select .file-select-name{line-height:40px;display:inline-block;padding:0 10px;}
+.file-upload .file-select:hover{border-color:#34495e;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+.file-upload .file-select:hover .file-select-button{background:#34495e;color:#FFFFFF;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+.file-upload.active .file-select{border-color:#3fa46a;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+.file-upload.active .file-select .file-select-button{background:#3fa46a;color:#FFFFFF;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+.file-upload .file-select input[type=file]{z-index:100;cursor:pointer;position:absolute;height:100%;width:100%;top:0;left:0;opacity:0;filter:alpha(opacity=0);}
+.file-upload .file-select.file-select-disabled{opacity:0.65;}
+.file-upload .file-select.file-select-disabled:hover{cursor:default;display:block;border: 2px solid #dce4ec;color: #34495e;cursor:pointer;height:40px;line-height:40px;margin-top:5px;text-align:left;background:#FFFFFF;overflow:hidden;position:relative;}
+.file-upload .file-select.file-select-disabled:hover .file-select-button{background:#dce4ec;color:#666666;padding:0 10px;display:inline-block;height:40px;line-height:40px;}
+.file-upload .file-select.file-select-disabled:hover .file-select-name{line-height:40px;display:inline-block;padding:0 10px;}
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -110,7 +134,7 @@
               <tr>
                   <td>Nomor Pajak</td>
                   <td>
-                    <input type="text" class="form-control" name="nomor_pajak">
+                    <input type="text" class="form-control nomor_pajak" name="nomor_pajak">
                     <input type="hidden" class="form-control invoice" name="invoice">
                 </td>
               </tr>
@@ -125,13 +149,16 @@
                   </div>
                 </td>
               </tr>
-              <tr>
+              <tr hidden="">
                 <td>Preview</td>
                 <td align="left">
                   <div class="preview_td">
                       <img style="width: 150px;height: 200px;border:1px solid pink" id="output" >
                   </div>
                 </td>
+              </tr>
+              <tr>
+                <td align="right" colspan="2"><button type="button" class="simpan_pdf btn btn-primary">Download PDF</button></td>
               </tr>
           </table>
         </div>
@@ -230,6 +257,15 @@
         // clearInterval(interval);
     }
 
+    $(".nomor_pajak").keypress(function (e) {
+     //if the letter is not digit then display error and don't type anything
+       if (e.which != 8 && e.which != 0  && (e.which < 48 || e.which > 57 ) && e.which != 46  ) {
+          //display error message
+          
+                 return false;
+      }
+     });
+
     function hapus(id){
         swal({
         title: "Apakah anda yakin?",
@@ -276,7 +312,31 @@
 
 function faktur_pajak(nomor) {
     $('.invoice').val(nomor);
-    $('#modal_pajak').modal('show');
+    $.ajax({
+          url:baseUrl + '/sales/cari_faktur_pajak',
+          data:{nomor},
+          type:'get',
+          dataType:'json',
+          success:function(data){
+            $('.nomor_pajak').val(data.data.i_faktur_pajak);
+            if (data.data.i_image_pajak != null) {
+              $('#output').attr('src','{{asset('perwita/storage/app/invoice')}}'+'/'+data.data.i_image_pajak);
+              $('#noFile').text(data.data.i_image_pajak);
+            }else{
+              $('#noFile').text('Pilih FIle...');
+            }
+            $('#modal_pajak').modal('show');
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+      });
 }
 
 
@@ -318,7 +378,6 @@ var loadFile = function(event) {
 
 $('.save_pajak').click(function(){
 
-
     $.ajaxSetup({
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -344,7 +403,8 @@ $('.save_pajak').click(function(){
                       showConfirmButton: true
                       },function(){
                         $('.invoice').val('');
-                         
+                         var table = $('#tabel_data').DataTable();
+                         table.ajax.reload();
               });
           },
           error:function(data){
@@ -358,5 +418,32 @@ $('.save_pajak').click(function(){
        }
     });
 })
+
+$('.simpan_pdf').click(function(e) {
+    e.preventDefault();  //stop the browser from following
+    var nomor = $('.invoice').val();
+    $.ajax({
+          url:baseUrl + '/sales/cari_faktur_pajak',
+          data:{nomor},
+          type:'get',
+          dataType:'json',
+          success:function(data){
+            if (data.data.i_image_pajak !=null) {
+               window.location.href = '{{asset('perwita/storage/app/invoice')}}'+'/'+data.data.i_image_pajak;
+            }
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+      });
+
+});
+
 </script>
 @endsection

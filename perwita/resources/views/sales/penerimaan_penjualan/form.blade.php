@@ -120,7 +120,7 @@
                                     </select>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr hidden="">
                                 <td style="width:110px;">Jenis Tarif</td>
                                 <td colspan="20" class="jenis_tarif_td">
                                     <select  class="form-control jenis_tarif" onchange="nota_tes()" name="jenis_tarif" >
@@ -136,7 +136,7 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td> 
                                 <td colspan="20" class="cabang_td">
-                                    <select onchange="um_sementara()" onchange="ganti_nota()" class="cb_cabang  form-control chosen-select-width"  name="cb_cabang" onchange="nota_kwitansi()" >
+                                    <select onchange="um_sementara()"  class="cb_cabang  form-control chosen-select-width"  name="cb_cabang" onchange="nota_kwitansi()" >
                                         <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
                                         @if(Auth()->user()->kode_cabang == $row->kode)
@@ -152,7 +152,7 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td style=" padding-top: 0.4cm" colspan="20" class="cabang_td">
-                                    <select  class="cb_cabang disabled form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
+                                    <select onchange="um_sementara()"  class="cb_cabang  form-control chosen-select-width"  name="cb_cabang" onchange="nota_kwitansi()" >
                                         <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
                                         @if(Auth()->user()->kode_cabang == $row->kode)
@@ -879,13 +879,14 @@ var table_data_biaya = $('#table_data_biaya').DataTable({
 //mengganti nota kwitansi
 function nota_kwitansi() {
     var cb_cabang = $('.cb_cabang').val();
+    console.log(cb_cabang);
 
     $.ajax({
         url:baseUrl + '/sales/nota_kwitansi',
         data:{cb_cabang},
         dataType:'json',
         success:function(response){
-            $('#ed_nomor').val(response.nota);
+            $('#nota_kwitansi').val(response.nota);
             um_sementara();
         }
     })
@@ -893,12 +894,16 @@ function nota_kwitansi() {
 
 }
 
+
+$('.cb_cabang').change(function(){
+    nota_kwitansi();
+})
 //NOTA kwitansi
 $(document).ready(function(){
-    var cabang = $('.cb_cabang').val();
+    var cb_cabang = $('.cb_cabang').val();
     $.ajax({
         url:baseUrl+'/sales/nota_kwitansi',
-        data:{cabang},
+        data:{cb_cabang},
         dataType : 'json',
         success:function(response){
             $('#nota_kwitansi').val(response.nota);
