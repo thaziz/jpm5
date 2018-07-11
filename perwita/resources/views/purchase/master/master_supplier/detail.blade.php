@@ -93,7 +93,7 @@
                           <tr>
                             <td> Alamat </td>
                             <td>
-                              <input type="text" class="form-control input-sm alamat" name="alamat" value="{{$sup->alamat}}" readonly=""> 
+                              <input type="text" class="form-control input-sm alamat" name="alamat" value="{{$sup->alamatsupplier}}" readonly=""> 
                             </td>
                           </tr>
                           

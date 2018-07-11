@@ -1048,7 +1048,7 @@ class MasterPurchaseController extends Controller
 
 
 
-		$data['supplier'] = DB::select("select *, cabang.nama as namacabang, cabang.kode as kodecabang from supplier, cabang, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and supplier.idsup = '$id' and idcabang = kode");
+		$data['supplier'] = DB::select("select *, cabang.nama as namacabang, cabang.kode as kodecabang, supplier.alamat as alamatsupplier from supplier, cabang, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and supplier.idsup = '$id' and idcabang = kode");
 		$data['item_supplier'] = DB::select("select * from itemsupplier,masteritem where is_idsup = '$id' and is_kodeitem = kode_item");
 		$data['countitem'] = count($data['item_supplier']);
 		$data['barang'] = masterItemPurchase::all();
@@ -1059,6 +1059,8 @@ class MasterPurchaseController extends Controller
 		$cabang = $data['supplier'][0]->kodecabang;
 		$data['mastersup'] = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang'");
 
+
+		
 		return view('purchase/master/master_supplier/detail', compact('data'));
 	}
 
