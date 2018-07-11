@@ -282,7 +282,7 @@
                                                         </select>
                                                     </td> --}}
                                                     <td style="width:110px; padding-top: 0.4cm">Tarif Vendor</td>
-                                                    <td>
+                                                    <td colspan="5">
                                                         <div>
                                                              <label class="radio-inline">
                                                               <input type="radio" class="cek_vendor_ya" name="cek_vendor">Ya
@@ -340,7 +340,8 @@
 
                                     {{-- HIDDEN --}}
 
-
+                                    <!-- temporari data total-->
+                                    <input type="hidden" name="do_total_temp">
 
                                     <input type="hidden" name="tarif_vendor_bol" id="tarif_vendor_bol" value="{{ $data->tarif_vendor_bol }}">
 
@@ -353,8 +354,10 @@
                                     <!-- Berat Minimum-->
                                     <input type="hidden" name="berat_minimum">
 
-                                    {{-- END OF HIDDEN --}}
+                                    <!-- Non Customer-->
+                                    <input type="hidden" name="nama_customer_hidden">
 
+                                    {{-- END OF HIDDEN --}}
 
                                     
                                     <div class="col-md-5">
@@ -989,6 +992,7 @@ function hitung() {
     var jenis_ppn = $("select[name='do_jenis_ppn']").val();
     var tarif_dasar = $("input[name='do_tarif_dasar']").val();
     var biaya_tambahan = $("input[name='do_biaya_tambahan']").val();
+    var biaya_penerus = $("input[name='do_tarif_penerus']").val();
     var diskon_p  = $("input[name='do_diskon_p']").val();
     var diskon_v  = $("input[name='do_diskon_v']").val();
     var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
@@ -1000,6 +1004,7 @@ function hitung() {
     var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");
     var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
     var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
+    var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
     var diskon_p = diskon_p.replace(/[A-Za-z$. ,-]/g, "");
     var diskon_v = diskon_v.replace(/[A-Za-z$. ,-]/g, "");
     var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g,"");
@@ -1028,7 +1033,7 @@ function hitung() {
     }
 
     //menghitung atas
-    var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi);
+    var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi)+parseFloat(biaya_penerus);
 
     if (diskon_p != 0) {
         var diskon_value_utama = diskon_p / 100 * total;
@@ -1058,12 +1063,12 @@ function hitung() {
         ppn =parseFloat(total) * parseFloat(0.1);
         total = total + ppn;
     }else if (jenis_ppn == 2) {
-        ppn =parseFloat(total) / parseFloat(100.1);
+        ppn =parseFloat(total) / parseFloat(100);
         total = total + ppn;
     }else if (jenis_ppn == 4) {
         ppn =0;
     }else if (jenis_ppn == 3) {
-        ppn =parseFloat(total) / parseFloat(100.1);
+        ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
     }else if (jenis_ppn == 5) {
         ppn =parseFloat(total) / parseFloat(10.1);
         total = total - ppn;
@@ -1195,7 +1200,7 @@ function hitung() {
             }
 
             //-- menghitung atas
-            var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi);
+            var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi)+parseFloat(biaya_penerus);
 
             var diskon_total = parseFloat(diskon_v)/parseFloat(total)*100;
         
@@ -1229,12 +1234,12 @@ function hitung() {
                 ppn =parseFloat(total) * parseFloat(0.1);
                 total = total + ppn;
             }else if (jenis_ppn == 2) {
-                ppn =parseFloat(total) / parseFloat(100.1);
+                ppn =parseFloat(total) / parseFloat(100);
                 total = total + ppn;
             }else if (jenis_ppn == 4) {
                 ppn =0;
             }else if (jenis_ppn == 3) {
-                ppn =parseFloat(total) / parseFloat(100.1);
+                ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
             }else if (jenis_ppn == 5) {
                 ppn =parseFloat(total) / parseFloat(10.1);
                 total = total - ppn;
@@ -1263,7 +1268,7 @@ function hitung() {
 
             $("input[name='do_diskon_p']").attr('readonly',false);          
 
-            var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi);
+            var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi)+parseFloat(biaya_penerus);
 
             var diskon_total = parseFloat(diskon_v)/parseFloat(total)*100;
 
@@ -1284,12 +1289,12 @@ function hitung() {
                 ppn =parseFloat(total) * parseFloat(0.1);
                 total = total + ppn;
             }else if (jenis_ppn == 2) {
-                ppn =parseFloat(total) / parseFloat(100.1);
+                ppn =parseFloat(total) / parseFloat(100);
                 total = total + ppn;
             }else if (jenis_ppn == 4) {
                 ppn =0;
             }else if (jenis_ppn == 3) {
-                ppn =parseFloat(total) / parseFloat(100.1);
+                ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
             }else if (jenis_ppn == 5) {
                 ppn =parseFloat(total) / parseFloat(10.1);
                 total = total - ppn;

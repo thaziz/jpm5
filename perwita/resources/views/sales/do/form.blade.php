@@ -2072,7 +2072,7 @@
                             var harga = convertToRupiah(parseInt(data.harga));
                             
                             var koli_dikali =$("input[name='ed_koli']").val() ;
-                            var berat_minimum  =$("input[name='ed_berat']").val();
+                            var berat_minimum_field  =$("input[name='ed_berat']").val();
                             if (data.tipe == 'KILOGRAM') {
                                 if (data.batas != 0 || data.batas != null) {
                                     toastr.info('Berat minimum adalah '+'<b style="color:red">'+data.batas+'</b>'+' KG','Pemberitahuan!')

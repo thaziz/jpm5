@@ -109,11 +109,11 @@
                                                         <option value="">- Pilih -</option>
                                                         @foreach ($customer as $row)
                                                             @if ( $row->kc_aktif  == 'AKTIF' && $row->kcd_jenis)
-                                                                <option style="background-color: #79fea5;" value="{{ $row->kode }}" data-alamat="{{$row->alamat}}" data-telpon="{{$row->telpon}}"  data-status="{{ $row->kc_aktif }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                                                <option style="background-color: #79fea5;" value="{{ $row->kode }}" data-alamat="{{$row->alamat}}" data-name="{{ $row1->nama }}" data-telpon="{{$row->telpon}}"  data-status="{{ $row->kc_aktif }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                                             @endif
                                                         @endforeach
                                                         @foreach ($cus as $row1)
-                                                                <option value="{{ $row1->kode }}" data-alamat="{{$row1->alamat}}" data-telpon="{{$row1->telpon}}"  >{{ $row1->kode }} - {{ $row1->nama }} </option>
+                                                                <option value="{{ $row1->kode }}" data-alamat="{{$row1->alamat}}" data-name="{{ $row1->nama }}" data-telpon="{{$row1->telpon}}"  >{{ $row1->kode }} - {{ $row1->nama }} </option>
                                                         @endforeach
                                                         </select>
                                                     </td>
@@ -265,7 +265,7 @@
                                                         </select>
                                                     </td> --}}
                                                     <td style="width:110px; padding-top: 0.4cm">Tarif Vendor</td>
-                                                    <td>
+                                                    <td colspan="2">
                                                         <div>
                                                              <label class="radio-inline">
                                                               <input type="radio" class="cek_vendor_ya" name="cek_vendor">Ya
@@ -313,6 +313,9 @@
 
 
 
+                                    <input type="hidden" name="do_total_total">
+                                    <!-- temporari data total-->
+                                    <input type="hidden" name="do_total_temp">
 
 
                                     <input type="hidden" name="tarif_vendor_bol" id="tarif_vendor_bol">
@@ -325,6 +328,8 @@
                                     <!-- Berat Minimum-->
                                     <input type="hidden" name="berat_minimum">
 
+                                    <!-- Non Customer-->
+                                    <input type="hidden" name="nama_customer_hidden">
 
 
 
@@ -421,9 +426,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td><input type="hidden" name="do_total_total"></td>
                                                 </tr>
-                                                <input type="hidden" name="do_total_temp">
                                             </tbody>
                                         </table>
                                     </div>
@@ -726,7 +729,17 @@ $('.radio-inline').click(function() {
 
 });
 
+//CUSTOMER REPLACE
+    $('#do_customer').change(function(){
+        var alamat = $(this).find(':selected').data('alamat');
+        var name = $(this).find(':selected').data('name');
+        var telpon = $(this).find(':selected').data('telpon');
+        $("input[name='do_nama_pengirim']").val(alamat);
+        $("input[name='nama_customer_hidden']").val(name);
+        $("input[name='do_alamat_pengirim']").val(name);
+        $("input[name='do_telpon_pengirim']").val(telpon);
 
+    })
 
 //SEMUNYIKAN BEBERAPA FIELD
     $(document).ready( function () {
@@ -909,6 +922,7 @@ function hitung() {
     var jenis_ppn = $("select[name='do_jenis_ppn']").val();
     var tarif_dasar = $("input[name='do_tarif_dasar']").val();
     var biaya_tambahan = $("input[name='do_biaya_tambahan']").val();
+    var biaya_penerus = $("input[name='do_tarif_penerus']").val();
     var diskon_p  = $("input[name='do_diskon_p']").val();
     var diskon_v  = $("input[name='do_diskon_v']").val();
     var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
@@ -920,6 +934,7 @@ function hitung() {
     var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");
     var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
     var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
+    var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
     var diskon_p = diskon_p.replace(/[A-Za-z$. ,-]/g, "");
     var diskon_v = diskon_v.replace(/[A-Za-z$. ,-]/g, "");
     var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g,"");
@@ -947,7 +962,7 @@ function hitung() {
     }
 
     //menghitung atas
-    var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi);
+    var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi)+parseFloat(biaya_penerus);
 
     if (diskon_p != 0) {
         var diskon_value_utama = diskon_p / 100 * total;
@@ -968,6 +983,7 @@ function hitung() {
     }
         
     //CHECKBOX VENDOR
+    var temp_total  = $('input[name="do_total_temp"]').val(total_dpp);
     
 
 
@@ -977,12 +993,12 @@ function hitung() {
         ppn =parseFloat(total) * parseFloat(0.1);
         total = total + ppn;
     }else if (jenis_ppn == 2) {
-        ppn =parseFloat(total) / parseFloat(100.1);
+        ppn =parseFloat(total) / parseFloat(100);
         total = total + ppn;
     }else if (jenis_ppn == 4) {
         ppn =0;
     }else if (jenis_ppn == 3) {
-        ppn =parseFloat(total) / parseFloat(100.1);
+        ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
     }else if (jenis_ppn == 5) {
         ppn =parseFloat(total) / parseFloat(10.1);
         total = total - ppn;
@@ -992,7 +1008,7 @@ function hitung() {
 
     
     //--hasil perhitungan
-    $("input[name='do_jml_ppn']").val(accounting.formatMoney(ppn,"",0,'.',','));
+    $("input[name='do_jml_ppn']").val(accounting.formatMoney(ppn,"",2,'.',','));
     $("input[name='do_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
 
 }
@@ -1143,6 +1159,8 @@ function hitung() {
             }
             //END
 
+            var temp_total  = $('input[name="do_total_temp"]').val(total_dpp);
+
             var ppn  = 0;
             if (jenis_ppn == 1) {
                 ppn =parseFloat(total) * parseFloat(0.1);
@@ -1153,7 +1171,7 @@ function hitung() {
             }else if (jenis_ppn == 4) {
                 ppn =0;
             }else if (jenis_ppn == 3) {
-                ppn =parseFloat(total) / parseFloat(100.1);
+               ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
             }else if (jenis_ppn == 5) {
                 ppn =parseFloat(total) / parseFloat(10.1);
                 total = total - ppn;
@@ -1189,8 +1207,10 @@ function hitung() {
             $('#do_diskon_p').val(Math.round(diskon_total,2));
             
             //PENGURANGAN DISKON
-            var total_dpp = total - diskon_v;
-            var sub_dpp = total_dpp - do_vendor;
+            var total_dpp   = total - diskon_v;
+            var sub_dpp     = total_dpp - do_vendor;
+
+            var temp_total  = $('input[name="do_total_temp"]').val(total_dpp);
 
             if ($('.vendor_tarif').is(':checked') == true) {
                 $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
@@ -1208,7 +1228,7 @@ function hitung() {
             }else if (jenis_ppn == 4) {
                 ppn =0;
             }else if (jenis_ppn == 3) {
-                ppn =parseFloat(total) / parseFloat(100.1);
+                ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
             }else if (jenis_ppn == 5) {
                 ppn =parseFloat(total) / parseFloat(10.1);
                 total = total - ppn;
