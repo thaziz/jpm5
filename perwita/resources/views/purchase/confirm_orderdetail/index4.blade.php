@@ -295,8 +295,8 @@
                         <td style="width:50px" rowspan="2"> Jumlah Disetujui </td>
                         <td style="width:50px" rowspan="2"> Stock Gudang </td>
                         <td style="width:70px" rowspan="2"> Satuan </td>                      
-                        <td style="width:700px; text-align: center" colspan="{{$data['count']}}"> Supplier </td>
-                        <td rowspan="2"> Ditolak </td>
+                        <td style="width:500px; text-align: center" colspan="{{$data['count']}}"> Supplier </td>
+                        <td rowspan="2" style="width:20px;"> Ditolak </td>
                         <td rowspan="2"> Keterangan Tolak </td>
                     
                     </tr>
@@ -364,6 +364,8 @@
                                   </label>
                               </div>
                         </td>   
+
+                        <td> <input type="text" class="form-control input-sm kettolak kettolak{{$idbarang}}" name="keterangantolak"> </td>
                       </tr>                     
                       @endforeach
 
@@ -414,6 +416,7 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+  $('.kettolak').attr('disabled' , true);
 
    $('body').removeClass('fixed-sidebar');
             $("body").toggleClass("mini-navbar");
@@ -448,6 +451,7 @@
           $('.qtyapproval'+id).attr('disabled' , true); 
            $('.checkbox' + id).prop('checked' , false); 
           $('.checkbox' + id).attr('disabled' , true);
+          $('.kettolak' + id).attr('disabled' , false);
 
          
 
@@ -456,7 +460,8 @@
         }
         else {
          $('.qtyapproval'+id).attr('disabled' , false); 
-         $('.checkbox'+id).attr('disabled' , false); 
+          $('.checkbox' + id).attr('disabled' , true);
+         $('.kettolak'+id).attr('disabled' , true); 
           
         }
     })

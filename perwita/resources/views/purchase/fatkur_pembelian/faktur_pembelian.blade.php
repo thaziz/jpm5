@@ -275,6 +275,11 @@
        <td>:</td>
        <td>{{$data['judul'][0]->fp_noinvoice}}</td>
      </tr>
+     <tr>
+        <td> Jatuh Tempo </td>
+        <td> : </td>
+        <td> {{ Carbon\Carbon::parse($data['judul'][0]->fp_jatuhtempo)->format('d-M-Y ') }} </td>
+     </tr>
    </table>
    </div>
    <div>
