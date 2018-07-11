@@ -63,6 +63,7 @@ class cabang_Controller extends Controller
             $kode = $kode;
             $kode = str_pad($kode+1, 3, '0', STR_PAD_LEFT);
         }
+        $kode = '018';
         $data = array(
                 'kode' => $kode,
                 'nama' => strtoupper($request->ed_nama),
