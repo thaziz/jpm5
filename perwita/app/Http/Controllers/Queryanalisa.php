@@ -316,6 +316,12 @@ class Queryanalisa extends Controller
 
 	}
 
+
+
+	public function allakunrekapkartuhutang(){
+		
+	}
+
 	//per supplier
 	public function kartuhutangdetail(){
 

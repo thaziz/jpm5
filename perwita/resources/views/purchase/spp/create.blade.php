@@ -68,7 +68,7 @@
                                     <table class="table table-striped" id='table-utama'>
                                           <tr>
                                             <td width="200px"> Kode SPP </td>
-                                            <td> <input type='text' class="input-sm form-control nospp" readonly="" name="nospp"></td>
+                                            <td> <input type='text' class="input-sm form-control nospp"  name="nospp"></td>
                                             <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
                                           </tr>
                                           
