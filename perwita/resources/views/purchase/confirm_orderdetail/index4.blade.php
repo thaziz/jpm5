@@ -297,6 +297,7 @@
                         <td style="width:70px" rowspan="2"> Satuan </td>                      
                         <td style="width:700px; text-align: center" colspan="{{$data['count']}}"> Supplier </td>
                         <td rowspan="2"> Ditolak </td>
+                        <td rowspan="2"> Keterangan Tolak </td>
                     
                     </tr>
 
