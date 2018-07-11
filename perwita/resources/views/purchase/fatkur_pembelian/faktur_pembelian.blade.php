@@ -384,12 +384,19 @@
               @if($data['judul'][0]->fp_ppn == 0)
                 0%
               @else
-              {{$data['judul'][0]->fp_ppn}}
+              {{$data['judul'][0]->fp_inputppn}} %
               @endif
             </td>
           </tr>
           <tr>
-           <td class="textleft">&nbsp;</td>
+            <td class="textleft">PPH </td>
+             <td class="textright"> 
+              @if($data['judul'][0]->fp_pph == 0)
+                0%
+              @else
+              {{$data['judul'][0]->fp_nilaipph}} %
+              @endif
+            </td>
           </tr>
           <tr>
            <td class="textleft">&nbsp;</td>
@@ -412,7 +419,7 @@
            <td class="textright"> {{number_format($data['judul'][0]->fp_ppn, 2)}}</td>
           </tr>
           <tr>
-           <td class="textright">&nbsp;</td>
+           <td class="textright"> {{number_format($data['judul'][0]->fp_pph, 2)}}</td>
           </tr>
            <tr>
            <td class="textright">&nbsp;</td>
