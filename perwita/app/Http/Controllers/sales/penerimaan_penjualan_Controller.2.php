@@ -218,7 +218,7 @@ class penerimaan_penjualan_Controller extends Controller
                                         AND to_char(k_create_at,'YY') = '$tahun'");
         $index = (integer)$cari_nota[0]->id + 1;
         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-        $nota = 'KWT' . $request->cabang . $bulan . $tahun . $index;
+        $nota = 'KWT' . $request->cb_cabang . $bulan . $tahun . $index;
 
         return response()->json(['nota'=>$nota]);
     }
@@ -297,7 +297,7 @@ class penerimaan_penjualan_Controller extends Controller
                   ->where('i_sisa_akhir','!=',0)
                   ->select('invoice.*')
                   // ->where('i_kode_cabang',$request->cabang)
-                  ->where('i_pendapatan',$request->jenis_tarif)
+                  // ->where('i_pendapatan',$request->jenis_tarif)
                   // ->orWhere('kd_nomor_invoice',$request->id)
                   ->get();
         // $temp_1 = array_map("unserialize",array_unique($temp_1),"serialize");
@@ -308,7 +308,7 @@ class penerimaan_penjualan_Controller extends Controller
                   ->where('i_sisa_akhir','!=',0)
                   ->where('i_statusprint','Printed')
                   ->where('i_kode_cabang',$request->cabang)
-                  ->where('i_pendapatan',$request->jenis_tarif)
+                  // ->where('i_pendapatan',$request->jenis_tarif)
                   ->select('invoice.*')
                   // ->orWhere('kd_nomor_invoice',$request->id)
                   ->get();
@@ -541,7 +541,7 @@ class penerimaan_penjualan_Controller extends Controller
                               'k_id' => $k_id,
                               'k_nomor' => $nota,
                               'k_tanggal'=> $tgl,
-                              'k_jenis_tarif'=> $request->jenis_tarif,
+                              // 'k_jenis_tarif'=> $request->jenis_tarif,
                               'k_kode_customer' => $request->customer,
                               'k_jumlah' => $request->jumlah_bayar,
                               'k_keterangan' => $request->ed_keterangan,
@@ -648,7 +648,7 @@ class penerimaan_penjualan_Controller extends Controller
             $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
                           'jr_year'   => carbon::parse($tgl)->format('Y'),
                           'jr_date'   => carbon::parse($tgl)->format('Y-m-d'),
-                          'jr_detail' => 'KWITANSI ' . $request->jenis_tarif,
+                          'jr_detail' => 'KWITANSI' ,
                           'jr_ref'    => $nota,
                           'jr_note'   => 'KWITANSI',
                           'jr_insert' => carbon::now(),
@@ -1252,7 +1252,7 @@ class penerimaan_penjualan_Controller extends Controller
                              ->update([
                               'k_nomor' => $nota,
                               'k_tanggal'=> $tgl,
-                              'k_jenis_tarif'=> $request->jenis_tarif,
+                              // 'k_jenis_tarif'=> $request->jenis_tarif,
                               'k_kode_customer' => $request->customer,
                               'k_jumlah' => $request->jumlah_bayar,
                               'k_keterangan' => $request->ed_keterangan,
@@ -1404,7 +1404,7 @@ class penerimaan_penjualan_Controller extends Controller
             $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
                           'jr_year'   => carbon::parse($tgl)->format('Y'),
                           'jr_date'   => carbon::parse($tgl)->format('Y-m-d'),
-                          'jr_detail' => 'KWITANSI ' . $request->jenis_tarif,
+                          'jr_detail' => 'KWITANSI' ,
                           'jr_ref'    => $nota,
                           'jr_note'   => 'KWITANSI',
                           'jr_insert' => carbon::now(),

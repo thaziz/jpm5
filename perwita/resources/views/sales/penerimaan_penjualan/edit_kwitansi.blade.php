@@ -158,7 +158,7 @@
                                     </select>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr hidden="">
                                 <td style="width:110px;">Jenis Tarif</td>
                                 <td colspan="20" class="jenis_tarif_td disabled">
                                     <select  class="form-control jenis_tarif" onchange="nota_tes()" name="jenis_tarif" >
