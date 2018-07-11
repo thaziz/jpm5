@@ -365,7 +365,7 @@
                               </div>
                         </td>   
 
-                        <td> <input type="text" class="form-control input-sm kettolak kettolak{{$idbarang}}" name="keterangantolak"> </td>
+                        <td> <input type="text" class="form-control input-sm kettolak kettolak{{$idbarang}}" name="keterangantolak[]"> </td>
                       </tr>                     
                       @endforeach
 

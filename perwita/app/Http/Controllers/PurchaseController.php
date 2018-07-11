@@ -1102,6 +1102,7 @@ class PurchaseController extends Controller
 				}*/
 				
 				$codt->codt_harga = $request->harga[$i];
+				$codt->codt_harga = $request->keterangantolak[$i];
 				$codt->save();
 				$n++;	
 		}	
