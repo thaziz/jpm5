@@ -1208,14 +1208,14 @@ public function simpan_invoice(request $request)
                 $data_akun[$i]['jrdt_detailid'] = $i+1;
                 $data_akun[$i]['jrdt_acc']      = $akun[$i];
                 $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'K';
+                $data_akun[$i]['jrdt_statusdk'] = 'D';
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }else{
                 $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                 $data_akun[$i]['jrdt_detailid'] = $i+1;
                 $data_akun[$i]['jrdt_acc']      = $akun[$i];
                 $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'D';
+                $data_akun[$i]['jrdt_statusdk'] = 'K';
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }
             }
