@@ -311,9 +311,9 @@
           <th class="textcenter top bot">Keterangan</th>
      </tr>
      
-     @foreach($data['barang'] as $brg)
+     @foreach($data['barang'] as $key=>$brg)
      <tr>
-       <td class="right">1</td>
+       <td class="right"> {{$key + 1}} </td>
        <td class="textleft right">{{$brg->kode_item}}</td>
        <td class="textleft right">{{$brg->nama_masteritem}}</td>
        <td class="textright right">{{$brg->fpdt_qty}}</td>
