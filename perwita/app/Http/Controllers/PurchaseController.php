@@ -303,7 +303,20 @@ class PurchaseController extends Controller
 			$hasiltahun = $tanggal[0];
 			
 		//	dd($hasilbulan);
-		
+
+			$nospp = $request->nospp;
+			$dataspp = DB::select("select * from spp where spp_nospp = '$nospp'");
+				if(count($dataspp) != 0){
+						$explode = explode("/", $dataspp[0]->spp_nospp);
+						$idspp3 = $explode[2];
+					
+						$idspp4 = (int)$idspp3 + 1;
+						$akhirspp = str_pad($idspp4, 3, '0', STR_PAD_LEFT);
+						$nospp = $explode[0] .'/' . $explode[1] . '/'  . $akhirspp;
+				}
+				else {
+					$nospp = $nospp;
+				}
 
 			$tbb = $request->total_biaya;
 			$hasiltbb = str_replace(',', '', $tbb);
@@ -315,7 +328,7 @@ class PurchaseController extends Controller
 
 			$spp = new spp_purchase();
 
-			$spp->spp_nospp = strtoupper($request->nospp);
+			$spp->spp_nospp = strtoupper($nospp);
 			$spp->spp_id = strtoupper($idspp);
 			$spp->spp_tgldibutuhkan = strtoupper($request->tgl_dibutuhkan);
 			$spp->spp_cabang = strtoupper($request->cabang);
@@ -1088,7 +1101,11 @@ class PurchaseController extends Controller
 					$codt->codt_supplier = $request->supplier[$idsup];	
 				}*/
 				
-				$codt->codt_harga = $request->harga[$i];
+				$replacehrg = str_replace(',', '', $request->harga[$i]);
+				$codt->codt_harga = $replacehrg;
+				$codt->codt_tolak = $request->keterangantolak[$i];
+				
+
 				$codt->save();
 				$n++;	
 		}	

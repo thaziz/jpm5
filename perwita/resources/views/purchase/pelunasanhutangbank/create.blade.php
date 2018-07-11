@@ -167,7 +167,7 @@
                                 Total
                               </td>
                               <td>
-                                <input type="text" class="form-control total" readonly="" style='text-align:right;'' name="total">
+                                <input type="text" class="form-control total" readonly="" style='text-align:right;' name="total">
                               </td>
                             </tr>
 
