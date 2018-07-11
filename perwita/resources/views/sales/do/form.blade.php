@@ -365,7 +365,7 @@
                                                 <tr style="max-height: 15px !important; height: 15px !important; overflow:hidden;">
                                                     <td style="padding-top: 0.4cm">Tarif Dasar</td>
                                                     <td colspan="2">
-                                                        <input type="text" class="form-control" name="ed_tarif_dasar" style="text-align:right" readonly="readonly" tabindex="-1" @if ($do === null) value="0" @else value="{{ number_format($do->tarif_dasar, 0, ",", ".") }}" @endif >
+                                                        <input type="text" class="form-control" name="ed_tarif_dasar" id="ed_tarif_dasar" style="text-align:right" readonly="readonly" tabindex="-1" @if ($do === null) value="0" @else value="{{ number_format($do->tarif_dasar, 0, ",", ".") }}" @endif >
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -625,6 +625,34 @@
                             </form>
                         </div>
                         <!--TIPE PENDAPATAN PAKET-->
+
+
+                        {{-- HIDDEN --}}
+
+
+
+
+
+
+
+                        <input type="hidden" name="tarif_vendor_bol" id="tarif_vendor_bol">
+                        <input type="hidden" name="id_tarif_vendor" id="id_tarif_vendor">
+                        <input type="hidden" name="nama_tarif_vendor" id="nama_tarif_vendor">
+
+                        <!-- PATOKAN BERATI DI KALI TARIF DASAR ,  -->
+                        <input type="hidden" name="tarif_dasar_patokan" id="tarif_dasar_patokan">
+
+                        <!-- Berat Minimum-->
+                        <input type="hidden" name="berat_minimum">
+
+
+
+
+
+
+                        {{-- END OF HIDDEN --}}
+
+
                         <!-- modal dokumen-->
                         <div id="modal_dokumen" class="modal" >
                             <div class="modal-dialog modal-lg">
@@ -716,6 +744,16 @@
 
                                             </tbody>
                                         </table>
+
+
+                                        {{-- HIDDEN --}}
+
+
+                                        <input type="hidden" name="berat_minimum">
+
+
+                                        {{-- HIDDEN --}}
+
                                     </form>
                                 </div>
                                 <div class="modal-footer">
@@ -2034,6 +2072,29 @@
                             var harga = convertToRupiah(parseInt(data.harga));
                             
                             var koli_dikali =$("input[name='ed_koli']").val() ;
+                            var berat_minimum  =$("input[name='ed_berat']").val();
+                            if (data.tipe == 'KILOGRAM') {
+                                if (data.batas != 0 || data.batas != null) {
+                                    toastr.info('Berat minimum adalah '+'<b style="color:red">'+data.batas+'</b>'+' KG','Pemberitahuan!')
+                                    if (berat_minimum_field < data.batas) {
+                                        //hitung hasil dari pencarian
+                                        var hitung_berat = parseFloat(data.batas)*parseFloat(data.harga);
+                                        //replace berat dan tarif dasar
+                                        $("input[name='ed_berat']").val(data.batas);
+                                        $("input[name='berat_minimum']").val(data.batas);
+                                        $('#ed_tarif_dasar').val(accounting.formatMoney(hitung_berat,"",0,'.',','));
+                                        $('#tarif_dasar_patokan').val(data.harga);
+                                    }else{
+                                        //replace berat dan tarif dasar
+                                        $("input[name='berat_minimum']").val(data.batas);
+                                        $('#ed_tarif_dasar').val(accounting.formatMoney(data.harga,"",0,'.',','));
+                                        $('#tarif_dasar_patokan').val(data.harga);
+                                    }
+                                }else{
+                                    toastr.error('Berat minimum belum di set / kosong ','Peringatan!')
+                                }
+                            }
+                                        
                             var biaya = convertToRupiah(parseInt(data.biaya_penerus));
                             var cek_tipe = $('#type_kiriman').find(':selected').val();
                             if (koli_dikali == 0 ) {
@@ -2053,6 +2114,7 @@
                                 }
                                 
                             }
+
                             // alert(hit);
                             var acc_penjualan = data.acc_penjualan;
                             $("input[name='ed_tarif_dasar']").val(accounting.formatMoney(hit,"",0,'.',','));
@@ -2074,7 +2136,7 @@
                             $("#button_a").hide();
                             $("input[name='acc_penjualan']").val(acc_penjualan);
                             if (biaya == 0 || biaya == '0' || biaya == null || biaya == '') {
-                                Command: toastr["warning"]("Zona/Penerus tidak ditemukan, periksa tujuan anda", "Peringatan !")
+                                Command: toastr["warning"]("Zona/Penerus tidak ditemukan / Data Terduplicate ", "Peringatan !")
                                 toastr.options = {
                                   "closeButton": false,
                                   "debug": true,

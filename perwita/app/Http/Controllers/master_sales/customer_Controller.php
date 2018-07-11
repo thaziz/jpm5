@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Carbon\Carbon;
 use Auth;
+use Yajra\Datatables\Datatables;
+
 class customer_Controller extends Controller
 {
     public function table_data () {
@@ -18,35 +20,31 @@ class customer_Controller extends Controller
          $list = DB::table('customer')->where('cabang',$cabang)->get();
       }
 
-        $data = array();
-        foreach ($list as $r) {
-            $data[] = (array) $r;
-        }
-        $i=0;
-        foreach ($data as $key) {
-            // add new button
+      $data = collect($list);
+      return Datatables::of($data)
+        ->addColumn('button', function ($data) {
+            $c =  '<div class="btn-group">'.
+                   '<button type="button" onclick="edit(this)" class="btn btn-info btn-sm btnedit" title="edit" id="'.$data->kode.'">'.
+                   '<label class="fa fa-pencil"></label></button>'.
+                   '<button type="button" onclick="hapus(this)" class="btn btn-danger btn-sm btndelete" title="hapus" id="'.$data->kode.'">'.
+                   '<label class="fa fa-trash"></label></button>'.
+                  '</div>';
+            $kode = '<input type="hidden" class="kode" value="'.$data->kode.'">';
+            return $c.$kode;
+        })
+        ->addColumn('active', function ($data) {
+            if (Auth::user()->punyaAkses('Verifikasi','aktif')) {
+                if($data->pic_status == 'AKTIF'){
+                  return '<input checked type="checkbox" onchange="check(this)" class="form-control check">';
+                }else{
+                  return '<input type="checkbox" onchange="check(this)" class="form-control check">';
+                }
+            }else{
+                return '-';
+            }
+        })
+        ->make(true);
 
-             $div_1  =   '<div class="btn-group">';
-                                  if (Auth::user()->punyaAkses('Customer','ubah')) {
-                                  $div_2  = '<button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>';
-                                  }else{
-                                    $div_2 = '';
-                                  }
-                                  if (Auth::user()->punyaAkses('Customer','hapus')) {
-                                  $div_3  = '<button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>';
-                                  }else{
-                                    $div_3 = '';
-                                  }
-                                  $div_4   = '</div>';
-                                $all_div = $div_1 . $div_2 . $div_3 . $div_4;
-
-                                $data[$i]['button'] = $all_div;
-                               
-                                $i++;
-           
-        }
-        $datax = array('data' => $data);
-        echo json_encode($datax);
     }
 
     public function get_data (Request $request) {
@@ -214,6 +212,30 @@ class customer_Controller extends Controller
         $cabang = DB::table('cabang')->get();   
         $pajak = DB::table('pajak')->get();
         return view('master_sales.customer.index', compact('kota','cabang','accpenjualan','csfpenjualan','bank','group_customer','pajak'));
+    }
+    public function check_status(Request $req)
+    {
+       if ($req->check == 'true') {
+         // return $req->check;
+
+            $data_dt = DB::table('customer')
+                ->where('kode',$req->kode)
+                ->update([
+                  'pic_status' => 'AKTIF' 
+                ]);
+
+             return json_encode('success 1');
+
+        }else{
+
+           $data_dt = DB::table('customer')
+                ->where('kode',$req->kode)
+                ->update([
+                  'pic_status' => 'NON-AKTIF' 
+                ]);
+                
+             return json_encode('success 2');
+        }
     }
 
 }

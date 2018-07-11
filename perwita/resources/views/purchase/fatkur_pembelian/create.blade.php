@@ -167,12 +167,34 @@
                             </li>
                             <li  id="tmbhdatasubcon" data-val='SC'><button class="btn btn-default tmbhdatasubcon" data-toggle="tab" href="#tab-5">Pembayaran Subcon</button>
                             </li>
-                            <li  id="tmbhdatavendor" data-val='P'><button class="btn btn-default tmbhdatavendor" data-toggle="tab" href="#tab-6">Pembayaran Vendor</button>
+                            <li  id="tmbhdatavendor" data-val='V'><button class="btn btn-default tmbhdatavendor" data-toggle="tab" href="#tab-6">Pembayaran Vendor</button>
                             </li>
                         </ul>
                         
                         <!-- KONTEN TANPA PO -->
                         <div class="tab-content">
+                           <!-- PANEL BIAYA PENERUS AGEN -->
+                            <div id="tab-3" class="tab-pane">
+                                <div class="panel-body resi" style="width: 100%;margin: 0 auto">
+                                </div>
+                            </div>
+                            <!-- END BIAYA PENERUS AGEN -->
+                            <!-- PANEL PEMBAYARAN OUTLET -->
+                             <div id="tab-4" class="tab-pane">
+                                <div class="panel-body outlet" style="width: 100%;margin: 0 auto">
+                                </div>
+                            </div>
+                            <!-- END PEMBAYARAN OUTLET -->
+                             <!-- PANEL SUBCON -->
+                             <div id="tab-5" class="tab-pane">
+                                <div class="panel-body subcon" style="width: 100%;margin: 0 auto">
+                                </div>
+                            </div>
+
+                            <div id="tab-6" class="tab-pane">
+                                <div class="panel-body vendor" style="width: 100%;margin: 0 auto">
+                                </div>
+                            </div>
                             <div id="tab-1" class="tab-pane active">
                                 <div class="panel-body">
                           <div class="row">
@@ -1116,28 +1138,7 @@
 
                                 </div>
 
-                            <!-- PANEL BIAYA PENERUS AGEN -->
-                            <div id="tab-3" class="tab-pane">
-                                <div class="panel-body resi" style="width: 100%;margin: 0 auto">
-                                </div>
-                            </div>
-                            <!-- END BIAYA PENERUS AGEN -->
-                            <!-- PANEL PEMBAYARAN OUTLET -->
-                             <div id="tab-4" class="tab-pane">
-                                <div class="panel-body outlet" style="width: 100%;margin: 0 auto">
-                                </div>
-                            </div>
-                            <!-- END PEMBAYARAN OUTLET -->
-                             <!-- PANEL SUBCON -->
-                             <div id="tab-5" class="tab-pane">
-                                <div class="panel-body subcon" style="width: 100%;margin: 0 auto">
-                                </div>
-                            </div>
-
-                            <div id="tab-6" class="tab-pane">
-                                <div class="panel-body vendor" style="width: 100%;margin: 0 auto">
-                                </div>
-                            </div>
+                           
                               <!-- modal -->
                               <div class="modal inmodal fade" id="myModal5" tabindex="-1" role="dialog"  aria-hidden="true">
                                 <div class="modal-dialog modal-lg">

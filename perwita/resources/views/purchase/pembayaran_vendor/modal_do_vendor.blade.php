@@ -231,6 +231,7 @@
 
 
 
+
 <div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
     <div class="modal-content">

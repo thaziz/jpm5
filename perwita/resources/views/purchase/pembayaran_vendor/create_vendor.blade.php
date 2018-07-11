@@ -286,7 +286,7 @@ $('.simpan_vendor_tt').click(function(){
 	      url:baseUrl + '/fakturpembelian/simpan_tt',
 	      type:'get',
 	      dataType:'json',
-	      data:$('.tabel_tt_vendor :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head_subcon :input').serialize()+'&cabang='+cabang,
+	      data:$('.tabel_tt_vendor :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head_subcon :input').serialize()+'&'+$('.head1 :input').serialize()+'&cabang='+cabang,
 	      success:function(response){
 	            swal({
 	                title: "Berhasil!",

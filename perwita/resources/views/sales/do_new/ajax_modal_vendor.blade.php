@@ -25,11 +25,14 @@
             @foreach ($vendor as $index => $element)
               <tr onclick="Pilih_vendor(this)">
                 <td>{{ $index+1 }} </td>
-                <td>{{ $element->kode }} <input type="hidden" class="id_vendor" value="{{ $element->id_tarif_vendor }}"></td>
-                <td>{{ $element->tuj }}</td>
+                <td><input type="hidden" class="id_vendor" value="{{ $element->id_tarif_vendor }}">
+                  {{ $element->kode }}</td>
                 <td>{{ $element->as }}</td>
-                <td>{{ $element->nama }}</td>
-                <td align="right">{{ number_format($element->tarif_vendor,0,'','.') }}</td>
+                <td>{{ $element->tuj }}</td>
+                <td><input type="hidden" name="" class="vendor_nama" value={{ $element->nama }}"">
+                  {{ $element->nama }}</td>
+                <td align="right"><input type="hidden"  class="tarif_vendor" value="{{ $element->tarif_vendor}}">
+                  {{ number_format($element->tarif_vendor,0,'','.') }}</td>
                 <td>{{ number_format($element->waktu_vendor,0,'','.') }}</td>
               </tr>
             @endforeach

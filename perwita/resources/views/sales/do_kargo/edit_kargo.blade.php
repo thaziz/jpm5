@@ -525,10 +525,13 @@ $('.date').datepicker({
 })
 
 $('.status_kendaraan').change(function(){
-    if ($(this).val() == 'OWN') {
-        $('.nama_subcon_detail ').val('');
+    if ($(this).val() == 'SUB'){
+        $('.nama_subcon_tr').attr('hidden',false);
+    }else{
+        $('.nama_subcon_tr').attr('hidden',true);
     }
-})
+});
+
 //menentukan cabang
 $(document).ready(function(){
    var cabang = $('.cabang_select').val();
