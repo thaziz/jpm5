@@ -1101,8 +1101,11 @@ class PurchaseController extends Controller
 					$codt->codt_supplier = $request->supplier[$idsup];	
 				}*/
 				
-				$codt->codt_harga = $request->harga[$i];
-				$codt->codt_harga = $request->keterangantolak[$i];
+				$replacehrg = str_replace(',', '', $request->harga[$i]);
+				$codt->codt_harga = $replacehrg;
+				$codt->codt_tolak = $request->keterangantolak[$i];
+				
+
 				$codt->save();
 				$n++;	
 		}	

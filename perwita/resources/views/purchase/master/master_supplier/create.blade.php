@@ -263,7 +263,7 @@
 
                           <tr>
                             <td> NIK </td>
-                            <td> <input type="number" class="form-control" name="nik"></td>
+                            <td> <input type="number" class="form-control pajak" name="nik"></td>
                           </tr>
 
                         <tr>
@@ -587,14 +587,10 @@
 
      $(function(){
             $('.hrg' + $no).change(function(){
-                var id = $(this).data('id');
-
-                harga = $(this).val();
-                $this = $(this);
-               
-                numhar = Math.round(harga).toFixed(2);
-         
-                $this.val(addCommas(numhar));
+                val = $(this).val();
+      
+               val = accounting.formatMoney(val, "", 2, ",",'.');
+               $(this).val(val);
 
             })
         }) 

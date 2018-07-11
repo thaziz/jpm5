@@ -17,7 +17,7 @@
                           <a> Master Purchase</a>
                         </li>
                         <li class="active">
-                            <strong> Create Master Supplier </strong>
+                            <strong> Detail Master Supplier </strong>
                         </li>
 
                     </ol>
@@ -319,7 +319,7 @@
 
                           <tr>
                             <td> NIK </td>
-                            <td>  <input type="text" class="form-control" value="{{$sup->nik}}"></td>
+                            <td>  <input type="text" class="form-control" value="{{$sup->nik}}" name="nik"></td>
                           </tr>
 
 

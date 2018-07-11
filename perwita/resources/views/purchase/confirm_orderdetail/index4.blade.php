@@ -278,7 +278,7 @@
                     <td>  <h4> Konfirmasi Order Detail</h4> </td>
                
                    <td> &nbsp; </td>
-                   <td>    <!--  <button class="btn btn-sm btn-primary edit" type="button"> Edit Data</button> --> </div> </td>
+                   <td>     <button class="btn btn-sm btn-primary edit" type="button"> Edit Data</button> </div> </td>
                    <td>
                     </td>
                   </tr>
@@ -453,15 +453,17 @@
           $('.checkbox' + id).attr('disabled' , true);
           $('.kettolak' + id).attr('disabled' , false);
 
-         
-
           $('.hrga' + id ).attr('disabled' , true); 
           $('.simpan').attr('disabled', true);
+          $('.harga' + id).val('0');
         }
         else {
          $('.qtyapproval'+id).attr('disabled' , false); 
-          $('.checkbox' + id).attr('disabled' , true);
+          $('.checkbox' + id).attr('disabled' , false);
          $('.kettolak'+id).attr('disabled' , true); 
+          hargahid = $('.hargahid' + id).val();
+        //  alert(hargahid);
+          $('.hrga' + id).val(hargahid);
           
         }
     })
@@ -469,7 +471,9 @@
       function cek_tb(index){ 
         var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';
         var idspp = $('.idspp').serialize();
-       
+        
+       // alert('test');
+
         $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -510,7 +514,8 @@
 
                   var qty2 = $('.qtyapproval' + idbarang).index();
                  
-                  totalharga = parseInt(harga * qty);
+                  harga2 = harga.replace(/,/g,'');
+                  totalharga = parseFloat(harga2 * qty);
                   
                   console.log('qty' + qty);
                   console.log(harga + 'harga');
@@ -713,7 +718,7 @@
                                                            '<label class="col-sm-1 control-label"> Rp </label>' + 
                                                             '<div class="col-xs-6">';
                                         
-                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+data.codt[i].codt_harga+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.codt[i].codt_supplier+'">  </div>';
+                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.codt[i].codt_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.codt[i].codt_supplier+'"> <input type="hidden" value="'+addCommas(data.codt[i].codt_harga)+' class="hargahid'+i+'" "> </div>';
                                         $('tr.brg'+n).find("td").eq(row).html(tampilharga);  
                             }
                           }
@@ -743,7 +748,7 @@
                                                            '<label class="col-sm-1 control-label"> Rp </label>' + 
                                                             '<div class="col-xs-6">';
                                         
-                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+' hrga'+n+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+data.sppdt[i].sppd_harga+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.sppdt[i].sppd_supplier+'">  </div> <div class="datasup'+ i +'"> </div> ';
+                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+' hrga'+n+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.sppdt[i].sppd_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.sppdt[i].sppd_supplier+'"> <input type="hidden" value="'+addCommas(data.sppdt[i].sppd_harga)+'" class="hargahid'+i+'" ">  </div> <div class="datasup'+ i +'">  </div> ';
 
                                         tampilharga += '<div class="col-sm-2"> <div class="checkbox checkbox-primary ">' +
                                             '<input id="cek" type="checkbox" value='+data.sppdt[i].sppd_supplier+' class="checkbox'+n+'" data-val='+i+' data-id='+nourut+' required data-supplier='+data.sppdt[i].sppd_supplier+' data-harga='+data.sppdt[i].sppd_harga+' data-totalhrg='+data.spptb[j].spptb_totalbiaya+' data-n='+n+'>' +
@@ -792,6 +797,15 @@
                                                   }
                                                 })
                                         })
+
+                                        $('.hrg').each(function(){
+                                        $(this).change(function(){
+                                         
+                                          val = $(this).val();    
+                                          val = accounting.formatMoney(val, "", 2, ",",'.');
+                                          $(this).val(val);
+                                        })
+                                      })
 
 
                                 }
@@ -875,16 +889,13 @@
 
            $('.harga' + index).change(function(){
                 var id = $(this).data('id');
-                harga = $(this).val();
-               /* indexhrg = $(this).index();
-                console.log(indexhrg);*/
-
-                numhar = Math.round(harga).toFixed(2);
-                  
+                val = $(this).val();
+            
+                val = accounting.formatMoney(val, "", 2, ",",'.');
 
                var tdtotalsuplier = $('td[data-suppliertotal="'+ datasupplier + '"]');
                // $('.harga' + index).val(addCommas(numhar));
-                $('.harga' + index).val(numhar);
+                $('.harga' + index).val(val);
 
                // (tdtotalsuplier).find("input").val(addCommas(numhar));
                /* total = parseInt(harga) + total;
@@ -944,7 +955,7 @@
                 var id = $(this).data('id');
                 harga = $(this).val();
                 numhar = Math.round(harga).toFixed(2);
-         
+                alert('test');
                 $('.harga' + id).val(addCommas(numhar));
             
               $('.simpan').prop("disabled" , true);
@@ -1042,6 +1053,8 @@
       $('.setujuipemb').html(setuju);
     //  $('.inputmngpemsetuju').html(input);
     }
+
+
 
 </script>
 @endsection
