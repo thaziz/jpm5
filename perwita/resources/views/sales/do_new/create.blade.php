@@ -209,7 +209,7 @@
                                                 <tr id="berat">
                                                     <td style="padding-top: 0.4cm">Berat</td>
                                                     <td colspan="5">
-                                                        <input onkeyup="BeratDefault()" type="text" class="form-control" value="0" name="do_berat" id="do_berat" style="text-align:right">
+                                                        <input onblur="BeratDefault()" type="text" class="form-control" value="0" name="do_berat" id="do_berat" style="text-align:right">
                                                     </td>
                                                 </tr>
                                                 <tr id="jml_unit">
