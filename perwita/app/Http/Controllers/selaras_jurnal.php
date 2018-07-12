@@ -9,6 +9,7 @@ use carbon\carbon;
 use Auth;
 use App\d_jurnal;
 use App\d_jurnal_dt;
+    set_time_limit(60000);
 class selaras_jurnal  extends Controller
 {
     public function sync_jurnal()
@@ -235,11 +236,18 @@ class selaras_jurnal  extends Controller
              for ($i=0; $i < count($bkk); $i++) { 
               $comp = DB::table('bukti_kas_keluar')
                               ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
-                              ->select('bkk_nota','bkkd_akun')
+                              // ->select('bkk_nota','bkkd_akun')
                               ->where('bkk_id',$bkk[$i]->bkk_id)
                               ->where('bkkd_ref','!=','NONE')
                               ->get();
-              
+              if ($comp !=null) {
+               $comp = DB::table('bukti_kas_keluar')
+                              ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
+                              // ->select('bkk_nota','bkkd_akun')
+                              ->where('bkk_id',$bkk[$i]->bkk_id)
+                              // ->where('bkkd_ref','!=','NONE')
+                              ->delete();
+              }
             }
             // RE INITIALIZE BKK
             $bkk = DB::table('bukti_kas_keluar')
