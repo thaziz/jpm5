@@ -1517,14 +1517,14 @@
                             " href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
                             </li>
                             @endif
-                            @if(Auth::user()->PunyaAkses('Delivery Order New','aktif'))
+                            @if(Auth::user()->PunyaAkses('Delivery Order Paket','aktif'))
                             <li >
                             <a class="sidebar master-perusahaan 
                             {{Request::is('sales/deliveryorder_paket') ? 'active' : '' || 
                             Request::is('sales/deliveryorder_paket/create') ? 'active' : '' || 
                             Request::is('sales/deliveryorder_paket/*') ? 'active' : ''}} 
 
-                            " href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO) New</a>
+                            " href="{{ url('sales/deliveryorder_paket')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO) New</a>
                             </li>
                             @endif
                             @if(Auth::user()->PunyaAkses('Delivery Order Kargo','aktif'))

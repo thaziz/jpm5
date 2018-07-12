@@ -1174,6 +1174,7 @@ function hitung() {
             var jenis_ppn = $("select[name='do_jenis_ppn']").val();
             var tarif_dasar = $("input[name='do_tarif_dasar']").val();
             var biaya_tambahan = $("input[name='do_biaya_tambahan']").val();
+            var biaya_penerus = $("input[name='do_tarif_penerus']").val();
             var diskon_p  = $("input[name='do_diskon_p']").val();
             var diskon_v  = $("input[name='do_diskon_v']").val();
             var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
@@ -1185,6 +1186,7 @@ function hitung() {
             //--Regex
             var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");
             var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
+            var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
             var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
             var diskon_p = diskon_p.replace(/[A-Za-z$. ,-]/g, "");
             var diskon_v = diskon_v.replace(/[A-Za-z$. ,-]/g, "");
@@ -1253,6 +1255,7 @@ function hitung() {
             var jenis_ppn = $("select[name='do_jenis_ppn']").val();
             var tarif_dasar = $("input[name='do_tarif_dasar']").val();
             var biaya_tambahan = $("input[name='do_biaya_tambahan']").val();
+            var biaya_penerus = $("input[name='do_tarif_penerus']").val();
             var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
             var diskon_p  = $("input[name='do_diskon_p']").val();
             var diskon_v  = $("input[name='do_diskon_v']").val();
@@ -1260,6 +1263,7 @@ function hitung() {
             //--Regex
             var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");
             var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
+            var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
             var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
             var diskon_p = diskon_p.replace(/[A-Za-z$. ,-]/g, "");
             var diskon_v = diskon_v.replace(/[A-Za-z$. ,-]/g, "");
