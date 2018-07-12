@@ -199,7 +199,7 @@
                                 <div class="panel-body">
                           <div class="row">
                             <div class="col-xs-6">
-               <form method="post" action="{{url('fakturpembelian/save')}}"  enctype="multipart/form-data" class="form-horizontal" id="myform">
+                              <form method="post" action="{{url('fakturpembelian/save')}}"  enctype="multipart/form-data" class="form-horizontal" id="myform">
                                <table class="table table-striped">
                                   <tr>
                                     <td> Supplier </td>

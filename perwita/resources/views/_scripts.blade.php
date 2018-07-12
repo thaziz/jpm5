@@ -1,7 +1,8 @@
 <!-- Mainly scripts -->
     <script type="text/javascript" src="{{ asset('assets/plugins/jquery-1.12.3.min.js') }}"></script>
 
-    
+    <!-- jQuery UI -->
+    <script src="{{ asset('assets/vendors/jquery-ui/jquery-ui.min.js') }}"></script>
 
     <script type="text/javascript" src="{{ asset('assets/vendors/bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/vendors//metisMenu/jquery.metisMenu.js') }}"></script>
@@ -63,8 +64,7 @@
     <script src="{{ asset('assets/vendors/highcharts.js') }}"></script>
     <script src="{{ asset('assets/vendors/highcharts-3d.js') }}"></script>
     {{-- END OF --}}
-    <!-- jQuery UI -->
-    <script src="{{ asset('assets/vendors/jquery-ui/jquery-ui.min.js') }}"></script>
+
 
     <script>
 
