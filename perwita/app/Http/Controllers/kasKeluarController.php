@@ -121,8 +121,9 @@ class kasKeluarController extends Controller
 
 	public function nota_bukti_kas(request $req)
 	{
-		$bulan = Carbon::now()->format('m');
-	    $tahun = Carbon::now()->format('y');
+
+		$bulan = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('m');
+	    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
 
 	    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),13) as id from bukti_kas_keluar
 	                                    WHERE bkk_comp = '$req->cabang'
