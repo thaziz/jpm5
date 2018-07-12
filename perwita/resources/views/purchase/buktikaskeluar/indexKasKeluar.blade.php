@@ -142,20 +142,51 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-     tableDetail = $('.tbl-penerimabarang').DataTable({
-            responsive: true,
-            searching: true,
-            //paging: false,
-            "pageLength": 10,
-            "language": dataTableLanguage,
-            "order": [[ 0, "desc" ]]
-            // "ordering": false
-    });
+   tableDetail = $('.tbl-penerimabarang').DataTable({
+         processing: true,
+            // responsive:true,
+            serverSide: true,
+            ajax: {
+                url:'{{ route("datatable_invoice1") }}',
+            },
+            columnDefs: [
+              {
+                 targets: 5,
+                 className: 'cssright'
+              },
+              {
+                 targets: 6,
+                 className: 'cssright'
+              },
+              {
+                 targets:7,
+                 className: 'center'
+              },
+              {
+                 targets:10,
+                 className: 'center'
+              },
+            ],
+            "columns": [
+            { "data": "i_nomor" },
+            { "data": "i_tanggal" },
+            { "data": "cabang" },
+            { "data": "customer"},
+            { "data": "i_jatuh_tempo" },
+            { "data": "tagihan" },
+            { "data": "sisa"},
+            { "data": "i_keterangan" },
+            { "data": "faktur_pajak" },
+            { "data": "status" },
+            { "data": "aksi" },
+            
+            ]
+  });
 
-    $('.date').datepicker({
-        autoclose: true,
-        format: 'yyyy-mm-dd'
-    });
+  $('.date').datepicker({
+      autoclose: true,
+      format: 'yyyy-mm-dd'
+  });
     
   function hapus(id){
     swal({
