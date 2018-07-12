@@ -583,6 +583,10 @@
                         '<tr>';
 
                         }
+                        else {
+                            rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required>  </td>' +
+                        '<tr>';
+                        }
                        nosup++;
                     
            }          

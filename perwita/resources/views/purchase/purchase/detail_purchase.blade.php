@@ -252,7 +252,8 @@
                         
                         <td> <input type="text" class="form-control totalharg totalharga{{$i}}{{$k}}" readonly="" value="{{number_format($data['podtbarang'][$k][$i]->podt_totalharga, 2)}}"  style='text-align: right' name="totalharga2[]">  </td> <!-- totalharga -->
                         
-                        <td> <select class="form-control lokasigudang" disabled="" name="lokasigudang[]"> @foreach($data['gudang'] as $gudang) <option value="{{$gudang->mg_id}}" @if($gudang->mg_id == $data['podtbarang'][$k][$i]->podt_lokasigudang) selected @endif> {{$gudang->mg_namagudang}}</option> @endforeach </select> </td> <!-- lokasi gudang -->
+                        <td> <select class="form-control lokasigudang chosen-select" name="lokasigudang[]"> @foreach($data['gudang'] as $gudang) <option value="{{$gudang->mg_id}}" @if($gudang->mg_id == $data['podtbarang'][$k][$i]->podt_lokasigudang) selected @endif> {{$gudang->mg_namagudang}}</option> @endforeach </select> </td> <!-- lokasi gudang -->
+
                         <td> <input type="text" class="form-control keterangan" name="keterangandt[]" value="{{$data['podtbarang'][$k][$i]->podt_keterangan}}"> </td> <!-- Keterangan -->                       
                         <tr>
                       @endfor
@@ -302,6 +303,25 @@
           return false;
         return true;
     })
+
+
+    clearInterval(reset);
+    var reset =setInterval(function(){
+     $(document).ready(function(){
+      var config = {
+                '.chosen-select'           : {},
+                '.chosen-select-deselect'  : {allow_single_deselect:true},
+                '.chosen-select-no-single' : {disable_search_threshold:10},
+                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+                '.chosen-select-width'     : {width:"95%"}
+                }
+
+             for (var selector in config) {
+               $(selector).chosen(config[selector]);
+             }
+
+    })
+     },2000);
 
     $('#savepurchase input').on("invalid" , function(){
       this.setCustomValidity("Harap di isi :) ");
@@ -382,7 +402,7 @@
       $('.supplier').attr('disabled', false);
       $('.catatan').attr('readonly', false);
       $('.edit').attr('disabled' , false);
-
+//      $('.lokasigudang').attr('disabled' , false);
     })
       
       var jmlhhrg = 0;
