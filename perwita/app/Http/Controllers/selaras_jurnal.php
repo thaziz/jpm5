@@ -231,6 +231,16 @@ class selaras_jurnal  extends Controller
                           ->delete();
                 }
             }
+
+             for ($i=0; $i < count($bkk); $i++) { 
+              return$comp = DB::table('bukti_kas_keluar')
+                              ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
+                              ->select('bkk_nota','bkkd_akun')
+                              ->where('bkk_id',$bkk[$i]->bkk_id)
+                              ->where('bkkd_ref','!=','NONE')
+                              ->get();
+              
+            }
             // RE INITIALIZE BKK
             $bkk = DB::table('bukti_kas_keluar')
                      ->orderBy('bkk_id','ASC')
@@ -536,10 +546,9 @@ class selaras_jurnal  extends Controller
 	                        $filter_comp[$bkk[$i]->bkk_nota][$a] = $comp[$a]->cabang;
 	                    }
 	                }
-	                // if ($bkk[$i]->bkk_nota == 'BKK0618/008/035') {
+	                if ($bkk[$i]->bkk_nota == 'BKK0618/009/006') {
 
-	                // 	dd($comp[$a]->bkk_nota);
-	                // }
+	                }
 	                $filter_comp[$bkk[$i]->bkk_nota] = array_map("unserialize", array_unique( array_map( 'serialize', $filter_comp[$bkk[$i]->bkk_nota] ) ));
 	                $filter_comp[$bkk[$i]->bkk_nota] = array_values($filter_comp[$bkk[$i]->bkk_nota]);
 

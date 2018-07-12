@@ -92,7 +92,7 @@ class kasKeluarController extends Controller
 		
 		return view('purchase.buktikaskeluar.indexKasKeluar',compact('cabang','jenis_bayar'));
 	}
-
+xzcz
 	public function datatable_bkk($value='')
 	{
 		$cabang = Auth::user()->kode_cabang;
