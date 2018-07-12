@@ -169,6 +169,29 @@ class ikhtisarController extends Controller
 
 		}
 	}
+
+	public function tes(request $req)
+	{
+		return DB::transaction(function() use ($req) {  
+			// BIAYA PENERUS KAS SYNCHONIZE PATTY CASH DAN JURNAL
+			$bpk = DB::table('biaya_penerus_kas')
+					 ->select('bpk_nota','bpk_comp','created_by','bpk_tanggal','bpk_kode_akun','bpk_acc_biaya','bpk_keterangan','bpk_tarif_penerus')
+					 ->orderBy('bpk_id','ASC')
+					 ->get();
+
+			$comp = DB::table('biaya_penerus_kas')
+					 ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
+					 ->select('bpkd_kode_cabang_awal','bpk_nota')
+					 ->orderBy('bpk_id','ASC')
+					 ->get();
+
+			$detail = DB::table('biaya_penerus_kas')
+					 ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
+					 ->orderBy('bpk_id','ASC')
+					 ->get();
+			
+		});
+	}
 	public function simpan(request $request){
 			// dd($request);
 
