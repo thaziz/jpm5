@@ -9,6 +9,14 @@
     pointer-events: none;
     opacity: 1;
 }
+.chosen-container .chosen-results {
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 0 4px 4px 0;
+    padding: 0 0 0 4px;
+    max-height: 120px !important;
+}
 </style>
 
  <div class="row wrapper border-bottom white-bg page-heading">

@@ -99,8 +99,8 @@ class do_paketController extends Controller
 //FORM CREATE DO PAKET
    public function create_deliveryorder_paket(Request $request)
    {
-
-        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        
+        $kota = DB::select("SELECT id,nama FROM kota ORDER BY nama ASC ");
         $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
 
         $customer = DB::table('customer as c')
