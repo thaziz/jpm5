@@ -1264,7 +1264,7 @@
           rowStr += " <option value=''>  -- Pilih Barang -- </option> ";            
                      $.each(arrItem, function(i , obj) {
                         supbtn = arrSupid;
-                        rowStr +=  "<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+" style='display:block'>"+ obj.nama_masteritem+"</option>";
+                        rowStr +=  "<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+" style='display:block'>"+obj.kode_item+" - "+ obj.nama_masteritem+"</option>";
                       });
          
 
