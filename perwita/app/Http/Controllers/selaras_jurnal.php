@@ -71,7 +71,7 @@ class selaras_jurnal  extends Controller
                 $save_patty = DB::table('patty_cash')
                        ->insert([
                             'pc_id'           => $cari_id_pc,
-                            'pc_tgl'          => Carbon::now(),
+                            'pc_tgl'          => $bpk[$i]->bpk_tanggal,
                             'pc_ref'          => 10,
                             'pc_akun'         => $bpk[$i]->bpk_kode_akun,
                             'pc_akun_kas'     => $bpk[$i]->bpk_kode_akun,
@@ -152,7 +152,7 @@ class selaras_jurnal  extends Controller
                     $save_patty = DB::table('patty_cash')
                            ->insert([
                                 'pc_id'           => $cari_id_pc,
-                                'pc_tgl'          => Carbon::now(),
+                                'pc_tgl'          => $bpk[$i]->bpk_tanggal,
                                 'pc_ref'          => 10,
                                 'pc_akun'         => $cari_akun->id_akun,
                                 'pc_akun_kas'     => $bpk[$i]->bpk_kode_akun,
@@ -267,7 +267,7 @@ class selaras_jurnal  extends Controller
                     $save_patty = DB::table('patty_cash')
                            ->insert([
                                 'pc_id'           => $cari_id_pc,
-                                'pc_tgl'          => Carbon::now(),
+                                'pc_tgl'          => $bpk[$i]->bkk_tgl,
                                 'pc_ref'          => 10,
                                 'pc_akun'         => $bkk[$i]->bkk_akun_kas,
                                 'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
@@ -361,7 +361,7 @@ class selaras_jurnal  extends Controller
 	                    $save_patty = DB::table('patty_cash')
 	                           ->insert([
 	                                'pc_id'           => $cari_id_pc,
-	                                'pc_tgl'          => Carbon::now(),
+	                                'pc_tgl'          => $bpk[$i]->bkk_tgl,
 	                                'pc_ref'          => 2,
 	                                'pc_akun'         => $cari_akun->id_akun,
 	                                'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
