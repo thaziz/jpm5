@@ -283,7 +283,7 @@ class kontrak_Controller extends Controller
          
               // Copy carbon dikirimkan ke address "haruna@sairenji" 
               // dengan nama penerima "Haruna Sairenji"
-              $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+              $mail->cc('puspitadury1987@gmail.com', 'ADMIN JPM');
          
               $mail->subject('KONTRAK VERIFIKASI');
         });
@@ -522,9 +522,6 @@ class kontrak_Controller extends Controller
 
     public function check_kontrak(request $request)
     {
-        // dd($request->all());
-      // return dd($request->all());
-
         if ($request->check == 'true') {
          // return $request->check;
 
