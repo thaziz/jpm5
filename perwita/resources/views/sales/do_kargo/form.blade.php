@@ -52,7 +52,7 @@
                                     <tr>
                                         <td>Tanggal</td>
                                         <td>
-                                            <div class="input-group date" style="width:100%">
+                                            <div class="input-group " style="width:100%">
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -476,12 +476,52 @@
 //tanggal do 
 $('.tanggal_do').datepicker({
     format:'dd/mm/yyyy',
-    endDate:'today'
+    endDate: new Date()
 })
 $('.date').datepicker({
     format:'dd/mm/yyyy'
 })
 
+$(".nomor_do").keypress(function (e) {
+ //if the letter is not digit then display error and don't type anything
+   if (e.which != 8 && e.which != 0  && (e.which < 48 ) && e.which != 46  ) {
+      //display error message
+      
+             return false;
+}
+});
+$(".kode_pos_pengirim ").keypress(function (e) {
+ //if the letter is not digit then display error and don't type anything
+   if (e.which != 8 && e.which != 0  && (e.which < 48 || e.whic > 57) && e.which != 46  ) {
+      //display error message
+      
+             return false;
+  }
+ });
+$(".telpon_pengirim").keypress(function (e) {
+ //if the letter is not digit then display error and don't type anything
+   if (e.which != 8 && e.which != 0  && (e.which < 48 || e.whic > 57) && e.which != 46  ) {
+      //display error message
+      
+             return false;
+  }
+});
+$(".kode_pos_penerima").keypress(function (e) {
+ //if the letter is not digit then display error and don't type anything
+   if (e.which != 8 && e.which != 0  && (e.which < 48 || e.whic > 57) && e.which != 46  ) {
+      //display error message
+      
+             return false;
+  }
+});
+$(".telpon_penerima ").keypress(function (e) {
+ //if the letter is not digit then display error and don't type anything
+   if (e.which != 8 && e.which != 0  && (e.which < 48 || e.whic > 57) && e.which != 46  ) {
+      //display error message
+      
+             return false;
+  }
+});
 function reseting() {
     $('.satuan').val('');
     $('.tarif_dasar_text').val('');
@@ -493,6 +533,18 @@ function reseting() {
     $('.kcd_dt').val('');
     $('.total_text').val('0');
     $('.total').val('0');
+
+    if ($('.jenis_tarif_do').val() == 9) {
+        $('.kontrak_tr').attr('hidden',true);
+        $('.tarif_dasar').val(1);
+        $('.harga_master').val(1);
+        $('#kode_tarif').val(0);
+        $('.kcd_id').val(0);
+        $('.kcd_dt').val(0);
+        $('.satuan').val('RP');
+        $('.discount ').attr('readonly',true);
+
+    }
 
     toastr.info('Data Diubah Mohon Memasukan Tarif Kembali')
 }
@@ -675,7 +727,6 @@ $('.jenis_tarif_do').change(function(){
         $('.kcd_dt').val(0);
         $('.satuan').val('RP');
         $('.discount ').attr('readonly',true);
-
     }else{      
         $('.kontrak_tr').attr('hidden',false);
         $('.jenis_tarif_temp').val($(this).val());

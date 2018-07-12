@@ -387,6 +387,7 @@ Route::get('buktikaskeluar/edit/{id}', 'kasKeluarController@edit');
 Route::post('buktikaskeluar/update_form', 'kasKeluarController@update_form');
 Route::post('buktikaskeluar/update_patty', 'kasKeluarController@update_patty');
 Route::get('buktikaskeluar/jurnal', 'kasKeluarController@jurnal');
+Route::get('buktikaskeluar/datatable_bkk', 'kasKeluarController@datatable_bkk')->name('datatable_bkk');
 
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
@@ -1338,7 +1339,7 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 // Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_controller@get_data_detail');
 // Route::get('sales/deliveryorderform/tabel_item', 'sales\do_controller@table_data_item');
 // Route::get('sales/deliveryorderform/get_item', 'sales\do_controller@get_item');
-// Route::get('sales/deliveryorderform/cari_harga', 'sales\do_controller@cari_harga');
+// Route::get('sales/deliveryorderform/cari_harga', 'sales\do_controller@cari_harga');  
 // Route::get('sales/deliveryorderform/cari_customer', 'sales\do_controller@cari_customer');
 // Route::get('sales/deliveryorderform/cari_kontrak', 'sales\do_controller@cari_kontrak');
 // Route::get('sales/deliveryorderform/cari_tipe', 'sales\do_controller@cari_tipe');

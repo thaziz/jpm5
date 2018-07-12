@@ -78,17 +78,17 @@
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm">Tanggal</td>
-                                                    <td colspan="1">
+                                                    <td colspan="2">
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control datepicker_today" name="do_tanggal" id="do_tanggal" value="">
                                                         </div>
                                                     </td>
 
                                                     <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                                    <td colspan="3">
+                                                    <td colspan="2">
                                                         <select class="form-control"  name="do_cabang" {{-- onclick="setMaxDisc()" --}} style="width:100%" id="do_cabang">
                                                             <option value="" >- Pilih -</option>
-                                                            <option value="001" data-diskon="30" selected="" >sby</option>
+                                                            {{-- <option value="001" data-diskon="30" selected="" >sby</option> --}}
                                                         @foreach ($cabang as $row)
                                                             @if($row->diskon != null)
                                                             <option value="{{ $row->kode }}" data-diskon="{{ $row->diskon }}">{{ $row->kode }} - {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
@@ -125,7 +125,7 @@
                                                         <select class="chosen-select-width replace_deskripsi" id="do_kota_asal" onchange="asal()" name="do_kota_asal" style="width:100%" >
                                                             <option value="">- Pilih -</option>
                                                             @foreach ($kota as $row)
-                                                                <option selected="" value="3573" data-nama="KOTA MALANG">3573 - KOTA MALANG</option>
+                                                                {{-- <option selected="" value="3573" data-nama="KOTA MALANG">3573 - KOTA MALANG</option> --}}
                                                                 <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
                                                             @endforeach
                                                         </select>
@@ -137,7 +137,7 @@
                                                         <select class="chosen-select-width replace_deskripsi" id="do_kota_tujuan" onchange="getKecamatan()" id="do_kota_tujuan" name="do_kota_tujuan" style="width:100%" >
                                                             <option value="">- Pilih -</option>
                                                             @foreach ($kota as $row)
-                                                                <option selected="" value="3578" data-nama="KOTA SURABAYA">3578 - KOTA SURABAYA</option>
+                                                                {{-- <option selected="" value="3578" data-nama="KOTA SURABAYA">3578 - KOTA SURABAYA</option> --}}
                                                                 <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
                                                             @endforeach
                                                         </select>
@@ -147,7 +147,7 @@
                                                     <td style="padding-top: 0.4cm" class="kecamatantujuanlabel">Kecamatan Tujuan</td>
                                                     <td colspan="5">
                                                         <select class="chosen-select-width form-control" id="do_kecamatan_tujuan" name="do_kecamatan_tujuan" style="width:100%" >
-                                                            <option selected="" value="3578120"> dukuh </option>
+                                                            {{-- <option selected="" value="3578120"> dukuh </option> --}}
                                                         </select>
                                                     </td>
                                                 </tr>
@@ -209,7 +209,7 @@
                                                 <tr id="berat">
                                                     <td style="padding-top: 0.4cm">Berat</td>
                                                     <td colspan="5">
-                                                        <input onkeyup="BeratDefault()" type="text" class="form-control" value="0" name="do_berat" id="do_berat" style="text-align:right">
+                                                        <input onblur="BeratDefault()" type="text" class="form-control" value="0" name="do_berat" id="do_berat" style="text-align:right">
                                                     </td>
                                                 </tr>
                                                 <tr id="jml_unit">
@@ -222,7 +222,7 @@
                                                 <tr id="jenis_unit" class="jenis_unit">
                                                     <td style="padding-top: 0.4cm">Jenis Unit</td>
                                                     <td colspan="2" class="jenisunit">
-                                                        <select class="form-control jns_unit" name="cb_jenis_unit[]" >
+                                                        <select class="form-control jns_unit" name="do_jenis_unit[]" >
                                                             <option value="SEPEDA">SEPEDA</option>
                                                             <option value="SPORT">MOTOR SPORT</option>
                                                             <option value="BETIC">MOTOR BEBEK/MATIC</option>
@@ -231,7 +231,7 @@
                                                     </td>
                                                     <td style="padding-top: 0.4cm">Berat Unit</td>
                                                     <td colspan="2">
-                                                        <input type="text" class="form-control beratunit" name="cb_berat_unit[]" style="text-align:right" >
+                                                        <input type="text" class="form-control beratunit" name="do_berat_unit[]" style="text-align:right" >
                                                     </td>
                                                 </tr>
                                                 
@@ -1410,7 +1410,7 @@ function hitung() {
 
                 //jika penrus == 0
                 if (data.biaya_penerus == 0) {
-                    toastr.warning('Tarif Penerus tidak ditemukan / Belum dibuat','Pemberitahuan!')
+                    toastr.error('Tarif Penerus tidak ditemukan / Belum dibuat / harga 0 ','Pemberitahuan!')
                 }
                 //replace
                 $("input[name='acc_penjualan']").val(data.acc_penjualan);
@@ -1484,9 +1484,9 @@ function hitung() {
                 return false;
             }
         }else if (tipe == 'KILOGRAM'){
-            if (berat < berat_minimum) {
-                toastr.error('Berat minimum adalah '+'<b style="color:blue">'+berat_minimum+'</b>'+' KG','Peringatan!')
-                $("input[name='do_berat']").val(berat_minimum);
+            if (berat < parseFloat(berat_minimum)) {
+                toastr.error('Berat minimum adalah '+'<b style="color:blue">'+parseFloat(berat_minimum)+'</b>'+' KG','Peringatan!')
+                $("input[name='do_berat']").val(parseFloat(berat_minimum));
             }
         }
 
@@ -1502,7 +1502,7 @@ function hitung() {
     function setJml(){
         var jumlah = $('.jmlunit').val();
         $('.jenis_unit').remove();
-        var jenis = '<tr id="jenis_unit" class="jenis_unit"><td style="padding-top: 0.4cm">Jenis Unit</td><td colspan="2" class="jenisunit"><select class="form-control jns_unit" name="cb_jenis_unit[]" ><option value="SEPEDA">SEPEDA</option><option value="SPORT">MOTOR SPORT</option><option value="BETIC">MOTOR BEBEK/MATIC</option><option value="MOGE">MOGE</option></select></td><td style="padding-top: 0.4cm">Berat Unit</td><td colspan="2"><input type="text" class="form-control beratunit" name="cb_berat_unit[]" style="text-align:right" ></td></tr>';
+        var jenis = '<tr id="jenis_unit" class="jenis_unit"><td style="padding-top: 0.4cm">Jenis Unit</td><td colspan="2" class="jenisunit"><select class="form-control jns_unit" name="do_jenis_unit[]" ><option value="SEPEDA">SEPEDA</option><option value="SPORT">MOTOR SPORT</option><option value="BETIC">MOTOR BEBEK/MATIC</option><option value="MOGE">MOGE</option></select></td><td style="padding-top: 0.4cm">Berat Unit</td><td colspan="2"><input type="text" class="form-control beratunit" name="do_berat_unit[]" style="text-align:right" ></td></tr>';
         for (var i = 0; i < jumlah; i++) {
             $(jenis).insertAfter('#jml_unit');
         }

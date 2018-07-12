@@ -9,6 +9,7 @@ use carbon\carbon;
 use Auth;
 use App\d_jurnal;
 use App\d_jurnal_dt;
+    set_time_limit(60000);
 class selaras_jurnal  extends Controller
 {
     public function sync_jurnal()
@@ -71,7 +72,7 @@ class selaras_jurnal  extends Controller
                 $save_patty = DB::table('patty_cash')
                        ->insert([
                             'pc_id'           => $cari_id_pc,
-                            'pc_tgl'          => Carbon::now(),
+                            'pc_tgl'          => $bpk[$i]->bpk_tanggal,
                             'pc_ref'          => 10,
                             'pc_akun'         => $bpk[$i]->bpk_kode_akun,
                             'pc_akun_kas'     => $bpk[$i]->bpk_kode_akun,
@@ -152,7 +153,7 @@ class selaras_jurnal  extends Controller
                     $save_patty = DB::table('patty_cash')
                            ->insert([
                                 'pc_id'           => $cari_id_pc,
-                                'pc_tgl'          => Carbon::now(),
+                                'pc_tgl'          => $bpk[$i]->bpk_tanggal,
                                 'pc_ref'          => 10,
                                 'pc_akun'         => $cari_akun->id_akun,
                                 'pc_akun_kas'     => $bpk[$i]->bpk_kode_akun,
@@ -231,6 +232,8 @@ class selaras_jurnal  extends Controller
                           ->delete();
                 }
             }
+
+    
             // RE INITIALIZE BKK
             $bkk = DB::table('bukti_kas_keluar')
                      ->orderBy('bkk_id','ASC')
@@ -267,7 +270,7 @@ class selaras_jurnal  extends Controller
                     $save_patty = DB::table('patty_cash')
                            ->insert([
                                 'pc_id'           => $cari_id_pc,
-                                'pc_tgl'          => Carbon::now(),
+                                'pc_tgl'          => $bpk[$i]->bkk_tgl,
                                 'pc_ref'          => 10,
                                 'pc_akun'         => $bkk[$i]->bkk_akun_kas,
                                 'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
@@ -361,7 +364,7 @@ class selaras_jurnal  extends Controller
 	                    $save_patty = DB::table('patty_cash')
 	                           ->insert([
 	                                'pc_id'           => $cari_id_pc,
-	                                'pc_tgl'          => Carbon::now(),
+	                                'pc_tgl'          => $bpk[$i]->bkk_tgl,
 	                                'pc_ref'          => 2,
 	                                'pc_akun'         => $cari_akun->id_akun,
 	                                'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
@@ -471,7 +474,7 @@ class selaras_jurnal  extends Controller
                     $save_patty = DB::table('patty_cash')
                            ->insert([
                                 'pc_id'           => $cari_id_pc,
-                                'pc_tgl'          => Carbon::now(),
+                                'pc_tgl'          => $bkk[$i]->bkk_tanggal,
                                 'pc_ref'          => 10,
                                 'pc_akun'         => $bkk[$i]->bkk_akun_kas,
                                 'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
@@ -536,10 +539,9 @@ class selaras_jurnal  extends Controller
 	                        $filter_comp[$bkk[$i]->bkk_nota][$a] = $comp[$a]->cabang;
 	                    }
 	                }
-	                // if ($bkk[$i]->bkk_nota == 'BKK0618/008/035') {
+	                if ($bkk[$i]->bkk_nota == 'BKK0618/009/006') {
 
-	                // 	dd($comp[$a]->bkk_nota);
-	                // }
+	                }
 	                $filter_comp[$bkk[$i]->bkk_nota] = array_map("unserialize", array_unique( array_map( 'serialize', $filter_comp[$bkk[$i]->bkk_nota] ) ));
 	                $filter_comp[$bkk[$i]->bkk_nota] = array_values($filter_comp[$bkk[$i]->bkk_nota]);
 
@@ -565,7 +567,7 @@ class selaras_jurnal  extends Controller
 	                    $save_patty = DB::table('patty_cash')
 	                           ->insert([
 	                                'pc_id'           => $cari_id_pc,
-	                                'pc_tgl'          => Carbon::now(),
+	                                'pc_tgl'          => $bkk[$i]->bkk_tanggal,
 	                                'pc_ref'          => 6,
 	                                'pc_akun'         => $cari_akun->id_akun,
 	                                'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
@@ -648,7 +650,7 @@ class selaras_jurnal  extends Controller
                     $save_patty = DB::table('patty_cash')
                            ->insert([
                                 'pc_id'           => $cari_id_pc,
-                                'pc_tgl'          => Carbon::now(),
+                                'pc_tgl'          => $bkk[$i]->bkk_tanggal,
                                 'pc_ref'          => 10,
                                 'pc_akun'         => $bkk[$i]->bkk_akun_kas,
                                 'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
@@ -742,7 +744,7 @@ class selaras_jurnal  extends Controller
 	                    $save_patty = DB::table('patty_cash')
 	                           ->insert([
 	                                'pc_id'           => $cari_id_pc,
-	                                'pc_tgl'          => Carbon::now(),
+	                                'pc_tgl'          => $bkk[$i]->bkk_tanggal,
 	                                'pc_ref'          => 7,
 	                                'pc_akun'         => $cari_akun->id_akun,
 	                                'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
@@ -820,7 +822,7 @@ class selaras_jurnal  extends Controller
                     $save_patty = DB::table('patty_cash')
                            ->insert([
                                 'pc_id'           => $cari_id_pc,
-                                'pc_tgl'          => Carbon::now(),
+                                'pc_tgl'          => $bkk[$i]->bkk_tanggal,
                                 'pc_ref'          => 10,
                                 'pc_akun'         => $bkk[$i]->bkk_akun_kas,
                                 'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
@@ -903,7 +905,7 @@ class selaras_jurnal  extends Controller
 	                    $save_patty = DB::table('patty_cash')
 	                           ->insert([
 	                                'pc_id'           => $cari_id_pc,
-	                                'pc_tgl'          => Carbon::now(),
+	                                'pc_tgl'          => $bkk[$i]->bkk_tanggal,
 	                                'pc_ref'          => 10,
 	                                'pc_akun'         => $cari_akun->id_akun,
 	                                'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
@@ -999,7 +1001,7 @@ class selaras_jurnal  extends Controller
                     $save_patty = DB::table('patty_cash')
                            ->insert([
                                 'pc_id'           => $cari_id_pc,
-                                'pc_tgl'          => Carbon::now(),
+                                'pc_tgl'          => $bkk[$i]->bkk_tanggal,
                                 'pc_ref'          => 10,
                                 'pc_akun'         => $bkk[$i]->bkk_akun_kas,
                                 'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
@@ -1093,7 +1095,7 @@ class selaras_jurnal  extends Controller
 	                    $save_patty = DB::table('patty_cash')
 	                           ->insert([
 	                                'pc_id'           => $cari_id_pc,
-	                                'pc_tgl'          => Carbon::now(),
+	                                'pc_tgl'          => $bkk[$i]->bkk_tanggal,
 	                                'pc_ref'          => 9,
 	                                'pc_akun'         => $cari_akun->id_akun,
 	                                'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,

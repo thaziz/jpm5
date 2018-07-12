@@ -9,6 +9,9 @@
     pointer-events: none;
     opacity: 1;
 }
+.chosen-container .chosen-results {
+    max-height: 120px !important;
+}
 </style>
 
  <div class="row wrapper border-bottom white-bg page-heading">
@@ -438,7 +441,7 @@
                 '.chosen-select-deselect'  : {allow_single_deselect:true},
                 '.chosen-select-no-single' : {disable_search_threshold:10},
                 '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                '.chosen-select-width'     : {width:"95%"}
+                '.chosen-select-width'     : {width:"100%"}
                 }
 
              for (var selector in config) {

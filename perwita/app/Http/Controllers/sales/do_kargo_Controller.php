@@ -542,7 +542,7 @@ class do_kargo_Controller extends Controller
             return response()->json(['status' => 3,'text'=>'Jumlah']);
         }
         
-        if ($request->tarif_dasar == '') {
+        if ($request->tarif_dasar == '' or $request->tarif_dasar == '0') {
             return response()->json(['status' => 3,'text'=>'Tarif Dasar']);
         }
         if ($request->harga_master == '') {
@@ -590,7 +590,9 @@ class do_kargo_Controller extends Controller
         $cari_do = DB::table('delivery_order')
                       ->where('nomor',$request->nomor_do)
                       ->first();
-
+        if ($cari_do != null) {
+            return response()->json(['status' => 3,'text'=>'Nomor Resi Telah Digunakan']);
+        }
            // dd('asd');    
         $tgl = str_replace('/', '-', $request->tanggal_do);
         $tgl = Carbon::parse($tgl)->format('Y-m-d');
