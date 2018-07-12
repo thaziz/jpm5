@@ -233,7 +233,7 @@ class selaras_jurnal  extends Controller
             }
 
              for ($i=0; $i < count($bkk); $i++) { 
-              return$comp = DB::table('bukti_kas_keluar')
+              $comp = DB::table('bukti_kas_keluar')
                               ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
                               ->select('bkk_nota','bkkd_akun')
                               ->where('bkk_id',$bkk[$i]->bkk_id)
