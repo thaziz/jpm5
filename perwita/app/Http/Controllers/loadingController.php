@@ -401,14 +401,14 @@ class loadingController extends Controller
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
-							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
-							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 						}
 					}
@@ -576,12 +576,12 @@ class loadingController extends Controller
 					->first();
 
 
-			$akun = DB::table('d_akun')
+			$cari_akun = DB::table('d_akun')
 					  ->where('id_akun','like','5299'.'%')
 					  ->where('kode_cabang',$request->cabang)
 					  ->first();
 
-			if ($akun == null) {
+			if ($cari_akun == null) {
 				return response()->json(['status'=>3,'data'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia']);
 			}
 
@@ -606,7 +606,7 @@ class loadingController extends Controller
 				  	'bpk_jarak'	 		 => 0,
 				  	'bpk_harga_bbm'	     => 0,
 					'bpk_jenis_bbm'      => 0,
-					'bpk_acc_biaya'      => $akun->id_akun,
+					'bpk_acc_biaya'      => $cari_akun->id_akun,
 				  	'updated_by'		 => Auth::user()->m_name,
 				]);
 
@@ -724,7 +724,7 @@ class loadingController extends Controller
 				//IKI TOTAL KABEH HARGANE
 				$total_harga=array_sum($harga_array);
 
-				$cari_akun = substr($cari_persen->kode_akun, 0,4);
+				$cari_akun = substr($cari_akun->id_akun, 0,4);
 
 
 
@@ -811,14 +811,14 @@ class loadingController extends Controller
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
-							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
-							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 						}
 					}
