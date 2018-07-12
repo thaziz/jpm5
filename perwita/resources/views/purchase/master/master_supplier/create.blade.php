@@ -10,11 +10,6 @@
     opacity: 1;
 }
 .chosen-container .chosen-results {
-    position: relative;
-    overflow-x: hidden;
-    overflow-y: auto;
-    margin: 0 4px 4px 0;
-    padding: 0 0 0 4px;
     max-height: 120px !important;
 }
 </style>
@@ -446,7 +441,7 @@
                 '.chosen-select-deselect'  : {allow_single_deselect:true},
                 '.chosen-select-no-single' : {disable_search_threshold:10},
                 '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                '.chosen-select-width'     : {width:"95%"}
+                '.chosen-select-width'     : {width:"100%"}
                 }
 
              for (var selector in config) {

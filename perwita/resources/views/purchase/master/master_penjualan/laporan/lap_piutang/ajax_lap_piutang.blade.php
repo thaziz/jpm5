@@ -16,22 +16,20 @@
                          <tr>
                            <td colspan="6">Customer : [{{ $customer[$in][0]->kode }}] {{ $customer[$in][0]->nama }}</td>
                          </tr>
-                         @foreach ($saldo_ut as $sal => $saldo_ut_)
                           <tr>
-                              @if ($saldo_ut[$sal] == 0)
-                              
+
+                              @if ($saldo_ut[$in] == 0)
+                                  <td >Saldo Awal :</td>
+                                  <td colspan="5" align="right">0</td>
                               @else
                               
-                                  @if ($customer[$in][0]->kode == $saldo_ut[$sal][0]->i_kode_customer)
-                                    <td >Saldo Awal :</td>
-                                    <td colspan="5" align="right">{{ $saldo_ut[$sal][0]->saldo }}</td>
-                                  @else 
-                                    {{-- <td>0</td> --}}
-                                  @endif
+                                @if ($customer[$in][0]->kode == $saldo_ut[$in][0]->i_kode_customer)
+                                  <td >Saldo Awal :</td>
+                                  <td colspan="5" align="right">{{ $saldo_ut[$in][0]->saldo }}</td>
+                                @endif
                               
                               @endif
                           </tr>
-                        @endforeach
                           @for ($i = 0; $i <count($data) ; $i++)
                             @if ($customer[$in][0]->kode == $data[$i]->customer)
                               <tr>
@@ -54,13 +52,20 @@
                                 @endif
 
                                 @if ($data[$i]->flag == 'D')
-                                  <td align="right">{{ $data[$i]->nominal }}</td>
-                                  <td align="right">0</td>
+                                  <td align="right"><input type="hidden" name="" value="{{ $data[$i]->nominal }}" class="debet_{{ $i }}">
+                                    {{ $data[$i]->nominal }}</td>
+                                  <td align="right"><input type="hidden" name="" value="0" class="debet_{{ $i }}">
+                                    0</td>
                                 @else 
-                                  <td align="right">0</td>
-                                  <td align="right">{{ $data[$i]->nominal }}</td>
+                                  <td align="right"><input type="hidden" name="" value="0" class="debet_{{ $i }}">
+                                    0</td>
+                                  <td align="right"><input type="hidden" name="" value="{{ $data[$i]->nominal }}" class="debet_{{ $i }}">
+                                    {{ $data[$i]->nominal }}</td>
                                 @endif
-                                <td>-</td>
+
+                                <td><input type="hidden" name="" value="" class="total_{{ $i }}">
+                                </td>
+                              
                               </tr>
                             @endif
                           @endfor
