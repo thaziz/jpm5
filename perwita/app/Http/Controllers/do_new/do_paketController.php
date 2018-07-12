@@ -99,8 +99,8 @@ class do_paketController extends Controller
 //FORM CREATE DO PAKET
    public function create_deliveryorder_paket(Request $request)
    {
-
-        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        
+        $kota = DB::select("SELECT id,nama FROM kota ORDER BY nama ASC ");
         $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
 
         $customer = DB::table('customer as c')
@@ -1140,14 +1140,25 @@ class do_paketController extends Controller
                             ]);
           }
           
-
-          
-          // return substr(, 0, -3);
-          // $save_kasbesar = DB::table()
-
           
         }
-        
+        // dd($request->all());
+
+        if ($data['kode_satuan'] == "SEPEDA"){
+            $data['jenis_pengiriman'] = 'REGULER';
+            $jml_unit = $request->do_jml_unit;
+        }
+
+        if ($data['kode_satuan'] == "SEPEDA"){
+            for ($i = 0; $i < $jml_unit; $i++){
+                $dt = new do_dt();
+                $dt->id_do = $request->do_nomor;
+                $dt->id_do_dt = $i + 1;
+                $dt->berat = $request->do_berat_unit[$i];
+                $dt->jenis = $request->do_jenis_unit[$i];
+                $dt->save();
+            }
+        }
         
 
          //    if ($data['kode_satuan'] == "SEPEDA"){
