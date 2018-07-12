@@ -1484,9 +1484,9 @@ function hitung() {
                 return false;
             }
         }else if (tipe == 'KILOGRAM'){
-            if (berat < berat_minimum) {
-                toastr.error('Berat minimum adalah '+'<b style="color:blue">'+berat_minimum+'</b>'+' KG','Peringatan!')
-                $("input[name='do_berat']").val(berat_minimum);
+            if (berat < parseFloat(berat_minimum)) {
+                toastr.error('Berat minimum adalah '+'<b style="color:blue">'+parseFloat(berat_minimum)+'</b>'+' KG','Peringatan!')
+                $("input[name='do_berat']").val(parseFloat(berat_minimum));
             }
         }
 
