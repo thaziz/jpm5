@@ -683,7 +683,6 @@ public function simpan_invoice(request $request)
     }
     $nota= str_replace(' ', '', $nota);
     $nota= str_replace('  ', '', $nota);
-    dd($request->all());
     if ($request->ed_pendapatan == 'PAKET' || $request->ed_pendapatan == 'KARGO') {
             $save_header_invoice = DB::table('invoice')
                                      ->insert([
