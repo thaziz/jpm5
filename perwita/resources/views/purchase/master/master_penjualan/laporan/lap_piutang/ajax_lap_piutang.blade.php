@@ -20,12 +20,14 @@
 
                               @if ($saldo_ut[$in] == 0)
                                   <td >Saldo Awal :</td>
-                                  <td colspan="5" align="right">0</td>
+                                  <td colspan="5" align="right"><input type="hidden" value="0" class="saldo saldo_{{ $in }}" name="">
+                                    0</td>
                               @else
                               
                                 @if ($customer[$in][0]->kode == $saldo_ut[$in][0]->i_kode_customer)
                                   <td >Saldo Awal :</td>
-                                  <td colspan="5" align="right">{{ $saldo_ut[$in][0]->saldo }}</td>
+                                  <td colspan="5" align="right"><input type="hidden" value="{{ $saldo_ut[$in][0]->saldo }}" class="saldo saldo_{{ $in }}" name="">
+                                    {{ $saldo_ut[$in][0]->saldo }}</td>
                                 @endif
                               
                               @endif
@@ -52,18 +54,27 @@
                                 @endif
 
                                 @if ($data[$i]->flag == 'D')
-                                  <td align="right"><input type="hidden" name="" value="{{ $data[$i]->nominal }}" class="debet_{{ $i }}">
-                                    {{ $data[$i]->nominal }}</td>
-                                  <td align="right"><input type="hidden" name="" value="0" class="debet_{{ $i }}">
-                                    0</td>
-                                @else 
-                                  <td align="right"><input type="hidden" name="" value="0" class="debet_{{ $i }}">
-                                    0</td>
-                                  <td align="right"><input type="hidden" name="" value="{{ $data[$i]->nominal }}" class="debet_{{ $i }}">
-                                    {{ $data[$i]->nominal }}</td>
+                                  <td align="right">
+                                    <input type="hidden" name="" value="{{ $data[$i]->nominal }}" class="debet debet_{{ $i }}">
+                                    {{ $data[$i]->nominal }}
+                                  </td>
+                                  <td align="right">
+                                    <input type="hidden" name="" value="0" class="debet debet_{{ $i }}">
+                                    0
+                                  </td>
+                                @else
+                                  <td align="right">
+                                    <input type="hidden" name="" value="0" class="kredit kredit_{{ $i }}">
+                                    0
+                                  </td>
+                                  <td align="right">
+                                    <input type="hidden" name="" value="{{ $data[$i]->nominal }}" class="kredit kredit_{{ $i }}">
+                                    {{ $data[$i]->nominal }}
+                                  </td>
                                 @endif
 
-                                <td><input type="hidden" name="" value="" class="total_{{ $i }}">
+                                <td class="total">
+
                                 </td>
                               
                               </tr>
@@ -92,35 +103,4 @@
                     </tbody>
 
                   </table>
-                   <script type="text/javascript" src="{{ asset('assets/plugins/jquery-1.12.3.min.js') }}"></script>
-                   <script src="{{ asset('assets/vendors/money/dist/jquery.maskMoney.js') }}"></script>
-                   <script src="{{ asset('assets/vendors/accounting/accounting.min.js') }}"></script>
-                   <script src="{{ asset('assets/vendors/jquery-ui/jquery-ui.min.js') }}"></script>
-                  <script type="text/javascript">                                   
-                  // saldo = 0;
-                  // $('.debet').each(function(){
-                  //   var par = $(this).parents('tr');
-                  //   var kredit = $(par).find('.kredit').val();
-                  //   var hasil = $(this).val() - kredit;
-                  //   saldo += hasil;
-                  //   console.log(saldo);
-                  //   $(par).find('.saldo').val(accounting.formatMoney(saldo,"",0,'.',','));
-                  // })
-                  // $('#total_total_ajax').val(accounting.formatMoney(saldo,"",0,'.',','));
-                  // var awal = 0;
-                  //   $('.debet').each(function(){
-                  //   var total = parseInt($(this).val());
-                  //   awal += total;
-                  //   // console.log(awal);
-                  //   });
-                  //   $('#total_debet_ajax').val(accounting.formatMoney(awal,"",0,'.',','));
-
-                  // var kred = 0;
-                  //   $('.kredit').each(function(){
-                  //   var total = parseInt($(this).val());
-                  //   kred += total;
-                  //   // console.log(kred);
-                  // });
-                  // $('#total_kredit_ajax').val(accounting.formatMoney(kred,"",0,'.',','));
                   
-                  </script>

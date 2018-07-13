@@ -13,7 +13,7 @@ class mutasi_piutang_Controller extends Controller
   {
   	
 
-      return view('purchase/master/master_penjualan/laporan/lap_mutasipiutang');
+      return view('purchase/master/master_penjualan/laporan/lap_mutasi_piutang/lap_mutasipiutang');
   }
 
 
