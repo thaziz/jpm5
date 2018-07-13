@@ -1951,7 +1951,7 @@ public function update_invoice(request $request)
 
         $save = DB::table('invoice')
                   ->where('i_nomor',$request->invoice)
-                  ->update(['i_image_pajak' => 'faktur_pajak_'.$id.'.pdf','i_faktur_pajak'=>$request->nomor_pajak]);
+                  ->update(['i_image_pajak' => 'faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension(),'i_faktur_pajak'=>$request->nomor_pajak]);
         
 
         Storage::put($filename,file_get_contents($request->file('files')));
