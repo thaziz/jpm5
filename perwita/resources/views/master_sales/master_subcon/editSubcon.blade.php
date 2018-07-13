@@ -16,7 +16,7 @@
                     <h5> KONTRAK
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../subcon" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../subcon" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembassli</i></a>
                 </div>
                 <div class="ibox-content">
                         <div class="row">

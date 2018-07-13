@@ -23,7 +23,7 @@
                     <h5> KONTRAK
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../subcon" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../subcon" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kem333bali</i></a>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -532,7 +532,7 @@ $.ajax({
         $('.asal').val(data.data.ksd_asal).trigger('chosen:updated');
         $('.tujuan').val(data.data.ksd_tujuan).trigger('chosen:updated');
         $('.angkutan').val(data.data.ksd_angkutan).trigger('chosen:updated');
-        $('.tarif').val(data.data.ksd_jenis_tarif);
+        $('.tarif').val(data.data.ksd_jenis_tarif).trigger('chosen:updated');
         $('.harga').val(accounting.formatMoney(data.data.ksd_harga,"",0,'.',','));
         $('.keterangan').val(data.data.ksd_keterangan);
         $('.id_detail').val(ksd_dt);
