@@ -1350,7 +1350,7 @@
 
             var val = $(this).val();
             var id = $(this).data('id');
-            var string = val.split(",");
+            var string = val.supduplicate(",");
             var bayar = string[1];
             var harga = string[5];
             var contract = string[4];
