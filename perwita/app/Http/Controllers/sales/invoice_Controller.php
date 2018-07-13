@@ -95,7 +95,7 @@ class invoice_Controller extends Controller
                         ->addColumn('sisa', function ($data) {
                           return number_format($data->i_sisa_pelunasan,2,',','.'  ); 
                         })
-                        ->addColumn('print', function ($data) {
+                        ->addColumn('status', function ($data) {
                             if($data->i_statusprint == 'Released'){
                               return '<label class="label label-warning">'.$data->i_statusprint.'</label>';
                             }else{
