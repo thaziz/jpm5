@@ -579,6 +579,7 @@ public function simpan_invoice(request $request)
     if(count($delete->first())!=0){
         $delete->delete();
     }
+
     $dataItem=[];
     $cabang=$request->cb_cabang;
     $do_awal        = str_replace('/', '-', $request->do_awal);
@@ -682,6 +683,7 @@ public function simpan_invoice(request $request)
     }
     $nota= str_replace(' ', '', $nota);
     $nota= str_replace('  ', '', $nota);
+    dd($request->all());
     if ($request->ed_pendapatan == 'PAKET' || $request->ed_pendapatan == 'KARGO') {
             $save_header_invoice = DB::table('invoice')
                                      ->insert([
@@ -1820,7 +1822,6 @@ public function hapus_invoice(request $request)
 
 public function update_invoice(request $request)
 {
-    // dd($request->all());
    
 
     return $this->simpan_invoice($request);
