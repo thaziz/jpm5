@@ -52,7 +52,7 @@
                                     <tr>
                                         <td>Tanggal</td>
                                         <td>
-                                            <div class="input-group date" style="width:100%">
+                                            <div class="input-group " style="width:100%">
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -476,7 +476,7 @@
 //tanggal do 
 $('.tanggal_do').datepicker({
     format:'dd/mm/yyyy',
-    endDate:'today'
+    endDate: new Date()
 })
 $('.date').datepicker({
     format:'dd/mm/yyyy'

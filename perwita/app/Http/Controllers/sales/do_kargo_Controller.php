@@ -542,7 +542,7 @@ class do_kargo_Controller extends Controller
             return response()->json(['status' => 3,'text'=>'Jumlah']);
         }
         
-        if ($request->tarif_dasar == '') {
+        if ($request->tarif_dasar == '' or $request->tarif_dasar == '0') {
             return response()->json(['status' => 3,'text'=>'Tarif Dasar']);
         }
         if ($request->harga_master == '') {

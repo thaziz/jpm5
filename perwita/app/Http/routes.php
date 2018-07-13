@@ -387,6 +387,7 @@ Route::get('buktikaskeluar/edit/{id}', 'kasKeluarController@edit');
 Route::post('buktikaskeluar/update_form', 'kasKeluarController@update_form');
 Route::post('buktikaskeluar/update_patty', 'kasKeluarController@update_patty');
 Route::get('buktikaskeluar/jurnal', 'kasKeluarController@jurnal');
+Route::get('buktikaskeluar/datatable_bkk', 'kasKeluarController@datatable_bkk')->name('datatable_bkk');
 
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
@@ -1569,7 +1570,7 @@ Route::get('sales/invoice_form/{nomor}/nota', 'sales\invoice_Controller@cetak_no
 Route::get('sales/invoice_form/{nilai}/terbilang', 'sales\invoice_Controller@penyebut');
 Route::get('sales/datatable_invoice1', 'sales\invoice_Controller@datatable_invoice')->name('datatable_invoice1');
 Route::get('sales/invoice/jurnal', 'sales\invoice_Controller@jurnal1');
-
+Route::get('sales/cari_faktur_pajak', 'sales\invoice_Controller@cari_faktur_pajak');
 // end invoice
 // invoice pembetulan
 Route::get('sales/invoice_pembetulan', 'sales\invoice_pembetulan_controller@index');
