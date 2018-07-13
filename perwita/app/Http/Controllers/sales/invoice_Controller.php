@@ -1947,7 +1947,7 @@ public function update_invoice(request $request)
       if ($file != null) {
 
         $id = str_replace('/', '-', $id);
-        $filename = 'invoice/faktur_pajak_'.$id.'.pdf';
+        $filename = 'invoice/faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension();
 
         $save = DB::table('invoice')
                   ->where('i_nomor',$request->invoice)
