@@ -990,7 +990,8 @@ class do_paketController extends Controller
               $ppn_value = 0;
               $ppn_bol = false;
           }
-
+          // TARIF DASAR + TARIF PENERUS = TOTAL;
+          $total = filter_var($request->do_tarif_dasar, FILTER_SANITIZE_NUMBER_INT)+filter_var($request->do_tarif_penerus, FILTER_SANITIZE_NUMBER_INT);
           $data = array(
                     'nomor'                 => strtoupper($request->do_nomor),
                     'tanggal'               => $request->do_tanggal,
@@ -1032,7 +1033,7 @@ class do_paketController extends Controller
                     'instruksi'             => strtoupper($request->do_instruksi),
                     'deskripsi'             => strtoupper($request->do_deskripsi),
                     'jenis_pembayaran'      => strtoupper($request->do_jenis_pembayaran),
-                    'total'                 => filter_var($request->do_tarif_dasar, FILTER_SANITIZE_NUMBER_INT),
+                    'total'                 => $total,
                     'diskon'                => filter_var($request->do_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                     'diskon_value'          => filter_var($request->do_diskon_p, FILTER_SANITIZE_NUMBER_INT),
                     'jenis'                 => 'PAKET',
@@ -1310,6 +1311,7 @@ class do_paketController extends Controller
           $ppn_bol = false;
       }
 
+      $total = filter_var($request->do_tarif_dasar, FILTER_SANITIZE_NUMBER_INT)+filter_var($request->do_tarif_penerus, FILTER_SANITIZE_NUMBER_INT);
       $data = array(
                 'nomor' => strtoupper($request->do_nomor),
                 'tanggal' => $request->do_tanggal,
@@ -1351,7 +1353,7 @@ class do_paketController extends Controller
                 'instruksi' => strtoupper($request->do_instruksi),
                 'deskripsi' => strtoupper($request->do_deskripsi),
                 'jenis_pembayaran' => strtoupper($request->do_jenis_pembayaran),
-                'total' => filter_var($request->do_tarif_dasar, FILTER_SANITIZE_NUMBER_INT),
+                'total' => $total,
                 'diskon' => filter_var($request->do_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'diskon_value' => filter_var($request->do_diskon_p, FILTER_SANITIZE_NUMBER_INT),
                 'jenis' => 'PAKET',
