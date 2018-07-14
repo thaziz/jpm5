@@ -36,6 +36,10 @@ class selaras_jurnal  extends Controller
                      ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
                      ->orderBy('bpk_id','ASC')
                      ->get();
+
+            $delete_jurnal = DB::table('d_jurnal')
+                               ->where('jr_note','BIAYA PENERUS KAS')
+                               ->delete();
             
             $comp = array_map("unserialize", array_unique( array_map( 'serialize', $comp ) ));
             $bpk = array_map("unserialize", array_unique( array_map( 'serialize', $bpk ) ));
@@ -59,9 +63,7 @@ class selaras_jurnal  extends Controller
                            ->where('pc_no_trans',$bpk[$i]->bpk_nota)
                            ->delete();
 
-                $delete_jurnal = DB::table('d_jurnal')
-                               ->where('jr_note','BIAYA PENERUS KAS')
-                               ->delete();
+                
                 // //JURNAL
                 $delete_patty = DB::table('patty_cash')
 	                               ->where('pc_no_trans',$bpk[$i]->bpk_nota)
@@ -256,15 +258,13 @@ class selaras_jurnal  extends Controller
                               ->where('bkk_id',$bkk[$i]->bkk_id)
                               ->get();
 
-                    $delete_jurnal = DB::table('d_jurnal')
-	                               ->where('jr_ref',$bkk[$i]->bkk_nota)
-	                               ->delete();
-	                $delete_patty = DB::table('patty_cash')
+                    
+	                  $delete_patty = DB::table('patty_cash')
 	                               ->where('pc_no_trans',$bkk[$i]->bkk_nota)
 	                               ->delete();
 	                // //JURNAL
 
-	                $cari_id_pc = DB::table('patty_cash')
+	                  $cari_id_pc = DB::table('patty_cash')
 	                                 ->max('pc_id')+1;
 
                     $save_patty = DB::table('patty_cash')
