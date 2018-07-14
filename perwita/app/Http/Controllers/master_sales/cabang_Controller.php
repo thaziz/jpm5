@@ -23,11 +23,11 @@ class cabang_Controller extends Controller
         foreach ($data as $key) {
             // add new button
             $div_1  =   '<div class="btn-group">';
-                              // if (Auth::user()->punyaAkses('Cabang','ubah')) {
-                              // $div_2  = '<button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" >'.'<i class="fa fa-pencil"></i></button>';
-                              // }else{
+                              if (Auth::user()->punyaAkses('Cabang','ubah')) {
+                              $div_2  = '<button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" >'.'<i class="fa fa-pencil"></i></button>';
+                              }else{
                               $div_2 = '';
-                              // }
+                              }
                               if (Auth::user()->punyaAkses('Cabang','hapus')) {
                               $div_3  = '<button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" >'.
                                         '<i class="fa fa-trash"></i></button>';
