@@ -1630,13 +1630,84 @@ class KasController extends Controller
 
     public function ganti_nota(request $request)
     {
+
+		return DB::transaction(function() use ($request) {  
+    	$data = DB::table('biaya_penerus_kas')
+	    		  ->orderBy('bpk_id','ASC')
+    			  ->get();
+
+    	$comp1 = DB::table('biaya_penerus_kas')
+    			  ->select('bpk_comp')
+    			  ->get();
+    	$comp = [];
+	    	for ($i=0; $i < count($comp1); $i++) { 
+	    		$comp[$i] = $comp1[$i]->bpk_comp;
+	    	}
+	    	$comp = array_unique($comp);
+	    	$comp = array_values($comp);
+
+	    	for ($i=0; $i < count($comp); $i++) { 
+	    		$tahun = [];
+	    		$tahun1 = DB::table('biaya_penerus_kas')
+	    				  ->select('bpk_tanggal')
+	    				  ->where('bpk_comp',$comp[$i])
+		    			  ->get();
+
+		    	for ($t=0; $t < count($tahun1); $t++) { 
+		    		$tahun[$t] = carbon::parse($tahun1[$t]->bpk_tanggal)->format('Y');
+		    	}
+		    	$tahun = array_unique($tahun);
+		    	$tahun = array_values($tahun);
+		    	for ($a=0; $a < count($tahun); $a++) { 
+		    		$bulan = [];
+	    			$bulan1 = DB::table('biaya_penerus_kas')
+		    				  ->select('bpk_tanggal')
+		    				  ->where('bpk_comp',$comp[$i])
+		    				  ->whereYear('bpk_tanggal','=',$tahun[$a])
+			    			  ->get();
+			    	for ($t=0; $t < count($bulan1); $t++) { 
+			    		$bulan[$t] = carbon::parse($bulan1[$t]->bpk_tanggal)->format('m');
+			    	}
+
+			    	$bulan = array_unique($bulan);
+			    	$bulan = array_values($bulan);
+			    	for ($b=0; $b < count($bulan); $b++) { 
+			    		$index = 0;
+			    		for ($c=0; $c < count($data); $c++) { 
+			    			if ($data[$c]->bpk_comp == $comp[$i] and 
+			    				carbon::parse($data[$c]->bpk_tanggal)->format('Y') == $tahun[$a] and
+			    				carbon::parse($data[$c]->bpk_tanggal)->format('m') == $bulan[$b]) {
+			    				
+							    $index = (integer)$index + 1;
+							    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
+								$nota = 'BK' . $bulan[$b] . $tahun[$a]. '/' . $comp[$i] . '/' .$index;
+
+								$update = DB::table('biaya_penerus_kas')
+											->where('bpk_id',$data[$c]->bpk_id)
+											->update([
+												'bpk_nota'=>$nota
+											]);
+			    			}
+			    		}
+			    	}
+
+		    	}
+	    	}
+
+	    	$data = DB::table('biaya_penerus_kas')
+	    		  ->orderBy('bpk_id','ASC')
+    			  ->get();
+    		// dd($data);
+    	});
+    	// return true;
 	    $bulan = Carbon::parse(str_replace('/', '-', $request->tanggal))->format('m');
 	    $tahun = Carbon::parse(str_replace('/', '-', $request->tanggal))->format('y');
 
-	    $cari_nota = DB::select("SELECT  substring(max(bpk_nota),12) as id from biaya_penerus_kas
+	    $cari_nota = DB::select("SELECT  to_char(bpk_tanggal,'MM') as id from biaya_penerus_kas
 	                                    WHERE bpk_comp = '$request->cabang'
 	                                    AND to_char(bpk_tanggal,'MM') = '$bulan'
-	                                    AND to_char(bpk_tanggal,'YY') = '$tahun'");
+	                                    AND to_char(bpk_tanggal,'YY') = '$tahun'
+	                                    ");
 	    $index = (integer)$cari_nota[0]->id + 1;
 	    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
 
