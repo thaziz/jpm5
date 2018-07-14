@@ -61,7 +61,7 @@ class cabang_Controller extends Controller
             $kode = 001;
         }else{
             $kode = $kode;
-            $kode = '022';
+            $kode = str_pad($kode+1, 3, '0', STR_PAD_LEFT);
         }
         $data = array(
                 'kode' => $kode,
