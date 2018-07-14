@@ -1680,7 +1680,7 @@ class KasController extends Controller
 			    				
 							    $index = (integer)$index + 1;
 							    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
-								$nota = 'BK' . $bulan[$b] . $tahun[$a]. '/' . $comp[$i] . '/' .$index;
+								$nota = 'BK' . $bulan[$b] . carbon::parse($tahun[$a])->format('y'). '/' . $comp[$i] . '/' .$index;
 
 								$update = DB::table('biaya_penerus_kas')
 											->where('bpk_id',$data[$c]->bpk_id)
