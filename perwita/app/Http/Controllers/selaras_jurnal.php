@@ -60,7 +60,7 @@ class selaras_jurnal  extends Controller
                            ->delete();
 
                 $delete_jurnal = DB::table('d_jurnal')
-                               ->where('jr_ref',$bpk[$i]->bpk_nota)
+                               ->where('jr_note','BIAYA PENERUS KAS')
                                ->delete();
                 // //JURNAL
                 $delete_patty = DB::table('patty_cash')
@@ -225,7 +225,7 @@ class selaras_jurnal  extends Controller
                        ->where('pc_no_trans',$bkk[$i]->bkk_nota)
                        ->delete();
                     $delete_jurnal = DB::table('d_jurnal')
-                               ->where('jr_ref',$bkk[$i]->bkk_nota)
+                               ->where('jr_note','BUKTI KAS KELUAR')
                                ->delete();
                     $delete_bkk = DB::table('bukti_kas_keluar')
                           ->where('bkk_id',$bkk[$i]->bkk_id)
