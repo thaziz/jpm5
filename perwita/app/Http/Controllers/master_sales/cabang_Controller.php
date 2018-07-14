@@ -119,7 +119,13 @@ class cabang_Controller extends Controller
             }
 
         }elseif ($crud == 'E') {
-
+            $data = array(
+                'nama' => strtoupper($request->ed_nama),
+                'id_kota' => strtoupper($request->cb_kota),
+                'alamat' => strtoupper($request->ed_alamat),
+                'telpon' => strtoupper($request->ed_telpon),
+                'fax' => strtoupper($request->ed_fax),
+            );
             $simpan = DB::table('cabang')->where('kode', $request->ed_kode_old)->update($data);
         }
         if($simpan == TRUE){
