@@ -37,7 +37,7 @@ use Auth;
 class KasController extends Controller
 {
 	public function index(){
-
+		// aaddcc
     	$cabang = Auth::user()->kode_cabang;
 		if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
 			$data = DB::table('biaya_penerus_kas')
