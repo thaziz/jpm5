@@ -344,8 +344,6 @@ $('.tanggal').change(function () {
             location.reload();
         }
     })
-
-
   });
    var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp '});
 

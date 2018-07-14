@@ -114,7 +114,7 @@ class KasController extends Controller
 
 	    $year  = Carbon::now()->format('Y'); 
 		$month = Carbon::now()->format('m');  	
-		$now   = Carbon::now()->format('d-m-Y');
+		$now   = Carbon::now()->format('d/m/Y');
 		$cabang = DB::table('cabang')
 					->get();
 		$angkutan = DB::table('tipe_angkutan')
