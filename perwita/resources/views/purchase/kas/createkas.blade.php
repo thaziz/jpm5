@@ -305,7 +305,7 @@ $('.tanggal').change(function () {
         }
     })
  });
-  $(document).ready(function(){
+$(document).ready(function(){
     // $('.hid').attr('hidden',true);
     $('.search').attr('disabled',true);
     var tanggal = $('.tanggal').val();
@@ -344,7 +344,7 @@ $('.tanggal').change(function () {
             location.reload();
         }
     })
-  });
+});
    var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp '});
 
    function ganti_nota() {
