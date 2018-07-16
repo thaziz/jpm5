@@ -1806,6 +1806,7 @@ Route::get('laporan_sales/analisa_piutang/tampil_data', 'laporan_sales\analisa_p
 
 //mutasi piutang
 Route::get('laporan_sales/mutasi_piutang', 'laporan_sales\mutasi_piutang_Controller@index');
+Route::get('laporan_sales/ajax_mutasipiutang_rekap/ajax_mutasipiutang_rekap', 'laporan_sales\mutasi_piutang_Controller@ajax_mutasipiutang_rekap');
 Route::get('laporan_sales/mutasi_piutang/tampil_data', 'laporan_sales\mutasi_piutang_Controller@tampil_mutasi_piutang');
 // end mutasi piutang
 
