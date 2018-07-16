@@ -277,9 +277,17 @@
     $('.jenis_item').change(function(){
           updatestock = $('.updatestock').val();
           groupitem = $('.jenis_item').val();
+
+
           cabang = $('.cabang').val();
           split = groupitem.split(",");
           stock = split[1];
+          jenis = split[0];
+
+          if(jenis == 'J'){
+            $('.j').attr('required' , false);
+            $('.j').attr('disabled' , true);
+          }
         
           $.ajax({
             data : {updatestock,groupitem,cabang},
@@ -445,11 +453,10 @@
 
    $(function(){
             $('.hrg').change(function(){
-                var id = $(this).data('id');
-                harga = $(this).val();
-                numhar = parseFloat(harga).toFixed(2);
-         
-                $('.hrg').val(addCommas(numhar));
+                val = $(this).val();
+      
+                val = accounting.formatMoney(val, "", 2, ",",'.');
+                $(this).val(val);
             })
         }) 
 
@@ -589,11 +596,11 @@
           }
           
           if (j == '') {
-            toastr.info('Minimum stock Harus Di isi');
+           /* toastr.info('Minimum stock Harus Di isi');
             $('html,body').animate({scrollTop: $('.j').offset().top}, 200, function() {
              $('.j').focus();
             });
-            return false;
+            return false;*/
           }
           if (k == '') {
             toastr.info('Update Stock Harus Di isi');

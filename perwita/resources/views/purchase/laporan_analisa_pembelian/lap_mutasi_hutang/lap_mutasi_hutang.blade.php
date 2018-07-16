@@ -75,12 +75,12 @@
                         </td>
                       </tr>
                       <tr>
-                        <td>Customer</td>
+                        <td>Supplier</td>
                         <td>
-                          <select class="chosen-select-width" name="customer" id="customer">
+                          <select class="chosen-select-width" name="supplier" id="supplier">
                             <option value="">- Pilih -</option>
-                            @foreach ($customer as $e)
-                              <option value="{{ $e->kode }}">{{ $e->kode }} - {{ $e->nama }}</option>
+                            @foreach ($supplier as $e)
+                              <option value="{{ $e->no_supplier }}">{{ $e->no_supplier }} - {{ $e->nama_supplier }}</option>
                             @endforeach
                           </select>
                         </td>
@@ -98,12 +98,9 @@
                       <tr>  
                       <td>Laporan</td>
                         <td>
-                          <select class="chosen-select-width" name="laporan" id="laporan">
-                            <option value="">- Pilih -</option>
-                            <option value="Rekap per Customer">Rekap per Customer</option>
-                            <option value="Rekap per Customer Detail">Rekap per Customer Detail</option>
-                            <option value="Rekap per akun">Rekap per akun</option>
-                            <option value="Rekap per akun Detail">Rekap per akun Detail</option>
+                          <select class="chosen-select-width" name="laporan" id="laporan" style="pointer-events: none">
+                            <option value="mutasi" selected="">Mutasi Hutang</option>
+                            <option value="mutasi_detail" selected="">Mutasi Hutang Detail</option>
                           </select>
                         </td>
 
@@ -119,7 +116,6 @@
                       </tr>
                       <br>
                       </table>
-                      <div id="container" style="height: 400px"></div>
                       <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-special cetak" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </a> </div>
                       <div class="row" style="margin-top: -39px;margin-left: 55px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="pdf()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
                       <div class="row" style="margin-top: -39px;margin-left: 136px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
@@ -194,8 +190,7 @@
 
      $('.date').datepicker({
         autoclose: true,
-        format: 'yyyy-mm',
-        minViewMode:1,
+        format: 'yyyy-mm-dd',
     });
            
 
@@ -228,92 +223,146 @@
     }
 
 
-Highcharts.chart('container', {
-    chart: {
-        type: 'column',
-        width: 1000
-    },
-    title: {
-        text: 'Total Piutang Seluruh cutomer'
-    },
-
-    xAxis: {
-        categories: ['Saldo'],
-                
-    },
-    plotOptions:{
-      series:{
-        pointWidth:40
-      }
-    },
-    series: [{
-        data: [saldo]
-    }]
-});
 
  function cari(){
 
   var awal = $('#min').val();
   var akir = $('#max').val();
-  var customer = $('#customer').val();
+  var supplier = $('#supplier').val();
   var akun = $('#akun').val();
   var laporan = $('#laporan').val();
 
- if (laporan == 'Rekap per Customer') {
-  alert('a');
- }else if (laporan == 'Rekap per Customer Detail') {
-
-  alert('b');
- }else if (laporan == 'Rekap per akun') {
-
-  alert('c');
- }else if (laporan == 'Rekap per akun Detail') {
-
-  // alert('d');
- }
+if (laporan == 'mutasi_detail') {
+   
     $.ajax({
       data:$('#search').serialize(),
       type:'get',
-      url:baseUrl + '/cari_kartupiutang/cari_kartupiutang',
+      url:("{{ route('cari_ajax_mutasi_hutang_detail') }}"),
       success : function(data){
+         
         $('#disini').html(data);
         $('#container').hide();
+
+             
       }
-    })
+    });
+
+
+ }else if (laporan == 'mutasi') {
+    $.ajax({
+      data:$('#search').serialize(),
+      type:'get',
+      url:("{{ route('cari_ajax_mutasi_hutang') }}"),
+      success : function(data){
+         
+        $('#disini').html(data);
+        $('#container').hide();
+
+          //saldo awal
+          var saldoawal = 0;
+          $('.saldoawal').each(function(){
+            var this_val_saldoawal = $('.saldoawal').val();
+            var hasil_saldoawal = parseFloat(this_val_saldoawal);
+            saldoawal += hasil_saldoawal;
+          })
+          $('.output_saldoawal').text(accounting.formatMoney(saldoawal,"",0,'.',','));
+
+          //hutang baru
+          var hutangbaru = 0;
+          $('.hutangbaru').each(function(){
+            var this_val_hutangbaru = $('.hutangbaru').val();
+            var hasil_hutangbaru = parseFloat(this_val_hutangbaru);
+            hutangbaru += hasil_hutangbaru;
+          })
+          $('.output_hutangbaru').text(accounting.formatMoney(hutangbaru,"",0,'.',','));
+
+          //hutang voucher
+          var voucherhutang = 0;
+          $('.voucherhutang').each(function(){
+            var this_val_voucherhutang = $('.voucherhutang').val();
+            var hasil_voucherhutang = parseFloat(this_val_voucherhutang);
+            voucherhutang += hasil_voucherhutang;
+          })
+          $('.output_voucherhutang').text(accounting.formatMoney(voucherhutang,"",0,'.',','));
+
+          //hutang nota kredit
+          var creditnota = 0;
+          $('.creditnota').each(function(){
+            var this_val_creditnota = $('.creditnota').val();
+            var hasil_creditnota = parseFloat(this_val_creditnota);
+            creditnota += hasil_creditnota;
+          })
+          $('.output_creditnota').text(accounting.formatMoney(creditnota,"",0,'.',','));
+
+          //byr cash
+          var cash = 0;
+          $('.cash').each(function(){
+            var this_val_cash = $('.cash').val();
+            var hasil_cash = parseFloat(this_val_cash);
+            cash += hasil_cash;
+          })
+          $('.output_cash').text(accounting.formatMoney(cash,"",0,'.',','));
+
+          //uangmuka
+          var uangmuka = 0;
+          $('.uangmuka').each(function(){
+            var this_val_uangmuka = $('.uangmuka').val();
+            var hasil_uangmuka = parseFloat(this_val_uangmuka);
+            uangmuka += hasil_uangmuka;
+          })
+          $('.output_uangmuka').text(accounting.formatMoney(uangmuka,"",0,'.',','));
+
+          //bg
+          var bg = 0;
+          $('.bg').each(function(){
+            var this_val_bg = $('.bg').val();
+            var hasil_bg = parseFloat(this_val_bg);
+            bg += hasil_bg;
+          })
+          $('.output_bg').text(accounting.formatMoney(bg,"",0,'.',','));
+
+          //rn
+          var rn = 0;
+          $('.rn').each(function(){
+            var this_val_rn = $('.rn').val();
+            var hasil_rn = parseFloat(this_val_rn);
+            rn += hasil_rn;
+          })
+          $('.output_rn').text(accounting.formatMoney(rn,"",0,'.',','));
+
+          //debitnota
+          var debitnota = 0;
+          $('.debitnota').each(function(){
+            var this_val_debitnota = $('.debitnota').val();
+            var hasil_debitnota = parseFloat(this_val_debitnota);
+            debitnota += hasil_debitnota;
+          })
+          $('.output_debitnota').text(accounting.formatMoney(debitnota,"",0,'.',','));
+
+          //saldoakhir
+          var saldoakhir = 0;
+          $('.saldoakhir').each(function(){
+            var this_val_saldoakhir = $('.saldoakhir').val();
+            var hasil_saldoakhir = parseFloat(this_val_saldoakhir);
+            saldoakhir += hasil_saldoakhir;
+          })
+          $('.output_saldoakhir').text(accounting.formatMoney(saldoakhir,"",0,'.',','));
+
+          //sisaum
+          var sisaum = 0;
+          $('.sisaum').each(function(){
+            var this_val_sisaum = $('.sisaum').val();
+            var hasil_sisaum = parseFloat(this_val_sisaum);
+            sisaum += hasil_sisaum;
+          })
+          $('.output_sisaum').text(accounting.formatMoney(sisaum,"",0,'.',','));
+        } 
+      })
+    }
  }
 
- // function pdf(){
-
- //  var awal = $('#min').val();
- //  var akir = $('#max').val();
- //  var customer = $('#customer').val();
 
 
-
- //    $.ajax({
- //      data:{a:awal,b:akir,c:customer},
- //      type:'get',
- //      url:baseUrl + '/reportpdf_kartupiutang/reportpdf_kartupiutang',
- //      success : function(data){
-        
- //      }
- //    })
- // }
-
- // function excel(){
-
- //  var awal = $('#min').val();
- //  var akir = $('#max').val();
- //  var customer = $('#customer').val();
-
- //    $.ajax({
- //      data:{a:awal,b:akir,c:customer},
- //      type:'get',
- //      url:baseUrl + '/reportexcel_kartupiutang/reportpdf_kartupiutang',
- //      success : function(data){
-        
- //      }
- //    })
- // }
+ 
 </script>
 @endsection

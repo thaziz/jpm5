@@ -428,7 +428,7 @@ $('.simpan_vendor_tt').click(function(){
         url:baseUrl + '/fakturpembelian/simpan_tt',
         type:'get',
         dataType:'json',
-        data:$('.tabel_tt_vendor :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.form_vendor :input').serialize()+'&cabang='+cabang,
+        data:$('.tabel_tt_vendor :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.form_vendor :input').serialize()+'&'+$('.head1 :input').serialize()+'&cabang='+cabang,
         success:function(response){
               swal({
                   title: "Berhasil!",
@@ -486,7 +486,7 @@ $('.simpan_data_vendor').click(function(){
                 }
             });
           $.ajax({
-          url:baseUrl + '/fakturpembelian/save_vendor',
+          url:baseUrl + '/fakturpembelian/update_vendor',
           type:'get',
           data:$('.head1 :input').serialize()
               +'&'+$('.table_vendor :input').serialize()
@@ -702,7 +702,7 @@ function hapus_um_vendor(a) {
 
   vendor_tabel_detail_um.row(par).remove().draw(false);
 
-  hitung_um();
+  hitung_um_vendor();
 }
 
 
@@ -741,7 +741,7 @@ $('.save_vendor_um').click(function(){
               }
           });
         $.ajax({
-        url:baseUrl + '/fakturpembelian/save_vendor_um',
+        url:baseUrl + '/fakturpembelian/update_vendor_um',
         type:'post',
         data:$('.head1 :input').serialize()
               +'&'+$('.table_vendor :input').serialize()
@@ -855,7 +855,7 @@ $('.save_vendor_um').click(function(){
   var um_keterangan   = '{{$val->umfpdt_keterangan}}';
   console.log(nofaktur);
 
-  datatable2.row.add([
+  vendor_tabel_detail_um.row.add([
             '<p class="tb_faktur_um_text">'+nofaktur+'</p>'+
             '<input type="hidden" class="tb_faktur_um_'+id_um+' tb_faktur_um" value="'+id_um+'">',
 
@@ -884,8 +884,8 @@ $('.save_vendor_um').click(function(){
     id_um++;
     array_um1.push(nomor);
     array_um2.push(um_nomorbukti);
-    hitung_um();
-    $('.bp_tabel_um :input').val('');
+    hitung_um_vendor();
+    $('.vendor_tabel_detail_um :input').val('');
 @endforeach
 
 

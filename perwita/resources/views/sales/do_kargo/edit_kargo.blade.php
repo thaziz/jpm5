@@ -525,10 +525,13 @@ $('.date').datepicker({
 })
 
 $('.status_kendaraan').change(function(){
-    if ($(this).val() == 'OWN') {
-        $('.nama_subcon_detail ').val('');
+    if ($(this).val() == 'SUB'){
+        $('.nama_subcon_tr').attr('hidden',false);
+    }else{
+        $('.nama_subcon_tr').attr('hidden',true);
     }
-})
+});
+
 //menentukan cabang
 $(document).ready(function(){
    var cabang = $('.cabang_select').val();
@@ -622,7 +625,17 @@ function reseting() {
     $('.kcd_dt').val('');
     $('.total_text').val('0');
     $('.total').val('0');
+    if ($('.jenis_tarif_do').val() == 9) {
+        $('.kontrak_tr').attr('hidden',true);
+        $('.tarif_dasar').val(1);
+        $('.harga_master').val(1);
+        $('#kode_tarif').val(0);
+        $('.kcd_id').val(0);
+        $('.kcd_dt').val(0);
+        $('.satuan').val('RP');
+        $('.discount ').attr('readonly',true);
 
+    }
     toastr.info('Data Diubah Mohon Memasukan Tarif Kembali')
 }
 // cari kontrak

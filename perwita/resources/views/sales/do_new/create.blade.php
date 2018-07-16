@@ -78,16 +78,17 @@
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm">Tanggal</td>
-                                                    <td colspan="1">
+                                                    <td colspan="2">
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control datepicker_today" name="do_tanggal" id="do_tanggal" value="">
                                                         </div>
                                                     </td>
 
                                                     <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                                    <td colspan="3">
+                                                    <td colspan="2">
                                                         <select class="form-control"  name="do_cabang" {{-- onclick="setMaxDisc()" --}} style="width:100%" id="do_cabang">
                                                             <option value="" >- Pilih -</option>
+                                                            {{-- <option value="001" data-diskon="30" selected="" >sby</option> --}}
                                                         @foreach ($cabang as $row)
                                                             @if($row->diskon != null)
                                                             <option value="{{ $row->kode }}" data-diskon="{{ $row->diskon }}">{{ $row->kode }} - {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
@@ -108,11 +109,11 @@
                                                         <option value="">- Pilih -</option>
                                                         @foreach ($customer as $row)
                                                             @if ( $row->kc_aktif  == 'AKTIF' && $row->kcd_jenis)
-                                                                <option style="background-color: #79fea5;" value="{{ $row->kode }}" data-alamat="{{$row->alamat}}" data-telpon="{{$row->telpon}}"  data-status="{{ $row->kc_aktif }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                                                <option style="background-color: #79fea5;" value="{{ $row->kode }}" data-alamat="{{$row->alamat}}" data-name="{{ $row1->nama }}" data-telpon="{{$row->telpon}}"  data-status="{{ $row->kc_aktif }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                                             @endif
                                                         @endforeach
                                                         @foreach ($cus as $row1)
-                                                                <option value="{{ $row1->kode }}" data-alamat="{{$row1->alamat}}" data-telpon="{{$row1->telpon}}"  >{{ $row1->kode }} - {{ $row1->nama }} </option>
+                                                                <option value="{{ $row1->kode }}" data-alamat="{{$row1->alamat}}" data-name="{{ $row1->nama }}" data-telpon="{{$row1->telpon}}"  >{{ $row1->kode }} - {{ $row1->nama }} </option>
                                                         @endforeach
                                                         </select>
                                                     </td>
@@ -124,6 +125,7 @@
                                                         <select class="chosen-select-width replace_deskripsi" id="do_kota_asal" onchange="asal()" name="do_kota_asal" style="width:100%" >
                                                             <option value="">- Pilih -</option>
                                                             @foreach ($kota as $row)
+                                                                {{-- <option selected="" value="3573" data-nama="KOTA MALANG">3573 - KOTA MALANG</option> --}}
                                                                 <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
                                                             @endforeach
                                                         </select>
@@ -135,6 +137,7 @@
                                                         <select class="chosen-select-width replace_deskripsi" id="do_kota_tujuan" onchange="getKecamatan()" id="do_kota_tujuan" name="do_kota_tujuan" style="width:100%" >
                                                             <option value="">- Pilih -</option>
                                                             @foreach ($kota as $row)
+                                                                {{-- <option selected="" value="3578" data-nama="KOTA SURABAYA">3578 - KOTA SURABAYA</option> --}}
                                                                 <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
                                                             @endforeach
                                                         </select>
@@ -144,7 +147,7 @@
                                                     <td style="padding-top: 0.4cm" class="kecamatantujuanlabel">Kecamatan Tujuan</td>
                                                     <td colspan="5">
                                                         <select class="chosen-select-width form-control" id="do_kecamatan_tujuan" name="do_kecamatan_tujuan" style="width:100%" >
-                                                            <option value="">- Pilih -</option>
+                                                            {{-- <option selected="" value="3578120"> dukuh </option> --}}
                                                         </select>
                                                     </td>
                                                 </tr>
@@ -152,15 +155,15 @@
                                                 <tr>
                                                     <select class="form-control" name="pendapatan" id="pendapatan" class="form-control" style="display:none" >
                                                             <option value="PAKET">PAKET</option>
-                                                        </select>
+                                                    </select>
                                                     <td style="width:110px; padding-top: 0.4cm">Type Kiriman</td>
                                                     <td colspan="5">
                                                         <select class="form-control"  name="type_kiriman" id="type_kiriman">
                                                             <option value="">- Pilih -</option>
                                                             <option value="DOKUMEN">DOKUMEN</option>
-                                                            <option value="KILOGRAM">KILOGRAM</option>
+                                                            <option value="KILOGRAM" >KILOGRAM</option>
                                                             <option value="KOLI">KOLI</option>
-                                                            <option value="SEPdoA">SEPdoA</option>
+                                                            <option value="SEPEDA">SEPEDA</option>
                                                         </select>
                                                     </td>
                                                 </tr>
@@ -169,7 +172,7 @@
                                                     <td colspan="5">
                                                         <select class="form-control" name="jenis_kiriman" id="jenis_kiriman" >
                                                             <option value="">- Pilih -</option>
-                                                            <option value="REGULER">REGULER</option>
+                                                            <option value="REGULER" selected="">REGULER</option>
                                                             <option value="EXPRESS">EXPRESS</option>
                                                         </select>
                                                     </td>
@@ -206,15 +209,32 @@
                                                 <tr id="berat">
                                                     <td style="padding-top: 0.4cm">Berat</td>
                                                     <td colspan="5">
-                                                        <input onkeyup="BeratDefault()" type="text" class="form-control" value="0" name="do_berat" style="text-align:right">
+                                                        <input onblur="BeratDefault()" type="text" class="form-control" value="0" name="do_berat" id="do_berat" style="text-align:right">
                                                     </td>
                                                 </tr>
                                                 <tr id="jml_unit">
                                                     <td style="padding-top: 0.4cm">Jumlah Unit</td>
                                                     <td colspan="5">
-                                                        <input type="text" class="form-control jmlunit" onkeyup="setJml()" value="0" name="do_jml_unit" style="text-align:right" >
+                                                        <input type="text" class="form-control jmlunit" id="jml_unit" onkeyup="setJml()" value="0" name="do_jml_unit" style="text-align:right" >
                                                     </td>
                                                 </tr>
+                                                
+                                                <tr id="jenis_unit" class="jenis_unit">
+                                                    <td style="padding-top: 0.4cm">Jenis Unit</td>
+                                                    <td colspan="2" class="jenisunit">
+                                                        <select class="form-control jns_unit" name="do_jenis_unit[]" >
+                                                            <option value="SEPEDA">SEPEDA</option>
+                                                            <option value="SPORT">MOTOR SPORT</option>
+                                                            <option value="BETIC">MOTOR BEBEK/MATIC</option>
+                                                            <option value="MOGE">MOGE</option>
+                                                        </select>
+                                                    </td>
+                                                    <td style="padding-top: 0.4cm">Berat Unit</td>
+                                                    <td colspan="2">
+                                                        <input type="text" class="form-control beratunit" name="do_berat_unit[]" style="text-align:right" >
+                                                    </td>
+                                                </tr>
+                                                
                                                 <div id="drop"></div>
                                                 <tr id="dimensi">
                                                     <td style="padding-top: 0.4cm">Panjang</td>
@@ -245,7 +265,7 @@
                                                         </select>
                                                     </td> --}}
                                                     <td style="width:110px; padding-top: 0.4cm">Tarif Vendor</td>
-                                                    <td>
+                                                    <td colspan="2">
                                                         <div>
                                                              <label class="radio-inline">
                                                               <input type="radio" class="cek_vendor_ya" name="cek_vendor">Ya
@@ -291,9 +311,26 @@
 
 
 
+
+
+                                    <input type="hidden" name="do_total_total">
+                                    <!-- temporari data total-->
+                                    <input type="hidden" name="do_total_temp">
+
+
                                     <input type="hidden" name="tarif_vendor_bol" id="tarif_vendor_bol">
                                     <input type="hidden" name="id_tarif_vendor" id="id_tarif_vendor">
                                     <input type="hidden" name="nama_tarif_vendor" id="nama_tarif_vendor">
+
+                                    <!-- PATOKAN BERATI DI KALI TARIF DASAR ,  -->
+                                    <input type="hidden" name="tarif_dasar_patokan" id="tarif_dasar_patokan">
+
+                                    <!-- Berat Minimum-->
+                                    <input type="hidden" name="berat_minimum">
+
+                                    <!-- Non Customer-->
+                                    <input type="hidden" name="nama_customer_hidden">
+
 
 
 
@@ -305,7 +342,7 @@
                                                 <tr style="max-height: 15px !important; height: 15px !important; overflow:hidden;">
                                                     <td style="padding-top: 0.4cm">Tarif Dasar</td>
                                                     <td colspan="2">
-                                                        <input type="text" class="form-control mask_money_dn hitung_keyup" name="do_tarif_dasar" value="0" style="text-align:right" tabindex="-1" >
+                                                        <input type="text" class="form-control mask_money_dn hitung_keyup" name="do_tarif_dasar" id="do_tarif_dasar" value="0" style="text-align:right" tabindex="-1" >
                                                     </td>
                                                 </tr>
                                                 <tr class="do_tarif_penerus">
@@ -389,9 +426,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td><input type="hidden" name="do_total_total"></td>
                                                 </tr>
-                                                <input type="hidden" name="do_total_temp">
                                             </tbody>
                                         </table>
                                     </div>
@@ -685,16 +720,26 @@ $("input[name='do_vendor']").prop('readonly',true);
 $('.radio-inline').click(function() {
    
    if($('.cek_vendor_ya').is(':checked')) { 
-        toastr.info("Tarif vendor aktif", "Pemberitahuan")
+        toastr.info("Tarif vendor aktif", "Pemberitahuan!")
         $('#tarif_vendor_bol').val('true');
    }else if($('.cek_vendor_tidak').is(':checked'))  {
-        toastr.info("Tarif vendor tidak aktif", "Pemberitahuan")
+        toastr.warning("Tarif vendor tidak aktif", "Pemberitahuan!")
         $('#tarif_vendor_bol').val('false');
    }
 
 });
 
+//CUSTOMER REPLACE
+    $('#do_customer').change(function(){
+        var alamat = $(this).find(':selected').data('alamat');
+        var name = $(this).find(':selected').data('name');
+        var telpon = $(this).find(':selected').data('telpon');
+        $("input[name='do_nama_pengirim']").val(alamat);
+        $("input[name='nama_customer_hidden']").val(name);
+        $("input[name='do_alamat_pengirim']").val(name);
+        $("input[name='do_telpon_pengirim']").val(telpon);
 
+    })
 
 //SEMUNYIKAN BEBERAPA FIELD
     $(document).ready( function () {
@@ -740,7 +785,7 @@ $('.radio-inline').click(function() {
 
 //CARI KECAMATAN
     function getKecamatan() {
-        $('#do_kecamatan_tujuan').append('<option value="">- Pilih -</option>').trigger('chosen:updated');
+
         var kot = $('#do_kota_tujuan').find(':selected').val();
         
         $('.cek_vendor_ya').prop("checked",false);
@@ -751,9 +796,13 @@ $('.radio-inline').click(function() {
             dataType:'json',
             success: function(data)
             {   
+                $('#do_kecamatan_tujuan').empty(); //remove all child nodes 
                  for (var i = 0; i < data.length; i++) {
-                    $('#do_kecamatan_tujuan').append('<option value="'+data[i].id+'" data-nama="'+data[i].nama+'">'+data[i].id+' - '+data[i].nama+'</option>').trigger('chosen:updated');
+                    var append_baru = '<option value="'+data[i].id+'" data-nama="'+data[i].nama+'">'+data[i].id+' - '+data[i].nama+'</option>';
+                    $('#do_kecamatan_tujuan').append(append_baru);
+                    
                  }
+                $('#do_kecamatan_tujuan').trigger('chosen:updated');
                              
             }
         })
@@ -823,7 +872,7 @@ $('.radio-inline').click(function() {
                 $("#jml_unit").hide();
                 $('#tr_jenis_kiriman').show();
                 $(".jenis_unit").hide();
-            }else if ( type_kiriman =='SEPdoA') {
+            }else if ( type_kiriman =='SEPEDA') {
                 $("#surat_jalan").hide();
                 $("#dimensi").hide();
                 $("#nopol").hide();
@@ -873,6 +922,7 @@ function hitung() {
     var jenis_ppn = $("select[name='do_jenis_ppn']").val();
     var tarif_dasar = $("input[name='do_tarif_dasar']").val();
     var biaya_tambahan = $("input[name='do_biaya_tambahan']").val();
+    var biaya_penerus = $("input[name='do_tarif_penerus']").val();
     var diskon_p  = $("input[name='do_diskon_p']").val();
     var diskon_v  = $("input[name='do_diskon_v']").val();
     var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
@@ -884,33 +934,35 @@ function hitung() {
     var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");
     var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
     var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
+    var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
     var diskon_p = diskon_p.replace(/[A-Za-z$. ,-]/g, "");
     var diskon_v = diskon_v.replace(/[A-Za-z$. ,-]/g, "");
     var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g,"");
     var do_vendor = do_vendor.replace(/[A-Za-z$. ,-]/g,"");
 
 
-
     if (diskon_p > 100) {
-        toastr.warning("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
+        toastr.error("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
         $("input[name='do_diskon_p']").val(0);
+        $("input[name='do_diskon_v']").val(0);
     }
 
     if(diskon_p > this_selected_value){
-        toastr.warning("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
+        toastr.error("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
         $("input[name='do_diskon_p']").val(0);
+        $("input[name='do_diskon_v']").val(0);
     }
 
     //alert ketika diskon dan biaya tambahan di pakai 2-2nya
     if (diskon_p > 0 && biaya_tambahan > 0) {
-        toastr.warning('Diskon dan biaya tambahan di isi salah satu!!');
+        toastr.error('Diskon dan biaya tambahan di isi salah satu!!','Peringatan !');
         $("input[name='do_diskon_p']").val(0);
         $("input[name='do_diskon_v']").val(0);
         $("input[name='do_biaya_tambahan']").val(0);
     }
 
-    //-- menghitung atas
-    var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi);
+    //menghitung atas
+    var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi)+parseFloat(biaya_penerus);
 
     if (diskon_p != 0) {
         var diskon_value_utama = diskon_p / 100 * total;
@@ -919,17 +971,19 @@ function hitung() {
         var diskon_value_utama = diskon_p / 100 * total;
         $("input[name='do_diskon_v']").val(Math.round(diskon_value_utama));
     }
-        //PENGURANGAN DISKON
-        var total_dpp = total - diskon_value_utama;
-        var sub_dpp = total_dpp - do_vendor;
 
-        if ($('.vendor_tarif').is(':checked') == true) {
-            console.log(sub_dpp);
-            console.log(total_dpp);
-            $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
-        }
+    //PENGURANGAN DISKON
+    var total_dpp = total - diskon_value_utama;
+    var sub_dpp = total_dpp - do_vendor;
+
+    if ($('.vendor_tarif').is(':checked') == true) {
+        $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
+    }else{
+        $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+    }
         
     //CHECKBOX VENDOR
+    var temp_total  = $('input[name="do_total_temp"]').val(total_dpp);
     
 
 
@@ -939,12 +993,12 @@ function hitung() {
         ppn =parseFloat(total) * parseFloat(0.1);
         total = total + ppn;
     }else if (jenis_ppn == 2) {
-        ppn =parseFloat(total) / parseFloat(100.1);
+        ppn =parseFloat(total) / parseFloat(100);
         total = total + ppn;
     }else if (jenis_ppn == 4) {
         ppn =0;
     }else if (jenis_ppn == 3) {
-        ppn =parseFloat(total) / parseFloat(100.1);
+        ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
     }else if (jenis_ppn == 5) {
         ppn =parseFloat(total) / parseFloat(10.1);
         total = total - ppn;
@@ -954,7 +1008,7 @@ function hitung() {
 
     
     //--hasil perhitungan
-    $("input[name='do_jml_ppn']").val(accounting.formatMoney(ppn,"",0,'.',','));
+    $("input[name='do_jml_ppn']").val(accounting.formatMoney(ppn,"",2,'.',','));
     $("input[name='do_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
 
 }
@@ -965,19 +1019,21 @@ function hitung() {
         if ($('#do_kota_asal').val() == '' 
             || $('#do_kota_tujuan').val() == '' 
             || $('#do_cabang').val() == '' ) {
-            toastr.warning('Data Kurang Lengkap ,Ada data yg Tidak Boleh Kosong!!');
+            toastr.error('Data Kurang Lengkap ,Ada data yg Tidak Boleh Kosong!!','Peringatan !');
             $('.cek_vendor_ya').prop("checked",false);
         }else{
             var asal = $('#do_kota_asal').find(':selected').val();
             var tujuan = $('#do_kota_tujuan').find(':selected').val();
             var cabang = $('#do_cabang').find(':selected').val();
             var jenis = $('#jenis_kiriman').find(':selected').val();
+            var tipe = $('#type_kiriman').find(':selected').val();
+            var berat = $('#do_berat').val();
 
             if ($('.cek_vendor_ya').is(":checked") == true) {
                 $('.do_tarif_penerus').hide();
                 $.ajax({
                 type: "GET",
-                data : {a:asal,b:tujuan,c:cabang,d:jenis},
+                data : {a:asal,b:tujuan,c:cabang,d:jenis,e:tipe,f:berat},
                 url : ('{{ route('cari_vendor_deliveryorder_paket') }}'),
                 success: function(data){   
                     $('#drop').html(data);
@@ -1002,33 +1058,33 @@ function hitung() {
 
 
 //PILIH VENDOR
- function Pilih_vendor(a){
+    function Pilih_vendor(a){
+        //field
         var id_vendor = $(a).find('.id_vendor').val();
+        var vendor_nama = $(a).find('.vendor_nama').val();
+        var vendor_tarif = $(a).find('.tarif_vendor').val();
+        //checklist
+        $("input[name='do_vendor']").prop('readonly',true);
+        $("input[name='do_dpp']").prop('readonly',true);
+        $("input[name='vendor_tarif']").prop('checked'  ,true);
 
-         $.ajax({
-            data: {a:id_vendor},
-            url:('{{ route('replace_vendor_deliveryorder_paket') }}'),
-            type:'get',
-            success:function(data){
-                $("input[name='do_vendor']").prop('readonly',true);
-                $("input[name='do_dpp']").prop('readonly',true);
-                $("input[name='vendor_tarif']").prop('checked'  ,true);
-                $("#modal_vendor").modal("hide");
-                
-
-                if ($('.vendor_tarif').is(':checked') == true) {
-                    $("input[name='do_vendor']").val(accounting.formatMoney(data[0].tarif_vendor,"",0,'.',','));
-                }
-
-                $("input[name='do_tarif_dasar']").val(accounting.formatMoney(data[0].tarif_vendor,"",0,'.',','));
-                hitung();
-
-                $('#id_tarif_vendor').val(data[0].kode);
-                $('#nama_tarif_vendor').val(data[0].nama);
-            }
-        });
+        //hiding
+        $("#modal_vendor").modal("hide");
         
+
+        if ($('.vendor_tarif').is(':checked') == true) {
+            $("input[name='do_vendor']").val(accounting.formatMoney(vendor_tarif,"",0,'.',','));
+        }
+
+        $("input[name='do_tarif_dasar']").val(accounting.formatMoney(vendor_tarif,"",0,'.',','));
+        hitung();
+
+        $('#id_tarif_vendor').val(id_vendor);
+        $('#nama_tarif_vendor').val(vendor_nama);
     }
+        
+        
+    
     
 //SET PPN / CHNGE PPN / GANTI PPN
     function setJmlPPN(){
@@ -1069,7 +1125,7 @@ function hitung() {
 
             //alert ketika diskon dan biaya tambahan di pakai 2-2nya
             if (diskon_p > 0 && biaya_tambahan > 0) {
-                toastr.warning('Diskon dan biaya tambahan di isi salah satu!!');
+                toastr.error('Diskon dan biaya tambahan di isi salah satu!!','Peringatan !');
                 $("input[name='do_diskon_p']").val(0);
                 $("input[name='do_diskon_v']").val(0);
                 $("input[name='do_biaya_tambahan']").val(0);
@@ -1081,7 +1137,7 @@ function hitung() {
             var diskon_total = parseFloat(diskon_v)/parseFloat(total)*100;
         
             if(diskon_total > this_selected_value){
-                toastr.warning("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
+                toastr.error("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
                 $("input[name='do_diskon_v']").val(0);
                 $('#do_diskon_p').val(0);
             }
@@ -1091,20 +1147,20 @@ function hitung() {
             if(diskon_v == 0 || diskon_v == ''){
                 $('#do_diskon_p').val(0);
             }
-                //PENGURANGAN DISKON
-                var total_dpp = total - diskon_v;
-                var sub_dpp = total_dpp - do_vendor;
 
-                if ($('.vendor_tarif').is(':checked') == true) {
-                    console.log(sub_dpp);
-                    console.log(total_dpp);
-                    $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
-                }
+            //PENGURANGAN DISKON
+            var total_dpp = total - diskon_v;
+            var sub_dpp = total_dpp - do_vendor;
 
-                // $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
-                // $("input[name='do_vendor']").val(accounting.formatMoney(0,"",0,'.',','));
-                // $("input[name='do_total_temp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
-                
+            if ($('.vendor_tarif').is(':checked') == true) {
+                $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
+            }else{
+                $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+            }
+            //END
+
+            var temp_total  = $('input[name="do_total_temp"]').val(total_dpp);
+
             var ppn  = 0;
             if (jenis_ppn == 1) {
                 ppn =parseFloat(total) * parseFloat(0.1);
@@ -1115,7 +1171,7 @@ function hitung() {
             }else if (jenis_ppn == 4) {
                 ppn =0;
             }else if (jenis_ppn == 3) {
-                ppn =parseFloat(total) / parseFloat(100.1);
+               ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
             }else if (jenis_ppn == 5) {
                 ppn =parseFloat(total) / parseFloat(10.1);
                 total = total - ppn;
@@ -1149,16 +1205,18 @@ function hitung() {
             var diskon_total = parseFloat(diskon_v)/parseFloat(total)*100;
 
             $('#do_diskon_p').val(Math.round(diskon_total,2));
-            console.log(diskon_total)
-                //PENGURANGAN DISKON
-                var total_dpp = total - diskon_v;
-                var sub_dpp = total_dpp - do_vendor;
+            
+            //PENGURANGAN DISKON
+            var total_dpp   = total - diskon_v;
+            var sub_dpp     = total_dpp - do_vendor;
 
-                if ($('.vendor_tarif').is(':checked') == true) {
-                    console.log(sub_dpp);
-                    console.log(total_dpp);
-                    $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
-                }
+            var temp_total  = $('input[name="do_total_temp"]').val(total_dpp);
+
+            if ($('.vendor_tarif').is(':checked') == true) {
+                $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
+            }else{
+                $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+            }
 
             var ppn  = 0;
             if (jenis_ppn == 1) {
@@ -1170,7 +1228,7 @@ function hitung() {
             }else if (jenis_ppn == 4) {
                 ppn =0;
             }else if (jenis_ppn == 3) {
-                ppn =parseFloat(total) / parseFloat(100.1);
+                ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
             }else if (jenis_ppn == 5) {
                 ppn =parseFloat(total) / parseFloat(10.1);
                 total = total - ppn;
@@ -1235,19 +1293,18 @@ function hitung() {
 
 //CEK VENDOR TAMBAH , JIKA MELEBIHI DARI TOTAL PENJUMLAHAN AKAN ERROR
     $('.check_harga_vendor').keyup(function(){
-
+        //field
         var dpp    = $('#do_dpp').val();
         var vendor = $('#do_vendor').val();
         var harga_temp = $("input[name='do_total_temp']").val();
-
+        //regex
         var dpp = dpp.replace(/[A-Za-z$. ,-]/g, "");
         var vendor = vendor.replace(/[A-Za-z$. ,-]/g, "");
         var harga_temp = harga_temp.replace(/[A-Za-z$. ,-]/g, "");
-
         var cek = parseInt(dpp)+parseInt(vendor);
 
         if (cek > harga_temp) {
-            toastr.warning('Tidak boleh meleihi batas!');
+            toastr.error('Tidak boleh meleihi batas!','Peringatan !');
             $('#do_dpp').val(0);
             $('#do_vendor').val(0);
         }
@@ -1265,19 +1322,193 @@ function hitung() {
             success: function(data, textStatus, jqXHR)
             {   
                 if (data.status == 'sukses') {
-                    toastr.success('Telah Tersimpan!');
+                    toastr.success('Data Telah Tersimpan!','Pemberitahuan!');
                 }else if (data.status == 'gagal') {
-                    toastr.error('Akun Piutang Pada Cabang Ini Belum Tersedia !');
+                    toastr.error('Akun Piutang Pada Cabang Ini Belum Tersedia !','Peringatan !');
                 }
                 else{
-                    toastr.error('Gagal Tersimpan!');
+                    toastr.error('Gagal Tersimpan! WA developer segera','Peringatan !');
                 }
             },
             error: function(jqXHR, textStatus, errorThrown)
             {
-               alert('gagal');
+               toastr.error('Gagal Tersimpan! cek kelengkapan data / tanya Developer','Peringatan !');
             }
         });
     });
+
+
+
+// UNTUK FORM PER 1 TENTANG BERAT DO
+
+    $('#btn_cari_harga').click(function(){
+        //FIELD
+        var kota_asal = $("select[name='do_kota_asal']").val();
+        var kecamatan_tujuan = $("select[name='do_kecamatan_tujuan']").val();
+        var kota_tujuan = $("select[name='do_kota_tujuan']").val();
+        var type = $("select[name='type_kiriman']").val();
+        var jenis =$("select[name='jenis_kiriman']").val();
+        var cabang = $("select[name='do_cabang']").val();
+        var berat = $("input[name='do_berat']").val();
+        var jenis_sepeda;
+        var input = document.getElementsByClassName( 'jns_unit' ),
+        jenis_sepeda  = [].map.call(input, function( input ) {
+            return input.value;
+        });
+        var berat_sepeda;
+        var input = document.getElementsByClassName( 'beratunit' ),
+        berat_sepeda  = [].map.call(input, function( input ) {
+            return input.value;
+        });
+
+        //VALIDASI
+        if (cabang == '') {
+            toastr.error('Cabang Harus di isi !','Peringatan !');
+            return false;
+        }else if (kota_asal == '') {
+            toastr.error('Kota Asal Harus di isi !','Peringatan !');
+            return false;
+        }else if (kota_tujuan == '') {
+            toastr.error('Kota Tujuan Harus di isi !','Peringatan !');
+            return false;
+        }else if (kecamatan_tujuan == '' || kecamatan_tujuan == null) {
+            toastr.error('kecamatan Tujuan Harus di isi !','Peringatan !');
+            return false;
+        }else if (type == '') {
+            toastr.error('Type Kiriman Harus di isi !','Peringatan !');
+            return false;
+        }else if (jenis == '') {
+            toastr.error('Jenis Kiriman Harus di isi !','Peringatan !');
+            return false;
+        }
+
+        //VALUE DATA 
+        var value = {
+            pendapatan: $("select[name='pendapatan']").val(),
+            asal: $("select[name='do_kota_asal']").val(),
+            tujuan: $("select[name='do_kota_tujuan']").val(),
+            tipe: $("select[name='type_kiriman']").val(),
+            tujuan: $("select[name='do_kota_tujuan']").val(),
+            jenis: $("select[name='jenis_kiriman']").val(),
+            angkutan: $("select[name='do_angkutan']").val(),
+            cabang: $("select[name='do_cabang']").val(),
+            berat : $('#do_berat').val(),
+            kecamatan : $("select[name='do_kecamatan_tujuan']").val(),
+            berat : berat,
+            sepeda: jenis_sepeda,
+            berat_sepeda: berat_sepeda
+        };
+
+        //AJAX
+        $.ajax({
+            url : ("{{ route('cari_harga_reguler_deliveryorder_paket') }}"),
+            type: "GET",
+            data : value,
+            dataType:'json',
+            success: function(data, textStatus, jqXHR)
+            {
+
+                //jika penrus == 0
+                if (data.biaya_penerus == 0) {
+                    toastr.error('Tarif Penerus tidak ditemukan / Belum dibuat / harga 0 ','Pemberitahuan!')
+                }
+                //replace
+                $("input[name='acc_penjualan']").val(data.acc_penjualan);
+                $("#do_tarif_penerus").val(accounting.formatMoney(data.biaya_penerus,"",0,'.',','));
+                $('#do_tarif_dasar').val(accounting.formatMoney(data.harga,"",0,'.',','));
+                $('#tarif_dasar_patokan').val(data.harga);
+                
+                //kondisi jika berat kurang dari batas minimum
+                var berat_minimum_field  = $("input[name='do_berat']").val();
+                var koli                 = $("input[name='do_koli']").val();
+                var tarif_dasar_patokan  = $("input[name='tarif_dasar_patokan']").val();
+                
+                if (data.tipe == 'KILOGRAM') {
+                    if (data.batas != 0 || data.batas != null) {
+                        toastr.info('Berat minimum adalah '+'<b style="color:red">'+data.batas+'</b>'+' KG','Pemberitahuan!')
+                        if (berat_minimum_field < data.batas) {
+                            //hitung hasil dari pencarian
+                            var hitung_berat = parseFloat(data.batas)*parseFloat(data.harga);
+                            //replace berat dan tarif dasar
+                            $("input[name='do_berat']").val(data.batas);
+                            $("input[name='berat_minimum']").val(data.batas);
+                            $('#do_tarif_dasar').val(accounting.formatMoney(hitung_berat,"",0,'.',','));
+                            $('#tarif_dasar_patokan').val(data.harga);
+                        }else{
+                            //replace berat dan tarif dasar
+                            $("input[name='berat_minimum']").val(data.batas);
+                            $('#do_tarif_dasar').val(accounting.formatMoney(data.harga,"",0,'.',','));
+                            $('#tarif_dasar_patokan').val(data.harga);
+                        }
+                    }else{
+                        toastr.error('Berat minimum belum di set / kosong ','Peringatan!')
+                    }
+                }
+
+                if (data.tipe == 'KOLI') {
+                    //kondisi
+                    if (koli ==  0 || koli == null) {
+                        koli = 1;            
+                    }else{
+                        koli = koli;
+                    }
+                    //hitung hasil dari pencarian
+                    var hitung_berat = parseFloat(koli)*parseFloat(data.harga);
+                    //replace berat dan tarif dasar
+                    $('#do_tarif_dasar').val(accounting.formatMoney(hitung_berat,"",0,'.',','));
+                    $('#tarif_dasar_patokan').val(data.harga);
+
+                }
+                
+                console.log(data);
+                hitung();
+            }   
+        })
+
+    });    
+
+    function BeratDefault(){
+        var tipe          = $('#type_kiriman').val();
+        var berat         = $("input[name='do_berat']").val();
+        var berat_minimum = $("input[name='berat_minimum']").val();
+        var tarif_dasar   = $("#tarif_dasar_patokan").val();
+        
+
+        //perhitungan berat dikali 
+
+        if (tipe == 'KOLI') {
+            if (berat > 50) {
+                toastr.error("Maksimal berat KOLI yang dilayani 50 Kg", "Peringatan !");
+                $("input[name='do_berat']").val(1);
+
+                return false;
+            }
+        }else if (tipe == 'KILOGRAM'){
+            if (berat < parseFloat(berat_minimum)) {
+                toastr.error('Berat minimum adalah '+'<b style="color:blue">'+parseFloat(berat_minimum)+'</b>'+' KG','Peringatan!')
+                $("input[name='do_berat']").val(parseFloat(berat_minimum));
+            }
+        }
+
+        
+    }
+
+
+
+// END FORM PER 1 
+
+
+//FORM DO KOLOM  KE 1 TTG SEPEDA
+    function setJml(){
+        var jumlah = $('.jmlunit').val();
+        $('.jenis_unit').remove();
+        var jenis = '<tr id="jenis_unit" class="jenis_unit"><td style="padding-top: 0.4cm">Jenis Unit</td><td colspan="2" class="jenisunit"><select class="form-control jns_unit" name="do_jenis_unit[]" ><option value="SEPEDA">SEPEDA</option><option value="SPORT">MOTOR SPORT</option><option value="BETIC">MOTOR BEBEK/MATIC</option><option value="MOGE">MOGE</option></select></td><td style="padding-top: 0.4cm">Berat Unit</td><td colspan="2"><input type="text" class="form-control beratunit" name="do_berat_unit[]" style="text-align:right" ></td></tr>';
+        for (var i = 0; i < jumlah; i++) {
+            $(jenis).insertAfter('#jml_unit');
+        }
+
+    }
+
+
 </script>
 @endsection

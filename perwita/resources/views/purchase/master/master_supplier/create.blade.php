@@ -9,6 +9,9 @@
     pointer-events: none;
     opacity: 1;
 }
+.chosen-container .chosen-results {
+    max-height: 120px !important;
+}
 </style>
 
  <div class="row wrapper border-bottom white-bg page-heading">
@@ -263,7 +266,7 @@
 
                           <tr>
                             <td> NIK </td>
-                            <td> <input type="number" class="form-control" name="nik"></td>
+                            <td> <input type="number" class="form-control pajak" name="nik"></td>
                           </tr>
 
                         <tr>
@@ -438,7 +441,7 @@
                 '.chosen-select-deselect'  : {allow_single_deselect:true},
                 '.chosen-select-no-single' : {disable_search_threshold:10},
                 '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                '.chosen-select-width'     : {width:"95%"}
+                '.chosen-select-width'     : {width:"100%"}
                 }
 
              for (var selector in config) {
@@ -575,7 +578,7 @@
 
       var rowBrg = "<tr id=dataitem item-"+$no+">" +
                     "<td> <b>" + $no +"</b> </td>" +               
-                    "<td> <select class='form-control' name='idbarang[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
+                    "<td> <select class='form-control chosen-select' name='idbarang[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}>  {{$item->kode_item}} - {{$item->nama_masteritem}} </option> @endforeach </select>" +
                      "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
                      "<td> <select class='form-control' name='updatestock[]'> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
                     "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a> </td>" +
@@ -587,14 +590,10 @@
 
      $(function(){
             $('.hrg' + $no).change(function(){
-                var id = $(this).data('id');
-
-                harga = $(this).val();
-                $this = $(this);
-               
-                numhar = Math.round(harga).toFixed(2);
-         
-                $this.val(addCommas(numhar));
+                val = $(this).val();
+      
+               val = accounting.formatMoney(val, "", 2, ",",'.');
+               $(this).val(val);
 
             })
         }) 

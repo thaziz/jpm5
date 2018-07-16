@@ -6,14 +6,17 @@
 
 
 <style type="text/css">
-  #addColumn thead tr th{
-    text-align: center;
-  }
   .asw{
     color: grey;
   }
   .asw:hover{
     color: red;
+  }
+  .center:{
+    text-align: center !important;
+  }
+  .right:{
+    text-align: right !important;
   }
 </style>
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -62,56 +65,38 @@
                   <div class="box-body">
                     
                 <div class="box-body">
-                  <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
-                    <thead align="center">
-                     <tr>
-                        <th> No. BKK </th>
-                        <th> Tanggal </th>
-                        <th> Nama Cabang </th>
-                        <th> Jenis Bayar</th>
-                        <th> Keterangan </th> 
-                        <th> Total </th>   
-                        <th> Print </th>   
-                        {{-- <th> Allow Edit </th> --}}
-                        <th> Aksi </th>
-                    </tr>
-                    </thead>
-                    <tbody>  
-                      @foreach($data as $val)
-                        <tr>
-                          <td>
-                            {{$val->bkk_nota}}
-                          </td>
-                          <td><?php echo date('d/m/Y',strtotime($val->bkk_tgl));?></td>
-                          <td>{{$val->nama}}</td>
-                          <td>{{$val->jenisbayar}}</td>
-                          @if($val->bkk_keterangan == '')
-                          <td align="center"> - </td>
-                          @else
-                          <td>{{$val->bkk_keterangan}}</td>
-                          @endif
-                          <td align="right">{{'Rp ' . number_format($val->bkk_total,2,',','.')}}</td>
-                          <td align="right">
-                            <input type="hidden" class="id_print" value="{{$val->bkk_id}}">
-                            <a title="Print" class="" onclick="printing('{{ $val->bkk_id }}')" >
-                              <i class="fa fa-print" aria-hidden="true">&nbsp; Print</i>
-                            </a> 
-                          </td>
-                          {{-- <td align="center"><input type="checkbox" class="checker"></td> --}}
-                          <td align="center" class="form-inline"> 
-
-                              <a title="Edit" class="btn btn-xs btn-success" href={{url('buktikaskeluar/edit/'.$val->bkk_id.'')}}>
-                              <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                              </a> 
-                              <a title="Hapus" class="btn btn-xs btn-success" onclick="hapus({{$val->bkk_id}})">
-                              <i class="fa fa-trash" aria-hidden="true"></i>
-                              </a> 
-                          </td> 
-                        </tr>
-                        @endforeach
-                    </tbody>
-                   
-                  </table>
+                  <div class="col-sm-6" style="margin-bottom: 20px">
+                    <table cellpadding="3" cellspacing="0" border="0" class="table">
+                      <tr id="filter_col1" data-column="0">
+                          <td>Cabang</td>
+                          <td align="center"><input type="text" class="column_filter form-control" id="col0_filter"></td>
+                      </tr>
+                      <tr id="filter_col2" data-column="1">
+                          <td>Jenis Pembayaran</td>
+                          <td align="center"><input type="text" class="column_filter form-control" id="col1_filter"></td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="col-sm-12">
+                    <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
+                      <thead align="center">
+                       <tr>
+                          <th> No. BKK </th>
+                          <th> Tanggal </th>
+                          <th> Nama Cabang </th>
+                          <th> Jenis Bayar</th>
+                          <th> Keterangan </th> 
+                          <th> Total </th>   
+                          <th> Print </th>   
+                          {{-- <th> Allow Edit </th> --}}
+                          <th> Aksi </th>
+                      </tr>
+                      </thead>
+                      <tbody>  
+                        
+                      </tbody>
+                    </table>
+                  </div>
                 </div><!-- /.box-body -->
 
                 <div class="box-footer">
@@ -142,20 +127,44 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-     tableDetail = $('.tbl-penerimabarang').DataTable({
-            responsive: true,
-            searching: true,
-            //paging: false,
-            "pageLength": 10,
-            "language": dataTableLanguage,
-            "order": [[ 0, "desc" ]]
-            // "ordering": false
-    });
+   tableDetail = $('.tbl-penerimabarang').DataTable({
+         processing: true,
+          // responsive:true,
+          serverSide: true,
+          ajax: {
+              url:'{{ route("datatable_bkk") }}',
+          },
+          columnDefs: [
+            {
+               targets: 5,
+               className:'right'
+            },
+            {
+               targets: 6,
+               className:'center'
+            },
+            {
+               targets:7,
+               className:'center'
+            },
+          ],
+          "columns": [
+          { "data": "bkk_nota" },
+          { "data": "bkk_tgl" },
+          { "data": "cabang" },
+          { "data": "jenisbayar"},
+          { "data": "bkk_keterangan" },
+          { "data": "tagihan" },
+          { "data": "print"},
+          { "data": "aksi" },
+          
+          ]
+  });
 
-    $('.date').datepicker({
-        autoclose: true,
-        format: 'yyyy-mm-dd'
-    });
+  $('.date').datepicker({
+      autoclose: true,
+      format: 'yyyy-mm-dd'
+  });
     
   function hapus(id){
     swal({

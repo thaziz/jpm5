@@ -270,6 +270,7 @@ class posting_pembayaran_Controller extends Controller
         $akun_bank = DB::table("masterbank")
                        ->where('mb_id',$request->akun_bank)
                        ->first();
+
         $temp = DB::table('kwitansi')
                   ->where('k_kode_cabang',$request->cabang)
                   ->where('k_nomor_posting','=',null)

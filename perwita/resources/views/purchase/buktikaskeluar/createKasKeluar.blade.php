@@ -76,7 +76,7 @@
                             </tr>
                             <tr>
                               <td width="120">Tanggal</td>
-                              <td colspan="2"><input value="{{ $now }}" class="form-control tanggal" type="text" readonly="" name="tanggal"></td>
+                              <td colspan="2"><input value="{{ $now }}" readonly="" class="form-control tanggal" type="text" name="tanggal"></td>
                             </tr>
                             <tr>
                                 @if(Auth::user()->punyaAkses('Bukti Kas Keluar','cabang'))
@@ -580,9 +580,49 @@
              PENANDA_UM UNTUK MENCARI DIV UANG MUKA 
   --}}
   var valid = [0];
-  $('.tanggal').datepicker({
-    format:'dd/mm/yyyy'
+  $('.tanggal').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
+      $('.tanggal').change();
   });
+
+  $('.tanggal').change(function () {
+      var cabang = $('.cabang').val();
+      var tanggal = $('.tanggal').val();
+      $.ajax({
+          url:baseUrl + '/buktikaskeluar/nota_bukti_kas',
+          type:'get',
+          data:{cabang,tanggal},
+          dataType:'json',
+          success:function(data){
+             $('.nota').val(data.nota);
+          },
+          error:function(data){
+          }
+      }); 
+
+      $.ajax({
+          url:baseUrl + '/buktikaskeluar/akun_kas_dropdown',
+          type:'get',
+          data:{cabang},
+          success:function(data){
+             $('.kas_td').html(data);
+          },
+          error:function(data){
+          }
+      }); 
+
+      $.ajax({
+          url:baseUrl + '/buktikaskeluar/akun_biaya_dropdown',
+          type:'get',
+          data:{cabang},
+          success:function(data){
+             $('.akun_biaya_td').html(data);
+          },
+          error:function(data){
+          }
+      }); 
+
+  });
+
 
   $('.periode').daterangepicker({
     format:'dd-mm-yyyy'
@@ -649,10 +689,14 @@
 
   $(document).ready(function(){
     var cabang = $('.cabang').val();
+    var tanggal = $('.tanggal').val();
+
+
+
     $.ajax({
         url:baseUrl + '/buktikaskeluar/nota_bukti_kas',
         type:'get',
-        data:{cabang},
+        data:{cabang,tanggal},
         dataType:'json',
         success:function(data){
            $('.nota').val(data.nota);
@@ -689,10 +733,11 @@
 
   $('.cabang').change(function(){
     var cabang = $('.cabang').val();
+    var tanggal = $('.tanggal').val();
     $.ajax({
         url:baseUrl + '/buktikaskeluar/nota_bukti_kas',
         type:'get',
-        data:{cabang},
+        data:{cabang,tanggal},
         dataType:'json',
         success:function(data){
            $('.nota').val(data.nota);

@@ -256,7 +256,7 @@ class subconController extends Controller
          
               // Copy carbon dikirimkan ke address "haruna@sairenji" 
               // dengan nama penerima "Haruna Sairenji"
-              $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+              $mail->cc('puspitadury1987@gmail.com', 'ADMIN JPM');
          
               $mail->subject('KONTRAK VERIFIKASI');
             });

@@ -559,7 +559,8 @@
                          Request::is('sales/tarif_cabang_dokumen/*') ? 'active' : ''}} "><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Dokumen</a>
                         </li>
                         @endif
-                        @if(Auth::user()->PunyaAkses('Tarif Penerus Kilogram','aktif'))
+
+                        @if(Auth::user()->PunyaAkses('Tarif Cabang Kilogram','aktif'))
                         <li>
                             <a class="sidebar master-perusahaan 
 
@@ -567,6 +568,7 @@
                          Request::is('sales/tarif_cabang_kilogram/*') ? 'active' : ''}}" href="{{ url('sales/tarif_cabang_kilogram')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Kilogram</a>
                         </li>
                         @endif
+                        
                         @if(Auth::user()->PunyaAkses('Tarif Cabang Koli','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
@@ -1515,14 +1517,14 @@
                             " href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
                             </li>
                             @endif
-                            @if(Auth::user()->PunyaAkses('Delivery Order New','aktif'))
+                            @if(Auth::user()->PunyaAkses('Delivery Order Paket','aktif'))
                             <li >
                             <a class="sidebar master-perusahaan 
                             {{Request::is('sales/deliveryorder_paket') ? 'active' : '' || 
                             Request::is('sales/deliveryorder_paket/create') ? 'active' : '' || 
                             Request::is('sales/deliveryorder_paket/*') ? 'active' : ''}} 
 
-                            " href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO) New</a>
+                            " href="{{ url('sales/deliveryorder_paket')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO) New</a>
                             </li>
                             @endif
                             @if(Auth::user()->PunyaAkses('Delivery Order Kargo','aktif'))

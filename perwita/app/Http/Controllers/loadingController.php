@@ -44,7 +44,7 @@ class loadingController extends Controller
     {
     	$year  = Carbon::now()->format('Y'); 
 		$month = Carbon::now()->format('m');  	
-		$now   = Carbon::now()->format('d-m-Y');
+		$now   = Carbon::now()->format('d/m/Y');
 		$cabang = DB::table('cabang')
 					->get();
 		$angkutan = DB::table('tipe_angkutan')
@@ -177,7 +177,7 @@ class loadingController extends Controller
 				  	'bpk_jenis_biaya' 	 => $request->jenis_pembiayaan,
 				  	'bpk_pembiayaan'  	 => $request->pembiayaan,
 				  	'bpk_total_tarif' 	 => round($request->total_tarif,2),
-				  	'bpk_tanggal'     	 => Carbon::parse($request->tN)->format('Y-m-d'),
+				  	'bpk_tanggal'     	 => Carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 				  	'bpk_nopol'		  	 => strtoupper($request->nopol),
 				  	'bpk_status'	  	 => 'Released',
 				  	'bpk_status_pending' => 'APPROVED',	
@@ -347,7 +347,7 @@ class loadingController extends Controller
 					$save_patty = DB::table('patty_cash')
 						   ->insert([
 						   		'pc_id'			  => $cari_id_pc,
-						   		'pc_tgl'		  => Carbon::now(),
+						   		'pc_tgl'		  => str_replace('/', '-', $request->tN),
 						   		'pc_ref'	 	  => 10,
 						   		'pc_akun' 		  => $acc->id_akun,
 						   		'pc_akun_kas' 	  => $request->nama_kas,
@@ -401,14 +401,14 @@ class loadingController extends Controller
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
-							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
-							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 						}
 					}
@@ -576,12 +576,12 @@ class loadingController extends Controller
 					->first();
 
 
-			$akun = DB::table('d_akun')
+			$cari_akun = DB::table('d_akun')
 					  ->where('id_akun','like','5299'.'%')
 					  ->where('kode_cabang',$request->cabang)
 					  ->first();
 
-			if ($akun == null) {
+			if ($cari_akun == null) {
 				return response()->json(['status'=>3,'data'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia']);
 			}
 
@@ -606,7 +606,7 @@ class loadingController extends Controller
 				  	'bpk_jarak'	 		 => 0,
 				  	'bpk_harga_bbm'	     => 0,
 					'bpk_jenis_bbm'      => 0,
-					'bpk_acc_biaya'      => $akun->id_akun,
+					'bpk_acc_biaya'      => $cari_akun->id_akun,
 				  	'updated_by'		 => Auth::user()->m_name,
 				]);
 
@@ -724,7 +724,7 @@ class loadingController extends Controller
 				//IKI TOTAL KABEH HARGANE
 				$total_harga=array_sum($harga_array);
 
-				$cari_akun = substr($cari_persen->kode_akun, 0,4);
+				$cari_akun = substr($cari_akun->id_akun, 0,4);
 
 
 
@@ -811,14 +811,14 @@ class loadingController extends Controller
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
-							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
-							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 						}
 					}

@@ -275,6 +275,11 @@
        <td>:</td>
        <td>{{$data['judul'][0]->fp_noinvoice}}</td>
      </tr>
+     <tr>
+        <td> Jatuh Tempo </td>
+        <td> : </td>
+        <td> {{ Carbon\Carbon::parse($data['judul'][0]->fp_jatuhtempo)->format('d-M-Y ') }} </td>
+     </tr>
    </table>
    </div>
    <div>
@@ -306,9 +311,9 @@
           <th class="textcenter top bot">Keterangan</th>
      </tr>
      
-     @foreach($data['barang'] as $brg)
+     @foreach($data['barang'] as $key=>$brg)
      <tr>
-       <td class="right">1</td>
+       <td class="right"> {{$key + 1}} </td>
        <td class="textleft right">{{$brg->kode_item}}</td>
        <td class="textleft right">{{$brg->nama_masteritem}}</td>
        <td class="textright right">{{$brg->fpdt_qty}}</td>
@@ -384,12 +389,19 @@
               @if($data['judul'][0]->fp_ppn == 0)
                 0%
               @else
-              {{$data['judul'][0]->fp_ppn}}
+              {{$data['judul'][0]->fp_inputppn}} %
               @endif
             </td>
           </tr>
           <tr>
-           <td class="textleft">&nbsp;</td>
+            <td class="textleft">PPH </td>
+             <td class="textright"> 
+              @if($data['judul'][0]->fp_pph == 0)
+                0%
+              @else
+              {{$data['judul'][0]->fp_nilaipph}} %
+              @endif
+            </td>
           </tr>
           <tr>
            <td class="textleft">&nbsp;</td>
@@ -412,7 +424,7 @@
            <td class="textright"> {{number_format($data['judul'][0]->fp_ppn, 2)}}</td>
           </tr>
           <tr>
-           <td class="textright">&nbsp;</td>
+           <td class="textright"> {{number_format($data['judul'][0]->fp_pph, 2)}}</td>
           </tr>
            <tr>
            <td class="textright">&nbsp;</td>

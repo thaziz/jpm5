@@ -119,8 +119,7 @@
                       </tr>
                       <br>
                       </table>
-                      <div id="container" style="height: 400px"></div>
-                      <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-special cetak" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </a> </div>
+                       <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-special cetak" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </a> </div>
                       <div class="row" style="margin-top: -39px;margin-left: 55px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="pdf()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
                       <div class="row" style="margin-top: -39px;margin-left: 136px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
                     </div>
@@ -163,36 +162,14 @@
 
     var table;
   
-   var awal = 0;
+    var awal = 0;
     $('.debet').each(function(){
-    var total = parseInt($(this).val());
-    awal += total;
-    // console.log(awal);
+        var total = parseInt($(this).val());
+        awal += total;
+        // console.log(awal);
     });
-    $('#total_debet').val(accounting.formatMoney(awal,"",0,'.',','));
 
-  var kred = 0;
-    $('.kredit').each(function(){
-    var total = parseInt($(this).val());
-    kred += total;
-    // console.log(kred);
-  });
-  $('#total_kredit').val(accounting.formatMoney(kred,"",0,'.',','));
-
-
-  var saldo = 0;
-  $('.debet').each(function(){
-    var par = $(this).parents('tr');
-    var kredit = $(par).find('.kredit').val();
-    var hasil = $(this).val() - kredit;
-    saldo += hasil;
-    $(par).find('.saldo').val(accounting.formatMoney(saldo,"",0,'.',','));
-  })
-  $('#total_total').val(accounting.formatMoney(saldo,"",0,'.',','));
-
-
-
-     $('.date').datepicker({
+    $('.date').datepicker({
         autoclose: true,
         format: 'yyyy-mm',
         minViewMode:1,
@@ -200,7 +177,7 @@
            
 
 
-      function cetak(){
+    function cetak(){
       var asw=[];
        var asd = table.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
@@ -227,30 +204,6 @@
       });
     }
 
-
-Highcharts.chart('container', {
-    chart: {
-        type: 'column',
-        width: 1000
-    },
-    title: {
-        text: 'Total Piutang Seluruh cutomer'
-    },
-
-    xAxis: {
-        categories: ['Saldo'],
-                
-    },
-    plotOptions:{
-      series:{
-        pointWidth:40
-      }
-    },
-    series: [{
-        data: [saldo]
-    }]
-});
-
  function cari(){
 
   var awal = $('#min').val();
@@ -260,9 +213,37 @@ Highcharts.chart('container', {
   var laporan = $('#laporan').val();
 
  if (laporan == 'Rekap per Customer') {
-  alert('a');
- }else if (laporan == 'Rekap per Customer Detail') {
 
+   $.ajax({
+      data:$('#search').serialize(),
+      type:'get',
+      url:baseUrl + '/cari_kartupiutang/cari_kartupiutang',
+      success : function(data){
+        $('#disini').html(data);
+        $('#container').hide();
+
+        $('.saldo').each(function(i){
+            var saldo_index = $('.saldo_'+i).val();
+
+            $('.debet_'+i).each(function(a){ 
+              saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+i).val());
+
+              console.log(parseFloat($('.kredit_'+0).val()));
+              console.log(i); 
+              var parent = $(this).parents('tr');
+              $(parent).find('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
+            })  
+
+           
+
+        })
+
+      }
+    })
+
+   
+ 
+ }else if (laporan == 'Rekap per Customer Detail') {
   alert('b');
  }else if (laporan == 'Rekap per akun') {
 
@@ -271,15 +252,7 @@ Highcharts.chart('container', {
 
   // alert('d');
  }
-    $.ajax({
-      data:$('#search').serialize(),
-      type:'get',
-      url:baseUrl + '/cari_kartupiutang/cari_kartupiutang',
-      success : function(data){
-        $('#disini').html(data);
-        $('#container').hide();
-      }
-    })
+    
  }
 
  // function pdf(){

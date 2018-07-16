@@ -240,6 +240,7 @@ Route::get('fakturpembelian/hasilum' , 'PurchaseController@hasilum');
 Route::post('fakturpembelian/bayaruangmuka' , 'PurchaseController@bayaruangmuka');
 Route::get('fakturpembelian/datagroupitem' , 'PurchaseController@datagroupitem');
 Route::get('fakturpembelian/jurnalumum' , 'PurchaseController@lihatjurnalumum');
+Route::post('fakturpembelian/getprovinsi' , 'PurchaseController@getprovinsi');
 
 
 //BIAYA PENERUS AGEN
@@ -310,7 +311,7 @@ Route::get('fakturpembelian/pilih_kontrak', 'BiayaPenerusController@pilih_kontra
 Route::get('fakturpembelian/pilih_kontrak_all', 'BiayaPenerusController@pilih_kontrak_all');
 Route::get('fakturpembelian/caripodsubcon', 'BiayaPenerusController@caripodsubcon');
 Route::get('fakturpembelian/subcon_save', 'BiayaPenerusController@subcon_save');
-Route::get('fakturpembelian/subcon_save', 'BiayaPenerusController@subcon_save');
+Route::post('fakturpembelian/subcon_save', 'BiayaPenerusController@subcon_save');
 Route::get('fakturpembelian/subcon_update', 'BiayaPenerusController@subcon_update');
 Route::get('master_subcon/cari_kontrak', 'BiayaPenerusController@cari_kontrak');
 Route::get('fakturpembelian/getpembayaransubcon', 'BiayaPenerusController@getpembayaransubcon')->name('getpembayaransubcon');
@@ -322,8 +323,9 @@ Route::get('fakturpembelian/getpembayaranvendor', 'pembayaran_vendor_controller@
 Route::get('fakturpembelian/cari_do_vendor', 'pembayaran_vendor_controller@cari_do_vendor');
 Route::get('fakturpembelian/append_vendor', 'pembayaran_vendor_controller@append_vendor');
 Route::get('fakturpembelian/save_vendor', 'pembayaran_vendor_controller@save_vendor');
-Route::get('fakturpembelian/vendor_um', 'pembayaran_vendor_controller@vendor_um');
+Route::get('fakturpembelian/update_vendor', 'pembayaran_vendor_controller@update_vendor');
 Route::post('fakturpembelian/save_vendor_um', 'pembayaran_vendor_controller@save_vendor_um');
+Route::post('fakturpembelian/update_vendor_um', 'pembayaran_vendor_controller@update_vendor_um');
 Route::get('fakturpembelian/cari_do_vendor_edit', 'pembayaran_vendor_controller@cari_do_vendor_edit');
 
 
@@ -386,6 +388,7 @@ Route::get('buktikaskeluar/edit/{id}', 'kasKeluarController@edit');
 Route::post('buktikaskeluar/update_form', 'kasKeluarController@update_form');
 Route::post('buktikaskeluar/update_patty', 'kasKeluarController@update_patty');
 Route::get('buktikaskeluar/jurnal', 'kasKeluarController@jurnal');
+Route::get('buktikaskeluar/datatable_bkk', 'kasKeluarController@datatable_bkk')->name('datatable_bkk');
 
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
@@ -1181,6 +1184,7 @@ Route::get('master_sales/customer/tabel', 'master_sales\customer_Controller@tabl
 Route::get('master_sales/customer/get_data', 'master_sales\customer_Controller@get_data');
 Route::get('master_sales/customer/save_data', 'master_sales\customer_Controller@save_data');
 Route::post('master_sales/customer/hapus_data', 'master_sales\customer_Controller@hapus_data');
+Route::get('master_sales/customer/check_status', 'master_sales\customer_Controller@check_status');
 // end customer
 
 
@@ -1336,7 +1340,7 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 // Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_controller@get_data_detail');
 // Route::get('sales/deliveryorderform/tabel_item', 'sales\do_controller@table_data_item');
 // Route::get('sales/deliveryorderform/get_item', 'sales\do_controller@get_item');
-// Route::get('sales/deliveryorderform/cari_harga', 'sales\do_controller@cari_harga');
+// Route::get('sales/deliveryorderform/cari_harga', 'sales\do_controller@cari_harga');  
 // Route::get('sales/deliveryorderform/cari_customer', 'sales\do_controller@cari_customer');
 // Route::get('sales/deliveryorderform/cari_kontrak', 'sales\do_controller@cari_kontrak');
 // Route::get('sales/deliveryorderform/cari_tipe', 'sales\do_controller@cari_tipe');
@@ -1434,6 +1438,8 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller
       Route::get('sales/deliveryorder_paket/cari_nomor_deliveryorder_paket', 'do_new\do_paketController@cari_nomor_deliveryorder_paket')->name('cari_nomor_deliveryorder_paket');
       //cari kecamatan
       Route::get('sales/deliveryorder_paket/cari_kecamatan_deliveryorder_paket', 'do_new\do_paketController@cari_kecamatan_deliveryorder_paket')->name('cari_kecamatan_deliveryorder_paket');
+      //cari harga do reguler / tanpa vendor / kontrak
+      Route::get('sales/deliveryorder_paket/cari_harga_reguler_deliveryorder_paket', 'do_new\do_paketController@cari_harga_reguler_deliveryorder_paket')->name('cari_harga_reguler_deliveryorder_paket');
       //cari vendor
       Route::get('sales/deliveryorder_paket/cari_vendor_deliveryorder_paket', 'do_new\do_paketController@cari_vendor_deliveryorder_paket')->name('cari_vendor_deliveryorder_paket');
       //replace vendor
@@ -1565,7 +1571,7 @@ Route::get('sales/invoice_form/{nomor}/nota', 'sales\invoice_Controller@cetak_no
 Route::get('sales/invoice_form/{nilai}/terbilang', 'sales\invoice_Controller@penyebut');
 Route::get('sales/datatable_invoice1', 'sales\invoice_Controller@datatable_invoice')->name('datatable_invoice1');
 Route::get('sales/invoice/jurnal', 'sales\invoice_Controller@jurnal1');
-
+Route::get('sales/cari_faktur_pajak', 'sales\invoice_Controller@cari_faktur_pajak');
 // end invoice
 // invoice pembetulan
 Route::get('sales/invoice_pembetulan', 'sales\invoice_pembetulan_controller@index');
@@ -2950,10 +2956,11 @@ Route::get('sales/laporan','laporanutamaController@seluruhlaporan');
 
 Route::get('logout', 'mMemberController@logout');
 
-//mutasi piutang
+//mutasi hutang
 Route::get('laporan_pembelian/mutasi_hutang', 'laporan_pembelian\mutasi_hutang_Controller@index');
-Route::get('laporan_pembelian/mutasi_hutang/tampil_data', 'laporan_pembelian\mutasi_hutang_Controller@tampil_mutasi_hutang');
-// end mutasi piutang
+Route::get('laporan_pembelian/mutasi_hutang/cari_ajax_mutasi_hutang', 'laporan_pembelian\mutasi_hutang_Controller@cari_ajax_mutasi_hutang')->name('cari_ajax_mutasi_hutang');
+Route::get('laporan_pembelian/mutasi_hutang/cari_ajax_mutasi_hutang_detail', 'laporan_pembelian\mutasi_hutang_Controller@cari_ajax_mutasi_hutang_detail')->name('cari_ajax_mutasi_hutang_detail');
+// end mutasi hutang
 
 // //pembelian
 // Route::get('reportbayarkas/reportbayarkas', 'LaporanPurchaseController@reportbayarkas');

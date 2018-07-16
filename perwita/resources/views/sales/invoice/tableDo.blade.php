@@ -100,7 +100,7 @@
                     <td>{{$val->tanggal}}</td>
                     <td>{{$val->nama_customer}}</td>
                     <td>{{$val->keterangan_tarif}}</td>
-                    <td align="right"> {{number_format($val->total, 2, ",", ".")}}</td>
+                    <td align="right"> {{number_format($val->total_net, 2, ",", ".")}}</td>
                     <td align="center">
                         <input class="tanda" type="checkbox"  name="tanda">
                     </td>

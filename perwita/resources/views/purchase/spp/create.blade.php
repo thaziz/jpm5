@@ -15,6 +15,10 @@
     pointer-events: none;
     opacity: 1;
 }
+
+.chosen-container .chosen-results {
+    max-height: 120px !important;
+}
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -68,7 +72,7 @@
                                     <table class="table table-striped" id='table-utama'>
                                           <tr>
                                             <td width="200px"> Kode SPP </td>
-                                            <td> <input type='text' class="input-sm form-control nospp" readonly="" name="nospp"></td>
+                                            <td> <input type='text' class="input-sm form-control nospp"  name="nospp"></td>
                                             <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
                                           </tr>
                                           
@@ -328,7 +332,7 @@
              }
 
 
-      $(".supplier").chosen(config);
+//      $(".suipd").chosen(config);
       $(".kndraan").chosen(config);
     })
      },2000);
@@ -1264,7 +1268,7 @@
           rowStr += " <option value=''>  -- Pilih Barang -- </option> ";            
                      $.each(arrItem, function(i , obj) {
                         supbtn = arrSupid;
-                        rowStr +=  "<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+" style='display:block'>"+ obj.nama_masteritem+"</option>";
+                        rowStr +=  "<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+" style='display:block'>"+obj.kode_item+" - "+ obj.nama_masteritem+"</option>";
                       });
          
 
@@ -1281,7 +1285,7 @@
 
                     "<td> <input type='text' class='input-sm form-control hrga hargabrg"+no+" harga"+counterId+"' name='harga[]' data-id='"+counterId+"' data-no='"+no+"'/> <br> <div> </div> </td>"+ //harga
 
-                    "<td> <select id='supselect' class='input-sm form-control select2 suipd suipl sup"+no+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' style='width: 100%;' data-no='"+no+"' name='supplier[]' required=> <option value=''> -- Pilih Data Supplier -- </option> </select> <br> <div class='supduplicate supduplicate"+no+"'> </div> </td>"; //supplier
+                    "<td> <select id='supselect' class='form-control chosen-select-width suipd suipl sup"+no+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' style='width: 100%;' data-no='"+no+"' name='supplier[]' required=> <option value=''> -- Pilih Data Supplier -- </option> </select> <br> <div class='supduplicate supduplicate"+no+"'> </div> </td>"; //supplier
 
                   /*  "<td class='pembayaranken'> <div class='form-group'> <div class='col-sm-8'> <input type='text' class='form-control bayar"+counterId+"' name='bayar[]' data-id='"+counterId+"'> </div> <label class='col-sm-2 col-sm-2 control-label'> Hari </label></div></td>";*/ //bayar
 
@@ -1350,7 +1354,7 @@
 
             var val = $(this).val();
             var id = $(this).data('id');
-            var string = val.split(",");
+            var string = val.supduplicate(",");
             var bayar = string[1];
             var harga = string[5];
             var contract = string[4];
@@ -1468,7 +1472,11 @@
                       
                         $('.sup'+nobarang).append("<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+nobarang+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected id='selectsup'>"+obj.no_supplier+"-"+obj.nama_supplier+"</option>");
                       });
-                      
+                        
+                      $('.sup' + nobarang).trigger("chosen:updated");
+                      $('.sup' + nobarang).trigger("liszt:updated");
+
+
                         supbtn = arrSupid;
 
 
@@ -1535,6 +1543,9 @@
                         $('.hargabrg' + nobarang).val(addCommas(hrgbrg));
                      
                       });
+
+                      $('.sup' + nobarang).trigger("chosen:updated");
+                      $('.sup' + nobarang).trigger("liszt:updated");
                     }
              
                 }
@@ -1602,7 +1613,7 @@
       					var rowSup = "<tr id='supp-"+idtrsup+"' class='data-supplier supp-"+counterId+"'>";
       					rowSup += "<td></td> <td></td>  <td> </td> <td></td> <td>  </td>"+
       							"<td> <input type='text' name='harga[]' data-id='"+counterId+"' class='input-sm form-control hrga hargabrg"+idtrsup+" harga"+counterId+"' data-id="+counterId+" data-no="+removesup+" '/></td>"+ //harga
-      							"<td><select id='supselect' class='form-control select2  suipd suipl sup"+idtrsup+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' style='width: 100%;' data-no='"+idtrsup+"' name='supplier[]' required=> <option value=''> -- Pilih Supplier -- </option>"; //SUpplier
+      							"<td><select id='supselect' class='form-control chosen-select select2 suipd suipl sup"+idtrsup+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' style='width: 100%;' data-no='"+idtrsup+"' name='supplier[]' required=> <option value=''> -- Pilih Supplier -- </option>"; //SUpplier
       					
                 if(hasilsupp.length > 0){ //TERIKAT KONTRAK
                       $.each(hasilsupp, function(i , obj) {

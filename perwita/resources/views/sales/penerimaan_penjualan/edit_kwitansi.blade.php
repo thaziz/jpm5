@@ -158,7 +158,7 @@
                                     </select>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr hidden="">
                                 <td style="width:110px;">Jenis Tarif</td>
                                 <td colspan="20" class="jenis_tarif_td disabled">
                                     <select  class="form-control jenis_tarif" onchange="nota_tes()" name="jenis_tarif" >
@@ -204,14 +204,14 @@
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Akun</td>
-                                <td colspan="3" class="akun_bank_td">
+                                <td colspan="3">
                                     <select class="form-control chosen-select-width cb_akun_h" id="cb_akun_h" name="cb_akun_h" >
                                         <option value="0">Pilih - Akun Bank</option>
                                         @foreach($akun_bank as $val)
                                         @if($data->k_kode_akun == $val->mb_kode)
-                                            <option selected="" value="{{$val->mb_kode}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
+                                            <option selected="" value="{{$val->mb_id}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
                                         @else
-                                            <option value="{{$val->mb_kode}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
+                                            <option value="{{$val->mb_id}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
                                         @endif
                                         @endforeach
                                     </select>

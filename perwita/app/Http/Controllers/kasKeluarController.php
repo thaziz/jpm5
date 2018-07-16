@@ -80,6 +80,21 @@ class kasKeluarController extends Controller
 	}
 
 	public function index(){
+		$cabang = DB::table('cabang')
+					->get();
+
+		$jenis_bayar = DB::table('jenisbayar')
+						 ->where('idjenisbayar','!=',1)
+						 ->where('idjenisbayar','!=',5)
+						 ->where('idjenisbayar','!=',10)
+						 ->orderBy('idjenisbayar','ASC')
+						 ->get();
+		
+		return view('purchase.buktikaskeluar.indexKasKeluar',compact('cabang','jenis_bayar'));
+	}
+
+	public function datatable_bkk($value='')
+	{
 		$cabang = Auth::user()->kode_cabang;
 		if (Auth::user()->punyaAkses('Bukti Kas Keluar','all')) {
 			$data = DB::table('bukti_kas_keluar')
@@ -95,11 +110,57 @@ class kasKeluarController extends Controller
 				  ->orderBy('bkk_id','ASC')
 				  ->get();
 		}
-		
-		return view('purchase.buktikaskeluar.indexKasKeluar',compact('data'));
-	}
 
-	
+        $data = collect($data);
+        // return $data;
+        return Datatables::of($data)
+                        ->addColumn('aksi', function ($data) {
+                            $a = '';
+                            if($data->bkk_status == 'RELEASED' or Auth::user()->punyaAkses('Bukti Kas Keluar','ubah')){
+                                if(cek_periode(carbon::parse($data->bkk_tgl)->format('m'),carbon::parse($data->bkk_tgl)->format('Y') ) != 0){
+                                  $a = '<a title="Edit" class="btn btn-xs btn-success" href='.url('buktikaskeluar/edit').'/'.$data->bkk_id.'>
+                              			<i class="fa fa-arrow-right" aria-hidden="true"></i></a> ';
+                                }
+                            }else{
+                              $a = '';
+                            }
+
+                            $c = '';
+                            if($data->bkk_status == 'RELEASED' or Auth::user()->punyaAkses('Bukti Kas Keluar','hapus')){
+                                if(cek_periode(carbon::parse($data->bkk_tgl)->format('m'),carbon::parse($data->bkk_tgl)->format('Y') ) != 0){
+                                  $c = '<a title="Hapus" class="btn btn-xs btn-success" onclick="hapus(\''.$data->bkk_id.'\')">
+		                               <i class="fa fa-trash" aria-hidden="true"></i>
+		                               </a>';
+                                }
+                            }else{
+                              $c = '';
+                            }
+                            return $a . $c  ;
+                                   
+                        })
+                    
+                        ->addColumn('cabang', function ($data) {
+                          $kota = DB::table('cabang')
+                                    ->get();
+
+                          for ($i=0; $i < count($kota); $i++) { 
+                            if ($data->bkk_comp == $kota[$i]->kode) {
+                                return $kota[$i]->nama;
+                            }
+                          }
+                        })
+                        ->addColumn('tagihan', function ($data) {
+                          return number_format($data->bkk_total,2,',','.'  ); 
+                        })
+                        ->addColumn('print', function ($data) {
+                           return $a = '<input type="hidden" class="id_print" value="'.$data->bkk_id.'">
+                            <a title="Print" class="" onclick="printing(\''.$data->bkk_id.'\')" >
+                            <i class="fa fa-print" aria-hidden="true">&nbsp; Print</i>
+                            </a>';
+                        })
+                        ->addIndexColumn()
+                        ->make(true);
+	}
 
 	public function create()
 	{
@@ -121,13 +182,14 @@ class kasKeluarController extends Controller
 
 	public function nota_bukti_kas(request $req)
 	{
-		$bulan = Carbon::now()->format('m');
-	    $tahun = Carbon::now()->format('y');
+
+		$bulan = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('m');
+	    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
 
 	    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),13) as id from bukti_kas_keluar
 	                                    WHERE bkk_comp = '$req->cabang'
-	                                    AND to_char(created_at,'MM') = '$bulan'
-	                                    AND to_char(created_at,'YY') = '$tahun'");
+	                                    AND to_char(bkk_tgl,'MM') = '$bulan'
+	                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
 
 	    $index = (integer)$cari_nota[0]->id + 1;
 	    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
@@ -235,13 +297,13 @@ class kasKeluarController extends Controller
 				if ($cari_nota->updated_by == $user) {
 					return 'Data Sudah Ada';
 				}else{
-					$bulan = Carbon::now()->format('m');
-				    $tahun = Carbon::now()->format('y');
+					$bulan = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('m');
+				    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
 
 				    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),13) as id from bukti_kas_keluar
 				                                    WHERE bkk_comp = '$req->cabang'
-				                                    AND to_char(created_at,'MM') = '$bulan'
-				                                    AND to_char(created_at,'YY') = '$tahun'");
+				                                    AND to_char(bkk_tgl,'MM') = '$bulan'
+				                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
 
 				    $index = (integer)$cari_nota[0]->id + 1;
 				    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
@@ -1090,13 +1152,13 @@ class kasKeluarController extends Controller
 				if ($cari_nota->updated_by == $user) {
 					return 'Data Sudah Ada';
 				}else{
-					$bulan = Carbon::now()->format('m');
-				    $tahun = Carbon::now()->format('y');
+					$bulan = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('m');
+				    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
 
 				    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),13) as id from bukti_kas_keluar
 				                                    WHERE bkk_comp = '$req->cabang'
-				                                    AND to_char(created_at,'MM') = '$bulan'
-				                                    AND to_char(created_at,'YY') = '$tahun'");
+				                                    AND to_char(bkk_tgl,'MM') = '$bulan'
+				                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
 
 				    $index = (integer)$cari_nota[0]->id + 1;
 				    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
@@ -1279,14 +1341,14 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
-                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->ed_keterangan);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
-                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->ed_keterangan);
 						}
 					}else if (substr($akun[$i],0, 1)>1) {
 
@@ -1295,15 +1357,15 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
-							$data_akun[$i]['jrdt_statusdk'] = 'K';
-                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->ed_keterangan);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
-							$data_akun[$i]['jrdt_statusdk'] = 'D';
-                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->ed_keterangan);
 						}
 					}
 
@@ -1368,14 +1430,14 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
-                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->ed_keterangan);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
-                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->ed_keterangan);
 						}
 					}else if (substr($akun[$i],0, 2) == 14) {
 
@@ -1385,14 +1447,14 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
-                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->ed_keterangan);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
 							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
-                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->ed_keterangan);
 						}
 					}
 

@@ -303,7 +303,20 @@ class PurchaseController extends Controller
 			$hasiltahun = $tanggal[0];
 			
 		//	dd($hasilbulan);
-		
+
+			$nospp = $request->nospp;
+			$dataspp = DB::select("select * from spp where spp_nospp = '$nospp'");
+				if(count($dataspp) != 0){
+						$explode = explode("/", $dataspp[0]->spp_nospp);
+						$idspp3 = $explode[2];
+					
+						$idspp4 = (int)$idspp3 + 1;
+						$akhirspp = str_pad($idspp4, 3, '0', STR_PAD_LEFT);
+						$nospp = $explode[0] .'/' . $explode[1] . '/'  . $akhirspp;
+				}
+				else {
+					$nospp = $nospp;
+				}
 
 			$tbb = $request->total_biaya;
 			$hasiltbb = str_replace(',', '', $tbb);
@@ -315,7 +328,7 @@ class PurchaseController extends Controller
 
 			$spp = new spp_purchase();
 
-			$spp->spp_nospp = strtoupper($request->nospp);
+			$spp->spp_nospp = strtoupper($nospp);
 			$spp->spp_id = strtoupper($idspp);
 			$spp->spp_tgldibutuhkan = strtoupper($request->tgl_dibutuhkan);
 			$spp->spp_cabang = strtoupper($request->cabang);
@@ -611,7 +624,7 @@ class PurchaseController extends Controller
 
 	public function detailspp ($id) {
 
-		$data['spp'] = DB::select("select * from confirm_order, spp, masterdepartment, cabang where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
+		/*$data['spp'] = DB::select("select * from confirm_order, spp, masterdepartment, cabang where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
 
 		$idgudang = $data['spp'][0]->spp_lokasigudang;
 
@@ -624,8 +637,46 @@ class PurchaseController extends Controller
 
 		$data['masterkendaraan'] = DB::select("select * from tb_vhc");
 
-		$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sppd_kendaraan , sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$idgudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem");
+		$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sppd_kendaraan , sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$idgudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem");*/
+
+		$data['spp'] = DB::select("select * from confirm_order, spp, cabang,masterdepartment where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
+	/*	dd($data['spp']);*/
+
 		
+		$lokasigudang = $data['spp'][0]->spp_lokasigudang;
+		$tipespp = $data['spp'][0]->spp_tipe;
+		if($tipespp == 'NS'){
+			$namatipe = 'NON STOCK';
+		}
+		else if($tipespp == 'S'){
+			$namatipe = 'STOCK';
+		}
+		else {
+			$namatipe = 'JASA';
+		}
+		
+
+		if($tipespp != 'J'){
+			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and  sppd_supplier = idsup order by sppd_seq asc");
+
+			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem ");
+
+			$data['codt'] = DB::select("select *  from confirm_order, masteritem, spp, confirm_order_dt LEFT OUTER JOIN stock_gudang on codt_kodeitem = sg_item where confirm_order_dt.codt_idco=co_id and co_idspp = '$id' and co_idspp = spp_id and codt_kodeitem = kode_item");
+
+			$data['gudang'] = DB::select("select mg_namagudang from spp, mastergudang where 	spp_lokasigudang = mg_id and spp_id = '$id'");
+
+		}
+		else {
+			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and  sppd_supplier = idsup order by sppd_seq asc");
+
+			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, unitstock from  masteritem , spp_detail  where sppd_idspp = '$id' and kode_item = sppd_kodeitem ");
+			
+			$data['codt'] = DB::select("select *  from confirm_order, masteritem, spp, confirm_order_dt where confirm_order_dt.codt_idco=co_id and co_idspp = '$id' and co_idspp = spp_id and codt_kodeitem = kode_item");
+		}
+		
+		$data['kendaraan'] = DB::select("select distinct sppd_kendaraan, merk, vhccde from spp_detail, tb_vhc where sppd_kendaraan = id_vhc and sppd_idspp = '$id'");
+		$data['countkendaraan'] = count($data['kendaraan']);
+
 		$data['spptb'] =  DB::select("select * from spp_totalbiaya,spp, supplier where spptb_idspp = '$id' and spptb_idspp = spp.spp_id and spptb_supplier = idsup");
 		
 		$data['sppd_brg'] = DB::select("select sppd_kodeitem from spp_detail where sppd_idspp='$id'");
@@ -657,7 +708,7 @@ class PurchaseController extends Controller
 
 
 		$data['countbrg'] = array_count_values($barang);
-		
+		$data['tipespp'] = $tipespp;
 
 		/*dd($data);*/
 	
@@ -1088,7 +1139,11 @@ class PurchaseController extends Controller
 					$codt->codt_supplier = $request->supplier[$idsup];	
 				}*/
 				
-				$codt->codt_harga = $request->harga[$i];
+				$replacehrg = str_replace(',', '', $request->harga[$i]);
+				$codt->codt_harga = $replacehrg;
+				$codt->codt_tolak = $request->keterangantolak[$i];
+				
+
 				$codt->save();
 				$n++;	
 		}	
@@ -5744,6 +5799,17 @@ public function purchase_order() {
 		return json_encode($data);
 
 	}
+
+		public function getprovinsi(Request $request){
+			$idcabang = $request->cabang;
+			$data['cabang'] = DB::Select("select * from cabang where kode = '$idcabang'");
+			$idkota = $data['cabang'][0]->id_kota;
+
+			$data['provinsi'] = DB::select("select * from kota where id = '$idkota'");
+			$provinsi = $data['provinsi'][0]->id_provinsi;
+
+			return $provinsi;
+		}
 
 		public function update_fp(Request $request){
 			return DB::transaction(function() use ($request) {   
