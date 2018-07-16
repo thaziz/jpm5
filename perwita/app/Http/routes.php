@@ -389,6 +389,7 @@ Route::post('buktikaskeluar/update_form', 'kasKeluarController@update_form');
 Route::post('buktikaskeluar/update_patty', 'kasKeluarController@update_patty');
 Route::get('buktikaskeluar/jurnal', 'kasKeluarController@jurnal');
 Route::get('buktikaskeluar/datatable_bkk', 'kasKeluarController@datatable_bkk')->name('datatable_bkk');
+Route::get('buktikaskeluar/append_table', 'kasKeluarController@append_table');
 
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
@@ -1806,6 +1807,7 @@ Route::get('laporan_sales/analisa_piutang/tampil_data', 'laporan_sales\analisa_p
 
 //mutasi piutang
 Route::get('laporan_sales/mutasi_piutang', 'laporan_sales\mutasi_piutang_Controller@index');
+Route::get('laporan_sales/ajax_mutasipiutang_rekap/ajax_mutasipiutang_rekap', 'laporan_sales\mutasi_piutang_Controller@ajax_mutasipiutang_rekap');
 Route::get('laporan_sales/mutasi_piutang/tampil_data', 'laporan_sales\mutasi_piutang_Controller@tampil_mutasi_piutang');
 // end mutasi piutang
 
