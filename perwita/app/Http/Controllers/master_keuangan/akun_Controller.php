@@ -258,7 +258,7 @@ class akun_Controller extends Controller
         DB::table('d_akun')->where("id_akun", '=', $id)->delete();
         DB::table('d_akun_saldo')->where("id_akun", '=', $id)->delete();
         Session::flash('sukses', "Data Akun Berhasil Dihapus.");
-        return redirect(route("akun.index"));
+        return redirect(route("akun.index").'?cab='.$_GET["cab"]);
     }
 
     public function cek_parrent($id){
