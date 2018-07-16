@@ -93,6 +93,27 @@ class kasKeluarController extends Controller
 		return view('purchase.buktikaskeluar.indexKasKeluar',compact('cabang','jenis_bayar'));
 	}
 
+	public function append_table(request $req)
+	{
+		if ($req->cabang != 0) {
+			$cabang = 'and bkk_comp = '."'$req->cabang'";
+		}else{
+			$cabang = '';
+		}
+
+		if ($req->jenis_bayar != 0) {
+			$jenisbayar = 'and bkk_jenisbayar = '."'$req->cabang'";
+		}else{
+			$jenisbayar = '';
+		}
+		if (Auth::user()->punyaAkses('Bukti Kas Keluar','all')) {
+			$sql = "SELECT * FROM bukti_kas_keluar 
+					JOIN jenisbayar on idjenisbayar = bkk_jenisbayar
+					join cabang on kode = bkk_comp
+					where bkk_nota != '0' $cabang $jenisbayar";
+		}
+		return DB::select($sql);
+	}
 	public function datatable_bkk($value='')
 	{
 		$cabang = Auth::user()->kode_cabang;
