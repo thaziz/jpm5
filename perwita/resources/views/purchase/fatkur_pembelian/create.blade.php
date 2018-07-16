@@ -5103,20 +5103,25 @@
 
 
         $(document).on('click','.removes-btn',function(){
+          alert('test');
           var id = $(this).data('id');
          
 
           var parent = $('#data-item-'+id);
-          biayaitem2 = $('.biayaitem' + id).val();
+          biayaitem2 = $('.nettoitem2' + id).val();
           biayaitem  = biayaitem2.replace(/,/g, '');
          
           jumlahharga = $('.jumlahharga').val();
+        
+
           replacejumlah = jumlahharga.replace(/,/g,'');
          
-            val2 = $('.biayaitem' + id).val();
+            val2 = $('.nettoitem2' + id).val();
+            
            // alert(val2);
             replaceval2 = val2.replace(/,/g,'');
 
+       //   alert(replaceval2);
             hasil = parseFloat(parseFloat(replacejumlah) - parseFloat(replaceval2)).toFixed(2);
 
           
@@ -5136,6 +5141,7 @@
                 jumlah = hasil;
               }
 
+              alert(jumlah);
               //DPP
                $('.dpp').val(addCommas(jumlah));
                $('.dpp').val(addCommas(jumlah));
@@ -5158,9 +5164,9 @@
 
               if(pph != 0) {
                 inputpph = $('.inputpph').val();
-                 hasilpph = parseFloat((inputpph / 100) * numeric2);
-                 hasilpph2 =   hasil.toFixed(2); 
-                 pph2 = $('.hasilpph').val(addCommas(hasilpph2));
+                 hasilpph = parseFloat((inputpph / 100) * numeric2).toFixed(2);
+                /* hasilpph2 =   hasil.toFixed(2); */
+                 pph2 = $('.hasilpph').val(addCommas(hasilpph));
                  pph = $('.hasilpph').val();
               }
 
@@ -5269,11 +5275,12 @@
                   }
                 } 
                 else {
+
                     $('.nettohutang').val(addCommas(numeric2));
                     $('.sisahutang').val(addCommas(numeric2));
                     $('.dpp').val(addCommas(numeric2));
-                    $('.inputppn').val('');
-                    $('.hasilppn').val('');
+                  /*  $('.inputppn').val('');
+                    $('.hasilppn').val('');*/
 
                      totaljumlah2 = $('.totaljumlah').val();
                          if(totaljumlah2 != ''){
@@ -6073,16 +6080,35 @@
      // alert($this);
       var string = $this.split(",");
       var harga = string[1];
-        var acc_persediaan = string[3];
+      var acc_persediaan = string[3];
       var acc_hpp = string[4];
     
-      $('.acc_biaya').val(acc_hpp);
-      $('.acc_persediaan').val(acc_persediaan);
+     /* $('.acc_biaya').val(acc_hpp);
+      $('.acc_persediaan').val(acc_persediaan);*/
       $('.harga').val(addCommas(harga));
 
       qty = $('.qty').val();
       diskon = $('.diskon').val();
 
+      cabang = $('.cabang').val();
+      $.ajax({
+        data : {cabang},
+        url : baseUrl + '/fakturpembelian/getprovinsi',
+        dataType : 'json',
+        type : 'post',
+        success : function(data){
+           cabang = $('.cabang').val();
+         
+          accpersediaan = acc_persediaan.substr(0,4);
+          accpersediaan = accpersediaan + data + cabang;
+          $('.acc_persediaan').val(accpersediaan);
+
+          acchpp = acc_hpp.substr(0,4);
+          acchpp = acc_hpp + data + cabang;
+
+          $('.acc_biaya').val(acchpp);
+        }
+      })
       if(qty != '') {
         /*  if(diskon != '') {
             hasil = parseFloat(qty * harga);  

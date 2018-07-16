@@ -72,6 +72,9 @@ class MasterPurchaseController extends Controller
 		return view('purchase/master/master_item/create', compact('data','akun'));
 	}
 
+
+	
+
 	public function getaccpersediaan(Request $request){
 		$updatestock = $request->updatestock;
 		$groupitem = $request->groupitem;
