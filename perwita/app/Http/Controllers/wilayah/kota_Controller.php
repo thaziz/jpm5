@@ -85,8 +85,14 @@ class kota_Controller extends Controller
     }
 
     public function index(){
+        $id = DB::table('kota')->max('id');
+        if ($id == null) {
+            $id = 1;
+        }else{
+            $id += 1;
+        }
         $provinsi = DB::select(DB::raw(" SELECT id,nama FROM provinsi p ORDER BY nama ASC "));
-        return view('wilayah.kota.index',compact('provinsi'));
+        return view('wilayah.kota.index',compact('provinsi','id'));
     }
 
 }

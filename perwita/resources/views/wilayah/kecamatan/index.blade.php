@@ -114,7 +114,7 @@
                                 <tr>
                                     <td style="width:120px; padding-top: 0.4cm">Id</td>
                                     <td>
-                                        <input type=number name="id" class="form-control" id="ed_id" >
+                                        <input type=text name="id" class="form-control" id="ed_id" >
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }} " id="ed_token" >
                                         <input type="hidden" name="ed_id_old" class="form-control" id="ed_id_old" >
                                         <input type="hidden" name="crud" class="form-control" id="crud" >
@@ -212,7 +212,8 @@
     $(document).on("click","#btn_add",function(){
         $("#modal").modal("show");
         $("#ed_id").focus();
-        $("#ed_id").val('');
+        $("#ed_id").val('{{ $id }}');
+        $("#ed_id").attr('readonly',true);
         $("#ed_kecamatan").val('');
         $("#cb_provinsi").val('').trigger('chosen:updated');
         $("#crud").val("N");
@@ -340,9 +341,10 @@
             {
                 if(data.crud == 'N'){
                     if(data.result == 1){
-                        var table = $('#table_data').DataTable();
-                        table.ajax.reload( null, false );
+                        // var table = $('#table_data').DataTable();
+                        // table.ajax.reload( null, false );
                         $("#modal").modal('hide');
+                        location.reload();
                         $("#btn_add").focus();
                     }else{
                         alert("Gagal menyimpan data!");
