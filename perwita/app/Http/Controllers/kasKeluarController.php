@@ -95,6 +95,12 @@ class kasKeluarController extends Controller
 
 	public function append_table(request $req)
 	{
+		$cab = $req->cabang;
+		$jenisbayar = $req->jenis_bayar;
+		return view('purchase.buktikaskeluar.table_index',compact('cab','jenisbayar'));
+	}
+	public function datatable_bkk(request $req)
+	{
 		if ($req->cabang != 0) {
 			$cabang = 'and bkk_comp = '."'$req->cabang'";
 		}else{
@@ -102,28 +108,20 @@ class kasKeluarController extends Controller
 		}
 
 		if ($req->jenis_bayar != 0) {
-			$jenisbayar = 'and bkk_jenisbayar = '."'$req->cabang'";
+			$jenisbayar = 'and bkk_jenisbayar = '."'$req->jenis_bayar'";
 		}else{
 			$jenisbayar = '';
 		}
 		if (Auth::user()->punyaAkses('Bukti Kas Keluar','all')) {
-			$sql = "SELECT * FROM bukti_kas_keluar 
-					JOIN jenisbayar on idjenisbayar = bkk_jenisbayar
-					join cabang on kode = bkk_comp
-					where bkk_nota != '0' $cabang $jenisbayar";
-		}
-		return DB::select($sql);
-	}
-	public function datatable_bkk($value='')
-	{
-		$cabang = Auth::user()->kode_cabang;
-		if (Auth::user()->punyaAkses('Bukti Kas Keluar','all')) {
-			$data = DB::table('bukti_kas_keluar')
-				  ->join('jenisbayar','idjenisbayar','=','bkk_jenisbayar')
-				  ->join('cabang','kode','=','bkk_comp')
-				  ->orderBy('bkk_id','ASC')
-				  ->get();
+			$sql = "SELECT * FROM bukti_kas_keluar JOIN jenisbayar on idjenisbayar = bkk_jenisbayar join cabang on kode = bkk_comp where bkk_nota != '0' $cabang $jenisbayar";
 		}else{
+			$sql = '';
+		}
+
+		if (Auth::user()->punyaAkses('Bukti Kas Keluar','all')) {
+			$data = DB::select($sql);
+		}else{
+			$cabang = Auth::user()->kode_cabang;
 			$data = DB::table('bukti_kas_keluar')
 				  ->join('jenisbayar','idjenisbayar','=','bkk_jenisbayar')
 				  ->join('cabang','kode','=','bkk_comp')

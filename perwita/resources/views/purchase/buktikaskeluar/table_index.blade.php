@@ -20,12 +20,15 @@
 <script type="text/javascript">
 
   $(document).ready(function(){
+    var cabang = '{{$cab}}';
+    var jenis_bayar = '{{$jenisbayar}}';
     tableDetail = $('.tbl-penerimabarang').DataTable({
          processing: true,
           // responsive:true,
           serverSide: true,
           ajax: {
               url:'{{ route("datatable_bkk") }}',
+              data:{cabang,jenis_bayar}
           },
           columnDefs: [
             {
