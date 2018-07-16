@@ -69,33 +69,30 @@
                     <table cellpadding="3" cellspacing="0" border="0" class="table">
                       <tr id="filter_col1" data-column="0">
                           <td>Cabang</td>
-                          <td align="center"><input type="text" class="column_filter form-control" id="col0_filter"></td>
+                          <td align="center">
+                            <select onchange="filtering()" class="form-control cabang chosen-select-width">
+                              <option value="0">Pilih - Cabang </option>
+                              @foreach ($cabang as $a)
+                                <option value="{{$a->kode}}">{{$a->nama}}</option>
+                              @endforeach
+                            </select>
+                          </td>
                       </tr>
                       <tr id="filter_col2" data-column="1">
                           <td>Jenis Pembayaran</td>
-                          <td align="center"><input type="text" class="column_filter form-control" id="col1_filter"></td>
+                          <td align="center">
+                            <select onchange="filtering()" class="form-control jenis_bayar chosen-select-width">
+                              <option value="0">Pilih - Jenis </option>
+                              @foreach ($jenis_bayar as $a)
+                                <option value="{{$a->idjenisbayar}}">{{$a->jenisbayar}}</option>
+                              @endforeach
+                            </select>
+                          </td>
                       </tr>
                     </table>
                   </div>
-                  <div class="col-sm-12">
-                    <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
-                      <thead align="center">
-                       <tr>
-                          <th> No. BKK </th>
-                          <th> Tanggal </th>
-                          <th> Nama Cabang </th>
-                          <th> Jenis Bayar</th>
-                          <th> Keterangan </th> 
-                          <th> Total </th>   
-                          <th> Print </th>   
-                          {{-- <th> Allow Edit </th> --}}
-                          <th> Aksi </th>
-                      </tr>
-                      </thead>
-                      <tbody>  
-                        
-                      </tbody>
-                    </table>
+                  <div class="col-sm-12 append_table">
+                    
                   </div>
                 </div><!-- /.box-body -->
 
@@ -127,39 +124,47 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-   tableDetail = $('.tbl-penerimabarang').DataTable({
-         processing: true,
-          // responsive:true,
-          serverSide: true,
-          ajax: {
-              url:'{{ route("datatable_bkk") }}',
-          },
-          columnDefs: [
-            {
-               targets: 5,
-               className:'right'
-            },
-            {
-               targets: 6,
-               className:'center'
-            },
-            {
-               targets:7,
-               className:'center'
-            },
-          ],
-          "columns": [
-          { "data": "bkk_nota" },
-          { "data": "bkk_tgl" },
-          { "data": "cabang" },
-          { "data": "jenisbayar"},
-          { "data": "bkk_keterangan" },
-          { "data": "tagihan" },
-          { "data": "print"},
-          { "data": "aksi" },
-          
-          ]
+$(document).ready(function(){
+  var cabang = $('.cabang').val();
+  var jenis_bayar = $('.jenis_bayar').val();
+  $.ajax({
+      url:baseUrl + '/buktikaskeluar/append_table',
+      data:{cabang,jenis_bayar},
+      type:'get',
+      success:function(data){
+        $('.append_table').html(data);
+      },
+      error:function(data){
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
   });
+})
+
+function filtering() {
+  var cabang = $('.cabang').val();
+  var jenis_bayar = $('.jenis_bayar').val();
+  $.ajax({
+      url:baseUrl + '/buktikaskeluar/append_table',
+      data:{cabang,jenis_bayar},
+      type:'get',
+      success:function(data){
+        $('.append_table').html(data);
+      },
+      error:function(data){
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+}
 
   $('.date').datepicker({
       autoclose: true,

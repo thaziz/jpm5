@@ -468,7 +468,7 @@ class KasController extends Controller
 
 
 	    $cari_nota = DB::table('bukti_kas_keluar')
-					   ->where('bkk_nota',$req->nota)
+					   ->where('bkk_nota',$request->nota)
 					   ->first();
 		if ($cari_nota != null) {
 			if ($cari_nota->updated_by == $user) {
@@ -490,7 +490,7 @@ class KasController extends Controller
 				$nota = 'BK' . $bulan . $tahun . '/' . $request->cabang . '/' .$index;
 			}
 		}elseif ($cari_nota == null) {
-			$nota = $req->nota;
+			$nota = $request->nota;
 		}
 	 
 	    $total_penerus_float = array_sum($request->penerus);

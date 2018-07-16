@@ -86,9 +86,15 @@ class kecamatan_Controller extends Controller
     }
 
     public function index(){
-        // return 'a';
+        $id = DB::table('kecamatan')->max('id');
+        if ($id == null) {
+            $id = 1;
+        }else{
+            $id += 1;
+        }
+
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota p ORDER BY nama ASC "));
-        return view('wilayah.kecamatan.index',compact('kota'));
+        return view('wilayah.kecamatan.index',compact('kota','id'));
     }
 
 }

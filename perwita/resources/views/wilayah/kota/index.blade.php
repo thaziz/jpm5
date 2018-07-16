@@ -212,7 +212,8 @@
     $(document).on("click","#btn_add",function(){
         $("#modal").modal("show");
         $("#ed_id").focus();
-        $("#ed_id").val('');
+        $("#ed_id").val({{ $id }});
+        $("#ed_id").attr('readonly',true);
         $("#ed_kota").val('');
         $("#cb_provinsi").val('').trigger('chosen:updated');
         $("#crud").val("N");
@@ -339,8 +340,9 @@
             {
                 if(data.crud == 'N'){
                     if(data.result == 1){
-                        var table = $('#table_data').DataTable();
-                        table.ajax.reload( null, false );
+                        // var table = $('#table_data').DataTable();
+                        // table.ajax.reload( null, false );
+                        location.reload();
                         $("#modal").modal('hide');
                         $("#btn_add").focus();
                     }else{
