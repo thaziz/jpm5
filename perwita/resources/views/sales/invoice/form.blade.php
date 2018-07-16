@@ -692,7 +692,6 @@ function hitung_total_tagihan(){
         table_detail.$('.dd_biaya_tambahan').each(function(){
             temp_bp += parseFloat($(this).val());
         });
-
         table_detail.$('.dd_diskon').each(function(){
             temp_diskon += parseFloat($(this).val());
         });
@@ -703,6 +702,7 @@ function hitung_total_tagihan(){
         if (netto_diskon1 < 0) {
             netto_diskon1 =0;
         }
+        console.log(temp_total+temp_bp);
         $('.ed_total').val(accounting.formatMoney(temp_total+temp_bp,"",2,'.',','));
         $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
         $('.netto_total').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));

@@ -44,7 +44,7 @@ class loadingController extends Controller
     {
     	$year  = Carbon::now()->format('Y'); 
 		$month = Carbon::now()->format('m');  	
-		$now   = Carbon::now()->format('d-m-Y');
+		$now   = Carbon::now()->format('d/m/Y');
 		$cabang = DB::table('cabang')
 					->get();
 		$angkutan = DB::table('tipe_angkutan')
@@ -177,7 +177,7 @@ class loadingController extends Controller
 				  	'bpk_jenis_biaya' 	 => $request->jenis_pembiayaan,
 				  	'bpk_pembiayaan'  	 => $request->pembiayaan,
 				  	'bpk_total_tarif' 	 => round($request->total_tarif,2),
-				  	'bpk_tanggal'     	 => Carbon::parse($request->tN)->format('Y-m-d'),
+				  	'bpk_tanggal'     	 => Carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 				  	'bpk_nopol'		  	 => strtoupper($request->nopol),
 				  	'bpk_status'	  	 => 'Released',
 				  	'bpk_status_pending' => 'APPROVED',	
@@ -347,7 +347,7 @@ class loadingController extends Controller
 					$save_patty = DB::table('patty_cash')
 						   ->insert([
 						   		'pc_id'			  => $cari_id_pc,
-						   		'pc_tgl'		  => Carbon::now(),
+						   		'pc_tgl'		  => str_replace('/', '-', $request->tN),
 						   		'pc_ref'	 	  => 10,
 						   		'pc_akun' 		  => $acc->id_akun,
 						   		'pc_akun_kas' 	  => $request->nama_kas,

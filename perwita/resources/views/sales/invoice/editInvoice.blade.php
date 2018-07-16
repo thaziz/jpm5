@@ -1024,6 +1024,7 @@ function hitung_pajak_lain(){
         var acc_piutang=$(".grup_item").find(':selected').data('accpiutang'); 
         var pajak_lain=$("#pajak_lain").find(':selected').data('pph'); 
         var ed_customer=$("#customer").val(); 
+        var ed_pendapatan=$(".ed_pendapatan").val(); 
       swal({
         title: "Apakah anda yakin?",
         text: "Update Data Invoice!",
@@ -1050,7 +1051,8 @@ function hitung_pajak_lain(){
                +'&'+$('.table_pajak :input').serialize()
                +'&acc_piutang='+acc_piutang
                +'&pajak_lain='+pajak_lain
-               +'&ed_customer='+ed_customer,
+               +'&ed_customer='+ed_customer
+               +'&ed_pendapatan='+ed_pendapatan,
           success:function(response){
             
 

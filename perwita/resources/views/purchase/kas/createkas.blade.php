@@ -274,13 +274,41 @@
 <script src="{{ asset('assets/vendors/chosen/chosen.jquery.js') }}"></script>
 <script type="text/javascript">
 var datatable;
-$('.tanggal').datepicker({
-  format:'dd-mm-yyyy'
-});
-  $(document).ready(function(){
+
+$('.tanggal').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
+    $('.tanggal').change();
+}); 
+
+$('.tanggal').change(function () {
+    var tanggal = $('.tanggal').val();
+    var cabang = $('.cabang_select').val();
+    $.ajax({
+        url:baseUrl + '/biaya_penerus/ganti_nota',
+        data:{cabang,tanggal},
+        dataType:'json',
+        success:function(data){
+            $('.no_trans').val(data.nota);
+        },
+        error:function(){
+            // location.reload();
+        }
+    })
+
+    $.ajax({
+        url:baseUrl + '/biaya_penerus/akun_kas',
+        data:{cabang},
+        success:function(data){
+            $('.akun_kas_td').html(data);
+        },
+        error:function(){
+            // location.reload();
+        }
+    })
+ });
+$(document).ready(function(){
     // $('.hid').attr('hidden',true);
     $('.search').attr('disabled',true);
-
+    var tanggal = $('.tanggal').val();
     var config1 = {
                '.chosen-select'           : {},
                '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -296,7 +324,7 @@ $('.tanggal').datepicker({
     var cabang = $('.cabang_select').val();
     $.ajax({
         url:baseUrl + '/biaya_penerus/ganti_nota',
-        data:{cabang},
+        data:{cabang,tanggal},
         dataType:'json',
         success:function(data){
             $('.no_trans').val(data.nota);
@@ -316,16 +344,15 @@ $('.tanggal').datepicker({
             location.reload();
         }
     })
-
-
-  });
+});
    var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp '});
 
    function ganti_nota() {
      var cabang = $('.cabang_select').val();
+     var tanggal = $('.tanggal').val();
       $.ajax({
           url:baseUrl + '/biaya_penerus/ganti_nota',
-          data:{cabang},
+          data:{cabang,tanggal},
           dataType:'json',
           success:function(data){
               $('.no_trans').val(data.nota);
