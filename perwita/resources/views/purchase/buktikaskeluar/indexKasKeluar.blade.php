@@ -69,11 +69,25 @@
                     <table cellpadding="3" cellspacing="0" border="0" class="table">
                       <tr id="filter_col1" data-column="0">
                           <td>Cabang</td>
-                          <td align="center"><input type="text" class="column_filter form-control" id="col0_filter"></td>
+                          <td align="center">
+                            <select class="form-control cabang chosen-select-width column_filter">
+                              <option></option>
+                              @foreach ($cabang as $a)
+                                <option value="{{$a->kode}}">{{$a->nama}}</option>
+                              @endforeach
+                            </select>
+                          </td>
                       </tr>
                       <tr id="filter_col2" data-column="1">
                           <td>Jenis Pembayaran</td>
-                          <td align="center"><input type="text" class="column_filter form-control" id="col1_filter"></td>
+                          <td align="center">
+                            <select class="form-control jenis_bayar chosen-select-width column_filter">
+                              <option></option>
+                              @foreach ($jenis_bayar as $a)
+                                <option value="{{$a->idjenisbayar}}">{{$a->jenisbayar}}</option>
+                              @endforeach
+                            </select>
+                          </td>
                       </tr>
                     </table>
                   </div>
@@ -127,7 +141,10 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-   tableDetail = $('.tbl-penerimabarang').DataTable({
+
+
+  $(document).ready(function() {
+    tableDetail = $('.tbl-penerimabarang').DataTable({
          processing: true,
           // responsive:true,
           serverSide: true,
@@ -160,11 +177,22 @@
           
           ]
   });
-
+   
+  $('.column_filter').on( 'change', function () {
+    console.log('asd');
+      filterColumn( $(this).parents('tr').attr('data-column') );
+  });
+  });
   $('.date').datepicker({
       autoclose: true,
       format: 'yyyy-mm-dd'
   });
+
+  function filterColumn ( i ) {
+    $('.tbl-penerimabarang').DataTable().column( i ).search(
+        $('#col'+i+'_filter').val(),
+    ).draw();
+}
     
   function hapus(id){
     swal({
