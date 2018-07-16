@@ -233,10 +233,14 @@
 
 
                         <td> 
+                        @if($data['tipespp'] != 'J')
                         @if ($sppd->sg_qty == '')
                            Kosong
                         @else
                         {{$sppd->sg_qty}}
+                         @endif
+                         @else
+                          -
                          @endif
                          </td>
 

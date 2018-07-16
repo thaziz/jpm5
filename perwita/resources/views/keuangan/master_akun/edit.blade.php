@@ -64,58 +64,6 @@
 
     </table>
   </div>
-
-  <div class="col-md-12 m-t-lg" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
-    <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small> Informasi Saldo Akun</small></span>
-
-    <table id="form-table" width="100%" border="1" style="margin-top: 10px;">
-      <thead>
-        <tr>
-          <th class="text-center" width="26%" style="padding: 5px 0px; border:1px solid #eee">Keterangan</th>
-          <th class="text-center" width="37%" style="padding: 5px 0px; border:1px solid #eee">Debet</th>
-          <th class="text-center" style="padding: 5px 0px; border:1px solid #eee">Kredit</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-
-          <?php
-            $debet = 0; $kredit = 0;
-
-            if($data->akun_dka == "D"){
-              if($data->saldo >= 0){
-                $debet = $data->saldo;
-              }else{
-                $kredit = ($data->saldo * -1);
-              }
-            }
-
-            if($data->akun_dka == "K"){
-              if($data->saldo <= 0){
-                $kredit = $data->saldo;
-              }else{
-                $debet = ($data->saldo * -1);
-              }
-            }
-          ?>
-
-          <td class="text-center" style="padding: 3px 0px; border:1px solid #eee">Saldo Awal</td>
-          <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
-            <center>
-              <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_debet" value="{{ $debet }}" style="width: 85%;" id="DEBET" onkeyup="if(this.value != 'Rp 0,00'){$('#KREDIT').val(0)}">
-            </center>
-          </td>
-
-          <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
-            <center>
-              <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_kredit" value="{{ $kredit }}" style="width: 85%;" id="KREDIT" onkeyup="if(this.value != 'Rp 0,00'){$('#DEBET').val(0)}">
-            </center>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
   </form>
 
   <div class="col-md-12 m-t" style="border-top: 1px solid #eee; padding: 10px 10px 0px 0px;">

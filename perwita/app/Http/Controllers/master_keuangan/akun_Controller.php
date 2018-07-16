@@ -219,11 +219,8 @@ class akun_Controller extends Controller
 
         $data = DB::table("d_akun")
                 ->join("cabang", "cabang.kode", "=", "d_akun.kode_cabang")
-                ->join('d_akun_saldo', 'd_akun_saldo.id_akun', '=', 'd_akun.id_akun')
                 ->where("d_akun.id_akun", $parrent)
-                ->where("d_akun_saldo.bulan", date('m'))
-                ->where("d_akun_saldo.tahun", date('Y'))
-                ->select("d_akun.*", "cabang.nama as nama_cabang", "d_akun_saldo.saldo_akun as saldo")
+                ->select("d_akun.*", "cabang.nama as nama_cabang")
                 ->orderBy("id_akun")->first();
         $provinsi = DB::table("provinsi")->orderBy("nama", "asc")->get();
 
@@ -261,7 +258,7 @@ class akun_Controller extends Controller
         DB::table('d_akun')->where("id_akun", '=', $id)->delete();
         DB::table('d_akun_saldo')->where("id_akun", '=', $id)->delete();
         Session::flash('sukses', "Data Akun Berhasil Dihapus.");
-        return redirect(route("akun.index"));
+        return redirect(route("akun.index").'?cab='.$_GET["cab"]);
     }
 
     public function cek_parrent($id){

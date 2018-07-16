@@ -15,6 +15,10 @@
     pointer-events: none;
     opacity: 1;
 }
+
+.chosen-container .chosen-results {
+    max-height: 120px !important;
+}
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
