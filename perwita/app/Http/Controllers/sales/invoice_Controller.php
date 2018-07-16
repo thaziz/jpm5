@@ -95,7 +95,7 @@ class invoice_Controller extends Controller
                         ->addColumn('sisa', function ($data) {
                           return number_format($data->i_sisa_pelunasan,2,',','.'  ); 
                         })
-                        ->addColumn('print', function ($data) {
+                        ->addColumn('status', function ($data) {
                             if($data->i_statusprint == 'Released'){
                               return '<label class="label label-warning">'.$data->i_statusprint.'</label>';
                             }else{
@@ -579,6 +579,7 @@ public function simpan_invoice(request $request)
     if(count($delete->first())!=0){
         $delete->delete();
     }
+
     $dataItem=[];
     $cabang=$request->cb_cabang;
     $do_awal        = str_replace('/', '-', $request->do_awal);
@@ -1820,7 +1821,6 @@ public function hapus_invoice(request $request)
 
 public function update_invoice(request $request)
 {
-    // dd($request->all());
    
 
     return $this->simpan_invoice($request);
@@ -1947,11 +1947,11 @@ public function update_invoice(request $request)
       if ($file != null) {
 
         $id = str_replace('/', '-', $id);
-        $filename = 'invoice/faktur_pajak_'.$id.'.pdf';
+        $filename = 'invoice/faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension();
 
         $save = DB::table('invoice')
                   ->where('i_nomor',$request->invoice)
-                  ->update(['i_image_pajak' => 'faktur_pajak_'.$id.'.pdf','i_faktur_pajak'=>$request->nomor_pajak]);
+                  ->update(['i_image_pajak' => 'faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension(),'i_faktur_pajak'=>$request->nomor_pajak]);
         
 
         Storage::put($filename,file_get_contents($request->file('files')));

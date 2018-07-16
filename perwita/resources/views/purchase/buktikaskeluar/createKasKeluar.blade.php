@@ -76,7 +76,7 @@
                             </tr>
                             <tr>
                               <td width="120">Tanggal</td>
-                              <td colspan="2"><input value="{{ $now }}" class="form-control tanggal" type="text" name="tanggal"></td>
+                              <td colspan="2"><input value="{{ $now }}" readonly="" class="form-control tanggal" type="text" name="tanggal"></td>
                             </tr>
                             <tr>
                                 @if(Auth::user()->punyaAkses('Bukti Kas Keluar','cabang'))

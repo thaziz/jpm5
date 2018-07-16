@@ -225,31 +225,86 @@
 
 <script src="{{ asset('assets/vendors/chosen/chosen.jquery.js') }}"></script>
 <script type="text/javascript">
-
-  $('.tanggal').datepicker({
-    format:'dd-mm-yyyy'
-  });
 var datatable;
-  $(document).ready(function(){
-    // $('.hid').attr('hidden',true);
-    // $('.search').attr('disabled',true);
+$('.tanggal').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
+  $('.tanggal').change();
+}); 
 
-    var config1 = {
-               '.chosen-select'           : {},
-               '.chosen-select-deselect'  : {allow_single_deselect:true},
-               '.chosen-select-no-single' : {disable_search_threshold:10},
-               '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-               '.chosen-select-width1'     : {width:"100%"}
-             }
-
-              for (var selector in config1) {
-               $(selector).chosen(config1[selector]);
-              }  
-
+$('.tanggal').change(function () {
+    var tanggal = $('.tanggal').val();
     var cabang = $('.cabang_select').val();
     $.ajax({
         url:baseUrl + '/biaya_penerus/ganti_nota',
+        data:{cabang,tanggal},
+        dataType:'json',
+        success:function(data){
+            $('.no_trans').val(data.nota);
+        },
+        error:function(){
+            // location.reload();
+        }
+    })
+
+    $.ajax({
+        url:baseUrl + '/biaya_penerus/akun_kas',
         data:{cabang},
+        success:function(data){
+            $('.akun_kas_td').html(data);
+        },
+        error:function(){
+            // location.reload();
+        }
+    })
+ });
+
+
+$(document).ready(function(){
+  $('.search').attr('disabled',true);
+  var tanggal = $('.tanggal').val();
+  var config1 = {
+             '.chosen-select'           : {},
+             '.chosen-select-deselect'  : {allow_single_deselect:true},
+             '.chosen-select-no-single' : {disable_search_threshold:10},
+             '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+             '.chosen-select-width1'     : {width:"100%"}
+           }
+
+            for (var selector in config1) {
+             $(selector).chosen(config1[selector]);
+            }  
+
+  var cabang = $('.cabang_select').val();
+  $.ajax({
+      url:baseUrl + '/biaya_penerus/ganti_nota',
+      data:{cabang,tanggal},
+      dataType:'json',
+      success:function(data){
+          $('.no_trans').val(data.nota);
+      },
+      error:function(){
+          location.reload();
+      }
+  })
+
+  $.ajax({
+      url:baseUrl + '/biaya_penerus/akun_kas',
+      data:{cabang},
+      success:function(data){
+          $('.akun_kas_td').html(data);
+      },
+      error:function(){
+          location.reload();
+      }
+  })
+});
+ var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp '});
+
+ function ganti_nota() {
+    var cabang = $('.cabang_select').val();
+    var tanggal = $('.tanggal').val();
+    $.ajax({
+        url:baseUrl + '/biaya_penerus/ganti_nota',
+        data:{cabang,tanggal},
         dataType:'json',
         success:function(data){
             $('.no_trans').val(data.nota);
@@ -261,7 +316,7 @@ var datatable;
 
     $.ajax({
         url:baseUrl + '/biaya_penerus/akun_kas',
-        data:{cabang},
+        data:{cabang,tanggal},
         success:function(data){
             $('.akun_kas_td').html(data);
         },
@@ -269,36 +324,7 @@ var datatable;
             location.reload();
         }
     })
-
-
-  });
-   var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp '});
-
-   function ganti_nota() {
-     var cabang = $('.cabang_select').val();
-      $.ajax({
-          url:baseUrl + '/biaya_penerus/ganti_nota',
-          data:{cabang},
-          dataType:'json',
-          success:function(data){
-              $('.no_trans').val(data.nota);
-          },
-          error:function(){
-              location.reload();
-          }
-      })
-
-      $.ajax({
-          url:baseUrl + '/biaya_penerus/akun_kas',
-          data:{cabang},
-          success:function(data){
-              $('.akun_kas_td').html(data);
-          },
-          error:function(){
-              location.reload();
-          }
-      })
-   }
+ }
 
 
 
