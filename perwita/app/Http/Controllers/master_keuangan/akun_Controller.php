@@ -240,6 +240,9 @@ class akun_Controller extends Controller
 
         $akun = master_akun::find($request->kode_akun);
         $akun->nama_akun = $request->nama_akun;
+        $akun->akun_dka = $request->posisi_dk;
+        $akun->is_active = $request->status_aktif;
+        $akun->type_akun = $request->type_akun;
 
         if($akun->save()){
             return json_encode($response);

@@ -59,7 +59,7 @@
 					<table class="table table-bordered" id="table-parent">
 						<tr>
 							<td valign="middle" align="center" id="td-first">
-								<img src="{{ asset('/assets/img/dboard/logo/Capture.png') }}" alt="">
+								<img src="{{ asset('perwita/storage/app/upload/images.jpg') }}"  width="200" height="100">
 							</td>
 
 							<td valign="middle" align="center" id="td-first">

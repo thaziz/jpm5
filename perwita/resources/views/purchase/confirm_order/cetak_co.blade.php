@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Print Laporan Stock</title>
+	<title>Print Konfirmasi Barang</title>
 	<style>
 *{
 	font-family: arial;
@@ -110,8 +110,8 @@ table, td, th {
 <div class="div-width">
 	<table width="100%">
 		<tr>
-			<td width="125px"><img src="" width="125px" height="60px"></td>
-			<td align="center" width="380px"><h2>LAPORAN PENERIMAAN BARANG</h2></td>
+			<td width="125px"><img src="{{ asset('perwita/storage/app/upload/images.jpg') }}"  width="200" height="100"></td>
+			<td align="center" width="380px"><h2>LAPORAN KONFIRMASI BARANG</h2></td>
 			<td class="top" width="270px">
 				<div class="float-left">
 					No SPP :

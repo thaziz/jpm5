@@ -7656,12 +7656,12 @@ public function kekata($x) {
 		if(Auth::user()->punyaAkses('Konfirmasi Order','all')){
 			$fpg = DB::select("select * from fpg");
 			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar ");
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by idfpg desc");
 		}
 		else {
 			$fpg = DB::select("select * from fpg where fpg_cabang = '$cabang'");
 			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' ");
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' order by idfpg desc");
 		}
 	
 
@@ -7774,7 +7774,7 @@ public function kekata($x) {
 	public function printformfpg($id){
 		
 
-		$fpg = DB::select("select * from fpg, fpg_dt where idfpg ='$id' and fpgdt_idfpg = idfpg");
+		$fpg = DB::select("select * from fpg, fpg_dt where idfpg ='$id'");
 
 		$jenisbayar = $fpg[0]->fpg_jenisbayar;
 		if($jenisbayar == '2'){
@@ -7841,7 +7841,7 @@ public function kekata($x) {
 			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
 		}
 		
-		//dd($data);
+		/*dd($data);*/
 		return view('purchase/formfpg/fpg', compact('data'));
 	}
 

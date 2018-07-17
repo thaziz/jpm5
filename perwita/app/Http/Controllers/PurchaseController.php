@@ -65,6 +65,7 @@ class PurchaseController extends Controller
 		   return view('k', compact('users'));
 	}
 	public function cetak(Request $request,$id){
+		
        $data = $request;
        $request->catatan;
        $request->bayar;
@@ -74,13 +75,13 @@ class PurchaseController extends Controller
        $request->jumlahharga;
        $request->ppn;
        $lokasigudang = [];
-       // return $id;
-       $data2['po'] = DB::table('pembelian_order')
+      	$data2['po'] = DB::table('pembelian_order')
        								  ->join('supplier','supplier.idsup','=','pembelian_order.po_supplier')
        								  ->where('po_id','=',$id)
        								  ->get();
 
-		$data2['supplier'] = DB::select("select * from supplier where active='AKTIF'");
+       	$sup = $data2['po'][0]->po_supplier;
+		$data2['supplier'] = DB::select("select * from supplier where active='AKTIF' and idsup = $sup ");
 
 		$data2['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang, mastergudang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode and podt_lokasigudang = mg_id");
 
@@ -7656,12 +7657,12 @@ public function kekata($x) {
 		if(Auth::user()->punyaAkses('Konfirmasi Order','all')){
 			$fpg = DB::select("select * from fpg");
 			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar ");
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by idfpg desc");
 		}
 		else {
 			$fpg = DB::select("select * from fpg where fpg_cabang = '$cabang'");
 			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' ");
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' order by idfpg desc");
 		}
 	
 
@@ -7774,7 +7775,7 @@ public function kekata($x) {
 	public function printformfpg($id){
 		
 
-		$fpg = DB::select("select * from fpg, fpg_dt where idfpg ='$id' and fpgdt_idfpg = idfpg");
+		$fpg = DB::select("select * from fpg, fpg_dt where idfpg ='$id'");
 
 		$jenisbayar = $fpg[0]->fpg_jenisbayar;
 		if($jenisbayar == '2'){
@@ -7841,7 +7842,7 @@ public function kekata($x) {
 			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
 		}
 		
-		//dd($data);
+		/*dd($data);*/
 		return view('purchase/formfpg/fpg', compact('data'));
 	}
 

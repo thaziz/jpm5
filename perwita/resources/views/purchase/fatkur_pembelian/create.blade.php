@@ -4092,22 +4092,21 @@
           }
 
 
-
           var amount = $('.amount').val();
           var diskon = $('.diskon').val();
           var biaya = $('.biaya').val();
           var acc_biaya = $('.acc_biaya').val();
           var acc_persediaan = $('.acc_persediaan').val();
-          var keterangan = $('.keterangan').val();
+          var keterangan = $('.keterangan2').val();
          
-       
+      
           var penerimaan = $('.penerimaan').val();
           var nettoitem = $('.nettoitem').val();
           var grupitem = $('.groupitem').val();
           var string4 = grupitem.split(",");
           groupitem = string4[0];
           kodestock = string4[1];
-         // alert(penerimaan);
+        /*  alert(keterangan);*/
 
           $.ajax({
             type : "get",

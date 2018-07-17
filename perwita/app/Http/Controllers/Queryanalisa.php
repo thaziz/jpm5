@@ -1044,10 +1044,13 @@ class Queryanalisa extends Controller
 
 
 		$data['hutangsupplier'] = [];
+		$data['blmjatuhtempo'] = [];
 		for($g = 0; $g < count($data['akunhutang']); $g++){
 			$saldoawal = 0;
 			$sisapelunasan = 0;
 			$terbayar = 0;
+			$blmjatuhtempo = 0;
+
 			$akunhutangdagang = $values[$g]['idakun'];
 			$jenishutang = $values[$g]['jenisakun'];
 
@@ -1056,23 +1059,35 @@ class Queryanalisa extends Controller
 			$hutangsupplier2 = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$akunhutangdagang%'");
 			
 			//belum jatuh tempo;
-			$fpblmjatuhtempo = DB::select("select * from faktur_pembelian,fpg, bukti_bank_keluar, bukti_bank_keluar_detail, fpg_dt where fp_jatuhtempo BETWEEN '$tglawal' and '$tglakhir' and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and fpgdt_idfpg = idfpg and fpgdt_idfp = fp_idfaktur and fp_acchutang LIKE '$akunhutangdagang%' and fpgt_nofaktur = fp_nofaktur and fpg_agen = fp_supplier");
+			$fpblmjatuhtempo = DB::select("select * from faktur_pembelian,fpg, bukti_bank_keluar, bukti_bank_keluar_detail, fpg_dt where fp_jatuhtempo BETWEEN '$tglawal' and '$tglakhir' and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and fpgdt_idfpg = idfpg and fpgdt_idfp = fp_idfaktur and fp_acchutang LIKE '$akunhutangdagang%' and fpgdt_nofaktur = fp_nofaktur and fpg_agen = fp_supplier and bbk_tgl < '$tglakhir'");
 
-			$vcblmjatuhtempo = DB::select("select * from v_hutang, fpg, bukti_bank_keluar, bukti_bank_keluar_detail, fpg_dt where fp_jatuhtempo BETWEEN '$tglawal' and '$tglakhir' and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and fpgdt_idfpg = idfpg and fpgdt_idfp = v_id and v_acchutang LIKE '$akunhutangdagang%' and fpgdt_nofaktur = v_nomorbukti and fpg_agen = v_supid");
+			$vcblmjatuhtempo = DB::select("select * from v_hutang, fpg, bukti_bank_keluar, bukti_bank_keluar_detail, fpg_dt where v_tempo BETWEEN '$tglawal' and '$tglakhir' and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and fpgdt_idfpg = idfpg and fpgdt_idfp = v_id and v_acchutang LIKE '$akunhutangdagang%' and fpgdt_nofaktur = v_nomorbukti and fpg_agen = v_supid and bbk_tgl < '$tglakhir'");
+
+			$tigapuluhhari = $tglakhir->add(new DateInterval('P30D'));
 
 			if(count($fpblmjatuhtempo) != 0){
 				for($k = 0; $k < count($fpblmjatuhtempo); $k++){
-
+					$nominal = $fpblmjatuhtempo[$k]->bbkd_nominal;
+					$blmjatuhtempo = floatval($blmjatuhtempo) + floatval($nominal);
 				}
 			}
+
+			if(count($vcblmjatuhtempo) != 0){
+				for($i = 0; $i < count($vcblmjatuhtempo); $i++){
+					$nominal = $vcblmjatuhtempo[$i]->bbkd_nominal;
+					$blmjatuhtempo = floatval($blmjatuhtempo) + floatval($nominal);
+				}
+			}
+
+			
 
 
 			if(count($hutangsupplier1) != 0){
 				$hutangsupplier3= DB::select("select * from v_hutang where v_tgl BETWEEN '$tglawal' and '$tglakhir' and v_acchutang LIKE '$akunhutangdagang%'");
 				for($j = 0; $j < count($hutangsupplier3); $j++){
 					$netto = $hutangsupplier3[$j]->v_hasil;
-					$v_pelunasan = $hutangsupplier3[$j]->v_pelunasan
-					$sisapelunasan = floatval($pelunasan) + floatval($v_pelunasan);
+					$v_pelunasan = $hutangsupplier3[$j]->v_pelunasan;
+					$sisapelunasan = floatval($sisapelunasan) + floatval($v_pelunasan);
 					$saldoawal = floatval($saldoawal) + floatval($netto);
 					$terbayar = floatval($saldoawal) - floatval($sisapelunasan);
 				}
@@ -1082,13 +1097,14 @@ class Queryanalisa extends Controller
 				$hutangsupplier4 =DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$akunhutangdagang%'");
 				for($j = 0; $j < count($hutangsupplier2); $j++){
 					$netto = $hutangsupplier4[$j]->fp_netto;
-					$fp_pelunasan = $hutangsupplier4[$j]->fp_pelunasan;
+					$fp_pelunasan = $hutangsupplier4[$j]->fp_sisapelunasan;
 					$saldoawal = floatval($saldoawal) + floatval($netto);
-					$sisapelunasan = floatval($pelunasan) + floatval($fp_pelunasan);
+					$sisapelunasan = floatval($sisapelunasan) + floatval($fp_pelunasan);
 					$terbayar = floatval($saldoawal) -floatval($sisapelunasan);
 				}
 			}
 			
+		
 			if(count($hutangsupplier1) != 0 && count($hutangsupplier2) != 0) {
 				$hutangsuppliers['data'] =	array_merge($hutangsupplier3 , $hutangsupplier4);
 				$hutangsuppliers['jumlahfaktur'] = $saldoawal;
@@ -1100,12 +1116,18 @@ class Queryanalisa extends Controller
 				$hutangsuppliers['jumlahfaktur'] = $saldoawal;
 				$hutangsuppliers['terbayar'] = $terbayar;
 			}
+			else if(count($hutangsupplier1) == 0 && count($hutangsupplier2) != 0){
+				$hutangsuppliers['data'] = $hutangsupplier4;
+				$hutangsuppliers['jumlahfaktur'] = $saldoawal;
+				$hutangsuppliers['terbayar'] = $terbayar;
+			}
 			else {
 				$hutangsuppliers['data'] = $hutangsupplier4;
 				$hutangsuppliers['jumlahfaktur'] = $saldoawal;
 				$hutangsuppliers['terbayar'] = $terbayar;
 			}
 
+			$hutangsuppliers['blmjatuhtempo'] = $blmjatuhtempo;
 			array_push($data['hutangsupplier'] , $hutangsuppliers);
 		}
 		

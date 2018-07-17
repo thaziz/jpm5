@@ -148,10 +148,10 @@ class mutasi_piutang_Controller extends Controller
 
 
     }
-    return $array;
+    // return $array;
     // return [$saldoawal,$piutangbaru,$nota_debet,$cash,$cek_bg_trsn,$uangmuka,$nota_kredit];
     $data = array_merge([$array,$saldoawal,$piutangbaru,$nota_debet,$cash,$cek_bg_trsn,$uangmuka,$nota_kredit]);
-    return view('purchase/master/master_penjualan/laporan/lap_mutasi_piutang/ajax_mutasipiutang_rekap',compact('saldoawal','data','array'));
+    return view('purchase/master/master_penjualan/laporan/lap_mutasi_piutang/ajax_mutasipiutang_rekap',compact('saldoawal','data','array','saldoawal'));
     
 
     

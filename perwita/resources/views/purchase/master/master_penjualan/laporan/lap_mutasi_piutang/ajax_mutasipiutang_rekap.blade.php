@@ -24,7 +24,8 @@
                     <tbody>
                      @foreach ($array as $index => $e)
                        <tr>
-                         <td>{{ $array[$index]->customer }}</td>
+                         <td>{{ $array[$index]['customer'] }}</td>
+                         {{-- <td>{{ $data[$index]-> }}</td> --}}
                        </tr>
                      @endforeach
                       
