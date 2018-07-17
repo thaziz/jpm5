@@ -1998,6 +1998,7 @@
                                         /* TTT */
                                         Request::is('form_tanda_terima_pembelian/') ? 'active' : '' || 
                                         Request::is('form_tanda_terima_pembelian/*') ? 'active' : '' ||
+                                        
                                         /* AJU */
                                         Request::is('formaju/formaju') ? 'active' : '' || 
                                         Request::is('formaju/formaju/*') ? 'active' : '' ||
