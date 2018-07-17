@@ -2010,8 +2010,6 @@
                tableum.rows.add($(html2)).draw();
                n++;
             }
-
-
       }
     })
   })
