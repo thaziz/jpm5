@@ -390,7 +390,8 @@ Route::post('buktikaskeluar/update_patty', 'kasKeluarController@update_patty');
 Route::get('buktikaskeluar/jurnal', 'kasKeluarController@jurnal');
 Route::get('buktikaskeluar/datatable_bkk', 'kasKeluarController@datatable_bkk')->name('datatable_bkk');
 Route::get('buktikaskeluar/append_table', 'kasKeluarController@append_table');
-
+// FORM TANDA TERIMA
+Route::get('form_tanda_terima_pembelian/index', 'form_tanda_terima_pembelian_controller@edit');
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
 Route::get('ikhtisar_kas/create', 'ikhtisarController@create');
