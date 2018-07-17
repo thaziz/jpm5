@@ -28,7 +28,7 @@
                         </li>
 
                     </ol>
-                </div>
+                </div>f
                 <div class="col-lg-2">
 
                 </div>
