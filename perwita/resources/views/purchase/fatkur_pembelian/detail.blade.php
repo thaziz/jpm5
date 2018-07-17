@@ -3664,8 +3664,7 @@
           //menghitung jumlah
           $('.jumlahharga_po').val(addCommas(hasil));
 
-          //diskon
-          //diskon
+          //diskon      
               diskon = $('.disc_item_po').val();
               if(diskon != ''){
                 hsl = parseFloat(parseFloat(diskon) * parseFloat(hasil)) / 100;
@@ -3674,7 +3673,7 @@
                 jumlah = parseFloat(parseFloat(hasil) - parseFloat(hsl)).toFixed(2);
               }
               else {
-                jumlah = hasiltotal;
+                jumlah = hasil;
               }
 
               //DPP

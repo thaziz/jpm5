@@ -142,7 +142,7 @@
 
                          <div class="col-sm-6">
                           <div class="tampilbayar"> </div>
-                           <h4> <a href="{{url('suratpermintaanpembelian/createPDF/'.$spp->spp_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </h4>
+                           <h4> <a href="{{url('suratpermintaanpembelian/cetakspp/'.$spp->spp_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </h4>
                          </div>
 
                       

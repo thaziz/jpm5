@@ -267,8 +267,6 @@
 
 @endsection
 
-
-
 @section('extra_scripts')
 
 <script src="{{ asset('assets/vendors/bootstrap-treegrid/js/jquery.treegrid.js') }}"></script>
@@ -283,8 +281,6 @@
     @elseif(Session::has('terpakai'))
         alert("{{ Session::get('terpakai') }}")
     @endif
-
-
 
     tableDetail = $('.tbl-penerimabarang').DataTable({
           responsive: true,

@@ -6104,7 +6104,7 @@
           $('.acc_persediaan').val(accpersediaan);
 
           acchpp = acc_hpp.substr(0,4);
-          acchpp = acc_hpp + data + cabang;
+          acchpp = acchpp + data + cabang;
 
           $('.acc_biaya').val(acchpp);
         }

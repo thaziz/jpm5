@@ -43,14 +43,30 @@
       <tr>
         <td width="15%" class="text-center">Posisi D/K</td>
         <td colspan="2">
-          <?php $dk = ($data->akun_dka == "D") ? "DEBET" : "KREDIT"; ?>
-          <input type="text" class="form-control" id="d/k" name="d/k" readonly value="{{ $dk }}">
+          {{-- <input type="text" class="form-control" id="d/k" name="d/k" readonly value="{{ $dk }}"> --}}
+
+          <?php
+            $d = $k = "";
+            if($data->akun_dka == "D")
+              $d = "selected";
+            else
+              $k = "selected";
+          ?>
+
+          <select name="posisi_dk" class="select_validate form-control" id="posisi_dk">
+            <option value="D" {{ $d }}>DEBET</option>
+            <option value="K" {{ $k }}>KREDIT</option>
+          </select>
         </td>
 
         <td width="15%" class="text-center">Type</td>
         <td colspan="2">
-          
-          <input type="text" class="form-control" id="type" name="type" readonly value="{{ $data->type_akun }}">
+
+          <select name="type_akun" class="select_validate form-control" id="type_akun">
+            <option value="ICF">ICF</option>
+            <option value="OCF">OCF</option>
+            <option value="FCF">FCF</option>
+          </select>
         </td>
       </tr>
 
@@ -58,7 +74,20 @@
         <td width="15%" class="text-center">Status Aktif</td>
         <td colspan="2">
           <?php $status = ($data->is_active == "1") ? "Aktif" : "Tidak Aktif"; ?>
-          <input type="text" class="form-control" id="status" name="status" readonly value="{{ $status }}">
+          {{-- <input type="text" class="form-control" id="status" name="status" readonly value="{{ $status }}"> --}}
+
+          <?php
+            $a = $t = "";
+            if($data->is_active == "1")
+              $a = "selected";
+            else
+              $t = "selected";
+          ?>
+
+          <select name="status_aktif" class="select_validate form-control" id="status_aktif">
+            <option value="1" {{ $a }}> Aktif</option>
+            <option value="2" {{ $t }}> Tidak</option>
+          </select>
         </td>
       </tr>
 
@@ -78,6 +107,8 @@
     $('[data-toggle="tooltip"]').tooltip();
 
     // console.log(cabang);
+
+    $("#type_akun").val('{{ $data->type_akun }}');
 
     $("#saldo").on("change", function(){
       if($(this).is(":checked")){
