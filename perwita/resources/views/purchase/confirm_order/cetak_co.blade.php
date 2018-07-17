@@ -111,7 +111,7 @@ table, td, th {
 	<table width="100%">
 		<tr>
 			<td width="125px"><img src="{{ asset('perwita/storage/app/upload/images.jpg') }}"  width="200" height="100"></td>
-			<td align="center" width="380px"><h2>LAPORAN KONFFIRMASI BARANG</h2></td>
+			<td align="center" width="380px"><h2>LAPORAN KONFIRMASI BARANG</h2></td>
 			<td class="top" width="270px">
 				<div class="float-left">
 					No SPP :
