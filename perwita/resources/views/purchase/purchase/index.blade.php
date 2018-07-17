@@ -150,7 +150,7 @@
                               <span class='label label-warning '> {{$po->po_setujufinance}}</span>
                             @endif
                             @if($po->po_setujufinance == 'DISETUJUI')
-                            <a href="/jpm/purchaseorder/print/{{$po->po_id}}"><i class="fa fa-print" aria-hidden="true"> </i></a>
+                            <a href="/jpm/purchaseorder/print/{{$po->po_id}}" class="btn btn-info"><i class="fa fa-print" aria-hidden="true"> </i></a>
                             @endif
                            @endif
                           
