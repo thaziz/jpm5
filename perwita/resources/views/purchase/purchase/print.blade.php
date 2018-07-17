@@ -366,7 +366,7 @@
         </tr>
        </tbody>
     </table>
-    <table class="ataspenting">
+    <table class="ataspenting" width="60%">
       <tr>
         <td style="width: 200px;">&nbsp;</td>
       </tr>

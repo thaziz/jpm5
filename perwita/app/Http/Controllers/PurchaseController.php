@@ -75,12 +75,13 @@ class PurchaseController extends Controller
        $request->ppn;
        $lokasigudang = [];
        // return $id;
-       $data2['po'] = DB::table('pembelian_order')
+      	$data2['po'] = DB::table('pembelian_order')
        								  ->join('supplier','supplier.idsup','=','pembelian_order.po_supplier')
        								  ->where('po_id','=',$id)
        								  ->get();
 
-		$data2['supplier'] = DB::select("select * from supplier where active='AKTIF'");
+       	$sup = $data2['po'][0]->po_supplier;
+		$data2['supplier'] = DB::select("select * from supplier where active='AKTIF' and idsup = $sup ");
 
 		$data2['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang, mastergudang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode and podt_lokasigudang = mg_id");
 
