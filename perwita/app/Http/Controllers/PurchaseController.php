@@ -65,6 +65,7 @@ class PurchaseController extends Controller
 		   return view('k', compact('users'));
 	}
 	public function cetak(Request $request,$id){
+		
        $data = $request;
        $request->catatan;
        $request->bayar;
@@ -74,7 +75,6 @@ class PurchaseController extends Controller
        $request->jumlahharga;
        $request->ppn;
        $lokasigudang = [];
-       // return $id;
       	$data2['po'] = DB::table('pembelian_order')
        								  ->join('supplier','supplier.idsup','=','pembelian_order.po_supplier')
        								  ->where('po_id','=',$id)

@@ -150,7 +150,7 @@
                               <span class='label label-warning '> {{$po->po_setujufinance}}</span>
                             @endif
                             @if($po->po_setujufinance == 'DISETUJUI')
-                            <button class="btn btn-sm btn-info print" type="button" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"> </i> </button>
+                            <a href="/jpm/purchaseorder/print/{{$po->po_id}}"><i class="fa fa-print" aria-hidden="true"> </i></a>
                             @endif
                            @endif
                           
@@ -336,7 +336,7 @@
     function cetak(){
         var data = $('#form').serialize();
         @foreach($data['po'] as $index=>$po)
-        window.open(baseUrl + '/purchaseorder/print/{{$po->po_id}}?' + data ,"_blank");  
+        window.open(baseUrl + '?' + data ,"_blank");  
         @endforeach
     }
 
