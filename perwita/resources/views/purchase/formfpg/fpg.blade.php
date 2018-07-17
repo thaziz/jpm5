@@ -238,7 +238,7 @@
  <div class="wrapper">
   <div class="position-fixed">
    <table class="inlineTable">
-      <td><img class="img" width="200" height="100" src="/jpm/perwita/img/logo_jpm.png"></td>
+      <td> <img src="{{ asset('perwita/storage/app/upload/images.jpg') }}"  width="200" height="100"></td>
    </table>
    <table class="inlineTable size" style="font-size:12px;margin-bottom: 21px;">
     <tr>
@@ -290,7 +290,7 @@
     <table>
       <tr>
         <td>
-        @if($data['fpg'][0]->fpg_jenisbayar == '5' || $data['fpg'][0]->fpg_jenisbayar == '3' ||  $data['fpg'][0]->fpg_jenisbayar == '2' )
+        @if($data['fpg'][0]->fpg_jenisbayar == '3' ||  $data['fpg'][0]->fpg_jenisbayar == '2' )
          {{$data['fpg'][0]->nama_supplier}}
 
         @elseif($data['fpg'][0]->fpg_jenisbayar == '6' || $data['fpg'][0]->fpg_jenisbayar == '7' || $data['fpg'][0]->fpg_jenisbayar == '9' || $data['fpg'][0]->fpg_jenisbayar == '1' )
@@ -373,7 +373,7 @@
 
           @else
           <tr>
-           <td style="text-align: center"> - </td>
+           <td style="text-align: center"> {{$data['fpg_bank'][0]->fpgb_nocheckbg}} </td>
           </tr>
 
           @endif
@@ -390,7 +390,7 @@
           @endforeach
           @else
           <tr>
-            <td style="text-align: center"> - </td>
+            <td style="text-align: center"> {{$data['fpg_bank'][0]->fpgb_nocheckbg}} </td>
           </tr>
           @endif
          </table>

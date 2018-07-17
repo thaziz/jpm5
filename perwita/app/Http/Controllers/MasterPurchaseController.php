@@ -1309,8 +1309,8 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function updatekonfirmasisupplier($id, Request $request){
-/*
-		dd($request);*/
+
+		/*dd($request);*/
 		if($request->iskontrak == 'tdkeditkontrak') {	
 			$replaceplafon = str_replace(',', '', $request->plafon_kredit);
 

@@ -3,6 +3,14 @@
 @section('title', 'dashboard')
 
 @section('content')
+<style type="text/css">
+.disabled {
+    pointer-events: none;
+    opacity: 1;
+}
+</style>
+
+
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Master Supplier </h2>
@@ -102,7 +110,7 @@
                               Pengajuan dari Cabang
                             </td>
                             <td>
-                              <select class="chosen-select-width ubah" name="idcabang" disabled="">
+                              <select class="chosen-select-width ubah" name="idcabang" >
                               @foreach($data['cabang'] as $cbg) 
                                  <option value="{{$cbg->kode}}" @if($cbg->kode == $sup->idcabang) selected="" @endif>  {{$cbg->nama}} </option>
                               @endforeach
@@ -116,7 +124,7 @@
                               Provinsi
                             </td>
                             <td>
-                              <select class="chosen-select-width provinsi ubah" name="provinsi" disabled="">
+                              <select class="chosen-select-width provinsi ubah" name="provinsi">
                               @foreach($data['provinsi'] as $provinsi)
                                       <option value="{{$provinsi->id}}" @if($provinsi->id == $sup->propinsi) selected="" @endif> {{$provinsi->nama}} </option> 
                               @endforeach
@@ -129,7 +137,7 @@
                            <tr>
                             <td> Kota </td>
                             <td>
-                               <select class="form-control kota chosen-select-width ubah" name="kota" disabled="">
+                               <select class="form-control kota chosen-select-width ubah disabled" name="kota">
                               @foreach($data['kota'] as $kota)
                                 <option value="{{$kota->id}}" @if($kota->id == $sup->kota)  selected="" @endif> {{$kota->nama}} </option>
                               @endforeach
@@ -222,7 +230,7 @@
                             Acc Hutang Dagang
                           </td>
                           <td> 
-                            <select class="form-control chosen-select-width1 acc_hutangdagang"   style="width:100%" disabled="">
+                            <select class="form-control chosen-select-width1 acc_hutangdagang"  name="acc_hutangdagang"  style="width:100%" >
                               @foreach($data['mastersup'] as $mstrsup)
                               <option value="{{$mstrsup->id_akun}}" @if($mstrsup->id_akun == $sup->acc_hutang) selected @endif > {{$mstrsup->id_akun}} - {{$mstrsup->nama_akun}}
                               </option>
@@ -235,7 +243,7 @@
                           <td>
                             Acc CSF
                           </td>
-                          <td> <select class="form-control chosen-select-width1 acc_csf" disabled="">
+                          <td> <select class="form-control chosen-select-width1 acc_csf" name="acc_csf">
 
                                  @foreach($data['mastersup'] as $mstrsup)
                                  <option value="{{$mstrsup->id_akun}}" @if($mstrsup->id_akun == $sup->acc_hutang) selected @endif > {{$mstrsup->id_akun}} - {{$mstrsup->nama_akun}}

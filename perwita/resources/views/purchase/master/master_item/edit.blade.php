@@ -82,7 +82,7 @@
                               </tr>
                               <tr>
                                 <td> Harga </td>
-                                <td> <input type="text" class="form-control harga"  name="harga" value="{{$item->harga}}"></td>
+                                <td> <input type="text" class="form-control harga hrg"  name="harga" value="{{$item->harga}}" style="text-align:right"></td>
                               </tr>
                             </table>
                         </div>   
@@ -130,13 +130,13 @@
               						
               						  <tr>
                             <td style="width:200px"> Minimum Stock </td>
-                            <td> <input type="number" class="form-control" name="minimum_stock" required="" value="{{$item->minstock}}"></td>
+                            <td> <input type="number" class="form-control j" name="minimum_stock" required="" value="{{$item->minstock}}"></td>
                           </tr>
                           
                       </tr>
                           <tr>
-                            <td> Update Stock </td>
-                            <td> <select class="form-control updatestock" name="update_stock" required=""> 
+                            <td class="updatedtock"> Update Stock </td>
+                            <td class="updatedtock"> <select class="form-control updatestock" name="update_stock" required=""> 
                               @if($item->updatestock == "T")
                                 <option value='T'  selected="" > T </option>
                                 <option value='Y'> Y </option>
@@ -256,6 +256,30 @@
     })
      },2000);
 
+    function addCommas(nStr) {
+            nStr += '';
+            x = nStr.split('.');
+            x1 = x[0];
+            x2 = x.length > 1 ? '.' + x[1] : '';
+            var rgx = /(\d+)(\d{3})/;
+            while (rgx.test(x1)) {
+                x1 = x1.replace(rgx, '$1' + ',' + '$2');
+            }
+            return x1 + x2;
+    }
+
+
+  $('.jenis_item').change(function(){
+    val = $(this).val();
+    if(val == 'J'){
+          $('.j').attr('required' , false);
+          $('.j').attr('disabled' , true);
+          
+    }
+  })
+
+  
+
  $('.d').change(function(){ //qtysatu
       if($('.e').val() != '') {
         e = $('e').val();
@@ -270,6 +294,15 @@
         $('.i').val(d);
       }
    })
+
+    $(function(){
+            $('.hrg').change(function(){
+                val = $(this).val();
+      
+                val = accounting.formatMoney(val, "", 2, ",",'.');
+                $(this).val(val);
+            })
+        }) 
 
    $('.e').change(function(){ //qtydua
       val = $(this).val();
