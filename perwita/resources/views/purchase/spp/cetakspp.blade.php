@@ -72,7 +72,7 @@ div.bottom
 <div class="div-width">
 	<table width="100%">
 		<tr>
-			<td width="125px"><img src="" width="125px" height="60px"></td>
+			<td width="125px"><img src="{{ asset('perwita/storage/app/upload/images.jpg') }}"  width="200" height="100"></td>
 			<td align="center" width="410px"><h2>SURAT PERMINTAAN PEMBELIAN</h2></td>
 			
 			<td class="top" width="240px">No SPP : {{$data['spp'][0]->spp_nospp}} <br>Tanggal : {{$data['spp'][0]->spp_tgldibutuhkan}}
