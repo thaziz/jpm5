@@ -90,6 +90,7 @@ class kasKeluarController extends Controller
 						 ->orderBy('idjenisbayar','ASC')
 						 ->get();
 		
+	
 		return view('purchase.buktikaskeluar.indexKasKeluar',compact('cabang','jenis_bayar'));
 	}
 
@@ -107,6 +108,12 @@ class kasKeluarController extends Controller
 			$cabang = '';
 		}
 
+		if ($req->cabang == '000') {
+			$cabang = 'and bkk_comp = '."'$req->cabang'";
+		}else{
+			$cabang = '';
+		}
+
 		if ($req->jenis_bayar != 0) {
 			$jenisbayar = 'and bkk_jenisbayar = '."'$req->jenis_bayar'";
 		}else{
@@ -117,7 +124,6 @@ class kasKeluarController extends Controller
 		}else{
 			$sql = '';
 		}
-
 		if (Auth::user()->punyaAkses('Bukti Kas Keluar','all')) {
 			$data = DB::select($sql);
 		}else{
