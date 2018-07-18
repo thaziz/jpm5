@@ -215,6 +215,10 @@ class selaras_jurnal  extends Controller
                      ->get();
 
 
+            $delete_jurnal = DB::table('d_jurnal')
+                               ->where('jr_note','BUKTI KAS KELUAR')
+                               ->delete();
+
             // HAPUS DATA KOSONG
             for ($i=0; $i < count($bkk); $i++) { 
             	$comp = DB::table('bukti_kas_keluar')
@@ -226,9 +230,7 @@ class selaras_jurnal  extends Controller
                     $delete = DB::table('patty_cash')
                        ->where('pc_no_trans',$bkk[$i]->bkk_nota)
                        ->delete();
-                    $delete_jurnal = DB::table('d_jurnal')
-                               ->where('jr_note','BUKTI KAS KELUAR')
-                               ->delete();
+                    
                     $delete_bkk = DB::table('bukti_kas_keluar')
                           ->where('bkk_id',$bkk[$i]->bkk_id)
                           ->delete();
@@ -808,16 +810,16 @@ class selaras_jurnal  extends Controller
                               ->where('bkk_id',$bkk[$i]->bkk_id)
                               ->get();
 
-	                $delete_jurnal = DB::table('d_jurnal')
-	                               ->where('jr_ref',$bkk[$i]->bkk_nota)
-	                               ->delete();
-	                $delete_patty = DB::table('patty_cash')
-	                               ->where('pc_no_trans',$bkk[$i]->bkk_nota)
-	                               ->delete();
-	                // //JURNAL
+  	                $delete_jurnal = DB::table('d_jurnal')
+  	                               ->where('jr_ref',$bkk[$i]->bkk_nota)
+  	                               ->delete();
+  	                $delete_patty = DB::table('patty_cash')
+  	                               ->where('pc_no_trans',$bkk[$i]->bkk_nota)
+  	                               ->delete();
+  	                // //JURNAL
 
-	                $cari_id_pc = DB::table('patty_cash')
-	                                 ->max('pc_id')+1;
+  	                $cari_id_pc = DB::table('patty_cash')
+  	                                 ->max('pc_id')+1;
 
                     $save_patty = DB::table('patty_cash')
                            ->insert([
