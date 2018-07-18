@@ -462,7 +462,7 @@ class kasKeluarController extends Controller
 										'jr_update' => carbon::now(),
 										]);
 
-
+f
 			$akun 	  = [];
 			$akun_val = [];
 			array_push($akun, $req->kas);
