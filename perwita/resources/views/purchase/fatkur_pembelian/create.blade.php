@@ -363,7 +363,7 @@
                             Keterangan 
                           </td>
                           <td>
-                            <input type='text' class='form-control keterangan' name="keterangan2" required="">
+                            <input type='text' class="form-control keteranganbawah" name="keterangan2" required="">
                           </td>
                           </tr>
                          </table>
@@ -1684,7 +1684,10 @@
     });
 
 
-
+    $('.keteranganbawah').change(function(){
+      val = $(this).val();
+     // alert(val);
+    })
 
   $('.editfakturpajak').click(function(){
         $('.inputppn').attr('readonly' , false);
@@ -4095,8 +4098,8 @@
           var biaya = $('.biaya').val();
           var acc_biaya = $('.acc_biaya').val();
           var acc_persediaan = $('.acc_persediaan').val();
-          var keterangan = $('.keterangan2').val();
-         
+          var keterangan = $('.keteranganbawah').val();
+          alert(keterangan);
       
           var penerimaan = $('.penerimaan').val();
           var nettoitem = $('.nettoitem').val();
@@ -4104,8 +4107,7 @@
           var string4 = grupitem.split(",");
           groupitem = string4[0];
           kodestock = string4[1];
-        /*  alert(keterangan);*/
-
+        
           $.ajax({
             type : "get",
             data  : {kodestock},

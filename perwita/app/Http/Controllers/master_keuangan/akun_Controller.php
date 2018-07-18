@@ -223,12 +223,14 @@ class akun_Controller extends Controller
                 ->select("d_akun.*", "cabang.nama as nama_cabang")
                 ->orderBy("id_akun")->first();
         $provinsi = DB::table("provinsi")->orderBy("nama", "asc")->get();
+        $group_neraca = DB::table("d_group_akun")->select("id", "nama_group", "jenis_group")->get();
 
         // return json_encode($data);
 
         return view("keuangan.master_akun.edit")
             ->withData($data)
-            ->withProvinsi($provinsi);
+            ->withProvinsi($provinsi)
+            ->withGroup_neraca($group_neraca);
     }
 
     public function update_data(Request $request){
@@ -243,6 +245,8 @@ class akun_Controller extends Controller
         $akun->akun_dka = $request->posisi_dk;
         $akun->is_active = $request->status_aktif;
         $akun->type_akun = $request->type_akun;
+        $akun->group_laba_rugi = $request->group_laba_rugi;
+        $akun->group_neraca = $request->group_neraca;
 
         if($akun->save()){
             return json_encode($response);

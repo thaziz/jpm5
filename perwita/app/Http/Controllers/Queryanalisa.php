@@ -1051,6 +1051,9 @@ class Queryanalisa extends Controller
 			$terbayar = 0;
 			$blmjatuhtempo = 0;
 			$tigapuluh = 0;
+			$empatpuluhlima =0;
+			$enampuluh = 0;
+			$sembilanpuluh = 0;
 
 			$akunhutangdagang = $values[$g]['idakun'];
 			$jenishutang = $values[$g]['jenisakun'];
@@ -1071,20 +1074,79 @@ class Queryanalisa extends Controller
 
 			$vctigapuluh = DB::select("select * from v_hutang, fpg, bukti_bank_keluar, bukti_bank_keluar_detail, fpg_dt where v_tempo BETWEEN '$tglawal' and '$tglakhir' and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and fpgdt_idfpg = idfpg and fpgdt_idfp = v_id and v_acchutang LIKE '$akunhutangdagang%' and fpgdt_nofaktur = v_nomorbukti and fpg_agen = v_supid and bbk_tgl < '$tgplhdate'");
 
-			$empatpuluhlima = strtotime('+45 day', strtotime($tglakhir));
-			$emptplhdate = date('Y-m-j' , $empatpuluhlima);
+			$empatpuluhlimahari = strtotime('+45 day', strtotime($tglakhir));
+			$emptplhdate = date('Y-m-j' , $empatpuluhlimahari);
 
 			$fpemptplhlima = DB::select("select * from faktur_pembelian,fpg, bukti_bank_keluar, bukti_bank_keluar_detail, fpg_dt where fp_jatuhtempo BETWEEN '$tglawal' and '$tglakhir' and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and fpgdt_idfpg = idfpg and fpgdt_idfp = fp_idfaktur and fp_acchutang LIKE '$akunhutangdagang%' and fpgdt_nofaktur = fp_nofaktur and fpg_agen = fp_supplier and bbk_tgl BETWEEN '$tgplhdate' and '$emptplhdate'");
 
 			$vcemptplhlima = DB::select("select * from v_hutang, fpg, bukti_bank_keluar, bukti_bank_keluar_detail, fpg_dt where v_tempo BETWEEN '$tglawal' and '$tglakhir' and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and fpgdt_idfpg = idfpg and fpgdt_idfp = v_id and v_acchutang LIKE '$akunhutangdagang%' and fpgdt_nofaktur = v_nomorbukti and fpg_agen = v_supid and bbk_tgl BETWEEN '$tgplhdate' and '$emptplhdate'");
 
+			$enaempuluhhari = strtotime('+60 day', strtotime($tglakhir));
+			$enmplhdate = date('Y-m-j' , $enaempuluhhari);
+
+			$fpenmplh = DB::select("select * from faktur_pembelian,fpg, bukti_bank_keluar, bukti_bank_keluar_detail, fpg_dt where fp_jatuhtempo BETWEEN '$tglawal' and '$tglakhir' and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and fpgdt_idfpg = idfpg and fpgdt_idfp = fp_idfaktur and fp_acchutang LIKE '$akunhutangdagang%' and fpgdt_nofaktur = fp_nofaktur and fpg_agen = fp_supplier and bbk_tgl BETWEEN '$emptplhdate' and '$enmplhdate'");
+
+			$vcenmplh = DB::select("select * from v_hutang, fpg, bukti_bank_keluar, bukti_bank_keluar_detail, fpg_dt where v_tempo BETWEEN '$tglawal' and '$tglakhir' and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and fpgdt_idfpg = idfpg and fpgdt_idfp = v_id and v_acchutang LIKE '$akunhutangdagang%' and fpgdt_nofaktur = v_nomorbukti and fpg_agen = v_supid and bbk_tgl BETWEEN '$emptplhdate' and '$enmplhdate'");
+
+
+			$sembilanpuluhhari = strtotime('+90 day', strtotime($tglakhir));
+			$smblnphdate = date('Y-m-j' , $sembilanpuluhhari);
+
+			$fpsmblnpuluh = DB::select("select * from faktur_pembelian,fpg, bukti_bank_keluar, bukti_bank_keluar_detail, fpg_dt where fp_jatuhtempo BETWEEN '$tglawal' and '$tglakhir' and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and fpgdt_idfpg = idfpg and fpgdt_idfp = fp_idfaktur and fp_acchutang LIKE '$akunhutangdagang%' and fpgdt_nofaktur = fp_nofaktur and fpg_agen = fp_supplier and bbk_tgl BETWEEN '$enmplhdate' and '$smblnphdate'");
+
+			$vcsmblnpuluh = DB::select("select * from v_hutang, fpg, bukti_bank_keluar, bukti_bank_keluar_detail, fpg_dt where v_tempo BETWEEN '$tglawal' and '$tglakhir' and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and fpgdt_idfpg = idfpg and fpgdt_idfp = v_id and v_acchutang LIKE '$akunhutangdagang%' and fpgdt_nofaktur = v_nomorbukti and fpg_agen = v_supid and bbk_tgl BETWEEN '$enmplhdate' and '$smblnphdate'");
+
+			if(count($fpsmblnpuluh) != 0){
+				for($key = 0 ; $key < count($fpsmblnpuluh) ; $key++){
+					$nominalsembilanpuluh = $fpsmblnpuluh[$key]->bbkd_nominal;
+					$sembilanpuluh = floatval($sembilanpuluh) + floatval($nominalsembilanpuluh);
+				}
+			}
+
+			if(count($vcsmblnpuluh) != 0){
+				for($key = 0; $key < count($vcsmblnpuluh); $key++){
+					$nominalsembilanpuluh = $vcsmblnpuluh[$key]->bbkd_nominal;
+					$sembilanpuluh = floatval($sembilanpuluh) + floatval($nominalenampuluh);
+				}
+			}
+
+			$hutangsuppliers['90hari'] = $sembilanpuluh;
+
+			
+			if(count($fpenmplh) != 0){
+				for($key = 0; $key < count($vcenmplh); $key++){
+					$nominalenampuluh = $vcenmplh[$key]->bbkd_nominal;
+					$enampuluh = floatval($enampuluh) + floatval($nominalenampuluh);
+				}
+			}
+
+			if(count($vcenmplh) != 0){
+				for($key = 0; $key < count($vcenmplh); $key++){
+					$nominalenampuluh = $vcenmplh[$key]->bbkd_nominal;
+					$enampuluh = floatval($enampuluh) + floatval($nominalenampuluh);
+				}
+			}
+
+			$hutangsuppliers['60hari'] = $enampuluh;
+
+
 			if(count($fpemptplhlima) != 0){
-				for()
+				for($key = 0; $key < count($fpemptplhlima); $key++){
+					$nominalempatpuluhlima = $fpemptplhlima[$key]->bbkd_nominal;
+					$empatpuluhlima = floatval($empatpuluhlima) + floatval($nominalempatpuluhlima);
+				}
 			}
 
 			if(count($vcemptplhlima) != 0){
-
+				for($key = 0; $key < count($vcemptplhlima); $key++){
+					$nominalempatpuluhlima = $vcemptplhlima[$key]->bbkd_nominal;
+					$empatpuluhlima = floatval($empatpuluhlima) + floatval($nominalempatpuluhlima);
+				}
 			}
+
+
+			$hutangsuppliers['45hari'] = $empatpuluhlima;
+
 
 			if(count($fptigapuluh) != 0){
 				for($key = 0; $key < count($fptigapuluh); $key++){
@@ -1099,6 +1161,8 @@ class Queryanalisa extends Controller
 					$tigapuluh = floatval($nominaltigapuluh) + floatval($tigapuluh);
 				}
 			}
+
+			$hutangsuppliers['30hari'] = $empatpuluhlima;
 
 
 			if(count($fpblmjatuhtempo) != 0){
