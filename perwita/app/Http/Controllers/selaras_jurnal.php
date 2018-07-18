@@ -810,16 +810,16 @@ class selaras_jurnal  extends Controller
                               ->where('bkk_id',$bkk[$i]->bkk_id)
                               ->get();
 
-	                $delete_jurnal = DB::table('d_jurnal')
-	                               ->where('jr_ref',$bkk[$i]->bkk_nota)
-	                               ->delete();
-	                $delete_patty = DB::table('patty_cash')
-	                               ->where('pc_no_trans',$bkk[$i]->bkk_nota)
-	                               ->delete();
-	                // //JURNAL
+  	                $delete_jurnal = DB::table('d_jurnal')
+  	                               ->where('jr_ref',$bkk[$i]->bkk_nota)
+  	                               ->delete();
+  	                $delete_patty = DB::table('patty_cash')
+  	                               ->where('pc_no_trans',$bkk[$i]->bkk_nota)
+  	                               ->delete();
+  	                // //JURNAL
 
-	                $cari_id_pc = DB::table('patty_cash')
-	                                 ->max('pc_id')+1;
+  	                $cari_id_pc = DB::table('patty_cash')
+  	                                 ->max('pc_id')+1;
 
                     $save_patty = DB::table('patty_cash')
                            ->insert([
