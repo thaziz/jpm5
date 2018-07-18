@@ -1586,7 +1586,7 @@
                                 <a href="{{ url('sales/fakturpajak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Faktur Pajak</a>
                             </li>
                             -->
-                            @if(Auth::user()->PunyaAkses('Invoice Lain Lain','aktif'))
+                       {{--      @if(Auth::user()->PunyaAkses('Invoice Lain Lain','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1595,7 +1595,7 @@
 
                             " href="{{ url('sales/invoice_lain')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice Lain Lain</a>
                             </li>
-                            @endif
+                            @endif --}}
 
                             @if(Auth::user()->PunyaAkses('Kwitansi','aktif'))
                             <li >
