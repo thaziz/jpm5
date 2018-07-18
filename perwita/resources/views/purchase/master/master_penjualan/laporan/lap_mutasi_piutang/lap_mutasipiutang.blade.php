@@ -154,22 +154,9 @@
                           <th>Nota Kredit</th>
                       </tr>       
                     </thead>        
-                    <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>1w</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                      </tr>
-                    </tbody>       
+                    <div class="drop">
+                      
+                    </div>
                   </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
@@ -217,7 +204,7 @@
           type:'get',
           url: baseUrl + '/laporan_sales/ajax_mutasipiutang_rekap/ajax_mutasipiutang_rekap',
           success : function(data){
-            $('#disini').html(data);
+            $('.drop').html(data);
             $('#container').hide();
 
             // $('.saldo').each(function(i){
