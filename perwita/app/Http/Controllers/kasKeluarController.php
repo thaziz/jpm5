@@ -102,23 +102,29 @@ class kasKeluarController extends Controller
 	}
 	public function datatable_bkk(request $req)
 	{
-		if ($req->cabang != 0) {
+		if ($req->cabang == '0') {
+			$req->cabang = "kosong";
+		}
+
+		if ($req->cabang != 'kosong') {
+			$cabang = 'and bkk_comp = '."'$req->cabang'";
+		}else{
+			$cabang = '';
+		}
+		if ($req->cabang == "000") {
 			$cabang = 'and bkk_comp = '."'$req->cabang'";
 		}else{
 			$cabang = '';
 		}
 
-		if ($req->cabang == '000') {
-			$cabang = 'and bkk_comp = '."'$req->cabang'";
-		}else{
-			$cabang = '';
-		}
-
-		if ($req->jenis_bayar != 0) {
+		dd($req->all());
+		if ($req->jenis_bayar != '0') {
 			$jenisbayar = 'and bkk_jenisbayar = '."'$req->jenis_bayar'";
 		}else{
 			$jenisbayar = '';
 		}
+
+
 		if (Auth::user()->punyaAkses('Bukti Kas Keluar','all')) {
 			$sql = "SELECT * FROM bukti_kas_keluar JOIN jenisbayar on idjenisbayar = bkk_jenisbayar join cabang on kode = bkk_comp where bkk_nota != '0' $cabang $jenisbayar";
 		}else{
