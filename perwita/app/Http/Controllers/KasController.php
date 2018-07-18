@@ -466,9 +466,17 @@ class KasController extends Controller
 			$id=1;
 		}
 
+		$user = Auth::user()->m_name;
+
+		if (Auth::user()->m_name == null) {
+			return response()->json([
+				'status'=>1,
+				'message'=>'Nama User Anda Belum Ada, Silahkan Hubungi Pihak Terkait'
+			]);
+		}
 
 	    $cari_nota = DB::table('bukti_kas_keluar')
-					   ->where('bkk_nota',$request->nota)
+					   ->where('bkk_nota',$request->no_trans)
 					   ->first();
 		if ($cari_nota != null) {
 			if ($cari_nota->updated_by == $user) {
