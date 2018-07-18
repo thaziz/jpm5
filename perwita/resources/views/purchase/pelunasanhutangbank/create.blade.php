@@ -463,6 +463,19 @@
         }
     });
 
+    $('.kodebank').change(function(){
+      val = $(this).val();
+      notabbk = $('.nobbk').val();
+      split = notabbk.split("-");
+      bank = split[0];
+      lain = split[1];
+      if(parseInt(val) < parseInt(10)){
+          val = '0' + val;
+      }
+      
+      nobbk = bank + val + '-' + lain;
+      $('.nobbk').val(nobbk);
+    })
    
 
     //GET NO BBK
@@ -497,7 +510,7 @@
 //                console.log('year' + year);
                 year2 = tahun.substring(2);
                 //year2 ="Anafaradina";
-                 nofaktur = 'BBK' + month + year2 + '/' + cabang + '/' +  response.data ;
+                 nofaktur = 'BK' + '-' + month + year2 + '/' + cabang + '/' +  response.data ;
                 $('.nobbk').val(nofaktur);
               }
               else {
@@ -644,6 +657,9 @@
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       }
     });
+
+
+
 
      $('.cabang').change(function(){    
       var comp = $(this).val();

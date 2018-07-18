@@ -90,6 +90,7 @@ Route::get('rekapmutasihutang' , 'Queryanalisa@rekapmutasihutang');
 Route::get('rekapmutasihutang' , 'Queryanalisa@rekapmutasihutang');
 Route::get('detailmutasihutang' , 'Queryanalisa@detailmutasihutang');
 Route::get('rekapanalisahutang' , 'Queryanalisa@rekapanalisahutang');
+Route::get('detailanalisahutang' , 'Queryanalisa@detailanalisahutang');
 
 
 
