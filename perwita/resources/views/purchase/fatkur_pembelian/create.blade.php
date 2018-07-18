@@ -1686,7 +1686,7 @@
 
     $('.keteranganbawah').change(function(){
       val = $(this).val();
-      alert(val);
+     // alert(val);
     })
 
   $('.editfakturpajak').click(function(){
