@@ -1996,8 +1996,9 @@
                                         Request::is('bankkaslain/bankkaslain') ? 'active' : '' || 
                                         Request::is('bankkaslain/bankkaslain/*') ? 'active' : '' ||
                                         /* TTT */
-                                        Request::is('formtandaterimatagihan/formtandaterimatagihan') ? 'active' : '' || 
-                                        Request::is('formtandaterimatagihan/formtandaterimatagihan/*') ? 'active' : '' ||
+                                        Request::is('form_tanda_terima_pembelian/') ? 'active' : '' || 
+                                        Request::is('form_tanda_terima_pembelian/*') ? 'active' : '' ||
+                                        
                                         /* AJU */
                                         Request::is('formaju/formaju') ? 'active' : '' || 
                                         Request::is('formaju/formaju/*') ? 'active' : '' ||
@@ -2010,6 +2011,8 @@
                                         /* Memorial purchase */
                                         Request::is('memorialpurchase/memorialpurchase') ? 'active' : '' || 
                                         Request::is('memorialpurchase/memorialpurchase/*') ? 'active' : ''
+
+                                    
                                     /*=========== END OF sub TRANSAKSI HUTANG ================*/
 
                                  }}
@@ -2017,6 +2020,12 @@
                                  " style="border-left:none;">
                                     <a href="#" style="font-size:85%"> Transaksi Hutang <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level" style="padding-left: 5%;font-size: 85%">
+                                @if(Auth::user()->PunyaAkses('Form Tanda Terima','aktif'))
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('form_tanda_terima_pembelian/index') ? 'active' : '' || 
+                                        Request::is('form_tanda_terima_pembelian/*') ? 'active' : ''}}" href="{{ url('form_tanda_terima_pembelian/')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Tanda Terima </a>
+                                </li>
+                                @endif
                                 @if(Auth::user()->PunyaAkses('Faktur Pembelian','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('fakturpembelian/fakturpembelian') ? 'active' : '' || 

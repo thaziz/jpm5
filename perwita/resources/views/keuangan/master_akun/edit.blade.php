@@ -91,6 +91,38 @@
         </td>
       </tr>
 
+      <tr>
+        <td width="15%" class="text-center">Group Neraca</td>
+        <td colspan="2">
+          <select name="group_neraca" class="select_validate form-control chosen-select" id="group_neraca">
+            <option value="---"> -- Pilih Group Neraca</option>
+
+            @foreach($group_neraca as $data_group_neraca)
+              <?php $selected = ($data->group_neraca == $data_group_neraca->id) ? "selected" : "" ?>
+              @if($data_group_neraca->jenis_group == "Neraca/Balance Sheet")
+                <option value="{{ $data_group_neraca->id }}" {{ $selected }}>{{ $data_group_neraca->nama_group }}</option>
+              @endif
+            @endforeach
+
+          </select>
+        </td>
+
+        <td width="15%" class="text-center">Group Laba Rugi</td>
+        <td colspan="2">
+          <select name="group_laba_rugi" class="select_validate_null form-control chosen-select" id="group_laba_rugi">
+            <option value="---"> -- Belum Di Pilih</option>
+
+            @foreach($group_neraca as $data_group_neraca)
+              <?php $selected = ($data->group_laba_rugi == $data_group_neraca->id) ? "selected" : "" ?>
+              @if($data_group_neraca->jenis_group == "Laba Rugi")
+                <option value="{{ $data_group_neraca->id }}" {{ $selected }}>{{ $data_group_neraca->nama_group }}</option>
+              @endif
+            @endforeach
+
+          </select>
+        </td>
+      </tr>
+
     </table>
   </div>
   </form>
