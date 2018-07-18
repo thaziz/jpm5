@@ -65,6 +65,7 @@ class PurchaseController extends Controller
 		   return view('k', compact('users'));
 	}
 	public function cetak(Request $request,$id){
+		
        $data = $request;
        $request->catatan;
        $request->bayar;
@@ -74,13 +75,13 @@ class PurchaseController extends Controller
        $request->jumlahharga;
        $request->ppn;
        $lokasigudang = [];
-       // return $id;
-       $data2['po'] = DB::table('pembelian_order')
+      	$data2['po'] = DB::table('pembelian_order')
        								  ->join('supplier','supplier.idsup','=','pembelian_order.po_supplier')
        								  ->where('po_id','=',$id)
        								  ->get();
 
-		$data2['supplier'] = DB::select("select * from supplier where active='AKTIF'");
+       	$sup = $data2['po'][0]->po_supplier;
+		$data2['supplier'] = DB::select("select * from supplier where active='AKTIF' and idsup = $sup ");
 
 		$data2['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang, mastergudang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode and podt_lokasigudang = mg_id");
 
@@ -185,7 +186,7 @@ class PurchaseController extends Controller
 			$idspp = $explode[2];
 
 			$string = (int)$idspp + 1;
-			$idspp = str_pad($string, 3, '0', STR_PAD_LEFT);
+			$idspp = str_pad($string, 4, '0', STR_PAD_LEFT);
 		}
 
 		else {
@@ -287,7 +288,7 @@ class PurchaseController extends Controller
 				$nosppid = $explode[2];
 			//	dd($nosppid);
 				$string = (int)$nosppid + 1;
-				$nospp = str_pad($string, 3, '0', STR_PAD_LEFT);
+				$nospp = str_pad($string, 4, '0', STR_PAD_LEFT);
 			}
 
 			else {
@@ -311,7 +312,7 @@ class PurchaseController extends Controller
 						$idspp3 = $explode[2];
 					
 						$idspp4 = (int)$idspp3 + 1;
-						$akhirspp = str_pad($idspp4, 3, '0', STR_PAD_LEFT);
+						$akhirspp = str_pad($idspp4, 4, '0', STR_PAD_LEFT);
 						$nospp = $explode[0] .'/' . $explode[1] . '/'  . $akhirspp;
 				}
 				else {
@@ -1569,7 +1570,7 @@ public function purchase_order() {
 					$idpo = $explode[2];*/
 
 					$string = (int)$idpo + 1;
-					$idpo = str_pad($string, 3, '0', STR_PAD_LEFT);
+					$idpo = str_pad($string, 4, '0', STR_PAD_LEFT);
 				}
 
 				else {
@@ -1971,7 +1972,7 @@ public function purchase_order() {
 			$string = explode("-", $idpb);
 			$idpb = $string[1];
 			$string = (int)$idpb + 1;
-			$idpb = str_pad($string, 3, '0', STR_PAD_LEFT);
+			$idpb = str_pad($string, 4, '0', STR_PAD_LEFT);
 		}
 
 		else {
@@ -2342,7 +2343,7 @@ public function purchase_order() {
 				$string = explode("-", $idpb);
 				$idpb = $string[1];
 				$string = (int)$idpb + 1;
-				$idpb = str_pad($string, 3, '0', STR_PAD_LEFT);
+				$idpb = str_pad($string, 4, '0', STR_PAD_LEFT);
 			}
 
 			else {
@@ -2675,7 +2676,7 @@ public function purchase_order() {
 				$string = explode("-", $idpb);
 				$idpb = $string[1];
 				$string = (int)$idpb + 1;
-				$idpb = str_pad($string, 3, '0', STR_PAD_LEFT);
+				$idpb = str_pad($string, 4, '0', STR_PAD_LEFT);
 			}
 
 			else {
@@ -4619,7 +4620,7 @@ public function purchase_order() {
 			$idfaktur = $explode[2];*/
 
 			$string = (int)$idfaktur + 1;
-			$idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
+			$idfaktur = str_pad($string, 4, '0', STR_PAD_LEFT);
 		}
 
 		else {
@@ -4846,7 +4847,7 @@ public function purchase_order() {
 						$string = explode("-", $idfaktur3);
 						$idfaktur2 = $string[1];
 						$idfakturss = (int)$idfaktur2 + 1;
-						$akhirfaktur = str_pad($idfakturss, 3, '0', STR_PAD_LEFT);
+						$akhirfaktur = str_pad($idfakturss, 4, '0', STR_PAD_LEFT);
 						$nofaktur = $explode[0] .'/' . $explode[1] . '/'  . $string[0] . '-' . $akhirfaktur;
 				}
 				else {
@@ -5848,7 +5849,7 @@ public function purchase_order() {
 				$idtt = $explode[2];
 
 				$string = (int)$idtt + 1;
-				$idtt = str_pad($string, 3, '0', STR_PAD_LEFT);
+				$idtt = str_pad($string, 4, '0', STR_PAD_LEFT);
 			}
 
 			else {
@@ -5923,7 +5924,7 @@ public function purchase_order() {
 						$string = explode("-", $idfaktur3);
 						$idfaktur2 = $string[1];
 						$idfakturss = (int)$idfaktur2 + 1;
-						$akhirfaktur = str_pad($idfakturss, 3, '0', STR_PAD_LEFT);
+						$akhirfaktur = str_pad($idfakturss, 4, '0', STR_PAD_LEFT);
 						$nofaktur = $explode[0] .'/' . $explode[1] . '/'  . $string[0] . '-' . $akhirfaktur;
 				}
 				else {
@@ -6572,7 +6573,7 @@ public function purchase_order() {
 				$idtt = $explode[2];
 
 				$string = (int)$idtt + 1;
-				$idtt2 = str_pad($string, 3, '0', STR_PAD_LEFT);
+				$idtt2 = str_pad($string, 4, '0', STR_PAD_LEFT);
 			}
 			else {
 				$idtt2 = '001';
@@ -6610,7 +6611,7 @@ public function purchase_order() {
 			$idfaktur2 = $string[1];
 
 			$idfaktur = (int)$idfaktur2 + 1;
-			$data['idfaktur'] = str_pad($idfaktur, 3, '0', STR_PAD_LEFT);
+			$data['idfaktur'] = str_pad($idfaktur, 4, '0', STR_PAD_LEFT);
 			
 			//return $data['idfaktur'];
 		}
@@ -6639,7 +6640,7 @@ public function purchase_order() {
 		
 
 			$idfpg4 = (int)$idfpg3 + 1;
-			$data['idfpg'] = str_pad($idfpg4, 3, '0', STR_PAD_LEFT);
+			$data['idfpg'] = str_pad($idfpg4, 4, '0', STR_PAD_LEFT);
 			
 		}
 
@@ -7115,7 +7116,7 @@ public function kekata($x) {
 			$idbbk = $explode[2];
 		
 			$string = (int)$idbbk + 1;
-			$idbbk = str_pad($string, 3, '0', STR_PAD_LEFT);
+			$idbbk = str_pad($string, 4, '0', STR_PAD_LEFT);
 		}
 		else {
 			$idbbk = '001';
@@ -7315,7 +7316,7 @@ public function kekata($x) {
 			$jurnal->jr_id = $idjurnal;
 	        $jurnal->jr_year = date('Y');
 	        $jurnal->jr_date = date('Y-m-d');
-	        $jurnal->jr_detail = 'POSTING BANK';
+	        $jurnal->jr_detail = 'BUKTI BANK KELUAR';
 	        $jurnal->jr_ref = $request->nobbk;
 	        $jurnal->jr_note = $request->keteranganheader;
 	        $jurnal->save();
@@ -7703,7 +7704,7 @@ public function kekata($x) {
 			$idfpg = $explode[2];
 
 			$string = (int)$idfpg + 1;
-			$idfpg = str_pad($string, 3, '0', STR_PAD_LEFT);
+			$idfpg = str_pad($string, 4, '0', STR_PAD_LEFT);
 		}
 
 		else {
