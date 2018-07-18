@@ -2767,7 +2767,7 @@
 
                         " style="border:none">
                                 @if(Auth::user()->PunyaAkses('Laporan Penjualan','aktif'))
-                                <a href="#" style="font-size:110%" ><i class="fa fa-folder-o" aria-hidden="true"></i> Operasional <span class="fa arrow"></span></a>
+                                <a href="#" style="font-size:110%" ><i class="fa fa-folder-o" aria-hidden="true"></i> Transaksi <span class="fa arrow"></span></a>
                                 @endif
                                     <ul class="nav nav-third-level" style="font-size:100%;margin-left:10px;">
                                             <li >
