@@ -2489,7 +2489,7 @@ public function purchase_order() {
 						$penerimaanbarangdt->save();
 
 						$accpersediaan = $request->accpersediaan[$i];
-						$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$cabang'");
+						$datakun2 = DB::select("select * from d_akun where id_akun = '$accpersediaan' and kode_cabang = '$cabang'");
 
 						$akundka = $datakun2[0]->akun_dka;
 
@@ -2562,7 +2562,7 @@ public function purchase_order() {
 							$penerimaanbarangdt->update_by = $request->username;
 							$penerimaanbarangdt->save();
 							
-							$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$cabang'");
+							$datakun2 = DB::select("select * from d_akun where id_akun = '$accpersediaan' and kode_cabang = '$cabang'");
 
 							$akundka = $datakun2[0]->akun_dka;
 
