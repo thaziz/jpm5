@@ -117,7 +117,6 @@ class kasKeluarController extends Controller
 			$cabang = '';
 		}
 
-		dd($req->all());
 		if ($req->jenis_bayar != '0') {
 			$jenisbayar = 'and bkk_jenisbayar = '."'$req->jenis_bayar'";
 		}else{
