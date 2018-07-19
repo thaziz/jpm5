@@ -287,6 +287,23 @@
 <script src="{{ asset('assets/vendors/chosen/chosen.jquery.js') }}"></script>
 <script type="text/javascript">
 var datatable;
+
+$('.jurnal').click(function(){
+  var id = '{{ $id }}';
+  $.ajax({
+      url:baseUrl + '/biaya_penerus/jurnal',
+      type:'get',
+      data:{id},
+      success:function(data){
+         $('.tabel_jurnal').html(data);
+         $('.modal_jurnal').modal('show');
+      },
+      error:function(data){
+          // location.reload();
+      }
+  }); 
+})
+
 $('.tanggal').datepicker({
   format:'dd-mm-yyyy'
 });
@@ -410,7 +427,7 @@ $('.tanggal').datepicker({
       })
     hitung();
     search();
-    jurnal();
+    // jurnal();
   });
    var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp '});
 
@@ -787,21 +804,6 @@ function reload(){
   location.reload();
 }
 
-$('.jurnal').click(function(){
-  var id = '{{ $id }}';
-  $.ajax({
-      url:baseUrl + '/biaya_penerus/jurnal',
-      type:'get',
-      data:{id},
-      success:function(data){
-         $('.tabel_jurnal').html(data);
-         $('.modal_jurnal').modal('show');
-      },
-      error:function(data){
-          // location.reload();
-      }
-  }); 
-})
 
 </script>
 @endsection
