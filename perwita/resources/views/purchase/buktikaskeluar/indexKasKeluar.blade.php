@@ -51,7 +51,7 @@
                     <h5> Pembayaran Kas
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                      @if (Auth::user()->punyaAkses('Bukti Kas Keluar','cabang')) 
+                      @if (Auth::user()->punyaAkses('Bukti Kas Keluar','tambah')) 
                       <div class="text-right">
                         <a class="btn btn-success" aria-hidden="true" href="{{ url('buktikaskeluar/create')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
                       </div>
