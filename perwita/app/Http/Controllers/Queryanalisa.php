@@ -1336,7 +1336,7 @@ class Queryanalisa extends Controller
 		$values = array_values($result_supplier);
 		$data['supplier'] = $values;
 
-		$data['hutang'] = [];
+		
 		for($i = 0; $i < count($values); $i++){
 			$nosupplier = $values[$i]['no_supplier'];
 			$datafp = DB::select("select * from faktur_pembelian where fp_supplier = '$nosupplier' and fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
@@ -1344,7 +1344,7 @@ class Queryanalisa extends Controller
 			$datavc = DB::select("select * from v_hutang where v_supid = '$nosupplier' and v_tgl BETWEEN '$tglawal' and '$tglakhir'");
 
 			$jumlahfaktur = 0;
-
+			$data['hutang'] = [];
 			for($j = 0 ; $j < count($datafp); $j++){
 				$idfaktur = $datafp[$j]->fp_idfaktur;
 
@@ -1354,9 +1354,11 @@ class Queryanalisa extends Controller
 				$datahutang['nota'] = $datafp[$j]->fp_nofaktur;
 				$datahutang['jatuhtempo'] = $datafp[$j]->fp_jatuhtempo;
 				$datahutang['jumlahfaktur'] = $datafp[$j]->fp_netto;
+
+				array_push($data['hutang'], $datahutang);
 			} 
 
-			array_push($data['hutang'] , $datahutang);
+			
 		}
 
 		return json_encode($data);

@@ -1889,15 +1889,10 @@ public function purchase_order() {
 
 	public function valgudang(Request $request){
 		$idcabang = $request->cabang;
-		if($idcabang == 000){
-			$data['gudang'] = DB::select("select * from mastergudang");
-		}
-		else {
-			$data['gudang'] = DB::select("select * from mastergudang where mg_cabang = '$idcabang'");
+	
+		$data['gudang'] = DB::select("select * from mastergudang where mg_cabang = '$idcabang'");
 
-		}
-
-
+		
 		$idgudang = $data['gudang'][0]->mg_id;
 		$data['terima'] = DB::select("select * from barang_terima, supplier where bt_gudang = '$idgudang' and bt_supplier = idsup");
 

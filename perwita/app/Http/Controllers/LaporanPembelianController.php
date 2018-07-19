@@ -1071,5 +1071,13 @@ class LaporanPembelianController extends Controller
 	//-- END LAPORAN
 
 
+	//-- LAPORAN ANALISA HUTANG
+
+	public function reportanalisausiahutang(Request $request)
+	{
+		 return view('purchase/laporan/analisausiahutang');
+	}
+
+	//-- END LAOPRAN
 
 }
