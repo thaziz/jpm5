@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\master_keuangan\laporan;
 
+ini_set('max_execution_time', 120);
+
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -18,6 +20,7 @@ class laporan_register_jurnal extends Controller
     // register jurnal pdf start
 
     public function print_pdf_register_single(Request $request){
+        // return "okee";
     	// return json_encode($request->all());
 
     	$d1 = date_format(date_create($request->tanggal), "Y-m-d");
@@ -44,7 +47,9 @@ class laporan_register_jurnal extends Controller
     										->get();
     	}
 
-    	// return json_encode($detail);
+    	// return json_encode($data);
+
+        return view('laporan_register_jurnal.pdf', compact("request", "detail", "data", "d1", "d2"));
 
     	$pdf = PDF::loadView('laporan_register_jurnal.pdf', compact("request", "detail", "data", "d1", "d2"))->setPaper('A4','landscape');
 

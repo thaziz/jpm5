@@ -2029,7 +2029,7 @@
                                 @if(Auth::user()->PunyaAkses('Faktur Pembelian','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('fakturpembelian/fakturpembelian') ? 'active' : '' || 
-                                        Request::is('fakturpembelian/fakturpembelian/*') ? 'active' : ''}}" href="{{ url('fakturpembelian/fakturpembelian')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Faktur Pembelian </a>
+                                        Request::is('fakturpembelian/fakturpembelian/*') ? 'active' : ''}}" href="{{ url('fakturpembelian/fakturpembeliand')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Faktur Pembelian </a>
                                 </li>
                                 @endif
                                 @if(Auth::user()->PunyaAkses('Uang Muka','aktif'))
@@ -2767,7 +2767,7 @@
 
                         " style="border:none">
                                 @if(Auth::user()->PunyaAkses('Laporan Penjualan','aktif'))
-                                <a href="#" style="font-size:110%" ><i class="fa fa-folder-o" aria-hidden="true"></i> Operasional <span class="fa arrow"></span></a>
+                                <a href="#" style="font-size:110%" ><i class="fa fa-folder-o" aria-hidden="true"></i> Transaksi <span class="fa arrow"></span></a>
                                 @endif
                                     <ul class="nav nav-third-level" style="font-size:100%;margin-left:10px;">
                                             <li >

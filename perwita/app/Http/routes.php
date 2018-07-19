@@ -108,6 +108,7 @@ Route::get('suratpermintaanpembelian/createPDF/{id}', 'PurchaseController@create
 Route::get('suratpermintaanpembelian/getnospp', 'PurchaseController@getnospp');
 Route::get('suratpermintaanpembelian/cetakspp/{id}', 'PurchaseController@cetakspp');
 Route::get('suratpermintaanpembelian/editspp/{id}', 'PurchaseController@editspp');
+Route::get('suratpermintaanpembelian/valgudang', 'PurchaseController@valgudang');
 
 Route::get('testing/analisa', 'PurchaseController@queryanalisa');
 
@@ -212,7 +213,7 @@ Route::get('laporan-neraca/index',  'laporan_neracaController@neraca');
 Route::get('master-keuangan/laporan-laba-rugi',  'laba_rugiController@index');
 
 /* end warehouse */
-Route::get('fakturpembelian/fakturpembelian', 'PurchaseController@fatkurpembelian');
+Route::get('fakturpembelian/fakturpembelians', 'PurchaseController@fatkurpembelian');
 Route::get('fakturpembelian/createfatkurpembelian', 'PurchaseController@createfatkurpembelian');
 Route::get('fakturpembelian/detailfatkurpembelian/{id}', 'PurchaseController@detailfatkurpembelian');
 Route::get('fakturpembelian/getchangefaktur', 'PurchaseController@supplierfaktur');
@@ -769,7 +770,6 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
 
 // Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
 Route::get('reportfakturpelunasan/reportfakturpelunasan', 'LaporanPurchaseController@reportfakturpelunasan');
-Route::get('reportanalisausiahutang/reportanalisausiahutang', 'LaporanPurchaseController@reportanalisausiahutang');
 Route::get('kartuhutangajax/kartuhutangajax', 'LaporanPurchaseController@kartuhutangajax');
 Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurchaseController@historisuangmukapembelian');
 //===========================================================================================================================
@@ -1084,6 +1084,11 @@ Route::get('cari_kartupiutang/cari_kartupiutang','LaporanMasterController@cari_k
 Route::post('reportpdf_kartupiutang/reportpdf_kartupiutang', 'LaporanMasterController@reportpdf_kartupiutang')->name('reportpdf_kartupiutang');
 Route::post('reportexcel_kartupiutang/reportexcel_kartupiutang', 'LaporanMasterController@reportexcel_kartupiutang')->name('reportexcel_kartupiutang');
 //END OF 
+
+//analisa piutang
+Route::get('laporan_sales/analisa_piutang', 'laporan_sales\analisa_piutang_Controller@index');
+Route::get('laporan_sales/analisa_piutang/ajax_lap_analisa_piutang', 'laporan_sales\analisa_piutang_Controller@ajax_lap_analisa_piutang');
+// end analisa piutang
 
 //---
 
@@ -1802,10 +1807,7 @@ Route::get('sales/laporaninvoicepenjualanperitem', function(){
 // Route::get('laporan_sales/kartu_piutang/tampil_data', 'laporan_sales\kartu_piutang_Controller@tampil_kartu_piutang');
 // end kartu piutang
 
-//analisa piutang
-Route::get('laporan_sales/analisa_piutang', 'laporan_sales\analisa_piutang_Controller@index');
-Route::get('laporan_sales/analisa_piutang/tampil_data', 'laporan_sales\analisa_piutang_Controller@tampil_analisa_piutang');
-// end analisa piutang
+
 
 //mutasi piutang
 Route::get('laporan_sales/mutasi_piutang', 'laporan_sales\mutasi_piutang_Controller@index');
@@ -2956,6 +2958,9 @@ Route::get('sales/laporaninvoicepenjualanperitem','laporan_penjualan\laporanpenj
 Route::get('sales/laporan','laporanutamaController@seluruhlaporan');
 //LAPORAN PEMBELIAN
 
+//analisa hutang
+Route::get('reportanalisausiahutang/reportanalisausiahutang', 'LaporanPembelianController@reportanalisausiahutang');
+// Route::get('reportanalisausiahutang/reportanalisausiahutang', 'laporan_pembelian@reportanalisausiahutang');
 
 
 Route::get('logout', 'mMemberController@logout');
