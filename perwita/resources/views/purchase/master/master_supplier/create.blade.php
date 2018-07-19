@@ -581,7 +581,7 @@
                     "<td> <select class='form-control chosen-select' name='idbarang[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}>  {{$item->kode_item}} - {{$item->nama_masteritem}} </option> @endforeach </select>" +
                      "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
                      "<td> <select class='form-control' name='updatestock[]'> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
-                    "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a> </td>" +
+                    "<td> <a class='btn btn-danger removes-btn' data-id='"+$no+"'> <i class='fa fa-trash'> </i>  </a> </td>" +
                     "</tr>";
 
         /*var rowBrg = "<tr> <td colspan='4'> <select class='form-control'> <option value=''> Ana </option> <option value=''> Arief </option> </select> </td> </tr>";*/
@@ -602,7 +602,7 @@
 
         $(document).on('click','.removes-btn',function(){
               var id = $(this).data('id');
-       //       alert(id);
+             alert(id);
               var parent = $('#item-'+id);
 
              parent.remove();
