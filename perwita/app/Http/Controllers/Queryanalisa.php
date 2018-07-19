@@ -1245,4 +1245,122 @@ class Queryanalisa extends Controller
 
 		return json_encode($data);
 	}
+
+
+	public function detailanalisahutang(){
+		$tglawal = '2018-06-02';
+		$tglakhir = '2018-08-02';
+
+		$idakun = '2101';
+
+		$datafp = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$idakun%'");
+
+		$datavc = DB::select("select * from v_hutang where v_tgl BETWEEN '$tglawal' and '$tglakhir' and v_acchutang LIKE '$idakun%'");
+
+
+
+		$nosupplier = [];
+		if($idakun == '2101'){
+				if(count($datafp) != 0){
+					for($g = 1; $g < count($datafp); $g++){
+						$idsup = $datafp[$g]->fp_idsup;
+
+						$datasupplier = DB::select("select * from supplier where idsup = '$idsup'");
+						
+						$no_supplier1['no_supplier'] = $datasupplier[0]->no_supplier;
+						$no_supplier1['nama'] = $datasupplier[0]->nama_supplier;
+						array_push($nosupplier , $no_supplier1);
+					}
+				}
+
+				if(count($datavc) != 0){
+					for($j = 0; $j < count($datavc); $j++){
+						$idsup = $datavc[$j]->v_supid;
+						$datasupplier = DB::select("select * from supplier where no_supplier = '$idsup'");
+						
+						$no_supplier1['no_supplier'] = $datasupplier[0]->no_supplier;
+						$no_supplier1['nama'] = $datasupplier[0]->nama_supplier;
+						array_push($nosupplier , $no_supplier1);
+					}
+				}
+		}
+		else {
+			if(count($datafp) != 0){
+						for($g = 0; $g < count($datafp); $g++){
+							$idsup = $datafp[$g]->fp_supplier;
+
+							$datasupplier = DB::select("select * from supplier where no_supplier = '$idsup'");
+							$datacustomer = DB::select("select * from agen where kode = '$idsup'");
+
+						//	return $datacustomer;
+							$datavendor = DB::select("select * from vendor where kode = '$idsup'");
+							$datasubcon = DB::select("select * from subcon where kode = '$idsup'");
+							if(count($datacustomer) != 0){
+								$no_supplier['no_supplier'] = $datacustomer[0]->kode;
+								$no_supplier['nama'] = $datacustomer[0]->nama;
+							}
+							else if(count($datasupplier) != 0){
+								$no_supplier['no_supplier'] = $datasupplier[0]->no_supplier;
+								$no_supplier['nama'] = $datasupplier[0]->nama_supplier;
+							}
+							else if(count($datavendor) != 0){
+								$no_supplier['no_supplier'] = $datavendor[0]->kode;
+								$no_supplier['nama'] = $datavendor[0]->nama;
+							}
+							else if(count($datasubcon) !=0){
+								$no_supplier['no_supplier'] = $datasubcon[0]->kode;
+								$no_supplier['nama'] = $datasubcon[0]->nama;
+							}
+							array_push($nosupplier , $no_supplier);
+						}
+			}
+
+			if(count($datavc) != 0){
+						for($j = 0; $j < count($datavc); $j++){
+							$idsup = $datavc[$j]->v_supid;
+							$datasupplier = DB::select("select * from supplier where no_supplier = '$idsup'");
+							$no_supplier['no_supplier'] = $datasupplier[0]->no_supplier;
+							$no_supplier['nama'] = $datasupplier[0]->nama_supplier;
+							array_push($nosupplier , $no_supplier);
+						}
+					}
+		}
+
+		$data['supplier'] = [];
+		$result_supplier = array();
+		foreach ($nosupplier as &$v) {
+		    if (!isset($result_supplier[$v['no_supplier']]))
+		        $result_supplier[$v['no_supplier']] =& $v;
+		}
+
+		$values = array_values($result_supplier);
+		$data['supplier'] = $values;
+
+		
+		for($i = 0; $i < count($values); $i++){
+			$nosupplier = $values[$i]['no_supplier'];
+			$datafp = DB::select("select * from faktur_pembelian where fp_supplier = '$nosupplier' and fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
+
+			$datavc = DB::select("select * from v_hutang where v_supid = '$nosupplier' and v_tgl BETWEEN '$tglawal' and '$tglakhir'");
+
+			$jumlahfaktur = 0;
+			$data['hutang'] = [];
+			for($j = 0 ; $j < count($datafp); $j++){
+				$idfaktur = $datafp[$j]->fp_idfaktur;
+
+				$terbayar = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_supplier = '$nosupplier' and fp_idfaktur = '$idfaktur'");
+
+
+				$datahutang['nota'] = $datafp[$j]->fp_nofaktur;
+				$datahutang['jatuhtempo'] = $datafp[$j]->fp_jatuhtempo;
+				$datahutang['jumlahfaktur'] = $datafp[$j]->fp_netto;
+
+				array_push($data['hutang'], $datahutang);
+			} 
+
+			
+		}
+
+		return json_encode($data);
+	}
 }

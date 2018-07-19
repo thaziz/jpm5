@@ -102,23 +102,29 @@ class kasKeluarController extends Controller
 	}
 	public function datatable_bkk(request $req)
 	{
-		if ($req->cabang != 0) {
+		if ($req->cabang == '0') {
+			$req->cabang = "kosong";
+		}
+
+		if ($req->cabang != 'kosong') {
+			$cabang = 'and bkk_comp = '."'$req->cabang'";
+		}else{
+			$cabang = '';
+		}
+		if ($req->cabang == "000") {
 			$cabang = 'and bkk_comp = '."'$req->cabang'";
 		}else{
 			$cabang = '';
 		}
 
-		if ($req->cabang == '000') {
-			$cabang = 'and bkk_comp = '."'$req->cabang'";
-		}else{
-			$cabang = '';
-		}
-
-		if ($req->jenis_bayar != 0) {
+		dd($req->all());
+		if ($req->jenis_bayar != '0') {
 			$jenisbayar = 'and bkk_jenisbayar = '."'$req->jenis_bayar'";
 		}else{
 			$jenisbayar = '';
 		}
+
+
 		if (Auth::user()->punyaAkses('Bukti Kas Keluar','all')) {
 			$sql = "SELECT * FROM bukti_kas_keluar JOIN jenisbayar on idjenisbayar = bkk_jenisbayar join cabang on kode = bkk_comp where bkk_nota != '0' $cabang $jenisbayar";
 		}else{
@@ -503,13 +509,13 @@ class kasKeluarController extends Controller
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
 						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
 						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
 					}
 				}
 			}

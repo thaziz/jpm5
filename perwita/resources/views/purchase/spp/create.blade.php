@@ -401,7 +401,7 @@
         })
 
 
-
+    
 
     $('.cabang').change(function(){    
       var comp = $(this).val();
@@ -486,7 +486,7 @@
           if(val == 'Y') {
          valupdatestock = val;
                 $('.kendaraan').remove();
-               var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
+               var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control chosen-select gudang' name='gudang'>" +
                               "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
                            "</select> </td>";
               $('.lokasigudang').html(rowgudang);
@@ -579,6 +579,45 @@
 
 
     })
+
+       $('.cabang').change(function(){
+       cabang = $('.cabang').val();
+        $.ajax({
+          url : baseUrl + '/penerimaanbarang/valgudang',
+          data :{cabang},
+          type : "GET",
+          dataType : 'json',
+          success : function(response){
+               $('.gudang').empty();
+                      $('.gudang').append(" <option value=''>  -- Pilih Gudang -- </option> ");
+                  $.each(response.gudang, function(i , obj) {
+            //        console.log(obj.is_kodeitem);
+                    $('.gudang').append("<option value="+obj.mg_id+"> <h5> "+obj.mg_namagudang+" </h5> </option>");
+                    $('.gudang').trigger("chosen:updated");
+                     $('.gudang').trigger("liszt:updated");
+                  })
+          }
+        })
+    })
+
+
+       cabang = $('.cabang').val();
+        $.ajax({
+          url : baseUrl + '/penerimaanbarang/valgudang',
+          data :{cabang},
+          type : "GET",
+          dataType : 'json',
+          success : function(response){
+               $('.gudang').empty();
+                      $('.gudang').append(" <option value=''>  -- Pilih Gudang -- </option> ");
+                  $.each(response.gudang, function(i , obj) {
+            //        console.log(obj.is_kodeitem);
+                    $('.gudang').append("<option value="+obj.mg_id+"> <h5> "+obj.mg_namagudang+" </h5> </option>");
+                    $('.gudang').trigger("chosen:updated");
+                     $('.gudang').trigger("liszt:updated");
+                  })
+          }
+        }) 
 
        function removeDuplicates(inputArray) {
             var i;

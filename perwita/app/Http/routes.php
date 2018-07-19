@@ -90,6 +90,7 @@ Route::get('rekapmutasihutang' , 'Queryanalisa@rekapmutasihutang');
 Route::get('rekapmutasihutang' , 'Queryanalisa@rekapmutasihutang');
 Route::get('detailmutasihutang' , 'Queryanalisa@detailmutasihutang');
 Route::get('rekapanalisahutang' , 'Queryanalisa@rekapanalisahutang');
+Route::get('detailanalisahutang' , 'Queryanalisa@detailanalisahutang');
 
 
 
@@ -107,6 +108,7 @@ Route::get('suratpermintaanpembelian/createPDF/{id}', 'PurchaseController@create
 Route::get('suratpermintaanpembelian/getnospp', 'PurchaseController@getnospp');
 Route::get('suratpermintaanpembelian/cetakspp/{id}', 'PurchaseController@cetakspp');
 Route::get('suratpermintaanpembelian/editspp/{id}', 'PurchaseController@editspp');
+Route::get('suratpermintaanpembelian/valgudang', 'PurchaseController@valgudang');
 
 Route::get('testing/analisa', 'PurchaseController@queryanalisa');
 
@@ -211,7 +213,7 @@ Route::get('laporan-neraca/index',  'laporan_neracaController@neraca');
 Route::get('master-keuangan/laporan-laba-rugi',  'laba_rugiController@index');
 
 /* end warehouse */
-Route::get('fakturpembelian/fakturpembelian', 'PurchaseController@fatkurpembelian');
+Route::get('fakturpembelian/fakturpembelians', 'PurchaseController@fatkurpembelian');
 Route::get('fakturpembelian/createfatkurpembelian', 'PurchaseController@createfatkurpembelian');
 Route::get('fakturpembelian/detailfatkurpembelian/{id}', 'PurchaseController@detailfatkurpembelian');
 Route::get('fakturpembelian/getchangefaktur', 'PurchaseController@supplierfaktur');
@@ -391,7 +393,7 @@ Route::get('buktikaskeluar/jurnal', 'kasKeluarController@jurnal');
 Route::get('buktikaskeluar/datatable_bkk', 'kasKeluarController@datatable_bkk')->name('datatable_bkk');
 Route::get('buktikaskeluar/append_table', 'kasKeluarController@append_table');
 // FORM TANDA TERIMA
-Route::get('form_tanda_terima_pembelian/index', 'form_tanda_terima_pembelian_controller@edit');
+Route::get('form_tanda_terima_pembelian/index', 'form_tanda_terima_pembelian_controller@index');
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
 Route::get('ikhtisar_kas/create', 'ikhtisarController@create');
@@ -530,7 +532,6 @@ Route::get('masteritem/edititem/{id}', 'MasterPurchaseController@edititem');
 Route::post('masteritem/updateitem/{id}', 'MasterPurchaseController@updateitem');
 Route::delete('masteritem/deleteitem/{id}', 'MasterPurchaseController@deleteitem');
 Route::get('masteritem/getaccpersediaan', 'MasterPurchaseController@getaccpersediaan');
-Route::post('masteritem/datajenisitem', 'MasterPurchaseController@datajenisitem');
 
 
 Route::get('masterbank/masterbank', 'MasterPurchaseController@masterbank');
