@@ -658,7 +658,7 @@
 				    
               <!-- FORM TANDA TERIMA -->
                 <form id="form_hasiltt">  
-               <div class="modal fade" id="myModal_TT" tabindex="-1" role="dialog"  aria-hidden="true">
+                  <div class="modal fade" id="myModal_TT" tabindex="-1" role="dialog"  aria-hidden="true">
                                 <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
                                   <div class="modal-content">
                                     <div class="modal-header">

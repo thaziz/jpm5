@@ -60,10 +60,6 @@
             <div class="col-xs-12">
               
               <div class="box">
-               
-                  <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
-                  <div class="box-body">
-                    
                 <div class="box-body">
                   <div class="col-sm-12">
                     <table class="table table-bordered table-striped table_tt " style="color: white">
@@ -90,11 +86,8 @@
                     </table>
                   </div>
                 </div><!-- /.box-body -->
-
                 <div class="box-footer">
                   <div class="pull-right">
-            
-                     
                     </div>
                   </div><!-- /.box-footer --> 
               </div><!-- /.box -->

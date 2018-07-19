@@ -43,6 +43,6 @@ class form_tanda_terima_pembelian_controller extends Controller
 
     public function create()
     {
-    	
+    	return view('purchase.form_tt.create_tt');
     }
 }
