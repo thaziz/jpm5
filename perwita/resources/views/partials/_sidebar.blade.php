@@ -2020,7 +2020,7 @@
                                  " style="border-left:none;">
                                     <a href="#" style="font-size:85%"> Transaksi Hutang <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level" style="padding-left: 5%;font-size: 85%">
-                                @if(Auth::user()->PunyaAkses('Form Tanda Terima','aktif'))
+                                @if(Auth::user()->PunyaAkses('Form Tanda Terima Pembelian','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('form_tanda_terima_pembelian/index') ? 'active' : '' || 
                                         Request::is('form_tanda_terima_pembelian/*') ? 'active' : ''}}" href="{{ url('form_tanda_terima_pembelian/')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Tanda Terima </a>

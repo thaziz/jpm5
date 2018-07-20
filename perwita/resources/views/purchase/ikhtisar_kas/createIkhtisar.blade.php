@@ -109,7 +109,7 @@
                     </select>
                 </td>
                 @else
-                <td class="disabled" hidden="">
+                <td class="disabled">
                     <select class="form-control chosen-select-width cabang" name="cabang">
                         @foreach ($cabang as $row)
                         <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
@@ -252,7 +252,7 @@ function simpan(){
       $.ajax({
          url:baseUrl +'/ikhtisar_kas/simpan',
          data:$('.table_header :input').serialize()+'&'+tabel_patty.$('input').serialize(),
-         type:'get',
+         type:'post',
       success:function(response){
         if(response.status == 1){
           swal({

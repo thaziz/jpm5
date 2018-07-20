@@ -18,6 +18,7 @@
   .right:{
     text-align: right ;
   }
+
 /*  .table_tt td{
     text-align: center !important;
   }*/
@@ -68,10 +69,32 @@
                         <td width="300"><input type="text" readonly="" name="nomor" class="nomor form-control"></td>
                         <td width="150">Pihak Ketiga</td>
                         <td colspan="2">
-                          <select  name="supplier" class="supplier form-control">
-                            <option>asdsadsadsa</option>
+                          <select  name="supplier" class="supplier form-control chosen-select-width">
+                            @foreach ($all as $val)
+                              <option value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                            @endforeach
                           </select>
                         </td>
+                      </tr>
+                      <tr>
+                        <td>Cabang</td>
+                        @if(Auth::user()->punyaAkses('Form Tanda Terima Pembelian','cabang'))
+                        <td colspan="4">
+                          <select  name="cabang" class="cabang form-control chosen-select-width">
+                            @foreach ($cabang as $val)
+                              <option @if($val->kode == Auth::user()->kode_cabang) @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                            @endforeach
+                          </select>
+                        </td>
+                        @else
+                        <td colspan="4" class="disabled">
+                          <select  name="cabang" class="cabang form-control chosen-select-width">
+                            @foreach ($cabang as $val)
+                              <option @if($val->kode == Auth::user()->kode_cabang) @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                            @endforeach
+                          </select>
+                        </td>
+                        @endif
                       </tr>
                       <tr>
                         <td colspan="5">
@@ -132,8 +155,8 @@
                       </tr>
                     </table>
                   </div>
-                  <div class="col-sm-12">
-                    <table class="table table-bordered table-striped table_tt " >
+                  <div class="col-sm-12 table-responsive">
+                    <table class="table table-bordered table-striped table_tt " style="width: 100%" >
                       <thead style="color: white">
                         <tr align="center">
                           <td width="60">No</td>
@@ -178,27 +201,70 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+  function nota() {
+    var cabang = $('.cabang').val();
+    var tanggal = $('.tanggal').val();
+    $.ajax({
+      url  : '{{ url('form_tanda_terima_pembelian/nota') }}',
+      data : {cabang,tanggal},
+      dataType:'json',
+      success:function(data){
+        $('.nomor').val(data.nota);
+      }
+    })
+  }
+  $(document).ready(function(){
+    var cabang = $('.cabang').val();
+    var tanggal = $('.tanggal').val();
+    $.ajax({
+      url  : '{{ url('form_tanda_terima_pembelian/nota') }}',
+      data : {cabang,tanggal},
+      dataType:'json',
+      success:function(data){
+        $('.nomor').val(data.nota);
+      }
+    })
+  })
   var index = 1 ;
   var table = $('.table_tt').DataTable({
     searching:true,
     sorting:false,
     columnDefs: [
-      {
-         targets: 0,
-         className:'center'
-      },
-      {
-         targets: 2,
-         className:'right'
-      },
-      {
-         targets: 3,
-         className:'center'
-      },
-      
-    ]
+          {
+             targets: 3,
+             className: 'cssright'
+          },
+          {
+             targets: 4,
+             className: 'cssright'
+          },
+          {
+             targets: 5,
+             className: 'center'
+          },
+          {
+             targets:6,
+             className: 'center'
+          },
+          {
+             targets:7,
+             className: 'center'
+          },
+    ],
   });
-  $('.tanggal').datepicker();
+ $('.tanggal').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
+      $('.tanggal').change();
+  });
+
+  $('.tanggal').change(function () {
+      nota();
+  });
+
+  $('.cabang').change(function(){
+      nota();
+  });
+
 
   $("#nominal").maskMoney({
       precision:0,
@@ -226,9 +292,9 @@
       '<p class="nominal_text">'+nominal+'</p>'+
       '<input type="hidden" class="nominal" name="nominal[]">',
 
-      '<div class="btn btn-sm btn-group">'+
-      '<button class="btn btn-warning"><i class="fa fa-edit"></i></button>'+
-      '<button class="btn btn-danger"><i class="fa fa-trash"></i></button>'+
+      '<div class=" btn-group">'+
+      '<a class="btn btn-warning"><i class="fa fa-edit"></i></a>'+
+      '<a class="btn btn-danger"><i class="fa fa-trash"></i></a>'+
       '</div>',
     ]).draw();
     index++;
