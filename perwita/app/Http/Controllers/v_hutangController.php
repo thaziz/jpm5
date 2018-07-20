@@ -321,13 +321,13 @@ class v_hutangController extends Controller
       
 
         $idnota = (int)$idnota + 1;
-        $idvhc = str_pad($idnota, 3, '0', STR_PAD_LEFT);
+        $idvhc = str_pad($idnota, 4, '0', STR_PAD_LEFT);
         
       }
 
       else {
     
-        $idvhc = '001';
+        $idvhc = '0001';
       }
 
       $datainfo = ['status' => 'sukses' , 'data' => $idvhc];

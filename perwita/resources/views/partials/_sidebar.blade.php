@@ -2029,7 +2029,7 @@
                                 @if(Auth::user()->PunyaAkses('Faktur Pembelian','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('fakturpembelian/fakturpembelian') ? 'active' : '' || 
-                                        Request::is('fakturpembelian/fakturpembelian/*') ? 'active' : ''}}" href="{{ url('fakturpembelian/fakturpembeliand')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Faktur Pembelian </a>
+                                        Request::is('fakturpembelian/fakturpembelian/*') ? 'active' : ''}}" href="{{ url('fakturpembelian/fakturpembelian')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Faktur Pembelian </a>
                                 </li>
                                 @endif
                                 @if(Auth::user()->PunyaAkses('Uang Muka','aktif'))

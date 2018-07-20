@@ -284,7 +284,9 @@
                                                    <br>
                                                    <br>
                                                    <div class="col-sm-12">
-                                                    <table class='table table-stripped table-bordered' id="tbl-hasilbank">
+                                                   <div style="overflow-x:auto;">
+                                                    <table class='table table-stripped table-bordered' id="tbl-hasilbank" style='width:100%'>
+                                                      <thead>
                                                       <tr>
                                                         <th> No </th>
                                                         <th> No Bukti </th>
@@ -297,7 +299,9 @@
                                                         <th> Keterangan </th>  
                                                         <th> Aksi </th>    
                                                       </tr>
+                                                    </thead>
                                                     </table>
+                                                    </div>
                                                    </div>
 
                                               </div>

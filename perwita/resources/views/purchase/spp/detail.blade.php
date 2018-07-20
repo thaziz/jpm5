@@ -8,6 +8,13 @@
     pointer-events: none;
     opacity: 1;
   }
+
+  .table {
+   overflow-x: scroll
+  }
+
+ 
+
 </style>
 
            <div class="row wrapper border-bottom white-bg page-heading">
@@ -143,11 +150,17 @@
                          <div class="col-sm-6">
                           <div class="tampilbayar"> </div>
                            <h4> <a href="{{url('suratpermintaanpembelian/cetakspp/'.$spp->spp_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </h4>
+
+                           <div class="kettolak">
+                           </div>
+
                          </div>
 
                       
                          </div>
                    @endforeach
+
+
                     </div>
                   </div>
          
@@ -169,23 +182,24 @@
                 
                 <div class="box-body">
                 <br>
-                <table id="hargatable" class="table table-bordered">
+                <div style="overflow-x:auto;">
+                <table id="hargatable" class="table table-bordered" style="width:100%">
                     <thead>
                      <tr>
-                        <td style="width:20px;vertical-align: center" rowspan="2"> No  </td>
-                        <td style="width:250px; text-align: center;vertical-align: center" rowspan="2"> Nama Barang</td>
-                        <td style="width:50px" rowspan="2"> Jumlah Permintaan </td>
+                        <td style="vertical-align: center" rowspan="2"> No  </td>
+                        <td style="text-align: center;vertical-align: center" rowspan="2"> Nama Barang</td>
+                        <td  rowspan="2"> Jumlah Permintaan </td>
                        <!--  <th style="width:50px" rowspan="2"> Jumlah Disetujui </th> -->
                       
                          @if($data['countkendaraan'] > 0)           
                             <td rowspan="2"> Kendaraan </td>                         
                          @endif
 
-                        <td style="width:50px;vertical-align: center" rowspan="2"> Stock Gudang </td>
-                        <td style="width:70px;vertical-align: center" rowspan="2"> Satuan </td>
+                        <td style="vertical-align: center" rowspan="2"> Stock Gudang </td>
+                        <td style="vertical-align: center" rowspan="2"> Satuan </td>
                       
                       
-                        <td style="width:500px; text-align: center;vertical-align: center" colspan="{{$data['count']}}"> Supplier </td>
+                        <td style="text-align: center;vertical-align: center" colspan="{{$data['count']}}"> Supplier </td>
 
                     
                     </tr>
@@ -196,7 +210,7 @@
                       <td class="supplier{{$index}}" data-id="{{$index}}" data-supplier="{{$spptb->spptb_supplier}}"> 
                           <select id="sup" class="chosen-select-width spl sp{{$index}}" name="idsup[]" data-index="{{$index}}" disabled="">
                              @foreach($data['supplier'] as $sup)
-                              <option value="{{$spptb->spptb_supplier}}, {{$spptb->syarat_kredit}}, {{$spptb->nama_supplier}}" @if($spptb->spptb_supplier == $sup->no_supplier) selected="" @endif>  {{$spptb->nama_supplier}} 
+                              <option value="{{$spptb->spptb_supplier}}, {{$spptb->syarat_kredit}}, {{$spptb->nama_supplier}}" @if($spptb->spptb_supplier == $sup->no_supplier) selected="" @endif>  {{$spptb->no_supplier}} - {{$spptb->nama_supplier}} 
                               </option>
                             
                              @endforeach
@@ -217,7 +231,7 @@
                         <td> 
                             <select class="chosen-select-width itm item{{$idbarang}}"  name="item[]" id="item" disabled="">
                               @foreach($data['item'] as $item)
-                               <option value="{{$item->kode_item}}" @if($sppd->sppd_kodeitem == $item->kode_item) selected="" @endif>  {{$item->nama_masteritem}}
+                               <option value="{{$item->kode_item}}" @if($sppd->sppd_kodeitem == $item->kode_item) selected="" @endif> {{$item->kode_item}} - {{$item->nama_masteritem}}
                               </option>
                               @endforeach
                             </select>
@@ -269,7 +283,7 @@
                     </tbody>
                    
                   </table>
-                 
+                 </div>
                     
                 </div><!-- /.box-body -->
                   
@@ -319,6 +333,27 @@
 
     })
 
+    idspp = $('.idspp').val();
+    $.ajax({
+      data : {idspp},
+      url :baseUrl + '/suratpermintaanpembelian/kettolak',
+      dataType : "json",
+      type : "get",
+      success : function(response){
+       // alert(response[0].nama_masteritem);
+       var table = "<br><h4>DATA YANG DITOLAK OLEH STAFF   PEMBELIAN </h4> <table border='0' class='table'> " +
+                  "<tr> <th> No </th> <th> Nama Barang </th> <th> Keterangan di Tolak </th> </tr>";
+                    for(i=0; i < response.length; i++){
+
+                      no = 1;
+                      table += "<tr> <td>"+ no +"</td> <td>"+response[i].nama_masteritem+"</td> <td>"+response[i].sppd_kettolak+"</td> </tr>";
+                      no++;
+                    }
+
+                table += "</table>";
+            $('.kettolak').html(table);
+      }
+    })
 
     function addCommas(nStr) {
             nStr += '';
