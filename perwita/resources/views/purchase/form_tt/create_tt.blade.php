@@ -15,8 +15,8 @@
   .center:{
     text-align: center ;
   }
-  .right:{
-    text-align: right ;
+  tbody .right:{
+    align-content: right;
   }
 
 /*  .table_tt td{
@@ -155,6 +155,16 @@
                       </tr>
                     </table>
                   </div>
+                  <div class="col-sm-12">
+                    <table>
+                      <tr>  
+                        <td>
+                          <button>Save</button>
+                          <button>Save</button>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
                   <div class="col-sm-12 table-responsive">
                     <table class="table table-bordered table-striped table_tt " style="width: 100%" >
                       <thead style="color: white">
@@ -231,26 +241,18 @@
     searching:true,
     sorting:false,
     columnDefs: [
-          {
-             targets: 3,
-             className: 'cssright'
-          },
-          {
-             targets: 4,
-             className: 'cssright'
-          },
-          {
-             targets: 5,
-             className: 'center'
-          },
-          {
-             targets:6,
-             className: 'center'
-          },
-          {
-             targets:7,
-             className: 'center'
-          },
+        {
+           targets: 0,
+           className: 'center'
+        },
+        {
+           targets: 2,
+           className: 'right'
+        },
+        {
+           targets: 3,
+           className: 'center'
+        },
     ],
   });
  $('.tanggal').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
@@ -283,7 +285,7 @@
       return toastr.warning('Nominal Harus Diisi');
     }
     table.row.add([
-      '<p class="index center">'+index+'</p>'+
+      '<p class="index">'+index+'</p>'+
       '<input type="hidden" class="index index_'+index+'" value="'+index+'">',
 
       '<p class="invoice_text">'+invoice+'</p>'+
@@ -298,6 +300,8 @@
       '</div>',
     ]).draw();
     index++;
+    $('.right').css('text-align','right');
+    $('.center').css('text-align','center');
   });
 </script>
 @endsection
