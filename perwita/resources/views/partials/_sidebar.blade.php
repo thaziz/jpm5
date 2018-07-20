@@ -2028,7 +2028,7 @@
                                 @endif
                                 @if(Auth::user()->PunyaAkses('Faktur Pembelian','aktif'))
                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('fakturpembelian/fakturpembelian') ? 'active' : '' || 
+                                    <a class="sidebar master-perusahaan {{Request::is('fakturpembelian/fakturpembelians') ? 'active' : '' || 
                                         Request::is('fakturpembelian/fakturpembelian/*') ? 'active' : ''}}" href="{{ url('fakturpembelian/fakturpembelian')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Faktur Pembelian </a>
                                 </li>
                                 @endif

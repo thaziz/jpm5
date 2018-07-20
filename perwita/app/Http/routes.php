@@ -214,7 +214,7 @@ Route::get('laporan-neraca/index',  'laporan_neracaController@neraca');
 Route::get('master-keuangan/laporan-laba-rugi',  'laba_rugiController@index');
 
 /* end warehouse */
-Route::get('fakturpembelian/fakturpembelian', 'PurchaseController@fatkurpembelian');
+Route::get('fakturpembelian/fakturpembelians', 'PurchaseController@fatkurpembelian');
 Route::get('fakturpembelian/createfatkurpembelian', 'PurchaseController@createfatkurpembelian');
 Route::get('fakturpembelian/detailfatkurpembelian/{id}', 'PurchaseController@detailfatkurpembelian');
 Route::get('fakturpembelian/getchangefaktur', 'PurchaseController@supplierfaktur');
