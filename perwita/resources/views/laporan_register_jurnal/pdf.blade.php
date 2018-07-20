@@ -342,6 +342,7 @@
 						<?php $sum_debet = $sum_kredit = 0; ?>
 						@foreach($data as $data_jr)
 							<?php $tot_debet = $tot_kredit = 0; ?>
+							
 							@foreach($detail[$data_jr->jr_id] as $key => $data_detail)
 								<tr>
 									<td style="padding-left: 3px;">{{ date('d-m-Y', strtotime($data_jr->jr_date)) }}</td>

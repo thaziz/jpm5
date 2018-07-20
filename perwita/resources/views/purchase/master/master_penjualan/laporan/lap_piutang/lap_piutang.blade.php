@@ -219,6 +219,9 @@
       type:'get',
       url:baseUrl + '/cari_kartupiutang/cari_kartupiutang',
       success : function(data){
+        if (data.status == 'kosong') {
+          toastr.warning('data Tidak Diketemukan');
+        }
         $('#disini').html(data);
         $('#container').hide();
 
