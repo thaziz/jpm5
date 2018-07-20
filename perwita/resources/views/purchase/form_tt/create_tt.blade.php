@@ -13,11 +13,15 @@
     color: red;
   }
   .center:{
+    text-align: center ;
+  }
+  tbody .right:{
+    align-content: right;
+  }
+
+/*  .table_tt td{
     text-align: center !important;
-  }
-  .right:{
-    text-align: right !important;
-  }
+  }*/
 </style>
 <div class="row wrapper border-bottom white-bg page-heading">
   <div class="col-lg-10">
@@ -47,16 +51,15 @@
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <div class="ibox-title">
-                      <h5>Form Tanda Terima Pembelian</h5>
-                      <a href="{{ url('form_tanda_terima_pembelian') }}" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+                <div class="ibox-title" style="background: hotpink">
+                    <div  style="background: hotpink" >
+                      <h5 style="color: white">Form Tanda Terima Pembelian</h5>
+                      <a href="{{ url('form_tanda_terima_pembelian') }}" class="pull-right" style="color: white"><i class="fa fa-arrow-left"> Kembali</i></a>
                     </div>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
-              
               <div class="box">
                 <div class="box-body">
                   <div class="col-sm-12">
@@ -65,14 +68,36 @@
                         <td width="150">Nomor</td>
                         <td width="300"><input type="text" readonly="" name="nomor" class="nomor form-control"></td>
                         <td width="150">Pihak Ketiga</td>
-                        <td>
-                          <select  name="supplier" class="supplier form-control">
-                            <option>asdsadsadsa</option>
+                        <td colspan="2">
+                          <select  name="supplier" class="supplier form-control chosen-select-width">
+                            @foreach ($all as $val)
+                              <option value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                            @endforeach
                           </select>
                         </td>
                       </tr>
                       <tr>
+                        <td>Cabang</td>
+                        @if(Auth::user()->punyaAkses('Form Tanda Terima Pembelian','cabang'))
                         <td colspan="4">
+                          <select  name="cabang" class="cabang form-control chosen-select-width">
+                            @foreach ($cabang as $val)
+                              <option @if($val->kode == Auth::user()->kode_cabang) @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                            @endforeach
+                          </select>
+                        </td>
+                        @else
+                        <td colspan="4" class="disabled">
+                          <select  name="cabang" class="cabang form-control chosen-select-width">
+                            @foreach ($cabang as $val)
+                              <option @if($val->kode == Auth::user()->kode_cabang) @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                            @endforeach
+                          </select>
+                        </td>
+                        @endif
+                      </tr>
+                      <tr>
+                        <td colspan="5">
                           <div class="row">
                             <div class="col-sm-3"> 
                               <div class="checkbox checkbox-info checkbox-circle">
@@ -109,29 +134,49 @@
                           </div>
                         </td>
                       </tr>
+                      <tr>
+                        <td>Lain-lain</td>
+                        <td colspan="2"><input type="text" class="lain form-control" name="lain"></td>
+                        <td width="150">Tanggal</td>
+                        <td width="300">
+                          <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
+                        </td>
+                      </tr>
                     </table>
                   </div>
                   <div class="col-sm-12">
-                    <table class="table table-bordered table-striped table_tt " style="color: white">
-                      <thead>
-                        <tr>
-                          <td>No</td>
+                    <table class="table table-bordered">
+                      <tr>
+                        <td>Nomor Invoice</td>
+                        <td><input type="text" class="form-control"  id="invoice"></td>
+                        <td>Nominal</td>
+                        <td><input type="text" class="form-control"  id="nominal"></td>
+                        <td align="center"><button type="button" class="btn btn-success append"><i class="fa fa-plus"> Append</i></button></td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="col-sm-12">
+                    <table>
+                      <tr>  
+                        <td>
+                          <button>Save</button>
+                          <button>Save</button>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="col-sm-12 table-responsive">
+                    <table class="table table-bordered table-striped table_tt " style="width: 100%" >
+                      <thead style="color: white">
+                        <tr align="center">
+                          <td width="60">No</td>
                           <td>Nomor</td>
-                          <td>Tanggal</td>
-                          <td>Nama Pihak Ketiga</td>
-                          <td>Print</td>
+                          <td>Nominal</td>
                           <td>Aksi</td>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        </tr>
+                        
                       </tbody>
                     </table>
                   </div>
@@ -151,7 +196,10 @@
             </div>
         </div>
     </div>
+    
 
+
+    
 
 
 <div class="row" style="padding-bottom: 50px;"></div>
@@ -163,10 +211,97 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-  $('.table_tt').DataTable({
+
+  function nota() {
+    var cabang = $('.cabang').val();
+    var tanggal = $('.tanggal').val();
+    $.ajax({
+      url  : '{{ url('form_tanda_terima_pembelian/nota') }}',
+      data : {cabang,tanggal},
+      dataType:'json',
+      success:function(data){
+        $('.nomor').val(data.nota);
+      }
+    })
+  }
+  $(document).ready(function(){
+    var cabang = $('.cabang').val();
+    var tanggal = $('.tanggal').val();
+    $.ajax({
+      url  : '{{ url('form_tanda_terima_pembelian/nota') }}',
+      data : {cabang,tanggal},
+      dataType:'json',
+      success:function(data){
+        $('.nomor').val(data.nota);
+      }
+    })
+  })
+  var index = 1 ;
+  var table = $('.table_tt').DataTable({
     searching:true,
     sorting:false,
+    columnDefs: [
+        {
+           targets: 0,
+           className: 'center'
+        },
+        {
+           targets: 2,
+           className: 'right'
+        },
+        {
+           targets: 3,
+           className: 'center'
+        },
+    ],
+  });
+ $('.tanggal').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
+      $('.tanggal').change();
   });
 
+  $('.tanggal').change(function () {
+      nota();
+  });
+
+  $('.cabang').change(function(){
+      nota();
+  });
+
+
+  $("#nominal").maskMoney({
+      precision:0,
+      thousands:'.',
+      allowZero:true,
+  });
+
+  $('.append').click(function(){
+    var invoice = $('#invoice').val();
+    var invoice = $('#invoice').val();
+    var nominal = $('#nominal').val();
+    if (invoice == '') {
+      return toastr.warning('Invoice Harus Diisi');
+    }
+    if (nominal == '') {
+      return toastr.warning('Nominal Harus Diisi');
+    }
+    table.row.add([
+      '<p class="index">'+index+'</p>'+
+      '<input type="hidden" class="index index_'+index+'" value="'+index+'">',
+
+      '<p class="invoice_text">'+invoice+'</p>'+
+      '<input type="hidden" class="invoice" name="invoice[]">',
+
+      '<p class="nominal_text">'+nominal+'</p>'+
+      '<input type="hidden" class="nominal" name="nominal[]">',
+
+      '<div class=" btn-group">'+
+      '<a class="btn btn-warning"><i class="fa fa-edit"></i></a>'+
+      '<a class="btn btn-danger"><i class="fa fa-trash"></i></a>'+
+      '</div>',
+    ]).draw();
+    index++;
+    $('.right').css('text-align','right');
+    $('.center').css('text-align','center');
+  });
 </script>
 @endsection

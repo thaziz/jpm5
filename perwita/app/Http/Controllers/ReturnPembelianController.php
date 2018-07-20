@@ -293,11 +293,11 @@ class ReturnPembelianController extends Controller
 		
 
 			$idrn = (int)$idrn + 1;
-			$data['idreturn'] = str_pad($idrn, 3, '0', STR_PAD_LEFT);
+			$data['idreturn'] = str_pad($idrn, 4, '0', STR_PAD_LEFT);
 			
 		}
 		else {
-			$data['idreturn'] = '001';
+			$data['idreturn'] = '0001';
 		}
 
 		

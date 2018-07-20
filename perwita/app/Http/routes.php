@@ -109,6 +109,7 @@ Route::get('suratpermintaanpembelian/getnospp', 'PurchaseController@getnospp');
 Route::get('suratpermintaanpembelian/cetakspp/{id}', 'PurchaseController@cetakspp');
 Route::get('suratpermintaanpembelian/editspp/{id}', 'PurchaseController@editspp');
 Route::get('suratpermintaanpembelian/valgudang', 'PurchaseController@valgudang');
+Route::get('suratpermintaanpembelian/kettolak', 'PurchaseController@kettolakspp');
 
 Route::get('testing/analisa', 'PurchaseController@queryanalisa');
 
@@ -396,15 +397,16 @@ Route::get('buktikaskeluar/append_table', 'kasKeluarController@append_table');
 Route::get('form_tanda_terima_pembelian', 'form_tanda_terima_pembelian_controller@index');
 Route::get('form_tanda_terima_pembelian/create', 'form_tanda_terima_pembelian_controller@create');
 Route::get('form_tanda_terima_pembelian/datatable', 'form_tanda_terima_pembelian_controller@datatable')->name('datatable_form_tt');
+Route::get('form_tanda_terima_pembelian/nota', 'form_tanda_terima_pembelian_controller@nota');
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
 Route::get('ikhtisar_kas/create', 'ikhtisarController@create');
 Route::get('ikhtisar_kas/nota', 'ikhtisarController@nota');
 Route::get('ikhtisar_kas/cari_patty', 'ikhtisarController@cari_patty');
 Route::get('ikhtisar_kas/tes', 'ikhtisarController@tes');
-Route::get('ikhtisar_kas/simpan', 'ikhtisarController@simpan');
+Route::post('ikhtisar_kas/simpan', 'ikhtisarController@simpan');
 Route::get('ikhtisar_kas/edit/{id}', 'ikhtisarController@edit');
-Route::get('ikhtisar_kas/update', 'ikhtisarController@update');
+Route::post('ikhtisar_kas/update', 'ikhtisarController@update');
 Route::get('ikhtisar_kas/hapus/{id}', 'ikhtisarController@hapus');
 Route::get('ikhtisar_kas/print/{id}', 'ikhtisarController@cetak');
 Route::get('ikhtisar_kas/datatable_ikhtisar', 'ikhtisarController@datatable_ikhtisar')->name('datatable_ikhtisar');

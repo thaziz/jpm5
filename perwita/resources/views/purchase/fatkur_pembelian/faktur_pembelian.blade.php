@@ -301,26 +301,30 @@
     <div class="pembungkus" >
    <table class="size textcenter  table-responsive" width="100%">
      <tr>
-          <th class="textcenter top bot right" width="4%" height="10">No.</th>
-          <th class="textcenter top bot right" width="10%">Kode</th>
-          <th class="textcenter top bot right" width="30%">Nama Barang / Jasa</th>
-          <th class="textcenter top bot right">Quantity</th>
-          <th class="textcenter top bot right">Unit</th>
-          <th class="textcenter top bot right">Harga Satuan</th>
-          <th class="textcenter top bot right">Jumlah Harga</th>
-          <th class="textcenter top bot">Keterangan</th>
+          <th class="textcenter top bot right" width="4%" height="10"> No.</th>
+          <th class="textcenter top bot right" width="10%"> Kode</th>
+          <th class="textcenter top bot right" width="30%"> Nama Barang / Jasa</th>
+          <th class="textcenter top bot right"> Quantity</th>
+          <th class="textcenter top bot right"> Unit</th>
+          <th class="textcenter top bot right"> Harga Satuan</th>
+          <th class="textcenter top bot right"> Jumlah Harga</th>
+          <th class="textcenter top bot right"> Biaya </th>
+          <th class="textcenter top bot right"> Netto Biaya </th>
+          <th class="textcenter top bot"> Keterangan</th>
      </tr>
      
      @foreach($data['barang'] as $key=>$brg)
      <tr>
        <td class="right"> {{$key + 1}} </td>
-       <td class="textleft right">{{$brg->kode_item}}</td>
-       <td class="textleft right">{{$brg->nama_masteritem}}</td>
-       <td class="textright right">{{$brg->fpdt_qty}}</td>
-       <td class="textright right">{{$brg->unitstock}}</td>
-       <td class="textright right">{{number_format($brg->fpdt_harga, 2)}}</td>
-       <td class="textright right">{{number_format($brg->fpdt_totalharga, 2)}}</td>
-       <td class="textleft right">{{$brg->fpdt_keterangan}}</td>
+       <td class="textleft right"> {{$brg->kode_item}}</td>
+       <td class="textleft right"> {{$brg->nama_masteritem}}</td>
+       <td class="textright right"> {{$brg->fpdt_qty}}</td>
+       <td class="textright right"> {{$brg->unitstock}}</td>
+       <td class="textright right"> {{number_format($brg->fpdt_harga, 2)}}</td>
+       <td class="textright right"> {{number_format($brg->fpdt_totalharga, 2)}}</td>
+       <td class="textright right"> {{number_format($brg->fpdt_biaya, 2)}}</td>
+       <td class="textright right"> {{number_format($brg->fpdt_netto, 2)}}</td>
+       <td class="textleft right"> {{$brg->fpdt_keterangan}} </td>
      </tr>
      @endforeach
 
@@ -334,14 +338,6 @@
        <td class="textright  right">&nbsp;</td>
        <td class="textright  right">&nbsp;</td>
        <td class="textright  right">&nbsp;</td>
-     </tr>
-       <tr>
-       <td class=" right">&nbsp;</td>
-       <td class="textleft  right">&nbsp;</td>
-       <td class=" right">&nbsp;</td>
-       <td class="textleft  right">&nbsp;</td>
-       <td class=" right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
        <td class="textright  right">&nbsp;</td>
        <td class="textright  right">&nbsp;</td>
      </tr>
@@ -361,13 +357,27 @@
        <td class=" right">&nbsp;</td>
        <td class="textleft  right">&nbsp;</td>
        <td class=" right">&nbsp;</td>
+       <td class="textright  right">&nbsp;</td>
+       <td class="textright  right">&nbsp;</td>
+       <td class="textright  right">&nbsp;</td>
+       <td class="textright  right">&nbsp;</td>
+       <td class="textright  right">&nbsp;</td>
+     </tr>
+       <tr>
+       <td class=" right">&nbsp;</td>
+       <td class="textleft  right">&nbsp;</td>
+       <td class=" right">&nbsp;</td>
+       <td class="textleft  right">&nbsp;</td>
+       <td class=" right">&nbsp;</td>
+       <td class="textright  right">&nbsp;</td>
+       <td class="textright  right">&nbsp;</td>
        <td class="textright  right">&nbsp;</td>
        <td class="textright  right">&nbsp;</td>
        <td class="textright  right">&nbsp;</td>
      </tr>
      <tr>
-       <td colspan="3" class="top right"></td>
-       <td colspan="3" class="top right">
+       <td colspan="4" class="top right"></td>
+       <td colspan="4" class="top right">
          <table width="100%">
 
           <tr>

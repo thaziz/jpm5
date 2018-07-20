@@ -1180,7 +1180,7 @@ class Queryanalisa extends Controller
 			}
 
 			if(count($hutangsupplier1) != 0){
-				$hutangsupplier3= DB::select("select * from v_hutang where v_tgl BETWEEN '$tglawal' and '$tglakhir' and v_acchutang LIKE '$akunhutangdagang%'");
+				$hutangsupplier3= DB::select("select * from v_hutang where v_tempo BETWEEN '$tglawal' and '$tglakhir' and v_acchutang LIKE '$akunhutangdagang%'");
 				for($j = 0; $j < count($hutangsupplier3); $j++){
 					$netto = $hutangsupplier3[$j]->v_hasil;
 					$v_pelunasan = $hutangsupplier3[$j]->v_pelunasan;
@@ -1191,7 +1191,7 @@ class Queryanalisa extends Controller
 			}
 
 			if(count($hutangsupplier2) != 0){
-				$hutangsupplier4 =DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$akunhutangdagang%'");
+				$hutangsupplier4 =DB::select("select * from faktur_pembelian where fp_jatuhtempo BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$akunhutangdagang%'");
 				for($j = 0; $j < count($hutangsupplier2); $j++){
 					$netto = $hutangsupplier4[$j]->fp_netto;
 					$fp_pelunasan = $hutangsupplier4[$j]->fp_sisapelunasan;

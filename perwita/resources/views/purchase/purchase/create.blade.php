@@ -392,8 +392,6 @@
         return this.id;
       }).toArray();
         
-
-
        var url = baseUrl + '/purchaseorder/ajax_tampilspp';
        var idspp = [];
        var idspp = checked;
@@ -576,7 +574,10 @@
                         '<td> <input type="text" class="form-control totalharga2 totalharga2'+nosup+'" readonly="" name="totalharga[]" data-id='+nosup+'>  </td>';
 
                         if(response.spp[0][0].spp_tipe != 'J'){
-                          rowTable += '<td id="tdgudang"> <select class="form-control gudang" name="lokasikirim[]" class="tdgudang">  @foreach($data['gudang'] as $gdg) <option value="{{$gdg->mg_id}}"> {{$gdg->mg_namagudang}}</option> @endforeach </select></td>'; //cabang
+                          rowTable += '<td id="tdgudang"> <select class="form-control gudang" name="lokasikirim[]" class="tdgudang">';
+                            for(key = 0; key < response.gudang.length; key++){
+                              rowTable += '<option value='+response.gudang[key].mg_id+'>'+response.gudang[key].mg_namagudang+'</option></select></td>'
+                            }
                          
 
                         rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required>  </td>' +
