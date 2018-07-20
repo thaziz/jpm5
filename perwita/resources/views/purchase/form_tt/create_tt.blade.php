@@ -62,7 +62,7 @@
             <div class="col-xs-12">
               <div class="box">
                 <div class="box-body">
-                  <div class="col-sm-12">
+                  <form class="col-sm-12 form_header">
                     <table class="table table-bordered">
                       <tr>
                         <td width="150">Nomor</td>
@@ -79,22 +79,26 @@
                       <tr>
                         <td>Cabang</td>
                         @if(Auth::user()->punyaAkses('Form Tanda Terima Pembelian','cabang'))
-                        <td colspan="4">
-                          <select  name="cabang" class="cabang form-control chosen-select-width">
+                        <td colspan="2">
+                          <select name="cabang" class="cabang form-control chosen-select-width">
                             @foreach ($cabang as $val)
                               <option @if($val->kode == Auth::user()->kode_cabang) @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
                             @endforeach
                           </select>
                         </td>
                         @else
-                        <td colspan="4" class="disabled">
-                          <select  name="cabang" class="cabang form-control chosen-select-width">
+                        <td colspan="2" class="disabled">
+                          <select name="cabang" class="cabang form-control chosen-select-width">
                             @foreach ($cabang as $val)
                               <option @if($val->kode == Auth::user()->kode_cabang) @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
                             @endforeach
                           </select>
                         </td>
                         @endif
+                        <td width="150">Tanggal</td>
+                        <td width="300">
+                          <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
+                        </td>
                       </tr>
                       <tr>
                         <td colspan="5">
@@ -137,56 +141,59 @@
                       <tr>
                         <td>Lain-lain</td>
                         <td colspan="2"><input type="text" class="lain form-control" name="lain"></td>
-                        <td width="150">Tanggal</td>
-                        <td width="300">
-                          <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
+                      
+                        <td>Tanggal Kembali</td>
+                        <td>
+                          <input type="text" name="tanggal_kembali" value="{{ $nextDay }}" class="tanggal_kembali form-control">
                         </td>
                       </tr>
                     </table>
-                  </div>
+                  </form>
                   <div class="col-sm-12">
                     <table class="table table-bordered">
                       <tr>
                         <td>Nomor Invoice</td>
-                        <td><input type="text" class="form-control"  id="invoice"></td>
+                        <td>
+                          <input type="text" class="form-control"  id="invoice">
+                          <input type="hidden" class="form-control"  id="dex">
+                        </td>
                         <td>Nominal</td>
                         <td><input type="text" class="form-control"  id="nominal"></td>
-                        <td align="center"><button type="button" class="btn btn-success append"><i class="fa fa-plus"> Append</i></button></td>
                       </tr>
-                    </table>
-                  </div>
-                  <div class="col-sm-12">
-                    <table>
-                      <tr>  
-                        <td>
-                          <button>Save</button>
-                          <button>Save</button>
+                      <tr>
+                        <td>Tanggal Invoice</td>
+                        <td align="center">
+                          <input type="text" value="{{ Carbon\carbon::now()->format('d/m/Y') }}" id="tanggal_detil" class="form-control">
+                        </td>
+                        <td align="center" colspan="2">
+                          <button type="button" class="btn btn-success append"><i class="fa fa-plus"> Append</i></button>
                         </td>
                       </tr>
                     </table>
                   </div>
-                  <div class="col-sm-12 table-responsive">
+                  <form class="col-sm-12 table-responsive form_detail">
                     <table class="table table-bordered table-striped table_tt " style="width: 100%" >
                       <thead style="color: white">
                         <tr align="center">
-                          <td width="60">No</td>
                           <td>Nomor</td>
+                          <td>Tanggal Invoice</td>
                           <td>Nominal</td>
                           <td>Aksi</td>
                         </tr>
                       </thead>
                       <tbody>
-                        
                       </tbody>
                     </table>
+                  </form>
+                  <div class="col-sm-12" align="right">
+                    <button class="btn btn-success"><i class="fa fa-save simpan_form"> Save</i></button>
                   </div>
                 </div><!-- /.box-body -->
-
                 <div class="box-footer">
                   <div class="pull-right">
             
                      
-                    </div>
+                  </div>
                   </div><!-- /.box-footer --> 
               </div><!-- /.box -->
             </div><!-- /.col -->
@@ -206,8 +213,6 @@
 
 
 @endsection
-
-
 
 @section('extra_scripts')
 <script type="text/javascript">
@@ -242,10 +247,6 @@
     sorting:false,
     columnDefs: [
         {
-           targets: 0,
-           className: 'center'
-        },
-        {
            targets: 2,
            className: 'right'
         },
@@ -255,8 +256,14 @@
         },
     ],
   });
- $('.tanggal').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
+  $('#tanggal_detil').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
+      $('#tanggal_detil').change();
+      $(this).datepicker('hide');
+  });
+
+  $('.tanggal').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
       $('.tanggal').change();
+      $(this).datepicker('hide');
   });
 
   $('.tanggal').change(function () {
@@ -266,7 +273,10 @@
   $('.cabang').change(function(){
       nota();
   });
-
+  $('.tanggal_kembali').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
+      $('.tanggal_kembali').change();
+      $(this).datepicker('hide');
+  });
 
   $("#nominal").maskMoney({
       precision:0,
@@ -275,33 +285,143 @@
   });
 
   $('.append').click(function(){
-    var invoice = $('#invoice').val();
-    var invoice = $('#invoice').val();
-    var nominal = $('#nominal').val();
+    var dex           = $('#dex').val();
+    var invoice       = $('#invoice').val();
+    var nominal       = $('#nominal').val();
+    var tanggal_detil = $('#tanggal_detil').val();
     if (invoice == '') {
       return toastr.warning('Invoice Harus Diisi');
     }
     if (nominal == '') {
       return toastr.warning('Nominal Harus Diisi');
     }
-    table.row.add([
-      '<p class="index">'+index+'</p>'+
-      '<input type="hidden" class="index index_'+index+'" value="'+index+'">',
+    var par = $('.dex_'+dex).parents('tr');
+    table.row(par).remove().draw();
 
+    table.row.add([
       '<p class="invoice_text">'+invoice+'</p>'+
-      '<input type="hidden" class="invoice" name="invoice[]">',
+      '<input type="hidden" class="invoice" name="invoice[]" value="'+invoice+'">'+
+      '<input type="hidden" class="dex dex_'+index+'" value="'+index+'">',
+
+      '<p class="tanggal_detil_text">'+tanggal_detil+'</p>'+
+      '<input type="hidden" class="tanggal_detil" name="tanggal_detil[]" value="'+tanggal_detil+'">',
 
       '<p class="nominal_text">'+nominal+'</p>'+
-      '<input type="hidden" class="nominal" name="nominal[]">',
+      '<input type="hidden" class="nominal" name="nominal[]" value="'+nominal+'">',
 
       '<div class=" btn-group">'+
-      '<a class="btn btn-warning"><i class="fa fa-edit"></i></a>'+
-      '<a class="btn btn-danger"><i class="fa fa-trash"></i></a>'+
+      '<a class="btn btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></a>'+
+      '<a class="btn btn-danger trash" onclick="trash(this)"><i class="fa fa-trash"></i></a>'+
       '</div>',
     ]).draw();
     index++;
     $('.right').css('text-align','right');
     $('.center').css('text-align','center');
+    $('#index').val('');
+    $('#invoice').val('');
+    $('#tanggal_detil').val('{{ Carbon\carbon::now()->format('d/m/Y') }}');
+    $('#nominal').val('');
   });
+
+  function edit(a) {
+    console.log('asd');
+    var par           = $(a).parents('tr');
+    var dex           = $(par).find('.dex').val();
+    var invoice       = $(par).find('.invoice').val();
+    var nominal       = $(par).find('.nominal').val();
+    var tanggal_detil = $(par).find('.tanggal_detil').val();
+
+    $('#dex').val(dex);
+    $('#invoice').val(invoice);
+    $('#nominal').val(nominal);
+    $('#tanggal_detil').val(tanggal_detil);
+  }
+
+  function trash(a) {
+    var par     = $(a).parents('tr');
+    table.row(par).remove().draw();
+  }
+
+  $('.simpan_form').click(function(){
+    var temp = 0
+    var validator = [];
+    var cabang   = $('.cabang').val();
+    var supplier = $('.supplier').val();
+    swal({
+    title: "Apakah anda yakin?",
+    text: "Simpan Tanda Terima!",
+    type: "warning",
+    showCancelButton: true,
+    showLoaderOnConfirm: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Ya, Simpan!",
+    cancelButtonText: "Batal",
+    closeOnConfirm: false,
+    showLoaderOnConfirm: true
+    },function(){
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+      $.ajax({
+        url:baseUrl + '/form_tanda_terima_pembelian/save',
+        type:'get',
+        data:$('.form_header input').serialize()+'&'+$('.form_detail input').serialize()+'&cabang='+cabang+'&supplier='+supplier,
+        dataType:'json',
+        success:function(data){
+          if (data.status == 1) {
+            swal({
+            title: "Berhasil!",
+                    type: 'success',
+                    text: "Data Berhasil Disimpan",
+                    timer: 2000,
+                    showConfirmButton: true
+                    },function(){
+                       
+            });
+          }else if (data.status == 0) {
+            swal({
+            title: "Berhasil!",
+                type: 'error',
+                text: data.message,
+                timer: 2000,
+                showConfirmButton: true
+                },function(){
+            });
+          }
+          
+        },
+        error:function(data){
+        }
+      }); 
+    });
+  })
+
+  $.fn.serializeArray = function () {
+    var rselectTextarea= /^(?:select|textarea)/i;
+    var rinput = /^(?:color|date|datetime|datetime-local|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i;
+    var rCRLF = /\r?\n/g;
+    
+    return this.map(function () {
+        return this.elements ? jQuery.makeArray(this.elements) : this;
+    }).filter(function () {
+        return this.name && !this.disabled && (this.checked || rselectTextarea.test(this.nodeName) || rinput.test(this.type) || this.type == "checkbox");
+    }).map(function (i, elem) {
+        var val = jQuery(this).val();
+        if (this.type == 'checkbox' && this.checked === false) {
+            val = 'off';
+        }
+        return val == null ? null : jQuery.isArray(val) ? jQuery.map(val, function (val, i) {
+            return {
+                name: elem.name,
+                value: val.replace(rCRLF, "\r\n")
+            };
+        }) : {
+            name: elem.name,
+            value: val.replace(rCRLF, "\r\n")
+        };
+    }).get();
+  }
 </script>
 @endsection
