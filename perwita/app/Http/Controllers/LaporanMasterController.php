@@ -2808,7 +2808,7 @@ class LaporanMasterController extends Controller
 		
 	
 
-		 $data_invoice = DB::select("SELECT 'D' as flag,i_nomor  as kode,i_kode_customer as customer,i_tanggal as tanggal,i_keterangan as keterangan,i_sisa_pelunasan as nominal
+		 $data_invoice = DB::select("SELECT 'D' as flag,i_nomor  as kode,i_acc_piutang,i_kode_customer as customer,i_tanggal as tanggal,i_keterangan as keterangan,i_sisa_pelunasan as nominal
 		 								from invoice 
 										where date_part('month',i_tanggal) >= '$awal' 
   										and date_part('month',i_tanggal) <= '$akir' 
@@ -2816,7 +2816,7 @@ class LaporanMasterController extends Controller
 										order by i_kode_customer");
 
 
-		$data_cn_dn = DB::select("SELECT cd_jenis as flag,cd_nomor as kode,cd_customer as customer,cd_tanggal as tanggal,cd_keterangan as keterangan,cd_total as nominal FROM cn_dn_penjualan 
+		$data_cn_dn = DB::select("SELECT cd_jenis as flag,cd_nomor as kode,cd_acc,cd_customer as customer,cd_tanggal as tanggal,cd_keterangan as keterangan,cd_total as nominal FROM cn_dn_penjualan 
   										where date_part('month',cd_tanggal) >= '$awal' 
    										and date_part('month',cd_tanggal) <= '$akir'
    										$customer_cndn $akun_cndn $cabang_cndn
@@ -2831,7 +2831,7 @@ class LaporanMasterController extends Controller
    										");
    		
    		
-   		 $data_postingbayar = DB::select("SELECT 'K' as flag,nomor as kode,k_kode_customer as customer,k_tanggal as tanggal,k_keterangan as keterangan,posting_pembayaran.jumlah,k_netto as nominal FROM kwitansi 
+   		$data_postingbayar = DB::select("SELECT 'K' as flag,nomor as kode,kode_acc,k_kode_customer as customer,k_tanggal as tanggal,k_keterangan as keterangan,posting_pembayaran.jumlah,k_netto as nominal FROM kwitansi 
    										join posting_pembayaran_d on posting_pembayaran_d.nomor_penerimaan_penjualan = kwitansi.k_nomor
    										join posting_pembayaran on posting_pembayaran.nomor = posting_pembayaran_d.nomor_posting_pembayaran
    										where date_part('month',k_tanggal) >= '$awal' 
@@ -2842,7 +2842,9 @@ class LaporanMasterController extends Controller
    		
 
    		$data = array_merge($data_invoice,$data_cn_dn,$data_kwitansi,$data_postingbayar);
-		
+		if ($data == null) {
+			return response()->json(['status'=>'kosong']);
+		}
    		if ($request->customer != '') {
    			$customer = DB::table('customer')->select('kode','nama')->where('kode','=',$request->customer)->get();
 
@@ -2854,17 +2856,12 @@ class LaporanMasterController extends Controller
    		}else{
    			$dt = array_map("unserialize", array_unique(array_map("serialize", $data)));
  	  		$dt = array_values($dt);
- 	  		// return $dt[0]->flag;
-
    			for ($i=0; $i <count($dt) ; $i++) { 
 
 				$customer[$i] = DB::table('customer')->select('kode','nama')->where('kode','=',$dt[$i]->customer)->groupBy('kode')->get();
 
 				
  	  		}
- 	  		// return $customer;
- 	  		
- 	  		
  	  		for ($i=0; $i <count($dt) ; $i++) { 
  	  			$dtt = $dt[$i]->customer;
  	  			$saldo_ut[$i] = DB::select("SELECT sum(i_sisa_akhir) as saldo,i_kode_customer,'D' as flag from invoice 
@@ -2886,13 +2883,18 @@ class LaporanMasterController extends Controller
 				}
  	  		}
    		}
+
    		// return $saldo_ut;
    		// $data = array_merge($data,$saldo_ut);
 		// array_push($saldo_ut , $data);
    		// return $data;
    		
-
-   		return view('purchase/master/master_penjualan/laporan/lap_piutang/ajax_lap_piutang',compact('saldo_ut','data','customer','data_saldo'));
+   		if ($request->customer != '') {
+   			return view('purchase/master/master_penjualan/laporan/lap_piutang/ajax_lap_piutang_fil_cust',compact('saldo_ut','data','customer','data_saldo'));
+   		}else{
+   			return view('purchase/master/master_penjualan/laporan/lap_piutang/ajax_lap_piutang',compact('saldo_ut','data','customer','data_saldo'));
+   		}
+   		
 
    }
    public function rekap_customer(){

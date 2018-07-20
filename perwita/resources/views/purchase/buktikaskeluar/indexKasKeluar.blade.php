@@ -51,9 +51,11 @@
                     <h5> Pembayaran Kas
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+                      @if (Auth::user()->punyaAkses('Bukti Kas Keluar','tambah')) 
                       <div class="text-right">
-                       <a class="btn btn-success" aria-hidden="true" href="{{ url('buktikaskeluar/create')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
-                    </div>
+                        <a class="btn btn-success" aria-hidden="true" href="{{ url('buktikaskeluar/create')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
+                      </div>
+                      @endif
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -67,6 +69,7 @@
                 <div class="box-body">
                   <div class="col-sm-6" style="margin-bottom: 20px">
                     <table cellpadding="3" cellspacing="0" border="0" class="table">
+                      @if (Auth::user()->punyaAkses('Bukti Kas Keluar','cabang')) 
                       <tr id="filter_col1" data-column="0">
                           <td>Cabang</td>
                           <td align="center">
@@ -78,6 +81,7 @@
                             </select>
                           </td>
                       </tr>
+                      @endif
                       <tr id="filter_col2" data-column="1">
                           <td>Jenis Pembayaran</td>
                           <td align="center">

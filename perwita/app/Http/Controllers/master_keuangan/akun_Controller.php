@@ -16,7 +16,7 @@ class akun_Controller extends Controller
 {
 
     public function index(){
-
+        //return "aa";
         // if(cek_periode() == 0)
         //     return view("keuangan.err.err_periode");
 
@@ -36,7 +36,7 @@ class akun_Controller extends Controller
                 ->select("d_akun.*", "cabang.nama as nama_cabang")
                 ->orderBy("id_akun", "asc")->get();
 
-        // return json_encode($data);
+        //return json_encode($data);
         return view("keuangan.master_akun.index")->withData($data)->withCabang($cabang)->withCabangs($cabangs);
     }
 
@@ -219,18 +219,22 @@ class akun_Controller extends Controller
 
         $data = DB::table("d_akun")
                 ->join("cabang", "cabang.kode", "=", "d_akun.kode_cabang")
+                //->join('d_akun_saldo', 'd_akun_saldo.id_akun', '=', 'd_akun.id_akun')
                 ->where("d_akun.id_akun", $parrent)
+                //->where("d_akun_saldo.bulan", date('m'))
+                //->where("d_akun_saldo.tahun", date('Y'))
                 ->select("d_akun.*", "cabang.nama as nama_cabang")
                 ->orderBy("id_akun")->first();
         $provinsi = DB::table("provinsi")->orderBy("nama", "asc")->get();
+
         $group_neraca = DB::table("d_group_akun")->select("id", "nama_group", "jenis_group")->get();
 
         // return json_encode($data);
 
         return view("keuangan.master_akun.edit")
             ->withData($data)
-            ->withProvinsi($provinsi)
-            ->withGroup_neraca($group_neraca);
+            ->withGroup_neraca($group_neraca)
+            ->withProvinsi($provinsi);
     }
 
     public function update_data(Request $request){
@@ -242,11 +246,6 @@ class akun_Controller extends Controller
 
         $akun = master_akun::find($request->kode_akun);
         $akun->nama_akun = $request->nama_akun;
-        $akun->akun_dka = $request->posisi_dk;
-        $akun->is_active = $request->status_aktif;
-        $akun->type_akun = $request->type_akun;
-        $akun->group_laba_rugi = $request->group_laba_rugi;
-        $akun->group_neraca = $request->group_neraca;
 
         if($akun->save()){
             return json_encode($response);

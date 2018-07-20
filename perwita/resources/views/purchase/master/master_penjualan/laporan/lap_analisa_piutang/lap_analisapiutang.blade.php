@@ -1,32 +1,26 @@
 @extends('main')
 
-@section('tittle','dashboard')
+@section('title', 'dashboard')
 
 @section('content')
-
 <style type="text/css">
-    .excel:before{
+  .br{
+    border:none;
+  }
+  th{
+        text-align: center !important;
+      }
+
+  .excel:before{
     content: "\f02f"; 
     font-family: FontAwesome;
 
   }
   .dataTables_filter, .dataTables_info { display: none; }
-  .saldo{
-    border: none;
-    background-color: #e6ffda;
-    color: #676a6c;
-  }
-  #total_debet{
-    border: none;
-    color: #676a6c;
-  }
-  #total_kredit{
-    border: none;
-    color: #676a6c;
-  }
-  #total_total{
-    border: none;
-    color: #676a6c;
+    .excel:before{
+    content: "\f02f"; 
+    font-family: FontAwesome;
+
   }
   .btn-special{
     background-color: #6d2db3;
@@ -34,26 +28,34 @@
     color: #FFFFFF;
   }
 </style>
+  <meta name="csrf-token" content="{{ csrf_token() }}" /> 
+
+<div class="return">
+  {{ csrf_field() }}
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Laporan DO Koran
+                    <h5> Laporan Tarif Dokumen
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                    <div class="ibox-tools">
+                     
 
-                    </div>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
-
+              
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
-                  <form class="form-horizontal" id="search" action="post" method="POST">
+                    
+                <div class="col-xs-12">
+
+                 
+                 <form class="form-horizontal" id="search" action="post" method="POST">
                   <div class="box-body">
                     <table class="table datatable ">
                         <tr>
@@ -100,10 +102,7 @@
                         <td>
                           <select class="chosen-select-width" name="laporan" id="laporan">
                             <option value="">- Pilih -</option>
-                            <option value="Rekap per Customer">Rekap per Customer</option>
-                            <option value="Rekap per Customer Detail">Rekap per Customer Detail</option>
-                            <option value="Rekap per akun">Rekap per akun</option>
-                            <option value="Rekap per akun Detail">Rekap per akun Detail</option>
+                            <option value="Rekap">Rekap </option>
                           </select>
                         </td>
 
@@ -124,15 +123,46 @@
                       <div class="row" style="margin-top: -39px;margin-left: 136px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
                     </div>
                 </form>
-                <div class="box-body">
-                <div id="disini">
 
-                  </div>
+                </div>
+
+
+                <div class="box-body">
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <div class="drop">
+                    
+                  {{-- <table id="addColumn" class="table table-bordered table-striped tbl-item">
+                    <thead>
+                       <tr>
+                          <th align="center" rowspan="2" > No</th>
+                          <th align="center" colspan="2"> Customer</th>
+                          <th align="center" rowspan="2"> Saldo Awal</th>
+                          <th align="center" colspan="2"> DEBET</th>
+                          <th align="center" colspan="4"> Kota Tujuan</th>
+                          <th align="center" rowspan="2"> Saldo Akir</th>
+                          <th align="center" rowspan="2"> Sisa Uangmuka </th>
+                      </tr> 
+                      <tr>
+                          <th>Kode</th>
+                          <th>Nama</th>
+                          <th>Piutang Baru</th>
+                          <th>Nota Debet</th>
+                          <th>Byr Cash</th>
+                          <th>Byr.Cek/BG/Trans</th>
+                          <th>Byr Uang Muka</th>
+                          <th>Nota Kredit</th>
+                      </tr>       
+                    </thead>        
+                      
+                    </div>
+                  </table> --}}
                 </div><!-- /.box-body -->
                 <div class="box-footer">
-                  <div class="pull-right">
-                    </div>
-                  </div><!-- /.box-footer -->
+                  
+                </div><!-- /.box-footer --> 
               </div><!-- /.box -->
             </div><!-- /.col -->
           </div><!-- /.row -->
@@ -145,7 +175,7 @@
 
 
 <div class="row" style="padding-bottom: 50px;"></div>
-
+</div>
 
 @endsection
 
@@ -153,143 +183,57 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-   
-    var d = new Date();
-    var a = d.getDate();
-    var b = d.getSeconds();
-    var c = d.getMilliseconds();
 
-
-    var table;
-  
-    var awal = 0;
-    $('.debet').each(function(){
-        var total = parseInt($(this).val());
-        awal += total;
-        // console.log(awal);
-    });
 
     $('.date').datepicker({
         autoclose: true,
-        format: 'yyyy-mm',
-        minViewMode:1,
+        format: 'yyyy-mm-dd',
     });
-           
-
-
-    function cetak(){
-      var asw=[];
-       var asd = table.rows( { filter : 'applied'} ).data(); 
-       for(var i = 0 ; i < asd.length; i++){
-
-           asw[i] =  $(asd[i][0]).val();
-  
-       }
-
-      $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-      });
-
-
-      $.ajax({
-        data: {a:asw,c:'download'},
-        url: baseUrl + '/reportkwitansi/reportkwitansi',
-        type: "post",
-       success : function(data){
-        var win = window.open();
-            win.document.write(data);
-        }
-      });
-    }
-
- function cari(){
-
-  var awal = $('#min').val();
-  var akir = $('#max').val();
-  var customer = $('#customer').val();
-  var akun = $('#akun').val();
-  var laporan = $('#laporan').val();
-
- if (laporan == 'Rekap per Customer') {
-
-   $.ajax({
-      data:$('#search').serialize(),
-      type:'get',
-      url:baseUrl + '/cari_kartupiutang/cari_kartupiutang',
-      success : function(data){
-        if (data.status == 'kosong') {
-          toastr.warning('data Tidak Diketemukan');
-        }
-        $('#disini').html(data);
-        $('#container').hide();
-
-        $('.saldo').each(function(i){
-            var saldo_index = $('.saldo_'+i).val();
-
-            $('.debet_'+i).each(function(a){ 
-              saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+i).val());
-
-              console.log(parseFloat($('.kredit_'+0).val()));
-              console.log(i); 
-              var parent = $(this).parents('tr');
-              $(parent).find('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
-            })  
-
-           
-
-        })
-
-      }
-    })
-
-   
- 
- }else if (laporan == 'Rekap per Customer Detail') {
-  alert('b');
- }else if (laporan == 'Rekap per akun') {
-
-  alert('c');
- }else if (laporan == 'Rekap per akun Detail') {
-
-  // alert('d');
- }
     
- }
+      function cari(){
 
- // function pdf(){
+      var awal = $('#min').val();
+      var akir = $('#max').val();
+      var customer = $('#customer').val();
+      var akun = $('#akun').val();
+      var laporan = $('#laporan').val();
 
- //  var awal = $('#min').val();
- //  var akir = $('#max').val();
- //  var customer = $('#customer').val();
+     if (laporan == 'Rekap') {
 
+       $.ajax({
+          data:$('#search').serialize(),
+          type:'get',
+          url: baseUrl + '/laporan_sales/analisa_piutang/ajax_lap_analisa_piutang',
+          success : function(data){
+            $('.drop').html(data);
+            $('#container').hide();
 
+            // $('.saldo').each(function(i){
+            //     var saldo_index = $('.saldo_'+i).val();
 
- //    $.ajax({
- //      data:{a:awal,b:akir,c:customer},
- //      type:'get',
- //      url:baseUrl + '/reportpdf_kartupiutang/reportpdf_kartupiutang',
- //      success : function(data){
+            //     $('.debet_'+i).each(function(a){ 
+            //       saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+i).val());
+
+            //       console.log(parseFloat($('.kredit_'+0).val()));
+            //       console.log(i); 
+            //       var parent = $(this).parents('tr');
+            //       $(parent).find('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
+            //     })  
+            // })
+          }
+        })
+     }else if (laporan == 'Rekap per Customer Detail') {
+      alert('b');
+     }else if (laporan == 'Rekap per akun') {
+
+      alert('c');
+     }else if (laporan == 'Rekap per akun Detail') {
+
+      // alert('d');
+     }
         
- //      }
- //    })
- // }
+     }
 
- // function excel(){
-
- //  var awal = $('#min').val();
- //  var akir = $('#max').val();
- //  var customer = $('#customer').val();
-
- //    $.ajax({
- //      data:{a:awal,b:akir,c:customer},
- //      type:'get',
- //      url:baseUrl + '/reportexcel_kartupiutang/reportpdf_kartupiutang',
- //      success : function(data){
-        
- //      }
- //    })
- // }
+  
 </script>
 @endsection
