@@ -993,7 +993,7 @@ class do_paketController extends Controller
           // TARIF DASAR + TARIF PENERUS = TOTAL;
           $total = filter_var($request->do_tarif_dasar, FILTER_SANITIZE_NUMBER_INT)+filter_var($request->do_tarif_penerus, FILTER_SANITIZE_NUMBER_INT);
           $data = array(
-                    'nomor'                 => strtoupper($request->do_nomor),
+                    'nomor'                 => str_replace(' ','',strtoupper($request->do_nomor)),
                     'tanggal'               => $request->do_tanggal,
                     'catatan_admin'         => '-',
                     'id_kota_asal'          => $request->do_kota_asal,
@@ -1313,7 +1313,7 @@ class do_paketController extends Controller
 
       $total = filter_var($request->do_tarif_dasar, FILTER_SANITIZE_NUMBER_INT)+filter_var($request->do_tarif_penerus, FILTER_SANITIZE_NUMBER_INT);
       $data = array(
-                'nomor' => strtoupper($request->do_nomor),
+                'nomor' => str_replace(' ','',strtoupper($request->do_nomor)),
                 'tanggal' => $request->do_tanggal,
                 'catatan_admin' => '-',
                 'id_kota_asal' => $request->do_kota_asal,

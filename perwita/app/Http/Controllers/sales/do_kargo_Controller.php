@@ -655,7 +655,7 @@ class do_kargo_Controller extends Controller
         
             $save_do = DB::table('delivery_order')
                          ->insert([
-                                'nomor'                 => strtoupper($request->nomor_do),
+                                'nomor'                 => str_replace(' ','',strtoupper($request->nomor_do)),
                                 'tanggal'               => $tgl,
                                 'id_kota_asal'          => (int)$request->asal_do,
                                 'id_kota_tujuan'        => (int)$request->tujuan_do,
@@ -780,7 +780,7 @@ class do_kargo_Controller extends Controller
 
             $save_do = DB::table('delivery_order')
                          ->insert([
-                                'nomor'                 => $nota,
+                                'nomor'                 => str_replace(' ','',strtoupper($nota)),
                                 'tanggal'               => $tgl,
                                 'id_kota_asal'          => $request->asal_do,
                                 'id_kota_tujuan'        => $request->tujuan_do,
