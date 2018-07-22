@@ -18,6 +18,9 @@
   .right:{
     text-align: right !important;
   }
+  .sorting_asc{
+    background: pink !important;
+  }
 </style>
 <div class="row wrapper border-bottom white-bg page-heading">
   <div class="col-lg-10">
@@ -62,26 +65,20 @@
               <div class="box">
                 <div class="box-body">
                   <div class="col-sm-12">
-                    <table class="table table-bordered table-striped table_tt " style="color: white">
-                      <thead>
+                    <table class="table table-bordered table-striped table_tt ">
+                      <thead style="color: white">
                         <tr>
-                          <td>No</td>
-                          <td>Nomor</td>
-                          <td>Tanggal</td>
-                          <td>Nama Pihak Ketiga</td>
-                          <td>Print</td>
-                          <td>Aksi</td>
+                          <th>No</th>
+                          <th>Nomor</th>
+                          <th>Tanggal</th>
+                          <th>Total Terima</th>
+                          <th>Kode Pihak Ketiga</th>
+                          <th>Print</th>
+                          <th>Aksi</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        </tr>
+                        
                       </tbody>
                     </table>
                   </div>
@@ -98,7 +95,6 @@
             </div>
         </div>
     </div>
-</div>
 
 
 
@@ -111,10 +107,46 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-  $('.table_tt').DataTable({
-    searching:true,
-    sorting:false,
-  });
+
+  $(document).ready(function(){
+    $('.table_tt').DataTable({
+            processing: true,
+            // responsive:true,
+            serverSide: true,
+            // sorting: false,
+            ajax: {
+                url:'{{ route("datatable_form_tt") }}',
+            },
+            columnDefs: [
+              {
+                 targets: 0,
+                 className: 'center'
+              },
+              {
+                 targets: 3,
+                 className: 'right'
+              },
+              {
+                 targets: 5,
+                 className: 'center'
+              },
+              {
+                 targets:6,
+                 className: 'center'
+              },
+            ],
+            "columns": [
+            { "data": "DT_Row_Index" },
+            { "data": "tt_noform" },
+            { "data": "tt_tgl" },
+            { "data": "tt_totalterima"},
+            { "data": "tt_supplier" },
+            { "data": "print" },
+            { "data": "aksi" },
+            ]
+        });
+
+  })
 
 </script>
 @endsection

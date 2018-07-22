@@ -35,7 +35,7 @@ class laporan_register_jurnal extends Controller
     				->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
     				->whereBetween("d_jurnal.jr_date", [$d1, $d2])
     				->whereBetween(DB::raw("substring(d_jurnal_dt.jrdt_acc, 1, 4)"), $range)
-    				->select("d_jurnal.*")->distinct('d_jurnal.jr_id')->get();
+    				->select("d_jurnal.*")->distinct('d_jurnal.jr_id')->orderBy('d_jurnal.jr_date', 'asc')->get();
 
     	// return json_encode($data);
 
