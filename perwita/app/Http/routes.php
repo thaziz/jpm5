@@ -214,7 +214,7 @@ Route::get('laporan-neraca/index',  'laporan_neracaController@neraca');
 Route::get('master-keuangan/laporan-laba-rugi',  'laba_rugiController@index');
 
 /* end warehouse */
-Route::get('fakturpembelian/fakturpembelians', 'PurchaseController@fatkurpembelian');
+Route::get('fakturpembelian/fakturpembelian', 'PurchaseController@fatkurpembelian');
 Route::get('fakturpembelian/createfatkurpembelian', 'PurchaseController@createfatkurpembelian');
 Route::get('fakturpembelian/detailfatkurpembelian/{id}', 'PurchaseController@detailfatkurpembelian');
 Route::get('fakturpembelian/getchangefaktur', 'PurchaseController@supplierfaktur');
@@ -480,6 +480,7 @@ Route::get('pelunasanhutangbank/cetak/{id}', 'PurchaseController@cetakbbk');
 Route::post('pelunasanhutangbank/update', 'PurchaseController@updatebbk');
 Route::get('pelunasanhutangbank/hapuspelunasanhutang/{id}', 'PurchaseController@hapusbbk');
 Route::post('pelunasanhutangbank/lihatjurnal', 'PurchaseController@lihatjurnalpelunasan');
+Route::get('queryanalisa', 'Queryanalisa@view');
 
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');

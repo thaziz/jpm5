@@ -483,7 +483,18 @@
         var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';
         var idspp = $('.idspp').serialize();
         
-       // alert('test');
+        $temp = 0;
+            $('.checkboxhrg').each(function(){
+              if ($(this).is(":checked")) {
+                $temp = $temp + 1;
+              }
+            })
+        
+
+       if($temp == 0){
+        toastr.info("Harap centang supplier yang dipilih");
+        return false;
+       }
 
         $.ajaxSetup({
         headers: {
@@ -761,7 +772,7 @@
                                         tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+' hrga'+n+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.sppdt[i].sppd_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.sppdt[i].sppd_supplier+'"> <input type="hidden" value="'+addCommas(data.sppdt[i].sppd_harga)+'" class="hargahid hargahid'+i+'" data-brg="'+n+'" data-id="'+i+'"">  </div> <div class="datasup'+ i +'">  </div> ';
 
                                         tampilharga += '<div class="col-sm-2"> <div class="checkbox checkbox-primary ">' +
-                                            '<input id="cek" type="checkbox" value='+data.sppdt[i].sppd_supplier+' class="checkbox'+n+'" data-val='+i+' data-id='+nourut+' required data-supplier='+data.sppdt[i].sppd_supplier+' data-harga='+data.sppdt[i].sppd_harga+' data-totalhrg='+data.spptb[j].spptb_totalbiaya+' data-n='+n+'>' +
+                                            '<input id="cek" type="checkbox" value='+data.sppdt[i].sppd_supplier+' class="checkboxhrg checkbox'+n+'" data-val='+i+' data-id='+nourut+' required data-supplier='+data.sppdt[i].sppd_supplier+' data-harga='+data.sppdt[i].sppd_harga+' data-totalhrg='+data.spptb[j].spptb_totalbiaya+' data-n='+n+'>' +
                                             '<label for="checkbox'+nourut+'">' +  
                                             '<div class="suppliercek'+nourut+'">  </div> '                                           
                                             '</label>' +
