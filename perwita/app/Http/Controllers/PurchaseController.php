@@ -2498,14 +2498,19 @@ public function purchase_order() {
 
 
 						//total harga
-						$totalharga = (int)$request->qtyterima[$i] * (int)$request->jumlahharga[$i];
+					//	$totalharga = (int)$request->qtyterima[$i] * (int)$request->jumlahharga[$i];
+
+						//$hpp = str_replace($request->hpp[$i], "", ",")
+						$hpp = str_replace(',', '', $request->hpp[$i]);
+						$totalharga = str_replace(',', '', $request->jumlahharga[$i]);
+
 
 						$penerimaanbarangdt->pbdt_id = $idpbdt;
 						$penerimaanbarangdt->pbdt_idpb = $idpbpk;
 						$penerimaanbarangdt->pbdt_date = $mytime;
 						$penerimaanbarangdt->pbdt_item = $request->kodeitem[$i];
 						$penerimaanbarangdt->pbdt_qty = $request->qtyterima[$i];	
-						$penerimaanbarangdt->pbdt_hpp =$request->jumlahharga[$i];
+						$penerimaanbarangdt->pbdt_hpp =$hpp;
 						$penerimaanbarangdt->pbdt_idfp =$request->idfp;
 						$penerimaanbarangdt->pbdt_updatestock =$request->updatestock;
 						$penerimaanbarangdt->pbdt_status = $status;
@@ -2573,14 +2578,16 @@ public function purchase_order() {
 							}
 
 							//total harga
-							$totalharga = (int)$request->qtysampling[$i] * (int)$request->jumlahharga[$i];
+						//	$totalharga = (int)$request->qtysampling[$i] * (int)$request->jumlahharga[$i];
+							$hpp = str_replace(',', '', $request->hpp[$i]);
+							$totalharga = str_replace(',', '', $request->jumlahharga[$i]);
 
 							$penerimaanbarangdt->pbdt_id = $idpbdt;
 							$penerimaanbarangdt->pbdt_idpb = $idpbpk;
 							$penerimaanbarangdt->pbdt_date = $mytime;
 							$penerimaanbarangdt->pbdt_item = $request->kodeitem[$i];
 							$penerimaanbarangdt->pbdt_qty = $request->qtysampling[$i];	
-							$penerimaanbarangdt->pbdt_hpp =$request->jumlahharga[$i];
+							$penerimaanbarangdt->pbdt_hpp =$hpp;
 							$penerimaanbarangdt->pbdt_idfp =$request->idfp;
 							$penerimaanbarangdt->pbdt_updatestock =$request->updatestock;
 							$penerimaanbarangdt->pbdt_status = $status2;
@@ -3767,6 +3774,8 @@ public function purchase_order() {
 
 			$data['fp'] = DB::select("select * from faktur_pembelian, supplier where fp_idsup = idsup and fp_idfaktur = '$idtransaksi' ");
 
+		//	return $idtransaksi;
+
 			$data['fpdt'] = DB::select("select * from faktur_pembelian, faktur_pembeliandt, masteritem where fpdt_kodeitem = kode_item and fpdt_idfp = fp_idfaktur and fp_idfaktur = '$idtransaksi'");
 			
 
@@ -3984,6 +3993,10 @@ public function purchase_order() {
 	}
 
 	public function hapusdatapenerimaan(Request $request){
+		return DB::transaction(function() use ($request) {   
+
+
+
 		$id = $request->id;
 		$flag = $request->flag;
 		$idtransaksi = $request->idtransaksi;
@@ -3998,7 +4011,10 @@ public function purchase_order() {
 			$datapb = DB::select("select * from penerimaan_barang , penerimaan_barangdt where pb_id = pbdt_idpb and pb_pbd = '$idtransaksi' and pb_id = '$id' ");	
 		}
 
-		DB::delete("DELETE from  d_jurnal where jr_ref = '$id' and jr_detail = 'PENERIMAAN BARANG' and jr_note = '$flag'");
+		$jr_note = $datapb[0]->pb_keterangan;
+		$lpb = $datapb[0]->pb_lpb;
+		DB::delete("DELETE from  d_jurnal where jr_ref = '$lpb' and jr_detail = 'PENERIMAAN BARANG $flag' and jr_note = '$jr_note'");
+
 		for($x = 0; $x < count($datapb); $x++){
 			$iditem = $datapb[$x]->pbdt_item;
 			$qty = $datapb[$x]->pbdt_qty;
@@ -4242,6 +4258,7 @@ public function purchase_order() {
 		DB::delete("DELETE from  penerimaan_barang where pb_id = '$id'");
 		
 		return json_encode('sukses');
+		});
 	}
 
 	public function lihatjurnal(Request $request){
@@ -4685,7 +4702,8 @@ public function purchase_order() {
 		$data['fakturdt'] = DB::select("select * from faktur_pembelian,supplier,faktur_pembeliandt , masteritem, pembelian_order where fpdt_idfp = fp_idfaktur and fp_idsup = idsup and fpdt_kodeitem = kode_item and fp_idfaktur = '$id'");
   		$jurnalRef=$data['faktur'][0]->fp_nofaktur;
 		$datas['fakturs'] = DB::select("select * from faktur_pembeliandt , pembelian_order, faktur_pembelian, supplier, masteritem where fpdt_idfp = fp_idfaktur and fp_idfaktur = '$id' and fp_idsup = idsup and fpdt_kodeitem = kode_item and fpdt_idpo = po_id");
-		
+		$data_tt = DB::select("select * from form_tt , form_tt_d where tt_idform = ttd_id");
+		$data['no_tt'] = DB::select("select tt_noform from form_tt, form_tt_d where ttd_faktur = '$jurnalRef' and tt_idform = ttd_id "); 
 		
 		if($datas['fakturs'] == null){ //FP
 			$data['status'] = 'FP';			
@@ -4712,7 +4730,7 @@ public function purchase_order() {
 
 //		dd($data['fakturdtpo'][0]->fpdt_idpo);
 
-		$data['tt'] = DB::select("select * from faktur_pembelian, form_tt, supplier where fp_idtt = tt_idform and fp_idfaktur = '$id' and tt_idsupplier =idsup");
+	/*	$data['tt'] = DB::select("select * from faktur_pembelian, form_tt, supplier where fp_idtt = tt_idform and fp_idfaktur = '$id' and tt_idsupplier =idsup");*/
 		$data['pajak'] = tb_master_pajak::all();
 		$fpm =  DB::select("select * from fakturpajakmasukan  where  fpm_idfaktur = '$id'");
 			if(count($fpm != 0)){
@@ -5867,8 +5885,16 @@ public function purchase_order() {
 
 			$year = substr($year, 2);
 
+			$data_tt = explode("," , $request->inputtandaterima);
 
-			// SAVE TANDA TERIMA
+			$update_tt =  DB::table('form_tt_d')
+	                ->where([['ttd_id' , '='  , $data_tt[0]], ['ttd_detail' , '=' , $data_tt[1]]])
+	                ->update([
+	                	'ttd_faktur' => $nofaktur,                                                           
+		            ]);
+
+
+			/*// SAVE TANDA TERIMA
 			$idtt = DB::select("select tt_noform , max(tt_idform) from form_tt where tt_idcabang = '$cabang' GROUP BY tt_idcabang, tt_noform");
 			
 
@@ -5916,7 +5942,7 @@ public function purchase_order() {
 			$tandaterima->tt_nofp = $nofaktur;
 
 
-			$tandaterima->save();
+			$tandaterima->save();*/
 			//SAVE FAKTUR PAJAK MASUKAN
 			
 
@@ -6013,7 +6039,7 @@ public function purchase_order() {
 
 				$fatkurpembelian->fp_netto = $netto;
 				$fatkurpembelian->fp_jenisbayar = 2;
-				$fatkurpembelian->fp_idtt = $idtandaterima[0]->tt_idform;
+				//$fatkurpembelian->fp_idtt = $idtandaterima[0]->tt_idform;
 				$fatkurpembelian->fp_comp = $request->cabang;
 			
 				
@@ -6591,27 +6617,21 @@ public function purchase_order() {
 			$year =Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
 			$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; 
 
-			if($month < 10) {
-				$month = '0' . $month;
-			}
-
-			$year = substr($year, 2);
-		$idtt = DB::select("select tt_noform , max(tt_idform) from form_tt where tt_idcabang = '$cabang' GROUP BY tt_idcabang, tt_noform");
-			if(count($idtt) > 0) {
-				
-				$explode = explode("/", $idtt[0]->tt_noform);
-				$idtt = $explode[2];
-
-				$string = (int)$idtt + 1;
-				$idtt2 = str_pad($string, 4, '0', STR_PAD_LEFT);
+			$supplier = $request->supplier;
+			$explode = explode("," , $supplier);
+			$nosupplier = $explode[4];
+			if($request->edit == 'edit'){
+				$nofaktur = $request->nofaktur;
+				$data['tt'] = DB::select("select * from form_tt, form_tt_d where tt_supplier = '$nosupplier' and ttd_id = tt_idform and ttd_faktur is null or ttd_faktur = '$nofaktur' and ttd_id = tt_idform");
 			}
 			else {
-				$idtt2 = '0001';
+				$data['tt'] = DB::select("select * from form_tt, form_tt_d where tt_supplier = '$nosupplier' and ttd_id = tt_idform and ttd_faktur is null");
 			}
+			/*return $nosupplier;*/
 
+			$data['counttt'] = count($data['tt']);
 
-
-			return json_encode($idtt2);
+			return json_encode($data);
 	}
 
 	public function getbiayalain (Request $request){
@@ -8227,13 +8247,23 @@ public function kekata($x) {
 							]);
 
 		//UPDATE TT
-		$nofaktur = $request->nofaktur;
-		$updatett = DB::table('form_tt')
-							->where('tt_nofp' , '$nofaktur')
-							->update([
-								'tt_lainlain' => $request->lainlain_tt2,
-								'tt_totalterima' => $netto,
-							]);
+		$data_tt = explode(",", $request->datatandaterima);
+
+		$datatt = DB::Select("select * from form_tt_d where ttd_faktur = '$nofaktur'");
+		$ttd_id = $datatt[0]->ttd_id;
+		$ttd_detail = $datatt[0]->ttd_detail;
+
+		$update_tt =  DB::table('form_tt_d')
+	                ->where([['ttd_id' , '='  , $ttd_id], ['ttd_detail' , '=' , $ttd_detail]])
+	                ->update([
+	                	'ttd_faktur' => null                                                           
+		            ]);
+
+   		$update_tt =  DB::table('form_tt_d')
+	                ->where([['ttd_id' , '='  , $data_tt[0]], ['ttd_detail' , '=' , $data_tt[1]]])
+	                ->update([
+	                	'ttd_faktur' => $nofaktur                                     
+		            ]);
 
 
 		$idfaktur = $request->idfaktur;
@@ -9367,15 +9397,32 @@ public function kekata($x) {
 				DB::delete("DELETE from d_jurnal where jr_detail = 'FAKTUR PEMBELIAN' and jr_ref = '$nofaktur'");						
 
 				$deletefp = DB::table('fakturpajakmasukan')->where('fpm_idfaktur' , '=' , $id)->delete();
-				$deletefp2 = DB::table('form_tt')->where('tt_nofp' , '=' , $nofaktur)->delete();
+		
 				$deletefp3 = DB::table('faktur_pembelian')->where('fp_idfaktur' , '=' , $id)->delete();
+				$datatt = DB::Select("select * from form_tt_d where ttd_faktur = '$nofaktur'");
+				$ttd_id = $datatt[0]->ttd_id;
+				$ttd_detail = $datatt[0]->ttd_detail;
+
+				$update_tt =  DB::table('form_tt_d')
+			                ->where([['ttd_id' , '='  , $ttd_id], ['ttd_detail' , '=' , $ttd_detail]])
+			                ->update([
+			                	'ttd_faktur' => null                                                           
+				            ]);
 		}
 		else {	
 				$flag = $data['faktur'][0]->fp_tipe;
 				if($flag != 'J') {				
 					$deletefp = DB::table('fakturpajakmasukan')->where('fpm_idfaktur' , '=' , $id)->delete();
-					$deletefp2 = DB::table('form_tt')->where('tt_nofp' , '=' , $nofaktur)->delete();
-					$deletefp = DB::table('faktur_pembelian')->where('fp_idfaktur' , '=' , $id)->delete();			
+					$deletefp = DB::table('faktur_pembelian')->where('fp_idfaktur' , '=' , $id)->delete();	
+					$datatt = DB::Select("select * from form_tt_d where ttd_faktur = '$nofaktur'");
+					$ttd_id = $datatt[0]->ttd_id;
+					$ttd_detail = $datatt[0]->ttd_detail;
+
+					$update_tt =  DB::table('form_tt_d')
+				                ->where([['ttd_id' , '='  , $ttd_id], ['ttd_detail' , '=' , $ttd_detail]])
+				                ->update([
+				                	'ttd_faktur' => null                                                           
+					            ]);		
 					$deletebt = 	DB::delete("DELETE from barang_terima where bt_idtransaksi = '$id' and bt_flag = 'FP'");
 					$dataum = $data['faktur'][0]->fp_uangmuka;
 					if($dataum != null){
@@ -9450,10 +9497,19 @@ public function kekata($x) {
 				}
 				else {
 					$deletefp = DB::table('fakturpajakmasukan')->where('fpm_idfaktur' , '=' , $id)->delete();
-					$deletefp2 = DB::table('form_tt')->where('tt_nofp' , '=' , $nofaktur)->delete();
 					$deletefp = DB::table('faktur_pembelian')->where('fp_idfaktur' , '=' , $id)->delete();
 					$deleteumfp = DB::delete("DELETE from uangmukapembelian_fp where umfp_nofaktur = '$nofaktur'");
-					DB::delete("DELETE from d_jurnal where jr_detail = 'FAKTUR PEMBELIAN' and jr_ref = '$nofaktur'");						
+					DB::delete("DELETE from d_jurnal where jr_detail = 'FAKTUR PEMBELIAN' and jr_ref = '$nofaktur'");		
+
+					$datatt = DB::Select("select * from form_tt_d where ttd_faktur = '$nofaktur'");
+					$ttd_id = $datatt[0]->ttd_id;
+					$ttd_detail = $datatt[0]->ttd_detail;
+
+					$update_tt =  DB::table('form_tt_d')
+				                ->where([['ttd_id' , '='  , $ttd_id], ['ttd_detail' , '=' , $ttd_detail]])
+				                ->update([
+				                	'ttd_faktur' => null                                                           
+					            ]);				
 
 				}
 
@@ -9943,7 +9999,7 @@ public function kekata($x) {
 					$explode = explode(",", $request->kodebayar);
 
 					$kodesupplier = $explode[1];
-					$formfpg->fpg_agen = $kodesupplier;
+					$formfpg->fpg_agen = $kodesupplier2;
 				}
 				
 				$formfpg->fpg_cabang = $cabang;

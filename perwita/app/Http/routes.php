@@ -1088,7 +1088,15 @@ Route::post('reportposting_bayar/reportposting_bayar', 'LaporanMasterController@
 
 //LAPORAN KARTU PIUTANG
 Route::get('laporan_sales/kartu_piutang','LaporanMasterController@kartupiutang');
-Route::get('cari_kartupiutang/cari_kartupiutang','LaporanMasterController@cari_kartupiutang');
+  //cari kartu piutang cus
+  Route::get('cari_kartupiutang/cari_kartupiutang','LaporanMasterController@cari_kartupiutang');
+  //cari kartu piutang cus detail
+  Route::get('cari_kartupiutang_detail_customer/cari_kartupiutang_detail_customer','LaporanMasterController@cari_kartupiutang_detail_customer');
+  //cari kartu piutang akun
+  Route::get('cari_kartupiutang_akun/cari_kartupiutang_akun','LaporanMasterController@cari_kartupiutang_akun');
+  //cari kartu piutang akun detil
+  Route::get('cari_kartupiutang_detail_akun/cari_kartupiutang_detail_akun','LaporanMasterController@cari_kartupiutang_detail_akun');
+
 Route::post('reportpdf_kartupiutang/reportpdf_kartupiutang', 'LaporanMasterController@reportpdf_kartupiutang')->name('reportpdf_kartupiutang');
 Route::post('reportexcel_kartupiutang/reportexcel_kartupiutang', 'LaporanMasterController@reportexcel_kartupiutang')->name('reportexcel_kartupiutang');
 //END OF 

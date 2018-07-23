@@ -51,9 +51,9 @@
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
-                <div class="ibox-title" style="background: hotpink">
-                    <div  style="background: hotpink" >
-                      <h5 style="color: white">Form Tanda Terima Pembelian</h5>
+                <div class="ibox-title" style="background: white">
+                    <div  style="background: white" >
+                      <h5>Form Tanda Terima Pembelian</h5>
                       <a href="{{ url('form_tanda_terima_pembelian') }}" class="pull-right" style="color: white"><i class="fa fa-arrow-left"> Kembali</i></a>
                     </div>
                 </div>

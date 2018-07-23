@@ -236,21 +236,68 @@
               var parent = $(this).parents('tr');
               $(parent).find('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
             })  
-
-           
-
         })
-
       }
     })
 
    
  
  }else if (laporan == 'Rekap per Customer Detail') {
-  alert('b');
+    
+    $.ajax({
+      data:$('#search').serialize(),
+      type:'get',
+      url:baseUrl + '/cari_kartupiutang_detail_customer/cari_kartupiutang_detail_customer',
+      success : function(data){
+        if (data.status == 'kosong') {
+          toastr.warning('data Tidak Diketemukan');
+        }
+        $('#disini').html(data);
+        $('#container').hide();
+
+        $('.saldo').each(function(i){
+            var saldo_index = $('.saldo_'+i).val();
+
+            $('.debet_'+i).each(function(a){ 
+              saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+i).val());
+
+              console.log(parseFloat($('.kredit_'+0).val()));
+              console.log(i); 
+              var parent = $(this).parents('tr');
+              $(parent).find('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
+            })  
+        })
+      }
+    })
+
  }else if (laporan == 'Rekap per akun') {
 
-  alert('c');
+    $.ajax({
+      data:$('#search').serialize(),
+      type:'get',
+      url:baseUrl + '/cari_kartupiutang_akun/cari_kartupiutang_akun',
+      success : function(data){
+        if (data.status == 'kosong') {
+          toastr.warning('data Tidak Diketemukan');
+        }
+        $('#disini').html(data);
+        $('#container').hide();
+
+        $('.saldo').each(function(i){
+            var saldo_index = $('.saldo_'+i).val();
+
+            $('.debet_'+i).each(function(a){ 
+              saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+i).val());
+
+              console.log(parseFloat($('.kredit_'+0).val()));
+              console.log(i); 
+              var parent = $(this).parents('tr');
+              $(parent).find('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
+            })  
+        })
+      }
+    })
+
  }else if (laporan == 'Rekap per akun Detail') {
 
   // alert('d');
