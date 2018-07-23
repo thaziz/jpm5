@@ -78,7 +78,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm">Tanggal</td>
-                                                    <td colspan="2">
+                                                    <td >
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control datepicker_today" name="do_tanggal" id="do_tanggal" value="">
                                                         </div>
@@ -1508,6 +1508,10 @@ function hitung() {
         }
 
     }
+
+ //KOTA ASAL MERUBAH CABANG
+    
+
 
 
 </script>
