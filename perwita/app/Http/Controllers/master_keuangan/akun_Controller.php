@@ -227,10 +227,13 @@ class akun_Controller extends Controller
                 ->orderBy("id_akun")->first();
         $provinsi = DB::table("provinsi")->orderBy("nama", "asc")->get();
 
+        $group_neraca = DB::table("d_group_akun")->select("id", "nama_group", "jenis_group")->get();
+
         // return json_encode($data);
 
         return view("keuangan.master_akun.edit")
             ->withData($data)
+            ->withGroup_neraca($group_neraca)
             ->withProvinsi($provinsi);
     }
 

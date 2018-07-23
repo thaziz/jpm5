@@ -293,11 +293,11 @@ class ReturnPembelianController extends Controller
 		
 
 			$idrn = (int)$idrn + 1;
-			$data['idreturn'] = str_pad($idrn, 3, '0', STR_PAD_LEFT);
+			$data['idreturn'] = str_pad($idrn, 4, '0', STR_PAD_LEFT);
 			
 		}
 		else {
-			$data['idreturn'] = '001';
+			$data['idreturn'] = '0001';
 		}
 
 		
@@ -517,21 +517,35 @@ class ReturnPembelianController extends Controller
 			 		]);
 
 
-				//UPDATE DATA STOCK GUDANG
-				$lokasigudang = $request->lokasigudang[$j];
-				$iditem = $request->kodeitem[$j];
-				$stockgudang = DB::select("select * from stock_gudang where sg_gudang = '$lokasigudang' and sg_cabang = '$cabang' and sg_item = '$iditem' ");
-			/*	return $iditem . $cabang . $lokasigudang;*/
-				//return $stockgudang[0]->sg_qty;
-				$hasilstockgudang = (int)$stockgudang[0]->sg_qty - (int)$request->qtyreturn[$j];
+				$datapb = DB::select("select * from barang_terima where bt_flag = 'PO' and bt_idtransaksi = '$idpo' and bt_statuspenerimaan != 'BELUM DI TERIMA'");
 
-				$updatestockgudang = stock_gudang::where([['sg_gudang' , '=', $request->lokasigudang[$j]],['sg_cabang' , '=' , $cabang], ['sg_item' , '=' , $iditem]]);
+				if(count($datapb) != 0){
 
-				$updatestockgudang->update([
-					'sg_qty' => $hasilstockgudang,
-					]);
 
+
+					//UPDATE DATA STOCK GUDANG
+					$lokasigudang = $request->lokasigudang[$j];
+					$iditem = $request->kodeitem[$j];
+					$stockgudang = DB::select("select * from stock_gudang where sg_gudang = '$lokasigudang' and sg_cabang = '$cabang' and sg_item = '$iditem' ");
+					$sgqty = $stockgudang[0]->sg_qty;
+					$qtyreturn = $request->qtyreturn[$j];
+					if((int)$sgqty > (int)$qtyreturn){
+						/*	return $iditem . $cabang . $lokasigudang;*/
+						//return $stockgudang[0]->sg_qty;
+						$hasilstockgudang = (int)$stockgudang[0]->sg_qty - (int)$request->qtyreturn[$j];
+
+						$updatestockgudang = stock_gudang::where([['sg_gudang' , '=', $request->lokasigudang[$j]],['sg_cabang' , '=' , $cabang], ['sg_item' , '=' , $iditem]]);
+
+						$updatestockgudang->update([
+							'sg_qty' => $hasilstockgudang,
+							]);
+
+						}
+					}
+					
 				}
+
+				
 			
 
 

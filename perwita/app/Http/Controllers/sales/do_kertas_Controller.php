@@ -192,10 +192,9 @@ class do_kertas_Controller extends Controller
             $tgl = carbon::parse($tgl)->format('Y-m-d');
 
             if ($cari_do == null) {
-        
                 $save_head = DB::table('delivery_order')
                                ->insert([
-                                'nomor'             => $request->ed_nomor,
+                                'nomor'             => str_replace(' ','',strtoupper($request->ed_nomor)),
                                 'tanggal'           => $tgl,
                                 'kode_customer'     => $request->customer,
                                 'pendapatan'        => 'KORAN',
@@ -243,7 +242,7 @@ class do_kertas_Controller extends Controller
                     $save_detail = DB::table('delivery_orderd')
                                  ->insert([
                                     'dd_id' => $id,
-                                    'dd_nomor' => $request->ed_nomor,
+                                    'dd_nomor' => str_replace(' ','',strtoupper($request->ed_nomor)),
                                     'dd_nomor_dt' => $i+1,
                                     'dd_kode_item' => strtoupper($request->d_kode_item[$i]),
                                     'dd_kode_satuan' => strtoupper($request->d_satuan[$i]),
@@ -282,7 +281,7 @@ class do_kertas_Controller extends Controller
 
                 $save_head = DB::table('delivery_order')
                                ->insert([
-                                'nomor'             => $nota,
+                                'nomor'             => str_replace(' ','',strtoupper($nota)),
                                 'tanggal'           => $tgl,
                                 'kode_customer'     => $request->customer,
                                 'pendapatan'        => 'KORAN',
@@ -328,7 +327,7 @@ class do_kertas_Controller extends Controller
                     $save_detail = DB::table('delivery_orderd')
                                  ->insert([
                                     'dd_id' => $id,
-                                    'dd_nomor' => $nota,
+                                    'dd_nomor' => str_replace(' ','',strtoupper($nota)),
                                     'dd_nomor_dt' => $i+1,
                                     'dd_kode_item' => strtoupper($request->d_kode_item[$i]),
                                     'dd_kode_satuan' => strtoupper($request->d_satuan[$i]),

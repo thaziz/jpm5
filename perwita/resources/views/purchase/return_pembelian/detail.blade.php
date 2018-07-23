@@ -488,7 +488,7 @@
     $('#test').click(function(){
       $.ajax({
         type : "get",
-        url : baseUrl + '/detailanalisahutang',
+        url : baseUrl + '/rekapanalisahutang',
         dataType : "json",
         success:function(response){
           
@@ -646,7 +646,7 @@
                         }
 
                       })
-                  alert(hasilminus);
+               //   alert(hasilminus);
                     hargasubtotal = parseFloat(parseFloat(subtotal) - parseFloat(hasilminus)).toFixed(2);
                     //  alert(hargasubtotal);
                       $('.subtotal').val(addCommas(hargasubtotal));
@@ -747,7 +747,7 @@
 
                       })
 
-                      alert(hasilminus);
+                   //   alert(hasilminus);
                       hargasubtotal = parseFloat(parseFloat(subtotal) - parseFloat(hasilminus)).toFixed(2);
                     //  alert(hargasubtotal);
                       $('.subtotal').val(addCommas(hargasubtotal));

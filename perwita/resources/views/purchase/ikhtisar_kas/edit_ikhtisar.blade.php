@@ -239,7 +239,7 @@ function simpan(){
       $.ajax({
          url:baseUrl +'/ikhtisar_kas/update',
          data:$('.table_header :input').serialize()+'&'+tabel_patty.$('input').serialize(),
-         type:'get',
+         type:'post',
       success:function(response){
   
           swal({

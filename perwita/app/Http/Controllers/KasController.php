@@ -147,7 +147,6 @@ class KasController extends Controller
 	}
 	public function cari_resi(Request $request){
 
-		// dd($request->all());
 		$now = carbon::now()->format('Y-m-d');
 		if ($request->data[2]['value'] == 'PAKET') {
 
@@ -202,7 +201,7 @@ class KasController extends Controller
 
 		for ($i=0; $i < count($request->resi_array); $i++) {
 
-			$cari_resi = DB::table('delivery_order')
+			return$cari_resi = DB::table('delivery_order')
 						   // ->where('pendapatan',$cari_persen->jenis_pendapatan)
 						   ->whereIn('nomor',$request->resi_array)
 						   ->orderBy('nomor','ASC')

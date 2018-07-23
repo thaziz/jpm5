@@ -38,6 +38,10 @@
       font-size :12px;
     }
 
+
+    .hargatable {
+      width: 800px; margin: 0 auto;
+    }
    /* #table_form td,
     #table_form th{
       padding:10px 0px;
@@ -205,7 +209,7 @@
                     <hr>
                     
                   @if($data['countcodt'] > 0)
-                     <table class="table table-bordered table-striped" id="hargatable">
+                     <table class="table table-bordered table-striped hargatable" id="hargatable" style="width:100%">
                       <tr>
                         <td rowspan="2"  style="width:20px"> No </td>
                         <td rowspan="2"  style="width:200px"> Nama Barang </td>
@@ -278,7 +282,7 @@
                     <td>  <h4> Konfirmasi Order Detail</h4> </td>
                
                    <td> &nbsp; </td>
-                   <td>     <button class="btn btn-sm btn-primary edit" type="button"> Edit Data</button> </div> </td>
+                   <td>    <!--  <button class="btn btn-sm btn-primary edit" type="button"> Edit Data</button> --> </div> </td>
                    <td>
                     </td>
                   </tr>
@@ -286,7 +290,7 @@
 
                 <div class="box-body">
                 
-                <table id="hargatable" class="table table-bordered" >
+                <table id="hargatable" class="table table-bordered hargatable" style="width:100%">
                     <thead>
                      <tr>
                         <td style="width:20px" rowspan="2"> No  </td>
@@ -359,13 +363,13 @@
                                 <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
                             @endforeach
                         <td>  <div class="checkbox">
-                                <input id="tolak tolak{{$idbarang}}" type="checkbox" data-id="{{$idbarang}}" class="tolak tolak{{$idbarang}}">
+                                <input id="tolak tolak{{$idbarang}}" type="checkbox" data-id="{{$idbarang}}" class="tolak tolak{{$idbarang}}" data-barang="{{$sppd->sppd_kodeitem}}">
                                   <label for="tolak{{$idbarang}}">   
                                   </label>
                               </div>
                         </td>   
 
-                        <td> <input type="text" class="form-control input-sm kettolak kettolak{{$idbarang}}" name="keterangantolak[]"> </td>
+                        <td> <input type="text" class="form-control input-sm kettolak kettolak{{$idbarang}}" name="keterangantolak[]" > <input type="hidden" class="databarangtolak" name="databarangtolak[]"> <input type="hidden" class="status status{{$idbarang}}" name="status[]" value="SETUJU"> </td>
                       </tr>                     
                       @endforeach
 
@@ -416,7 +420,7 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-  $('.kettolak').attr('disabled' , true);
+  $('.kettolak').attr('readonly' , true);
 
    $('body').removeClass('fixed-sidebar');
             $("body").toggleClass("mini-navbar");
@@ -433,6 +437,9 @@
             return x1 + x2;
     }
 
+
+
+
     $('.sup').each(function(){
         $(this).change(function(){
           id = $(this).data('id');
@@ -448,20 +455,24 @@
       var id = $(this).data('id');
         if($('input.tolak'+id).is(':checked')){
         
-          $('.qtyapproval'+id).attr('disabled' , true); 
+          $('.qtyapproval'+id).attr('readonly' , true); 
            $('.checkbox' + id).prop('checked' , false); 
           $('.checkbox' + id).attr('disabled' , true);
-          $('.kettolak' + id).attr('disabled' , false);
+          $('.kettolak' + id).attr('readonly' , false);
 
-          $('.hrga' + id ).attr('disabled' , true); 
+          $('.hrga' + id ).attr('readonly' , true); 
           $('.simpan').attr('disabled', true);
-          $('.harga' + id).val('0');
+          $('.hrga' + id).val('0');
+          databarang = $(this).data('barang');
+          $('.databarangtolak').val(databarang);
+          $('.status' + id).val('TOLAK');
         }
         else {
-         $('.qtyapproval'+id).attr('disabled' , false); 
+        $('.qtyapproval'+id).attr('readonly' , false); 
           $('.checkbox' + id).attr('disabled' , false);
-         $('.kettolak'+id).attr('disabled' , true); 
+         $('.kettolak'+id).attr('readonly' , true); 
           hargahid = $('.hargahid' + id).val();
+          $('.status' + id).val('SETUJU');
         //  alert(hargahid);
           $('.hrga' + id).val(hargahid);
           
@@ -472,7 +483,18 @@
         var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';
         var idspp = $('.idspp').serialize();
         
-       // alert('test');
+        $temp = 0;
+            $('.checkboxhrg').each(function(){
+              if ($(this).is(":checked")) {
+                $temp = $temp + 1;
+              }
+            })
+        
+
+       if($temp == 0){
+        toastr.info("Harap centang supplier yang dipilih");
+        return false;
+       }
 
         $.ajaxSetup({
         headers: {
@@ -496,12 +518,11 @@
 
 
           for(var i = 0; i < data.sppdt.length; i++){    
-          var isDisabled = $('#hrga' + i).prop('disabled');
+              var isDisabled = $('#hrga' + i).prop('disabled');
 
                 if (isDisabled) {
                   var harga = $('#hrga' + i).val();
-                  var idbrg = $('#hrga' + i).data('brg');
-               
+                  var idbrg = $('#hrga' + i).data('brg');              
                 }
                 else {
                   var harga = $('#hrga' + i).val();
@@ -704,7 +725,7 @@
               $('#hargatable').each(function(){
                 for(var n=0; n < data.sppdt_barang.length; n++){
                   var kodebrg = $('.brg' + n).data("kodeitem");
-                    console.log($('.brg0').data("kodeitem"));
+                   
                     for(var i = 0; i < data.codt.length; i++){
                         if(kodebrg == data.codt[i].codt_kodeitem) {
 
@@ -748,10 +769,10 @@
                                                            '<label class="col-sm-1 control-label"> Rp </label>' + 
                                                             '<div class="col-xs-6">';
                                         
-                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+' hrga'+n+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.sppdt[i].sppd_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.sppdt[i].sppd_supplier+'"> <input type="hidden" value="'+addCommas(data.sppdt[i].sppd_harga)+'" class="hargahid'+i+'" ">  </div> <div class="datasup'+ i +'">  </div> ';
+                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+' hrga'+n+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.sppdt[i].sppd_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.sppdt[i].sppd_supplier+'"> <input type="hidden" value="'+addCommas(data.sppdt[i].sppd_harga)+'" class="hargahid hargahid'+i+'" data-brg="'+n+'" data-id="'+i+'"">  </div> <div class="datasup'+ i +'">  </div> ';
 
                                         tampilharga += '<div class="col-sm-2"> <div class="checkbox checkbox-primary ">' +
-                                            '<input id="cek" type="checkbox" value='+data.sppdt[i].sppd_supplier+' class="checkbox'+n+'" data-val='+i+' data-id='+nourut+' required data-supplier='+data.sppdt[i].sppd_supplier+' data-harga='+data.sppdt[i].sppd_harga+' data-totalhrg='+data.spptb[j].spptb_totalbiaya+' data-n='+n+'>' +
+                                            '<input id="cek" type="checkbox" value='+data.sppdt[i].sppd_supplier+' class="checkboxhrg checkbox'+n+'" data-val='+i+' data-id='+nourut+' required data-supplier='+data.sppdt[i].sppd_supplier+' data-harga='+data.sppdt[i].sppd_harga+' data-totalhrg='+data.spptb[j].spptb_totalbiaya+' data-n='+n+'>' +
                                             '<label for="checkbox'+nourut+'">' +  
                                             '<div class="suppliercek'+nourut+'">  </div> '                                           
                                             '</label>' +
@@ -770,7 +791,19 @@
                                                   if ($this.is(":checked")) {
                                                       rowsupplier = "<input type='hidden' value="+idsup+" name='datasup[]'>";
                                                       $('.suppliercek'+id).html(rowsupplier);
-                                                        $('.harga' + val).attr('disabled', false);
+
+                                                      $('.harga' + val).attr('disabled', false);
+
+                                                      $('.hrg').each(function(){
+                                                        dataid = $(this).data('id');
+                                                        datan = $(this).data('brg');
+                                                        if(datan == n){
+                                                          if(dataid != val){
+                                                            $(this).val('0');
+                                                          }
+                                                        }
+                                                      })
+
                                                       $(".checkbox"+n).not($this).prop({ disabled: true, checked: false }); 
                                                       $('.simpan').attr('disabled', true);          
 
@@ -782,9 +815,25 @@
                                                       })
 
                                                   } else {
-                                                       $('.suppliercek'+id).empty();
+                                                      
+                                                    hargaasli = $(this).data('harga');
+                                                     $('.hrg').each(function(){
+                                                        dataid = $(this).data('id');
+                                                        datan = $(this).data('brg');
+                                                        nilai = $('.hargahid' + dataid).val();
+                                                        if(datan == n){
+                                                          if(dataid != val){
+                                                            $(this).val(addCommas(nilai));
+                                                          }
+                                                        }
+                                                      });
 
-                                                        $('.harga' + val).attr('disabled', true);
+                                                   
+
+                                                      $('.suppliercek'+id).empty();
+
+                                                      $('.harga' + val).prop("disabled" , true);
+
                                                       $(".checkbox"+n).prop("disabled", false);
                                                       $('.simpan').attr('disabled', true);  
 

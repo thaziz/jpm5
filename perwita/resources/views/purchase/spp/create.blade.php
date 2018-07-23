@@ -83,7 +83,7 @@
                                               <td>                                              
 
                                                @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','cabang'))
-                                              <select class="form-control cabang" name="cabang">
+                                              <select class="form-control chosen-select cabang" name="cabang">
                                                   @foreach($data['cabang'] as $cabang)
                                                 <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->kode}} - {{$cabang->nama}} </option>
                                                 @endforeach
@@ -163,8 +163,8 @@
 
 
 
-                                      <tr>
-                                       <td colspan="2"> <div class="lokasigudang"> </div> </td>
+                                      <tr class="lokasigudang">
+                                       <td> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control chosen-select gudang' name='gudang'> </select> </td> </td>
                                       </tr>
                                <!--    <button class='btn btn-danger remv-btn' type='button'> hapus </button> -->
                                     <tr>
@@ -200,17 +200,16 @@
 
 
                                 <hr>
-
                                  
-                                  <table id="table-data" class="table table-bordered">
+                                  <table id="table-data" class="table table-bordered" width="100%">
                                   <tr class="header-table">
-                                      <th style="width:20px"> No  </th>
-                                       <th style="width:200px"> Nama Barang</th>
-                                      <th style="width:10px"> Jumlah </th>
-                                      <th style="width:30px"> Stock Gudang </th>
-                                      <th style="width:5px"> Satuan </th>
-                                       <th style="width:10px"> Harga </th>
-                                      <th style="width:10px" class="kolompembayaran"> Supplier </th>
+                                      <th> No  </th>
+                                       <th> Nama Barang</th>
+                                      <th style="width:100px"> Jumlah </th>
+                                      <th> Stock Gudang </th>
+                                      <th> Satuan </th>
+                                       <th> Harga </th>
+                                      <th  class="kolompembayaran"> Supplier </th>
                                   <!--     <th class="kolompembayaran" style="width:10px" id="pembayaran"> Pembayaran </th> -->
                                       <th style="width:5px"> Aksi </th>
                                       <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -232,7 +231,7 @@
                                
 
                                  </table>
-                              
+                                 
                                 </div>
                            
            
@@ -336,6 +335,11 @@
       $(".kndraan").chosen(config);
     })
      },2000);
+
+
+    /*$('#table-data').DataTable({
+      "scrollX" : true,
+    });*/
 
    function addCommas(nStr) {
             nStr += '';
@@ -583,7 +587,7 @@
        $('.cabang').change(function(){
        cabang = $('.cabang').val();
         $.ajax({
-          url : baseUrl + '/penerimaanbarang/valgudang',
+          url : baseUrl + '/suratpermintaanpembelian/valgudang',
           data :{cabang},
           type : "GET",
           dataType : 'json',
@@ -600,10 +604,9 @@
         })
     })
 
-
-       cabang = $('.cabang').val();
+        cabang = $('.cabang').val();
         $.ajax({
-          url : baseUrl + '/penerimaanbarang/valgudang',
+          url : baseUrl + '/suratpermintaanpembelian/valgudang',
           data :{cabang},
           type : "GET",
           dataType : 'json',
@@ -617,7 +620,8 @@
                      $('.gudang').trigger("liszt:updated");
                   })
           }
-        }) 
+        })
+
 
        function removeDuplicates(inputArray) {
             var i;
@@ -1011,15 +1015,16 @@
           if(val == 'Y') {
          valupdatestock = val;
                 $('.kendaraan').remove();
-               var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
+              /* var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
                               "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
                            "</select> </td>";
-              $('.lokasigudang').html(rowgudang);
+              $('.lokasigudang').html(rowgudang);*/
+              $('.lokasigudang').show();
           }
           else if(val == 'T') {
            
              valupdatestock = val;
-            $('.lokasigudang').empty();
+            $('.lokasigudang').hide();
             $('.header-table').find($('.kendaraan')).remove();
             var rowColom = "<th class='kendaraan' style='width:100px'> Kendaraan </th>";
              
@@ -1048,23 +1053,25 @@
             $('.updatestock').show();
               valupdatestock = val;
                 $('.kendaraan').remove();
-               var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
+              /* var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
                               "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
                            "</select> </td>";
-              $('.lokasigudang').html(rowgudang);
+              $('.lokasigudang').html(rowgudang);*/
               //$('.penerimaan').val('S');
+              $('.lokasigudang').show();
           }
           else {
              valupdatestock = val;
-             var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
+            /* var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
                               "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
                            "</select> </td>";
-              $('.lokasigudang').html(rowgudang);
+              $('.lokasigudang').html(rowgudang);*/
+              $('.lokasigudang').show();
              //$('.penerimaan').val('NS');
           }
         }
         else {
-            $('.lokasigudang').empty();
+            $('.lokasigudang').hide();
             $('#tdstock').hide();
             $('.updatestock').hide();
             valupdatestock = 'J';
@@ -1322,9 +1329,9 @@
 
                     "<td> <div class='satuan"+counterId+"'>  <br> <br> <div> </div> </td>"+ //satuan
 
-                    "<td> <input type='text' class='input-sm form-control hrga hargabrg"+no+" harga"+counterId+"' name='harga[]' data-id='"+counterId+"' data-no='"+no+"'/> <br> <div> </div> </td>"+ //harga
+                    "<td> <input type='text' class='input-sm form-control hrga hargabrg"+no+" harga"+counterId+"' name='harga[]' style='text-align:right' data-id='"+counterId+"' data-no='"+no+"'/> <br> <div> </div> </td>"+ //harga
 
-                    "<td> <select id='supselect' class='form-control chosen-select-width suipd suipl sup"+no+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' style='width: 100%;' data-no='"+no+"' name='supplier[]' required=> <option value=''> -- Pilih Data Supplier -- </option> </select> <br> <div class='supduplicate supduplicate"+no+"'> </div> </td>"; //supplier
+                    "<td> <select id='supselect' class='form-control chosen-select-width suipd suipl sup"+no+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' data-no='"+no+"' name='supplier[]' required=> <option value=''> -- Pilih Data Supplier -- </option> </select> <br> <div class='supduplicate supduplicate"+no+"'> </div> </td>"; //supplier
 
                   /*  "<td class='pembayaranken'> <div class='form-group'> <div class='col-sm-8'> <input type='text' class='form-control bayar"+counterId+"' name='bayar[]' data-id='"+counterId+"'> </div> <label class='col-sm-2 col-sm-2 control-label'> Hari </label></div></td>";*/ //bayar
 
@@ -1465,6 +1472,11 @@
              variable = jnsitem.split(",");
              jenisitem = variable[0];
               penerimaan = variable[1];
+
+              if(gudang == ''){
+                toastr.info('Harap Pilih Gudang :)');
+                return false;
+              }
 
              $.ajax({
                 url : baseUrl + '/suratpermintaanpembelian/ajax_hargasupplier',
@@ -1651,8 +1663,8 @@
 
       					var rowSup = "<tr id='supp-"+idtrsup+"' class='data-supplier supp-"+counterId+"'>";
       					rowSup += "<td></td> <td></td>  <td> </td> <td></td> <td>  </td>"+
-      							"<td> <input type='text' name='harga[]' data-id='"+counterId+"' class='input-sm form-control hrga hargabrg"+idtrsup+" harga"+counterId+"' data-id="+counterId+" data-no="+removesup+" '/></td>"+ //harga
-      							"<td><select id='supselect' class='form-control chosen-select select2 suipd suipl sup"+idtrsup+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' style='width: 100%;' data-no='"+idtrsup+"' name='supplier[]' required=> <option value=''> -- Pilih Supplier -- </option>"; //SUpplier
+      							"<td> <input type='text' style='text-align:right' name='harga[]' data-id='"+counterId+"' class='input-sm form-control hrga hargabrg"+idtrsup+" harga"+counterId+"' data-id="+counterId+" data-no="+removesup+" '/></td>"+ //harga
+      							"<td><select id='supselect' class='form-control chosen-select select2 suipd suipl sup"+idtrsup+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' data-no='"+idtrsup+"' name='supplier[]' required=> <option value=''> -- Pilih Supplier -- </option>"; //SUpplier
       					
                 if(hasilsupp.length > 0){ //TERIKAT KONTRAK
                       $.each(hasilsupp, function(i , obj) {
@@ -1842,7 +1854,7 @@
         parent.remove();
 
   })
- 
+  
 
 </script>
 @endsection

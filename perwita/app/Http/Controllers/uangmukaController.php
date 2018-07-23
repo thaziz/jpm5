@@ -115,13 +115,13 @@ class uangmukaController extends Controller
 		
 
 			$idnota = (int)$idnota + 1;
-			$data['idum'] = str_pad($idnota, 3, '0', STR_PAD_LEFT);
+			$data['idum'] = str_pad($idnota, 4, '0', STR_PAD_LEFT);
 			
 		}
 
 		else {
 	
-			$data['idum'] = '001';
+			$data['idum'] = '0001';
 		}
 
 		$datainfo = ['status' => 'sukses' , 'data' => $data['idum']];

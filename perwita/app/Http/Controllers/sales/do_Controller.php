@@ -819,7 +819,7 @@ class do_Controller extends Controller
             $cari_dt += 1;
         }
         $data = array(
-            'nomor' => strtoupper($request->ed_nomor_d),
+            'nomor' => str_replace(' ','',strtoupper($request->ed_nomor_d)),
 
             'nomor_so' => strtoupper($request->ed_so),
             'kode_item' => strtoupper($request->ed_kode_item),

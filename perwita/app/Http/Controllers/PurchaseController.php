@@ -191,7 +191,7 @@ class PurchaseController extends Controller
 
 		else {
 		
-			$idspp = '001';
+			$idspp = '0001';
 		}
 
 
@@ -292,7 +292,7 @@ class PurchaseController extends Controller
 			}
 
 			else {
-				$nospp = '001';
+				$nospp = '0001';
 			}
 
 		//rumus no_spp$
@@ -889,6 +889,15 @@ class PurchaseController extends Controller
 	}
 
 
+	public function kettolakspp(Request $request){
+		$idspp = $request->idspp;
+
+		$datasppdt = DB::select("select sppd_kodeitem,sppd_kettolak, nama_masteritem from spp_detail, masteritem where sppd_idspp = '$idspp' and sppd_status = 'TOLAK' and sppd_kodeitem = kode_item group by sppd_kodeitem, sppd_kettolak, nama_masteritem");
+
+		return json_encode($datasppdt);
+
+	}
+
 	
 	public function deletesup($id){
 
@@ -1053,9 +1062,9 @@ class PurchaseController extends Controller
 
 
 	public function saveconfirmorderdt(Request $request){
-	//	dd($request);
-
-		$updatespp = spp_purchase::where('spp_id', '=', $request->idspp);
+	/*	dd($request);*/
+		return DB::transaction(function() use ($request) { 
+				$updatespp = spp_purchase::where('spp_id', '=', $request->idspp);
 		$updatespp->update([
 			'spp_status' => 'DITERIMA',
 		]);	
@@ -1107,46 +1116,64 @@ class PurchaseController extends Controller
 		$n = 1;
 		$idsup = 0;
 		for($i = 0 ; $i <$countapproval; $i++) {
+			if($request->status[$i] == 'SETUJU'){
+				$lastid = co_purchasedt::max('codt_id'); 
 
-			$lastid = co_purchasedt::max('codt_id'); 
-
-			if(isset($lastid)) {
-				$idco = (int)$lastid + 1;
-			}
-			else {
-				$idco = 1;
-			}
-
-			$codt = new co_purchasedt();
-
-
-				$codt->codt_id = $idco;
-				$codt->codt_idco = $request->idco;
-				$codt->codt_seq = $n;
-				$codt->codt_kodeitem = $request->item[$i];
-				$codt->codt_qtyrequest = $request->qtyrequest[$i];
-				$codt->codt_qtyapproved = $request->qtyapproval[$i];
-
-				/*$string = $request->supplier3[$i];
-				$explode = explode(",", $string);
-				$idsup = $explode[0];*/
-
-				$codt->codt_supplier = $request->datasup[$i];
-				/*if(count($request->supplier) > 1 ){
-					
-					$idsup++;
+				if(isset($lastid)) {
+					$idco = (int)$lastid + 1;
 				}
 				else {
-					$codt->codt_supplier = $request->supplier[$idsup];	
-				}*/
-				
-				$replacehrg = str_replace(',', '', $request->harga[$i]);
-				$codt->codt_harga = $replacehrg;
-				$codt->codt_tolak = $request->keterangantolak[$i];
-				
+					$idco = 1;
+				}
 
-				$codt->save();
-				$n++;	
+					$codt = new co_purchasedt();
+
+					$codt->codt_id = $idco;
+					$codt->codt_idco = $request->idco;
+					$codt->codt_seq = $n;
+					$codt->codt_kodeitem = $request->item[$i];
+					$codt->codt_qtyrequest = $request->qtyrequest[$i];
+					$codt->codt_qtyapproved = $request->qtyapproval[$i];
+
+					/*$string = $request->supplier3[$i];
+					$explode = explode(",", $string);
+					$idsup = $explode[0];*/
+
+					$codt->codt_supplier = $request->datasup[$i];
+					/*if(count($request->supplier) > 1 ){
+						
+						$idsup++;
+					}
+					else {
+						$codt->codt_supplier = $request->supplier[$idsup];	
+					}*/
+					
+					$replacehrg = str_replace(',', '', $request->harga[$i]);
+					$codt->codt_harga = $replacehrg;
+					$codt->codt_tolak = $request->keterangantolak[$i];
+					
+
+					$codt->save();
+
+					$kodeitem = $request->item[$i];
+
+					$updatespp = sppdt_purchase::where([['sppd_idspp' , '=' , $request->idspp],['sppd_kodeitem' , '=' , $kodeitem]]);
+					$updatespp->update([
+						'sppd_status' => $request->status[$i],	
+					]);	
+
+					$n++;	
+			}
+			else {
+				$kodeitem = $request->item[$i];
+
+				$updatespp = sppdt_purchase::where([['sppd_idspp' , '=' , $request->idspp],['sppd_kodeitem' , '=' , $kodeitem]]);
+				$updatespp->update([
+					'sppd_status' => $request->status[$i],
+					'sppd_kettolak' => $request->keterangantolak[$i],	
+				]);	
+
+			}		
 		}	
 
 
@@ -1195,6 +1222,9 @@ class PurchaseController extends Controller
 						'setujustaffpemb' => $data['co'][0]->co_staffpemb_approved);
 
 		return redirect('konfirmasi_order/konfirmasi_order');
+
+		});
+		
 	}
 
 	public function createAjax() {
@@ -1270,7 +1300,7 @@ public function purchase_order() {
 		//	return $idsupplier ;
 			$data['supplier'] = DB::select("select * from supplier where idsup ='$idsupplier' and active = 'AKTIF' ");
 
-			$data['gudang'] = DB::select("select * from mastergudang");
+			
 		for($j=0; $j < count($array); $j++){
 				$explode = explode("," , $array[$j]);
 				$idspp = $explode[0]; 
@@ -1278,13 +1308,16 @@ public function purchase_order() {
 				$gudang = $explode[2];
 				$idcotb = $explode[5];
 				$idco = $explode[6];
+
 			if($gudang == 'null'){
 							$data['spp'][] = DB::select("select * from spp, spp_totalbiaya, confirm_order, confirm_order_tb, supplier , cabang where co_idspp = spp_id and spp_id = '$idspp' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup and active = 'AKTIF' and idsup = '$nosupplier' and cotb_supplier = '$nosupplier' and spptb_idspp = '$idspp' and spptb_supplier = cotb_supplier and cotb_id = '$idcotb' and co_id = '$idco' and cotb_idco = co_id");
 			}	
 			else {
 							$data['spp'][] = DB::select("select * from mastergudang, spp, spp_totalbiaya, confirm_order, confirm_order_tb, supplier , cabang where co_idspp = spp_id and spp_id = '$idspp' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup and active = 'AKTIF' and idsup = '$nosupplier' and cotb_supplier = '$nosupplier' and spptb_idspp = '$idspp' and spptb_idspp = spp_id and spp_lokasigudang = mg_id and spptb_supplier = cotb_supplier and cotb_id = '$idcotb' and co_id = '$idco' and cotb_idco = co_id");
 			}	
+			
 			$data['codt'][] = DB::select("select * from confirm_order, masteritem,  confirm_order_dt , confirm_order_tb, spp where co_idspp = '$idspp' and codt_idco = co_id and cotb_idco = co_id and co_idspp = spp_id and codt_supplier = cotb_supplier and codt_supplier = '$nosupplier' and codt_kodeitem = kode_item and cotb_id = '$idcotb' and co_id = '$idco' ");
+			$data['gudang'] = DB::select("select * from mastergudang where mg_id = '$gudang'");
 		}
 		return json_encode($data);
 	}
@@ -1574,7 +1607,7 @@ public function purchase_order() {
 				}
 
 				else {
-					$idpo = '001';
+					$idpo = '0001';
 				}
 
 
@@ -1741,6 +1774,8 @@ public function purchase_order() {
 
 		$data['po'] = DB::select("select * from spp, pembelian_orderdt where podt_idspp = spp_id");
 		$data['cabang'] = DB::select('select * from cabang');
+
+//		$lokasigudang = $data['spp']
 		$data['gudang'] = masterGudangPurchase::all();
 		//dd($data);
 
@@ -1971,7 +2006,7 @@ public function purchase_order() {
 		}
 
 		else {
-			$idpb = '001';
+			$idpb = '0001';
 		}
 
 		if($request->updatestock == 'IYA') {
@@ -2342,7 +2377,7 @@ public function purchase_order() {
 			}
 
 			else {
-				$idpb = '001';
+				$idpb = '0001';
 			}
 
 
@@ -2675,7 +2710,7 @@ public function purchase_order() {
 			}
 
 			else {
-				$idpb = '001';
+				$idpb = '0001';
 			}
 
 
@@ -4619,7 +4654,7 @@ public function purchase_order() {
 		}
 
 		else {
-			$idfaktur = '001';
+			$idfaktur = '0001';
 		}
 
 
@@ -5848,7 +5883,7 @@ public function purchase_order() {
 			}
 
 			else {
-				$idtt = '001';
+				$idtt = '0001';
 			}
 
 
@@ -6571,7 +6606,7 @@ public function purchase_order() {
 				$idtt2 = str_pad($string, 4, '0', STR_PAD_LEFT);
 			}
 			else {
-				$idtt2 = '001';
+				$idtt2 = '0001';
 			}
 
 
@@ -6613,7 +6648,7 @@ public function purchase_order() {
 
 		else {
 	
-			$data['idfaktur'] = '001';
+			$data['idfaktur'] = '0001';
 		}
 
 		$datainfo = ['status' => 'sukses' , 'data' => $data['idfaktur']];
@@ -6641,7 +6676,7 @@ public function purchase_order() {
 
 		else {
 	
-			$data['idfpg'] = '001';
+			$data['idfpg'] = '0001';
 		}
 
 		return json_encode($data);
@@ -7114,7 +7149,7 @@ public function kekata($x) {
 			$idbbk = str_pad($string, 4, '0', STR_PAD_LEFT);
 		}
 		else {
-			$idbbk = '001';
+			$idbbk = '0001';
 		}
 
 		$datainfo =['status' => 'sukses' , 'data' => $idbbk];
@@ -7704,7 +7739,7 @@ public function kekata($x) {
 
 		else {
 			
-			$idfpg = '001';
+			$idfpg = '0001';
 		}
 
 		//dd($idfpg);

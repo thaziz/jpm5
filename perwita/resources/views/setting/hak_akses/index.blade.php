@@ -25,20 +25,11 @@
                                 <div class="box-header">
                                 </div><!-- /.box-header -->
                                 <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
-                                    <div class="box-body">
-                                      
                                         <div class="row">
                                             <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
-
                                             </table>
                                             <div class="col-xs-6">
-
-
-
                                             </div>
-
-
-
                                         </div>
                                 </form>
                                 <div class="box-body">
@@ -49,14 +40,13 @@
                                                     <td style="width:110px; padding-top: 0.4cm">Level</td>
                                                     <td>
                                                         <input type="hidden" class="form-control" name="_token" id="_token" value="{{ csrf_token() }}" readonly="" >
-                                                        <select class="form-control" id="cblevel" name="cb_level">
+                                                        <select class="form-control chosen-select-width" id="cblevel" name="cb_level">
                                                             @foreach ($level as $row)
                                                             <option value="{{ $row->level }}"> {{ $row->level }} </option>
                                                             @endforeach
                                                         </select>
                                                     </td>
                                                 </tr>
-                
                                             </tbody>
                                         </table>
                                         <div class="row">
@@ -70,15 +60,10 @@
                                         </div>
                                     </form>
                                     <div class="table_data">
-                                        
                                     </div>
-                                    
                                 </div><!-- /.box-body -->
-
                                 <div class="box-footer">
                                     <div class="pull-right">
-
-
                                     </div><!-- /.box-footer -->
                                 </div><!-- /.box -->
                             </div><!-- /.col -->

@@ -60,7 +60,7 @@ class PengeluaranBarangController extends Controller
 	                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
 
 	    $index = (integer)$cari_nota[0]->id + 1;
-	    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
+	    $index = str_pad($index, 4, '0', STR_PAD_LEFT);
 
 		
 		$nota = 'SPPB' . $bulan . $tahun . '/' . $req->cabang . '/' .$index;
@@ -730,12 +730,12 @@ class PengeluaranBarangController extends Controller
 		    $id = $explode[2];
 			$id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
 			$string = (int)$id + 1;
-			$id = str_pad($string, 3, '0', STR_PAD_LEFT);
+			$id = str_pad($string, 4, '0', STR_PAD_LEFT);
 
 		}
 
 		else {
-			$id = '001';
+			$id = '0001';
 		}
 
 
@@ -765,12 +765,12 @@ class PengeluaranBarangController extends Controller
 			$idnota = $explode[2];
 
 			$string = (int)$idnota + 1;
-			$idnota = str_pad($string, 3, '0', STR_PAD_LEFT);
+			$idnota = str_pad($string, 4, '0', STR_PAD_LEFT);
 		}
 
 		else {
 		
-			$idnota = '001';
+			$idnota = '0001';
 		}
 
 

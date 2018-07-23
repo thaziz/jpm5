@@ -121,6 +121,8 @@
                             <td> Kode Bank </td>
                             <td>
                               <select class="form-control kodebank">
+                               <option value=""> Pilih Data Bank</option>
+
                                 @foreach($data['bank'] as $bank)
                                   <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                 @endforeach
@@ -284,7 +286,9 @@
                                                    <br>
                                                    <br>
                                                    <div class="col-sm-12">
-                                                    <table class='table table-stripped table-bordered' id="tbl-hasilbank">
+                                                   <div style="overflow-x:auto;">
+                                                    <table class='table table-stripped table-bordered' id="tbl-hasilbank" style='width:100%'>
+                                                      <thead>
                                                       <tr>
                                                         <th> No </th>
                                                         <th> No Bukti </th>
@@ -297,7 +301,9 @@
                                                         <th> Keterangan </th>  
                                                         <th> Aksi </th>    
                                                       </tr>
+                                                    </thead>
                                                     </table>
+                                                    </div>
                                                    </div>
 
                                               </div>
@@ -473,7 +479,9 @@
           val = '0' + val;
       }
       
-      nobbk = bank + val + '-' + lain;
+      str = bank.substr(0,2);
+
+      nobbk = str + val + '-' + lain;
       $('.nobbk').val(nobbk);
     })
    
