@@ -2883,11 +2883,6 @@ class LaporanMasterController extends Controller
 				}
  	  		}
    		}
-
-   		// return $saldo_ut;
-   		// $data = array_merge($data,$saldo_ut);
-		// array_push($saldo_ut , $data);
-   		// return $data;
    		
    		if ($request->customer != '') {
    			return view('purchase/master/master_penjualan/laporan/lap_piutang/ajax_lap_piutang_fil_cust',compact('saldo_ut','data','customer','data_saldo'));
@@ -2897,6 +2892,98 @@ class LaporanMasterController extends Controller
    		
 
    }
+
+   public function cari_kartupiutang_detail_customer(Request $request)
+   {
+   		return 'detail kartu detail customer';
+   }
+
+   public function cari_kartupiutang_akun(Request $request)
+   {
+   		$awal = substr($request->min,-2);
+   		$akir = substr($request->max,-2);
+   		//invoice
+   		if ($request->customer != '' || $request->customer != null) {
+			$customer_invoice = " AND i_kode_customer = '".$request->customer."' ";
+		}else{
+			$customer_invoice = '';
+		}
+		if ($request->akun != '' || $request->akun != null) {
+			$akun_invoice = " AND i_acc_piutang = '".$request->akun."' ";
+		}else{
+			$akun_invoice = '';
+		}
+		if ($request->cabang != '' || $request->cabang != null) {
+			$cabang_invoice = " AND i_kode_cabang = '".$request->cabang."' ";
+		}else{
+			$cabang_invoice = '';
+		}
+		//end
+		//Kwitansi
+		if ($request->customer != '' || $request->customer != null) {
+			$customer_kwitansi = " AND k_kode_customer = '".$request->customer."' ";
+		}else{
+			$customer_kwitansi = '';
+		}
+		if ($request->akun != '' || $request->akun != null) {
+			$akun_kwitansi = " AND kwitansi_d.kd_kode_akun_acc = '".$request->akun."' ";
+		}else{
+			$akun_kwitansi = '';
+		}
+		if ($request->cabang != '' || $request->cabang != null) {
+			$cabang_kwitansi = " AND k_kode_cabang = '".$request->cabang."' ";
+		}else{
+			$cabang_kwitansi = '';
+		}
+		//end
+		//posting pemaaran
+		if ($request->customer != '' || $request->customer != null) {
+			$customer_postingbayar = " AND posting_pembayaran_d.kode_customer = '".$request->customer."' ";
+		}else{
+			$customer_postingbayar = '';
+		}
+		if ($request->akun != '' || $request->akun != null) {
+			$akun_postingbayar = " AND posting_pembayaran_d.kode_acc = '".$request->akun."' ";
+		}else{
+			$akun_postingbayar = '';
+		}
+		if ($request->cabang != '' || $request->cabang != null) {
+			$cabang_postingbayar = " AND posting_pembayaran.kode_cabang = '".$request->cabang."' ";
+		}else{
+			$cabang_postingbayar = '';
+		}
+		//end
+
+
+		$data_invoice = DB::select("SELECT i_acc_piutang as akun,sum(i_debet) as debet,sum(i_kredit) as kredit,sum(i_total_tagihan) as saldo_awal
+		 								from invoice 
+										where date_part('month',i_tanggal) >= '$awal' 
+  										and date_part('month',i_tanggal) <= '$akir' 
+		 								$customer_invoice $akun_invoice $cabang_invoice
+		 								group by i_acc_piutang");
+
+		$data_kwitansi = DB::select("SELECT 'K' as flag,kwitansi_d.kd_kode_akun_acc FROM kwitansi 
+   										join kwitansi_d on kwitansi.k_nomor = kwitansi_d.kd_k_nomor
+   										where date_part('month',k_tanggal) >= '$awal' 
+   										and date_part('month',k_tanggal) <= '$akir'
+   										$customer_kwitansi $akun_kwitansi $cabang_kwitansi
+   										group by kd_kode_akun_acc");
+   		
+   		
+   		$data_postingbayar = DB::select("SELECT 'K' as flag,kode_acc FROM kwitansi 
+   										join posting_pembayaran_d on posting_pembayaran_d.nomor_penerimaan_penjualan = kwitansi.k_nomor
+   										join posting_pembayaran on posting_pembayaran.nomor = posting_pembayaran_d.nomor_posting_pembayaran
+   										where date_part('month',k_tanggal) >= '$awal' 
+   										and date_part('month',k_tanggal) <= '$akir'
+   										$customer_postingbayar $akun_postingbayar $cabang_postingbayar
+   										");
+
+   		return [$data_invoice,$data_kwitansi,$data_postingbayar];
+
+		return view('purchase/master/master_penjualan/laporan/lap_piutang/ajax_lap_piutang_akun',compact('data_invoice'));
+   }
+
+
    public function rekap_customer(){
    		$cabang = DB::table('cabang')->get();
    		return view('purchase/master/master_penjualan/laporan/do_total/rekap_customer/lap_rekapcustomer',compact('cabang'));

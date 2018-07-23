@@ -48,6 +48,9 @@ class update_o_Controller extends Controller
   }
 
 	public function up2(){
+    set_time_limit(600);
+    ini_set('memory_limit', '1000M');
+
     $nodo = DB::table('delivery_order')->orderBy('tanggal','DESC')->get();
     $kota = DB::table('kota')->get();
 		return view('updatestatus/up2',compact('nodo','kota'));
