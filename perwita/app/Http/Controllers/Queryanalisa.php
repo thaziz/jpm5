@@ -1183,27 +1183,34 @@ class Queryanalisa extends Controller
 				}
 			}
 
-			if(count($hutangsupplier1) != 0){
-			
-				for($j = 0; $j < count($hutangsupplier3); $j++){
-					$netto = $hutangsupplier1[$j]->v_hasil;
-					$v_pelunasan = $hutangsupplier1[$j]->v_pelunasan;
-					$sisapelunasan = floatval($sisapelunasan) + floatval($v_pelunasan);
-					$saldoawal = floatval($saldoawal) + floatval($netto);
-					$terbayar = floatval($saldoawal) - floatval($sisapelunasan);
+			if(count($hutangsupplier1) != 0){	
+
+				$datavc = DB::select("select * from v_hutang, fpg, fpg_dt, bukti_bank_keluar, bukti_bank_keluar_detail, bukti_kas_keluar, bukti_kas_keluar_detail where v_acchutang LIKE '$akunhutangdagang%' and v_tempo < '$tglakhir' and fpgdt_idfpg = idfpg and fpgdt_idfp = v_id and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and bkkd_bkk_id = bkk_id and bkkd_ref = v_nomorbukti and bkk_tgl < '$tglakhir' and bbk_tgl < '$tglakhir'");
+
+				for($j = 0; $j < count($datavc); $j++){
+					$netto = $datavc[$j]->v_hasil;
+					$dibayarbkk = $datavc[$j]->bkkd_total;
+					$dibayarbbk = $datavc[$j]->bbkd_nominal;
+
+					$terbayar = floatval($saldoawal) + (floatval($dibayarbbk) + floatval($dibayarbkk));
+					$blmjatuhtempo = floatval($netto) - floatval($terbayar);
 				}
 			}
 
+			return $terbayar;
 
 
 			if(count($hutangsupplier2) != 0){
 				
-				for($j = 0; $j < count($hutangsupplier2); $j++){
-					$netto = $hutangsupplier2[$j]->fp_netto;
-					$fp_pelunasan = $hutangsupplier2[$j]->fp_sisapelunasan;
-					$saldoawal = floatval($saldoawal) + floatval($netto);
-					$sisapelunasan = floatval($sisapelunasan) + floatval($fp_pelunasan);
-					$terbayar = floatval($saldoawal) -floatval($sisapelunasan);
+				$datafb = DB::select("select * from faktur_pembelian, fpg, fpg_dt, bukti_bank_keluar, bukti_bank_keluar_detail, bukti_kas_keluar, bukti_kas_keluar_detail where fp_acchutang LIKE '$akunhutangdagang%' and fp_jatuhtempo < '$tglakhir' and fpgdt_idfpg = idfpg and fpgdt_idfp = fp_idfaktur and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and bkkd_bkk_id = bkk_id and bkkd_ref = fp_nofaktur and bkk_tgl < '$tglakhir' and bbk_tgl < '$tglakhir'");
+
+				for($j = 0; $j < count($datafb); $j++){
+					$netto = $datafb[$j]->fp_netto;
+					$dibayarbkk = $datafb[$j]->bkkd_total;
+					$dibayarbbk = $datafb[$j]->bbkd_nominal;
+
+					$terbayar = floatval($saldoawal) + (floatval($dibayarbbk) + floatval($dibayarbkk));
+					$blmjatuhtempo = floatval($netto) - floatval($terbayar);
 				}
 			}
 			

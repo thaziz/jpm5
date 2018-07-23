@@ -3,6 +3,18 @@
 @section('title', 'dashboard')
 
 @section('content')
+<style type="text/css">
+    .disabled {
+    pointer-events: none;
+    opacity: 1;
+  }
+
+  .table {
+   overflow-x: scroll
+  }
+
+
+</style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
 	<div class="col-lg-10">
@@ -210,6 +222,8 @@
                         <td> <input type='text' class='form-control sisahutang_po' readonly="" name="sisapelunasan_po" style="text-align: right" value="{{ number_format($faktur->fp_sisapelunasan, 2) }}"> <input type='hidden' class='form-control fp_uangmuka' value="{{$faktur->fp_uangmuka}}"> </td>
                       </tr>
 
+                      <tr>  <td> <b> No Faktur </b> </td> <td> <div class="row"> <div class="col-xs-6"> <input type="text" class="form-control notandaterima" value="{{$data['no_tt'][0]->tt_noform}}" readonly="">   </div>   <div class="col-xs-6">  <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_tt" data-toggle="modal" data-target="#myModal_TT" type="button"> <i class="fa fa-book"> </i> &nbsp; Ganti Form Tanda Terima </button>  </div> </div> <input type="hidden" class="datatandaterima" name="datatandaterima"> </td>  </tr>
+
                       <tr> <td> <button class="btn btn-sm btn-primary" type="button" id="createmodal_um" data-target="#bayaruangmuka" data-toggle="modal"> Bayar dengan Uang Muka </button> </td> <td>
 
                        @if(isset($jurnal_um))
@@ -222,23 +236,9 @@
                       @endforeach
 
                        <tr>
-                        <!--     <td colspan="2">   <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_tt" data-toggle="modal" data-target="#myModal_TT" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button> </td> -->
+                           
                        </tr>
 
-                          <input type='hidden' name='dpp_fakturpembelian' class='dppfakturpembelian'>
-                          <input type='hidden' name='hasilppn_fakturpembelian' class='hasilppnfakturpembelian'>
-                          <input type='hidden' name='inputppn_fakturpembelian' class='inputppnfakturpembelian'> 
-                          <input type='hidden' name='jenisppn_faktur' class='jenisppnfaktur'>                
-                          <input type='hidden' name='masapajak_faktur' class='masapajakfaktur'>                     
-                          <input type='hidden' name='netto_faktur' class='nettofaktur'>                              
-                          <input type='hidden' name='nofaktur_pajak' class='nofakturpajak'>                            
-                          <input type='hidden' name='tglfaktur_pajak' class='tglfakturpajak'>   
-                          <input type='hidden' class='inputfakturpajakmasukan' value="sukses">
-                          <input type='hidden' class='inputtandaterima' value="sukses">
-
-                          <!-- TT -->
-                           <input type='hidden' name='lainlain_tt2' class='lainlain_tt2' value="{{$data['tt'][0]->tt_lainlain}}">
-                           <input type='hidden' name='notandaterima2' class='notandaterima2'>
                      </table>
                       </div>
                       </div>
@@ -251,7 +251,7 @@
                           <!--  <button class="btn btn-primary" style="margin-right: 10px;" type="text" id="createmodal" data-toggle="modal" data-target="#myModal5"><i class="fa fa-book">&nbsp;Buat Tanda Terima</i></button> 
                        &nbsp;
                         -->
-                           <a class="btn btn-sm btn-info " href="{{url('fakturpembelian/cetaktt/'.$data['tt'][0]->tt_idform.'')}}"><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>   &nbsp;
+                           <a class="btn btn-sm btn-info " href=""><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>   &nbsp;
 
                            @if($data['faktur'][0]->fp_status == 'Approved')
 
@@ -277,22 +277,22 @@
                      @if($data['faktur'][0]->fp_tipe != 'PO')
 
                     <button class="btn btn-sm btn-success tmbh-brg" type="button" id="createmodal_brg" data-toggle="modal" data-target="#myModalBrg" ><i class="fa fa-book">&nbsp; Tambah Data Barang </i></button>
-                    <div class="table-responsive">
-                      <table class="table  table-striped tbl-penerimabarang" id="tablefp">
+                    <div style="overflow-x:auto;">
+                      <table class="table  table-border tbl-penerimabarang" id="tablefp" width="100%">
                       <tr >
                         <thead>
                           <th> No </th>
-                          <th width="150px"> Nama Item </th>
-                          <th width="80px"> Qty </th>
-                          <th width="150px">Gudang </th>
-                          <th width="100px"> Harga / unit </th>
-                          <th> Amount </th>
-                          <th width="80px"> Update Stock ? </th>
-                          <th>  Biaya </th>
-                          <th> Netto </th>
-                          <th> Account Biaya </th>
-                          <th> Account Persediaan </th>
-                          <th> Keterangan</th>
+                          <th style="width:300px"> Nama Item </th>
+                          <th> Qty </th>
+                          <th style="width:200px">Gudang </th>
+                          <th style="width:180px"> Harga / unit </th>
+                          <th style="width:180px"> Amount </th>
+                          <th> Update Stock ? </th>
+                          <th style="width:180px">  Biaya </th>
+                          <th style="width:180px"> Netto </th>
+                          <th style="width:180px"> Account Biaya </th>
+                          <th style="width:180px"> Account Persediaan </th>
+                          <th style="width:300px"> Keterangan</th>
                         </thead>
 
                       </tr>
@@ -305,7 +305,7 @@
 
                         <td> <select class="form-control barangitem brg{{$index + 1}} edit"  name="item[]" data-id="{{$index + 1}}" disabled="">
                          @foreach($data['barang'] as $brg) 
-                         <option value="{{$brg->kode_item}}" @if($fakturdt->fpdt_kodeitem == $brg->kode_item) selected @endif> {{$brg->nama_masteritem}} </option>
+                         <option value="{{$brg->kode_item}}" @if($fakturdt->fpdt_kodeitem == $brg->kode_item) selected @endif> {{$brg->kode_item}} - {{$brg->nama_masteritem}} </option>
                           @endforeach </select>   </td>  <!-- nama barang -->
 
                         <td> <input type="text" class="form-control qtyitem qtyitem{{$index + 1}} edit" value="{{$fakturdt->fpdt_qty}}" name="qty[]" data-id="{{$index +1}}" readonly=""> 
@@ -314,7 +314,7 @@
                         
                         <td> <select class="form-control gudangheader edit gudangitem gudangitem{{$index + 1}}" name="gudang[]" disabled=""> @foreach($data['gudang'] as $gudang)  <option value="{{$gudang->mg_id}}" @if($fakturdt->fpdt_gudang == $gudang->mg_id) selected @endif> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td> <!-- gudang -->
 
-                        <td> <input type='text' class='form-control hargaitem hargaitem{{$index + 1}} edit' value="{{ number_format($fakturdt->fpdt_harga, 2)}}" name="harga[]" data-id="{{$index + 1}}" readonly=""></td><!-- "+ //harga -->
+                        <td> <input type='text' class='form-control hargaitem hargaitem{{$index + 1}} edit' value="{{ number_format($fakturdt->fpdt_harga, 2)}}" name="harga[]" data-id="{{$index + 1}}" readonly="" style="text-align:right"></td><!-- "+ //harga -->
 
                         <td> <input type="text" class="form-control totalbiayaitem totalbiayaitem{{$index + 1}}" value="{{number_format($fakturdt->fpdt_totalharga, 2) }}" name="totalharga[]" readonly=""> </td> <!-- //total harga -->
 
@@ -407,117 +407,41 @@
 
                  
 
-                <!-- FORM TANA TERIMA -->
-                                 <div class="modal fade" id="myModal_TT" tabindex="-1" role="dialog"  aria-hidden="true">
+                   <form id="form_hasiltt">  
+               <div class="modal fade" id="myModal_TT" tabindex="-1" role="dialog"  aria-hidden="true">
                                 <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
                                   <div class="modal-content">
                                     <div class="modal-header">
-                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
-                                      <h4 class="modal-title" style="text-align: center;"> FORM TANDA TERIMA </h4>     
+                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span>
+                                        <span class="sr-only">Close</span>
+                                      </button>                     
+                                      <h4 class="modal-title" style="text-align: center;"> 
+                                       </h4>     
                                     </div>
                                                   
                                     <div class="modal-body">              
-                                    <table class="table table-stripped">
-                                      <tr>
-                                        <td width="150px">
-                                          No Tanda Terima 
-                                        </td>
-                                        <td>
-                                          <input type='text' class='input-sm form-control notandaterima' readonly="" value="{{$data['tt'][0]->tt_noform}}">
-                                          <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td> Tanggal </td>
-                                        <td>
-                                           <div class="input-group date">
-                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="{{ Carbon\Carbon::parse($data['tt'][0]->tt_tgl)->format('d-M-Y ') }}" readonly="">
-                                          </div>
-                                        </td>
-                                      </tr>
-                                     
-                                      <tr>
-                                        <td> Supplier </td>
-                                        <td> <input type='text' class="form-control supplier_tt" value="{{$data['tt'][0]->nama_supplier}}" readonly=""></td>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td colspan="2">
-                                           <div class="row">
-                                              <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="Kwitansi" type="checkbox" checked="">
-                                                      <label for="Kwitansi">
-                                                          Kwitansi / Invoice / No
-                                                      </label>
-                                                </div> 
-                                              </div>
-                                              <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="FakturPajak" type="checkbox" checked="">
-                                                      <label for="FakturPajak">
-                                                          Faktur Pajak
-                                                      </label>
-                                                </div> 
-                                              </div>
-
-                                              <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="SuratPerananAsli" type="checkbox" checked="">
-                                                      <label for="SuratPerananAsli">
-                                                          Surat Peranan Asli
-                                                      </label>
-                                                </div> 
-                                              </div>
-
-                                               <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="SuratJalanAsli" type="checkbox" checked="">
-                                                      <label for="SuratJalanAsli">
-                                                         Surat Jalan Asli
-                                                      </label>
-                                                </div> 
-                                              </div>
-                                            </div>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>
-                                         Lain Lain
-                                        </td>
-                                        <td>
-                                        
-                                          <input type="text" class="form-control lainlain_tt" name="lainlain" value="{{$data['tt'][0]->tt_lainlain}}">
-                                        </td>
-                                      </tr>
-
-                                      <tr>
-                                        <td> Tanggal Kembali </td>
-                                        <td>   <div class="input-group date">
-                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" value="{{ Carbon\Carbon::parse($data['tt'][0]->tt_tglkembali)->format('d-M-Y ') }}">
-                                          </div> </td>
-                                      </tr>
-
-                                      <tr>
-                                        <td>
-                                         Total di Terima
-                                        </td>
-                                        <td> <div class="row"> <div class="col-sm-3"> <label class="col-sm-3 label-control"> Rp </label> </div> <div class="col-sm-9"> <input type="text" class="form-control totalterima_tt"  style="text-align:right;" readonly=""></div> </div> </td>
-                                      </tr>
-                                     
-                                       </table>                           
-                                               
-                                         </div>
+                                      <table class="table table-stripped tabel_tt" id="table_tt">
+                                         <thead>
+                                            <tr>
+                                                <th> No </th> <th> No Supplier </th> <th> Nota TT </th> <th> Tgl Kembali </th> <th> No Invoice </th> <th> Nominal </th> <th> Aksi </th>
+                                            </tr>
+                                         </thead>
+                                      </table>                                      
+                                    </div>
 
                                       <div class="modal-footer">
                                           <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-                                          <button type="button" class="btn btn-primary" id="buttonsimpan_tt">Simpan</button>
+                                          <button type="button" class="btn btn-primary " id="buttonsimpan_tt">
+                                            Simpan
+                                          </button>
                                          
                                       </div>
                                       
                                   </div>
                                 </div>
                              </div> 
+                    </form>
 
 
                  <!-- MODAL PO -->
@@ -596,7 +520,7 @@
 							<tr>
                                 <td width='150px'> Nama Item : </td>
                                 <td width="150px">
-                                <select class='form-control chosen-select-width item' name="nama_item" required="" id="item"> 
+                                <select class='form-control chosen-select-width1 item' name="nama_item" required="" id="item"> 
                                         <option value=""> -- Pilih Barang -- </option>
                                         <option value=""> -- Pilih Barang -- </option>                              
                                         <option value=""> -- Pilih Barang -- </option>                              
@@ -1571,34 +1495,70 @@
 
     })
 
-     $('#createmodal_tt').click(function(){
-
+    $('#createmodal_tt').click(function(){
       cabang = $('.cabang').val();
-      supplier = $('.idsup').val();
+      supplier = $('.idsup2').val();
       string = supplier.split(",");
+      edit = 'edit';
+      nofaktur = $('.nofaktur').val();
+      if(supplier == ''){
+          toastr.info("Mohon maaf supplier belum di pilih :)");
+          return false;
+      }
+       $.ajax({    
+            type :"post",
+            data : {cabang,supplier,edit,nofaktur},
+            url : baseUrl + '/fakturpembelian/getnotatt',
+            dataType:'json',
+            success : function(data){
+              console.log(data);
+                //console.log(data['tt'][0].tt_idform);
+                tableTT = $('#table_tt').DataTable();
+                tableTT.clear().draw();
+                nomor = 1;
+                for(i = 0; i < data['tt'].length; i++){
+                // alert('ha');
+                  var  html = "<tr> <td>"+nomor+"</td> <td>"+data['tt'][i].tt_supplier+"</td> <td>"+data['tt'][i].tt_noform+"</td> <td>"+data['tt'][i].tt_tglkembali+"</td> <td>"+data['tt'][i].ttd_invoice+"</td><td>"+addCommas(data['tt'][i].ttd_nominal)+"</td>";
 
-      tgl = $('.tgl').val();
-      jatuhtempo = $('.jatuhtempoitem').val();
-      nettohutang = $('.nettohutang_po').val();
+                  html += "<td><div class='checkbox'> <input type='checkbox' id="+data['tt'][i].tt_idform+","+data['tt'][i].ttd_detail+","+data['tt'][i].tt_noform+" class='check_tt' value='option1' aria-label='Single checkbox One'>" +
+                                      "<label></label>" +
+                                      "</div> </td>" +
+                                      "</tr>";              
+                    nomor++;
 
-     
-      $('.totalterima_tt').val(nettohutang);
-
+                  tableTT.rows.add($(html)).draw();
+                }
+            }
+        })
     })
 
       $('#buttonsimpan_tt').click(function(){
-      lainlain =   $('.lainlain_tt').val();
       notandaterima = $('.notandaterima').val();
-      if(lainlain == ''){
-        toastr.info('Kolom lain lain belum di isi');
+
+      var checked = $(".check_tt:checked").map(function(){
+        return this.id;
+      }).toArray();
+  //    alert(checked[0]);
+
+
+      if(checked[0] == undefined){
+        toastr.info("Tolong di check no tandaterima nya :)");
+        return false;
       }
       else {
-        if(notandaterima != '' || lainlain != ''){
-           $('.inputtandaterima').val('sukses');
+      //      alert(checked);
+            variablett = checked[0];
+            notatt = variablett.split(",");
+           // alert(notatt);
+            notandaterima = notatt[2];
+            //alert(notandaterima);
+      
+      
+            $('.datatandaterima').val(checked[0]);
+            $('.notandaterima').val(notandaterima);
+            $('#myModal_TT').modal("toggle" );
         }
-        $('.lainlain_tt2').val(lainlain);
-          $('#myModal_TT').modal("toggle" );;
-      } 
+ 
     })
 
        $.ajaxSetup({
@@ -1611,20 +1571,13 @@
      $('#updatefp').submit(function(event){
        // alert('sa');
         pajakmasukan = $('.inputfakturpajakmasukan').val();
-        tandaterima = $('.inputtandaterima').val();
+        tandaterima = $('.datatandaterima').val();
         inputppn = $('.inputppn').val();
         hasilppn = $('.hasilppn').val();
         tampilpo = $('.tampilpo').val();
         /*alert(tampilpo);
         alert(pajakmasukan);
         alert(tandaterima);*/
-        if(tampilpo == 'nope'){
-          toastr.info("Tidak ada perubahan yang dibuat :)");
-          return false;
-        }
-      
-        else{         
-
           event.preventDefault();
          // alert('test');
           var post_url2 = $(this).attr("action");
@@ -1662,7 +1615,7 @@
           }
         })
       });
-      }
+      
       return false;
       })
 

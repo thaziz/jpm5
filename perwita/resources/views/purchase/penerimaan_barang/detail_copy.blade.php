@@ -134,7 +134,7 @@
                       </tr>
                    
                         <tr >
-                          <th style="width:200px"> No FP </th>
+                          <th style="width:200px"> No FB </th>
                           <td style="width:400px"> {{$data['fp'][0]->fp_nofaktur}} </td>
                            
                         </tr>
@@ -633,9 +633,10 @@
 <script type="text/javascript">
     function lihatjurnal(id,note){
        $('.loading').css('display', 'block');
-         ref = id;
-         note = note;    
-
+         datasplit = id.split(",");
+         ref = datasplit[0];
+         note = datasplit[1];    
+        
         $.ajax({
           type : "get",
           url : baseUrl + '/penerimaanbarang/lihatjurnal',
@@ -644,6 +645,7 @@
           success : function(response){
               $('#jurnal').modal('show'); 
              $('.loading').css('display', 'none');
+            
                 $('.listjurnal').empty();
                 $totalDebit=0;
                 $totalKredit=0;
@@ -878,7 +880,7 @@
                             "<tr> <td> Diterima oleh </td> <td> : </td> <td>"+response.judul[j].pb_terimadari+"</td> </tr>" + //terimadari
                             "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_po+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_po+"> <i class='fa fa-trash'> </i>  Hapus </a> &nbsp;";
                               if(response.jurnal.length > 0){
-                        rowtampil += "<a class='btn btn-xs btn-primary' onclick=lihatjurnal('"+response.judul[j].pb_lpb+"','"+response.judul[j].pb_keterangan+"')> <i class='fa fa-book'> </i> Lihat Jurnal </a>";
+                        rowtampil += "<a class='btn btn-xs btn-primary' onclick=lihatjurnal('"+response.judul[j].pb_lpb+','+response.judul[j].pb_keterangan+"')> <i class='fa fa-book'> </i> Lihat Jurnal </a>";
 
                               }
                             rowtampil += "</td> </tr>" +
@@ -1066,7 +1068,7 @@
               }) // end edit
 
 
-                    $('.qtyreceive2').change(function(){
+                    $('.qtyreceive2').keyup(function(){
                       val = $(this).val();
                       id = $(this).data('id');
                       kodeitem = $(this).data('kodeitem');
@@ -1181,10 +1183,10 @@
 									"<tr> <td> Tgl di Terima </td> <td style='width:20px'> :</td> <td>"+ response.judul[j].pb_date + "</td>  </tr> " +
 									"<tr> <td> Status Penerimaan Barang </td> <td> </td> <td> "+response.judul[j].pb_status+" </div> </td> </tr>" +
                   "<tr> <td> Diterima oleh </td> <td> : </td> <td>"+response.judul[j].pb_terimadari+"</td> </tr>" +
-                  "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_fp+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_fp+"> <i class='fa fa-trash'> </i>  Hapus </a>  </td> <td> <a class='btn btn-xs btn-primary jurnal' onclick=lihatjurnal('"+response.judul[j].pb_lpb+"','"+response.judul[j].pb_keterangan+"')> Lihat Jurnal </a> </td> </tr>" +
+                  "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_fp+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_fp+"> <i class='fa fa-trash'> </i>  Hapus </a>  </td> <td> <a class='btn btn-xs btn-primary jurnal' onclick='lihatjurnal(\""+response.judul[j].pb_lpb+","+response.judul[j].pb_keterangan+"\")'> Lihat Jurnal </a> </td> </tr>" +
                   "<tr> <td> <div class='row'> <div class='col-sm-5'> <button class='btn btn-xs btn-default editdata' type='button' data-id="+$notable+" data-ajax="+$noajax+" style='color:red'> <i class='fa fa-pencil'> </i> Edit Data</button> </div> &nbsp; <div class='col-sm-5'> <div class='simpan2"+$notable+"'> </div> </div> </div> </td> </tr>" +
 									"</table>";
-						rowtampil += "<table class='table table-striped table-bordered' style='width:75%'> <tr> <th> No </th> <th> Nama Barang </th> <th> Satuan </th> <th> Harga Satuan </th> <th> Jumlah Harga </th> <th> Jumlah Dikirim </th> <th> Jumlah yang diterima </th> <th> No FP </th> </tr>"; // judul
+						rowtampil += "<table class='table table-striped table-bordered' style='width:75%'> <tr> <th> No </th> <th> Nama Barang </th> <th> Satuan </th> <th> Harga Satuan </th> <th> Jumlah Harga </th> <th> Jumlah Dikirim </th> <th> Jumlah yang diterima </th> <th> No FB </th> </tr>"; // judul
 
 						 for(var x =0; x < response.barang[j].length; x++) {
 						//  console.log(x);
@@ -1350,7 +1352,7 @@
 
               })
 
-              $('.qtyreceive2').change(function(){
+              $('.qtyreceive2').keyup(function(){
                       val = $(this).val();
                       id = $(this).data('id');
                       kodeitem = $(this).data('kodeitem');
@@ -1466,7 +1468,7 @@
                   "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_pbd+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_pbd+"> <i class='fa fa-trash'> </i>  Hapus </a>  </td> </tr>" +
                   "<tr> <td> <div class='row'> <div class='col-sm-5'> <button class='btn btn-xs btn-default editdata' type='button' data-id="+$notable+" data-ajax="+$noajax+" style='color:red'> <i class='fa fa-pencil'> </i> Edit Data</button> </div> &nbsp; <div class='col-sm-5'> <div class='simpan2"+$notable+"'> </div> </div> </div> </td> </tr>" +
                   "</table>";
-            rowtampil += "<table class='table table-striped table-bordered' style='width:75%'> <tr> <th> No </th> <th> Nama Barang </th> <th> Satuan </th> <th> Harga Satuan </th> <th> Jumlah Harga </th> <th> Jumlah Dikirim </th> <th> Jumlah yang diterima </th> <th> No FP </th> </tr>"; // judul
+            rowtampil += "<table class='table table-striped table-bordered' style='width:75%'> <tr> <th> No </th> <th> Nama Barang </th> <th> Satuan </th> <th> Harga Satuan </th> <th> Jumlah Harga </th> <th> Jumlah Dikirim </th> <th> Jumlah yang diterima </th> <th> No FB </th> </tr>"; // judul
 
              for(var x =0; x < response.barang[j].length; x++) {
             //  console.log(x);
@@ -1741,7 +1743,7 @@
     })
 
 
-    $('.qtyreceive').change(function(){
+    $('.qtyreceive').keyup(function(){
     
       val = $(this).val();
       id = $(this).data('id');

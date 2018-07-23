@@ -247,7 +247,6 @@
     }
 
      $('#formsave').submit(function(event){
-         
           event.preventDefault();
           var post_url2 = $(this).attr("action");
           var form_data2 = $(this).serialize();
