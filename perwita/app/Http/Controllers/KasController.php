@@ -201,7 +201,7 @@ class KasController extends Controller
 
 		for ($i=0; $i < count($request->resi_array); $i++) {
 
-			return$cari_resi = DB::table('delivery_order')
+			$cari_resi = DB::table('delivery_order')
 						   // ->where('pendapatan',$cari_persen->jenis_pendapatan)
 						   ->whereIn('nomor',$request->resi_array)
 						   ->orderBy('nomor','ASC')
