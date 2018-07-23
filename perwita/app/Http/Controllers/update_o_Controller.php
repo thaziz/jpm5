@@ -61,7 +61,7 @@ class update_o_Controller extends Controller
         
         $results = array();
         $queries = DB::table('delivery_order')
-            ->where('delivery_order.nomor', 'like', '%PAK%')
+            ->where('delivery_order.pendapatan','=','PAKET' )
             ->where('delivery_order.nomor', 'like', '%'.$term.'%')
             ->take(10)->get();
 
