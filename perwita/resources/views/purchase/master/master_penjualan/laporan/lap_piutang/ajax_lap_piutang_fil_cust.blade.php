@@ -21,9 +21,7 @@
                                   <td >Saldo Awal :</td>
                                   <td colspan="5" align="right"><input type="hidden" value="0" class="saldo saldo_{{ $in }}" name="">
                                     0</td>
-                              
-                              
-                        
+                  
                           </tr>
                           @for ($i = 0; $i <count($data) ; $i++)
                             @if ($customer[$in]->kode == $data[$i]->customer)
