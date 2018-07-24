@@ -91,7 +91,7 @@ class v_hutangController extends Controller
       $totalhutang = 0;
         
 
-        $anj = DB::table('v_hutang')->max('v_id');
+       $anj = DB::table('v_hutang')->max('v_id');
 
        if ($anj == '' ) {
          $anj=1;
@@ -148,7 +148,7 @@ class v_hutangController extends Controller
 
 
         $subacchutang = substr($request->accountid[$i], 0 , 4);
-        $datakun = DB::select("select * from d_akun where id_akun LIKE '$subacchutang%' and  kode_cabang = '$comp'");
+        $datakun = DB::select("select * from d_akun where id_akun LIKE '$subacchutang%' and kode_cabang = '$comp'");
         $acchutang = $datakun[0]->id_akun;
         $akundka = $datakun[0]->akun_dka;
 
