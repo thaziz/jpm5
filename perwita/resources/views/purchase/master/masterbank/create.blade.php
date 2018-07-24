@@ -72,13 +72,13 @@
                           <td> Pengajuan dari Cabang : </td>
                           <td> 
                             @if(Auth::user()->punyaAkses('Master Bank','cabang'))
-                            <select class="form-control  cabang" name="cabang">
+                            <select class="form-control cabang" name="cabang" required="">
                                 @foreach($data['cabang'] as $cabang)
                               <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                               @endforeach
                             </select>
                             @else
-                              <select class="form-control disabled cabang" name="cabang">
+                              <select class="form-control disabled cabang" name="cabang" required="">
                                 @foreach($data['cabang'] as $cabang)
                                 <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                                 @endforeach
