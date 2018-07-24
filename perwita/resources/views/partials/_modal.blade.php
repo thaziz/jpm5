@@ -175,7 +175,7 @@
                     <select class="form-control buku_besar select_bukbes_validate" name="akun1" id="akun1" style="width: 35%;">
 
                     </select>
-                    <small id="buku_besar_akun1_txt"> &nbsp;Pilih Cabang Dahulu</small>
+                    <br><small id="buku_besar_akun1_txt"> &nbsp;Pilih Cabang Dahulu</small>
                   </td>
                 </tr>
 
@@ -185,7 +185,7 @@
                     <select class="form-control buku_besar select_bukbes_validate" name="akun2" id="akun2" style="width: 35%;">
                       
                     </select>
-                    <small id="buku_besar_akun2_txt"> &nbsp;Pilih Cabang Dahulu</small>
+                    <br><small id="buku_besar_akun2_txt"> &nbsp;Pilih Cabang Dahulu</small>
                   </td>
                 </tr>
 
