@@ -930,8 +930,8 @@ class do_paketController extends Controller
       // DB::beginTransaction();
       // try {
 
-          return $cek_data = DB::table('delivery_order')->where('nomor','=',strtoupper($request->ed_nomor))->get();
-          if ($cek_data > 0 ) {
+          $cek_data_do = DB::table('delivery_order')->where('nomor','=',$request->do_nomor)->get();
+          if ($cek_data_do != null  ) {
               return response()->json(['status'=>1]);
           }
 
