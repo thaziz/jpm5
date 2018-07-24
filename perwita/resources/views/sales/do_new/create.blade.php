@@ -1326,7 +1326,7 @@ function hitung() {
                 }else if (data.status == 'gagal') {
                     toastr.error('Akun Piutang Pada Cabang Ini Belum Tersedia !','Peringatan !');
                 }else if (data.status == 1) {
-                    toastr.error('Data Telah Digunakan yg lain !','Peringatan !');
+                    toastr.error('Data Telah Digunakan !','Peringatan !');
                 }
                 else{
                     toastr.error('Gagal Tersimpan! WA developer segera','Peringatan !');

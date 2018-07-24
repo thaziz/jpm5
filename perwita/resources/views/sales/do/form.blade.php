@@ -3135,7 +3135,7 @@
             {
 
                  if(data.ada == 1){
-                    toastr.error('Data Telah Digunakan yg lain !','Peringatan !');
+                    toastr.error('Data Telah Digunakan !','Peringatan !');
                     return false;
                 }
 
@@ -3520,7 +3520,7 @@
             success: function(data, textStatus, jqXHR)
             {
                  if(data.ada == 1){
-                    toastr.error('Data Telah Digunakan yg lain !','Peringatan !');
+                    toastr.error('Data Telah Digunakan !','Peringatan !');
                     return false;
                 }
                  if(data.status == 'gagal'){
@@ -3908,7 +3908,7 @@
                     return false;
                 }
                 if(data.ada == 1){
-                    toastr.error('Data Telah Digunakan yg lain !','Peringatan !');
+                    toastr.error('Data Telah Digunakan !','Peringatan !');
                     return false;
                 }
                 if(data.crud == 'N'){
@@ -3974,7 +3974,7 @@
                     }
                 }else{
                     if(data.ada == 1){
-                    toastr.error('Data Telah Digunakan yg lain !','Peringatan !');
+                    toastr.error('Data Telah Digunakan !','Peringatan !');
                         return false;
                     }
 
