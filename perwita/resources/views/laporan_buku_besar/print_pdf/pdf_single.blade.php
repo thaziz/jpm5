@@ -224,10 +224,10 @@
 							<tr>
 				              <td></td>
 				              <td></td>
-				              <td style="padding-left: 50px;">Saldo Awal</td>
+				              <td style="padding-left: 50px; font-weight: 600;">Saldo Awal</td>
 				              <td style="padding-left: 3px;" class="money"></td>
 				              <td style="padding-left: 3px;" class="money"></td>
-				              <td style="padding-right: 3px;" class="money text-right">{{ number_format($saldo, 2) }}</td>
+				              <td style="padding-right: 3px; font-weight: 600;" class="money text-right">{{ number_format($saldo, 2) }}</td>
 				            </tr>
 
 							@foreach($grap as $data_grap)
