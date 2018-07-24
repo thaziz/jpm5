@@ -17,12 +17,26 @@
 
   #table_akun{
     width: 100%;
-    font-size: 0.9em;
+    font-size: 8pt;
   }
 
   #table_akun th{
     text-align: center;
     padding: 5px;
+    background: #eee;
+  }
+
+  #table_akun td{
+    border: 1px solid #eee;
+    padding: 5px;
+  }
+
+  #table_akun td.currency{
+    font-weight: 600;
+  }
+
+  #table_akun tfoot td{
+    padding: 10px;
   }
 
 </style>
@@ -31,10 +45,21 @@
   <form id="akun_form">
     <input type="hidden" readonly value="{{ csrf_token() }}" name="_token">
     
-  <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+  <div class="col-md-7" style="border: 0px solid #ddd; border-radius: 5px; padding: 10px;">
     <table border="0" id="form-table" class="col-md-12">
+
       <tr>
-        <td width="10%" class="text-left">Cabang</td>
+        <td width="20%" class="text-left">Jenis Transaksi</td>
+        <td colspan="2">
+          <select name="jenis_transaksi" class="select_validate form-control" id="jenis_transaksi" style="width: 40%">
+            <option value="kas_masuk">Kas Masuk</option>
+            <option value="kas_keluar">Kas Keluar</option>
+          </select>
+        </td>
+      </tr>
+
+      <tr>
+        <td width="20%" class="text-left">Transaksi Cabang</td>
         <td colspan="2">
           <select name="cabang" class="select_validate form-control chosen-select" id="cabang">
             @foreach($cabangs as $cab)
@@ -45,19 +70,30 @@
       </tr>
 
       <tr>
-        <td width="10%" class="text-left">Nama Transaksi</td>
-        <td width="35%" colspan="2">
-          <input type="text" class="form_validate form-control" name="jr_detail" placeholder="Masukkan Nama Transaksi" id="jr_detail">
-        </td>
-
-        <td width="15%" class="text-left">Tanggal Transaksi</td>
+        <td width="10%" class="text-left">Akun COA</td>
         <td colspan="2">
-          <input type="text" class="form_validate form-control text-center" name="jr_date" readonly id="jr_date" value="{{date("d-m-Y")}}" readonly>
+          <select name="nama_akun_kredit[]" class="select_validate form-control chosen-select akun">
+            <option value="---"> -- Pilih Akun Coa</option>
+          </select>
         </td>
       </tr>
 
       <tr>
-        <td width="10%" class="text-left" style="vertical-align: top;">Catatan</td>
+        <td width="10%" class="text-left">Nomor Transaksi</td>
+        <td width="35%" colspan="2">
+          <input type="text" class="form_validate form-control" name="jr_ref" placeholder="Masukkan Nomor Transaksi" id="jr_ref">
+        </td>
+      </tr>
+
+      <tr>
+        <td width="10%" class="text-left">Nama Transaksi</td>
+        <td width="35%" colspan="2">
+          <input type="text" class="form_validate form-control" name="jr_detail" placeholder="Masukkan Nama Transaksi" id="jr_detail">
+        </td>
+      </tr>
+
+      <tr>
+        <td width="10%" class="text-left" style="vertical-align: top; padding-top: 1em;">Catatan</td>
         <td colspan="2">
           <textarea name="jr_note" class="input-Validity upper form-control form_validate" style="resize: none;height: 100px;" placeholder="Masukkan Catatan Jurnal Disini"></textarea>
         </td>
@@ -66,18 +102,53 @@
     </table>
   </div>
 
-  <div class="col-md-12 m-t-lg" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
-      <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Form Isian Akun COA</small></span>
+  <div class="col-md-5" style="border: 0px solid #ddd; border-radius: 5px; padding: 10px; background: #eee;">
+    <table border="0" id="form-table" class="col-md-12">
 
-    <div id="saldo_all" class="text-center" style="padding: 10px 5px;">
-      <table id="table_akun" border="1">
+      <tr>
+        {{-- <td width="10%" class="text-left">Nama</td> --}}
+        <td width="35%" colspan="2">
+          <input type="text" class="form_validate form-control" name="jr_detail" placeholder="Masukkan Nama Transaksi" id="jr_detail">
+        </td>
+      </tr>
+
+    </table>
+  </div>
+
+  <div class="col-md-12 m-t" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+      <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Detail Akun COA</small></span>
+
+    <div id="saldo_all" style="padding: 10px 5px;">
+      <table id="table_akun" border="0">
         <thead>
           <tr>
-            <th width="55%">Akun COA</th>
-            <th>Debet</th>
-            <th>Kredit</th>
+            <th width="60%">Akun COA</th>
+            <th width="20%">Debet</th>
+            <th width="20%">Kredit</th>
           </tr>
         </thead>
+
+        <tbody>
+          <tr>
+            <td>100311001 - KAS BESAR JPM SURABAYA</td>
+            <td class="text-right currency">{{ number_format(25000000000, 2) }}</td>
+            <td class="text-right currency">{{ number_format(0, 2) }}</td>
+          </tr>
+
+          <tr>
+            <td>100211002 - BON SEMENTARA JPM JEMBER</td>
+            <td class="text-right currency">{{ number_format(0, 2) }}</td>
+            <td class="text-right currency">{{ number_format(25000000000, 2) }}</td>
+          </tr>
+        </tbody>
+
+        <tfoot>
+          <tr>
+            <td class="text-center" style="font-weight: bold; background: #eee;"> Total </td>
+            <td class=" text-right currency" style="background: #eee;"> {{ number_format(25000000000, 2) }} </td>
+            <td class=" text-right currency" style="background: #eee;"> {{ number_format(25000000000, 2) }} </td>
+          </tr>
+        </tfoot>
       </table>
     </div>
 

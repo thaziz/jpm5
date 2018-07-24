@@ -1416,12 +1416,9 @@
                     Request::is('keuangan/jurnal_umum/*') ? 'active' : ''
              /*======== END OF MASTER KEUANGAN OPERASIONAL ==============================*/
 
-
-                          
-
                         }}
                         ">
-                    <a href="#" ><i class="fa fa-suitcase" aria-hidden="true"></i><span class="nav-label">Operasional</span><span class="fa arrow"></span></a>
+                    <a href="#" ><i class="fa fa-suitcase" aria-hidden="true"></i><span class="nav-label">Transaksi</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         <!-- Operasional Penjualan -->
                         <li class="
