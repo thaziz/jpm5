@@ -258,40 +258,8 @@ class v_hutangController extends Controller
     return view('purchase/voucher_hutang/index',compact('data'));
     }
     public function createvoucherhutang() {
-      $data = DB::table('v_hutang')->get();
-      $sup = DB::select("select * from supplier where status ='SETUJU' and active = 'AKTIF' ");
-       $akunselect = DB::table('d_akun')->get();
-      //CREATE NOMER VOUCHER HUTANG
       
-  //  $newtime = date('Y-M-d H:i:s', $time);  
-    
-     $year = carbon::now()->format('y');
-     $month = carbon::now()->format('m');
-
-      
-
-         //select max dari um_id dari table d_uangmuka
-    $maxid = DB::Table('v_hutang')->select('v_id')->max('v_id');
-
-    //untuk +1 nilai yang ada,, jika kosong maka maxid = 1 , 
-    if ($maxid <= 0 || $maxid <= '') {
-      $maxid  = 1;
-    }else{
-      $maxid += 1;
-    }
-
-    //jika kurang dari 100 maka maxid mimiliki 00 didepannya
-    if ($maxid < 100) {
-      $maxid = '00'.$maxid;
-    }
-
-
-       $nofp = 'VC' . $month . $year . '/' . 'C001' . '/' .  $maxid;
-
-       $cabang = DB::select("select * from cabang");
-
-      $akun = DB::select("select * from d_akun");
-      return view('purchase/voucher_hutang/create',compact('akunselect','data','sup','nofp', 'akun', 'cabang'));
+      return view('purchase/voucher_hutang/create');
     }
     public function editvoucherhutang($v_id) {
        $data1= v_hutang::findOrfail($v_id);

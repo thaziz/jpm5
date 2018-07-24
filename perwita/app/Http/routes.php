@@ -430,7 +430,7 @@ Route::post('pending_subcon/save', 'pendingController@save_subcon');
 
 // VOucher hutang
 Route::get('voucherhutang/voucherhutang', 'v_hutangController@voucherhutang');
-Route::get('voucherhutang/createvoucherhutang', 'v_hutangController@createvoucherhutang1');
+Route::get('voucherhutang/createvoucherhutang', 'v_hutangController@createvoucherhutang');
 Route::get('voucherhutang/store1', 'v_hutangController@simpan');
 Route::get('voucherhutang/detailvoucherhutang/{v_id}', 'v_hutangController@detailvoucherhutang');
 Route::get('voucherhutang/editvoucherhutang/{v_id}', 'v_hutangController@editvoucherhutang');
