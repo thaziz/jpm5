@@ -3134,6 +3134,11 @@
             success: function(data, textStatus, jqXHR)
             {
 
+                 if(data.ada == 1){
+                    toastr.error('Data Telah Digunakan yg lain !','Peringatan !');
+                    return false;
+                }
+
                 if(data.status == 'gagal'){
                     alert(data.info);
                     return false;
@@ -3514,6 +3519,10 @@
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
             {
+                 if(data.ada == 1){
+                    toastr.error('Data Telah Digunakan yg lain !','Peringatan !');
+                    return false;
+                }
                  if(data.status == 'gagal'){
                     alert(data.info);
                     return false;
@@ -3889,12 +3898,17 @@
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
             {   
+
                 if(data.status == 'gagal'){
                     alert(data.info);
                     return false;
                 }
                 if(data.terpakai == 1){
                     alert('Nomor Do sudah terpakai. Data tidak bisa di edit');
+                    return false;
+                }
+                if(data.ada == 1){
+                    toastr.error('Data Telah Digunakan yg lain !','Peringatan !');
                     return false;
                 }
                 if(data.crud == 'N'){
@@ -3959,11 +3973,16 @@
                             });
                     }
                 }else{
+                    if(data.ada == 1){
+                    toastr.error('Data Telah Digunakan yg lain !','Peringatan !');
+                        return false;
+                    }
+
                     swal("Error","invalid order","error");
                 }
             },
             error: function(jqXHR, textStatus, errorThrown)
-            {
+            {   
                swal("Error!", textStatus, "error");
             }
         });

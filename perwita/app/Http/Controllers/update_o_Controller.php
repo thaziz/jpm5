@@ -142,8 +142,8 @@ class update_o_Controller extends Controller
 
 	}
 	public function store2(Request $request){
-				// dd($request);
-				// return $request->asw;
+				// dd($request->all());
+
         $increment = DB::table('u_s_order_do')->max('id');
                 if ($increment == 0) {
                     $increment = 1;
@@ -191,6 +191,63 @@ class update_o_Controller extends Controller
             );
         $simpan = DB::table('delivery_order')->where('nomor', $request->b[0]['value'])->update($update1);
        }
+
+
+       if ($request->b[1]['value'] == 'DELIVERED OK') {
+          
+          $data_do = DB::table('delivery_order')->where('nomor',$request->b[0]['value'])->get();
+
+          $cari_akun_vendor = DB::table('d_akun')->where('id_akun','like','4501%')->where('kode_cabang','=',$data_do[0]->kode_cabang)->get();
+          $cari_akun_titipan = DB::table('d_akun')->where('id_akun','like','2498%')->where('kode_cabang','=',$data_do[0]->kode_cabang)->get();
+          $cari_akun_own = DB::table('d_akun')->where('id_akun','like','4301%')->where('kode_cabang','=',$data_do[0]->kode_cabang)->get();
+
+          $max = DB::table('d_jurnal')->max('jr_id');
+            if ($max == null) {
+              $max = 1;
+            }else{
+              $max += 1;
+            }
+
+          $dt = Carbon::now();
+          
+
+          $simpan_utama = DB::table('d_jurnal')->insert([
+                              'jr_id'=>$max,
+                              'jr_year'=>$dt->year,
+                              'jr_date'=>$dt,
+                              'jr_detail'=>'DEVLIERY ORDER PAKET BALIK',
+                              'jr_ref'=>$request->b[0]['value'],
+                              'jr_note'=>'DEVLIERY ORDER PAKET BALIK',
+                              'jr_insert'=>$dt,
+                              'jr_update'=>$dt,
+                            ]);
+          $acc            = [  $cari_akun_titipan[0]->id_akun
+                              ,$cari_akun_vendor[0]->id_akun
+                              ,$cari_akun_own[0]->id_akun
+                            ];
+
+          $jrdt_status_dk = ['D','K','K'];
+
+          $jrdt_value     = [  $data_do[0]->total_net,
+                               $data_do[0]->total_vendo,
+                               $data_do[0]->total_dpp
+                             ];
+
+
+          for ($i=0; $i <count($acc) ; $i++) { 
+            if ($jrdt_value[$i] != 0) {
+              $simpan_detil = DB::table('d_jurnal_dt')->insert([
+                              'jrdt_jurnal'=>$max,
+                              'jrdt_detailid'=>$i+1,
+                              'jrdt_value'=>$jrdt_value[$i],
+                              'jrdt_acc'=>$acc[$i],
+                              'jrdt_statusdk'=>$jrdt_status_dk[$i],
+                            ]);
+            }
+          }
+          
+          
+        }
    
    
    
