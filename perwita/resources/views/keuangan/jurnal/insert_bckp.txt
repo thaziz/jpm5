@@ -14,17 +14,6 @@
     width: 90%;
     font-size: 8pt;
   }
-
-  #table_akun{
-    width: 100%;
-    font-size: 0.9em;
-  }
-
-  #table_akun th{
-    text-align: center;
-    padding: 5px;
-  }
-
 </style>
 
 <div class="row">
@@ -70,16 +59,92 @@
       <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Form Isian Akun COA</small></span>
 
     <div id="saldo_all" class="text-center" style="padding: 10px 5px;">
-      <table id="table_akun" border="1">
-        <thead>
-          <tr>
-            <th width="55%">Akun COA</th>
-            <th>Debet</th>
-            <th>Kredit</th>
-          </tr>
-        </thead>
-      </table>
+
+      <div class="col-md-6" style="padding: 0px; padding-right: 8px;">
+        <table border="0" id="form-table" class="col-md-12">
+          <tbody>
+            <tr>
+              <td colspan="3" style="background: #0099CC; border: 1px solid white; color: white;">
+                <strong>
+
+                  <span class="pull-left" style="padding-left: 10px; cursor: pointer;">
+                    <i class="fa fa-plus add_row" data-table="debet"></i>
+                  </span>
+
+                  Debet 
+                </strong>
+              </td>
+            </tr>
+
+            <tr>
+              <td width="65%" class="text-left">
+                <select name="nama_akun_debet[]" class="select_validate form-control chosen-select akun">
+                  <option value="---"> -- Pilih Akun Coa</option>
+
+                </select>
+              </td>
+
+              <td width="100%" class="text-left" style="padding-right: 0px;">
+                <div class="input-group" style="padding: 0px;">
+                  <input type="text" name="debet[]" value="0" class="currency debet form-control text-right" style="width: 100%">
+                  <span class="input-group-btn">
+                    <button class="btn btn-danger delete_row" type="button" style="padding: 6px 6px 5px 6px;font-size: 8pt;" data-id="debet"><i class="fa fa-eraser"></i></button>
+                  </span>
+                </div><!-- /input-group -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col-md-6" style="padding: 0px; padding-left: 8px;">
+        <table border="0" id="form-table" class="col-md-12">
+          <tbody>
+            <tr>
+              <td colspan="3" style="background: #0099CC; border: 1px solid white; color: white;">
+                <strong>
+
+                  <span class="pull-left" style="padding-left: 10px; cursor: pointer;">
+                    <i class="fa fa-plus add_row" data-table="kredit"></i>
+                  </span>
+
+                  Kredit 
+                </strong>
+              </td>
+            </tr>
+
+            <tr>
+              <td width="65%" class="text-left">
+                <select name="nama_akun_kredit[]" class="select_validate form-control chosen-select akun">
+                  <option value="---"> -- Pilih Akun Coa</option>
+
+                </select>
+              </td>
+
+              <td width="100%" class="text-left" style="padding-right: 0px;">
+                <div class="input-group" style="padding: 0px;">
+                  <input type="text" name="kredit[]" value="0" class="currency kredit form-control text-right" style="width: 100%">
+                  <span class="input-group-btn">
+                    <button class="btn btn-danger delete_row" type="button" style="padding: 6px 6px 5px 6px;font-size: 8pt;" data-id="kredit"><i class="fa fa-eraser"></i></button>
+                  </span>
+                </div><!-- /input-group -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
+  </div>
+
+  <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 0px; padding: 10px; margin-top: 5px; border-top: 0px;">
+      <div class="col-md-6">
+        <input type="text" readonly class="form-control currency text-center" style="font-size: 8pt;" name="total_debet" id="total_debet">
+      </div>
+
+      <div class="col-md-6">
+        <input type="text" readonly class="form-control currency text-center" style="font-size: 8pt;" name="total_kredit" id="total_kredit">
+      </div>
 
   </div>
 

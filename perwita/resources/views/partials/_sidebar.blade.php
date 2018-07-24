@@ -2185,17 +2185,17 @@
                             <ul class="nav nav-third-level" style="font-size:85%">
 
                             @if(Auth::user()->PunyaAkses('Ikhtisar Kas','aktif'))
-                            <li >
+                            {{-- <li>
                             <a class="sidebar master-perusahaan {{Request::is('keuangan/penerimaan') ? 'active' : '' || 
                         Request::is('keuangan/penerimaan/*') ? 'active' : ''}}" href="{{ url('keuangan/penerimaan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Penerimaan </a>
-                            </li>
+                            </li> --}}
                             @endif
                             @if(Auth::user()->PunyaAkses('Ikhtisar Kas','aktif'))
 
-                                <li >
+                                {{-- <li >
                                     <a class="sidebar master-perusahaan {{Request::is('keuangan/pengeluaran') ? 'active' : '' || 
                             Request::is('keuangan/pengeluaran/*') ? 'active' : ''}}" href="{{ url('keuangan/pengeluaran   ')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pengeluaran </a>
-                                </li>
+                                </li> --}}
 
                             @endif
                             @if(Auth::user()->PunyaAkses('Jurnal Umum','aktif'))
