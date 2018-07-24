@@ -42,11 +42,12 @@ class d_jurnal_controller extends Controller
     }
 
     public function add(){
+
     	$cabangs = DB::table('cabang')->select("kode", "nama")->get();
         $cabang = DB::table('cabang')->select("kode")->first();
-
         $akun = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->get();
-    	return view("keuangan.jurnal.insert")
+
+        return view("keuangan.jurnal.insert")
     			->withCabangs($cabangs)
                 ->withCabang($cabang)
                 ->withAkun(json_encode($akun));
