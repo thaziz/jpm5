@@ -3166,6 +3166,8 @@ public function purchase_order() {
 								);
 							}
 							array_push($datajurnal, $dataakun );
+
+							$totalhutang = floatval($totalhutang) + floatval($hasilppn);
 						}		
 					}
 
@@ -3206,6 +3208,7 @@ public function purchase_order() {
 								);
 							}
 							array_push($datajurnal, $dataakun );
+							$totalhutang = floatval($totalhutang) - floatval($hasilpph);
 						}
 				}
 
@@ -3689,7 +3692,7 @@ public function purchase_order() {
 
 		$data['status'] = [];
 		if($flag == 'PO'){
-		$data['header'] = DB::select("select * from barang_terima , supplier where bt_id = '$id' and bt_supplier = idsup");
+		$data['header'] = DB::select("select * from barang_terima , supplier, mastergudang where bt_id = '$id' and bt_supplier = idsup and bt_gudang = mg_id");
 
 		$data['cabang'] = DB::select("select * from cabang");
 		
@@ -3760,7 +3763,7 @@ public function purchase_order() {
 		
 			$data['cabang'] = DB::select("select * from cabang");
 		
-			$data['header'] = DB::select("select * from barang_terima , supplier where bt_id = '$id' and bt_supplier = idsup");
+			$data['header'] = DB::select("select * from barang_terima , supplier, mastergudang where bt_id = '$id' and bt_supplier = idsup and bt_gudang = mg_id");
 
 			$idgudang = $data['header'][0]->bt_gudang;
 
@@ -3828,7 +3831,7 @@ public function purchase_order() {
 
 			$data['cabang'] = DB::select("select * from cabang");
 		
-			$data['header'] = DB::select("select * from barang_terima , cabang where bt_id = '$id' and bt_agen = kode");
+			$data['header'] = DB::select("select * from barang_terima , cabang, gudang where bt_id = '$id' and bt_agen = kode and bt_gudang = mg_id");
 
 			$idgudang = $data['header'][0]->bt_gudang;
 
@@ -3896,7 +3899,7 @@ public function purchase_order() {
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$id')")); 
 		
-		//dd($data);
+	/*	dd($data);*/
 		return view('purchase/penerimaan_barang/detail_copy', compact('data','jurnal_dt'));
 			
 	}

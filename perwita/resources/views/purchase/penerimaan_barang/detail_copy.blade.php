@@ -75,7 +75,10 @@
                     @if($data['flag'] == 'FP') <!-- FP -->
                     <input type="hidden" class="flag" value="FP" name="flag">
                     <table border="0" class="table">
-                    
+                      <tr>
+                        <th> Gudang </th>
+                        <td> {{$data['header'][0]->mg_namagudang}} </td>
+                      </tr>
                      <tr>
                         <input type="hidden" name="idfp" value="{{$data['fp'][0]->fp_idfaktur}}" class="idfp">
                         <input type="hidden" name="idsup" value="{{$data['fp'][0]->fp_idsup}}">
@@ -252,6 +255,11 @@
                     <table border="0" class="table">
 
                   <input type="hidden" class="flag" value="PO" name="flag">
+                      <tr>
+                        <th> Gudang </th>
+                        <th> {{$data['header'][0]->mg_namagudang}} </th>
+                      </tr>
+
                       <tr>
                         <th style="width:200px"> Supplier </th>
                         <td style="width:400px"> <h3> {{$data['po'][0]->nama_supplier}} </h3> </td>
@@ -430,7 +438,10 @@
           @else <!-- PENGELUARAN BARANG -->
            <input type="hidden" class="flag" value="PBG" name="flag">
                     <table border="0" class="table">
-                    
+                    <tr>
+                      <th> Gudang </th>
+                      <td> {{$data['header'][0]->mg_namagudang}} </td>
+                    </tr>
                      <tr>
                         <input type="hidden" name="idpbg" value="{{$data['pbg'][0]->pb_id}}" class="idpbg">
                         <input type="hidden" name="idsup" value="{{$data['pbg'][0]->pb_comp}}">
@@ -880,7 +891,7 @@
                             "<tr> <td> Diterima oleh </td> <td> : </td> <td>"+response.judul[j].pb_terimadari+"</td> </tr>" + //terimadari
                             "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_po+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_po+"> <i class='fa fa-trash'> </i>  Hapus </a> &nbsp;";
                               if(response.jurnal.length > 0){
-                        rowtampil += "<a class='btn btn-xs btn-primary' onclick=lihatjurnal('"+response.judul[j].pb_lpb+','+response.judul[j].pb_keterangan+"')> <i class='fa fa-book'> </i> Lihat Jurnal </a>";
+                        rowtampil += "<a class='btn btn-xs btn-primary' onclick='lihatjurnal(\""+response.judul[j].pb_lpb+","+response.judul[j].pb_keterangan+"\")'> <i class='fa fa-book'> </i> Lihat Jurnal </a>";
 
                               }
                             rowtampil += "</td> </tr>" +
