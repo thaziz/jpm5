@@ -1051,7 +1051,8 @@
 
 
                                           <!-- TT -->
-                                           <input type='text' name='lainlain_tt2' class='lainlain_tt2'><!-- 
+                                           <!-- <input type='text' name='lainlain_tt2' class='lainlain_tt2'> -->
+                                           <!-- 
                                            <input type='hidden' name='notandaterima2' class='notandaterima2'> -->
 
                                         
