@@ -194,12 +194,33 @@ class update_o_Controller extends Controller
 
 
        if ($request->b[1]['value'] == 'DELIVERED OK') {
-          
           $data_do = DB::table('delivery_order')->where('nomor',$request->b[0]['value'])->get();
+
+          
+
+          $tarif_vendor   = filter_var($data_do[0]->total_vendo, FILTER_SANITIZE_NUMBER_FLOAT);
+          $tarif_own      = filter_var($data_do[0]->total_dpp, FILTER_SANITIZE_NUMBER_FLOAT);
+
+          $tarif_ppn = (1/101*((float)$tarif_vendor+$tarif_own));
+
+          $total_tarif    = $tarif_vendor + $tarif_own;
+
+          $hitung_vendor  = (float)$tarif_ppn/$total_tarif*$tarif_vendor;
+          $hitung_own     = (float)$tarif_ppn/$total_tarif*$tarif_own;
+
+          $hitung_ppn     = $hitung_vendor+$hitung_own;
+          $hitung_vendor_jurnal = round($tarif_vendor-$hitung_vendor,2);
+          $hitung_own_jurnal = round($tarif_own-$hitung_own,2);
+          $hitung_total   = round($hitung_ppn+$hitung_vendor_jurnal+$hitung_own_jurnal);
+
 
           $cari_akun_vendor = DB::table('d_akun')->where('id_akun','like','4501%')->where('kode_cabang','=',$data_do[0]->kode_cabang)->get();
           $cari_akun_titipan = DB::table('d_akun')->where('id_akun','like','2498%')->where('kode_cabang','=',$data_do[0]->kode_cabang)->get();
           $cari_akun_own = DB::table('d_akun')->where('id_akun','like','4301%')->where('kode_cabang','=',$data_do[0]->kode_cabang)->get();
+          $cari_akun_ppn  = DB::table('d_akun')->where('id_akun','like','2301%')->where('kode_cabang','=',$data_do[0]->kode_cabang)->get();
+
+
+          $ppn_2dec = number_format((float)$hitung_ppn, 2, '.', '');
 
           $max = DB::table('d_jurnal')->max('jr_id');
             if ($max == null) {
@@ -224,13 +245,15 @@ class update_o_Controller extends Controller
           $acc            = [  $cari_akun_titipan[0]->id_akun
                               ,$cari_akun_vendor[0]->id_akun
                               ,$cari_akun_own[0]->id_akun
+                              ,$cari_akun_ppn[0]->id_akun
                             ];
 
-          $jrdt_status_dk = ['D','K','K'];
+          $jrdt_status_dk = ['D','K','K','K'];
 
           $jrdt_value     = [  $data_do[0]->total_net,
                                $data_do[0]->total_vendo,
-                               $data_do[0]->total_dpp
+                               $data_do[0]->total_dpp,
+                               $ppn_2dec,
                              ];
 
 

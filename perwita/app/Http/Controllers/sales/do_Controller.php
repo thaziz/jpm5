@@ -169,7 +169,7 @@ class do_Controller extends Controller
         $totaltotal = $a+$b;
 
         $cek_data = DB::table('delivery_order')->where('nomor','=',$request->ed_nomor)->get();
-        if ($cek_data != null ) {
+        if ($cek_data != null &&  $request->crud_h != 'E') {
             return response()->json(['ada'=>1]);
         }
 

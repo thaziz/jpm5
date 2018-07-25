@@ -989,7 +989,7 @@ class do_paketController extends Controller
               $cus_kon_dt = $request->kontrak_cus_dt;
           }
 
-          if ($request->do_jenis_ppn == 2) {
+          if ($request->do_jenis_ppn == 2 ) {
               $ppn_value = $request->do_jml_ppn;
               $ppn_bol = true;
           }else{
@@ -1102,7 +1102,7 @@ class do_paketController extends Controller
           $hitung_total   = round($hitung_ppn+$hitung_vendor_jurnal+$hitung_own_jurnal);
 
           $cari_akun      = DB::table('d_akun')->where('id_akun','like','1003%')->where('kode_cabang','=',$cabang)->get();
-          $cari_akun_ppn  = DB::table('d_akun')->where('id_akun','like','2301%')->where('kode_cabang','=',$cabang)->get();
+          // $cari_akun_ppn  = DB::table('d_akun')->where('id_akun','like','2301%')->where('kode_cabang','=',$cabang)->get();
           $cari_akun_vendor = DB::table('d_akun')->where('id_akun','like','4501%')->where('kode_cabang','=',$cabang)->get();
           $cari_akun_titipan = DB::table('d_akun')->where('id_akun','like','2498%')->where('kode_cabang','=',$cabang)->get();
 
@@ -1126,15 +1126,15 @@ class do_paketController extends Controller
                               'jr_update'=>$dt,
                             ]);
           $acc            = [  $cari_akun[0]->id_akun
-                              ,$cari_akun_ppn[0]->id_akun
+                              // ,$cari_akun_ppn[0]->id_akun
                               ,$cari_akun_vendor[0]->id_akun
                               ,$cari_akun_titipan[0]->id_akun
                             ];
 
-          $jrdt_status_dk = ['D','K','K','K'];
+          $jrdt_status_dk = ['D','K','K'];
 
           $jrdt_value     = [  $total_tarif,
-                               $hitung_ppn,
+                               // $hitung_ppn,
                                $hitung_vendor_jurnal,
                                $hitung_own_jurnal
                              ];
