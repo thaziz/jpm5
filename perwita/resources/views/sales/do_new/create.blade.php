@@ -734,9 +734,9 @@ $('.radio-inline').click(function() {
         var alamat = $(this).find(':selected').data('alamat');
         var name = $(this).find(':selected').data('name');
         var telpon = $(this).find(':selected').data('telpon');
-        $("input[name='do_nama_pengirim']").val(alamat);
+        $("input[name='do_nama_pengirim']").val(name);
         $("input[name='nama_customer_hidden']").val(name);
-        $("input[name='do_alamat_pengirim']").val(name);
+        $("input[name='do_alamat_pengirim']").val(alamat);
         $("input[name='do_telpon_pengirim']").val(telpon);
 
     })
