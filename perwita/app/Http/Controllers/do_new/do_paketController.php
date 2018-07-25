@@ -989,7 +989,7 @@ class do_paketController extends Controller
               $cus_kon_dt = $request->kontrak_cus_dt;
           }
 
-          if ($request->do_jenis_ppn == 2) {
+          if ($request->do_jenis_ppn == 2 ) {
               $ppn_value = $request->do_jml_ppn;
               $ppn_bol = true;
           }else{
@@ -1102,7 +1102,7 @@ class do_paketController extends Controller
           $hitung_total   = round($hitung_ppn+$hitung_vendor_jurnal+$hitung_own_jurnal);
 
           $cari_akun      = DB::table('d_akun')->where('id_akun','like','1003%')->where('kode_cabang','=',$cabang)->get();
-          $cari_akun_ppn  = DB::table('d_akun')->where('id_akun','like','2301%')->where('kode_cabang','=',$cabang)->get();
+          // $cari_akun_ppn  = DB::table('d_akun')->where('id_akun','like','2301%')->where('kode_cabang','=',$cabang)->get();
           $cari_akun_vendor = DB::table('d_akun')->where('id_akun','like','4501%')->where('kode_cabang','=',$cabang)->get();
           $cari_akun_titipan = DB::table('d_akun')->where('id_akun','like','2498%')->where('kode_cabang','=',$cabang)->get();
 
@@ -1122,21 +1122,21 @@ class do_paketController extends Controller
                               'jr_detail'=>'DEVLIERY ORDER PAKET',
                               'jr_ref'=>$request->do_nomor,
                               'jr_note'=>'DEVLIERY ORDER PAKET',
-                              'jr_insert'=>$dt,
+                              'jr_insert'=>$request->do_tanggal,
                               'jr_update'=>$dt,
                             ]);
           $acc            = [  $cari_akun[0]->id_akun
-                              ,$cari_akun_ppn[0]->id_akun
-                              ,$cari_akun_vendor[0]->id_akun
+                              // ,$cari_akun_ppn[0]->id_akun
+                              // ,$cari_akun_vendor[0]->id_akun
                               ,$cari_akun_titipan[0]->id_akun
                             ];
 
-          $jrdt_status_dk = ['D','K','K','K'];
+          $jrdt_status_dk = ['D','K'];
 
           $jrdt_value     = [  $total_tarif,
-                               $hitung_ppn,
-                               $hitung_vendor_jurnal,
-                               $hitung_own_jurnal
+                               // $hitung_ppn,
+                               // $tarif_vendor,
+                               $total_tarif
                              ];
 
 
@@ -1387,6 +1387,41 @@ class do_paketController extends Controller
         $nilai = str_replace(',', '.', $nilai);
         return (float)$nilai;
 
+    }
+
+//LIHAT JURNAL AWAL
+    public function jurnal_awal_deliveryorder_paket(Request $request)
+    {
+        $data = DB::table('d_jurnal')
+                  ->select('jr_ref','jrdt_acc','nama_akun','jrdt_statusdk','jrdt_value')
+                  ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
+                  ->join('d_akun','jrdt_acc','=','id_akun')
+                  ->where('jr_ref','=',$request->id)
+                  ->where('jr_note','DEVLIERY ORDER PAKET')
+                  ->get();
+
+        if ($data == null) {
+          return response()->json(['status'=>'kosong']);
+        }else{
+          return view('sales.do_new.modal_jurnal_awal_do', compact('data'));
+        }
+    }
+//LIHAT JURNAL BALIK 
+    public function jurnal_balik_deliveryorder_paket(Request $request)
+    {
+        $data = DB::table('d_jurnal')
+                  ->select('jr_ref','jrdt_acc','jrdt_statusdk','nama_akun','jrdt_value')
+                  ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
+                  ->join('d_akun','jrdt_acc','=','id_akun')
+                  ->where('jr_ref','=',$request->id)
+                  ->where('jr_note','DEVLIERY ORDER PAKET BALIK')
+                  ->get();
+
+        if ($data == null) {
+          return response()->json(['status'=>'kosong']);
+        }else{
+          return view('sales.do_new.modal_jurnal_balik_do', compact('data'));
+        }
     }
 
 
