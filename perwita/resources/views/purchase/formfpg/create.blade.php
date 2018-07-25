@@ -104,7 +104,7 @@
                               <th> Cabang </th>
                               <td>
                                    @if(Auth::user()->punyaAkses('Form Permintaan Giro','cabang'))
-                                <select class="form-control chosen-select-width  cabang" name="cabang">
+                                <select class="form-control chosen-select-width cabang" name="cabang">
                                     @foreach($data['cabang'] as $cabang)
                                   <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->kode}} - {{$cabang->nama}} </option>
                                   @endforeach
@@ -2172,7 +2172,9 @@
                         } 
                     }
                     else if(idjenis == '1'){
-                       $('.jenisbayar2').empty();  
+                        $('.jenisbayar2').attr('disabled' , true);
+
+                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Cabang  </option>"); 
                        for(var j=0; j<response.length; j++){                                    
                          $('.jenisbayar2').append("<option value='"+response[j].nama+","+response[j].kode+"'>"+response[j].kode+" - "+response[j].nama+"</option>");
@@ -2181,9 +2183,8 @@
                         } 
 
                         cabang = $('.cabang').val();
+                       
                         $('.jenisbayar2').val(cabang);
-                        $('.jenisbayar2').trigger("liszt:updated");
-                        $('.jenisbayar2').trigger("chosen:updated");
 
 
                        // alert(cabang);
