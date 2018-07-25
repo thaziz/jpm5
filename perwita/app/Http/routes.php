@@ -1488,6 +1488,10 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller
   Route::get('sales/deliveryorder_paket/{nomor}/edit_deliveryorder_paket', 'do_new\do_paketController@edit_deliveryorder_paket')->name('edit_deliveryorder_paket');
       //update
       Route::get('sales/deliveryorder_paket/update_deliveryorder_paket', 'do_new\do_paketController@update_deliveryorder_paket')->name('update_deliveryorder_paket');
+      //jurnal awal
+      Route::get('sales/deliveryorder_paket/jurnal_awal_deliveryorder_paket', 'do_new\do_paketController@jurnal_awal_deliveryorder_paket')->name('jurnal_awal_deliveryorder_paket');
+      //jurnal balik
+      Route::get('sales/deliveryorder_paket/jurnal_balik_deliveryorder_paket', 'do_new\do_paketController@jurnal_balik_deliveryorder_paket')->name('jurnal_balik_deliveryorder_paket');
 
 //end of do baru
 
@@ -1611,6 +1615,20 @@ Route::get('sales/datatable_invoice1', 'sales\invoice_Controller@datatable_invoi
 Route::get('sales/invoice/jurnal', 'sales\invoice_Controller@jurnal1');
 Route::get('sales/cari_faktur_pajak', 'sales\invoice_Controller@cari_faktur_pajak');
 // end invoice
+//FORM TANDA TERIMA PENJUALAN
+Route::get('sales/form_tanda_terima_penjualan/index', 'form_tanda_terima_penjualan_controller@index');
+Route::get('sales/form_tanda_terima_penjualan/create', 'form_tanda_terima_penjualan_controller@create');
+Route::get('sales/form_tanda_terima_penjualan/save', 'form_tanda_terima_penjualan_controller@save');
+Route::get('sales/form_tanda_terima_penjualan/update', 'form_tanda_terima_penjualan_controller@update');
+Route::get('sales/form_tanda_terima_penjualan/edit/{id}', 'form_tanda_terima_penjualan_controller@edit');
+Route::get('sales/form_tanda_terima_penjualan/delete', 'form_tanda_terima_penjualan_controller@delete');
+Route::get('sales/form_tanda_terima_penjualan/datatable', 'form_tanda_terima_penjualan_controller@datatable')->name('tt_penjualan');
+Route::get('sales/form_tanda_terima_penjualan/ganti_jt', 'form_tanda_terima_penjualan_controller@ganti_jt')->name('ganti_jt');
+Route::get('sales/form_tanda_terima_penjualan/cari_invoice', 'form_tanda_terima_penjualan_controller@cari_invoice')->name('cari_invoice');
+Route::get('sales/form_tanda_terima_penjualan/append_invoice', 'form_tanda_terima_penjualan_controller@append_invoice')->name('append_invoice');
+
+
+
 // invoice pembetulan
 Route::get('sales/invoice_pembetulan', 'sales\invoice_pembetulan_controller@index');
 Route::get('sales/invoice_pembetulan_create', 'sales\invoice_pembetulan_controller@invoice_pembetulan_create');

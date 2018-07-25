@@ -39,10 +39,10 @@ class pembayaran_vendor_controller extends Controller
     	}
     	$data = DB::table("delivery_order")
     			  ->leftjoin('biaya_penerus_dt','nomor','=','bpd_pod')
-    			  ->where('kode_cabang',$req->cabang)
-    			  ->where('id_tarif_vendor',$req->nama_vendor)
-    			  ->where('bpd_pod',null)
-    			  ->whereNotIn('nomor',$valid)
+    			  // ->where('kode_cabang',$req->cabang)
+    			  // ->where('id_tarif_vendor',$req->nama_vendor)
+    			  // ->where('bpd_pod',null)
+    			  // ->whereNotIn('nomor',$valid)
     			  ->get();
 
     	

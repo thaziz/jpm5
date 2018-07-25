@@ -64,7 +64,7 @@
                 <a>Keuangan</a>
             </li>
             <li class="active">
-                <strong> Jurnal Transaksi  </strong>
+                <strong> Transaksi Kas </strong>
             </li>
 
         </ol>
@@ -80,14 +80,14 @@
                 <option value="2">Jurnal Detail</option>
                 <option value="3">Jurnal Referensi</option>
                 <option value="4">Jurnal Note</option>
-            </select>
+          </select>
         </td>
 
         <td width="18%">
           <select class="form-control" style="width:90%; height: 30px" id="yang">
               <option value="1">Yang Mengandung</option>
               <option value="2">Yang Berawalan</option>
-            </select>
+          </select>
         </td>
 
         <td width="15%" class="text-center">Kata Kunci : </td>
@@ -109,7 +109,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Data Jurnal Transaksi Cabang {{ $cabang->nama }} {{-- Periode {{ date_ind($_GET["date"]) }} {{ $_GET["year"] }} --}}
+                    <h5> Data Transaksi Kas Cabang {{ $cabang->nama }} {{-- Periode {{ date_ind($_GET["date"]) }} {{ $_GET["year"] }} --}}
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
@@ -121,7 +121,7 @@
                         </select> &nbsp;&nbsp;
 
                         <button class="btn btn-sm btn-primary tambahAkun" data-parrent="0" data-toggle="modal" data-target="#modal_tambah_akun">
-                          <i class="fa fa-plus"></i> &nbsp;Tambah Data Jurnal Transaksi
+                          <i class="fa fa-plus"></i> &nbsp;Tambah Data Transaksi Kas
                         </button>
                     </div>
                 </div>
@@ -172,11 +172,11 @@
 
  <!-- modal -->
 <div id="modal_tambah_akun" class="modal">
-  <div class="modal-dialog" style="width: 80%">
+  <div class="modal-dialog" style="width: 60%">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Form Tambah Data Jurnal Transaksi</h4>
+        <h4 class="modal-title">Form Tambah Data Transaksi Kas</h4>
         <input type="hidden" class="parrent"/>
       </div>
       <div class="modal-body">

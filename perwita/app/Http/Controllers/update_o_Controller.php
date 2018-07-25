@@ -142,8 +142,8 @@ class update_o_Controller extends Controller
 
 	}
 	public function store2(Request $request){
-				// dd($request);
-				// return $request->asw;
+				// dd($request->all());
+
         $increment = DB::table('u_s_order_do')->max('id');
                 if ($increment == 0) {
                     $increment = 1;
@@ -191,6 +191,86 @@ class update_o_Controller extends Controller
             );
         $simpan = DB::table('delivery_order')->where('nomor', $request->b[0]['value'])->update($update1);
        }
+
+        $data_do = DB::table('delivery_order')->join('customer','kode','=','kode_customer')->where('nomor',$request->b[0]['value'])->get();
+
+        if ($request->b[1]['value'] == 'DELIVERED OK' && $data_do[0]->nama == 'NON CUSTOMER' ) {
+
+          
+
+          $tarif_vendor   = filter_var($data_do[0]->total_vendo, FILTER_SANITIZE_NUMBER_FLOAT);
+          $tarif_own      = filter_var($data_do[0]->total_dpp, FILTER_SANITIZE_NUMBER_FLOAT);
+
+          $tarif_ppn = (1/101*((float)$tarif_vendor+$tarif_own));
+
+          $total_tarif    = $tarif_vendor + $tarif_own;
+
+          $hitung_vendor  = (float)$tarif_ppn/$total_tarif*$tarif_vendor;
+          $hitung_own     = (float)$tarif_ppn/$total_tarif*$tarif_own;
+
+          $hitung_ppn     = $hitung_vendor+$hitung_own;
+          $hitung_vendor_jurnal = round($tarif_vendor-$hitung_vendor,2);
+          $hitung_own_jurnal = round($tarif_own-$hitung_own,2);
+          $hitung_total   = round($hitung_ppn+$hitung_vendor_jurnal+$hitung_own_jurnal);
+
+
+          $cari_akun_vendor = DB::table('d_akun')->where('id_akun','like','4501%')->where('kode_cabang','=',$data_do[0]->kode_cabang)->get();
+          $cari_akun_titipan = DB::table('d_akun')->where('id_akun','like','2498%')->where('kode_cabang','=',$data_do[0]->kode_cabang)->get();
+          $cari_akun_own = DB::table('d_akun')->where('id_akun','like','4301%')->where('kode_cabang','=',$data_do[0]->kode_cabang)->get();
+          $cari_akun_ppn  = DB::table('d_akun')->where('id_akun','like','2301%')->where('kode_cabang','=',$data_do[0]->kode_cabang)->get();
+
+
+          $ppn_2dec = number_format((float)$hitung_ppn, 2, '.', '');
+
+          $max = DB::table('d_jurnal')->max('jr_id');
+            if ($max == null) {
+              $max = 1;
+            }else{
+              $max += 1;
+            }
+
+          $dt = Carbon::now();
+          
+
+          $simpan_utama = DB::table('d_jurnal')->insert([
+                              'jr_id'=>$max,
+                              'jr_year'=>$dt->year,
+                              'jr_date'=>$dt,
+                              'jr_detail'=>'DEVLIERY ORDER PAKET BALIK',
+                              'jr_ref'=>$request->b[0]['value'],
+                              'jr_note'=>'DEVLIERY ORDER PAKET BALIK',
+                              'jr_insert'=>$dt,
+                              'jr_update'=>$dt,
+                            ]);
+          $acc            = [  $cari_akun_titipan[0]->id_akun
+                              ,$cari_akun_vendor[0]->id_akun
+                              ,$cari_akun_own[0]->id_akun
+                              ,$cari_akun_ppn[0]->id_akun
+                            ];
+
+          $jrdt_status_dk = ['D','K','K','K'];
+
+          $jrdt_value     = [  $data_do[0]->total_net,
+                               $hitung_vendor_jurnal,
+                               $hitung_own_jurnal,
+                               $ppn_2dec,
+                             ];
+
+
+          for ($i=0; $i <count($acc) ; $i++) { 
+            if ($jrdt_value[$i] != 0) {
+              $simpan_detil = DB::table('d_jurnal_dt')->insert([
+                              'jrdt_jurnal'=>$max,
+                              'jrdt_detailid'=>$i+1,
+                              'jrdt_value'=>$jrdt_value[$i],
+                              'jrdt_acc'=>$acc[$i],
+                              'jrdt_statusdk'=>$jrdt_status_dk[$i],
+                            ]);
+            }
+          }
+          
+          
+        }
    
    
    

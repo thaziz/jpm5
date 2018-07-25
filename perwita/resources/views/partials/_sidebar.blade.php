@@ -1416,12 +1416,9 @@
                     Request::is('keuangan/jurnal_umum/*') ? 'active' : ''
              /*======== END OF MASTER KEUANGAN OPERASIONAL ==============================*/
 
-
-                          
-
                         }}
                         ">
-                    <a href="#" ><i class="fa fa-suitcase" aria-hidden="true"></i><span class="nav-label">Operasional</span><span class="fa arrow"></span></a>
+                    <a href="#" ><i class="fa fa-suitcase" aria-hidden="true"></i><span class="nav-label">Transaksi</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         <!-- Operasional Penjualan -->
                         <li class="
@@ -1480,7 +1477,7 @@
 
                                     {{
 
-                        
+                    Request::is('sales/form_tanda_terima_penjualan/*') ? 'active' : '' ||
                     Request::is('sales/deliveryorder') ? 'active' : '' || 
                             Request::is('sales/deliveryorder/*') ? 'active' : '' ||
                     Request::is('sales/deliveryorder_paket') ? 'active' : '' || 
@@ -1569,6 +1566,16 @@
                             Request::is('sales/invoice/*') ? 'active' : ''}} 
 
                             " href="{{ url('sales/invoice')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice </a>
+                            </li>
+                            @endif
+                            @if(Auth::user()->PunyaAkses('Form Tanda Terima Penjualan','aktif'))
+                            <li >
+                                <a class="sidebar master-perusahaan 
+
+                            {{Request::is('sales/form_tanda_terima_penjualan/index') ? 'active' : '' || 
+                            Request::is('sales/form_tanda_terima_penjualan/*') ? 'active' : ''}} 
+
+                            " href="{{ url('sales/form_tanda_terima_penjualan/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Tanda Terima Penjualan </a>
                             </li>
                             @endif
                             @if(Auth::user()->PunyaAkses('Invoice Pembetulan','aktif'))
@@ -2194,17 +2201,17 @@
                             <ul class="nav nav-third-level" style="font-size:85%">
 
                             @if(Auth::user()->PunyaAkses('Ikhtisar Kas','aktif'))
-                            <li >
+                            {{-- <li>
                             <a class="sidebar master-perusahaan {{Request::is('keuangan/penerimaan') ? 'active' : '' || 
                         Request::is('keuangan/penerimaan/*') ? 'active' : ''}}" href="{{ url('keuangan/penerimaan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Penerimaan </a>
-                            </li>
+                            </li> --}}
                             @endif
                             @if(Auth::user()->PunyaAkses('Ikhtisar Kas','aktif'))
 
-                                <li >
+                                {{-- <li >
                                     <a class="sidebar master-perusahaan {{Request::is('keuangan/pengeluaran') ? 'active' : '' || 
                             Request::is('keuangan/pengeluaran/*') ? 'active' : ''}}" href="{{ url('keuangan/pengeluaran   ')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pengeluaran </a>
-                                </li>
+                                </li> --}}
 
                             @endif
                             @if(Auth::user()->PunyaAkses('Jurnal Umum','aktif'))
