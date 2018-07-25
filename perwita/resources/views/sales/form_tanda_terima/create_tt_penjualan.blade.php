@@ -154,7 +154,7 @@
                       <tr>
                         <td colspan="5">
                           <button type="button" class="btn btn-primary add"><i class="fa fa-plus"> Tambah Invoice</i></button>
-                          <button type="button"  class="btn btn-success"><i class="fa fa-save simpan_form"> Save</i></button>
+                          <button type="button"  class="btn btn-success simpan_form"><i class="fa fa-save "> Save</i></button>
                           {{-- <button type="button"  class="btn btn-warning"><i class="fa fa-print "> </i></button> --}}
                         </td>
                       </tr>
@@ -307,9 +307,15 @@
         toastr.warning('Customer Harus Diisi');
         return false;
     }
+    $.ajaxSetup({
+      headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+      });
     $.ajax({
       url  : '{{ route('cari_invoice') }}',
       data : {customer,cabang,array_simpan,id},
+      type : 'post',
       success:function(data){
         $('.invoice_div').html(data);
         $('.right').css('text-align','right');
@@ -330,11 +336,16 @@
         array_invoice.push(nomor);
       }
     })
-
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
     $.ajax({
       url  : '{{ route('append_invoice') }}',
       data : {array_invoice},
       dataType:'json',
+      type : 'post',
       success:function(data){
 
         for (var i = 0; i < data.data.length; i++) {
@@ -391,7 +402,7 @@
         });
       $.ajax({
         url:baseUrl + '/sales/form_tanda_terima_penjualan/save',
-        type:'get',
+        type:'post',
         data:$('.form_header input').serialize()+'&'+table.$('input').serialize()+'&cabang='+cabang+'&customer='+customer,
         dataType:'json',
         success:function(data){

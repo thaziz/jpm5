@@ -1623,14 +1623,14 @@ Route::get('sales/cari_faktur_pajak', 'sales\invoice_Controller@cari_faktur_paja
 Route::get('sales/form_tanda_terima_penjualan/index', 'form_tanda_terima_penjualan_controller@index');
 Route::get('sales/form_tanda_terima_penjualan/nota', 'form_tanda_terima_penjualan_controller@nota');
 Route::get('sales/form_tanda_terima_penjualan/create', 'form_tanda_terima_penjualan_controller@create');
-Route::get('sales/form_tanda_terima_penjualan/save', 'form_tanda_terima_penjualan_controller@save');
-Route::get('sales/form_tanda_terima_penjualan/update', 'form_tanda_terima_penjualan_controller@update');
+Route::post('sales/form_tanda_terima_penjualan/save', 'form_tanda_terima_penjualan_controller@save');
+Route::post('sales/form_tanda_terima_penjualan/update', 'form_tanda_terima_penjualan_controller@update');
 Route::get('sales/form_tanda_terima_penjualan/edit/{id}', 'form_tanda_terima_penjualan_controller@edit');
 Route::get('sales/form_tanda_terima_penjualan/delete', 'form_tanda_terima_penjualan_controller@delete');
 Route::get('sales/form_tanda_terima_penjualan/datatable', 'form_tanda_terima_penjualan_controller@datatable')->name('tt_penjualan');
 Route::get('sales/form_tanda_terima_penjualan/ganti_jt', 'form_tanda_terima_penjualan_controller@ganti_jt')->name('ganti_jt');
-Route::get('sales/form_tanda_terima_penjualan/cari_invoice', 'form_tanda_terima_penjualan_controller@cari_invoice')->name('cari_invoice');
-Route::get('sales/form_tanda_terima_penjualan/append_invoice', 'form_tanda_terima_penjualan_controller@append_invoice')->name('append_invoice');
+Route::post('sales/form_tanda_terima_penjualan/cari_invoice', 'form_tanda_terima_penjualan_controller@cari_invoice')->name('cari_invoice');
+Route::post('sales/form_tanda_terima_penjualan/append_invoice', 'form_tanda_terima_penjualan_controller@append_invoice')->name('append_invoice');
 
 
 

@@ -89,8 +89,8 @@
                           </select>
                         </td>
                         <td width="150">Tanggal</td>
-                        <td width="300">
-                          <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
+                        <td width="300" class="disabled">
+                          <input type="text" readonly="" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
                         </td>
                       </tr>
                       <tr>
@@ -143,7 +143,7 @@
                       <tr>
                         <td colspan="5">
                           <button type="button" class="btn btn-primary add"><i class="fa fa-plus"> Tambah Invoice</i></button>
-                          <button type="button"  class="btn btn-success"><i class="fa fa-save simpan_form"> Save</i></button>
+                          <button type="button"  class="btn btn-success simpan_form" ><i class="fa fa-save "> Save</i></button>
                           {{-- <button type="button"  class="btn btn-warning"><i class="fa fa-print "> </i></button> --}}
                         </td>
                       </tr>
@@ -191,42 +191,7 @@
 @section('extra_scripts')
 <script type="text/javascript">
 var array_simpan = [0];
-$('.customer').change(function(){
-  var customer = $(this).val();
-  var tanggal = $('.tanggal').val();
-  $.ajax({
-    url  : '{{ route('ganti_jt') }}',
-    data : {customer,tanggal},
-    dataType:'json',
-    success:function(data){
-      $('.jatuh_tempo').val(data.tgl);
-    }
-  })
-})
-function nota() {
-  var cabang = $('.cabang').val();
-  var tanggal = $('.tanggal').val();
-  $.ajax({
-    url  : '{{ url('sales/form_tanda_terima_penjualan/nota') }}',
-    data : {cabang,tanggal},
-    dataType:'json',
-    success:function(data){
-      $('.nomor').val(data.nota);
-    }
-  })
-}
-$(document).ready(function(){
-  var cabang = $('.cabang').val();
-  var tanggal = $('.tanggal').val();
-  $.ajax({
-    url  : '{{ url('sales/form_tanda_terima_penjualan/nota') }}',
-    data : {cabang,tanggal},
-    dataType:'json',
-    success:function(data){
-      $('.nomor').val(data.nota);
-    }
-  })
-})
+
   var index = 1 ;
   var table = $('.table_tt').DataTable({
     searching:true,
@@ -294,9 +259,15 @@ $(document).ready(function(){
         toastr.warning('Customer Harus Diisi');
         return false;
     }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
     $.ajax({
       url  : '{{ route('cari_invoice') }}',
       data : {customer,cabang,array_simpan,id},
+      type : 'post',
       success:function(data){
         $('.invoice_div').html(data);
         $('.right').css('text-align','right');
@@ -317,11 +288,16 @@ $(document).ready(function(){
         array_invoice.push(nomor);
       }
     })
-
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
     $.ajax({
       url  : '{{ route('append_invoice') }}',
       data : {array_invoice},
       dataType:'json',
+      type : 'post',
       success:function(data){
 
         for (var i = 0; i < data.data.length; i++) {
@@ -337,7 +313,7 @@ $(document).ready(function(){
 
             '<div class=" btn-group">'+
             '<a class="btn btn-danger trash" onclick="trash(this)"><i class="fa fa-trash"></i></a>'+
-            '<input type="hidden" checked class="form-control" name="revisi[]" >'+
+            '<input type="hidden" value="on" class="form-control" name="revisi[]" >'+
             '</div>',
           ]).draw();
 
@@ -378,8 +354,8 @@ $(document).ready(function(){
             }
         });
       $.ajax({
-        url:baseUrl + '/sales/form_tanda_terima_penjualan/save',
-        type:'get',
+        url:baseUrl + '/sales/form_tanda_terima_penjualan/update',
+        type:'post',
         data:$('.form_header input').serialize()+'&'+table.$('input').serialize()+'&cabang='+cabang+'&customer='+customer,
         dataType:'json',
         success:function(data){
@@ -442,6 +418,11 @@ $.fn.serializeArray = function () {
     var tanggal_detil = '{{ Carbon\carbon::parse($val->ftd_tanggal_invoice)->format('d/m/Y') }}';
     var catatan       = '{{ $val->ftd_keterangan }}';
     var catatan       = '{{ $val->ftd_keterangan }}';
+    @if($val->ftd_status == 'APPROVED')
+      var aksi =  '<input type="checkbox" checked class="form-control" name="revisi[]" >';
+    @else
+      var aksi =  '<input type="checkbox" class="form-control disabled" name="revisi[]" >';
+    @endif
 
     table.row.add([
       '<p class="invoice_text">'+invoice+'</p>'+
@@ -454,7 +435,7 @@ $.fn.serializeArray = function () {
       '<input type="text" class="form-control" name="catatan[]" value="'+catatan+'" style="width:100%">',
 
       '<div class=" btn-group">'+
-      '<input type="checkbox" @if($val->ftd_status == 'APPROVED') checked @endif class="form-control" name="revisi[]" >'+
+      aksi+
       '</div>',
     ]).draw();
     $('.right').css('text-align','right');
