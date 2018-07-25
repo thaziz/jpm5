@@ -32,7 +32,9 @@ class laporan_buku_besar extends Controller
             $d1 = date_format(date_create($request->d1), "n-Y");
             $d2 = date_format(date_create($request->d2), "n-Y");
 
-            // return $d1." / ".$d2;
+            $b1 = date_format(date_create($request->d1), "m-Y"); $b2 = date_format(date_create($request->d2), "m-Y");
+
+            // return $b1." / ".$b2;
             // return $request->akun1." / ".$request->akun2;
 
             $time = DB::table('d_jurnal')
@@ -76,6 +78,8 @@ class laporan_buku_besar extends Controller
             $d1 = $request->y1;
             $d2 = $request->y2;
 
+            $b1 = $d1; $b2 = $d2;
+
             $time = DB::table('d_jurnal')
                     ->whereBetween(DB::raw("date_part('year', jr_date)"), [$d1, $d2])
                     ->select(DB::raw("distinct(date_part('year', jr_date)) as time"))->orderBy("time", "asc")->get();
@@ -105,14 +109,15 @@ class laporan_buku_besar extends Controller
         }
 
         // return json_encode($grap);
+        return view('laporan_buku_besar.print_pdf.pdf_single', compact('request', 'throttle', 'saldo_awal', 'data', 'grap', 'time', 'b1', 'b2'));
 
-    	$pdf = PDF::loadView('laporan_buku_besar.print_pdf.pdf_single', compact('request', 'throttle', 'saldo_awal', 'data', 'grap', 'time'))
-                  ->setPaper('folio','landscape');
+    	// $pdf = PDF::loadView('laporan_buku_besar.print_pdf.pdf_single', compact('request', 'throttle', 'saldo_awal', 'data', 'grap', 'time'))
+                  // ->setPaper('folio','landscape');
 
-        if($throttle == "Bulan")
-          return $pdf->stream('Laporan_Buku_Besar_Bulan_'.$request["m"].'/'.$request["y"].'.pdf');
-        else if($throttle == "Tahun")
-          return $pdf->stream('Laporan_Buku_Besar_tahun_'.$request["y"].'.pdf');
+        // if($throttle == "Bulan")
+        //   return $pdf->stream('Laporan_Buku_Besar_Bulan_'.$request["m"].'/'.$request["y"].'.pdf');
+        // else if($throttle == "Tahun")
+        //   return $pdf->stream('Laporan_Buku_Besar_tahun_'.$request["y"].'.pdf');
 
     }
 
@@ -208,10 +213,10 @@ class laporan_buku_besar extends Controller
             }
         }
 
-    return json_encode($grap);
+    // return json_encode($grap);
 
-    $pdf = PDF::loadView('laporan_buku_besar.print_pdf.pdf_single', compact('request', 'throttle', 'saldo_awal', 'data', 'grap', 'time'))
-                  ->setPaper('folio','landscape');
+    // $pdf = PDF::loadView('laporan_buku_besar.print_pdf.pdf_single', compact('request', 'throttle', 'saldo_awal', 'data', 'grap', 'time'))
+                  // ->setPaper('folio','landscape');
 
     if($throttle == "Bulan")
       return $pdf->stream('Laporan_Buku_Besar_Bulan_'.$request["m"].'/'.$request["y"].'.pdf');

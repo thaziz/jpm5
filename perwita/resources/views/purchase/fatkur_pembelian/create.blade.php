@@ -395,7 +395,7 @@
                             <img src="{{ asset('assets/image/loading1.gif') }}" width="100px">
                         </div>
                           <tr>
-                            <td> <input type='hidden' class='nofakturitem nofaktur' name='nofakturitem'> <input type='hidden' class='keteranganheader' name='keteranganheader'> <input type='hidden' class='noinvoiceitem' name='noinvoice'> <input type='hidden' class='jatuhtempoitem' name='jatuhtempoitem'> <input type='hidden' class='tglitem' name='tglitem'> <input type='hidden' class='idsupitem' name='idsupitem'> <input type='hidden' class='inputfakturpajakmasukan'>  <input type='hidden' class='inputtandaterima'> <input type='hidden' class='cabang2' name='cabang'>  <input type='hidden' class='inputtandaterima'>  <input type="hidden" class="acchutangdagang" name="acchutangdagang">   </td>
+                            <td> <input type='hidden' class='nofakturitem nofaktur' name='nofakturitem'> <input type='hidden' class='keteranganheader' name='keteranganheader'> <input type='hidden' class='noinvoiceitem' name='noinvoice'> <input type='hidden' class='jatuhtempoitem' name='jatuhtempoitem'> <input type='hidden' class='tglitem' name='tglitem'> <input type='hidden' class='idsupitem' name='idsupitem'> <input type='hidden' class='inputfakturpajakmasukan'>  <input type='hidden' class='inputtandaterima' name="inputtandaterima"> <input type='hidden' class='cabang2' name='cabang'>   <input type="hidden" class="acchutangdagang" name="acchutangdagang">   </td>
                              <input type="hidden" name="_token" value="{{ csrf_token() }}">
                              <input type="hidden" value="{{Auth::user()->m_name}}" name="username">
                           </tr>
@@ -444,6 +444,11 @@
                             <td> Sisa Hutang </td>
                             <td> <input type="text" class="form-control sisahutang" readonly="" name="sisahutang" style="text-align: right"> </td>
 
+                          </tr>
+
+                          <tr>
+                              <td> No Tanda Terima </td>
+                              <td> <input type="text" class="form-control notandaterima" readonly="" name="notandaterima" value="-"></td>
                           </tr>
 
                           <tr>
@@ -588,46 +593,46 @@
 
                     <div class="col-xs-12">
                         <div class="table-responsive">
-                          <table class='table table-bordered table-striped tbl-penerimabarang' id="tablefp">
+                          <table class='table table-bordered table-striped tbl-penerimabarang' id="tablefp" width="90%">
                           <tr>
                           <thead> 
                             <th>
                               No
                             </th>
-                              <th width='300px'>
+                              <th style="width:400px">
                                  Nama Item
                               </th>
-                              <th width="100px">
+                              <th style="width:90px">
                               Qty
                               </th>
-                              <th width='150px' class="tdgudangitem">
+                              <th class="tdgudangitem" style="width:400px">
                                 Gudang
                               </th>
-                              <th width='300px'>
+                              <th style="width:400px">
                                 Harga / unit
                               </th>
-                              <th width='300px'>
+                              <th style="width:400px">
                                 Total Harga
                               </th>
-                              <th width='100px' class="tdupdatestock">
+                              <th class="tdupdatestock" style="width:100px">
                                 Update Stock ?
                               </th>
                              
-                              <th width='300px'>
+                              <th style="width:400px">
                                 Biaya 
                               </th> 
 
-                               <th width='300px'>
+                               <th style="width:400px">
                                 Netto 
                               </th> 
 
-                              <th width='100px'>
+                              <th style="width:400px">
                                 Account Biaya
                               </th>
-                              <th width='100px'>
+                              <th style="width:400px">
                                 Account Persediaan
                               </th>
-                              <th width='500px'>
+                              <th style="width:400px">
                                 Keterangan
                               </th>
                               <th>
@@ -671,96 +676,14 @@
                                     </div>
                                                   
                                     <div class="modal-body">              
-                                    <table class="table table-stripped tabel_tt">
-                                      <tr>
-                                        <td width="150px">
-                                          No Tanda Terima 
-                                        </td>
-                                        <td>
-                                          <input type="text" name="nota_tt" class="input-sm form-control notandaterima" readonly="">
-                                          <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td> Tanggal </td>
-                                        <td>
-                                           <div class="input-group date">
-                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="" readonly="" name="tgl_tt">
-                                          </div>
-                                        </td>
-                                      </tr>
-                                     
-                                      <tr>
-                                        <td> Supplier </td>
-                                        <td> <input type='text' class="form-control supplier_tt" value="" name="supplier_tt" readonly=""></td>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td colspan="2">
-                                           <div class="row">
-                                              <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="Kwitansi" type="checkbox" checked="" name="kwitansi">
-                                                      <label for="Kwitansi">
-                                                          Kwitansi / Invoice / No
-                                                      </label>
-                                                </div> 
-                                              </div>
-                                              <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="FakturPajak" type="checkbox" checked="" name="faktur_pajak">
-                                                      <label for="FakturPajak">
-                                                          Faktur Pajak
-                                                      </label>
-                                                </div> 
-                                              </div>
-
-                                              <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="SuratPerananAsli" type="checkbox" checked="" name="surat_peranan">
-                                                      <label for="SuratPerananAsli">
-                                                          Surat Peranan Asli
-                                                      </label>
-                                                </div> 
-                                              </div>
-
-                                               <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="SuratJalanAsli" type="checkbox" checked="" name="surat_jalan">
-                                                      <label for="SuratJalanAsli">
-                                                         Surat Jalan Asli
-                                                      </label>
-                                                </div> 
-                                              </div>
-                                            </div>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>
-                                         Lain Lain
-                                        </td>
-                                        <td>
-                                          <input type="text" class="form-control lainlain_tt" name="lainlain">
-                                        </td>
-                                      </tr>
-
-                                      <tr>
-                                        <td> Tanggal Kembali </td>
-                                        <td>   <div class="input-group">
-                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali">
-                                          </div> </td>
-                                      </tr>
-
-                                      <tr>
-                                        <td>
-                                         Total di Terima
-                                        </td>
-                                        <td> <div class="row"> <div class="col-sm-3"> <label class="col-sm-3 label-control"> Rp </label> </div> <div class="col-sm-9"> <input type="text" class="form-control totalterima_tt" name="total_diterima" style="text-align:right;" readonly=""></div> </div> </td>
-                                      </tr>
-                                     
-                                       </table>                           
-                                               
-                                         </div>
+                                      <table class="table table-stripped tabel_tt" id="table_tt">
+                                         <thead>
+                                            <tr>
+                                                <th> No </th> <th> No Supplier </th> <th> Nota TT </th> <th> Tgl Kembali </th> <th> No Invoice </th> <th> Nominal </th> <th> Aksi </th>
+                                            </tr>
+                                         </thead>
+                                      </table>                                      
+                                    </div>
 
                                       <div class="modal-footer">
                                           <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
@@ -1128,7 +1051,8 @@
 
 
                                           <!-- TT -->
-                                           <input type='text' name='lainlain_tt2' class='lainlain_tt2'><!-- 
+                                           <!-- <input type='text' name='lainlain_tt2' class='lainlain_tt2'> -->
+                                           <!-- 
                                            <input type='hidden' name='notandaterima2' class='notandaterima2'> -->
 
                                         
@@ -1684,6 +1608,8 @@
     });
 
 
+    
+
     $('.keteranganbawah').change(function(){
       val = $(this).val();
      // alert(val);
@@ -2236,20 +2162,32 @@
 
     
     $('#buttonsimpan_tt').click(function(){
-      lainlain =   $('.lainlain_tt').val();
       notandaterima = $('.notandaterima').val();
-   //   alert(lainlain);
-      if(lainlain == ''){
-        toastr.info('Kolom lain lain belum di isi');
+
+      var checked = $(".check_tt:checked").map(function(){
+        return this.id;
+      }).toArray();
+  //    alert(checked[0]);
+
+
+      if(checked[0] == undefined){
+        toastr.info("Tolong di check no tandaterima nya :)");
+        return false;
       }
       else {
-        if(notandaterima != '' || lainlain != ''){
-           $('.inputtandaterima').val('sukses');
+      //      alert(checked);
+            variablett = checked[0];
+            notatt = variablett.split(",");
+           // alert(notatt);
+            notandaterima = notatt[2];
+            //alert(notandaterima);
+      
+      
+            $('.inputtandaterima').val(checked[0]);
+            $('.notandaterima').val(notandaterima);
+            $('#myModal_TT').modal("toggle" );
         }
-        $('.lainlain_tt2').val(lainlain);
-        $('.notandaterima2').val(notandaterima);
-          $('#myModal_TT').modal("toggle" );;
-      } 
+ 
     })
 
     $('#createmodal_tt').click(function(){
@@ -2257,51 +2195,32 @@
       supplier = $('.idsup').val();
       string = supplier.split(",");
 
-      tgl = $('.tgl').val();
-      jatuhtempo = $('.jatuhtempoitem').val();
-      nettohutang = $('.nettohutang').val();
-      sisahutang = $('.sisahutang').val();
-
-      $('.tgl_tt').val(tgl);
-      $('.supplier_tt').val(string[2]);
-      $('.jatuhtempo_tt').val(jatuhtempo);
-      $('.totalterima_tt').val(sisahutang);
-
-
+      if(supplier == ''){
+          toastr.info("Mohon maaf supplier belum di pilih :)");
+          return false;
+      }
        $.ajax({    
             type :"post",
-            data : {cabang},
+            data : {cabang,supplier},
             url : baseUrl + '/fakturpembelian/getnotatt',
             dataType:'json',
             success : function(data){
+                //console.log(data['tt'][0].tt_idform);
+                tableTT = $('#table_tt').DataTable();
+                tableTT.clear().draw();
+                nomor = 1;
+                for(i = 0; i < data['tt'].length; i++){
+                // alert('ha');
+                  var  html = "<tr> <td>"+nomor+"</td> <td>"+data['tt'][i].tt_supplier+"</td> <td>"+data['tt'][i].tt_noform+"</td> <td>"+data['tt'][i].tt_tglkembali+"</td> <td>"+data['tt'][i].ttd_invoice+"</td><td>"+addCommas(data['tt'][i].ttd_nominal)+"</td>";
 
-               console.log(data);
-                var d = new Date();
-                
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
+                  html += "<td><div class='checkbox'> <input type='checkbox' id="+data['tt'][i].tt_idform+","+data['tt'][i].ttd_detail+","+data['tt'][i].tt_noform+" class='check_tt' value='option1' aria-label='Single checkbox One'>" +
+                                      "<label></label>" +
+                                      "</div> </td>" +
+                                      "</tr>";              
+                    nomor++;
 
-                if(month < 10) {
-                  month = '0' + month1;
+                  tableTT.rows.add($(html)).draw();
                 }
-
-                console.log(d);
-
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
-
-              
-                 nott = 'TT' + month + year2 + '/' + cabang + '/' +  data;
-               
-                $('.notandaterima').val(nott);
             }
         })
     })
@@ -3848,7 +3767,7 @@
        $('#form_jumlah').submit(function(event){
 
         pajakmasukan = $('.inputfakturpajakmasukan').val();
-        tandaterima = $('.inputtandaterima').val();
+        tandaterima = $('.notandaterima').val();
       
         inputppn = $('.inputppn').val();
         hasilppn = $('.hasilppn').val();
@@ -4099,7 +4018,7 @@
           var acc_biaya = $('.acc_biaya').val();
           var acc_persediaan = $('.acc_persediaan').val();
           var keterangan = $('.keteranganbawah').val();
-          alert(keterangan);
+         // alert(keterangan);
       
           var penerimaan = $('.penerimaan').val();
           var nettoitem = $('.nettoitem').val();
@@ -4128,31 +4047,32 @@
           $('.hsljenisitem').val(kodestock);
 
           var  row = "<tr id='data-item-"+nourut+"'> <td>"+nourut+"</td>"+
-                  "<td> <select class='form-control disabled barangitem brg-"+nourut+"' data-id="+nourut+">  @foreach($data['barang'] as $brg) <option value='{{$brg->kode_item}}'>{{$brg->nama_masteritem}} </option> @endforeach </select>  <input type='hidden' class='brg-"+nourut+"' name='item[]'> </td>" + //nama barang
+                  "<td style='width:300px'> <select class='form-control disabled barangitem brg-"+nourut+"' data-id="+nourut+" style='min-width:200px'>  @foreach($data['barang'] as $brg) <option value='{{$brg->kode_item}}'>{{$brg->kode_item}} - {{$brg->nama_masteritem}} </option> @endforeach </select>  <input type='hidden' class='brg-"+nourut+"' name='item[]'> </td>" + //nama barang
 
-                  "<td> <input type='text' class='input-sm form-control qtyitem qtyitem"+nourut+"' value="+qty+" name='qty[]' data-id="+nourut+"> " +
+                  "<td style='width:100px'> <input type='text' class='input-sm form-control qtyitem qtyitem"+nourut+"' value="+qty+" name='qty[]' data-id="+nourut+" style='min-width:70px'>" +
+
                   "<input type='hidden' class='form-control groupitem' value="+groupitem+" name='groupitem[]'> <input type='hidden' class='form-control kodestock' value="+kodestock+" name='kodestock[]'> </td>"+ //qty
                   
-                  "<td class='tdgudangitem'> <select class='form-control gudangitem gudangitem"+nourut+"' name='gudang[]'> @foreach($data['gudang'] as $gudang)  <option value='{{$gudang->mg_id}}'> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td>"+ //gudang
+                  "<td class='tdgudangitem' style='width:300px'> <select class='form-control gudangitem gudangitem"+nourut+"' name='gudang[]' style='min-width:200px'> @foreach($data['gudang'] as $gudang)  <option value='{{$gudang->mg_id}}'> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td>"+ //gudang
 
-                  "<td> <input type='text' class='input-sm form-control hargaitem hargaitem"+nourut+"' value='"+ addCommas(harga)+"' name='harga[]' data-id="+nourut+"></td>"+ //harga
+                  "<td style='width:150px'> <input type='text' class='input-sm form-control hargaitem hargaitem"+nourut+"' value='"+ addCommas(harga)+"' name='harga[]' data-id="+nourut+" style='min-width:150px;text-align:right'></td>"+ //harga
 
-                  "<td> <input type='text' class='input-sm form-control totalbiayaitem totalbiayaitem"+nourut+"' value='"+ amount+"' name='totalharga[]' readonly> </td>"+ //total harga
+                  "<td style='width:150px'> <input type='text' class='input-sm form-control totalbiayaitem totalbiayaitem"+nourut+"' value='"+ amount+"' name='totalharga[]' readonly style='min-width:150px;text-align:right'> </td>"+ //total harga
 
               
 
-                  "<td class='tdupdatestock'> <input type='text' class='form-control updatestockitem updatestockitem"+nourut+"' value='"+updatestock+"'  name='updatestock[]' readonly> </td>"+ // updatestock
+                  "<td class='tdupdatestock' style='width:100px'> <input type='text' class='form-control updatestockitem updatestockitem"+nourut+"' value='"+updatestock+"'  name='updatestock[]' readonly style='min-width:100%'> </td>"+ // updatestock
                       /* "<td> <input type='number' class='form-control diskonitem2 diskonitem2"+nourut+"' value='"+diskon+"' name='diskonitem[]' data-id="+nourut+"> </td>" + //diskon*/
 
-                  "<td>  <input type='text' class='input-sm form-control biayaitem biayaitem"+nourut+"' value='"+biaya+"'  name='biaya[]' data-id="+nourut+"> </td>"+ //biaya
+                  "<td style='width:150px'>  <input type='text' class='input-sm form-control biayaitem biayaitem"+nourut+"' value='"+biaya+"'  name='biaya[]' data-id="+nourut+" style='min-width:150px;text-align:right'> </td>"+ //biaya
 
-                    "<td>  <input type='text' class='input-sm form-control nettoitem2 nettoitem2"+nourut+"' value='"+nettoitem+"'  name='nettoitem[]' readonly> </td>"+ //biaya
+                    "<td style='width:150px'>  <input type='text' class='input-sm form-control nettoitem2 nettoitem2"+nourut+"' value='"+nettoitem+"'  name='nettoitem[]' readonly style='min-width:150px;text-align:right'> </td>"+ //biaya
 
-                  "<td> <input type='text' class='input-sm form-control acc_biayaitem acc_biayaitem"+nourut+"' value='"+acc_biaya+"' name='acc_biaya[]' readonly> </td>"+ //acc_biaya
+                  "<td style='width:150px'> <input type='text' class='input-sm form-control acc_biayaitem acc_biayaitem"+nourut+"' value='"+acc_biaya+"' name='acc_biaya[]' readonly style='min-width:150px;text-align:right'> </td>"+ //acc_biaya
 
-                  "<td> <input type='text' class='input-sm form-control acc_persediaanitem acc_persediaanitem"+nourut+"' value='"+acc_persediaan+"' name='acc_persediaan[]' readonly> </td>"+ //acc_persediaan
+                  "<td style='width:150px'>  <input type='text' class='input-sm form-control acc_persediaanitem acc_persediaanitem"+nourut+"' value='"+acc_persediaan+"' name='acc_persediaan[]' readonly style='min-width:150px'> </td>"+ //acc_persediaan
 
-                  "<td> <input type='text' class='input-sm form-control keteranganitem keteranganitem"+nourut+"' value='"+keterangan+"'  name='keteranganitem[]'>  <input type='hidden' name='penerimaan[]' class='penerimaan' value='"+penerimaan+"'></td>" +
+                  "<td style='width:300px'> <input type='text' class='input-sm form-control keteranganitem keteranganitem"+nourut+"' value='"+keterangan+"'  name='keteranganitem[]' style='min-width:300px'>  <input type='hidden' name='penerimaan[]' class='penerimaan' value='"+penerimaan+"'></td>" +
                   
                   "<td class='edit"+nourut+"'> <button class='btn btn-sm btn-danger removes-btn' data-id='"+nourut+"' type='button'> <i class='fa fa-trash'></i> </button> "+
                   " </td> </tr>"; 

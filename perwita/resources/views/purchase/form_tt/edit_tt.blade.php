@@ -51,9 +51,9 @@
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
-                <div class="ibox-title" style="background: white">
-                    <div  style="background: white" >
-                      <h5>Form Tanda Terima Pembelian</h5>
+                <div class="ibox-title" style="background: hotpink">
+                    <div  style="background: hotpink" >
+                      <h5 style="color: white">Form Tanda Terima Pembelian</h5>
                       <a href="{{ url('form_tanda_terima_pembelian') }}" class="pull-right" style="color: white"><i class="fa fa-arrow-left"> Kembali</i></a>
                     </div>
                 </div>
@@ -66,38 +66,28 @@
                     <table class="table table-bordered">
                       <tr>
                         <td width="150">Nomor</td>
-                        <td width="300"><input type="text" readonly="" name="nomor" class="nomor form-control"></td>
+                        <td width="300"><input type="text" readonly="" value="{{ $data->tt_noform }}" name="nomor" class="nomor form-control"></td>
                         <td width="150">Pihak Ketiga</td>
                         <td colspan="2">
                           <select  name="supplier" class="supplier form-control chosen-select-width">
                             @foreach ($all as $val)
-                              <option value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                              <option @if($val->kode == $data->tt_supplier) selected  @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
                             @endforeach
                           </select>
                         </td>
                       </tr>
                       <tr>
                         <td>Cabang</td>
-                        @if(Auth::user()->punyaAkses('Form Tanda Terima Pembelian','cabang'))
-                        <td colspan="2">
-                          <select name="cabang" class="cabang form-control chosen-select-width">
-                            @foreach ($cabang as $val)
-                              <option @if($val->kode == Auth::user()->kode_cabang) @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
-                            @endforeach
-                          </select>
-                        </td>
-                        @else
                         <td colspan="2" class="disabled">
                           <select name="cabang" class="cabang form-control chosen-select-width">
                             @foreach ($cabang as $val)
-                              <option @if($val->kode == Auth::user()->kode_cabang) @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                              <option @if($val->kode == $data->tt_idcabang) selected="" @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
                             @endforeach
                           </select>
                         </td>
-                        @endif
                         <td width="150">Tanggal</td>
                         <td width="300">
-                          <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
+                          <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::parse($data->tt_tgl)->format('d/m/Y') }}">
                         </td>
                       </tr>
                       <tr>
@@ -105,7 +95,7 @@
                           <div class="row">
                             <div class="col-sm-3"> 
                               <div class="checkbox checkbox-info checkbox-circle">
-                                  <input id="Kwitansi" type="checkbox" checked="" name="kwitansi">
+                                  <input id="Kwitansi" type="checkbox" @if($data->tt_kwitansi == 'on') checked="" @endif name="kwitansi">
                                     <label for="Kwitansi">
                                         Kwitansi / Invoice / No
                                     </label>
@@ -113,7 +103,7 @@
                             </div>
                             <div class="col-sm-3"> 
                               <div class="checkbox checkbox-info checkbox-circle">
-                                  <input id="FakturPajak" type="checkbox" checked="" name="faktur_pajak">
+                                  <input id="FakturPajak" type="checkbox" @if($data->tt_faktur == 'on') checked="" @endif name="faktur_pajak">
                                     <label for="FakturPajak">
                                         Faktur Pajak
                                     </label>
@@ -121,7 +111,7 @@
                             </div>
                             <div class="col-sm-3"> 
                               <div class="checkbox checkbox-info checkbox-circle">
-                                  <input id="SuratPerananAsli" type="checkbox" checked="" name="surat_peranan">
+                                  <input id="SuratPerananAsli" type="checkbox" @if($data->tt_suratperan == 'on') checked="" @endif name="surat_peranan">
                                     <label for="SuratPerananAsli">
                                         Surat Peranan Asli
                                     </label>
@@ -129,7 +119,7 @@
                             </div>
                              <div class="col-sm-3"> 
                               <div class="checkbox checkbox-info checkbox-circle">
-                                  <input id="SuratJalanAsli" type="checkbox" checked="" name="surat_jalan">
+                                  <input id="SuratJalanAsli" type="checkbox" @if($data->tt_suratjalanasli == 'on') checked="" @endif name="surat_jalan">
                                     <label for="SuratJalanAsli">
                                        Surat Jalan Asli
                                     </label>
@@ -140,11 +130,13 @@
                       </tr>
                       <tr>
                         <td>Lain-lain</td>
-                        <td colspan="2"><input type="text" class="lain form-control" name="lain"></td>
+                        <td colspan="2">
+                          <input type="text" class="lain form-control" value="{{ $data->tt_lainlain }}" name="lain">
+                        </td>
                       
                         <td>Tanggal Kembali</td>
                         <td>
-                          <input type="text" name="tanggal_kembali" value="{{ $nextDay }}" class="tanggal_kembali form-control">
+                          <input type="text" name="tanggal_kembali" value="{{ Carbon\carbon::parse($data->tt_tglkembali)->format('d/m/Y') }}" class="tanggal_kembali form-control">
                         </td>
                       </tr>
                     </table>
@@ -217,30 +209,6 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-  function nota() {
-    var cabang = $('.cabang').val();
-    var tanggal = $('.tanggal').val();
-    $.ajax({
-      url  : '{{ url('form_tanda_terima_pembelian/nota') }}',
-      data : {cabang,tanggal},
-      dataType:'json',
-      success:function(data){
-        $('.nomor').val(data.nota);
-      }
-    })
-  }
-  $(document).ready(function(){
-    var cabang = $('.cabang').val();
-    var tanggal = $('.tanggal').val();
-    $.ajax({
-      url  : '{{ url('form_tanda_terima_pembelian/nota') }}',
-      data : {cabang,tanggal},
-      dataType:'json',
-      success:function(data){
-        $('.nomor').val(data.nota);
-      }
-    })
-  })
   var index = 1 ;
   var table = $('.table_tt').DataTable({
     searching:true,
@@ -262,19 +230,10 @@
   });
 
   $('.tanggal').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
-      $('.tanggal').change();
       $(this).datepicker('hide');
   });
 
-  $('.tanggal').change(function () {
-      nota();
-  });
-
-  $('.cabang').change(function(){
-      nota();
-  });
   $('.tanggal_kembali').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
-      $('.tanggal_kembali').change();
       $(this).datepicker('hide');
   });
 
@@ -349,7 +308,7 @@
     var supplier = $('.supplier').val();
     swal({
     title: "Apakah anda yakin?",
-    text: "Simpan Tanda Terima!",
+    text: "Update Tanda Terima!",
     type: "warning",
     showCancelButton: true,
     showLoaderOnConfirm: true,
@@ -365,7 +324,7 @@
             }
         });
       $.ajax({
-        url:baseUrl + '/form_tanda_terima_pembelian/save',
+        url:baseUrl + '/form_tanda_terima_pembelian/update',
         type:'get',
         data:$('.form_header input').serialize()+'&'+$('.form_detail input').serialize()+'&cabang='+cabang+'&supplier='+supplier,
         dataType:'json',
@@ -374,7 +333,7 @@
             swal({
             title: "Berhasil!",
                     type: 'success',
-                    text: "Data Berhasil Disimpan",
+                    text: "Data Berhasil Diupdate",
                     timer: 2000,
                     showConfirmButton: true
                     },function(){
@@ -423,5 +382,31 @@
         };
     }).get();
   }
+
+  @foreach ($detail as $i => $val)
+    var invoice       = '{{ $val->ttd_invoice }}';
+    var nominal       = '{{ $val->ttd_nominal }}';
+    var tanggal_detil = '{{ Carbon\carbon::parse($val->ttd_tanggal)->format('d/m/Y') }}';
+
+    table.row.add([
+      '<p class="invoice_text">'+invoice+'</p>'+
+      '<input type="hidden" class="invoice" name="invoice[]" value="'+invoice+'">'+
+      '<input type="hidden" class="dex dex_'+index+'" value="'+index+'">',
+
+      '<p class="tanggal_detil_text">'+tanggal_detil+'</p>'+
+      '<input type="hidden" class="tanggal_detil" name="tanggal_detil[]" value="'+tanggal_detil+'">',
+
+      '<p class="nominal_text">'+nominal+'</p>'+
+      '<input type="hidden" class="nominal" name="nominal[]" value="'+nominal+'">',
+
+      '<div class=" btn-group">'+
+      '<a class="btn btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></a>'+
+      '<a class="btn btn-danger trash" onclick="trash(this)"><i class="fa fa-trash"></i></a>'+
+      '</div>',
+    ]).draw();
+    $('.right').css('text-align','right');
+    $('.center').css('text-align','center');
+    index++;
+  @endforeach
 </script>
 @endsection

@@ -121,6 +121,8 @@
                             <td> Kode Bank </td>
                             <td>
                               <select class="form-control kodebank">
+                               <option value=""> Pilih Data Bank</option>
+
                                 @foreach($data['bank'] as $bank)
                                   <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                 @endforeach
@@ -477,7 +479,9 @@
           val = '0' + val;
       }
       
-      nobbk = bank + val + '-' + lain;
+      str = bank.substr(0,2);
+
+      nobbk = str + val + '-' + lain;
       $('.nobbk').val(nobbk);
     })
    

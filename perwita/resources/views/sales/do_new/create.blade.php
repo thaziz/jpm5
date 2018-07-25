@@ -78,7 +78,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm">Tanggal</td>
-                                                    <td colspan="2">
+                                                    <td >
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control datepicker_today" name="do_tanggal" id="do_tanggal" value="">
                                                         </div>
@@ -798,7 +798,7 @@ $('.radio-inline').click(function() {
             {   
                 $('#do_kecamatan_tujuan').empty(); //remove all child nodes 
                  for (var i = 0; i < data.length; i++) {
-                    var append_baru = '<option value="'+data[i].id+'" data-nama="'+data[i].nama+'">'+data[i].id+' - '+data[i].nama+'</option>';
+                    var append_baru = '<option value="'+data[i].id+'" data-nama="'+data[i].nama+'">'+data[i].id+' -1 '+data[i].nama+'</option>';
                     $('#do_kecamatan_tujuan').append(append_baru);
                     
                  }
@@ -1325,6 +1325,8 @@ function hitung() {
                     toastr.success('Data Telah Tersimpan!','Pemberitahuan!');
                 }else if (data.status == 'gagal') {
                     toastr.error('Akun Piutang Pada Cabang Ini Belum Tersedia !','Peringatan !');
+                }else if (data.status == 1) {
+                    toastr.error('Data Telah Digunakan !','Peringatan !');
                 }
                 else{
                     toastr.error('Gagal Tersimpan! WA developer segera','Peringatan !');
@@ -1508,6 +1510,17 @@ function hitung() {
         }
 
     }
+
+ //KOTA ASAL MERUBAH CABANG
+
+ //Replace deskipris
+    $('.replace_deskripsi').change(function(){
+        var asal = $("select[name='do_kota_asal']").find(':selected').data('nama');
+        var tujuan = $("select[name='do_kota_tujuan']").find(':selected').data('nama');
+        // var kecamatan_rep = $("#do_kecamatan_tujuan").find(':selected').data('nama');
+        var nama_penerima = $("input[name='do_nama_penerima']").val();
+        var deskripsi_rep =  $("input[name='do_deskripsi']").val(asal +' - '+ tujuan +' - '+ '-' +'  '+ nama_penerima);
+    })
 
 
 </script>

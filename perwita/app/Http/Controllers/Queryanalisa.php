@@ -62,6 +62,10 @@ class Queryanalisa extends Controller
 {
 
 
+	public function view(){
+		return view('purchase/pelunasanhutangbank/queryanalisa');
+	}
+
 	//berdasarkan supplier
 	public function kartuhutangrekap(){
 
@@ -1008,10 +1012,10 @@ class Queryanalisa extends Controller
 	//all supplier
 	public function rekapanalisahutang (){
 		$tglawal = '2018-06-02';
-		$tglakhir = '2018-08-02';
+		$tglakhir = '2018-09-02';
 
-		$akun = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
-		$akunpajak = DB::select("select * from v_hutang where v_tgl BETWEEN '$tglawal' and '$tglakhir'");
+		$akun = DB::select("select * from faktur_pembelian where fp_jatuhtempo BETWEEN '$tglawal' and '$tglakhir'");
+		$akunpajak = DB::select("select * from v_hutang where v_tempo BETWEEN '$tglawal' and '$tglakhir'");
 
 		$data['akunhutang'] = [];
 		for($i = 0; $i < count($akun); $i++){
@@ -1058,9 +1062,9 @@ class Queryanalisa extends Controller
 			$akunhutangdagang = $values[$g]['idakun'];
 			$jenishutang = $values[$g]['jenisakun'];
 
-			$hutangsupplier1 = DB::select("select * from v_hutang where v_tgl BETWEEN '$tglawal' and '$tglakhir' and v_acchutang LIKE '$akunhutangdagang%'");
+			$hutangsupplier1 = DB::select("select * from v_hutang where v_tempo BETWEEN '$tglawal' and '$tglakhir' and v_acchutang LIKE '$akunhutangdagang%'");
 
-			$hutangsupplier2 = DB::select("select * from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$akunhutangdagang%'");
+			$hutangsupplier2 = DB::select("select * from faktur_pembelian where fp_jatuhtempo BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$akunhutangdagang%'");
 			
 			//belum jatuh tempo;
 			$fpblmjatuhtempo = DB::select("select * from faktur_pembelian,fpg, bukti_bank_keluar, bukti_bank_keluar_detail, fpg_dt where fp_jatuhtempo BETWEEN '$tglawal' and '$tglakhir' and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and fpgdt_idfpg = idfpg and fpgdt_idfp = fp_idfaktur and fp_acchutang LIKE '$akunhutangdagang%' and fpgdt_nofaktur = fp_nofaktur and fpg_agen = fp_supplier and bbk_tgl < '$tglakhir'");
@@ -1179,47 +1183,56 @@ class Queryanalisa extends Controller
 				}
 			}
 
-			if(count($hutangsupplier1) != 0){
-				$hutangsupplier3= DB::select("select * from v_hutang where v_tempo BETWEEN '$tglawal' and '$tglakhir' and v_acchutang LIKE '$akunhutangdagang%'");
-				for($j = 0; $j < count($hutangsupplier3); $j++){
-					$netto = $hutangsupplier3[$j]->v_hasil;
-					$v_pelunasan = $hutangsupplier3[$j]->v_pelunasan;
-					$sisapelunasan = floatval($sisapelunasan) + floatval($v_pelunasan);
-					$saldoawal = floatval($saldoawal) + floatval($netto);
-					$terbayar = floatval($saldoawal) - floatval($sisapelunasan);
+			if(count($hutangsupplier1) != 0){	
+
+				$datavc = DB::select("select * from v_hutang, fpg, fpg_dt, bukti_bank_keluar, bukti_bank_keluar_detail, bukti_kas_keluar, bukti_kas_keluar_detail where v_acchutang LIKE '$akunhutangdagang%' and v_tempo < '$tglakhir' and fpgdt_idfpg = idfpg and fpgdt_idfp = v_id and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and bkkd_bkk_id = bkk_id and bkkd_ref = v_nomorbukti and bkk_tgl < '$tglakhir' and bbk_tgl < '$tglakhir'");
+
+				for($j = 0; $j < count($datavc); $j++){
+					$netto = $datavc[$j]->v_hasil;
+					$dibayarbkk = $datavc[$j]->bkkd_total;
+					$dibayarbbk = $datavc[$j]->bbkd_nominal;
+
+					$terbayar = floatval($saldoawal) + (floatval($dibayarbbk) + floatval($dibayarbkk));
+					$blmjatuhtempo = floatval($netto) - floatval($terbayar);
 				}
 			}
 
+			return $terbayar;
+
+
 			if(count($hutangsupplier2) != 0){
-				$hutangsupplier4 =DB::select("select * from faktur_pembelian where fp_jatuhtempo BETWEEN '$tglawal' and '$tglakhir' and fp_acchutang LIKE '$akunhutangdagang%'");
-				for($j = 0; $j < count($hutangsupplier2); $j++){
-					$netto = $hutangsupplier4[$j]->fp_netto;
-					$fp_pelunasan = $hutangsupplier4[$j]->fp_sisapelunasan;
-					$saldoawal = floatval($saldoawal) + floatval($netto);
-					$sisapelunasan = floatval($sisapelunasan) + floatval($fp_pelunasan);
-					$terbayar = floatval($saldoawal) -floatval($sisapelunasan);
+				
+				$datafb = DB::select("select * from faktur_pembelian, fpg, fpg_dt, bukti_bank_keluar, bukti_bank_keluar_detail, bukti_kas_keluar, bukti_kas_keluar_detail where fp_acchutang LIKE '$akunhutangdagang%' and fp_jatuhtempo < '$tglakhir' and fpgdt_idfpg = idfpg and fpgdt_idfp = fp_idfaktur and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg and bkkd_bkk_id = bkk_id and bkkd_ref = fp_nofaktur and bkk_tgl < '$tglakhir' and bbk_tgl < '$tglakhir'");
+
+				for($j = 0; $j < count($datafb); $j++){
+					$netto = $datafb[$j]->fp_netto;
+					$dibayarbkk = $datafb[$j]->bkkd_total;
+					$dibayarbbk = $datafb[$j]->bbkd_nominal;
+
+					$terbayar = floatval($saldoawal) + (floatval($dibayarbbk) + floatval($dibayarbkk));
+					$blmjatuhtempo = floatval($netto) - floatval($terbayar);
 				}
 			}
 			
 		
 			if(count($hutangsupplier1) != 0 && count($hutangsupplier2) != 0) {
-				$hutangsuppliers['data'] =	array_merge($hutangsupplier3 , $hutangsupplier4);
+				$hutangsuppliers['data'] =	array_merge($hutangsupplier1 , $hutangsupplier2);
 				$hutangsuppliers['jumlahfaktur'] = $saldoawal;
 				$hutangsuppliers['terbayar'] = $terbayar;
 
 			}
 			else if(count($hutangsupplier1) != 0 && count($hutangsupplier2) == 0) {
-				$hutangsuppliers['data'] = $hutangsupplier3;
+				$hutangsuppliers['data'] = $hutangsupplier1;
 				$hutangsuppliers['jumlahfaktur'] = $saldoawal;
 				$hutangsuppliers['terbayar'] = $terbayar;
 			}
 			else if(count($hutangsupplier1) == 0 && count($hutangsupplier2) != 0){
-				$hutangsuppliers['data'] = $hutangsupplier4;
+				$hutangsuppliers['data'] = $hutangsupplier2;
 				$hutangsuppliers['jumlahfaktur'] = $saldoawal;
 				$hutangsuppliers['terbayar'] = $terbayar;
 			}
 			else {
-				$hutangsuppliers['data'] = $hutangsupplier4;
+				$hutangsuppliers['data'] = $hutangsupplier2;
 				$hutangsuppliers['jumlahfaktur'] = $saldoawal;
 				$hutangsuppliers['terbayar'] = $terbayar;
 			}
@@ -1237,14 +1250,14 @@ class Queryanalisa extends Controller
 			$namaakun['id_akun'] = $akun;
 			$namaakun2 = $datakun[0]->nama_akun;
 			$namaakun['nama_akun'] = substr($namaakun2, 0, -5);
-
+			
 			array_push($data['akun'] , $namaakun);
 		}
 
-
-
 		return json_encode($data);
 	}
+
+
 
 
 	public function detailanalisahutang(){

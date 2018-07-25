@@ -929,6 +929,12 @@ class do_paketController extends Controller
         // dd($request->all()); 
       // DB::beginTransaction();
       // try {
+
+          $cek_data_do = DB::table('delivery_order')->where('nomor','=',$request->do_nomor)->get();
+          if ($cek_data_do != null  ) {
+              return response()->json(['status'=>1]);
+          }
+
           $simpan = '';
           $cabang = $request->do_cabang;
           $kota_asal = $request->do_kota_asal;
@@ -983,7 +989,7 @@ class do_paketController extends Controller
               $cus_kon_dt = $request->kontrak_cus_dt;
           }
 
-          if ($request->do_jenis_ppn == 2) {
+          if ($request->do_jenis_ppn == 2 ) {
               $ppn_value = $request->do_jml_ppn;
               $ppn_bol = true;
           }else{
@@ -993,7 +999,7 @@ class do_paketController extends Controller
           // TARIF DASAR + TARIF PENERUS = TOTAL;
           $total = filter_var($request->do_tarif_dasar, FILTER_SANITIZE_NUMBER_INT)+filter_var($request->do_tarif_penerus, FILTER_SANITIZE_NUMBER_INT);
           $data = array(
-                    'nomor'                 => strtoupper($request->do_nomor),
+                    'nomor'                 => str_replace(' ','',strtoupper($request->do_nomor)),
                     'tanggal'               => $request->do_tanggal,
                     'catatan_admin'         => '-',
                     'id_kota_asal'          => $request->do_kota_asal,
@@ -1057,7 +1063,7 @@ class do_paketController extends Controller
                     'created_by'            =>auth::user()->m_name,
                     'total_net'             => filter_var($request->do_total_h, FILTER_SANITIZE_NUMBER_INT),
           );
-        DB::table('delivery_order')->insert($data);
+        DB::table('delivery_order')->insert($data);  
         //end save do
 
 
@@ -1078,24 +1084,27 @@ class do_paketController extends Controller
             'asal_barang' => $request->do_kota_asal,
             'id'=>$increment,
         );
-        $simpan = DB::table('u_s_order_do')->insert($data1);
+        $simpan = DB::table('u_s_order_do')->insert($data1); 
 
         if ($request->nama_customer_hidden == 'NON CUSTOMER') {
-          $tarif_vendor = filter_var($request->do_vendor, FILTER_SANITIZE_NUMBER_FLOAT);
-          $tarif_own = filter_var($request->do_dpp, FILTER_SANITIZE_NUMBER_FLOAT);
-          $tarif_ppn = str_replace(",",".",$request->do_jml_ppn);
-          $total_tarif = $tarif_vendor + $tarif_own;
-
-          $hitung_vendor = (float)$tarif_ppn/$total_tarif*$tarif_vendor;
-          $hitung_own = (float)$tarif_ppn/$total_tarif*$tarif_own;
             
+          $tarif_vendor   = filter_var($request->do_vendor, FILTER_SANITIZE_NUMBER_FLOAT);
+          $tarif_own      = filter_var($request->do_dpp, FILTER_SANITIZE_NUMBER_FLOAT);
+          $tarif_ppn      = str_replace(",",".",$request->do_jml_ppn);
+          $total_tarif    = $tarif_vendor + $tarif_own;
 
-          $hitung_ppn = $hitung_vendor+$hitung_own;
+          $hitung_vendor  = (float)$tarif_ppn/$total_tarif*$tarif_vendor;
+          $hitung_own     = (float)$tarif_ppn/$total_tarif*$tarif_own;
+
+          $hitung_ppn     = $hitung_vendor+$hitung_own;
           $hitung_vendor_jurnal = round($tarif_vendor-$hitung_vendor,2);
           $hitung_own_jurnal = round($tarif_own-$hitung_own,2);
-          $hitung_total = round($hitung_ppn+$hitung_vendor_jurnal+$hitung_own_jurnal);
+          $hitung_total   = round($hitung_ppn+$hitung_vendor_jurnal+$hitung_own_jurnal);
 
-          $cari_akun = DB::table('d_akun')->where('id_akun','like','1003%')->where('kode_cabang','=',$cabang)->get();
+          $cari_akun      = DB::table('d_akun')->where('id_akun','like','1003%')->where('kode_cabang','=',$cabang)->get();
+          // $cari_akun_ppn  = DB::table('d_akun')->where('id_akun','like','2301%')->where('kode_cabang','=',$cabang)->get();
+          $cari_akun_vendor = DB::table('d_akun')->where('id_akun','like','4501%')->where('kode_cabang','=',$cabang)->get();
+          $cari_akun_titipan = DB::table('d_akun')->where('id_akun','like','2498%')->where('kode_cabang','=',$cabang)->get();
 
           $max = DB::table('d_jurnal')->max('jr_id');
             if ($max == null) {
@@ -1104,8 +1113,8 @@ class do_paketController extends Controller
               $max += 1;
             }
 
-          $dt = Carbon::now();  
-
+          $dt = Carbon::now();
+          
           $simpan_utama = DB::table('d_jurnal')->insert([
                               'jr_id'=>$max,
                               'jr_year'=>$dt->year,
@@ -1113,32 +1122,35 @@ class do_paketController extends Controller
                               'jr_detail'=>'DEVLIERY ORDER PAKET',
                               'jr_ref'=>$request->do_nomor,
                               'jr_note'=>'DEVLIERY ORDER PAKET',
-                              'jr_insert'=>$dt,
+                              'jr_insert'=>$request->do_tanggal,
                               'jr_update'=>$dt,
                             ]);
           $acc            = [  $cari_akun[0]->id_akun
-                              ,$akun_piutang
-                              ,$akun_piutang
-                              ,$akun_piutang
+                              // ,$cari_akun_ppn[0]->id_akun
+                              ,$cari_akun_vendor[0]->id_akun
+                              ,$cari_akun_titipan[0]->id_akun
                             ];
 
-          $jrdt_status_dk = ['D','K','K','K'];
+          $jrdt_status_dk = ['D','K','K'];
 
           $jrdt_value     = [  $total_tarif,
-                               $hitung_ppn,
-                               $hitung_vendor_jurnal,
-                               $hitung_own_jurnal
+                               // $hitung_ppn,
+                               $tarif_vendor,
+                               $tarif_own
                              ];
 
-          for ($i=0; $i <count($acc) ; $i++) { 
 
-            $simpan_detil = DB::table('d_jurnal_dt')->insert([
+
+          for ($i=0; $i <count($acc) ; $i++) { 
+            if ($jrdt_value[$i] != 0) {
+              $simpan_detil = DB::table('d_jurnal_dt')->insert([
                               'jrdt_jurnal'=>$max,
                               'jrdt_detailid'=>$i+1,
                               'jrdt_value'=>$jrdt_value[$i],
                               'jrdt_acc'=>$acc[$i],
                               'jrdt_statusdk'=>$jrdt_status_dk[$i],
                             ]);
+            }
           }
           
           
@@ -1160,24 +1172,6 @@ class do_paketController extends Controller
                 $dt->save();
             }
         }
-        
-
-         //    if ($data['kode_satuan'] == "SEPEDA"){
-         //        $data['jenis_pengiriman'] = 'REGULER';
-         //        $jml_unit = $request->cb_jml_unit;
-         //    }
-        
-         // if ($data['kode_satuan'] == "SEPEDA"){
-         //    for ($i = 0; $i < $jml_unit; $i++){
-         //        $dt = new do_dt();
-         //        $dt->id_do = $request->do_nomor;
-         //        $dt->id_do_dt = $i + 1;
-         //        $dt->berat = $request->cb_berat_unit[$i];
-         //        $dt->jenis = $request->cb_jenis_unit[$i];
-         //        $dt->save();
-         //    }
-         // }
-
 
         return response()->json(['status'=>'sukses']);
     // }catch (\Exception $e) {
@@ -1313,7 +1307,7 @@ class do_paketController extends Controller
 
       $total = filter_var($request->do_tarif_dasar, FILTER_SANITIZE_NUMBER_INT)+filter_var($request->do_tarif_penerus, FILTER_SANITIZE_NUMBER_INT);
       $data = array(
-                'nomor' => strtoupper($request->do_nomor),
+                'nomor' => str_replace(' ','',strtoupper($request->do_nomor)),
                 'tanggal' => $request->do_tanggal,
                 'catatan_admin' => '-',
                 'id_kota_asal' => $request->do_kota_asal,

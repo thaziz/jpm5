@@ -76,9 +76,9 @@
                         <td> {{$bbk->mb_nama}} </td>
                         <td> {{ Carbon\Carbon::parse($bbk->bbk_tgl)->format('d-M-Y ') }}</td>
                         <td> {{$bbk->bbk_keterangan}} </td>
-                        <td> {{$bbk->bbk_cekbg}} </td>
-                        <td> {{$bbk->bbk_biaya}}  </td>
-                        <td> {{$bbk->bbk_total}} </td>
+                        <td> {{number_format($bbk->bbk_cekbg, 2)}} </td>
+                        <td> {{number_format($bbk->bbk_biaya, 2)}}  </td>
+                        <td> {{ number_format($bbk->bbk_total, 2) }} </td>
                         <td>
                                @if(Auth::user()->punyaAkses('Pelunasan Hutang','ubah'))     
                         <a class="btn btn-sm btn-success text-right" href={{url('pelunasanhutangbank/detailpelunasanbank/'.$bbk->bbk_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i></a> &nbsp; 

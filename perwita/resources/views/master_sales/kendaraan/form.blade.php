@@ -5,7 +5,10 @@
 @section('content')
 <style type="text/css">
       .id {display:none; }
-    </style>
+      b{
+        color: red; 
+      }
+</style>
 
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -25,64 +28,24 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
-                    <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
-                        <div class="box-body">
-                       <!--  <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
-                            <div class="col-sm-2">
-                             <select id="bulan_id" name="bulan_id" class="form-control">
-                                                      <option value="">Pilih Bulan</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div>
-                           <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="tahun" class="col-sm-1 control-label">Tahun</label>
-                            <div class="col-sm-2">
-                             <select id="tahun" name="tahun" class="form-control">
-                                                      <option value="">Pilih Tahun</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div> -->
-                            <div class="row">
-                                <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
-
-                            </table>
-                        <div class="col-xs-6">
-
-
-
-                        </div>
-
-
-
-                    </div>
-                </form>
                 <form id="form_header" class="form-horizontal">
-                    <table class="table table-striped table-bordered table-hover">
+                    <table class="table table-hover">
                         <tbody>
                             <tr>
-                                <td style="width:120px; padding-top: 0.4cm">Nopol</td>
+                                <td style="width:120px; padding-top: 0.4cm">Nopol <b>*</b></td>
                                 <td>
                                     <input type="text" name="ed_nopol" id="ed_nopol" class="form-control" style="text-transform: uppercase" value="{{ $data->nopol or null }}" >
                                     <input type="hidden" name="ed_id" class="form-control" style="text-transform: uppercase" value="{{ $data->id or null }}" >
                                     <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                     <input type="hidden" class="form-control" name="crud_h" class="form-control" @if ($data === null) value="N" @else value="E" @endif>
                                 </td>
-                                <td style="width:120px; padding-top: 0.4cm">Kode</td>
+                                <td style="width:120px; padding-top: 0.4cm">Kode <b>*</b></td>
                                 <td>
                                     <input type="text" name="ed_kode" class="form-control" style="text-transform: uppercase" value="{{ $data->kode or null }}" >
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:120px; padding-top: 0.4cm">Status</td>
+                                <td style="width:120px; padding-top: 0.4cm">Status <b>*</b></td>
                                 <td>
                                     <select class="form-control" name="cb_status" >                                    
                                         <option value="0">Pilih - Status</option>
@@ -94,7 +57,7 @@
                                 </td>
 
                                 @if(Auth::user()->punyaAkses('Kendaraan','cabang'))
-                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td style="width:110px; padding-top: 0.4cm">Cabang <b>*</b></td>
                                 <td>
                                     <select class="form-control" name="cb_cabang" >
                                     @foreach ($cabang as $row)
@@ -103,7 +66,7 @@
                                     </select>
                                 </td>
                                 @else
-                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td style="width:110px; padding-top: 0.4cm">Cabang <b>*</b></td>
                                 <td class="disabled">
                                     <select class="form-control chosen-select-width" name="cb_cabang" >
                                     @foreach ($cabang as $row)
@@ -115,7 +78,7 @@
 
                             </tr>
                             <tr>
-                                <td style="width:110px; padding-top: 0.4cm">Subcon</td>
+                                <td style="width:110px; padding-top: 0.4cm">Subcon <b>*</b></td>
                                 <td colspan="3">
                                     <select class="form-control subcon chosen-select-width" name="cb_subcon" >
                                         <option value="0">NON SUBCON</option>
@@ -146,18 +109,18 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:120px; padding-top: 0.4cm">No Rangka</td>
+                                <td style="width:120px; padding-top: 0.4cm">No Rangka <b>*</b></td>
                                 <td>
                                     <input type="text" name="ed_no_rangka" class="form-control" style="text-transform: uppercase" value="{{ $data->no_rangka or null }}" >
                                 </td>
-                                <td style="width:120px; padding-top: 0.4cm">No Mesin</td>
+                                <td style="width:120px; padding-top: 0.4cm">No Mesin <b>*</b></td>
                                 <td>
                                     <input type="text" name="ed_no_mesin" class="form-control" style="text-transform: uppercase" value="{{ $data->no_mesin or null }}" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Merk</td>
-                                <td colspan="3">
+                                <td     >
                                     <input type="text" name="ed_merk" class="form-control" style="text-transform: uppercase" value="{{ $data->merk or null }}" >
                                 </td>
                                 <td style="width:120px; padding-top: 0.4cm">Jenis Bak</td>
@@ -174,19 +137,26 @@
                                 <td>
                                     <input type="number" name="ed_lebar" class="form-control angka" style="text-transform: uppercase" value="{{ $data->l or null }}" >
                                 </td>
-                                <td style="width:120px; padding-top: 0.4cm">Tinggi</td>
-                                <td>
-                                    <input type="number" name="ed_tinggi" class="form-control angka" style="text-transform: uppercase" value="{{ $data->t or null }}" >
-                                </td>
+                                
                             </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Volume</td>
                                 <td>
                                     <input type="number" name="ed_volume" class="form-control" style="text-transform: uppercase" readonly="readonly" tabindex="-1"  value="{{ $data->volume or null }}" >
                                 </td>
+                                <td style="width:120px; padding-top: 0.4cm">Tinggi</td>
+                                <td>
+                                    <input type="number" name="ed_tinggi" class="form-control angka" style="text-transform: uppercase" value="{{ $data->t or null }}" >
+                                </td>
                             </tr>
                             <tr>
-                                <td style="width:120px; padding-top: 0.4cm">Tahun Pembuatan</td>
+                                <td style="width:120px; padding-top: 0.4cm">Warna Kabin</td>
+                                <td>
+                                    <input type="text" name="ed_warna_kabin" class="form-control" style="text-transform: uppercase" value="{{ $data->warna_kabin or null }}" >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:120px; padding-top: 0.4cm">Tahun Pembuatan <b>*</b></td>
                                 <td>
                                     <input type="number" name="ed_tahun_pembuatan" class="form-control angka" style="text-transform: uppercase" value="{{ $data->tahun or null }}" >
                                 </td>
@@ -194,13 +164,10 @@
                                 <td>
                                     <input type="text" name="ed_seri_unit" class="form-control" style="text-transform: uppercase" value="{{ $data->seri_unit or null }}" >
                                 </td>
-                                <td style="width:120px; padding-top: 0.4cm">Warna Kabin</td>
-                                <td>
-                                    <input type="text" name="ed_warna_kabin" class="form-control" style="text-transform: uppercase" value="{{ $data->warna_kabin or null }}" >
-                                </td>
+                                
                             </tr>
                             <tr>
-                                <td style="width:120px; padding-top: 0.4cm">No BPKB</td>
+                                <td style="width:120px; padding-top: 0.4cm">No BPKB <b>*</b></td>
                                 <td>
                                     <input type="text" name="ed_no_bpkb" class="form-control" style="text-transform: uppercase" value="{{ $data->no_bpkb or null }}" >
                                 </td>
@@ -212,7 +179,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:120px; padding-top: 0.4cm">No Kir</td>
+                                <td style="width:120px; padding-top: 0.4cm">No Kir <b>*</b></td>
                                 <td>
                                     <input type="text" name="ed_no_kir" class="form-control" style="text-transform: uppercase" value="{{ $data->no_kir or null }}" >
                                 </td>
@@ -237,6 +204,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">GPS</td>
                                 <td>
@@ -246,16 +214,20 @@
                                 <td>
                                     <input type="text" name="ed_posisi_bpkb" class="form-control" style="text-transform: uppercase" value="{{ $data->posisi_bpkb or null }}" >
                                 </td>
+                                
+                            </tr>
+                            <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Ket BPKB</td>
                                 <td>
                                     <input type="text" name="ed_ket_bpkb" class="form-control" style="text-transform: uppercase" value="{{ $data->ket_bpkb or null }}" >
                                 </td>
-                            </tr>
-                            <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Asuransi</td>
                                 <td>
                                     <input type="text" name="ed_asuransi" class="form-control" style="text-transform: uppercase" value="{{ $data->asuransi or null }}" >
                                 </td>
+                            </tr>
+                            <tr>
+                                
                                 <td style="width:120px; padding-top: 0.4cm">Harga Perolehan</td>
                                 <td>
                                     <input type="text" name="ed_harga_perolehan" class="form-control angka" style="text-transform: uppercase" @if ($data === null) value="0" @else value="{{ number_format($data->harga, 0, ",", ".") }}" @endif>

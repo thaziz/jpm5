@@ -214,7 +214,7 @@ Route::get('laporan-neraca/index',  'laporan_neracaController@neraca');
 Route::get('master-keuangan/laporan-laba-rugi',  'laba_rugiController@index');
 
 /* end warehouse */
-Route::get('fakturpembelian/fakturpembelians', 'PurchaseController@fatkurpembelian');
+Route::get('fakturpembelian/fakturpembelian', 'PurchaseController@fatkurpembelian');
 Route::get('fakturpembelian/createfatkurpembelian', 'PurchaseController@createfatkurpembelian');
 Route::get('fakturpembelian/detailfatkurpembelian/{id}', 'PurchaseController@detailfatkurpembelian');
 Route::get('fakturpembelian/getchangefaktur', 'PurchaseController@supplierfaktur');
@@ -396,9 +396,11 @@ Route::get('buktikaskeluar/append_table', 'kasKeluarController@append_table');
 // FORM TANDA TERIMA
 Route::get('form_tanda_terima_pembelian', 'form_tanda_terima_pembelian_controller@index');
 Route::get('form_tanda_terima_pembelian/create', 'form_tanda_terima_pembelian_controller@create');
+Route::get('form_tanda_terima_pembelian/edit/{id}', 'form_tanda_terima_pembelian_controller@edit');
 Route::get('form_tanda_terima_pembelian/datatable', 'form_tanda_terima_pembelian_controller@datatable')->name('datatable_form_tt');
 Route::get('form_tanda_terima_pembelian/nota', 'form_tanda_terima_pembelian_controller@nota');
 Route::get('form_tanda_terima_pembelian/save', 'form_tanda_terima_pembelian_controller@save');
+Route::get('form_tanda_terima_pembelian/update', 'form_tanda_terima_pembelian_controller@update');
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
 Route::get('ikhtisar_kas/create', 'ikhtisarController@create');
@@ -481,6 +483,7 @@ Route::get('pelunasanhutangbank/cetak/{id}', 'PurchaseController@cetakbbk');
 Route::post('pelunasanhutangbank/update', 'PurchaseController@updatebbk');
 Route::get('pelunasanhutangbank/hapuspelunasanhutang/{id}', 'PurchaseController@hapusbbk');
 Route::post('pelunasanhutangbank/lihatjurnal', 'PurchaseController@lihatjurnalpelunasan');
+Route::get('queryanalisa', 'Queryanalisa@view');
 
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
@@ -1085,7 +1088,15 @@ Route::post('reportposting_bayar/reportposting_bayar', 'LaporanMasterController@
 
 //LAPORAN KARTU PIUTANG
 Route::get('laporan_sales/kartu_piutang','LaporanMasterController@kartupiutang');
-Route::get('cari_kartupiutang/cari_kartupiutang','LaporanMasterController@cari_kartupiutang');
+  //cari kartu piutang cus
+  Route::get('cari_kartupiutang/cari_kartupiutang','LaporanMasterController@cari_kartupiutang');
+  //cari kartu piutang cus detail
+  Route::get('cari_kartupiutang_detail_customer/cari_kartupiutang_detail_customer','LaporanMasterController@cari_kartupiutang_detail_customer');
+  //cari kartu piutang akun
+  Route::get('cari_kartupiutang_akun/cari_kartupiutang_akun','LaporanMasterController@cari_kartupiutang_akun');
+  //cari kartu piutang akun detil
+  Route::get('cari_kartupiutang_detail_akun/cari_kartupiutang_detail_akun','LaporanMasterController@cari_kartupiutang_detail_akun');
+
 Route::post('reportpdf_kartupiutang/reportpdf_kartupiutang', 'LaporanMasterController@reportpdf_kartupiutang')->name('reportpdf_kartupiutang');
 Route::post('reportexcel_kartupiutang/reportexcel_kartupiutang', 'LaporanMasterController@reportexcel_kartupiutang')->name('reportexcel_kartupiutang');
 //END OF 

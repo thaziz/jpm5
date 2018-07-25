@@ -290,8 +290,8 @@
            <td class="right bot" align="center"> {{$data['barang'][$i][$j]->nama_masteritem}}</td>
            <td class="right bot" align="center"> {{$data['barang'][$i][$j]->unitstock}} </td>
            <td class="right bot" align="center"> {{$data['barang'][$i][$j]->pbdt_qty}}</td>
-           <td class="right bot" align="right">Rp  </td>
-           <td class="bot" align="right">Rp  </td>
+           <td class="right bot" align="right">Rp {{number_format($data['barang'][$i][$j]->pbdt_hpp)}}  </td>
+           <td class="bot" align="right">Rp {{number_format($data['barang'][$i][$j]->pbdt_totalharga)}} </td>
            <span hidden="true"></span>
            <span hidden="true" align="right"></span>
        </tr>
@@ -373,14 +373,14 @@
          <span hidden="true"></span>
          <span hidden="true"></span>
        </tr>
-  
+  <!-- 
      <tr class="botdouble topdouble">
        <th class="right bot textcenter" colspan="2">JUMLAH</th>
        <td class="right bot grey" style="background-color: #d8d8d8 !important; "></td>
        <td class="right bot" align="center"></td>
        <td class="right bot grey" style="background-color: #d8d8d8 !important;"></td>
        <td class="bot" align="right">Rp </td>
-     </tr>
+     </tr> -->
    </table>
    <table width="100%">
       <tr>

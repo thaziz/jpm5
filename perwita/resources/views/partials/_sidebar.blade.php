@@ -1416,12 +1416,9 @@
                     Request::is('keuangan/jurnal_umum/*') ? 'active' : ''
              /*======== END OF MASTER KEUANGAN OPERASIONAL ==============================*/
 
-
-                          
-
                         }}
                         ">
-                    <a href="#" ><i class="fa fa-suitcase" aria-hidden="true"></i><span class="nav-label">Operasional</span><span class="fa arrow"></span></a>
+                    <a href="#" ><i class="fa fa-suitcase" aria-hidden="true"></i><span class="nav-label">Transaksi</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         <!-- Operasional Penjualan -->
                         <li class="
@@ -2030,15 +2027,15 @@
                                  " style="border-left:none;">
                                     <a href="#" style="font-size:85%"> Transaksi Hutang <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level" style="padding-left: 5%;font-size: 85%">
-                                @if(Auth::user()->PunyaAkses('Form Tanda Terima Pembelian','aktif'))
+                               
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('form_tanda_terima_pembelian/index') ? 'active' : '' || 
                                         Request::is('form_tanda_terima_pembelian/*') ? 'active' : ''}}" href="{{ url('form_tanda_terima_pembelian/')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Tanda Terima </a>
                                 </li>
-                                @endif
+                                
                                 @if(Auth::user()->PunyaAkses('Faktur Pembelian','aktif'))
                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('fakturpembelian/fakturpembelians') ? 'active' : '' || 
+                                    <a class="sidebar master-perusahaan {{Request::is('fakturpembelian/fakturpembelian') ? 'active' : '' || 
                                         Request::is('fakturpembelian/fakturpembelian/*') ? 'active' : ''}}" href="{{ url('fakturpembelian/fakturpembelian')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Faktur Pembelian </a>
                                 </li>
                                 @endif
@@ -2195,17 +2192,17 @@
                             <ul class="nav nav-third-level" style="font-size:85%">
 
                             @if(Auth::user()->PunyaAkses('Ikhtisar Kas','aktif'))
-                            <li >
+                            {{-- <li>
                             <a class="sidebar master-perusahaan {{Request::is('keuangan/penerimaan') ? 'active' : '' || 
                         Request::is('keuangan/penerimaan/*') ? 'active' : ''}}" href="{{ url('keuangan/penerimaan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Penerimaan </a>
-                            </li>
+                            </li> --}}
                             @endif
                             @if(Auth::user()->PunyaAkses('Ikhtisar Kas','aktif'))
 
-                                <li >
+                                {{-- <li >
                                     <a class="sidebar master-perusahaan {{Request::is('keuangan/pengeluaran') ? 'active' : '' || 
                             Request::is('keuangan/pengeluaran/*') ? 'active' : ''}}" href="{{ url('keuangan/pengeluaran   ')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pengeluaran </a>
-                                </li>
+                                </li> --}}
 
                             @endif
                             @if(Auth::user()->PunyaAkses('Jurnal Umum','aktif'))
