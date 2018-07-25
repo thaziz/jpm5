@@ -31,31 +31,15 @@
                     </div>
                 </div>
                 <div class="ibox-content" >
-                <div>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                    Petunjuk Input
-                    </button>
-                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                      <div class="modal-dialog modal-dialog-centered" style="width: 800px;" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalCenterTitle">Point-Point Yang Harus Diperhatikan</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            <span><b style="color: red">1 .*Data Customer Berwarna <g style="color: green">Hijau</g> Menandakan Bahwa Customer Tersebut Memiliki Kontrak</b></span><br>
-                            <span><b style="color: red">2 .*Pencarian Tarif Penerus Pada Customer Yang Memiliki  <g style="color: green">Kontrak</g> ,Cari Dengan tombol </b> <span class="input-group-btn"> <button type="button"  class="btn btn-warning"> <i class="fa fa-search"></i> Tipe </span>
-                          </div>
-                          <div class="modal-footer">                            
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                                
+                <div class="drop_here">
                     
                 </div>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-primary" onclick="jurnal_awal()">Jurnal Awal</button>
+
+                  <button type="button" class="btn btn-primary" onclick="jurnal_balik()">Jurnal Balik</button>
+                </div>
+
                 
                 <br>
           <div class="row">
@@ -1567,5 +1551,76 @@ function hitung() {
 
 
 // END FORM PER 1 
+
+
+//JURNAL AWAL
+    function jurnal_awal() {
+        var id = $('#do_nomor').val();
+        $.ajax(
+        {
+            url :  ("{{ route('jurnal_awal_deliveryorder_paket') }}"),
+            type: "GET",
+            data : {id:id} ,
+            success: function(data, textStatus, jqXHR)
+            {  
+                if (data.status == 'kosong') {
+                    toastr.error('Data Tidak Ditemukan! / Do bukan Non-cust','Peringatan!');
+                }
+                else{
+                   $('.drop_here').html(data);
+                   $('#modal_jurnal_awal').modal('show');
+                   var kredit_l = 0;
+                   $('.kredit_jurnal_awal').each(function(i) {
+                        var kredit_total = parseFloat($(this).val());
+                        kredit_l += kredit_total;
+                   })
+                   $('.total_kredit_jurnal_awal').text(kredit_l);
+
+                   var debet_jurnal_awal = $('.debet_jurnal_awal').val();
+                   $('.total_debet_jurnal_awal').text(debet_jurnal_awal);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+               toastr.error('Error!','Error!');
+            }
+        });
+    }
+
+
+//JURNAL BALIK
+    function jurnal_balik() {
+        var id = $('#do_nomor').val();
+        $.ajax(
+        {
+            url :  ("{{ route('jurnal_balik_deliveryorder_paket') }}"),
+            type: "GET",
+            data : {id:id} ,
+            success: function(data, textStatus, jqXHR)
+            {  
+                if (data.status == 'kosong') {
+                    toastr.error('Data Tidak Ditemukan! / Do bukan Non-cust','Peringatan!');
+                }
+                else{
+                   $('.drop_here').html(data);
+                   $('#modal_jurnal_balik').modal('show');
+                   var kredit_l = 0;
+                   $('.kredit_jurnal_balik').each(function(i) {
+                        var kredit_total = parseFloat($(this).val());
+                        kredit_l += kredit_total;
+                   })
+                   $('.total_kredit_jurnal_balik').text(kredit_l);
+
+                   var debet_jurnal_balik = $('.debet_jurnal_balik').val();
+                   $('.total_debet_jurnal_balik').text(debet_jurnal_balik);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+               toastr.error('Error!','Error!');
+            }
+        });
+    }
+    
 </script>
 @endsection
