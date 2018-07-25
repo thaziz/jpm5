@@ -1477,7 +1477,7 @@
 
                                     {{
 
-                        
+                    Request::is('sales/form_tanda_terima_penjualan/*') ? 'active' : '' ||
                     Request::is('sales/deliveryorder') ? 'active' : '' || 
                             Request::is('sales/deliveryorder/*') ? 'active' : '' ||
                     Request::is('sales/deliveryorder_paket') ? 'active' : '' || 
@@ -1572,10 +1572,10 @@
                             <li >
                                 <a class="sidebar master-perusahaan 
 
-                            {{Request::is('sales/invoice') ? 'active' : '' || 
-                            Request::is('sales/invoice/*') ? 'active' : ''}} 
+                            {{Request::is('sales/form_tanda_terima_penjualan/index') ? 'active' : '' || 
+                            Request::is('sales/form_tanda_terima_penjualan/*') ? 'active' : ''}} 
 
-                            " href="{{ url('sales/invoice')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Tanda Terima Penjualan </a>
+                            " href="{{ url('sales/form_tanda_terima_penjualan/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Tanda Terima Penjualan </a>
                             </li>
                             @endif
                             @if(Auth::user()->PunyaAkses('Invoice Pembetulan','aktif'))

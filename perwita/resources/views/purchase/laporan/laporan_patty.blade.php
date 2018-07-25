@@ -143,7 +143,6 @@
 
 @section('extra_scripts')
 
-
 <script type="text/javascript">
 // patty cash
 function starto(){

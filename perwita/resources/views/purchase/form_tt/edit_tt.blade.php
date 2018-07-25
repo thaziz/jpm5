@@ -326,7 +326,7 @@
       $.ajax({
         url:baseUrl + '/form_tanda_terima_pembelian/update',
         type:'get',
-        data:$('.form_header input').serialize()+'&'+$('.form_detail input').serialize()+'&cabang='+cabang+'&supplier='+supplier,
+        data:$('.form_header input').serialize()+'&'+table.$('input').serialize()+'&cabang='+cabang+'&supplier='+supplier,
         dataType:'json',
         success:function(data){
           if (data.status == 1) {
