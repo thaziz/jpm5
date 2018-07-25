@@ -59,7 +59,7 @@ class form_tanda_terima_penjualan_controller extends Controller
 	    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
 
 	    $cari_nota = DB::select("SELECT  substring(max(ft_nota),12) as id from form_tt_penjualan
-	                                    WHERE tt_idcabang = '$req->cabang'
+	                                    WHERE ft_kode_cabang = '$req->cabang'
 	                                    AND to_char(ft_tanggal,'MM') = '$bulan'
 	                                    AND to_char(ft_tanggal,'YY') = '$tahun'");
 
@@ -74,6 +74,7 @@ class form_tanda_terima_penjualan_controller extends Controller
     public function save(Request $req)
     {
    		return DB::transaction(function() use ($req) {  
+   			$user = Auth::user()->m_name;
    			if (Auth::user()->m_name == null) {
 				return response()->json([
 					'status'=>1,
@@ -86,6 +87,7 @@ class form_tanda_terima_penjualan_controller extends Controller
 						   ->first();
 						   
 			if ($cari_nota != null) {
+
 				if ($cari_nota->updated_by == $user) {
 					return 'Data Sudah Ada';
 				}else{
@@ -140,7 +142,7 @@ class form_tanda_terima_penjualan_controller extends Controller
 							'ftd_detail' 			=> $i+1,
 							'ftd_tanggal_invoice' 	=> $invoice->i_tanggal,
 							'ftd_invoice' 			=> $req->invoice[$i],
-							'ftd_total_invoice' 	=> $req->i_total_tagihan,
+							'ftd_total_invoice' 	=> $invoice->i_total_tagihan,
 							'ftd_status' 			=> 'APPROVED',
 							'ftd_keterangan'		=> $req->catatan[$i],
 							'created_at' 			=> carbon::now(),
@@ -168,12 +170,12 @@ class form_tanda_terima_penjualan_controller extends Controller
     public function edit($id)
     {
     	if (Auth::user()->punyaAkses('Form Tanda Terima Penjualan','ubah')) {
-    		$data = DB::table('form_tt')
-    				  ->where('ft_idform',$id)
+    		$data = DB::table('form_tt_penjualan')
+    				  ->where('ft_id',$id)
     				  ->first();
 
-	 		$detail = DB::table('form_tt_d')
-					  ->where('ttd_id',$id)
+	 		$detail = DB::table('form_tt_penjualan_d')
+					  ->where('ftd_id',$id)
 					  ->get();
 
 
@@ -184,7 +186,7 @@ class form_tanda_terima_penjualan_controller extends Controller
 			$nextDay = carbon::now()->subDays(-7)->format('d/m/Y');
 
 
-			return view('sales.form_tanda_terima.edit_tt',compact('data','detail','customer','cabang'));
+			return view('sales.form_tanda_terima.edit_tt_penjualan',compact('data','detail','customer','cabang','id'));
     	}else{
     		return redirect()->back();
     	}
@@ -193,7 +195,7 @@ class form_tanda_terima_penjualan_controller extends Controller
     public function update(Request $req)
     {
     	return DB::transaction(function() use ($req) {  
-
+    		dd($req->all());
 			$cari_nota = DB::table('form_tt')
 						   ->where('ft_noform',$req->nomor)
 						   ->first();
@@ -222,7 +224,7 @@ class form_tanda_terima_penjualan_controller extends Controller
 						]);
 
 			$delete = DB::table('form_tt_d')
-						->where('ttd_id',$cari_nota->tt_idform)
+						->where('ftd_id',$cari_nota->tt_idform)
 						->delete();
 
 			for ($i=0; $i < count($req->invoice); $i++) { 
@@ -264,7 +266,15 @@ class form_tanda_terima_penjualan_controller extends Controller
     			  ->get();
 
 
+    	$data1 = DB::table('invoice')
+    			  ->join('form_tt_penjualan_d','i_nomor','=','ftd_invoice')
+    			  ->where('ftd_id',$req->id)
+    			  ->get();
+
+    	$data = array_merge($data,$data1);
+
     	$temp = $data;
+
     	for ($i=0; $i < count($req->array_simpan); $i++) { 
     		for ($a=0; $a < count($temp); $a++) { 
     			if ($temp[$a]->i_nomor == $req->array_simpan[$i]) {
@@ -307,7 +317,7 @@ class form_tanda_terima_penjualan_controller extends Controller
                         ->addColumn('aksi', function ($data) {
                             $a = '';
                             if(Auth::user()->punyaAkses('Form Tanda Terima Penjualan','ubah')){
-                              $a = '<a title="Edit" class="btn btn-xs btn-success" href='.url('sales/form_tanda_terima_Penjualan/edit').'/'.$data->ft_id.'>
+                              $a = '<a title="Edit" class="btn btn-xs btn-success" href='.url('sales/form_tanda_terima_penjualan/edit').'/'.$data->ft_id.'>
                           			<i class="fa fa-arrow-right" aria-hidden="true"></i></a> ';
                             }else{
                               $a = '';

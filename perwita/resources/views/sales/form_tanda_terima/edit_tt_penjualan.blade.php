@@ -4,7 +4,6 @@
 
 @section('content')
 
-
 <style type="text/css">
   .asw{
     color: grey;
@@ -69,36 +68,26 @@
                     <table class="table table-bordered">
                       <tr>
                         <td width="150">Kode Transaksi</td>
-                        <td width="300"><input type="text" readonly="" name="nomor" class="nomor form-control" ></td>
+                        <td width="300"><input type="text" readonly="" name="nomor" class="nomor form-control" value="{{ $data->ft_nota }}"></td>
                         <td width="150">Customer</td>
-                        <td colspan="2" class="customer_td">
+                        <td colspan="2" class="disabled">
                           <select  name="customer" class="customer form-control chosen-select-width">
                               <option value="0">Pilih - Customer</option>
                             @foreach ($customer as $val)
-                              <option value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                              <option @if($data->ft_customer == $val->kode) selected="" @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
                             @endforeach
                           </select>
                         </td>
                       </tr>
                       <tr>
                         <td>Cabang</td>
-                        @if(Auth::user()->punyaAkses('Form Tanda Terima Pembelian','cabang'))
-                        <td colspan="2" class="cabang_td">
-                          <select name="cabang" class="cabang form-control chosen-select-width">
-                            @foreach ($cabang as $val)
-                              <option @if($val->kode == Auth::user()->kode_cabang)selected="" @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
-                            @endforeach
-                          </select>
-                        </td>
-                        @else
                         <td colspan="2" class="disabled">
                           <select name="cabang" class="cabang form-control chosen-select-width">
                             @foreach ($cabang as $val)
-                              <option @if($val->kode == Auth::user()->kode_cabang)selected="" @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                              <option @if($val->kode == $data->ft_kode_cabang) selected="" @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
                             @endforeach
                           </select>
                         </td>
-                        @endif
                         <td width="150">Tanggal</td>
                         <td width="300">
                           <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
@@ -109,7 +98,7 @@
                           <div class="row">
                             <div class="col-sm-3"> 
                               <div class="checkbox checkbox-info checkbox-circle">
-                                  <input id="Kwitansi" type="checkbox" checked="" name="kwitansi">
+                                  <input id="Kwitansi" type="checkbox" @if($data->ft_kwitansi == 'on') checked="" @endif name="kwitansi">
                                     <label for="Kwitansi">
                                         Kwitansi / Invoice / No
                                     </label>
@@ -117,7 +106,7 @@
                             </div>
                             <div class="col-sm-3"> 
                               <div class="checkbox checkbox-info checkbox-circle">
-                                  <input id="FakturPajak" type="checkbox" checked="" name="faktur_pajak">
+                                  <input id="FakturPajak" type="checkbox" @if($data->ft_faktur == 'on') checked="" @endif name="faktur_pajak">
                                     <label for="FakturPajak">
                                         Faktur Pajak
                                     </label>
@@ -125,7 +114,7 @@
                             </div>
                             <div class="col-sm-3"> 
                               <div class="checkbox checkbox-info checkbox-circle">
-                                  <input id="SuratPerananAsli" type="checkbox" checked="" name="surat_peranan">
+                                  <input id="SuratPerananAsli" type="checkbox" @if($data->ft_suratperan == 'on') checked="" @endif name="surat_peranan">
                                     <label for="SuratPerananAsli">
                                         Surat Peranan Asli
                                     </label>
@@ -133,7 +122,7 @@
                             </div>
                              <div class="col-sm-3"> 
                               <div class="checkbox checkbox-info checkbox-circle">
-                                  <input id="SuratJalanAsli" type="checkbox" checked="" name="surat_jalan">
+                                  <input id="SuratJalanAsli" type="checkbox" @if($data->ft_suratjalanasli == 'on') checked="" @endif name="surat_jalan">
                                     <label for="SuratJalanAsli">
                                        Surat Jalan Asli
                                     </label>
@@ -144,11 +133,11 @@
                       </tr>
                       <tr>
                         <td>Lain-lain</td>
-                        <td colspan="2"><input type="text" class="lain form-control" name="lain"></td>
+                        <td colspan="2"><input type="text" class="lain form-control" name="lain" value="{{ $data->ft_lainlain }}"></td>
                       
                         <td>Jatuh Tempo</td>
                         <td>
-                          <input type="text" name="jatuh_tempo" value="" readonly="" class="jatuh_tempo form-control">
+                          <input type="text" name="jatuh_tempo" readonly="" class="jatuh_tempo form-control" value="{{ Carbon\carbon::parse($data->ft_jatuh_tempo)->format('d/m/Y') }}">
                         </td>
                       </tr>
                       <tr>
@@ -167,7 +156,7 @@
                           <td style="width: 15%">Invoice</td>
                           <td style="width: 10%">Tanggal Invoice</td>
                           <td style="width: 15%">Nominal</td>
-                          <td style="width: 55%">Catatan</td>
+                          <td style="width: 45%">Catatan</td>
                           <td style="width: 5%">Aksi</td>
                         </tr>
                       </thead>
@@ -192,7 +181,6 @@
     
 @include('sales.form_tanda_terima.modal_tt')
 
-    
 
 
 <div class="row" style="padding-bottom: 50px;"></div>
@@ -202,43 +190,43 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-  var array_simpan = [0];
-  $('.customer').change(function(){
-    var customer = $(this).val();
-    var tanggal = $('.tanggal').val();
-    $.ajax({
-      url  : '{{ route('ganti_jt') }}',
-      data : {customer,tanggal},
-      dataType:'json',
-      success:function(data){
-        $('.jatuh_tempo').val(data.tgl);
-      }
-    })
+var array_simpan = [0];
+$('.customer').change(function(){
+  var customer = $(this).val();
+  var tanggal = $('.tanggal').val();
+  $.ajax({
+    url  : '{{ route('ganti_jt') }}',
+    data : {customer,tanggal},
+    dataType:'json',
+    success:function(data){
+      $('.jatuh_tempo').val(data.tgl);
+    }
   })
-  function nota() {
-    var cabang = $('.cabang').val();
-    var tanggal = $('.tanggal').val();
-    $.ajax({
-      url  : '{{ url('sales/form_tanda_terima_penjualan/nota') }}',
-      data : {cabang,tanggal},
-      dataType:'json',
-      success:function(data){
-        $('.nomor').val(data.nota);
-      }
-    })
-  }
-  $(document).ready(function(){
-    var cabang = $('.cabang').val();
-    var tanggal = $('.tanggal').val();
-    $.ajax({
-      url  : '{{ url('sales/form_tanda_terima_penjualan/nota') }}',
-      data : {cabang,tanggal},
-      dataType:'json',
-      success:function(data){
-        $('.nomor').val(data.nota);
-      }
-    })
+})
+function nota() {
+  var cabang = $('.cabang').val();
+  var tanggal = $('.tanggal').val();
+  $.ajax({
+    url  : '{{ url('sales/form_tanda_terima_penjualan/nota') }}',
+    data : {cabang,tanggal},
+    dataType:'json',
+    success:function(data){
+      $('.nomor').val(data.nota);
+    }
   })
+}
+$(document).ready(function(){
+  var cabang = $('.cabang').val();
+  var tanggal = $('.tanggal').val();
+  $.ajax({
+    url  : '{{ url('sales/form_tanda_terima_penjualan/nota') }}',
+    data : {cabang,tanggal},
+    dataType:'json',
+    success:function(data){
+      $('.nomor').val(data.nota);
+    }
+  })
+})
   var index = 1 ;
   var table = $('.table_tt').DataTable({
     searching:true,
@@ -299,8 +287,7 @@
   }
 
   $('.add').click(function(){
-
-    var id = 0;
+    var id = '{{ $id }}';
     var customer = $('.customer').val();
     var cabang = $('.cabang').val();
     if (customer == '0') {
@@ -350,6 +337,7 @@
 
             '<div class=" btn-group">'+
             '<a class="btn btn-danger trash" onclick="trash(this)"><i class="fa fa-trash"></i></a>'+
+            '<input type="hidden" checked class="form-control" name="revisi[]" >'+
             '</div>',
           ]).draw();
 
@@ -423,30 +411,57 @@
     });
   })
 
-  $.fn.serializeArray = function () {
-    var rselectTextarea= /^(?:select|textarea)/i;
-    var rinput = /^(?:color|date|datetime|datetime-local|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i;
-    var rCRLF = /\r?\n/g;
-    
-    return this.map(function () {
-        return this.elements ? jQuery.makeArray(this.elements) : this;
-    }).filter(function () {
-        return this.name && !this.disabled && (this.checked || rselectTextarea.test(this.nodeName) || rinput.test(this.type) || this.type == "checkbox");
-    }).map(function (i, elem) {
-        var val = jQuery(this).val();
-        if (this.type == 'checkbox' && this.checked === false) {
-            val = 'off';
-        }
-        return val == null ? null : jQuery.isArray(val) ? jQuery.map(val, function (val, i) {
-            return {
-                name: elem.name,
-                value: val.replace(rCRLF, "\r\n")
-            };
-        }) : {
-            name: elem.name,
-            value: val.replace(rCRLF, "\r\n")
-        };
-    }).get();
-  }
+$.fn.serializeArray = function () {
+  var rselectTextarea= /^(?:select|textarea)/i;
+  var rinput = /^(?:color|date|datetime|datetime-local|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i;
+  var rCRLF = /\r?\n/g;
+  
+  return this.map(function () {
+      return this.elements ? jQuery.makeArray(this.elements) : this;
+  }).filter(function () {
+      return this.name && !this.disabled && (this.checked || rselectTextarea.test(this.nodeName) || rinput.test(this.type) || this.type == "checkbox");
+  }).map(function (i, elem) {
+      var val = jQuery(this).val();
+      if (this.type == 'checkbox' && this.checked === false) {
+          val = 'off';
+      }
+      return val == null ? null : jQuery.isArray(val) ? jQuery.map(val, function (val, i) {
+          return {
+              name: elem.name,
+              value: val.replace(rCRLF, "\r\n")
+          };
+      }) : {
+          name: elem.name,
+          value: val.replace(rCRLF, "\r\n")
+      };
+  }).get();
+}
+@foreach ($detail as $i => $val)
+    var invoice       = '{{ $val->ftd_invoice }}';
+    var nominal       = '{{ $val->ftd_total_invoice }}';
+    var tanggal_detil = '{{ Carbon\carbon::parse($val->ftd_tanggal_invoice)->format('d/m/Y') }}';
+    var catatan       = '{{ $val->ftd_keterangan }}';
+    var catatan       = '{{ $val->ftd_keterangan }}';
+
+    table.row.add([
+      '<p class="invoice_text">'+invoice+'</p>'+
+      '<input type="hidden" class="invoice" name="invoice[]" value="'+invoice+'">',
+
+      '<p class="tanggal_detil_text">'+tanggal_detil+'</p>',
+
+      '<p class="nominal_text">'+accounting.formatMoney(nominal,"", 2, ".",',')+'</p>',
+
+      '<input type="text" class="form-control" name="catatan[]" value="'+catatan+'" style="width:100%">',
+
+      '<div class=" btn-group">'+
+      '<input type="checkbox" @if($val->ftd_status == 'APPROVED') checked @endif class="form-control" name="revisi[]" >'+
+      '</div>',
+    ]).draw();
+    $('.right').css('text-align','right');
+    $('.center').css('text-align','center');
+    index++;
+    array_simpan.push(invoice);
+
+  @endforeach
 </script>
 @endsection

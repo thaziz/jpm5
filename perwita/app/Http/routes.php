@@ -1603,6 +1603,7 @@ Route::get('sales/cari_faktur_pajak', 'sales\invoice_Controller@cari_faktur_paja
 // end invoice
 //FORM TANDA TERIMA PENJUALAN
 Route::get('sales/form_tanda_terima_penjualan/index', 'form_tanda_terima_penjualan_controller@index');
+Route::get('sales/form_tanda_terima_penjualan/nota', 'form_tanda_terima_penjualan_controller@nota');
 Route::get('sales/form_tanda_terima_penjualan/create', 'form_tanda_terima_penjualan_controller@create');
 Route::get('sales/form_tanda_terima_penjualan/save', 'form_tanda_terima_penjualan_controller@save');
 Route::get('sales/form_tanda_terima_penjualan/update', 'form_tanda_terima_penjualan_controller@update');
