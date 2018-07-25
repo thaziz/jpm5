@@ -309,6 +309,20 @@ Route::get('master_subcon/check_kontrak', 'subconController@check_kontrak');
 Route::get('master_subcon/detail/{id}', 'subconController@detail');
 
 
+
+// BON SEMENTARA
+Route::get('bonsementaracabang/bonsementaracabang', 'BonSementaraController@index');
+Route::get('bonsementaracabang/createcabang', 'BonSementaraController@create');
+Route::get('bonsementaracabang/getnota', 'BonSementaraController@getnota');
+Route::post('bonsementaracabang/save', 'BonSementaraController@savecabang');
+Route::get('bonsementaracabang/setujukacab', 'BonSementaraController@setujukacab');
+Route::post('bonsementaracabang/updatekacab', 'BonSementaraController@updatekacab');
+
+
+Route::get('bonsementarapusat/bonsementarapusat', 'BonSementaraController@indexpusat');
+Route::get('bonsementarapusat/updatekapus', 'BonSementaraController@updatekapus');
+
+
 //PEMBAYARAN SUBCON
 Route::get('fakturpembelian/pilih_kontrak', 'BiayaPenerusController@pilih_kontrak');
 Route::get('fakturpembelian/pilih_kontrak_all', 'BiayaPenerusController@pilih_kontrak_all');

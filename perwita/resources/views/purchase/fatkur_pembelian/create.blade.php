@@ -958,7 +958,7 @@
                                               <input type="hidden" class="tgl_po" name="tgl_po">
                                               <input type='hidden' class='cabang2' name='cabang'> 
                                               <input type='hidden' class='inputfakturpajakmasukan'> 
-                                               <input type='hidden' class='inputtandaterima'> 
+                                               <input type='hidden' class='inputtandaterima' name="inputtandaterima"> 
                                                 <input type='hidden' name='notandaterima2' class='notandaterima2'>
                                             <tr>
                                               <td> Jumlah </td>
@@ -1010,8 +1010,13 @@
 
                                             </tr>
 
+                                            <tr>
+                                              <td> No Tanda Terima </td>
+                                              <td> <input type="text" class="form-control notandaterima" readonly="" name="notandaterima" value="-"></td>
+                                            </tr>
+
                                               <tr>
-                                            <td colspan="2">   <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_ttpo" data-toggle="modal" data-target="#myModal_TT" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button> &nbsp; <button class="btn btn-primary" type="button" id="createmodal_um" data-target="#bayaruangmuka" data-toggle="modal"> Bayar dengan Uang Muka </button></td>
+                                            <td colspan="2">    <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_ttpo" data-toggle="modal" data-target="#myModal_TT"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button> &nbsp; <button class="btn btn-primary" type="button" id="createmodal_um" data-target="#bayaruangmuka" data-toggle="modal"> Bayar dengan Uang Muka </button></td>
                                           </tr>
 
                                           </table>
@@ -2030,8 +2035,6 @@
                   location.reload();
               }
                
-
-                
           },
           error : function(){
             location.reload();
@@ -2191,9 +2194,18 @@
     })
 
     $('#createmodal_tt').click(function(){
+      
       cabang = $('.cabang').val();
-      supplier = $('.idsup').val();
+      var a = $('ul#tabmenu').find('li.active').data('val');
+      if(a == 'PO'){
+        supplier = $('.idsup_po').val();
+      }
+      else{
+         supplier = $('.idsup').val();
+      }
+
       string = supplier.split(",");
+      invoice = $('.noinvoice').val();
 
       if(supplier == ''){
           toastr.info("Mohon maaf supplier belum di pilih :)");
@@ -2201,7 +2213,7 @@
       }
        $.ajax({    
             type :"post",
-            data : {cabang,supplier},
+            data : {cabang,supplier,invoice},
             url : baseUrl + '/fakturpembelian/getnotatt',
             dataType:'json',
             success : function(data){
@@ -2228,53 +2240,43 @@
 	$('#createmodal_ttpo').click(function(){
 
       cabang = $('.cabang').val();
-      supplier = $('.idsup_po').val();
+      var a = $('ul#tabmenu').find('li.active').data('val');
+      if(a == 'PO'){
+        supplier = $('.idsup_po').val();
+      }
+      else{
+         supplier = $('.idsup').val();
+      }
+
       string = supplier.split(",");
+      invoice = $('.noinvoice').val();
 
-      tgl = $('.tgl').val();
-      jatuhtempo = $('.jatuhtempo_po').val();
-      nettohutang = $('.nettohutang_po').val();
-
-      $('.tgl_tt').val(tgl);
-      $('.supplier_tt').val(string[2]);
-      $('.jatuhtempo_tt').val(jatuhtempo);
-      $('.totalterima_tt').val(nettohutang);
-
-
+      if(supplier == ''){
+          toastr.info("Mohon maaf supplier belum di pilih :)");
+          return false;
+      }
        $.ajax({    
             type :"post",
-            data : {cabang},
+            data : {cabang,supplier,invoice},
             url : baseUrl + '/fakturpembelian/getnotatt',
             dataType:'json',
             success : function(data){
+                //console.log(data['tt'][0].tt_idform);
+                tableTT = $('#table_tt').DataTable();
+                tableTT.clear().draw();
+                nomor = 1;
+                for(i = 0; i < data['tt'].length; i++){
+                // alert('ha');
+                  var  html = "<tr> <td>"+nomor+"</td> <td>"+data['tt'][i].tt_supplier+"</td> <td>"+data['tt'][i].tt_noform+"</td> <td>"+data['tt'][i].tt_tglkembali+"</td> <td>"+data['tt'][i].ttd_invoice+"</td><td>"+addCommas(data['tt'][i].ttd_nominal)+"</td>";
 
-               console.log(data);
-                var d = new Date();
-                
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
+                  html += "<td><div class='checkbox'> <input type='checkbox' id="+data['tt'][i].tt_idform+","+data['tt'][i].ttd_detail+","+data['tt'][i].tt_noform+" class='check_tt' value='option1' aria-label='Single checkbox One'>" +
+                                      "<label></label>" +
+                                      "</div> </td>" +
+                                      "</tr>";              
+                    nomor++;
 
-                if(month < 10) {
-                  month = '0' + month1;
+                  tableTT.rows.add($(html)).draw();
                 }
-
-                console.log(d);
-
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
-
-              
-                 nott = 'TT' + month1 + year2 + '/' + cabang + '/' +  data;
-               
-                $('.notandaterima').val(nott);
             }
         })
     })

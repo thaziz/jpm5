@@ -2037,12 +2037,21 @@
                                     <a class=" {{/* uangmuka */Request::is('uangmuka') ? 'active' : '' || Request::is('uangmuka/*') ? 'active' : '' }}" href="{{url('uangmuka')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Uang Muka </a>
                                 </li>
                                 @endif
-                                @if(Auth::user()->PunyaAkses('Voucher Hutang','aktif'))
+
+                                @if(Auth::user()->PunyaAkses('Bon Sementara Cabang','aktif'))
                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('voucherhutang/voucherhutang') ? 'active' : '' || 
-                                        Request::is('voucherhutang/voucherhutang/*') ? 'active' : ''}}" href="{{ url('voucherhutang/voucherhutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Voucher Hutang </a>
+                                    <a class="sidebar master-perusahaan {{Request::is('bonsementaracabang/bonsementaracabang') ? 'active' : '' || 
+                                        Request::is('bonsementaracabang/bonsementaracabang/*') ? 'active' : ''}}" href="{{ url('bonsementaracabang/bonsementaracabang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pengajuan Bon Sementara Cabang </a>
                                 </li>
                                 @endif
+
+                                 @if(Auth::user()->PunyaAkses('Bon Sementara Pusat','aktif'))
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('bonsementarapusat/bonsementarapusat') ? 'active' : '' || 
+                                        Request::is('bonsementarapusat/bonsementarapusat/*') ? 'active' : ''}}" href="{{ url('bonsementarapusat/bonsementarapusat')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Konfirmasi Bon Sementara Pusat </a>
+                                </li>
+                                @endif
+
                                 @if(Auth::user()->PunyaAkses('Pending','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('pending/index') ? 'active' : '' || 
