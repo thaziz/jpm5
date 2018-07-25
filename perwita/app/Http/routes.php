@@ -1586,6 +1586,11 @@ Route::get('sales/datatable_invoice1', 'sales\invoice_Controller@datatable_invoi
 Route::get('sales/invoice/jurnal', 'sales\invoice_Controller@jurnal1');
 Route::get('sales/cari_faktur_pajak', 'sales\invoice_Controller@cari_faktur_pajak');
 // end invoice
+//FORM TANDA TERIMA PENJUALAN
+Route::get('sales/form_tanda_terima_penjualan/index', 'sales\form_tanda_terima_penjualan@index');
+
+
+
 // invoice pembetulan
 Route::get('sales/invoice_pembetulan', 'sales\invoice_pembetulan_controller@index');
 Route::get('sales/invoice_pembetulan_create', 'sales\invoice_pembetulan_controller@invoice_pembetulan_create');

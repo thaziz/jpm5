@@ -147,7 +147,7 @@ class KasController extends Controller
 	}
 	public function cari_resi(Request $request){
 
-		// dd($request->all());
+		dd($request->all());
 		$now = carbon::now()->format('Y-m-d');
 		if ($request->data[2]['value'] == 'PAKET') {
 

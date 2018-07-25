@@ -52,7 +52,7 @@
 <!-- <link href="{{ asset('assets/vendors/chosen/chosen.css')}}" rel="stylesheet"> -->
 <div class="row wrapper border-bottom white-bg page-heading">
   <div class="col-lg-10">
-      <h2> Laporan Patty Cash </h2>
+      <h2> Laporan Petty Cash </h2>
       <ol class="breadcrumb">
           <li>
               <a>Home</a>
@@ -64,7 +64,7 @@
             <a> Pembelian</a>
           </li>
           <li class="active">
-              <strong>Laporan Patty Cash</strong>
+              <strong>Laporan Petty Cash</strong>
           </li>
       </ol>
   </div>
@@ -77,7 +77,7 @@
     <!-- HEADER -->
     <div class="ibox">&nbsp;
       <div class="ibox-title">
-        <h5>Laporan Patty Cash</h5>
+        <h5>Laporan Petty Cash</h5>
         <a href="../buktikaskeluar/index" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
       </div>
       <div class="ibox-content col-sm-12">
@@ -127,7 +127,7 @@
     <!-- body Patty Cash-->
 <div class="ibox patty_cash" hidden="" style="padding-top: 10px;">
       <div class="ibox-title">
-        <h5>Detail Patty Cash</h5>
+        <h5>Detail Petty Cash</h5>
       </div>
   <div class=" ibox-content col-sm-12 tb_sb_hidden tabel_patty" >
   
