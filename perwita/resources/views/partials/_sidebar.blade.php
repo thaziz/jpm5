@@ -1568,6 +1568,16 @@
                             " href="{{ url('sales/invoice')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice </a>
                             </li>
                             @endif
+                            @if(Auth::user()->PunyaAkses('Form Tanda Terima Penjualan','aktif'))
+                            <li >
+                                <a class="sidebar master-perusahaan 
+
+                            {{Request::is('sales/invoice') ? 'active' : '' || 
+                            Request::is('sales/invoice/*') ? 'active' : ''}} 
+
+                            " href="{{ url('sales/invoice')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Tanda Terima Penjualan </a>
+                            </li>
+                            @endif
                             @if(Auth::user()->PunyaAkses('Invoice Pembetulan','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan 
