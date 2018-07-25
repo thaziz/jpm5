@@ -1122,7 +1122,7 @@ class do_paketController extends Controller
                               'jr_detail'=>'DEVLIERY ORDER PAKET',
                               'jr_ref'=>$request->do_nomor,
                               'jr_note'=>'DEVLIERY ORDER PAKET',
-                              'jr_insert'=>$dt,
+                              'jr_insert'=>$request->do_tanggal,
                               'jr_update'=>$dt,
                             ]);
           $acc            = [  $cari_akun[0]->id_akun
