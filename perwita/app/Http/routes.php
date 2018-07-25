@@ -320,7 +320,11 @@ Route::post('bonsementaracabang/updatekacab', 'BonSementaraController@updatekaca
 
 
 Route::get('bonsementarapusat/bonsementarapusat', 'BonSementaraController@indexpusat');
+Route::get('bonsementarapusat/setujukacab', 'BonSementaraController@setujukacab');
+Route::get('bonsementarapusat/setujukeu', 'BonSementaraController@setujukacab');
 Route::get('bonsementarapusat/updatekapus', 'BonSementaraController@updatekapus');
+Route::post('bonsementarapusat/updateadmin', 'BonSementaraController@updateadmin');
+Route::post('bonsementarapusat/updatekeu', 'BonSementaraController@updatekeu');
 
 
 //PEMBAYARAN SUBCON

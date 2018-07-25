@@ -75,8 +75,10 @@
                             <td> {{$bonsem->bp_keperluan}} </td>
                             <td style="text-align:center"> <span class="label label-warning">  {{$bonsem->status_pusat}} </span></td>
                             <td style="text-align:center">
-                             <button type="button" class="btn btn-sm btn-primary" onclick="kacab({{$bonsem->bp_id}})" data-toggle="modal" data-target="#myModal2">  PROSES KACAB </button>      
 
+                               @if(Auth::user()->PunyaAkses('Bon Sementara Kabang','aktif'))
+                             <button type="button" class="btn btn-sm btn-primary" onclick="kacab({{$bonsem->bp_id}})" data-toggle="modal" data-target="#myModal2">  PROSES KACAB </button>      
+                              @endif
 
                              </td>
                             </tr>
@@ -301,7 +303,8 @@ function kacab(id) {
           $(this).val(val);
       })
 
-      if(response['pb'][0].status_pusat == 'DITERIMA'){
+      if(response['pb'][0].bp_setujuadmin == 'SETUJU'){
+      
         $('.edit').attr('readonly' , true);
       }
     }

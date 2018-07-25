@@ -116,7 +116,7 @@ class BonSementaraController extends Controller
 		/*return $cabang;*/
 		$bp = new bonsempengajuan();
 
-		$dataid = DB::select("select * from bonsem_pengajuan");
+		$dataid = DB::select("select max(bp_id) as bp_id from bonsem_pengajuan");
 
 		if(count($dataid) == 0){
 			$id = 1;
@@ -125,6 +125,8 @@ class BonSementaraController extends Controller
 			$id = (int)$dataid[0]->bp_id + 1;
 		}
 
+
+		
 		$bp->bp_id = $id;
 		$bp->bp_cabang = $cabang;
 		$bp->bp_nominal = $nominal;
@@ -156,6 +158,23 @@ class BonSementaraController extends Controller
 		return json_encode($data);
 	}
 
+	public function setujukeu(Request $request){
+		$idpb = $request->idpb;
+
+		$data['pb']= DB::select("select * from bonsem_pengajuan, cabang where bp_id = '$idpb' and bp_cabang = kode");
+		$cabang = $data['pb'][0]->bp_cabang;
+
+		$akuncabang = DB::select("select * from d_akun where id_akun LIKE '1001%' and kode_cabang = '$cabang'");
+		$idakun = $akuncabang[0]->id_akun;
+
+		$month = date('m');
+		
+		$data['kaskecil'] = DB::select("select * from d_akun_saldo where id_akun = '$idakun' and bulan = '$month'");
+
+		return json_encode($data);
+	}
+
+
 	public function updatekacab(Request $request){
 		$id = $request->idpb;
 
@@ -171,16 +190,43 @@ class BonSementaraController extends Controller
 		return json_encode('sukses');
 	}
 
+	public function updateadmin(Request $request){
+		$id = $request->idpb;
+
+		$nominal = str_replace(",", "", $request->nominal);
+		$date = date("Y-m-d");
+		$updatepb = bonsempengajuan::find($id);
+		$updatepb->bp_nominaladmin = $nominal;
+		$updatepb->bp_setujuadmin = $request->statuskacab;
+		$updatepb->status_pusat = 'DITERIMA CABANG';
+		$updatepb->time_setujuadmin = $date;
+		$updatepb->save();
+
+		return json_encode('sukses');
+	}
+
+	public function updatekeu(Request $request){
+		$id = $request->idpb;
+
+		$nominal = str_replace(",", "", $request->nominal);
+		$date = date("Y-m-d");
+		$updatepb = bonsempengajuan::find($id);
+		$updatepb->bp_nominalkeu = $nominal;
+		$updatepb->bp_setujukeu = $request->statuskacab;
+		$updatepb->status_pusat = 'DISETUJUI';
+		$updatepb->time_setujukeu = $date;
+		$updatepb->save();
+
+		return json_encode('sukses');
+	}
 
 	public function indexpusat(){
 
-		$data['pb'] = DB::select("select * from bonsem_pengajuan, cabang where bp_setujukacab = 'SETUJU' and bp_cabang = kode");
+		$data['pb'] = DB::select("select * from bonsem_pengajuan, cabang where bp_setujukacab = 'SETUJU' and bp_cabang = kode order by bp_id desc");
 
 		return view('purchase/bonsementara/indexpusat' , compact('data'));
 	}
 
-	public function updatekapus(){
-		
-	}
+	
 
 }
