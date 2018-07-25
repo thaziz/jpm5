@@ -334,6 +334,29 @@ class form_tanda_terima_penjualan_controller extends Controller
 
     	return Response::json(['data'=>$data]);
     }
+    public function hapus_tt_penjualan(Request $req)
+    {
+    	$data = DB::table('form_tt_penjualan_d')
+    			  ->where('ftd_id',$req->id)
+    			  ->get();
+    	for ($i=0; $i < count($data); $i++) { 
+			$invoice = DB::table('invoice')
+						 ->where('i_nomor',$data[$i]->ftd_invoice)
+						 ->first();
+
+			$upd = array('i_tanda_terima'			=> null,
+						 'i_tanggal_tanda_terima'	=> null);
+	
+			$update = DB::table('invoice')
+					->where('i_nomor',$data[$i]->ftd_invoice)
+					->update($upd);
+		}
+
+		$data = DB::table('form_tt_penjualan')
+    			  ->where('ft_id',$req->id)
+    			  ->delete();
+    	return Response::json(['status'=>1]);
+    }
     public function datatable()
     {
     	if (Auth::user()->punyaAkses('Form Tanda Terima Penjualan','all')) {

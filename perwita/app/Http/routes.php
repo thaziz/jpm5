@@ -1631,6 +1631,7 @@ Route::get('sales/form_tanda_terima_penjualan/datatable', 'form_tanda_terima_pen
 Route::get('sales/form_tanda_terima_penjualan/ganti_jt', 'form_tanda_terima_penjualan_controller@ganti_jt')->name('ganti_jt');
 Route::post('sales/form_tanda_terima_penjualan/cari_invoice', 'form_tanda_terima_penjualan_controller@cari_invoice')->name('cari_invoice');
 Route::post('sales/form_tanda_terima_penjualan/append_invoice', 'form_tanda_terima_penjualan_controller@append_invoice')->name('append_invoice');
+Route::get('sales/form_tanda_terima_penjualan/hapus', 'form_tanda_terima_penjualan_controller@hapus_tt_penjualan')->name('hapus_tt_penjualan');
 
 
 
