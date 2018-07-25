@@ -1135,8 +1135,8 @@ class do_paketController extends Controller
 
           $jrdt_value     = [  $total_tarif,
                                // $hitung_ppn,
-                               $hitung_vendor_jurnal,
-                               $hitung_own_jurnal
+                               $tarif_vendor,
+                               $tarif_own
                              ];
 
 
