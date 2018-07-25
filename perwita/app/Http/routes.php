@@ -1474,6 +1474,10 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller
   Route::get('sales/deliveryorder_paket/{nomor}/edit_deliveryorder_paket', 'do_new\do_paketController@edit_deliveryorder_paket')->name('edit_deliveryorder_paket');
       //update
       Route::get('sales/deliveryorder_paket/update_deliveryorder_paket', 'do_new\do_paketController@update_deliveryorder_paket')->name('update_deliveryorder_paket');
+      //jurnal awal
+      Route::get('sales/deliveryorder_paket/jurnal_awal_deliveryorder_paket', 'do_new\do_paketController@jurnal_awal_deliveryorder_paket')->name('jurnal_awal_deliveryorder_paket');
+      //jurnal balik
+      Route::get('sales/deliveryorder_paket/jurnal_balik_deliveryorder_paket', 'do_new\do_paketController@jurnal_balik_deliveryorder_paket')->name('jurnal_balik_deliveryorder_paket');
 
 //end of do baru
 

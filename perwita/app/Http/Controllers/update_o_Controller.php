@@ -192,9 +192,9 @@ class update_o_Controller extends Controller
         $simpan = DB::table('delivery_order')->where('nomor', $request->b[0]['value'])->update($update1);
        }
 
+        $data_do = DB::table('delivery_order')->join('customer','kode','=','kode_customer')->where('nomor',$request->b[0]['value'])->get();
 
-       if ($request->b[1]['value'] == 'DELIVERED OK') {
-          $data_do = DB::table('delivery_order')->where('nomor',$request->b[0]['value'])->get();
+        if ($request->b[1]['value'] == 'DELIVERED OK' && $data_do[0]->nama == 'NON CUSTOMER' ) {
 
           
 
@@ -251,8 +251,8 @@ class update_o_Controller extends Controller
           $jrdt_status_dk = ['D','K','K','K'];
 
           $jrdt_value     = [  $data_do[0]->total_net,
-                               $data_do[0]->total_vendo,
-                               $data_do[0]->total_dpp,
+                               $hitung_vendor_jurnal,
+                               $hitung_own_jurnal,
                                $ppn_2dec,
                              ];
 

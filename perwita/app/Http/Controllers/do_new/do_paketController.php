@@ -1127,16 +1127,16 @@ class do_paketController extends Controller
                             ]);
           $acc            = [  $cari_akun[0]->id_akun
                               // ,$cari_akun_ppn[0]->id_akun
-                              ,$cari_akun_vendor[0]->id_akun
+                              // ,$cari_akun_vendor[0]->id_akun
                               ,$cari_akun_titipan[0]->id_akun
                             ];
 
-          $jrdt_status_dk = ['D','K','K'];
+          $jrdt_status_dk = ['D','K'];
 
           $jrdt_value     = [  $total_tarif,
                                // $hitung_ppn,
-                               $tarif_vendor,
-                               $tarif_own
+                               // $tarif_vendor,
+                               $total_tarif
                              ];
 
 
@@ -1387,6 +1387,41 @@ class do_paketController extends Controller
         $nilai = str_replace(',', '.', $nilai);
         return (float)$nilai;
 
+    }
+
+//LIHAT JURNAL AWAL
+    public function jurnal_awal_deliveryorder_paket(Request $request)
+    {
+        $data = DB::table('d_jurnal')
+                  ->select('jr_ref','jrdt_acc','nama_akun','jrdt_statusdk','jrdt_value')
+                  ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
+                  ->join('d_akun','jrdt_acc','=','id_akun')
+                  ->where('jr_ref','=',$request->id)
+                  ->where('jr_note','DEVLIERY ORDER PAKET')
+                  ->get();
+
+        if ($data == null) {
+          return response()->json(['status'=>'kosong']);
+        }else{
+          return view('sales.do_new.modal_jurnal_awal_do', compact('data'));
+        }
+    }
+//LIHAT JURNAL BALIK 
+    public function jurnal_balik_deliveryorder_paket(Request $request)
+    {
+        $data = DB::table('d_jurnal')
+                  ->select('jr_ref','jrdt_acc','jrdt_statusdk','nama_akun','jrdt_value')
+                  ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
+                  ->join('d_akun','jrdt_acc','=','id_akun')
+                  ->where('jr_ref','=',$request->id)
+                  ->where('jr_note','DEVLIERY ORDER PAKET BALIK')
+                  ->get();
+
+        if ($data == null) {
+          return response()->json(['status'=>'kosong']);
+        }else{
+          return view('sales.do_new.modal_jurnal_balik_do', compact('data'));
+        }
     }
 
 
