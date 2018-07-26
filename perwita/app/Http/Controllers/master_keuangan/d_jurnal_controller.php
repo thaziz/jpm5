@@ -16,8 +16,8 @@ use Session;
 
 class d_jurnal_controller extends Controller
 {
-    public function index(){
-    	// return "aaa";
+    public function index(Request $request){
+    	// return json_encode($request->all());
 
         $cabang = DB::table("cabang")->where("kode", $_GET["cab"])->select("nama")->first();
         $date = (substr($_GET['date'], 0, 1) == 0) ? substr($_GET['date'], 1, 1) : $_GET["date"];
@@ -27,11 +27,17 @@ class d_jurnal_controller extends Controller
         else
             $cabangs = DB::table("cabang")->where("kode", Session::get("cabang"))->select("kode", "nama")->get();
 
+        $idx = "";
+        
+        if($request->jenis == 'kas'){
+            $idx = 'TK';
+        }
+
     	$data = DB::table("d_jurnal")
                 ->join("d_jurnal_dt", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
                 ->join('d_akun', "d_akun.id_akun", "=", "d_jurnal_dt.jrdt_acc")
                 ->where("d_akun.kode_cabang", $_GET['cab'])
-                ->where(DB::raw("substring(jr_ref, 1,5)"), "TRANS")
+                ->where(DB::raw("substring(jr_ref, 1,2)"), $idx)
                 // ->where(DB::raw("date_part('month', jr_date)"), $date)
                 // ->where(DB::raw("date_part('year', jr_date)"), $_GET["year"])
                 ->select(DB::raw("distinct d_jurnal.jr_id"), "d_jurnal.*")->orderBy("jr_id", "desc")->get();
@@ -54,7 +60,7 @@ class d_jurnal_controller extends Controller
     }
 
     public function save_data(Request $request){
-       //return json_encode($request->all());
+       // return json_encode($request->all());
 
        $response = [
             'status'    => 'berhasil',
@@ -83,55 +89,65 @@ class d_jurnal_controller extends Controller
         }
 
         $id = DB::table("d_jurnal")->max("jr_id");
-        $ref = "TRANS".date("my")."/".date("d")."/00".($id+1);
+
+       if($request->type_transaksi == "kas"){
+            if($request->jenis_transaksi == 1){
+                $try =  (DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKM")->orderBy('jr_insert', 'desc')->first()) ? substr(DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKM")->orderBy('jr_insert', 'desc')->first()->jr_ref, 13) : 0;
+                $ref = "TKM".date("my")."/".date("d")."/00".($try+1);
+
+                // return json_encode(($try+1));
+            }
+            else{
+                $try =  (DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKK")->orderBy('jr_insert', 'desc')->first()) ? substr(DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKK")->orderBy('jr_insert', 'desc')->first()->jr_ref, 13) : 0;
+                $ref = "TKK".date("my")."/".date("d")."/00".($try+1);
+            }
+       }
 
         $jurnal = new d_jurnal;
         $jurnal->jr_id = ($id+1);
         $jurnal->jr_year = date('Y');
-        $jurnal->jr_date = date('Y-m-d', strtotime($request->jr_date));
+        $jurnal->jr_date = date('Y-m-d');
         $jurnal->jr_detail = $request->jr_detail;
         $jurnal->jr_ref = $ref;
         $jurnal->jr_note = $request->jr_note;
 
+        // $jurnal->save();
+
         if($jurnal->save()){
-            $detailid = 1;
-            for ($i=0; $i < count($request->nama_akun_debet); $i++) { 
+            foreach ($request->akun as $key => $data_akun) {
+                $acc = DB::table("d_akun")->where("id_akun", $data_akun)->select("akun_dka")->first();
+                $debet = str_replace('.', '', explode(',', $request->debet[$key])[0]);
+                $kredit = str_replace('.', '', explode(',', $request->kredit[$key])[0]);
 
-                $acc = DB::table("d_akun")->where("id_akun", $request->nama_akun_debet[$i])->select("akun_dka")->first();
+                // return json_encode($acc->akun_dka);
 
-                $value = ($acc->akun_dka != "D") ? (explode(",", str_replace(".", "", substr($request->debet[$i], 0)))[0] * -1) : explode(",", str_replace(".", "", substr($request->debet[$i], 0)))[0];
+                if($debet != 0){
+                    $value = ($acc->akun_dka == "D") ? $debet : ($debet * -1);
+                    $pos = "D";
+                }else if($kredit != 0){
+                    $value = ($acc->akun_dka == "K") ? $kredit : ($kredit * -1);
+                    $pos = "K";
+                }else if($debet == 0 && $kredit == 0){
+                    $value = 0;
+                    $pos = $acc->akun_dka;
+                }
 
-                $debet = new d_jurnal_dt;
-                $debet->jrdt_jurnal = ($id+1);
-                $debet->jrdt_detailid = $detailid;
-                $debet->jrdt_acc = $request->nama_akun_debet[$i];
-                $debet->jrdt_value = $value;
-                $debet->jrdt_type = "-";
-                $debet->jrdt_detail = "-";
-                $debet->jrdt_statusdk = "D";
+                $jr_dt = new d_jurnal_dt;
+                $jr_dt->jrdt_jurnal = ($id+1);
+                $jr_dt->jrdt_detailid = ($key+1);
+                $jr_dt->jrdt_acc = $data_akun;
+                $jr_dt->jrdt_value = $value;
+                $jr_dt->jrdt_type = "-";
+                $jr_dt->jrdt_detail = "-";
+                $jr_dt->jrdt_statusdk = $pos;
 
-                $debet->save();
-                $detailid++;
-            }
-
-            for ($i=0; $i < count($request->nama_akun_kredit); $i++) { 
-                $acc = DB::table("d_akun")->where("id_akun", $request->nama_akun_kredit[$i])->select("akun_dka")->first();
-
-                $value = ($acc->akun_dka != "K") ? (explode(",", str_replace(".", "", substr($request->kredit[$i], 0)))[0] * -1) : explode(",", str_replace(".", "", substr($request->kredit[$i], 0)))[0];
-
-                $debet = new d_jurnal_dt;
-                $debet->jrdt_jurnal = ($id+1);
-                $debet->jrdt_detailid = $detailid;
-                $debet->jrdt_acc = $request->nama_akun_kredit[$i];
-                $debet->jrdt_value = $value;
-                $debet->jrdt_type = "-";
-                $debet->jrdt_detail = "-";
-                $debet->jrdt_statusdk = "K";
-
-                $debet->save();
-                $detailid++;
+                $jr_dt->save();
             }
         }
+
+        // if($jurnal->save()){
+
+        // }
 
         return json_encode($response);
 

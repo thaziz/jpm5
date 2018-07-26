@@ -54,7 +54,7 @@
     <table border="0" id="form-table" class="col-md-12">
 
       <tr>
-        <td width="20%" class="text-left">Jenis Transaksi</td>
+        <td width="20%" class="text-left">Jenis Transaksi <input type="hidden" name="type_transaksi" value="kas" readonly /> </td>
         <td colspan="2">
           <select name="jenis_transaksi" class="select_validate form-control" id="jenis_transaksi" style="width: 40%">
             <option value="1">Kas Masuk</option>
@@ -83,12 +83,12 @@
         </td>
       </tr>
 
-      <tr>
+      {{-- <tr>
         <td width="10%" class="text-left">Nomor Transaksi</td>
         <td width="35%" colspan="2">
           <input type="text" class="form_validate form-control" name="jr_ref" placeholder="Masukkan Nomor Transaksi" id="jr_ref">
         </td>
-      </tr>
+      </tr> --}}
 
       <tr>
         <td width="10%" class="text-left">Nama Transaksi</td>
@@ -121,7 +121,7 @@
         <tr>
           {{-- <td width="10%" class="text-left">Nama</td> --}}
           <td width="35%" colspan="2">
-            <select class="select_validate form-control chosen-select akun">
+            <select class="select_validate form-control chosen-select akun" id="akun_lawan">
               <option value="---"> -- Pilih Akun Coa</option>
             </select>
           </td>
@@ -154,12 +154,14 @@
 
         <tbody id="coa_detail">
           <tr id="coa_1" data-id="1">
-            <td class="name">100311001 - KAS BESAR JPM SURABAYA</td>
+            <td class="name">
+              100311001 - KAS BESAR JPM SURABAYA</td>
             <td class="text-right currency">
-              <input class="form-control currency debet" value="0" data-id="1">
+              <input type="hidden" name="akun[]" class="akunName" readonly>
+              <input class="form-control currency debet" value="0" data-id="1" name="debet[]">
             </td>
             <td class="text-right currency">
-              <input class="form-control currency kredit" value="0" data-id="1" readonly>
+              <input class="form-control currency kredit" value="0" data-id="1" name="kredit[]" readonly>
             </td>
           </tr>
         </tbody>
@@ -214,10 +216,10 @@
       evt.preventDefault();
 
       btn = $(this);
-      btn.attr("disabled", "disabled");
-      btn.text("Menyimpan...");
+      // btn.attr("disabled", "disabled");
+      // btn.text("Menyimpan...");
 
-      if($("#total_debet").val() != $("#total_kredit").val()){
+      if($(".total_debet").val() != $(".total_kredit").val()){
         alert("Total Debet Kredit Harus Sama");
         btn.removeAttr("disabled");
         btn.text("Simpan");
@@ -233,6 +235,7 @@
           dataType: 'json',
           success: function(response){
             console.log(response);
+            form_reset();
             if(response.status == "berhasil"){
               toastr.success('Data Jurnal Memorial Berhasil Disimpan');
               btn.removeAttr("disabled");
@@ -326,15 +329,16 @@
     })
 
     $("#add_coa_lawan").click(function(evt){
-      evt.preventDefault();
+      evt.preventDefault(); var value = $("#akun_lawan");
 
-      var html = '<tr id="coa_'+(id + 1)+'" data-id="'+(id+1)+'">'+
-                    '<td class="name">100311001 - KAS BESAR JPM SURABAYA</td>'+
+      var html = '<tr id="coa_'+(id + 1)+'" data-id="'+(id+1)+'" class="akun_lawan_wrap">'+
+                    '<td class="name">'+
+                        '<input type="hidden" name="akun[]" value="'+value.val()+'" readonly>'+value.children('option:selected').text()+'</td>'+
                     '<td class="text-right currency">'+
-                      '<input class="form-control currency debet" value="0" data-id="'+(id+1)+'">'+
+                      '<input class="form-control currency debet" name="debet[]" value="0" data-id="'+(id+1)+'">'+
                     '</td>'+
                     '<td class="text-right currency">'+
-                      '<input class="form-control currency kredit" value="0" data-id="'+(id+1)+'">'+
+                      '<input class="form-control currency kredit" name="kredit[]" value="0" data-id="'+(id+1)+'">'+
                     '</td>'+
                   '</tr>';
 
@@ -346,6 +350,7 @@
 
     function generate_coa_transaksi(){
       $('#coa_1 .name').text($("#akun_transaksi option:selected").text());
+      $('#coa_1 .akunName').val($("#akun_transaksi").val());
     }
 
     function validate_form(){
@@ -414,11 +419,17 @@
       })
 
       $(".select_validate").each(function(){
-          $(this).val("---");
+          $(this).val($(this).children('option').first().attr('value'));
       })
 
-      $('#kode_cabang').trigger("chosen:updated");
-      $('#group_neraca').trigger("chosen:updated");
+      $(".akun_lawan_wrap").remove();
+      $("#coa_1 input").val(0);
+
+      $(".total_debet").val(0); 
+      $(".total_kredit").val(0)
+
+      // $('#kode_cabang').trigger("chosen:updated");
+      // $('#group_neraca').trigger("chosen:updated");
     }
   })
 </script>
