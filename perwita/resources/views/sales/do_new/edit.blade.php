@@ -1045,23 +1045,22 @@ function hitung() {
     //--PPN
     var ppn  = 0;
     if (jenis_ppn == 1) {
-        ppn =parseFloat(total) * parseFloat(0.1);
-        total = total + ppn;
+        ppn =parseFloat(total_dpp) * parseFloat(0.1);
+        total = total_dpp + ppn;
     }else if (jenis_ppn == 2) {
-        ppn =parseFloat(total) / parseFloat(100);
-        total = total + ppn;
+        ppn =parseFloat(total_dpp) / parseFloat(100);
+        total = total_dpp + ppn;
     }else if (jenis_ppn == 4) {
         ppn =0;
     }else if (jenis_ppn == 3) {
-        ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
+        ppn = 1 / parseFloat(100+1) * parseFloat(total_dpp) ;
     }else if (jenis_ppn == 5) {
-        ppn =parseFloat(total) / parseFloat(10.1);
-        total = total - ppn;
+        ppn =parseFloat(total_dpp) / parseFloat(10.1);
+        total = total_dpp - ppn;
     }
 
     var total_h = total-diskon_value_utama; 
 
-    
     //--hasil perhitungan
     $("input[name='do_jml_ppn']").val(ppn.toFixed(2));
     $("input[name='do_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
@@ -1241,6 +1240,7 @@ function hitung() {
                 $('#do_total_h').val(accounting.formatMoney(1,"",0,'.',','));
             }
             $("input[name='do_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
+            console.log('a');
 
 
         }else{
@@ -1299,7 +1299,9 @@ function hitung() {
                 ppn =parseFloat(total_hitung_ppn) / parseFloat(10.1);
                 total = total_hitung_ppn - ppn;
             }
+
             $('.jml_ppn').val(ppn.toFixed(2));
+            console.log('b');
 
             var total_h = total-diskon_v; 
             $("input[name='do_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
