@@ -155,11 +155,13 @@
                         </td>
                       </tr>
                       <tr>
-                        <td colspan="5">
+                        <td colspan="2">
                           <button type="button" class="btn btn-primary add"><i class="fa fa-plus"> Tambah Invoice</i></button>
                           <button type="button"  class="btn btn-success simpan_form"><i class="fa fa-save "> Save</i></button>
                           {{-- <button type="button"  class="btn btn-warning"><i class="fa fa-print "> </i></button> --}}
                         </td>
+                        <td colspan="1">Total</td>
+                        <td colspan="2"><input type="text" readonly="" name="total_tt" class="form-control total_tt"></td>
                       </tr>
                     </table>
                   </form>
@@ -293,6 +295,7 @@
       allowZero:true,
   });
 
+
   function trash(a) {
     var par     = $(a).parents('tr');
     var invoice = $(par).find('.invoice').val();
@@ -303,6 +306,7 @@
       $('.cabang_td').removeClass('disabled');
     }
     table.row(par).remove().draw();
+    total();
   }
 
   $('.add').click(function(){
@@ -335,6 +339,16 @@
     })
   })
 
+  function total() {
+    var total = 0;
+    $('.nominal').each(function(){
+      console.log($(this));
+      var nominal = $(this).val();
+      nominal     = nominal.replace(/[^0-9\-]+/g,"")/100;
+      total       += nominal;
+    })
+    $('.total_tt').val(total);
+  }
   $('.append_invoice').click(function(){
     var array_invoice = [];
     invoice.$('.child_check').each(function(){
@@ -362,7 +376,8 @@
 
             '<p class="tanggal_detil_text">'+data.data[i].i_tanggal+'</p>',
 
-            '<p class="nominal_text">'+accounting.formatMoney(data.data[i].i_total_tagihan,"", 2, ".",',')+'</p>',
+            '<p class="nominal_text">'+accounting.formatMoney(data.data[i].i_total_tagihan,"", 2, ".",',')+'</p>'+
+            '<input type="text" class="form-control nominal" name="nominal[]" value="'+data.data[i].i_total_tagihan+'">',
 
             '<input type="text" class="form-control" name="catatan[]" style="width:100%">',
 
@@ -383,6 +398,8 @@
       }
     })
     $('#modal_tt').modal('hide');
+    total();
+
   })
 
   $('.simpan_form').click(function(){
