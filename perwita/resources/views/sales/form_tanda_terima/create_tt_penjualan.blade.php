@@ -69,7 +69,10 @@
                     <table class="table table-bordered">
                       <tr>
                         <td width="150">Kode Transaksi</td>
-                        <td width="300"><input type="text" readonly="" name="nomor" class="nomor form-control" ></td>
+                        <td width="300">
+                          <input type="text" name="nomor" class="nomor form-control" >
+                          <input type="text" name="nomor_old" class="nomor form-control" >
+                        </td>
                         <td width="150">Customer</td>
                         <td colspan="2" class="customer_td">
                           <select  name="customer" class="customer form-control chosen-select-width">
@@ -223,7 +226,10 @@
       data : {cabang,tanggal},
       dataType:'json',
       success:function(data){
-        $('.nomor').val(data.nota);
+        if ($('.nomor_old').val() == $('.nomor').val()) {
+            $('.nomor').val(data.nota);
+            $('.nomor_old').val(data.nota);
+        }
       }
     })
   }
@@ -236,6 +242,7 @@
       dataType:'json',
       success:function(data){
         $('.nomor').val(data.nota);
+        $('.nomor_old').val(data.nota);
       }
     })
   })
