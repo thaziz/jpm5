@@ -271,7 +271,7 @@
                                                               <input type="radio" class="cek_vendor_ya" name="cek_vendor">Ya
                                                             </label>
                                                             <label class="radio-inline">
-                                                              <input type="radio" class="cek_vendor_tidak" name="cek_vendor">Tidak
+                                                              <input type="radio" class="cek_vendor_tidak" name="cek_vendor" checked>Tidak
                                                             </label>
                                                         </div>
                                                     </td>
