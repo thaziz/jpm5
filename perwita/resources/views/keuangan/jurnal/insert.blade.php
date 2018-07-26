@@ -39,6 +39,11 @@
     padding: 10px;
   }
 
+  input.currency{
+    font-size: 8pt;
+    text-align: right;
+  }
+
 </style>
 
 <div class="row">
@@ -52,8 +57,8 @@
         <td width="20%" class="text-left">Jenis Transaksi</td>
         <td colspan="2">
           <select name="jenis_transaksi" class="select_validate form-control" id="jenis_transaksi" style="width: 40%">
-            <option value="kas_masuk">Kas Masuk</option>
-            <option value="kas_keluar">Kas Keluar</option>
+            <option value="1">Kas Masuk</option>
+            <option value="2">Kas Keluar</option>
           </select>
         </td>
       </tr>
@@ -72,7 +77,7 @@
       <tr>
         <td width="10%" class="text-left">Akun COA</td>
         <td colspan="2">
-          <select name="nama_akun_kredit[]" class="select_validate form-control chosen-select akun">
+          <select class="select_validate form-control chosen-select akun" id="akun_transaksi">
             <option value="---"> -- Pilih Akun Coa</option>
           </select>
         </td>
@@ -92,27 +97,46 @@
         </td>
       </tr>
 
-      <tr>
-        <td width="10%" class="text-left" style="vertical-align: top; padding-top: 1em;">Catatan</td>
-        <td colspan="2">
-          <textarea name="jr_note" class="input-Validity upper form-control form_validate" style="resize: none;height: 100px;" placeholder="Masukkan Catatan Jurnal Disini"></textarea>
-        </td>
-      </tr>
-
     </table>
   </div>
 
-  <div class="col-md-5" style="border: 0px solid #ddd; border-radius: 5px; padding: 10px; background: #eee;">
-    <table border="0" id="form-table" class="col-md-12">
+  <div class="col-md-5" style="border: 0px solid #ddd; border-radius: 5px;">
 
-      <tr>
-        {{-- <td width="10%" class="text-left">Nama</td> --}}
-        <td width="35%" colspan="2">
-          <input type="text" class="form_validate form-control" name="jr_detail" placeholder="Masukkan Nama Transaksi" id="jr_detail">
-        </td>
-      </tr>
+    <div class="col-md-12" style="padding: 0px;">
+      <table border="0" id="form-table" class="col-md-12">
 
-    </table>
+        <tr>
+          <td width="20%" class="text-left" style="vertical-align: top; padding-top: 1em;">Catatan</td>
+          <td colspan="2">
+            <textarea name="jr_note" class="input-Validity upper form-control form_validate" style="width:100%; resize: none; height: 100px;" placeholder="Masukkan Catatan Jurnal Disini"></textarea>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <div class="col-md-12 m-t" style="padding: 10px; background: #eee;">
+      <table border="0" id="form-table" class="col-md-12">
+
+        <tr>
+          {{-- <td width="10%" class="text-left">Nama</td> --}}
+          <td width="35%" colspan="2">
+            <select class="select_validate form-control chosen-select akun">
+              <option value="---"> -- Pilih Akun Coa</option>
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          {{-- <td width="10%" class="text-left">Nama</td> --}}
+          <td colspan="2" style="padding-top: 10px;">
+            <button class="btn btn-primary btn-xs btn-block" id="add_coa_lawan">Tambahkan Ke Detail COA</button>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
   </div>
 
   <div class="col-md-12 m-t" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
@@ -128,25 +152,23 @@
           </tr>
         </thead>
 
-        <tbody>
-          <tr>
-            <td>100311001 - KAS BESAR JPM SURABAYA</td>
-            <td class="text-right currency">{{ number_format(25000000000, 2) }}</td>
-            <td class="text-right currency">{{ number_format(0, 2) }}</td>
-          </tr>
-
-          <tr>
-            <td>100211002 - BON SEMENTARA JPM JEMBER</td>
-            <td class="text-right currency">{{ number_format(0, 2) }}</td>
-            <td class="text-right currency">{{ number_format(25000000000, 2) }}</td>
+        <tbody id="coa_detail">
+          <tr id="coa_1" data-id="1">
+            <td class="name">100311001 - KAS BESAR JPM SURABAYA</td>
+            <td class="text-right currency">
+              <input class="form-control currency debet" value="0" data-id="1">
+            </td>
+            <td class="text-right currency">
+              <input class="form-control currency kredit" value="0" data-id="1" readonly>
+            </td>
           </tr>
         </tbody>
 
         <tfoot>
           <tr>
-            <td class="text-center" style="font-weight: bold; background: #eee;"> Total </td>
-            <td class=" text-right currency" style="background: #eee;"> {{ number_format(25000000000, 2) }} </td>
-            <td class=" text-right currency" style="background: #eee;"> {{ number_format(25000000000, 2) }} </td>
+            <td>  </td>
+            <td style="font-weight: bold; background: #eee; border: 1px solid #fff;"><input class="form-control currency total_debet" style="height: 10px; border: none; padding-right: 8px; background: #eee;" value="0"></td>
+            <td style="font-weight: bold; background: #eee; border: 1px solid #fff;"><input class="form-control currency total_kredit" style="height: 10px; border: none; padding-right: 8px; background: #eee;" value="0"></td>
           </tr>
         </tfoot>
       </table>
@@ -164,20 +186,22 @@
 <script>
   $(document).ready(function(){
 
-    akun = {!! $akun !!};
+    akun = {!! $akun !!}; var id = 1;
 
     $(".chosen-select.akun").html(initiate_akun($("#cabang").val()));
     $('.chosen-select.akun').trigger("chosen:updated");
 
+    generate_coa_transaksi();
+
     $.fn.maskFunc = function(){
-      $('.currency').inputmask("currency", {
+      $('input.currency').inputmask("currency", {
           radixPoint: ",",
           groupSeparator: ".",
           digits: 2,
           autoGroup: true,
           prefix: '', //Space after $, this will not truncate the first character.
           rightAlign: false,
-          oncleared: function () { self.Value(''); }
+          allowMinus: false
       });
 
       $(".chosen-select").chosen()
@@ -252,40 +276,77 @@
       initiate_total($(this).data("id"))
     })
 
-    $(".add_row").click(function(){
-      $print = '<tr>'+
-                  '<td width="65%" class="text-left">'+
-                    '<select name="nama_akun_'+$(this).data("table")+'[]" class="select_validate form-control chosen-select akun">'+
-                        initiate_akun($("#cabang").val())+
-                    '</select>'+
-                  '</td>'+
-                  '<td width="100%" class="text-left" style="padding-right: 0px;">'+
-                    '<div class="input-group" style="padding: 0px;">'+
-                      '<input type="text" name="'+$(this).data("table")+'[]" value="0" class="currency '+$(this).data("table")+' form-control text-right" style="width: 100%">'+
-                      '<span class="input-group-btn">'+
-                        '<button class="btn btn-danger delete_row" type="button" style="padding: 6px 6px 5px 6px;font-size: 8pt;" data-id="'+$(this).data("table")+'"><i class="fa fa-eraser"></i></button>'+
-                      '</span>'+
-                    '</div><!-- /input-group -->'+
-                  '</td>'+
-                '</tr>';
-
-      $(this).parents("tbody").append($print);
-      $(this).maskFunc()
-
-      return false
-    })
-
     $("#jr_detail").on("keyup", function(){
       $(this).val($(this).val().toUpperCase())
     })
 
-    $("table").on("keyup", ".debet", function(){
-      initiate_total('debet');
+    $("#coa_detail").on('keyup', 'input.debet', function(evt){
+      evt.preventDefault(); var id = evt.target.getAttribute('data-id');
+
+      if(evt.key != "Tab"){
+        $('#coa_'+id+' input.kredit').val(0);
+        initiate_total();
+      }
+
     })
 
-    $("table").on("keyup", ".kredit", function(){
-      initiate_total('kredit');
+    $("#coa_detail").on('keyup', 'input.kredit', function(evt){
+      evt.preventDefault(); var id = evt.target.getAttribute('data-id');
+
+      if(evt.key != "Tab"){
+        $('#coa_'+id+' input.debet').val(0);
+        initiate_total();
+      }
+
     })
+
+    $('#akun_transaksi').change(function(evt){
+      evt.preventDefault();
+      generate_coa_transaksi();
+    })
+
+    $("#jenis_transaksi").change(function(evt){
+      evt.preventDefault(); context = $(this);
+
+      if(context.val() == 1){
+        val =  $("#coa_1 input.kredit").val().replace(/\./g, '').split(',')[0];
+        $("#coa_1 input.debet").removeAttr('readonly');
+        $("#coa_1 input.kredit").attr('readonly', 'readonly');
+        $("#coa_1 input.kredit").val(0);
+        $("#coa_1 input.debet").val(val);
+      }else{
+        val =  $("#coa_1 input.debet").val().replace(/\./g, '').split(',')[0];
+        $("#coa_1 input.kredit").removeAttr('readonly');
+        $("#coa_1 input.debet").attr('readonly', 'readonly');
+        $("#coa_1 input.debet").val(0);
+        $("#coa_1 input.kredit").val(val);
+      }
+
+      initiate_total();
+    })
+
+    $("#add_coa_lawan").click(function(evt){
+      evt.preventDefault();
+
+      var html = '<tr id="coa_'+(id + 1)+'" data-id="'+(id+1)+'">'+
+                    '<td class="name">100311001 - KAS BESAR JPM SURABAYA</td>'+
+                    '<td class="text-right currency">'+
+                      '<input class="form-control currency debet" value="0" data-id="'+(id+1)+'">'+
+                    '</td>'+
+                    '<td class="text-right currency">'+
+                      '<input class="form-control currency kredit" value="0" data-id="'+(id+1)+'">'+
+                    '</td>'+
+                  '</tr>';
+
+
+      $("#coa_detail").append(html);
+      $(this).maskFunc();
+      id++;
+    })
+
+    function generate_coa_transaksi(){
+      $('#coa_1 .name').text($("#akun_transaksi option:selected").text());
+    }
 
     function validate_form(){
       a = true;
@@ -320,18 +381,22 @@
       return a;
     }
 
-    function initiate_total(id){
-      $total = 0;
-      $("."+id).each(function(){
-        $value = $(this).val()
-        $nilai = $value.split(",")[0].replace(/\./g,"")
-
-        // alert($nilai)
-        $total += parseInt($nilai)
+    function initiate_total(context){
+      var total = 0;
+      $(".debet").each(function(idx){
+       var num = $(this).val().replace(/\./g, '').split(',')[0];
+       total += parseInt(num);
       })
 
-      // alert($total)
-      $("#total_"+id).val($total);
+      $("input.total_debet").val(total);
+
+      total = 0;
+      $(".kredit").each(function(idx){
+       var num = $(this).val().replace(/\./g, '').split(',')[0];
+       total += parseInt(num);
+      })
+
+      $("input.total_kredit").val(total);
     }
 
     function initiate_akun(cabang){
