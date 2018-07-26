@@ -126,6 +126,20 @@ class BonSementaraController extends Controller
 		}
 
 
+
+		$databonsem = DB::select("select * from bonsem_pengajuan where bp_nota = '$nota'");
+			if(count($databonsem) != 0){
+					$explode = explode("/", $databonsem[0]->bp_nota);
+					$idbonsem = $explode[2];
+				
+					$idbonsem = (int)$idbonsem + 1;
+					$akhirbonsem = str_pad($idbonsem, 4, '0', STR_PAD_LEFT);
+					$nobonsem = $explode[0] .'/' . $explode[1] . '/'  . $akhirbonsem;
+			}
+			else {
+				$nobonsem = $nota;
+			}
+
 		
 		$bp->bp_id = $id;
 		$bp->bp_cabang = $cabang;
@@ -133,7 +147,7 @@ class BonSementaraController extends Controller
 		$bp->bp_keperluan = strtoupper($keperluan);
 		$bp->bp_bagian = strtoupper($bagian);
 		$bp->bp_tgl = $tgl;
-		$bp->bp_nota = $nota;
+		$bp->bp_nota = $nobonsem;
 		$bp->status_pusat = 'DITERBITKAN';
 		$bp->created_by = $request->username;
 		$bp->updated_by = $request->username;
