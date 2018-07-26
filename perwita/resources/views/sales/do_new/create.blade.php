@@ -989,18 +989,18 @@ function hitung() {
     //--PPN
     var ppn  = 0;
     if (jenis_ppn == 1) {
-        ppn =parseFloat(total) * parseFloat(0.1);
-        total = total + ppn;
+        ppn =parseFloat(total_dpp) * parseFloat(0.1);
+        total = total_dpp + ppn;
     }else if (jenis_ppn == 2) {
         ppn =parseFloat(total) / parseFloat(100);
-        total = total + ppn;
+        total = total_dpp + ppn;
     }else if (jenis_ppn == 4) {
         ppn =0;
     }else if (jenis_ppn == 3) {
-        ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
+        ppn = 1 / parseFloat(100+1) * parseFloat(total_dpp) ;
     }else if (jenis_ppn == 5) {
-        ppn =parseFloat(total) / parseFloat(10.1);
-        total = total - ppn;
+        ppn =parseFloat(total_dpp) / parseFloat(10.1);
+        total = total_dpp - ppn;
     }
     
     var total_h = total-diskon_value_utama; 

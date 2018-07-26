@@ -1220,7 +1220,7 @@ function hitung() {
                 ppn =parseFloat(total_hitung_ppn) * parseFloat(0.1);
                 total = total_hitung_ppn + ppn;
             }else if (jenis_ppn == 2) {
-                ppn =parseFloat(total) / parseFloat(100.1);
+                ppn =parseFloat(total_hitung_ppn) / parseFloat(100.1);
                 total = total_hitung_ppn + ppn;
             }else if (jenis_ppn == 4) {
                 ppn =0;
@@ -1289,7 +1289,7 @@ function hitung() {
                 ppn =parseFloat(total_hitung_ppn) * parseFloat(0.1);
                 total = total_hitung_ppn + ppn;
             }else if (jenis_ppn == 2) {
-                ppn =parseFloat(total) / parseFloat(100.1);
+                ppn =parseFloat(total_hitung_ppn) / parseFloat(100.1);
                 total = total_hitung_ppn + ppn;
             }else if (jenis_ppn == 4) {
                 ppn =0;
