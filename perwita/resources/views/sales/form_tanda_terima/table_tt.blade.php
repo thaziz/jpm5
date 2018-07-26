@@ -11,7 +11,9 @@
 	<tbody>
 		@foreach ($data as $i=> $val)
 			<tr>
-				<td style="width: 20px">{{ $i+1 }}</td>
+				<td style="width: 20px">{{ $i+1 }}
+					{{ csrf_field() }}
+				</td>
 				<td>{{ $val->i_nomor }}
 					<input type="hidden" name="nomor_invoice" class="nomor_invoice" value="{{ $val->i_nomor }}">
 				</td>

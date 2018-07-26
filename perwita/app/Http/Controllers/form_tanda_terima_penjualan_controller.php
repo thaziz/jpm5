@@ -195,48 +195,85 @@ class form_tanda_terima_penjualan_controller extends Controller
     public function update(Request $req)
     {
     	return DB::transaction(function() use ($req) {  
-    		dd($req->all());
-			$cari_nota = DB::table('form_tt')
-						   ->where('ft_noform',$req->nomor)
+			$cari_nota = DB::table('form_tt_penjualan')
+						   ->where('ft_nota',$req->nomor)
 						   ->first();
 			$total = 0;
-			for ($i=0; $i < count($req->nominal); $i++) { 
-				$total += filter_var($req->nominal[$i],FILTER_SANITIZE_NUMBER_INT);
-			}
-
-			$save = DB::table('form_tt')
-						->where('ft_noform',$req->nomor)
+			$save = DB::table('form_tt_penjualan')
+						->where('ft_nota',$req->nomor)
 						->update([
-							'ft_tgl' 			=> carbon::parse(str_replace('/','-',$req->tanggal))->format('Y-m-d'),
+							'ft_tanggal' 		=> carbon::parse(str_replace('/','-',$req->tanggal))->format('Y-m-d'),
 							'ft_lainlain' 		=> $req->lain,
-							'ft_tglkembali' 	=> carbon::parse(str_replace('/','-',$req->tanggal_kembali))->format('Y-m-d'),
-							'ft_totalterima' 	=> $total,
+							'ft_jatuh_tempo' 	=> carbon::parse(str_replace('/','-',$req->jatuh_tempo))->format('Y-m-d'),
+							'created_at' 		=> carbon::now(),
 							'updated_at' 		=> carbon::now(),
 							'ft_kwitansi' 		=> $req->kwitansi,
 							'ft_suratperan' 	=> $req->surat_peranan,
 							'ft_suratjalanasli' => $req->surat_jalan,
-							'ft_noform' 		=> $req->nomor,
-							'ft_idcabang' 		=> $req->cabang,
-							'ft_nofp' 			=> $req->nomor,
-							'ft_supplier' 		=> $req->supplier,
+							'ft_nota' 			=> $req->nomor,
+							'ft_kode_cabang'	=> $req->cabang,
+							'ft_customer' 		=> $req->customer,
 							'ft_faktur' 		=> $req->faktur_pajak,
+							'created_by' 		=> Auth::user()->m_name,
 							'updated_by' 		=> Auth::user()->m_name,
 						]);
 
-			$delete = DB::table('form_tt_d')
-						->where('ftd_id',$cari_nota->tt_idform)
+			$delete = DB::table('form_tt_penjualan_d')
+						->where('ftd_id',$cari_nota->ft_id)
 						->delete();
 
+			$total = 0;
 			for ($i=0; $i < count($req->invoice); $i++) { 
-				$save = DB::table('form_tt_d')
-						->insert([
-							'ttd_id' 		=> $cari_nota->tt_idform,
-							'ttd_detail' 	=> $i+1,
-							'ttd_invoice' 	=> $req->invoice[$i],
-							'ttd_nominal' 	=> filter_var($req->nominal[$i],FILTER_SANITIZE_NUMBER_INT),
-							'ttd_tanggal' 	=> carbon::parse(str_replace('/','-',$req->tanggal_detil[$i]))->format('Y-m-d'),
-						]);
+				$invoice = DB::table('invoice')
+							 ->where('i_nomor',$req->invoice[$i])
+							 ->first();
+				if ($req->revisi[$i] == 'off') {
+					$detail = array('ftd_id' 				=> $cari_nota->ft_id,
+								'ftd_detail' 			=> $i+1,
+								'ftd_tanggal_invoice' 	=> $invoice->i_tanggal,
+								'ftd_invoice' 			=> $req->invoice[$i],
+								'ftd_total_invoice' 	=> $invoice->i_total_tagihan,
+								'ftd_status' 			=> 'CANCEL',
+								'ftd_keterangan'		=> $req->catatan[$i],
+								'created_at' 			=> carbon::now(),
+								'updated_at' 			=> carbon::now(),
+								);
+				}else{
+					$detail = array('ftd_id' 				=> $cari_nota->ft_id,
+								'ftd_detail' 			=> $i+1,
+								'ftd_tanggal_invoice' 	=> $invoice->i_tanggal,
+								'ftd_invoice' 			=> $req->invoice[$i],
+								'ftd_total_invoice' 	=> $invoice->i_total_tagihan,
+								'ftd_status' 			=> 'APPROVED',
+								'ftd_keterangan'		=> $req->catatan[$i],
+								'created_at' 			=> carbon::now(),
+								'updated_at' 			=> carbon::now(),
+								);
+				}
+				
+
+				$save = DB::table('form_tt_penjualan_d')
+						->insert($detail);
+
+				$total += $invoice->i_total_tagihan;
+				if ($req->revisi[$i] == 'off') {
+					$upd = array('i_tanda_terima'			=> null,
+								 'i_tanggal_tanda_terima'	=> null);
+				}else{
+					$upd = array('i_tanda_terima'			=> $req->nomor,
+								 'i_tanggal_tanda_terima'	=> carbon::parse(str_replace('/','-',$req->tanggal))->format('Y-m-d'));
+				}
+
+				$update = DB::table('invoice')
+						->where('i_nomor',$req->invoice[$i])
+						->update($upd);
 			}
+
+			$save = DB::table('form_tt_penjualan')
+						->where('ft_id',$cari_nota->ft_id)
+						->update([
+							'ft_total' 		=> $total,
+						]);
 
 			return Response::json(['status'=>1]);
 
@@ -296,6 +333,29 @@ class form_tanda_terima_penjualan_controller extends Controller
     	
 
     	return Response::json(['data'=>$data]);
+    }
+    public function hapus_tt_penjualan(Request $req)
+    {
+    	$data = DB::table('form_tt_penjualan_d')
+    			  ->where('ftd_id',$req->id)
+    			  ->get();
+    	for ($i=0; $i < count($data); $i++) { 
+			$invoice = DB::table('invoice')
+						 ->where('i_nomor',$data[$i]->ftd_invoice)
+						 ->first();
+
+			$upd = array('i_tanda_terima'			=> null,
+						 'i_tanggal_tanda_terima'	=> null);
+	
+			$update = DB::table('invoice')
+					->where('i_nomor',$data[$i]->ftd_invoice)
+					->update($upd);
+		}
+
+		$data = DB::table('form_tt_penjualan')
+    			  ->where('ft_id',$req->id)
+    			  ->delete();
+    	return Response::json(['status'=>1]);
     }
     public function datatable()
     {

@@ -1482,6 +1482,7 @@
 
                         
                     Request::is('sales/deliveryorder') ? 'active' : '' || 
+                    Request::is('sales/form_tanda_terima_penjualan/*') ? 'active' : '' || 
                             Request::is('sales/deliveryorder/*') ? 'active' : '' ||
                     Request::is('sales/deliveryorder_paket') ? 'active' : '' || 
                             Request::is('sales/deliveryorder_paket/*') ? 'active' : '' ||
@@ -1569,6 +1570,16 @@
                             Request::is('sales/invoice/*') ? 'active' : ''}} 
 
                             " href="{{ url('sales/invoice')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice </a>
+                            </li>
+                            @endif
+                            @if(Auth::user()->PunyaAkses('Form Tanda Terima Penjualan','aktif'))
+                            <li >
+                            <a class="sidebar 
+
+                            {{Request::is('sales/form_tanda_terima_penjualan/index') ? 'active' : '' || 
+                            Request::is('sales/form_tanda_terima_penjualan/*') ? 'active' : ''}} 
+
+                            " href="{{ url('sales/form_tanda_terima_penjualan/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Form Tanda Terima Penjualan</a>
                             </li>
                             @endif
                             @if(Auth::user()->PunyaAkses('Invoice Pembetulan','aktif'))
@@ -2557,6 +2568,7 @@
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporan_invoice') ? 'active' : '' || 
                                     Request::is('sales/laporan_invoice/*') ? 'active' : ''}} " href="{{ url('sales/laporan_invoice')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice</a>
                                 </li>
+
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporan_invoice_lain') ? 'active' : '' || 
                                     Request::is('sales/laporan_invoice_lain/*') ? 'active' : ''}} " href="{{ url('sales/laporan_invoice_lain')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice Lain</a>
