@@ -16,7 +16,7 @@
                          <tr>
                            <td colspan="6">Customer : [{{ $customer[$in][0]->kode }}] {{ $customer[$in][0]->nama }}</td>
                          </tr>
-                          <tr>
+                         <tr>
 
                               @if ($saldo_ut[$in] == 0)
                                   <td >Saldo Awal :</td>

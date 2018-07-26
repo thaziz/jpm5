@@ -963,7 +963,6 @@ function hitung() {
 
     //menghitung atas
     var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi)+parseFloat(biaya_penerus);
-
     if (diskon_p != 0) {
         var diskon_value_utama = diskon_p / 100 * total;
         $("input[name='do_diskon_v']").val(Math.round(diskon_value_utama));
@@ -1106,6 +1105,7 @@ function hitung() {
             var jenis_ppn = $("select[name='do_jenis_ppn']").val();
             var tarif_dasar = $("input[name='do_tarif_dasar']").val();
             var biaya_tambahan = $("input[name='do_biaya_tambahan']").val();
+            var biaya_penerus = $("input[name='do_tarif_penerus']").val();
             var diskon_p  = $("input[name='do_diskon_p']").val();
             var diskon_v  = $("input[name='do_diskon_v']").val();
             var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
@@ -1118,6 +1118,7 @@ function hitung() {
             var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");
             var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
             var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
+            var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
             var diskon_p = diskon_p.replace(/[A-Za-z$. ,-]/g, "");
             var diskon_v = diskon_v.replace(/[A-Za-z$. ,-]/g, "");
             var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g,"");
@@ -1132,7 +1133,7 @@ function hitung() {
             }
 
             //-- menghitung atas
-            var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi);
+            var total  = parseFloat(tarif_dasar)+parseFloat(biaya_penerus)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi);
 
             var diskon_total = parseFloat(diskon_v)/parseFloat(total)*100;
         
@@ -1185,17 +1186,22 @@ function hitung() {
             var jenis_ppn = $("select[name='do_jenis_ppn']").val();
             var tarif_dasar = $("input[name='do_tarif_dasar']").val();
             var biaya_tambahan = $("input[name='do_biaya_tambahan']").val();
-            var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
+            var biaya_penerus = $("input[name='do_tarif_penerus']").val();
             var diskon_p  = $("input[name='do_diskon_p']").val();
             var diskon_v  = $("input[name='do_diskon_v']").val();
+            var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
+            var do_vendor  = $("input[name='do_vendor']").val();
 
+            
             //--Regex
             var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");
             var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
             var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
+            var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
             var diskon_p = diskon_p.replace(/[A-Za-z$. ,-]/g, "");
             var diskon_v = diskon_v.replace(/[A-Za-z$. ,-]/g, "");
             var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g,"");
+            var do_vendor = do_vendor.replace(/[A-Za-z$. ,-]/g,"");
 
 
             $("input[name='do_diskon_p']").attr('readonly',false);          
@@ -1313,6 +1319,8 @@ function hitung() {
 
 //SIMPAN DATA
     $(document).on("click","#btnsimpan",function(){
+
+
         $.ajax(
         {
             url :  ("{{ route('save_deliveryorder_paket') }}"),
@@ -1475,7 +1483,6 @@ function hitung() {
         var berat_minimum = $("input[name='berat_minimum']").val();
         var tarif_dasar   = $("#tarif_dasar_patokan").val();
         
-
         //perhitungan berat dikali 
 
         if (tipe == 'KOLI') {
@@ -1491,8 +1498,6 @@ function hitung() {
                 $("input[name='do_berat']").val(parseFloat(berat_minimum));
             }
         }
-
-        
     }
 
 

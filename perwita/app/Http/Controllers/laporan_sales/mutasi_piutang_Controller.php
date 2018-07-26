@@ -31,7 +31,6 @@ class mutasi_piutang_Controller extends Controller
 	   }
 
 	   // return $arraycus;
-
 	   //unique customer
 		$result_customer = array();
 		foreach ($arraycus as &$v) {

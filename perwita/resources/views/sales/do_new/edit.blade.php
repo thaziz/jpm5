@@ -325,14 +325,14 @@
                                     {{-- HIDDEN --}}
 
                                     <!-- temporari data total-->
-                                    <input type="hidden" name="do_total_temp">
+                                    <input type="hidden" name="do_total_temp" value="{{ $data->total_net }}">
 
                                     <input type="hidden" name="tarif_vendor_bol" id="tarif_vendor_bol" value="{{ $data->tarif_vendor_bol }}">
 
                                     <input type="hidden" name="id_tarif_vendor" id="id_tarif_vendor">
                                     <input type="hidden" name="nama_tarif_vendor" id="nama_tarif_vendor">
 
-                                    <!-- PATOKAN BERATI DI KALI TARIF DASAR ,  -->
+                                    <!-- PATOKAN BERAT DI KALI TARIF DASAR ,  -->
                                     <input type="hidden" name="tarif_dasar_patokan" id="tarif_dasar_patokan">
 
                                     <!-- Berat Minimum-->
@@ -1018,7 +1018,6 @@ function hitung() {
 
     //menghitung atas
     var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi)+parseFloat(biaya_penerus);
-
     if (diskon_p != 0) {
         var diskon_value_utama = diskon_p / 100 * total;
         $("input[name='do_diskon_v']").val(Math.round(diskon_value_utama));
@@ -1153,12 +1152,13 @@ function hitung() {
 //DISKON VALUE
     function diskon_value(){
         if ($("input[name='do_diskon_v']").val() != 0) {
+
             $("input[name='do_diskon_p']").attr('readonly',true);
 
             var jenis_ppn = $("select[name='do_jenis_ppn']").val();
             var tarif_dasar = $("input[name='do_tarif_dasar']").val();
-            var biaya_tambahan = $("input[name='do_biaya_tambahan']").val();
             var biaya_penerus = $("input[name='do_tarif_penerus']").val();
+            var biaya_tambahan = $("input[name='do_biaya_tambahan']").val();
             var diskon_p  = $("input[name='do_diskon_p']").val();
             var diskon_v  = $("input[name='do_diskon_v']").val();
             var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
@@ -1171,7 +1171,7 @@ function hitung() {
             var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");
             var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
             var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
-            var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
+            var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
             var diskon_p = diskon_p.replace(/[A-Za-z$. ,-]/g, "");
             var diskon_v = diskon_v.replace(/[A-Za-z$. ,-]/g, "");
             var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g,"");
@@ -1179,59 +1179,61 @@ function hitung() {
 
             //alert ketika diskon dan biaya tambahan di pakai 2-2nya
             if (diskon_p > 0 && biaya_tambahan > 0) {
-                toastr.warning('Diskon dan biaya tambahan di isi salah satu!!', "Peringatan!");
+                toastr.error('Diskon dan biaya tambahan di isi salah satu!!','Peringatan !');
                 $("input[name='do_diskon_p']").val(0);
                 $("input[name='do_diskon_v']").val(0);
                 $("input[name='do_biaya_tambahan']").val(0);
             }
 
             //-- menghitung atas
-            var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi)+parseFloat(biaya_penerus);
+            var total  = parseFloat(tarif_dasar)+parseFloat(biaya_penerus)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi);
 
             var diskon_total = parseFloat(diskon_v)/parseFloat(total)*100;
         
-            if(diskon_total > this_selected_value){
-                toastr.warning("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan!")
-                $("input[name='do_diskon_v']").val(0);
-                $('#do_diskon_p').val(0);
-            }
+            
 
 
             $('#do_diskon_p').val(Math.round(diskon_total,2));
             if(diskon_v == 0 || diskon_v == ''){
                 $('#do_diskon_p').val(0);
             }
-                //PENGURANGAN DISKON
-                var total_dpp = total - diskon_v;
-                var sub_dpp = total_dpp - do_vendor;
 
-                if ($('.vendor_tarif').is(':checked') == true) {
-                    console.log(sub_dpp);
-                    console.log(total_dpp);
-                    $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
-                }
+            //PENGURANGAN DISKON
+            var total_dpp = total - diskon_v;
+            var sub_dpp = total_dpp - do_vendor;
 
-                // $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
-                // $("input[name='do_vendor']").val(accounting.formatMoney(0,"",0,'.',','));
-                // $("input[name='do_total_temp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
-                
+            if ($('.vendor_tarif').is(':checked') == true) {
+                $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
+            }else{
+                $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+            }
+            //END
+
+            var temp_total  = $('input[name="do_total_temp"]').val(total_dpp);
+
             var ppn  = 0;
             if (jenis_ppn == 1) {
                 ppn =parseFloat(total) * parseFloat(0.1);
                 total = total + ppn;
             }else if (jenis_ppn == 2) {
-                ppn =parseFloat(total) / parseFloat(100);
+                ppn =parseFloat(total) / parseFloat(100.1);
                 total = total + ppn;
             }else if (jenis_ppn == 4) {
                 ppn =0;
             }else if (jenis_ppn == 3) {
-                ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
+               ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
             }else if (jenis_ppn == 5) {
                 ppn =parseFloat(total) / parseFloat(10.1);
                 total = total - ppn;
             }
             
             var total_h = total-diskon_v; 
+            if(diskon_total > this_selected_value){
+                toastr.error("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
+                $("input[name='do_diskon_v']").val(0);
+                $('#do_diskon_p').val(0);
+                $('#do_total_h').val(accounting.formatMoney(1,"",0,'.',','));
+            }
             $("input[name='do_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
 
 
@@ -1248,7 +1250,7 @@ function hitung() {
             var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");
             var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
             var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
-            var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
+            var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
             var diskon_p = diskon_p.replace(/[A-Za-z$. ,-]/g, "");
             var diskon_v = diskon_v.replace(/[A-Za-z$. ,-]/g, "");
             var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g,"");
@@ -1256,28 +1258,30 @@ function hitung() {
 
             $("input[name='do_diskon_p']").attr('readonly',false);          
 
-            var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi)+parseFloat(biaya_penerus);
+            var total  = parseFloat(tarif_dasar)+parseFloat(biaya_penerus)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi);
 
             var diskon_total = parseFloat(diskon_v)/parseFloat(total)*100;
 
             $('#do_diskon_p').val(Math.round(diskon_total,2));
-            console.log(diskon_total)
-                //PENGURANGAN DISKON
-                var total_dpp = total - diskon_v;
-                var sub_dpp = total_dpp - do_vendor;
+            
+            //PENGURANGAN DISKON
+            var total_dpp   = total - diskon_v;
+            var sub_dpp     = total_dpp - do_vendor;
 
-                if ($('.vendor_tarif').is(':checked') == true) {
-                    console.log(sub_dpp);
-                    console.log(total_dpp);
-                    $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
-                }
+            var temp_total  = $('input[name="do_total_temp"]').val(total_dpp);
+
+            if ($('.vendor_tarif').is(':checked') == true) {
+                $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
+            }else{
+                $("input[name='do_dpp']").val(accounting.formatMoney(total_dpp,"",0,'.',','));
+            }
 
             var ppn  = 0;
             if (jenis_ppn == 1) {
                 ppn =parseFloat(total) * parseFloat(0.1);
                 total = total + ppn;
             }else if (jenis_ppn == 2) {
-                ppn =parseFloat(total) / parseFloat(100);
+                ppn =parseFloat(total) / parseFloat(100.1);
                 total = total + ppn;
             }else if (jenis_ppn == 4) {
                 ppn =0;
