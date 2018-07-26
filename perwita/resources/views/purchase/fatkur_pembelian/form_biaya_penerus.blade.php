@@ -50,6 +50,16 @@
  	<td width="10">:</td>
  	<td width="200"><input type="text" name="Invoice_biaya" class="form-control" style="" placeholder="No Invoice"></td>
  </tr>
+ <tr>
+  <td style="width: 100px">Tanda terima</td>
+  <td width="10">:</td>
+  <td width="200">
+    <input type="text" readonly="" name="tanda_terima" class="form-control tanda_terima" style="" >
+    <input type="hidden" readonly="" name="invoice_tt" class="form-control invoice_tt" style="" >
+    <input type="hidden" readonly="" name="id_tt" class="form-control id_tt" style="" >
+    <input type="hidden" readonly="" name="dt_tt" class="form-control dt_tt" style="" >
+  </td>
+ </tr>
   <tr>
  	<td style="width: 100px">Keterangan</td>
  	<td width="10">:</td>
@@ -57,7 +67,7 @@
  </tr>	
 <tr>
   <td colspan="3">
-     <button onclick="tt_penerus()" class="btn btn-info modal_penerus_tt" style="margin-right: 20px;" type="button" data-toggle="modal" data-target="#modal_tt_penerus" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+     <button onclick="tt_penerus()" class="btn btn-info modal_penerus_tt" style="margin-right: 20px;" type="button" data-toggle="modal" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
      <button type="button" style="margin-right: 20px;" class="btn btn-warning pull-left disabled" id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
   </td>
 </tr>
@@ -491,27 +501,31 @@
   function tt_penerus() {
 
     var cabang = $('.cabang').val();
+    var agen_vendor = $('.agen_vendor ').val();
     $.ajax({
       url:baseUrl +'/fakturpembelian/nota_tt',
-      data: {cabang},
-      dataType:'json',
+      data: {cabang,agen_vendor},
       success:function(data){
-        $('.notandaterima').val(data.nota);
-        var agen_vendor = $('.agen_vendor').val();
-        var jatuh_tempo = $('.jatuh_tempo').val();
-        var total_jml   = $('.total_jml').val();
-        total_jml       = total_jml.replace(/[^0-9\-]+/g,"")/100;
-        $('.supplier_tt').val(agen_vendor);
-        $('.jatuhtempo_tt').val(jatuh_tempo);
-        $('.totalterima_tt').val(accounting.formatMoney(total_jml, "Rp ", 2, ".",','));
-
+        $('.div_tt').html(data);
+        $('#modal_tt_penerus').modal('show');
       },error:function(){
         toastr.warning('Terjadi Kesalahan');
       }
     })
 
   }
+  function select_tt(a) {
+    var tt_form = $(a).find('.tt_form').text();
+    var tt_invoice = $(a).find('.tt_invoice').text();
+    var tt_id = $(a).find('.tt_id').val();
+    var tt_dt = $(a).find('.tt_dt').val();
 
+    $('.tanda_terima').val(tt_form);
+    $('.invoice_tt').val(tt_invoice);
+    $('.id_tt').val(tt_id);
+    $('.dt_tt').val(tt_dt);
+    $('#modal_tt_penerus').modal('hide');
+  }
   function simpan_tt() {
       swal({
         title: "Apakah anda yakin?",

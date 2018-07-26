@@ -34,18 +34,18 @@ class pembayaran_vendor_controller extends Controller
 
     public function cari_do_vendor(request $req)
     {	
+    	$valid = [];
     	for ($i=0; $i < count($req->array_simpan); $i++) { 
     		$valid[$i] = $req->array_simpan[$i];
     	}
     	$data = DB::table("delivery_order")
     			  ->leftjoin('biaya_penerus_dt','nomor','=','bpd_pod')
-    			  // ->where('kode_cabang',$req->cabang)
-    			  // ->where('id_tarif_vendor',$req->nama_vendor)
-    			  // ->where('bpd_pod',null)
-    			  // ->whereNotIn('nomor',$valid)
+    			  ->where('kode_cabang',$req->cabang)
+    			  ->where('id_tarif_vendor',$req->nama_vendor)
+    			  ->where('bpd_pod',null)
+    			  ->whereNotIn('nomor',$valid)
     			  ->get();
 
-    	
 
 
 		return view('purchase/pembayaran_vendor/tabel_do_vendor',compact('data'));
@@ -182,6 +182,14 @@ class pembayaran_vendor_controller extends Controller
 								  'bpd_tarif_resi'  => $cari_do->total_vendo
 							]);
 			}
+
+			$tt = DB::table('form_tt_d')
+								->where('ttd_detail',$req->dt_tt)
+								->where('ttd_id',$req->id_tt)
+								->where('ttd_invoice',$req->invoice_tt)
+								->update([
+									'ttd_faktur' => $request->nofaktur,
+								]);
 
 			$cari_dt=DB::table('biaya_penerus_dt')		
 						 ->join('delivery_order','bpd_pod','=','nomor')
