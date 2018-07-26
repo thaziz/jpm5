@@ -713,9 +713,21 @@ class MasterPurchaseController extends Controller
 
 		$dka = DB::select("select akun_dka from d_akun where id_akun = '$idbank2' ");
 
-	//	dd($dka[0]->akun_dka);
-
-		$masterbank = new masterbank();
+		if($request->statusbg == 'BUKAN BG'){
+			$masterbank = new masterbank();
+			$masterbank->mb_id = $idbank;
+			$masterbank->mb_kode = $request->kodebank;
+			$masterbank->mb_nama = strtoupper($request->nmbank);
+			$masterbank->mb_cabang = strtoupper($request->cabang);
+			$masterbank->mb_accno = strtoupper($request->norekening);		
+			$masterbank->mb_alamat = strtoupper($request->alamat);
+			$masterbank->mb_namarekening = strtoupper($request->namarekening);
+			$masterbank->mb_namarekening = strtoupper($request->namarekening);
+			$masterbank->mb_bka = $dka[0]->akun_dka;
+			$masterbank->save();
+		}
+		else {
+					$masterbank = new masterbank();
 		$masterbank->mb_id = $idbank;
 		$masterbank->mb_kode = $request->kodebank;
 		$masterbank->mb_nama = strtoupper($request->nmbank);
@@ -756,12 +768,13 @@ class MasterPurchaseController extends Controller
 			$masterbank->mb_mshaktif = $request->mshaktif;
 		}
 
-		$masterbank->mb_namarekening = strtoupper($request->namarekening);
-		$masterbank->mb_namarekening = strtoupper($request->namarekening);
-		$masterbank->mb_bka = $dka[0]->akun_dka;
-		$masterbank->save();
+			$masterbank->mb_namarekening = strtoupper($request->namarekening);
+			$masterbank->mb_namarekening = strtoupper($request->namarekening);
+			$masterbank->mb_bka = $dka[0]->akun_dka;
+			$masterbank->save();
 
-		if($request->input == 'CEK'){
+
+			if($request->input == 'CEK'){
 			$banyaknyaseri = $request->nosericek;
 			for($i = 10; $i < count($banyaknyaseri);$i++){
 				$masterbankdt = new masterbank_dt();
@@ -899,10 +912,10 @@ class MasterPurchaseController extends Controller
 
 			}
 		}
-		
-		
-		
+			
+		}
 
+	//	dd($dka[0]->akun_dka);
 		return json_encode("sukses");
 	}
 

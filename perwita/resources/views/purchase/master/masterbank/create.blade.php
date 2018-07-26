@@ -60,25 +60,31 @@
                   <form method="post" action="{{url('masterbank/savemasterbank')}}"  enctype="multipart/form-data" class="form-horizontal" id="formId">
 
                 <div class="row">
-                    <div class="col-xs-6">
+                    <div class="col-sm-6">
                     
                       <br>
                       <br>
+                     
                       <table class="table">
 
 
                         <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
+
+                        <tr>
+                          <td> Jenis Bank </td>
+                          <td> <select class="form-control statusbg" name="statusbg"> <option value="SERIBG"> SERI BG </option> <option value="BUKAN BG"> BUKAN SERI / BG </option> </select> </td>
+                        </tr>
                         <tr>
                           <td> Pengajuan dari Cabang : </td>
                           <td> 
                             @if(Auth::user()->punyaAkses('Master Bank','cabang'))
-                            <select class="form-control cabang" name="cabang" required="">
+                            <select class="form-control cabang" name="cabang" required="" style="min-width:60%">
                                 @foreach($data['cabang'] as $cabang)
                               <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                               @endforeach
                             </select>
                             @else
-                              <select class="form-control disabled cabang" name="cabang" required="">
+                              <select class="form-control disabled cabang" name="cabang" required="" style="min-width:60%">>
                                 @foreach($data['cabang'] as $cabang)
                                 <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                                 @endforeach
@@ -91,17 +97,17 @@
                         </tr>
 
                         <tr>
-                          <td style="width:100px"> Kode Bank </td> 
+                          <td > Kode Bank </td> 
                           <td>
                           <div class="row">
                             <div class="col-sm-4">
-                                 <input type="text" class="input-sm form-control idbank" readonly="" name="kodebank" required="">
+                                 <input type="text" class="input-sm form-control idbank" readonly="" name="kodebank" required="" style="min-width:60%">
                              
                                 <div class="inputseri"> </div>
                             </div>
                             <div class="col-sm-8">
                             
-                             <select class="form-control input-sm chosen-select-width bank" required="">
+                             <select class="form-control input-sm chosen-select-width bank" required="" style="min-width:60%">>
                              <option value="">  Pilih Bank  </option>
                                 @foreach($data['bank'] as $bank)
                                  <option value="{{$bank->id_akun}}">{{$bank->id_akun}} - {{$bank->nama_akun}}  </option>  
@@ -115,20 +121,22 @@
                         </tr> 
                         <tr>
                           <td> Nama Bank </th>
-                          <td> <input type="text" class="input-sm form-control" name="nmbank" required="" style="text-transform: uppercase"> </td>
+                          <td> <input type="text" class="input-sm form-control" name="nmbank" required="" style="text-transform: uppercase" style="min-width:60%"> </td>
                         </tr>
                         <tr>
                           <td> Cabang </td>
                           <td> 
-                            <input type="text" class="input-sm form-control" name="cabang" required="" style="text-transform: uppercase">
+                            <input type="text" class="input-sm form-control" name="cabang" required="" style="text-transform: uppercase" style="min-width:60%">
                           </td>
                         </tr>
                         </table>
+                      
                           </div>
 
                           <div class="col-sm-6">
                           <br>
                           <br>
+                          <div class="table-resposive">
                           <table class="table">
                         <tr>
                           <td> No Rekening </td>
@@ -144,8 +152,10 @@
                         </tr>
                       </table>
                       </div>
+                      </div>
 
                       <div class="col-xs-12">
+                      <div class="table-responsive">
                       <table class="table">
                        <tr>
                         <td>
@@ -222,6 +232,7 @@
                        </tr>
 
                       </table>
+                      </div>
                       </div>
                   </div>
                    <label class="label label-info"> No Seri Cek / BG </label>
@@ -315,12 +326,20 @@
     $('.valcabang').val(cabang);
 
     $('#submit').click(function(){
-      val = $('#noseri').val();
-      if(val === "undefined"){
-     /*   alert("Harap Buat no seri CEK / BG :)");*/
-       toastr.info('Harap Buat no seri CEK / BG :)');
-        return false;
+
+      statusbg = $('.statusbg').val();
+      if(statusbg == 'BUKAN BG'){
+
       }
+      else {
+         val = $('#noseri').val();
+        if(val === undefined){
+       /*   alert("Harap Buat no seri CEK / BG :)");*/
+         toastr.info('Harap Buat no seri CEK / BG :)');
+          return false;
+        }
+      }
+     
     });
 
 
