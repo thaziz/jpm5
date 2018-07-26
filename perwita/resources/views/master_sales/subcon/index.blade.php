@@ -193,6 +193,12 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td style="padding-top: 0.4cm">Syarat Kredit</td>
+                                    <td colspan="3">
+                                        <input type="number" class="form-control " name="syarat_kredit" >
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td style="padding-top: 0.4cm">Acc Akun</td>
                                     <td colspan="3">
                                       <select name="acc_code"  class="form-control acc_code chosen-select-width">
@@ -315,6 +321,7 @@
         $(".acc_code").val('0').trigger('chosen:updated');
         $(".csf_code").val('0').trigger('chosen:updated');
         $("input[name='ed_telpon']").val('');
+        $("input[name='syarat_kredit']").val('');
         $("input[name='ed_fax']").val('');
         $("input[name='ed_kontak_person']").val('');
         $("input[name='persen']").val('80');
@@ -354,6 +361,7 @@
                 $("input[name='persen']").prop('readonly',false);
                 $("input[name='ed_telpon']").val(data.telpon);
                 $("input[name='ed_fax']").val(data.fax);
+                $("input[name='syarat_kredit']").val(data.syarat_kredit);
                 $("input[name='ed_email']").val(data.email);
                 $("input[name='ed_kontak_person']").val(data.kontak_person);
                 $("#modal").modal('show');

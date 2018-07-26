@@ -415,10 +415,13 @@ Route::get('buktikaskeluar/append_table', 'kasKeluarController@append_table');
 Route::get('form_tanda_terima_pembelian', 'form_tanda_terima_pembelian_controller@index');
 Route::get('form_tanda_terima_pembelian/create', 'form_tanda_terima_pembelian_controller@create');
 Route::get('form_tanda_terima_pembelian/edit/{id}', 'form_tanda_terima_pembelian_controller@edit');
-Route::get('form_tanda_terima_pembelian/datatable', 'form_tanda_terima_pembelian_controller@datatable')->name('datatable_form_tt');
+Route::get('form_tanda_terima_pembelian/datatable', 'form_tanda_terima_pembelian_controller@datatable')
+                                                                            ->name('datatable_form_tt');
+Route::get('form_tanda_terima_pembelian/ganti_jt', 'form_tanda_terima_pembelian_controller@ganti_jt')->name('ganti_jt_pembelian');
 Route::get('form_tanda_terima_pembelian/nota', 'form_tanda_terima_pembelian_controller@nota');
 Route::get('form_tanda_terima_pembelian/save', 'form_tanda_terima_pembelian_controller@save');
 Route::get('form_tanda_terima_pembelian/update', 'form_tanda_terima_pembelian_controller@update');
+Route::get('form_tanda_terima_pembelian/hapus', 'form_tanda_terima_pembelian_controller@hapus_tt_pembelian')->name('hapus_tt_pembelian');
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
 Route::get('ikhtisar_kas/create', 'ikhtisarController@create');

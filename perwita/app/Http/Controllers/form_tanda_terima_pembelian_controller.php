@@ -79,6 +79,36 @@ class form_tanda_terima_pembelian_controller extends Controller
 
     	return Response::json(['nota'=>$nota]);
     }
+    public function ganti_jt(Request $req)
+    {
+    	$agen 	  = DB::select("SELECT kode, nama,syarat_kredit from agen order by kode");
+
+		$vendor   = DB::select("SELECT kode, nama,syarat_kredit from vendor order by kode "); 
+
+		$subcon   = DB::select("SELECT kode, nama,syarat_kredit from subcon order by kode "); 
+
+		$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama,syarat_kredit from supplier where status = 'SETUJU' and active = 'AKTIF' order by no_supplier");
+
+		$all = array_merge($agen,$vendor,$subcon,$supplier);
+		$cus;
+		for ($i=0; $i < count($all); $i++) { 
+			if ($all[$i]->kode == $req->supplier) {
+				$cus = $all[$i];
+			}
+		}
+	    $jt = $cus->syarat_kredit;
+	    if ($jt == null) {
+	    	$jt = 0;
+	    }
+	    $tgl = str_replace('/', '-' ,$req->tanggal);
+	    $tgl = Carbon::parse($tgl)->format('Y-m-d');
+	    $tgl = Carbon::parse($tgl)->subDays(-$jt)->format('d/m/Y');
+
+	    return response()->json([
+	                         'jt' =>$jt,
+	                         'tgl'=>$tgl
+	                       ]);
+    }
     public function save(Request $req)
     {
    		return DB::transaction(function() use ($req) {  
@@ -138,6 +168,7 @@ class form_tanda_terima_pembelian_controller extends Controller
 							'tt_idcabang' 		=> $req->cabang,
 							'tt_supplier' 		=> $req->supplier,
 							'tt_faktur' 		=> $req->faktur_pajak,
+							'tt_lampiran_po' 	=> $req->lampiran_po,
 							'created_by' 		=> Auth::user()->m_name,
 							'updated_by' 		=> Auth::user()->m_name,
 						]);
@@ -220,6 +251,7 @@ class form_tanda_terima_pembelian_controller extends Controller
 							'tt_idcabang' 		=> $req->cabang,
 							'tt_nofp' 			=> $req->nomor,
 							'tt_supplier' 		=> $req->supplier,
+							'tt_lampiran_po' 	=> $req->lampiran_po,
 							'tt_faktur' 		=> $req->faktur_pajak,
 							'updated_by' 		=> Auth::user()->m_name,
 						]);
@@ -244,6 +276,13 @@ class form_tanda_terima_pembelian_controller extends Controller
    		});
     }
 
+    public function hapus_tt_pembelian(Request $req)
+    {
+		$data = DB::table('form_tt')
+    			  ->where('tt_idform',$req->id)
+    			  ->delete();
+    	return Response::json(['status'=>1]);
+    }
     public function datatable()
     {
     	if (Auth::user()->punyaAkses('Form Tanda Terima Pembelian','all')) {

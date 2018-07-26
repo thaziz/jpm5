@@ -76,7 +76,7 @@
                               </td>
                             </tr>
                             <tr>
-                              <td width="120">Tanggal</td>
+                              <td width="120" class="disabled">Tanggal</td>
                               <td colspan="2"><input value="{{ carbon\carbon::parse($data->bkk_tgl)->format('d/m/Y') }}" class="form-control tanggal" type="text" readonly="" name="tanggal"></td>
                             </tr>
                             <tr>
