@@ -244,12 +244,12 @@
           
           nominal = val.replace(/,/g, '');
          
-           if(parseFloat(kascabang) < parseFloat(nominal)){
+           /*if(parseFloat(kascabang) < parseFloat(nominal)){
             toastr.info("Mohon maaf, Kas Kecil Cabang tidak mencukupi :) ");
           
             $(this).val('');
             return false;
-           }
+           }*/
 
         event.preventDefault();
           var post_url2 = $(this).attr("action");
@@ -295,12 +295,12 @@
 
     nominal = val.replace(/,/g, '');
    
-     if(parseFloat(kascabang) < parseFloat(nominal)){
+     /*if(parseFloat(kascabang) < parseFloat(nominal)){
       toastr.info("Mohon maaf, Kas Kecil Cabang tidak mencukupi :) ");
       //$('.nominal').attr('readonly' , true);
       $(this).val('');
       return false;
-     }
+     }*/
 
     $(this).val(val);
   });
