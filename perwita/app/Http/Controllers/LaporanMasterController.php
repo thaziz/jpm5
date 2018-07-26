@@ -2733,8 +2733,8 @@ class LaporanMasterController extends Controller
    }
    public function cari_kartupiutang(Request $request){
    		// dd($request->all());
-   		$awal = substr($request->min,-2);
-   		$akir = substr($request->max,-2);
+   		$awal = $request->min;
+   		$akir = $request->max;
 
    		//invoice
    		if ($request->customer != '' || $request->customer != null) {
@@ -2810,23 +2810,23 @@ class LaporanMasterController extends Controller
 
 		 $data_invoice = DB::select("SELECT 'D' as flag,i_nomor  as kode,i_acc_piutang,i_kode_customer as customer,i_tanggal as tanggal,i_keterangan as keterangan,i_sisa_pelunasan as nominal
 		 								from invoice 
-										where i_tanggal >= '$awal' 
-  										and i_tanggal <= '$akir' 
+										where date_part('month',i_tanggal) >= '$awal' 
+  										and date_part('month',i_tanggal) <= '$akir' 
 		 								$customer_invoice $akun_invoice $cabang_invoice
 										order by i_kode_customer");
 
 
 		$data_cn_dn = DB::select("SELECT cd_jenis as flag,cd_nomor as kode,cd_acc,cd_customer as customer,cd_tanggal as tanggal,cd_keterangan as keterangan,cd_total as nominal FROM cn_dn_penjualan 
-  										where cd_tanggal >= '$awal' 
-   										and cd_tanggal <= '$akir'
+  										where date_part('month',cd_tanggal) >= '$awal' 
+   										and date_part('month',cd_tanggal) <= '$akir'
    										$customer_cndn $akun_cndn $cabang_cndn
    										");
 		
 
    		$data_kwitansi = DB::select("SELECT 'K' as flag,k_nomor as kode,k_kode_cabang,k_kode_customer as customer,kwitansi_d.kd_kode_akun_acc,k_tanggal as tanggal,k_keterangan as keterangan,k_netto as nominal FROM kwitansi 
    										join kwitansi_d on kwitansi.k_nomor = kwitansi_d.kd_k_nomor
-   										where k_tanggal >= '$awal' 
-   										and k_tanggal <= '$akir'
+   										where date_part('month',k_tanggal) >= '$awal' 
+   										and date_part('month',k_tanggal) <= '$akir'
    										$customer_kwitansi $akun_kwitansi $cabang_kwitansi
    										");
    		
@@ -2834,15 +2834,14 @@ class LaporanMasterController extends Controller
    		$data_postingbayar = DB::select("SELECT 'K' as flag,nomor as kode,kode_acc,k_kode_customer as customer,k_tanggal as tanggal,k_keterangan as keterangan,posting_pembayaran.jumlah,k_netto as nominal FROM kwitansi 
    										join posting_pembayaran_d on posting_pembayaran_d.nomor_penerimaan_penjualan = kwitansi.k_nomor
    										join posting_pembayaran on posting_pembayaran.nomor = posting_pembayaran_d.nomor_posting_pembayaran
-   										where k_tanggal >= '$awal' 
-   										and k_tanggal <= '$akir'
+   										where date_part('month',k_tanggal) >= '$awal' 
+   										and date_part('month',k_tanggal) <= '$akir'
    										$customer_postingbayar $akun_postingbayar $cabang_postingbayar
    										");
 
    		
 
    		$data = array_merge($data_invoice,$data_cn_dn,$data_kwitansi,$data_postingbayar);
-
 		if ($data == null) {
 			return response()->json(['status'=>'kosong']);
 		}
@@ -2850,28 +2849,42 @@ class LaporanMasterController extends Controller
    			$customer = DB::table('customer')->select('kode','nama')->where('kode','=',$request->customer)->get();
 
    			$saldo_ut = DB::select("SELECT sum(i_sisa_akhir) as saldo from invoice 
-										where i_tanggal >= '$awal' 
-			   							and i_tanggal  <= '$akir' 
+										where date_part('month',i_tanggal) >= '$awal' 
+			   							and date_part('month',i_tanggal) <= '$akir' 
 										$customer_invoice $akun_invoice $cabang_invoice
 										");
    		}else{
-   			
-			return $customer = DB::select("SELECT i_kode_customer from invoice where i_tanggal BETWEEN '$tglawal' and '$tglakhir'");
+   			$dt = array_map("unserialize", array_unique(array_map("serialize", $data)));
+ 	  		$dt = array_values($dt);
+   			for ($i=0; $i <count($dt) ; $i++) { 
 
- 	  		// return $customer;
- 	  		
+				$customer = DB::table('customer')->select('kode','nama')->where('kode','=',$dt[$i]->customer)->groupBy('kode')->get();
+
+				
+ 	  		}
+ 	  		$result_customer = array();
+			foreach ($arraycus as &$v) {
+			    if (!isset($result_customer[$v['customer']]))
+			        $result_customer[$v['customer']] =& $v;
+			}
+			$array = array_values($result_customer);	
 
  	  		for ($i=0; $i <count($dt) ; $i++) { 
  	  			$dtt = $dt[$i]->customer;
  	  			$saldo_ut[$i] = DB::select("SELECT sum(i_sisa_akhir) as saldo,i_kode_customer,'D' as flag from invoice 
-										where i_tanggal >= '$awal' 
-			   							and i_tanggal <= '$akir' 
+										where date_part('month',i_tanggal) >= '$awal' 
+			   							and date_part('month',i_tanggal) <= '$akir' 
 			   							and i_kode_customer = '$dtt'
 										$customer_invoice $akun_invoice $cabang_invoice
 										group by(i_kode_customer )
 									");
 				if ($saldo_ut[$i] == null) {
+					// $var = new stdClass();
+					// $saldo_ut[$i]=$var;
 					$saldo_ut[$i] = 0;
+					// $saldo_ut[$i][0]['saldo'] = '0';
+					// $saldo_ut[$i][0]['flag'] = '-';
+					// $saldo_ut[$i][0]->saldo = '0';
 				}else{
 					$saldo_ut= $saldo_ut;
 				}

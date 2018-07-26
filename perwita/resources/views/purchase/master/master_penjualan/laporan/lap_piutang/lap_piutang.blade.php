@@ -171,8 +171,7 @@
 
     $('.date').datepicker({
         autoclose: true,
-        format: 'yyyy-mm',
-        minViewMode:1,
+        format: 'yyyy-mm-dd',
     });
            
 
