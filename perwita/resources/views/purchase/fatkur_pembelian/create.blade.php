@@ -1475,24 +1475,6 @@
 </div><!-- /.modal -->
 
 
-<div class="modal fade" id="modal_tt_penerus" tabindex="-1" role="dialog"  aria-hidden="true">
-  <div class="modal-dialog" role="document" style="min-width: 800px !important; min-height: 800px">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Form Tanda Terima</h2>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body div_tt">
-        
-      </div>
-      <div class="modal-footer inline-form">
-        <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-        <button onclick="simpan_tt()" type="button" class="btn btn-primary simpan_penerus" data-dismiss="modal">Simpan</button>
-    </div>
-  </div>
-</div>
 
 
 

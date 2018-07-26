@@ -275,9 +275,6 @@ $('.simpan_vendor_tt').click(function(){
 	var selectOutlet = $('.nama_vendor').val();
 	var cabang = $('.cabang').val();
 	var totalterima_tt_subcon = $('.totalterima_tt_vendor').val();
-	if (totalterima_tt_subcon == 'Rp 0,00') {
-	toastr.warning('Nilai Tanda Terima Tidak Boleh Nol');
-	}
 	  swal({
 	    title: "Apakah anda yakin?",
 	    text: "Simpan Data!",

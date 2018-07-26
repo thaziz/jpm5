@@ -611,11 +611,17 @@ class BiayaPenerusController extends Controller
 						}
 					}
 				}
+
+				$tt = DB::table('form_tt_d')
+						->join('form_tt','tt_idform','=','ttd_id')
+						->where('ttd_faktur',$bp->fp_nofaktur)
+						->first();
+
 				// return $um;
 				if ($bp->bp_tipe_vendor == "AGEN") {
-					return view('purchase/fatkur_pembelian/edit_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um'));
+					return view('purchase/fatkur_pembelian/edit_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um','tt'));
 				}else{
-					return view('purchase/pembayaran_vendor/edit_vendor',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um'));
+					return view('purchase/pembayaran_vendor/edit_vendor',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um','tt'));
 				}
 
 			} elseif ($cari_fp->fp_jenisbayar == 7){
@@ -699,7 +705,12 @@ class BiayaPenerusController extends Controller
 					}
 				}
 
-			return view('purchase/fatkur_pembelian/editOutlet',compact('date','agen','akun_biaya','second','start','jt','data','data_dt','valid_cetak','id','cabang','um','nota'));
+				$tt = DB::table('form_tt_d')
+						->join('form_tt','tt_idform','=','ttd_id')
+						->where('ttd_faktur',$data->fp_nofaktur)
+						->first();
+
+			return view('purchase/fatkur_pembelian/editOutlet',compact('date','agen','akun_biaya','second','start','jt','data','data_dt','valid_cetak','id','cabang','um','nota','tt'));
 
 			}elseif ($cari_fp->fp_jenisbayar == 9){
 				$date = Carbon::now()->format('d/m/Y');
@@ -778,7 +789,12 @@ class BiayaPenerusController extends Controller
 						}
 					}
 				}
-				return view('purchase/fatkur_pembelian/editsubcon',compact('date','kota','subcon','akun_biaya','akun','valid_cetak','data','data_dt','cabang','um','nota','id'));
+
+				$tt = DB::table('form_tt_d')
+						->join('form_tt','tt_idform','=','ttd_id')
+						->where('ttd_faktur',$data->fp_nofaktur)
+						->first();
+				return view('purchase/fatkur_pembelian/editsubcon',compact('date','kota','subcon','akun_biaya','akun','valid_cetak','data','data_dt','cabang','um','nota','id','tt'));
 			}
 
 
@@ -908,7 +924,6 @@ class BiayaPenerusController extends Controller
 		public function update_agen(request $request){
 
 			return DB::transaction(function() use ($request) {  
-				// dd($request->all());
 		
 				$cari_fp = DB::table('faktur_pembelian')
 							 ->where('fp_nofaktur',$request->nofaktur)
@@ -1061,8 +1076,14 @@ class BiayaPenerusController extends Controller
 
 					}	
 
+					$tt_upd = DB::table('form_tt_d')
+					  ->where('ttd_faktur',$request->nofaktur)
+					  ->update([
+					  	'ttd_faktur'=>null
+					  ]);
+
 					$tt = DB::table('form_tt_d')
-								->where('ttd_detail',$req-uest>dt_tt)
+								->where('ttd_detail',$request->dt_tt)
 								->where('ttd_id',$request->id_tt)
 								->where('ttd_invoice',$request->invoice_tt)
 								->update([
@@ -2018,13 +2039,19 @@ class BiayaPenerusController extends Controller
 					$pot_dt += 1;
 				}
 			}
+			$tt_upd = DB::table('form_tt_d')
+					  ->where('ttd_faktur',$request->nofaktur)
+					  ->update([
+					  	'ttd_faktur'=>null
+					  ]);
+
 			$tt = DB::table('form_tt_d')
-								->where('ttd_detail',$request->dt_tt)
-								->where('ttd_id',$request->id_tt)
-								->where('ttd_invoice',$request->invoice_tt)
-								->update([
-									'ttd_faktur' => $request->nofaktur,
-								]);
+						->where('ttd_detail',$request->dt_tt)
+						->where('ttd_id',$request->id_tt)
+						->where('ttd_invoice',$request->invoice_tt)
+						->update([
+							'ttd_faktur' => $request->nofaktur,
+						]);
 
 			$status = DB::table('faktur_pembelian')
 						->where('fp_nofaktur',$cari_nota->fp_nofaktur)
@@ -2776,13 +2803,19 @@ class BiayaPenerusController extends Controller
 				]);
 			}
 
+			$tt_upd = DB::table('form_tt_d')
+					  ->where('ttd_faktur',$request->nofaktur)
+					  ->update([
+					  	'ttd_faktur'=>null
+					  ]);
+
 			$tt = DB::table('form_tt_d')
-								->where('ttd_detail',$request->dt_tt)
-								->where('ttd_id',$request->id_tt)
-								->where('ttd_invoice',$request->invoice_tt)
-								->update([
-									'ttd_faktur' => $request->nofaktur,
-								]);
+						->where('ttd_detail',$request->dt_tt)
+						->where('ttd_id',$request->id_tt)
+						->where('ttd_invoice',$request->invoice_tt)
+						->update([
+							'ttd_faktur' => $request->nofaktur,
+						]);
 			if (in_array('PENDING', $pending)) {
 				$status = 'PENDING';
 			}else{

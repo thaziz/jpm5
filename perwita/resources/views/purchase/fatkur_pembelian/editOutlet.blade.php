@@ -143,6 +143,16 @@
         <input  class="form-control jatuh_tempo_outlet" type="text" value="{{$jt}}" name="jatuh_tempo_outlet"  >
       </td>
      </tr>
+     <tr>
+      <td style="width: 100px">Tanda terima</td>
+      <td width="10">:</td>
+      <td width="200">
+        <input type="text" readonly="" name="tanda_terima" class="form-control tanda_terima" value="{{ $tt->tt_noform }}">
+        <input type="hidden" readonly="" name="invoice_tt" class="form-control invoice_tt" value="{{ $tt->ttd_invoice }}">
+        <input type="hidden" readonly="" name="id_tt" class="form-control id_tt" value="{{ $tt->ttd_id }}">
+        <input type="hidden" readonly="" name="dt_tt" class="form-control dt_tt" value="{{ $tt->ttd_detail }}">
+      </td>
+     </tr>
     <tr>
       <td width="111">Note</td>
       <td width="20">:</td>
@@ -191,7 +201,7 @@
     </div>
 
       <table class="table table-bordered table-hover table_outlet" style="font-size: 12px; ">
-      <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+      <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button"  type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
       <button type="button" class="btn btn-primary pull-right " id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
       <hr>
       <div class="loading text-center" style="display: none;">
@@ -256,120 +266,6 @@
     </div>
 
 </div>
-</div>
-
-
-<!-- {{-- MODAL TT OUTLET --}} -->
-
-<div class="modal fade" id="modal_tt_outlet" tabindex="-1" role="dialog"  aria-hidden="true">
-  <div class="modal-dialog" role="document" style="min-width: 800px !important; min-height: 800px">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Form Tanda Terima</h2>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <table class="table table-stripped tabel_tt_outlet">
-          <tr>
-            <td width="150px">
-                  No Tanda Terima 
-                </td>
-                <td>
-                  <input value="{{$valid_cetak->tt_noform or $nota}}" type='text' name="nota_tt" class='input-sm form-control notandaterima'>
-                  <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                </td>
-          </tr>
-          <tr>
-            <td> Tanggal </td>
-                <td>
-                   <div class="input-group date">
-                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" readonly="" value="{{carbon\carbon::parse($valid_cetak->tt_tgl)->format('d/m/Y')}}" name="tgl_tt">
-                  </div>
-                </td>
-          </tr>
-          <tr>
-              <td> Supplier </td>
-              <td> <input type='text' class="form-control supplier_tt" value="{{$valid_cetak->tt_idagen}}" name="supplier_tt" readonly=""></td>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                 <div class="row">
-                    <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="Kwitansi" type="checkbox" @if($valid_cetak->tt_kwitansi == 'ADA') checked="" @endif name="kwitansi">
-                            <label for="Kwitansi">
-                                Kwitansi / Invoice / No
-                            </label>
-                      </div> 
-                    </div>
-                    <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="FakturPajak" type="checkbox" @if($valid_cetak->tt_faktur == 'ADA') checked="" @endif name="faktur_pajak">
-                            <label for="FakturPajak">
-                                Faktur Pajak
-                            </label>
-                      </div> 
-                    </div>
-
-                    <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="SuratPerananAsli" type="checkbox" @if($valid_cetak->tt_suratperan == 'ADA') checked="" @endif name="surat_peranan">
-                            <label for="SuratPerananAsli">
-                                Surat Peranan Asli
-                            </label>
-                      </div> 
-                    </div>
-
-                     <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="SuratJalanAsli" type="checkbox" @if($valid_cetak->tt_suratjalanasli == 'ADA') checked="" @endif name="surat_jalan">
-                            <label for="SuratJalanAsli">
-                               Surat Jalan Asli
-                            </label>
-                      </div> 
-                    </div>
-                  </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-               Lain Lain
-              </td>
-              <td>                      
-                <input type="text" value="{{$valid_cetak->tt_lainlain}}" class="form-control lain_outlet" name="lainlain_penerus">
-              </td>
-            </tr>
-            <tr>
-              <td> Tanggal Kembali </td>
-              <td><div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input value="{{$valid_cetak->tt_tglkembali}}" type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali">
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>Total di Terima</td>
-              <td>
-                <div class="row">
-                  <div class="col-sm-3">
-                    <label class="col-sm-3 label-control"> Rp </label>
-                  </div>
-                  <div class="col-sm-9">
-                    <input type="text" value="{{$valid_cetak->tt_tglkembali}}" class="form-control totalterima_tt" name="total_diterima" style="text-align:right;" readonly="">
-                  </div>
-                </div>
-              </td>
-            </tr>
-        </table>
-      </div>
-      <div class="modal-footer inline-form">
-        <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-primary simpan_outlet" onclick="simpan_tt()" data-dismiss="modal">Simpan</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 
@@ -491,6 +387,7 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+@include('purchase.pembayaran_vendor.modal_do_vendor')
 
 <div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
@@ -557,14 +454,34 @@ $(document).ready(function(){
 
   function tt_penerus_outlet() {
 
-    var total_all_komisi  = $('.total_all_komisi').val();
-    var jatuh_tempo_outlet  = $('.jatuh_tempo_outlet').val();
-
-    $('.jatuhtempo_tt').val(jatuh_tempo_outlet);
-    $('.totalterima_tt').val(total_all_komisi);
-
+    var cabang = $('.cabang').val();
+    var agen_vendor = $('.selectOutlet').val();
+    $.ajax({
+      url:baseUrl +'/fakturpembelian/nota_tt',
+      data: {cabang,agen_vendor},
+      success:function(data){
+        $('.div_tt').html(data);
+      $('#modal_tt_penerus').modal('show');
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
 
   }
+
+
+function select_tt(a) {
+    var tt_form = $(a).find('.tt_form').text();
+    var tt_invoice = $(a).find('.tt_invoice').text();
+    var tt_id = $(a).find('.tt_id').val();
+    var tt_dt = $(a).find('.tt_dt').val();
+
+    $('.tanda_terima').val(tt_form);
+    $('.invoice_tt').val(tt_invoice);
+    $('.id_tt').val(tt_id);
+    $('.dt_tt').val(tt_dt);
+    $('#modal_tt_outlet').modal('hide');
+}
 
 
    function save_outlet(){

@@ -1013,6 +1013,21 @@ class pembayaran_vendor_controller extends Controller
 							]);
 			}
 
+
+			$tt_upd = DB::table('form_tt_d')
+					  ->where('ttd_faktur',$request->nofaktur)
+					  ->update([
+					  	'ttd_faktur'=>null
+					  ]);
+
+			$tt = DB::table('form_tt_d')
+						->where('ttd_detail',$request->dt_tt)
+						->where('ttd_id',$request->id_tt)
+						->where('ttd_invoice',$request->invoice_tt)
+						->update([
+							'ttd_faktur' => $request->nofaktur,
+						]);
+			
 			$cari_dt=DB::table('biaya_penerus_dt')		
 						 ->join('delivery_order','bpd_pod','=','nomor')
 						 ->where('bpd_bpid',$cari_bp->bp_id)
