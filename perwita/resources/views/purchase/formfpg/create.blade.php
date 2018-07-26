@@ -203,7 +203,7 @@
                             </tr>
                             <tr>
                               <th> Uang Muka </th>
-                              <td> <input type="text" class="input-sm form-control" name="uangmuka"> </td>
+                              <td> <input type="text" class="input-sm form-control" name="uangmuka" readonly=""> </td>
                             </tr>
                             <tr>
                               <th> Cek / BG </th>
@@ -450,7 +450,7 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <button style="min-height:0;" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
-                    <h4 class="modal-title" style="text-align: center;"> FAKTUR PEMBELIAN </h4>     
+                    <h4 class="modal-title" style="text-align: center;"> Data Data </h4>     
                   </div>
                                 
                   <div class="modal-body"> 
@@ -518,7 +518,7 @@
                                           <th> Kode Bank </th> <th> Nama Bank </th> <th> Cabang / Alamat </th> <th> No Account </th>
                                         </tr>
                                         <tr>
-                                          <td> <select class="form-control selectOutlet chosen-select-width1 bank" name="selectOutlet">
+                                          <td> <select class="form-control selectOutlet chosen-select-width1 bank" >
                                                
                                                     <option value=""> Pilih Data Bank </option>
 
@@ -535,18 +535,22 @@
 
                                     <div class="col-md-3">
                                     <fieldset>
+
+
+                                        <div class="checkbox checkbox-info checkbox-circle">
+                                            <input id="jenisbayaribaking" type="checkbox" name="jenisbayarbank" value="INTERNET BANKING" class="metodebayar jenisbayarbankibaking">
+                                            <label for="jenisbayarbankcekbg">
+                                               Internet Banking
+                                            </label>
+                                        </div>
+                                     
                                         <div class="checkbox checkbox-info checkbox-circle">
                                             <input id="jenisbayarbankcekbg" type="checkbox" name="jenisbayarbank" value="CHECK/BG" class="metodebayar jenisbayarbankbg" checked="">
                                             <label for="jenisbayarbankcekbg">
                                                 Cheque / BG
                                             </label>
                                         </div>
-                                        <div class="checkbox checkbox-info checkbox-circle">
-                                            <input id="jenisbayarbanktf" type="checkbox"  name="jenisbayarbank" value="TF" class="metodebayar jenisbayarbankbgtf">
-                                            <label for="jenisbayarbanktf">
-                                               Transfer Bank Luar Rekening
-                                            </label>
-                                        </div>
+                                     
 
                                        <div class="checkbox checkbox-info checkbox-circle">
                                             <input id="jenisbayarbanktfacc" type="checkbox"  name="jenisbayarbank" value="TFAkun" class="metodebayar jenisbayarbanktfacc">
@@ -554,6 +558,8 @@
                                                Transfer Bank Account Bank
                                             </label>
                                         </div>
+
+
 
                                     </fieldset>
                                       <br>
@@ -697,9 +703,22 @@
                                     </table>
 
 
-                                   <!--  <div class="pull-right">
-                                        <button class="btn btn-sm btn-info" id="tmbhtujuan" type="button"> Tambah Rekening </button>
-                                    </div> -->
+                                </div>
+
+
+                                <div class="col-md-12 ibanking" style="padding-top: 20px">
+                                  <table class="table table-bordered" id="tbl-ibank">
+                                    <tr>
+                                      <th> Nomor </th>
+                                      <th> No Bukti </th>
+                                      <th> Tanggal </th>
+                                      <th> Kode Bank </th>
+                                      <th> Jatuh Tempo </th>
+                                      <th> Nominal </th>
+                                      <th> Aksi </th>
+                                     
+                                    </tr>
+                                  </table>
                                 </div>
 
                                 <div class="col-md-12 checkbgtf" style="padding-top: 20px">
@@ -797,6 +816,7 @@
       $('.tujuanbank').hide();
       $('.tujuanbankacc').hide();
       $('.transferbank').hide();
+      $('.ibanking').hide();
 
       //MENDAPATKAN NO FPG
        cabang = $('.cabang').val();
@@ -807,6 +827,9 @@
        val = $('.metodebayar:checked').val();
         $('.valjenisbayarbank').val(val);       
       })
+
+
+
 
         valjenisbayar = $('.metodebayar:checked').val();
         $('.valjenisbayarbank').val(valjenisbayar);
@@ -964,16 +987,13 @@
        $('.jenisbayarbankbgtf').change(function(){
         $this = $(this);
           if ($this.is(":checked")) {
-           $('.jenisbayarbankbg').prop({ disabled: true, checked: false }); 
-           $('.jenisbayarbanktfacc').prop({ disabled: true, checked: false }); 
+           
            $('.checkbgtf').hide();
            $('.tujuanbank').show();
            $('.transferbank').show();
           }
           else {
-           $('.jenisbayarbankbg').prop({ disabled: false, checked: false }); 
-           $('.jenisbayarbanktfacc').prop({ disabled: false, checked: false }); 
-           $('.checkbgtf').show();
+         
            $('.tujuanbank').hide();
            $('.tujuanbankacc').hide();
             $('.transferbank').hide();
@@ -983,50 +1003,102 @@
 
        $('.jenisbayarbanktfacc').change(function(){
         $this = $(this);
-          if ($this.is(":checked")) {
-           $('.jenisbayarbankbg').prop({ disabled: true, checked: false }); 
-           $('.jenisbayarbankbgtf').prop({ disabled: true, checked: false }); 
+          if ($this.is(":checked")) {         
            $('.checkbgtf').hide();
            $('.tujuanbank').hide();
            $('.tujuanbankacc').show();
            $('.transferbank').show();
           }
-          else {
-           $('.jenisbayarbankbg').prop({ disabled: false, checked: false }); 
-           $('.jenisbayarbankbgtf').prop({ disabled: false, checked: false }); 
-           $('.jenisbayarbanktfacc').prop({ disabled: false, checked: false }); 
+          else {          
            $('.checkbgtf').show();
            $('.tujuanbank').hide();
            $('.tujuanbankacc').hide();
-            $('.transferbank').hide();
+           $('.transferbank').hide();
           }
       })
 
         // BANK BG TF
        $this = $('.jenisbayarbankbgtf');
            if ($this.is(":checked")) {
-              $('.jenisbayarbankbgtf').prop({ disabled: true, checked: false }); 
+             
            }
            else {
-              $('.jenisbayarbankbgtf').prop({ disabled: false, checked: false }); 
+             
 
            }
 
       $('.jenisbayarbankbg').change(function(){
           $this = $(this);
            if ($this.is(":checked")) {
-              $('.jenisbayarbankbgtf').prop({ disabled: true, checked: false }); 
-              $('.jenisbayarbanktfacc').prop({ disabled: true, checked: false });
+                $('.jenisbayarbankibaking').prop({checked: false });
                 $('.tujuanbank').hide();
                 $('.tujuanbankacc').hide();
                 $('.transferbank').hide();
+                 $('.checkbgtf').show();
+                 $('.ibanking').hide();
            }
            else {
-              $('.jenisbayarbankbgtf').prop({ disabled: false, checked: false }); 
-              $('.jenisbayarbanktfacc').prop({ disabled: false, checked: false }); 
-
+                $('.ibanking').hide();
            }
       })
+
+      $('.jenisbayarbankibaking').change(function(){
+          $this = $(this);
+           if ($this.is(":checked")) {
+                 $('.jenisbayarbankbg').prop({ checked: false });
+                $('.tujuanbank').hide();
+                $('.tujuanbankacc').hide();
+                $('.transferbank').hide();
+                $('.checkbgtf').hide();
+                $('.ibanking').show();
+
+                tgl = $('.tgl').val();
+                bank = $('.bank').val();
+                kodebank = bank.split(",");
+             //   alert(kodebank);
+                jatuhtempo = $('.jatuhtempo').val();
+                nofpg = $('.nofpg').val();
+
+                $('tr.tblbank').remove();
+
+                 var row = "<tr class='tblbank'> <td> 1 </td>  <td>"+nofpg+"</td>" + // NO FPG
+                      "<td>"+tgl+"</td>"+
+                      "<td> <input type='text' class='form-control kodebankbg' value="+kodebank[4]+" name='kodebankbg'></td>"+ // TGL
+                      "<td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"' readonly> </td> <td> <input type='text'  class='input-sm form-control nominaltblibank' name='nominalbank' style='text-align:right' required > </td>" + //JATUH TEMPO
+                      "<td>  </td> </tr>"; //NOMINAL
+                    
+                  $('#tbl-ibank').append(row);
+
+                  $('.nominaltblibank').change(function(){
+                      //alert('as');
+                      totbayar = $('.totbayar').val();
+
+
+                      val = $(this).val();
+                      
+                       val = accounting.formatMoney(val, "", 2, ",",'.');
+                       $(this).val(val);
+                       totbayar = totbayar.replace(/,/g,'');
+                       val = val.replace(/,/g,'');
+                       if(parseFloat(totbayar) < parseFloat(val)) {
+                        toastr.info("Nominal harus sama dengan totalbayar :)");
+                        return false;
+                       }
+
+
+                     /*  $('.totbayar').val(val);*/
+                       $('.ChequeBg').val(addCommas(val));
+                  })
+
+           }
+           else {
+            $('.checkbgtf').show();
+            $('.ibanking').hide();
+           }
+      })
+
+
+
 
      $('#formfpg').submit(function(){
         if(!this.checkValidity() ) 
@@ -1041,9 +1113,6 @@
       location.reload();
     })
 
-    $('#jenisbayarbankcekbg').click(function(){
-
-    })
 
 
     $('#formfpg').submit(function(event){
@@ -1960,11 +2029,11 @@
       account = string[3];
       id = string[0];
 
-
+      $('.valbank').val(val);
       $('.nmbank').val(namabank);
       $('.cbgbank').val(alamat);
       $('.account').val(account);
-
+      $('.kodebankbg').val(string[4]);
       $.ajax({
           type : "post",
           data : {id},
@@ -1972,8 +2041,7 @@
           dataType : 'json',
           success : function (response){
             table = response.table;
-            console.log(table);
-
+             $('.hutangbank').val(string[4]);
           var tablecek = $('#tbl-cheuque').DataTable();
           tablecek.clear().draw();
             var nmrbnk = 1;
@@ -2124,6 +2192,15 @@
         location.reload();
       }
 
+      if(idjenis == '12'){
+          $('.jenisbayarbankbg').prop({ disabled: true, checked: false });
+          $('.jenisbayarbanktfacc').prop({ disabled: false, checked: false });
+      }
+      else {
+          $('.jenisbayarbanktfacc').prop({ disabled: true, checked: false });
+          $('.jenisbayarbankbg').prop({ disabled: false, checked: false });
+      }
+
        var tablefaktur = $('#tbl-faktur').DataTable();  
       tablefaktur.clear().draw();
         $.ajax({ //AJAX
@@ -2172,6 +2249,8 @@
                         } 
                     }
                     else if(idjenis == '1'){
+                        $('.jenisbayar2').val(cabang);
+                   
                         $('.jenisbayar2').attr('disabled' , true);
 
                         $('.jenisbayar2').empty();  
@@ -2184,8 +2263,6 @@
 
                         cabang = $('.cabang').val();
                        
-                        $('.jenisbayar2').val(cabang);
-
 
                        // alert(cabang);
 /*                        if(cabang != 000){
@@ -2223,15 +2300,22 @@
               idsup = split[0];
               nosupplier = split[1];
               var idjenisbayar = $('.jenisbayar').val();
-            
+              if(idjenisbayar == '1'){
+                nosupplier = cabang;
+              } 
+              else {
+                nosupplier = nosupplier;
+                if(idsup == ''){
+                toastr.info("Data Supplier belum ada :)");
+                return false;
+                 }
+              }
+
               cabangfaktur = $('.cabangfaktur').val();
              // alert(cabangfaktur);
               $('.hsljenisbayar').val(val);
 
-              if(idsup == ''){
-                toastr.info("Data Supplier belum ada :)");
-                return false;
-              }
+             
               //alert(cabangfaktur);
               arrnofaktur = [];
              $('tr.field').each(function(){
@@ -2250,9 +2334,6 @@
                  
                     var fp = data.fakturpembelian;
                   
-                    //$('.hari_bank').val(fp[0].fp_jatuhtempo);
-
-                     //tambah data ke table data po
                   
                     var n = 1;
                     if(idjenisbayar == '2' ){
@@ -2334,8 +2415,7 @@
                               }
                         $('.hutangdagang').val(fp[0].fp_acchutang); 
                        $('.cabangfaktur').val(fp[0].fp_comp) 
-                      /*  alert(fp[0].fp_comp + 'cabangfaktur');   
-                        alert(fp[0].fp_acchutang + 'hutangdagang');   */
+                     
                     }
                     else if(idjenisbayar == '3'){
                       $('.supfaktur').show();
