@@ -788,7 +788,11 @@ if ($('#do_jenis_ppn').val() == 3) {
     var biaya_tambahan = $("input[name='do_biaya_tambahan']").val();
     var biaya_komisi  = $("input[name='do_biaya_komisi']").val();
     var jenis_ppn = $("select[name='do_jenis_ppn']").val();
+    var biaya_penerus = $("input[name='do_tarif_penerus']").val();
+    var do_diskon_v = $("input[name='do_diskon_v']").val();
 
+    var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
+    var do_diskon_v = do_diskon_v.replace(/[A-Za-z$. ,-]/g, "");
     var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
     var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
     var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g,"");
@@ -796,15 +800,13 @@ if ($('#do_jenis_ppn').val() == 3) {
 
 
 
-    var total  = parseFloat(tarif_dasar)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi);
+    var total  = parseFloat(tarif_dasar)+parseFloat(biaya_penerus)+parseFloat(biaya_tambahan)+parseFloat(biaya_komisi)-parseFloat(do_diskon_v);
     var ppn  = 0;
     if (jenis_ppn == 3) {
-        ppn = parseFloat(total) / parseFloat(100.1);
+        ppn = 1/101*parseFloat(total);
     }
 
-    $(".jml_ppn").val(ppn);
-
-    
+    $(".jml_ppn").val(ppn.toFixed(2));
 }
 
 //END OF
@@ -1056,12 +1058,12 @@ function hitung() {
         ppn =parseFloat(total) / parseFloat(10.1);
         total = total - ppn;
     }
-    
+
     var total_h = total-diskon_value_utama; 
 
     
     //--hasil perhitungan
-    $("input[name='do_jml_ppn']").val(accounting.formatMoney(ppn,"",0,'.',','));
+    $("input[name='do_jml_ppn']").val(ppn.toFixed(2));
     $("input[name='do_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
 
 }
@@ -1202,6 +1204,9 @@ function hitung() {
             var total_dpp = total - diskon_v;
             var sub_dpp = total_dpp - do_vendor;
 
+            var total_hitung_ppn = total - diskon_v;
+
+
             if ($('.vendor_tarif').is(':checked') == true) {
                 $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
             }else{
@@ -1213,21 +1218,22 @@ function hitung() {
 
             var ppn  = 0;
             if (jenis_ppn == 1) {
-                ppn =parseFloat(total) * parseFloat(0.1);
-                total = total + ppn;
+                ppn =parseFloat(total_hitung_ppn) * parseFloat(0.1);
+                total = total_hitung_ppn + ppn;
             }else if (jenis_ppn == 2) {
                 ppn =parseFloat(total) / parseFloat(100.1);
-                total = total + ppn;
+                total = total_hitung_ppn + ppn;
             }else if (jenis_ppn == 4) {
                 ppn =0;
             }else if (jenis_ppn == 3) {
-               ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
+                ppn = 1 / parseFloat(100+1) * parseFloat(total_hitung_ppn) ;
             }else if (jenis_ppn == 5) {
-                ppn =parseFloat(total) / parseFloat(10.1);
-                total = total - ppn;
+                ppn =parseFloat(total_hitung_ppn) / parseFloat(10.1);
+                total = total_hitung_ppn - ppn;
             }
             
             var total_h = total-diskon_v; 
+            $('.jml_ppn').val(ppn.toFixed(2));
             if(diskon_total > this_selected_value){
                 toastr.error("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
                 $("input[name='do_diskon_v']").val(0);
@@ -1268,6 +1274,8 @@ function hitung() {
             var total_dpp   = total - diskon_v;
             var sub_dpp     = total_dpp - do_vendor;
 
+            var total_hitung_ppn = total - diskon_v;
+
             var temp_total  = $('input[name="do_total_temp"]').val(total_dpp);
 
             if ($('.vendor_tarif').is(':checked') == true) {
@@ -1278,20 +1286,21 @@ function hitung() {
 
             var ppn  = 0;
             if (jenis_ppn == 1) {
-                ppn =parseFloat(total) * parseFloat(0.1);
-                total = total + ppn;
+                ppn =parseFloat(total_hitung_ppn) * parseFloat(0.1);
+                total = total_hitung_ppn + ppn;
             }else if (jenis_ppn == 2) {
                 ppn =parseFloat(total) / parseFloat(100.1);
-                total = total + ppn;
+                total = total_hitung_ppn + ppn;
             }else if (jenis_ppn == 4) {
                 ppn =0;
             }else if (jenis_ppn == 3) {
-                ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
+                ppn = 1 / parseFloat(100+1) * parseFloat(total_hitung_ppn) ;
             }else if (jenis_ppn == 5) {
-                ppn =parseFloat(total) / parseFloat(10.1);
-                total = total - ppn;
+                ppn =parseFloat(total_hitung_ppn) / parseFloat(10.1);
+                total = total_hitung_ppn - ppn;
             }
-            
+            $('.jml_ppn').val(ppn.toFixed(2));
+
             var total_h = total-diskon_v; 
             $("input[name='do_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
 

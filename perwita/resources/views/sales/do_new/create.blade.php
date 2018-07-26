@@ -1153,6 +1153,8 @@ function hitung() {
             var total_dpp = total - diskon_v;
             var sub_dpp = total_dpp - do_vendor;
 
+            var total_hitung_ppn = total - diskon_v;
+
             if ($('.vendor_tarif').is(':checked') == true) {
                 $("input[name='do_dpp']").val(accounting.formatMoney(sub_dpp,"",0,'.',','));
             }else{
@@ -1164,19 +1166,20 @@ function hitung() {
 
             var ppn  = 0;
             if (jenis_ppn == 1) {
-                ppn =parseFloat(total) * parseFloat(0.1);
-                total = total + ppn;
+                ppn =parseFloat(total_hitung_ppn) * parseFloat(0.1);
+                total = total_hitung_ppn + ppn;
             }else if (jenis_ppn == 2) {
                 ppn =parseFloat(total) / parseFloat(100.1);
-                total = total + ppn;
+                total = total_hitung_ppn + ppn;
             }else if (jenis_ppn == 4) {
                 ppn =0;
             }else if (jenis_ppn == 3) {
-               ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
+                ppn = 1 / parseFloat(100+1) * parseFloat(total_hitung_ppn) ;
             }else if (jenis_ppn == 5) {
-                ppn =parseFloat(total) / parseFloat(10.1);
-                total = total - ppn;
+                ppn =parseFloat(total_hitung_ppn) / parseFloat(10.1);
+                total = total_hitung_ppn - ppn;
             }
+            $('.jml_ppn').val(ppn.toFixed(2));
             
             var total_h = total-diskon_v; 
             $("input[name='do_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
@@ -1216,6 +1219,8 @@ function hitung() {
             var total_dpp   = total - diskon_v;
             var sub_dpp     = total_dpp - do_vendor;
 
+            var total_hitung_ppn = total - diskon_v;
+
             var temp_total  = $('input[name="do_total_temp"]').val(total_dpp);
 
             if ($('.vendor_tarif').is(':checked') == true) {
@@ -1226,19 +1231,20 @@ function hitung() {
 
             var ppn  = 0;
             if (jenis_ppn == 1) {
-                ppn =parseFloat(total) * parseFloat(0.1);
-                total = total + ppn;
+                ppn =parseFloat(total_hitung_ppn) * parseFloat(0.1);
+                total = total_hitung_ppn + ppn;
             }else if (jenis_ppn == 2) {
                 ppn =parseFloat(total) / parseFloat(100.1);
-                total = total + ppn;
+                total = total_hitung_ppn + ppn;
             }else if (jenis_ppn == 4) {
                 ppn =0;
             }else if (jenis_ppn == 3) {
-                ppn = 1 / parseFloat(100+1) * parseFloat(total) ;
+                ppn = 1 / parseFloat(100+1) * parseFloat(total_hitung_ppn) ;
             }else if (jenis_ppn == 5) {
-                ppn =parseFloat(total) / parseFloat(10.1);
-                total = total - ppn;
+                ppn   = parseFloat(total_hitung_ppn) / parseFloat(10.1);
+                total = total_hitung_ppn - ppn;
             }
+            $('.jml_ppn').val(ppn.toFixed(2));
             
             var total_h = total-diskon_v; 
             $("input[name='do_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
