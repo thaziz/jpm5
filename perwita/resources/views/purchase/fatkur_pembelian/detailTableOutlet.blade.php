@@ -43,7 +43,7 @@
 	 	</div>
 
 	    <table class="table table-bordered table-hover table_outlet" style="font-size: 12px; ">
-	    <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+	    <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal"  type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
 	    <button type="button" class="btn btn-primary pull-right save_update_outlet" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
 	    	
 	    <div class="loading text-center" style="display: none;">
@@ -430,15 +430,34 @@ $('.modal_outlet_tt').click(function(){
 
   function tt_penerus_outlet() {
 
-    var total_all_komisi 	= $('.total_all_komisi').val();
-    var jatuh_tempo_outlet  = $('.jatuh_tempo_outlet').val();
-
-    $('.jatuhtempo_tt').val(jatuh_tempo_outlet);
-    $('.totalterima_tt').val(total_all_komisi);
-
+    var cabang = $('.cabang').val();
+    var agen_vendor = $('.selectOutlet').val();
+    $.ajax({
+      url:baseUrl +'/fakturpembelian/nota_tt',
+      data: {cabang,agen_vendor},
+      success:function(data){
+        $('.div_tt').html(data);
+    	$('#modal_tt_penerus').modal('show');
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
 
   }
 
+
+function select_tt(a) {
+    var tt_form = $(a).find('.tt_form').text();
+    var tt_invoice = $(a).find('.tt_invoice').text();
+    var tt_id = $(a).find('.tt_id').val();
+    var tt_dt = $(a).find('.tt_dt').val();
+
+    $('.tanda_terima').val(tt_form);
+    $('.invoice_tt').val(tt_invoice);
+    $('.id_tt').val(tt_id);
+    $('.dt_tt').val(tt_dt);
+    $('#modal_tt_outlet').modal('hide');
+}
  
 $.fn.serializeArray = function () {
     var rselectTextarea= /^(?:select|textarea)/i;

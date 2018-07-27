@@ -71,7 +71,7 @@
                         <td width="150">Kode Transaksi</td>
                         <td width="300">
                           <input type="text" name="nomor" class="nomor form-control" >
-                          <input type="text" name="nomor_old" class="nomor form-control" >
+                          <input type="hidden" name="nomor_old" class="nomor_old form-control" >
                         </td>
                         <td width="150">Customer</td>
                         <td colspan="2" class="customer_td">
@@ -228,6 +228,7 @@
       data : {cabang,tanggal},
       dataType:'json',
       success:function(data){
+
         if ($('.nomor_old').val() == $('.nomor').val()) {
             $('.nomor').val(data.nota);
             $('.nomor_old').val(data.nota);
@@ -245,6 +246,8 @@
       success:function(data){
         $('.nomor').val(data.nota);
         $('.nomor_old').val(data.nota);
+      },error:function(){
+        location.reload();
       }
     })
   })
@@ -339,16 +342,7 @@
     })
   })
 
-  function total() {
-    var total = 0;
-    $('.nominal').each(function(){
-      console.log($(this));
-      var nominal = $(this).val();
-      nominal     = nominal.replace(/[^0-9\-]+/g,"")/100;
-      total       += nominal;
-    })
-    $('.total_tt').val(total);
-  }
+  
   $('.append_invoice').click(function(){
     var array_invoice = [];
     invoice.$('.child_check').each(function(){
@@ -377,7 +371,7 @@
             '<p class="tanggal_detil_text">'+data.data[i].i_tanggal+'</p>',
 
             '<p class="nominal_text">'+accounting.formatMoney(data.data[i].i_total_tagihan,"", 2, ".",',')+'</p>'+
-            '<input type="text" class="form-control nominal" name="nominal[]" value="'+data.data[i].i_total_tagihan+'">',
+            '<input type="hidden" class="form-control nominals" name="nominal[]" value="'+data.data[i].i_total_tagihan+'">',
 
             '<input type="text" class="form-control" name="catatan[]" style="width:100%">',
 
@@ -392,16 +386,25 @@
         $('.center').css('text-align','center');
         $('.customer_td').addClass('disabled');
         $('.cabang_td').addClass('disabled');
+        total();
       },
       error:function(data){
         toastr.warning('Terjadi Kesalahan Periksa Kembali Data Anda');
       }
     })
     $('#modal_tt').modal('hide');
-    total();
 
   })
-
+  function total() {
+    var total = 0;
+    table.$('.nominals').each(function(){
+      console.log($(this));
+      var nominal = $(this).val();
+      nominal     = nominal.replace(/[^0-9\-]+/g,"")*1;
+      total       += nominal;
+    })
+    $('.total_tt').val(accounting.formatMoney(total,"", 2, ".",','));
+  }
   $('.simpan_form').click(function(){
     var temp = 0
     var validator = [];

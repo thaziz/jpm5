@@ -267,11 +267,11 @@
                                                     <td style="width:110px; padding-top: 0.4cm">Tarif Vendor</td>
                                                     <td colspan="2">
                                                         <div>
-                                                             <label class="radio-inline">
+                                                            <label class="radio-inline">
                                                               <input type="radio" class="cek_vendor_ya" name="cek_vendor">Ya
                                                             </label>
                                                             <label class="radio-inline">
-                                                              <input type="radio" class="cek_vendor_tidak" name="cek_vendor">Tidak
+                                                              <input type="radio" class="cek_vendor_tidak" name="cek_vendor" checked>Tidak
                                                             </label>
                                                         </div>
                                                     </td>

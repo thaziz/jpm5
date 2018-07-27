@@ -2733,8 +2733,8 @@ class LaporanMasterController extends Controller
    }
    public function cari_kartupiutang(Request $request){
    		// dd($request->all());
-   		$awal = substr($request->min,-2);
-   		$akir = substr($request->max,-2);
+   		$awal = $request->min;
+   		$akir = $request->max;
 
    		//invoice
    		if ($request->customer != '' || $request->customer != null) {
@@ -2841,8 +2841,7 @@ class LaporanMasterController extends Controller
 
    		
 
-   		$data = array_merge($data_invoice,$data_cn_dn,$data_kwitansi,$data_postingbayar);
-
+   			$data = array_merge($data_invoice,$data_cn_dn,$data_kwitansi,$data_postingbayar);
 		if ($data == null) {
 			return response()->json(['status'=>'kosong']);
 		}
@@ -2851,18 +2850,30 @@ class LaporanMasterController extends Controller
 
    			$saldo_ut = DB::select("SELECT sum(i_sisa_akhir) as saldo from invoice 
 										where i_tanggal >= '$awal' 
-			   							and i_tanggal  <= '$akir' 
+			   							and i_tanggal <= '$akir' 
 										$customer_invoice $akun_invoice $cabang_invoice
 										");
    		}else{
-   			
-			return $customer = DB::select("SELECT i_kode_customer from invoice where i_tanggal BETWEEN '$tglawal' and '$tglakhir'");
 
- 	  		// return $customer;
- 	  		
-
- 	  		for ($i=0; $i <count($dt) ; $i++) { 
- 	  			$dtt = $dt[$i]->customer;
+   			$arraycus = [];
+			for($i = 0; $i < count($data); $i++){
+				$cus_id['customer'] = $data[$i]->customer;	
+				array_push($arraycus , $cus_id);
+			}
+			$result_customer = array();
+			foreach ($arraycus as &$v) {
+			    if (!isset($result_customer[$v['customer']]))
+			        $result_customer[$v['customer']] =& $v;
+			}
+			$array = array_values($result_customer);	
+			
+			for ($i=0; $i <count($array) ; $i++) { 
+ 	  			$dtt = $array[$i]['customer'];
+				$customer[$i] = DB::table('customer')->select('kode','nama')->where('kode','=',$dtt)->get();
+			}
+			// return $customer;
+ 	  		for ($i=0; $i <count($array) ; $i++) { 
+ 	  			$dtt = $array[$i]['customer'];
  	  			$saldo_ut[$i] = DB::select("SELECT sum(i_sisa_akhir) as saldo,i_kode_customer,'D' as flag from invoice 
 										where i_tanggal >= '$awal' 
 			   							and i_tanggal <= '$akir' 
@@ -2873,12 +2884,11 @@ class LaporanMasterController extends Controller
 				if ($saldo_ut[$i] == null) {
 					$saldo_ut[$i] = 0;
 				}else{
-					$saldo_ut= $saldo_ut;
+					$saldo_ut = $saldo_ut;
 				}
  	  		}
    		}
-
-   		
+   		// return $saldo_ut;
    		if ($request->customer != '') {
    			return view('purchase/master/master_penjualan/laporan/lap_piutang/ajax_lap_piutang_fil_cust',compact('saldo_ut','data','customer','data_saldo'));
    		}else{

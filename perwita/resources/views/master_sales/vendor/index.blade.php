@@ -210,6 +210,12 @@
                                     
                                 </tr>
                                 <tr>
+                                    <td style="padding-top: 0.4cm">Syarat Kredit</td>
+                                    <td colspan="3">
+                                        <input type="number" class="form-control " name="syarat_kredit" >
+                                    </td>
+                                </tr>
+                                <tr>
                                 <td style="padding-top: 0.4cm">Acc Biaya</td>
                                 <td colspan="7">
                                     <div class="input-group date">
@@ -371,6 +377,7 @@
         $("input[name='ed_telpon']").val('');
         $("#ed_komisi_vendor").val('80');
         $("input[name='ed_kode_pos']").val('');
+        $("input[name='syarat_kredit']").val('');
         $("input[name='ck_status']").attr('checked', false);
         $("select[name='ed_acc1']").val('').trigger('chosen:updated');
         $("select[name='ed_acc2']").val('').trigger('chosen:updated');
@@ -405,6 +412,7 @@
                 $("input[name='ed_telpon']").val(data.telpon);
                 $("input[name='ed_kode_pos']").val(data.kode_pos);
                 $("#ed_komisi_vendor").val(data.komisi_vendor);
+                $("input[name='syarat_kredit']").val(data.syarat_kredit);
                 $("#ed_komisi_vendor").attr('readonly',false);
                 $("input[name='ck_status']").attr('checked', data.status);
                 $("select[name='ed_acc1']").val(data.acc_penjualan).trigger('chosen:updated');
