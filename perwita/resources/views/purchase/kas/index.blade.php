@@ -62,55 +62,26 @@
                
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
-                    
-                <div class="box-body">
-                  <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
-                    <thead align="center">
-                     <tr>
-                        <th> No. BBM </th>
-                        <th> Tanggal </th>
-                        <th> Nama Cabang </th>
-                        <th> Biaya Penerus </th>
-                        <th> Detail </th>   
-                        <th> Allow Edit </th>
-                        <th> aksi </th>
-                    </tr>
-                    </thead>
-                    <tbody>  
-                      @foreach($data as $val)
-                      <tr>
-                        <td>{{$val->bpk_nota}}</td>
-                        <td>{{$val->bpk_tanggal}}</td>
-                        <td>{{$val->nama}}</td>
-                        <td align="center">{{"Rp " . number_format(round($val->bpk_tarif_penerus),2,",",".")}}</td>
-                        <td align="left" style="width: 9%">
-                          @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','print'))
-                            <a class="fa asw fa-print" align="center"  title="edit" href="{{route('detailkas', ['id' => $val->bpk_id])}}"> detail</a><br>
-                          @endif
-                          @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','print'))
-                            <a class="fa asw fa-print" align="center"  title="print" href="{{route('buktikas', ['id' => $val->bpk_id])}}"> Bukti Kas</a>
-                          @endif
-                        </td>
-                        <td align="center"><input type="checkbox" class="allow" name="cek[]"></td>
-                        <td align="left" style="width: 6%">
-                          @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','ubah'))
-                           @if(cek_periode(carbon\carbon::parse($val->bpk_tanggal)->format('m'),carbon\carbon::parse($val->bpk_tanggal)->format('Y') ) != 0)
-                           <a class="fa asw fa-pencil" align="center" href="{{route('editkas', ['id' => $val->bpk_id])}}" title="edit"> Edit</a><br>
-                           @endif
-                          @endif
-                          @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','hapus'))
-                          @if(cek_periode(carbon\carbon::parse($val->bpk_tanggal)->format('m'),carbon\carbon::parse($val->bpk_tanggal)->format('Y') ) != 0)
-                            <a class="fa fa-trash asw" align="center" onclick="hapus({{$val->bpk_id}})" title="hapus"> Hapus</a>
-                          @endif
-                          @endif
-                        </td>
+                <div class="col-sm-6" style="margin-bottom: 20px">
+                    <table cellpadding="3" cellspacing="0" border="0" class="table">
+                      @if (Auth::user()->punyaAkses('Biaya Penerus Kas','cabang')) 
+                      <tr id="filter_col1" data-column="0">
+                          <td>Cabang</td>
+                          <td align="center">
+                            <select onchange="filtering()" class="form-control cabang chosen-select-width">
+                              <option value="0">Pilih - Cabang </option>
+                              @foreach ($cabang as $a)
+                                <option value="{{$a->kode}}">{{$a->nama}}</option>
+                              @endforeach
+                            </select>
+                          </td>
                       </tr>
-                      @endforeach 
-                    </tbody>
-                   
-                  </table>
-                </div><!-- /.box-body -->
+                      @endif
+                    </table>
+                  </div>
+                <div class="box-body append_table">
 
+                </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
             
@@ -139,18 +110,51 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-     tableDetail = $('.tbl-penerimabarang').DataTable({
-            responsive: true,
-            searching: true,
-            //paging: false,
-            "pageLength": 10,
-            "language": dataTableLanguage,
+$(document).ready(function(){
+  var cabang = $('.cabang').val();
+  $.ajax({
+      url:baseUrl + '/biaya_penerus/append_table',
+      data:{cabang},
+      type:'get',
+      success:function(data){
+        $('.append_table').html(data);
+      },
+      error:function(data){
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
     });
+   }
+  });
+})
 
-    $('.date').datepicker({
-        autoclose: true,
-        format: 'yyyy-mm-dd'
+function filtering() {
+  var cabang = $('.cabang').val();
+  var jenis_bayar = $('.jenis_bayar').val();
+  $.ajax({
+      url:baseUrl + '/biaya_penerus/append_table',
+      data:{cabang,jenis_bayar},
+      type:'get',
+      success:function(data){
+        $('.append_table').html(data);
+      },
+      error:function(data){
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
     });
+   }
+  });
+}
+
+  $('.date').datepicker({
+      autoclose: true,
+      format: 'yyyy-mm-dd'
+  });
     
   function hapus(id){
     swal({

@@ -373,6 +373,8 @@ Route::get('biaya_penerus/buktikas', 'KasController@buktikas')->name('buktikas')
 Route::get('biaya_penerus/detailkas', 'KasController@detailkas')->name('detailkas');
 Route::get('biaya_penerus/carinopol', 'KasController@carinopol')->name('carinopol');
 Route::get('biaya_penerus/jurnal', 'KasController@jurnal');
+Route::get('biaya_penerus/append_table', 'KasController@append_table');
+Route::get('buktikaskeluar/datatable_bk', 'KasController@datatable_bk')->name('datatable_bk');
 
 // BIAYA PENERUS LOADING/UNLOADING
 Route::get('biaya_penerus_loading/index', 'loadingController@index_loading');
