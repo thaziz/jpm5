@@ -22,7 +22,7 @@ class mutasi_piutang_Controller extends Controller
   	  $tglawal = $request->min;
   	  $tglakhir = $request->max;
 
-  	  $customer  =  DB::select("SELECT i_kode_customer from invoice where i_tanggal BETWEEN '$tglawal' and '$tglakhir'");
+  	  return $customer  =  DB::select("SELECT i_kode_customer from invoice where i_tanggal BETWEEN '$tglawal' and '$tglakhir'");
   	  
   	  $arraycus = [];
 	   for($i = 0; $i < count($customer); $i++){

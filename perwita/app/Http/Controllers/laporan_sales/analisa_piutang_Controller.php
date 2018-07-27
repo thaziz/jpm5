@@ -18,11 +18,11 @@ class analisa_piutang_Controller extends Controller
     }
 
     public function ajax_lap_analisa_piutang(Request $request) {
-      
+        
         $tglawal = $request->min;
         $tglakhir = $request->max;
 
-        $customer  =  DB::select("SELECT i_kode_customer from invoice where i_tanggal BETWEEN '$tglawal' and '$tglakhir' order by i_nomor asc");
+        $customer  =  DB::select("SELECT i_kode_customer from invoice where i_tanggal BETWEEN '$tglawal' and '$tglakhir' order by i_kode_customer asc");
       
         $arraycus = [];
         for($i = 0; $i < count($customer); $i++){
@@ -40,11 +40,9 @@ class analisa_piutang_Controller extends Controller
         }
         $array = array_values($result_customer);   
 
-        
-
-
         $saldo_push                 = [];
         $terbayar_push              = [];
+        $terbayar_posting_push      = [];
         $tersisa_push               = [];
         $sebelum_jatuhtempo_push    = [];
         $jatuhtempo_30_push         = [];
@@ -67,7 +65,6 @@ class analisa_piutang_Controller extends Controller
             array_push($tgl_jthtempo_now_push, $tgl_jthtempo_now);
 
 
-
             $saldoawal = DB::table('invoice')
                             ->select(DB::raw('SUM(i_total_tagihan) as saldoawal'))
                             ->where('i_tanggal','>',$tglawal)
@@ -82,8 +79,21 @@ class analisa_piutang_Controller extends Controller
                         ->where('k_tanggal','<',$tglakhir)
                         ->where('k_kode_customer','=',$array[$i])
                         ->get();
+
+
             
             array_push($terbayar_push, $terbayar);
+
+            $terbayar_posting = DB::table('posting_pembayaran_d')
+                        ->select(DB::raw('SUM(k_netto) as terbayar_posting'))
+                        ->where('tanggal','>',$tglawal)
+                        ->where('tanggal','<',$tglakhir)
+                        ->where('kode_customer','=',$array[$i])
+                        ->get();
+
+
+            
+            array_push($terbayar_posting_push, $terbayar_posting);
 
             $ss[$i] = ($saldo_push[$i][0]->saldoawal - $terbayar_push[$i][0]->terbayar);
 
@@ -107,14 +117,18 @@ class analisa_piutang_Controller extends Controller
             $date_30 = strtotime ( '+30 day' , strtotime ( $tglakhir ));
             $date_30_g = date('Y-m-j' , $date_30);
             
-            $jatuhtempo_30 = DB::table('invoice')
+            for ($u=0; $u <count($tgl_jthtempo_now_push[$i]) ; $u++) { 
+                $jatuhtempo_30 = DB::table('invoice')
                             ->select(DB::raw('SUM(i_total_tagihan) as jatuhtempo_30'))
                             ->where('i_tanggal','>',$tglawal)
                             ->where('i_tanggal','<',$tglakhir)
-                            ->whereBetween('i_jatuh_tempo',[$tgl_jthtempo_now_push[$i][0]->i_jatuh_tempo,$date_30_g])
+                            ->where('i_jatuh_tempo','>',$tgl_jthtempo_now_push[$i][$u]->i_jatuh_tempo)
+                            ->where('i_jatuh_tempo','<',$date_30_g)
                             ->where('i_kode_customer','=',$array[$i])
                             ->get();
-            array_push($jatuhtempo_30_push, $jatuhtempo_30);
+                array_push($jatuhtempo_30_push, $jatuhtempo_30);
+            }
+            
 
             $date_60 = strtotime ( '+60 day' , strtotime ( $tglakhir ));
             $date_60_g = date('Y-m-j' , $date_60);
@@ -190,7 +204,9 @@ class analisa_piutang_Controller extends Controller
 
 
         }
-        return $sebelum_jatuhtempo_push;
+            // return $jatuhtempo_30_push;
+
+        // $sebelum_jatuhtempo_push;    
         
         // [$terbayar_push,$saldo_push,$ss,$sebelum_jatuhtempo_push,$jatuhtempo_30_push,$jatuhtempo_60_push,$jatuhtempo_90_push,$jatuhtempo_120_push,$jatuhtempo_180_push,$jatuhtempo_360_push,$tgl_jthtempo_now_push];
 

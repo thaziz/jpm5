@@ -2848,16 +2848,17 @@ class LaporanMasterController extends Controller
    		if ($request->customer != '') {
    			$customer = DB::table('customer')->select('kode','nama')->where('kode','=',$request->customer)->get();
 
-   			$saldo_ut = DB::select("SELECT sum(i_sisa_akhir) as saldo from invoice 
+   			$saldo_ut = DB::select("SELECT sum(i_total_tagihan) as saldo from invoice 
 										where i_tanggal >= '$awal' 
 			   							and i_tanggal <= '$akir' 
 										$customer_invoice $akun_invoice $cabang_invoice
 										");
    		}else{
+   			$cus  =  DB::select("SELECT i_kode_customer as customer from invoice where i_tanggal BETWEEN '$awal' and '$akir'");
 
    			$arraycus = [];
-			for($i = 0; $i < count($data); $i++){
-				$cus_id['customer'] = $data[$i]->customer;	
+			for($i = 0; $i < count($cus); $i++){
+				$cus_id['customer'] = $cus[$i]->customer;	
 				array_push($arraycus , $cus_id);
 			}
 			$result_customer = array();
@@ -2874,7 +2875,7 @@ class LaporanMasterController extends Controller
 			// return $customer;
  	  		for ($i=0; $i <count($array) ; $i++) { 
  	  			$dtt = $array[$i]['customer'];
- 	  			$saldo_ut[$i] = DB::select("SELECT sum(i_sisa_akhir) as saldo,i_kode_customer,'D' as flag from invoice 
+ 	  			$saldo_ut[$i] = DB::select("SELECT sum(i_total_tagihan) as saldo,i_kode_customer,'D' as flag from invoice 
 										where i_tanggal >= '$awal' 
 			   							and i_tanggal <= '$akir' 
 			   							and i_kode_customer = '$dtt'

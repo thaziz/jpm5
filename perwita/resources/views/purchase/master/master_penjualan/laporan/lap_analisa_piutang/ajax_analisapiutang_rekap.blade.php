@@ -4,9 +4,9 @@
                        <tr>
                           <th align="center"> No</th>
                           <th align="center"> Customer</th>
-                          <th align="center"> Jum Faktur</th>
+                          <th align="center"> Saldo Awal</th>
                           <th align="center"> Terbayar</th>
-                          <th align="center"> Sisa Faktur</th>
+                          <th align="center"> Sisa Saldo</th>
                           <th align="center"> Umur</th>
                           <th align="center"> Belum jatuh tempo </th>
                           <th align="center"> Umur 0 s/d 30 </th>
