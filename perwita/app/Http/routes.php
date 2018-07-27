@@ -30,9 +30,11 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('login', 'loginController@authenticate');
     Route::post('login', 'loginController@authenticate');
 });
+
 /*Route::get('/', function(){
     return view('auth.login');
 });*/
+
 Route::group(['middleware' => 'auth'], function () {
 Route::get('/dashboard','dashboardController@dashboard');
 
