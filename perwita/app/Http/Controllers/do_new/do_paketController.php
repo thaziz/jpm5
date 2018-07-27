@@ -96,12 +96,19 @@ class do_paketController extends Controller
                 ->make(true);
    }
 
+   public function hapus_deliveryorder_paket(Request $request,$nomor)
+    {
+      $data = DB::table('delivery_order')->where('nomor',$nomor)->delete();
+      return redirect('sales/deliveryorder_paket');
+    }
+
 //FORM CREATE DO PAKET
    public function create_deliveryorder_paket(Request $request)
    {
         
         $kota = DB::select("SELECT id,nama FROM kota ORDER BY nama ASC ");
         $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
+        $masterbank = DB::select(" SELECT mb_kode,mb_nama FROM masterbank where mb_sericek is null ORDER BY mb_kode ASC ");
 
         $customer = DB::table('customer as c')
                              ->select('c.kode','c.nama','c.alamat','c.telpon','kc.kc_aktif','kcd.kcd_jenis')
@@ -149,7 +156,7 @@ class do_paketController extends Controller
             $cabang = DB::select(" select kode, nama, (select dc_diskon from d_disc_cabang x where dc_cabang = y.kode and dc_jenis = 'PAKET') diskon from cabang y where kode = '$authe' group by kode order by kode asc ");
         }
 
-        return view('sales.do_new.create', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data','cus','do_dt'));
+        return view('sales.do_new.create', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data','cus','do_dt','masterbank'));
    }
 
 //CARI NOMOR DO PAKET
@@ -958,13 +965,17 @@ class do_paketController extends Controller
                        ->where('id_akun','like','1303'.'%')
                        ->where('kode_cabang',$request->do_cabang)
                        ->first();
-
-          if ($select_akun == null) {
+          if ($request->do_bank == null) {
+            if ($select_akun == null) {
               $dataInfo = ['status' => 'gagal', 'info' => 'Akun Piutang Pada Cabang Ini Belum Tersedia'];
               return json_encode($dataInfo);
+            }else{
+              $akun_piutang = $select_akun->id_akun;
+            }
           }else{
-            $akun_piutang = $select_akun->id_akun;
+            $akun_piutang = $request->do_bank;
           }
+          
           //cek nama username/user
           $namanama  = Auth::user()->m_nama;
           if ($namanama == null) {
@@ -1388,6 +1399,7 @@ class do_paketController extends Controller
         return (float)$nilai;
 
     }
+
 
 //LIHAT JURNAL AWAL
     public function jurnal_awal_deliveryorder_paket(Request $request)

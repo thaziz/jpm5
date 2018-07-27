@@ -1482,7 +1482,7 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller
 //deny do baru
 
   //index
-  Route::get('sales/deliveryorder_paket', 'do_new\do_paketController@index');
+  Route::get('sales/deliveryorder_paket', 'do_new\do_paketController@index')->name('deliveryorder_paket');
       //datatable
       Route::get('sales/deliveryorder_paket/datatable_deliveryorder_paket', 'do_new\do_paketController@datatable_deliveryorder_paket')->name('datatable_deliveryorder_paket');
   //create
@@ -1507,6 +1507,7 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller
       Route::get('sales/deliveryorder_paket/jurnal_awal_deliveryorder_paket', 'do_new\do_paketController@jurnal_awal_deliveryorder_paket')->name('jurnal_awal_deliveryorder_paket');
       //jurnal balik
       Route::get('sales/deliveryorder_paket/jurnal_balik_deliveryorder_paket', 'do_new\do_paketController@jurnal_balik_deliveryorder_paket')->name('jurnal_balik_deliveryorder_paket');
+  Route::get('sales/deliveryorder_paket/{nomor}/hapus_deliveryorder_paket', 'do_new\do_paketController@hapus_deliveryorder_paket')->name('hapus_deliveryorder_paket');
 
 //end of do baru
 
