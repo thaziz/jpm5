@@ -25,7 +25,7 @@
  	<td width="10">:</td>
 	<td width="200"><input type="text" name="status" class="form-control" value="Released" readonly="" style=""></td>
  </tr>
-  <tr class="vendor">
+  <tr class="">
  	<td style="width: 100px">Tipe Vendor </td>
  	<td width="10">:</td>
  	<td width="200" class="vendor_td">
