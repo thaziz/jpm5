@@ -130,8 +130,16 @@ class BiayaPenerusController extends Controller
 	            ->where('bpd_pod',null)
 	            ->take(10)->get();
 
+	        $validate = DB::table('biaya_penerus_dt')
+				            ->where('bpd_pod', 'like', '%'.strtoupper($request->term).'%')
+				            ->take(10)->get();
+
 	        if ($queries == null){
-	            $results[] = [ 'id' => null, 'label' => 'Tidak ditemukan data terkait'];
+	        	if ($validate != null) {
+	            	$results[] = [ 'id' => null, 'label' => 'Data Telah Ada Di Database'];
+	        	}else{
+	            	$results[] = [ 'id' => null, 'label' => 'Tidak ditemukan data terkait'];
+	        	}
 	        } else {
 
 	            foreach ($queries as $query)
@@ -438,7 +446,7 @@ class BiayaPenerusController extends Controller
 												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
 												'jr_detail' => $jenis_bayar->jenisbayar,
 												'jr_ref'  	=> $request->nofaktur,
-												'jr_note'  	=> 'BUKTI KAS KELUAR',
+												'jr_note'  	=> 'BIAYA PANERUS HUTANG AGEN '. strtoupper($request->Keterangan_biaya),
 												'jr_insert' => carbon::now(),
 												'jr_update' => carbon::now(),
 												]);
@@ -458,10 +466,7 @@ class BiayaPenerusController extends Controller
 										  ->first();
 
 						if ($id_akun == null) {
-							$id_akun = DB::table('d_akun')
-										  ->where('id_akun','like','5315%')
-										  ->where('kode_cabang','000')
-										  ->first();
+							return response()->json(['status'=>0]);
 						}
 						array_push($akun, $id_akun->id_akun);
 						array_push($akun_val, $jurnal[$i]['harga']);
@@ -482,14 +487,14 @@ class BiayaPenerusController extends Controller
 								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
 								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
 								$data_akun[$i]['jrdt_statusdk'] = 'D';
-								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->Keterangan_biaya;
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
 							}else{
 								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 								$data_akun[$i]['jrdt_detailid']	= $i+1;
 								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
 								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
 								$data_akun[$i]['jrdt_statusdk'] = 'K';
-								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->Keterangan_biaya;
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
 							}
 						}else if (substr($akun[$i],0, 1)>2) {
 
@@ -499,14 +504,14 @@ class BiayaPenerusController extends Controller
 								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
 								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
 								$data_akun[$i]['jrdt_statusdk'] = 'K';
-								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->Keterangan_biaya;
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
 							}else{
 								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 								$data_akun[$i]['jrdt_detailid']	= $i+1;
 								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
 								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
 								$data_akun[$i]['jrdt_statusdk'] = 'D';
-								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . $request->Keterangan_biaya;
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
 							}
 						}
 					}
@@ -1148,7 +1153,7 @@ class BiayaPenerusController extends Controller
 												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
 												'jr_detail' => $jenis_bayar->jenisbayar,
 												'jr_ref'  	=> $request->nofaktur,
-												'jr_note'  	=> 'BIAYA PENERUS HUTANG',
+												'jr_note'  	=> 'BIAYA PENERUS HUTANG ' . strtoupper($request->Keterangan_biaya),
 												'jr_insert' => carbon::now(),
 												'jr_update' => carbon::now(),
 												]);
@@ -1853,7 +1858,7 @@ class BiayaPenerusController extends Controller
 												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
 												'jr_detail' => $jenis_bayar->jenisbayar,
 												'jr_ref'  	=> $request->nofaktur,
-												'jr_note'  	=> 'PEMBAYARAN OUTLET',
+												'jr_note'  	=> 'PEMBAYARAN OUTLET '.strtoupper($request->note),
 												'jr_insert' => carbon::now(),
 												'jr_update' => carbon::now(),
 												]);
@@ -2115,7 +2120,7 @@ class BiayaPenerusController extends Controller
 												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
 												'jr_detail' => $jenis_bayar->jenisbayar,
 												'jr_ref'  	=> $request->nofaktur,
-												'jr_note'  	=> 'PEMBAYARAN OUTLET',
+												'jr_note'  	=> 'PEMBAYARAN OUTLET '.strtoupper($request->note),
 												'jr_insert' => carbon::now(),
 												'jr_update' => carbon::now(),
 												]);
@@ -2449,7 +2454,7 @@ class BiayaPenerusController extends Controller
 						'fp_comp'			=> $request->cabang,
 						'created_at'		=> Carbon::now(),
 						'updated_at'		=> Carbon::now(),
-						'fp_keterangan'		=> $request->keterangan_subcon,
+						'fp_keterangan'		=> strtoupper($request->keterangan_subcon),
 						'fp_status'			=> 'Released',
 						'fp_noinvoice'		=> $request->invoice_subcon,
 						'fp_pending_status'	=> 'PENDING',
@@ -2477,7 +2482,7 @@ class BiayaPenerusController extends Controller
 						  'pb_faktur'  		  => $request->nofaktur,
 						  'pb_status'  		  => 'Released',
 						  'pb_kode_subcon'    => $request->nama_subcon,
-						  'pb_keterangan' 	  => $request->keterangan_subcon,
+						  'pb_keterangan' 	  => strtoupper($request->keterangan_subcon),
 						  'updated_at' 		  => Carbon::now(),
 						  'created_at' 	      => Carbon::now(),
 						  'pb_acc'	      	  => $akun_hutang->id_akun,
@@ -2601,7 +2606,7 @@ class BiayaPenerusController extends Controller
 											'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
 											'jr_detail' => $jenis_bayar->jenisbayar,
 											'jr_ref'  	=> $request->nofaktur,
-											'jr_note'  	=> 'BIAYA SUBCON',
+											'jr_note'  	=> 'BIAYA SUBCON '.strtoupper($request->keterangan_subcon),
 											'jr_insert' => carbon::now(),
 											'jr_update' => carbon::now(),
 											]);
@@ -2725,7 +2730,7 @@ class BiayaPenerusController extends Controller
 						'fp_comp'			=> $request->cabang,
 						'created_at'		=> Carbon::now(),
 						'updated_at'		=> Carbon::now(),
-						'fp_keterangan'		=> $request->keterangan_subcon,
+						'fp_keterangan'		=> strtoupper($request->keterangan_subcon),
 						'fp_status'			=> 'Released',
 						'fp_noinvoice'		=> $request->invoice_subcon,
 						'fp_pending_status'	=> 'PENDING',
@@ -2747,7 +2752,7 @@ class BiayaPenerusController extends Controller
 						  'pb_faktur'  		  => $request->nofaktur,
 						  'pb_status'  		  => 'Released',
 						  'pb_kode_subcon'    => $request->nama_subcon,
-						  'pb_keterangan' 	  => $request->keterangan_subcon,
+						  'pb_keterangan' 	  => strtoupper($request->keterangan_subcon),
 						  'updated_at' 		  => Carbon::now(),
 						  'pb_acc'	      	  => $akun_hutang->id_akun,
 						  'pb_csf'	 		  => $akun_hutang->id_akun,
@@ -2887,7 +2892,7 @@ class BiayaPenerusController extends Controller
 												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
 												'jr_detail' => $jenis_bayar->jenisbayar,
 												'jr_ref'  	=> $request->nofaktur,
-												'jr_note'  	=> 'BIAYA SUBCON',
+												'jr_note'  	=> 'BIAYA SUBCON '.strtoupper($request->keterangan_subcon),
 												'jr_insert' => carbon::now(),
 												'jr_update' => carbon::now(),
 												]);
@@ -3329,7 +3334,7 @@ public function save_bp_um(request $req)
 						'created_by'		=> Auth::user()->m_name,
 						'created_at' 		=> carbon::now(),
 						'updated_at' 		=> carbon::now(),
-						'umfp_keterangan'	=> $req->Keterangan_biaya,
+						'umfp_keterangan'	=> strtoupper($req->Keterangan_biaya),
 						'umfp_nofaktur'		=> $req->nofaktur,
 					  ]);
 
@@ -3456,7 +3461,7 @@ public function save_bp_um(request $req)
 												'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tgl_biaya_head))->format('Y-m-d'),
 												'jr_detail' => 'UANG MUKA PEMBELIAN FP',
 												'jr_ref'  	=> $req->nofaktur,
-												'jr_note'  	=> 'BIAYA SUBCON',
+												'jr_note'  	=> 'UANG MUKA '.strtoupper($req->Keterangan_biaya),
 												'jr_insert' => carbon::now(),
 												'jr_update' => carbon::now(),
 												]);
@@ -3730,7 +3735,7 @@ public function update_bp_um(request $req)
 						'created_by'		=> Auth::user()->m_name,
 						'created_at' 		=> carbon::now(),
 						'updated_at' 		=> carbon::now(),
-						'umfp_keterangan'	=> $req->Keterangan_biaya,
+						'umfp_keterangan'	=> strtoupper($req->Keterangan_biaya),
 						'umfp_nofaktur'		=> $req->nofaktur,
 					  ]);
 
@@ -3870,7 +3875,7 @@ public function update_bp_um(request $req)
 												'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tgl_biaya_head))->format('Y-m-d'),
 												'jr_detail' => 'UANG MUKA PEMBELIAN FP',
 												'jr_ref'  	=> $req->nofaktur,
-												'jr_note'  	=> 'BIAYA SUBCON',
+												'jr_note'  	=> 'UANG MUKA '.strtoupper($req->Keterangan_biaya),
 												'jr_insert' => carbon::now(),
 												'jr_update' => carbon::now(),
 												]);

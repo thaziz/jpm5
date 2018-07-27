@@ -277,13 +277,15 @@ class posting_pembayaran_Controller extends Controller
                   ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
                   ->where('k_id_bank',$request->akun_bank)
                   ->get();
-        
-        $temp1 = DB::table('kwitansi')
+
+        $temp = DB::table('kwitansi')
                   ->where('k_kode_cabang',$request->cabang)
                   ->where('k_nomor_posting','=',null)
                   ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
                   ->where('k_id_bank',$request->akun_bank)
                   ->get();
+
+
         $kwitansi_edit = DB::table('kwitansi')
                           ->whereIn('k_nomor',$request->nomor)
                           ->get();
@@ -466,7 +468,7 @@ class posting_pembayaran_Controller extends Controller
                               'jr_date'   => carbon::parse($request->ed_tanggal)->format('Y-m-d'),
                               'jr_detail' => 'POSTING PEMBAYARAN ' . $request->cb_jenis_pembayaran,
                               'jr_ref'    => $nota,
-                              'jr_note'   => 'POSTING PEMBAYARAN',
+                              'jr_note'   => 'POSTING PEMBAYARAN '.$request->ed_keterangan,
                               'jr_insert' => carbon::now(),
                               'jr_update' => carbon::now(),
                               ]);
@@ -566,7 +568,7 @@ class posting_pembayaran_Controller extends Controller
                               'jr_date'   => carbon::parse($request->ed_tanggal)->format('Y-m-d'),
                               'jr_detail' => 'POSTING PEMBAYARAN ' . $request->cb_jenis_pembayaran,
                               'jr_ref'    => $nota,
-                              'jr_note'   => 'POSTING PEMBAYARAN',
+                              'jr_note'   => 'POSTING PEMBAYARAN '. strtoupper($request->ed_keterangan),
                               'jr_insert' => carbon::now(),
                               'jr_update' => carbon::now(),
                               ]);
@@ -667,7 +669,7 @@ class posting_pembayaran_Controller extends Controller
             
         });
     }
-
+    
     public function posting_pembayaran_hapus(request $request)
     {
         // dd($request->all());

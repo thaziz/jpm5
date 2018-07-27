@@ -777,7 +777,7 @@ public function simpan_invoice(request $request)
                         'jr_date'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
                         'jr_detail' => 'INVOICE ' . $request->ed_pendapatan,
                         'jr_ref'    => $nota,
-                        'jr_note'   => 'INVOICE',
+                        'jr_note'   => 'INVOICE '.$request->ed_keterangan,
                         'jr_insert' => carbon::now(),
                         'jr_update' => carbon::now(),
                         ]);
@@ -1327,7 +1327,7 @@ public function simpan_invoice(request $request)
                       'jr_date'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
                       'jr_detail' => 'INVOICE ' . $request->ed_pendapatan,
                       'jr_ref'    => $nota,
-                      'jr_note'   => 'INVOICE',
+                      'jr_note'   => 'INVOICE '.$request->ed_keterangan,
                       'jr_insert' => carbon::now(),
                       'jr_update' => carbon::now(),
                       ]); 
