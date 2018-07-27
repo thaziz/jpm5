@@ -650,7 +650,7 @@ class penerimaan_penjualan_Controller extends Controller
                           'jr_date'   => carbon::parse($tgl)->format('Y-m-d'),
                           'jr_detail' => 'KWITANSI' ,
                           'jr_ref'    => $nota,
-                          'jr_note'   => 'KWITANSI',
+                          'jr_note'   => 'KWITANSI '.$request->ed_keterangan,
                           'jr_insert' => carbon::now(),
                           'jr_update' => carbon::now(),
                           ]);
@@ -1407,7 +1407,7 @@ class penerimaan_penjualan_Controller extends Controller
                           'jr_date'   => carbon::parse($tgl)->format('Y-m-d'),
                           'jr_detail' => 'KWITANSI' ,
                           'jr_ref'    => $nota,
-                          'jr_note'   => 'KWITANSI',
+                          'jr_note'   => 'KWITANSI '.$request->ed_keterangan,
                           'jr_insert' => carbon::now(),
                           'jr_update' => carbon::now(),
                           ]);

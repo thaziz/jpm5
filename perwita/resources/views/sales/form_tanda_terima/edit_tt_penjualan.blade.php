@@ -141,11 +141,13 @@
                         </td>
                       </tr>
                       <tr>
-                        <td colspan="5">
+                        <td colspan="2">
                           <button type="button" class="btn btn-primary add"><i class="fa fa-plus"> Tambah Invoice</i></button>
-                          <button type="button"  class="btn btn-success simpan_form" ><i class="fa fa-save "> Save</i></button>
+                          <button type="button"  class="btn btn-success simpan_form"><i class="fa fa-save "> Save</i></button>
                           {{-- <button type="button"  class="btn btn-warning"><i class="fa fa-print "> </i></button> --}}
                         </td>
+                        <td colspan="1">Total</td>
+                        <td colspan="2"><input type="text" readonly="" value="{{ number_format($data->ft_total, 2, ",", ".") }}" name="total_tt" class="form-control total_tt"></td>
                       </tr>
                     </table>
                   </form>
@@ -249,6 +251,7 @@ var array_simpan = [0];
       $('.cabang_td').removeClass('disabled');
     }
     table.row(par).remove().draw();
+    total();
   }
 
   $('.add').click(function(){
@@ -307,7 +310,8 @@ var array_simpan = [0];
 
             '<p class="tanggal_detil_text">'+data.data[i].i_tanggal+'</p>',
 
-            '<p class="nominal_text">'+accounting.formatMoney(data.data[i].i_total_tagihan,"", 2, ".",',')+'</p>',
+            '<p class="nominal_text">'+accounting.formatMoney(data.data[i].i_total_tagihan,"", 2, ".",',')+'</p>'+
+            '<input type="hidden" class="form-control nominals" name="nominal[]" value="'+data.data[i].i_total_tagihan+'">',
 
             '<input type="text" class="form-control" name="catatan[]" style="width:100%">',
 
@@ -323,6 +327,7 @@ var array_simpan = [0];
         $('.center').css('text-align','center');
         $('.customer_td').addClass('disabled');
         $('.cabang_td').addClass('disabled');
+        total();
       },
       error:function(data){
         toastr.warning('Terjadi Kesalahan Periksa Kembali Data Anda');
@@ -330,7 +335,16 @@ var array_simpan = [0];
     })
     $('#modal_tt').modal('hide');
   })
-
+  function total() {
+    var total = 0;
+    table.$('.nominals').each(function(){
+      console.log($(this));
+      var nominal = $(this).val();
+      nominal     = nominal.replace(/[^0-9\-]+/g,"")*1;
+      total       += nominal;
+    })
+    $('.total_tt').val(accounting.formatMoney(total,"", 2, ".",','));
+  }
   $('.simpan_form').click(function(){
     var temp = 0
     var validator = [];
@@ -430,7 +444,8 @@ $.fn.serializeArray = function () {
 
       '<p class="tanggal_detil_text">'+tanggal_detil+'</p>',
 
-      '<p class="nominal_text">'+accounting.formatMoney(nominal,"", 2, ".",',')+'</p>',
+      '<p class="nominal_text">'+accounting.formatMoney(nominal,"", 2, ".",',')+'</p>'+
+      '<input type="hidden" class="form-control nominals" name="nominal[]" value="'+parseInt(nominal)+'">',
 
       '<input type="text" class="form-control" name="catatan[]" value="'+catatan+'" style="width:100%">',
 

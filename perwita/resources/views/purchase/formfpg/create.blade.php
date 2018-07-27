@@ -552,12 +552,7 @@
                                         </div>
                                      
 
-                                       <div class="checkbox checkbox-info checkbox-circle">
-                                            <input id="jenisbayarbanktfacc" type="checkbox"  name="jenisbayarbank" value="TFAkun" class="metodebayar jenisbayarbanktfacc">
-                                            <label for="jenisbayarbanktfacc">
-                                               Transfer Bank Account Bank
-                                            </label>
-                                        </div>
+                                      
 
 
 
@@ -828,9 +823,6 @@
         $('.valjenisbayarbank').val(val);       
       })
 
-
-
-
         valjenisbayar = $('.metodebayar:checked').val();
         $('.valjenisbayarbank').val(valjenisbayar);
 
@@ -1029,71 +1021,99 @@
 
       $('.jenisbayarbankbg').change(function(){
           $this = $(this);
+          jenisbayar = $('.jenisbayar').val();
            if ($this.is(":checked")) {
-                $('.jenisbayarbankibaking').prop({checked: false });
-                $('.tujuanbank').hide();
-                $('.tujuanbankacc').hide();
-                $('.transferbank').hide();
-                 $('.checkbgtf').show();
-                 $('.ibanking').hide();
+                if(jenisbayar == '12'){
+                    $('.transferbank').show();
+                    $('.tujuanbankacc').show();
+                    $('.jenisbayarbankibaking').prop({checked: false });
+                }
+                else {
+                  $('.jenisbayarbankibaking').prop({checked: false });
+                  $('.tujuanbank').hide();
+                  $('.tujuanbankacc').hide();
+                  $('.transferbank').hide();
+                  $('.checkbgtf').show();
+                  $('.ibanking').hide();
+                }
            }
            else {
-                $('.ibanking').hide();
+                if(jenisbayar == '12'){
+                  $('.ibanking').hide();
+                  $('.checkbgtf').hide();
+                }
+                else {
+                  $('.ibanking').hide();
+                }
            }
       })
 
       $('.jenisbayarbankibaking').change(function(){
           $this = $(this);
+          jenisbayar = $('.jenisbayar').val();
            if ($this.is(":checked")) {
-                 $('.jenisbayarbankbg').prop({ checked: false });
-                $('.tujuanbank').hide();
-                $('.tujuanbankacc').hide();
-                $('.transferbank').hide();
-                $('.checkbgtf').hide();
-                $('.ibanking').show();
+                if(jenisbayar == '12'){
+                  $('.transferbank').show();
+                  $('.tujuanbankacc').show();
+                  $('.jenisbayarbankbg').prop({ checked: false }); 
+                }
+                else {
+                  $('.jenisbayarbankbg').prop({ checked: false });           
+                  $('.tujuanbank').hide();
+                  $('.tujuanbankacc').hide();
+                  $('.transferbank').hide();
+                  $('.checkbgtf').hide();
+                  $('.ibanking').show();
 
-                tgl = $('.tgl').val();
-                bank = $('.bank').val();
-                kodebank = bank.split(",");
-             //   alert(kodebank);
-                jatuhtempo = $('.jatuhtempo').val();
-                nofpg = $('.nofpg').val();
+                  tgl = $('.tgl').val();
+                  bank = $('.bank').val();
+                  kodebank = bank.split(",");
+           
+                  jatuhtempo = $('.jatuhtempo').val();
+                  nofpg = $('.nofpg').val();
 
-                $('tr.tblbank').remove();
+                  $('tr.tblbank').remove();
 
-                 var row = "<tr class='tblbank'> <td> 1 </td>  <td>"+nofpg+"</td>" + // NO FPG
-                      "<td>"+tgl+"</td>"+
-                      "<td> <input type='text' class='form-control kodebankbg' value="+kodebank[4]+" name='kodebankbg'></td>"+ // TGL
-                      "<td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"' readonly> </td> <td> <input type='text'  class='input-sm form-control nominaltblibank' name='nominalbank' style='text-align:right' required > </td>" + //JATUH TEMPO
-                      "<td>  </td> </tr>"; //NOMINAL
-                    
-                  $('#tbl-ibank').append(row);
-
-                  $('.nominaltblibank').change(function(){
-                      //alert('as');
-                      totbayar = $('.totbayar').val();
-
-
-                      val = $(this).val();
+                   var row = "<tr class='tblbank'> <td> 1 </td>  <td>"+nofpg+"</td>" + // NO FPG
+                        "<td>"+tgl+"</td>"+
+                        "<td> <input type='text' class='form-control kodebankbg' value="+kodebank[4]+" name='kodebankbg' readonly></td>"+ // TGL
+                        "<td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"' readonly> </td> <td> <input type='text'  class='input-sm form-control nominaltblibank' name='nominalbank' style='text-align:right' required > </td>" + //JATUH TEMPO
+                        "<td>  </td> </tr>"; //NOMINAL
                       
-                       val = accounting.formatMoney(val, "", 2, ",",'.');
-                       $(this).val(val);
-                       totbayar = totbayar.replace(/,/g,'');
-                       val = val.replace(/,/g,'');
-                       if(parseFloat(totbayar) < parseFloat(val)) {
-                        toastr.info("Nominal harus sama dengan totalbayar :)");
-                        return false;
-                       }
+                    $('#tbl-ibank').append(row);
+
+                    $('.nominaltblibank').change(function(){
+                        //alert('as');
+                        totbayar = $('.totbayar').val();
 
 
-                     /*  $('.totbayar').val(val);*/
-                       $('.ChequeBg').val(addCommas(val));
-                  })
+                        val = $(this).val();
+                        
+                         val = accounting.formatMoney(val, "", 2, ",",'.');
+                         $(this).val(val);
+                         totbayar = totbayar.replace(/,/g,'');
+                         val = val.replace(/,/g,'');
+                         if(parseFloat(totbayar) < parseFloat(val)) {
+                          toastr.info("Nominal harus sama dengan totalbayar :)");
+                          return false;
+                         }
 
+
+                       /*  $('.totbayar').val(val);*/
+                         $('.ChequeBg').val(addCommas(val));
+                    })
+                }
            }
            else {
-            $('.checkbgtf').show();
-            $('.ibanking').hide();
+            if(jenisbayar == 12){
+              $('.checkbgtf').hide();
+              $('.ibanking').hide();
+            }
+            else {
+              $('.checkbgtf').show();
+              $('.ibanking').hide();
+            }
+
            }
       })
 
@@ -1690,6 +1710,70 @@
                                arrnofaktur.push(val);
                             }
                     }
+                    else if( jenisbayar == '11'){
+                         $('.nofaktur').val(data.faktur[0][0].bp_nota);
+                          $('.tgl').val(data.faktur[0][0].bp_tgl);
+/*                          $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
+*/                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
+                         // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
+                          
+                          $('.sisatrbyr').val(addCommas(data.faktur[0][0].bp_pelunasan));
+                          $('.sisafaktur').val(addCommas(data.faktur[0][0].bp_pelunasan));
+                          $('.pelunasan').attr('readonly' , false);
+                          $('.jmlhfaktur').val(addCommas(data.faktur[0][0].bp_nominalkeu));
+                          $('.hutangdagang').val(data.faktur[0][0].bp_akunhutang); 
+                            $('.cabangfaktur').val(data.faktur[0][0].bp_akunhutang);
+
+
+                     //LOOPING DATA NO FAKTUR 
+
+                    for(var i = 0 ; i < data.faktur.length; i++){
+                       nmr++;
+                        totalpembayaranfp = 0;
+                        for(var l=0;l<data.pembayaran[i].length;l++){
+                            pelunasanfp = data.pembayaran[i][l].pelunasan;
+                           // alert(pelunasan);
+                            totalpembayaranfp = parseFloat(parseFloat(totalpembayaranfp) + parseFloat(pelunasanfp)).toFixed(2);
+                        }
+
+
+                        sisapelunasan = data.faktur[i][0].fp_sisapelunasan;
+                       var row = "<tr class='field field"+nmr+"' id='field"+nmr+"' data-id='"+nmr+"' data-nota='"+data.faktur[i][0].bp_nota+"'> <td>"+nmr+"</td>" + //nmr
+                                 "<td> <a class='nofp nofp"+nmr+"' data-id='"+nmr+"' data-idfaktur="+data.faktur[i][0].bp_id+">"+data.faktur[i][0].bp_nota+" </a><input type='hidden' class='datanofaktur nofaktur"+nmr+"' value="+data.faktur[i][0].bp_nota+" name='nofaktur[]'> <input type='hidden' class='datanofaktur'  value="+data.faktur[i][0].bp_id+" name='idfaktur[]'>  </td>"+  //nofaktur
+                                  "<td>"+data.faktur[i][0].bp_tgl+" <input type='hidden' class='tgl"+nmr+"' value="+data.faktur[i][0].bp_tgl+"></td>" + //tgl
+
+                                  "<td style='text-align:center'> - </td>" + //jatuhtempo
+
+                                  "<td>"+addCommas(data.faktur[i][0].bp_nominalkeu)+" <input type='hidden' class='sisapelunasan"+nmr+"' value="+data.faktur[i][0].bp_pelunasan+"> </td> <input type='hidden' class='netto"+nmr+"' value="+data.faktur[i][0].bp_nominalkeu+" name='netto[]'> </td>"+ //netto
+
+                                   "<td> <input type='text' class='input-sm pelunasanitem pelunasan"+nmr+" form-control' style='text-align:right' readonly data-id="+nmr+" name='pelunasan[]'>   </td>" +   //pelunasan         
+
+                                   "<td> <input type='text' class='input-sm pembayaranitem pembayaranitem"+data.faktur[i][0].bp_id+" form-control' style='text-align:right' readonly data-id="+nmr+" name='pembayaran[]' value="+addCommas(totalpembayaranfp)+"> </td>" +
+
+
+                                  "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].bp_pelunasan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
+
+                                  "<td> <input type='text' class='input-sm form-control' name='fpgdt_keterangan[]'> </td>" +
+
+                                  "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].bp_nota+" data-idfaktur="+data.faktur[i][0].bp_id+" type='button'><i class='fa fa-trash'></i></button> </td>" +
+                                  "</tr>";
+
+                            $('.tbl-item').append(row);
+                            jumlahfaktur = jumlahfaktur + parseFloat(sisapelunasan);
+                            jumlahfakturs = jumlahfaktur.toFixed(2);
+                       }
+                            tblitem = $('.field').length;
+                       //     console.log('tblitem2' + tblitem);
+                             arrnofaktur = [];
+           
+                            var nmr2 = 1;
+                            for(var z =0; z < tblitem; z++ ){
+                              val = $('.nofaktur'+nmr2 ).val();
+                         //     console.log(val + 'val');
+                              nmr2++;
+                               arrnofaktur.push(val);
+                            }
+                    }
 	
 						
 //                        alert(hasilsisaterbayar);
@@ -2191,17 +2275,17 @@
         toastr.info('Data No FPG belum ada, form akan reload otomatis');
         location.reload();
       }
-
-      if(idjenis == '12'){
-          $('.jenisbayarbankbg').prop({ disabled: true, checked: false });
-          $('.jenisbayarbanktfacc').prop({ disabled: false, checked: false });
+     /* alert(idjenis);*/
+      if(idjenis == 12){
+         $('#tbl-bank').hide();  
+         $('#tbl-ibank').hide();  
+         $('.transferbank').show();
+         $('.tujuanbankacc').show();
+          $('.checkbgtf').hide();
       }
-      else {
-          $('.jenisbayarbanktfacc').prop({ disabled: true, checked: false });
-          $('.jenisbayarbankbg').prop({ disabled: false, checked: false });
-      }
+     
 
-       var tablefaktur = $('#tbl-faktur').DataTable();  
+      var tablefaktur = $('#tbl-faktur').DataTable();  
       tablefaktur.clear().draw();
         $.ajax({ //AJAX
                   url : baseUrl + '/formfpg/getjenisbayar',
@@ -2295,15 +2379,16 @@
               var tablefaktur = $('#tbl-faktur').DataTable();
               tablefaktur.clear().draw();
 
-              var val = $('.jenisbayar2').val();
-              split = val.split(",");
-              idsup = split[0];
-              nosupplier = split[1];
+            
               var idjenisbayar = $('.jenisbayar').val();
-              if(idjenisbayar == '1'){
+              if(idjenisbayar == '1' || idjenisbayar == '11'){
                 nosupplier = cabang;
               } 
               else {
+                  var val = $('.jenisbayar2').val();
+                split = val.split(",");
+                idsup = split[0];
+                nosupplier = split[1];
                 nosupplier = nosupplier;
                 if(idsup == ''){
                 toastr.info("Data Supplier belum ada :)");
@@ -2502,6 +2587,37 @@
                            } 
                                            
                       } // END ELSE IF JENISBAYAR GIRO
+
+                      else if (idjenisbayar == '11'){ // BON SEMENTARA 
+                        $('.supfaktur').show();
+                        $('.invfaktur').show();
+                        var tablefaktur = $('#tbl-faktur').DataTable();
+                        tablefaktur.clear().draw();
+
+                           for(var i = 0; i < fp.length; i++){    
+                             
+                                 var html2 = "<tr class='data"+n+"' id='data"+fp[i].bp_nota+"'> <td>"+n+"</td>" +
+                                               "<td>"+fp[i].nama+"</td>" +
+                                              "<td>"+fp[i].bp_nota+"</td>" +
+                                              "<td> - </td>" +                                       
+                                            
+                                              "<td>"+fp[i].nama +"</td>"+
+                                              "<td> - </td>" +
+                                              "<td> - </td>" +
+                                              "<td>"+addCommas(fp[i].bp_pelunasan)+"</td> ";
+
+                                           
+                                            html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].bp_id+","+fp[i].bp_nota+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                          "<label></label>" +
+                                          "</div></td>";
+                                              
+                               html2 +=  "</tr>"; 
+                               tablefaktur.rows.add($(html2)).draw(); 
+                              n++; 
+
+                              console.log(n +'n');
+                             } 
+                      }
                     },
 					error : function(){
 					//	location.reload();
@@ -2728,7 +2844,7 @@
                         $('.deskirpsijenisbayar').html(rowSupplier);
       }*/
 
-      if(idjenis == '5'){ // TRANSFER KAS BANK
+      if(idjenis == '5' || idjenis == '12'){ // TRANSFER KAS BANK
           $('#tab-1').removeClass("active");
           $('#detailbayar').attr('disabled' , true);
           $('#tab-2').addClass("active");     

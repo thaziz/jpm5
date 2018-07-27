@@ -151,6 +151,16 @@
               <input type="text" name="Invoice_biaya" class="form-control" value="{{$cari_fp->fp_noinvoice}}" placeholder="No Invoice">
             </td>
            </tr>
+           <tr>
+            <td style="width: 100px">Tanda terima</td>
+            <td width="10">:</td>
+            <td width="200">
+              <input type="text" readonly="" name="tanda_terima" class="form-control tanda_terima" value="{{ $tt->tt_noform }}">
+              <input type="hidden" readonly="" name="invoice_tt" class="form-control invoice_tt" value="{{ $tt->ttd_invoice }}">
+              <input type="hidden" readonly="" name="id_tt" class="form-control id_tt" value="{{ $tt->ttd_id }}">
+              <input type="hidden" readonly="" name="dt_tt" class="form-control dt_tt" value="{{ $tt->ttd_detail }}">
+            </td>
+           </tr>
             <tr>
             <td style="width: 100px">Keterangan</td>
             <td width="10">:</td>
@@ -235,7 +245,7 @@
                 <td colspan="3">
                   <button type="button" class="btn btn-primary pull-right cari-pod" onclick="appendDO();"><i class="fa fa-search">&nbsp;Append</i></button>
                   <button class="btn btn-primary btn_modal_bp" type="button" > Bayar dengan Uang Muka </button>
-               <button onclick="tt_penerus()" class="btn btn-info modal_penerus_tt "  type="button" data-toggle="modal" data-target="#modal_tt_penerus" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+               <button onclick="tt_penerus()" class="btn btn-info modal_penerus_tt "  type="button" data-toggle="modal"  type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
                 </td>
               </tr>
                </table>
@@ -346,118 +356,9 @@
 </div>
 
 <!--  MODAL TT PENERUS  -->
+@include('purchase.pembayaran_vendor.modal_do_vendor')
 
-<div class="modal fade" id="modal_tt_penerus" tabindex="-1" role="dialog"  aria-hidden="true">
-  <div class="modal-dialog" role="document" style="min-width: 800px !important; min-height: 800px">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Form Tanda Terima</h2>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <table class="table table-stripped tabel_tt_penerus">
-          <tr>
-            <td width="150px">
-                  No Tanda Terima 
-                </td>
-                <td>
-                  <input type='text' name="nota_tt" value="{{$form_tt->tt_noform or $nota}}" class='input-sm form-control notandaterima'>
-                  <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                </td>
-          </tr>
-          <tr>
-            <td> Tanggal </td>
-                <td>
-                   <div class="input-group date">
-                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="@if(isset($form_tt->tt_tgl)){{carbon\carbon::parse($form_tt->tt_tgl )->format('d/m/Y')}}@else{{carbon\carbon::now()->format('d/m/Y')}}@endif" readonly="" name="tgl_tt">
-                  </div>
-                </td>
-          </tr>
-          <tr>
-              <td> Supplier </td>
-              <td> <input type='text' class="form-control supplier_tt" value="{{$form_tt->tt_idagen or $bp->fp_supplier}}" name="supplier_tt" readonly=""></td>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                 <div class="row">
-                    <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="Kwitansi" type="checkbox"@if(isset($form_tt)) @if($form_tt->tt_kwitansi == 'ADA') checked=""  @endif @endif name="kwitansi">
-                            <label for="Kwitansi">
-                                Kwitansi / Invoice / No
-                            </label>
-                      </div> 
-                    </div>
-                    <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="FakturPajak" type="checkbox"@if(isset($form_tt)) @if($form_tt->tt_faktur == 'ADA') checked=""  @endif @endif name="faktur_pajak">
-                            <label for="FakturPajak">
-                                Faktur Pajak
-                            </label>
-                      </div> 
-                    </div>
 
-                    <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="SuratPerananAsli" type="checkbox"@if(isset($form_tt)) @if($form_tt->tt_suratperan == 'ADA') checked=""  @endif @endif name="surat_peranan">
-                            <label for="SuratPerananAsli">
-                                Surat Peranan Asli
-                            </label>
-                      </div> 
-                    </div>
-
-                     <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="SuratJalanAsli" type="checkbox"@if(isset($form_tt)) @if($form_tt->tt_suratjalanasli == 'ADA') checked=""  @endif @endif name="surat_jalan">
-                            <label for="SuratJalanAsli">
-                               Surat Jalan Asli
-                            </label>
-                      </div> 
-                    </div>
-                  </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-               Lain Lain
-              </td>
-              <td>                      
-                <input type="text" class="form-control lain_penerus" value="{{$form_tt->tt_lainlain or null}}" name="lainlain">
-              </td>
-            </tr>
-            <tr>
-              <td> Tanggal Kembali </td>
-              <td>
-                <div class="input-group date">
-                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuh_tempo" value="@if(isset($form_tt->tt_tgl)){{carbon\carbon::parse($form_tt->tt_tgl )->format('d/m/Y')}}@else{{carbon\carbon::now()->format('d/m/Y')}}@endif" readonly="" name="tgl_kembali">
-                </div>
-              </td>
-            </tr>
-            <tr>
-            <td>Total di Terima</td>
-              <td>
-                <div class="row">
-                  <div class="col-sm-3">
-                    <label class="col-sm-3 label-control"> Rp </label>
-                  </div>
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control totalterima_tt" name="total_diterima" style="text-align:right;" readonly="">
-                  </div>
-                </div>
-              </td>
-            </tr>
-        </table>
-      </div>
-      <div class="modal-footer inline-form">
-        <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-        <button onclick="simpan_tt()" type="button" class="btn btn-primary simpan_penerus" data-dismiss="modal">Simpan</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 {{-- modal uang muka --}}
@@ -946,11 +847,32 @@
   }
 
   function tt_penerus() {
-    var total_jml = $('.total_jml').val();
-    total_jml = total_jml.replace(/[^0-9\-]+/g,"")/100;
-    var supplier = $('.agen_vendor').val();
-    $('.totalterima_tt').val(accounting.formatMoney(total_jml, "Rp ", 2, ".",','));
-    $('.supplier_tt').val(supplier);
+
+    var cabang = $('.cabang').val();
+    var agen_vendor = $('.agen_vendor ').val();
+    $.ajax({
+      url:baseUrl +'/fakturpembelian/nota_tt',
+      data: {cabang,agen_vendor},
+      success:function(data){
+        $('.div_tt').html(data);
+        $('#modal_tt_penerus').modal('show');
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
+
+  }
+  function select_tt(a) {
+    var tt_form = $(a).find('.tt_form').text();
+    var tt_invoice = $(a).find('.tt_invoice').text();
+    var tt_id = $(a).find('.tt_id').val();
+    var tt_dt = $(a).find('.tt_dt').val();
+
+    $('.tanda_terima').val(tt_form);
+    $('.invoice_tt').val(tt_invoice);
+    $('.id_tt').val(tt_id);
+    $('.dt_tt').val(tt_dt);
+    $('#modal_tt_penerus').modal('hide');
   }
 
   function save_biaya() {
@@ -963,7 +885,6 @@
         toastr.warning('Tidak Ada Data');
         return 1;
       }
-      tt_penerus();
       swal({
         title: "Apakah anda yakin?",
         text: "Simpan Data!",
@@ -994,33 +915,7 @@
                     timer: 900,
                     showConfirmButton: true
                     },function(){
-                      $.ajax({
-                          url:baseUrl + '/fakturpembelian/simpan_tt',
-                          type:'get',
-                          data:$('.tabel_tt_penerus :input').serialize()
-                               +'&'+$('.head1 :input').serialize()
-                               +'&'+$('.head_atas :input').serialize(),
-                          success:function(response){
-                                swal({
-                                    title: "Berhasil!",
-                                    type: 'success',
-                                    text: "Data berhasil disimpan",
-                                    timer: 900,
-                                    showConfirmButton: true
-                                    },function(){
-                                      
-                                    });
-                          },
-                          error:function(data){
-                            swal({
-                            title: "Terjadi Kesalahan",
-                                    type: 'error',
-                                    timer: 900,
-                                   showConfirmButton: true
-
-                        });
-                       }
-                      });
+                
                     });
             }else{
 
@@ -1032,53 +927,6 @@
 
               });
             }
-          },
-          error:function(data){
-            swal({
-            title: "Terjadi Kesalahan",
-                    type: 'error',
-                    timer: 900,
-                   showConfirmButton: true
-
-        });
-       }
-      });  
-     });
-  }
-
-  function simpan_tt(argument) {
-      swal({
-        title: "Apakah anda yakin?",
-        text: "Simpan Data!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Ya, Simpan!",
-        cancelButtonText: "Batal",
-        closeOnConfirm: true
-      },
-      function(){
-           $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-          $.ajax({
-          url:baseUrl + '/fakturpembelian/simpan_tt',
-          type:'get',
-          data:$('.tabel_tt_penerus :input').serialize()
-               +'&'+$('.head1 :input').serialize()
-               +'&'+$('.head_atas :input').serialize(),
-          success:function(response){
-                swal({
-                    title: "Berhasil!",
-                    type: 'success',
-                    text: "Data berhasil disimpan",
-                    timer: 900,
-                    showConfirmButton: true
-                    },function(){
-                      
-                    });
           },
           error:function(data){
             swal({

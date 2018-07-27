@@ -37,6 +37,16 @@
 		 		<input  class="form-control jatuh_tempo_outlet" type="text" value="{{$jt}}" name="jatuh_tempo_outlet"  >
 		 	</td>
 		 </tr>
+		 <tr>
+		  <td style="width: 100px">Tanda terima</td>
+		  <td width="10">:</td>
+		  <td width="200">
+		    <input type="text" readonly="" name="tanda_terima" class="form-control tanda_terima" style="" >
+		    <input type="hidden" readonly="" name="invoice_tt" class="form-control invoice_tt" style="" >
+		    <input type="hidden" readonly="" name="id_tt" class="form-control id_tt" style="" >
+		    <input type="hidden" readonly="" name="dt_tt" class="form-control dt_tt" style="" >
+		  </td>
+		 </tr>
 		<tr>
 		 	<td width="111">Note</td>
 		 	<td width="20">:</td>
@@ -97,6 +107,8 @@ function autoNote(){
       minLength: 3,
     });
  }
+
+
 
  function cari_outlet() {
  	var  selectOutlet = $('.selectOutlet').val();

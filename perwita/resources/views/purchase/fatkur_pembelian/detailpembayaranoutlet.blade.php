@@ -42,7 +42,7 @@
 	 	</table>
 	 	</div>
 	    <table class="table table-bordered table-hover table_outlet" style="font-size: 12px; ">
-	    <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+	    <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal"  type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
         <button class="btn btn-primary btn_modal_ot disabled" type="button" > Bayar dengan Uang Muka </button>
 	    <button type="button" class="btn btn-primary pull-right disabled save_update_outlet" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
 	    	
@@ -600,77 +600,16 @@ $('.modal_outlet_tt').click(function(){
 });
 
 
-
-
-function simpan_tt() {
- 	var totalterima_tt = $('.totalterima_tt').val();
- 	var cabang = $('.cabang').val();
-	var selectOutlet = $('.selectOutlet').val();
- 	if (totalterima_tt == 'Rp 0,00') {
- 		toastr.warning('Nilai Tanda Terima Tidak Boleh Nol');
- 	}
-      swal({
-        title: "Apakah anda yakin?",
-        text: "Simpan Data!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Ya, Simpan!",
-        cancelButtonText: "Batal",
-        closeOnConfirm: true
-      },
-      function(){
-           $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-          $.ajax({
-          url:baseUrl + '/fakturpembelian/simpan_tt',
-          type:'get',
-          data:$('.tabel_tt_outlet :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
-          success:function(response){
-                swal({
-                    title: "Berhasil!",
-                    type: 'success',
-                    text: "Data berhasil disimpan",
-                    timer: 900,
-                    showConfirmButton: true
-                    },function(){
-                      $('#save_update_outlet').removeClass('disabled');
-                    });
-          },
-          error:function(data){
-            swal({
-            title: "Terjadi Kesalahan",
-                    type: 'error',
-                    timer: 900,
-                   showConfirmButton: true
-
-        });
-       }
-      });  
-     });
-  }
-
   function tt_penerus_outlet() {
 
     var cabang = $('.cabang').val();
+    var agen_vendor = $('.selectOutlet').val();
     $.ajax({
       url:baseUrl +'/fakturpembelian/nota_tt',
-      data: {cabang},
-      dataType:'json',
+      data: {cabang,agen_vendor},
       success:function(data){
-        var agen_vendor = $('.selectOutlet').val();
-        var jatuh_tempo = $('.jatuh_tempo_outlet').val();
-        var total_jml   = $('.total_all_komisi').val();
-        total_jml       = total_jml.replace(/[^0-9\-]+/g,"")/100;
-        $('.notandaterima').val(data.nota);
-        $('.supplier_tt').val(agen_vendor);
-        $('.jatuhtempo_tt').val(jatuh_tempo);
-        $('.tgl_tt').val('{{carbon\carbon::now()->format('d/m/Y')}}');
-        $('.totalterima_tt').val(accounting.formatMoney(total_jml, "Rp ", 2, ".",','));
-        $('#modal_tt_outlet').modal('show');
+        $('.div_tt').html(data);
+    	$('#modal_tt_penerus').modal('show');
       },error:function(){
         toastr.warning('Terjadi Kesalahan');
       }
@@ -678,6 +617,19 @@ function simpan_tt() {
 
   }
 
+
+function select_tt(a) {
+    var tt_form = $(a).find('.tt_form').text();
+    var tt_invoice = $(a).find('.tt_invoice').text();
+    var tt_id = $(a).find('.tt_id').val();
+    var tt_dt = $(a).find('.tt_dt').val();
+
+    $('.tanda_terima').val(tt_form);
+    $('.invoice_tt').val(tt_invoice);
+    $('.id_tt').val(tt_id);
+    $('.dt_tt').val(tt_dt);
+    $('#modal_tt_outlet').modal('hide');
+}
 function print_penerus() {
   var idfaktur = $('.idfaktur').val();
   console.log(idfaktur);

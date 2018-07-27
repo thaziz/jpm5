@@ -54,7 +54,7 @@
                 <div class="ibox-title" style="background: white">
                     <div  style="background: white" >
                       <h5>Form Tanda Terima Pembelian</h5>
-                      <a href="{{ url('form_tanda_terima_pembelian') }}" class="pull-right" style="color: white"><i class="fa fa-arrow-left"> Kembali</i></a>
+                      <a href="{{ url('form_tanda_terima_pembelian') }}" class="pull-right" style="color: #999"><i class="fa fa-arrow-left"> Kembali</i></a>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -70,6 +70,7 @@
                         <td width="150">Pihak Ketiga</td>
                         <td colspan="2">
                           <select  name="supplier" class="supplier form-control chosen-select-width">
+                              <option value="0">Pilih - Supplier</option>
                             @foreach ($all as $val)
                               <option value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
                             @endforeach
@@ -103,7 +104,7 @@
                       <tr>
                         <td colspan="5">
                           <div class="row">
-                            <div class="col-sm-3"> 
+                            <div class="col-sm-2"> 
                               <div class="checkbox checkbox-info checkbox-circle">
                                   <input id="Kwitansi" type="checkbox" checked="" name="kwitansi">
                                     <label for="Kwitansi">
@@ -111,7 +112,7 @@
                                     </label>
                               </div> 
                             </div>
-                            <div class="col-sm-3"> 
+                            <div class="col-sm-2"> 
                               <div class="checkbox checkbox-info checkbox-circle">
                                   <input id="FakturPajak" type="checkbox" checked="" name="faktur_pajak">
                                     <label for="FakturPajak">
@@ -135,6 +136,14 @@
                                     </label>
                               </div> 
                             </div>
+                            <div class="col-sm-2"> 
+                              <div class="checkbox checkbox-info checkbox-circle">
+                                  <input id="lampiran_po" type="checkbox" checked="" name="lampiran_po">
+                                    <label for="lampiran_po">
+                                       Lampiran PO
+                                    </label>
+                              </div> 
+                            </div>
                           </div>
                         </td>
                       </tr>
@@ -142,9 +151,9 @@
                         <td>Lain-lain</td>
                         <td colspan="2"><input type="text" class="lain form-control" name="lain"></td>
                       
-                        <td>Tanggal Kembali</td>
+                        <td>Jatuh Tempo</td>
                         <td>
-                          <input type="text" name="tanggal_kembali" value="{{ $nextDay }}" class="tanggal_kembali form-control">
+                          <input type="text" name="tanggal_kembali" value="" class="tanggal_kembali form-control">
                         </td>
                       </tr>
                     </table>
@@ -216,6 +225,19 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+  $('.supplier').change(function(){
+    var supplier = $(this).val();
+    var tanggal = $('.tanggal').val();
+    $.ajax({
+      url  : '{{ route('ganti_jt_pembelian') }}',
+      data : {supplier,tanggal},
+      dataType:'json',
+      success:function(data){
+        $('.tanggal_kembali').val(data.tgl);
+      }
+    })
+  })
 
   function nota() {
     var cabang = $('.cabang').val();
@@ -347,6 +369,11 @@
     var validator = [];
     var cabang   = $('.cabang').val();
     var supplier = $('.supplier').val();
+
+    if (supplier == 0) {
+      toastr.warning('Supplier harus Diisi');
+      return false;
+    }
     swal({
     title: "Apakah anda yakin?",
     text: "Simpan Tanda Terima!",
@@ -378,6 +405,7 @@
                     timer: 2000,
                     showConfirmButton: true
                     },function(){
+                    location.href = '{{ url('form_tanda_terima_pembelian') }}';
                        
             });
           }else if (data.status == 0) {

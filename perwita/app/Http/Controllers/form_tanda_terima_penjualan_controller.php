@@ -195,6 +195,8 @@ class form_tanda_terima_penjualan_controller extends Controller
     public function update(Request $req)
     {
     	return DB::transaction(function() use ($req) {  
+
+    		// dd($req->all());
 			$cari_nota = DB::table('form_tt_penjualan')
 						   ->where('ft_nota',$req->nomor)
 						   ->first();

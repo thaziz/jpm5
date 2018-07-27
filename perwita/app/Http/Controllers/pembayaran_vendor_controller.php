@@ -34,18 +34,18 @@ class pembayaran_vendor_controller extends Controller
 
     public function cari_do_vendor(request $req)
     {	
+    	$valid = [];
     	for ($i=0; $i < count($req->array_simpan); $i++) { 
     		$valid[$i] = $req->array_simpan[$i];
     	}
     	$data = DB::table("delivery_order")
     			  ->leftjoin('biaya_penerus_dt','nomor','=','bpd_pod')
-    			  // ->where('kode_cabang',$req->cabang)
-    			  // ->where('id_tarif_vendor',$req->nama_vendor)
-    			  // ->where('bpd_pod',null)
-    			  // ->whereNotIn('nomor',$valid)
+    			  ->where('kode_cabang',$req->cabang)
+    			  ->where('id_tarif_vendor',$req->nama_vendor)
+    			  ->where('bpd_pod',null)
+    			  ->whereNotIn('nomor',$valid)
     			  ->get();
 
-    	
 
 
 		return view('purchase/pembayaran_vendor/tabel_do_vendor',compact('data'));
@@ -113,7 +113,7 @@ class pembayaran_vendor_controller extends Controller
 						   	  'fp_idfaktur'   		=> $id,
 							  'fp_nofaktur'   		=> $req->nofaktur,
 							  'fp_tgl'        		=> carbon::parse(str_replace('/','-',$req->tanggal_vendor))->format('Y-m-d'),
-							  'fp_keterangan' 		=> $req->Keterangan_biaya,
+							  'fp_keterangan' 		=> strtoupper($request->Keterangan_biaya),
 							  'fp_noinvoice'  		=> $req->no_invoice,
 							  'fp_jatuhtempo' 		=> carbon::parse(str_replace('/','-',$req->jatuh_tempo_vendor))->format('Y-m-d'),
 							  'created_at'    		=> carbon::now(),
@@ -183,6 +183,14 @@ class pembayaran_vendor_controller extends Controller
 							]);
 			}
 
+			$tt = DB::table('form_tt_d')
+								->where('ttd_detail',$req->dt_tt)
+								->where('ttd_id',$req->id_tt)
+								->where('ttd_invoice',$req->invoice_tt)
+								->update([
+									'ttd_faktur' => $request->nofaktur,
+								]);
+
 			$cari_dt=DB::table('biaya_penerus_dt')		
 						 ->join('delivery_order','bpd_pod','=','nomor')
 						 ->where('bpd_bpid','=',$id_bp)
@@ -238,7 +246,7 @@ class pembayaran_vendor_controller extends Controller
 									'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal_vendor))->format('Y-m-d'),
 									'jr_detail' => $jenis_bayar->jenisbayar,
 									'jr_ref'  	=> $req->nofaktur,
-									'jr_note'  	=> 'BIAYA PENERUS HUTANG',
+									'jr_note'  	=> 'BIAYA PENERUS HUTANG '.strtoupper($req->Keterangan_biaya),
 									'jr_insert' => carbon::now(),
 									'jr_update' => carbon::now(),
 									]);
@@ -397,7 +405,7 @@ class pembayaran_vendor_controller extends Controller
 							'created_by'		=> Auth::user()->m_name,
 							'created_at' 		=> carbon::now(),
 							'updated_at' 		=> carbon::now(),
-							'umfp_keterangan'	=> $req->Keterangan_biaya,
+							'umfp_keterangan'	=> strtoupper($req->Keterangan_biaya),
 							'umfp_nofaktur'		=> $req->nofaktur,
 						  ]);
 
@@ -530,7 +538,7 @@ class pembayaran_vendor_controller extends Controller
 													'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tgl_biaya_head))->format('Y-m-d'),
 													'jr_detail' => 'UANG MUKA PEMBELIAN FP',
 													'jr_ref'  	=> $req->nofaktur,
-													'jr_note'  	=> 'BIAYA SUBCON',
+													'jr_note'  	=> 'UANG MUKA '.strtoupper($req->Keterangan_biaya),
 													'jr_insert' => carbon::now(),
 													'jr_update' => carbon::now(),
 													]);
@@ -840,7 +848,7 @@ class pembayaran_vendor_controller extends Controller
 													'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tgl_biaya_head))->format('Y-m-d'),
 													'jr_detail' => 'UANG MUKA PEMBELIAN FP',
 													'jr_ref'  	=> $req->nofaktur,
-													'jr_note'  	=> 'BIAYA SUBCON',
+													'jr_note'  	=> 'UANG MUKA '.strtoupper($req->Keterangan_biaya),
 													'jr_insert' => carbon::now(),
 													'jr_update' => carbon::now(),
 													]);
@@ -1005,6 +1013,21 @@ class pembayaran_vendor_controller extends Controller
 							]);
 			}
 
+
+			$tt_upd = DB::table('form_tt_d')
+					  ->where('ttd_faktur',$request->nofaktur)
+					  ->update([
+					  	'ttd_faktur'=>null
+					  ]);
+
+			$tt = DB::table('form_tt_d')
+						->where('ttd_detail',$request->dt_tt)
+						->where('ttd_id',$request->id_tt)
+						->where('ttd_invoice',$request->invoice_tt)
+						->update([
+							'ttd_faktur' => $request->nofaktur,
+						]);
+			
 			$cari_dt=DB::table('biaya_penerus_dt')		
 						 ->join('delivery_order','bpd_pod','=','nomor')
 						 ->where('bpd_bpid',$cari_bp->bp_id)
@@ -1060,7 +1083,7 @@ class pembayaran_vendor_controller extends Controller
 									'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal_vendor))->format('Y-m-d'),
 									'jr_detail' => $jenis_bayar->jenisbayar,
 									'jr_ref'  	=> $req->nofaktur,
-									'jr_note'  	=> 'BIAYA PENERUS HUTANG',
+									'jr_note'  	=> 'BIAYA PENERUS HUTANG '.strtoupper($cari_fp->fp_keterangan),
 									'jr_insert' => carbon::now(),
 									'jr_update' => carbon::now(),
 									]);

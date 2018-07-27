@@ -86,14 +86,14 @@
                           </select>
                         </td>
                         <td width="150">Tanggal</td>
-                        <td width="300">
+                        <td width="300" class="disabled">
                           <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::parse($data->tt_tgl)->format('d/m/Y') }}">
                         </td>
                       </tr>
                       <tr>
                         <td colspan="5">
                           <div class="row">
-                            <div class="col-sm-3"> 
+                            <div class="col-sm-2"> 
                               <div class="checkbox checkbox-info checkbox-circle">
                                   <input id="Kwitansi" type="checkbox" @if($data->tt_kwitansi == 'on') checked="" @endif name="kwitansi">
                                     <label for="Kwitansi">
@@ -101,7 +101,7 @@
                                     </label>
                               </div> 
                             </div>
-                            <div class="col-sm-3"> 
+                            <div class="col-sm-2"> 
                               <div class="checkbox checkbox-info checkbox-circle">
                                   <input id="FakturPajak" type="checkbox" @if($data->tt_faktur == 'on') checked="" @endif name="faktur_pajak">
                                     <label for="FakturPajak">
@@ -122,6 +122,14 @@
                                   <input id="SuratJalanAsli" type="checkbox" @if($data->tt_suratjalanasli == 'on') checked="" @endif name="surat_jalan">
                                     <label for="SuratJalanAsli">
                                        Surat Jalan Asli
+                                    </label>
+                              </div> 
+                            </div>
+                            <div class="col-sm-2"> 
+                              <div class="checkbox checkbox-info checkbox-circle">
+                                  <input id="lampiran_po" type="checkbox" @if($data->tt_lampiran_po == 'on') checked="" @endif name="lampiran_po">
+                                    <label for="lampiran_po">
+                                       Lampiran PO
                                     </label>
                               </div> 
                             </div>
@@ -302,10 +310,16 @@
   }
 
   $('.simpan_form').click(function(){
+
     var temp = 0
     var validator = [];
     var cabang   = $('.cabang').val();
     var supplier = $('.supplier').val();
+
+    if (supplier == 0) {
+      toastr.warning('Supplier harus Diisi');
+      return false;
+    }
     swal({
     title: "Apakah anda yakin?",
     text: "Update Tanda Terima!",

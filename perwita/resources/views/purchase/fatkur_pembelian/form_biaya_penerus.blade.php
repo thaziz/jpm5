@@ -25,7 +25,7 @@
  	<td width="10">:</td>
 	<td width="200"><input type="text" name="status" class="form-control" value="Released" readonly="" style=""></td>
  </tr>
-  <tr class="vendor">
+  <tr class="">
  	<td style="width: 100px">Tipe Vendor </td>
  	<td width="10">:</td>
  	<td width="200" class="vendor_td">
@@ -50,6 +50,16 @@
  	<td width="10">:</td>
  	<td width="200"><input type="text" name="Invoice_biaya" class="form-control" style="" placeholder="No Invoice"></td>
  </tr>
+ <tr>
+  <td style="width: 100px">Tanda terima</td>
+  <td width="10">:</td>
+  <td width="200">
+    <input type="text" readonly="" name="tanda_terima" class="form-control tanda_terima" value="" >
+    <input type="hidden" readonly="" name="invoice_tt" class="form-control invoice_tt" value="" >
+    <input type="hidden" readonly="" name="id_tt" class="form-control id_tt" value="" >
+    <input type="hidden" readonly="" name="dt_tt" class="form-control dt_tt" value="" >
+  </td>
+ </tr>
   <tr>
  	<td style="width: 100px">Keterangan</td>
  	<td width="10">:</td>
@@ -57,7 +67,7 @@
  </tr>	
 <tr>
   <td colspan="3">
-     <button onclick="tt_penerus()" class="btn btn-info modal_penerus_tt" style="margin-right: 20px;" type="button" data-toggle="modal" data-target="#modal_tt_penerus" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+     <button onclick="tt_penerus()" class="btn btn-info modal_penerus_tt disabled" style="margin-right: 20px;" type="button" data-toggle="modal" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
      <button type="button" style="margin-right: 20px;" class="btn btn-warning pull-left disabled" id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
   </td>
 </tr>
@@ -399,8 +409,8 @@
       $('.table_biaya').prop('hidden',false);
       $('.table_detail input').val(''); 
       $('.jml_data').val(count); 
+      $('.modal_penerus_tt').removeClass('disabled');
       toastr.success('Data Berhasil Di Append, Buat Tanda Terima Untuk Mengaktifkan fitur Simpan');
-      $('.save_biaya').removeClass('disabled');
       $('.vendor_td').addClass('disabled');
       $('.nama_kontak_td').addClass('disabled');
       hitung();
@@ -483,6 +493,7 @@
       $('.vendor_td').removeClass('disabled');
       $('.nama_kontak_td').removeClass('disabled');
       $('.save_biaya').addClass('disabled');
+      $('.modal_penerus_tt').addClass('disabled');
     }
     
     hitung();
@@ -491,72 +502,33 @@
   function tt_penerus() {
 
     var cabang = $('.cabang').val();
+    var agen_vendor = $('.agen_vendor ').val();
     $.ajax({
       url:baseUrl +'/fakturpembelian/nota_tt',
-      data: {cabang},
-      dataType:'json',
+      data: {cabang,agen_vendor},
       success:function(data){
-        $('.notandaterima').val(data.nota);
-        var agen_vendor = $('.agen_vendor').val();
-        var jatuh_tempo = $('.jatuh_tempo').val();
-        var total_jml   = $('.total_jml').val();
-        total_jml       = total_jml.replace(/[^0-9\-]+/g,"")/100;
-        $('.supplier_tt').val(agen_vendor);
-        $('.jatuhtempo_tt').val(jatuh_tempo);
-        $('.totalterima_tt').val(accounting.formatMoney(total_jml, "Rp ", 2, ".",','));
-
+        $('.div_tt').html(data);
+        $('#modal_tt_penerus').modal('show');
       },error:function(){
         toastr.warning('Terjadi Kesalahan');
       }
     })
 
   }
+  function select_tt(a) {
+    var tt_form = $(a).find('.tt_form').text();
+    var tt_invoice = $(a).find('.tt_invoice').text();
+    var tt_id = $(a).find('.tt_id').val();
+    var tt_dt = $(a).find('.tt_dt').val();
 
-  function simpan_tt() {
-      swal({
-        title: "Apakah anda yakin?",
-        text: "Simpan Data!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Ya, Simpan!",
-        cancelButtonText: "Batal",
-        closeOnConfirm: true
-      },
-      function(){
-           $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-          $.ajax({
-          url:baseUrl + '/fakturpembelian/simpan_tt',
-          type:'get',
-          data:$('.tabel_tt_penerus :input').serialize()
-               +'&'+$('.head1 :input').serialize(),
-          success:function(response){
-                swal({
-                    title: "Berhasil!",
-                    type: 'success',
-                    text: "Data berhasil disimpan",
-                    timer: 900,
-                    showConfirmButton: true
-                    },function(){
-                      $('.save_biaya').removeClass('disabled');
-                    });
-          },
-          error:function(data){
-            swal({
-            title: "Terjadi Kesalahan",
-                    type: 'error',
-                    timer: 900,
-                   showConfirmButton: true
-
-        });
-       }
-      });  
-     });
+    $('.tanda_terima').val(tt_form);
+    $('.invoice_tt').val(tt_invoice);
+    $('.id_tt').val(tt_id);
+    $('.dt_tt').val(tt_dt);
+    $('#modal_tt_penerus').modal('hide');
+    $('.save_biaya').removeClass('disabled');
   }
+
 
 
   function save_biaya() {
