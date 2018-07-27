@@ -55,29 +55,29 @@
                     @endif
                 </div>
                 <div class="ibox-content">
-                        <div class="row">
+            <div class="row">
             <div class="col-xs-12">
-              
               <div class="box">
-               
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
-                <div class="col-sm-6" style="margin-bottom: 20px">
-                    <table cellpadding="3" cellspacing="0" border="0" class="table">
-                      @if (Auth::user()->punyaAkses('Biaya Penerus Kas','cabang')) 
-                      <tr id="filter_col1" data-column="0">
-                          <td>Cabang</td>
-                          <td align="center">
-                            <select onchange="filtering()" class="form-control cabang chosen-select-width">
-                              <option value="0">Pilih - Cabang </option>
-                              @foreach ($cabang as $a)
-                                <option value="{{$a->kode}}">{{$a->nama}}</option>
-                              @endforeach
-                            </select>
-                          </td>
-                      </tr>
-                      @endif
-                    </table>
+                  <div class="col-sm-12" style="margin-bottom: 20px">
+                    <div class="col-sm-6">
+                      <table cellpadding="3" cellspacing="0" border="0" class="table">
+                        @if (Auth::user()->punyaAkses('Biaya Penerus Kas','cabang')) 
+                        <tr id="filter_col1" data-column="0">
+                            <td>Cabang</td>
+                            <td align="center">
+                              <select onchange="filtering()" class="form-control cabang chosen-select-width">
+                                <option value="0">Pilih - Cabang </option>
+                                @foreach ($cabang as $a)
+                                  <option value="{{$a->kode}}">{{$a->nama}}</option>
+                                @endforeach
+                              </select>
+                            </td>
+                        </tr>
+                        @endif
+                      </table>
+                    </div>
                   </div>
                 <div class="box-body append_table">
 
