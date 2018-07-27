@@ -65,7 +65,7 @@ class BonSementaraController extends Controller
 
 		$data['bonsem'] = DB::select("select * from bonsem_pengajuan, cabang where bp_cabang = kode order by bp_id desc");
 		
-		$fpg = DB::select("select * fpg, fpg_dt, bukti_bank_keluar, bukti_bank_keluar_dt where fpgdt_idfpg = idfpg and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg");
+		
 
 		return view('purchase/bonsementara/indexcabang', compact('data'));
 	}
