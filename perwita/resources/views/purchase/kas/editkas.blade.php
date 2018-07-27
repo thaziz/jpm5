@@ -109,7 +109,7 @@
             </tr>
             <tr>
               <td>Tanggal</td>
-              <td><input readonly="" class="form-control tanggal" value="{{ carbon\carbon::parse($data->bpk_tanggal)->format('d-m-Y') }}" type="text" name="tN"></td>
+              <td class="disabled"><input readonly="" class="form-control tanggal" value="{{ carbon\carbon::parse($data->bpk_tanggal)->format('d-m-Y') }}" type="text" name="tN"></td>
             </tr>
           </table>
         </div>
