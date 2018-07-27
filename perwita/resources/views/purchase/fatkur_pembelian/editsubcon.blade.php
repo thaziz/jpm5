@@ -152,6 +152,16 @@ No Faktur
   <td width="200"><input type="text" value="{{$data->fp_noinvoice}}" name="invoice_subcon" class="form-control invoice_subcon" ></td>
  </tr>  
  <tr>
+  <td style="width: 100px">Tanda terima</td>
+  <td width="10">:</td>
+  <td width="200">
+    <input type="text" readonly="" name="tanda_terima" class="form-control tanda_terima" value="{{ $tt->tt_noform }}">
+    <input type="hidden" readonly="" name="invoice_tt" class="form-control invoice_tt" value="{{ $tt->ttd_invoice }}">
+    <input type="hidden" readonly="" name="id_tt" class="form-control id_tt" value="{{ $tt->ttd_id }}">
+    <input type="hidden" readonly="" name="dt_tt" class="form-control dt_tt" value="{{ $tt->ttd_detail }}">
+  </td>
+ </tr>
+ <tr>
   <td style="width: 100px">Keterangan </td>
   <td width="10">:</td>
   <td width="200"><input type="text" value="{{$data->fp_keterangan}}" name="keterangan_subcon" class="form-control keterangan_subcon"  ></td>
@@ -339,7 +349,7 @@ No Faktur
       </tr>
        <tr>
       <td colspan="3">
-        <button class="btn btn-info modal_tt_subcon disabled pull-left" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+        <button class="btn btn-info modal_tt_subcon disabled pull-left" style="margin-right: 10px;" type="button" data-toggle="modal"  type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
 
           <button type="button" class="btn btn-primary pull-right append_subcon" onclick="cariSUB()"><i class="fa fa-plus">&nbsp;Append</i></button>
           <button type="button" style="margin-right: 20px" class="btn  pull-right" onclick="cancel_data()"><i class="fa fa-close">&nbsp;Clear</i></button>
@@ -416,118 +426,6 @@ No Faktur
 </div>
 
 
-{{-- MODAL TT SUBCON --}}
-
-<div class="modal fade" id="modal_tt_subcon" tabindex="-1" role="dialog"  aria-hidden="true">
-  <div class="modal-dialog" role="document" style="min-width: 1000px !important; min-height: 1000px">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Form Tanda Terima</h2>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <table class="table table-stripped tabel_tt_subcon">
-          <tr>
-            <td width="150px">
-                  No Tanda Terima 
-                </td>
-                <td>
-                  <input readonly="" type='text' name="nota_tt" class='input-sm form-control notandaterima'>
-                  <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                </td>
-          </tr>
-          <tr>
-            <td> Tanggal </td>
-                <td>
-                   <div class="input-group date">
-                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="" readonly="" name="tgl_tt">
-                  </div>
-                </td>
-          </tr>
-          <tr>
-              <td> Supplier </td>
-              <td> <input type='text' class="form-control supplier_tt" value="" name="supplier_tt" readonly=""></td>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                 <div class="row">
-                    <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="Kwitansi" type="checkbox" @if($valid_cetak->tt_kwitansi == 'ADA') checked="" @endif name="kwitansi">
-                            <label for="Kwitansi">
-                                Kwitansi / Invoice / No
-                            </label>
-                      </div> 
-                    </div>
-                    <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="FakturPajak" type="checkbox" @if($valid_cetak->tt_faktur == 'ADA') checked="" @endif name="faktur_pajak">
-                            <label for="FakturPajak">
-                                Faktur Pajak
-                            </label>
-                      </div> 
-                    </div>
-
-                    <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="SuratPerananAsli" type="checkbox" @if($valid_cetak->tt_suratperan == 'ADA') checked="" @endif name="surat_peranan">
-                            <label for="SuratPerananAsli">
-                                Surat Peranan Asli
-                            </label>
-                      </div> 
-                    </div>
-
-                     <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="SuratJalanAsli" type="checkbox" @if($valid_cetak->tt_suratjalanasli == 'ADA') checked="" @endif name="surat_jalan">
-                            <label for="SuratJalanAsli">
-                               Surat Jalan Asli
-                            </label>
-                      </div> 
-                    </div>
-                  </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-               Lain Lain
-              </td>
-              <td>                      
-                <input type="text" class="form-control lain_subcon" value="{{$valid_cetak->tt_lainlain}}" name="lainlain_penerus">
-              </td>
-            </tr>
-            <tr>
-              <td> Tanggal Kembali </td>
-              <td><div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali">
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>Total di Terima</td>
-              <td>
-                <div class="row">
-                  <div class="col-sm-3">
-                    <label class="col-sm-3 label-control"> Rp </label>
-                  </div>
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control totalterima_tt_subcon" name="total_diterima" style="text-align:right;" readonly="">
-                  </div>
-                </div>
-              </td>
-            </tr>
-        </table>
-      </div>
-      <div class="modal-footer inline-form">
-        <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-primary simpan_subcon" onclick="simpan_tt()" data-dismiss="modal">Simpan</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 
@@ -550,142 +448,6 @@ No Faktur
   </div>
 </div>
 
-    </div> 
-  </div>
-</div>
-
-
-<!-- MODAL TANDA TERIMA-->
-<div id="modal_tt" class="modal fade" role="dialog">
-  <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
-    <div class="modal-content" >
-      <div class="modal-header">
-        <button style="min-height:0;" type="button" class="close" data-dismiss="modal">&times;</button>
-        <h2 class="modal-title" style="text-align: center;"><b>Tambah Data Tanda Terima</h2>
-      </div>
-      <div class="modal-body">
-        <table class="table table_terima" style="font-size: 14px;">
-          <tr>
-            <td>No Tanda Terima</td>
-            <td>
-              <input type="text" name="no_tt" readonly="" class="form-control" value="{{$valid_cetak->tt_noform or $nota}}">
-            </td>
-          </tr>
-          <tr>
-            <td>Tanggal</td>
-            <td>
-              @if($valid_cetak->tt_tgl == null)
-              <input type="text" name="modal_tanggal" class="form-control modal_tanggal" value="">
-              @else
-               <input type="text" name="modal_tanggal" class="form-control modal_tanggal" value="<?php echo date('d/m/Y',strtotime($valid_cetak->tt_tgl)); ?>">
-              @endif
-            </td>
-          </tr>
-          <tr>
-            <td>Subcon</td>
-            <td><input type="text" name="modal_vendor" class="form-control" readonly="" value=""></td>
-          </tr>
-          <tr>  
-            <td colspan="2" style="font-size: 12px;">
-              @if($valid_cetak->tt_noform == null)
-              <input type="checkbox" name="Kwitansi" style="margin-right: 10px;" checked=""><label style=" margin-right: 10%;">Kwitansi/Invoice/No</label>
-              <input type="checkbox" name="Faktur" style="margin-right: 10px;" checked=""><label style=" margin-right: 10%;">Faktur Pajak</label>
-              <input type="checkbox" name="Peranan" style="margin-right: 10px;" checked=""><label style=" margin-right: 10%;">Surat Peranan Asli</label>
-              <input type="checkbox" name="Jalan" style="margin-right: 10px;" checked=""><label style=" margin-right: 0%;">Surat Jalan Asli</label>
-              @else
-
-                @if($valid_cetak->tt_kwitansi == 'TIDAK ADA')
-                <div class="checkbox checkbox-info checkbox-circle" style="display: inline-block;">
-                  <input type="checkbox" name="Kwitansi" style="margin-right: 10px;">
-                  <label style=" margin-right: 10%;">Kwitansi/Invoice/No</label>
-                </div>
-
-                @else
-                <div class="checkbox checkbox-info checkbox-circle" style="display: inline-block;">
-                  <input type="checkbox" name="Kwitansi" style="margin-right: 10px;" checked="">
-                  <label style=" margin-right: 10%;">Kwitansi/Invoice/No</label>
-                </div>
-
-                @endif
-
-                @if($valid_cetak->tt_faktur == 'TIDAK ADA')
-                <div class="checkbox checkbox-info checkbox-circle" style="display: inline-block; width: ">
-                  <input type="checkbox" name="Faktur" style="margin-right: 10px;">
-                  <label style=" margin-right: 10%;">Faktur Pajak</label>
-                </div>
-
-                @else
-                <div class="checkbox checkbox-info checkbox-circle" style="display: inline-block;">
-                  <input type="checkbox" name="Faktur" style="margin-right: 10px;" checked="">
-                  <label style=" margin-right: 10%;">Faktur Pajak</label>
-                </div>
-
-                @endif
-
-                @if($valid_cetak->tt_suratperan == 'TIDAK ADA')
-                <div class="checkbox checkbox-info checkbox-circle" style="display: inline-block;">
-                  <input type="checkbox" name="Peranan" style="margin-right: 10px;">
-                  <label style=" margin-right: 10%;">Surat Peranan Asli</label>
-                </div>
-
-                @else
-                <div class="checkbox checkbox-info checkbox-circle" style="display: inline-block;">
-                  <input type="checkbox" name="Peranan" style="margin-right: 10px;" checked="">
-                  <label style=" margin-right: 10%;">Surat Peranan Asli</label>
-                </div>
-
-                @endif
-
-                @if($valid_cetak->tt_suratjalanasli == 'TIDAK ADA')
-                <div class="checkbox checkbox-info checkbox-circle" style="display: inline-block;">
-                  <input type="checkbox" name="Jalan">
-                  <label style=" margin-right: 0%;">Surat Jalan Asli</label>
-                </div>
-                @else
-                <div class="checkbox checkbox-info checkbox-circle" style="display: inline-block;">
-                  <input type="checkbox" name="Jalan" checked="">
-                  <label style=" margin-right: 0%;">Surat Jalan Asli</label>
-                </div>
-                @endif
-              @endif
-            </td>
-          </tr>
-          <tr>
-            <td>Lain Lain</td>
-             <td>
-              @if($valid_cetak->tt_noform == null)
-              <input type="text" name="modal_lain" class="form-control" value="">
-              @else
-              <input type="text" name="modal_lain" class="form-control" value="{{$valid_cetak->tt_lainlain}}">
-              @endif
-             </td>
-          </tr>
-          <tr>
-          <td>Tanggal Kembali</td>
-          <td>
-           <div class="input-group date">
-             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-             @if($valid_cetak->tt_noform == null)
-             <input type="text" name="tgl_terima"  class="form-control tgl_terima" value="">
-             @else
-             <input type="text" name="tgl_terima"  class="form-control tgl_terima" value="<?php echo date('d/m/Y'); ?>">
-             @endif
-           </div>
-         </td>
-        </tr>
-          <tr>
-            <td>Total di Terima</td>
-             <td>
-              <input type="text" name="total_terima" class="form-control total_terima" value="{{'Rp ' . number_format($data->fp_netto,2,',','.')}}"> 
-            </td>
-          </tr>
-        </table>
-      <div align="right">
-        <hr>
-      <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-      <button type="button" class="btn btn-primary" id="saver" onclick="save_tt()"  data-dismiss="modal">Save changes</button>
-      </div> 
-      </div>    
     </div> 
   </div>
 </div>
@@ -809,6 +571,7 @@ No Faktur
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+@include('purchase.pembayaran_vendor.modal_do_vendor')
 
 <div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
@@ -1284,51 +1047,32 @@ function edit_subcon(a) {
 }
 
 $('.modal_tt_subcon').click(function(){
-  var nota_subcon = $('.nota_subcon').val();
-  if (nota_subcon != '') {
-    toastr.warning('Terdapat Data Yang Belum Di Append');
-    return 1
-  }
   var cabang = $('.cabang').val();
-  var nota_id_tt = $('.nota_id_tt').val();
-
-  if (nota_id_tt == '') {
-      $.ajax({
-        url:baseUrl +'/fakturpembelian/nota_tt',
-        data: {cabang},
-        dataType:'json',
-        success:function(data){
-          var total_subcon = $('.total_subcon').val();
-      var tempo_subcon = $('.tempo_subcon').val();
-      var nama_sc    = $('.nama_sc').val();
-          total_subcon       = total_subcon.replace(/[^0-9\-]+/g,"")/100;
-          $('.notandaterima').val(data.nota);
-          $('.supplier_tt').val(nama_sc);
-          $('.jatuhtempo_tt').val(tempo_subcon);
-          $('.tgl_tt').val('{{carbon\carbon::now()->format('d/m/Y')}}');
-          $('.totalterima_tt_subcon').val(accounting.formatMoney(total_subcon, "Rp ", 2, ".",','));
-      $('#modal_tt_subcon').modal('show');
-        },error:function(){
-          toastr.warning('Terjadi Kesalahan');
-        }
-      })
-  }else{
-    var total_subcon = '{{$valid_cetak->tt_totalterima}}';
-    var nota_no_tt = '{{$valid_cetak->tt_noform}}'
-    var tempo_subcon = '{{carbon\carbon::parse($valid_cetak->tt_tglkembali)->format('d/m/Y')}}'
-    var sekarang = '{{carbon\carbon::parse($valid_cetak->tt_tgl)->format('d/m/Y')}}'
-    var nama_sc    = $('.nama_sc').val();
-    
-        total_subcon       = total_subcon.replace(/[^0-9\-]+/g,"")/100;
-        $('.notandaterima').val(nota_no_tt);
-        $('.supplier_tt').val(nama_sc);
-        $('.jatuhtempo_tt').val(tempo_subcon);
-        $('.tgl_tt').val(sekarang);
-        $('.totalterima_tt_subcon').val(accounting.formatMoney(total_subcon, "Rp ", 2, ".",','));
-    $('#modal_tt_subcon').modal('show');
-  }
-  
+    var agen_vendor = $('.nama_sc').val();
+    $.ajax({
+      url:baseUrl +'/fakturpembelian/nota_tt',
+      data: {cabang,agen_vendor},
+      success:function(data){
+        $('.div_tt').html(data);
+    $('#modal_tt_penerus').modal('show');
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
 })
+
+function select_tt(a) {
+    var tt_form = $(a).find('.tt_form').text();
+    var tt_invoice = $(a).find('.tt_invoice').text();
+    var tt_id = $(a).find('.tt_id').val();
+    var tt_dt = $(a).find('.tt_dt').val();
+
+    $('.tanda_terima').val(tt_form);
+    $('.invoice_tt').val(tt_invoice);
+    $('.id_tt').val(tt_id);
+    $('.dt_tt').val(tt_dt);
+  $('#modal_tt_subcon').modal('show');
+}
 
 
 
@@ -1419,60 +1163,6 @@ function save_subcon(){
 }
 
 
-
-function simpan_tt() {
-  var selectOutlet = $('.nama_sc').val();
-  var cabang = $('.cabang').val();
-  var totalterima_tt_subcon = $('.totalterima_tt_subcon').val();
-  if (totalterima_tt_subcon == 'Rp 0,00') {
-    toastr.warning('Nilai Tanda Terima Tidak Boleh Nol');
-  }
-      swal({
-        title: "Apakah anda yakin?",
-        text: "Simpan Data!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Ya, Simpan!",
-        cancelButtonText: "Batal",
-        closeOnConfirm: true
-      },
-      function(){
-           $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-          $.ajax({
-          url:baseUrl + '/fakturpembelian/simpan_tt',
-          type:'get',
-          dataType:'json',
-          data:$('.tabel_tt_subcon :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head_subcon :input').serialize()+'&cabang='+cabang,
-          success:function(response){
-                swal({
-                    title: "Berhasil!",
-                    type: 'success',
-                    text: "Data berhasil disimpan",
-                    timer: 900,
-                    showConfirmButton: true
-                    },function(){
-
-                    $('.save_subcon').removeClass('disabled');
-                    });
-
-          },
-          error:function(data){
-            swal({
-            title: "Terjadi Kesalahan",
-                    type: 'error',
-                    timer: 900,
-                   showConfirmButton: true
-
-        });
-       }
-      });  
-     });
-  }
 
 
  function print_penerus() {

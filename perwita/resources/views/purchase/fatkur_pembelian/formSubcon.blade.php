@@ -49,6 +49,16 @@
 	<td width="200"><input type="text" name="keterangan_subcon" class="form-control keterangan_subcon"  ></td>
  </tr>	
  <tr>
+  <td style="width: 100px">Tanda terima</td>
+  <td width="10">:</td>
+  <td width="200">
+    <input type="text" readonly="" name="tanda_terima" class="form-control tanda_terima" style="" >
+    <input type="hidden" readonly="" name="invoice_tt" class="form-control invoice_tt" style="" >
+    <input type="hidden" readonly="" name="id_tt" class="form-control id_tt" style="" >
+    <input type="hidden" readonly="" name="dt_tt" class="form-control dt_tt" style="" >
+  </td>
+ </tr>
+ <tr>
  	<td style="width: 100px">Total Biaya</td>
  	<td width="10">:</td>
 	<td width="200"><input type="text" readonly="" style="text-align: right"  class="form-control total_subcon" name="total_subcon" ></td>
@@ -800,51 +810,32 @@ function edit_subcon(a) {
 }
 
 $('.modal_tt_subcon').click(function(){
-	var nota_subcon = $('.nota_subcon').val();
-	if (nota_subcon != '') {
-		toastr.warning('Terdapat Data Yang Belum Di Append');
-		return 1
-	}
 	var cabang = $('.cabang').val();
-	var nota_id_tt = $('.nota_id_tt').val();
-	if (nota_id_tt == '') {
-	    $.ajax({
-	      url:baseUrl +'/fakturpembelian/nota_tt',
-	      data: {cabang},
-	      dataType:'json',
-	      success:function(data){
-	        var total_subcon = $('.total_subcon').val();
-			var tempo_subcon = $('.tempo_subcon').val();
-			var nama_sc  	 = $('.nama_sc').val();
-	        total_subcon       = total_subcon.replace(/[^0-9\-]+/g,"")/100;
-	        $('.notandaterima').val(data.nota);
-	        $('.supplier_tt').val(nama_sc);
-	        $('.jatuhtempo_tt').val(tempo_subcon);
-	        $('.tgl_tt').val('{{carbon\carbon::now()->format('d/m/Y')}}');
-	        $('.totalterima_tt_subcon').val(accounting.formatMoney(total_subcon, "Rp ", 2, ".",','));
-			$('#modal_tt_subcon').modal('show');
-	      },error:function(){
-	        toastr.warning('Terjadi Kesalahan');
-	      }
-	    })
-	}else{
-		var total_subcon = $('.total_subcon').val();
-		var nota_no_tt = $('.nota_no_tt').val();
-		var tempo_subcon = $('.tempo_subcon').val();
-		var nama_sc  	 = $('.nama_sc').val();
-		var nama_sc  	 = $('.nama_sc').val();
-        total_subcon       = total_subcon.replace(/[^0-9\-]+/g,"")/100;
-        $('.notandaterima').val(nota_no_tt);
-        $('.supplier_tt').val(nama_sc);
-        $('.jatuhtempo_tt').val(tempo_subcon);
-        $('.tgl_tt').val('{{carbon\carbon::now()->format('d/m/Y')}}');
-        $('.totalterima_tt_subcon').val(accounting.formatMoney(total_subcon, "Rp ", 2, ".",','));
-		$('#modal_tt_subcon').modal('show');
-	}
-	
+    var agen_vendor = $('.nama_sc').val();
+    $.ajax({
+      url:baseUrl +'/fakturpembelian/nota_tt',
+      data: {cabang,agen_vendor},
+      success:function(data){
+        $('.div_tt').html(data);
+		$('#modal_tt_penerus').modal('show');
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
 })
 
+function select_tt(a) {
+    var tt_form = $(a).find('.tt_form').text();
+    var tt_invoice = $(a).find('.tt_invoice').text();
+    var tt_id = $(a).find('.tt_id').val();
+    var tt_dt = $(a).find('.tt_dt').val();
 
+    $('.tanda_terima').val(tt_form);
+    $('.invoice_tt').val(tt_invoice);
+    $('.id_tt').val(tt_id);
+    $('.dt_tt').val(tt_dt);
+	$('#modal_tt_subcon').modal('show');
+}
 
 
 function save_subcon(){

@@ -166,6 +166,12 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td style="padding-top: 0.4cm">Syarat Kredit</td>
+                                    <td colspan="3">
+                                        <input type="number" class="form-control " name="syarat_kredit" >
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td style="padding-top: 0.4cm">Telpon</td>
                                     <td>
                                         <input type="text" class="form-control" name="ed_telpon" style="text-transform: uppercase" >
@@ -361,6 +367,7 @@
         $("select[name='cb_csf_penjualan']").change();
         $("input[name='ed_alamat']").val('');
         $("input[name='ed_telpon']").val('');
+        $("input[name='syarat_kredit']").val('');
         $("input[name='ed_fax']").val('');
         $("input[name='ed_komisi']").val('0');
         $("#modal").modal("show");
@@ -401,6 +408,7 @@
                 $("select[name='ed_acc2']").val(data.acc_hutang).trigger('chosen:updated');
                 $("select[name='ed_acc3']").val(data.csf_penjualan).trigger('chosen:updated'); 
                 $("select[name='cb_acc_penjualan']").change();
+                $("input[name='syarat_kredit']").val(data.syarat_kredit);
                 $("select[name='cb_csf_penjualan']").change();
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();

@@ -141,6 +141,15 @@
                   <td><input type="text" value="{{$bp->fp_noinvoice}}" class="form-control no_invoice" name="no_invoice"></td>
                 </tr>
                 <tr>
+                  <td style="width: 100px">Tanda terima</td>
+                  <td width="200">
+                    <input type="text" readonly="" name="tanda_terima" class="form-control tanda_terima" value="{{ $tt->tt_noform }}">
+                    <input type="hidden" readonly="" name="invoice_tt" class="form-control invoice_tt" value="{{ $tt->ttd_invoice }}">
+                    <input type="hidden" readonly="" name="id_tt" class="form-control id_tt" value="{{ $tt->ttd_id }}">
+                    <input type="hidden" readonly="" name="dt_tt" class="form-control dt_tt" value="{{ $tt->ttd_detail }}">
+                  </td>
+                 </tr>
+                <tr>
                   <td>Keterangan</td>
                   <td><input type="text" value="{{$bp->fp_keterangan}}" class="form-control keterangan" name="Keterangan_biaya"></td>
                 </tr>
@@ -270,43 +279,31 @@ $('.tambah_data_vendor').click(function(){
     }) 
 })
 $('.tt_vendor').click(function(){
-
-    $('.notandaterima').val('{{$form_tt->tt_noform}}');
-
-    if ('{{$form_tt->tt_kwitansi}}' == 'ADA') {
-      $('#Kwitansi').prop('checked',true);
-    }else{
-      $('#Kwitansi').prop('checked',false);
-    }
-
-    if ('{{$form_tt->tt_suratperan}}' == 'ADA') {
-      $('#SuratPerananAsli').prop('checked',true);
-    }else{
-      $('#SuratPerananAsli').prop('checked',false);
-    }
-
-    if ('{{$form_tt->tt_suratjalanasli}}' == 'ADA') {
-      $('#SuratJalanAsli').prop('checked',true);
-    }else{
-      $('#SuratJalanAsli').prop('checked',false);
-    }
-
-    if ('{{$form_tt->tt_faktur}}' == 'ADA') {
-      $('#FakturPajak').prop('checked',true);
-    }else{
-      $('#FakturPajak').prop('checked',false);
-    }
-    $('.lain_penerus').val('{{$form_tt->tt_lainlain}}');
-
-    var agen_vendor = $('.nama_vendor').val();
-    var jatuh_tempo = $('.jatuh_tempo_vendor').val();
-    var total_jml   = $('.total_vendor').val();
-    total_jml       = total_jml.replace(/[^0-9\-]+/g,"")*1;
-    $('.supplier_tt').val(agen_vendor);
-    $('.jatuhtempo_tt').val(jatuh_tempo);
-    $('.totalterima_tt_vendor').val(accounting.formatMoney(total_jml, "Rp ", 2, ".",','));
-    $('#modal_tt_vendor').modal('show');
+    var cabang = $('.cabang').val();
+    var agen_vendor = $('.nama_vendor_baru').val();
+    $.ajax({
+      url:baseUrl +'/fakturpembelian/nota_tt',
+      data: {cabang,agen_vendor},
+      success:function(data){
+        $('.div_tt').html(data);
+        $('#modal_tt_penerus').modal('show');
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
 })
+function select_tt(a) {
+    var tt_form = $(a).find('.tt_form').text();
+    var tt_invoice = $(a).find('.tt_invoice').text();
+    var tt_id = $(a).find('.tt_id').val();
+    var tt_dt = $(a).find('.tt_dt').val();
+
+    $('.tanda_terima').val(tt_form);
+    $('.invoice_tt').val(tt_invoice);
+    $('.id_tt').val(tt_id);
+    $('.dt_tt').val(tt_dt);
+    $('#modal_tt_vendor').modal('hide');
+}
 
 $('.append_vendor').click(function(){
   var nomor_vendor = [];
@@ -404,10 +401,7 @@ function rubah_angka_vendor(){
 $('.simpan_vendor_tt').click(function(){
   var selectOutlet = $('.nama_vendor').val();
   var cabang = $('.cabang').val();
-  var totalterima_tt_subcon = $('.totalterima_tt_vendor').val();
-  if (totalterima_tt_subcon == 'Rp 0,00') {
-  toastr.warning('Nilai Tanda Terima Tidak Boleh Nol');
-  }
+  
     swal({
       title: "Apakah anda yakin?",
       text: "Simpan Data!",
