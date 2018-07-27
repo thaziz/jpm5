@@ -70,9 +70,27 @@
               <div class="box">
                
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
-                  <div class="box-body">
-                    
                 <div class="box-body">
+                <div class="col-sm-12" style="margin-bottom: 20px">
+                  <div class="col-sm-6">
+                    <table cellpadding="3" cellspacing="0" border="0" class="table">
+                      @if (Auth::user()->punyaAkses('Biaya Penerus Kas','cabang')) 
+                      <tr id="filter_col1" data-column="0">
+                          <td>Cabang</td>
+                          <td align="center">
+                            <select onchange="filtering()" class="form-control cabang chosen-select-width">
+                              <option value="0">Pilih - Cabang </option>
+                              @foreach ($cabang as $a)
+                                <option value="{{$a->kode}}">{{$a->nama}}</option>
+                              @endforeach
+                            </select>
+                          </td>
+                      </tr>
+                      @endif
+                    </table>
+                  </div>
+                </div>   
+                <div class="box-body append_table">
                   <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
                     <thead align="center">
                      <tr>
@@ -88,34 +106,7 @@
                     </tr>
                     </thead>
                     <tbody>  
-                      @foreach($data as $val)
-                      <tr>
-                        <td>{{$val->ik_nota}}</td>
-                        <td><?php echo date('d/m/Y',strtotime($val->ik_tgl_akhir));?></td>
-                        <td>{{$val->nama}}</td>
-                        <td>{{$val->ik_keterangan}}</td>
-                        <td>{{$val->ik_total}}</td>
-                        <td align="center">
-                          <a title="Print" class="" href={{url('ikhtisar_kas/print/'.$val->ik_id.'')}}>
-                              <i class="fa fa-print" aria-hidden="true">&nbsp; Print</i>
-                          </a> 
-                        </td>
-                        <td>{{$val->ik_status}}</td>
-                        <td align="center"><input type="checkbox" name="check" class="check form-control"></td>
-                        <td align="center"> 
-                            @if(Auth::user()->punyaAkses('Ikhtisar Kas','ubah'))
-                              <a title="Edit" class="btn btn-success" href={{url('ikhtisar_kas/edit/'.$val->ik_id.'')}}>
-                              <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                              </a> 
-                            @endif
-                            @if(Auth::user()->punyaAkses('Ikhtisar Kas','hapus'))
-                              <a title="Hapus" class="btn btn-success" onclick="hapus({{$val->ik_id}})">
-                              <i class="fa fa-trash" aria-hidden="true"></i>
-                              </a> 
-                            @endif
-                          </td> 
-                      </tr>
-                      @endforeach
+               
                     </tbody>
                    
                   </table>
@@ -149,49 +140,51 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-    $('.tbl-penerimabarang').DataTable({
-            processing: true,
-            // responsive:true,
-            serverSide: true,
-            ajax: {
-                url:'{{ route("datatable_ikhtisar") }}',
-            },
-            columnDefs: [
-              {
-                 targets: 4,
-                 className: 'right'
-              },
-              {
-                 targets: 6,
-                 className: 'center'
-              },
-              {
-                 targets:7,
-                 className: 'center'
-              },
-              {
-                 targets:8,
-                 className: 'center'
-              },
-            ],
-            "columns": [
-            { "data": "ik_nota" },
-            { "data": "tanggal" },
-            { "data": "nama" },
-            { "data": "ik_keterangan" },
-            { "data": "ik_total",render: $.fn.dataTable.render.number( '.', '.', 0, '' ) },
-            { "data": "print"},
-            { "data": "ik_status" },
-            { "data": "editing" },
-            { "data": "aksi" },
-            ]
+  $(document).ready(function(){
+    var cabang = $('.cabang').val();
+    $.ajax({
+        url:baseUrl + '/ikhtisar_kas/append_table',
+        data:{cabang},
+        type:'get',
+        success:function(data){
+          $('.append_table').html(data);
+        },
+        error:function(data){
+          swal({
+          title: "Terjadi Kesalahan",
+                  type: 'error',
+                  timer: 2000,
+                  showConfirmButton: false
       });
-
-    $('.date').datepicker({
-        autoclose: true,
-        format: 'yyyy-mm-dd'
+     }
     });
-    
+  })  
+
+  $('.date').datepicker({
+      autoclose: true,
+      format: 'yyyy-mm-dd'
+  });
+  
+  function filtering() {
+    var cabang = $('.cabang').val();
+    var jenis_bayar = $('.jenis_bayar').val();
+    $.ajax({
+        url:baseUrl + '/ikhtisar_kas/append_table',
+        data:{cabang,jenis_bayar},
+        type:'get',
+        success:function(data){
+          $('.append_table').html(data);
+        },
+        error:function(data){
+          swal({
+          title: "Terjadi Kesalahan",
+                  type: 'error',
+                  timer: 2000,
+                  showConfirmButton: false
+      });
+     }
+    });
+  }
 
 
   function hapus(id){

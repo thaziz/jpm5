@@ -3,7 +3,7 @@
       <table class="table table-bordered table-hover tabel_patty_cash">
           <thead align="center">
             <tr>
-            <th>Pilih</th>
+            <th><input type="checkbox" class="parent_check"></th>
             <th>Tanggal</th>
             <th>No Ref</th>
             <th>Akun Biaya</th>
@@ -32,5 +32,15 @@
 <script type="text/javascript">
   var tabel_patty = $('.tabel_patty_cash').DataTable({
     'searching':true
+  })
+
+  
+  $('.parent_check').change(function(){
+    console.log($(this).is(':checked'));
+    if ($(this).is(':checked') == true) {
+      tabel_patty.$('.ck').prop('checked',true);
+    }else{
+      tabel_patty.$('.ck').prop('checked',false);
+    }
   })
 </script>
