@@ -61,7 +61,11 @@ use App\bonsempengajuan;
 class BonSementaraController extends Controller
 {
 	public function index(){
+
+
 		$data['bonsem'] = DB::select("select * from bonsem_pengajuan, cabang where bp_cabang = kode order by bp_id desc");
+		
+		$fpg = DB::select("select * fpg, fpg_dt, bukti_bank_keluar, bukti_bank_keluar_dt where fpgdt_idfpg = idfpg and bbkd_idbbk = bbk_id and bbkd_idfpg = idfpg");
 
 		return view('purchase/bonsementara/indexcabang', compact('data'));
 	}
@@ -104,8 +108,8 @@ class BonSementaraController extends Controller
 
 
 	public function savecabang(Request $request){
-
-		$cabang = $request->cabang;
+		return DB::transaction(function() use ($request) { 
+			$cabang = $request->cabang;
 		$nota = $request->nonota;
 		$keperluan = $request->keperluan;
 		$bagian = $request->bagian;
@@ -125,6 +129,8 @@ class BonSementaraController extends Controller
 			$id = (int)$dataid[0]->bp_id + 1;
 		}
 
+		$db = DB::select("select * from d_akun where id_akun LIKE '1002%' and kode_cabang = '$cabang'");
+		$idakun = $db[0]->id_akun;
 
 
 		$databonsem = DB::select("select * from bonsem_pengajuan where bp_nota = '$nota'");
@@ -151,90 +157,153 @@ class BonSementaraController extends Controller
 		$bp->status_pusat = 'DITERBITKAN';
 		$bp->created_by = $request->username;
 		$bp->updated_by = $request->username;
+		$bp->bp_akunhutang = $idakun;
+	
 		$bp->save();
 
 		return json_encode('sukses');
+		});		
 	}
 
 	public function setujukacab(Request $request){
-		$idpb = $request->idpb;
+		return DB::transaction(function() use ($request) { 
+			$idpb = $request->idpb;
 
-		$data['pb']= DB::select("select * from bonsem_pengajuan, cabang where bp_id = '$idpb' and bp_cabang = kode");
-		$cabang = $data['pb'][0]->bp_cabang;
+			$data['pb']= DB::select("select * from bonsem_pengajuan, cabang where bp_id = '$idpb' and bp_cabang = kode");
+			$cabang = $data['pb'][0]->bp_cabang;
 
-		$akuncabang = DB::select("select * from d_akun where id_akun LIKE '1001%' and kode_cabang = '$cabang'");
-		$idakun = $akuncabang[0]->id_akun;
+			$akuncabang = DB::select("select * from d_akun where id_akun LIKE '1001%' and kode_cabang = '$cabang'");
+			$idakun = $akuncabang[0]->id_akun;
 
-		$month = date('m');
-		
-		$data['kaskecil'] = DB::select("select * from d_akun_saldo where id_akun = '$idakun' and bulan = '$month'");
+			$month = date('m');
+			
+			$data['kaskecil'] = DB::select("select * from d_akun_saldo where id_akun = '$idakun' and bulan = '$month'");
 
-		return json_encode($data);
+			return json_encode($data);
+		});
 	}
 
 	public function setujukeu(Request $request){
-		$idpb = $request->idpb;
+		return DB::transaction(function() use ($request) { 
+			$idpb = $request->idpb;
 
-		$data['pb']= DB::select("select * from bonsem_pengajuan, cabang where bp_id = '$idpb' and bp_cabang = kode");
-		$cabang = $data['pb'][0]->bp_cabang;
+			$data['pb']= DB::select("select * from bonsem_pengajuan, cabang where bp_id = '$idpb' and bp_cabang = kode");
+			$cabang = $data['pb'][0]->bp_cabang;
 
-		$akuncabang = DB::select("select * from d_akun where id_akun LIKE '1001%' and kode_cabang = '$cabang'");
-		$idakun = $akuncabang[0]->id_akun;
+			$akuncabang = DB::select("select * from d_akun where id_akun LIKE '1001%' and kode_cabang = '$cabang'");
+			$idakun = $akuncabang[0]->id_akun;
 
-		$month = date('m');
-		
-		$data['kaskecil'] = DB::select("select * from d_akun_saldo where id_akun = '$idakun' and bulan = '$month'");
+			$month = date('m');
+			
+			$data['kaskecil'] = DB::select("select * from d_akun_saldo where id_akun = '$idakun' and bulan = '$month'");
 
-		return json_encode($data);
+			return json_encode($data);
+		});
+	}
+
+	public function updatecabang(Request $request){
+		return DB::transaction(function() use ($request) {
+			$id = $request->idpb;
+
+			$nominal = str_replace(",", "", $request->nominal);
+			$date = date("Y-m-d");
+			$updatepb = bonsempengajuan::find($id);
+			$updatepb->bp_nominal = $nominal;
+			$updatepb->bp_bagian = $request->bagian;
+			$updatepb->bp_keperluan = $request->keperluan;
+			$updatepb->bp_tgl = $request->tgl;
+			$updatepb->updated_by = $request->username;
+			$updatepb->save();
+			
+			return json_encode('sukses');
+		});
 	}
 
 
+	public function hapuscabang($id){
+
+		DB::delete("DELETE FROM bonsem_pengajuan where bp_id = '$id'");
+		return 'sukses';
+	}
+
 	public function updatekacab(Request $request){
-		$id = $request->idpb;
+		return DB::transaction(function() use ($request) {
+			$id = $request->idpb;
+			$nominal = str_replace(",", "", $request->nominal);
+			$date = date("Y-m-d");
+			$updatepb = bonsempengajuan::find($id);
+			$updatepb->bp_nominalkacab = $nominal;
+			$updatepb->bp_setujukacab = $request->statuskacab;
+			$updatepb->bp_keterangankacab = $request->keterangankacab;
+			$updatepb->time_setujukacab = $date;
+			if($request->statuskacab == 'TIDAK SETUJU') {
+				$updatepb->status_pusat = "TIDAK DISETUJUI KACAB"; 
+			}
+			else {
+				$updatepb->status_pusat = 'DISETUJUI KACAB';
+			}
 
-		$nominal = str_replace(",", "", $request->nominal);
-		$date = date("Y-m-d");
-		$updatepb = bonsempengajuan::find($id);
-		$updatepb->bp_nominalkacab = $nominal;
-		$updatepb->bp_setujukacab = $request->statuskacab;
-		$updatepb->bp_keterangankacab = $request->keterangankacab;
-		$updatepb->time_setujukacab = $date;
-		$updatepb->save();
+			$updatepb->save();
 
-		return json_encode('sukses');
+			return json_encode('sukses');
+		});
 	}
 
 	public function updateadmin(Request $request){
-		$id = $request->idpb;
+		return DB::transaction(function() use ($request) {
+			$id = $request->idpb;
 
-		$nominal = str_replace(",", "", $request->nominal);
-		$date = date("Y-m-d");
-		$updatepb = bonsempengajuan::find($id);
-		$updatepb->bp_nominaladmin = $nominal;
-		$updatepb->bp_setujuadmin = $request->statuskacab;
-		$updatepb->status_pusat = 'DITERIMA CABANG';
-		$updatepb->time_setujuadmin = $date;
-		$updatepb->save();
+			$nominal = str_replace(",", "", $request->nominal);
+			$date = date("Y-m-d");
+			$updatepb = bonsempengajuan::find($id);
+			$updatepb->bp_nominaladmin = $nominal;
+			$updatepb->bp_setujuadmin = $request->statuskacab;
+			$updatepb->time_setujukacab = $date;
+			if($request->bp_setujuadmin == 'TIDAK SETUJU') {
+				$updatepb->status_pusat = "TIDAK DISETUJUI PUSAT"; 
+			}
+			else {
+				$updatepb->status_pusat = 'DITERIMA PUSAT';
+			}
+			
+			$updatepb->time_setujuadmin = $date;
+			$updatepb->save();
 
-		return json_encode('sukses');
+			return json_encode('sukses');
+		});		
 	}
 
 	public function updatekeu(Request $request){
-		$id = $request->idpb;
+		return DB::transaction(function() use ($request) {
+			$id = $request->idpb;
 
-		$nominal = str_replace(",", "", $request->nominal);
-		$date = date("Y-m-d");
-		$updatepb = bonsempengajuan::find($id);
-		$updatepb->bp_nominalkeu = $nominal;
-		$updatepb->bp_setujukeu = $request->statuskacab;
-		$updatepb->status_pusat = 'DISETUJUI';
-		$updatepb->time_setujukeu = $date;
-		$updatepb->save();
+			$nominal = str_replace(",", "", $request->nominal);
+			$date = date("Y-m-d");
+			$updatepb = bonsempengajuan::find($id);
+			$updatepb->bp_nominalkeu = $nominal;
+			$updatepb->bp_setujukeu = $request->statuskacab;
+			//$updatepb->status_pusat = 'DISETUJUI MENKEU';
+			
+			if($request->bp_setujukeu == 'TIDAK SETUJU') {
+				$updatepb->status_pusat = "TIDAK DISETUJUI MENKEU"; 
+			}
+			else {
+				$updatepb->status_pusat = 'DISETUJUI MENKEU';
+			}
+			$updatepb->bp_pelunasan = $nominal;
 
-		return json_encode('sukses');
+			$updatepb->time_setujukeu = $date;
+			$updatepb->save();
+
+			return json_encode('sukses');
+		});
 	}
 
 	public function indexpusat(){
+			$data['adminbelumdiproses'] = DB::table("bonsem_pengajuan")->whereNull('bp_setujuadmin')->where('bp_setujukacab' , '=' , 'SETUJU')->count();
+			$data['mankeubelumproses'] = DB::table("bonsem_pengajuan")->whereNull('bp_setujukeu')->where('bp_setujukacab' , '=' , 'SETUJU')->count();
+			$data['pencairan'] = DB::table("bonsem_pengajuan")->where('status_pusat' , '=' , 'PENCAIRAN')->count();
+			$data['selesai'] = DB::table("bonsem_pengajuan")->where('status_pusat' , '=' , 'SELESAI')->count();
 
 		$data['pb'] = DB::select("select * from bonsem_pengajuan, cabang where bp_setujukacab = 'SETUJU' and bp_cabang = kode order by bp_id desc");
 

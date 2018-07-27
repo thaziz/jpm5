@@ -30,6 +30,38 @@
   </div>
 </div>
 
+ <div class="wrapper wrapper-content animated fadeInRight">
+   
+    <div class="col-md-2" style="min-height: 100px">
+      <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <h2 style='text-align:center'> <b> {{$data['adminbelumdiproses']}} DATA </b></h2> <h4 style='text-align:center'> Belum di proses Admin Pusat </h4>
+      </div>
+    </div>
+
+    <div class="col-md-2" style="min-height: 100px;min-width:120px" >
+      <div class="alert alert-success alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <h2 style='text-align:center'> <b> {{$data['mankeubelumproses']}} DATA  </b></h2> <h4 style='text-align:center'> Belum di proses Manager Keuangan </h4>
+      </div>
+    </div>
+
+    <div class="col-md-2" style="min-height: 100px">
+      <div class="alert alert-warning alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <h2 style='text-align:center'> <b> {{$data['pencairan']}} DATA  </b></h2> <h4 style='text-align:center'> <br> Proses Transfer  </h4>
+      </div>
+    </div>
+    <div class="col-md-2" style="min-height: 100px">
+      <div class="alert alert-info alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+         <h2 style='text-align:center'> <b> {{$data['selesai']}} DATA  </b></h2> <h4 style='text-align:center'> <br> SELESAI </h4>
+      </div>
+    </div>
+
+
+
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
@@ -57,9 +89,10 @@
                           <th> Cabang </th>
                           <th>Nomor</th>
                           <th>Tanggal</th>
-                          <th>Nominal</th>
-                          <th>Keperluan</th>
-                        
+                          <th> Nominal Cabang </th>
+                          <th> Nominal Admin Pusat </th>
+                          <th> Nominal Mankeu </th>
+                          <th> Status </th>
                           <th> Proses </th>                         
                         </tr>
                       </thead>
@@ -71,8 +104,20 @@
                             <td> {{$bonsem->nama}} </td>
                             <td> {{$bonsem->bp_nota}} </td>
                             <td> {{ Carbon\Carbon::parse($bonsem->bp_tgl)->format('d-m-Y') }} </td>
-                            <td>{{ number_format($bonsem->bp_nominal ,2)}} </td>
-                            <td> {{$bonsem->bp_keperluan}} </td>
+                            <td>{{ number_format($bonsem->bp_nominalkacab ,2)}} </td>
+                            <td style="text-align:right"> @if($bonsem->bp_nominaladmin == null)
+                                  <span class="label label-info"> BELUM DI PROSES </span>
+                                @else
+                                  {{ number_format($bonsem->bp_nominaladmin, 2)}}
+                                @endif
+                            </td>
+                            <td style="text-align:right"> @if($bonsem->bp_nominalkeu == null)
+                                  <span class="label label-info"> BELUM DI PROSES </span>
+                                @else
+                                  {{ number_format($bonsem->bp_nominalkeu, 2)}}
+                                @endif
+                            </td>
+                            <td> <span class="label label-info"> {{$bonsem->status_pusat}} </span> </td>
                           
                             <td style="text-align:center">
                                 @if(Auth::user()->PunyaAkses('Bon Sementara Pusat','aktif'))
@@ -496,7 +541,8 @@ function setujuadmin(id) {
     }
   })
 }
-
+ $('body').removeClass('fixed-sidebar');
+  $("body").toggleClass("mini-navbar");
 
 function addCommas(nStr) {
             nStr += '';
