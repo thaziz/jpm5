@@ -3166,6 +3166,8 @@ public function purchase_order() {
 								);
 							}
 							array_push($datajurnal, $dataakun );
+
+							$totalhutang = floatval($totalhutang) + floatval($hasilppn);
 						}		
 					}
 
@@ -3206,6 +3208,7 @@ public function purchase_order() {
 								);
 							}
 							array_push($datajurnal, $dataakun );
+							$totalhutang = floatval($totalhutang) - floatval($hasilpph);
 						}
 				}
 
@@ -3689,7 +3692,7 @@ public function purchase_order() {
 
 		$data['status'] = [];
 		if($flag == 'PO'){
-		$data['header'] = DB::select("select * from barang_terima , supplier where bt_id = '$id' and bt_supplier = idsup");
+		$data['header'] = DB::select("select * from barang_terima , supplier, mastergudang where bt_id = '$id' and bt_supplier = idsup and bt_gudang = mg_id");
 
 		$data['cabang'] = DB::select("select * from cabang");
 		
@@ -3760,7 +3763,7 @@ public function purchase_order() {
 		
 			$data['cabang'] = DB::select("select * from cabang");
 		
-			$data['header'] = DB::select("select * from barang_terima , supplier where bt_id = '$id' and bt_supplier = idsup");
+			$data['header'] = DB::select("select * from barang_terima , supplier, mastergudang where bt_id = '$id' and bt_supplier = idsup and bt_gudang = mg_id");
 
 			$idgudang = $data['header'][0]->bt_gudang;
 
@@ -3828,7 +3831,7 @@ public function purchase_order() {
 
 			$data['cabang'] = DB::select("select * from cabang");
 		
-			$data['header'] = DB::select("select * from barang_terima , cabang where bt_id = '$id' and bt_agen = kode");
+			$data['header'] = DB::select("select * from barang_terima , cabang, gudang where bt_id = '$id' and bt_agen = kode and bt_gudang = mg_id");
 
 			$idgudang = $data['header'][0]->bt_gudang;
 
@@ -3896,7 +3899,7 @@ public function purchase_order() {
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$id')")); 
 		
-		//dd($data);
+	/*	dd($data);*/
 		return view('purchase/penerimaan_barang/detail_copy', compact('data','jurnal_dt'));
 			
 	}
@@ -4836,32 +4839,14 @@ public function purchase_order() {
 			
 
 			//TANDA TERIMA	
-			$lastidtt = tandaterima::max('tt_idform'); 
-				if(isset($lastidtt)) {
-					$idtt = $lastidtt;
-					$idtt = (int)$idtt + 1;
-				}
-				else {
-					$idtt = 1;
-				}
+			$data_tt = explode("," , $request->inputtandaterima);
 
-			$tandaterima = new tandaterima();
-			$tandaterima->tt_idform = $idtt;
-			$tandaterima->tt_tgl = $request->tgl_po;
-			$tandaterima->tt_idsupplier =$idsup;
-			$tandaterima->tt_totalterima = $netto;
-			$tandaterima->tt_kwitansi = $request->kwitansi;
-			$tandaterima->tt_suratperan = $request->suratperan;
-			$tandaterima->tt_suratjalanasli = $request->suratjalanasli;
-			$tandaterima->tt_noform = $request->notandaterima2;
-			$tandaterima->tt_lainlain = $request->lainlain_tt2;
-			$tandaterima->tt_tglkembali = $request->jatuhtempo_po;
-			$tandaterima->tt_idcabang = $cabang;
-			$tandaterima->tt_nofp = $nofaktur;
-			$tandaterima->save();
+			$update_tt =  DB::table('form_tt_d')
+	                ->where([['ttd_id' , '='  , $data_tt[0]], ['ttd_detail' , '=' , $data_tt[1]]])
+	                ->update([
+	                	'ttd_faktur' => $nofaktur,                                                           
+		            ]);
 
-
-			$idtandaterima = DB::select("select tt_idform from form_tt where tt_nofp = '$nofaktur'");
 			
 
 			$lastid = fakturpembelian::max('fp_idfaktur'); 
@@ -4949,7 +4934,7 @@ public function purchase_order() {
 
 				$fatkurpembeliand->fp_netto = $netto;
 				$fatkurpembeliand->fp_jenisbayar = 2;
-				$fatkurpembeliand->fp_idtt = $idtandaterima[0]->tt_idform;
+				//$fatkurpembeliand->fp_idtt = $idtandaterima[0]->tt_idform;
 				$fatkurpembeliand->fp_comp = $cabang;
 				$fatkurpembeliand->fp_sisapelunasan = $netto;
 				
@@ -6609,7 +6594,7 @@ public function purchase_order() {
 	
 	
 	public function getnotatt(Request $request){
-		$cabang = $request->cabang;
+			$cabang = $request->cabang;
 			//MEMBUAT NOFORMTT	
 			$time = Carbon::now();
 		//	$newtime = date('Y-M-d H:i:s', $time);  
@@ -7139,6 +7124,9 @@ public function kekata($x) {
 		else if($jenisbayar == '5'){ 
 			$data['fpg'] = DB::select("select * from fpg, fpg_cekbank, cabang, masterbank, jenisbayar where idfpg = '$idfpg' and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpgb_id = '$idfpgb' and fpgb_idfpg = idfpg and idfpg = '$idfpg' and fpg_cabang = kode");
 		}
+		else if($jenisbayar == '11'){
+			$data['fpg'] = DB::select("select * from fpg, fpg_cekbank, cabang, masterbank, jenisbayar where idfpg = '$idfpg' and fpg_jenisbayar = idjenisbayar and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpgb_id = '$idfpgb' and fpgb_idfpg = idfpg and idfpg = '$idfpg' and fpg_cabang = kode");
+		}
 	}
 		/*$data['fpgbank'] = DB::select("select * from fpg_cekbank , fpg where fpdb_id = '$idfpgb' and fpgb_idfpg = idfpg and idfpg = '$idfpg' and fpdb_id = '$idfpgb' and fpgb_idfpg = idfpg and idfpg = '$idfpg'");*/
 
@@ -7267,6 +7255,8 @@ public function kekata($x) {
 						'fpgb_posting' => 'DONE',
 					]);
 
+
+
 				$dataallfpg = DB::select("select * from fpg, fpg_cekbank where idfpg = '$idfpg' and fpgb_idfpg = idfpg");
 				for($x = 0; $x < count($dataallfpg); $x++){
 					$done = $dataallfpg[$x]->fpgb_posting;
@@ -7282,6 +7272,7 @@ public function kekata($x) {
 						'fpg_posting' => 'DONE',
 					]);
 				}
+
 
 				$akunhutangdagang2 = $request->hutangdagang[$i];
 				$datajurnal2 = DB::select("select * from d_akun where id_akun = '$akunhutangdagang2'");
@@ -7392,7 +7383,6 @@ public function kekata($x) {
 				);	
 	        }
 	        
-
 			array_push($datajurnal, $dataakun );
     		$key  = 1;
     		for($j = 0; $j < count($datajurnal); $j++){
@@ -7704,7 +7694,7 @@ public function kekata($x) {
 	public function formfpg() {
 		$cabang = session::get('cabang');
 
-		if(Auth::user()->punyaAkses('Konfirmasi Order','all')){
+		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
 			$fpg = DB::select("select * from fpg");
 			$arrfpg = [];
 			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by idfpg desc");
@@ -7907,14 +7897,14 @@ public function kekata($x) {
 				if($idjenisbayar == '2' ){
 
 					if($cabang == 000){
-						$datas['fp'] = DB::select("select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00'  and fp_terimabarang = 'SUDAH' order by fp_idfaktur asc");
+						$datas['fp'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00'  and fp_terimabarang = 'SUDAH' order by fp_idfaktur asc");
 	
-						$datas['fp1'] = DB::select("select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS'  union select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_terimabarang = 'SUDAH' order by fp_idfaktur ASC");
+						$datas['fp1'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00'  and fp_terimabarang = 'SUDAH' order by fp_idfaktur asc");
 					}
 					else{
-						$datas['fp'] = DB::select("select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_terimabarang = 'SUDAH' order by fp_idfaktur asc");
+						$datas['fp'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00'  and fp_terimabarang = 'SUDAH' order by fp_idfaktur asc");
 	
-						$datas['fp1'] = DB::select("select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS'  union select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_terimabarang = 'SUDAH' order by fp_idfaktur ASC");
+						$datas['fp1'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00'  and fp_terimabarang = 'SUDAH' order by fp_idfaktur asc");
 					}
 
 					if(count($request->arrnofaktur) != 0){
@@ -7936,14 +7926,14 @@ public function kekata($x) {
 				else if($idjenisbayar == '6' || $idjenisbayar == '7'  ){
 
 					if($cabang == 000){
-						$datas['fp']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED'" );
+						$datas['fp']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian, form_tt where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED' and tt_idform = ttd_id and ttd_faktur = fp_nofaktur " );
 	
-						$datas['fp1']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED' " );
+						$datas['fp1']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian, form_tt where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED'  and tt_idform = ttd_id and ttd_faktur = fp_nofaktur " );
 					}
 					else{				
-						$datas['fp']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
+						$datas['fp']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian , form_tt where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang' and tt_idform = ttd_id and ttd_faktur = fp_nofaktur" );
 	
-						$datas['fp1']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
+						$datas['fp1']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian , form_tt where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang' and tt_idform = ttd_id and ttd_faktur = fp_nofaktur" );
 					}
 
 					if(count($request->arrnofaktur) != 0){
@@ -7965,14 +7955,14 @@ public function kekata($x) {
 				else if($idjenisbayar == '9'){
 
 					if($cabang == 000){
-						$datas['fp']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED'" );
+						$datas['fp']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian, form_tt where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and tt_idform = ttd_id and ttd_faktur = fp_nofaktur" );
 										
-							$datas['fp1']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' " );
+							$datas['fp1']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian, form_tt where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and tt_idform = ttd_id and ttd_faktur = fp_nofaktur");
 					}
 					else{ 
-						$datas['fp']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
+						$datas['fp']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian , form_tt where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang' and tt_idform = ttd_id and ttd_faktur = fp_nofaktur" );
 						
-						$datas['fp1']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
+						$datas['fp1']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang' and tt_idform = ttd_id and ttd_faktur = fp_nofaktur");
 					}
 
 					if(count($request->arrnofaktur) != 0){
@@ -8049,7 +8039,7 @@ public function kekata($x) {
 				else if($idjenisbayar == '1'){ //GIRO KAS KECIL
 					$datas['fp']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$nosupplier' and ik_comp = kode and ik_status = 'APPROVED'");
 
-					$datas['fp1']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$nosupplier' and ik_comp = kode and ik_status = 'APPROVED'");
+					$datas['fp1']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$nosupplier' and ik_comp = kode and ik_status = 'APPROVED' and ik_pelunasan != 0.00");
 
 					if(count($request->arrnofaktur) != 0){
 						for($i = 0 ; $i < count($datas['fp']); $i++){
@@ -8067,57 +8057,30 @@ public function kekata($x) {
 					}
 
 				}
-					
+				else if($idjenisbayar == '11') {
+					$datas['fp']  = DB::select("select * from bonsem_pengajuan, cabang where  bp_cabang = '$nosupplier' and bp_cabang = kode and bp_setujukeu = 'SETUJU' and bp_pelunasan != 0.00");
 
-			/*if(count($request->arrnofaktur) == 0){
-				if($idjenisbayar == '2' ){
-				$data['fakturpembelian'] = DB::select("select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_terimabarang = 'SUDAH'");
-				
-				}
-				else if($idjenisbayar == '6' || $idjenisbayar == '7'  ){
-					$data['fakturpembelian'] = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
-				}
-				else if($idjenisbayar == '9'){
-					$data['fakturpembelian'] = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
-				}
-				else if($idjenisbayar == '3'){
-					$data['fakturpembelian'] = DB::select("select * from v_hutang, cabang, supplier where v_supplier = '$idsup' and vc_comp = kode and v_supplier = idsup and v_pelunasan != '0.00' and vc_comp = '$cabang' ");
-					
-				}
-				else if($idjenisbayar == '4'){ //uang muka pembelian
-					$data['fakturpembelian'] = DB::select("select * from d_uangmuka, cabang where  um_supplier = '$idsup' and um_comp = kode and um_comp = '$cabang'");
-				}
-				else if($idjenisbayar == '1'){ //GIRO KAS KECIL
-					$data['fakturpembelian'] = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$idsup' and ik_comp = kode and ik_status = 'APPROVED'");
-				}
-			}
-			else {
-				for($i = 0 ; $i < count($request->arrnofaktur); $i++){
-					$nofaktur = $request->arrnofaktur[$i];
-					if($idjenisbayar == '2' ){
-					$data['fakturpembelian'] = DB::select("select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS'   and fp_nofaktur != '$nofaktur'  union select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_terimabarang = 'SUDAH' and fp_nofaktur != '$nofaktur' ");
-					
+					$datas['fp1']  = DB::select("select * from bonsem_pengajuan, cabang where  bp_cabang = '$nosupplier' and bp_cabang = kode and bp_setujukeu = 'SETUJU' and bp_pelunasan != 0.00");
+
+					if(count($request->arrnofaktur) != 0){
+						for($i = 0 ; $i < count($datas['fp']); $i++){
+							for($j = 0; $j < count($request->arrnofaktur); $j++){
+								if($request->arrnofaktur[$j] == $datas['fp'][$i]->bp_nota){
+									unset($datas['fp1'][$i]);
+								}
+							}
+						}
+						$datas['fp1'] = array_values($datas['fp1']);
+           				$data['fakturpembelian'] = $datas['fp1'];
 					}
-					else if($idjenisbayar == '6' || $idjenisbayar == '7'  ){
-						$data['fakturpembelian'] = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang' and fp_nofaktur != '$nofaktur'" );
+					else {
+						$data['fakturpembelian'] = $datas['fp1'];
 					}
-					else if($idjenisbayar == '9'){
-						$data['fakturpembelian'] = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang' and fp_nofaktur != '$nofaktur'" );
-					}
-					else if($idjenisbayar == '3'){
-						$data['fakturpembelian'] = DB::select("select * from v_hutang, cabang, supplier where v_supplier = '$idsup' and vc_comp = kode and v_supplier = idsup and v_pelunasan != '0.00' and vc_comp = '$cabang' and v_nomorbukti != '$nofaktur' ");
-						
-					}
-					else if($idjenisbayar == '4'){ //uang muka pembelian
-						$data['fakturpembelian'] = DB::select("select * from d_uangmuka, cabang where  um_supplier = '$idsup' and um_comp = kode and um_comp = '$cabang' and um_nomorbukti = '$nofaktur");
-					}
-					else if($idjenisbayar == '1'){ //GIRO KAS KECIL
-						$data['fakturpembelian'] = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$idsup' and ik_comp = kode and ik_status = 'APPROVED' and ik_nota = '$nofaktur'");
-					}
-				}
-			}
-						*/
+				}	
+
+			
 		return json_encode($data);
+				
 	}
 
 	public function updatefaktur(Request $request){
@@ -9565,7 +9528,7 @@ public function kekata($x) {
 				$idfp1 = $idfp[$i];		
 				$nofaktur = $request->nofaktur2[$i];
 
-				$data['faktur'][] = DB::select("select * from faktur_pembelian, form_tt where fp_idfaktur = '$idfp1' and fp_idtt = tt_idform ");
+				$data['faktur'][] = DB::select("select * from faktur_pembelian, form_tt, form_tt_d where fp_idfaktur = '$idfp1' and tt_idform = ttd_id and ttd_faktur = fp_nofaktur ");
 				$data['pembayaran'][] = DB::select("select fpg_nofpg as nofpg, fpg_tgl as tgl, fpgdt_pelunasan as pelunasan, fp_nofaktur as nofaktur, fp_idfaktur as idfp from fpg,fpg_dt, faktur_pembelian where fpgdt_idfp ='$idfp1' and fpgdt_idfpg = idfpg and fpgdt_idfp = fp_idfaktur and fpgdt_nofaktur = fp_nofaktur union select bkk_nota as nofpg, bkk_tgl as tgl, bkkd_total as pelunasan, bkkd_ref as nofaktur, fp_idfaktur as idfp from bukti_kas_keluar, bukti_kas_keluar_detail, faktur_pembelian where bkkd_bkk_id = bkk_id and bkkd_ref = '$nofaktur' and bkkd_ref = fp_nofaktur");
 
 				$data['cndn'][] = DB::select("select * from cndnpembelian, cndnpembelian_dt, faktur_pembelian where cndt_idcn = cndn_id  and cndt_idfp = fp_idfaktur and cndt_idfp = '$idfp1' and cndt_idfp = fp_idfaktur");
@@ -9723,6 +9686,37 @@ public function kekata($x) {
 				}
 				array_push($data['perhitunganfaktur'], $perhitunganfaktur);
 			}
+		}
+		else if($jenisbayar == '11'){
+			$idfp = $request->idfp;
+			for($i = 0; $i < count($idfp); $i++){
+				$idfp1 = $idfp[$i];		
+				$nofaktur = $request->nofaktur2[$i];
+
+				$data['faktur'][] = DB::select("select * from bonsem_pengajuan where bp_id = '$idfp1'");
+				$data['pembayaran'][] = DB::select("select fpg_nofpg as nofpg, fpg_tgl as tgl, fpgdt_pelunasan as pelunasan, bp_nota as nofaktur, bp_id as idfp from fpg,fpg_dt, bonsem_pengajuan where fpgdt_idfp ='$idfp1' and fpgdt_idfpg = idfpg and fpgdt_idfp = bp_id and fpgdt_nofaktur = bp_nota union select bkk_nota as nofpg, bkk_tgl as tgl, bkkd_total as pelunasan, bkkd_ref as nofaktur, bp_id as idfp from bukti_kas_keluar, bukti_kas_keluar_detail, bonsem_pengajuan where bkkd_bkk_id = bkk_id and bkkd_ref = '$nofaktur' and bkkd_ref = bp_nota");
+			}
+
+
+			$data['perhitunganfaktur'] = array();
+				$perhitunganfaktur = 0;
+
+			for($kz = 0; $kz < count($data['pembayaran']); $kz++){
+
+				if(count($data['pembayaran'][$kz]) == 0){
+						$perhitunganfaktur = "0.00";
+				}
+				else {
+					for($kf = 0; $kf < count($data['pembayaran'][$kz]); $kf++){
+						$pelunasanfaktur = $data['pembayaran'][$kz][$kf]->pelunasan;
+						$perhitunganfaktur = $perhitunganfaktur + (float)$pelunasanfaktur;
+											
+					}
+
+				}
+				array_push($data['perhitunganfaktur'], $perhitunganfaktur);
+			}
+		
 		}
 
 		return json_encode($data);
@@ -9994,12 +9988,15 @@ public function kekata($x) {
 					$formfpg->fpg_supplier = $kodesupplier;
 					$formfpg->fpg_agen = $datasupplier[0]->no_supplier;
 				}
-				else if($request->jenisbayar == 6 || $request->jenisbayar== 7 || $request->jenisbayar == 9 || $request->jenisbayar == 4 || $request->jenisbayar == 1 || $request->jenisbayar == 3 ){
+				else if($request->jenisbayar == 6 || $request->jenisbayar== 7 || $request->jenisbayar == 9 || $request->jenisbayar == 4 || $request->jenisbayar == 3 ){
 					
 					$explode = explode(",", $request->kodebayar);
 
 					$kodesupplier = $explode[1];
 					$formfpg->fpg_agen = $kodesupplier2;
+				}
+				else {
+					$formfpg->fpg_agen = $cabang;					
 				}
 				
 				$formfpg->fpg_cabang = $cabang;
@@ -10105,13 +10102,47 @@ public function kekata($x) {
 							'um_sisaterpakai' => $sisaterpakai2,
 						]);	
 					}
+					else if($request->jenisbayar == 11){
+						$updatebp = DB::table('bonsem_pengajuan')
+						->where('bp_nota', $request->nofaktur[$i])
+						->update([
+							'bp_pelunasan' => $sisafaktur,
+							'status_pusat' => 'PENCAIRAN'
+						]);	
+					}
 
 				
 					
 
 				}
 			}
-				//SIMPAN CHECK
+
+				if($request->jenisbayarbank == 'INTERNET BANKING') {
+
+					$formfpg_bank = new formfpg_bank();
+					$lastidfpg_bank =  formfpg_bank::max('fpgb_id');;
+					if(isset($lastidfpg_bank)) {
+							$idfpg_bank = $lastidfpg_bank;
+							$idfpg_bank = (int)$idfpg_bank + 1;
+					}
+					else {
+							$idfpg_bank = 1;
+					} 
+
+					$nominalbank =  str_replace(',', '', $request->nominalbank);
+
+					$formfpg_bank->fpgb_idfpg = $idfpg;
+					$formfpg_bank->fpgb_id = $idfpg_bank;
+					$formfpg_bank->fpgb_kodebank = $idbank;
+					$formfpg_bank->fpgb_jenisbayarbank = $request->jenisbayarbank;
+					$formfpg_bank->fpgb_nominal = $nominalbank;
+					$formfpg_bank->fpgb_cair = 'IYA';
+					$formfpg_bank->fpgb_setuju = 'SETUJU';
+					$formfpg_bank->save();
+
+				}
+				else {
+					//SIMPAN CHECK
 				for($j=0; $j < count($request->noseri); $j++){
 					$formfpg_bank = new formfpg_bank();
 
@@ -10134,7 +10165,7 @@ public function kekata($x) {
 					$formfpg_bank->fpgb_jenisbayarbank = $request->jenisbayarbank;
 
 
-					if( $request->jenisbayarbank == 'TF'){
+					if($request->jenisbayarbank == 'TF'){
 						$formfpg_bank->fpgb_norekening = $request->norekening;
 						$formfpg_bank->fpgb_norekening = $request->namabank;
 
@@ -10153,6 +10184,7 @@ public function kekata($x) {
 					if($request->jenisbayar != 7){
 						$formfpg_bank->fpgb_jatuhtempo = $request->jatuhtempo[0];
 					}
+
 					$formfpg_bank->fpgb_nominal = $nominalbank;
 					$formfpg_bank->fpgb_cair = 'IYA';
 					$formfpg_bank->fpgb_setuju = 'SETUJU';
@@ -10169,6 +10201,10 @@ public function kekata($x) {
 					 	'mbdt_tglstatus' => $time
 				 	]);			 		 
 				}
+				}
+
+
+				
 
 				$nofpg = $request->nofpg;
 				
