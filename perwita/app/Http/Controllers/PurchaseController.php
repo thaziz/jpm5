@@ -9749,7 +9749,7 @@ public function kekata($x) {
 			$data['isi'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF' ");
 		}
 		elseif($idjenis == '6'){ //BIAYA AGEN / VENDOR
-			$data['isi'] = DB::select("select kode, nama from agen where kategori = 'AGEN DAN OUTLET' union select kode,nama from vendor");
+			$data['isi'] = DB::select("select kode, nama from agen where kategori = 'AGEN DAN OUTLET' or kategori = 'AGEN' or kategori = 'OUTLET' union select kode,nama from vendor");
 
 		}
 		elseif($idjenis == '7'){ // OUTLET
