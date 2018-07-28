@@ -312,7 +312,7 @@ class loadingController extends Controller
 											'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 											'jr_detail' => $jenis_bayar->jenisbayar,
 											'jr_ref'  	=> $request->no_trans,
-											'jr_note'  	=> 'BIAYA PENERUS KAS LOADING/UNLOADING',
+											'jr_note'  	=> 'BIAYA PENERUS KAS LOADING/UNLOADING '.strtoupper($request->note),
 											'jr_insert' => carbon::now(),
 											'jr_update' => carbon::now(),
 											]);
@@ -716,7 +716,7 @@ class loadingController extends Controller
 											'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 											'jr_detail' => $jenis_bayar->jenisbayar,
 											'jr_ref'  	=> $request->no_trans,
-											'jr_note'  	=> 'BIAYA PENERUS KAS',
+											'jr_note'  	=> 'BIAYA PENERUS KAS '.strtoupper($request->note),
 											'jr_insert' => carbon::now(),
 											'jr_update' => carbon::now(),
 											]);
