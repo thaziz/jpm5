@@ -150,7 +150,7 @@ class PurchaseController extends Controller
 	public function spp_index () {
 		$cabang = session::get('cabang');
 
-		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
+		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','aktif')){
 			$data['spp'] = DB::select("select * from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode order by spp_id desc");
 
 			$data['belumdiproses'] = DB::table("spp")->where('spp_status' , '=' , 'DITERBITKAN')->count();
@@ -913,7 +913,7 @@ class PurchaseController extends Controller
 		$cabang = session::get('cabang');
 
 
-		if(Auth::user()->punyaAkses('Konfirmasi Order','all')){
+		if(Auth::user()->punyaAkses('Konfirmasi Order','aktif')){
 			$data['co']=DB::select("select * from confirm_order, spp where co_idspp = spp_id order by co_id desc");
 
 		}
@@ -1249,7 +1249,7 @@ public function purchase_order() {
 
 		$cabang = session::get('cabang');
 
-		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
+		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','aktif')){
 			$data['po'] = DB::select("select * from pembelian_order, supplier, cabang where po_supplier = idsup and po_cabang = kode  and po_statusreturn = 'AKTIF' order by po_id desc");
 			$data['spp'] = DB::select("select * from  spp, supplier, cabang, confirm_order, confirm_order_tb where co_idspp = spp_id and co_mng_pem_approved = 'DISETUJUI' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup  and cotb_setuju = 'BELUM DI SETUJUI'");
 
