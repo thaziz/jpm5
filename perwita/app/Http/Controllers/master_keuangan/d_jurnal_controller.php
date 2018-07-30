@@ -96,12 +96,7 @@ class d_jurnal_controller extends Controller
 
                 $ref =  ($jr) ? (substr($jr->jr_ref, 12) + 1) : 1;
                 $ref = "TKM-".date("d")."/".date("my")."/".str_pad($ref, 3, '0', STR_PAD_LEFT);
-
-
-                $jr_no = ($jr) ? (substr($jr->jr_no, 11) + 1) : 1;
-                $jr_no = "KM-".date("d")."/".date("my")."/".str_pad($jr_no, 4, '0', STR_PAD_LEFT);
-
-                // return json_encode($ref." __ ".$jr_no);
+                $jr_no = get_id_jurnal('KK');
 
             }
             else{
