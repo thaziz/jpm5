@@ -308,25 +308,52 @@ class posting_pembayaran_Controller extends Controller
           }
 
         }else{
-          return$kwitansi = DB::table('kwitansi')
-                    ->select('k_nomor as nomor','k_tanggal as tanggal','k_netto as total_net')
+          $kwitansi = DB::table('kwitansi')
+                    ->select('k_nomor','k_tanggal','k_netto')
                     ->where('k_kode_cabang',$request->cabang)
                     ->where('k_nomor_posting','=',null)
                     ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
                     ->get();
 
           $do = DB::table('delivery_order')
-                    ->select('nomor','tanggal','total_net')
+                    ->select('nomor as k_nomor','tanggal as k_tanggal','total_net as k_netto')
                     ->join('d_jurnal','nomor','=','jr_ref')
                     ->where('kode_cabang',$request->cabang)
                     ->where('posting','=',null)
                     ->get();
 
-          $data = array_merge($kwitansi,$do);
+          $kwitansi_edit = DB::table('kwitansi')
+                            ->select('k_nomor','k_nomor','k_netto')
+                            ->whereIn('k_nomor',$request->nomor)
+                            ->get();
 
+          $do_edit = DB::table('delivery_order')
+                            ->select('nomor as k_nomor','tanggal as k_tanggal','total_net as k_netto')
+                            ->whereIn('nomor',$request->nomor)
+                            ->get();
 
+          $temp = array_merge($kwitansi,$do,$kwitansi_edit,$do_edit);
+
+          $temp1 = $temp;
+
+          if (isset($request->array_simpan)) {
+
+              for ($i=0; $i < count($temp1); $i++) { 
+                  for ($a=0; $a < count($request->array_simpan); $a++) { 
+                      if ($request->array_simpan[$a] == $temp1[$i]->k_nomor) {
+                          unset($temp[$i]);
+                      }
+                      
+                  }
+              }
+              $temp = array_values($temp);
+              $data = $temp;
+              
+          }else{
+
+              $data = $temp;
+          }
         }
-        
         return view('sales.posting_pembayaran.table_kwitansi',compact('data'));
     }   
 
