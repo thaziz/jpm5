@@ -120,7 +120,7 @@
                           <tr>
                             <td> Kode Bank </td>
                             <td>
-                              <select class="form-control kodebank">
+                              <select class="form-control kodebank chosen-select">
                                <option value=""> Pilih Data Bank</option>
 
                                 @foreach($data['bank'] as $bank)
@@ -218,6 +218,7 @@
                                   <div class="tabs-container">
                                       <ul class="nav nav-tabs" id="tabmenu">
                                           <li class="active" id="tabcekbg"><a data-toggle="tab" href="#tab-1"> Detail Cek / BG </a></li>
+                                          <li class="" id="tabcekbgakun"><a data-toggle="tab" href="#tab-3"> Cek / BG & Akun </a></li>
                                           <li class="" id="tabbiaya"><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
                                       </ul>
                                       <div class="tab-content">
@@ -370,6 +371,97 @@
                                                         <th> D / K </th>
                                                         <th> Nominal </th>
                                                         <th> Keterangan </th>
+                                                        <th> Aksi </th>
+                                                      </tr>
+                                                    </table>
+                                                   </div>
+                                              </div>
+                                          </div>
+                                          <div id="tab-3" class="tab-pane">
+                                              <div class="panel-body">
+                                                  <div class="row">
+                                                  <div class="col-sm-6">
+                                                    <table class="table">
+                                                      <tr>
+                                                        <th> Acc Biaya </th>
+                                                        <td>
+                                                            <div class="col-sm-12">
+                                                            <select class="chosen-select-width form-control akun biayabg accbiayaakun">
+                                                               <option value="">
+                                                                Pilih Akun 
+                                                              </option>
+
+                                                              @foreach($data['akun'] as $akun)
+                                                              <option value="{{$akun->id_akun}},{{$akun->akun_dka}}">
+                                                               {{$akun->id_akun}} - {{$akun->nama_akun}}
+                                                              </option>
+                                                              @endforeach
+                                                             </select>
+                                                             </div>
+                                                        </td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <th> D / K </th>
+                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk biayabg" readonly=""> </div> </td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <th> Jumlah </th>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount biayabg jumlahakunbg" style="text-align: right jumlahakunbiaya"> </div> </td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <th> Keterangan </th>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  keteranganakunbg biayabg"> </div> </td>
+                                                      </tr>
+                                                    </table>
+                                                  </div>
+                                                  
+                                                  <div class="col-sm-6">
+                                                    <table class="table">
+                                                      <tr>
+                                                          <th> No Check / BG </th>
+                                                              <td> <input type="text" class="input-sm form-control nocheck biayabg checkakunbg" type="button" data-toggle="modal" data-target="#myModal2">  </td>
+                                                          </tr>
+
+                                                          <tr>
+                                                              <th> No FPG </th>
+                                                              <td> <input type='text' class='input-sm form-control jatuhtempo biayabg nofpgakunbgbiaya' readonly="" name="fpg_jatuhtempo"> </td>
+                                                          </tr>
+
+                                                          <tr>
+                                                            <th> Nominal </th>
+                                                            <td> <input type='text' class='input-sm form-control nominalakunbiaya biayabg' name="fpg_nominal" readonly="" style='text-align: right'> </td>
+                                                          </tr>
+
+                                                          <tr>
+                                                            <th> Keterangan </th>
+                                                            <td> <input type='text' class='input-sm form-control keteranganakuniayafpg biayabg' name="fpg_keterangan" readonly=""> </td>
+                                                          </tr>
+                                                    </table>
+                                                  </div>
+                                                  </div>
+                                                
+
+                                                   <div class="text-left">
+                                                      <a class='btn btn-sm btn-info' id="tmbhdatabgakun"> <i class="fa fa-plus"> </i> Tambah Data </a>
+                                                   </div>
+
+                                                   <br>
+                                                   <br>
+                                                   <div class="col-sm-12">
+                                                    <table class='table table-stripped table-bordered' id="tbl-biayaakun">
+                                                      <tr>
+                                                        <th> No </th>
+                                                        <th> No Bukti </th> 
+                                                        <th> Acc Bank </th>
+                                                        <th> D / K </th>
+                                                        <th> Nominal </th>
+                                                        <th> Keterangan Akun </th>
+                                                        <th> No FPG </th>
+                                                        <th> Nominal </th>
+                                                        <th> Keterangan FPG </th>
                                                         <th> Aksi </th>
                                                       </tr>
                                                     </table>
@@ -618,8 +710,13 @@
     }).datepicker("setDate", "0");;
     
     $('.nocheck').click(function(){
-        kodebank = $('.kodebank').val();
+          kodebank = $('.kodebank').val();
          $('.loading').css('display', 'block');
+
+         if(kodebank == ''){
+          toastr.info("Mohon pilih data bank :) ");
+          return false;
+         }
 
          arrtransaksi = [];
         $('.transaksi').each(function(){
@@ -830,6 +927,7 @@
         }).toArray();
 
         $('#tabbiaya').addClass('disabled');
+        $('#tabcekbgakun').addClass('disabled');
 
         $('.loadingcek').css('display' , 'block');
          data = checked;
@@ -934,6 +1032,7 @@
           $('.valkodebank').val(kodecabang);
 
           $('#tabcekbg').addClass('disabled');
+          $('#tabcekbgakun').addClass('disabled');
 
           if(flag == 'CEKBG'){
             toastr.info("Anda sudah mengisi form 'CEK BG' mohon untuk dilanjutkan :)");

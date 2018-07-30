@@ -65,7 +65,8 @@
                           <th>Keperluan</th>
                           <th> Status </th>
                           <th> Proses </th>
-                          <th> Aksi </th>                      
+                          <th> Terima Uang </th>
+                          <th> Aksi </th>                    
                         </tr>
                       </thead>
                       <tbody>
@@ -91,6 +92,12 @@
                               @endif
 
                              </td>
+
+                             <td> @if(Auth::user()->PunyaAkses('Bon Sementara Kabang','aktif'))
+                                    @if($bonsem->bp_pelunasan == '0.00') 
+                                  <button class="btn btn-sm btn-danger"> <i class="fa fa-money"> </i> Terima Uang ? </button> </td>
+                                    @endif
+                                  @endif
                              <td>
                                @if(Auth::user()->PunyaAkses('Bon Sementara Cabang','aktif'))
                                 @if($bonsem->bp_setujukacab != 'SETUJU')
@@ -99,6 +106,7 @@
                                 @endif
                                 @endif
                               </td>
+
                             </tr>
                           @endforeach
                       </tbody>
