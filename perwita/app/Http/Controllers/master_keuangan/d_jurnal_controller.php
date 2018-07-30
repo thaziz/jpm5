@@ -92,14 +92,15 @@ class d_jurnal_controller extends Controller
 
        if($request->type_transaksi == "kas"){
             if($request->jenis_transaksi == 1){
-                $try =  (DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKM")->orderBy('jr_insert', 'desc')->first()) ? substr(DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKM")->orderBy('jr_insert', 'desc')->first()->jr_ref, 13) : 0;
-                $ref = "TKM".date("my")."/".date("d")."/00".($try+1);
+                $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKM")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
 
-                // return json_encode(($try+1));
+                $ref =  ($jr) ? (substr($jr->jr_ref, 12) + 1) : 1;
+                $ref = "TKM-".date("d")."/".date("my")."/".str_pad($ref, 3, '0', STR_PAD_LEFT);
+                $jr_no = get_id_jurnal('KK');
+
             }
             else{
-                $try =  (DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKK")->orderBy('jr_insert', 'desc')->first()) ? substr(DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKK")->orderBy('jr_insert', 'desc')->first()->jr_ref, 13) : 0;
-                $ref = "TKK".date("my")."/".date("d")."/00".($try+1);
+               return json_encode("null");
             }
        }
 
@@ -110,6 +111,8 @@ class d_jurnal_controller extends Controller
         $jurnal->jr_detail = $request->jr_detail;
         $jurnal->jr_ref = $ref;
         $jurnal->jr_note = $request->jr_note;
+        $jurnal->jr_no = $jr_no;
+        $jurnal->jr_on_proses = 2;
 
         // $jurnal->save();
 
