@@ -1532,7 +1532,7 @@ $(document).on("click","#btnsimpan_tambah",function(){
         //VALUE DATA 
         var value = {
             pendapatan: $("select[name='pendapatan']").val(),
-            asal: $("select[name='do_kota_asal']").val(),
+            kota_asal: $("select[name='do_kota_asal']").val(),
             tujuan: $("select[name='do_kota_tujuan']").val(),
             tipe: $("select[name='type_kiriman']").val(),
             tujuan: $("select[name='do_kota_tujuan']").val(),
@@ -1665,5 +1665,7 @@ $(document).on("click","#btnsimpan_tambah",function(){
     })
 
 
+ //replace nomor do ketika spasi dan tab
+    // $()
 </script>
 @endsection
