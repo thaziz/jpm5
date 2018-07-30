@@ -25,20 +25,12 @@ use Yajra\Datatables\Datatables;
 class ikhtisarController extends Controller
 {
 	public function index(){
-		$cabang = Auth::user()->kode_cabang;
-		if (Auth::user()->punyaAkses('Ikhtisar Kas','all')) {
-			$data = DB::table('ikhtisar_kas')
-				  ->join('cabang','kode','=','ik_comp')
-				  ->get();
-		}else{
-			$data = DB::table('ikhtisar_kas')
-				  ->join('cabang','kode','=','ik_comp')
-				  ->where('ik_comp',$cabang)
-				  ->get();
-		}
+		$cabang = DB::table('cabang')
+                  ->get();
+	
 		
 
-		return view('purchase.ikhtisar_kas.indexIkhtisar',compact('data'));
+		return view('purchase.ikhtisar_kas.indexIkhtisar',compact('cabang'));
 	}
 
 	public function kekata($x) {
@@ -94,46 +86,63 @@ class ikhtisarController extends Controller
 	    return $hasil;
 	}
 
-	public function datatable_ikhtisar()
-    {
-        $cabang = auth::user()->kode_cabang;
-        if (Auth::user()->punyaAkses('Ikhtisar Kas','all')) {
-            $data = DB::table('ikhtisar_kas')
-                      ->join('cabang','kode','=','ik_comp')
-                      ->get();
-        }else{
-            $data = DB::table('ikhtisar_kas')
+	public function append_table(request $req)
+	{
+		$cab = $req->cabang;
+		return view('purchase.ikhtisar_kas.tabel_ik',compact('cab'));
+	}
+
+	public function datatable_ikhtisar(Request $req)
+    {	
+    	$nama_cabang = DB::table("cabang")
+						 ->where('kode',$req->cabang)
+						 ->first();
+
+		if ($nama_cabang != null) {
+			$cabang = 'and ik_comp = '."'$req->cabang'";
+		}else{
+			$cabang = '';
+		}
+
+
+		if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
+			$sql = "SELECT * FROM ikhtisar_kas  join cabang on kode = ik_comp where ik_nota != '0' $cabang";
+			$data = DB::select($sql);
+		}else{
+			$cabang = Auth::user()->kode_cabang;
+			$data = DB::table('ikhtisar_kas')
                       ->join('cabang','kode','=','ik_comp')
                       ->where('ik_comp',$cabang)
                       ->get();
-        }
+		}
 
         $data = collect($data);
+
         // return $data;
         return Datatables::of($data)
             ->addColumn('aksi', function ($data) {
-
-                if(Auth::user()->punyaAkses('Ikhtisar Kas','ubah')){
-                    if(cek_periode(carbon::parse($data->created_at)->format('m'),carbon::parse($data->created_at)->format('Y') ) != 0){
-                      $a = '<a title="Edit" class="btn btn-success" href='.url('ikhtisar_kas/edit').'/'.$data->ik_id.'><i class="fa fa-arrow-right" aria-hidden="true"></i></a>';
-                    }
-                }else{
-                  $a = '';
+            	$a = '';
+                if(Auth::user()->punyaAkses('Ikhtisar Kas','ubah') or $data->ik_edit == 'ALLOWED'){
+                	if ($data->ik_status == 'RELEASED') {
+                		if(cek_periode(carbon::parse($data->created_at)->format('m'),carbon::parse($data->created_at)->format('Y') ) != 0){
+	                      $a = '<a title="Edit" class="btn btn-success" href='.url('ikhtisar_kas/edit').'/'.$data->ik_id.'><i class="fa fa-arrow-right" aria-hidden="true"></i></a>';
+	                    }
+                	}
                 }
 
                 
 
                 $c = '';
                 if(Auth::user()->punyaAkses('Ikhtisar Kas','hapus')){
-                	if ($data->ik_status == 'Released' ) {
+                	if ($data->ik_status == 'RELEASED' ) {
                 		if(cek_periode(carbon::parse($data->created_at)->format('m'),carbon::parse($data->created_at)->format('Y') ) != 0){
-	                      $c = '<a title="Hapus" class="btn btn-success" onclick="hapus(\''.$data->ik_id.'\')">
+	                      $c = '<a title="Hapus" class="btn btn-danger" onclick="hapus(\''.$data->ik_id.'\')">
 	                              <i class="fa fa-trash" aria-hidden="true"></i></a>';
 	                    }
                 	}
                     
                 }
-                return $a.$c  ;
+                return '<div class="btn-group">'. $a.$c .'</div>' ;
                        
             })->addColumn('print', function ($data) {
 
@@ -148,11 +157,17 @@ class ikhtisarController extends Controller
                 return carbon::parse($data->created_at)->format('d/m/Y');
             })->addColumn('editing', function ($data) {
 
-                if ($data->ik_edit == 'UNALLOWED') {
-                	return '<input type="checkbox" class="editing" checked>';
+                if(Auth::user()->punyaAkses('Ikhtisar Kas','ubah')){
+                	if ($data->ik_edit == 'UNALLOWED') {
+	                	return '<input type="checkbox" class="editing" checked>';
+	                }else{
+	                	return '<input type="checkbox" class="editing" >';
+	                }
                 }else{
-                	return '<input type="checkbox" class="editing" >';
+                	return '-';
                 }
+
+                
             })
             ->addIndexColumn()
             ->make(true);
@@ -503,11 +518,45 @@ class ikhtisarController extends Controller
 				}
 				$debet = array_sum($debet);
 				// return $request->checker;
+				$user = Auth::user()->m_name;
 
+				if (Auth::user()->m_name == null) {
+					return response()->json([
+						'status'=>1,
+						'message'=>'Nama User Anda Belum Ada, Silahkan Hubungi Pihak Terkait'
+					]);
+				}
+
+			    $cari_nota = DB::table('bukti_kas_keluar')
+							   ->where('bkk_nota',$request->no_trans)
+							   ->first();
+				if ($cari_nota != null) {
+					if ($cari_nota->updated_by == $user) {
+						return 'Data Sudah Ada';
+					}else{
+						$bulan = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('m');
+					    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
+
+					    $cari_nota = DB::select("SELECT  substring(max(ik_nota),12) as id from ikhtisar_kas
+					                                    WHERE ik_comp = '$req->cabang'
+					                                    AND to_char(ik_tanggal,'MM') = '$bulan'
+					                                    AND to_char(ik_tanggal,'YY') = '$tahun'
+					                                    ");
+
+					    $index = (integer)$cari_nota[0]->id + 1;
+					    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
+
+						$nota = 'IK' . $bulan . $tahun . '/' . $req->cabang . '/' .$index;
+
+					}
+				}elseif ($cari_nota == null) {
+					$nota = $request->ik;
+				}
+	 
 				$save_ikhtisar = DB::table('ikhtisar_kas')
 								   ->insert([
 								   		'ik_id'   		=> $id,
-								   		'ik_nota' 		=> $request->ik,
+								   		'ik_nota' 		=> $nota,
 								   		'ik_tgl_awal'  	=> $start,
 								   		'ik_tgl_akhir' 	=> $end,
 								   		'ik_keterangan' => $request->Keterangan,
@@ -518,55 +567,59 @@ class ikhtisarController extends Controller
 								   		'ik_status'		=> 'RELEASED',
 								   		'created_at'	=> Carbon::now(),
 								   		'updated_at'	=> Carbon::now(),
+								   		'ik_tanggal'	=> Carbon::parse(str_replace('/','-',$request->tanggal))->format('Y-m-d'),
 								   		'ik_akunhutang' => $acchutang,
+								   		'created_by'	=> Auth::user()->m_name,
+								   		'updated_by'	=> Auth::user()->m_name
 								]);
 				for ($i=0; $i < count($cari_id); $i++) { 
 
-						$ikd = DB::table('ikhtisar_kas_detail')
-						->max('ikd_id');
+					$ikd = DB::table('ikhtisar_kas_detail')
+					->max('ikd_id');
 
 
-						if ($ikd != null) {
-							$ikd += 1;
-						}else{
-							$ikd = 1;
-						}
+					if ($ikd != null) {
+						$ikd += 1;
+					}else{
+						$ikd = 1;
+					}
 
-						$save_ikhtisar = DB::table('ikhtisar_kas_detail')
-								   ->insert([
-								   		'ikd_id'   		=> $ikd,
-								   		'ikd_ik_id'   	=> $id,
-								   		'ikd_pc_id'   	=> $cari_id[$i][0]->pc_id,
-								   		'ikd_ik_dt'   	=> $i+1,
-								   		'ikd_ref' 		=> $cari_id[$i][0]->pc_no_trans,
-								   		'ikd_akun' 		=> $cari_id[$i][0]->pc_akun,
-								   		'ikd_nominal'  	=> $cari_id[$i][0]->pc_kredit,
-								   		'ikd_keterangan'=> $cari_id[$i][0]->pc_keterangan,
-								   		'ikd_acc_hutang'=> $cari_id[$i][0]->pc_akun,
-								   		'created_at'	=> Carbon::now(),
-								   		'updated_at'	=> Carbon::now()
+					$save_ikhtisar = DB::table('ikhtisar_kas_detail')
+							   ->insert([
+							   		'ikd_id'   		=> $ikd,
+							   		'ikd_ik_id'   	=> $id,
+							   		'ikd_pc_id'   	=> $cari_id[$i][0]->pc_id,
+							   		'ikd_ik_dt'   	=> $i+1,
+							   		'ikd_ref' 		=> $cari_id[$i][0]->pc_no_trans,
+							   		'ikd_akun' 		=> $cari_id[$i][0]->pc_akun,
+							   		'ikd_nominal'  	=> $cari_id[$i][0]->pc_kredit,
+							   		'ikd_keterangan'=> $cari_id[$i][0]->pc_keterangan,
+							   		'ikd_acc_hutang'=> $cari_id[$i][0]->pc_akun,
+							   		'created_at'	=> Carbon::now(),
+							   		'updated_at'	=> Carbon::now(),
+							   		
+							]);
+
+					$update = DB::table('patty_cash')
+								->where('pc_id',$request->id[$i])
+							    ->update([
+							   		'pc_reim'       => 'RELEASED',
+							   		'updated_at'	=> Carbon::now()
 								]);
 
-						$update = DB::table('patty_cash')
-									->where('pc_id',$request->id[$i])
-								    ->update([
-								   		'pc_reim'       => 'RELEASED',
-								   		'updated_at'	=> Carbon::now()
-									]);
-
-						$cari_bp = DB::table('patty_cash')
-								->where('pc_id',(int)$request->id[$i])
-								->first();
-					
-						if($cari_bp->pc_ref == 10){
-							// return 'asd';
-							$updt_bk = DB::table('biaya_penerus_kas')
-									 ->where('bpk_nota',$cari_bp->pc_no_trans)
-									 ->update([
-									 	'bpk_status'    => 'Approved',
-									   	'updated_at'	=> Carbon::now()
-									 ]);
-						}
+					$cari_bp = DB::table('patty_cash')
+							->where('pc_id',(int)$request->id[$i])
+							->first();
+				
+					if($cari_bp->pc_ref == 10){
+						// return 'asd';
+						$updt_bk = DB::table('biaya_penerus_kas')
+								 ->where('bpk_nota',$cari_bp->pc_no_trans)
+								 ->update([
+								 	'bpk_status'    => 'Approved',
+								   	'updated_at'	=> Carbon::now()
+								 ]);
+					}
 
 					
 				}
@@ -614,7 +667,7 @@ class ikhtisarController extends Controller
 									->where('pc_id',(int)$request->id_pc[$i])
 								    ->update([
 								   		'pc_reim'       => 'UNRELEASED',
-								   		'updated_at'	=> Carbon::now()
+								   		'updated_at'	=> Carbon::now(),
 									]);
 
 					$cari_bp = DB::table('patty_cash')
@@ -626,7 +679,8 @@ class ikhtisarController extends Controller
 								 ->where('bpk_nota',$cari_bp->pc_no_trans)
 								 ->update([
 								 	'bpk_status'    => 'Released',
-								   	'updated_at'	=> Carbon::now()
+								   	'updated_at'	=> Carbon::now(),
+					   				'updated_by'	=> Auth::user()->m_name
 								 ]);
 					}
 
@@ -669,7 +723,9 @@ class ikhtisarController extends Controller
 					   	 ->update([
 					   	 	'ik_status' 	=> $status,
 					   	 	'ik_keterangan' => $request->Keterangan,
-					   	 	'ik_total' => $harga
+					   	 	'ik_total' 		=> $harga,
+					   		'updated_by'	=> Auth::user()->m_name,
+							'updated_at'	=> Carbon::now(),
 					   	 ]);
 			// return $val;		   	 
 			if (in_array('on', $val)) {
@@ -699,19 +755,20 @@ class ikhtisarController extends Controller
 									->where('pc_id',$cari[$i]->ikd_pc_id)
 								    ->update([
 								   		'pc_reim'       => 'UNRELEASED',
-								   		'updated_at'	=> Carbon::now()
+								   		'updated_at'	=> Carbon::now(),
 									]);
 
 				$cari_bp = DB::table('patty_cash')
 								->where('pc_id',(int)$cari[$i]->ikd_pc_id)
 								->first();
-					
+						
 					if($cari_bp->pc_ref == 10){
 						$updt_bk = DB::table('biaya_penerus_kas')
 								 ->where('bpk_nota',$cari_bp->pc_no_trans)
 								 ->update([
 								 	'bpk_status'    => 'Released',
-								   	'updated_at'	=> Carbon::now()
+								   	'updated_at'	=> Carbon::now(),
+					   				'updated_by'	=> Auth::user()->m_name
 								 ]);
 					}
 			}
@@ -747,19 +804,20 @@ class ikhtisarController extends Controller
 
 		public function nota(request $req)
 		{
-			$bulan = Carbon::now()->format('m');
-		    $tahun = Carbon::now()->format('y');
+			$bulan = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('m');
+		    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
 
 		    $cari_nota = DB::select("SELECT  substring(max(ik_nota),12) as id from ikhtisar_kas
 		                                    WHERE ik_comp = '$req->cabang'
-		                                    AND to_char(created_at,'MM') = '$bulan'
-		                                    AND to_char(created_at,'YY') = '$tahun'");
+		                                    AND to_char(ik_tanggal,'MM') = '$bulan'
+		                                    AND to_char(ik_tanggal,'YY') = '$tahun'
+		                                    ");
 
 		    $index = (integer)$cari_nota[0]->id + 1;
 		    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
 
 			
-			$nota = 'RB' . $bulan . $tahun . '/' . $req->cabang . '/' .$index;
+			$nota = 'IK' . $bulan . $tahun . '/' . $req->cabang . '/' .$index;
 
 			return response()->json(['nota'=>$nota]);		
 		}

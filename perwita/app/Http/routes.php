@@ -440,6 +440,8 @@ Route::post('ikhtisar_kas/update', 'ikhtisarController@update');
 Route::get('ikhtisar_kas/hapus/{id}', 'ikhtisarController@hapus');
 Route::get('ikhtisar_kas/print/{id}', 'ikhtisarController@cetak');
 Route::get('ikhtisar_kas/datatable_ikhtisar', 'ikhtisarController@datatable_ikhtisar')->name('datatable_ikhtisar');
+Route::get('ikhtisar_kas/print/{id}', 'ikhtisarController@cetak');
+Route::get('ikhtisar_kas/append_table', 'ikhtisarController@append_table');
 
 
 

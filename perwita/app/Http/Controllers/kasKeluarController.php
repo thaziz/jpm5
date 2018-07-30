@@ -97,7 +97,6 @@ class kasKeluarController extends Controller
 	public function append_table(request $req)
 	{
 		$cab = $req->cabang;
-		$jenisbayar = $req->jenis_bayar;
 		return view('purchase.buktikaskeluar.table_index',compact('cab','jenisbayar'));
 	}
 	public function datatable_bkk(request $req)

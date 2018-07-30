@@ -232,6 +232,11 @@
         -webkit-print-color-adjust: exact;
     }
     } 
+    .pembungkus1{
+      border-right: 1px solid black;
+      border-left:  1px solid black;
+      border-bottom: 1px solid black;
+    }
 </style>
 <body>
  <div class="wrapper">
@@ -444,11 +449,15 @@
            <td class="textright">  {{number_format($data['judul'][0]->fp_netto, 2)}} </td>
           </tr>
          </table>
+          
        </td>
        <td class="top"></td>
      </tr>
    </table>
  </div>
+          <div class="pembungkus1" style="height:100px;">
+            1111
+          </div>
 </div>
 
      
