@@ -803,7 +803,9 @@ var index_um = 0;
 $('.ed_tanggal').datepicker({
     format:'dd/mm/yyyy',
     endDate:'today'
-})
+}).on('changeDate', function (ev) {
+    nota_kwitansi();
+});
 
 var config1 = {
                    '.chosen-select'           : {},
@@ -879,11 +881,11 @@ var table_data_biaya = $('#table_data_biaya').DataTable({
 //mengganti nota kwitansi
 function nota_kwitansi() {
     var cb_cabang = $('.cb_cabang').val();
-    console.log(cb_cabang);
+    var tanggal = $('.ed_tanggal').val();
 
     $.ajax({
         url:baseUrl + '/sales/nota_kwitansi',
-        data:{cb_cabang},
+        data:{cb_cabang,tanggal},
         dataType:'json',
         success:function(response){
             $('#nota_kwitansi').val(response.nota);

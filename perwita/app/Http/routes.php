@@ -1613,6 +1613,7 @@ Route::get('sales/lihat_invoice/{i}', 'sales\invoice_Controller@lihat_invoice');
 Route::get('sales/hapus_invoice', 'sales\invoice_Controller@hapus_invoice');
 Route::get('sales/cetak_nota/{id}', 'sales\invoice_Controller@cetak_nota');
 Route::get('sales/drop_cus', 'sales\invoice_Controller@drop_cus');
+Route::get('sales/invoice/append_table', 'sales\invoice_Controller@append_table');
 
 Route::get('sales/invoice_form/tabel_data_detail', 'sales\invoice_Controller@table_data_detail');
 Route::get('sales/invoice/tabel', 'sales\invoice_Controller@table_data');
