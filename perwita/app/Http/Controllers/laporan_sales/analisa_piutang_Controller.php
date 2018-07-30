@@ -64,6 +64,7 @@ class analisa_piutang_Controller extends Controller
                             ->get();
             array_push($tgl_jthtempo_now_push, $tgl_jthtempo_now);
 
+            $tgl_jthtempo_now_push;
 
             $saldoawal = DB::table('invoice')
                             ->select(DB::raw('SUM(i_total_tagihan) as saldoawal'))
@@ -84,16 +85,16 @@ class analisa_piutang_Controller extends Controller
             
             array_push($terbayar_push, $terbayar);
 
-            $terbayar_posting = DB::table('posting_pembayaran_d')
-                        ->select(DB::raw('SUM(k_netto) as terbayar_posting'))
-                        ->where('tanggal','>',$tglawal)
-                        ->where('tanggal','<',$tglakhir)
-                        ->where('kode_customer','=',$array[$i])
-                        ->get();
+            // $terbayar_posting = DB::table('posting_pembayaran_d')
+            //             ->select(DB::raw('SUM(jumlah) as terbayar_posting'))
+            //             ->where('tanggal','>',$tglawal)
+            //             ->where('tanggal','<',$tglakhir)
+            //             ->where('kode_customer','=',$array[$i])
+            //             ->get();
 
 
             
-            array_push($terbayar_posting_push, $terbayar_posting);
+            // array_push($terbayar_posting_push, $terbayar_posting);
 
             $ss[$i] = ($saldo_push[$i][0]->saldoawal - $terbayar_push[$i][0]->terbayar);
 
@@ -122,7 +123,7 @@ class analisa_piutang_Controller extends Controller
                             ->select(DB::raw('SUM(i_total_tagihan) as jatuhtempo_30'))
                             ->where('i_tanggal','>',$tglawal)
                             ->where('i_tanggal','<',$tglakhir)
-                            ->where('i_jatuh_tempo','>',$tgl_jthtempo_now_push[$i][$u]->i_jatuh_tempo)
+                            ->where('i_jatuh_tempo','>=',$tgl_jthtempo_now_push[$i][$u]->i_jatuh_tempo)
                             ->where('i_jatuh_tempo','<',$date_30_g)
                             ->where('i_kode_customer','=',$array[$i])
                             ->get();

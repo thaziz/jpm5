@@ -65,9 +65,12 @@
                             <tr>
                                 <th>Nomor</th>
                                 <th>Tanggal </th>
+                                <th>Cabang </th>
+                                <th>Akun Bank/Kas </th>
                                 <th>Jenis</th>
                                 <th>Jumlah</th>
                                 <th>Keterangan </th>
+
                                 <th style="width:8%"> Aksi </th>
                             </tr>
                         </thead>
@@ -115,21 +118,19 @@
             },
             columnDefs: [
               {
-                 targets: 3,
-                 className: 'cssright'
-              },
-              {
-                 targets: 2,
+                 targets: 7,
                  className: 'center'
               },
               {
                  targets:5,
-                 className: 'center'
+                 className: 'cssright'
               },
             ],
             "columns": [
             { "data": "nomor" },
             { "data": "tanggal" },
+            { "data": "cabang" },
+            { "data": "bank" },
             { "data": "pembayaran" },
             { "data": "jumlah_text"},
             { "data": "keterangan" },

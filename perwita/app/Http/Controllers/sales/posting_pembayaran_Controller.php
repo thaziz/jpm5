@@ -266,50 +266,93 @@ class posting_pembayaran_Controller extends Controller
 
     public function cari_kwitansi(request $request)
     {
-        // dd($request->all());
-        $akun_bank = DB::table("masterbank")
+        if ($request->cb_jenis_pembayaran != 'T') {
+
+          $akun_bank = DB::table("masterbank")
                        ->where('mb_id',$request->akun_bank)
                        ->first();
 
-        $temp = DB::table('kwitansi')
-                  ->where('k_kode_cabang',$request->cabang)
-                  ->where('k_nomor_posting','=',null)
-                  ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
-                  ->where('k_id_bank',$request->akun_bank)
-                  ->get();
+          $temp = DB::table('kwitansi')
+                    ->where('k_kode_cabang',$request->cabang)
+                    ->where('k_nomor_posting','=',null)
+                    ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
+                    ->where('k_id_bank',$request->akun_bank)
+                    ->get();
 
-        $temp = DB::table('kwitansi')
-                  ->where('k_kode_cabang',$request->cabang)
-                  ->where('k_nomor_posting','=',null)
-                  ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
-                  ->where('k_id_bank',$request->akun_bank)
-                  ->get();
+          $temp1 = $temp;
 
+          $kwitansi_edit = DB::table('kwitansi')
+                            ->whereIn('k_nomor',$request->nomor)
+                            ->get();
+          $temp = array_merge($temp,$kwitansi_edit);
+          $temp1 = array_merge($temp1,$kwitansi_edit);
+          $temp = array_values($temp);
+          $temp1 = array_values($temp1);
 
-        $kwitansi_edit = DB::table('kwitansi')
-                          ->whereIn('k_nomor',$request->nomor)
-                          ->get();
-        $temp = array_merge($temp,$kwitansi_edit);
-        $temp1 = array_merge($temp1,$kwitansi_edit);
-        $temp = array_values($temp);
-        $temp1 = array_values($temp1);
+          if (isset($request->array_simpan)) {
 
-        if (isset($request->array_simpan)) {
+              for ($i=0; $i < count($temp1); $i++) { 
+                  for ($a=0; $a < count($request->array_simpan); $a++) { 
+                      if ($request->array_simpan[$a] == $temp1[$i]->k_nomor) {
+                          unset($temp[$i]);
+                      }
+                      
+                  }
+              }
+              $temp = array_values($temp);
+              $data = $temp;
+              
+          }else{
 
-            for ($i=0; $i < count($temp1); $i++) { 
-                for ($a=0; $a < count($request->array_simpan); $a++) { 
-                    if ($request->array_simpan[$a] == $temp1[$i]->k_nomor) {
-                        unset($temp[$i]);
-                    }
-                    
-                }
-            }
-            $temp = array_values($temp);
-            $data = $temp;
-            
+              $data = $temp;
+          }
+
         }else{
+          $kwitansi = DB::table('kwitansi')
+                    ->select('k_nomor','k_tanggal','k_netto')
+                    ->where('k_kode_cabang',$request->cabang)
+                    ->where('k_nomor_posting','=',null)
+                    ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
+                    ->get();
 
-            $data = $temp;
+          $do = DB::table('delivery_order')
+                    ->select('nomor as k_nomor','tanggal as k_tanggal','total_net as k_netto')
+                    ->join('d_jurnal','nomor','=','jr_ref')
+                    ->where('kode_cabang',$request->cabang)
+                    ->where('posting','=',null)
+                    ->get();
+
+          $kwitansi_edit = DB::table('kwitansi')
+                            ->select('k_nomor','k_nomor','k_netto')
+                            ->whereIn('k_nomor',$request->nomor)
+                            ->get();
+
+          $do_edit = DB::table('delivery_order')
+                            ->select('nomor as k_nomor','tanggal as k_tanggal','total_net as k_netto')
+                            ->whereIn('nomor',$request->nomor)
+                            ->get();
+
+          $temp = array_merge($kwitansi,$do,$kwitansi_edit,$do_edit);
+
+          $temp1 = $temp;
+
+          if (isset($request->array_simpan)) {
+
+              for ($i=0; $i < count($temp1); $i++) { 
+                  for ($a=0; $a < count($request->array_simpan); $a++) { 
+                      if ($request->array_simpan[$a] == $temp1[$i]->k_nomor) {
+                          unset($temp[$i]);
+                      }
+                      
+                  }
+              }
+              $temp = array_values($temp);
+              $data = $temp;
+              
+          }else{
+
+              $data = $temp;
+          }
         }
         return view('sales.posting_pembayaran.table_kwitansi',compact('data'));
     }   

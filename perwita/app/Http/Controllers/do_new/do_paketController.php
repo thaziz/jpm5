@@ -26,8 +26,8 @@ class do_paketController extends Controller
 	    if (Auth::user()->punyaAkses('Delivery Order','all')) {
 	    $sql = "SELECT d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
 	                FROM delivery_order d
-	                LEFT JOIN kota k ON k.id=d.id_kota_asal
-	                LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+	                JOIN kota k ON k.id=d.id_kota_asal
+	                JOIN kota kk ON kk.id=d.id_kota_tujuan
 	                join customer c on d.kode_customer = c.kode 
 	                join cabang cc on d.kode_cabang = cc.kode 
 	                WHERE d.jenis='PAKET'
@@ -36,8 +36,8 @@ class do_paketController extends Controller
 	    else{
 	    $sql = "SELECT d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
 	                FROM delivery_order d
-	                LEFT JOIN kota k ON k.id=d.id_kota_asal
-	                LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+	                JOIN kota k ON k.id=d.id_kota_asal
+	                JOIN kota kk ON kk.id=d.id_kota_tujuan
 	                join customer c on d.kode_customer = c.kode 
 	                join cabang cc on d.kode_cabang = cc.kode 
 	                WHERE d.jenis='PAKET'
@@ -63,8 +63,8 @@ class do_paketController extends Controller
         if (Auth::user()->punyaAkses('Delivery Order','all')) {
         $sql = "SELECT d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
-                    LEFT JOIN kota k ON k.id=d.id_kota_asal
-                    LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+                    JOIN kota k ON k.id=d.id_kota_asal
+                    JOIN kota kk ON kk.id=d.id_kota_tujuan
                     join customer c on d.kode_customer = c.kode 
                     join cabang cc on d.kode_cabang = cc.kode 
                     WHERE d.jenis='PAKET'
@@ -73,8 +73,8 @@ class do_paketController extends Controller
         else{
         $sql = "SELECT d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
-                    LEFT JOIN kota k ON k.id=d.id_kota_asal
-                    LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+                    JOIN kota k ON k.id=d.id_kota_asal
+                    JOIN kota kk ON kk.id=d.id_kota_tujuan
                     join customer c on d.kode_customer = c.kode 
                     join cabang cc on d.kode_cabang = cc.kode 
                     WHERE d.jenis='PAKET'

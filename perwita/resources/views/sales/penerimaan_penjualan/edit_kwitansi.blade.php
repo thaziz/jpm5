@@ -103,8 +103,9 @@
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td colspan="20">
-                                    <div class="input-group date" style="width: 100%">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="ed_tanggal form-control col-xs-12"  name="ed_tanggal" value="{{$data->k_tanggal}}">
+                                    <div class="input-group date disabled" style="width: 100%">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input readonly="" type="text" class="ed_tanggal form-control col-xs-12"  name="ed_tanggal" value="{{$data->k_tanggal}}">
                                     </div>
                                 </td>
                             </tr>
