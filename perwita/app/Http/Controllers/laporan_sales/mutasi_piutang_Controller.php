@@ -112,12 +112,13 @@ class mutasi_piutang_Controller extends Controller
           $cash[$i] = $cash[$i];
       }
 
-      $cek_bg_trsn[$i] = DB::table('kwitansi')
-                        ->select(DB::raw('SUM(k_netto) as cek_bg_trsn'))
-                        ->where('k_tanggal','>',$tglawal)
-                        ->where('k_tanggal','<',$tglakhir)
-                        ->Where('k_jenis_pembayaran','=', 'C')
-                        ->where('k_kode_customer','=',$array[$i])
+      $cek_bg_trsn[$i] = DB::table('posting_pembayaran as pb')
+                        ->select(DB::raw('SUM(pbdt.jumlah) as cek_bg_trsn'))
+                        ->join('posting_pembayaran_d as pbdt','pb.nomor','=','pbdt.nomor_posting_pembayaran')
+                        ->where('tanggal','>',$tglawal)
+                        ->where('tanggal','<',$tglakhir)
+                        ->Where('jenis_pembayaran','=', 'C')
+                        ->where('kode_customer','=',$array[$i])
                         ->get();
 
       if ($cek_bg_trsn[$i][0]->cek_bg_trsn == null) {
