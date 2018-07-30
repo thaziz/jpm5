@@ -84,16 +84,16 @@ class analisa_piutang_Controller extends Controller
             
             array_push($terbayar_push, $terbayar);
 
-            $terbayar_posting = DB::table('posting_pembayaran_d')
-                        ->select(DB::raw('SUM(k_netto) as terbayar_posting'))
-                        ->where('tanggal','>',$tglawal)
-                        ->where('tanggal','<',$tglakhir)
-                        ->where('kode_customer','=',$array[$i])
-                        ->get();
+            // $terbayar_posting = DB::table('posting_pembayaran_d')
+            //             ->select(DB::raw('SUM(jumlah) as terbayar_posting'))
+            //             ->where('tanggal','>',$tglawal)
+            //             ->where('tanggal','<',$tglakhir)
+            //             ->where('kode_customer','=',$array[$i])
+            //             ->get();
 
 
             
-            array_push($terbayar_posting_push, $terbayar_posting);
+            // array_push($terbayar_posting_push, $terbayar_posting);
 
             $ss[$i] = ($saldo_push[$i][0]->saldoawal - $terbayar_push[$i][0]->terbayar);
 

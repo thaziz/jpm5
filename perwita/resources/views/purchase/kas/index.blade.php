@@ -86,8 +86,8 @@
                   <div class="pull-right">
             
                                      
-                    </div>
-                  </div><!-- /.box-footer --> 
+                  </div>
+                </div><!-- /.box-footer --> 
               </div><!-- /.box -->
             </div><!-- /.col -->
             </div>
