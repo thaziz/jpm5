@@ -228,13 +228,14 @@ class penerimaan_penjualan_Controller extends Controller
 
     public function nota_kwitansi(request $request)
     {
-        $bulan = Carbon::parse($request->tanggal)->format('m');
-        $tahun = Carbon::parse($request->tanggal)->format('y');
+        $bulan = Carbon::parse(str_replace('/','-',$request->tanggal))->format('m');
+        $tahun = Carbon::parse(str_replace('/','-',$request->tanggal))->format('y');
 
         $cari_nota = DB::select("SELECT  substring(max(k_nomor),11) as id from kwitansi
                                         WHERE k_kode_cabang = '$request->cabang'
                                         AND to_char(k_tanggal,'MM') = '$bulan'
-                                        AND to_char(k_tanggal,'YY') = '$tahun'");
+                                        AND to_char(k_tanggal,'YY') = '$tahun'
+                                        ");
         $index = (integer)$cari_nota[0]->id + 1;
         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
         $nota = 'KWT' . $request->cb_cabang . $bulan . $tahun . $index;
@@ -719,7 +720,7 @@ class penerimaan_penjualan_Controller extends Controller
                   if (!isset($akun_temp_total[$i])) {
                     $akun_temp_total[$i] = 0;
                   }
-                  $akun_temp_total[$i] = $akun_temp_total[$i] + $request->i_tot_bayar[$a] - $request->i_debet[$a] + $request->i_kredit[$a];
+                  $akun_temp_total[$i] = $akun_temp_total[$i] + $request->i_tot_bayar[$a] + $request->i_debet[$a] - $request->i_kredit[$a];
                 }
               }
             }
@@ -1477,7 +1478,7 @@ class penerimaan_penjualan_Controller extends Controller
                   if (!isset($akun_temp_total[$i])) {
                     $akun_temp_total[$i] = 0;
                   }
-                  $akun_temp_total[$i] = $akun_temp_total[$i] + $request->i_tot_bayar[$a] - $request->i_debet[$a] + $request->i_kredit[$a];
+                  $akun_temp_total[$i] = $akun_temp_total[$i] + $request->i_tot_bayar[$a] + $request->i_debet[$a] - $request->i_kredit[$a];
                 }
               }
             }
@@ -1659,18 +1660,18 @@ class penerimaan_penjualan_Controller extends Controller
                   $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                   $data_akun[$i]['jrdt_detailid'] = $i+1;
                   $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                  $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
+                  $data_akun[$i]['jrdt_value']    = $akun_val[$i];
                   $data_akun[$i]['jrdt_type']     = 'M';
-                  $data_akun[$i]['jrdt_statusdk'] = 'K';
-                  $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                  $data_akun[$i]['jrdt_statusdk'] = 'D';
+                  $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan) .' LEBIH BAYAR';
                 }else{
                   $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                   $data_akun[$i]['jrdt_detailid'] = $i+1;
                   $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                  $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
+                  $data_akun[$i]['jrdt_value']    = $akun_val[$i];
                   $data_akun[$i]['jrdt_type']     = 'M';
-                  $data_akun[$i]['jrdt_statusdk'] = 'D';
-                  $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                  $data_akun[$i]['jrdt_statusdk'] = 'K';
+                  $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan) .' LEBIH BAYAR';
                 }
               }else{
                 if ($cari_coa->akun_dka == 'D') {
@@ -1679,8 +1680,8 @@ class penerimaan_penjualan_Controller extends Controller
                   $data_akun[$i]['jrdt_acc']      = $akun[$i];
                   $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
                   $data_akun[$i]['jrdt_type']     = null;
-                  $data_akun[$i]['jrdt_statusdk'] = 'k';
-                  $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                  $data_akun[$i]['jrdt_statusdk'] = 'K';
+                  $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan) .' KURANG BAYAR';
                 }else{
                   $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                   $data_akun[$i]['jrdt_detailid'] = $i+1;
@@ -1688,7 +1689,7 @@ class penerimaan_penjualan_Controller extends Controller
                   $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
                   $data_akun[$i]['jrdt_type']     = null;
                   $data_akun[$i]['jrdt_statusdk'] = 'D';
-                  $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                  $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan) .' KURANG BAYAR';
                 }
               }
             }

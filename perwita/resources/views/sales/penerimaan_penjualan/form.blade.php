@@ -880,12 +880,12 @@ var table_data_biaya = $('#table_data_biaya').DataTable({
 
 //mengganti nota kwitansi
 function nota_kwitansi() {
-    var cb_cabang = $('.cb_cabang').val();
+    var cabang = $('.cb_cabang').val();
     var tanggal = $('.ed_tanggal').val();
 
     $.ajax({
         url:baseUrl + '/sales/nota_kwitansi',
-        data:{cb_cabang,tanggal},
+        data:{cabang,tanggal},
         dataType:'json',
         success:function(response){
             $('#nota_kwitansi').val(response.nota);
@@ -902,10 +902,11 @@ $('.cb_cabang').change(function(){
 })
 //NOTA kwitansi
 $(document).ready(function(){
-    var cb_cabang = $('.cb_cabang').val();
+    var cabang = $('.cb_cabang').val();
+    var tanggal = $('.ed_tanggal').val();
     $.ajax({
         url:baseUrl+'/sales/nota_kwitansi',
-        data:{cb_cabang},
+        data:{cabang,tanggal},
         dataType : 'json',
         success:function(response){
             $('#nota_kwitansi').val(response.nota);
