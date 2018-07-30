@@ -52,12 +52,15 @@ class mutasi_piutang_Controller extends Controller
     $push_cek_bg_trsn = [];
     $push_uangmuka    = [];
     $push_nota_kredit = [];
+    $push_customer_lenght = [];
 
     for ($i=0; $i <count($array) ; $i++) { 
 
       $customer_lenght = DB::table('customer')->select('kode','nama')->where('kode',$array[$i])->get(); 
 
-
+      array_push($push_customer_lenght,$customer_lenght);
+      // return $push_customer_lenght;
+      
       $saldoawal[$i] = DB::table('invoice')
                         ->select(DB::raw('SUM(i_total_tagihan) as saldoawal'))
                         ->where('i_tanggal','>',$tglawal)
@@ -166,8 +169,8 @@ class mutasi_piutang_Controller extends Controller
       }                
 
     }
-
-    return view('purchase/master/master_penjualan/laporan/lap_mutasi_piutang/ajax_mutasipiutang_rekap',compact('saldoawal','data','array','piutangbaru','notadebet','cash','cek_bg_trsn','uangmuka','nota_kredit','sisa_uangmuka','customer_lenght'));
+    // return $customer_lenght;
+    return view('purchase/master/master_penjualan/laporan/lap_mutasi_piutang/ajax_mutasipiutang_rekap',compact('saldoawal','data','array','piutangbaru','notadebet','cash','cek_bg_trsn','uangmuka','nota_kredit','sisa_uangmuka','push_customer_lenght'));
   }
   	  
 

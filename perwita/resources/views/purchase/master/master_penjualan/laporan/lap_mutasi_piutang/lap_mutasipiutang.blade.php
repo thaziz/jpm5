@@ -207,18 +207,19 @@
             $('.drop').html(data);
             $('#container').hide();
 
-            // $('.saldo').each(function(i){
-            //     var saldo_index = $('.saldo_'+i).val();
+            $('.saldoawal').each(function(i){
+                saldo_index =   parseFloat($('.saldoawal').val())
+                              + parseFloat($('.piutangbaru').val())
+                              + parseFloat($('.notadebet').val())
+                              - parseFloat($('.cash').val())
+                              - parseFloat($('.cek_bg_trsn').val())
+                              - parseFloat($('.uangmuka').val())
+                              - parseFloat($('.nota_kredit').val());
 
-            //     $('.debet_'+i).each(function(a){ 
-            //       saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+i).val());
+                console.log(saldo_index);
 
-            //       console.log(parseFloat($('.kredit_'+0).val()));
-            //       console.log(i); 
-            //       var parent = $(this).parents('tr');
-            //       $(parent).find('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
-            //     })  
-            // })
+                $('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
+            })
           }
         })
      }else if (laporan == 'Rekap per Customer Detail') {
