@@ -6,7 +6,7 @@
                           <th align="center" colspan="2"> Customer</th>
                           <th align="center" rowspan="2"> Saldo Awal</th>
                           <th align="center" colspan="2"> DEBET</th>
-                          <th align="center" colspan="4"> Kota Tujuan</th>
+                          <th align="center" colspan="4"> KREDIT</th>
                           <th align="center" rowspan="2"> Saldo Akir</th>
                           <th align="center" rowspan="2"> Sisa Uangmuka </th>
                       </tr> 
@@ -25,9 +25,9 @@
                      @foreach ($array as $index => $e)
                        <tr>
                          <td>{{ $index+1 }}</td>
-                         <td>{{ $array[$index]['customer'] }}</td>
-                         <td>{{ $index+1 }}</td>
-                         <td>{{ $saldo_awal[$index][0]->saldoawal }}</td>
+                         <td>{{ $customer_lenght[$index]->kode }}</td>
+                         <td>{{ $customer_lenght[$index]->nama }}</td>
+                         <td>{{ $saldoawal[$index][0]->saldoawal }}</td>
                          <td>{{ $piutangbaru[$index][0]->piutang_baru }}</td>
                          <td>{{ $notadebet[$index][0]->nota_debet }}</td>
                          <td>{{ $cash[$index][0]->cash }}</td>

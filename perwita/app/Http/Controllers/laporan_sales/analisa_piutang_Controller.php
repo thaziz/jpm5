@@ -64,6 +64,7 @@ class analisa_piutang_Controller extends Controller
                             ->get();
             array_push($tgl_jthtempo_now_push, $tgl_jthtempo_now);
 
+            return $tgl_jthtempo_now_push;
 
             $saldoawal = DB::table('invoice')
                             ->select(DB::raw('SUM(i_total_tagihan) as saldoawal'))
