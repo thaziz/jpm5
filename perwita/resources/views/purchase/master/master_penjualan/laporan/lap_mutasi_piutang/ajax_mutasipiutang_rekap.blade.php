@@ -25,8 +25,8 @@
                      @foreach ($array as $index => $e)
                        <tr>
                          <td>{{ $index+1 }}</td>
-                         <td>{{ $customer_lenght[$index]->kode }}</td>
-                         <td>{{ $customer_lenght[$index]->nama }}</td>
+                         <td>{{ $push_customer_lenght[$index][0]->kode }}</td>
+                         <td>{{ $push_customer_lenght[$index][0]->nama }}</td>
                          <td><input type="hidden" value="{{ $saldoawal[$index][0]->saldoawal }}" class="saldoawal" name="">
                           {{ $saldoawal[$index][0]->saldoawal }}
                          </td>

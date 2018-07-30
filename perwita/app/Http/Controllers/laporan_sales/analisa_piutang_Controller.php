@@ -75,7 +75,7 @@ class analisa_piutang_Controller extends Controller
             array_push($saldo_push, $saldoawal);
 
             $terbayar = DB::table('kwitansi')
-                        ->select(DB::raw('SUM(i_sisa_akir) as terbayar'))
+                        ->select(DB::raw('SUM(k_netto) as terbayar'))
                         ->where('k_tanggal','>',$tglawal)
                         ->where('k_tanggal','<',$tglakhir)
                         ->where('k_kode_customer','=',$array[$i])
@@ -84,8 +84,6 @@ class analisa_piutang_Controller extends Controller
 
             
             array_push($terbayar_push, $terbayar);
-
-
 
             // $terbayar_posting = DB::table('posting_pembayaran_d')
             //             ->select(DB::raw('SUM(jumlah) as terbayar_posting'))
