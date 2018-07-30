@@ -1,7 +1,7 @@
 <table id="table_data_d" class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>Nomor Kwitansi</th>
+            <th>Kode Transaksi</th>
             <th>Tanggal</th>
             <th style="width:20%">Jumlah</th>
             <th><input type="checkbox" onchange="check_parent()" class="parent_box" name=""></th>

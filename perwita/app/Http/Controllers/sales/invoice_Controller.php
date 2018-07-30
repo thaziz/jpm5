@@ -18,14 +18,23 @@ use Storage;
 class invoice_Controller extends Controller
 {
 
-    public function datatable_invoice()
+    public function datatable_invoice(Request $req)
     {
-        $cabang = auth::user()->kode_cabang;
-        if (Auth::user()->punyaAkses('Invoice','all')) {
-            $data = DB::table('invoice')
-                      ->join('customer','kode','=','i_kode_customer')
-                      ->get();
+        $nama_cabang = DB::table("cabang")
+             ->where('kode',$req->cabang)
+             ->first();
+
+        if ($nama_cabang != null) {
+          $cabang = 'and i_kode_cabang = '."'$req->cabang'";
         }else{
+          $cabang = '';
+        }
+
+        if (Auth::user()->punyaAkses('Invoice','all')) {
+            $sql = "SELECT * FROM invoice  join cabang on kode = i_kode_cabang where i_nomor != '0' $cabang";
+            $data = DB::select($sql);
+        }else{
+            $cabang = auth::user()->kode_cabang;
             $data = DB::table('invoice')
                       ->join('customer','kode','=','i_kode_customer')
                       ->where('i_kode_cabang',$cabang)
@@ -33,6 +42,7 @@ class invoice_Controller extends Controller
         }
 
         $data = collect($data);
+
         // return $data;
         return Datatables::of($data)
                         ->addColumn('aksi', function ($data) {
@@ -119,7 +129,11 @@ class invoice_Controller extends Controller
         echo json_encode($data);
     }
 
-
+    public function append_table(request $req)
+    {
+      $cab = $req->cabang;
+      return view('sales.invoice.table_invoice',compact('cab'));
+    }
 
     public function index(){
 
@@ -133,22 +147,11 @@ class invoice_Controller extends Controller
         //               ])
         // }
 
-        $cabang = auth::user()->kode_cabang;
-        if (Auth::user()->punyaAkses('Invoice','all')) {
-            $data = DB::table('invoice')
-                      ->join('customer','kode','=','i_kode_customer')
-                      ->take(2000)
-                      ->get();
-        }else{
-            $data = DB::table('invoice')
-                      ->join('customer','kode','=','i_kode_customer')
-                      ->where('i_kode_cabang',$cabang)
-                      ->take(2000)
-                      ->get();
-        }
+        $cabang = DB::table('cabang')
+                    ->get();
         $kota = DB::table('kota')
                   ->get();
-        return view('sales.invoice.index',compact('data'));
+        return view('sales.invoice.index',compact('data','cabang'));
     }
 
     public function form(){
