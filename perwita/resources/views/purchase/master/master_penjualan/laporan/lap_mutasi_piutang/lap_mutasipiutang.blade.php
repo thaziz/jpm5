@@ -206,19 +206,16 @@
           success : function(data){
             $('.drop').html(data);
             $('#container').hide();
-
-            $('.saldoawal').each(function(i){
-                saldo_index =   parseFloat($('.saldoawal').val())
-                              + parseFloat($('.piutangbaru').val())
-                              + parseFloat($('.notadebet').val())
-                              - parseFloat($('.cash').val())
-                              - parseFloat($('.cek_bg_trsn').val())
-                              - parseFloat($('.uangmuka').val())
-                              - parseFloat($('.nota_kredit').val());
-
-                console.log(saldo_index);
-
-                $('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
+            $('.fore').each(function(i){
+                saldo_index =   parseFloat($('.saldoawal_'+i).val())
+                              + parseFloat($('.piutangbaru_'+i).val())
+                              + parseFloat($('.notadebet_'+i).val())
+                              - parseFloat($('.cash_'+i).val())
+                              - parseFloat($('.cek_bg_trsn_'+i).val())
+                              - parseFloat($('.uangmuka_'+i).val())
+                              - parseFloat($('.nota_kredit_'+i).val());
+                
+                $('.total_'+i).text(accounting.formatMoney(saldo_index,"",0,'.',','));
             })
           }
         })
