@@ -235,13 +235,12 @@
           dataType: 'json',
           success: function(response){
             console.log(response);
-            form_reset();
             if(response.status == "berhasil"){
               toastr.success('Data Jurnal Memorial Berhasil Disimpan');
               btn.removeAttr("disabled");
               btn.text("Simpan");
 
-              form_reset();
+              // form_reset();
             }else if(response.status == "exist"){
               toastr.error('Kode Master Akun Sudah Ada Dengan Nama '+response.content+'. Silahkan Membuat Kode Akun Lagi.');
               btn.removeAttr("disabled");
