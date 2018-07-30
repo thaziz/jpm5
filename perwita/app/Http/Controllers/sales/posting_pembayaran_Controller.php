@@ -30,6 +30,10 @@ class posting_pembayaran_Controller extends Controller
         return Datatables::of($data)
                         ->addColumn('aksi', function ($data) {
 
+                            $a = '';
+                            $b = '';
+                            $c = '';
+                          
                             if(Auth::user()->punyaAkses('Posting Pembayaran','ubah')){
                                 if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
                                   $a = '<button type="button" onclick="edit(\''.$data->nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
