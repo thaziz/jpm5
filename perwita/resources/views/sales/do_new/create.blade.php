@@ -1348,6 +1348,8 @@ function hitung() {
         var do_alamat_penerima      = $("input[name='do_alamat_penerima']").val();
         var do_kode_pos_penerima    = $("input[name='do_kode_pos_penerima']").val();
         var do_telpon_penerima      = $("input[name='do_telpon_penerima']").val();
+        var do_vendor_cekbox        = $("input[name='cek_vendor']").val();
+
 
         if (do_nomor == '') {
             toastr.error('Data Nomor Kosong!','Peringatan!');

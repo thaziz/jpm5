@@ -46,7 +46,10 @@ class invoice_Controller extends Controller
         // return $data;
         return Datatables::of($data)
                         ->addColumn('aksi', function ($data) {
-
+                            $a = '';
+                            $b = '';
+                            $c = '';
+                            
                             if($data->i_statusprint == 'Released' or Auth::user()->punyaAkses('Invoice','ubah')){
                                 if(cek_periode(carbon::parse($data->i_tanggal)->format('m'),carbon::parse($data->i_tanggal)->format('Y') ) != 0){
                                   $a = '<button type="button" onclick="edit(\''.$data->i_nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';

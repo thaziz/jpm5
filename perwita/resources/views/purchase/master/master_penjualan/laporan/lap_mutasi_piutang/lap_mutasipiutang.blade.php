@@ -133,7 +133,7 @@
                     <br>
                     <br>
                   <table id="addColumn" class="table table-bordered table-striped tbl-item">
-                    <thead>
+                    {{-- <thead>
                        <tr>
                           <th align="center" rowspan="2" > No</th>
                           <th align="center" colspan="2"> Customer</th>
@@ -153,7 +153,7 @@
                           <th>Byr Uang Muka</th>
                           <th>Nota Kredit</th>
                       </tr>       
-                    </thead>        
+                    </thead>  --}}       
                     <div class="drop">
                       
                     </div>

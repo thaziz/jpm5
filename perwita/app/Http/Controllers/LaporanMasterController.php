@@ -2808,7 +2808,7 @@ class LaporanMasterController extends Controller
 		
 	
 
-		 $data_invoice = DB::select("SELECT 'D' as flag,i_nomor  as kode,i_acc_piutang,i_kode_customer as customer,i_tanggal as tanggal,i_keterangan as keterangan,i_sisa_pelunasan as nominal
+		 $data_invoice = DB::select("SELECT 'D' as flag,i_nomor  as kode,i_acc_piutang,i_kode_customer as customer,i_tanggal as tanggal,i_keterangan as keterangan,i_total_tagihan as nominal
 		 								from invoice 
 										where i_tanggal >= '$awal' 
   										and i_tanggal <= '$akir' 
