@@ -622,7 +622,7 @@
                   "<td> <input type='text' class='form-control input-sm nominalfpgdetailbg' value="+nominal+" name='nominalfpg[]' readonly style='min-width:200px;text-align:right'> </td>" +
                   "<td> <input type='text' class='form-control input-sm keteranganbiayadetailbg' value="+keteranganbiaya+" name='keteranganfpg[]' readonly style='min-width:200px'> </td>" +
                   "</td>" +
-                  "<td> <button class='btn btn-xs btn-danger' type='button' onclick='hapus(this)'> <i class='fa fa-trash'> </i> </button> &nbsp; <button class='btn btn-xs btn-warning' type='button' onclick='editakunbg(this)'> <i class='fa fa-pencil'> </i>  </button> </td>" +
+                  "<td> <button class='btn btn-xs btn-danger' type='button' onclick='hapus(this)'> <i class='fa fa-trash'> </i> </button></td>" +
                   "</tr>";
         $('#tbl-biayaakun').append(row);
 
@@ -650,8 +650,6 @@
 
       splitakun = accbiayaakun.split(",");
       akundakun = splitakun[0];
-      alert(nocheckakunbg);
-      alert(akundakun);
       valid2 = akundakun.toString();
 
       var a = $('.dataakunbg' + valid2);
