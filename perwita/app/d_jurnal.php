@@ -17,4 +17,9 @@ class d_jurnal extends Model
     
     
     protected $fillable = ['jr_id', 'jr_year','jr_date', 'jr_detail','jr_ref','jr_note'];
+
+
+    public function detail(){
+    	return $this->hasMany('App\d_jurnal_dt', 'jrdt_jurnal', 'jr_id');
+    }
 }

@@ -2203,7 +2203,7 @@ Route::post('master_keuangan/saldo_piutang/save', [
 
 //end saldo piutang
 
-// jurnal_umum
+// transaksi kas
 Route::get('keuangan/jurnal_umum', [
   'uses' => 'master_keuangan\d_jurnal_controller@index',
   'as'   => 'jurnal.index'
@@ -2229,8 +2229,47 @@ Route::get('keuangan/jurnal_umum/show-detail/{id}', [
   'as'   => 'jurnal.show-detail;'
 ]);
 
+Route::get('keuangan/jurnal_umum/list_transaksi', [
+  'uses' => 'master_keuangan\d_jurnal_controller@list_transaksi',
+  'as'   => 'jurnal.list-transaksi'
+]);
 
-//end jurnal_umum
+
+//end transaksi_kas
+
+
+
+// transaksi Bank
+
+Route::get('keuangan/transaksi_bank', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@index',
+  'as'   => 'jurnal.index'
+]);
+
+Route::get('keuangan/transaksi_bank/add', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@add',
+  'as'   => 'jurnal.add'
+]);
+
+Route::get('keuangan/transaksi_bank/detail/{id}', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@getDetail',
+  'as'   => 'jurnal.detail'
+]);
+
+Route::post('keuangan/transaksi_bank/save_data', [
+  'uses'  => 'master_keuangan\transaksi_bank_controller@save_data',
+  'as'    => 'jurnal.save'
+]);
+
+Route::get('keuangan/transaksi_bank/show-detail/{id}', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@showDetail',
+  'as'   => 'jurnal.show-detail;'
+]);
+
+//end transaksi bank
+
+
+
 
 //akun
 Route::get('master_keuangan/akun', [

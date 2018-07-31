@@ -36,7 +36,9 @@
 
     .modal-open{
       overflow: inherit;
-    }.chosen-select {
+    }
+
+    .chosen-select {
         background: red;
     }
     .cabang{
@@ -76,10 +78,11 @@
         <td width="15%" class="text-center">Filter Berdasarkan : </td>
         <td width="18%">
           <select class="form-control" style="width:90%; height: 30px" id="berdasarkan">
-              <option value="1">Tanggal</option>
-                <option value="2">Jurnal Detail</option>
-                <option value="3">Jurnal Referensi</option>
-                <option value="4">Jurnal Note</option>
+              <option value="1">Transaksi Cabang</option>
+                <option value="2">Jurnal Referensi</option>
+                <option value="3">Tanggal Jurnal</option>
+                <option value="4">Jurnal Detail</option>
+                <option value="5">Jurnal Note</option>
           </select>
         </td>
 
@@ -109,15 +112,21 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Data Transaksi Kas Cabang {{ $cabang->nama }} {{-- Periode {{ date_ind($_GET["date"]) }} {{ $_GET["year"] }} --}}
+                    <h5> Data Transaksi Kas {{ $cabang_nama }} {{-- Periode {{ date_ind($_GET["date"]) }} {{ $_GET["year"] }} --}}
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
                         <select name="cab" class="select_validate_null" id="pil_cab" style="padding: 5px 5px; border-color: #ccc;border-radius: 3px; color: #666;width: 13em; font-size: 8pt;">
+
+                          @if(Session::get('cabang') == '000')
+                            <option value="all">Semua Cabang</option>
+                          @endif
+
                           @foreach($cabangs as $cab)
                             <?php $select = ($cab->kode == $_GET["cab"]) ? "selected" : "" ?>
                             <option value="{{ $cab->kode }}" {{$select}}>{{ $cab->nama }}</option>
                           @endforeach
+
                         </select> &nbsp;&nbsp;
 
                         <button class="btn btn-sm btn-primary tambahAkun" data-parrent="0" data-toggle="modal" data-target="#modal_tambah_akun">
@@ -137,11 +146,12 @@
                             <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px; font-size: 8pt;">
                               <thead>
                                 <tr>
-                                  <th width="15%" class="text-center">Tahun Jurnal</th>
-                                  <th width="30%" class="text-center">Tanggal</th>
+                                  <th width="15%" class="text-center">Transaksi Cabang</th>
+                                  <th width="15%" class="text-center">Jurnal Referensi</th>
+                                  <th width="12%" class="text-center">Tanggal</th>
                                   <th class="text-center">Jurnal Detail</th>
-                                  <th class="text-center">Jurnal Referensi</th>
                                   <th class="text-center">Jurnal Note</th>
+                                  <th class="text-center">Aksi</th>
                                   {{-- <th style="padding:8px 0px" class="text-center">Saldo</th> --}}
                                 </tr>
                               </thead>
@@ -149,11 +159,14 @@
 
                                 @foreach($data as $dataAkun)
                                   <tr>
-                                    <td width="15%" class="text-center">{{ $dataAkun->jr_year }}</td>
-                                    <td width="30%" class="text-center">{{ date("d-m-Y", strtotime($dataAkun->jr_date)) }}</td>
-                                    <td class="text-center">{{ $dataAkun->jr_detail }}</td>
+                                    <td class="text-center">{{ $dataAkun->nama }}</td>
                                     <td class="text-center">{{ $dataAkun->jr_ref }}</td>
+                                    <td class="text-center">{{ date("d-m-Y", strtotime($dataAkun->jr_date)) }}</td>
+                                    <td class="text-center">{{ $dataAkun->jr_detail }}</td>
                                     <td class="text-center">{{ $dataAkun->jr_note }}</td>
+                                    <td class="text-center">
+                                      <button class="btn btn-xs btn-success lihat_jurnal" data-toggle="tooltip" data-placement="left" title="Lihat Jurnal" data-id="{{ $dataAkun->jr_id }}"><i class="fa fa-balance-scale"></i></button>
+                                    </td>
                                     {{-- <th style="padding:8px 0px" class="text-center">Saldo</th> --}}
                                   </tr>
                                 @endforeach
@@ -170,9 +183,25 @@
     </div>
 </div>
 
+<div id="overlay">
+  <div class="modal-dialog" style="width: 50%; min-height: 650px; margin-top: 30px;">
+    <div class="modal-content" style="background: #efefef;">
+      <div class="modal-header" style="background: white">
+        <button type="button" class="close overlay_close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">List Transaksi <span id="cab_list_name"></span></h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+      <div class="modal-body">
+        <center class="text-muted">Sedang Memuat ...</center>
+      </div>
+
+    </div>
+  </div>
+</div>
+
  <!-- modal -->
 <div id="modal_tambah_akun" class="modal">
-  <div class="modal-dialog" style="width: 60%; min-height: 650px;">
+  <div class="modal-dialog" style="width: 60%;">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -187,6 +216,26 @@
   </div>
 </div>
   <!-- modal -->
+
+
+<!-- modal -->
+<div id="modal_jurnal" class="modal">
+  <div class="modal-dialog" style="width: 55%;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Detail Jurnal</h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+      <div class="modal-body">
+        <center class="text-muted">Sedang Memuat</center>
+      </div>
+
+    </div>
+  </div>
+</div>
+  <!-- modal -->
+
 
 <!-- modal -->
 <div id="modal_edit_akun" class="modal">
@@ -309,7 +358,7 @@
     $("#modal_tambah_akun").on("shown.bs.modal", function(e){
       //alert($("#modal_tambah_akun .modal-header .parrent").val())
 
-      $.ajax(baseUrl+"/keuangan/jurnal_umum/add", {
+      $.ajax(baseUrl+"/keuangan/jurnal_umum/add?cab={{ $_GET['cab'] }}", {
          timeout: 15000,
          dataType: "html",
          success: function (data) {
@@ -347,7 +396,7 @@
 
     $('#pil_cab').change(function(evt){
       evt.preventDefault();
-      window.location = baseUrl + "/keuangan/jurnal_umum?cab="+$(this).val()+"&date={{date('m')}}&year={{date('Y')}}";
+      window.location = baseUrl + "/keuangan/jurnal_umum?cab="+$(this).val()+"&date={{date('m')}}&year={{date('Y')}}&jenis={{ $_GET['jenis'] }}";
     })
 
     $("#submit_setting").click(function(event){
@@ -355,7 +404,7 @@
       form = $("#table_setting_form"); $(this).attr("disabled", true); $(this).text("Mengubah Tampilan Table ...");
 
       window.location = baseUrl + "/keuangan/jurnal_umum?" + form.serialize();
-    })
+    });
 
     $('#set').click(function () {
         $val = $('#filter').val().toUpperCase();
@@ -373,9 +422,38 @@
               that.search('^' + $val, true, false).draw();
           });
         }
-    })
+    });
+
+    $('.lihat_jurnal').click(function(evt){
+      evt.preventDefault();
+      $("#modal_jurnal").modal('show');
+      $("#modal_jurnal .modal-body").html('<center class="text-muted">Sedang Memuat</center>');
+
+      $.ajax(baseUrl+"/keuangan/jurnal_umum/show-detail/"+$(this).data('id'), {
+         timeout: 15000,
+         dataType: "html",
+         success: function (data) {
+             $("#modal_jurnal .modal-body").html(data);
+         },
+         error: function(request, status, err) {
+            if (status == "timeout") {
+              $("#modal_jurnal .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
+            } else {
+              $("#modal_jurnal .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
+            }
+        } 
+      });
+
+    });
+
+    $(".overlay_close").click(function(){
+      $("#overlay").fadeOut(100);
+    });
+
+    $("#overlay").click(function(){
+      $("#overlay").fadeOut(100);
+    });
 
   })
-
 </script>
 @endsection
