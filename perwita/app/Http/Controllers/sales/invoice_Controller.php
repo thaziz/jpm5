@@ -647,12 +647,12 @@ public function simpan_invoice(request $request)
         $ppn_type = 'npkp';
         $ppn_persen = 1;
         $nilaiPpn=1/101;
-        $akunPPN='2302';
+        $akunPPN='2301';
     } elseif ($request->cb_jenis_ppn == 5) {//include
         $ppn_type = 'npkp';
         $ppn_persen = 10;
         $nilaiPpn=10/110;
-        $akunPPN='2302';
+        $akunPPN='2398';
     }
 
   $user = Auth::user()->m_name;
@@ -1348,7 +1348,7 @@ public function simpan_invoice(request $request)
           $temp = DB::table('item')
                     ->where('kode',$do->dd_kode_item)
                     ->first();
-
+          // dd($temp);          
           array_push($pendapatan_koran, $temp->acc_penjualan);
         }
 
@@ -1385,6 +1385,7 @@ public function simpan_invoice(request $request)
             }
           }
           // PIUTANG
+          // dd(substr($cari_acc_piutang,0, 4));
           $akun_piutang = DB::table('d_akun')
                           ->where('id_akun','like',substr($cari_acc_piutang,0, 4).'%')
                           ->where('kode_cabang',$cabang)
@@ -1439,6 +1440,7 @@ public function simpan_invoice(request $request)
               array_push($akun_val,(filter_var($request->pph,FILTER_SANITIZE_NUMBER_INT)/100));
             }
           }
+          
           // JURNAL PENDAPATAN
           for ($i=0; $i < count($pendapatan_koran); $i++) { 
              $akun_pendapatan = DB::table('d_akun')

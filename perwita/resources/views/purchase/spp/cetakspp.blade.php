@@ -75,7 +75,7 @@ div.bottom
 			<td width="125px"><img src="{{ asset('perwita/storage/app/upload/images.jpg') }}"  width="200" height="100"></td>
 			<td align="center" width="410px"><h2>SURAT PERMINTAAN PEMBELIAN</h2></td>
 			
-			<td class="top" width="240px">No SPP : {{$data['spp'][0]->spp_nospp}} <br>Tanggal : {{$data['spp'][0]->spp_tgldibutuhkan}}
+			<td class="top" width="240px">No SPP : {{$data['spp'][0]->spp_nospp}} <br>Tanggal Input : {{ Carbon\Carbon::parse($data['spp'][0]->tglinput)->format('d-M-Y ') }}
 
 			<br> No PO : <br> @foreach($data['po'] as $po) &nbsp; -  {{$po->po_no}} <br> @endforeach
 			</td>
@@ -89,7 +89,7 @@ div.bottom
 			<td colspan="9" style="text-align: left">
 				Diminta oleh bagian : {{$data['spp'][0]->spp_bagian}} <br>
 				Untuk keperluan : {{$data['spp'][0]->spp_keperluan}}<br>
-				Tanggal dibutuhkan : {{ Carbon\Carbon::parse($data['spp'][0]->spp_tgldibutuhkan)->format('d-M-Y ') }}
+				Tanggal dibutuhkan : {{ Carbon\Carbon::parse($data['spp'][0]->created_at)->format('d-M-Y ') }}
 			</td>
 		</tr>
 		<tr>

@@ -153,7 +153,8 @@ class form_tanda_terima_penjualan_controller extends Controller
 						->where('i_nomor',$req->invoice[$i])
 						->update([
 							'i_tanda_terima'			=> $req->nomor,
-							'i_tanggal_tanda_terima'	=> carbon::parse(str_replace('/','-',$req->jatuh_tempo))->format('Y-m-d'),
+							'i_tanggal_tanda_terima'	=> carbon::parse(str_replace('/','-',$req->tanggal))->format('Y-m-d'),
+							'i_jatuh_tempo_tt'			=> carbon::parse(str_replace('/','-',$req->jatuh_tempo))->format('Y-m-d'),
 						]);
 			}
 			$save = DB::table('form_tt_penjualan')
@@ -260,11 +261,12 @@ class form_tanda_terima_penjualan_controller extends Controller
 				$total += $invoice->i_total_tagihan;
 				if ($req->revisi[$i] == 'off') {
 					$upd = array('i_tanda_terima'			=> null,
-								 'i_tanggal_tanda_terima'	=> null);
+								 'i_tanggal_tanda_terima'	=> null,
+								 'i_jatuh_tempo_tt'			=> null);
 				}else{
 					$upd = array('i_tanda_terima'			=> $req->nomor,
-								 'i_tanggal_tanda_terima'	=> carbon::parse(str_replace('/','-',$req->tanggal))->format('Y-m-d'));
-								 'i_jatuh_tempo_tt'			=> carbon::parse(str_replace('/','-',$req->jatuh_tempo))->format('Y-m-d');
+								 'i_tanggal_tanda_terima'	=> carbon::parse(str_replace('/','-',$req->tanggal))->format('Y-m-d')),
+								 'i_jatuh_tempo_tt'			=> carbon::parse(str_replace('/','-',$req->jatuh_tempo))->format('Y-m-d'),
 				}
 
 				$update = DB::table('invoice')

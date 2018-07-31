@@ -96,19 +96,19 @@
                               </tr>
                               <tr>
                                 <td> Ke Satu </td>
-                                <td> <input type="text" class="form-control d" name="unit1" value="{{$item->unit1}}"> </td>
+                                <td> <input type="text" class="form-control d qtysatu" name="unit1" value="{{$item->unit1}}"> </td>
                                 <td> </td>
                               </tr>
                               <tr>
                                 <td> Ke Dua </td>
-                                <td> <input type="text" class="form-control e" name="unit2" value="{{$item->unit2}}"> </td>
+                                <td> <input type="text" class="form-control e qtydua" name="unit2" value="{{$item->unit2}}"> </td>
                                 <td> <div class='form-group'> <label class='col-sm-3 col-sm-3 control-label'> 1 PCS </label> <div class='col-sm-6'> <input type='text' class='form-control biaya'  name='konversi2' value="{{$item->konversi3}}">  </div> </div>
                                 </td>
                               </tr>
 
                               <tr>
                                 <td> Ke Tiga </td>
-                                <td> <input type="text" class="form-control g" name="unit3" value="{{$item->unit3}}"></td>
+                                <td> <input type="text" class="form-control g qtytiga" name="unit3" value="{{$item->unit3}}"></td>
                                 <td> <div class='form-group'> <label class='col-sm-3 col-sm-3 control-label'> 1 PCS </label> <div class='col-sm-6'> <input type='text' class='form-control biaya'  name='konversi3' value="{{$item->konversi3}}"> </div> </div></td>
                               </tr>
 
@@ -116,7 +116,7 @@
 
                               <tr>
                                 <td> Satuan Stock </td>
-                                <td> <input type="text" class="form-control i" required="" name="unitstock" value="{{$item->unitstock}}" readonly=""> </td>
+                                <td> <input type="text" class="form-control i qtystock" required="" name="unitstock" value="{{$item->unitstock}}" readonly=""> </td>
                               </tr>
                             </table>
                         </div>
@@ -350,22 +350,51 @@
       })
   })
 
-  
+     $('.qtysatu').change(function(){
+      qtysatu = $('.qtysatu').val();
+      qtydua = $('.qtydua').val();
+      qtytiga = $('.qtytiga').val();
 
- $('.d').change(function(){ //qtysatu
-      if($('.e').val() != '') {
-        e = $('e').val();
-        $('.i').val(e);
+      if(qtydua != ''){
+        if(qtytiga != ''){
+          $('.qtystock').val(qtytiga);
+        }
+        else {
+          $('.qtystock').val(qtydua)
+        }
       }
-      else if ($('.g').val() != ''){
-        g = $('.g').val();
-        $('.i').val(g);
+      else if(qtytiga != ''){
+        $('.qtystock').val(qtytiga);
       }
       else {
-        d = $('.d').val();
-        $('.i').val(d);
+        $('.qtystock').val(qtysatu);
       }
-   })
+    })
+
+    $('.qtydua').change(function(){
+      qtysatu = $('.qtysatu').val();
+      qtydua = $('.qtydua').val();
+      qtytiga = $('.qtytiga').val();
+
+      if(qtytiga != ''){
+     //   alert('asas');
+        $('.qtystock').val(qtytiga);
+      }
+      else {
+        $('.qtystock').val(qtydua);
+      }
+    })
+
+
+    $('.qtytiga').change(function(){
+      qtysatu = $('.qtysatu').val();
+      qtydua = $('.qtydua').val();
+      qtytiga = $('.qtytiga').val();
+
+        $('.qtystock').val(qtytiga);
+     
+    })
+
 
     $(function(){
             $('.hrg').change(function(){
@@ -376,16 +405,7 @@
             })
         }) 
 
-   $('.e').change(function(){ //qtydua
-      val = $(this).val();
-      $('.i').val(val);
-   })
-
-   
-   $('.g').change(function(){ //qtytiga
-      val = $(this).val();
-      $('.i').val(val);
-  })
+ 
 
     $('.harga').change(function(){
        

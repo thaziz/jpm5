@@ -20,7 +20,7 @@ use Yajra\Datatables\Datatables;
 use App\d_jurnal;
 use App\d_jurnal_dt;
 // use Datatables;
-
+ini_set('max_execution_time', 60000);
 
 class kasKeluarController extends Controller
 {
@@ -96,7 +96,8 @@ class kasKeluarController extends Controller
 
 	public function append_table(request $req)
 	{
-		$cab = $req->cabang;
+		$cab 		= $req->cabang;
+		$jenisbayar = $req->jenis_bayar;
 		return view('purchase.buktikaskeluar.table_index',compact('cab','jenisbayar'));
 	}
 	public function datatable_bkk(request $req)
@@ -297,6 +298,10 @@ class kasKeluarController extends Controller
 			$all   = DB::select("SELECT kode, nama from subcon order by kode "); 
 
 			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
+		} elseif($req->jenis_bayar == 9){
+			$all   = DB::select("SELECT kode, nama from subcon order by kode "); 
+
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		}
 	}
 
@@ -477,7 +482,6 @@ class kasKeluarController extends Controller
 				array_push($akun, $req->pt_akun_biaya[$i]);
 				array_push($akun_val, $req->pt_nominal[$i]);
 			}
-
 			$data_akun = [];
 			for ($i=0; $i < count($akun); $i++) { 
 

@@ -2659,22 +2659,6 @@ $('.print').click(function(){
 });
 
 
-window.onbeforeunload = function(event)
-{       
-            var flag_nota = $('.flag_nota').val();
-            $.ajax({
-            url:baseUrl + '/sales/hapus_um_kwitansi',
-            data:$('.tabel_header :input').serialize()
-                 +'&'+table_data.$('input').serialize()
-                 +'&flag='+'R'
-                 +'&flag_nota='+flag_nota,
-            dataType:'json',
-            success:function(response){
-            }
-            })
-
-
-};
 
 </script>
 

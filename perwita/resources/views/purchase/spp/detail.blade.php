@@ -85,10 +85,10 @@
 
 
                           <tr>
-                            <td> <b> Tanggal </b> </td>
+                            <td> <b> Tanggal di Butuhkan</b> </td>
                             <td>
                            <div class="input-group date">
-                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="tgl_dibutuhkan" required="" value="{{ Carbon\Carbon::parse($spp->spp_tgldibutuhkan)->format('d-M-Y ') }}" disabled="">
+                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="tgl_dibutuhkan" required="" value="{{ Carbon\Carbon::parse($spp->spp_tgldibutuhkan)->format('d-M-Y') }}" disabled="">
                              </div> 
                             </td>
                           </tr>
@@ -102,6 +102,15 @@
                             </td>
                           </tr>
 
+                           <tr>
+                              <td> 
+                               <b> Tgl Input  </b>
+                              </td>
+                              <td> 
+                                <input type='text' class='form-control' value="{{ Carbon\Carbon::parse($spp->tglinput)->format('d-M-Y ')}}" readonly=""> 
+                              </td>
+                           </tr>
+                                        
                         
 
                           <tr>
