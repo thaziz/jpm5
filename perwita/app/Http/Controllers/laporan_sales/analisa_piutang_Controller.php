@@ -70,16 +70,20 @@ class analisa_piutang_Controller extends Controller
                             ->where('i_kode_customer','=',$array[$i])
                             ->get();
             array_push($saldo_push, $saldoawal);
+            $cust_arr = $array[$i]['customer'];
+            // return $cust_arr;
+            return $terbayar = DB::select("select sum(kwitansi.k_jumlah) as terbayar from kwitansi where k_tanggal > '$tglawal' and k_tanggal < '$tglakhir' and k_kode_customer = '$cust_arr' group by k_kode_customer");
 
-            $terbayar = DB::table('invoice')
-                            ->select(DB::raw('SUM(i_sisa_akhir) as terbayar'))
-                            ->where('i_tanggal','>',$tglawal)
-                            ->where('i_tanggal','<',$tglakhir)
-                            ->where('i_kode_customer','=',$array[$i])
-                            ->get();
+            // $terbayar = DB::table('kwitansi')
+            //                 ->select(DB::raw('SUM(i_sisa_akhir) as terbayar'))
+            //                 ->where('i_tanggal','>',$tglawal)
+            //                 ->where('i_tanggal','<',$tglakhir)
+            //                 ->where('i_kode_customer','=',$array[$i])
+            //                 ->get();
 
            
             array_push($terbayar_push, $terbayar);
+
 
             $ss[$i] = ($saldo_push[$i][0]->saldoawal - $terbayar_push[$i][0]->terbayar);
             $sisa_saldo[$i] = ($saldo_push[$i][0]->saldoawal - $ss[$i]);
@@ -96,6 +100,7 @@ class analisa_piutang_Controller extends Controller
                             ->get();
 
             array_push($sebelum_jatuhtempo_push, $sebelum_jatuhtempo);
+
             
             $sebelum_jatuhtempo_hasil[$i] = ($saldo_push[$i][0]->saldoawal - $terbayar_push[$i][0]->terbayar);  
 

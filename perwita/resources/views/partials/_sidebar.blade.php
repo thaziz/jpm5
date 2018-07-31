@@ -1508,7 +1508,7 @@
                                     <a  href="#" style="font-size: 96%" > Transaksi Penjualan <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level" style="padding-left: 5%;font-size: 85%;">
                                 <li>
-                            {{-- @if(Auth::user()->PunyaAkses('Delivery Order','aktif'))
+                            @if(Auth::user()->PunyaAkses('Delivery Order','aktif'))
                             <li >
                             <a class="sidebar master-perusahaan 
                             {{Request::is('sales/deliveryorder') ? 'active' : '' || 
@@ -1517,7 +1517,7 @@
 
                             " href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
                             </li>
-                            @endif --}}
+                            @endif
                             @if(Auth::user()->PunyaAkses('Delivery Order Paket','aktif'))
                             <li >
                             <a class="sidebar master-perusahaan 
