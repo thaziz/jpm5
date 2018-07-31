@@ -118,7 +118,7 @@
                           </tr>
 
                           <tr>
-                            <td> Kode Bank </td>
+                            <td class='disabledbank'> Kode Bank </td>
                             <td>
                               <select class="form-control kodebank chosen-select">
                                <option value=""> Pilih Data Bank</option>
@@ -567,7 +567,8 @@
       $nomor = 1;
     $('#tmbhdatabgakun').click(function(){
 
-
+      kodecabang = $('.kodebank').val();
+      $('.disabledbank').addClass('disabled');
 
       nobbk = $('.nobbk').val();
       nofpg = $('.nofpgakunbgbiaya').val();
