@@ -640,7 +640,7 @@ class PurchaseController extends Controller
 
 		$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sppd_kendaraan , sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$idgudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem");*/
 
-		$data['spp'] = DB::select("select * from confirm_order, spp, cabang,masterdepartment where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
+		$data['spp'] = DB::select("select *, spp.created_at as tglinput from confirm_order, spp, cabang,masterdepartment where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
 	/*	dd($data['spp']);*/
 
 		
@@ -711,8 +711,7 @@ class PurchaseController extends Controller
 		$data['countbrg'] = array_count_values($barang);
 		$data['tipespp'] = $tipespp;
 
-		/*dd($data);*/
-	
+		
 		return view('purchase.spp.detail', compact('data'));
 	}
 

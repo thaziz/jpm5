@@ -592,10 +592,10 @@
         arridbank.push(valid);
        // alert(arrnofaktur + 'arrnofaktur');
       });
-
-
       index = arridbank.indexOf(akundakun);
-    
+      console.log(arridbank);
+      console.log(index);
+      
       if(index == -1) {  
       row = "<tr class='transaksi dataakunbg dataakunbg"+$nomor+"' data-nomor="+akundakun+"> <td>"+$nomor+"</td>" +
                   "<td> <input type='text' class='form-control input-sm nobbkdetailbg' value="+nobbk+" style='min-width:200px' readonly>  </td>" + //nobbk
@@ -638,10 +638,11 @@
       nominalfpg = par.find('.nominalfpgdetailbg').val();
       keteranganfpg = par.find('.keteranganbiayadetailbg').val();
       nomorbank = par.find('.transaksi').data('nomor');
-   
+      
+
         $('.nofpgakunbgbiaya').val(nofpg);
         $('.nominalakunbiaya').val(nominalfpg);
-        $('.keteranganakunbiaya').val(keteranganakun);
+        $('.keteranganakunbg').val(keteranganakun);
         $('.checkakunbg').val(nocheck);
         $('.accbiayaakun').val(accakun + "," + dk);
         $('.dkbiayabg').val(dk);
