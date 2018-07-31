@@ -254,23 +254,23 @@ class kasKeluarController extends Controller
 	{	
 
 
-		$total = DB::table("delivery_order")
-				   ->where('total_dpp',null)
-				   ->get();
+		// $total = DB::table("delivery_order")
+		// 		   ->where('total_dpp',null)
+		// 		   ->get();
 
 
-		for ($i=0; $i < count($total); $i++) { 
-			DB::table('delivery_order')
-				->where('nomor',$total[$i]->nomor)
-				->update([
-					'total_dpp'		=> $total[$i]->total_net,
-					'total_vendo'	=> 0,
-				]);
-		}
-		$total = DB::table("delivery_order")
-				   ->where('total_dpp',null)
-				   ->get();
-		dd($total);
+		// for ($i=0; $i < count($total); $i++) { 
+		// 	DB::table('delivery_order')
+		// 		->where('nomor',$total[$i]->nomor)
+		// 		->update([
+		// 			'total_dpp'		=> $total[$i]->total_net,
+		// 			'total_vendo'	=> 0,
+		// 		]);
+		// }
+		// $total = DB::table("delivery_order")
+		// 		   ->where('total_dpp',null)
+		// 		   ->get();
+		// dd($total);
 		if (isset($req->sup)) {
 			$sup = $req->sup;
 		}else{
