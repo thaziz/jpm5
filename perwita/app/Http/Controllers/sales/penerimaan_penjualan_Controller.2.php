@@ -663,17 +663,8 @@ class penerimaan_penjualan_Controller extends Controller
 
           // JURNAL
           if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'B' or $request->cb_jenis_pembayaran == 'U') {
-
-            // $bulan = Carbon::parse($tgl)->format('m');
-            // $tahun = Carbon::parse($tgl)->format('y');
-
-            // $cari_nota = DB::select("SELECT  substring(max(k_nomor),11) as id from kwitansi
-            //                                 WHERE k_kode_cabang = '$request->cabang'
-            //                                 AND substring(max(k_nomor),11) = 'KK'
-            //                                 ");
-            // $index   = (integer)$cari_nota[0]->id + 1;
-            // $index   = str_pad($index, 5, '0', STR_PAD_LEFT);
-            // $nota_km = 'KM' . $request->cb_cabang . $bulan . $tahun . $index;
+            
+            // $param = get_id_jurnal($)
 
             $id_jurnal=d_jurnal::max('jr_id')+1;
             $delete = d_jurnal::where('jr_ref',$nota)->delete();
