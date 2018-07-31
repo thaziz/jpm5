@@ -85,7 +85,7 @@
 
 
                           <tr>
-                            <td> <b> Tanggal </b> </td>
+                            <td> <b> Tanggal di Butuhkan</b> </td>
                             <td>
                            <div class="input-group date">
                                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="tgl_dibutuhkan" required="" value="{{ Carbon\Carbon::parse($spp->spp_tgldibutuhkan)->format('d-M-Y ') }}" disabled="">

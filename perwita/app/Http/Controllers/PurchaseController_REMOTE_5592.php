@@ -150,7 +150,7 @@ class PurchaseController extends Controller
 	public function spp_index () {
 		$cabang = session::get('cabang');
 
-		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','aktif')){
+		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
 			$data['spp'] = DB::select("select * from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode order by spp_id desc");
 
 			$data['belumdiproses'] = DB::table("spp")->where('spp_status' , '=' , 'DITERBITKAN')->count();
