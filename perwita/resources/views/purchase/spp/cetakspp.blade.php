@@ -89,7 +89,7 @@ div.bottom
 			<td colspan="9" style="text-align: left">
 				Diminta oleh bagian : {{$data['spp'][0]->spp_bagian}} <br>
 				Untuk keperluan : {{$data['spp'][0]->spp_keperluan}}<br>
-				Tanggal dibutuhkan : {{ Carbon\Carbon::parse($data['spp'][0]->spp_tgldibutuhkan)->format('d-M-Y ') }}
+				Tanggal dibutuhkan : {{ Carbon\Carbon::parse($data['spp'][0]->created_at)->format('d-M-Y ') }}
 			</td>
 		</tr>
 		<tr>
