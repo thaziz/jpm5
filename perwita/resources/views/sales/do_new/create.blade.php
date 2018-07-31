@@ -125,7 +125,7 @@
                                                         <select class="chosen-select-width replace_deskripsi" id="do_kota_asal" onchange="asal()" name="do_kota_asal" style="width:100%" >
                                                             <option value="">- Pilih -</option>
                                                             @foreach ($kota as $row)
-                                                                {{-- <option selected="" value="3573" data-nama="KOTA MALANG">3573 - KOTA MALANG</option> --}}
+                                                         
                                                                 <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
                                                             @endforeach
                                                         </select>
@@ -137,7 +137,7 @@
                                                         <select class="chosen-select-width replace_deskripsi" id="do_kota_tujuan" onchange="getKecamatan()" id="do_kota_tujuan" name="do_kota_tujuan" style="width:100%" >
                                                             <option value="">- Pilih -</option>
                                                             @foreach ($kota as $row)
-                                                                {{-- <option selected="" value="3578" data-nama="KOTA SURABAYA">3578 - KOTA SURABAYA</option> --}}
+                                                               
                                                                 <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
                                                             @endforeach
                                                         </select>
