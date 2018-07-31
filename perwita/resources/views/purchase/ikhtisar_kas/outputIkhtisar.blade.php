@@ -194,20 +194,22 @@
  <div class="wrapper">
   <div class="position-fixed">
    <table class="inlineTable">
-      <td><img class="img" width="150" height="80" src="{{ asset('assets/img/dboard/logo/logo_jpm.png') }}"></td>
+      <td>
+          <img class="img" width="150" height="80" src="{{ asset('perwita/storage/app/upload/images.jpg') }}">
+      </td>
    </table>
    <table class="inlineTable size" style="margin-bottom: -5px;">
     <tr>
-      <th style="font-size: 18px;">PT. JAWA PRATAMA MANDIRI</th>
+      <th>{{perusahaan()->mp_nama}}</th>
     </tr>
     <tr>
       <td>&nbsp;</td>
     </tr>
      <tr>
-       <td>Jl. Karah Agung no.45 Surabaya</td>
+       <td>{{perusahaan()->mp_alamat}}</td>
      </tr>
      <tr>
-       <td>Telp. 031.8290606, 82518332</td>
+       <td>Telp.{{perusahaan()->mp_tlp}}</td>
      </tr>
      <tr>
        <td>Fax 031.8983999</td>
@@ -215,7 +217,7 @@
    </table>
    <table class="inlineTable bold" style="font-size: 16px;">
      <td>
-       LIST REIMBURSTMENT
+       IKHTISAR KAS
      </td>
    </table>
    <table class="inlineTable pull-right" >
