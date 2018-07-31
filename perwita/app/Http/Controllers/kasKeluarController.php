@@ -20,7 +20,7 @@ use Yajra\Datatables\Datatables;
 use App\d_jurnal;
 use App\d_jurnal_dt;
 // use Datatables;
-
+ini_set('max_execution_time', 60000);
 
 class kasKeluarController extends Controller
 {
@@ -252,6 +252,22 @@ class kasKeluarController extends Controller
 
 	public function supplier_dropdown(request $req)
 	{	
+
+
+		$total = DB::table("delivery_order")
+				   ->where('total_dpp',null)
+				   ->get();
+
+
+		for ($i=0; $i < count($total); $i++) { 
+			DB::table('delivery_order')
+				->where('nomor',$total[$i]->nomor)
+				->update([
+					'total_dpp'		=> $total[$i]->total_net,
+					'total_vendo'	=> 0,
+				]);
+		}
+		return false;
 		if (isset($req->sup)) {
 			$sup = $req->sup;
 		}else{
@@ -292,6 +308,10 @@ class kasKeluarController extends Controller
 			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		} elseif($req->jenis_bayar == 7){
 			$all 	  = DB::select("SELECT kode, nama from agen where kategori = 'OUTLET' or kategori = 'AGEN DAN OUTLET' order by kode ASC");
+
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
+		} elseif($req->jenis_bayar == 9){
+			$all   = DB::select("SELECT kode, nama from subcon order by kode "); 
 
 			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		} elseif($req->jenis_bayar == 9){
