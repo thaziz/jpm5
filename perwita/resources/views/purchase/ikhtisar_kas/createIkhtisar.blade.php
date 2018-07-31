@@ -74,7 +74,7 @@
     <div class="ibox">&nbsp;
       <div class="ibox-title">
         <h5>Laporan Patty Cash</h5>
-        <a href="../buktikaskeluar/index" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+        <a href="../ikhtisar_kas/index" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
       </div>
       <div class="ibox-content col-sm-12">
         <div class="col-sm-6">

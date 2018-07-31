@@ -132,7 +132,8 @@ class ikhtisarController extends Controller
 
                 
 
-                $c = '';
+                $c = '<a title="Hapus" class="btn btn-danger">
+	                              <i class="fa fa-stop" aria-hidden="true"></i></a>';
                 if(Auth::user()->punyaAkses('Ikhtisar Kas','hapus')){
                 	if ($data->ik_status == 'RELEASED' ) {
                 		if(cek_periode(carbon::parse($data->created_at)->format('m'),carbon::parse($data->created_at)->format('Y') ) != 0){
@@ -746,9 +747,7 @@ class ikhtisarController extends Controller
 			$cari = DB::table('ikhtisar_kas_detail')
 					  ->where('ikd_ik_id',$id)
 					  ->get();
-			if ($cari) {
-				# code...
-			}
+		
 			for ($i=0; $i < count($cari); $i++) { 
 
 				$update = DB::table('patty_cash')
