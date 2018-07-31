@@ -148,7 +148,7 @@ class ikhtisarController extends Controller
             })->addColumn('print', function ($data) {
 
                 if(Auth::user()->punyaAkses('Ikhtisar Kas','print')){
-                   return $b = '<a title="Print" class="" href=url(ikhtisar_kas/print/'.$data->ik_id.')>
+                   return $b = '<a title="Print" class="" href='.url('ikhtisar_kas/print').'/'.$data->ik_id.'>
                           <i class="fa fa-print" aria-hidden="true">&nbsp; Print</i>';
                 }else{
                   return $b = '-';
