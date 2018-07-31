@@ -647,12 +647,12 @@ public function simpan_invoice(request $request)
         $ppn_type = 'npkp';
         $ppn_persen = 1;
         $nilaiPpn=1/101;
-        $akunPPN='2302';
+        $akunPPN='2301';
     } elseif ($request->cb_jenis_ppn == 5) {//include
         $ppn_type = 'npkp';
         $ppn_persen = 10;
         $nilaiPpn=10/110;
-        $akunPPN='2302';
+        $akunPPN='2398';
     }
 
   $user = Auth::user()->m_name;
