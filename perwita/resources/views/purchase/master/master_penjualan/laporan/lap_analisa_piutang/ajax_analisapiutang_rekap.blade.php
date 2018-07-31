@@ -25,8 +25,8 @@
                          <td>{{ $index+1 }}</td>
                          <td>{{ $array[$index]['customer'] }}</td>
                          <td>{{ $saldo_push[$index][0]->saldoawal }}</td>
-                         <td>{{ $terbayar_push[$index][0]->terbayar }}</td>
                          <td>{{ $ss[$index] }}</td>
+                         <td>{{ $sisa_saldo[$index] }}</td>
                          <td></td>
                          <td>{{ $sebelum_jatuhtempo_push[$index][0]->sebelum_jatuhtempo }}</td>
                          <td>{{ $jatuhtempo_30_push[$index][0]->jatuhtempo_30 }}</td>

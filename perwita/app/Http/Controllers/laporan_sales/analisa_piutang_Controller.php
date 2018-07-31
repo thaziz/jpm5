@@ -80,22 +80,9 @@ class analisa_piutang_Controller extends Controller
 
            
             array_push($terbayar_push, $terbayar);
-            // return $terbayar_push;
-            // $terbayar_posting = DB::table('posting_pembayaran_d')
-            //             ->select(DB::raw('SUM(jumlah) as terbayar_posting'))
-            //             ->where('tanggal','>',$tglawal)
-            //             ->where('tanggal','<',$tglakhir)
-            //             ->where('kode_customer','=',$array[$i])
-            //             ->get();
-
-
-            
-            // array_push($terbayar_posting_push, $terbayar_posting);
 
             $ss[$i] = ($saldo_push[$i][0]->saldoawal - $terbayar_push[$i][0]->terbayar);
-
-            // $date_now = carbon::create($tglakhir);
-            // return $date_now_g = $date_now->year.'-'.$date_now->month.'-'.$date_now->day;
+            $sisa_saldo[$i] = ($saldo_push[$i][0]->saldoawal - $ss[$i]);
 
             $date_now =  strtotime ( $tglakhir );
             $date_now_g = date('Y-m-j' , $date_now);
@@ -109,6 +96,7 @@ class analisa_piutang_Controller extends Controller
                             ->get();
 
             array_push($sebelum_jatuhtempo_push, $sebelum_jatuhtempo);
+            
             $sebelum_jatuhtempo_hasil[$i] = ($saldo_push[$i][0]->saldoawal - $terbayar_push[$i][0]->terbayar);  
 
             $date_30 = strtotime ( '+30 day' , strtotime ( $tglakhir ));
@@ -202,12 +190,14 @@ class analisa_piutang_Controller extends Controller
 
         }
             // return $jatuhtempo_30_push;
+        // return $sisa_saldo;
+        // return $ss;
 
         // $sebelum_jatuhtempo_push;    
         
         // [$terbayar_push,$saldo_push,$ss,$sebelum_jatuhtempo_push,$jatuhtempo_30_push,$jatuhtempo_60_push,$jatuhtempo_90_push,$jatuhtempo_120_push,$jatuhtempo_180_push,$jatuhtempo_360_push,$tgl_jthtempo_now_push];
 
-        return view('purchase/master/master_penjualan/laporan/lap_analisa_piutang/ajax_analisapiutang_rekap',compact('array','saldo_push','terbayar_push','ss','sebelum_jatuhtempo_push','jatuhtempo_30_push','jatuhtempo_60_push','jatuhtempo_90_push','jatuhtempo_120_push','jatuhtempo_180_push','jatuhtempo_360_push','jatuhtempo_lebih360_push','tgl_jthtempo_now_push'));
+        return view('purchase/master/master_penjualan/laporan/lap_analisa_piutang/ajax_analisapiutang_rekap',compact('array','saldo_push','terbayar_push','ss','sebelum_jatuhtempo_push','jatuhtempo_30_push','jatuhtempo_60_push','jatuhtempo_90_push','jatuhtempo_120_push','jatuhtempo_180_push','jatuhtempo_360_push','jatuhtempo_lebih360_push','tgl_jthtempo_now_push','sisa_saldo'));
     }
 
 }
