@@ -256,13 +256,13 @@ class posting_pembayaran_Controller extends Controller
         $bulan = Carbon::now()->format('m');
         $tahun = Carbon::now()->format('y');
 
-        $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from posting_pembayaran
+        $cari_nota = DB::select("SELECT  substring(max(nomor),8) as id from posting_pembayaran
                                         WHERE kode_cabang = '$request->cabang'
                                         AND to_char(tanggal,'MM') = '$bulan'
                                         AND to_char(tanggal,'YY') = '$tahun'");
         $index = (integer)$cari_nota[0]->id + 1;
         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-        $nota = 'PST' . $request->cabang . $bulan . $tahun . $index;
+        $nota = 'BM' . $request->cabang . $bulan . $tahun . $index;
 
         return response()->json(['nota'=>$nota]);
 
@@ -423,13 +423,13 @@ class posting_pembayaran_Controller extends Controller
                     $bulan = Carbon::now()->format('m');
                     $tahun = Carbon::now()->format('y');
 
-                    $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from posting_pembayaran
+                    $cari_nota = DB::select("SELECT  substring(max(nomor),8) as id from posting_pembayaran
                                                     WHERE kode_cabang = '$request->cabang'
                                                     AND to_char(create_at,'MM') = '$bulan'
                                                     AND to_char(create_at,'YY') = '$tahun'");
                     $index = (integer)$cari_nota[0]->id + 1;
                     $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-                    $nota = 'PST' . $request->cabang . $bulan . $tahun . $index;
+                    $nota = 'BM' . $request->cabang . $bulan . $tahun . $index;
 
                 }
             }elseif ($cari_nota == null) {
@@ -490,6 +490,13 @@ class posting_pembayaran_Controller extends Controller
                                          ->update([
                                             'k_nomor_posting'   => $request->nomor_posting,
                                             'k_tgl_posting'     => $request->ed_tanggal,
+                                         ]);
+
+                    $update_kwitansi = DB::table('delivery_order')
+                                         ->where('nomor',$request->d_nomor_kwitansi[$i])
+                                         ->update([
+                                            'posting'             => $request->nomor_posting,
+                                            'tanggal_posting'     => $request->ed_tanggal,
                                          ]);
                 }else{
                     $update_kwitansi = DB::table('uang_muka_penjualan')
@@ -625,12 +632,18 @@ class posting_pembayaran_Controller extends Controller
                     $kwitansi = DB::table('kwitansi')
                                   ->where('k_nomor',$request->d_nomor_kwitansi[$i])
                                   ->first();
+
+                    $do = DB::table('delivery_order')
+                                  ->where('nomor',$request->d_nomor_kwitansi[$i])
+                                  ->first();
                     array_push($temp_akun_piutang, $kwitansi->k_kode_akun);
                     array_push($temp_nominal_piutang, $kwitansi->k_netto);
+
+                    array_push($temp_akun_piutang, $do->acc_piutang_do);
+                    array_push($temp_nominal_piutang, $do->total_net);
                     
                 }
                 $fix_akun_piutang = array_unique($temp_akun_piutang);
-            
                 $fix_nominal_akun = [];
                 for ($i=0; $i < count($fix_akun_piutang); $i++) { 
                     for ($a=0; $a < count($temp_akun_piutang); $a++) { 
@@ -665,7 +678,6 @@ class posting_pembayaran_Controller extends Controller
                             ->first();
 
                     if ($i == 0) {
-                    
                         if ($cari_coa->akun_dka == 'D') {
                             $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                             $data_akun[$i]['jrdt_detailid'] = $i+1;
