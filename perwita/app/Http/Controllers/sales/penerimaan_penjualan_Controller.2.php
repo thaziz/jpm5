@@ -231,7 +231,7 @@ class penerimaan_penjualan_Controller extends Controller
         $bulan = Carbon::parse(str_replace('/','-',$request->tanggal))->format('m');
         $tahun = Carbon::parse(str_replace('/','-',$request->tanggal))->format('y');
 
-        $cari_nota = DB::select("SELECT  substring(max(k_nomor),11) as id from kwitansi
+        $cari_nota = DB::select("SELECT  substring(max(k_nomor),8) as id from kwitansi
                                         WHERE k_kode_cabang = '$request->cabang'
                                         AND to_char(k_tanggal,'MM') = '$bulan'
                                         AND to_char(k_tanggal,'YY') = '$tahun'
@@ -533,19 +533,19 @@ class penerimaan_penjualan_Controller extends Controller
                    
           if ($cari_nota != null) {
             if ($cari_nota->k_update_by == $user) {
-              return 'Data Sudah Ada';
+              return response()->json(['status'=>1,'message'=>'Data Sudah Ada']);
             }else{
-              $bulan = Carbon::now()->format('m');
+              $bulan = Carbon::parse($tgl)->format('m');
+              $tahun = Carbon::parse($tgl)->format('y');
 
-              $tahun = Carbon::now()->format('y');
-
-              $cari_nota = DB::select("SELECT  substring(max(k_nomor),11) as id from kwitansi
+              $cari_nota = DB::select("SELECT  substring(max(k_nomor),8) as id from kwitansi
                                               WHERE k_kode_cabang = '$request->cabang'
-                                              AND to_char(k_create_at,'MM') = '$bulan'
-                                              AND to_char(k_create_at,'YY') = '$tahun'");
+                                              AND to_char(k_tanggal,'MM') = '$bulan'
+                                              AND to_char(k_tanggal,'YY') = '$tahun'
+                                              ");
               $index = (integer)$cari_nota[0]->id + 1;
               $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-              $nota = 'KWT' . $request->cabang . $bulan . $tahun . $index;
+              $nota = 'KWT' . $request->cb_cabang . $bulan . $tahun . $index;
 
             }
           }elseif ($cari_nota == null) {
@@ -664,16 +664,16 @@ class penerimaan_penjualan_Controller extends Controller
           // JURNAL
           if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'B' or $request->cb_jenis_pembayaran == 'U') {
 
-            $bulan = Carbon::parse($tgl)->format('m');
-            $tahun = Carbon::parse($tgl)->format('y');
+            // $bulan = Carbon::parse($tgl)->format('m');
+            // $tahun = Carbon::parse($tgl)->format('y');
 
-            $cari_nota = DB::select("SELECT  substring(max(k_nomor),11) as id from kwitansi
-                                            WHERE k_kode_cabang = '$request->cabang'
-                                            AND substring(max(k_nomor),11) = 'KK'
-                                            ");
-            $index   = (integer)$cari_nota[0]->id + 1;
-            $index   = str_pad($index, 5, '0', STR_PAD_LEFT);
-            $nota_km = 'KM' . $request->cb_cabang . $bulan . $tahun . $index;
+            // $cari_nota = DB::select("SELECT  substring(max(k_nomor),11) as id from kwitansi
+            //                                 WHERE k_kode_cabang = '$request->cabang'
+            //                                 AND substring(max(k_nomor),11) = 'KK'
+            //                                 ");
+            // $index   = (integer)$cari_nota[0]->id + 1;
+            // $index   = str_pad($index, 5, '0', STR_PAD_LEFT);
+            // $nota_km = 'KM' . $request->cb_cabang . $bulan . $tahun . $index;
 
             $id_jurnal=d_jurnal::max('jr_id')+1;
             $delete = d_jurnal::where('jr_ref',$nota)->delete();
