@@ -217,9 +217,9 @@
                               <div class="col-lg-12">
                                   <div class="tabs-container">
                                       <ul class="nav nav-tabs" id="tabmenu">
-                                          <li class="active" id="tabcekbg"><a data-toggle="tab" href="#tab-1"> Detail Cek / BG </a></li>
-                                          <li class="" id="tabcekbgakun"><a data-toggle="tab" href="#tab-3"> Cek / BG & Akun </a></li>
-                                          <li class="" id="tabbiaya"><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
+                                          <li class="active" id="tabcekbg" data-val='BG'><a data-toggle="tab" href="#tab-1" > Detail Cek / BG </a></li>
+                                          <li class="" id="tabcekbgakun" data-val="AKUNBG"><a data-toggle="tab" href="#tab-3"> Cek / BG & Akun </a></li>
+                                          <li class="" id="tabbiaya" data-val="BIAYA"><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
                                       </ul>
                                       <div class="tab-content">
                                           <div id="tab-1" class="tab-pane active">
@@ -234,7 +234,7 @@
                                                       <table class='table'>
                                                           <tr>
                                                               <th> No Check / BG </th>
-                                                              <td> <input type="text" class="input-sm form-control nocheck bg" type="button" data-toggle="modal" data-target="#myModal2">  </td>
+                                                              <td> <input type="text" class="input-sm form-control nocheck bg" type="button" data-toggle="modal" data-target="#myModal2" readonly="">  </td>
                                                           </tr>
 
                                                           <tr>
@@ -403,12 +403,12 @@
 
                                                       <tr>
                                                         <th> D / K </th>
-                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk biayabg" readonly=""> </div> </td>
+                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk dkbiayabg biayabg" readonly=""> </div> <input type='hidden' class='nomorbgakun'> </td>
                                                       </tr>
 
                                                       <tr>
                                                         <th> Jumlah </th>
-                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount biayabg jumlahakunbg" style="text-align: right jumlahakunbiaya"> </div> </td>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount biayabg jumlahakunbg" style="text-align:right'"> </div> </td>
                                                       </tr>
 
                                                       <tr>
@@ -422,22 +422,22 @@
                                                     <table class="table">
                                                       <tr>
                                                           <th> No Check / BG </th>
-                                                              <td> <input type="text" class="input-sm form-control nocheck biayabg checkakunbg" type="button" data-toggle="modal" data-target="#myModal2">  </td>
+                                                              <td> <input type="text" class="input-sm form-control nocheck biayabg checkakunbg" type="button" data-toggle="modal" data-target="#myModal2" readonly="">  </td>
                                                           </tr>
 
                                                           <tr>
                                                               <th> No FPG </th>
-                                                              <td> <input type='text' class='input-sm form-control jatuhtempo biayabg nofpgakunbgbiaya' readonly="" name="fpg_jatuhtempo"> </td>
+                                                              <td> <input type='text' class='input-sm form-control jatuhtempo biayabg nofpgakunbgbiaya' readonly="" name="nofpg"> <input type='text' class='input-sm form-control jatuhtempo biayabg idfpgakunbgbiaya' readonly="" name="idfpg"> </td>
                                                           </tr>
 
                                                           <tr>
                                                             <th> Nominal </th>
-                                                            <td> <input type='text' class='input-sm form-control nominalakunbiaya biayabg' name="fpg_nominal" readonly="" style='text-align: right'> </td>
+                                                            <td> <input type='text' class='input-sm form-control nominalakunbiaya biayabg' name="fpg_nominal" readonly="" style='text-align:right'> </td>
                                                           </tr>
 
                                                           <tr>
                                                             <th> Keterangan </th>
-                                                            <td> <input type='text' class='input-sm form-control keteranganakuniayafpg biayabg' name="fpg_keterangan" readonly=""> </td>
+                                                            <td> <input type='text' class='input-sm form-control keteranganakunbiayafpg biayabg' name="fpg_keterangan" readonly=""> </td>
                                                           </tr>
                                                     </table>
                                                   </div>
@@ -451,6 +451,7 @@
                                                    <br>
                                                    <br>
                                                    <div class="col-sm-12">
+                                                    <div class="table-responsive">
                                                     <table class='table table-stripped table-bordered' id="tbl-biayaakun">
                                                       <tr>
                                                         <th> No </th>
@@ -460,11 +461,13 @@
                                                         <th> Nominal </th>
                                                         <th> Keterangan Akun </th>
                                                         <th> No FPG </th>
+                                                        <th> No Check </th>
                                                         <th> Nominal </th>
                                                         <th> Keterangan FPG </th>
                                                         <th> Aksi </th>
                                                       </tr>
                                                     </table>
+                                                    </div>
                                                    </div>
                                               </div>
                                           </div>
@@ -561,6 +564,99 @@
         }
     });
 
+      $nomor = 1;
+    $('#tmbhdatabgakun').click(function(){
+      nobbk = $('.nobbk').val();
+      nofpg = $('.nofpgakunbgbiaya').val();
+      idfpg = $('.idfpgakunbgbiaya').val();
+      nominal = $('.nominalakunbiaya').val();
+      keteranganbiaya = $('.keteranganakunbiayafpg').val();
+      nocheckakunbg = $('.checkakunbg').val();
+      accbiayaakun = $('.accbiayaakun').val();    
+      dk = $('.dkbiayabg').val();
+      jumlahakunbiaya = $('.jumlahakunbg').val();
+      keteranganakunbg = $('.keteranganakunbg').val();
+    
+      $('.cekbg').val(addCommas(nominal));
+
+      $('.biayabg').val('');   
+      $('#tabcekbg').addClass('disabled');
+      $('#tabbiaya').addClass('disabled');
+
+      splitakun = accbiayaakun.split(",");
+      akundakun = splitakun[0];
+      
+       arridbank = [];
+      $('tr.dataakunbg').each(function(){
+        valid = $('.dataakunbg').data('nomor');
+        arridbank.push(valid);
+       // alert(arrnofaktur + 'arrnofaktur');
+      });
+
+
+      index = arridbank.indexOf(akundakun);
+    
+      if(index == -1) {  
+      row = "<tr class='transaksi dataakunbg dataakunbg"+$nomor+"' data-nomor="+akundakun+"> <td>"+$nomor+"</td>" +
+                  "<td> <input type='text' class='form-control input-sm nobbkdetailbg' value="+nobbk+" style='min-width:200px' readonly>  </td>" + //nobbk
+                  "<td> <input type='text' class='form-control input-sm akundakundetailbg' value="+akundakun+" name='accbiayaakun[]' style='min-width:200px' readonly> </td>"+
+                  "<td> <input type='text' class='form-control input-sm dkakundetailbg' value="+dk+" name='dk[]' style='min-width:90px' readonly> </td>" +
+                  "<td> <input type='text' class='form-control input-sm jumlahakunbiayadetailbg' value="+jumlahakunbiaya+" style='min-width:200px; text-align:right' name='nominalakun[]' style='min-width:100px' readonly> </td>" +
+                  "<td> <input type='text' class='form-control input-sm keteranganakunbgdetail' value='"+keteranganakunbg+"' name='keteranganakunbg[]' style='min-width:200px' readonly> </td>" +
+                  "<td> <input type='text' class='form-control input-sm nofpgdetailbg' value="+nofpg+" name='nofpg[]' readonly style='min-width:200px'> <input type='hidden' class='idfpgakunbgdetail' value="+idfpg+" name='idfpg[]'> </td>" +
+                  "<td> <input type='text' class='form-control input-sm accbiayaakundetailbg' value="+nocheckakunbg+" name='nocheck[]' readonly style='min-width:200px'> </td>" +
+                  "<td> <input type='text' class='form-control input-sm nominalfpgdetailbg' value="+nominal+" name='nominalfpg[]' readonly style='min-width:200px;text-align:right'> </td>" +
+                  "<td> <input type='text' class='form-control input-sm keteranganbiayadetailbg' value="+keteranganbiaya+" name='keteranganfpg[]' readonly style='min-width:200px'> </td>" +
+                  "</td>" +
+                  "<td> <button class='btn btn-xs btn-danger' type='button' onclick='hapus(this)'> <i class='fa fa-trash'> </i> </button> &nbsp; <button class='btn btn-xs btn-warning' type='button' onclick='editakunbg(this)'> <i class='fa fa-pencil'> </i>  </button> </td>" +
+                  "</tr>";
+        $('#tbl-biayaakun').append(row);
+
+        jumlahnominal = 0;
+        $('.jumlahakunbiayadetailbg').each(function(){
+          nominal = $(this).val();
+          nominal2 =  nominal.replace(/,/g, '');
+          jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+          $('.total').val(addCommas(jumlahnominal));
+        })
+      }
+      else {
+        alert('edit');
+      }
+    })
+    
+    function editakunbg(a){
+      var par = $(a).parents('tr');
+      nobbk = par.find('.nobbkdetailbg').val();
+      accakun = par.find('.akundakundetailbg').val();
+      dk = par.find('.dkakundetailbg').val();
+      nominalakun = par.find('.jumlahakunbiayadetailbg').val();
+      keteranganakun = par.find('.keteranganakunbgdetail').val();
+      nofpg = par.find('.nofpgdetailbg').val();
+      idfpg = par.find('.idfpgakunbgdetail').val();
+      nocheck = par.find('.accbiayaakundetailbg').val();
+      nominalfpg = par.find('.nominalfpgdetailbg').val();
+      keteranganfpg = par.find('.keteranganbiayadetailbg').val();
+      nomorbank = par.find('.transaksi').data('nomor');
+   
+        $('.nofpgakunbgbiaya').val(nofpg);
+        $('.nominalakunbiaya').val(nominalfpg);
+        $('.keteranganakunbiaya').val(keteranganakun);
+        $('.checkakunbg').val(nocheck);
+        $('.accbiayaakun').val(accakun + "," + dk);
+        $('.dkbiayabg').val(dk);
+        $('.jumlahakunbg').val(nominalakun);
+        $('.keteranganakunbiayafpg').val(keteranganfpg);
+        $('.idfpgakunbgbiaya').val(idfpg);
+        $('.nomorbgakun').val(nomorbank);
+    }
+
+    function hapus(a){
+       var par = $(a).parents('tr');
+       par.remove();
+    }
+
+
     $('.kodebank').change(function(){
       val = $(this).val();
       notabbk = $('.nobbk').val();
@@ -645,6 +741,34 @@
       return false;
      }
      else {
+      var a = $('ul#tabmenu').find('li.active').data('val');
+      if(a == 'CEKBG'){
+        cekbg = $('.cekbg').val();
+        total = $('.total').val();
+        if(cekbg != total){
+          toastr.info("Total BG dan Total tidak sama :)");
+          return false;
+        }
+      }
+      else if(a == 'BIAYA'){
+        biaya = $('.biaya').val();
+        total = $('.total').val();
+        if(biaya != total){
+          toastr.info("Total Biaya dan Total tidak sama :)");
+          return false;
+        }
+      }
+      else if(a == 'AKUNBG'){
+        total = $('.total').val();
+        cekbg = $('.cekbg').val();
+        if(total != cekbg){
+          toastr.info("Total BG dan Total tidak sama :)");
+          return false;
+        }
+
+      }
+
+
        url : baseUrl + '/pelunasanhutangbank/simpan';
 
         event.preventDefault();
@@ -926,8 +1050,8 @@
           return this.id;
         }).toArray();
 
-        $('#tabbiaya').addClass('disabled');
-        $('#tabcekbgakun').addClass('disabled');
+
+
 
         $('.loadingcek').css('display' , 'block');
          data = checked;
@@ -949,8 +1073,18 @@
             dataType : "json",
             success : function (response){
                $('.loadingcek').css('display' , 'none');
-
                 $('#myModal2').modal('hide');
+                var a = $('ul#tabmenu').find('li.active').data('val');
+                if(a == 'AKUNBG'){
+                    $('.nofpgakunbgbiaya').val(response.fpg[0].fpg_nofpg);
+                    $('.idfpgakunbgbiaya').val(response.fpg[0].idfpg);
+                    $('.nominalakunbiaya').val(addCommas(response.fpg[0].fpgb_nominal));
+                    $('.keteranganakunbiayafpg').val(response.fpg[0].fpg_keterangan);
+                    $('.checkakunbg').val(response.fpg[0].fpgb_nocheckbg);
+                  //  alert(response.fpg[0].fpgb_nocheckbg);
+                }
+                else {
+               
                   $('.idfpg').val(response.fpg[0].idfpg);
                   $('.nofpg').val(response.fpg[0].fpg_nofpg);
                   $('.nocheck').val(response.fpg[0].fpgb_nocheckbg);
@@ -999,6 +1133,7 @@
                    $('.kodesup').val(response.fpg[0].kode);
                    $('.namasupplier').val(response.fpg[0].nama); 
                 }
+              }
             }
         })
 

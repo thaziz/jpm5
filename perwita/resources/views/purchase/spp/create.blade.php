@@ -76,8 +76,8 @@
                                             <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
                                           </tr>
                                           
-                                          <tr>
-                                              
+                                         
+
                                              <tr>
                                               <td> Cabang </td>
                                               <td>                                              

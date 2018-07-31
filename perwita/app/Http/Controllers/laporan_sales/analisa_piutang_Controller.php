@@ -21,7 +21,6 @@ class analisa_piutang_Controller extends Controller
         
         $tglawal = $request->min;
         $tglakhir = $request->max;
-
         $customer  =  DB::select("SELECT i_kode_customer from invoice where i_tanggal BETWEEN '$tglawal' and '$tglakhir' order by i_kode_customer asc");
       
         $arraycus = [];
@@ -63,8 +62,6 @@ class analisa_piutang_Controller extends Controller
                             ->where('i_kode_customer','=',$array[$i])
                             ->get();
             array_push($tgl_jthtempo_now_push, $tgl_jthtempo_now);
-
-            $tgl_jthtempo_now_push;
 
             $saldoawal = DB::table('invoice')
                             ->select(DB::raw('SUM(i_total_tagihan) as saldoawal'))
