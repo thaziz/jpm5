@@ -517,7 +517,7 @@ function hapus_detail(o) {
         $('.cb_jenis_pembayaran').removeClass('disabled');
         $('.cabang_td').removeClass('disabled');
     }
-    
+    hitung();
 }
 
 $('#btnsimpan').click(function(){
