@@ -270,7 +270,7 @@ class kasKeluarController extends Controller
 		$total = DB::table("delivery_order")
 				   ->where('total_dpp',null)
 				   ->get();
-		dd($total)
+		dd($total);
 		if (isset($req->sup)) {
 			$sup = $req->sup;
 		}else{
