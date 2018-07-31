@@ -593,7 +593,7 @@
 
       $('.cekbg').val(addCommas(nominal));
 
-      $('.biayabg').val('');   
+       
       $('#tabcekbg').addClass('disabled');
       $('#tabbiaya').addClass('disabled');
 
@@ -633,9 +633,9 @@
           jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
           $('.total').val(addCommas(jumlahnominal));
         })
+         $('.biayabg').val(''); 
       }
       else {
-
 
       nobbk = $('.nobbk').val();
       nofpg = $('.nofpgakunbgbiaya').val();
@@ -650,9 +650,11 @@
 
       splitakun = accbiayaakun.split(",");
       akundakun = splitakun[0];
-      alert(accbiayaakun);
-      
-      var a = $('.dataakunbg' + akundakun);
+      alert(nocheckakunbg);
+      alert(akundakun);
+      valid2 = akundakun.toString();
+
+      var a = $('.dataakunbg' + valid2);
       var par = a.parents('tr');
       nobbk = par.find('.nobbkdetailbg').val(nobbk);
       accakun = par.find('.akundakundetailbg').val(accbiayaakun);
