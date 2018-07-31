@@ -593,7 +593,7 @@
 
       $('.cekbg').val(addCommas(nominal));
 
-      $('.biayabg').val('');   
+       
       $('#tabcekbg').addClass('disabled');
       $('#tabbiaya').addClass('disabled');
 
@@ -608,12 +608,10 @@
        // alert(arrnofaktur + 'arrnofaktur');
       });
      
-
-  
       index = arridbank.indexOf(akundakun);
   
       if(index == -1) {  
-      row = "<tr class='transaksi dataakunbg dataakunbg"+$nomor+"' data-nomor="+akundakun+"> <td>"+$nomor+"</td>" +
+      row = "<tr class='transaksi dataakunbg dataakunbg"+akundakun+"' data-nomor="+akundakun+"> <td>"+$nomor+"</td>" +
                   "<td> <input type='text' class='form-control input-sm nobbkdetailbg' value="+nobbk+" style='min-width:200px' readonly>  </td>" + //nobbk
                   "<td> <input type='text' class='form-control input-sm akundakundetailbg' value="+akundakun+" name='accbiayaakun[]' style='min-width:200px' readonly> </td>"+
                   "<td> <input type='text' class='form-control input-sm dkakundetailbg' value="+dk+" name='dk[]' style='min-width:90px' readonly> </td>" +
@@ -624,7 +622,7 @@
                   "<td> <input type='text' class='form-control input-sm nominalfpgdetailbg' value="+nominal+" name='nominalfpg[]' readonly style='min-width:200px;text-align:right'> </td>" +
                   "<td> <input type='text' class='form-control input-sm keteranganbiayadetailbg' value="+keteranganbiaya+" name='keteranganfpg[]' readonly style='min-width:200px'> </td>" +
                   "</td>" +
-                  "<td> <button class='btn btn-xs btn-danger' type='button' onclick='hapus(this)'> <i class='fa fa-trash'> </i> </button> &nbsp; <button class='btn btn-xs btn-warning' type='button' onclick='editakunbg(this)'> <i class='fa fa-pencil'> </i>  </button> </td>" +
+                  "<td> <button class='btn btn-xs btn-danger' type='button' onclick='hapus(this)'> <i class='fa fa-trash'> </i> </button></td>" +
                   "</tr>";
         $('#tbl-biayaakun').append(row);
 
@@ -635,9 +633,46 @@
           jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
           $('.total').val(addCommas(jumlahnominal));
         })
+         $('.biayabg').val(''); 
       }
       else {
-        alert('edit');
+
+      nobbk = $('.nobbk').val();
+      nofpg = $('.nofpgakunbgbiaya').val();
+      idfpg = $('.idfpgakunbgbiaya').val();
+      nominal = $('.nominalakunbiaya').val();
+      keteranganbiaya = $('.keteranganakunbiayafpg').val();
+      nocheckakunbg = $('.checkakunbg').val();
+      accbiayaakun = $('.accbiayaakun').val();    
+      dk = $('.dkbiayabg').val();
+      jumlahakunbiaya = $('.jumlahakunbg').val();
+      keteranganakunbg = $('.keteranganakunbg').val();
+
+      splitakun = accbiayaakun.split(",");
+      akundakun = splitakun[0];
+      valid2 = akundakun.toString();
+
+      var a = $('.dataakunbg' + valid2);
+      var par = a.parents('tr');
+      nobbk = par.find('.nobbkdetailbg').val(nobbk);
+      accakun = par.find('.akundakundetailbg').val(accbiayaakun);
+      dk = par.find('.dkakundetailbg').val(dk);
+      nominalakun = par.find('.jumlahakunbiayadetailbg').val(jumlahakunbiaya);
+      keteranganakun = par.find('.keteranganakunbgdetail').val(keteranganakunbg);
+      nofpg = par.find('.nofpgdetailbg').val(nofpg);
+      idfpg = par.find('.idfpgakunbgdetail').val(idfpg);
+      nocheck = par.find('.accbiayaakundetailbg').val(nocheckakunbg);
+      nominalfpg = par.find('.nominalfpgdetailbg').val(nominal);
+      keteranganfpg = par.find('.keteranganbiayadetailbg').val(keteranganakunbg);
+      
+        jumlahnominal = 0;
+        $('.jumlahakunbiayadetailbg').each(function(){
+          nominal = $(this).val();
+          nominal2 =  nominal.replace(/,/g, '');
+          jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+          $('.total').val(addCommas(jumlahnominal));
+        })
+
       }
     })
     
