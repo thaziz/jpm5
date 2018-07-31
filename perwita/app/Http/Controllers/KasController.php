@@ -112,7 +112,7 @@ $a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' 
                           }
                         })
                         ->addColumn('tagihan', function ($data) {
-                          return number_format($data->bpk_tarif_penerus,2,',','.'  ); 
+                          return number_format(round($data->bpk_tarif_penerus,0),2,',','.'  ); 
                         })
                         ->addColumn('print', function ($data) {
                            return $a = ' <a class="fa asw fa-print" align="center"  title="edit" href="'.route('detailkas', ['id' => $data->bpk_id]).'"> detail</a><br>
