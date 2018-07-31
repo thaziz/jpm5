@@ -279,8 +279,8 @@
      $('.date').datepicker({
         autoclose: true,
         format: 'dd-MM-yyyy',
-        endDate: 'today'
-    }).datepicker("setDate", "0");
+      
+    });
 
 
     cabang = $('.cabang').val();

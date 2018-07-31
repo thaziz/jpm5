@@ -566,6 +566,9 @@
 
       $nomor = 1;
     $('#tmbhdatabgakun').click(function(){
+
+
+
       nobbk = $('.nobbk').val();
       nofpg = $('.nofpgakunbgbiaya').val();
       idfpg = $('.idfpgakunbgbiaya').val();
@@ -576,7 +579,18 @@
       dk = $('.dkbiayabg').val();
       jumlahakunbiaya = $('.jumlahakunbg').val();
       keteranganakunbg = $('.keteranganakunbg').val();
-    
+      
+
+      if(nofpg == ''){
+        toastr.info("Mohon lengkapi isi data :)");
+        return false;
+      }
+
+      if(nominal == ''){
+        toastr.info("Mohon lengkapi isi data :)");
+        return false;
+      }
+
       $('.cekbg').val(addCommas(nominal));
 
       $('.biayabg').val('');   
@@ -589,13 +603,15 @@
        arridbank = [];
       $('tr.dataakunbg').each(function(){
         valid = $('.dataakunbg').data('nomor');
-        arridbank.push(valid);
+        valid2 = valid.toString();
+         arridbank.push(valid2);
        // alert(arrnofaktur + 'arrnofaktur');
       });
+     
+
+  
       index = arridbank.indexOf(akundakun);
-      console.log(arridbank);
-      console.log(index);
-      
+  
       if(index == -1) {  
       row = "<tr class='transaksi dataakunbg dataakunbg"+$nomor+"' data-nomor="+akundakun+"> <td>"+$nomor+"</td>" +
                   "<td> <input type='text' class='form-control input-sm nobbkdetailbg' value="+nobbk+" style='min-width:200px' readonly>  </td>" + //nobbk
