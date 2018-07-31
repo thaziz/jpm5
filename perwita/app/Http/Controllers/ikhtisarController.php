@@ -123,7 +123,7 @@ class ikhtisarController extends Controller
             ->addColumn('aksi', function ($data) {
             	$a = '';
                 if(Auth::user()->punyaAkses('Ikhtisar Kas','ubah') or $data->ik_edit == 'ALLOWED'){
-                	if ($data->ik_status == 'RELEASED') {
+                	if ($data->ik_status == 'RELEASED' or $data->ik_comp == '000') {
                 		if(cek_periode(carbon::parse($data->created_at)->format('m'),carbon::parse($data->created_at)->format('Y') ) != 0){
 	                      $a = '<a title="Edit" class="btn btn-success" href='.url('ikhtisar_kas/edit').'/'.$data->ik_id.'><i class="fa fa-arrow-right" aria-hidden="true"></i></a>';
 	                    }
@@ -135,7 +135,7 @@ class ikhtisarController extends Controller
                 $c = '<a title="Hapus" class="btn btn-danger">
 	                              <i class="fa fa-stop" aria-hidden="true"></i></a>';
                 if(Auth::user()->punyaAkses('Ikhtisar Kas','hapus')){
-                	if ($data->ik_status == 'RELEASED' ) {
+                	if ($data->ik_status == 'RELEASED'  or $data->ik_comp == '000') {
                 		if(cek_periode(carbon::parse($data->created_at)->format('m'),carbon::parse($data->created_at)->format('Y') ) != 0){
 	                      $c = '<a title="Hapus" class="btn btn-danger" onclick="hapus(\''.$data->ik_id.'\')">
 	                              <i class="fa fa-trash" aria-hidden="true"></i></a>';
