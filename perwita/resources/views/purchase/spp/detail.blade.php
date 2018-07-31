@@ -102,6 +102,15 @@
                             </td>
                           </tr>
 
+                           <tr>
+                              <td> 
+                               <b> Tgl Input </b>
+                              </td>
+                              <td> 
+                                <input type='text' class='form-control' value="{{ Carbon\Carbon::parse($spp->created_at)->format('d-M-Y ') }}" readonly=""> 
+                              </td>
+                           </tr>
+                                        
                         
 
                           <tr>
