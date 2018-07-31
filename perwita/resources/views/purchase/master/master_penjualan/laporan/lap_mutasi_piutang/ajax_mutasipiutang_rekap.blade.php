@@ -6,7 +6,7 @@
                           <th align="center" colspan="2"> Customer</th>
                           <th align="center" rowspan="2"> Saldo Awal</th>
                           <th align="center" colspan="2"> DEBET</th>
-                          <th align="center" colspan="4"> Kota Tujuan</th>
+                          <th align="center" colspan="4"> KREDIT</th>
                           <th align="center" rowspan="2"> Saldo Akir</th>
                           <th align="center" rowspan="2"> Sisa Uangmuka </th>
                       </tr> 
@@ -24,17 +24,31 @@
                     <tbody>
                      @foreach ($array as $index => $e)
                        <tr>
-                         <td>{{ $index+1 }}</td>
-                         <td>{{ $array[$index]['customer'] }}</td>
-                         <td>{{ $index+1 }}</td>
-                         <td>{{ $saldo_awal[$index][0]->saldoawal }}</td>
-                         <td>{{ $piutangbaru[$index][0]->piutang_baru }}</td>
-                         <td>{{ $notadebet[$index][0]->nota_debet }}</td>
-                         <td>{{ $cash[$index][0]->cash }}</td>
-                         <td>{{ $cek_bg_trsn[$index][0]->cek_bg_trsn }}</td>
-                         <td>{{ $uangmuka[$index][0]->uangmuka }}</td>
-                         <td>{{ $nota_kredit[$index][0]->nota_kredit }}</td>
-                         <td class="total">1</td>
+                         <td><input type="hidden" name="" class="fore">{{ $index+1 }}</td>
+                         <td>{{ $push_customer_lenght[$index][0]->kode }}</td>
+                         <td>{{ $push_customer_lenght[$index][0]->nama }}</td>
+                         <td><input type="hidden" value="{{ $saldoawal[$index][0]->saldoawal }}" class="saldoawal_{{ $index }}" name="">
+                          {{ $saldoawal[$index][0]->saldoawal }}
+                         </td>
+                         <td><input type="hidden" value="{{ $piutangbaru[$index][0]->piutang_baru }}" class="piutangbaru_{{ $index }}" name="">
+                          {{ $piutangbaru[$index][0]->piutang_baru }}
+                         </td>
+                         <td><input type="hidden" value="{{ $notadebet[$index][0]->nota_debet }}" class="notadebet_{{ $index }}" name="">
+                          {{ $notadebet[$index][0]->nota_debet }}
+                         </td>
+                         <td><input type="hidden" value="{{ $cash[$index][0]->cash  }}" class="cash_{{ $index }}" name="">
+                          {{ $cash[$index][0]->cash }}
+                         </td>
+                         <td><input type="hidden" value="{{ $cek_bg_trsn[$index][0]->cek_bg_trsn }}" class="cek_bg_trsn_{{ $index }}" name="">
+                          {{ $cek_bg_trsn[$index][0]->cek_bg_trsn }}
+                          </td>
+                         <td><input type="hidden" value="{{ $uangmuka[$index][0]->uangmuka }}" class="uangmuka_{{ $index }}" name="">
+                          {{ $uangmuka[$index][0]->uangmuka }}
+                         </td>
+                         <td><input type="hidden" value="{{ $nota_kredit[$index][0]->nota_kredit }}" class="nota_kredit_{{ $index }}" name="">
+                          {{ $nota_kredit[$index][0]->nota_kredit }}
+                          </td>
+                         <td class="total_{{ $index }}"></td>
                          <td>{{ $sisa_uangmuka[$index][0]->sisa_uangmuka }}</td>
                        </tr>
                      @endforeach

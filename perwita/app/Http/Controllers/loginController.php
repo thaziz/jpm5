@@ -81,8 +81,8 @@ class loginController extends Controller {
 
                     Auth::login($user);
 
-                     $dataInfo=['status'=>'sukses','nama'=>$user->m_name];            
-                      return json_encode($dataInfo);
+                    $dataInfo=['status'=>'sukses','nama'=>$user->m_name];            
+                    return json_encode($dataInfo);
             } else {
                 return json_encode(["status" => "gagal", "content" => "ups . Kombinasi Username Dan Password Tidak Ditemukan"]);
             }

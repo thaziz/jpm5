@@ -65,6 +65,8 @@
                             <tr>
                                 <th>Nomor</th>
                                 <th>Tanggal </th>
+                                <th>Cabang </th>
+                                <th>Akun Bank/Kas </th>
                                 <th>Customer</th>
                                 <th>Jumlah</th>
                                 <th>Memorial</th>
@@ -118,29 +120,27 @@ $(document).ready(function() {
             },
             columnDefs: [
               {
-                 targets: 3,
-                 className: 'cssright'
-              },
-              {
-                 targets: 4,
-                 className: 'cssright'
-              },
-              {
                  targets: 5,
+                 className: 'cssright'
+              },
+              {
+                 targets: 6,
+                 className: 'cssright'
+              },
+              {
+                 targets: 9,
                  className: 'center'
               },
               {
-                 targets:6,
+                 targets:8,
                  className: 'center'
-              },
-              {
-                 targets:7,
-                 className: 'center'
-              },
+              }
             ],
             "columns": [
             { "data": "k_nomor" },
             { "data": "k_tanggal" },
+            { "data": "cabang" },
+            { "data": "bank" },
             { "data": "customer" },
             { "data": "jumlah_text"},
             { "data": "memorial_text" },
@@ -158,11 +158,6 @@ $(document).ready(function() {
     $('.date').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd'
-    });
-
-
-    $(document).on( "click",".btnhapus", function(){
-        if(!confirm("Hapus Data ?")) return false;
     });
 
     function ngeprint(id){

@@ -93,7 +93,7 @@
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
-                                <td >
+                                <td  class="disabled">
                                     <div class="input-group date">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>

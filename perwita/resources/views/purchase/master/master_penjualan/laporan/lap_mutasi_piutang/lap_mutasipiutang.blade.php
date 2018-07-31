@@ -133,7 +133,7 @@
                     <br>
                     <br>
                   <table id="addColumn" class="table table-bordered table-striped tbl-item">
-                    <thead>
+                    {{-- <thead>
                        <tr>
                           <th align="center" rowspan="2" > No</th>
                           <th align="center" colspan="2"> Customer</th>
@@ -153,7 +153,7 @@
                           <th>Byr Uang Muka</th>
                           <th>Nota Kredit</th>
                       </tr>       
-                    </thead>        
+                    </thead>  --}}       
                     <div class="drop">
                       
                     </div>
@@ -206,19 +206,17 @@
           success : function(data){
             $('.drop').html(data);
             $('#container').hide();
-
-            // $('.saldo').each(function(i){
-            //     var saldo_index = $('.saldo_'+i).val();
-
-            //     $('.debet_'+i).each(function(a){ 
-            //       saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+i).val());
-
-            //       console.log(parseFloat($('.kredit_'+0).val()));
-            //       console.log(i); 
-            //       var parent = $(this).parents('tr');
-            //       $(parent).find('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
-            //     })  
-            // })
+            $('.fore').each(function(i){
+                saldo_index =   parseFloat($('.saldoawal_'+i).val())
+                              + parseFloat($('.piutangbaru_'+i).val())
+                              + parseFloat($('.notadebet_'+i).val())
+                              - parseFloat($('.cash_'+i).val())
+                              - parseFloat($('.cek_bg_trsn_'+i).val())
+                              - parseFloat($('.uangmuka_'+i).val())
+                              - parseFloat($('.nota_kredit_'+i).val());
+                
+                $('.total_'+i).text(accounting.formatMoney(saldo_index,"",0,'.',','));
+            })
           }
         })
      }else if (laporan == 'Rekap per Customer Detail') {

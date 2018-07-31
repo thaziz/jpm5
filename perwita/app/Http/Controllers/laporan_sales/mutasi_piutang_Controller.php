@@ -18,13 +18,13 @@ class mutasi_piutang_Controller extends Controller
   }
   public function ajax_mutasipiutang_rekap(Request $request)
   {
-  	  // dd($request->all());
-  	  $tglawal = $request->min;
-  	  $tglakhir = $request->max;
+	  // dd($request->all());
+	  $tglawal = $request->min;
+	  $tglakhir = $request->max;
 
-  	  return $customer  =  DB::select("SELECT i_kode_customer from invoice where i_tanggal BETWEEN '$tglawal' and '$tglakhir'");
-  	  
-  	  $arraycus = [];
+	  $customer  =  DB::select("SELECT i_kode_customer from invoice where i_tanggal BETWEEN '$tglawal' and '$tglakhir'");
+	  
+	  $arraycus = [];
 	   for($i = 0; $i < count($customer); $i++){
 			$cus_id['customer'] = $customer[$i]->i_kode_customer;	
 			array_push($arraycus , $cus_id);
@@ -45,7 +45,6 @@ class mutasi_piutang_Controller extends Controller
     //       $cus_invoice = '';
     //   }
     
-    
     $push_saldo       = [];
     $push_piutangbaru = [];
     $push_nota_debet  = [];
@@ -53,19 +52,27 @@ class mutasi_piutang_Controller extends Controller
     $push_cek_bg_trsn = [];
     $push_uangmuka    = [];
     $push_nota_kredit = [];
+    $push_customer_lenght = [];
 
     for ($i=0; $i <count($array) ; $i++) { 
 
-      $saldoawal = DB::table('invoice')
+      $customer_lenght = DB::table('customer')->select('kode','nama')->where('kode',$array[$i])->get(); 
+
+      array_push($push_customer_lenght,$customer_lenght);
+      // return $push_customer_lenght;
+      
+      $saldoawal[$i] = DB::table('invoice')
                         ->select(DB::raw('SUM(i_total_tagihan) as saldoawal'))
                         ->where('i_tanggal','>',$tglawal)
                         ->where('i_tanggal','<',$tglakhir)
                         ->where('i_kode_customer','=',$array[$i])
                         ->get();
 
-      array_push($push_saldo, $saldoawal);
-
-
+      if ($saldoawal[$i][0]->saldoawal == null) {
+          $saldoawal[$i][0]->saldoawal = 0;
+      }else{
+          $saldoawal[$i] = $saldoawal[$i];
+      }
       $piutangbaru[$i] = DB::table('invoice')
                         ->select(DB::raw('SUM(i_total_tagihan) as piutang_baru'))
                         ->where('i_tanggal','>',$tglakhir)
@@ -74,7 +81,7 @@ class mutasi_piutang_Controller extends Controller
       if ($piutangbaru[$i][0]->piutang_baru == null) {
           $piutangbaru[$i][0]->piutang_baru = 0;
       }else{
-          $piutangbaru[$i] = 1;
+          $piutangbaru[$i] = $piutangbaru[$i];
       }
 
 
@@ -105,12 +112,13 @@ class mutasi_piutang_Controller extends Controller
           $cash[$i] = $cash[$i];
       }
 
-      $cek_bg_trsn[$i] = DB::table('kwitansi')
-                        ->select(DB::raw('SUM(k_netto) as cek_bg_trsn'))
-                        ->where('k_tanggal','>',$tglawal)
-                        ->where('k_tanggal','<',$tglakhir)
-                        ->Where('k_jenis_pembayaran','=', 'C')
-                        ->where('k_kode_customer','=',$array[$i])
+      $cek_bg_trsn[$i] = DB::table('posting_pembayaran as pb')
+                        ->select(DB::raw('SUM(pbdt.jumlah) as cek_bg_trsn'))
+                        ->join('posting_pembayaran_d as pbdt','pb.nomor','=','pbdt.nomor_posting_pembayaran')
+                        ->where('tanggal','>',$tglawal)
+                        ->where('tanggal','<',$tglakhir)
+                        ->Where('jenis_pembayaran','=', 'C')
+                        ->where('kode_customer','=',$array[$i])
                         ->get();
 
       if ($cek_bg_trsn[$i][0]->cek_bg_trsn == null) {
@@ -162,9 +170,8 @@ class mutasi_piutang_Controller extends Controller
       }                
 
     }
-    $saldo_awal = $push_saldo;
-
-    return view('purchase/master/master_penjualan/laporan/lap_mutasi_piutang/ajax_mutasipiutang_rekap',compact('saldo_awal','data','array','piutangbaru','notadebet','cash','cek_bg_trsn','uangmuka','nota_kredit','sisa_uangmuka'));
+    // return $customer_lenght;
+    return view('purchase/master/master_penjualan/laporan/lap_mutasi_piutang/ajax_mutasipiutang_rekap',compact('saldoawal','data','array','piutangbaru','notadebet','cash','cek_bg_trsn','uangmuka','nota_kredit','sisa_uangmuka','push_customer_lenght'));
   }
   	  
 

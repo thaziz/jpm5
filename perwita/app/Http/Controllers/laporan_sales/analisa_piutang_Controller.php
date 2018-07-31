@@ -21,7 +21,6 @@ class analisa_piutang_Controller extends Controller
         
         $tglawal = $request->min;
         $tglakhir = $request->max;
-
         $customer  =  DB::select("SELECT i_kode_customer from invoice where i_tanggal BETWEEN '$tglawal' and '$tglakhir' order by i_kode_customer asc");
       
         $arraycus = [];
@@ -64,7 +63,6 @@ class analisa_piutang_Controller extends Controller
                             ->get();
             array_push($tgl_jthtempo_now_push, $tgl_jthtempo_now);
 
-
             $saldoawal = DB::table('invoice')
                             ->select(DB::raw('SUM(i_total_tagihan) as saldoawal'))
                             ->where('i_tanggal','>',$tglawal)
@@ -73,17 +71,16 @@ class analisa_piutang_Controller extends Controller
                             ->get();
             array_push($saldo_push, $saldoawal);
 
-            $terbayar = DB::table('kwitansi')
-                        ->select(DB::raw('SUM(k_netto) as terbayar'))
-                        ->where('k_tanggal','>',$tglawal)
-                        ->where('k_tanggal','<',$tglakhir)
-                        ->where('k_kode_customer','=',$array[$i])
-                        ->get();
+            $terbayar = DB::table('invoice')
+                            ->select(DB::raw('SUM(i_sisa_akhir) as terbayar'))
+                            ->where('i_tanggal','>',$tglawal)
+                            ->where('i_tanggal','<',$tglakhir)
+                            ->where('i_kode_customer','=',$array[$i])
+                            ->get();
 
-
-            
+           
             array_push($terbayar_push, $terbayar);
-
+            // return $terbayar_push;
             // $terbayar_posting = DB::table('posting_pembayaran_d')
             //             ->select(DB::raw('SUM(jumlah) as terbayar_posting'))
             //             ->where('tanggal','>',$tglawal)
@@ -122,7 +119,7 @@ class analisa_piutang_Controller extends Controller
                             ->select(DB::raw('SUM(i_total_tagihan) as jatuhtempo_30'))
                             ->where('i_tanggal','>',$tglawal)
                             ->where('i_tanggal','<',$tglakhir)
-                            ->where('i_jatuh_tempo','>',$tgl_jthtempo_now_push[$i][$u]->i_jatuh_tempo)
+                            ->where('i_jatuh_tempo','>=',$tgl_jthtempo_now_push[$i][$u]->i_jatuh_tempo)
                             ->where('i_jatuh_tempo','<',$date_30_g)
                             ->where('i_kode_customer','=',$array[$i])
                             ->get();
