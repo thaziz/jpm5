@@ -75,9 +75,12 @@
                                             <td> <input type='text' class="input-sm form-control nospp"  name="nospp"></td>
                                             <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
                                           </tr>
-                                          
-                                          <tr>
-                                              
+                                            <tr>
+                                              <td> Tgl Input </td>
+                                              <td> <input type='text' class='form-control' value="{{ Carbon\Carbon::now()->format('d-M-Y ') }}" disabled=""></td>
+                                            </tr>
+                                         
+
                                              <tr>
                                               <td> Cabang </td>
                                               <td>                                              
@@ -276,8 +279,8 @@
      $('.date').datepicker({
         autoclose: true,
         format: 'dd-MM-yyyy',
-        endDate: 'today'
-    }).datepicker("setDate", "0");
+      
+    });
 
 
     cabang = $('.cabang').val();

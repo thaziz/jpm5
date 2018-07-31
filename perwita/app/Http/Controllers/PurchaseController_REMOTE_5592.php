@@ -150,7 +150,7 @@ class PurchaseController extends Controller
 	public function spp_index () {
 		$cabang = session::get('cabang');
 
-		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','aktif')){
+		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
 			$data['spp'] = DB::select("select * from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode order by spp_id desc");
 
 			$data['belumdiproses'] = DB::table("spp")->where('spp_status' , '=' , 'DITERBITKAN')->count();
@@ -640,7 +640,7 @@ class PurchaseController extends Controller
 
 		$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sppd_kendaraan , sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$idgudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem");*/
 
-		$data['spp'] = DB::select("select * from confirm_order, spp, cabang,masterdepartment where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
+		$data['spp'] = DB::select("select *, spp.created_at as tglinput from confirm_order, spp, cabang,masterdepartment where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
 	/*	dd($data['spp']);*/
 
 		
@@ -711,8 +711,7 @@ class PurchaseController extends Controller
 		$data['countbrg'] = array_count_values($barang);
 		$data['tipespp'] = $tipespp;
 
-		/*dd($data);*/
-	
+		
 		return view('purchase.spp.detail', compact('data'));
 	}
 
@@ -839,7 +838,7 @@ class PurchaseController extends Controller
 	}
 
 	public function cetakspp($id){
-		$data['spp'] = DB::select("select * from confirm_order, spp, masterdepartment where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id");
+		$data['spp'] = DB::select("select *, spp.created_at as tglinput from confirm_order, spp, masterdepartment where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id");
 		$data['po'] = DB::select("select * from pembelian_order, pembelian_orderdt, spp where podt_idspp = spp_id and podt_idspp = '$id' and podt_idpo = po_id");
 		$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and idsup = sppd_supplier order by sppd_seq asc");
 

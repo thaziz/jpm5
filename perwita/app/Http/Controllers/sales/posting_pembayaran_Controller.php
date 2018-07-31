@@ -10,6 +10,7 @@ use Auth;
 use App\d_jurnal;
 use App\d_jurnal_dt;
 use Yajra\Datatables\Datatables;
+use Exception;
 class posting_pembayaran_Controller extends Controller
 {
     public function datatable_posting (Request $request) {
@@ -256,7 +257,7 @@ class posting_pembayaran_Controller extends Controller
         $bulan = Carbon::now()->format('m');
         $tahun = Carbon::now()->format('y');
 
-        $cari_nota = DB::select("SELECT  substring(max(nomor),8) as id from posting_pembayaran
+        $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from posting_pembayaran
                                         WHERE kode_cabang = '$request->cabang'
                                         AND to_char(tanggal,'MM') = '$bulan'
                                         AND to_char(tanggal,'YY') = '$tahun'");
@@ -375,12 +376,19 @@ class posting_pembayaran_Controller extends Controller
         // return $request->sall();
         if ($request->cb_jenis_pembayaran != 'U') {
 
+            $kw = DB::table('kwitansi')
+                      ->join('customer','kode','=','k_kode_customer')
+                      ->select('k_nomor','k_tanggal','k_netto','nama')
+                      ->whereIn('k_nomor',$request->nomor)
+                      ->get();
 
-            $data = DB::table('kwitansi')
-                  ->join('customer','kode','=','k_kode_customer')
-                  ->whereIn('k_nomor',$request->nomor)
-                  ->get();
+            $do = DB::table('delivery_order')
+                      ->join('customer','kode','=','kode_customer')
+                      ->select('nomor as k_nomor','tanggal as k_tanggal','total_net as k_netto','nama')
+                      ->whereIn('nomor',$request->nomor)
+                      ->get();
 
+            $data = array_merge($kw,$do);
             return response()->json(['data'=>$data]);
         }else{
 
@@ -636,11 +644,21 @@ class posting_pembayaran_Controller extends Controller
                     $do = DB::table('delivery_order')
                                   ->where('nomor',$request->d_nomor_kwitansi[$i])
                                   ->first();
-                    array_push($temp_akun_piutang, $kwitansi->k_kode_akun);
-                    array_push($temp_nominal_piutang, $kwitansi->k_netto);
+                    try{
+                      array_push($temp_akun_piutang, $kwitansi->k_kode_akun);
+                      array_push($temp_nominal_piutang, $kwitansi->k_netto);
+                    }catch(Exception $e){
 
-                    array_push($temp_akun_piutang, $do->acc_piutang_do);
-                    array_push($temp_nominal_piutang, $do->total_net);
+                    }
+                    
+                    try{
+                      array_push($temp_akun_piutang, $do->acc_piutang_do);
+                      array_push($temp_nominal_piutang, $do->total_net);
+                    }catch(Exception $e){
+                      
+                    }
+
+                    
                     
                 }
                 $fix_akun_piutang = array_unique($temp_akun_piutang);

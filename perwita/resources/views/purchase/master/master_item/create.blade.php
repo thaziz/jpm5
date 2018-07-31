@@ -123,26 +123,26 @@
                         </tr>
                         <tr>
                           <td> Ke Satu </td>
-                          <td> <input type="text" class="form-control d" name="unit1"> </td>
+                          <td> <input type="text" class="form-control d qtysatu" name="unit1"> </td>
                           <td> </td>
                         </tr>
                         <tr>
                           <td> Ke Dua </td>
-                          <td> <input type="text" class="form-control e " name="unit2"> </td>
+                          <td> <input type="text" class="form-control e qtydua" name="unit2"> </td>
                           <td> <div class='form-group'> <label class='col-sm-3 col-sm-3 control-label'> 1 PCS </label> <div class='col-sm-6'> <input type='text' class='form-control biaya f '  name='konversi2'>  </div>
                           </td>
                         </tr>
 
                         <tr>
                           <td> Ke Tiga </td>
-                          <td> <input type="text" class="form-control g " name="unit3"></td>
+                          <td> <input type="text" class="form-control g qtytiga" name="unit3"></td>
                           <td> <div class='form-group'> <label class='col-sm-3 col-sm-3 control-label'> 1 PCS </label> <div class='col-sm-6'> <input type='text' class='form-control biaya h '  name='konversi3'>  </div></td>
                         </tr>
 
 
                         <tr>
                           <td> Satuan Stock </td>
-                          <td> <input type="text" class="form-control i" required="" name="unitstock" readonly=""> </td>
+                          <td> <input type="text" class="form-control i qtystock" required="" name="unitstock" readonly=""> </td>
                         </tr>
                       </table>
                     </div>
@@ -273,6 +273,51 @@
     })
      },2000);
     
+    $('.qtysatu').change(function(){
+      qtysatu = $('.qtysatu').val();
+      qtydua = $('.qtydua').val();
+      qtytiga = $('.qtytiga').val();
+
+      if(qtydua != ''){
+        if(qtytiga != ''){
+          $('.qtystock').val(qtytiga);
+        }
+        else {
+          $('.qtystock').val(qtydua)
+        }
+      }
+      else if(qtytiga != ''){
+        $('.qtystock').val(qtytiga);
+      }
+      else {
+        $('.qtystock').val(qtysatu);
+      }
+    })
+
+    $('.qtydua').change(function(){
+      qtysatu = $('.qtysatu').val();
+      qtydua = $('.qtydua').val();
+      qtytiga = $('.qtytiga').val();
+
+      if(qtytiga != ''){
+     //   alert('asas');
+        $('.qtystock').val(qtytiga);
+      }
+      else {
+        $('.qtystock').val(qtydua);
+      }
+    })
+
+
+    $('.qtytiga').change(function(){
+      qtysatu = $('.qtysatu').val();
+      qtydua = $('.qtydua').val();
+      qtytiga = $('.qtytiga').val();
+
+        $('.qtystock').val(qtytiga);
+     
+    })
+
 
     $('.jenis_item').change(function(){
           updatestock = $('.updatestock').val();
@@ -351,6 +396,7 @@
 
           })
     })
+  
 
 
     $('.updatestock').change(function(){
@@ -461,32 +507,7 @@
         }) 
 
 
-   $('.d').change(function(){ //qtysatu
-      if($('.e').val() != '') {
-        e = $('e').val();
-        $('.i').val(e);
-      }
-      else if ($('.g').val() != ''){
-        g = $('.g').val();
-        $('.i').val(g);
-      }
-      else {
-        d = $('.d').val();
-        $('.i').val(d);
-      }
-   })
-
-   $('.e').change(function(){ //qtydua
-      val = $(this).val();
-      $('.i').val(val);
-   })
-
-
-
-   $('.g').change(function(){ //qtytiga
-      val = $(this).val();
-      $('.i').val(val);
-  })
+  
 
 
         $( "#submit" ).click(function() { 

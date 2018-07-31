@@ -543,6 +543,7 @@ function hapus_detail(o) {
         $('.cabang_td').removeClass('disabled');
         $('.bank_tr').removeClass('disabled');
     }
+    hitung();
     
 }
 
