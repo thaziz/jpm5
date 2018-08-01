@@ -888,18 +888,13 @@ $('.cabang').change(function(){
             if(data == "YA") {
                 var rowContract = '<div class="form-group"> <label class="col-sm-1"> No </label> <div class="col-sm-10"> <input type="text" class="form-control" name="nokontrak" required=""> </div> </div>';
                 $('.nokontrak').html(rowContract);   
-                $('.tmbhdatabarang').attr('disabled' , false);
+                $('.tmbhdatabarang').show();
                 $('.tablebarang').show();
-                
-           
-
-               
-
             }
             else {
               $('.nokontrak').empty();
               $('.nokontrak2').empty();
-               $('.tmbhdatabarang').attr('disabled' , true);
+               $('.tmbhdatabarang').hide();
                $('.tablebarang').hide();
                $('#addColumn').attr('disabled' , true);
               
