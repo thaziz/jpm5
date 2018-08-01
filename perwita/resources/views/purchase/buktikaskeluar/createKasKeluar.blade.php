@@ -1,4 +1,4 @@
-x@extends('main')
+@extends('main')
 
 @section('title', 'dashboard')
 
