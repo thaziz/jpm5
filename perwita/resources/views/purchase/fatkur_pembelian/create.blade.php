@@ -503,9 +503,7 @@
                                         <div class="row">
                                           <div class="col-sm-6">
                                             <table class='table'>
-                                              <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                         
-
+                                             
                                               <tr> 
                                                 <td> No Faktur Pajak </td>
                                                 <td> <input type='text' class='form-control input-sm nofaktur_pajak' name='nofaktur_pajak'> </td>
