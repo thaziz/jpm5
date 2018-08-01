@@ -38,7 +38,8 @@
       form_reset();
       var ids = detail_trans.findIndex(i => i.jr_id == $(this).data('id')); var html_detail = '';
       
-      $('#jenis_transaksi').val((detail_trans[ids].jr_no.substr(0, 2) == "KM") ? "1" : "2");
+      $('#jenis_transaksi').val((detail_trans[ids].jr_no.substr(0, 2) == "KM" || detail_trans[ids].jr_no.substr(0, 2) == "BM" || detail_trans[ids].jr_no.substr(0, 2) == "MM") ? "1" : "2");
+
       $("#cabang").val(detail_trans[ids].jr_no.substr(8, 3));
       $('#akun_transaksi').val(detail_trans[ids].detail[0].jrdt_acc);
       $('#jr_detail').val(detail_trans[ids].jr_detail);
@@ -55,6 +56,7 @@
           if(i != 0){
             if(n.jrdt_statusdk == "D"){
               var html_detail = '<tr id="coa_'+(i + 1)+'" data-id="'+(i+1)+'" class="akun_lawan_wrap">'+
+                      '<td></td>'
                       '<td class="name">'+n.jrdt_acc+' - '+n.akun.nama_akun+'</td>'+
                       '<td class="text-right currency">'+
                         '<input class="form-control currency debet" name="debet[]" value="'+n.jrdt_value.replace('-', '')+'" data-id="'+(i+1)+'" disabled>'+
@@ -65,6 +67,7 @@
                     '</tr>';
             }else{
               var html_detail = '<tr id="coa_'+(i + 1)+'" data-id="'+(i+1)+'" class="akun_lawan_wrap">'+
+                      '<td></td>'+
                       '<td class="name">'+n.jrdt_acc+' - '+n.akun.nama_akun+'</td>'+
                       '<td class="text-right currency">'+
                         '<input class="form-control currency debet" name="debet[]" value="0" data-id="'+(i+1)+'" disabled>'+
@@ -85,7 +88,7 @@
       $('.chosen-select#akun_transaksi').trigger("chosen:updated");
       $('.chosen-select#akun_lawan').trigger("chosen:updated");
       $('.chosen-select#cabang').trigger("chosen:updated");
-
+      
       $('#modal_list_transaksi').modal('toggle');
       // alert(detail_trans[ids].detail[0].jrdt_acc);
     })

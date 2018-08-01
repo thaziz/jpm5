@@ -10,7 +10,7 @@
   		<?php $no = 1; $totDeb = $totKred = 0; ?>
   		@foreach($detail as $dataDetail)
 			<tr>
-		        <td class="text-left">{{ $dataDetail->akun->nama_akun }}</td>
+		        <td class="text-left" style="font-weight: 550;">{{ $dataDetail->akun->nama_akun }}</td>
 
             @if($dataDetail->jrdt_statusdk == "D")
               <td class="text-right">{{ str_replace('-', '', number_format($dataDetail->jrdt_value,2,'.',',')) }}</td>

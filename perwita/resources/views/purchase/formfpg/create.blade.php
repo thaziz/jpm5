@@ -680,7 +680,7 @@
 
                                     <tr>
                                       <th> Nominal </th>                                      
-                                      <td> <input type="text" class="input-sm form-control nominal" style="text-align: right"> <input type="hidden" class="idbank"> </td>
+                                      <td> <input type="text" class="input-sm form-control nominal nominaltujuanbank" style="text-align: right"> <input type="hidden" class="idbank"> </td>
 
                                       <td> <div class="checkbox  checkbox-circle">
                                                 <input id="checkbox7" type="checkbox" name="setuju" required="" checked="">
@@ -1900,6 +1900,18 @@
         if(lengthbank > 1){
           $('.nominal').attr('readonly', true);
         }
+
+        nominaltujuan = $('.nominaltujuanbank').val();
+        
+
+        jenisbayar = $('.jenisbayar').val();
+        if(jenisbayar == 12){
+          banktujuan = $('.banktujuan').val();
+          if(banktujuan == ''){
+            toastr.info("Mohon maaf bank tujuan belum dipilih :)");
+            return false;
+          }
+        }
        var checked = $(".checkcek:checked").map(function(){
           return this.id;
         }).toArray();
@@ -2040,12 +2052,15 @@
                       }
                     }
                     // IF CHECKBG
-                 
-
-
-                    $('.nominalbank1').val(nominalbank);
-                    $('.ChequeBg').val(nominalbank);
-                   
+                  
+                    if(jenisbayar == '12'){
+                      $('.nominalbank1').val(nominaltujuan);
+                      $('.ChequeBg').val(nominaltujuan);
+                    }
+                    else {
+                      $('.nominalbank1').val(nominalbank);
+                      $('.ChequeBg').val(nominalbank);
+                    }
 
                       $(document).on('click','.remove-btn',function(){
 
@@ -2949,7 +2964,7 @@
             
             val = accounting.formatMoney(val, "", 2, ",",'.');
 
-            $(this).val(val);
+           
             if(idbank != ''){
                 $('.nominalbank' + idbank).val(val);
                 totalbayar = $('.totbayar').val();
@@ -3011,7 +3026,7 @@
            
                idbank = $('.idbank').val();  
                val = $(this).val();
-              
+                alert(idbank);
                val = accounting.formatMoney(val, "", 2, ",",'.');
                $(this).val(val);
           
@@ -3048,14 +3063,13 @@
              toastr.info('Angka yang di inputkan lebih dari Total Bayar :) ');
               $('.nominal').val('');
               $('.nominalbank' + idbank).val('');
+            }
+            else {
 
-          }
-          else {
-
-             val3 = parseFloat(jmlhnominal);
-             val4 = jmlhnominal.toFixed(2);
-             $('.ChequeBg').val(addCommas(val4));
-          }
+               val3 = parseFloat(jmlhnominal);
+               val4 = jmlhnominal.toFixed(2);
+               $('.ChequeBg').val(addCommas(val4));
+            }
           }
           else {
              val3 = parseFloat(jmlhnominal);

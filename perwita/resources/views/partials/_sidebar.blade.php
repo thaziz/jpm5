@@ -1413,7 +1413,13 @@
                     Request::is('keuangan/pengeluaran/*') ? 'active' : ''||
                     /* jurnal_umum */
                     Request::is('keuangan/jurnal_umum') ? 'active' : '' || 
-                    Request::is('keuangan/jurnal_umum/*') ? 'active' : ''
+                    Request::is('keuangan/jurnal_umum/*') ? 'active' : ''||
+                    /* transaksi_bank */
+                    Request::is('keuangan/transaksi_bank') ? 'active' : '' || 
+                    Request::is('keuangan/transaksi_bank/*') ? 'active' : ''||
+                    /* transaksi_memorial */
+                    Request::is('keuangan/transaksi_memorial') ? 'active' : '' || 
+                    Request::is('keuangan/transaksi_memorial/*') ? 'active' : ''
              /*======== END OF MASTER KEUANGAN OPERASIONAL ==============================*/
 
 
@@ -2195,7 +2201,13 @@
                             Request::is('keuangan/pengeluaran/*') ? 'active' : ''||
                             /* jurnal_umum */
                             Request::is('keuangan/jurnal_umum') ? 'active' : '' || 
-                            Request::is('keuangan/jurnal_umum/*') ? 'active' : ''
+                            Request::is('keuangan/jurnal_umum/*') ? 'active' : ''||
+
+                            Request::is('keuangan/transaksi_bank') ? 'active' : '' || 
+                            Request::is('keuangan/transaksi_bank/*') ? 'active' : ''||
+
+                            Request::is('keuangan/transaksi_memorial') ? 'active' : '' || 
+                            Request::is('keuangan/transaksi_memorial/*') ? 'active' : ''
                              /*======== END OF MASTER KEUANGAN OPERASIONAL ==============================*/
 
                         }}
@@ -2228,9 +2240,14 @@
                             Request::is('keuangan/jurnal_umum/*') ? 'active' : ''   }}" href="{{ url('keuangan/jurnal_umum?cab='.$text.'&date='.date("m").'&year='.date("Y").'&jenis=kas')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Transaksi Kas </a>
                                 </li>
 
-                            <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('keuangan/jurnal_umum') ? 'active' : '' || 
-                            Request::is('keuangan/jurnal_umum/*') ? 'active' : ''   }}" href="{{ url('keuangan/jurnal_umum?cab='.$text.'&date='.date("m").'&year='.date("Y").'&jenis=bank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Transaksi Bank </a>
+                            <li>
+                                    <a class="sidebar master-perusahaan {{Request::is('keuangan/transaksi_bank') ? 'active' : '' || 
+                            Request::is('keuangan/transaksi_bank/*') ? 'active' : ''   }}" href="{{ url('keuangan/transaksi_bank?cab='.$text.'&date='.date("m").'&year='.date("Y").'&jenis=bank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Transaksi Bank </a>
+                                </li>
+
+                            <li>
+                                    <a class="sidebar master-perusahaan {{Request::is('keuangan/transaksi_memorial') ? 'active' : '' || 
+                            Request::is('keuangan/transaksi_memorial/*') ? 'active' : ''   }}" href="{{ url('keuangan/transaksi_memorial?cab='.$text.'&date='.date("m").'&year='.date("Y").'&jenis=memorial')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Transaksi Memorial </a>
                                 </li>
 
                             @endif
