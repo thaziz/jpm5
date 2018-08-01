@@ -1413,7 +1413,13 @@
                     Request::is('keuangan/pengeluaran/*') ? 'active' : ''||
                     /* jurnal_umum */
                     Request::is('keuangan/jurnal_umum') ? 'active' : '' || 
-                    Request::is('keuangan/jurnal_umum/*') ? 'active' : ''
+                    Request::is('keuangan/jurnal_umum/*') ? 'active' : ''||
+                    /* transaksi_bank */
+                    Request::is('keuangan/transaksi_bank') ? 'active' : '' || 
+                    Request::is('keuangan/transaksi_bank/*') ? 'active' : ''||
+                    /* transaksi_memorial */
+                    Request::is('keuangan/transaksi_memorial') ? 'active' : '' || 
+                    Request::is('keuangan/transaksi_memorial/*') ? 'active' : ''
              /*======== END OF MASTER KEUANGAN OPERASIONAL ==============================*/
 
 
@@ -2195,7 +2201,13 @@
                             Request::is('keuangan/pengeluaran/*') ? 'active' : ''||
                             /* jurnal_umum */
                             Request::is('keuangan/jurnal_umum') ? 'active' : '' || 
-                            Request::is('keuangan/jurnal_umum/*') ? 'active' : ''
+                            Request::is('keuangan/jurnal_umum/*') ? 'active' : ''||
+
+                            Request::is('keuangan/transaksi_bank') ? 'active' : '' || 
+                            Request::is('keuangan/transaksi_bank/*') ? 'active' : ''||
+
+                            Request::is('keuangan/transaksi_memorial') ? 'active' : '' || 
+                            Request::is('keuangan/transaksi_memorial/*') ? 'active' : ''
                              /*======== END OF MASTER KEUANGAN OPERASIONAL ==============================*/
 
                         }}
