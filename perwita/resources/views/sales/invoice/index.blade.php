@@ -264,7 +264,7 @@
           
                  return false;
       }
-    });
+     });
 
     function hapus(id){
         swal({
