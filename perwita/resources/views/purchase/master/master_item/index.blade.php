@@ -69,15 +69,15 @@
                     <br>
                     <br>
 
-                  <table id="addColumn" class="table table-bordered table-striped tbl-item">
+                  <table id="addColumn" class="table table-bordered table-striped tbl-item" style='width:100%'>
                     <thead>
                      <tr>
-                        <th style="width:40px">Kode</th>
+                        <th >Kode</th>
                  
-                        <th style="width:100px"> Nama Item </th>
+                        <th > Nama Item </th>
                         <th> Jenis Item</th>
-                        <th style="width:30px"> Satuan </th>
-                        <th style="width:30px"> Minimum Stock </th>
+                        <th > Satuan </th>
+                        <th > Minimum Stock </th>
                         <th> Harga </th>
                        
                         <th> Update Stock </th>

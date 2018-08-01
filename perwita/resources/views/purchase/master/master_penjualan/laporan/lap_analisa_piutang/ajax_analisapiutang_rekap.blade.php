@@ -4,9 +4,9 @@
                        <tr>
                           <th align="center"> No</th>
                           <th align="center"> Customer</th>
-                          <th align="center"> Jum Faktur</th>
+                          <th align="center"> Saldo Awal</th>
                           <th align="center"> Terbayar</th>
-                          <th align="center"> Sisa Faktur</th>
+                          <th align="center"> Sisa Saldo</th>
                           <th align="center"> Umur</th>
                           <th align="center"> Belum jatuh tempo </th>
                           <th align="center"> Umur 0 s/d 30 </th>
@@ -25,10 +25,10 @@
                          <td>{{ $index+1 }}</td>
                          <td>{{ $array[$index]['customer'] }}</td>
                          <td>{{ $saldo_push[$index][0]->saldoawal }}</td>
-                         <td>{{ $terbayar_push[$index][0]->terbayar }}</td>
+                         <td>{{ $sisa_saldo[$index] }}</td>
                          <td>{{ $ss[$index] }}</td>
                          <td></td>
-                         <td>{{ $sebelum_jatuhtempo_push[$index][0]->sebelum_jatuhtempo }}</td>
+                         <td>{{ $sebelum_jatuhtempo_fix[$index] }}</td>
                          <td>{{ $jatuhtempo_30_push[$index][0]->jatuhtempo_30 }}</td>
                          <td>{{ $jatuhtempo_60_push[$index][0]->jatuhtempo_60 }}</td>
                          <td>{{ $jatuhtempo_90_push[$index][0]->jatuhtempo_90 }}</td>

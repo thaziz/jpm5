@@ -11,6 +11,15 @@
 		return "okee";
 	}
 
+	function get_id_jurnal($state, $cab){
+		$jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_no, 1, 2)"), $state)->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
+
+		$jr_no = ($jr) ? (substr($jr->jr_no, 12) + 1) : 1;
+        $jr_no = $state."-".date("my")."/".$cab."/".str_pad($jr_no, 4, '0', STR_PAD_LEFT);
+
+        return $jr_no;
+	}
+
 	function date_ind($date){
 		$ret = "";
 		switch ($date) {

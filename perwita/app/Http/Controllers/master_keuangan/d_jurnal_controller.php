@@ -19,13 +19,19 @@ class d_jurnal_controller extends Controller
     public function index(Request $request){
     	// return json_encode($request->all());
 
-        $cabang = DB::table("cabang")->where("kode", $_GET["cab"])->select("nama")->first();
+        if($_GET['cab'] != 'all')
+            $cabang_nama = DB::table("cabang")->where("kode", $_GET["cab"])->select("nama")->first()->nama;
+        else
+            $cabang_nama = "Semua Cabang";
+        
         $date = (substr($_GET['date'], 0, 1) == 0) ? substr($_GET['date'], 1, 1) : $_GET["date"];
 
-        if(Session::get("cabang") == "000")
+        if(Session::get("cabang") == "000"){
             $cabangs = DB::table("cabang")->select("kode", "nama")->get();
-        else
+        }
+        else{
             $cabangs = DB::table("cabang")->where("kode", Session::get("cabang"))->select("kode", "nama")->get();
+        }
 
         $idx = "";
         
@@ -33,30 +39,48 @@ class d_jurnal_controller extends Controller
             $idx = 'TK';
         }
 
-    	$data = DB::table("d_jurnal")
+        if($_GET['cab'] != 'all'){
+            $data = DB::table("d_jurnal")
                 ->join("d_jurnal_dt", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
-                ->join('d_akun', "d_akun.id_akun", "=", "d_jurnal_dt.jrdt_acc")
-                ->where("d_akun.kode_cabang", $_GET['cab'])
+                ->join('cabang', 'cabang.kode', '=', DB::raw('substring(jr_no, 9, 3)'))
+                ->where(DB::raw('substring(jr_no, 9, 3)'), $_GET['cab'])
                 ->where(DB::raw("substring(jr_ref, 1,2)"), $idx)
                 // ->where(DB::raw("date_part('month', jr_date)"), $date)
                 // ->where(DB::raw("date_part('year', jr_date)"), $_GET["year"])
-                ->select(DB::raw("distinct d_jurnal.jr_id"), "d_jurnal.*")->orderBy("jr_id", "desc")->get();
+                ->select(DB::raw("distinct d_jurnal.jr_id"), "d_jurnal.*", 'cabang.nama')->orderBy("jr_id", "desc")->get();
+        }else{
+            $data = DB::table("d_jurnal")
+                ->join("d_jurnal_dt", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
+                ->join('cabang', 'cabang.kode', '=', DB::raw('substring(jr_no, 9, 3)'))
+                ->where(DB::raw("substring(jr_ref, 1,2)"), $idx)
+                // ->where(DB::raw("date_part('month', jr_date)"), $date)
+                // ->where(DB::raw("date_part('year', jr_date)"), $_GET["year"])
+                ->select(DB::raw("distinct d_jurnal.jr_id"), "d_jurnal.*", 'cabang.nama')->orderBy("jr_id", "desc")->get();
+        }
 
         // return json_encode($data);
 
-        return view("keuangan.jurnal.index")->withData($data)->withCabang($cabang)->withCabangs($cabangs);
+        return view("keuangan.jurnal.index")->withData($data)->withCabang_nama($cabang_nama)->withCabangs($cabangs);
     }
 
-    public function add(){
+    public function add(Request $request){
 
-    	$cabangs = DB::table('cabang')->select("kode", "nama")->get();
+        // return json_encode($request->all());
+
+        if($request->cab == 'all')
+    	   $cabangs = DB::table('cabang')->select("kode", "nama")->get();
+        else
+           $cabangs = DB::table('cabang')->where("kode", $request->cab)->select("kode", "nama")->get();
+
         $cabang = DB::table('cabang')->select("kode")->first();
-        $akun = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->get();
+        $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '10')->get();
+        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
 
         return view("keuangan.jurnal.insert")
     			->withCabangs($cabangs)
                 ->withCabang($cabang)
-                ->withAkun(json_encode($akun));
+                ->withAkun_real(json_encode($akun_real))
+                ->withAkun_all($akun_all);
     }
 
     public function save_data(Request $request){
@@ -92,14 +116,22 @@ class d_jurnal_controller extends Controller
 
        if($request->type_transaksi == "kas"){
             if($request->jenis_transaksi == 1){
-                $try =  (DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKM")->orderBy('jr_insert', 'desc')->first()) ? substr(DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKM")->orderBy('jr_insert', 'desc')->first()->jr_ref, 13) : 0;
-                $ref = "TKM".date("my")."/".date("d")."/00".($try+1);
+                $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKM")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
 
-                // return json_encode(($try+1));
+                $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
+                $ref = "TKM-".date("my")."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
+                $jr_no = get_id_jurnal('KM', $request->cabang);
+
+                // return json_encode($jr_no." __ ".$ref);
             }
             else{
-                $try =  (DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKK")->orderBy('jr_insert', 'desc')->first()) ? substr(DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKK")->orderBy('jr_insert', 'desc')->first()->jr_ref, 13) : 0;
-                $ref = "TKK".date("my")."/".date("d")."/00".($try+1);
+               $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKK")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
+
+                $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
+                $ref = "TKK-".date("my")."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
+                $jr_no = get_id_jurnal('KK', $request->cabang);
+
+                // return json_encode($jr_no." __ ".$ref);
             }
        }
 
@@ -110,6 +142,8 @@ class d_jurnal_controller extends Controller
         $jurnal->jr_detail = $request->jr_detail;
         $jurnal->jr_ref = $ref;
         $jurnal->jr_note = $request->jr_note;
+        $jurnal->jr_no = $jr_no;
+        $jurnal->jr_on_proses = 2;
 
         // $jurnal->save();
 
@@ -173,5 +207,24 @@ class d_jurnal_controller extends Controller
     public function showDetail($id){
         $detail = d_jurnal_dt::where("jrdt_jurnal", $id)->get();
         return view("keuangan.jurnal.show_detail")->withDetail($detail);
+    }
+
+    public function list_transaksi(Request $request){
+
+        // return json_encode($request->all());
+
+        $data = d_jurnal::where(DB::raw("substring(jr_no, 1, 2)"), "KK")
+                ->where(DB::raw('substring(jr_no, 9, 3)'), $request->cab)
+                ->orWhere(DB::raw("substring(jr_no, 1, 2)"), "KM")
+                ->where(DB::raw('substring(jr_no, 9, 3)'), $request->cab)
+                ->with(['detail' => function($query){
+                    $query->with('akun');
+                }])->get();
+
+        $data_json = json_encode($data);
+        $cab_nama = DB::table('cabang')->where('kode', $request->cab)->first()->nama;
+        // return $data;
+
+        return view('keuangan.jurnal.list_transaksi', compact('data', 'data_json', 'cab_nama'));
     }
 }

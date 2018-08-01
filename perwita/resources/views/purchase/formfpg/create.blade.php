@@ -552,12 +552,7 @@
                                         </div>
                                      
 
-                                       <div class="checkbox checkbox-info checkbox-circle">
-                                            <input id="jenisbayarbanktfacc" type="checkbox"  name="jenisbayarbank" value="TFAkun" class="metodebayar jenisbayarbanktfacc">
-                                            <label for="jenisbayarbanktfacc">
-                                               Transfer Bank Account Bank
-                                            </label>
-                                        </div>
+                                      
 
 
 
@@ -663,10 +658,11 @@
                                       <th> <h4> No Referensi  </h4> </th>
                                       <td> <input type="text" class="input-sm form-control nocheck" type="button" data-toggle="modal" data-target="#myModal2" id="getbank2">
                                      </td>
-                                      
-
+                                    
+                                   </tr>
+                                    <tr>
                                       <th> Acc Rekening </th>
-                                      <td> <select class="form-control selectOutlet chosen-select-width1 bank1" name="tujuanbank">
+                                      <td> <select class="form-control selectOutlet chosen-select-width1 bank1 banktujuan" name="tujuanbank">
                                                
                                                     <option value=""> Pilih Data Bank </option>
 
@@ -684,13 +680,8 @@
 
                                     <tr>
                                       <th> Nominal </th>                                      
-                                      <td> <input type="text" class="input-sm form-control nominal" style="text-align: right"> <input type="hidden" class="idbank"> </td>
+                                      <td> <input type="text" class="input-sm form-control nominal nominaltujuanbank" style="text-align: right"> <input type="hidden" class="idbank"> </td>
 
-                                      <th> Periode </th>
-                                      <td> <div class="input-group date">
-                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgltfakun" name="tglfpg" required="">
-                                          </div>
-                                      </td>
                                       <td> <div class="checkbox  checkbox-circle">
                                                 <input id="checkbox7" type="checkbox" name="setuju" required="" checked="">
                                                 <label for="checkbox7">
@@ -738,6 +729,7 @@
                                 </div>
 
                                  <div class="col-md-12 transferbank" style="padding-top: 20px">
+                                  <div class="table-responsive">
                                   <table class="table table-bordered" id="tbl-tfbank">
                                     <tr>
                                        <th> Nomor </th>
@@ -748,12 +740,12 @@
                                       <th> Tujuan Kode Bank </th>
                                       <th> No Rekening Tujuan </th>
                                       <th> Nama Rekening </th>
-                                      <th> Periode </th>
                                       <th> Nominal </th>
                                       <th> Aksi </th>
                                      
                                     </tr>
                                   </table>
+                                  </div>
                                 </div>
 
                             </div>
@@ -827,9 +819,6 @@
        val = $('.metodebayar:checked').val();
         $('.valjenisbayarbank').val(val);       
       })
-
-
-
 
         valjenisbayar = $('.metodebayar:checked').val();
         $('.valjenisbayarbank').val(valjenisbayar);
@@ -974,7 +963,7 @@
                       "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> - </a></td>"+ // NOSERI
                       "<td>"+tgl+"</td>"+ // TGL
                       "<td>"+namabank+"-"+norekening+"</td> <td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"'> </td>" + //JATUH TEMPO
-                      "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required value="+nominal+"> </td>" + //NOMINAL
+                      "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right'  value="+nominal+"> </td>" + //NOMINAL
                       "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"' type='button'><i class='fa fa-trash'></i></button></td> </tr>"
           
           $("#tbl-bank").append(row);
@@ -1029,71 +1018,102 @@
 
       $('.jenisbayarbankbg').change(function(){
           $this = $(this);
+          jenisbayar = $('.jenisbayar').val();
            if ($this.is(":checked")) {
-                $('.jenisbayarbankibaking').prop({checked: false });
-                $('.tujuanbank').hide();
-                $('.tujuanbankacc').hide();
-                $('.transferbank').hide();
-                 $('.checkbgtf').show();
-                 $('.ibanking').hide();
+                if(jenisbayar == '12'){
+                    $('.transferbank').show();
+                    $('.tujuanbankacc').show();
+                    $('.jenisbayarbankibaking').prop({checked: false });
+                    
+                }
+                else {
+                  $('.jenisbayarbankibaking').prop({checked: false });
+                  $('.tujuanbank').hide();
+                  $('.tujuanbankacc').hide();
+                  $('.transferbank').hide();
+                  $('.checkbgtf').show();
+                  $('.ibanking').hide();
+                  $('#tbl-bank').show();
+                }
            }
            else {
-                $('.ibanking').hide();
+                if(jenisbayar == '12'){
+                  $('.ibanking').hide();
+                  $('.checkbgtf').hide();
+                }
+                else {
+                  $('.ibanking').hide();
+                }
            }
       })
 
       $('.jenisbayarbankibaking').change(function(){
           $this = $(this);
+          jenisbayar = $('.jenisbayar').val();
            if ($this.is(":checked")) {
-                 $('.jenisbayarbankbg').prop({ checked: false });
-                $('.tujuanbank').hide();
-                $('.tujuanbankacc').hide();
-                $('.transferbank').hide();
-                $('.checkbgtf').hide();
-                $('.ibanking').show();
+                if(jenisbayar == '12'){
+                  $('.transferbank').show();
+                  $('.tujuanbankacc').show();
+                  $('.jenisbayarbankbg').prop({ checked: false }); 
+                }
+                else {
+                  $('.jenisbayarbankbg').prop({ checked: false });           
+                  $('.tujuanbank').hide();
+                  $('.tujuanbankacc').hide();
+                  $('.transferbank').hide();
+                  $('.checkbgtf').hide();
+                  $('.ibanking').show();
+                  $('#tbl-ibank').show();
 
-                tgl = $('.tgl').val();
-                bank = $('.bank').val();
-                kodebank = bank.split(",");
-             //   alert(kodebank);
-                jatuhtempo = $('.jatuhtempo').val();
-                nofpg = $('.nofpg').val();
+                  tgl = $('.tgl').val();
+                  bank = $('.bank').val();
+                  kodebank = bank.split(",");
+           
+                  jatuhtempo = $('.jatuhtempo').val();
+                  nofpg = $('.nofpg').val();
 
-                $('tr.tblbank').remove();
+                  $('tr.tblbank').remove();
 
-                 var row = "<tr class='tblbank'> <td> 1 </td>  <td>"+nofpg+"</td>" + // NO FPG
-                      "<td>"+tgl+"</td>"+
-                      "<td> <input type='text' class='form-control kodebankbg' value="+kodebank[4]+" name='kodebankbg'></td>"+ // TGL
-                      "<td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"' readonly> </td> <td> <input type='text'  class='input-sm form-control nominaltblibank' name='nominalbank' style='text-align:right' required > </td>" + //JATUH TEMPO
-                      "<td>  </td> </tr>"; //NOMINAL
-                    
-                  $('#tbl-ibank').append(row);
-
-                  $('.nominaltblibank').change(function(){
-                      //alert('as');
-                      totbayar = $('.totbayar').val();
-
-
-                      val = $(this).val();
+                   var row = "<tr class='tblbank'> <td> 1 </td>  <td>"+nofpg+"</td>" + // NO FPG
+                        "<td>"+tgl+"</td>"+
+                        "<td> <input type='text' class='form-control kodebankbg' value="+kodebank[4]+" name='kodebankbg' readonly></td>"+ // TGL
+                        "<td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"' readonly> </td> <td> <input type='text'  class='input-sm form-control nominaltblibank' name='nominalbank' style='text-align:right' required > </td>" + //JATUH TEMPO
+                        "<td>  </td> </tr>"; //NOMINAL
                       
-                       val = accounting.formatMoney(val, "", 2, ",",'.');
-                       $(this).val(val);
-                       totbayar = totbayar.replace(/,/g,'');
-                       val = val.replace(/,/g,'');
-                       if(parseFloat(totbayar) < parseFloat(val)) {
-                        toastr.info("Nominal harus sama dengan totalbayar :)");
-                        return false;
-                       }
+                    $('#tbl-ibank').append(row);
+
+                    $('.nominaltblibank').change(function(){
+                        //alert('as');
+                        totbayar = $('.totbayar').val();
+                        kodebank = $('.kodebankbg').val();
+
+                        val = $(this).val();
+                        
+                         val = accounting.formatMoney(val, "", 2, ",",'.');
+                         $(this).val(val);
+                         totbayar = totbayar.replace(/,/g,'');
+                         val = val.replace(/,/g,'');
+                         if(parseFloat(totbayar) < parseFloat(val)) {
+                          toastr.info("Nominal harus sama dengan totalbayar :)");
+                          return false;
+                         }
 
 
-                     /*  $('.totbayar').val(val);*/
-                       $('.ChequeBg').val(addCommas(val));
-                  })
-
+                       /*  $('.totbayar').val(val);*/
+                         $('.ChequeBg').val(addCommas(val));
+                    })
+                }
            }
            else {
-            $('.checkbgtf').show();
-            $('.ibanking').hide();
+            if(jenisbayar == 12){
+              $('.checkbgtf').hide();
+              $('.ibanking').hide();
+            }
+            else {
+              $('.checkbgtf').show();
+              $('.ibanking').hide();
+            }
+
            }
       })
 
@@ -1690,6 +1710,70 @@
                                arrnofaktur.push(val);
                             }
                     }
+                    else if( jenisbayar == '11'){
+                         $('.nofaktur').val(data.faktur[0][0].bp_nota);
+                          $('.tgl').val(data.faktur[0][0].bp_tgl);
+/*                          $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
+*/                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
+                         // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
+                          
+                          $('.sisatrbyr').val(addCommas(data.faktur[0][0].bp_pelunasan));
+                          $('.sisafaktur').val(addCommas(data.faktur[0][0].bp_pelunasan));
+                          $('.pelunasan').attr('readonly' , false);
+                          $('.jmlhfaktur').val(addCommas(data.faktur[0][0].bp_nominalkeu));
+                          $('.hutangdagang').val(data.faktur[0][0].bp_akunhutang); 
+                            $('.cabangfaktur').val(data.faktur[0][0].bp_akunhutang);
+
+
+                     //LOOPING DATA NO FAKTUR 
+
+                    for(var i = 0 ; i < data.faktur.length; i++){
+                       nmr++;
+                        totalpembayaranfp = 0;
+                        for(var l=0;l<data.pembayaran[i].length;l++){
+                            pelunasanfp = data.pembayaran[i][l].pelunasan;
+                           // alert(pelunasan);
+                            totalpembayaranfp = parseFloat(parseFloat(totalpembayaranfp) + parseFloat(pelunasanfp)).toFixed(2);
+                        }
+
+
+                        sisapelunasan = data.faktur[i][0].fp_sisapelunasan;
+                       var row = "<tr class='field field"+nmr+"' id='field"+nmr+"' data-id='"+nmr+"' data-nota='"+data.faktur[i][0].bp_nota+"'> <td>"+nmr+"</td>" + //nmr
+                                 "<td> <a class='nofp nofp"+nmr+"' data-id='"+nmr+"' data-idfaktur="+data.faktur[i][0].bp_id+">"+data.faktur[i][0].bp_nota+" </a><input type='hidden' class='datanofaktur nofaktur"+nmr+"' value="+data.faktur[i][0].bp_nota+" name='nofaktur[]'> <input type='hidden' class='datanofaktur'  value="+data.faktur[i][0].bp_id+" name='idfaktur[]'>  </td>"+  //nofaktur
+                                  "<td>"+data.faktur[i][0].bp_tgl+" <input type='hidden' class='tgl"+nmr+"' value="+data.faktur[i][0].bp_tgl+"></td>" + //tgl
+
+                                  "<td style='text-align:center'> - </td>" + //jatuhtempo
+
+                                  "<td>"+addCommas(data.faktur[i][0].bp_nominalkeu)+" <input type='hidden' class='sisapelunasan"+nmr+"' value="+data.faktur[i][0].bp_pelunasan+"> </td> <input type='hidden' class='netto"+nmr+"' value="+data.faktur[i][0].bp_nominalkeu+" name='netto[]'> </td>"+ //netto
+
+                                   "<td> <input type='text' class='input-sm pelunasanitem pelunasan"+nmr+" form-control' style='text-align:right' readonly data-id="+nmr+" name='pelunasan[]'>   </td>" +   //pelunasan         
+
+                                   "<td> <input type='text' class='input-sm pembayaranitem pembayaranitem"+data.faktur[i][0].bp_id+" form-control' style='text-align:right' readonly data-id="+nmr+" name='pembayaran[]' value="+addCommas(totalpembayaranfp)+"> </td>" +
+
+
+                                  "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].bp_pelunasan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
+
+                                  "<td> <input type='text' class='input-sm form-control' name='fpgdt_keterangan[]'> </td>" +
+
+                                  "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].bp_nota+" data-idfaktur="+data.faktur[i][0].bp_id+" type='button'><i class='fa fa-trash'></i></button> </td>" +
+                                  "</tr>";
+
+                            $('.tbl-item').append(row);
+                            jumlahfaktur = jumlahfaktur + parseFloat(sisapelunasan);
+                            jumlahfakturs = jumlahfaktur.toFixed(2);
+                       }
+                            tblitem = $('.field').length;
+                       //     console.log('tblitem2' + tblitem);
+                             arrnofaktur = [];
+           
+                            var nmr2 = 1;
+                            for(var z =0; z < tblitem; z++ ){
+                              val = $('.nofaktur'+nmr2 ).val();
+                         //     console.log(val + 'val');
+                              nmr2++;
+                               arrnofaktur.push(val);
+                            }
+                    }
 	
 						
 //                        alert(hasilsisaterbayar);
@@ -1816,6 +1900,18 @@
         if(lengthbank > 1){
           $('.nominal').attr('readonly', true);
         }
+
+        nominaltujuan = $('.nominaltujuanbank').val();
+        
+
+        jenisbayar = $('.jenisbayar').val();
+        if(jenisbayar == 12){
+          banktujuan = $('.banktujuan').val();
+          if(banktujuan == ''){
+            toastr.info("Mohon maaf bank tujuan belum dipilih :)");
+            return false;
+          }
+        }
        var checked = $(".checkcek:checked").map(function(){
           return this.id;
         }).toArray();
@@ -1842,15 +1938,13 @@
         for(var z=0; z <nobank.length; z++){
           $('tr#datacek'+nobank[z]).hide();
         }
-
-
          $.ajax({ //AJAX
                   url : baseUrl + '/formfpg/getakunbg',
                   data : {idmb},
                   type : "post",
                   dataType : "json",
                   success : function(data) {
-
+             
                     bank = $('.bank').val();
                     explode = bank.split(",");
                     kodebank = explode[4];
@@ -1869,67 +1963,104 @@
                     mbdt = data.mbdt;
                     
                     metodebayar = $('.metodebayar:checked').val();
+                    jenisbayar = $('.jenisbayar').val();
 
-                    if(metodebayar == 'CHECK/BG'){
-                      jenisbayar = $('.jenisbayar').val();
-                      if(jenisbayar == 5){
-                        $('.jthtmpo_bank').attr('disabled' , true);
-                        //$('.hari_bank').attr('disabled', true);
-                        jatuhtempo = $('.jthtmpo_bank').val();
-                      }
-                      else {
-                        jatuhtempo = $('.jthtmpo_bank').val();
-    
-                      }
-                  
-                      for(var i =0 ; i < mbdt.length; i++ ){                    
-                        var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
-                        "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> "+mbdt[i][0].mbdt_noseri+ "</a> <input type='hidden' class='noseri"+nomrbnk+"' value='"+mbdt[i][0].mbdt_noseri+"' name='noseri[]'></td>"+ // NOSERI
+                    if(jenisbayar == 11){
+                      if(metodebayar == 'CHECK/BG'){
+                        asalbank = $('.bank1').val();
+                        split = asalbank.split(",");
+                        idmb = split[0];
+                        norek = split[3]
+                        accbank = split[4];
+                        namabank = $('.nmbank1').val();
+                        periode = $('.tgltfakun').val();
 
-                        "<td>"+tgl+"</td>"+ // TGL
-                        "<td>"+mbdt[i][0].mb_kode+"</td> <td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"'> </td>" + //JATUH TEMPO
-                        "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
-                        "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
+                        for(var i =0 ; i < mbdt.length; i++ ){                    
+                          var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
+                          "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> "+mbdt[i][0].mbdt_noseri+ "</a> <input type='hidden' class='noseri"+nomrbnk+"' value='"+mbdt[i][0].mbdt_noseri+"' name='noseri[]'></td>"+ // NOSERI
 
-                        $('#tbl-bank').append(row);
-                        arrnohapus.push(nomrbnk);
-                        nomrbnk++;
-                      }
+                          "<td>"+tgl+"</td>"+ // TGL
+                          "<td>"+mbdt[i][0].mb_kode+"</td>" + // ASAL KODE
+                          "<td> <input type='text' class='form-control input-sm' value="+accbank+" name='tujuanaccbank[]' style='min-width:100px'> <input type='hidden' value='"+idmb+"' name='tujuanidbank[]' readonly></td>" + // Tujuan Bank KODE BANK
+                          "<td> <input type='text' class='form-control input-sm' value="+norek+" name='tujuannorekbank[]' style='min-width:170px' readonly> </td>" + // NO REKENING BANK
+                          "<td> <input type='text' class='form-control input-sm' value='"+namabank+"' name='tujuannamabank[]' style='min-width:170px' readonly></td>" + // NAMA REKENING BANK
 
-                    } // IF CHECKBG
-                    else if(metodebayar == 'TFAkun'){
-                      asalbank = $('.bank1').val();
-                      split = asalbank.split(",");
-                      idmb = split[0];
-                      norek = split[3]
-                      accbank = split[4];
-                      namabank = $('.nmbank1').val();
-                      periode = $('.tgltfakun').val();
+                          "<td> <input type='text' class='form-control jatuhtempotblbank' value='"+periode+"' name='periode[]' readonly> </td>" + //JATUH TEMPO
+                          "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required style='min-width:200px'> </td>" + //NOMINAL
+                          "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
-                      for(var i =0 ; i < mbdt.length; i++ ){                    
-                        var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
-                        "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> "+mbdt[i][0].mbdt_noseri+ "</a> <input type='hidden' class='noseri"+nomrbnk+"' value='"+mbdt[i][0].mbdt_noseri+"' name='noseri[]'></td>"+ // NOSERI
-
-                        "<td>"+tgl+"</td>"+ // TGL
-                        "<td>"+mbdt[i][0].mb_kode+"</td>" + // ASAL KODE
-                        "<td> <input type='text' class='form-control input-sm' value="+accbank+" name='tujuanaccbank[]'> <input type='hidden' value='"+idmb+"' name='tujuanidbank[]'></td>" + // Tujuan Bank KODE BANK
-                        "<td> <input type='text' class='form-control input-sm' value="+norek+" name='tujuannorekbank[]'> </td>" + // NO REKENING BANK
-                        "<td> <input type='text' class='form-control input-sm' value='"+namabank+"' name='tujuannamabank[]'></td>" + // NAMA REKENING BANK
-
-                        "<td> <input type='text' class='form-control jatuhtempotblbank' value='"+periode+"' name='periode[]'> </td>" + //JATUH TEMPO
-                        "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
-                        "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
-
-                        $('#tbl-tfbank').append(row);
-                        arrnohapus.push(nomrbnk);
-                        nomrbnk++;
+                          $('#tbl-tfbank').append(row);
+                          arrnohapus.push(nomrbnk);
+                          nomrbnk++;
+                        }
                       }
                     }
+                    else{
 
+                      if(jenisbayar == '12') {
+                        banktujuan = $('.banktujuan').val();
+                        split = banktujuan.split(",");
+                        kodebanktujuan = split[4];
+                        norekening = split[3];
+                        namabank = split[1];
 
-                    $('.nominalbank1').val(nominalbank);
-                    $('.ChequeBg').val(nominalbank);
-                   
+                        if(metodebayar == 'CHECK/BG'){
+                          for(var i =0 ; i < mbdt.length; i++ ){                    
+                            var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
+                            "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> "+mbdt[i][0].mbdt_noseri+ "</a> <input type='hidden' class='noseri"+nomrbnk+"' value='"+mbdt[i][0].mbdt_noseri+"' name='noseri[]'></td>"+ // NOSERI
+
+                            "<td>"+tgl+"</td>"+ // TGL
+                            "<td>"+mbdt[i][0].mb_kode+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]'> </td>" + //BANK TUJUAN
+                            "<td> <input type='text' class='form-control norekening' value='"+norekening+"'> </td>" + //NO REKENING TUJUAN
+                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"'> </td>" + //NAMA BANK TUJUAN
+                            "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
+                            "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
+
+                            $('#tbl-tfbank').append(row);
+                            arrnohapus.push(nomrbnk);
+                            nomrbnk++;
+                          }
+                        }
+                      }
+                      else {
+                        if(metodebayar == 'CHECK/BG'){
+                        
+                        jenisbayar = $('.jenisbayar').val();
+                        if(jenisbayar == 5){
+                          $('.jthtmpo_bank').attr('disabled' , true);
+                          //$('.hari_bank').attr('disabled', true);
+                          jatuhtempo = $('.jthtmpo_bank').val();
+                        }
+                        else {
+                          jatuhtempo = $('.jthtmpo_bank').val();      
+                        }
+
+                        for(var i =0 ; i < mbdt.length; i++ ){                    
+                          var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
+                          "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> "+mbdt[i][0].mbdt_noseri+ "</a> <input type='hidden' class='noseri"+nomrbnk+"' value='"+mbdt[i][0].mbdt_noseri+"' name='noseri[]'></td>"+ // NOSERI
+
+                          "<td>"+tgl+"</td>"+ // TGL
+                          "<td>"+mbdt[i][0].mb_kode+"</td> <td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"'> </td>" + //JATUH TEMPO
+                          "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
+                          "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
+
+                          $('#tbl-bank').append(row);
+                          arrnohapus.push(nomrbnk);
+                          nomrbnk++;
+                        }
+                       }
+                      }
+                    }
+                    // IF CHECKBG
+                  
+                    if(jenisbayar == '12'){
+                      $('.nominalbank1').val(nominaltujuan);
+                      $('.ChequeBg').val(nominaltujuan);
+                    }
+                    else {
+                      $('.nominalbank1').val(nominalbank);
+                      $('.ChequeBg').val(nominalbank);
+                    }
 
                       $(document).on('click','.remove-btn',function(){
 
@@ -2191,17 +2322,31 @@
         toastr.info('Data No FPG belum ada, form akan reload otomatis');
         location.reload();
       }
-
-      if(idjenis == '12'){
-          $('.jenisbayarbankbg').prop({ disabled: true, checked: false });
-          $('.jenisbayarbanktfacc').prop({ disabled: false, checked: false });
+     /* alert(idjenis);*/
+      if(idjenis == 12){
+         $('#tbl-bank').hide();  
+         $('#tbl-ibank').hide();  
+         $('.transferbank').show();
+         $('.tujuanbankacc').show();
+          $('.checkbgtf').hide();
       }
       else {
-          $('.jenisbayarbanktfacc').prop({ disabled: true, checked: false });
-          $('.jenisbayarbankbg').prop({ disabled: false, checked: false });
-      }
+        metodebayar = $('.metodebayar').val();
+        if(metodebayar == 'INTERNET BANKING'){
+                $('.jenisbayarbankbg').prop({ checked: false });           
+                  $('.tujuanbank').hide();
+                  $('.tujuanbankacc').hide();
+                  $('.transferbank').hide();
+                  $('.checkbgtf').hide();
+                  $('.ibanking').show();
+        }
+        else {
 
-       var tablefaktur = $('#tbl-faktur').DataTable();  
+        }
+      }
+     
+
+      var tablefaktur = $('#tbl-faktur').DataTable();  
       tablefaktur.clear().draw();
         $.ajax({ //AJAX
                   url : baseUrl + '/formfpg/getjenisbayar',
@@ -2210,8 +2355,15 @@
                   dataType : "json",
                   success : function(data) {
                     var response = data['isi'];
-                    
+                 
+                    $('.jenisbayar2').empty();
+                    $('.jenisbayar2').trigger("chosen:updated");
+                    $('.jenisbayar2').trigger("liszt:updated");
+
                     if(idjenis == '2' || idjenis == '3'){  
+                     
+                       $('.jenisbayar2').attr('disabled' , false);
+
                       $('.jenisbayar2').empty();   
                           $('.jenisbayar2').append("<option value='' selected> Pilih Supplier </option>");                
                       for(var j=0; j<response.length; j++){  
@@ -2222,6 +2374,8 @@
                       }                     
                     }   
                     else if(idjenis == '6'){
+                       $('.jenisbayar2').attr('disabled',false);
+
                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Agen  </option>");  
                        for(var j=0; j<response.length; j++){                                    
@@ -2231,7 +2385,9 @@
                       } 
                     }
                     else if(idjenis == '7'){
-                       $('.jenisbayar2').empty();  
+                        
+                        $('.jenisbayar2').attr('disabled',false);
+                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Outlet  </option>"); 
                        for(var j=0; j<response.length; j++){                                    
                          $('.jenisbayar2').append("<option value="+response[j].nama+","+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
@@ -2240,6 +2396,7 @@
                         } 
                     }
                     else if(idjenis == '9'){
+                       $('.jenisbayar2').attr('disabled' , false);
                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Vendor  </option>"); 
                        for(var j=0; j<response.length; j++){                                    
@@ -2273,6 +2430,7 @@
 
                     }
                     else if(idjenis == '4'){
+                        $('.jenisbayar2').attr('disabled' , false);
                         $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Data  </option>"); 
                        for(var j=0; j<response.length; j++){                                    
@@ -2295,15 +2453,16 @@
               var tablefaktur = $('#tbl-faktur').DataTable();
               tablefaktur.clear().draw();
 
-              var val = $('.jenisbayar2').val();
-              split = val.split(",");
-              idsup = split[0];
-              nosupplier = split[1];
+            
               var idjenisbayar = $('.jenisbayar').val();
-              if(idjenisbayar == '1'){
+              if(idjenisbayar == '1' || idjenisbayar == '11'){
                 nosupplier = cabang;
               } 
               else {
+                  var val = $('.jenisbayar2').val();
+                split = val.split(",");
+                idsup = split[0];
+                nosupplier = split[1];
                 nosupplier = nosupplier;
                 if(idsup == ''){
                 toastr.info("Data Supplier belum ada :)");
@@ -2502,6 +2661,37 @@
                            } 
                                            
                       } // END ELSE IF JENISBAYAR GIRO
+
+                      else if (idjenisbayar == '11'){ // BON SEMENTARA 
+                        $('.supfaktur').show();
+                        $('.invfaktur').show();
+                        var tablefaktur = $('#tbl-faktur').DataTable();
+                        tablefaktur.clear().draw();
+
+                           for(var i = 0; i < fp.length; i++){    
+                             
+                                 var html2 = "<tr class='data"+n+"' id='data"+fp[i].bp_nota+"'> <td>"+n+"</td>" +
+                                               "<td>"+fp[i].nama+"</td>" +
+                                              "<td>"+fp[i].bp_nota+"</td>" +
+                                              "<td> - </td>" +                                       
+                                            
+                                              "<td>"+fp[i].nama +"</td>"+
+                                              "<td> - </td>" +
+                                              "<td> - </td>" +
+                                              "<td>"+addCommas(fp[i].bp_pelunasan)+"</td> ";
+
+                                           
+                                            html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].bp_id+","+fp[i].bp_nota+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                          "<label></label>" +
+                                          "</div></td>";
+                                              
+                               html2 +=  "</tr>"; 
+                               tablefaktur.rows.add($(html2)).draw(); 
+                              n++; 
+
+                              console.log(n +'n');
+                             } 
+                      }
                     },
 					error : function(){
 					//	location.reload();
@@ -2728,7 +2918,7 @@
                         $('.deskirpsijenisbayar').html(rowSupplier);
       }*/
 
-      if(idjenis == '5'){ // TRANSFER KAS BANK
+      if(idjenis == '5' || idjenis == '12'){ // TRANSFER KAS BANK
           $('#tab-1').removeClass("active");
           $('#detailbayar').attr('disabled' , true);
           $('#tab-2').addClass("active");     
@@ -2759,150 +2949,137 @@
     //NOMINAL BANK
     arrnominal = [];
     $('.nominal').change(function(){
-    //  alert('guy');
+ 
           totalbayar = $('.totbayar').val();
           jenisbayar = $('.jenisbayar').val();
+          val = $(this).val();
+            
+          val = accounting.formatMoney(val, "", 2, ",",'.');
+
+          $(this).val(val);
+
           if(jenisbayar == 5){
-              idbank = $('.idbank').val();
-    
-       val = $(this).val();
-      
-       val = accounting.formatMoney(val, "", 2, ",",'.');
-       $(this).val(val);
-       console.log(idbank);
+            idbank = $('.idbank').val();     
+            val = $(this).val();
+            
+            val = accounting.formatMoney(val, "", 2, ",",'.');
 
-       if(idbank != ''){
-          $('.nominalbank' + idbank).val(val);
-          totalbayar = $('.totbayar').val();
-          aslitotal = totalbayar.replace(/,/g, '');
-       }
-       else {
-           $('.nominalbank1').val(val);
-       }
-
-        
-
-
+           
+            if(idbank != ''){
+                $('.nominalbank' + idbank).val(val);
+                totalbayar = $('.totbayar').val();
+                aslitotal = totalbayar.replace(/,/g, '');
+            }
+            else {
+                 $('.nominalbank1').val(val);
+            }
 
           var jmlhnominal = 0;
-        $('.nominaltblbank').each(function(){
-         
-          totalbayar = $('.totbayar').val();
-          aslitotal = totalbayar.replace(/,/g, '');
-          id = $(this).data('id');
-          val = $(this).val();
+          $('.nominaltblbank').each(function(){
            
-           val2 = val.replace(/,/g, '');
-         
-          if(val2 != ''){
-            jmlhnominal += parseFloat   (val2);
+            totalbayar = $('.totbayar').val();
+            aslitotal = totalbayar.replace(/,/g, '');
+            id = $(this).data('id');
+            val = $(this).val();
+             
+             val2 = val.replace(/,/g, '');
            
-          }
-         
-        })
+            if(val2 != ''){
+              jmlhnominal += parseFloat   (val2);
+             
+            }
+           
+          })
         
-        console.log(jmlhnominal);
         jenisbayarnominal = $('.jenisbayar').val();
         // alert(jmlhnominal);
 
-        if(jenisbayarnominal != '5'){
-            if(jmlhnominal > aslitotal){
-           toastr.info('Angka yang di inputkan lebih dari Total Bayar :) ');
-            $('.nominal').val('');
-            $('.nominalbank' + idbank).val('');
+            if(jenisbayarnominal != '5'){
+                if(jmlhnominal > aslitotal){
+                 toastr.info('Angka yang di inputkan lebih dari Total Bayar :) ');
+                  $('.nominal').val('');
+                  $('.nominalbank' + idbank).val('');
+                }
+                else {
 
-        }
-        else {
-
-           val3 = parseFloat(jmlhnominal);
-           val4 = jmlhnominal.toFixed(2);
-           $('.ChequeBg').val(addCommas(val4));
-        }
-        }
-        else {
-           val3 = parseFloat(jmlhnominal);
-           val4 = jmlhnominal.toFixed(2);
-          $('.totbayar').val(addCommas(val4));
-          $('.ChequeBg').val(addCommas(val4));
-        }
-      
+                   val3 = parseFloat(jmlhnominal);
+                   val4 = jmlhnominal.toFixed(2);
+                   $('.ChequeBg').val(addCommas(val4));
+                }
+            }
+            else {
+              val3 = parseFloat(jmlhnominal);
+              val4 = jmlhnominal.toFixed(2);
+              $('.totbayar').val(addCommas(val4));
+              $('.ChequeBg').val(addCommas(val4));
+            }     
           }
           else {
 
-
-          if(totalbayar == '') {
+          jenisbayar = $('.jenisbayar').val();
+          if(jenisbayar != '12'){
+            if(totalbayar == '') {
+            
+              toastr.info("Anda Belum menginputkan nilai pembayaran di transaksi :)");
+                return false;
+            }
+           
+               idbank = $('.idbank').val();  
+               val = $(this).val();
+                alert(idbank);
+               val = accounting.formatMoney(val, "", 2, ",",'.');
+               $(this).val(val);
           
-            toastr.info("Anda Belum menginputkan nilai pembayaran di transaksi :)");
-              return false;
+               if(idbank != ''){
+                  $('.nominalbank' + idbank).val(val);
+                  totalbayar = $('.totbayar').val();
+                  aslitotal = totalbayar.replace(/,/g, '');
+               }
+               else {
+                   $('.nominalbank1').val(val);
+               }
+
+              var jmlhnominal = 0;
+              $('.nominaltblbank').each(function(){
+             
+              totalbayar = $('.totbayar').val();
+              aslitotal = totalbayar.replace(/,/g, '');
+              id = $(this).data('id');
+              val = $(this).val();
+               
+               val2 = val.replace(/,/g, '');
+             
+              if(val2 != ''){
+                jmlhnominal += parseFloat   (val2);               
+              }
+            })
+        
+       
+          jenisbayarnominal = $('.jenisbayar').val();
+          // alert(jmlhnominal);
+
+          if(jenisbayarnominal != '5'){
+              if(jmlhnominal > aslitotal){
+             toastr.info('Angka yang di inputkan lebih dari Total Bayar :) ');
+              $('.nominal').val('');
+              $('.nominalbank' + idbank).val('');
+            }
+            else {
+
+               val3 = parseFloat(jmlhnominal);
+               val4 = jmlhnominal.toFixed(2);
+               $('.ChequeBg').val(addCommas(val4));
+            }
           }
           else {
-             idbank = $('.idbank').val();
-    
-       val = $(this).val();
-      
-       val = accounting.formatMoney(val, "", 2, ",",'.');
-       $(this).val(val);
-       console.log(idbank);
-
-       if(idbank != ''){
-          $('.nominalbank' + idbank).val(val);
-          totalbayar = $('.totbayar').val();
-          aslitotal = totalbayar.replace(/,/g, '');
-       }
-       else {
-           $('.nominalbank1').val(val);
-       }
-
-        
-
-
-
-          var jmlhnominal = 0;
-        $('.nominaltblbank').each(function(){
-         
-          totalbayar = $('.totbayar').val();
-          aslitotal = totalbayar.replace(/,/g, '');
-          id = $(this).data('id');
-          val = $(this).val();
-           
-           val2 = val.replace(/,/g, '');
-         
-          if(val2 != ''){
-            jmlhnominal += parseFloat   (val2);
-           
+             val3 = parseFloat(jmlhnominal);
+             val4 = jmlhnominal.toFixed(2);
+            $('.totbayar').val(addCommas(val4));
+            $('.ChequeBg').val(addCommas(val4));
           }
-         
-        })
-        
-        console.log(jmlhnominal);
-        jenisbayarnominal = $('.jenisbayar').val();
-        // alert(jmlhnominal);
-
-        if(jenisbayarnominal != '5'){
-            if(jmlhnominal > aslitotal){
-           toastr.info('Angka yang di inputkan lebih dari Total Bayar :) ');
-            $('.nominal').val('');
-            $('.nominalbank' + idbank).val('');
-
-        }
-        else {
-
-           val3 = parseFloat(jmlhnominal);
-           val4 = jmlhnominal.toFixed(2);
-           $('.ChequeBg').val(addCommas(val4));
-        }
-        }
-        else {
-           val3 = parseFloat(jmlhnominal);
-           val4 = jmlhnominal.toFixed(2);
-          $('.totbayar').val(addCommas(val4));
-          $('.ChequeBg').val(addCommas(val4));
-        }
-      
-
+          
+            }
           }
-
-        }
       
 
        

@@ -55,11 +55,11 @@
 
                     <tr>
                       <td style="width:150px"> Kode </td>
-                      <td> <input class="form-control" type="text"  name="kode_department"  style="width:200px"> </td>
+                      <td> <input class="form-control" type="text"  name="kode_department"  style="width:200px" required=""> </td>
                     </tr>
                     <tr>
                       <td style="width:150px"> Keterangan </td>
-                      <td> <input type="text" class="form-control" name="keterangan" style="width:200px"> </td>
+                      <td> <input type="text" class="form-control" name="keterangan" style="width:200px" required=""> </td>
                     </tr>
                   </table>
 

@@ -18,14 +18,23 @@ use Storage;
 class invoice_Controller extends Controller
 {
 
-    public function datatable_invoice()
+    public function datatable_invoice(Request $req)
     {
-        $cabang = auth::user()->kode_cabang;
-        if (Auth::user()->punyaAkses('Invoice','all')) {
-            $data = DB::table('invoice')
-                      ->join('customer','kode','=','i_kode_customer')
-                      ->get();
+        $nama_cabang = DB::table("cabang")
+             ->where('kode',$req->cabang)
+             ->first();
+
+        if ($nama_cabang != null) {
+          $cabang = 'and i_kode_cabang = '."'$req->cabang'";
         }else{
+          $cabang = '';
+        }
+
+        if (Auth::user()->punyaAkses('Invoice','all')) {
+            $sql = "SELECT * FROM invoice  join cabang on kode = i_kode_cabang where i_nomor != '0' $cabang";
+            $data = DB::select($sql);
+        }else{
+            $cabang = auth::user()->kode_cabang;
             $data = DB::table('invoice')
                       ->join('customer','kode','=','i_kode_customer')
                       ->where('i_kode_cabang',$cabang)
@@ -33,10 +42,14 @@ class invoice_Controller extends Controller
         }
 
         $data = collect($data);
+
         // return $data;
         return Datatables::of($data)
                         ->addColumn('aksi', function ($data) {
-
+                            $a = '';
+                            $b = '';
+                            $c = '';
+                            
                             if($data->i_statusprint == 'Released' or Auth::user()->punyaAkses('Invoice','ubah')){
                                 if(cek_periode(carbon::parse($data->i_tanggal)->format('m'),carbon::parse($data->i_tanggal)->format('Y') ) != 0){
                                   $a = '<button type="button" onclick="edit(\''.$data->i_nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
@@ -119,7 +132,11 @@ class invoice_Controller extends Controller
         echo json_encode($data);
     }
 
-
+    public function append_table(request $req)
+    {
+      $cab = $req->cabang;
+      return view('sales.invoice.table_invoice',compact('cab'));
+    }
 
     public function index(){
 
@@ -133,22 +150,11 @@ class invoice_Controller extends Controller
         //               ])
         // }
 
-        $cabang = auth::user()->kode_cabang;
-        if (Auth::user()->punyaAkses('Invoice','all')) {
-            $data = DB::table('invoice')
-                      ->join('customer','kode','=','i_kode_customer')
-                      ->take(2000)
-                      ->get();
-        }else{
-            $data = DB::table('invoice')
-                      ->join('customer','kode','=','i_kode_customer')
-                      ->where('i_kode_cabang',$cabang)
-                      ->take(2000)
-                      ->get();
-        }
+        $cabang = DB::table('cabang')
+                    ->get();
         $kota = DB::table('kota')
                   ->get();
-        return view('sales.invoice.index',compact('data'));
+        return view('sales.invoice.index',compact('data','cabang'));
     }
 
     public function form(){
@@ -641,12 +647,12 @@ public function simpan_invoice(request $request)
         $ppn_type = 'npkp';
         $ppn_persen = 1;
         $nilaiPpn=1/101;
-        $akunPPN='2302';
+        $akunPPN='2301';
     } elseif ($request->cb_jenis_ppn == 5) {//include
         $ppn_type = 'npkp';
         $ppn_persen = 10;
         $nilaiPpn=10/110;
-        $akunPPN='2302';
+        $akunPPN='2398';
     }
 
   $user = Auth::user()->m_name;
@@ -777,7 +783,7 @@ public function simpan_invoice(request $request)
                         'jr_date'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
                         'jr_detail' => 'INVOICE ' . $request->ed_pendapatan,
                         'jr_ref'    => $nota,
-                        'jr_note'   => 'INVOICE',
+                        'jr_note'   => 'INVOICE '.$request->ed_keterangan,
                         'jr_insert' => carbon::now(),
                         'jr_update' => carbon::now(),
                         ]);
@@ -1327,7 +1333,7 @@ public function simpan_invoice(request $request)
                       'jr_date'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
                       'jr_detail' => 'INVOICE ' . $request->ed_pendapatan,
                       'jr_ref'    => $nota,
-                      'jr_note'   => 'INVOICE',
+                      'jr_note'   => 'INVOICE '.$request->ed_keterangan,
                       'jr_insert' => carbon::now(),
                       'jr_update' => carbon::now(),
                       ]); 
@@ -1342,7 +1348,7 @@ public function simpan_invoice(request $request)
           $temp = DB::table('item')
                     ->where('kode',$do->dd_kode_item)
                     ->first();
-
+          // dd($temp);          
           array_push($pendapatan_koran, $temp->acc_penjualan);
         }
 
@@ -1379,6 +1385,7 @@ public function simpan_invoice(request $request)
             }
           }
           // PIUTANG
+          // dd(substr($cari_acc_piutang,0, 4));
           $akun_piutang = DB::table('d_akun')
                           ->where('id_akun','like',substr($cari_acc_piutang,0, 4).'%')
                           ->where('kode_cabang',$cabang)
@@ -1433,6 +1440,7 @@ public function simpan_invoice(request $request)
               array_push($akun_val,(filter_var($request->pph,FILTER_SANITIZE_NUMBER_INT)/100));
             }
           }
+          
           // JURNAL PENDAPATAN
           for ($i=0; $i < count($pendapatan_koran); $i++) { 
              $akun_pendapatan = DB::table('d_akun')

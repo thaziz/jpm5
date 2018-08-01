@@ -44,6 +44,10 @@
     text-align: right;
   }
 
+  #form-table input:disabled, #form-table textarea:disabled, #table_akun input:disabled{
+    background: white;
+  }
+
 </style>
 
 <div class="row">
@@ -56,17 +60,27 @@
       <tr>
         <td width="20%" class="text-left">Jenis Transaksi <input type="hidden" name="type_transaksi" value="kas" readonly /> </td>
         <td colspan="2">
-          <select name="jenis_transaksi" class="select_validate form-control" id="jenis_transaksi" style="width: 40%">
+          <select name="jenis_transaksi" class="select_validate form-control list-should-disabled" id="jenis_transaksi" style="width: 40%; display: inline-block;">
             <option value="1">Kas Masuk</option>
             <option value="2">Kas Keluar</option>
-          </select>
+          </select> &nbsp;&nbsp;&nbsp;&nbsp;
+
+          <i class="fa fa-search" style="display: inline-block; cursor: pointer;" id="list-show"></i>&nbsp;&nbsp;&nbsp;
+          <i class="fa fa-times text-danger" style="display: none; cursor: pointer;" id="list-reset"></i>
+        </td>
+      </tr>
+
+      <tr id="info-referensi" style="display: none;">
+        <td width="20%" class="text-left">Nomor Referensi <input type="hidden" name="ref" readonly /> </td>
+        <td colspan="2">
+          <input type="text" class="form_validate form-control list-should-disabled" placeholder="Nomor Referensi" id="jr_ref" style="width: 60%">
         </td>
       </tr>
 
       <tr>
         <td width="20%" class="text-left">Transaksi Cabang</td>
         <td colspan="2">
-          <select name="cabang" class="select_validate form-control chosen-select" id="cabang">
+          <select name="cabang" class="select_validate form-control chosen-select list-should-disabled" id="cabang">
             @foreach($cabangs as $cab)
               <option value="{{$cab->kode}}">{{$cab->nama}}</option>
             @endforeach
@@ -77,7 +91,7 @@
       <tr>
         <td width="10%" class="text-left">Akun COA</td>
         <td colspan="2">
-          <select class="select_validate form-control chosen-select akun" id="akun_transaksi">
+          <select class="select_validate form-control chosen-select akun list-should-disabled" id="akun_transaksi">
             <option value="---"> -- Pilih Akun Coa</option>
           </select>
         </td>
@@ -93,7 +107,7 @@
       <tr>
         <td width="10%" class="text-left">Nama Transaksi</td>
         <td width="35%" colspan="2">
-          <input type="text" class="form_validate form-control" name="jr_detail" placeholder="Masukkan Nama Transaksi" id="jr_detail">
+          <input type="text" class="form_validate form-control list-should-disabled" name="jr_detail" placeholder="Masukkan Nama Transaksi" id="jr_detail">
         </td>
       </tr>
 
@@ -108,7 +122,7 @@
         <tr>
           <td width="20%" class="text-left" style="vertical-align: top; padding-top: 1em;">Catatan</td>
           <td colspan="2">
-            <textarea name="jr_note" class="input-Validity upper form-control form_validate" style="width:100%; resize: none; height: 100px;" placeholder="Masukkan Catatan Jurnal Disini"></textarea>
+            <textarea name="jr_note" class="input-Validity upper form-control form_validate list-should-disabled" style="width:100%; resize: none; height: 100px;" placeholder="Masukkan Catatan Jurnal Disini" id="jr_note"></textarea>
           </td>
         </tr>
 
@@ -121,8 +135,11 @@
         <tr>
           {{-- <td width="10%" class="text-left">Nama</td> --}}
           <td width="35%" colspan="2">
-            <select class="select_validate form-control chosen-select akun" id="akun_lawan">
-              <option value="---"> -- Pilih Akun Coa</option>
+            <select class="select_validate form-control chosen-select list-should-disabled" id="akun_lawan">
+              <option value="---"> -- Pilih Akun Lawan</option>
+              @foreach($akun_all as $key => $data_akun)
+                <option value="{{ $data_akun->id_akun }}">{{ $data_akun->nama_akun }}</option>
+              @endforeach
             </select>
           </td>
         </tr>
@@ -130,7 +147,7 @@
         <tr>
           {{-- <td width="10%" class="text-left">Nama</td> --}}
           <td colspan="2" style="padding-top: 10px;">
-            <button class="btn btn-primary btn-xs btn-block" id="add_coa_lawan">Tambahkan Ke Detail COA</button>
+            <button class="btn btn-primary btn-xs btn-block list-should-disabled" id="add_coa_lawan">Tambahkan Ke Detail COA</button>
           </td>
         </tr>
 
@@ -146,7 +163,8 @@
       <table id="table_akun" border="0">
         <thead>
           <tr>
-            <th width="60%">Akun COA</th>
+            <th width="5%">**</th>
+            <th width="55%">Akun COA</th>
             <th width="20%">Debet</th>
             <th width="20%">Kredit</th>
           </tr>
@@ -154,20 +172,24 @@
 
         <tbody id="coa_detail">
           <tr id="coa_1" data-id="1">
+            <td width="5%" class="text-center" style="cursor: pointer;">
+              
+            </td>
             <td class="name">
               100311001 - KAS BESAR JPM SURABAYA</td>
             <td class="text-right currency">
               <input type="hidden" name="akun[]" class="akunName" readonly>
-              <input class="form-control currency debet" value="0" data-id="1" name="debet[]">
+              <input class="form-control currency debet list-should-disabled" value="0" data-id="1" name="debet[]">
             </td>
             <td class="text-right currency">
-              <input class="form-control currency kredit" value="0" data-id="1" name="kredit[]" readonly>
+              <input class="form-control currency kredit list-should-disabled" value="0" data-id="1" name="kredit[]" readonly>
             </td>
           </tr>
         </tbody>
 
         <tfoot>
           <tr>
+            <td></td>
             <td>  </td>
             <td style="font-weight: bold; background: #eee; border: 1px solid #fff;"><input class="form-control currency total_debet" style="height: 10px; border: none; padding-right: 8px; background: #eee;" value="0"></td>
             <td style="font-weight: bold; background: #eee; border: 1px solid #fff;"><input class="form-control currency total_kredit" style="height: 10px; border: none; padding-right: 8px; background: #eee;" value="0"></td>
@@ -181,14 +203,14 @@
   </form>
 
   <div class="col-md-12 m-t" style="border-top: 1px solid #eee; padding: 10px 10px 0px 0px;">
-    <button class="btn btn-primary btn-sm pull-right" id="simpan">Simpan</button>
+    <button class="btn btn-primary btn-sm pull-right list-should-disabled" id="simpan">Simpan</button>
   </div>
 </div>
 
 <script>
   $(document).ready(function(){
 
-    akun = {!! $akun !!}; var id = 1;
+    akun = {!! $akun_real !!}; var id = 1; var list = '';
 
     $(".chosen-select.akun").html(initiate_akun($("#cabang").val()));
     $('.chosen-select.akun').trigger("chosen:updated");
@@ -216,8 +238,8 @@
       evt.preventDefault();
 
       btn = $(this);
-      // btn.attr("disabled", "disabled");
-      // btn.text("Menyimpan...");
+      btn.attr("disabled", "disabled");
+      btn.text("Menyimpan...");
 
       if($(".total_debet").val() != $(".total_kredit").val()){
         alert("Total Debet Kredit Harus Sama");
@@ -235,7 +257,6 @@
           dataType: 'json',
           success: function(response){
             console.log(response);
-            form_reset();
             if(response.status == "berhasil"){
               toastr.success('Data Jurnal Memorial Berhasil Disimpan');
               btn.removeAttr("disabled");
@@ -272,6 +293,8 @@
     $("#cabang").change(function(){
       $(".chosen-select.akun").html(initiate_akun($(this).val()));
       $('.chosen-select.akun').trigger("chosen:updated");
+
+      generate_coa_transaksi();
     })
 
     $("table").on("click", ".delete_row", function(){
@@ -331,7 +354,13 @@
     $("#add_coa_lawan").click(function(evt){
       evt.preventDefault(); var value = $("#akun_lawan");
 
+      if(value.val() == '---')
+        return;
+
       var html = '<tr id="coa_'+(id + 1)+'" data-id="'+(id+1)+'" class="akun_lawan_wrap">'+
+                    '<td width="5%" class="text-center text-danger" style="cursor: pointer;">'+
+                      '<i class="fa fa-eraser delete_akun" data-id="'+(id+1)+'"></i>'+
+                    '</td>'+
                     '<td class="name">'+
                         '<input type="hidden" name="akun[]" value="'+value.val()+'" readonly>'+value.children('option:selected').text()+'</td>'+
                     '<td class="text-right currency">'+
@@ -346,6 +375,49 @@
       $("#coa_detail").append(html);
       $(this).maskFunc();
       id++;
+    })
+
+    $("#coa_detail").on('click', '.delete_akun', function(evt){
+      evt.preventDefault(); ctx = $(this); 
+      ctx.parents('tr').first().remove();
+      initiate_total();
+    })
+
+    $("#list-show").click(function(evt){
+      evt.preventDefault();
+      $('#overlay').fadeIn(80);
+
+      if(list != $("#cabang").val())
+        $("#overlay .modal-body").html('<center class="text-muted">Sedang Memuat ...</center>');
+
+      $.ajax(baseUrl+"/keuangan/jurnal_umum/list_transaksi?cab="+$("#cabang").val(), {
+         timeout: 15000,
+         dataType: "html",
+         success: function (data) {
+             $("#overlay .modal-body").html(data);
+             list = $("#cabang").val();
+         },
+         error: function(request, status, err) {
+            if (status == "timeout") {
+              $("#overlay .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
+            } else {
+              $("#overlay .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
+            }
+        } 
+      });
+
+      // $("#modal_list_transaksi").modal('show');
+    })
+
+    $("#list-reset").click(function(evt){
+      evt.preventDefault();
+      $(this).fadeOut(200);
+      $(".list-should-disabled").removeAttr('disabled');
+      $('.chosen-select#akun_transaksi').trigger("chosen:updated");
+      $('.chosen-select#akun_lawan').trigger("chosen:updated");
+      $('.chosen-select#cabang').trigger("chosen:updated");
+      $("#info-referensi").fadeOut(200);
+      form_reset();
     })
 
     function generate_coa_transaksi(){

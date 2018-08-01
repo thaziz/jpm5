@@ -74,7 +74,7 @@
     <div class="ibox">&nbsp;
       <div class="ibox-title">
         <h5>Laporan Patty Cash</h5>
-        <a href="../buktikaskeluar/index" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+        <a href="../ikhtisar_kas/index" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
       </div>
       <div class="ibox-content col-sm-12">
         <div class="col-sm-6">
@@ -88,6 +88,12 @@
             </tr>
             <tr>
               <td>Tanggal</td>
+              <td>
+                <input  class="form-control tanggal" type="text" value="{{ carbon\carbon::now()->format('d/m/Y') }}" name="tanggal" readonly=""  >
+              </td>
+            </tr>
+            <tr>
+              <td>Filter Tanggal</td>
               <td>
                 <input  class="form-control reportrange" type="text" value="{{$start}} - {{$second}}" name="rangepicker"  >
               </td>
@@ -164,6 +170,24 @@ $('.reportrange').daterangepicker({
           format: 'DD/MM/YYYY'
       }         
 });
+
+$('.tanggal').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
+    $('.tanggal').change();
+}); 
+
+$('.tanggal').change(function () {
+    var tanggal = $('.tanggal').val();
+    var cabang = $('.cabang_select').val();
+    $.ajax({
+      url:baseUrl +'/ikhtisar_kas/nota',
+      data:$('.table_header :input').serialize(),
+      success:function(response){
+        $('.nomor_ik').val(response.nota);
+      }
+    });
+ });
+
+
 $(document).ready(function(){
   $.ajax({
     url:baseUrl +'/ikhtisar_kas/cari_patty',

@@ -86,7 +86,7 @@
                           </select>
                         </td>
                         <td width="150">Tanggal</td>
-                        <td width="300">
+                        <td width="300" class="disabled">
                           <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::parse($data->tt_tgl)->format('d/m/Y') }}">
                         </td>
                       </tr>

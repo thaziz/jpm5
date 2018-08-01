@@ -33,29 +33,94 @@ use Mail;
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 use Auth;
+use Yajra\Datatables\Datatables;
 
 class KasController extends Controller
 {
 	public function index(){
 		// aaddcc
-    	$cabang = Auth::user()->kode_cabang;
-		if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
-			$data = DB::table('biaya_penerus_kas')
-				->join('cabang','kode','=','bpk_comp')
-				->where('bpk_jenis_biaya','!=','LOADING')
-				->get();
-		}else{
-			$data = DB::table('biaya_penerus_kas')
-				->join('cabang','kode','=','bpk_comp')
-				->where('bpk_comp',$cabang)
-				->where('bpk_jenis_biaya','!=','LOADING')
-				->get();
-		}
-		 
+		$cabang = DB::table('cabang')
+                  ->get();
 		
-		return view('purchase/kas/index',compact('data'));
+		return view('purchase/kas/index',compact('data','cabang'));
+	}
+	public function append_table(request $req)
+	{
+		$cab = $req->cabang;
+		return view('purchase.kas.table_kas',compact('cab'));
 	}
 
+	public function datatable_bk(request $req)
+	{
+
+		$nama_cabang = DB::table("cabang")
+						 ->where('kode',$req->cabang)
+						 ->first();
+
+		if ($nama_cabang != null) {
+			$cabang = 'and bpk_comp = '."'$req->cabang'";
+		}else{
+			$cabang = '';
+		}
+
+
+		if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
+			$sql = "SELECT * FROM biaya_penerus_kas  join cabang on kode = bpk_comp where bpk_nota != '0' $cabang";
+			$data = DB::select($sql);
+		}else{
+			$cabang = Auth::user()->kode_cabang;
+			$data = DB::table('biaya_penerus_kas')
+				  ->join('cabang','kode','=','bpk_comp')
+				  ->where('kode',$cabang)
+				  ->orderBy('bpk_id','ASC')
+				  ->get();
+		}
+
+        $data = collect($data);
+        // return $data;
+        return Datatables::of($data)
+                        ->addColumn('aksi', function ($data) {
+                            $a = '';
+                            if($data->bpk_status == 'Released' or Auth::user()->punyaAkses('Biaya Penerus Kas','ubah')){
+                                if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
+$a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' => $data->bpk_id] ).'" title="edit"> Edit</a><br>';
+                                }
+                            }else{
+                              $a = '';
+                            }
+
+                            $c = '';
+                            if($data->bpk_status == 'Released' or Auth::user()->punyaAkses('Biaya Penerus Kas','hapus')){
+                                if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
+                                  $c = '<a class="fa fa-trash asw" align="center" onclick="hapus(\''.$data->bpk_id.'\')" title="hapus"> Hapus</a>';
+                                }
+                            }else{
+                              $c = '';
+                            }
+                            return $a . $c  ;
+                                   
+                        })
+                    
+                        ->addColumn('cabang', function ($data) {
+                          $kota = DB::table('cabang')
+                                    ->get();
+
+                          for ($i=0; $i < count($kota); $i++) { 
+                            if ($data->bpk_comp == $kota[$i]->kode) {
+                                return $kota[$i]->nama;
+                            }
+                          }
+                        })
+                        ->addColumn('tagihan', function ($data) {
+                          return number_format(round($data->bpk_tarif_penerus,0),2,',','.'  ); 
+                        })
+                        ->addColumn('print', function ($data) {
+                           return $a = ' <a class="fa asw fa-print" align="center"  title="edit" href="'.route('detailkas', ['id' => $data->bpk_id]).'"> detail</a><br>
+										<a class="fa asw fa-print" align="center"  title="print" href="'.route('buktikas', ['id' => $data->bpk_id]).'"> Bukti Kas</a>';
+                        })
+                        ->addIndexColumn()
+                        ->make(true);
+	}
 	public function kekata($x) {
     $x = abs($x);
     $angka = array("", "satu", "dua", "tiga", "empat", "lima",
@@ -515,7 +580,7 @@ class KasController extends Controller
 		  	'bpk_status_pending' => $pending_status,	
 		  	'bpk_kode_akun'		 => $request->nama_kas,
 		  	'bpk_sopir'		 	 => strtoupper($request->nama_sopir),
-		  	'bpk_keterangan'	 => $request->note,
+		  	'bpk_keterangan'	 => strtoupper($request->note),
 		  	'bpk_tipe_angkutan'  => $request->jenis_kendaraan,		
 		  	'created_at'		 => Carbon::now(),
 		  	'bpk_comp'	 		 => $request->cabang,
@@ -655,7 +720,7 @@ class KasController extends Controller
 										'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 										'jr_detail' => $jenis_bayar->jenisbayar,
 										'jr_ref'  	=> $nota,
-										'jr_note'  	=> 'BIAYA PENERUS KAS',
+										'jr_note'  	=> 'BIAYA PENERUS KAS '.strtoupper($request->note),
 										'jr_insert' => carbon::now(),
 										'jr_update' => carbon::now(),
 										]);
@@ -803,6 +868,7 @@ class KasController extends Controller
 		$data = DB::table('biaya_penerus_kas')
 				  ->where('bpk_id',$request->id)
 				  ->first();
+
 
 		$data_dt = DB::table('biaya_penerus_kas_detail')
 				  ->where('bpkd_bpk_id',$request->id)
@@ -983,7 +1049,7 @@ class KasController extends Controller
 		  	'bpk_status_pending' => $pending_status,	
 		  	'bpk_kode_akun'		 => $request->nama_kas,
 		  	'bpk_sopir'		 	 => strtoupper($request->nama_sopir),
-		  	'bpk_keterangan'	 => $request->note,
+		  	'bpk_keterangan'	 => strtoupper($request->note),
 		  	'bpk_tipe_angkutan'  => $request->jenis_kendaraan,		
 		  	'created_at'		 => Carbon::now(),
 		  	'bpk_comp'	 		 => $request->cabang,
@@ -1130,7 +1196,7 @@ class KasController extends Controller
 										'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 										'jr_detail' => $jenis_bayar->jenisbayar,
 										'jr_ref'  	=> $request->no_trans,
-										'jr_note'  	=> 'BIAYA PENERUS KAS',
+										'jr_note'  	=> 'BIAYA PENERUS KAS '.strtoupper($request->note),
 										'jr_insert' => carbon::now(),
 										'jr_update' => carbon::now(),
 										]);
@@ -1319,7 +1385,14 @@ class KasController extends Controller
 					}
 				}
 			}
-
+			$akun_biaya = [];
+			for ($i=0; $i < count($unik_asal); $i++) { 
+				$temp = DB::table('d_akun')
+						  ->where("id_akun",'like',substr($cari_id[0]->bpk_acc_biaya,0,4).'%')
+						  ->where('kode_cabang',$unik_asal[$i])
+						  ->first();
+				array_push($akun_biaya,$temp->id_akun);
+			}
 			for ($i=0; $i < count($unik_asal); $i++) { 
 				${'total'.$unik_asal[$i]} = array_sum(${$unik_asal[$i]});
 			}
@@ -1330,7 +1403,6 @@ class KasController extends Controller
 			for ($i=0; $i < count($harga_array); $i++) { 
 				 $harga_array[$i] = round($harga_array[$i]);
 			}
-			// return $harga_array;
 			$total_harga=array_sum($harga_array);
 
 			$terbilang = $this->terbilang($total_harga,$style=3);
@@ -1344,7 +1416,7 @@ class KasController extends Controller
 				}
 			}
 		}
-		return view('purchase/kas/buktikas',compact('cari','harga_array','total_harga','terbilang','cari_akun'));
+		return view('purchase/kas/buktikas',compact('cari','harga_array','total_harga','terbilang','cari_akun','akun_biaya'));
 
 	}
 

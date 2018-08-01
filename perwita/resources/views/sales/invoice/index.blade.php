@@ -80,27 +80,29 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 <div class="box-body">
-
-                    <table style="font-size: 12px" id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
-                        <thead>
-                            <tr>
-                                <th>Nomor</th>
-                                <th>Tanggal </th>
-                                <th>Cabang </th>
-                                <th>Customer</th>
-                                <th>JT</th>
-                                <th>Tagihan </th>
-                                <th>Sisa Tagihan </th>
-                                <th>Keterangan </th>
-                                <th>No Faktur Pajak </th>
-                                <th>Status Print</th>
-                                <th style="width:10%"> Aksi </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                    </table>
+                  <div class="col-sm-12">
+                    <div class="col-sm-6">
+                      <table cellpadding="3" cellspacing="0" border="0" class="table">
+                        @if (Auth::user()->punyaAkses('Invoice','cabang')) 
+                        <tr id="filter_col1" data-column="0">
+                            <td>Cabang</td>
+                            <td align="center">
+                              <select onchange="filtering()" class="form-control cabang chosen-select-width">
+                                <option value="0">Pilih - Cabang </option>
+                                @foreach ($cabang as $a)
+                                  <option value="{{$a->kode}}">{{$a->kode}} - {{$a->nama}}</option>
+                                @endforeach
+                              </select>
+                            </td>
+                        </tr>
+                        @endif
+                      </table>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 append_table">
+                    
+                  </div>
+                    
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
@@ -179,51 +181,48 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-    $(document).ready( function () {
 
-         $('#tabel_data').DataTable({
-            processing: true,
-            // responsive:true,
-            serverSide: true,
-            ajax: {
-                url:'{{ route("datatable_invoice1") }}',
-            },
-            columnDefs: [
-              {
-                 targets: 5,
-                 className: 'cssright'
-              },
-              {
-                 targets: 6,
-                 className: 'cssright'
-              },
-              {
-                 targets:7,
-                 className: 'center'
-              },
-              {
-                 targets:10,
-                 className: 'center'
-              },
-            ],
-            "columns": [
-            { "data": "i_nomor" },
-            { "data": "i_tanggal" },
-            { "data": "cabang" },
-            { "data": "customer"},
-            { "data": "i_jatuh_tempo" },
-            { "data": "tagihan" },
-            { "data": "sisa"},
-            { "data": "i_keterangan" },
-            { "data": "faktur_pajak" },
-            { "data": "status" },
-            { "data": "aksi" },
-            
-            ]
+
+    $(document).ready(function(){
+      var cabang = $('.cabang').val();
+      $.ajax({
+          url:baseUrl + '/sales/invoice/append_table',
+          data:{cabang},
+          type:'get',
+          success:function(data){
+            $('.append_table').html(data);
+          },
+          error:function(data){
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
       });
-      $.fn.dataTable.ext.errMode = 'throw';
-    });
+    })
 
+    function filtering() {
+      var cabang = $('.cabang').val();
+      var jenis_bayar = $('.jenis_bayar').val();
+      $.ajax({
+          url:baseUrl + '/sales/invoice/append_table',
+          data:{cabang,jenis_bayar},
+          type:'get',
+          success:function(data){
+            $('.append_table').html(data);
+          },
+          error:function(data){
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+      });
+    }
 
     $(document).on("click","#btn_add_order",function(){
         window.location.href = baseUrl + '/sales/invoice_form'

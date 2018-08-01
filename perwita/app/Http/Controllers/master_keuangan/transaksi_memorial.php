@@ -1,0 +1,192 @@
+<?php
+
+namespace App\Http\Controllers\master_keuangan;
+
+use Illuminate\Http\Request;
+
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
+use App\d_jurnal;
+use App\d_jurnal_dt;
+use App\master_akun;
+
+use DB;
+use Validator;
+use Session;
+
+class transaksi_memorial extends Controller
+{
+    public function index(Request $request){
+    	// return json_encode($request->all());
+
+        if($_GET['cab'] != 'all')
+            $cabang_nama = DB::table("cabang")->where("kode", $_GET["cab"])->select("nama")->first()->nama;
+        else
+            $cabang_nama = "Semua Cabang";
+        
+        $date = (substr($_GET['date'], 0, 1) == 0) ? substr($_GET['date'], 1, 1) : $_GET["date"];
+
+        if(Session::get("cabang") == "000"){
+            $cabangs = DB::table("cabang")->select("kode", "nama")->get();
+        }
+        else{
+            $cabangs = DB::table("cabang")->where("kode", Session::get("cabang"))->select("kode", "nama")->get();
+        }
+
+        $idx = "TM";
+
+        if($_GET['cab'] != 'all'){
+            $data = DB::table("d_jurnal")
+                ->join("d_jurnal_dt", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
+                ->join('cabang', 'cabang.kode', '=', DB::raw('substring(jr_no, 9, 3)'))
+                ->where(DB::raw('substring(jr_no, 9, 3)'), $_GET['cab'])
+                ->where(DB::raw("substring(jr_ref, 1,2)"), $idx)
+                // ->where(DB::raw("date_part('month', jr_date)"), $date)
+                // ->where(DB::raw("date_part('year', jr_date)"), $_GET["year"])
+                ->select(DB::raw("distinct d_jurnal.jr_id"), "d_jurnal.*", 'cabang.nama')->orderBy("jr_id", "desc")->get();
+        }else{
+            $data = DB::table("d_jurnal")
+                ->join("d_jurnal_dt", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
+                ->join('cabang', 'cabang.kode', '=', DB::raw('substring(jr_no, 9, 3)'))
+                ->where(DB::raw("substring(jr_ref, 1,2)"), $idx)
+                // ->where(DB::raw("date_part('month', jr_date)"), $date)
+                // ->where(DB::raw("date_part('year', jr_date)"), $_GET["year"])
+                ->select(DB::raw("distinct d_jurnal.jr_id"), "d_jurnal.*", 'cabang.nama')->orderBy("jr_id", "desc")->get();
+        }
+
+        // return json_encode($data);
+
+        return view("keuangan.transaksi_memorial.index")->withData($data)->withCabang_nama($cabang_nama)->withCabangs($cabangs);
+    }
+
+    public function add(Request $request){
+
+        // return json_encode($request->all());
+
+        if($request->cab == 'all')
+           $cabangs = DB::table('cabang')->select("kode", "nama")->get();
+        else
+           $cabangs = DB::table('cabang')->where("kode", $request->cab)->select("kode", "nama")->get();
+
+        $cabang = DB::table('cabang')->select("kode")->first();
+        $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '10')->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
+
+        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '10')->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
+
+        return view("keuangan.transaksi_memorial.insert")
+                ->withCabangs($cabangs)
+                ->withCabang($cabang)
+                ->withAkun_real(json_encode($akun_real))
+                ->withAkun_all($akun_all);
+    }
+
+    public function save_data(Request $request){
+       // return json_encode($request->all());
+
+       $response = [
+            'status'    => 'berhasil',
+            'content'   => $request->all()
+        ];
+
+        $rules = [
+            'jr_detail'     => 'required',
+            'total_debet'   => 'same:total_kredit'
+        ];
+
+        $messages = [
+            'jr_detail.required'    => 'Anda Diharuskan Memilih Transaksi Terlebih Dahulu.',
+            'total_debet.same'      => 'Pastikan Total Debet Dan Total Kredit Harus Seimbang.'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if($validator->fails()){
+            $response = [
+                'status'    => 'gagal',
+                'content'   => $validator->errors()->first()
+            ];
+
+            return json_encode($response);
+        }
+
+        $id = DB::table("d_jurnal")->max("jr_id");
+
+       if($request->type_transaksi == "memorial"){
+            $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TM")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
+
+            $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
+            $ref = "TM-".date("my")."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
+            $jr_no = get_id_jurnal('MM', $request->cabang);
+
+            // return json_encode($jr_no." __ ".$ref);
+       }
+
+        $jurnal = new d_jurnal;
+        $jurnal->jr_id = ($id+1);
+        $jurnal->jr_year = date('Y');
+        $jurnal->jr_date = date('Y-m-d');
+        $jurnal->jr_detail = $request->jr_detail;
+        $jurnal->jr_ref = $ref;
+        $jurnal->jr_note = $request->jr_note;
+        $jurnal->jr_no = $jr_no;
+        $jurnal->jr_on_proses = 2;
+
+        // $jurnal->save();
+
+        if($jurnal->save()){
+            foreach ($request->akun as $key => $data_akun) {
+                $acc = DB::table("d_akun")->where("id_akun", $data_akun)->select("akun_dka")->first();
+                $debet = str_replace('.', '', explode(',', $request->debet[$key])[0]);
+                $kredit = str_replace('.', '', explode(',', $request->kredit[$key])[0]);
+
+                // return json_encode($acc->akun_dka);
+
+                if($debet != 0){
+                    $value = ($acc->akun_dka == "D") ? $debet : ($debet * -1);
+                    $pos = "D";
+                }else if($kredit != 0){
+                    $value = ($acc->akun_dka == "K") ? $kredit : ($kredit * -1);
+                    $pos = "K";
+                }else if($debet == 0 && $kredit == 0){
+                    $value = 0;
+                    $pos = $acc->akun_dka;
+                }
+
+                $jr_dt = new d_jurnal_dt;
+                $jr_dt->jrdt_jurnal = ($id+1);
+                $jr_dt->jrdt_detailid = ($key+1);
+                $jr_dt->jrdt_acc = $data_akun;
+                $jr_dt->jrdt_value = $value;
+                $jr_dt->jrdt_type = "-";
+                $jr_dt->jrdt_detail = "-";
+                $jr_dt->jrdt_statusdk = $pos;
+
+                $jr_dt->save();
+            }
+        }
+
+        // if($jurnal->save()){
+
+        // }
+
+        return json_encode($response);
+
+    }
+
+    public function list_transaksi(Request $request){
+
+        // return json_encode($request->all());
+
+        $data = d_jurnal::where(DB::raw("substring(jr_no, 1, 2)"), "MM")
+                ->where(DB::raw('substring(jr_no, 9, 3)'), $request->cab)
+                ->with(['detail' => function($query){
+                    $query->with('akun');
+                }])->get();
+
+        $data_json = json_encode($data);
+        $cab_nama = DB::table('cabang')->where('kode', $request->cab)->first()->nama;
+        // return $data;
+
+        return view('keuangan.jurnal.list_transaksi', compact('data', 'data_json', 'cab_nama'));
+    }
+}

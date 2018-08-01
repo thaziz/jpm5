@@ -26,8 +26,8 @@ class do_paketController extends Controller
 	    if (Auth::user()->punyaAkses('Delivery Order','all')) {
 	    $sql = "SELECT d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
 	                FROM delivery_order d
-	                LEFT JOIN kota k ON k.id=d.id_kota_asal
-	                LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+	                JOIN kota k ON k.id=d.id_kota_asal
+	                JOIN kota kk ON kk.id=d.id_kota_tujuan
 	                join customer c on d.kode_customer = c.kode 
 	                join cabang cc on d.kode_cabang = cc.kode 
 	                WHERE d.jenis='PAKET'
@@ -36,8 +36,8 @@ class do_paketController extends Controller
 	    else{
 	    $sql = "SELECT d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
 	                FROM delivery_order d
-	                LEFT JOIN kota k ON k.id=d.id_kota_asal
-	                LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+	                JOIN kota k ON k.id=d.id_kota_asal
+	                JOIN kota kk ON kk.id=d.id_kota_tujuan
 	                join customer c on d.kode_customer = c.kode 
 	                join cabang cc on d.kode_cabang = cc.kode 
 	                WHERE d.jenis='PAKET'
@@ -63,8 +63,8 @@ class do_paketController extends Controller
         if (Auth::user()->punyaAkses('Delivery Order','all')) {
         $sql = "SELECT d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
-                    LEFT JOIN kota k ON k.id=d.id_kota_asal
-                    LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+                    JOIN kota k ON k.id=d.id_kota_asal
+                    JOIN kota kk ON kk.id=d.id_kota_tujuan
                     join customer c on d.kode_customer = c.kode 
                     join cabang cc on d.kode_cabang = cc.kode 
                     WHERE d.jenis='PAKET'
@@ -73,8 +73,8 @@ class do_paketController extends Controller
         else{
         $sql = "SELECT d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
-                    LEFT JOIN kota k ON k.id=d.id_kota_asal
-                    LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+                    JOIN kota k ON k.id=d.id_kota_asal
+                    JOIN kota kk ON kk.id=d.id_kota_tujuan
                     join customer c on d.kode_customer = c.kode 
                     join cabang cc on d.kode_cabang = cc.kode 
                     WHERE d.jenis='PAKET'
@@ -96,12 +96,19 @@ class do_paketController extends Controller
                 ->make(true);
    }
 
+   public function hapus_deliveryorder_paket(Request $request,$nomor)
+    {
+      $data = DB::table('delivery_order')->where('nomor',$nomor)->delete();
+      return redirect('sales/deliveryorder_paket');
+    }
+
 //FORM CREATE DO PAKET
    public function create_deliveryorder_paket(Request $request)
    {
         
         $kota = DB::select("SELECT id,nama FROM kota ORDER BY nama ASC ");
         $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
+        $masterbank = DB::select(" SELECT mb_kode,mb_nama FROM masterbank where mb_sericek is null ORDER BY mb_kode ASC ");
 
         $customer = DB::table('customer as c')
                              ->select('c.kode','c.nama','c.alamat','c.telpon','kc.kc_aktif','kcd.kcd_jenis')
@@ -109,6 +116,7 @@ class do_paketController extends Controller
                              ->leftjoin('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
                              ->groupBy('kc.kc_aktif','c.kode','kcd.kcd_jenis')
                              ->where('kcd.kcd_jenis','=','PAKET')
+                             ->where('pic_status','=','AKTIF')
                              ->orderBy('c.kode','ASC')
                              ->get();
 
@@ -149,7 +157,7 @@ class do_paketController extends Controller
             $cabang = DB::select(" select kode, nama, (select dc_diskon from d_disc_cabang x where dc_cabang = y.kode and dc_jenis = 'PAKET') diskon from cabang y where kode = '$authe' group by kode order by kode asc ");
         }
 
-        return view('sales.do_new.create', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data','cus','do_dt'));
+        return view('sales.do_new.create', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data','cus','do_dt','masterbank'));
    }
 
 //CARI NOMOR DO PAKET
@@ -296,7 +304,7 @@ class do_paketController extends Controller
     public function cari_harga_reguler_deliveryorder_paket(Request $request)
     {
         // dd($request->all());
-        $asal = $request->input('asal');
+        $asal = $request->input('kota_asal');
         $tujuan = $request->input('tujuan');
         $kecamatan = $request->input('kecamatan');
         $pendapatan = $request->input('pendapatan');
@@ -312,14 +320,17 @@ class do_paketController extends Controller
             $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_dokumen WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND kode_cabang='$cabang'";
             $data = collect(DB::select($sql));
 
+            // return $data;
             //kondisi jika express dan reguler
             if ($jenis == 'EXPRESS'){
                 $sql_biaya_penerus = "SELECT harga_zona as harga FROM tarif_penerus_dokumen join zona on id_zona = tarif_express WHERE type='$tipe' and id_kota='$tujuan' and id_kecamatan='$kecamatan'";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             }else if($jenis == 'REGULER'){
-                $sql_biaya_penerus = "SELECT harga_zona as harga FROM tarif_penerus_dokumen join zona on id_zona = tarif_reguler WHERE type='$tipe' and id_kota='$tujuan' and id_kecamatan='$kecamatan'";
+                $sql_biaya_penerus = "SELECT harga_zona as harga FROM tarif_penerus_dokumen join zona on id_zona = tarif_reguler WHERE type='$tipe' and id_kota='$tujuan' and id_kecamatan='$kecamatan' ";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             }
+
+            // return json_encode($biaya_penerus);
 
             //jika kosong
             if ($biaya_penerus == null){
@@ -958,13 +969,17 @@ class do_paketController extends Controller
                        ->where('id_akun','like','1303'.'%')
                        ->where('kode_cabang',$request->do_cabang)
                        ->first();
-
-          if ($select_akun == null) {
+          if ($request->do_bank == null) {
+            if ($select_akun == null) {
               $dataInfo = ['status' => 'gagal', 'info' => 'Akun Piutang Pada Cabang Ini Belum Tersedia'];
               return json_encode($dataInfo);
+            }else{
+              $akun_piutang = $select_akun->id_akun;
+            }
           }else{
-            $akun_piutang = $select_akun->id_akun;
+            $akun_piutang = $request->do_bank;
           }
+          
           //cek nama username/user
           $namanama  = Auth::user()->m_nama;
           if ($namanama == null) {
@@ -1056,11 +1071,11 @@ class do_paketController extends Controller
                     'kontrak'               =>  $bol_kon,
                     'kontrak_cus'           => $cus_kon,
                     'kontrak_cus_dt'        => $cus_kon_dt,
-                    'tarif_vendor_bol'      =>$request->tarif_vendor_bol,
-                    'id_tarif_vendor'       =>$request->id_tarif_vendor,
-                    'nama_tarif_vendor'     =>$request->nama_tarif_vendor,
-                    'created_at'            =>carbon::now(),
-                    'created_by'            =>auth::user()->m_name,
+                    'tarif_vendor_bol'      => $request->tarif_vendor_bol,
+                    'id_tarif_vendor'       => $request->id_tarif_vendor,
+                    'nama_tarif_vendor'     => $request->nama_tarif_vendor,
+                    'created_at'            => carbon::now(),
+                    'created_by'            => auth::user()->m_name,
                     'total_net'             => filter_var($request->do_total_h, FILTER_SANITIZE_NUMBER_INT),
           );
         DB::table('delivery_order')->insert($data);  
@@ -1388,6 +1403,7 @@ class do_paketController extends Controller
         return (float)$nilai;
 
     }
+
 
 //LIHAT JURNAL AWAL
     public function jurnal_awal_deliveryorder_paket(Request $request)

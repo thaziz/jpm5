@@ -69,7 +69,7 @@
                                 <td>
                                     <select class="form-control cb_jenis_pembayaran" name="cb_jenis_pembayaran" >
                                         <option value="C"> TRANSFER </option>
-                                        <option value="T"> TUNAI/KWITANSI </option>
+                                        <option value="T"> TRANSFER KAS </option>
                                         <option value="L"> LAIN-LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
                                         <option value="B"> NOTA/BIAYA LAIN </option>
@@ -517,7 +517,7 @@ function hapus_detail(o) {
         $('.cb_jenis_pembayaran').removeClass('disabled');
         $('.cabang_td').removeClass('disabled');
     }
-    
+    hitung();
 }
 
 $('#btnsimpan').click(function(){

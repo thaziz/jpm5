@@ -125,7 +125,7 @@
                                                         <select class="chosen-select-width replace_deskripsi" id="do_kota_asal" onchange="asal()" name="do_kota_asal" style="width:100%" >
                                                             <option value="">- Pilih -</option>
                                                             @foreach ($kota as $row)
-                                                                {{-- <option selected="" value="3573" data-nama="KOTA MALANG">3573 - KOTA MALANG</option> --}}
+                                                         
                                                                 <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
                                                             @endforeach
                                                         </select>
@@ -137,7 +137,7 @@
                                                         <select class="chosen-select-width replace_deskripsi" id="do_kota_tujuan" onchange="getKecamatan()" id="do_kota_tujuan" name="do_kota_tujuan" style="width:100%" >
                                                             <option value="">- Pilih -</option>
                                                             @foreach ($kota as $row)
-                                                                {{-- <option selected="" value="3578" data-nama="KOTA SURABAYA">3578 - KOTA SURABAYA</option> --}}
+                                                               
                                                                 <option value="{{ $row->id }}" data-nama="{{ $row->nama }}">{{ $row->id }} - {{ $row->nama }} </option>
                                                             @endforeach
                                                         </select>
@@ -278,6 +278,18 @@
 
                                                 </tr>
                                                 <tr>
+                                                    <td style="padding-top: 0.4cm">Kas Bank</td>
+                                                    <td colspan="5">
+                                                        <select class="chosen-select-width" name="do_bank">
+                                                            <option value="">- Pilih -</option>
+                                                            @foreach ($masterbank as $element)
+                                                                <option value="{{ $element->mb_kode }}">{{ $element->mb_kode }} - {{ $element->mb_nama }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    <b style="color:red;">*NOTE : Hanya Memilih Ketika Non-Customer</b>
+                                                    </td>
+                                                </tr>
+                                                <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">DO Outlet</td>
                                                     <td colspan="2">
                                                         <select class="chosen-select-width"  name="do_outlet" style="width:100%" id="do_outlet">
@@ -304,6 +316,7 @@
                                                     </td>
                                                         
                                                 </tr>
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -446,7 +459,7 @@
                                                     <td style="width:110px; padding-top: 0.4cm">Marketing</td>
                                                     <td colspan="">
                                                         <select class="chosen-select-width marketingpengirim"  name="do_marketing" style="width:100%">
-                                                            <option>- Pilih -</option>
+                                                            <option value="">- Pilih -</option>
                                                             @foreach ($marketing as $row)
                                                                 <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                                             @endforeach
@@ -798,7 +811,7 @@ $('.radio-inline').click(function() {
             {   
                 $('#do_kecamatan_tujuan').empty(); //remove all child nodes 
                  for (var i = 0; i < data.length; i++) {
-                    var append_baru = '<option value="'+data[i].id+'" data-nama="'+data[i].nama+'">'+data[i].id+' -1 '+data[i].nama+'</option>';
+                    var append_baru = '<option value="'+data[i].id+'" data-nama="'+data[i].nama+'">'+data[i].id+' - '+data[i].nama+'</option>';
                     $('#do_kecamatan_tujuan').append(append_baru);
                     
                  }
@@ -1326,6 +1339,52 @@ function hitung() {
 //SIMPAN DATA
     $(document).on("click","#btnsimpan",function(){
 
+        var do_nomor                = $("input[name='do_nomor']").val();
+        var do_marketing            = $("select[name='do_marketing']").val();
+        var do_nama_pengirim        = $("input[name='do_nama_pengirim']").val();
+        var do_alamat_pengirim      = $("input[name='do_alamat_pengirim']").val();
+        var do_kode_pos_pengirim    = $("input[name='do_kode_pos_pengirim']").val();
+        var do_telpon_pengirim      = $("input[name='do_telpon_pengirim']").val();
+        var do_alamat_penerima      = $("input[name='do_alamat_penerima']").val();
+        var do_kode_pos_penerima    = $("input[name='do_kode_pos_penerima']").val();
+        var do_telpon_penerima      = $("input[name='do_telpon_penerima']").val();
+        var tarif_vendor_bol        = $("input[name='cek_vendor']").val();
+
+
+        if (do_nomor == '') {
+            toastr.error('Data Nomor Kosong!','Peringatan!');
+            return false;
+        }else if (do_marketing == '') {
+            toastr.error('Data Marketing Kosong!','Peringatan!');
+            return false;
+        }else if (do_nama_pengirim == '') {
+            toastr.error('Data Nama Pengirim Kosong!','Peringatan!');
+            return false;
+        }else if (do_alamat_pengirim == '') {
+            toastr.error('Data Alamat Pengirim Kosong!','Peringatan!');
+            return false;
+        }else if (do_kode_pos_pengirim == '') {
+            toastr.error('Data Kode Pos Pengirim Kosong!','Peringatan!');
+            return false;
+        }else if (do_telpon_pengirim == '') {
+            toastr.error('Data Tlpn Pengirim Kosong!','Peringatan!');
+            return false;
+        }else if (do_alamat_penerima == '') {
+            toastr.error('Data Alamat Penerima Kosong!','Peringatan!');
+            return false;
+        }else if (do_kode_pos_penerima == '') {
+            toastr.error('Data Kode Pos Penerima Kosong!','Peringatan!');
+            return false;
+        }else if (do_telpon_penerima == '') {
+            toastr.error('Data Tlpn Penerima Kosong!','Peringatan!');
+            return false;
+        }
+
+           if($('.cek_vendor_ya').is(':checked')) { 
+                $('#tarif_vendor_bol').val('true');
+           }else if($('.cek_vendor_tidak').is(':checked'))  {
+                $('#tarif_vendor_bol').val('false');
+           }
 
         $.ajax(
         {
@@ -1337,6 +1396,83 @@ function hitung() {
             {   
                 if (data.status == 'sukses') {
                     toastr.success('Data Telah Tersimpan!','Pemberitahuan!');
+                    window.location=('{{ route('deliveryorder_paket') }}')
+                }else if (data.status == 'gagal') {
+                    toastr.error('Akun Piutang Pada Cabang Ini Belum Tersedia !','Peringatan !');
+                }else if (data.status == 1) {
+                    toastr.error('Data Telah Digunakan !','Peringatan !');
+                }
+                else{
+                    toastr.error('Gagal Tersimpan! WA developer segera','Peringatan !');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+               toastr.error('Gagal Tersimpan! cek kelengkapan data / tanya Developer','Peringatan !');
+            }
+        });
+    });
+
+//SIMPAN DAN TAMBAH BARU
+$(document).on("click","#btnsimpan_tambah",function(){
+
+        var do_nomor                = $("input[name='do_nomor']").val();
+        var do_customer             = $("input[name='do_customer']").val();
+        var do_marketing            = $("select[name='do_marketing']").val();
+        var do_nama_pengirim        = $("input[name='do_nama_pengirim']").val();
+        var do_alamat_pengirim      = $("input[name='do_alamat_pengirim']").val();
+        var do_kode_pos_pengirim    = $("input[name='do_kode_pos_pengirim']").val();
+        var do_telpon_pengirim      = $("input[name='do_telpon_pengirim']").val();
+        var do_alamat_penerima      = $("input[name='do_alamat_penerima']").val();
+        var do_kode_pos_penerima    = $("input[name='do_kode_pos_penerima']").val();
+        var do_telpon_penerima      = $("input[name='do_telpon_penerima']").val();
+
+       
+
+        if (do_nomor == '') {
+            toastr.error('Data Nomor Kosong!','Peringatan!');
+            return false;
+        }else if (do_customer == '') {
+            toastr.error('Data Customer Kosong!','Peringatan!');
+            return false;
+        }else if (do_marketing == '') {
+            toastr.error('Data Marketing Kosong!','Peringatan!');
+            return false;
+        }else if (do_nama_pengirim == '') {
+            toastr.error('Data Nama Pengirim Kosong!','Peringatan!');
+            return false;
+        }else if (do_alamat_pengirim == '') {
+            toastr.error('Data Alamat Pengirim Kosong!','Peringatan!');
+            return false;
+        }else if (do_kode_pos_pengirim == '') {
+            toastr.error('Data Kode Pos Pengirim Kosong!','Peringatan!');
+            return false;
+        }else if (do_telpon_pengirim == '') {
+            toastr.error('Data Tlpn Pengirim Kosong!','Peringatan!');
+            return false;
+        }else if (do_alamat_penerima == '') {
+            toastr.error('Data Alamat Penerima Kosong!','Peringatan!');
+            return false;
+        }else if (do_kode_pos_penerima == '') {
+            toastr.error('Data Kode Pos Penerima Kosong!','Peringatan!');
+            return false;
+        }else if (do_telpon_penerima == '') {
+            toastr.error('Data Tlpn Penerima Kosong!','Peringatan!');
+            return false;
+        }
+
+
+        $.ajax(
+        {
+            url :  ("{{ route('save_deliveryorder_paket') }}"),
+            type: "GET",
+            dataType:"JSON",
+            data : $('.kirim :input').serialize() ,
+            success: function(data, textStatus, jqXHR)
+            {   
+                if (data.status == 'sukses') {
+                    toastr.success('Data Telah Tersimpan!','Pemberitahuan!');
+                    location.reload();
                 }else if (data.status == 'gagal') {
                     toastr.error('Akun Piutang Pada Cabang Ini Belum Tersedia !','Peringatan !');
                 }else if (data.status == 1) {
@@ -1401,7 +1537,7 @@ function hitung() {
         //VALUE DATA 
         var value = {
             pendapatan: $("select[name='pendapatan']").val(),
-            asal: $("select[name='do_kota_asal']").val(),
+            kota_asal: $("select[name='do_kota_asal']").val(),
             tujuan: $("select[name='do_kota_tujuan']").val(),
             tipe: $("select[name='type_kiriman']").val(),
             tujuan: $("select[name='do_kota_tujuan']").val(),
@@ -1534,5 +1670,7 @@ function hitung() {
     })
 
 
+ //replace nomor do ketika spasi dan tab
+    // $()
 </script>
 @endsection

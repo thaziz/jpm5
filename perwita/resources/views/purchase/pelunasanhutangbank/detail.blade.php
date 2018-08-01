@@ -214,6 +214,7 @@
                                   <div class="tabs-container">
                                       <ul class="nav nav-tabs">
                                           <li class="active" id="tabcekbg"><a data-toggle="tab" href="#tab-1"> Detail Cek / BG </a></li>
+                                           <li class="" id="tabcekbgakun" data-val="AKUNBG"><a data-toggle="tab" href="#tab-3"> Cek / BG & Akun </a></li>
                                           <li class="" id="tabbiaya"><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
                                       </ul>
                                       <div class="tab-content">
@@ -257,8 +258,7 @@
                                                         
                                                          <td> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_jenissup}}" name="jenissup[]" readonly="">  <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_keterangan}}" name="keterangan[]" readonly="">  <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_akunhutang}}" name="akunhutangdagang[]" readonly=""> </td>
                                                          <td> <button class="btn btn-danger btn-sm removes-btn" type="button" data-id={{$i}} data-cek="{{$data['bbkd'][$i]->bbkd_nocheck}}" data-nominal="{{ number_format($data['bbkd'][$i]->bbkd_nominal, 2) }}"><i class="fa fa-trash"></i></button>  </td>
-                                                        </tr>
-                                                        
+                                                        </tr>                                                        
                                                         @endfor
                                                       @endif
                                                     </table>
@@ -301,6 +301,63 @@
                                                    </div>
                                               </div>
                                           </div>
+                                           <div id="tab-3" class="tab-pane">
+                                              <div class="panel-body">
+                                                 
+                                                   <div class="col-sm-12">
+                                                    <div class="table-responsive">
+                                                    <table class='table table-stripped table-bordered' id="tbl-biayaakun">
+                                                      <tr>
+                                                        <th> No </th>
+                                                        <th> No Bukti </th> 
+                                                        <th> Acc Bank </th>
+                                                        <th> D / K </th>
+                                                        <th> Nominal </th>
+                                                        <th> Keterangan Akun </th>
+                                                        <th> No FPG </th>
+                                                        <th> No Check </th>
+                                                        <th> Nominal </th>
+                                                        <th> Keterangan FPG </th>
+                                                        <th> Aksi </th>
+                                                      </tr>
+
+                                                       @if($data['bbk'][0]->bbk_flag == 'BGAKUN')
+                                                        @foreach($data['bbkd'] as $index=>$bbkd)
+                                                        <tr id="hslbiaya" class="databiaya transaksi{{$index + 1}}" data-biaya="{{$bbkd->bbkab_akun}}">
+                                                          <td> {{$index + 1}} </td>
+                                                          <td> <input type="text" class="form-control input-sm" value="{{$bbkd->bbk_nota}}" readonly="" style="min-width:150px"> </td>
+
+                                                          <td> <input type="text" class="form-control input-sm" value="{{$bbkd->bbkab_akun}} - {{$bbkd->nama_akun}}" readonly="" style="min-width:150px"> </td>
+
+                                                          
+                                                          <td> <input type="text" class="form-control input-sm" value="{{$bbkd->bbkab_dk}}" name="dk[]" readonly="" style="min-width:90px"> </td>
+
+                                                          <td style='text-align: right'> <input type="text" class="form-control input-sm nominalbiaya" value="{{ number_format($bbkd->bbkab_nominal, 2) }}" name="jumlah[]" style="text-align: right" style="min-width:150px" readonly=""> </td>
+
+                                                          <td> <input type="text" class="form-control" value="{{$bbkd->bbkab_keterangan}}" name="keterangan[]" style="min-width:150px" readonly=""> </td>
+
+
+                                                           <td> <input type="text" class="form-control" value="{{$bbkd->bbkab_nofpg}}" name="nofpg[]" style="min-width:150px" readonly=""> </td>
+
+                                                           <td> <input type="text" class="form-control" value="{{$bbkd->bbkab_nocheck}}" name="nocheck[]" style="min-width:150px" readonly=""> </td>
+
+
+
+                                                           <td> <input type="text" class="form-control" value="{{number_format($bbkd->bbkab_nominalfpg)}}" name="nominalfpg[]" style="min-width:150px" readonly=""> </td>
+
+                                                           <td> <input type="text" class="form-control" value="{{$bbkd->bbkab_keteranganfpg}}" name="keteranganfpg[]" style="min-width:150px" readonly=""> </td>
+
+                                                          <td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="{{$index + 1}}" data-cek='"{{$bbkd->bbkab_akun}}"' data-nominal="{{ number_format($bbkd->bbkab_nominal, 2) }}"><i class='fa fa-trash'></i></button> </td>
+                                                        </tr>
+                                                        @endforeach
+                                                      @endif
+
+                                                    </table>
+                                                    </div>
+                                                   </div>
+                                              </div>
+                                          </div>
+
                                       </div>
 
 
@@ -419,17 +476,17 @@
 
                                                           <tr>
                                                               <th> Jatuh Tempo </th>
-                                                              <td> <input type='text' class='input-sm form-control jatuhtempo bg' readonly="" name="fpg_jatuhtempo"> </td>
+                                                              <td> <input type='text' class='input-sm form-control jatuhtempo bg' readonly="" > </td>
                                                           </tr>
 
                                                           <tr>
                                                             <th> Nominal </th>
-                                                            <td> <input type='text' class='input-sm form-control nominal bg' name="fpg_nominal" readonly="" style='text-align: right'> </td>
+                                                            <td> <input type='text' class='input-sm form-control nominal bg'  readonly="" style='text-align: right'> </td>
                                                           </tr>
 
                                                           <tr>
                                                             <th> Keterangan </th>
-                                                            <td> <input type='text' class='input-sm form-control keterangan bg' name="fpg_keterangan" readonly=""> </td>
+                                                            <td> <input type='text' class='input-sm form-control keterangan bg' readonly=""> </td>
                                                           </tr>
 
                                                       </table>
@@ -600,6 +657,7 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+       $('#tab-1').removeClass("active");
 
       $('.removes-btn').hide();
       $('.remove-btn').hide();
@@ -611,14 +669,27 @@
          flag = $('.flag').val();
      
       if(flag == 'CEKBG') {
-          $('#tab-1').addClass('active');
+           $('#tab-1').addClass("active");
            $('#tab-2').removeClass("active");
+           $('#tab-3').removeClass("active");
+
            $('#tabbiaya').addClass("disabled");
+           $('#tabcekbgakun').addClass("disabled");
+      }
+      else if(flag == 'BIAYA') {
+           $('#tab-1').removeClass("active");
+          $('#tab-2').addClass("active");
+          
+           $('#tab-3').removeClass("active");
+           $('#tabcekbg').addClass("disabled");
+           $('#tabcekbgakun').addClass("disabled");
       }
       else {
-          $('#tab-2').addClass('active');
+          $('#tab-3').addClass("active");
            $('#tab-1').removeClass("active");
+           $('#tab-2').removeClass("active");
            $('#tabcekbg').addClass("disabled");
+           $('#tabbiaya').addClass("disabled");
       }
 
      $('#formbbk').submit(function(){
@@ -827,11 +898,11 @@
           "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+tgl+"' name='tgl[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+notransaksi+"' name='notransaksi[]' readonly>" +
-          "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value='"+jatuhtempo+"' readonly> <input type='text' class='input-sm form-control' name='idfpg[]' value='"+idfpg+"' readonly> </td>" +
+          "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value='"+jatuhtempo+"' readonly> <input type='hidden' class='input-sm form-control' name='idfpg[]' value='"+idfpg+"' readonly> </td>" +
           "<td> <input type='text' class='input-sm form-control' value= "+accbank+" name='bank[]' readonly> <input type='hidden' class='idbank' name='idbank[]' value='"+accbank+"'>  </td>" +
           "<td style='text-align:right'> <input type='text' class='input-sm form-control nominal' value= '"+addCommas(nominal)+"' name='nominal[]' readonly> </td>" +
           "<td><input type='text' class='input-sm form-control' value= '"+namasupplier+"'  readonly> <input type='hidden' class='input-sm form-control' value= '"+jenissup+"' name='jenissup[]'> <input type='hidden' class='input-sm form-control' value= '"+supplier+"' name='supplier[]'> </td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+keterangan+"' name='keterangan[]' readonly> <input type='text' class='form-control input-sm' value='"+akunhutang+"' name='akunhutangdagang[]' readonly=''></td>" +
+          "<td> <input type='text' class='input-sm form-control' value='"+keterangan+"' name='keterangan[]' readonly> <input type='hidden' class='form-control input-sm' value='"+akunhutang+"' name='akunhutangdagang[]' readonly=''></td>" +
           "<td> <button class='btn btn-danger btn-sm removes-btn' type='button' data-id="+$nomr+" data-cek='"+notransaksi+"' data-nominal='"+nominal+"'><i class='fa fa-trash'></i></button> </td> </tr>";
 
 

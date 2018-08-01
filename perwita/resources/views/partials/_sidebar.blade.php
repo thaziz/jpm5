@@ -1413,7 +1413,13 @@
                     Request::is('keuangan/pengeluaran/*') ? 'active' : ''||
                     /* jurnal_umum */
                     Request::is('keuangan/jurnal_umum') ? 'active' : '' || 
-                    Request::is('keuangan/jurnal_umum/*') ? 'active' : ''
+                    Request::is('keuangan/jurnal_umum/*') ? 'active' : ''||
+                    /* transaksi_bank */
+                    Request::is('keuangan/transaksi_bank') ? 'active' : '' || 
+                    Request::is('keuangan/transaksi_bank/*') ? 'active' : ''||
+                    /* transaksi_memorial */
+                    Request::is('keuangan/transaksi_memorial') ? 'active' : '' || 
+                    Request::is('keuangan/transaksi_memorial/*') ? 'active' : ''
              /*======== END OF MASTER KEUANGAN OPERASIONAL ==============================*/
 
 
@@ -2195,7 +2201,13 @@
                             Request::is('keuangan/pengeluaran/*') ? 'active' : ''||
                             /* jurnal_umum */
                             Request::is('keuangan/jurnal_umum') ? 'active' : '' || 
-                            Request::is('keuangan/jurnal_umum/*') ? 'active' : ''
+                            Request::is('keuangan/jurnal_umum/*') ? 'active' : ''||
+
+                            Request::is('keuangan/transaksi_bank') ? 'active' : '' || 
+                            Request::is('keuangan/transaksi_bank/*') ? 'active' : ''||
+
+                            Request::is('keuangan/transaksi_memorial') ? 'active' : '' || 
+                            Request::is('keuangan/transaksi_memorial/*') ? 'active' : ''
                              /*======== END OF MASTER KEUANGAN OPERASIONAL ==============================*/
 
                         }}
@@ -2204,7 +2216,7 @@
                             <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Keuangan <span class="fa arrow"></span></a>
                             <ul class="nav nav-third-level" style="font-size:85%">
 
-                            @if(Auth::user()->PunyaAkses('Ikhtisar Kas','aktif'))
+                           {{--  @if(Auth::user()->PunyaAkses('Ikhtisar Kas','aktif'))
                             <li >
                             <a class="sidebar master-perusahaan {{Request::is('keuangan/penerimaan') ? 'active' : '' || 
                         Request::is('keuangan/penerimaan/*') ? 'active' : ''}}" href="{{ url('keuangan/penerimaan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Penerimaan </a>
@@ -2217,13 +2229,27 @@
                             Request::is('keuangan/pengeluaran/*') ? 'active' : ''}}" href="{{ url('keuangan/pengeluaran   ')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pengeluaran </a>
                                 </li>
 
-                            @endif
+                            @endif --}}
+
                             @if(Auth::user()->PunyaAkses('Jurnal Umum','aktif'))
+
+                                <?php $text = (Session::get('cabang') == '000') ? 'all' : Session::get('cabang') ?>
 
                             <li >
                                     <a class="sidebar master-perusahaan {{Request::is('keuangan/jurnal_umum') ? 'active' : '' || 
-                            Request::is('keuangan/jurnal_umum/*') ? 'active' : ''   }}" href="{{ url('keuangan/jurnal_umum?cab='.Session::get('cabang').'&date='.date("m").'&year='.date("Y").'&jenis=kas')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Jurnal Transaksi Kas </a>
+                            Request::is('keuangan/jurnal_umum/*') ? 'active' : ''   }}" href="{{ url('keuangan/jurnal_umum?cab='.$text.'&date='.date("m").'&year='.date("Y").'&jenis=kas')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Transaksi Kas </a>
                                 </li>
+
+                            <li>
+                                    <a class="sidebar master-perusahaan {{Request::is('keuangan/transaksi_bank') ? 'active' : '' || 
+                            Request::is('keuangan/transaksi_bank/*') ? 'active' : ''   }}" href="{{ url('keuangan/transaksi_bank?cab='.$text.'&date='.date("m").'&year='.date("Y").'&jenis=bank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Transaksi Bank </a>
+                                </li>
+
+                            <li>
+                                    <a class="sidebar master-perusahaan {{Request::is('keuangan/transaksi_memorial') ? 'active' : '' || 
+                            Request::is('keuangan/transaksi_memorial/*') ? 'active' : ''   }}" href="{{ url('keuangan/transaksi_memorial?cab='.$text.'&date='.date("m").'&year='.date("Y").'&jenis=memorial')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Transaksi Memorial </a>
+                                </li>
+
                             @endif
                             @if(Auth::user()->PunyaAkses('Desain Neraca','aktif'))
 

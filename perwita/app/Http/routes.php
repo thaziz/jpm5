@@ -30,9 +30,11 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('login', 'loginController@authenticate');
     Route::post('login', 'loginController@authenticate');
 });
+
 /*Route::get('/', function(){
     return view('auth.login');
 });*/
+
 Route::group(['middleware' => 'auth'], function () {
 Route::get('/dashboard','dashboardController@dashboard');
 
@@ -79,6 +81,7 @@ Route::post('setting/hak_akses/edit_hak_akses', 'setting\hak_akses_Controller@ed
 Route::get('setting/sync_jurnal', 'selaras_jurnal@sync_jurnal');
 Route::get('setting/sync_jurnal/biaya_penerus_kas', 'selaras_jurnal@biaya_penerus_kas');
 Route::get('setting/sync_jurnal/bukti_kas_keluar', 'selaras_jurnal@bukti_kas_keluar');
+Route::get('setting/sync_jurnal/invoice', 'selaras_jurnal@invoice');
 
 //***PEMBELIAN
 //***PEMBELIAN
@@ -317,6 +320,9 @@ Route::get('bonsementaracabang/getnota', 'BonSementaraController@getnota');
 Route::post('bonsementaracabang/save', 'BonSementaraController@savecabang');
 Route::get('bonsementaracabang/setujukacab', 'BonSementaraController@setujukacab');
 Route::post('bonsementaracabang/updatekacab', 'BonSementaraController@updatekacab');
+Route::post('bonsementaracabang/updatecabang', 'BonSementaraController@updatecabang');
+Route::get('bonsementaracabang/hapus/{id}', 'BonSementaraController@hapuscabang');
+Route::post('bonsementaracabang/terimauang', 'BonSementaraController@terimauang');
 
 
 Route::get('bonsementarapusat/bonsementarapusat', 'BonSementaraController@indexpusat');
@@ -369,6 +375,8 @@ Route::get('biaya_penerus/buktikas', 'KasController@buktikas')->name('buktikas')
 Route::get('biaya_penerus/detailkas', 'KasController@detailkas')->name('detailkas');
 Route::get('biaya_penerus/carinopol', 'KasController@carinopol')->name('carinopol');
 Route::get('biaya_penerus/jurnal', 'KasController@jurnal');
+Route::get('biaya_penerus/append_table', 'KasController@append_table');
+Route::get('buktikaskeluar/datatable_bk', 'KasController@datatable_bk')->name('datatable_bk');
 
 // BIAYA PENERUS LOADING/UNLOADING
 Route::get('biaya_penerus_loading/index', 'loadingController@index_loading');
@@ -434,6 +442,8 @@ Route::post('ikhtisar_kas/update', 'ikhtisarController@update');
 Route::get('ikhtisar_kas/hapus/{id}', 'ikhtisarController@hapus');
 Route::get('ikhtisar_kas/print/{id}', 'ikhtisarController@cetak');
 Route::get('ikhtisar_kas/datatable_ikhtisar', 'ikhtisarController@datatable_ikhtisar')->name('datatable_ikhtisar');
+Route::get('ikhtisar_kas/print/{id}', 'ikhtisarController@cetak');
+Route::get('ikhtisar_kas/append_table', 'ikhtisarController@append_table');
 
 
 
@@ -1474,7 +1484,7 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller
 //deny do baru
 
   //index
-  Route::get('sales/deliveryorder_paket', 'do_new\do_paketController@index');
+  Route::get('sales/deliveryorder_paket', 'do_new\do_paketController@index')->name('deliveryorder_paket');
       //datatable
       Route::get('sales/deliveryorder_paket/datatable_deliveryorder_paket', 'do_new\do_paketController@datatable_deliveryorder_paket')->name('datatable_deliveryorder_paket');
   //create
@@ -1499,6 +1509,7 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller
       Route::get('sales/deliveryorder_paket/jurnal_awal_deliveryorder_paket', 'do_new\do_paketController@jurnal_awal_deliveryorder_paket')->name('jurnal_awal_deliveryorder_paket');
       //jurnal balik
       Route::get('sales/deliveryorder_paket/jurnal_balik_deliveryorder_paket', 'do_new\do_paketController@jurnal_balik_deliveryorder_paket')->name('jurnal_balik_deliveryorder_paket');
+  Route::get('sales/deliveryorder_paket/{nomor}/hapus_deliveryorder_paket', 'do_new\do_paketController@hapus_deliveryorder_paket')->name('hapus_deliveryorder_paket');
 
 //end of do baru
 
@@ -1604,6 +1615,7 @@ Route::get('sales/lihat_invoice/{i}', 'sales\invoice_Controller@lihat_invoice');
 Route::get('sales/hapus_invoice', 'sales\invoice_Controller@hapus_invoice');
 Route::get('sales/cetak_nota/{id}', 'sales\invoice_Controller@cetak_nota');
 Route::get('sales/drop_cus', 'sales\invoice_Controller@drop_cus');
+Route::get('sales/invoice/append_table', 'sales\invoice_Controller@append_table');
 
 Route::get('sales/invoice_form/tabel_data_detail', 'sales\invoice_Controller@table_data_detail');
 Route::get('sales/invoice/tabel', 'sales\invoice_Controller@table_data');
@@ -2193,7 +2205,7 @@ Route::post('master_keuangan/saldo_piutang/save', [
 
 //end saldo piutang
 
-// jurnal_umum
+// transaksi kas
 Route::get('keuangan/jurnal_umum', [
   'uses' => 'master_keuangan\d_jurnal_controller@index',
   'as'   => 'jurnal.index'
@@ -2219,8 +2231,122 @@ Route::get('keuangan/jurnal_umum/show-detail/{id}', [
   'as'   => 'jurnal.show-detail;'
 ]);
 
+Route::get('keuangan/jurnal_umum/list_transaksi', [
+  'uses' => 'master_keuangan\d_jurnal_controller@list_transaksi',
+  'as'   => 'jurnal.list-transaksi'
+]);
 
-//end jurnal_umum
+
+//end transaksi_kas
+
+
+
+// transaksi Bank
+
+Route::get('keuangan/transaksi_bank', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@index',
+  'as'   => 'transaksi_bank.index'
+]);
+
+Route::get('keuangan/transaksi_bank/add', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@add',
+  'as'   => 'transaksi_bank.add'
+]);
+
+Route::get('keuangan/transaksi_bank/detail/{id}', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@getDetail',
+  'as'   => 'transaksi_bank.detail'
+]);
+
+Route::post('keuangan/transaksi_bank/save_data', [
+  'uses'  => 'master_keuangan\transaksi_bank_controller@save_data',
+  'as'    => 'transaksi_bank.save'
+]);
+
+Route::get('keuangan/transaksi_bank/show-detail/{id}', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@showDetail',
+  'as'   => 'transaksi_bank.show-detail;'
+]);
+
+Route::get('keuangan/transaksi_bank/list_transaksi', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@list_transaksi',
+  'as'   => 'transaksi_bank.list-transaksi'
+]);
+
+//end transaksi bank
+
+
+// transaksi Bank
+
+Route::get('keuangan/transaksi_bank', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@index',
+  'as'   => 'transaksi_bank.index'
+]);
+
+Route::get('keuangan/transaksi_bank/add', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@add',
+  'as'   => 'transaksi_bank.add'
+]);
+
+Route::get('keuangan/transaksi_bank/detail/{id}', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@getDetail',
+  'as'   => 'transaksi_bank.detail'
+]);
+
+Route::post('keuangan/transaksi_bank/save_data', [
+  'uses'  => 'master_keuangan\transaksi_bank_controller@save_data',
+  'as'    => 'transaksi_bank.save'
+]);
+
+Route::get('keuangan/transaksi_bank/show-detail/{id}', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@showDetail',
+  'as'   => 'transaksi_bank.show-detail;'
+]);
+
+Route::get('keuangan/transaksi_bank/list_transaksi', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@list_transaksi',
+  'as'   => 'transaksi_bank.list-transaksi'
+]);
+
+//end transaksi bank
+
+
+// transaksi memorial
+
+Route::get('keuangan/transaksi_memorial', [
+  'uses' => 'master_keuangan\transaksi_memorial@index',
+  'as'   => 'transaksi_bank.index'
+]);
+
+Route::get('keuangan/transaksi_memorial/add', [
+  'uses' => 'master_keuangan\transaksi_memorial@add',
+  'as'   => 'transaksi_memorial.add'
+]);
+
+Route::get('keuangan/transaksi_memorial/detail/{id}', [
+  'uses' => 'master_keuangan\transaksi_memorial@getDetail',
+  'as'   => 'transaksi_memorial.detail'
+]);
+
+Route::post('keuangan/transaksi_memorial/save_data', [
+  'uses'  => 'master_keuangan\transaksi_memorial@save_data',
+  'as'    => 'transaksi_memorial.save'
+]);
+
+Route::get('keuangan/transaksi_memorial/show-detail/{id}', [
+  'uses' => 'master_keuangan\transaksi_memorial@showDetail',
+  'as'   => 'transaksi_memorial.show-detail;'
+]);
+
+Route::get('keuangan/transaksi_memorial/list_transaksi', [
+  'uses' => 'master_keuangan\transaksi_memorial@list_transaksi',
+  'as'   => 'transaksi_memorial.list-transaksi'
+]);
+
+//end transaksi memorial
+
+
+
 
 //akun
 Route::get('master_keuangan/akun', [

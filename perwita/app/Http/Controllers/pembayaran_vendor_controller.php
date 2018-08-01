@@ -113,7 +113,7 @@ class pembayaran_vendor_controller extends Controller
 						   	  'fp_idfaktur'   		=> $id,
 							  'fp_nofaktur'   		=> $req->nofaktur,
 							  'fp_tgl'        		=> carbon::parse(str_replace('/','-',$req->tanggal_vendor))->format('Y-m-d'),
-							  'fp_keterangan' 		=> $req->Keterangan_biaya,
+							  'fp_keterangan' 		=> strtoupper($request->Keterangan_biaya),
 							  'fp_noinvoice'  		=> $req->no_invoice,
 							  'fp_jatuhtempo' 		=> carbon::parse(str_replace('/','-',$req->jatuh_tempo_vendor))->format('Y-m-d'),
 							  'created_at'    		=> carbon::now(),
@@ -246,7 +246,7 @@ class pembayaran_vendor_controller extends Controller
 									'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal_vendor))->format('Y-m-d'),
 									'jr_detail' => $jenis_bayar->jenisbayar,
 									'jr_ref'  	=> $req->nofaktur,
-									'jr_note'  	=> 'BIAYA PENERUS HUTANG',
+									'jr_note'  	=> 'BIAYA PENERUS HUTANG '.strtoupper($req->Keterangan_biaya),
 									'jr_insert' => carbon::now(),
 									'jr_update' => carbon::now(),
 									]);
@@ -405,7 +405,7 @@ class pembayaran_vendor_controller extends Controller
 							'created_by'		=> Auth::user()->m_name,
 							'created_at' 		=> carbon::now(),
 							'updated_at' 		=> carbon::now(),
-							'umfp_keterangan'	=> $req->Keterangan_biaya,
+							'umfp_keterangan'	=> strtoupper($req->Keterangan_biaya),
 							'umfp_nofaktur'		=> $req->nofaktur,
 						  ]);
 
@@ -538,7 +538,7 @@ class pembayaran_vendor_controller extends Controller
 													'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tgl_biaya_head))->format('Y-m-d'),
 													'jr_detail' => 'UANG MUKA PEMBELIAN FP',
 													'jr_ref'  	=> $req->nofaktur,
-													'jr_note'  	=> 'BIAYA SUBCON',
+													'jr_note'  	=> 'UANG MUKA '.strtoupper($req->Keterangan_biaya),
 													'jr_insert' => carbon::now(),
 													'jr_update' => carbon::now(),
 													]);
@@ -848,7 +848,7 @@ class pembayaran_vendor_controller extends Controller
 													'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tgl_biaya_head))->format('Y-m-d'),
 													'jr_detail' => 'UANG MUKA PEMBELIAN FP',
 													'jr_ref'  	=> $req->nofaktur,
-													'jr_note'  	=> 'BIAYA SUBCON',
+													'jr_note'  	=> 'UANG MUKA '.strtoupper($req->Keterangan_biaya),
 													'jr_insert' => carbon::now(),
 													'jr_update' => carbon::now(),
 													]);
@@ -1083,7 +1083,7 @@ class pembayaran_vendor_controller extends Controller
 									'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal_vendor))->format('Y-m-d'),
 									'jr_detail' => $jenis_bayar->jenisbayar,
 									'jr_ref'  	=> $req->nofaktur,
-									'jr_note'  	=> 'BIAYA PENERUS HUTANG',
+									'jr_note'  	=> 'BIAYA PENERUS HUTANG '.strtoupper($cari_fp->fp_keterangan),
 									'jr_insert' => carbon::now(),
 									'jr_update' => carbon::now(),
 									]);
