@@ -27,7 +27,7 @@
 
 			    .table-saldo{
 			    	background: #37474F;
-			    	margin-top: 15px;
+			    	margin-top: 5px;
 			    }
 
 			   .table-saldo td{
@@ -49,9 +49,9 @@
 
 			    .table_neraca th{
 			    	text-align: center;
-			    	border: 1px solid #aaa;
-			    	border-collapse: collapse;
-			    	background: #ccc;
+			    	border-top: 2px solid #555;
+			    	border-bottom: 1px solid #000;
+			    	background: white;
 			    	padding: 5px 0px;
 			    }
 
@@ -183,7 +183,7 @@
 				<table width="100%" border="0" style="font-size: 8pt;">
 					<thead>
 						<tr>
-							<td style="text-align: left;">Periode Transaksi : {{ $b1 }} s/d {{ $b2 }}</td>
+							<td style="text-align: left;"></td>
 							<td style="text-align: right;"></td>
 						</tr>
 					</thead>
@@ -202,7 +202,13 @@
 				     <table width="100%" border="0" class="table-saldo">
 						<thead>
 							<tr>
-								<td>Nama Perkiraan : {{ $data_akun->akun }} - {{ $data_akun->main_name }}</td>
+								@if($throttle)
+									<td style="background: white; text-align: left; padding-left: 0px; color: #555;font-weight: bold;">Periode Transaksi : {{ date_ind(explode('-', $b1)[0]).' '.explode('-', $b1)[1] }} &nbsp;s/d &nbsp;{{ date_ind(explode('-', $b2)[0]).' '.explode('-', $b2)[1] }}</td>
+								@else
+									<td style="background: white; text-align: left; padding-left: 15px; color: #555;font-weight: bold;">Periode Transaksi : {{ $b1 }} s/d {{ $b2 }}</td>
+								@endif
+
+								<td style="background: white; color: #555;font-weight: bold; padding: 0px;">Nama Perkiraan : {{ $data_akun->akun }} &nbsp; {{ $data_akun->main_name }}</td>
 							</tr>
 						</thead>
 					</table>
