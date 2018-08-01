@@ -238,7 +238,7 @@ class penerimaan_penjualan_Controller extends Controller
                                         ");
         $index = (integer)$cari_nota[0]->id + 1;
         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-        $nota = 'KWT' . $request->cb_cabang . $bulan . $tahun . $index;
+        $nota = 'KWT' . $request->cabang . $bulan . $tahun . $index;
 
         return response()->json(['nota'=>$nota]);
     }
