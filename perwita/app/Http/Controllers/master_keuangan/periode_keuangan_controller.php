@@ -16,13 +16,12 @@ class periode_keuangan_controller extends Controller
     public function make(Request $request){
 
         // return json_encode($request->all());
-
+        // dd($request->all());
         $response = [
             'status' => 'sukses',
         ];
 
         $cek = DB::table('d_periode_keuangan')->where('bulan', $request->bulan)->where("tahun", $request->tahun)->first();
-
         if(count($cek) > 0){
             $response = [
                 'status' => 'exist',
