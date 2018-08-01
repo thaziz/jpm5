@@ -57,7 +57,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2> Transaksi Kas</h2>
+        <h2> Transaksi Memorial</h2>
         <ol class="breadcrumb">
             <li>
                 <a>Home</a>
@@ -66,7 +66,7 @@
                 <a>Keuangan</a>
             </li>
             <li class="active">
-                <strong> Transaksi Kas </strong>
+                <strong> Transaksi Memorial </strong>
             </li>
 
         </ol>
@@ -112,7 +112,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Data Transaksi Kas {{ $cabang_nama }} {{-- Periode {{ date_ind($_GET["date"]) }} {{ $_GET["year"] }} --}}
+                    <h5> Data Transaksi Memorial {{ $cabang_nama }} {{-- Periode {{ date_ind($_GET["date"]) }} {{ $_GET["year"] }} --}}
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
@@ -130,7 +130,7 @@
                         </select> &nbsp;&nbsp;
 
                         <button class="btn btn-sm btn-primary tambahAkun" data-parrent="0" data-toggle="modal" data-target="#modal_tambah_akun">
-                          <i class="fa fa-plus"></i> &nbsp;Tambah Data Transaksi Kas
+                          <i class="fa fa-plus"></i> &nbsp;Tambah Data Transaksi Memorial
                         </button>
                     </div>
                 </div>
@@ -188,7 +188,7 @@
     <div class="modal-content" style="background: #efefef;">
       <div class="modal-header" style="background: white">
         <button type="button" class="close overlay_close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">List Transaksi Kas<span id="cab_list_name"></span></h4>
+        <h4 class="modal-title">List Transaksi Memorial <span id="cab_list_name"></span></h4>
         <input type="hidden" class="parrent"/>
       </div>
       <div class="modal-body">
@@ -205,7 +205,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Form Tambah Data Transaksi Kas</h4>
+        <h4 class="modal-title">Form Tambah Data Transaksi Memorial</h4>
         <input type="hidden" class="parrent"/>
       </div>
       <div class="modal-body">
@@ -358,7 +358,7 @@
     $("#modal_tambah_akun").on("shown.bs.modal", function(e){
       //alert($("#modal_tambah_akun .modal-header .parrent").val())
 
-      $.ajax(baseUrl+"/keuangan/jurnal_umum/add?cab={{ $_GET['cab'] }}", {
+      $.ajax(baseUrl+"/keuangan/transaksi_memorial/add?cab={{ $_GET['cab'] }}", {
          timeout: 15000,
          dataType: "html",
          success: function (data) {

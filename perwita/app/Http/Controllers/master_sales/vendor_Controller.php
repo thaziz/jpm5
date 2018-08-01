@@ -68,7 +68,7 @@ class vendor_Controller extends Controller
         $year = carbon::now()->format('y');
         $month = carbon::now()->format('m');
         $day = carbon::now()->format('d');
-         $kodecabang =  /*Auth::user()->kode_cabang*/ 'test';
+        $kodecabang =  strtoupper($request->cb_cabang);
 
         if ($request->ed_kode == null || $request->ed_kode == '') {
              $kodekode = DB::table('vendor')->max('id_vendor');
@@ -106,7 +106,7 @@ class vendor_Controller extends Controller
                 'alamat' => strtoupper($request->ed_alamat),
                 'telpon' => strtoupper($request->ed_telpon),
                 'kode_pos' => strtoupper($request->ed_kode_pos),
-                'status' => strtoupper($statusbol),
+                'status' => strtoupper(TRUE),
                 'komisi_vendor' =>strtoupper($request->ed_komisi_vendor),
                 'syarat_kredit' => $request->syarat_kredit,
                 'cabang_vendor' => strtoupper($request->cb_cabang),

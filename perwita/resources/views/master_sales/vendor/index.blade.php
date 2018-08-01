@@ -103,7 +103,7 @@
                             <th> Alamat </th>
                             <th> Kota </th>
                             <th> Telpon </th>
-                            <th> Status </th>
+                            {{-- <th> Status </th> --}}
                             <th> Aksi </th>
                         </tr>
                     </thead>
@@ -200,7 +200,8 @@
                                     </td>
                                     <td>
                                         <div >
-                                            <label for="checkbox1"> <input type="checkbox" name="ck_status"> Pakai Angkutan </label>
+                                            <label for="checkbox1"> <input type="checkbox" name="ck_status"> Status </label>
+                                            <input type="hidden" name="status_bol">
                                         </div>  
                                     </td>
                                      <td style="padding-top: 0.4cm">Komisi Vendor(%)</td>
@@ -230,7 +231,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                           {{--  <tr>
                                 <td style="padding-top: 0.4cm">CSF Biaya</td>
                                 <td colspan="7">
                                     <div class="input-group date">
@@ -244,7 +245,7 @@
                                       </select>
                                     </div>
                                 </td>
-                            </tr>
+                            </tr> --}}
                              <tr>
                                 <td style="padding-top: 0.4cm">Acc Hutang</td>
                                 <td colspan="7">
@@ -260,7 +261,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                          {{--   <tr>
                                 <td style="padding-top: 0.4cm">CSF Hutang</td>
                                 <td colspan="7">
                                     <div class="input-group date">
@@ -274,7 +275,7 @@
                                       </select>
                                     </div>
                                 </td>
-                            </tr>
+                            </tr> --}}
                             </tbody>
                           </table>
                         </form>
@@ -339,7 +340,7 @@
             { "data": "alamat" },
             { "data": "kota" },
             { "data": "telpon" },
-            { "data": "status" },
+            // { "data": "status" },
             { "data": "button" },
             ]
         });
@@ -432,6 +433,8 @@
     });
 
     $(document).on("click","#btnsave",function(){
+        
+
         $.ajax(
         {
             url : baseUrl + "/master_sales/vendor/save_data",

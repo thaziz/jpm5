@@ -58,11 +58,10 @@
     <table border="0" id="form-table" class="col-md-12">
 
       <tr>
-        <td width="20%" class="text-left">Jenis Transaksi <input type="hidden" name="type_transaksi" value="kas" readonly /> </td>
+        <td width="20%" class="text-left">Jenis Transaksi <input type="hidden" name="type_transaksi" value="memorial" readonly /> </td>
         <td colspan="2">
           <select name="jenis_transaksi" class="select_validate form-control list-should-disabled" id="jenis_transaksi" style="width: 40%; display: inline-block;">
-            <option value="1">Kas Masuk</option>
-            <option value="2">Kas Keluar</option>
+            <option value="1">Memorial</option>
           </select> &nbsp;&nbsp;&nbsp;&nbsp;
 
           <i class="fa fa-search" style="display: inline-block; cursor: pointer;" id="list-show"></i>&nbsp;&nbsp;&nbsp;
@@ -89,7 +88,7 @@
       </tr>
 
       <tr>
-        <td width="10%" class="text-left">Akun COA</td>
+        <td width="10%" class="text-left">Pilih Akun Bank</td>
         <td colspan="2">
           <select class="select_validate form-control chosen-select akun list-should-disabled" id="akun_transaksi">
             <option value="---"> -- Pilih Akun Coa</option>
@@ -249,8 +248,14 @@
         return;
       }
 
+      if($('#akun_transaksi').val() == null){
+        toastr.warning('Inputan Akun Bank Tidak Boleh Kosong');
+        btn.removeAttr("disabled");
+        return;
+      }
+
       if(validate_form()){
-        $.ajax(baseUrl+"/keuangan/jurnal_umum/save_data",{
+        $.ajax(baseUrl+"/keuangan/transaksi_memorial/save_data",{
           type: "post",
           timeout: 15000,
           data: $("#akun_form").serialize(),
@@ -390,7 +395,7 @@
       if(list != $("#cabang").val())
         $("#overlay .modal-body").html('<center class="text-muted">Sedang Memuat ...</center>');
 
-      $.ajax(baseUrl+"/keuangan/jurnal_umum/list_transaksi?cab="+$("#cabang").val(), {
+      $.ajax(baseUrl+"/keuangan/transaksi_memorial/list_transaksi?cab="+$("#cabang").val(), {
          timeout: 15000,
          dataType: "html",
          success: function (data) {
@@ -418,6 +423,9 @@
       $('.chosen-select#cabang').trigger("chosen:updated");
       $("#info-referensi").fadeOut(200);
       form_reset();
+
+      $('#coa_1 .name').text($("#akun_transaksi option:selected").text());
+      $('#coa_1 .akunName').val($("#akun_transaksi").val());
     })
 
     function generate_coa_transaksi(){

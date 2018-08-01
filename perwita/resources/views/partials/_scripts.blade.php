@@ -135,6 +135,47 @@
                 $("#modal_register_jurnal").modal("show");
            })
 
+           $("#register_jurnal").click(function(evt){
+                evt.preventDefault();
+                $("#modal_register_jurnal").modal("show");
+           })
+
+
+           // script for neraca saldo
+
+              $("#neraca_saldo").click(function(evt){
+                    evt.preventDefault();
+                    $("#modal_neraca_saldo").modal("show");
+                    html = '<option value="---">-- Pilih Cabang</option>'; $("#buku_besar_cabang_txt").fadeIn(100);
+
+                    $.ajax(baseUrl+"/purchaseorder/grapcabang", {
+                       timeout: 15000,
+                       type: "get",
+                       dataType: 'json',
+                       success: function (data) {
+                           $.each(data, function(i, n){
+                                html = html + '<option value="'+n.kode+'">'+n.nama+'</option>';
+                           })
+
+                           $("#buku_besar_cabang").html(html);
+                           $("#buku_besar_cabang_txt").fadeOut(300);
+                       },
+                       error: function(request, status, err) {
+                          if (status == "timeout") {
+                            alert("Request Timeout. Gagal Mengambil Data Cabang.");
+                          }else {
+                            alert("Internal Server Error. Gagal Mengambil Data Cabang.");
+                          }
+
+                          $(".cek").removeAttr("disabled");
+                      }
+                    });
+               })
+
+           // end neraca saldo
+
+
+
            // script for buku besar
 
            $("#buku_besar").click(function(evt){

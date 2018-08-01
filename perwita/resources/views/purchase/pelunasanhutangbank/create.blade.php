@@ -239,17 +239,17 @@
 
                                                           <tr>
                                                               <th> Jatuh Tempo </th>
-                                                              <td> <input type='text' class='input-sm form-control jatuhtempo bg' readonly="" name="fpg_jatuhtempo"> </td>
+                                                              <td> <input type='text' class='input-sm form-control jatuhtempo bg' readonly="" > </td>
                                                           </tr>
 
                                                           <tr>
                                                             <th> Nominal </th>
-                                                            <td> <input type='text' class='input-sm form-control nominal bg' name="fpg_nominal" readonly="" style='text-align: right'> </td>
+                                                            <td> <input type='text' class='input-sm form-control nominal bg' readonly="" style='text-align: right'> </td>
                                                           </tr>
 
                                                           <tr>
                                                             <th> Keterangan </th>
-                                                            <td> <input type='text' class='input-sm form-control keterangan bg' name="fpg_keterangan" readonly=""> </td>
+                                                            <td> <input type='text' class='input-sm form-control keterangan bg' readonly=""> </td>
                                                           </tr>
 
                                                       </table>
@@ -264,17 +264,17 @@
 
                                                         <tr>
                                                         <th> Bank </th>
-                                                        <td> <div class='row'> <div class="col-sm-3"> <input type='text' class='col-sm-3 input-sm form-control bank bg' name="fpg_bank" readonly=""> </div> <div class="col-sm-9"> <input type='text' class='col-sm-6 input-sm form-control namabank bg' readonly=""> <input type='hidden' class="idbank">  </div> <input type='hidden' class='akunkodebank'> <input type='hidden' class='hutangdagang'> <input type='hidden' class='akunuangmuka'>  </div>
+                                                        <td> <div class='row'> <div class="col-sm-3"> <input type='text' class='col-sm-3 input-sm form-control bank bg'  readonly=""> </div> <div class="col-sm-9"> <input type='text' class='col-sm-6 input-sm form-control namabank bg' readonly=""> <input type='hidden' class="idbank">  </div> <input type='hidden' class='akunkodebank'> <input type='hidden' class='hutangdagang'> <input type='hidden' class='akunuangmuka'>  </div>
                                                       
                                                         </tr>
                                                         <tr>
                                                           <th> Supplier </th>
-                                                          <td> <div class='row'> <div class="col-sm-3"> <input type='text' class='col-sm-3 input-sm form-control kodesup bg' name="fpg_supplier" readonly=""> </div> <div class="col-sm-9"> <input type='text' class='col-sm-6 input-sm form-control namasupplier bg' readonly=""> <input type='hidden' class='jenissup' name='jenissup'>  </div>  </div> </td>
+                                                          <td> <div class='row'> <div class="col-sm-3"> <input type='text' class='col-sm-3 input-sm form-control kodesup bg'  readonly=""> </div> <div class="col-sm-9"> <input type='text' class='col-sm-6 input-sm form-control namasupplier bg' readonly=""> <input type='hidden' class='jenissup' >  </div>  </div> </td>
                                                         </tr>
 
                                                         <tr>
                                                           <th> Tanggal FPG </th>
-                                                          <td> <input type='text' class='input-sm form-control tgl bg' name="tglfpg" readonly=""></td>
+                                                          <td> <input type='text' class='input-sm form-control tgl bg' readonly=""></td>
                                                         </tr>
 
                                                        
@@ -427,17 +427,17 @@
 
                                                           <tr>
                                                               <th> No FPG </th>
-                                                              <td> <input type='text' class='input-sm form-control jatuhtempo biayabg nofpgakunbgbiaya' readonly="" name="nofpg"> <input type='text' class='input-sm form-control jatuhtempo biayabg idfpgakunbgbiaya' readonly="" name="idfpg"> </td>
+                                                              <td> <input type='text' class='input-sm form-control jatuhtempo biayabg nofpgakunbgbiaya' readonly=""> <input type='hidden' class='input-sm form-control jatuhtempo biayabg idfpgakunbgbiaya' readonly="" > </td>
                                                           </tr>
 
                                                           <tr>
                                                             <th> Nominal </th>
-                                                            <td> <input type='text' class='input-sm form-control nominalakunbiaya biayabg' name="fpg_nominal" readonly="" style='text-align:right'> </td>
+                                                            <td> <input type='text' class='input-sm form-control nominalakunbiaya biayabg'  readonly="" style='text-align:right'> </td>
                                                           </tr>
 
                                                           <tr>
                                                             <th> Keterangan </th>
-                                                            <td> <input type='text' class='input-sm form-control keteranganakunbiayafpg biayabg' name="fpg_keterangan" readonly=""> </td>
+                                                            <td> <input type='text' class='input-sm form-control keteranganakunbiayafpg biayabg'  readonly=""> </td>
                                                           </tr>
                                                     </table>
                                                   </div>
@@ -568,6 +568,7 @@
     $('#tmbhdatabgakun').click(function(){
 
       kodecabang = $('.kodebank').val();
+      $('.valkodebank').val(kodecabang);
       $('.disabledbank').addClass('disabled');
 
       nobbk = $('.nobbk').val();
@@ -591,6 +592,8 @@
         toastr.info("Mohon lengkapi isi data :)");
         return false;
       }
+
+      $('.flag').val('BGAKUN');
 
       $('.cekbg').val(addCommas(nominal));
 
@@ -621,7 +624,7 @@
                   "<td> <input type='text' class='form-control input-sm nofpgdetailbg' value="+nofpg+" name='nofpg[]' readonly style='min-width:200px'> <input type='hidden' class='idfpgakunbgdetail' value="+idfpg+" name='idfpg[]'> </td>" +
                   "<td> <input type='text' class='form-control input-sm accbiayaakundetailbg' value="+nocheckakunbg+" name='nocheck[]' readonly style='min-width:200px'> </td>" +
                   "<td> <input type='text' class='form-control input-sm nominalfpgdetailbg' value="+nominal+" name='nominalfpg[]' readonly style='min-width:200px;text-align:right'> </td>" +
-                  "<td> <input type='text' class='form-control input-sm keteranganbiayadetailbg' value="+keteranganbiaya+" name='keteranganfpg[]' readonly style='min-width:200px'> </td>" +
+                  "<td> <input type='text' class='form-control input-sm keteranganbiayadetailbg' value='"+keteranganbiaya+"' name='keteranganfpg[]' readonly style='min-width:200px'> </td>" +
                   "</td>" +
                   "<td> <button class='btn btn-xs btn-danger' type='button' onclick='hapus(this)'> <i class='fa fa-trash'> </i> </button></td>" +
                   "</tr>";
@@ -804,8 +807,9 @@
         }
       }
       else if(a == 'BIAYA'){
-        biaya = $('.biaya').val();
+        biaya = $('.totalbiaya').val();
         total = $('.total').val();
+     
         if(biaya != total){
           toastr.info("Total Biaya dan Total tidak sama :)");
           return false;

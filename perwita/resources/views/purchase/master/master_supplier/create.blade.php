@@ -619,11 +619,12 @@
           //  console.log(data);
             if(data == "YA") {
                 var rowContract = '<div class="form-group"> <label class="col-sm-1"> No </label> <div class="col-sm-10"> <input type="text" class="form-control" name="nokontrak" required=""> </div> </div>';
-                $('.nokontrak').html(rowContract);              
+                $('.nokontrak').html(rowContract);    
+                $('.hslkontrak').show();          
             }
             else {
               $('.nokontrak').empty();
-              $('.hslkontrak').attr('disabled' , true);
+              $('.hslkontrak').hide();
             }
         })
 

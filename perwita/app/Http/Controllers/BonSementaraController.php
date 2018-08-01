@@ -165,6 +165,17 @@ class BonSementaraController extends Controller
 		});		
 	}
 
+	public function terimauang(Request $request){
+			$idbonsem = $request->idbonsem;
+
+			$updatepb = bonsempengajuan::find($idbonsem);
+			$updatepb->bp_terima = 'DONE';
+			$updatepb->save();
+
+			return 'sukses';
+
+	}
+
 	public function setujukacab(Request $request){
 		return DB::transaction(function() use ($request) { 
 			$idpb = $request->idpb;
