@@ -95,7 +95,7 @@
 
                              <td> @if(Auth::user()->PunyaAkses('Bon Sementara Kabang','aktif'))
                                     @if($bonsem->bp_pelunasan == '0.00') 
-                                  <button class="btn btn-sm btn-danger"> <i class="fa fa-money"> </i> Terima Uang ? </button> </td>
+                                  <button class="btn btn-sm btn-danger" onclick="uangterima({{$bonsem->bp_id}})" data-toggle="modal" data-target="#modaluangterima"> <i class="fa fa-money"> </i> Terima Uang ? </button> </td>
                                     @endif
                                   @endif
                              <td>
@@ -114,6 +114,67 @@
                     </div>
                   </div>
                 </div><!-- /.box-body -->
+
+
+
+                 <!-- modal kacab-->
+                            <div class="modal inmodal fade" id="modaluangterima" tabindex="-1" role="dialog"  aria-hidden="true">
+                              <div class="modal-dialog"  style="min-width: 800px !important; min-height: 400px">
+                                  <div class="modal-content">
+                                     <div class="modal-header">
+                                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
+                                      <h4 class="modal-title"> Terima Uang  </h4>
+
+                                     </div>
+                            
+                              <div class="modal-body">
+                                <form id="terimauang">
+                                  <div class="table-responsive">
+                                  <table class="table table-bordered table-striped" style="width:100%">
+                                    <tr>
+                                      <th> Nota Bonsem </th>
+                                      <th> Pengajuan Cabang </th>
+                                      <th> Persetujuan Kepala Cabang </th>
+                                      <th> Persetujuan Admin Pusat </th>
+                                      <th> Persetujuan Manager Keu Pusat </th>
+                                    </tr>
+                                    <tr>
+                                        <td> <input type='text' class='form-control notabonsem' style="min-width: 150px" readonly=""> </td>
+                                        <td> <input type='text' class='form-control nominalcabang' style="min-width: 120px; text-align: right;" readonly=""> </td>
+                                        <td> <input type='text' class='form-control nominalkabag' style="min-width: 120px;text-align: right;"  readonly=""> </td>
+                                        <td> <input type='text' class='form-control nominaladmin' style="min-width: 120px;text-align: right;" readonly=""> </td>
+                                        <td> <input type='text' class='form-control nominalmenkeu' style="min-width: 120px;text-align: right;" readonly=""> <input type="hidden" class="idbonsem"> </td>
+                                    </tr>
+                                  </table>
+
+
+                                  <table style="border: 0px">
+                                    <tr>
+                                        <td> Apakah Cabang sudah menerima uang ? </td>
+                                        <td> &nbsp; </td>
+                                        <td> <button class="btn btn-sm btn-success" type="button" id="terima"> Terima </button> </td>
+                                        <td> &nbsp; </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-danger" type="button" id="batalterima"> Batal </button>
+                                          </td>
+                                          <td>
+                                              &nbsp;
+                                          </td>
+                                          <td>
+                                            <p class="doneterima" style="color: blue">  <i> *Uang sudah diterima </i>  </p>
+                                        </td>
+                                    </tr>
+                                  </table>
+                                </div>
+                              </div>
+
+
+
+                        
+                       </div>
+                  </div> 
+
+                      </div> <!-- ENd Modal -->
 
                   <!-- modal kacab-->
                             <div class="modal inmodal fade" id="myModal2" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -293,6 +354,24 @@
         format: 'dd-MM-yyyy',
        
     })
+
+  $('#terima').click(function(){   
+     idbonsem = $('.idbonsem').val();
+     $.ajax({
+        url : baseUrl + '/bonsementaracabang/terimauang',
+        type : "POST",
+        dataType : "json",
+        data : {idbonsem},
+        success : function(){
+            alertSuccess();
+            location.reload();
+        }
+      })
+  })
+
+  $('#batalterima').click(function(){
+    $('#modaluangterima').modal('hide');
+  })
   
   $('#editcabang').submit(function(event){
      event.preventDefault();
@@ -483,6 +562,29 @@ $('#statuskacab').submit(function(event){
     }
     })
   }
+
+function uangterima(id){
+  
+   var idpb = id;
+  //alert(idpb);
+  $.ajax({
+    data : {idpb},
+    url : baseUrl + '/bonsementaracabang/setujukacab',
+    type : "get",
+    dataType : 'json',
+    success : function(response){
+      $('.notabonsem').val(response['pb'][0].bp_nota);
+      $('.nominalcabang').val(addCommas(response['pb'][0].bp_nominal));
+      $('.nominalkabag').val(addCommas(response['pb'][0].bp_nominalkacab));
+      $('.nominaladmin').val(addCommas(response['pb'][0].bp_nominaladmin));
+      $('.nominalmenkeu').val(addCommas(response['pb'][0].bp_nominalkeu));
+     $('.idbonsem').val(response['pb'][0].bp_id);
+      if(response['pb'][0].bp_terima == 'DONE'){
+        $('#terima').attr('disabled' , true);
+      }
+    }
+  })
+}
 
 function kacab(id) {
   var idpb = id;

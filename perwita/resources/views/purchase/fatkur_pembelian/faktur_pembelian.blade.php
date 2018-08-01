@@ -347,24 +347,37 @@
 				<td></td>
 			</tr>
 			<tr class="text-center"  style="height: 105px;vertical-align: top;">
-				<td colspan="3" style="padding:5px">No Acc.
-					<table width="100%" style="">
+				<td colspan="3" style="padding:20px"> Jurnal
+					<table width="90%" style="">
 						<tr>
-							<td> ID AKUN </td>
-							<td> K </td>
-							<td> D </td>
+							<td> <b> ID AKUN </b> </td>
+							<td> <b> NAMA AKUN </b> </td>
+							<td> <b> K  </b> </td>
+							<td> <b> D </b> </td>
 						</tr>
 						<tr>
 							<?php $totalDebit=0;
                 			$totalKredit=0; ?>
-                			{{count($data['jurnal_dt'])}}
-							
-                 
+                			@for($key = 0; $key < count($data['jurnal_dt']); $key++)
+                				<tr>
+                					<td> {{$data['jurnal_dt'][$key]->id_akun}}</td>
+                					<td class="text-left" style="padding-left: 20px"> {{$data['jurnal_dt'][$key]->nama_akun}}</td>
+                						@if($data['jurnal_dt'][$key]->dk == 'D')
+                						<?php $totalDebit = $totalDebit + abs($data['jurnal_dt'][$key]->jrdt_value) ?>
+                							<td class="text-right"> {{number_format(abs($data['jurnal_dt'][$key]->jrdt_value), 2)}} </td>                				
+                							<td> </td>
+                						@elseif($data['jurnal_dt'][$key]->dk == 'K')
+                							<?php $totalKredit = $totalKredit + abs($data['jurnal_dt'][$key]->jrdt_value) ?>
+                							<td>  </td>
+                							<td class="text-right"> {{number_format(abs($data['jurnal_dt'][$key]->jrdt_value), 2)}} </td>
+                						@endif
+                				</tr>
+                 			@endfor
                      
                           <tr>
-                                  <td>Total</td>                        
-                                  <td> 1 </td>
-                                  <td> 2 </td>
+                                  <td colspan="2"> <b> Total </b> </td>                        
+                                  <td> <?php echo number_format($totalDebit ,2) ?>  </td>
+                                  <td> <?php echo number_format($totalKredit , 2) ?> </td>
                                  
                           <tr>
                      
