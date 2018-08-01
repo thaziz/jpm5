@@ -1348,7 +1348,7 @@ function hitung() {
         var do_alamat_penerima      = $("input[name='do_alamat_penerima']").val();
         var do_kode_pos_penerima    = $("input[name='do_kode_pos_penerima']").val();
         var do_telpon_penerima      = $("input[name='do_telpon_penerima']").val();
-        var do_vendor_cekbox        = $("input[name='cek_vendor']").val();
+        var tarif_vendor_bol        = $("input[name='cek_vendor']").val();
 
 
         if (do_nomor == '') {
@@ -1380,6 +1380,11 @@ function hitung() {
             return false;
         }
 
+           if($('.cek_vendor_ya').is(':checked')) { 
+                $('#tarif_vendor_bol').val('true');
+           }else if($('.cek_vendor_tidak').is(':checked'))  {
+                $('#tarif_vendor_bol').val('false');
+           }
 
         $.ajax(
         {

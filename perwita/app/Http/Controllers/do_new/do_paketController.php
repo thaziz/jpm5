@@ -116,6 +116,7 @@ class do_paketController extends Controller
                              ->leftjoin('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
                              ->groupBy('kc.kc_aktif','c.kode','kcd.kcd_jenis')
                              ->where('kcd.kcd_jenis','=','PAKET')
+                             ->where('pic_status','=','AKTIF')
                              ->orderBy('c.kode','ASC')
                              ->get();
 
@@ -319,14 +320,17 @@ class do_paketController extends Controller
             $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_dokumen WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND kode_cabang='$cabang'";
             $data = collect(DB::select($sql));
 
+            // return $data;
             //kondisi jika express dan reguler
             if ($jenis == 'EXPRESS'){
                 $sql_biaya_penerus = "SELECT harga_zona as harga FROM tarif_penerus_dokumen join zona on id_zona = tarif_express WHERE type='$tipe' and id_kota='$tujuan' and id_kecamatan='$kecamatan'";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             }else if($jenis == 'REGULER'){
-                $sql_biaya_penerus = "SELECT harga_zona as harga FROM tarif_penerus_dokumen join zona on id_zona = tarif_reguler WHERE type='$tipe' and id_kota='$tujuan' and id_kecamatan='$kecamatan'";
+                $sql_biaya_penerus = "SELECT harga_zona as harga FROM tarif_penerus_dokumen join zona on id_zona = tarif_reguler WHERE type='$tipe' and id_kota='$tujuan' and id_kecamatan='$kecamatan' ";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             }
+
+            // return json_encode($biaya_penerus);
 
             //jika kosong
             if ($biaya_penerus == null){
@@ -1067,11 +1071,11 @@ class do_paketController extends Controller
                     'kontrak'               =>  $bol_kon,
                     'kontrak_cus'           => $cus_kon,
                     'kontrak_cus_dt'        => $cus_kon_dt,
-                    'tarif_vendor_bol'      =>$request->tarif_vendor_bol,
-                    'id_tarif_vendor'       =>$request->id_tarif_vendor,
-                    'nama_tarif_vendor'     =>$request->nama_tarif_vendor,
-                    'created_at'            =>carbon::now(),
-                    'created_by'            =>auth::user()->m_name,
+                    'tarif_vendor_bol'      => $request->tarif_vendor_bol,
+                    'id_tarif_vendor'       => $request->id_tarif_vendor,
+                    'nama_tarif_vendor'     => $request->nama_tarif_vendor,
+                    'created_at'            => carbon::now(),
+                    'created_by'            => auth::user()->m_name,
                     'total_net'             => filter_var($request->do_total_h, FILTER_SANITIZE_NUMBER_INT),
           );
         DB::table('delivery_order')->insert($data);  
