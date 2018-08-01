@@ -58,10 +58,14 @@
                     
                       <br>
                       <br>
-                      <table class="table">
+                      <table class="table" style="width:100%">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
                         <tr>
-                          <td style="width:100px"> Kode Bank </td> 
+                          <td style='width:100px'> Kode Bank </td>
+                          <td> {{$banks->mb_id}} </td>
+                        </tr>
+                        <tr>
+                          <td> Akun Bank </td> 
                           <td>
                           <div class="row">
                             <div class="col-sm-4">
@@ -437,8 +441,6 @@
 //CHANGE SERI CEK
   $('.sericek').change(function(){ 
     val =   $(this).val();
-
-   
 
       if(val == 'CEK'){
 

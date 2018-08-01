@@ -1,467 +1,398 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title></title>
+	<title>FAKTUR PEMBELIAN</title>
+	<style type="text/css">
+		
+		.s16{
+			font-size: 16px !important;
+		}
+		.div-width{
+			margin: auto;
+			width: 95vw;
+		}
+		.underline{
+			text-decoration: underline;
+		}
+		.italic{
+			font-style: italic;
+		}
+		.bold{
+			font-weight: bold;
+		}
+		.text-center{
+			text-align: center;
+		}
+		.text-right{
+			text-align: right;
+		}
+		.text-left{
+			text-align: left;
+		}
+		.border-none-right{
+			border-right: hidden;
+		}
+		.border-none-left{
+			border-left:hidden;
+		}
+		.border-none-bottom{
+			border-bottom: hidden;
+		}
+		.border-none-top{
+			border-top: hidden;
+		}
+		.float-left{
+			float: left;
+		}
+		.float-right{
+			float: right;
+		}
+		.top{
+			vertical-align: text-top;
+		}
+		.vertical-baseline{
+			vertical-align: baseline;
+		}
+		.bottom{
+			vertical-align: text-bottom;
+		}
+		.ttd{
+			top: 0;
+			position: absolute;
+		}
+		.relative{
+			position: relative;
+		}
+		.absolute{
+			position: absolute;
+		}
+		.empty{
+			height: 18px;
+		}
+		table,td{
+			border:1px solid black;
+		}
+		table{
+			border-collapse: collapse;
+		}
+		table.border-none ,.border-none td{
+			border:none !important;
+		}
+		.position-top{
+			vertical-align: top;
+		}
+		@page {
+			size: portrait;
+		}
+		@media print {
+			margin:0;
+		}
+		fieldset{
+			border: 1px solid black;
+			margin:-.5px;
+		}
+	</style>
 </head>
-  <link href="{{ asset('assets/vendors/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-  <style type="text/css">
-    .tandatangan{
-    margin-top: 100px;
-    margin-left: 40%;
-    }
-    body{
-      font-family: arial;
-      font-size: 13px;
-    }
-    th td {
-       border: 1px solid black
-    }
-    .wrapper{
-      width: 1000px;
-      margin: -10px 10px 10px 10px;
-    }
-    .bold{
-      font-weight: bold;
-    }
-    .img{
-      margin-left: 10px;
-      margin-top: 10px;
-    }
-    .size{
-      font-size: 15px;
-    }
-    .border {
-      border:1px solid;
-    }
-    .header{
-      font-size: 12px;
-      margin-top: 20px;
-    }
-    .full-right{
-      margin-bottom: 27px;
-      padding-right:10px;
-      padding-left:10px;
-    }
-    .bottomheader{
-      border-bottom: 1px solid black;
-    }
-    .kepada{
-     border-bottom: 1px solid;
-     right:120%;
-    }
-    .tabel2{
-      padding: 10px 10px;
-      display: inline-block;
-    }
-    .jarak1{
-      padding: -10px -10px -10px -10px;
-    }
-    .inlineTable {
-      display: inline-block;
-    }
-    .tabel-utama{
-      margin-left: 10px;
-      width: 97%;
-    }
-    .textcenter{
-      text-align: center;
-    }
-    .jarak{
-      padding: 10px 10px 10px 10px;
-    }
-    .textright{
-      text-align: right;
-      padding-right: 5px;
-    }
-    .textleft{
-      text-align: left;
-      text-indent: 5px;
-    }
-    .hiddenborderleft{
-      border-left:  0px ;
-    }
-    .hiddenborderright{
-      border-right:  0px ;
-    }
-    .hiddenbordertop{
-      border-top:  0px ;
-    }
-    .hiddenborderbottom{
-      border-bottom:  0px ;
-    }
-    .borderright{
-      border-right: 1px solid black;
-      padding-right: 100px;
-    }
-    .right{
-      border-right: 1px solid black;
-    }
-    .bot{
-      border-bottom: 1px solid black;
-    }
-    .inputheader{
-      width: 285px;
-      border-bottom: 1px solid black;
-    }
-    .fontpenting{
-      font-size: 11px;
-      margin-top: 100px;
-      font-family: georgia;
-      padding: 3px 3px 3px 3px;
-    }
-    .ataspenting{
-      margin:  20px 0px 2px 10px;
-    }
-    .tabelpenting{
-      margin: 0px 0px 10px 10px;
-      border:1px 1px 0px 1px solid black;
-      width: 112%;
-    }
-    .headpenting{
-      font-family: georgia;
-      padding: 3px 3px 3px 3px;
-    }
-    .tab{
-      margin-left: 10px;
-      margin-top: 10px;
-    }
-    .boldtandatangan{
-      font-weight: bold;
-      font-size: 11px;
-    }
-    .tandatangandiv{
-      margin-top: -225px;
-      margin-left: 585px;
-      margin-bottom: 10px;
-    }
-    .headtandatangan{
-      text-align: center;
-      width:  287px;
-      padding-bottom: 70px;
-    }
-    .top{
-      border-top: 1px solid black;
-    }
-    .bot{
-      border-bottom: 1px solid black;
-    }
-    .bottabelutama{
-      border-bottom: 1px solid grey;
-    }
-    .right{
-      border-right: 1px solid black;
-    }
-    .left{
-      border-left: 1px solid black;
-    }
-    .note{
-      margin: 0px 10px 10px 10px;
-      text-decoration: underline;
-    }
-    .underline{
-      text-decoration: underline;
-    }
-    .nomorform{
-      margin: -10px 0px 0px 700px;
-    }
-    .pull-right{
-    margin-right: 14px;
-    padding: 0px 10px 0px 0px;
-    }
-    .paddingbottom{
-      padding-bottom: 60px;
-    }
-    .fixed{
-      position: absolute;
-    }
-    .catatanpadding{
-      padding-left: 10px;
-    }
-    .gg{
-      padding-bottom: -20px;
-    }
-    .position-fixed{
-      position: relative;
-    }
-    .margin-top-60px{
-      margin-top: -48px;
-    }
-    .margin-top-10px{
-      margin-top: -29px;
-    }
-     .Kwitansi{
-      margin-left: 37%;
-      font-family: georgia;
-      font-size:25px; 
-      text-decoration: underline; 
-    }
-    .minheight{
-      min-height: 100px;
-    }
-    .akirkanan{
-      padding-left: 40px;
-    }
-/*    .table-utama {
-      border:1px solid black;
-    }*/
-    .pembungkus{
-      border-right: 1px solid black;
-      border-left:  1px solid black;
-      border-bottom: 1px solid black;
-      min-height: 180px;
-    }
-    .borderlefttabel{
-      border-left: 1px solid black;
-    }
-    .bordertoptabel{
-      border-top: 1px solid black;  
-    }
-   fieldset.scheduler-border {
-    border: 1px solid black !important;
-    padding:0 2em 1.4em 1.4em !important;
-    margin: 0 0 1.5em 0 !important;
-   }
-   @media print, screen{
-    legend.scheduler-border {
-        font-size: 15px !important;
-        z-index: 999;
-        text-align: left !important;
-        width:auto;
-        padding:0 10px ;
-        border-bottom:none;
-        -webkit-print-color-adjust: exact;
-    }
-    } 
-    .pembungkus1{
-      border-right: 1px solid black;
-      border-left:  1px solid black;
-      border-bottom: 1px solid black;
-    }
-</style>
 <body>
- <div class="wrapper">
-  <div class="position-fixed">
-   <table class="inlineTable">
-      <td><img class="img" width="200" height="100" src="/jpm/perwita/img/logo_jpm.png"></td>
-   </table>
-   <table class="inlineTable size" style="font-size:12px;margin-bottom: 21px;">
-    <tr>
-      <th style="font-size: 17px;">PT. JAWA PRATAMA MANDIRI</th>
-    </tr>
-     <tr>
-       <td>Gedung Temprina Lt.1 Jl.Wringin Anom KM 30-31 Sumengko Gresik</td>
-     </tr>
-     <tr>
-       <td>Telp.(031) 8986777, 89868888</td>
-     </tr>
-     <tr>
-       <td>Email : ekspedisi@jawapos.co.id</td>
-     </tr>
-   </table>
-    <table class="inlineTable pull-right size" >
-     <tr>
-       <th width="90">&nbsp;</th>
-       <th width="10">&nbsp;</th>
-       <th>&nbsp;</th>
-       <th>&nbsp;</th>
-     </tr>
-     <tr>
-       <td>No.Faktur</td>
-       <td>:</td>
-       <td> {{$data['judul'][0]->fp_nofaktur}} </td>
-     </tr>
-     <tr>
-       <td>Tanggal</td>
-       <td>:</td>
-       <td> {{ Carbon\Carbon::parse($data['judul'][0]->fp_tgl)->format('d-M-Y ') }} </td>
-     </tr>
-     <tr>
-        <td>No. Invoice</td>
-       <td>:</td>
-       <td>{{$data['judul'][0]->fp_noinvoice}}</td>
-     </tr>
-     <tr>
-        <td> Jatuh Tempo </td>
-        <td> : </td>
-        <td> {{ Carbon\Carbon::parse($data['judul'][0]->fp_jatuhtempo)->format('d-M-Y ') }} </td>
-     </tr>
-   </table>
-   </div>
-   <div>
-   <div class="Kwitansi bold">
-      <p>FAKTUR PEMBELIAN</p>
-   </div>
-<fieldset class="scheduler-border">
-    <legend class="scheduler-border" style=" font-style: italic;background-color: white !important;">Diterima Dari :</legend>
-    <table>
-      <tr>
-        <td> {{$data['judul'][0]->nama_supplier}} [{{$data['judul'][0]->no_supplier}}] </td>
-      </tr>
-      <tr>
-        <td>{{$data['judul'][0]->alamat}}</td>
-      </tr>
-    </table>
-</fieldset>
-    </div>
-    <div class="pembungkus" >
-   <table class="size textcenter  table-responsive" width="100%">
-     <tr>
-          <th class="textcenter top bot right" width="4%" height="10"> No.</th>
-          <th class="textcenter top bot right" width="10%"> Kode</th>
-          <th class="textcenter top bot right" width="30%"> Nama Barang / Jasa</th>
-          <th class="textcenter top bot right"> Quantity</th>
-          <th class="textcenter top bot right"> Unit</th>
-          <th class="textcenter top bot right"> Harga Satuan</th>
-          <th class="textcenter top bot right"> Jumlah Harga</th>
-          <th class="textcenter top bot right"> Biaya </th>
-          <th class="textcenter top bot right"> Netto Biaya </th>
-          <th class="textcenter top bot"> Keterangan</th>
-     </tr>
-     
-     @foreach($data['barang'] as $key=>$brg)
-     <tr>
-       <td class="right"> {{$key + 1}} </td>
-       <td class="textleft right"> {{$brg->kode_item}}</td>
-       <td class="textleft right"> {{$brg->nama_masteritem}}</td>
-       <td class="textright right"> {{$brg->fpdt_qty}}</td>
-       <td class="textright right"> {{$brg->unitstock}}</td>
-       <td class="textright right"> {{number_format($brg->fpdt_harga, 2)}}</td>
-       <td class="textright right"> {{number_format($brg->fpdt_totalharga, 2)}}</td>
-       <td class="textright right"> {{number_format($brg->fpdt_biaya, 2)}}</td>
-       <td class="textright right"> {{number_format($brg->fpdt_netto, 2)}}</td>
-       <td class="textleft right"> {{$brg->fpdt_keterangan}} </td>
-     </tr>
-     @endforeach
+	<div class="div-width">
+		<table class="border-none" width="100%" cellspacing="0" cellpadding="0">
+			<tr>
+				<td width="1%"><img src="" width="120px" height="75px"></td>
+				<td class="s16 text-left">
+					<text class="bold">PT. Jawa Pratama Mandiri</text><br>
+					<small>
+						Gedung Temprina Lt.1 Jl.Wringin Anom KM 30-31 Sumengko<br>
+						Telp. ( 031 ) 8986777, 896888<br>
+						Email : ekspedisi@jawapos.co.id
+					</small>
+				</td>
+				<td class="s16 position-top" width="30%">
+					<table class="border-none float-right">
+						<tr>
+							<td class="s16">No. Faktur</td>
+							<td class="s16">:</td>
+							<td class="s16">{{$data['judul'][0]->fp_nofaktur}}</td>
+						</tr>
+						<tr>
+							<td class="s16">Tanggal</td>
+							<td class="s16">:</td>
+							<td class="s16"> {{ Carbon\Carbon::parse($data['judul'][0]->fp_tgl)->format('d-M-Y ') }} </td>
+						</tr>
+						<tr>
+							<td class="s16">No. Invoice</td>
+							<td class="s16">:</td>
+							<td class="s16"> {{$data['judul'][0]->fp_noinvoice}} </td>
+						</tr>
+						<tr>
+								<td class="s16"> Jatuh Tempo </td>
+						        <td class="s16"> : </td>
+						        <td class="s16">  {{ Carbon\Carbon::parse($data['judul'][0]->fp_jatuhtempo)->format('d-M-Y ') }} </td>
+												</tr>
+					</table>
+				</td>
+				
+			</tr>
+			<tr>
+				<td colspan="3" class="text-center bold underline">
+					<h2>FAKTUR PEMBELIAN</h2>
+				</td>
+			</tr>
+		</table>
+		<fieldset style="margin-bottom: 5px;">
+			<legend class="italic">Diterima Dari :</legend>
+			{{$data['judul'][0]->nama_supplier}} [{{$data['judul'][0]->no_supplier}}]  <br>
+			{{$data['judul'][0]->alamat}}
+		</fieldset>
+		<table width="100%" cellspacing="0" class="tabel" border="1px">
+			<tr class="text-center">
+				<td>No</td>
+				<td>Kode</td>
+				<td>Nama Barang / Jasa</td>
+				<td>Quantity</td>
+				<td>Unit</td>
+				<td>Harga Satuan</td>
+				<td>Jumlah Harga</td>
+				<td>Biaya</td>
+				<td>Netto</td>
+				<td>Keterangan</td>
+			</tr>
+			
+			 @foreach($data['barang'] as $key=>$brg)
+		     <tr>
+		       <td class="right"> {{$key + 1}} </td>
+		       <td class="textleft right"> {{$brg->kode_item}}</td>
+		       <td class="textleft right"> {{$brg->nama_masteritem}}</td>
+		       <td class="textright right"> {{$brg->fpdt_qty}}</td>
+		       <td class="textright right"> {{$brg->unitstock}}</td>
+		       <td class="textright right"> {{number_format($brg->fpdt_harga, 2)}}</td>
+		       <td class="textright right"> {{number_format($brg->fpdt_totalharga, 2)}}</td>
+		       <td class="textright right"> {{number_format($brg->fpdt_biaya, 2)}}</td>
+		       <td class="textright right"> {{number_format($brg->fpdt_netto, 2)}}</td>
+		       <td class="textleft right"> {{$brg->fpdt_keterangan}} </td>
+		     </tr>
+		     @endforeach
 
 
-      <tr>
-       <td class=" right">&nbsp;</td>
-       <td class="textleft  right">&nbsp;</td>
-       <td class=" right">&nbsp;</td>
-       <td class="textleft  right">&nbsp;</td>
-       <td class=" right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-     </tr>
-       <tr>
-       <td class=" right">&nbsp;</td>
-       <td class="textleft  right">&nbsp;</td>
-       <td class=" right">&nbsp;</td>
-       <td class="textleft  right">&nbsp;</td>
-       <td class=" right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-     </tr>
-       <tr>
-       <td class=" right">&nbsp;</td>
-       <td class="textleft  right">&nbsp;</td>
-       <td class=" right">&nbsp;</td>
-       <td class="textleft  right">&nbsp;</td>
-       <td class=" right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-     </tr>
-       <tr>
-       <td class=" right">&nbsp;</td>
-       <td class="textleft  right">&nbsp;</td>
-       <td class=" right">&nbsp;</td>
-       <td class="textleft  right">&nbsp;</td>
-       <td class=" right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-       <td class="textright  right">&nbsp;</td>
-     </tr>
-     <tr>
-       <td colspan="4" class="top right"></td>
-       <td colspan="4" class="top right">
-         <table width="100%">
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				<td class="text-right"></td>
+				<td class="text-center"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				<td class="text-right"></td>
+				<td class="text-center"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				<td class="text-right"></td>
+				<td class="text-center"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				<td class="text-right"></td>
+				<td class="text-center"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				<td class="text-right"></td>
+				<td class="text-center"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				<td class="text-right"></td>
+				<td class="text-center"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				<td class="text-right"></td>
+				<td class="text-center"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				<td class="text-right"></td>
+				<td class="text-center"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				<td class="text-right"></td>
+				<td class="text-center"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				<td class="text-right"></td>
+				<td class="text-center"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td colspan="3"></td>
+				<td colspan="4">DPP</td>
+				<td class="border-none-left"></td>
+				<td class="text-right"> {{number_format($data['judul'][0]->fp_dpp, 2)}} </td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td colspan="3"></td>
+				<td colspan="4">Discount</td>
+				<td class="text-right border-none-left">
+					@if($data['judul'][0]->fp_discount == null)
+			           0%
+			           @else
+			            {{$data['judul'][0]->fp_discount}}
+			           @endif
+			    </td>
+				<td class="text-right">{{number_format($data['judul'][0]->fp_hsldiscount, 2)}}</td>
+				<td class="text-right"> </td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td colspan="3"></td>
+				<td colspan="4">PPn</td>
+				<td class="text-right border-none-left">
+					 @if($data['judul'][0]->fp_ppn == 0)
+		                0%
+		              @else
+		              {{$data['judul'][0]->fp_inputppn}} %
+		              @endif
+				</td>
+				<td class="text-right">  {{number_format($data['judul'][0]->fp_ppn, 2)}} </td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom" style="height: 50px;vertical-align: top;">
+				<td colspan="3"></td>
+				<td colspan="4">PPH</td>
+				<td class="text-right border-none-left">
+					  @if($data['judul'][0]->fp_pph == 0)
+		                0%
+		              @else
+		              {{$data['judul'][0]->fp_nilaipph}} %
+		              @endif
+				</td>
+				<td class="text-right">{{number_format($data['judul'][0]->fp_pph, 2)}}</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="3"></td>
+				<td colspan="4">Netto</td>
+				<td class="border-none-left"></td>
+				<td class="text-right"> {{number_format($data['judul'][0]->fp_netto, 2)}} </td>
+				<td></td>
+			</tr>
+			<tr class="text-center"  style="height: 105px;vertical-align: top;">
+				<td colspan="3" style="padding:20px"> Jurnal
+					<table width="90%" style="">
+						<tr>
+							<td> <b> ID AKUN </b> </td>
+							<td> <b> NAMA AKUN </b> </td>
+							<td> <b> K  </b> </td>
+							<td> <b> D </b> </td>
+						</tr>
+						<tr>
+							<?php $totalDebit=0;
+                			$totalKredit=0; ?>
+                			@for($key = 0; $key < count($data['jurnal_dt']); $key++)
+                				<tr>
+                					<td> {{$data['jurnal_dt'][$key]->id_akun}}</td>
+                					<td class="text-left" style="padding-left: 20px"> {{$data['jurnal_dt'][$key]->nama_akun}}</td>
+                						@if($data['jurnal_dt'][$key]->dk == 'D')
+                						<?php $totalDebit = $totalDebit + abs($data['jurnal_dt'][$key]->jrdt_value) ?>
+                							<td class="text-right"> {{number_format(abs($data['jurnal_dt'][$key]->jrdt_value), 2)}} </td>                				
+                							<td> </td>
+                						@elseif($data['jurnal_dt'][$key]->dk == 'K')
+                							<?php $totalKredit = $totalKredit + abs($data['jurnal_dt'][$key]->jrdt_value) ?>
+                							<td>  </td>
+                							<td class="text-right"> {{number_format(abs($data['jurnal_dt'][$key]->jrdt_value), 2)}} </td>
+                						@endif
+                				</tr>
+                 			@endfor
+                     
+                          <tr>
+                                  <td colspan="2"> <b> Total </b> </td>                        
+                                  <td> <?php echo number_format($totalDebit ,2) ?>  </td>
+                                  <td> <?php echo number_format($totalKredit , 2) ?> </td>
+                                 
+                          <tr>
+                     
+						</tr>
+					</table>
+				</td>
+				<td class="border-none-bottom" colspan="5"> 
 
-          <tr>
-           <td class="textleft">D.P.P</td>
-          </tr>
-          <tr>
-           <td class="textleft">Discount</td>
-           <td class="textright">
-           @if($data['judul'][0]->fp_discount == null)
-           0%
-           @else
-            {{$data['judul'][0]->fp_discount}}
-           @endif
-           </td>
-          </tr>
-          <tr>
-           <td class="textleft">PPn</td>
-            <td class="textright">
-              @if($data['judul'][0]->fp_ppn == 0)
-                0%
-              @else
-              {{$data['judul'][0]->fp_inputppn}} %
-              @endif
-            </td>
-          </tr>
-          <tr>
-            <td class="textleft">PPH </td>
-             <td class="textright"> 
-              @if($data['judul'][0]->fp_pph == 0)
-                0%
-              @else
-              {{$data['judul'][0]->fp_nilaipph}} %
-              @endif
-            </td>
-          </tr>
-          <tr>
-           <td class="textleft">&nbsp;</td>
-          </tr>
-          <tr>
-           <td class="textleft">NETTO</td>
-          </tr>
-         </table>
-       </td>
 
-       <td class="top right textright">
-          <table width="100%">
-          <tr>
-           <td> {{number_format($data['judul'][0]->fp_dpp, 2)}} </td>
-          </tr>
-          <tr>
-           <td class="textright">  {{number_format($data['judul'][0]->fp_hsldiscount, 2)}}</td>
-          </tr>
-          <tr>
-           <td class="textright"> {{number_format($data['judul'][0]->fp_ppn, 2)}}</td>
-          </tr>
-          <tr>
-           <td class="textright"> {{number_format($data['judul'][0]->fp_pph, 2)}}</td>
-          </tr>
-           <tr>
-           <td class="textright">&nbsp;</td>
-          </tr>
-         
-          <tr>
-           <td class="textright">  {{number_format($data['judul'][0]->fp_netto, 2)}} </td>
-          </tr>
-         </table>
-          
-       </td>
-       <td class="top"></td>
-     </tr>
-   </table>
- </div>
-          <div class="pembungkus1" style="height:100px;">
-            1111
-          </div>
-</div>
+				</td>
 
-     
- 
- 
+				<td>Dibuat</td>
+				<td>Diterima</td>
+			</tr>
+		</table>
+	</div>
 </body>
 </html>
