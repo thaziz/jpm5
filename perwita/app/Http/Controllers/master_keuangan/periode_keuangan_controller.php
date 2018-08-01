@@ -27,18 +27,21 @@ class periode_keuangan_controller extends Controller
             $response = [
                 'status' => 'exist',
             ];
-
+            return 'Periode Sudah Ada';
             return json_encode($response);
         }
 
         $cek2 = DB::table('d_periode_keuangan')->select("*")->limit(1)->first();
+
+        // return 'okee';
+        // return json_encode($request->bulan.' dan '.$request->tahun);
 
         if($request->bulan < date("m") || $request->tahun < date("Y")){
             $response = [
                 'status' => 'past_insert',
             ];
 
-            return json_encode($response);
+            return 'Periode Sudah Ada';
         }
 
         $id = (DB::table("d_periode_keuangan")->max("id") == null) ? 1 : (DB::table("d_periode_keuangan")->max("id")+1);
@@ -53,14 +56,19 @@ class periode_keuangan_controller extends Controller
 
         if($periode->save()){
             
-            $this->generate_akun($request);
+            // $this->generate_akun($request);
 
-            return json_encode($response);
+            // return "okee berhasil";
+
+            Session::flash('sukses', 'Periode Berhasil Dibuat');
+            return redirect()->back();
         }
 
         $response = [
             'status' => 'gagal',
         ];
+
+        return 'Gagal Disimpan';
 
         return json_encode($response);
 
@@ -101,11 +109,11 @@ class periode_keuangan_controller extends Controller
                 $saldo = null; $transaksi = null;
 
                 if($d != 0 && $t != 0){
-                    $saldo = DB::table("d_akun_saldo")
-                             ->where("id_akun", $value->id_akun)
-                             ->where("bulan", $d)
-                             ->where("tahun", "$t")
-                             ->select('saldo_akun')->first()->saldo_akun;
+                    // $saldo = DB::table("d_akun_saldo")
+                    //          ->where("id_akun", $value->id_akun)
+                    //          ->where("bulan", $d)
+                    //          ->where("tahun", "$t")
+                    //          ->select('saldo_akun')->first()->saldo_akun;
 
                     $transaksi = DB::table("d_jurnal_dt")
                                  ->where("jrdt_acc", $value->id_akun)

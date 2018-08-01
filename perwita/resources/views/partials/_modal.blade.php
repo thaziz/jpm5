@@ -28,23 +28,28 @@
       </div>
 
       <div class="modal-body" style="padding: 10px;">
-          <form role="form" class="form-inline">
+          <form role="form" class="form-inline" method="post" action="{{ route('periode_keuangan.tambah') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly>
               <div class="form-group">
                   <label for="exampleInputEmail2" class="sr-only">Email address</label>
                   <input style="cursor: pointer;" type="text" placeholder="Bulan"
-                         class="form-control periode_month" readonly value="{{date('m')}}">
+                         class="form-control periode_month" name="bulan" readonly value="{{date('m')}}">
               </div>
               <div class="form-group">
                   <label for="exampleInputPassword2" class="sr-only">Password</label>
-                  <input style="cursor: pointer;" type="text" placeholder="Tahun"
+                  <input style="cursor: pointer;" type="text" placeholder="Tahun" name="tahun"
                          class="form-control periode_year" readonly value="{{date('Y')}}">
               </div>
+              <div class="form-group" style="margin-top: 20px;">
+                  <button class="btn btn-primary btn-sm" type="submit" id="submit">Simpan</button>
+              </div>
+
           </form>
       </div>
 
-      <div class="modal-footer">
-          <button class="btn btn-primary btn-sm" id="save" >Simpan</button>
-      </div>
+      {{-- <div class="modal-footer">
+          
+      </div> --}}
     </div>
   </div>
 </div>
@@ -350,41 +355,41 @@
       
     })
 
-     $("#save").click(function(evt){
-        evt.preventDefault();
+     // $("#save").click(function(evt){
+     //    evt.preventDefault();
 
-        $(this).attr("disabled", "disabled");
-        $(this).text("Sedang Menambahkan...");
+     //    $(this).attr("disabled", "disabled");
+     //    $(this).text("Sedang Menambahkan...");
 
-        $.ajax(baseUrl+"/master_keuangan/periode_keuangan/tambah", {
-           timeout: 500000,
-           type: "post",
-           data: {bulan: $("#periode_month").val(), tahun: $("#periode_year").val(), _token: '{{ csrf_token() }}' },
-           dataType: 'json',
-           success: function (data) {
-              console.log(data);
-               if(data.status == "sukses")
-                alert("Periode Berhasil Dibuat Dan Secara Otomatis Diaktifkan...");
-               else if(data.status == "exist")
-                alert("Periode Sudah Ada. Data Gagal Disimpan...");
-               else if(data.status == "past_insert")
-                alert("Anda Tidak Bisa Menambahkan Periode Yang Sudah Berlalu...");
+     //    $.ajax(baseUrl+"/master_keuangan/periode_keuangan/tambah", {
+     //       timeout: 500000,
+     //       type: "post",
+     //       data: {bulan: $("#periode_month").val(), tahun: $("#periode_year").val(), _token: '{{ csrf_token() }}' },
+     //       dataType: 'json',
+     //       success: function (data) {
+     //          console.log(data);
+     //           if(data.status == "sukses")
+     //            alert("Periode Berhasil Dibuat Dan Secara Otomatis Diaktifkan...");
+     //           else if(data.status == "exist")
+     //            alert("Periode Sudah Ada. Data Gagal Disimpan...");
+     //           else if(data.status == "past_insert")
+     //            alert("Anda Tidak Bisa Menambahkan Periode Yang Sudah Berlalu...");
 
-              $("#save").text("Simpan");
-              $("#save").removeAttr("disabled");
-           },
-           error: function(request, status, err) {
-              if (status == "timeout") {
-                alert("Request Timeout. Data Gagal Ditambahkan");
-              }else {
-                alert("Internal Server Error. Data Gagal Ditambahkan");
-              }
+     //          $("#save").text("Simpan");
+     //          $("#save").removeAttr("disabled");
+     //       },
+     //       error: function(request, status, err) {
+     //          if (status == "timeout") {
+     //            alert("Request Timeout. Data Gagal Ditambahkan");
+     //          }else {
+     //            alert("Internal Server Error. Data Gagal Ditambahkan");
+     //          }
 
-              $("#save").text("Simpan");
-              $("#save").removeAttr("disabled");
-          }
-        });
-     })
+     //          $("#save").text("Simpan");
+     //          $("#save").removeAttr("disabled");
+     //      }
+     //    });
+     // })
 
      $(".cek").change(function(){
 
