@@ -213,6 +213,65 @@
   <!-- modal -->
 
    <!-- modal -->
+<div id="modal_neraca_saldo" class="modal">
+  <div class="modal-dialog" style="width: 40%;">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Form Neraca Saldo</h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+
+      <div class="modal-body" style="padding: 10px;">
+        <div class="row">
+          <form role="form" class="form-inline" id="form-neraca-saldo" method="POST" action="{{ route("neraca_saldo.index") }}" target="_blank">
+              <input type="hidden" value="{{ csrf_token() }}" name="_token" readonly>
+              <table border="0" id="form-table" class="col-md-12">
+
+                <tr>
+                  <td width="40%" class="text-center">Periode Neraca Saldo</td>
+                  <td colspan="3">
+                    <select class="form-control neraca_saldo select_validate" name="jenis" id="periode_neraca_saldo" style="width: 80%;">
+                      <option value="Bulan">Bulanan</option>
+                      <option value="Tahun">Tahunan</option>
+                    </select>
+                  </td>
+                </tr>
+
+                {{-- <tr>
+                  <td width="40%" class="text-center">Pilih Cabang</td>
+                  <td colspan="3">
+                    <select class="form-control buku_besar select_bukbes_validate" name="buku_besar_cabang" id="buku_besar_cabang" style="width: 80%;">
+
+                    </select>
+                    &nbsp;&nbsp; <small id="buku_besar_cabang_txt" style="display: none;"><i class="fa fa-hourglass-half"></i></small>
+                  </td>
+                </tr> --}}
+
+                <tr>
+                  <td width="20%" class="text-center">Masukkan <span id="state-masuk">Bulan</span></td>
+                  <td width="25%">
+                    <input type="text" class="form-control neraca_saldo form_neraca-saldo_validate neraca_saldo_tanggal first" name="d1" placeholder="MM/YYYY" style="width: 100%; cursor: pointer; background: white;" readonly>
+
+                    <input type="text" class="form-control neraca_saldo form_neraca-saldo_validate neraca_saldo_tahun first" name="y1" placeholder="YYYY" style="width: 90%; cursor: pointer; background: white; display: none;" readonly>
+                  <td>
+                </tr>
+
+              </table>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+          <button class="btn btn-primary btn-sm" id="proses_neraca_saldo" >Proses</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- modal -->
+
+   <!-- modal -->
 <div id="modal_option_periode" class="modal">
   <div class="modal-dialog" style="width: 30%;">
     <div class="modal-content">
@@ -370,6 +429,29 @@
         });
      })
 
+     function validate_form_register(){
+        a = true;
+        $(".register_validate").each(function(i, e){
+          if($(this).val() == "" && $(this).is(":visible")){
+            a = false;
+            $(this).focus();
+            toastr.warning('Harap Lengkapi Data Diatas');
+            return false;
+          }
+        })
+
+        $(".register_validate_select").each(function(i, e){
+          if($(this).val() == "---"){
+            a = false;
+            $(this).focus();
+            toastr.warning('Harap Lengkapi Data Diatas');
+            return false;
+          }
+        })
+
+        return a;
+      }
+
      // script for buku besar
 
       akun = [];
@@ -418,7 +500,6 @@
           $(".buku_besar_tahun").css("display", "inline-block");
         }
       })
-
 
       $("#buku_besar_cabang").change(function(evt){
         evt.preventDefault();
@@ -535,31 +616,48 @@
         return a;
       }
 
-      function validate_form_register(){
-        a = true;
-        $(".register_validate").each(function(i, e){
-          if($(this).val() == "" && $(this).is(":visible")){
-            a = false;
-            $(this).focus();
-            toastr.warning('Harap Lengkapi Data Diatas');
-            return false;
-          }
-        })
-
-        $(".register_validate_select").each(function(i, e){
-          if($(this).val() == "---"){
-            a = false;
-            $(this).focus();
-            toastr.warning('Harap Lengkapi Data Diatas');
-            return false;
-          }
-        })
-
-        return a;
-      }
-
-      
-
      // buku besar end
+
+
+     // script for neraca_saldo
+
+      $('.neraca_saldo_tanggal.first').datepicker( {
+          format: "yyyy-mm",
+          viewMode: "months", 
+          minViewMode: "months"
+      })
+
+      $('.neraca_saldo_tahun.first').datepicker( {
+          format: "yyyy",
+          viewMode: "years", 
+          minViewMode: "years"
+      })
+
+      $("#periode_neraca_saldo").change(function(evt){
+        evt.preventDefault();
+
+        periode = $(this);
+
+        $("#state-masuk").text(periode.val());
+        if(periode.val() == "Bulan"){
+          $(".neraca_saldo_tahun").css("display", "none");
+          $(".neraca_saldo_tanggal").css("display", "inline-block");
+        }else if(periode.val() == "Tahun"){
+          $(".neraca_saldo_tanggal").css("display", "none");
+          $(".neraca_saldo_tahun").css("display", "inline-block");
+        }
+      })
+
+      $('#proses_neraca_saldo').click(function(evt){
+        evt.preventDefault()
+
+        // if(validate_form_buku_besar() == true){
+          $("#form-neraca-saldo").submit();
+        // }
+      })
+
+      //end neraca_saldo
+
+
 
   </script>

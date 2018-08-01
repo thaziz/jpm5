@@ -1993,7 +1993,7 @@ Route::get('master_keuangan/err_cek', function(){
 
 
 // neraca saldo
-Route::get('master_keuangan/neraca-saldo/{throtle}', [
+Route::post('master_keuangan/neraca-saldo/single', [
   'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
   'as'   => 'neraca_saldo.index'
 ]);

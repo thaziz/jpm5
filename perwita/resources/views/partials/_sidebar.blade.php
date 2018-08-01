@@ -2968,13 +2968,13 @@
                                 </li>
 
                                 <li>
-                                    <a class="sidebar master-perusahaan  {{Request::is('master_keuangan/neraca-saldo') ? 'active' : '' || 
-                            Request::is('master-keuangan/laporan-neraca*') ? 'active' : ''}}" href="{{ route("neraca_saldo.index", "bulan?m=".date("m")."&y=".date("Y")."") }}"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Neraca Saldo</a>
+                                    <a class="sidebar master-perusahaan  {{Request::is('master_keuangan/neraca') ? 'active' : '' || 
+                            Request::is('master-keuangan/laporan-neraca*') ? 'active' : ''}}" href="{{ route("neraca.index_single", "bulan?cab=".Session::get("cabang")."&m=".date("m")."&y=".date("Y")."") }}"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Neraca </a>
                                 </li>
 
                                 <li>
-                                    <a class="sidebar master-perusahaan  {{Request::is('master_keuangan/neraca') ? 'active' : '' || 
-                            Request::is('master-keuangan/laporan-neraca*') ? 'active' : ''}}" href="{{ route("neraca.index_single", "bulan?cab=".Session::get("cabang")."&m=".date("m")."&y=".date("Y")."") }}"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Neraca </a>
+                                    <a class="sidebar master-perusahaan  {{Request::is('master_keuangan/neraca-saldo') ? 'active' : '' || 
+                            Request::is('master-keuangan/laporan-neraca*') ? 'active' : ''}}" href="{{ route("neraca_saldo.index", "bulan?m=".date("m")."&y=".date("Y")."") }}" id="neraca_saldo"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Neraca Saldo</a>
                                 </li>
 
                                 <li>
