@@ -1811,14 +1811,14 @@ class selaras_jurnal  extends Controller
 				    $data_akun[$a]['jrdt_jurnal']   = $id_jurnal;
 				    $data_akun[$a]['jrdt_detailid'] = $a+1;
 				    $data_akun[$a]['jrdt_acc']      = $akun[$a];
-				    $data_akun[$a]['jrdt_value']    = -$akun_val[$a];
+				    $data_akun[$a]['jrdt_value']    = $akun_val[$a];
 				    $data_akun[$a]['jrdt_statusdk'] = 'K';
 				    $data_akun[$a]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($invoice[$i]->i_keterangan);
 				  }else{
 				    $data_akun[$a]['jrdt_jurnal']   = $id_jurnal;
 				    $data_akun[$a]['jrdt_detailid'] = $a+1;
 				    $data_akun[$a]['jrdt_acc']      = $akun[$a];
-				    $data_akun[$a]['jrdt_value']    = -$akun_val[$a];
+				    $data_akun[$a]['jrdt_value']    = $akun_val[$a];
 				    $data_akun[$a]['jrdt_statusdk'] = 'D';
 				    $data_akun[$a]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($invoice[$i]->i_keterangan);
 				  }
