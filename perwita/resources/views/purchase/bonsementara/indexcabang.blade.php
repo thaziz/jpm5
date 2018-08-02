@@ -583,6 +583,10 @@ function uangterima(id){
      $('.idbonsem').val(response['pb'][0].bp_id);
       if(response['pb'][0].bp_terima == 'DONE'){
         $('#terima').attr('disabled' , true);
+        $('.doneterima').show();
+      }
+      else {
+        $('.doneterima').hide();
       }
     }
   })
