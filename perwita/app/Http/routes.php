@@ -1305,9 +1305,7 @@ Route::get('master_sales/kendaraan/{id}/hapus_data', 'master_sales\kendaraan_Con
 // end kendaraan
 
 //Nomor seri pajak
-Route::get('master_sales/nomorseripajak', function(){
-        return view('master_sales.nomor_seri_pajak.index');
-});
+Route::get('master_sales/nomorseripajak','master_sales\nomor_seri_pajak_controller@index');
 
 
 //---WILAYAH----------

@@ -9,6 +9,7 @@ use carbon\carbon;
 use Auth;
 use App\d_jurnal;
 use App\d_jurnal_dt;
+use Exception;
     set_time_limit(60000);
 class selaras_jurnal  extends Controller
 {
@@ -1201,11 +1202,16 @@ class selaras_jurnal  extends Controller
             $do = DB::table('delivery_order')
                     ->where('nomor',$invoice_detail[$a]->id_nomor_do)
                     ->first();
-
-            $tot_vendor += $do->total_vendo;
-            $tot_own += $do->total_dpp;
+            try{
+            	$tot_vendor += $do->total_vendo;
+            	$tot_own += $do->total_dpp;
+            }catch(Exception $er){
+            	$erno = [];
+            	array_push($erno, $invoice_detail[$a]->id_nomor_do);
+          		dd($erno);
+            }
+            
           }
-
           $akun     = [];
           $akun_val = [];
           if ($invoice[$i]->i_jenis_ppn != 4) {
@@ -1521,14 +1527,15 @@ class selaras_jurnal  extends Controller
             }
           }
         }else if($invoice[$i]->i_pendapatan == 'KORAN'){
-          $pendapatan_koran = [];
-          $harga_koran      = [];
+			$pendapatan_koran = [];
+			$harga_koran      = [];
 
-          $invoice_detail = DB::table('invoice_d')
+			$invoice_detail = DB::table('invoice_d')
                               ->where('id_nomor_invoice',$invoice[$i]->i_nomor)
                               ->get();
 
           for ($a=0; $a < count($invoice_detail); $a++) { 
+
             $do = DB::table('delivery_orderd')
                     ->where('dd_nomor',$invoice_detail[$i]->nomor)
                     ->where('dd_id',$request->do_id[$i])
@@ -1536,7 +1543,7 @@ class selaras_jurnal  extends Controller
             $temp = DB::table('item')
                       ->where('kode',$do->dd_kode_item)
                       ->first();
-
+            dd($temp);
             array_push($pendapatan_koran, $temp->acc_penjualan);
           }
         }
