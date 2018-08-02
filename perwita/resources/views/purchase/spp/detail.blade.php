@@ -311,6 +311,7 @@
                                     
 
                                       <div class="modal-body">
+                                        <form id="setujukabag">
                                         <table border="0" class="table">
                                           <tr>
                                               <th>
@@ -339,7 +340,7 @@
                                         <button class="btn btn-primary" type="submit">
                                           <i class="fa fa-check"> </i> Ya, Saya Mengetahui dan Menyetujui
                                         </button>
-
+                                      </form>
                                       </div>
 
                                 
@@ -381,6 +382,10 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+
+$('#setujukabag').onclick(function(){
+  
+})
 
     $(document).ready(function(){
       var config = {

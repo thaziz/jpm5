@@ -905,7 +905,7 @@
        $('.hasilurutcek').val('');      
     }
     else {
-      hasil = parseInt(val) + 25;
+      hasil = parseInt(val) + 24;
       $('.hasilurutcek').val(hasil);      
     }
   })
@@ -917,7 +917,7 @@
        $('.hasilurutbg').val('');      
     }
     else {
-      hasil = parseInt(val) + 25;
+      hasil = parseInt(val) + 24;
       $('.hasilurutbg').val(hasil);      
     }
   })
