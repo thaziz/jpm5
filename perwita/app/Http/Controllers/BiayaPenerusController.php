@@ -890,6 +890,8 @@ class BiayaPenerusController extends Controller
 				$delete = DB::table('biaya_penerus')
 		 				->where('bp_faktur',$cari->fp_nofaktur)
 		 				->delete();
+
+		 		
 			}elseif ($cari->fp_jenisbayar == 7){
 				$pot = DB::table('pembayaran_outlet')
 		 				->where('pot_faktur',$cari->fp_nofaktur)
@@ -920,6 +922,8 @@ class BiayaPenerusController extends Controller
 					  ->update([
 					  	'ttd_faktur'=>null
 					  ]);
+
+
 		 	$delete = DB::table('faktur_pembelian')
 		 				->where('fp_idfaktur',$id)
 		 				->delete();
