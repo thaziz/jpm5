@@ -172,8 +172,22 @@ class PurchaseController extends Controller
 		return view('purchase.spp.index', compact('data'));
 	}
 	
-	public function getnospp(Request $request){
-		
+
+	public function sppsetujukabag(Request $request){
+		$namakabag = $request->namakabag;
+		$keterangankabag = $request->kabag;
+		$idspp = $request->idspp;
+		$updatespp = spp_purchase::find($idspp);
+		$updatespp->spp_namakabag = $request->namakabag;
+		$updatespp->spp_keterangankabag = $request->keterangankabag;
+		$updatespp->spp_statuskabag = 'SETUJU';
+		$updatespp->save();
+
+
+		return json_encode('sukses');
+	}
+
+	public function getnospp(Request $request){	
 		$cabang = $request->comp;
 		$bulan = Carbon::now()->format('m');
         $tahun = Carbon::now()->format('y');
