@@ -568,7 +568,7 @@
           tempcek = 1;
          
 
-          for(ds = 0; ds < hasilurutcek; ds++){ // CEK DOUBLE 
+          for(ds = 0; ds <= hasilurutcek; ds++){ // CEK DOUBLE 
             if(arrnourutcek[ds] == urutcek){
              tempcek = parseInt(tempcek) + 1;
               
@@ -588,7 +588,7 @@
 
 
           tempbg = 1;
-          for(ds = 0; ds < hasilurutbg; ds++){ // CEK DOUBLE BG
+          for(ds = 0; ds <= hasilurutbg; ds++){ // CEK DOUBLE BG
             if(arrnourutbg[ds] == urutbg){
              tempbg = parseInt(tempbg) + 1;
               
@@ -633,7 +633,7 @@
         
           var n = 1;
         
-          for(var i = urutcek; i < hasilurutcek; i++){ //ADD TABLE
+          for(var i = urutcek; i <= hasilurutcek; i++){ //ADD TABLE
             var html2 = "<tr>" + 
                         "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                         "<label></label>" +
@@ -657,7 +657,7 @@
             }
 
 
-            for(var j = urutbg; j < hasilurutbg; j++){ //LOOPING BG
+            for(var j = urutbg; j <= hasilurutbg; j++){ //LOOPING BG
               var html3 = "<tr>" + 
                         "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                         "<label></label>" +
@@ -754,7 +754,7 @@
                 
                   var n = 1;
                 
-                  for(var i = urutcek; i < hasilurutcek; i++){ //ADD TABLE
+                  for(var i = urutcek; i <= hasilurutcek; i++){ //ADD TABLE
                     var html2 = "<tr>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                                 "<label></label>" +
@@ -820,7 +820,7 @@
 
                   temp = 1;
                 
-                  for(ds = 0; ds < hasilurutbg; ds++){ // CEK DOUBLE
+                  for(ds = 0; ds <= hasilurutbg; ds++){ // CEK DOUBLE
                     if(arrnourutbg[ds] == urutbg){
                      temp = parseInt(temp) + 1;                      
                     }
@@ -852,7 +852,7 @@
                 
                   var n = 1;
                 
-                  for(var i = urutbg; i < hasilurutbg; i++){ //ADD TABLE
+                  for(var i = urutbg; i <= hasilurutbg; i++){ //ADD TABLE
                     var html2 = "<tr>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                                 "<label></label>" +
@@ -905,7 +905,7 @@
        $('.hasilurutcek').val('');      
     }
     else {
-      hasil = parseInt(val) + 25;
+      hasil = parseInt(val) + 24;
       $('.hasilurutcek').val(hasil);      
     }
   })
@@ -917,7 +917,7 @@
        $('.hasilurutbg').val('');      
     }
     else {
-      hasil = parseInt(val) + 25;
+      hasil = parseInt(val) + 24;
       $('.hasilurutbg').val(hasil);      
     }
   })

@@ -492,13 +492,8 @@
         
 
        if($temp == 0){
-        if($('input.tolak'+id).is(':checked')){
-         // alert('test');
-        }
-        else {
-          toastr.info("Harap centang supplier yang dipilih");
-          return false;
-        }
+        toastr.info("Harap centang supplier yang dipilih");
+        return false;
        }
 
         $.ajaxSetup({
@@ -507,8 +502,6 @@
             }
         });
 
-    
-      
          
         $.ajax({    
           type :"GET",
@@ -524,30 +517,23 @@
           var newArray = [];
 
 
-          for(var i = 0; i < data.sppdt.length; i++){   
-              testharga = $('#hrga' + i).val();
-              if(testharga == undefined){
-
-              } 
-              else {
+          for(var i = 0; i < data.sppdt.length; i++){    
               var isDisabled = $('#hrga' + i).prop('disabled');
 
-                if(isDisabled) {
-                  
+                if (isDisabled) {
                   var harga = $('#hrga' + i).val();
                   var idbrg = $('#hrga' + i).data('brg');              
                 }
                 else {
+                  var harga = $('#hrga' + i).val();
 
-                  var harga = $('#hrga'+i).val();
+                  var idbarang = $('#hrga' + i).data('brg');
 
-                  var idbarang = $('#hrga'+i).data('brg');
+                  var idsupplier = $('#hrga' + i).data('hrgsupplier');
 
-                  var idsupplier = $('#hrga'+i).data('hrgsupplier');
+                  var qty = $('.qtyapproval' + idbarang).val();
 
-                  var qty = $('.qtyapproval'+idbarang).val();
-
-                  var qty2 = $('.qtyapproval'+idbarang).index();
+                  var qty2 = $('.qtyapproval' + idbarang).index();
                  
                   harga2 = harga.replace(/,/g,'');
                   totalharga = parseFloat(harga2 * qty);
@@ -561,7 +547,7 @@
                     totalharga : totalharga ,
                     idsupplier :  idsupplier});
                 }
-              }
+         
             }
       
             console.log(arrtotal);
@@ -676,13 +662,11 @@
                       if(result[j].id == datasup) {
                         var supplier3 = $('td[data-supplier="'+ datasup + '"]').index() + 1;
                           var biaya = Math.round(result[j].totalharga).toFixed(2);
-                          var tb = '<div class="form-group"> <label class="col-sm-2 col-sm-2 control-label"> Rp </label> <div class="col-sm-8"> <input type="text" class="input-sm form-control totalbiaya" name="bayar[]" value="'+addCommas(biaya)+'" readonly="" > <input type="hidden" name="tb[]" value="'+result[j].id+ "," + result[j].totalharga +'">  <input type="hidden" name="datasupplier[]" value="'+datasup+'"> </div>  </div>';
+                          var tb = '<div class="form-group"> <label class="col-sm-2 col-sm-2 control-label"> Rp </label> <div class="col-sm-8"> <input type="text" class="input-sm form-control totalbiaya" name="bayar[]" value="asa" readonly="" > <input type="hidden" name="tb[]" value="'+result[j].id+ "," + result[j].totalharga +'">  <input type="hidden" name="datasupplier[]" value="'+datasup+'"> </div>  </div>';
                       
                           $('tr.totalbiaya').find("td").eq(supplier3).html(tb);
                       }
                   } 
-
-
                 }
             
 

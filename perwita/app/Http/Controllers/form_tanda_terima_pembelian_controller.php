@@ -112,7 +112,7 @@ class form_tanda_terima_pembelian_controller extends Controller
     public function save(Request $req)
     {
    		return DB::transaction(function() use ($req) {  
-   			
+   			$user = Auth::user()->m_name;
    			if (Auth::user()->m_name == null) {
 				return response()->json([
 					'status'=>1,
