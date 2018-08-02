@@ -1217,16 +1217,17 @@ class selaras_jurnal  extends Controller
 	          if ($invoice[$i]->i_jenis_ppn != 4) {
 	            // MENAMBAH TOTAL TAGIHAN DAN MENGURANGI TOTAL TAGIHAN
 	            if ($ppn_type == 'npkp') {
-
-	                $tot_own1    = $invoice[$i]->i_ppnrp/$invoice[$i]->i_netto_detail * $tot_own;
-	                $tot_vendor1 = $invoice[$i]->i_ppnrp/$invoice[$i]->i_netto_detail * $tot_vendor;
+	                $tot_own1    = $invoice[$i]->i_ppnrp/($invoice[$i]->i_netto_detail+$invoice[$i]->i_ppnrp)* $tot_own;
+	                $tot_vendor1 = $invoice[$i]->i_ppnrp/($invoice[$i]->i_netto_detail+$invoice[$i]->i_ppnrp) * $tot_vendor;
 	                $tot_own    -= $tot_own1;
 	                $tot_vendor -= $tot_vendor1;
 	            }
 
 	            array_push($akun, $invoice[$i]->i_acc_piutang);
 	            array_push($akun_val, round($invoice[$i]->i_total_tagihan));
-
+	            // if ($invoice[$i]->i_nomor == 'FP0418/02/A0009') {
+             //  		// dd($tot_own);
+             //  	}
 	            // DISKON
 	            // dd($request->diskon2 );
 	            if ($invoice[$i]->i_diskon2 > 0) {
@@ -1295,9 +1296,11 @@ class selaras_jurnal  extends Controller
 	              if ($akun_own == null) {
 	                return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait PAKET']);
 	              }
+	              
 	              array_push($akun, $akun_own->id_akun);
 	              array_push($akun_val, round($tot_own));
 	            }
+	            
 	          }else{
 	            // NON PPN
 	            array_push($akun, $cari_acc_piutang);
@@ -1387,8 +1390,8 @@ class selaras_jurnal  extends Controller
 	            // MENAMBAH TOTAL TAGIHAN DAN MENGURANGI TOTAL TAGIHAN
 	            if ($ppn_type == 'npkp') {
 
-	                $tot_own1    = $invoice[$i]->i_ppnrp/$invoice[$i]->i_netto_detail * $tot_own;
-	                $tot_subcon1 = $invoice[$i]->i_ppnrp/$invoice[$i]->i_netto_detail * $tot_subcon;
+	                $tot_own1    = $invoice[$i]->i_ppnrp/($invoice[$i]->i_netto_detail+$invoice[$i]->i_ppnrp) * $tot_own;
+	                $tot_subcon1 = $invoice[$i]->i_ppnrp/($invoice[$i]->i_netto_detail+$invoice[$i]->i_ppnrp) * $tot_subcon;
 	                $tot_own    -= $tot_own1;
 	                $tot_subcon -= $tot_subcon1;
 	            }
@@ -1573,7 +1576,7 @@ class selaras_jurnal  extends Controller
 		        	// MENAMBAH TOTAL TAGIHAN DAN MENGURANGI TOTAL TAGIHAN
 					if ($ppn_type == 'npkp') {
 						for ($a=0; $a < count($pendapatan_koran); $a++) { 
-						  $harga_koran1 = $invoice[$i]->i_ppnrp/$invoice[$i]->i_netto_detail * $harga_koran[$a];
+						  $harga_koran1 = $invoice[$i]->i_ppnrp/($invoice[$i]->i_netto_detail+$invoice[$i]->i_ppnrp) * $harga_koran[$a];
 						  $harga_koran[$a] -= $harga_koran1;
 						}
 					}
@@ -1649,12 +1652,6 @@ class selaras_jurnal  extends Controller
 					}
 		        }else{
 		        	// MENAMBAH TOTAL TAGIHAN DAN MENGURANGI TOTAL TAGIHAN
-					if ($ppn_type == 'npkp') {
-						for ($a=0; $a < count($pendapatan_koran); $a++) { 
-						  $harga_koran1 = $invoice[$i]->i_ppnrp/$invoice[$i]->i_netto_detail * $harga_koran[$a];
-						  $harga_koran[$a] -= $harga_koran1;
-						}
-					}
 					// PIUTANG
 					// dd(substr($cari_acc_piutang,0, 4));
 					$akun_piutang = DB::table('d_akun')
@@ -1737,7 +1734,7 @@ class selaras_jurnal  extends Controller
 					    $data_akun[$a]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($invoice[$i]->i_keterangan);
 					  }
 					}catch(Exception $e){
-						// dd($akun[$a]);
+						dd($akun[$a]);
 					}
 				  
 				}else if (substr($akun[$a],0, 4)==2302 or substr($akun[$a],0, 4)==2398) {
@@ -1830,8 +1827,8 @@ class selaras_jurnal  extends Controller
 			$jurnal_dt = d_jurnal_dt::insert($data_akun);
       	}
 
-      	$lihat = DB::table('d_jurnal_dt')->where('jr_detail','like','INVOICE%')->get();
-      	dd($lihat);
+      	$lihat = DB::table('d_jurnal')->where('jr_detail','like','INVOICE%')->get();
+      	// dd($lihat);
     });    
   }
 }
