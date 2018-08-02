@@ -158,6 +158,7 @@ class PurchaseController extends Controller
 			$data['disetujui'] = DB::table("spp")->where('spp_status' , '=' , 'DISETUJUI')->count();
 			$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->count();
 			$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->count();
+			$data['statuskabag'] = DB::table("spp")->where('spp_statuskabag' , '=' , 'BELUM MENGETAHUI')->count();
 		}else{
 			$data['spp'] = DB::select("select * from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode and spp_cabang = '$cabang' order by spp_id desc");
 
@@ -165,6 +166,7 @@ class PurchaseController extends Controller
 			$data['disetujui'] = DB::table("spp")->where('spp_status' , '=' , 'DISETUJUI')->where('spp_cabang' , '=' , $cabang)->count();
 			$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->where('spp_cabang' , '=' , $cabang)->count();
 			$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->where('spp_cabang' , '=' , $cabang)->count();
+			$data['statuskabag'] = DB::table("spp")->where('spp_statuskabag' , '=' , 'BELUM MENGETAHUI')->count();
 		}
 
 		return view('purchase.spp.index', compact('data'));
@@ -342,6 +344,7 @@ class PurchaseController extends Controller
 			$spp->spp_penerimaan = $request->spp_penerimaan;
 			$spp->create_by = $request->username;
 			$spp->update_by = $request->username;
+			$spp->spp_statuskabag = 'BELUM MENGETAHUI';
 
 			$jenisitem = explode(",", $request->jenisitem);
 			$idjenisitem = $jenisitem[0];
@@ -1062,7 +1065,7 @@ class PurchaseController extends Controller
 
 
 	public function saveconfirmorderdt(Request $request){
-	/*	dd($request);*/
+		//dd($request);
 		return DB::transaction(function() use ($request) { 
 				$updatespp = spp_purchase::where('spp_id', '=', $request->idspp);
 		$updatespp->update([
@@ -7291,7 +7294,6 @@ public function kekata($x) {
 				$bbkdt->save();
 
 
-
 				$idfpg = $request->idfpg[$i];
 				$data['idfpg'] = DB::table('fpg_cekbank')
 					->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $request->notransaksi[$i]]])
@@ -7599,10 +7601,6 @@ public function kekata($x) {
 				]);
 			
 		}
-
-
-		
-		
 
 
 		DB::delete("DELETE from  bukti_bank_keluar_detail where bbkd_idbbk = '$idbbk'");

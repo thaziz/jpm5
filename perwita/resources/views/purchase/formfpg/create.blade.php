@@ -2055,7 +2055,7 @@
                   
                     if(jenisbayar == '12'){
                       $('.nominalbank1').val(nominaltujuan);
-                      $('.ChequeBg').val(nominaltujuan);
+                      $('.ChequeBg').val(nominaltujuan);  
                     }
                     else {
                       $('.nominalbank1').val(nominalbank);

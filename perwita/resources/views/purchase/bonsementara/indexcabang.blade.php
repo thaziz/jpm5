@@ -155,6 +155,7 @@
                                         <td> <button class="btn btn-sm btn-success" type="button" id="terima"> Terima </button> </td>
                                         <td> &nbsp; </td>
                                         <td>
+
                                             <button class="btn btn-sm btn-danger" type="button" id="batalterima"> Batal </button>
                                           </td>
                                           <td>
@@ -165,6 +166,7 @@
                                         </td>
                                     </tr>
                                   </table>
+                                </form>
                                 </div>
                               </div>
 
@@ -453,7 +455,7 @@ function(){
   });
 }
 
-$('#statuskacab').submit(function(event){      
+$('#statuskacab').submit(function(event){ 
           kascabang = $('.kascabang').text();
           kascabang = kascabang.replace(/,/g, '');
          

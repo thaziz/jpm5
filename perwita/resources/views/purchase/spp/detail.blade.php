@@ -163,11 +163,17 @@
                            <div class="kettolak">
                            </div>
 
+                            @if(Auth::user()->punyaAkses('SPP Kabag','aktif'))
+                            <button class='btn btn-sm btn-info' type="button" id="createmodal" data-toggle="modal" data-target="#myModal2">
+                              <i class="fa fa-info-circle"> </i>
+                                Mengetahui Kabag
+                             
+                            </button>
+                            @endif
                          </div>
-
-                      
                          </div>
                    @endforeach
+
 
 
                     </div>
@@ -293,7 +299,56 @@
                    
                   </table>
                  </div>
-                    
+                      
+                      <!-- Modal -->
+                       <div class="modal inmodal fade" id="myModal2" tabindex="-1" role="dialog"  aria-hidden="true">
+                                      <div class="modal-dialog">
+                                          <div class="modal-content">
+                                             <div class="modal-header">
+                                                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
+                                              <h4 class="modal-title">KEPALA BAGIAN  </h4>     
+                                             </div>
+                                    
+
+                                      <div class="modal-body">
+                                        <table border="0" class="table">
+                                          <tr>
+                                              <th>
+                                                  <i class="fa fa-check"> </i> Kepala Bagian
+                                              </th>
+                                              
+                                          </tr>
+                                          <tr>
+                                            <th>
+                                                Nama 
+                                            </th>
+                                            <td>
+                                                <input type="text" class="form-control" name="namakabag" value="{{Auth::user()->m_username}}">
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <th>
+                                              Keterangan
+                                            </th>
+                                            <td>
+                                                <input type="text" class="form-control" name="keterangankabag">
+                                            </td>
+                                          </tr>
+                                        </table>
+                                        
+                                        <button class="btn btn-primary" type="submit">
+                                          <i class="fa fa-check"> </i> Ya, Saya Mengetahui dan Menyetujui
+                                        </button>
+
+                                      </div>
+
+                                
+                               </div>
+                          </div> 
+                              </div> <!-- ENd Modal -->
+
+
+
                 </div><!-- /.box-body -->
                   
                 <div class="box-footer">
@@ -350,13 +405,18 @@
       type : "get",
       success : function(response){
        // alert(response[0].nama_masteritem);
-       var table = "<br><h4>DATA YANG DITOLAK OLEH STAFF   PEMBELIAN </h4> <table border='0' class='table'> " +
+       var table = "<br><h4>DATA YANG DITOLAK OLEH PUSAT </h4> <table border='0' class='table'> " +
                   "<tr> <th> No </th> <th> Nama Barang </th> <th> Keterangan di Tolak </th> </tr>";
-                    for(i=0; i < response.length; i++){
-
-                      no = 1;
-                      table += "<tr> <td>"+ no +"</td> <td>"+response[i].nama_masteritem+"</td> <td>"+response[i].sppd_kettolak+"</td> </tr>";
-                      no++;
+                    if(response.length == 0){
+                        table += "<tr> <td> - </td> <td> - </td> <td> - </td> </tr>";
+                    }
+                    else {
+                        for(i=0; i < response.length; i++){
+    
+                          no = 1;
+                          table += "<tr> <td>"+ no +"</td> <td>"+response[i].nama_masteritem+"</td> <td>"+response[i].sppd_kettolak+"</td> </tr>";
+                          no++;
+                        }
                     }
 
                 table += "</table>";
