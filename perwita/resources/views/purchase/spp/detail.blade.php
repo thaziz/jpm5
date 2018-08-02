@@ -300,53 +300,7 @@
                   </table>
                  </div>
                       
-                      <!-- Modal -->
-                       <div class="modal inmodal fade" id="myModal2" tabindex="-1" role="dialog"  aria-hidden="true">
-                                      <div class="modal-dialog">
-                                          <div class="modal-content">
-                                             <div class="modal-header">
-                                                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
-                                              <h4 class="modal-title">KEPALA BAGIAN  </h4>     
-                                             </div>
-                                    
-
-                                      <div class="modal-body">
-                                        <form id="setujukabag">
-                                        <table border="0" class="table">
-                                          <tr>
-                                              <th>
-                                                  <i class="fa fa-check"> </i> Kepala Bagian
-                                              </th>
-                                              
-                                          </tr>
-                                          <tr>
-                                            <th>
-                                                Nama 
-                                            </th>
-                                            <td>
-                                                <input type="text" class="form-control" name="namakabag" value="{{Auth::user()->m_username}}">
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <th>
-                                              Keterangan
-                                            </th>
-                                            <td>
-                                                <input type="text" class="form-control" name="keterangankabag">
-                                            </td>
-                                          </tr>
-                                        </table>
-                                        
-                                        <button class="btn btn-primary" type="submit">
-                                          <i class="fa fa-check"> </i> Ya, Saya Mengetahui dan Menyetujui
-                                        </button>
-                                      </form>
-                                      </div>
-
-                                
-                               </div>
-                          </div> 
-                              </div> <!-- ENd Modal -->
+                      
 
 
 
@@ -364,6 +318,69 @@
               </div><!-- /.box -->
             </div><!-- /.col -->
           </div><!-- /.row -->
+
+          <!-- Modal -->
+                       <div class="modal inmodal fade" id="myModal2" tabindex="-1" role="dialog"  aria-hidden="true">
+                                      <div class="modal-dialog">
+                                          <div class="modal-content">
+                                             <div class="modal-header">
+                                                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
+                                              <h4 class="modal-title">KEPALA BAGIAN  </h4>     
+                                             </div>
+                                    
+
+                                      <div class="modal-body">
+                                        <form id="formsetujukabag">
+                                          <p> Status Kepala Bagian : <span class="label label-info"> {{$data['spp'][0]->spp_statuskabag}}  </span></p>
+                                        <table border="0" class="table">
+                                          <tr>
+                                              <th>
+                                                  <i class="fa fa-check"> </i> Kepala Bagian
+                                              </th>
+                                              
+                                          </tr>
+                                          <tr>
+                                            <th>
+                                                Nama 
+                                            </th>
+                                            <td>
+                                                @if($data['spp'][0]->spp_statuskabag != 'SETUJU')
+                                                <input type="text" class="form-control" name="namakabag" value="{{Auth::user()->m_name}}">
+                                                @else
+                                                <input type="text" class="form-control" name="namakabag" value="{{$data['spp'][0]->spp_namakabag}}">
+                                                @endif
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <th>
+                                              Keterangan
+                                            </th>
+                                            <td>
+                                              @if($data['spp'][0]->spp_statuskabag != 'SETUJU')
+                                                <input type="text" class="form-control" name="keterangankabag">
+                                              @else
+                                                  <input type="text" class="form-control" name="keterangankabag" value="{{$data['spp'][0]->spp_keterangankabag}}">
+                                              @endif
+                                            </td>
+                                          </tr>
+                                                <input type="hidden" class="idsppkabag" name="idspp" value="{{$data['spp'][0]->spp_id}}">
+                                        </table>
+                                        @if($data['spp'][0]->spp_statuskabag != 'SETUJU')
+                                        <button class="btn btn-primary" type="submit" id="setujukabag">
+                                          <i class="fa fa-check"> </i> Ya, Saya Mengetahui dan Menyetujui
+                                        </button>
+                                        @else
+                                        <button class="btn btn-primary" type="submit" id="setujukabag" disabled="">
+                                          <i class="fa fa-check"> </i> Ya, Saya Mengetahui dan Menyetujui
+                                      @endif
+
+                                      </div>
+
+                                
+                               </div>
+                          </div> 
+                           </form>
+                              </div> <!-- ENd Modal -->
                 </div>
             </div>
         </div>
@@ -383,8 +400,38 @@
 <script type="text/javascript">
 
 
-$('#setujukabag').onclick(function(){
-  
+$('#formsetujukabag').submit(function(){
+        alert('test');
+          event.preventDefault();
+          var post_url2 = baseUrl + '/suratpermintaanpembelian/setujukabag';
+          var form_data2 = $('#formsetujukabag').serialize();
+            swal({
+            title: "Apakah anda yakin?",
+            text: "PERSETUJUAN KABAG",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: true
+          },
+          function(){
+               
+        $.ajax({
+          type : "POST",          
+          data : form_data2,
+          url : post_url2,
+          dataType : 'json',
+          success : function (response){
+                  alertSuccess(); 
+             $('#myModal2').modal('hide');
+             location.reload();
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
+          }
+        })
+      });
 })
 
     $(document).ready(function(){
@@ -638,6 +685,9 @@ $('#setujukabag').onclick(function(){
                 
 
               
+             },
+             error :function(){
+              location.reload();
              }
 
         })

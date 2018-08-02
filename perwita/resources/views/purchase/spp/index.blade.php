@@ -159,7 +159,7 @@
                       <td>
                         @if($spp->spp_statuskabag == 'BELUM MENGETAHUI')
                         <span class="label label-info"> <i class="fa fa-close"> </i> {{$spp->spp_statuskabag}} </span>
-                        @else
+                        @elseif($spp->spp_statuskabag == 'SETUJU')
                         <span class="label label-info"> <i class="fa fa-check"> </i> {{$spp->spp_statuskabag}}
                         @endif
                       </td>
