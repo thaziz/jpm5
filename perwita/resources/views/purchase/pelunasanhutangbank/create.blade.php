@@ -219,7 +219,7 @@
                                       <ul class="nav nav-tabs" id="tabmenu">
                                           <li class="active" id="tabcekbg" data-val='BG'><a data-toggle="tab" href="#tab-1" > Detail Cek / BG </a></li>
                                           <li class="" id="tabcekbgakun" data-val="AKUNBG"><a data-toggle="tab" href="#tab-3"> Cek / BG & Akun </a></li>
-                                          <li class="" id="tabbiaya" data-val="BIAYA"><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
+                                          <li class="" id="tabbiaya" data-val="BIAYA"><a data-toggle="tab" href="#tab-2"> POSTING </a></li>
                                       </ul>
                                       <div class="tab-content">
                                           <div id="tab-1" class="tab-pane active">
@@ -264,7 +264,7 @@
 
                                                         <tr>
                                                         <th> Bank </th>
-                                                        <td> <div class='row'> <div class="col-sm-3"> <input type='text' class='col-sm-3 input-sm form-control bank bg'  readonly=""> </div> <div class="col-sm-9"> <input type='text' class='col-sm-6 input-sm form-control namabank bg' readonly=""> <input type='hidden' class="idbank">  </div> <input type='hidden' class='akunkodebank'> <input type='hidden' class='hutangdagang'> <input type='hidden' class='akunuangmuka'>  </div>
+                                                        <td> <div class='row'> <div class="col-sm-3"> <input type='text' class='col-sm-3 input-sm form-control bank bg'  readonly=""> </div> <div class="col-sm-9"> <input type='text' class='col-sm-6 input-sm form-control namabank bg' readonly=""> <input type='hidden' class="idbank">  </div> <input type='hidden' class='akunkodebank'> <input type='hidden' class='hutangdagang'> <input type='hidden' class='akunuangmuka'> <input type='hidden' class='jenisbayarfpg'>  </div>
                                                       
                                                         </tr>
                                                         <tr>
@@ -1001,6 +1001,11 @@
      $nomr = 1;
     $('.tmbhdatacek').click(function(){
 
+        jenisbayar = $('.jenisbayarfpg').val();
+        if(jenisbayar == '5'){
+          toastr.info("Mohon Maaf Transaksi TRANSFER KAS hanya bisa dilakukan di CEK / BG & Akun :)");
+          return false;
+        }
       
         nofpg = $('.nofpg').val();
         nobbk = $('.nobbk').val();
@@ -1155,7 +1160,7 @@
                     $('.akunkodebank').val(response.fpg[0].fpg_kodebank);
                     $('.hutangdagang').val(response.fpg[0].fpg_acchutang);
                     $('.akunuangmuka').val(response.fpg[0].fpg_accum);
-
+                    $('.jenisbayarfpg').val(response.fpg[0].fpg_jenisbayar);
 
                 if(response.fpg[0].fpg_jenisbayar == '2' || response.fpg[0].fpg_jenisbayar == '3' ) {                  
                     $('.kodesup').val(response.fpg[0].no_supplier);

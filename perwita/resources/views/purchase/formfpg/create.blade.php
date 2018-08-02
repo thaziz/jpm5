@@ -2888,7 +2888,7 @@
                 })
             })*/
 
-      if(idjenis == '2' || idjenis == '3' || idjenis == '4' || idjenis == '5' || idjenis == '6' || idjenis == '7' || idjenis == '8' || idjenis == '9' || idjenis == '1') { // HUTANG DAGANG SUPPLIER
+      if(idjenis == '2' || idjenis == '3' || idjenis == '4' || idjenis == '5' || idjenis == '6' || idjenis == '7' || idjenis == '8' || idjenis == '9' || idjenis == '1' || idjenis == '11') { // HUTANG DAGANG SUPPLIER
         $('.tbl-jenisbayar').show();
         $('.deskirpsijenisbayar').hide();
         $("#jurnal").show(); 
