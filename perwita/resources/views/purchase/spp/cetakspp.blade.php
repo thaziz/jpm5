@@ -328,25 +328,25 @@ div.bottom
 	<table width="100%" style="border-top: hidden;">
 		<tr>
 			<td width="200px" class="footer">
-				<div class="top-center" style="padding-bottom: 50px;">Diminta oleh</div>
-				<div class="bottom">Tanggal :</div>
+				<div class="top-center" style="padding-bottom: 50px;">Diminta oleh <br>
+					{{$data['spp'][0]->create_by}}</div>
+
+				<p> &nbsp; </p>
+				<div class="bottom">Tanggal :  {{ Carbon\Carbon::parse($data['spp'][0]->tglinput)->format('d-M-Y ') }} </div>
 			</td>
 			<td width="182px">
-				<div class="top-center" style="padding-bottom: 50px;">Disetujui oleh</div>
-				<div class="bottom">Tanggal :</div>
-			</td>
-			<td width="153px">
-				<div class="top-center" style="padding-bottom: 50px;">Staff Pembelian</div>
-				<div class="bottom">Tanggal :</div>
-			</td>
-			<td width="153px">
-				<div class="top-center" style="padding-bottom: 50px;">Dikontrol Oleh</div>
-				<div class="bottom">Tanggal :</div>
-			</td>
-			<td width="">
-				<div class="top-center" style="padding-bottom: 50px;">Manager Keuangan dan Akuntansi</div>
-				<div class="bottom">Tanggal :</div>
-			</td>
+				<div class="top-center" style="padding-bottom: 50px;">Diketahui oleh
+				<br>
+				{{$data['spp'][0]->spp_namakabag}} 
+				</div>
+					@if($data['spp'][0]->spp_statuskabag != 'BELUM MENGETAHUI')
+					<p> BELUM MENGETAHUI </p>
+					@endif
+				<div class="bottom">Tanggal :
+					@if($data['spp'][0]->spp_statuskabag == 'SETUJU')
+				 {{ Carbon\Carbon::parse($data['spp'][0]->spp_timesetujukabag)->format('d-M-Y ') }}</div>
+					@endif
+			</td>	
 		</tr>
 	</table>
 	<div class="bottom" style="width: 300px;float: left">1. Arsip yang meminta barang / jasa</div>

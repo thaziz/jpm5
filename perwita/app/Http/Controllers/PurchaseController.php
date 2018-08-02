@@ -181,6 +181,7 @@ class PurchaseController extends Controller
 		$updatespp->spp_namakabag = $request->namakabag;
 		$updatespp->spp_keterangankabag = $request->keterangankabag;
 		$updatespp->spp_statuskabag = 'SETUJU';
+		$updatespp->spp_timesetujukabag = date('Y-m-d');
 		$updatespp->save();
 
 

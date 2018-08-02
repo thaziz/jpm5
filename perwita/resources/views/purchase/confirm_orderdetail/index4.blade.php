@@ -492,8 +492,13 @@
         
 
        if($temp == 0){
-        toastr.info("Harap centang supplier yang dipilih");
-        return false;
+        if($('input.tolak'+id).is(':checked')){
+         // alert('test');
+        }
+        else {
+          toastr.info("Harap centang supplier yang dipilih");
+          return false;
+        }
        }
 
         $.ajaxSetup({
@@ -502,6 +507,8 @@
             }
         });
 
+    
+      
          
         $.ajax({    
           type :"GET",
@@ -517,23 +524,30 @@
           var newArray = [];
 
 
-          for(var i = 0; i < data.sppdt.length; i++){    
+          for(var i = 0; i < data.sppdt.length; i++){   
+              testharga = $('#hrga' + i).val();
+              if(testharga == undefined){
+
+              } 
+              else {
               var isDisabled = $('#hrga' + i).prop('disabled');
 
-                if (isDisabled) {
+                if(isDisabled) {
+                  
                   var harga = $('#hrga' + i).val();
                   var idbrg = $('#hrga' + i).data('brg');              
                 }
                 else {
-                  var harga = $('#hrga' + i).val();
 
-                  var idbarang = $('#hrga' + i).data('brg');
+                  var harga = $('#hrga'+i).val();
 
-                  var idsupplier = $('#hrga' + i).data('hrgsupplier');
+                  var idbarang = $('#hrga'+i).data('brg');
 
-                  var qty = $('.qtyapproval' + idbarang).val();
+                  var idsupplier = $('#hrga'+i).data('hrgsupplier');
 
-                  var qty2 = $('.qtyapproval' + idbarang).index();
+                  var qty = $('.qtyapproval'+idbarang).val();
+
+                  var qty2 = $('.qtyapproval'+idbarang).index();
                  
                   harga2 = harga.replace(/,/g,'');
                   totalharga = parseFloat(harga2 * qty);
@@ -547,7 +561,7 @@
                     totalharga : totalharga ,
                     idsupplier :  idsupplier});
                 }
-         
+              }
             }
       
             console.log(arrtotal);

@@ -36,7 +36,7 @@ Route::group(['middleware' => 'guest'], function () {
 });*/
 
 Route::group(['middleware' => 'auth'], function () {
-Route::get('/dashboard','dashboardController@dashboard');
+Route::get('/dashboard','');
 
 Route::get('seragam', function(){
         return view('seragam.seragam');
