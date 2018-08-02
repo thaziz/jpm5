@@ -913,15 +913,15 @@ class PurchaseController extends Controller
 
 	public function confirm_order () {
 		$data['spp']=spp_purchase::all();
+
 		$cabang = session::get('cabang');
 
-
-		if(Auth::user()->punyaAkses('Konfirmasi Order','aktif')){
-			$data['co']=DB::select("select * from confirm_order, spp where co_idspp = spp_id order by co_id desc");
+		if(Auth::user()->punyaAkses('Konfirmasi Order','all')){
+			$data['co']=DB::select("select * from confirm_order, spp where co_idspp = spp_id and spp_statuskabag = 'SETUJU' order by co_id desc");
 
 		}
 		else {
-				$data['co']=DB::select("select * from confirm_order, spp where co_idspp = spp_id and co_cabang = '$cabang' order by co_id desc");	
+				$data['co']=DB::select("select * from confirm_order, spp where co_idspp = spp_id and co_cabang = '$cabang' and spp_statuskabag = 'SETUJU' order by co_id desc");	
 		}
 
 
