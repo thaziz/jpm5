@@ -1989,7 +1989,7 @@
                           "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required style='min-width:200px'> </td>" + //NOMINAL
                           "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
-                          $('#tbl-tfbank').append(row);
+                          $('#tbl-bank').append(row);
                           arrnohapus.push(nomrbnk);
                           nomrbnk++;
                         }
