@@ -38,7 +38,7 @@
                      </h5>
                     <div class="ibox-tools">
                         <div class="text-right">
-                       <a class="btn btn-danger" aria-hidden="true" href="{{ url('uangmukapembelian/uangmukapembelian')}}"> <i class="fa fa-arrow-circle-left"> </i> &nbsp; Kembali  </a> 
+                       <a class="btn btn-default" aria-hidden="true" href="{{ url('uangmukapembelian/uangmukapembelian')}}"> <i class="fa fa-arrow-circle-left"> </i> &nbsp; Kembali  </a> 
                     </div>  
                     </div>
                 </div>

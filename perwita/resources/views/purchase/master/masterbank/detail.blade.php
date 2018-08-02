@@ -37,7 +37,9 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
-                        
+                          <div class="text-right">
+                       <a class="btn btn-default" aria-hidden="true" href="{{url('masterbank/masterbank')}}"> <i class="fa fa-arrow-circle-left"> </i> &nbsp; Kembali  </a> 
+                    </div>  
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -511,10 +513,10 @@
     arrdatafpg = [];
      var tableBank = $('#tbl-cek').DataTable();
      trdatabaru = $('tr.databaru').length;
-     alert(trdatabaru);
+    // alert(trdatabaru);
      tempdfpg = 0;
      if(trdatabaru == 0){
-      alert(trdatabaru);
+     // alert(trdatabaru);
           $('.databasefpg').each(function(){
             val = $(this).val();
      //       alert(val);
@@ -524,14 +526,14 @@
   //        alert(count(arrdatafpg));
 
         for($j= 0 ; $j < arrdatafpg.length; $j++){
-          alert(arrdatafpg[$j]);
+         // alert(arrdatafpg[$j]);
           if(arrdatafpg[$j] != " "){
             tempdfpg = tempdfpg + 1;
-            alert(tempdfpg);
+           // alert(tempdfpg);
           }
         }
 
-        alert(tempdfpg);
+        //alert(tempdfpg);
         if(tempdfpg == 0){
         //  var remove = tableBank.rows('.datadatabase').remove().draw(false);
         }
@@ -594,7 +596,7 @@
     })
 
 
-    alert(tempseri + 'tempseri');
+   // alert(tempseri + 'tempseri');
     if(tempseri > 0){
       toastr.info('DATA SERI sudah digunakan, silahkan input data yang lain :)');
       return false;
@@ -602,7 +604,7 @@
 
 
     if($('#sericek').prop('checked') == true && $('#sericekbg').prop('checked') == true ) { // CEK DOUBLE
-      alert('double');
+     // alert('double');
         var inputseri = '<input type="hidden" name="input" value="centangdua">';
         $('.inputseri').html(inputseri);
 
@@ -792,7 +794,7 @@
     }
     else {
       if($("#sericek").prop('checked') == true ){ //SERI CEK
-		alert('sericek');
+	//	alert('sericek');
 
         var inputseri = '<input type="hidden" name="input" value="CEK">';
         $('.inputseri').html(inputseri);
@@ -864,7 +866,7 @@
                   var n = 1;
                 
                   for(var i = urutcek; i < hasilurutcek; i++){ //ADD TABLE
-                    alert(urutcek);
+                   // alert(urutcek);
                     var html2 = "<tr class='databaru'>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                                 "<label></label>" +
@@ -892,7 +894,7 @@
           }
 
       if($('#sericekbg').prop('checked') == true){ ////SERI BG
-	alert('true');
+//	alert('true');
            var inputseri = '<input type="hidden" name="input" value="BG">';
         $('.inputseri').html(inputseri);
 
@@ -961,8 +963,8 @@
                   var tableBank = $('#tbl-cek').DataTable();
                 
                   var n = 1;
-                  alert(urutbg);
-                  alert(hasilurutbg);
+                 // alert(urutbg);
+                 // alert(hasilurutbg);
                   for(var i = urutbg; i < hasilurutbg; i++){ //ADD TABLE
                     var html2 = "<tr class='databaru'>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +

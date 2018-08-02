@@ -498,7 +498,6 @@
                                              </div>
                                     
 
-
                                       <div class="modal-body">
                                         <div class="row">
                                           <div class="col-sm-6">
@@ -511,7 +510,7 @@
                                               <tr>
                                                 <td> Tanggal </td>
                                                 <td>  <div class="input-group date">
-                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control  tglfaktur_pajak" name="tglfaktur_pajak" required="">
+                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tglfaktur_pajak" name="tglfaktur_pajak" required="">
                                                     </div>
                                               </td>
                                               </tr>
@@ -556,7 +555,7 @@
                                                 </tr>
 
                                                 <tr>
-                                                  <td> <input type='text' class='form-control input-sm hasilppn_fakturpajak ' style="text-align : right" readonly=""> </td>
+                                                  <td> <input type='text' class='form-control input-sm hasilppn_fakturpajak' style="text-align : right" readonly=""> </td>
                                                 </tr>
                                               </table>
                                           </div>
@@ -3807,7 +3806,7 @@
            // var accHutang=$(".idsup_po").find(':selected').data('accHutang');
           $.ajax({
             type : "POST",
-            data : form_data3+form_dataum,
+            data : form_data3+"&"+form_dataum,
             url : post_url3,
             dataType : "json",
             success : function(response){

@@ -727,7 +727,7 @@ class MasterPurchaseController extends Controller
 			$masterbank->save();
 		}
 		else {
-					$masterbank = new masterbank();
+		$masterbank = new masterbank();
 		$masterbank->mb_id = $idbank;
 		$masterbank->mb_kode = $request->kodebank;
 		$masterbank->mb_nama = strtoupper($request->nmbank);
