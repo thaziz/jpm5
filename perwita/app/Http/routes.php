@@ -2151,6 +2151,16 @@ Route::get('master_keuangan/group_akun/hapus/{id}', [
     'as'  => 'group_akun.hapus'
 ]);
 
+Route::get('master_keuangan/group_akun/list_akun', [
+    'uses' => 'master_keuangan\group_akun_controller@list_akun',
+    'as'  => 'group_akun.list_akun'
+]);
+
+Route::get('master_keuangan/group_akun/list_akun_on_group', [
+    'uses' => 'master_keuangan\group_akun_controller@list_akun_on_group',
+    'as'  => 'group_akun.list_akun_on_group'
+]);
+
 // end kelompok akun
 
 //saldo akun
