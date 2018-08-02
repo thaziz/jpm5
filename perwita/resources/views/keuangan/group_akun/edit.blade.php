@@ -38,7 +38,10 @@
 
         <td width="15%" class="text-center">Jenis</td>
         <td colspan="2">
-          <input type="text" class="form_validate form-control" name="jenis" placeholder="Masukkan Nama Group" id="jenis" value="{{ $group->jenis_group }}" readonly>
+          <select name="jenis" class="select_validate form-control" id="jenis" disabled>
+            <option value="1"> Neraca / Balance Sheet</option>
+            <option value="2"> Laba Rugi</option>
+          </select>
         </td>
       </tr>
 
@@ -47,18 +50,51 @@
 
   </form>
 
-  <div class="col-md-12 m-t" style="border-top: 1px solid #eee; padding: 10px 10px 0px 0px;">
-    <button class="btn btn-primary btn-sm pull-right" id="simpan">Simpan</button>
+  <div class="col-md-12 m-t" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+    <table class="table table-bordered tabel-list no-margin" id="table" style="padding:0px; font-size: 8pt;">
+      <thead>
+        <tr>
+          <th style="position: sticky;top: 0px;" width="5%">*</th>
+          <th style="position: sticky;top: 0px;" width="15%">Kode Akun</th>
+          <th style="position: sticky;top: 0px;" width="60%">Nama Akun</th>
+          <th style="position: sticky;top: 0px;" width="20%">Cabang</th>
+        </tr>
+      </thead>
+
+      <tbody>
+          @foreach($data_akun as $key => $akun)
+            <tr>
+              <td style="background: white;" class="text-center"><input type="checkbox" value="{{ $akun->id_akun }}" class="deleted_check" checked="true"></td>
+              <td style="background: white;">{{ $akun->id_akun }}</td>
+              <td style="background: white;">{{ $akun->nama_akun }}</td>
+              <td style="background: white;">{{ $akun->nama }}</td>
+            </tr>
+          @endforeach
+      </tbody>
+    </table>
   </div>
+
+  <div class="col-md-6" style="border-top: 0px solid #eee; padding: 13px 10px 0px 0px; background: none; margin-top: 10px;">
+    <small class="text-info" style="font-style: italic;"><span id="akun_counter" style="font-weight: bold;">0</span> Akun Telah Ditambahkan Di Group Ini</small>
+  </div>
+
+  <div class="col-md-6 text-right" style="border-top: 0px solid #eee; padding: 10px 10px 0px 0px; background: none; margin-top: 10px;">
+    <button class="btn btn-default btn-sm" id="tambah_akun">Tambahkan Akun</button>
+    <button class="btn btn-primary btn-sm" id="simpan">Simpan</button>
+  </div>
+
 </div>
 
 <script>
   $(document).ready(function(){
 
+    var state = null; var deleted_akun = []; list_akun = [];
+
     $(".chosen-select").chosen();
     $('[data-toggle="tooltip"]').tooltip();
+    $("#jenis").val('{{ $group->jenis_group }}');
 
-
+    console.log(deleted_akun);
     // console.log(cabang);
 
     $("#saldo").on("change", function(){
@@ -102,10 +138,20 @@
       btn.text("Menyimpan...");
 
       if(validate_form()){
+
+        data = {
+          _token        : '{{ csrf_token() }}',
+          nama          : $("#nama_group").val(),
+          jenis         : $("#jenis").val(),
+          kode_group    : $("#kode_group").val(),
+          akun_inside   : list_akun,
+          deleted_akun  : deleted_akun
+        }
+
         $.ajax(baseUrl+"/master_keuangan/group_akun/update",{
           type: "post",
           timeout: 15000,
-          data: $("#data_form").serialize(),
+          data: data,
           dataType: 'json',
           success: function(response){
             console.log(response);
@@ -144,6 +190,47 @@
 
     $("#nama_group").on("keyup", function(){
       $(this).val($(this).val().toUpperCase())
+    })
+
+    $("#tambah_akun").click(function(evt){
+      evt.preventDefault(); var name = $('#jenis');
+      $('#overlay').fadeIn(80);
+      $('#cab_list_name').text('Data Akun Yang Belum Memiliki Grup '+name.children('option:selected').text());
+
+      if(state != name.val()){
+        $("#overlay .modal-body").html('<center class="text-muted">Sedang Memuat ...</center>');
+        list_akun = [];
+      }else{
+        return;
+      }
+
+      $.ajax(baseUrl+"/master_keuangan/group_akun/list_akun?keyword="+name.val(), {
+         timeout: 15000,
+         dataType: "html",
+         success: function (data) {
+             $("#overlay .modal-body").html(data);
+             state = name.val();
+         },
+         error: function(request, status, err) {
+            if (status == "timeout") {
+              $("#overlay .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
+            } else {
+              $("#overlay .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
+            }
+        } 
+      });
+    })
+
+    $(".overlay_close").click(function(){
+      $("#overlay").fadeOut(100);
+      $('#akun_counter').text(list_akun.length);
+    });
+
+    $('.deleted_check').change(function(){
+      if($(this).is(':checked'))
+        deleted_akun.splice(deleted_akun.findIndex(u => u.id_akun == $(this).val()), 1);
+      else
+        deleted_akun.push($(this).val());
     })
 
     $('.currency').inputmask("currency", {

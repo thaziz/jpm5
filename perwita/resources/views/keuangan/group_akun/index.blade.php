@@ -120,7 +120,6 @@
                             <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px; font-size: 8pt;">
                               <thead>
                                 <tr>
-                                  <th width="15%" class="text-center">Kode Group</th>
                                   <th width="30%" class="text-center">Nama Group</th>
                                   <th class="text-center">Jenis Group</th>
                                   <th class="text-center">Tanggal Buat</th>
@@ -132,20 +131,37 @@
                               <tbody class="searchable">
 
                                 @foreach($data as $group)
+                                  <?php
+                                    $nama_group = '';
+
+                                    switch($group->jenis_group){
+                                      case '1':
+                                        $nama_group = 'Neraca / Balance Sheet';
+                                        break;
+
+                                      case '2':
+                                        $nama_group = 'Laba Rugi';
+                                        break;
+                                    }
+                                  ?>
+
                                   <tr>
-                                    <td class="id">{{ $group->id }}</td>
-                                    <td class="nama_group">{{ $group->nama_group }}</td>
-                                    <td class="jenis_group text-center">{{ $group->jenis_group }}</td>
+                                    <td class="nama_group text-center">{{ $group->nama_group }}</td>
+                                    <td class="jenis_group text-center">{{ $nama_group }}</td>
                                     <td class="tanggal_buat text-center">{{ date("d", strtotime($group->tanggal_buat)) }} {{ date_ind(date("m", strtotime($group->tanggal_buat))) }} {{ date("Y", strtotime($group->tanggal_buat)) }}</td>
 
                                     <td class="text-center">
 
+                                        <span data-toggle="tooltip" data-placement="top" title="Lihat Akun-Akun Di {{ $group->nama_group }}">
+                                            <button class="btn btn-xs btn-info btn-circle view_akun" data-id="{{ $group->id }}" data-jenis="{{ $group->jenis_group }}"><i class="fa fa-list fa-fw"></i></button>
+                                        </span>
+
                                         <span data-toggle="tooltip" data-placement="top" title="Edit Group {{ $group->nama_group }}">
-                                            <button data-parrent="{{ $group->id }}" class="btn btn-xs btn-warning edit"><i class="fa fa-pencil-square fa-fw"></i></button>
+                                            <button data-parrent="{{ $group->id }}" class="btn btn-xs btn-info edit btn-circle"><i class="fa fa-pencil-square fa-fw"></i></button>
                                         </span>
 
                                         <a onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Group \'{{ $group->nama_group }}\' Ini ??')" href="{{ route("group_akun.hapus", $group->id) }}">
-                                          <button data-toggle="tooltip" data-placement="top" title="Hapus Group {{ $group->nama_group }}" class="btn btn-xs btn-danger"><i class="fa fa-eraser fa-fw"></i></button>
+                                          <button data-toggle="tooltip" data-placement="top" title="Hapus Group {{ $group->nama_group }}" class="btn btn-xs btn-info btn-circle"><i class="fa fa-eraser fa-fw"></i></button>
                                         </a>
 
                                       </td>
@@ -162,6 +178,22 @@
             </div>
         </div>
     </div>
+</div>
+
+<div id="overlay">
+  <div class="modal-dialog" style="width: 50%; margin-top: 30px;">
+    <div class="modal-content" style="background: #efefef;">
+      <div class="modal-header" style="background: white">
+        <button type="button" class="close overlay_close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><span id="cab_list_name"></span></h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+      <div class="modal-body">
+        <center class="text-muted">Sedang Memuat ...</center>
+      </div>
+
+    </div>
+  </div>
 </div>
 
  <!-- modal -->
@@ -193,6 +225,19 @@
       </div>
       <div class="modal-body">
         <center class="text-muted">Menyiapkan Form</center>
+      </div>
+
+    </div>
+  </div>
+</div>
+  <!-- modal -->
+
+  <!-- modal -->
+<div id="modal_list_akun" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <center class="text-muted">Sedang Mengambil Data</center>
       </div>
 
     </div>
@@ -257,6 +302,28 @@
       });
     })
 
+    $(".searchable").on("click", ".view_akun", function(){
+
+      $("#modal_list_akun").modal("show");
+      $("#modal_list_akun .modal-body").html('<center class="text-muted">Sedang Mengambil Data</center>');
+
+      $.ajax(baseUrl+"/master_keuangan/group_akun/list_akun_on_group?id_group="+$(this).data('id')+"&jenis="+$(this).data('jenis')+"&checked=false", {
+         timeout: 15000,
+         dataType: "html",
+         success: function (data) {
+             $("#modal_list_akun .modal-body").html(data);
+         },
+         error: function(request, status, err) {
+            if (status == "timeout") {
+              $("#modal_list_akun .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
+            } else {
+              $("#modal_list_akun .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
+            }
+        } 
+      });
+      
+    })
+
     $(".searchable").on("click", ".edit", function(){
 
       $("#modal_edit").modal("show");
@@ -308,7 +375,6 @@
           });
         }
     })
-
   })
 
 </script>
