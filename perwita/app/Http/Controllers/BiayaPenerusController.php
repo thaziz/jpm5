@@ -890,6 +890,8 @@ class BiayaPenerusController extends Controller
 				$delete = DB::table('biaya_penerus')
 		 				->where('bp_faktur',$cari->fp_nofaktur)
 		 				->delete();
+
+		 		
 			}elseif ($cari->fp_jenisbayar == 7){
 				$pot = DB::table('pembayaran_outlet')
 		 				->where('pot_faktur',$cari->fp_nofaktur)
@@ -920,6 +922,8 @@ class BiayaPenerusController extends Controller
 					  ->update([
 					  	'ttd_faktur'=>null
 					  ]);
+
+
 		 	$delete = DB::table('faktur_pembelian')
 		 				->where('fp_idfaktur',$id)
 		 				->delete();
@@ -1213,14 +1217,14 @@ class BiayaPenerusController extends Controller
 								$data_akun[$i]['jrdt_detailid']	= $i+1;
 								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
 								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-								$data_akun[$i]['jrdt_statusdk'] = 'K';
+								$data_akun[$i]['jrdt_statusdk'] = 'D';
 								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
 							}else{
 								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 								$data_akun[$i]['jrdt_detailid']	= $i+1;
 								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
 								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-								$data_akun[$i]['jrdt_statusdk'] = 'D';
+								$data_akun[$i]['jrdt_statusdk'] = 'K';
 								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
 							}
 						}

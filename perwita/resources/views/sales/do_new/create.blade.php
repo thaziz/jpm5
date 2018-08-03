@@ -278,13 +278,10 @@
 
                                                 </tr>
                                                 <tr>
-                                                    <td style="padding-top: 0.4cm">Kas Bank</td>
+                                                    <td style="padding-top: 0.4cm">Kas Besar</td>
                                                     <td colspan="5">
-                                                        <select class="chosen-select-width" name="do_bank">
-                                                            <option value="">- Pilih -</option>
-                                                            @foreach ($masterbank as $element)
-                                                                <option value="{{ $element->mb_kode }}">{{ $element->mb_kode }} - {{ $element->mb_nama }}</option>
-                                                            @endforeach
+                                                        <select class="chosen-select-width" name="do_bank" id="do_bank">
+                                                            {{-- <option value="">- Pilih -</option> --}}
                                                         </select>
                                                     <b style="color:red;">*NOTE : Hanya Memilih Ketika Non-Customer</b>
                                                     </td>
@@ -790,6 +787,19 @@ $('.radio-inline').click(function() {
                         }else{
                         }
                 }
+           }
+        })
+
+        $.ajax({
+           url:('{{ route('cari_kas_besar_deliveryorder_paket') }}'),
+           type:'get',
+           data:{a:cabang_this},
+           success:function(response){
+             $('#do_bank').empty(); //remove all child nodes 
+                    var append_baru = '<option value="'+response.id_akun+'">'+response.id_akun+' - '+response.nama_akun+'</option>';
+                    $('#do_bank').append(append_baru);
+             $('#do_bank').trigger('chosen:updated');
+
            }
         })
     })
