@@ -1318,10 +1318,10 @@ $('.jurnal').click(function(){
   jurnal();
 })
 
-$('.jurnal_um').click(function(){
-  $('.modal_jurnal').modal('show');
-  jurnal_um();
-})
+// $('.jurnal_um').click(function(){
+//   $('.modal_jurnal').modal('show');
+//   jurnal_um();
+// })
 
 </script>
 
