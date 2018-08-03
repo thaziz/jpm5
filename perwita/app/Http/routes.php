@@ -113,6 +113,9 @@ Route::get('suratpermintaanpembelian/cetakspp/{id}', 'PurchaseController@cetaksp
 Route::get('suratpermintaanpembelian/editspp/{id}', 'PurchaseController@editspp');
 Route::get('suratpermintaanpembelian/valgudang', 'PurchaseController@valgudang');
 Route::get('suratpermintaanpembelian/kettolak', 'PurchaseController@kettolakspp');
+Route::post('suratpermintaanpembelian/setujukabag', 'PurchaseController@sppsetujukabag');
+
+
 
 Route::get('testing/analisa', 'PurchaseController@queryanalisa');
 
@@ -1305,9 +1308,7 @@ Route::get('master_sales/kendaraan/{id}/hapus_data', 'master_sales\kendaraan_Con
 // end kendaraan
 
 //Nomor seri pajak
-Route::get('master_sales/nomorseripajak', function(){
-        return view('master_sales.nomor_seri_pajak.index');
-});
+Route::get('master_sales/nomorseripajak','master_sales\nomor_seri_pajak_controller@index');
 
 
 //---WILAYAH----------
@@ -2150,6 +2151,16 @@ Route::post('master_keuangan/group_akun/update', [
 Route::get('master_keuangan/group_akun/hapus/{id}', [
     'uses' => 'master_keuangan\group_akun_controller@hapus',
     'as'  => 'group_akun.hapus'
+]);
+
+Route::get('master_keuangan/group_akun/list_akun', [
+    'uses' => 'master_keuangan\group_akun_controller@list_akun',
+    'as'  => 'group_akun.list_akun'
+]);
+
+Route::get('master_keuangan/group_akun/list_akun_on_group', [
+    'uses' => 'master_keuangan\group_akun_controller@list_akun_on_group',
+    'as'  => 'group_akun.list_akun_on_group'
 ]);
 
 // end kelompok akun

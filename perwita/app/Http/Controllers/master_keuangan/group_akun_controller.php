@@ -22,9 +22,9 @@ class group_akun_controller extends Controller
 
     public function add(){
         // $akun = json_encode(DB::table("d_akun")->select("id_akun", "nama_akun", "group_neraca", "group_laba_rugi")->orderBy("id_akun", "asc")->get());
-        $ids = DB::table("d_group_akun")->orderBy("id", "desc")->first()->id;
+        //$ids = DB::table("d_group_akun")->orderBy("id", "desc")->first()->id;
 
-    	return view("keuangan.group_akun.insert")->withIds($ids);
+    	return view("keuangan.group_akun.insert");
     }
 
     public function save(Request $request){
@@ -35,34 +35,44 @@ class group_akun_controller extends Controller
             "content" => "null"
         ];
 
-    	$id = "GA-".$request->kode_group;
+    	$id = (DB::table('d_group_akun')->max('id')) ? (DB::table('d_group_akun')->max('id') + 1) : 1;
+        // return $id;
 
     	$cek = DB::table("d_group_akun")->where("id", $id)->select("*")->first();
 
-    	// return json_encode($cek);
-
-    	if(count($cek)){
-    		$response = [
-	            "status" => "exist",
-	            "content" => $cek->nama_group
-	        ];
-
-	        return json_encode($response);
-    	}
-
     	$group = new d_group_akun;
     	$group->id = $id;
-    	$group->nama_group = $request->nama_group;
+    	$group->nama_group = $request->nama;
     	$group->jenis_group = $request->jenis;
 
-    	if($group->save())
+    	if($group->save()){
+            if($request->jenis == '1' && isset($request->akun_inside)){
+                DB::table('d_akun')->whereIn('id_akun', $request->akun_inside)->update([
+                    'group_neraca'  => $id,
+                ]);
+            }
+
 			return json_encode($response);
+        }
     }
 
     public function edit($id){
     	$group = DB::table("d_group_akun")->where("id", $id)->first();
 
+        if($group->jenis_group == 1)
+            $akun = DB::table('d_akun')->where('group_neraca', $group->id)
+                            ->join('cabang', 'cabang.kode', '=', 'd_akun.kode_cabang');
+                            
+        else if($group->jenis_group == 2)
+            $akun = DB::table('d_akun')->where('group_laba_rugi', $group->id)
+                            ->join('cabang', 'cabang.kode', '=', 'd_akun.kode_cabang');
+
+        $data_akun = $akun->select('id_akun', 'nama_akun', 'cabang.nama')->orderBy('id_akun', 'asc')->get();
+        $id_akun = json_encode($akun->select('id_akun')->orderBy('id_akun', 'asc')->get());
+
     	return view("keuangan.group_akun.edit")
+               ->withData_akun($data_akun)
+               ->withId_akun($id_akun)
     		   ->withGroup($group);
     }
 
@@ -77,16 +87,85 @@ class group_akun_controller extends Controller
     	// return json_encode($cek);
 
     	$group = DB::table("d_group_akun")->where("id", $request->kode_group)->update([
-    		"nama_group"	=> $request->nama_group
+    		"nama_group"	=> $request->nama
     	]);
+
+        if($request->jenis == 1){
+            if(isset($request->akun_inside)){
+                DB::table('d_akun')->whereIn('id_akun', $request->akun_inside)->update([
+                    'group_neraca'  => $request->kode_group,
+                ]);
+            }else if(isset($request->deleted_akun)){
+                DB::table('d_akun')->whereIn('id_akun', $request->deleted_akun)->update([
+                    'group_neraca'  => '---',
+                ]);
+            }
+        }elseif($request->jenis == 2){
+            if(isset($request->akun_inside)){
+                DB::table('d_akun')->whereIn('id_akun', $request->akun_inside)->update([
+                    'group_laba_rugi'  => $request->kode_group,
+                ]);
+            }else if(isset($request->deleted_akun)){
+                DB::table('d_akun')->whereIn('id_akun', $request->deleted_akun)->update([
+                    'group_laba_rugi'  => '---',
+                ]);
+            }
+        }
 
 		return json_encode($response);
     }
 
     public function hapus($id){
+        $data = DB::table('d_group_akun')->where('id', $id)->first();
     	DB::table("d_group_akun")->where("id", $id)->delete();
+
+        if($data->jenis_group == 1){
+            DB::table('d_akun')->where('group_neraca', $id)->update([
+                'group_neraca'  => '---',
+            ]);
+        }else if($data->jenis_group == 2){
+            DB::table('d_akun')->where('group_laba_rugi', $id)->update([
+                'group_laba_rugi'  => '---',
+            ]);
+        }
+
     	Session::flash('sukses', "Data Master Group Akun Berhasil Dihapus.");
 
     	return redirect(url("master_keuangan/group_akun"));
+    }
+
+    public function list_akun(Request $request){
+        // return $request->keyword;
+
+        if($request->keyword == 1)
+            $data = DB::table('d_akun')->where('group_neraca', '---')
+                    ->join('cabang', 'cabang.kode', '=', 'd_akun.kode_cabang')
+                    ->select('id_akun', 'nama_akun', 'cabang.nama')->orderBy('id_akun', 'asc')->get();
+        else if($request->keyword == 2)
+            $data = DB::table('d_akun')->where('group_laba_rugi', '---')
+                    ->join('cabang', 'cabang.kode', '=', 'd_akun.kode_cabang')
+                    ->select('id_akun', 'nama_akun', 'cabang.nama')->orderBy('id_akun', 'asc')->get();
+
+        $withChecked = 'true';
+        // return json_encode($data);
+        return view('keuangan.group_akun.list_akun', compact('data', 'withChecked'));
+    }
+
+    public function list_akun_on_group(Request $request){
+        // return $request->all();
+
+        $withChecked = (isset($request->checked)) ? $request->checked : 'true';
+
+        if($request->jenis == 1)
+            $data = DB::table('d_akun')->where('group_neraca', $request->id_group)
+                    ->join('cabang', 'cabang.kode', '=', 'd_akun.kode_cabang')
+                    ->select('id_akun', 'nama_akun', 'cabang.nama')->orderBy('id_akun', 'asc')->get();
+        else if($request->jenis == 2)
+            $data = DB::table('d_akun')->where('group_laba_rugi', $group->id_group)
+                    ->join('cabang', 'cabang.kode', '=', 'd_akun.kode_cabang')
+                    ->select('id_akun', 'nama_akun', 'cabang.nama')->orderBy('id_akun', 'asc')->get();
+
+        // return json_encode($data);
+        return view('keuangan.group_akun.list_akun', compact('data', 'withChecked'));
     }
 }

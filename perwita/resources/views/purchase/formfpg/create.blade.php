@@ -1967,29 +1967,26 @@
 
                     if(jenisbayar == 11){
                       if(metodebayar == 'CHECK/BG'){
-                        asalbank = $('.bank1').val();
-                        split = asalbank.split(",");
-                        idmb = split[0];
-                        norek = split[3]
-                        accbank = split[4];
-                        namabank = $('.nmbank1').val();
-                        periode = $('.tgltfakun').val();
+                        jenisbayar = $('.jenisbayar').val();
+                        if(jenisbayar == 5){
+                          $('.jthtmpo_bank').attr('disabled' , true);
+                          //$('.hari_bank').attr('disabled', true);
+                          jatuhtempo = $('.jthtmpo_bank').val();
+                        }
+                        else {
+                          jatuhtempo = $('.jthtmpo_bank').val();      
+                        }
 
                         for(var i =0 ; i < mbdt.length; i++ ){                    
                           var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
                           "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> "+mbdt[i][0].mbdt_noseri+ "</a> <input type='hidden' class='noseri"+nomrbnk+"' value='"+mbdt[i][0].mbdt_noseri+"' name='noseri[]'></td>"+ // NOSERI
 
                           "<td>"+tgl+"</td>"+ // TGL
-                          "<td>"+mbdt[i][0].mb_kode+"</td>" + // ASAL KODE
-                          "<td> <input type='text' class='form-control input-sm' value="+accbank+" name='tujuanaccbank[]' style='min-width:100px'> <input type='hidden' value='"+idmb+"' name='tujuanidbank[]' readonly></td>" + // Tujuan Bank KODE BANK
-                          "<td> <input type='text' class='form-control input-sm' value="+norek+" name='tujuannorekbank[]' style='min-width:170px' readonly> </td>" + // NO REKENING BANK
-                          "<td> <input type='text' class='form-control input-sm' value='"+namabank+"' name='tujuannamabank[]' style='min-width:170px' readonly></td>" + // NAMA REKENING BANK
-
-                          "<td> <input type='text' class='form-control jatuhtempotblbank' value='"+periode+"' name='periode[]' readonly> </td>" + //JATUH TEMPO
-                          "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required style='min-width:200px'> </td>" + //NOMINAL
+                          "<td>"+mbdt[i][0].mb_kode+"</td> <td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"'> </td>" + //JATUH TEMPO
+                          "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
                           "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
-                          $('#tbl-tfbank').append(row);
+                          $('#tbl-bank').append(row);
                           arrnohapus.push(nomrbnk);
                           nomrbnk++;
                         }
@@ -2055,7 +2052,7 @@
                   
                     if(jenisbayar == '12'){
                       $('.nominalbank1').val(nominaltujuan);
-                      $('.ChequeBg').val(nominaltujuan);
+                      $('.ChequeBg').val(nominaltujuan);  
                     }
                     else {
                       $('.nominalbank1').val(nominalbank);
@@ -2888,7 +2885,7 @@
                 })
             })*/
 
-      if(idjenis == '2' || idjenis == '3' || idjenis == '4' || idjenis == '5' || idjenis == '6' || idjenis == '7' || idjenis == '8' || idjenis == '9' || idjenis == '1') { // HUTANG DAGANG SUPPLIER
+      if(idjenis == '2' || idjenis == '3' || idjenis == '4' || idjenis == '5' || idjenis == '6' || idjenis == '7' || idjenis == '8' || idjenis == '9' || idjenis == '1' || idjenis == '11') { // HUTANG DAGANG SUPPLIER
         $('.tbl-jenisbayar').show();
         $('.deskirpsijenisbayar').hide();
         $("#jurnal").show(); 

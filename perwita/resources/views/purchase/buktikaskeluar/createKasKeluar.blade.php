@@ -978,7 +978,7 @@
           swal({
           title: "Berhasil!",
                   type: 'success',
-                  text: "Data Berhasil Dihapus",
+                  text: "Data Berhasil Disimpan",
                   timer: 2000,
                   showConfirmButton: true
                   },function(){

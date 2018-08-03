@@ -37,6 +37,13 @@
       </div>
     </div>
 
+     <div class="col-md-2" style="min-height: 100px">
+      <div class="alert alert-success alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <h2 style='text-align:center'> <b> {{$data['statuskabag']}} SPP  </b></h2> <h4 style='text-align:center'> BELUM DI KETAHUI KEPALA BAGIAN </h4>
+      </div>
+    </div>
+
     <div class="col-md-2" style="min-height: 100px">
       <div class="alert alert-success alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
@@ -99,6 +106,7 @@
                         <th> Bagian </th>
                         <th> Status </th>
                         <th> Detail </th>
+                        <th> Status Kabag </th>
                     </tr>
                  
                     </thead>
@@ -147,6 +155,14 @@
                           @endif
                       </td>
                       
+
+                      <td>
+                        @if($spp->spp_statuskabag == 'BELUM MENGETAHUI')
+                        <span class="label label-info"> <i class="fa fa-close"> </i> {{$spp->spp_statuskabag}} </span>
+                        @elseif($spp->spp_statuskabag == 'SETUJU')
+                        <span class="label label-info"> <i class="fa fa-check"> </i> {{$spp->spp_statuskabag}}
+                        @endif
+                      </td>
                     </tr>
                    @endforeach
 
@@ -155,6 +171,9 @@
                    
                   </table>
                 </div><!-- /.box-body -->
+
+                
+
                 <div class="box-footer">
                   
                   </div><!-- /.box-footer --> 
@@ -193,12 +212,10 @@
         format: 'dd-mm-yyyy'
     });
     
-    $no = 0;
-    $('.carispp').click(function(){
-      $no++;
-      $("#addColumn").append('<tr> <td> ' + $no +' </td> <td> no spp </td> <td> 21 Juli 2016  </td> <td> <a href="{{ url('purchase/konfirmasi_orderdetail')}}" class="btn btn-danger btn-flat" id="tmbh_data_barang">Lihat Detail</a> </td> <td> <i style="color:red" >Disetujui </i> </td> </tr>');   
-    })
- 
+    function kabag(){
+
+    }
+
       
     function hapusData(id){
    
