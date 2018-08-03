@@ -1157,10 +1157,32 @@ class selaras_jurnal  extends Controller
   public function invoice(Request $req)
   {
     return DB::transaction(function() use ($req) {  
+
+
+
+      $akun = DB::table('master_akun_fitur')
+                ->leftjoin('d_akun','maf_kode_akun','=','id_akun')
+                ->get();
+      $kosong =[];
+      for ($i=0; $i < count($akun); $i++) { 
+        if ($akun[$i]->id_akun == null) {
+          array_push($kosong, $akun[$i]->maf_id);
+        }
+      }
+
+      for ($i=0; $i < count($kosong); $i++) { 
+        $akun = DB::table('master_akun_fitur')
+                ->where('maf_id',$kosong[$i])
+                ->delete();
+      }
+
+      return 'berhasil';
+
+
     	$error_invoice = [];
       	$invoice = DB::table('invoice')
                    ->get();
-		$delete = d_jurnal::where('jr_detail','like','INVOICE%')->delete();
+		  $delete = d_jurnal::where('jr_detail','like','INVOICE%')->delete();
 
       	for ($i=0; $i < count($invoice); $i++) { 
 	        // SET PPN AWAL
