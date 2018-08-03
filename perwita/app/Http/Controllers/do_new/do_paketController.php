@@ -1439,6 +1439,19 @@ class do_paketController extends Controller
           return view('sales.do_new.modal_jurnal_balik_do', compact('data'));
         }
     }
+ //CARI KAS BESAR
+    public function cari_kas_besar_deliveryorder_paket(Request $request)
+    {
+        $data = DB::table('d_akun')
+                  ->where('id_akun','like','%1003%')
+                  ->where('kode_cabang','=',$request->a)
+                  ->first();
 
+        if ($data == null) {
+          return response()->json(['status'=>'kosong']);
+        }else{
+          return response()->json($data);
+        }
+    }
 
 }
