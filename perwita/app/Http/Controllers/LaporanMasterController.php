@@ -2827,6 +2827,7 @@ class LaporanMasterController extends Controller
    										join kwitansi_d on kwitansi.k_nomor = kwitansi_d.kd_k_nomor
    										where k_tanggal >= '$awal' 
    										and k_tanggal <= '$akir'
+   										and k_jenis_pembayaran != 'C'
    										$customer_kwitansi $akun_kwitansi $cabang_kwitansi
    										");
    		

@@ -28,9 +28,9 @@
                          <td>{{ $sisa_saldo[$index] }}</td>
                          <td>{{ $ss[$index] }}</td>
                          <td></td>
-                         <td>{{ $sebelum_jatuhtempo_fix[$index] }}</td>
-                         <td>{{ $jatuhtempo_30_push[$index][0]->jatuhtempo_30 }}</td>
-                         <td>{{ $jatuhtempo_60_push[$index][0]->jatuhtempo_60 }}</td>
+                         <td>{{ $sebelum_jatuhtempo_hasil[$index] }}</td>
+                         <td>{{ $jatuhtempo_30_hasil[$index] }}</td>
+                         <td>{{ $jatuhtempo_60_hasil[$index] }}</td>
                          <td>{{ $jatuhtempo_90_push[$index][0]->jatuhtempo_90 }}</td>
                          <td>{{ $jatuhtempo_120_push[$index][0]->jatuhtempo_120 }}</td>
                          <td>{{ $jatuhtempo_180_push[$index][0]->jatuhtempo_180 }}</td>

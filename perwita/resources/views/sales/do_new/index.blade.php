@@ -177,6 +177,15 @@
                         <tr>
                                                     
                         </tr>
+                        <tr>
+                          <th style="width: 100px; padding-top: 16px"> Nomor </th>
+                          <td > 
+                           <input type="text" name="do_nomor">
+                          </td>
+
+                          
+                          
+                        </tr>
                        
 
                       <br>

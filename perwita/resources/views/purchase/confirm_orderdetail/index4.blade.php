@@ -119,6 +119,10 @@
 
                 </div>
             </div>
+              <br>
+          <div class="alert alert-info" id="statuskeuangan">
+              <p> Pihak Keuangan bisa melakukan transaksi jika pihak pembelian sudah mensetujui transaksi ini </p>
+          </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -193,10 +197,64 @@
                             </td>
                             <td>
                               <input type="text" class="form-control" readonly="" value="{{$namatipe}}">
+                              <input type="hidden" class="prosespembelian" readonly="" value="{{$spp->staff_pemb}}">
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td> <b> Pemroses </b> </td>
+                            <td>  @if(Auth::user()->punyaAkses('Konfirmasi Order Keu','aktif'))
+                                   <select class="form-control pemroses" name="pemroses">
+                                      <option value="KEUANGAN" selected="">
+                                          PIHAK KEUANGAN
+                                      </option>
+                                      <option value="PEMBELIAN">
+                                         PIHAK PEMBELIAN
+                                      </option>
+                                   </select>
+                                  @elseif(Auth::user()->punyaAkses('Konfirmasi Order','aktif'))
+                                     <select class="form-control pemroses" name="pemroses">
+                                          <option value="KEUANGAN">
+                                              PIHAK KEUANGAN
+                                          </option>
+                                          <option value="PEMBELIAN" selected="">
+                                              PIHAK PEMBELIAN
+                                          </option>
+                                       </select>
+                                  @endif
                             </td>
                           </tr>
 
                           </table>
+                         </div>
+
+                         <div class="col-xs-6">
+                            <table class="table">
+                              <tr>
+                                <th colspan="2" style="text-align:center">
+                                    Status Persetujuan
+                                </th>
+                              </tr>
+                              <tr>
+                                  <th style="text-align:center"> Staff Pembelian </th>
+                                  <th style="text-align:center"> Manager Keuangan </th>
+                              </tr>
+                              <tr>
+                                  <th> 
+                                      @if($spp->staff_pemb == 'DISETUJUI')
+                                      @else
+                                        <div style='text-align: center'>  <p class="label label-danger" > BELUM DI PROSES </p> </div>
+                                      @endif
+                                  </th>
+                                  <th>
+                                    @if($spp->man_keu == 'DISETUJUI')
+                                    
+                                    @else
+                                      <div style='text-align: center'> <p class="label label-danger" style='text-align: center'> BELUM DI PROSES </p> </div>
+                                    @endif
+                                  </th>
+                              </tr>
+                            </table>
                          </div>
                          </div>
                     @endforeach
@@ -355,7 +413,6 @@
                          </td>
 
 
-
                         <td> <input type="text" class="input-sm form-control satuan" value="{{$sppd->unitstock}} " disabled=""></td>
                         <!-- hargasupplier-->
                    
@@ -394,7 +451,7 @@
                   <div class="pull-right">
                      @if($data['countcodt'] < 1)
                       
-                      <a class="btn btn-danger" onclick="cek_tb({{$data['count_brg']}})"> Cek Total Biaya </a>
+                      <a class="btn btn-danger cektotal" onclick="cek_tb({{$data['count_brg']}})"> Cek Total Biaya </a>
                       <button type="submit" class="btn btn-success btn-flat simpan" disabled=""> Simpan </button>
                       </form>
                     @endif
@@ -421,6 +478,41 @@
 @section('extra_scripts')
 <script type="text/javascript">
   $('.kettolak').attr('readonly' , true);
+     $('#statuskeuangan').hide();
+  prosespembelian = $('.prosespembelian').val();
+  pemroses = $('.pemroses').val();
+  if(pemroses == 'KEUANGAN'){
+      if(prosespembelian !== "DISETUJUI"){
+          $('.cektotal').attr('disabled' , true);
+          $('#statuskeuangan').show();
+      }
+      else {
+         $('#statuskeuangan').hide();
+      }
+     
+  }
+  else {
+    $('#statuskeuangan').hide();
+    $('.cektotal').attr('disabled' , false);  
+  }
+
+  $('.pemroses').change(function(){
+    val = $(this).val();
+    if(val == 'KEUANGAN'){
+       if(prosespembelian != "DISETUJUI"){
+          $('.cektotal').attr('disabled' , true);
+          $('#statuskeuangan').show();
+        }
+        else {
+           $('#statuskeuangan').hide();
+        }
+    }
+    else {
+        $('#statuskeuangan').hide();
+        $('.cektotal').attr('disabled' , false);  
+    }
+   
+  })
 
    $('body').removeClass('fixed-sidebar');
             $("body").toggleClass("mini-navbar");
