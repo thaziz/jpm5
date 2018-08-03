@@ -135,7 +135,7 @@ class analisa_piutang_Controller extends Controller
                 $sebelum_jatuhtempo_pst = DB::select("select sum(posting_pembayaran.jumlah) as terbayar_posting from posting_pembayaran,posting_pembayaran_d where tanggal > '$tglawal' and tanggal < '$tglakhir' and kode_customer = '$cust_arr' group by kode_customer");
             }
 
-            return $sebelum_jatuhtempo_kw;
+            return $kwitansi_kode;
             // sebelum jth tempo Invoice
             if ($sebelum_jatuhtempo[$i]->sebelum_jatuhtempo == null) {
                 $sebelum_jatuhtempo[$i] = 0;
