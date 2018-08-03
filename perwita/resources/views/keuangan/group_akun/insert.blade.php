@@ -18,22 +18,8 @@
 
 <div class="row">
   <form id="data_form">
-    <input type="hidden" readonly value="{{ csrf_token() }}" name="_token">
-  <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+  <div class="col-md-12" style="border-bottom: 1px solid #ddd; border-radius: 0px; padding: 10px; padding-bottom: 15px; padding-top: 0px;">
     <table border="0" id="form-table" class="col-md-12">
-      <tr>
-        <td width="15%" class="text-center">Kode Group</td>
-        <td colspan="2" width="35%">
-          <div class="input-group" style="width: 97%">
-            <span class="input-group-addon" style="font-size: 8pt;">GA -</span>
-            <input type="text" display: inline-block;" class="form_validate form-control text-center" name="kode_group" placeholder="Kode Group" id="kode_group" data-toggle="tooltip" data-placement="top" title="Hanya Memperbolehkan Input Angka">
-          </div>
-        </td>
-
-        <td colspan="3" class="text-center">
-          <small class="text-muted">Kode Group Terakhir Di Database &nbsp;<i class="fa fa-arrow-right"></i>&nbsp; {{ $ids }}</small>
-        </td>
-      </tr>
 
       <tr>
         <td width="15%" class="text-center">Nama Group</td>
@@ -44,8 +30,8 @@
         <td width="15%" class="text-center">Jenis</td>
         <td colspan="2">
           <select name="jenis" class="select_validate form-control" id="jenis">
-            <option value="Neraca/Balance Sheet"> Neraca / Balance Sheet</option>
-            <option value="Laba Rugi"> Laba Rugi</option>
+            <option value="1"> Neraca / Balance Sheet</option>
+            <option value="2"> Laba Rugi</option>
           </select>
         </td>
       </tr>
@@ -55,13 +41,20 @@
 
   </form>
 
-  <div class="col-md-12 m-t" style="border-top: 1px solid #eee; padding: 10px 10px 0px 0px;">
-    <button class="btn btn-primary btn-sm pull-right" id="simpan">Simpan</button>
+  <div class="col-md-6" style="border-top: 0px solid #eee; padding: 13px 10px 0px 0px; background: none; margin-top: 10px;">
+    <small class="text-info" style="font-style: italic;"><span id="akun_counter" style="font-weight: bold;">0</span> Akun Telah Ditambahkan Di Group Ini</small>
+  </div>
+
+  <div class="col-md-6 text-right" style="border-top: 0px solid #eee; padding: 10px 10px 0px 0px; background: none; margin-top: 10px;">
+    <button class="btn btn-default btn-sm" id="tambah_akun">Tambahkan Akun</button>
+    <button class="btn btn-primary btn-sm" id="simpan">Simpan</button>
   </div>
 </div>
 
 <script>
   $(document).ready(function(){
+
+    var state = null; list_akun = [];
 
     $(".chosen-select").chosen();
     $('[data-toggle="tooltip"]').tooltip();
@@ -108,13 +101,20 @@
       btn.attr("disabled", "disabled");
       btn.text("Menyimpan...");
 
-      console.log($("#data_form").serialize());
+      // console.log($("#data_form").serialize());
 
       if(validate_form()){
+        data = {
+          _token        : '{{ csrf_token() }}',
+          nama          : $("#nama_group").val(),
+          jenis         : $("#jenis").val(),
+          akun_inside   : list_akun
+        }
+
         $.ajax(baseUrl+"/master_keuangan/group_akun/save",{
           type: "post",
           timeout: 15000,
-          data: $("#data_form").serialize(),
+          data: data,
           dataType: 'json',
           success: function(response){
             console.log(response);
@@ -154,6 +154,40 @@
     $("#nama_group").on("keyup", function(){
       $(this).val($(this).val().toUpperCase())
     })
+
+    $("#tambah_akun").click(function(evt){
+      evt.preventDefault(); var name = $('#jenis');
+      $('#overlay').fadeIn(80);
+      $('#cab_list_name').text(name.children('option:selected').text());
+
+      if(state != name.val()){
+        $("#overlay .modal-body").html('<center class="text-muted">Sedang Memuat ...</center>');
+        list_akun = [];
+      }else{
+        return;
+      }
+
+      $.ajax(baseUrl+"/master_keuangan/group_akun/list_akun?keyword="+name.val(), {
+         timeout: 15000,
+         dataType: "html",
+         success: function (data) {
+             $("#overlay .modal-body").html(data);
+             state = name.val();
+         },
+         error: function(request, status, err) {
+            if (status == "timeout") {
+              $("#overlay .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
+            } else {
+              $("#overlay .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
+            }
+        } 
+      });
+    })
+
+    $(".overlay_close").click(function(){
+      $("#overlay").fadeOut(100);
+      $('#akun_counter').text(list_akun.length);
+    });
 
     $('.currency').inputmask("currency", {
         radixPoint: ",",

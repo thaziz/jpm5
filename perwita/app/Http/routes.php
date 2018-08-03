@@ -1502,6 +1502,8 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller
       Route::get('sales/deliveryorder_paket/replace_vendor_deliveryorder_paket', 'do_new\do_paketController@replace_vendor_deliveryorder_paket')->name('replace_vendor_deliveryorder_paket');
       //simpan data
       Route::get('sales/deliveryorder_paket/save_deliveryorder_paket', 'do_new\do_paketController@save_deliveryorder_paket')->name('save_deliveryorder_paket');
+      //cari akun kas besar
+      Route::get('sales/deliveryorder_paket/cari_kas_besar_deliveryorder_paket', 'do_new\do_paketController@cari_kas_besar_deliveryorder_paket')->name('cari_kas_besar_deliveryorder_paket');
   //Edit
   Route::get('sales/deliveryorder_paket/{nomor}/edit_deliveryorder_paket', 'do_new\do_paketController@edit_deliveryorder_paket')->name('edit_deliveryorder_paket');
       //update
@@ -2149,6 +2151,16 @@ Route::post('master_keuangan/group_akun/update', [
 Route::get('master_keuangan/group_akun/hapus/{id}', [
     'uses' => 'master_keuangan\group_akun_controller@hapus',
     'as'  => 'group_akun.hapus'
+]);
+
+Route::get('master_keuangan/group_akun/list_akun', [
+    'uses' => 'master_keuangan\group_akun_controller@list_akun',
+    'as'  => 'group_akun.list_akun'
+]);
+
+Route::get('master_keuangan/group_akun/list_akun_on_group', [
+    'uses' => 'master_keuangan\group_akun_controller@list_akun_on_group',
+    'as'  => 'group_akun.list_akun_on_group'
 ]);
 
 // end kelompok akun
