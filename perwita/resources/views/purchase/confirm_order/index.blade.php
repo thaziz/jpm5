@@ -86,7 +86,7 @@
                         </td>
 
                         <td>
-                        @if(Auth::user()->punyaAkses('Konfirmasi Order Keu','ubah'))
+                        @if(Auth::user()->punyaAkses('Konfirmasi Order Keu','aktif'))
                           @if($co->man_keu == 'DISETUJUI')
                              <span class="label label-info"> {{$co->man_keu}} </span>       
                           @else
