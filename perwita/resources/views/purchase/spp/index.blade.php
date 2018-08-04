@@ -120,7 +120,7 @@
                       <td>{{ $spp->nama }}</td>
                       <td>{{ $spp->spp_keperluan}} </td>
                       <td> {{$spp->nama_department}} </td>
-                      <td><!--  {{$spp->co_mng_pem_approved}} -->
+                      <td><!--  {{$spp->staff_pemb}} -->
 
                       @if($spp->spp_status == 'DISETUJUI')
                          <span class="label label-info"> <!-- <a href="{{url('suratpermintaanpembelian/statuspp/'.$spp->spp_id.'')}}" stye="color:black"> --> DISETUJUI </a></span>

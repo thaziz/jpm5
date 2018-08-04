@@ -117,7 +117,7 @@ class mutasi_piutang_Controller extends Controller
                         ->join('posting_pembayaran_d as pbdt','pb.nomor','=','pbdt.nomor_posting_pembayaran')
                         ->where('tanggal','>',$tglawal)
                         ->where('tanggal','<',$tglakhir)
-                        ->Where('jenis_pembayaran','=', 'C')
+                        // ->Where('jenis_pembayaran','=', 'C')
                         ->where('kode_customer','=',$array[$i])
                         ->get();
 

@@ -403,11 +403,11 @@ class PurchaseController extends Controller
 			$co->co_id = $idco;
 			$co->co_noco = 'CO' . '-' . $idspp;
 			$co->co_idspp = $spp->spp_id;
-			$co->mng_umum_approved = $status;
+			$co->staff_pemb = $status;
 		//	$co->time_mng_umum_approved = $time;
-			$co->co_mng_pem_approved = $status;
+			$co->man_keu = $status;
 		//	$co->co_time_mng_pem_approved = $time;
-			$co->co_staffpemb_approved = $status;
+		
 			$co->co_cabang = $request->cabang;
 			$co->create_by = $request->username;
 			$co->update_by  = $request->username;
@@ -932,7 +932,7 @@ class PurchaseController extends Controller
 		$cabang = session::get('cabang');
 
 		if(Auth::user()->punyaAkses('Konfirmasi Order','all')){
-			$data['co']=DB::select("select * from confirm_order, spp where co_idspp = spp_id and spp_statuskabag = 'SETUJU' order by co_id desc");
+			$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = kode order by co_id desc");
 
 		}
 		else {
@@ -1082,10 +1082,19 @@ class PurchaseController extends Controller
 	public function saveconfirmorderdt(Request $request){
 		//dd($request);
 		return DB::transaction(function() use ($request) { 
-				$updatespp = spp_purchase::where('spp_id', '=', $request->idspp);
-		$updatespp->update([
-			'spp_status' => 'DITERIMA',
-		]);	
+		
+		if($request->pemroses == 'KEUANGAN'){
+			$updatespp = spp_purchase::where('spp_id', '=', $request->idspp);
+			$updatespp->update([
+				'spp_status' => 'DISETUJUI',
+			]);	
+		}
+		elseif($request->pemroses == 'PEMBELIAN') {
+			$updatespp = spp_purchase::where('spp_id', '=', $request->idspp);
+			$updatespp->update([
+				'spp_status' => 'DISETUJUI',
+			]);
+		}
 
 		$idsppcodt = $request->idspp;
 
@@ -1094,40 +1103,18 @@ class PurchaseController extends Controller
 		$codt = new co_purchasedt();
 
 		$mytime = Carbon::now();		
-		if($request->mngstaffpemb != '') {
-			$co->co_staffpemb_approved = $request->mngstaffpemb;
-			$co->co_time_staffpemb_approved = $mytime;
+		if($request->pemroses == 'PEMBELIAN') {
+			$co->staff_pemb = 'DISETUJUI';
+			$co->time_staffpemb = $mytime;
 			$co->save();
 		}
 
-		if($request->mngpembsetuju != '') {
-			$co->co_mng_pem_approved = $request->mngpembsetuju;
-			$co->co_time_mng_pem_approved = $mytime;
+		if($request->pemroses == 'KEUANGAN') {
+			$co->man_keu = 'DISETUJUI';
+			$co->time_mankeu = $mytime;
 			$co->save();
 		}
 
-		$setuju = 'DISETUJUI';
-		
-		$co->co_mng_pem_approved = $setuju;
-		$co->co_time_mng_pem_approved = $mytime;
-		$co->save();
-
-		$co->co_staffpemb_approved = $setuju;
-		$co->co_time_staffpemb_approved = $mytime;
-		$co->save();
-
-		$countitem = count($request->item);
-
-		$countitm = count($request->supplier);
-
-	/*	if($countitm > 1) {
-			dd('yes lbh dr 1');
-		}
-		else {
-			dd('no');
-		}*/
-
-/*		dd($countitm);*/
 		
 		$countapproval = count($request->qtyapproval);
 
@@ -1233,11 +1220,7 @@ class PurchaseController extends Controller
 		$data['co'] = DB::select("select * from confirm_order where co_idspp = '$idsppcodt'");
 		$data['spp'] = DB::select("select * from spp, masterdepartment, cabang where spp_bagian = kode_department and spp_id = '$idsppcodt' and spp_cabang =  kode ");
 	//	dd($data['spp']);
-		$data = array('namacabang'=>$data['spp'][0]->nama ,
-						'nospp' => $data['spp'][0]->spp_nospp,
-						'setujumngumum'=> $data['co'][0]->mng_umum_approved,
-						'setujumngpem' => $data['co'][0]->co_mng_pem_approved,
-						'setujustaffpemb' => $data['co'][0]->co_staffpemb_approved);
+		
 
 		return redirect('konfirmasi_order/konfirmasi_order');
 
