@@ -1158,27 +1158,6 @@ class selaras_jurnal  extends Controller
   {
     return DB::transaction(function() use ($req) {  
 
-
-
-      $akun = DB::table('master_akun_fitur')
-                ->leftjoin('d_akun','maf_kode_akun','=','id_akun')
-                ->get();
-      $kosong =[];
-      for ($i=0; $i < count($akun); $i++) { 
-        if ($akun[$i]->id_akun == null) {
-          array_push($kosong, $akun[$i]->maf_id);
-        }
-      }
-
-      for ($i=0; $i < count($kosong); $i++) { 
-        $akun = DB::table('master_akun_fitur')
-                ->where('maf_id',$kosong[$i])
-                ->delete();
-      }
-
-      return 'berhasil';
-
-
     	$error_invoice = [];
       	$invoice = DB::table('invoice')
                    ->get();
@@ -1852,5 +1831,27 @@ class selaras_jurnal  extends Controller
       	$lihat = DB::table('d_jurnal')->where('jr_detail','like','INVOICE%')->get();
       	// dd($lihat);
     });    
+  }
+
+
+  public function master_akun_fitur()
+  {
+      $akun = DB::table('master_akun_fitur')
+                ->leftjoin('d_akun','maf_kode_akun','=','id_akun')
+                ->get();
+      $kosong =[];
+      for ($i=0; $i < count($akun); $i++) { 
+        if ($akun[$i]->id_akun == null) {
+          array_push($kosong, $akun[$i]->maf_id);
+        }
+      }
+
+      for ($i=0; $i < count($kosong); $i++) { 
+        $akun = DB::table('master_akun_fitur')
+                ->where('maf_id',$kosong[$i])
+                ->delete();
+      }
+
+      return 'berhasil';
   }
 }
