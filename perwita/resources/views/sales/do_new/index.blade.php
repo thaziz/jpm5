@@ -180,11 +180,8 @@
                         <tr>
                           <th style="width: 100px; padding-top: 16px"> Nomor </th>
                           <td > 
-                           <input type="text" name="do_nomor">
+                           <input type="text" name="do_nomor" class="form-control">
                           </td>
-
-                          
-                          
                         </tr>
                        
 
@@ -229,11 +226,6 @@
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
-
-
-
-
-
                     </div>
                   </div><!-- /.box-footer -->
               </div><!-- /.box -->

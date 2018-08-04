@@ -875,7 +875,6 @@ class LaporanMasterController extends Controller
 	}
 	public function ajaxcarideliveryorder_total(Request $request)
     {	
-
 		$min = $request->min;
 		$max = $request->max;
 		$asal =$request->asal;
