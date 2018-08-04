@@ -53,9 +53,9 @@ class laporan_buku_besar extends Controller
                     ->join("d_jurnal", "d_jurnal.jr_id", "=", "d_jurnal_dt.jrdt_jurnal")
                     ->whereBetween(DB::raw("concat_ws('-', date_part('month', jr_date), date_part('year', jr_date))"), [$d1, $d2])
                     ->whereBetween('d_jurnal_dt.jrdt_acc', [$request->akun1, $request->akun2])
-                    ->select("d_jurnal_dt.jrdt_value", "d_jurnal_dt.jrdt_acc as acc", "d_jurnal.jr_ref", "d_jurnal.jr_note", "d_jurnal.jr_date", "d_jurnal_dt.jrdt_statusdk")->orderBy("d_jurnal_dt.jrdt_statusdk", "asc")->get();
+                    ->select("d_jurnal_dt.jrdt_value", "d_jurnal_dt.jrdt_acc as acc", "d_jurnal.jr_ref", "d_jurnal.jr_note", "d_jurnal.jr_date", "d_jurnal_dt.jrdt_statusdk")->orderBy("d_jurnal.jr_date", "asc")->get();
 
-            // return json_encode($data);
+            // return json_encode($grap);
 
             foreach($time as $key => $data_time){
                 $m = (explode("-", $data_time->time)[0] >= 10) ? explode("-", $data_time->time)[0] : "0".explode("-", $data_time->time)[0];

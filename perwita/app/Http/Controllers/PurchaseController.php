@@ -403,11 +403,11 @@ class PurchaseController extends Controller
 			$co->co_id = $idco;
 			$co->co_noco = 'CO' . '-' . $idspp;
 			$co->co_idspp = $spp->spp_id;
-			$co->mng_umum_approved = $status;
+			$co->staff_pemb = $status;
 		//	$co->time_mng_umum_approved = $time;
-			$co->co_mng_pem_approved = $status;
+			$co->man_keu = $status;
 		//	$co->co_time_mng_pem_approved = $time;
-			$co->co_staffpemb_approved = $status;
+		
 			$co->co_cabang = $request->cabang;
 			$co->create_by = $request->username;
 			$co->update_by  = $request->username;
@@ -1220,11 +1220,7 @@ class PurchaseController extends Controller
 		$data['co'] = DB::select("select * from confirm_order where co_idspp = '$idsppcodt'");
 		$data['spp'] = DB::select("select * from spp, masterdepartment, cabang where spp_bagian = kode_department and spp_id = '$idsppcodt' and spp_cabang =  kode ");
 	//	dd($data['spp']);
-		$data = array('namacabang'=>$data['spp'][0]->nama ,
-						'nospp' => $data['spp'][0]->spp_nospp,
-						'setujumngumum'=> $data['co'][0]->mng_umum_approved,
-						'setujumngpem' => $data['co'][0]->co_mng_pem_approved,
-						'setujustaffpemb' => $data['co'][0]->co_staffpemb_approved);
+		
 
 		return redirect('konfirmasi_order/konfirmasi_order');
 

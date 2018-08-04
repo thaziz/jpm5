@@ -76,7 +76,7 @@
                         <td> <a class="btn btn-xs btn-danger" href="{{url('konfirmasi_order/konfirmasi_orderdetail/'. $co->co_idspp.'')}}"> <i> Lihat Detail </i> </a> </td>
                             @endif --}}
                         <td>
-                        @if(Auth::user()->punyaAkses('Konfirmasi Order','ubah'))
+                        @if(Auth::user()->punyaAkses('Konfirmasi Order','aktif'))
                           @if($co->staff_pemb == 'DISETUJUI')
                                  <span class="label label-info"> {{$co->staff_pemb}} </span>   
                           @else
@@ -86,7 +86,7 @@
                         </td>
 
                         <td>
-                        @if(Auth::user()->punyaAkses('Konfirmasi Order Keu','ubah'))
+                        @if(Auth::user()->punyaAkses('Konfirmasi Order Keu','aktif'))
                           @if($co->man_keu == 'DISETUJUI')
                              <span class="label label-info"> {{$co->man_keu}} </span>       
                           @else
