@@ -228,7 +228,7 @@ class master_akun_controller extends Controller
                     ->where('maf_cabang',$req->cabang)
                     ->get();
      
-        $akun = DB::table('d_akun')get();
+        $akun = DB::table('d_akun')->get();
        
       }else{
         $akun_patty = DB::table('master_akun_fitur')
@@ -236,7 +236,7 @@ class master_akun_controller extends Controller
                     ->where('maf_cabang',$req->cabang)
                     ->get();
 
-        $akun = DB::table('d_akun')get();
+        $akun = DB::table('d_akun')->get();
       }
 
       return view('master_sales.master_akun.dropdown_patty',compact('akun','akun_patty'));
@@ -252,14 +252,14 @@ class master_akun_controller extends Controller
                     ->where('maf_cabang',$req->cabang)
                     ->get();
      
-        $akun = DB::table('d_akun')get();
+        $akun = DB::table('d_akun')->get();
       }else{
         $akun_patty = DB::table('master_akun_fitur')
                     ->where('maf_group','1')
                     ->where('maf_cabang',$req->cabang)
                     ->get();
      
-        $akun = DB::table('d_akun')get();
+        $akun = DB::table('d_akun')->get();
       }
 
       return view('master_sales.master_akun.dropdown_item',compact('akun','akun_item'));
