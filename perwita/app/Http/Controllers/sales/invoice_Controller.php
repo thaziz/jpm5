@@ -1976,13 +1976,6 @@ public function update_invoice(request $request)
       }
     }
 
-    public function cari_faktur_pajak(request $req)
-    {
-        $data = DB::table('invoice')
-                  ->where('i_nomor',$req->nomor)
-                  ->first();
-        $storage = url('storage/app/invoice').'/'.$data->i_image_pajak;
-        return response()->json(['data'=>$data,'img'=>$storage]);
-    }
+    
 
 }

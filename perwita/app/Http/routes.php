@@ -1310,6 +1310,11 @@ Route::get('master_sales/kendaraan/{id}/hapus_data', 'master_sales\kendaraan_Con
 //Nomor seri pajak
 Route::get('master_sales/nomorseripajak','master_sales\nomor_seri_pajak_controller@index');
 Route::get('master_sales/datatable_nomor_seri_pajak','master_sales\nomor_seri_pajak_controller@datatable_nomor_seri_pajak')->name('datatable_nomor_seri_pajak');
+Route::post('master_sales/save_pajak_invoice', 'master_sales\nomor_seri_pajak_controller@save_pajak_invoice');
+Route::get('master_sales/cari_faktur_pajak', 'master_sales\nomor_seri_pajak_controller@cari_faktur_pajak');
+Route::get('master_sales/cari_id_pajak', 'master_sales\nomor_seri_pajak_controller@cari_id_pajak');
+Route::get('master_sales/hapus_faktur_pajak', 'master_sales\nomor_seri_pajak_controller@hapus_faktur_pajak');
+Route::get('master_sales/cek_nomor_pajak', 'master_sales\nomor_seri_pajak_controller@cek_nomor_pajak');
 
 
 //---WILAYAH----------
@@ -1321,7 +1326,7 @@ Route::get('sales/provinsi/tabel', 'wilayah\provinsi_Controller@table_data');
 Route::get('sales/provinsi/get_data', 'wilayah\provinsi_Controller@get_data');
 Route::post('sales/provinsi/save_data', 'wilayah\provinsi_Controller@save_data');
 Route::post('sales/provinsi/hapus_data', 'wilayah\provinsi_Controller@hapus_data');
-//end provinsi
+//end provinsi1
 
 
 //kota

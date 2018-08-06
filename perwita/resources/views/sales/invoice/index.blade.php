@@ -284,7 +284,7 @@
       }
      });
 
-    function hapus(id){
+  function hapus(id){
         swal({
         title: "Apakah anda yakin?",
         text: "Hapus Data!",
