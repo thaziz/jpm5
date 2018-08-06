@@ -1006,7 +1006,7 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function savesupplier(Request $request) {
-	//	dd($request);
+		/*dd($request);*/
 		$mastersupplier = new masterSupplierPurchase();
 		$cabang = $request->cabang;
 	/*	dd($request);*/

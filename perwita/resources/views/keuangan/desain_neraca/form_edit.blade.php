@@ -1150,7 +1150,7 @@
       function grab_parrent(){
         html = '<option value="---">- Pilih Parrent</option>';
 
-        $.each($.grep(data_neraca, function(n){ return n.id_parrent == null && n.type == state && n.jenis == 1 }), function(i, n){
+        $.each($.grep(data_neraca, function(n){ return n.id_parrent == "" && n.type == state && n.jenis == 1 }), function(i, n){
           html = html+'<option value="'+n.nomor_id+'">'+n.nomor_id+'</option>';
         })
 

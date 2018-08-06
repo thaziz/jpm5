@@ -302,6 +302,10 @@ class kasKeluarController extends Controller
 			$all   = DB::select("SELECT kode, nama from subcon order by kode "); 
 
 			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
+		} elseif($req->jenis_bayar == 11){
+			$all   = DB::select("SELECT kode, nama from subcon order by kode "); 
+
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		}
 	}
 

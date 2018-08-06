@@ -492,16 +492,14 @@
         valupdatestock = val;
           if(val == 'Y') {
          valupdatestock = val;
-                $('.kendaraan').remove();
-               var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control chosen-select gudang' name='gudang'>" +
-                              "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
-                           "</select> </td>";
-              $('.lokasigudang').html(rowgudang);
+              $('.kendaraan').remove();
+           
+              $('.lokasigudang').show();
           }
           else if(val == 'T') {
            
              valupdatestock = val;
-            $('.lokasigudang').empty();
+      
             $('.header-table').find($('.kendaraan')).remove();
             var rowColom = "<th class='kendaraan' style='width:100px'> Kendaraan </th>";
              
@@ -518,29 +516,35 @@
             $("<th class='kendaraan'> </th>").insertAfter($('.kolomtghpembayaran'));
 
             $("<td class='kendaraan'> <select class='form-control kendaraan' name='kendaraan[]'>  @foreach($data['kendaraan'] as $kndraan) <option value={{$kndraan->id}}> {{$kndraan->nopol}} - {{$kndraan->merk}} </option> @endforeach  </select> </td>").insertAfter($('.pembayaranken'))
-            
+             $('.lokasigudang').show();
            //  $("rowColom").insertAfter("#pembayaran");
         }
       }
     
       else {
-         if(val == 'Y') {
-           valupdatestock = val;
+          if(penerimaan == 'Y'){
+           if(val == 'Y') {
+               $('#tdstock').show();
+            $('.updatestock').show();
+              valupdatestock = val;
                 $('.kendaraan').remove();
-               var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
-                              "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
-                           "</select> </td>";
-              $('.lokasigudang').html(rowgudang);
-             // $('.penerimaan').val('S');
+         
+              $('.lokasigudang').show();
           }
           else {
              valupdatestock = val;
-              var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
-                              "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
-                           "</select> </td>";
-              $('.lokasigudang').html(rowgudang);
-
+          
+              $('.lokasigudang').show();
+            
           }
+        }
+        else {
+            $('.lokasigudang').hide();
+            $('#tdstock').hide();
+            $('.updatestock').hide();
+            valupdatestock = 'J';
+           
+        }  
       }
 
      
@@ -561,7 +565,7 @@
                       $('.barang').append(" <option value=''>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                          $('.barang').append("<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+"> <h5> "+obj.nama_masteritem+" </h5> </option>");
+                          $('.barang').append("<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+"> <h5>"+obj.kode_item+" - "+obj.nama_masteritem+" </h5> </option>");
                            $('.barang').trigger("chosen:updated");
                            $('.barang').trigger("liszt:updated");
                         })
@@ -1018,16 +1022,13 @@
           if(val == 'Y') {
          valupdatestock = val;
                 $('.kendaraan').remove();
-              /* var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
-                              "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
-                           "</select> </td>";
-              $('.lokasigudang').html(rowgudang);*/
+            
               $('.lokasigudang').show();
           }
           else if(val == 'T') {
            
              valupdatestock = val;
-            $('.lokasigudang').hide();
+        
             $('.header-table').find($('.kendaraan')).remove();
             var rowColom = "<th class='kendaraan' style='width:100px'> Kendaraan </th>";
              
@@ -1035,10 +1036,6 @@
              var colomBarang = "<td class='kendaraan'> Barang </td>";
              var colomSupplier = "<td class='kendaraan'> Supplier </td>";
 
-            /*  $('.addbarang td:eq(6)').append(colomBarang);
-              $('.data-supplier td:eq(6)').append(colomSupplier);*/
-
-            //$('.header-table th:eq(6)').append(rowColom);
 
             $("<th class='kendaraan' style='width:100px'> Kendaraan </th>").insertAfter($('.kolompembayaran'));
             $("<th class='kendaraan'> </th>").insertAfter($('.kolomtghpembayaran'));
@@ -1056,21 +1053,14 @@
             $('.updatestock').show();
               valupdatestock = val;
                 $('.kendaraan').remove();
-              /* var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
-                              "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
-                           "</select> </td>";
-              $('.lokasigudang').html(rowgudang);*/
-              //$('.penerimaan').val('S');
+         
               $('.lokasigudang').show();
           }
           else {
              valupdatestock = val;
-            /* var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
-                              "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
-                           "</select> </td>";
-              $('.lokasigudang').html(rowgudang);*/
+          
               $('.lokasigudang').show();
-             //$('.penerimaan').val('NS');
+            
           }
         }
         else {
@@ -1078,7 +1068,7 @@
             $('#tdstock').hide();
             $('.updatestock').hide();
             valupdatestock = 'J';
-            //$('.penerimaan').val('J');
+           
         }
       }
      
@@ -1121,132 +1111,7 @@
 
 
     })
-  /* $(function(){
-      $('.jenisitem').change(function(){
-              val = $('.updatestock').val();
-              $('.loadingjenis').css('display', 'block');
-              var jnsitem = $(this).val();
-              var variable = jnsitem.split(",");
-              var jenisitem = variable[0];
-              var penerimaan = variable[1];
-              
-
-
-              if(penerimaan == 'T'){
-                 $('.penerimaan').val(penerimaan);
-                   $('td#tdstock').hide();
-              }
-              else {
-                 $('td#tdstock').show();
-                $('.penerimaan').val(penerimaan);
-              }
-             
-              var updatestock = $('.updatestock').val();
-
-              if(jenisitem == 'S' && updatestock == 'T'){
-                 $('.loadingjenis').css('display', 'block');
-                    valupdatestock = val;
-              $('.lokasigudang').empty();
-              $('.header-table').find($('.kendaraan')).remove();
-              var rowColom = "<th class='kendaraan' style='width:100px'> Kendaraan </th>";
-               
-
-               var colomBarang = "<td class='kendaraan'> Barang </td>";
-               var colomSupplier = "<td class='kendaraan'> Supplier </td>";
-
-              /*  $('.addbarang td:eq(6)').append(colomBarang);
-                $('.data-supplier td:eq(6)').append(colomSupplier);*/
-
-              //$('.header-table th:eq(6)').append(rowColom);
-
-              /*$("<th class='kendaraan' style='width:100px'> Kendaraan </th>").insertAfter($('.kolompembayaran'));
-              $("<th class='kendaraan'> </th>").insertAfter($('.kolomtghpembayaran'));
-
-              $("<td class='kendaraan'> <select class='form-control kendaraan kndraan' name='kendaraan[]'>  @foreach($data['kendaraan'] as $kndraan) <option value={{$kndraan->id}}> {{$kndraan-> nopol}} - {{$kndraan->merk}} </option> @endforeach  </select> </td>").insertAfter($('.pembayaranken'))
-              }
-              
-            
-              if(penerimaan == 'T'){
-                 $('tr#trstock').hide();
-                 valupdatestock = 'J';
-                
-                $.ajax({
-                url : baseUrl + '/suratpermintaanpembelian/ajax_jenisitem',
-                type : "post",
-                data : {jenisitem,updatestock,penerimaan},
-                dataType : "json",
-                success : function(data) {
-                  $('.loadingjenis').css('display' , 'none');
-                  
-                  arrItem = data;
-                  console.log('arrItem' + arrItem);
-
-                  if(arrItem.length > 0) {
-                      $('.barang').empty();
-                      $('.barang').append(" <option value=''>  -- Pilih Barang -- </option> ");
-                        $.each(arrItem, function(i , obj) {
-                        //  console.log(obj.is_kodeitem);
-                          $('.barang').append("<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+">"+obj.nama_masteritem+"</option>");
-                        })
-                         $('.barang').trigger("chosen:updated");
-                         $('.barang').trigger("liszt:updated");
-                    }
-                  else{
-                     
-                     //   toastr.info('kosong');
-                         $('.barang').empty();
-                        var rowKosong = "<option value=''> -- Data Kosong --</option>";
-                       $('.barang').append(rowKosong); 
-                          $('.barang').trigger("chosen:updated");
-                         $('.barang').trigger("liszt:updated");            
-                  }
-                }
-              })
-
-             }
-             else if(penerimaan != 'T') {
-                $('tr#trstock').show();
-                $('td#trstock').show();
-
-                if(updatestock != '') {
-
-             
-              $.ajax({
-                url : baseUrl + '/suratpermintaanpembelian/ajax_jenisitem',
-                type : "post",
-                data : {jenisitem,updatestock,penerimaan},
-                dataType : "json",
-                success : function(data) {
-              //    console.log(data);
-                  arrItem = data;
-                  console.log('arrItem' + arrItem);
-                  $('.loadingjenis').css('display', 'none');
-                  if(arrItem.length > 0) {
-                      $('.barang').empty();
-                      $('.barang').append(" <option value=''>  -- Pilih Barang -- </option> ");
-                        $.each(arrItem, function(i , obj) {
-                        //  console.log(obj.is_kodeitem);
-                          $('.barang').append("<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+">"+obj.nama_masteritem+"</option>");
-                        })
-                         $('.barang').trigger("chosen:updated");
-                         $('.barang').trigger("liszt:updated");
-                    }
-                  else{
-                     
-                     //   toastr.info('kosong');
-                         $('.barang').empty();
-                        var rowKosong = "<option value=''> -- Data Kosong --</option>";
-                       $('.barang').append(rowKosong);   
-                          $('.barang').trigger("chosen:updated");
-                         $('.barang').trigger("liszt:updated");          
-                  }
-                }
-              })
-            } 
-           }
-            
-     })
-    })*/
+ 
 
 
 

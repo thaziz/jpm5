@@ -256,7 +256,7 @@
                     
                          @if($data['countkendaraan'] > 0) 
                           @foreach($data['kendaraan'] as $kndaraan)
-                            <td> <select class="form-control kendaraan" disabled=""> @foreach($data['masterkendaraan'] as $msterkendaraan) <option value="{{$msterkendaraan->id_vhc}}" @if($kndaraan->sppd_kendaraan == $msterkendaraan->id_vhc) selected="" @endif  > {{$msterkendaraan->vhccde}} - {{$msterkendaraan->merk}}  </option> @endforeach </select> </td>
+                            <td> <select class="form-control kendaraan" disabled=""> @foreach($data['masterkendaraan'] as $msterkendaraan) <option value="{{$msterkendaraan->id}}" @if($kndaraan->sppd_kendaraan == $msterkendaraan->id) selected="" @endif  > {{$msterkendaraan->nopol}} - {{$msterkendaraan->merk}}  </option> @endforeach </select> </td>
                           @endforeach
                          @endif
 
@@ -357,7 +357,7 @@
                                             </th>
                                             <td>
                                               @if($data['spp'][0]->spp_statuskabag != 'SETUJU')
-                                                <input type="text" class="form-control" name="keterangankabag">
+                                                <input type="text" class="form-control" name="keterangankabag" required="">
                                               @else
                                                   <input type="text" class="form-control" name="keterangankabag" value="{{$data['spp'][0]->spp_keterangankabag}}">
                                               @endif
@@ -401,7 +401,7 @@
 
 
 $('#formsetujukabag').submit(function(){
-        alert('test');
+       // alert('test');
           event.preventDefault();
           var post_url2 = baseUrl + '/suratpermintaanpembelian/setujukabag';
           var form_data2 = $('#formsetujukabag').serialize();
@@ -620,7 +620,6 @@ $('#formsetujukabag').submit(function(){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        console.log(idspp);
         $.ajax({     
           type :"get",
           data : idspp,

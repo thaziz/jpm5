@@ -96,7 +96,7 @@ class desain_neracaController extends Controller
         }
 
         $data_akun = DB::table("d_akun")->select("*")->get();
-        $data_group = DB::table("d_group_akun")->where("jenis_group", "Neraca/Balance Sheet")->select("*")->orderBy("nama_group", "asc")->get();
+        $data_group = DB::table("d_group_akun")->where("jenis_group", 1)->select("*")->orderBy("nama_group", "asc")->get();
         $data_desain = DB::table("desain_neraca")->where("id_desain", $id)->first();
         $data_neraca = DB::table("desain_neraca_dt")->where("id_desain", $id)->get();
         $data_detail = DB::table("desain_detail_dt")->where("id_desain", "$id")->get();

@@ -47,7 +47,7 @@
                 <div class="logo-element" style="background:#f3f3f4;">
                     <img src="{{ asset('assets/img/dboard/logo/sublogo.png') }}" width="30px">
                 </div>
-            </li>F
+            </li>
 
                 <!-- Setting --> 
                 <li class="treeview sidebar data-master {{Request::is('setting/pengguna') ? 'active' : '' || Request::is('setting/pengguna/*') ? 'active' : '' }}">
