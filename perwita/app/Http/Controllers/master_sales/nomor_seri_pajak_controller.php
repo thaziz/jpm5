@@ -73,7 +73,6 @@ class nomor_seri_pajak_controller extends Controller
     }
     public function save_pajak_invoice(Request $req)
     {
-      dd($req->all());
     	$file = $req->file('files');
     	if ($req->id_old == '') {
     		$req->id_old = 0;
@@ -107,7 +106,7 @@ class nomor_seri_pajak_controller extends Controller
   	        	$filename = 'nomor_seri_pajak/faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension();
   	        	Storage::put($filename,file_get_contents($req->file('files')));
   	      	}
-
+            dd($filename);
   	      	$save = DB::table('nomor_seri_pajak')
   	                  		->insert([
   	                  			'nsp_id'		 => $id,
