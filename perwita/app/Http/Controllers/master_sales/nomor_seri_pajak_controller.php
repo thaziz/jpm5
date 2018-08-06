@@ -104,7 +104,7 @@ class nomor_seri_pajak_controller extends Controller
           	$id = DB::table('nomor_seri_pajak')->max('nsp_id')+1;
           	if ($file != null) {
   	        	$filename = 'nomor_seri_pajak/faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension();
-  	        	Storage::put($filename,file_get_contents($req->file('files')));
+  	        	Storage::put($filename,file_get_contents($file));
               dd($filename);
   	      	}
   	      	$save = DB::table('nomor_seri_pajak')
