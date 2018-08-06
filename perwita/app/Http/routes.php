@@ -1058,6 +1058,12 @@ Route::get('carideliveryorder_total/carideliveryorder_total','LaporanMasterContr
   //deial Entry
   Route::get('ajaxcarideliveryorder_total_entry/ajaxcarideliveryorder_total_entry','LaporanMasterController@ajaxcarideliveryorder_total_entry');
   //end off
+  //ajaxcarideliveryorder_non_customer
+  Route::get('ajaxcarideliveryorder_non_customer/ajaxcarideliveryorder_non_customer','LaporanMasterController@ajaxcarideliveryorder_non_customer');
+  //end off
+   //ajaxcarideliveryorder_belum_delivered_ok
+  Route::get('ajaxcarideliveryorder_belum_delivered_ok/ajaxcarideliveryorder_belum_delivered_ok','LaporanMasterController@ajaxcarideliveryorder_belum_delivered_ok');
+  //end off
   //deial mobil
   Route::get('ajaxcarideliveryorder_total_detailnopol/ajaxcarideliveryorder_total_detailnopol','LaporanMasterController@ajaxcarideliveryorder_total_detailnopol');
   //end off
@@ -1094,6 +1100,12 @@ Route::post('reportinvoice/reportinvoice', 'LaporanMasterController@reportinvoic
 Route::get('excelinvoice/excelinvoice', 'LaporanMasterController@excelinvoice')->name('excelinvoice');
 Route::get('carireport_invoice/carireport_invoice', 'LaporanMasterController@carireport_invoice')->name('carireport_invoice');
 Route::get('carientry_invoice/carientry_invoice', 'LaporanMasterController@carientry_invoice')->name('carientry_invoice');
+Route::get('carientry_invoice/carientry_invoice', 'LaporanMasterController@carientry_invoice')->name('carientry_invoice');
+//
+Route::get('cari_invoice_belum_tt/cari_invoice_belum_tt', 'LaporanMasterController@cari_invoice_belum_tt')->name('cari_invoice_belum_tt');
+Route::get('cari_invoice_sudah_tt/cari_invoice_sudah_tt', 'LaporanMasterController@cari_invoice_sudah_tt')->name('cari_invoice_sudah_tt');
+Route::get('cari_faktur_belum_tt/cari_faktur_belum_tt', 'LaporanMasterController@cari_faktur_belum_tt')->name('cari_faktur_belum_tt');
+Route::get('cari_jarak_invoice_dengan_tt/cari_jarak_invoice_dengan_tt', 'LaporanMasterController@cari_jarak_invoice_dengan_tt')->name('cari_jarak_invoice_dengan_tt');
 //END OF LAPORAN INVOICE
 
 //LAPORAN KWITANSI

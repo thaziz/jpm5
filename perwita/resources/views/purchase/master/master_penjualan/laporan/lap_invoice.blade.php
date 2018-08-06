@@ -15,10 +15,10 @@
     min-width: 310px; 
     max-width: 100%;
     margin: 0 auto;
-}
-.highcharts-color-0{
-  color:red;
-}
+    }
+    .highcharts-color-0{
+      color:red;
+    }
 
   .dataTables_filter, .dataTables_info { display: none; }
 
@@ -66,6 +66,9 @@
                   <div class="form-group col-md-4">
                       <select class="cari_semua chosen-select-width laporan" id="jenis"  name="jenis">
                         <option value="INVOICE">INVOICE</option>
+                        <option value="INVOICE BELUM TT">INVOICE BELUM TT</option>
+                        <option value="INVOICE SESUDAH TT">INVOICE SESUDAH TT</option>
+                        <option value="JARAK INVOICE DENGAN TT">JARAK INVOICE DENGAN TT</option>
                         <option value="ENTRY">ENTRY</option>
                       </select>
                     </div>
@@ -141,6 +144,17 @@
       var customer =  $('.select-picker5').val();
       var cabang =  $('#cabang').val();
       var laporan = $('.laporan').val();
+      
+      if (awal == '') {
+        toastr.error('Tgl awal Harus Di isi !','Peringatan!');
+        return false;
+      }
+      if (akir == '') {
+        toastr.error('Tgl akir Harus Di isi !','Peringatan!');
+        return false;
+      }
+
+
 
       if (laporan == 'INVOICE') {
         $.ajax({
@@ -151,7 +165,9 @@
             $('#drop_here').html(data);
           }
        });
-      }else if (laporan == 'ENTRY') {
+      }
+
+      else if (laporan == 'ENTRY') {
         $.ajax({
           data: {awal:awal,akir:akir,customer:customer,cabang:cabang},
           url: baseUrl + '/carientry_invoice/carientry_invoice',
@@ -161,6 +177,40 @@
           }
        });
       }
+
+      else if (laporan == 'INVOICE BELUM TT') {
+        $.ajax({
+          data: {awal:awal,akir:akir,customer:customer,cabang:cabang},
+          url: baseUrl + '/cari_invoice_belum_tt/cari_invoice_belum_tt',
+          type: "get",
+           success : function(data){
+            $('#drop_here').html(data);
+          }
+       });
+      }
+
+      else if (laporan == 'INVOICE SESUDAH TT') {
+        $.ajax({
+          data: {awal:awal,akir:akir,customer:customer,cabang:cabang},
+          url: baseUrl + '/cari_invoice_sudah_tt/cari_invoice_sudah_tt',
+          type: "get",
+           success : function(data){
+            $('#drop_here').html(data);
+          }
+       });
+      }
+
+      else if (laporan == 'JARAK INVOICE DENGAN TT') {
+        $.ajax({
+          data: {awal:awal,akir:akir,customer:customer,cabang:cabang},
+          url: baseUrl + '/cari_jarak_invoice_dengan_tt/cari_jarak_invoice_dengan_tt',
+          type: "get",
+           success : function(data){
+            $('#drop_here').html(data);
+          }
+       });
+      }
+
       
     }
 
