@@ -49,6 +49,9 @@ class invoice_Controller extends Controller
                             $a = '';
                             $b = '';
                             $c = '';
+                            $d = '';
+
+
                             
                             if($data->i_statusprint == 'Released' or Auth::user()->punyaAkses('Invoice','ubah')){
                                 if(cek_periode(carbon::parse($data->i_tanggal)->format('m'),carbon::parse($data->i_tanggal)->format('Y') ) != 0){
@@ -72,7 +75,11 @@ class invoice_Controller extends Controller
                             }else{
                               $c = '';
                             }
-                            return $a . $b .$c  ;
+
+
+                            $d = '<button title="lihat jurnal" type="button" onclick="lihat_jurnal(\''.$data->i_nomor.'\')" class="btn btn-xs btn-success btnjurnal"><i class="fa fa-eye"></i></button>';
+                 
+                            return '<div class="btn-group">'.$a . $b .$c .$d.'</div>' ;
                                    
                         })
                         ->addColumn('customer', function ($data) {

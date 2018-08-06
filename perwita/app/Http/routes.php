@@ -1309,6 +1309,7 @@ Route::get('master_sales/kendaraan/{id}/hapus_data', 'master_sales\kendaraan_Con
 
 //Nomor seri pajak
 Route::get('master_sales/nomorseripajak','master_sales\nomor_seri_pajak_controller@index');
+Route::get('master_sales/datatable_nomor_seri_pajak','master_sales\nomor_seri_pajak_controller@datatable_nomor_seri_pajak')->name('datatable_nomor_seri_pajak');
 
 
 //---WILAYAH----------

@@ -122,7 +122,7 @@
     </div>
 </div>
 
-<div class="modal modal_jurnal fade" id="modal_pajak" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="modal_pajak" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
     <div class="modal-content">
       <div class="modal-header">
@@ -174,6 +174,25 @@
 
 <div class="row" style="padding-bottom: 50px;"></div>
 
+
+<div class="modal  fade" id="modal_jurnal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Jurnal Invoice</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body tabel_jurnal">
+          
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 @endsection
 
@@ -443,6 +462,22 @@ $('.simpan_pdf').click(function(e) {
       });
 
 });
+
+
+function lihat_jurnal(id){
+    $.ajax({
+        url:baseUrl + '/sales/kwitansi/jurnal',
+        type:'get',
+        data:{id},
+        success:function(data){
+           $('.tabel_jurnal').html(data);
+           $('#modal_jurnal').modal('show');
+        },
+        error:function(data){
+            // location.reload();
+        }
+    }); 
+}
 
 </script>
 @endsection
