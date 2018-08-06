@@ -1957,25 +1957,40 @@ public function update_invoice(request $request)
 
     public function pajak_invoice(request $request)
     {
-      $file = $request->file('files');
-      $id = $request->invoice;
-      if ($file != null) {
-
-        $id = str_replace('/', '-', $id);
-        $filename = 'invoice/faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension();
-
+        $id = $request->invoice;
         $save = DB::table('invoice')
                   ->where('i_nomor',$request->invoice)
-                  ->update(['i_image_pajak' => 'faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension(),'i_faktur_pajak'=>$request->nomor_pajak]);
-        
-
-        Storage::put($filename,file_get_contents($request->file('files')));
-    
+                  ->update([
+                    'i_faktur_pajak'=>$request->nomor_pajak,
+                    'i_id_pajak'=>$request->id_pajak
+                  ]);
 
         return response()->json(['status'=>1]);
-      }
     }
 
-    
+    public function cari_nomor_pajak(Request $req)
+    {
+      $data = DB::table('nomor_seri_pajak')
+                ->leftjoin('invoice','i_id_pajak','=','nsp_id')
+                ->where('nsp_aktif',true)
+                ->where('i_id_pajak',null)
+                ->get();
+
+      $temp = DB::table('nomor_seri_pajak')
+                ->join('invoice','i_id_pajak','=','nsp_id')
+                ->where('i_nomor',$req->invoice)
+                ->get();
+      $data = array_merge($data,$temp);
+
+      return view('sales.invoice.append_modal',compact('data'));
+    }
+    public function cari_faktur_pajak(request $req)
+    {
+        $data = DB::table('nomor_seri_pajak')
+                ->join('invoice','i_id_pajak','=','nsp_id')
+                ->where('i_nomor',$req->nomor)
+                ->first();
+        return response()->json(['data'=>$data]);
+    }
 
 }

@@ -172,6 +172,7 @@ $(document).ready(function(){
         processing: true,
         // responsive:true,
         serverSide: true,
+        "order": [[ 1, "desc" ],[ 0, "desc" ]],
         ajax: {
             url:'{{ route("datatable_nomor_seri_pajak") }}',
 

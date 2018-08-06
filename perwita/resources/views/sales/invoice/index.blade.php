@@ -122,7 +122,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal_pajak" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal modal_jurnal fade" id="modal_pajak" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
     <div class="modal-content">
       <div class="modal-header">
@@ -136,19 +136,9 @@
               <tr>
                   <td>Nomor Pajak</td>
                   <td>
-                    <input type="text" class="form-control nomor_pajak" name="nomor_pajak">
+                    <input type="text" placeholder="klik disini untuk memilih faktur" class="form-control nomor_pajak" name="nomor_pajak">
+                    <input type="hidden" class="form-control id_pajak" name="id_pajak">
                     <input type="hidden" class="form-control invoice" name="invoice">
-                </td>
-              </tr>
-              <tr>
-                <td>PDF (max 1MB)</td>
-                <td>
-                  <div class="file-upload">
-                    <div class="file-select">
-                      <div class="file-select-name" id="noFile">Choose Image...</div> 
-                      <input type="file" name="image" onchange="loadFile(event)" id="chooseFile">
-                    </div>
-                  </div>
                 </td>
               </tr>
               <tr hidden="">
@@ -160,7 +150,9 @@
                 </td>
               </tr>
               <tr>
-                <td align="right" colspan="2"><button type="button" class="simpan_pdf btn btn-primary">Download PDF</button></td>
+                <td align="right" colspan="2">
+                  <button type="button" class="simpan_pdf btn btn-primary">Download PDF</button>
+                </td>
               </tr>
           </table>
         </div>
@@ -171,9 +163,6 @@
     </div>
   </div>
 </div>
-
-<div class="row" style="padding-bottom: 50px;"></div>
-
 
 <div class="modal  fade" id="modal_jurnal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
@@ -193,6 +182,26 @@
     </div>
   </div>
 </div>
+
+<div class="modal  fade" id="modal_faktur_pajak" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Faktur Pajak</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body append_modal">
+            
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 @endsection
 
@@ -275,16 +284,7 @@
         // clearInterval(interval);
     }
 
-    $(".nomor_pajak").keypress(function (e) {
-     //if the letter is not digit then display error and don't type anything
-       if (e.which != 8 && e.which != 0  && (e.which < 48 || e.which > 57 ) && e.which != 46  ) {
-          //display error message
-          
-                 return false;
-      }
-     });
-
-  function hapus(id){
+    function hapus(id){
         swal({
         title: "Apakah anda yakin?",
         text: "Hapus Data!",
@@ -330,18 +330,16 @@
 
 function faktur_pajak(nomor) {
     $('.invoice').val(nomor);
+    $('.nomor_pajak').val('');
     $.ajax({
           url:baseUrl + '/sales/cari_faktur_pajak',
           data:{nomor},
           type:'get',
           dataType:'json',
           success:function(data){
-            $('.nomor_pajak').val(data.data.i_faktur_pajak);
-            if (data.data.i_image_pajak != null) {
-              $('#output').attr('src','{{asset('perwita/storage/app/invoice')}}'+'/'+data.data.i_image_pajak);
-              $('#noFile').text(data.data.i_image_pajak);
-            }else{
-              $('#noFile').text('Pilih FIle...');
+            if (data.data != null) {
+              $('.nomor_pajak').val(data.data.i_faktur_pajak);
+              $('.id_pajak').val(data.data.i_id_pajak);
             }
             $('#modal_pajak').modal('show');
           },
@@ -394,6 +392,22 @@ var loadFile = function(event) {
   reader.readAsDataURL(event.target.files[0]);
 };
 
+
+$('.nomor_pajak').focus(function(){
+  var invoice = $('.invoice').val();
+    $.ajax({
+        url:baseUrl + '/sales/cari_nomor_pajak',
+        type:'get',
+        data:{invoice},
+        success:function(data){
+           $('.append_modal').html(data);
+           $('#modal_faktur_pajak').modal('show');
+        },
+        error:function(data){
+            // location.reload();
+        }
+    }); 
+})
 $('.save_pajak').click(function(){
 
     $.ajaxSetup({
@@ -402,12 +416,8 @@ $('.save_pajak').click(function(){
         }
     });
 
-    var formdata = new FormData();  
-    formdata.append( 'files', $('#chooseFile')[0].files[0]);
-       console.log(formdata);
     $.ajax({
           url:baseUrl + '/sales/pajak_invoice'+'?'+$('.table_pajak :input').serialize(),
-          data:formdata,
           type:'POST',
           dataType:'json',
           processData: false,
@@ -446,8 +456,8 @@ $('.simpan_pdf').click(function(e) {
           type:'get',
           dataType:'json',
           success:function(data){
-            if (data.data.i_image_pajak !=null) {
-               window.location.href = '{{asset('perwita/storage/app/invoice')}}'+'/'+data.data.i_image_pajak;
+            if (data.data!=null) {
+               window.open('{{asset('perwita/storage/app')}}'+'/'+data.data.nsp_pdf);
             }
           },
           error:function(data){
@@ -458,9 +468,8 @@ $('.simpan_pdf').click(function(e) {
                     timer: 2000,
                     showConfirmButton: false
         });
-       }
-      });
-
+      }
+    });
 });
 
 
@@ -479,5 +488,13 @@ function lihat_jurnal(id){
     }); 
 }
 
+function pilih_pajak(a) {
+  var nomor = $(a).find('.nsp_nomor_pajak').val();
+  var id    = $(a).find('.nsp_id').val();
+
+  $('.nomor_pajak').val(nomor);
+  $('.id_pajak').val(id);
+  $('#modal_faktur_pajak').modal('hide');
+}
 </script>
 @endsection

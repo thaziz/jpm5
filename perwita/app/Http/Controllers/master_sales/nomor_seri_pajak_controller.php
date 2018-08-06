@@ -64,7 +64,7 @@ class nomor_seri_pajak_controller extends Controller
                         	if ($data->nsp_aktif == true) {
                           		return '<input type="checkbox" onchange="cek(\''.$data->nsp_id.'\',this)" checked class="check form-control">';
                         	}else{
-                          		return '<input type="checkbox" class="check form-control">';
+                          		return '<input type="checkbox"  onchange="cek(\''.$data->nsp_id.'\',this)" class="check form-control">';
                         	}
                         })
                         ->addIndexColumn()
