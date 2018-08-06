@@ -36,10 +36,10 @@
         </td>
       </tr>
 
-      <tr>
+      <tr id="type_ctn">
         <td class="text-center">Type Group</td>
         <td colspan="2">
-          <select name="jenis" class="select_validate form-control" id="jenis">
+          <select name="type" class="select_validate form-control" id="type">
             <option value="A"> Aktiva</option>
             <option value="P"> Pasiva</option>
           </select>
@@ -118,6 +118,7 @@
           _token        : '{{ csrf_token() }}',
           nama          : $("#nama_group").val(),
           jenis         : $("#jenis").val(),
+          type          : $('#type').val(),
           akun_inside   : list_akun
         }
 
@@ -163,6 +164,14 @@
 
     $("#nama_group").on("keyup", function(){
       $(this).val($(this).val().toUpperCase())
+    })
+
+    $("#jenis").change(function(evt){
+      evt.preventDefault(); var context = $(this);
+      if(context.val() == 2)
+        $('#type_ctn').css('display', 'none');
+      else
+        $('#type_ctn').css('display', '');
     })
 
     $("#tambah_akun").click(function(evt){
@@ -247,9 +256,12 @@
         $(this).val("");
       })
 
-      $(".select_validate").each(function(){
-          $(this).val("Neraca/Balance Sheet");
-      })
+      $("#jenis").val(1);
+      $("#type").val("A");
+
+      // $(".select_validate").each(function(){
+      //     $(this).val(1);
+      // })
 
       // $('#kode_cabang').trigger("chosen:updated");
       // $('#saldo').prop('checked', false);
