@@ -15,7 +15,8 @@ use Auth;
 use Yajra\Datatables\Datatables;
 // use Intervention\Image\ImageManagerStatic as Image;
 use File;
-use Storage;
+use Illuminate\Support\Facades\Storage;
+
 
 class nomor_seri_pajak_controller extends Controller
 {
@@ -105,7 +106,7 @@ class nomor_seri_pajak_controller extends Controller
           	if ($file != null) {
   	        	$filename = 'nomor_seri_pajak/faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension();
   	        	Storage::put($filename,file_get_contents($file));
-              dd($filename);
+              // dd($filename);
   	      	}
   	      	$save = DB::table('nomor_seri_pajak')
   	                  		->insert([
