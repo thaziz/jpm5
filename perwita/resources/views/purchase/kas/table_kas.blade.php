@@ -24,6 +24,7 @@
          processing: true,
           // responsive:true,
           serverSide: true,
+          "order": [[ 1, "desc" ],[ 0, "desc" ]],
           ajax: {
               url:'{{ route("datatable_bk") }}',
               data:{cabang}

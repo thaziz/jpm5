@@ -56,8 +56,9 @@
                         <th> No SPP </th>
                         <th> Cabang Pemohon </th>
                         <th> Tanggal di butuhkan </th>
-                        <th> Aksi </th>
-                        <th> status </th>
+                        <th> Status Pembelian </th>
+                        <th> Status Keuangan </th>
+                        <th> </th>
                        
                     </tr>
                   
@@ -68,20 +69,32 @@
                       <tr> 
                         <td> {{$index + 1}} </td>
                         <td> {{$co->spp_nospp}} </td>
-                        <td> {{$co->spp_cabang}} </td>
+                        <td> {{$co->spp_cabang}} - {{$co->nama}} </td>
                         <td>  {{ Carbon\Carbon::parse($co->spp_tgldibutuhkan)->format('d-M-Y ') }}  </td>
 
-                            @if(Auth::user()->punyaAkses('Konfirmasi Order','ubah'))
+                          {{--   @if(Auth::user()->punyaAkses('Konfirmasi Order','ubah'))
                         <td> <a class="btn btn-xs btn-danger" href="{{url('konfirmasi_order/konfirmasi_orderdetail/'. $co->co_idspp.'')}}"> <i> Lihat Detail </i> </a> </td>
-                            @endif
-
-                          @if($co->co_mng_pem_approved == 'BELUM DI SETUJUI')
-                                 <td> <span class="label label-info"> {{$co->co_mng_pem_approved}} </span>   </td>     
+                            @endif --}}
+                        <td>
+                        @if(Auth::user()->punyaAkses('Konfirmasi Order','aktif'))
+                          @if($co->staff_pemb == 'DISETUJUI')
+                                 <a class="label label-info" href="{{url('konfirmasi_order/konfirmasi_orderdetailpemb/'. $co->co_idspp.'')}}"> {{$co->staff_pemb}} </a>   
                           @else
-                            <td> <span class="label label-warning"> {{$co->co_mng_pem_approved}} </span> &nbsp; &nbsp; <a class="btn btn-sm btn-success" href="{{url('konfirmasi_order/cetakkonfirmasi/'.$co->co_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i>  </a></td>
+                               <a class="label label-warning" href="{{url('konfirmasi_order/konfirmasi_orderdetailpemb/'. $co->co_idspp.'')}}"> <i class="fa fa-close"> </i> BELUM DI PROSES </a> &nbsp; &nbsp;
                           @endif
+                        @endif  
+                        </td>
 
-       
+                        <td>
+                        @if(Auth::user()->punyaAkses('Konfirmasi Order Keu','aktif'))
+                          @if($co->man_keu == 'DISETUJUI')
+                             <a class="label label-info"  href="{{url('konfirmasi_order/konfirmasi_orderdetailkeu/'. $co->co_idspp.'')}}"> {{$co->man_keu}} </a>       
+                          @else
+                             <a class="label label-warning"  href="{{url('konfirmasi_order/konfirmasi_orderdetailkeu/'. $co->co_idspp.'')}}"> <i class="fa fa-close"></i> BELUM DI PROSES </a> &nbsp; &nbsp; 
+                          @endif
+                        @endif  
+                        </td>
+                            <td>  <a class="btn btn-sm btn-success" href="{{url('konfirmasi_order/cetakkonfirmasi/'.$co->co_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i>  </a></td>
 
                       </tr>
                     @endforeach

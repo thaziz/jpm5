@@ -203,7 +203,17 @@
 
                           <tr>
                             <td> <b> Pemroses </b> </td>
-                            <td>  @if(Auth::user()->punyaAkses('Konfirmasi Order Keu','aktif'))
+                            <td class="disabled"> 
+                                <select class="form-control pemroses" name="pemroses">
+                                      <option value="KEUANGAN" >
+                                          PIHAK KEUANGAN
+                                      </option>
+                                      <option value="PEMBELIAN" selected="">
+                                         PIHAK PEMBELIAN
+                                      </option>
+                                   </select>
+
+                            {{--  @if(Auth::user()->punyaAkses('Konfirmasi Order Keu','aktif'))
                                    <select class="form-control pemroses" name="pemroses">
                                       <option value="KEUANGAN" selected="">
                                           PIHAK KEUANGAN
@@ -221,7 +231,7 @@
                                               PIHAK PEMBELIAN
                                           </option>
                                        </select>
-                                  @endif
+                                  @endif --}}
                             </td>
                           </tr>
 
@@ -242,6 +252,7 @@
                               <tr>
                                   <th> 
                                       @if($spp->staff_pemb == 'DISETUJUI')
+                                         <div style='text-align: center'>  <p class="label label-info" > {{$spp->staff_pemb}} </p> </div>
                                       @else
                                         <div style='text-align: center'>  <p class="label label-danger" > BELUM DI PROSES </p> </div>
                                       @endif
@@ -280,16 +291,16 @@
 
                       <tr class="data-supplier">
                          <!--  @foreach($data['codt_supplier'] as $index=>$codtsup)
-                          <td class="supplier{{$index}} spl" data-id="{{$index}}" data-supplier="{{$codtsup->codt_supplier}}">
-                            <select class="form-control supplier{{$index}} sup"  data-supplier="{{$codtsup->codt_supplier}}" disabled="">
-                                  <option value="{{$codtsup->codt_supplier}}"> {{$codtsup->codt_supplier}} </option>
+                          <td class="supplier{{$index}} spl" data-id="{{$index}}" data-supplier="{{$codtsup->codtk_supplier}}">
+                            <select class="form-control supplier{{$index}} sup"  data-supplier="{{$codtsup->codtk_supplier}}" disabled="">
+                                  <option value="{{$codtsup->codtk_supplier}}"> {{$codtsup->codtk_supplier}} </option>
                               @foreach($data['supplier'] as $sup)
-                              <option value="{{$codtsup->codt_supplier}}" @if($codtsup->codt_supplier == $sup->no_supplier) selected="" @endif>  {{$sup->nama_supplier}};
+                              <option value="{{$codtsup->codtk_supplier}}" @if($codtsup->codtk_supplier == $sup->no_supplier) selected="" @endif>  {{$sup->nama_supplier}};
                               </option>
                             
                              @endforeach 
                             </select> --> 
-                            <td class="supplier{{$index}} spl" data-id="{{$index}}" data-supplier="{{$codtsup->codt_supplier}}" style="text-align: center">
+                            <td class="supplier{{$index}} spl" data-id="{{$index}}" data-supplier="{{$codtsup->codtk_supplier}}" style="text-align: center">
                                {{$codtsup->nama_supplier}}
                            </td> 
                          <!--  @endforeach -->
@@ -297,11 +308,11 @@
 
 
                       @foreach($data['codt'] as $idbarang=>$codt)
-                      <tr class="brg{{$idbarang}}" data-id="{{$idbarang}}" id="brg" data-kodeitem="{{$codt->codt_kodeitem}}" >
+                      <tr class="brg{{$idbarang}}" data-id="{{$idbarang}}" id="brg" data-kodeitem="{{$codt->codtk_kodeitem}}" >
                         <td> {{$idbarang + 1}} </td>
                         <td> {{$codt->nama_masteritem}} </td>
-                        <td> {{$codt->codt_qtyrequest}} </td>
-                        <td> {{$codt->codt_qtyapproved}} </td>
+                        <td> {{$codt->codtk_qtyrequest}} </td>
+                        <td> {{$codt->codtk_qtyapproved}} </td>
                         <td> {{$codt->unitstock}}</td>
                         <td> 
                         @if($tipespp != 'J')
@@ -324,7 +335,7 @@
                       @endforeach
                        <tr class="totalbiaya"> <td colspan="6" style="text-align: center"> <b> Total Biaya </b> </td> 
                         @foreach($data['codt_tb'] as $cotb)
-                          <td data-suppliertotal="{{$cotb->cotb_supplier}}"> <div class='form-group'> <label class='col-sm-2 col-sm-2 control-label'> Rp </label> <div class='col-sm-8'> <input type='text' class='input-sm form-control totalbiaya'  value="{{number_format($cotb->cotb_totalbiaya, 2)}}" readonly="" > </div>  </div></td>
+                          <td data-suppliertotal="{{$cotb->cotbk_supplier}}"> <div class='form-group'> <label class='col-sm-2 col-sm-2 control-label'> Rp </label> <div class='col-sm-8'> <input type='text' class='input-sm form-control totalbiaya'  value="{{number_format($cotb->cotbk_totalbiaya, 2)}}" readonly="" > </div>  </div></td>
                           @endforeach
                         </tr>
 
@@ -369,7 +380,7 @@
                       <td class="supid supplier{{$index}}" data-id="{{$index}}" data-supplier="{{$spptb->spptb_supplier}}"> 
                             <select class="input-sm form-control supplier{{$index}} sup" name="supplier3[]" disabled="" data-supplier="{{$spptb->spptb_supplier}}" data-id="{{$index}}">
                              @foreach($data['supplier'] as $sup)
-                              <option value="{{$sup->idsup}},{{$sup->syarat_kredit}}" @if($spptb->spptb_supplier == $sup->idsup) selected="" @endif>  {{$sup->nama_supplier}} 
+                              <option value="{{$sup->idsup}},{{$sup->syarat_kredit}}.{{$sup->kontrak}}" @if($spptb->spptb_supplier == $sup->idsup) selected="" @endif>  {{$sup->nama_supplier}} 
                              @endforeach
                             </select>
                           </div>
@@ -536,7 +547,7 @@
         $(this).change(function(){
           id = $(this).data('id');
           val = $(this).val();
-          alert(val);
+         //// alert(val);
           string = val.split(",");
           syaratkredit = string[1];
           $('.bayar' + id).val(syaratkredit);
@@ -572,9 +583,11 @@
     })
 
       function cek_tb(index){ 
+
         var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';
-        var idspp = $('.idspp').serialize();
-        
+        var idspp = $('.idspp').val();
+        var pemroses = $('.pemroses').val();
+
         $temp = 0;
             $('.checkboxhrg').each(function(){
               if ($(this).is(":checked")) {
@@ -604,7 +617,7 @@
          
         $.ajax({    
           type :"GET",
-          data : idspp,
+          data : {idspp,pemroses},
           url : url,
           dataType:'json',
           success : function(data){
@@ -699,30 +712,7 @@
                   return res;
               },{});
 
-          
-
-               /*//beda in supplier
-                 for(var x=0;x<data.spptb.length;x++){  //2itusupplier               
-                        var supDisabled = $('.supplier'+x).is(':disabled');;                
-                        if(supDisabled){
-                           var supplier1 = $('.supplier' + x).index() + 1;
-                           biaya2 = 0;
-                            $('tr.totalbiaya').find("td").eq(supplier1).html(addCommas(biaya2));
-                         
-                        }                 
-                  }*/
-
-               /* for(var h=0;h<result.length;h++){
-                          var supplier2 = $('td[data-supplier="'+ result[h].id + '"]').index() + 1;
-                          var biaya = Math.round(result[h].totalharga).toFixed(2);
-                          var tb = '<div class="form-group"> <label class="col-sm-2 col-sm-2 control-label"> Rp </label> <div class="col-sm-8"> <input type="text" class="form-control totalbiaya" name="bayar[]" value="'+addCommas(biaya)+'" readonly="" > <input type="hidden" name="tb[]" value="'+result[h].id+ "," + result[h].totalharga +'"> </div>  </div>';
-
-                          $('tr.totalbiaya').find("td").eq(supplier2).html(tb);
-                  }*/
-
-
-                
-                 
+    
                  
             //CEK SEMUA DATA SUPPLIER
                 var lengthsup = $('.supid').length;
@@ -811,8 +801,8 @@
 
     $(function(){
       var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';
-        var idspp = $('.idspp').serialize();
-       
+        var idspp = $('.idspp').val();
+        var pemroses = $('.pemroses').val();
         $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -821,31 +811,32 @@
 
         $.ajax({     
           type :"GET",
-          data : idspp,
+          data : {idspp,pemroses},
           url : url,
           dataType:'json',
           success : function(data){
-          console.log(data);
-
+          
             if(data.codt.length > 0) {
+
               $('#hargatable').each(function(){
                 for(var n=0; n < data.sppdt_barang.length; n++){
                   var kodebrg = $('.brg' + n).data("kodeitem");
-                   
+             
                     for(var i = 0; i < data.codt.length; i++){
-                        if(kodebrg == data.codt[i].codt_kodeitem) {
-
+                        if(kodebrg == data.codt[i].codtk_kodeitem) {
+                       
                           for (var j = 0; j < data.codt_tb.length; j++) {
-                            if(data.codt[i].codt_supplier == data.codt_tb[j].cotb_supplier){
-                              var row = $('td[data-supplier="'+ data.codt[i].codt_supplier + '"]').index() + 6; 
-                              console.log('row' + row);
+
+                            if(data.codt[i].codtk_supplier == data.codt_tb[j].cotbk_supplier){
+                              var row = $('td[data-supplier="'+ data.codt[i].codtk_supplier + '"]').index() + 6; 
+                                     // alert(data.codt[i].codtk_harga);
                                         var column = $('td', this).eq(row);
                                         var tampilharga = '<div class="form-group">' +
                                                           '<label class="col-sm-1 control-label"> @ </label>' +
                                                            '<label class="col-sm-1 control-label"> Rp </label>' + 
                                                             '<div class="col-xs-6">';
                                         
-                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.codt[i].codt_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.codt[i].codt_supplier+'"> <input type="hidden" value="'+addCommas(data.codt[i].codt_harga)+' class="hargahid'+i+'" "> </div>';
+                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.codt[i].codtk_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.codt[i].codtk_supplier+'"> <input type="hidden" value="'+addCommas(data.codt[i].codtk_harga)+' class="hargahid'+i+'" "> </div>';
                                         $('tr.brg'+n).find("td").eq(row).html(tampilharga);  
                             }
                           }
@@ -921,7 +912,7 @@
                                                       })
 
                                                   } else {
-                                                      
+                                                        
                                                     hargaasli = $(this).data('harga');
                                                      $('.hrg').each(function(){
                                                         dataid = $(this).data('id');

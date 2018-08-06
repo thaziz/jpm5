@@ -31,7 +31,7 @@ class desain_neracaController extends Controller
 
     public function add(){
         $data_akun = DB::table("d_akun")->select("*")->get();
-        $data_group = DB::table("d_group_akun")->where("jenis_group", "Neraca/Balance Sheet")->select("*")->orderBy("nama_group", "asc")->get();
+        $data_group = DB::table("d_group_akun")->where("jenis_group", 1)->select("*")->orderBy("nama_group", "asc")->get();
 
         // return json_encode($data_akun);
         // return json_encode($data_group);

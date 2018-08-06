@@ -82,6 +82,7 @@ Route::get('setting/sync_jurnal', 'selaras_jurnal@sync_jurnal');
 Route::get('setting/sync_jurnal/biaya_penerus_kas', 'selaras_jurnal@biaya_penerus_kas');
 Route::get('setting/sync_jurnal/bukti_kas_keluar', 'selaras_jurnal@bukti_kas_keluar');
 Route::get('setting/sync_jurnal/invoice', 'selaras_jurnal@invoice');
+Route::get('setting/sync_jurnal/master_akun_fitur', 'selaras_jurnal@master_akun_fitur');
 
 //***PEMBELIAN
 //***PEMBELIAN
@@ -120,7 +121,8 @@ Route::post('suratpermintaanpembelian/setujukabag', 'PurchaseController@sppsetuj
 Route::get('testing/analisa', 'PurchaseController@queryanalisa');
 
 Route::get('konfirmasi_order/konfirmasi_order' , 'PurchaseController@confirm_order');
-Route::get('konfirmasi_order/konfirmasi_orderdetail/{id}' , 'PurchaseController@confirm_order_dt');
+Route::get('konfirmasi_order/konfirmasi_orderdetailkeu/{id}' , 'PurchaseController@confirm_order_dtkeu');
+Route::get('konfirmasi_order/konfirmasi_orderdetailpemb/{id}' , 'PurchaseController@confirm_order_dtpemb');
 Route::get('konfirmasi_order/ajax_confirmorderdt' , 'PurchaseController@ajax_confirmorderdt');
 Route::post('konfirmasi_order/gettotalbiaya' , 'PurchaseController@get_tb');
 Route::post('konfirmasi_order/savekonfirmasiorderdetail' , 'PurchaseController@saveconfirmorderdt');
