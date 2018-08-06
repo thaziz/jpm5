@@ -22,16 +22,26 @@
     <table border="0" id="form-table" class="col-md-12">
 
       <tr>
-        <td width="15%" class="text-center">Nama Group</td>
-        <td colspan="2">
-          <input type="text" class="form_validate form-control" name="nama_group" placeholder="Masukkan Nama Group" id="nama_group">
-        </td>
-
         <td width="15%" class="text-center">Jenis</td>
         <td colspan="2">
           <select name="jenis" class="select_validate form-control" id="jenis">
             <option value="1"> Neraca / Balance Sheet</option>
             <option value="2"> Laba Rugi</option>
+          </select>
+        </td>
+
+        <td width="15%" class="text-center">Nama Group</td>
+        <td colspan="2">
+            <input type="text" class="form_validate form-control" name="nama_group" placeholder="Masukkan Nama Group" id="nama_group">
+        </td>
+      </tr>
+
+      <tr>
+        <td class="text-center">Type Group</td>
+        <td colspan="2">
+          <select name="jenis" class="select_validate form-control" id="jenis">
+            <option value="A"> Aktiva</option>
+            <option value="P"> Pasiva</option>
           </select>
         </td>
       </tr>
