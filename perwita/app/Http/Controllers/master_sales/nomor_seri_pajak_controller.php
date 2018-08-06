@@ -108,7 +108,7 @@ class nomor_seri_pajak_controller extends Controller
               try{
                 Storage::put($filename,file_get_contents($file));
               }catch(Exception $error){
-                dd($error);
+                report($error);
               }
   	      	}
   	      	$save = DB::table('nomor_seri_pajak')
