@@ -56,6 +56,86 @@
   <!-- modal -->
 
   <!-- modal -->
+<div id="modal_setting_neraca" class="modal">
+  <div class="modal-dialog" style="width: 30%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Form Tampilan Neraca</h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <form id="table_setting_form">
+          <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+            <table border="0" id="form-table" class="col-md-12">
+              <tr>
+                <td width="30%" class="text-center">Pilih Cabang</td>
+                <td colspan="2">
+                    <select name="cab" class="select_validate_null form-control" id="group_laba_rugi">
+                      
+                      @if(Session::get("cabang") == '000')
+                        <option value="all">SEMUA CABANG</option>
+                      @endif
+
+                      @foreach(cabang() as $cab)
+                        <option value="{{ $cab->kode }}">{{ $cab->nama }}</option>
+                      @endforeach
+                    </select>
+                </td>
+              </tr>
+
+              <tr>
+                <td width="30%" class="text-center">Jenis Neraca</td>
+                <td colspan="2">
+                    <select class="form-control" style="width:90%; height: 30px" id="tampil">
+                      <option value="bulan">Neraca Bulan</option>
+                      <option value="tahun">Neraca Tahun</option>
+                      {{-- <option value="p_bulan">Perbandingan Bulan</option> --}}
+                      {{-- <option value="p_tahun">Perbandingan Tahun</option> --}}
+                    </select>
+                </td>
+              </tr>
+
+              <tr>
+                <td width="30%" class="text-center"></td>
+                <td>
+
+                    <input class="form-control text-center date" style="width:90%; height: 30px; cursor: pointer; background: #fff; display:;" readonly data-toggle="tooltip" id="bulan" placeholder="Pilih Bulan">
+
+                    <input class="form-control text-center date_year" style="width:90%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="bulan_1" placeholder="Bulan Ke-1">
+
+                    <input class="form-control text-center year" style="width:90%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="tahun_1" placeholder="Tahun Ke-1">
+
+                </td>
+
+                <td>
+
+                    <input class="form-control text-center year" style="width:80%; height: 30px; cursor: pointer; background: #fff; display:;" readonly data-toggle="tooltip" id="tahun" placeholder="Pilih Tahun">
+
+                    <input class="form-control text-center date_year" style="width:80%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="bulan_2" placeholder="Bulan Ke-2">
+
+                    <input class="form-control text-center year" style="width:80%; height: 30px; cursor: pointer; background: #fff; display:none;" readonly data-toggle="tooltip" id="tahun_2" placeholder="Tahun Ke-2">
+
+                </td>
+
+              </tr>
+            </table>
+          </div>
+          </form>
+
+          <div class="col-md-12 m-t" style="border-top: 1px solid #eee; padding: 10px 10px 0px 0px;">
+            <button class="btn btn-primary btn-sm pull-right" id="submit_setting_neraca">Submit</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+  <!-- modal -->
+
+  <!-- modal -->
 <div id="modal_register_jurnal" class="modal">
   <div class="modal-dialog" style="width: 30%;">
     <div class="modal-content">
@@ -355,6 +435,29 @@
       
     })
 
+    function validate_form_register(){
+        a = true;
+        $(".register_validate").each(function(i, e){
+          if($(this).val() == "" && $(this).is(":visible")){
+            a = false;
+            $(this).focus();
+            toastr.warning('Harap Lengkapi Data Diatas');
+            return false;
+          }
+        })
+
+        $(".register_validate_select").each(function(i, e){
+          if($(this).val() == "---"){
+            a = false;
+            $(this).focus();
+            toastr.warning('Harap Lengkapi Data Diatas');
+            return false;
+          }
+        })
+
+        return a;
+      }
+
      // $("#save").click(function(evt){
      //    evt.preventDefault();
 
@@ -434,28 +537,118 @@
         });
      })
 
-     function validate_form_register(){
-        a = true;
-        $(".register_validate").each(function(i, e){
-          if($(this).val() == "" && $(this).is(":visible")){
-            a = false;
-            $(this).focus();
-            toastr.warning('Harap Lengkapi Data Diatas');
-            return false;
-          }
-        })
+    // script for neraca
 
-        $(".register_validate_select").each(function(i, e){
-          if($(this).val() == "---"){
-            a = false;
-            $(this).focus();
-            toastr.warning('Harap Lengkapi Data Diatas');
-            return false;
-          }
-        })
+      $('.date_year').datepicker( {
+          format: "mm/yyyy",
+          viewMode: "months", 
+          minViewMode: "months"
+      });
 
-        return a;
-      }
+      $('#dateMonth').datepicker( {
+          format: "mm",
+          viewMode: "months", 
+          minViewMode: "months"
+      });
+
+      $('.year').datepicker( {
+          format: "yyyy",
+          viewMode: "years", 
+          minViewMode: "years"
+      });
+
+      $('#bulan').datepicker( {
+          format: "mm",
+          viewMode: "months", 
+          minViewMode: "months"
+      });
+
+      $("#tampil").change(function(evt){
+          evt.stopImmediatePropagation();
+          evt.preventDefault();
+
+          cek = $(this);
+
+          if(cek.val() == "bulan"){
+            // alert("okee");
+            $("#bulan_1").css("display", "none"); $("#bulan_2").css("display", "none");
+            $("#tahun_1").css("display", "none"); $("#tahun_2").css("display", "none");
+            $("#bulan").css("display", "inline-block"); $("#bulan").val(""); $("#tahun").css("display", "inline-block");
+            $("#bulan").removeAttr("disabled");
+
+          }else if(cek.val() == "tahun"){
+            $("#bulan_1").css("display", "none"); $("#bulan_2").css("display", "none");
+            $("#tahun_1").css("display", "none"); $("#tahun_2").css("display", "none");
+            $("#bulan").css("display", "inline-block"); $("#tahun").css("display", "inline-block");
+            $("#bulan").attr("disabled", "disabled"); $("#bulan").val("-");
+          }else if(cek.val() == "p_bulan"){
+            $("#tahun_1").css("display", "none"); $("#tahun_2").css("display", "none");
+            $("#bulan").css("display", "none"); $("#tahun").css("display", "none");
+            $("#bulan_1").css("display", "inline-block"); $("#bulan_2").css("display", "inline-block");
+          }else if(cek.val() == "p_tahun"){
+            $("#bulan_1").css("display", "none"); $("#bulan_2").css("display", "none");
+            $("#bulan").css("display", "none"); $("#tahun").css("display", "none");
+            $("#tahun_1").css("display", "inline-block"); $("#tahun_2").css("display", "inline-block");
+          }
+
+         })
+
+         $("#submit_setting_neraca").click(function(event){
+            event.preventDefault();
+            form = $("#table_setting_form"); $(this).attr("disabled", true); $(this).text("Mengubah Tampilan Neraca ...");
+
+            tampil = $("#tampil").val();
+
+            if(tampil == "bulan"){
+
+              data = $("#tampil").val()+"?"+form.serialize()+"&m="+$("#bulan").val()+"&y="+$("#tahun").val();
+
+              if($("#bulan").val() == "" || $("#tahun").val() == ""){
+                toastr.warning('Bulan Dan Tahun Tidak Boleh Kosong');
+                $(this).removeAttr("disabled"); $(this).text("Submit");
+                return false;
+              }else{
+                window.open(baseUrl+"/master_keuangan/neraca/single/"+data, '_blank');
+              }
+            }else if(tampil == "tahun"){
+
+              data = $("#tampil").val()+"?"+form.serialize()+"&m="+$("#bulan").val()+"&y="+$("#tahun").val();
+
+              if($("#bulan").val() == "" || $("#tahun").val() == ""){
+                toastr.warning('Tahun Tidak Boleh Kosong');
+                $(this).removeAttr("disabled"); $(this).text("Submit");
+                return false;
+              }else{
+                window.open(baseUrl+"/master_keuangan/neraca/single/"+data, '_blank');
+              }
+            }else if(tampil == "p_bulan"){
+
+              data = $("#tampil").val()+"?"+form.serialize()+"&m="+$("#bulan_1").val()+"&y="+$("#bulan_2").val();
+
+              if($("#bulan_1").val() == "" || $("#bulan_2").val() == ""){
+                toastr.warning('Bulan Tidak Boleh Ada Yang Kosong');
+                $(this).removeAttr("disabled"); $(this).text("Submit");
+                return false;
+              }else{
+                window.location = baseUrl+"/master_keuangan/neraca/perbandingan/"+data;
+              }
+            }else if(tampil == "p_tahun"){
+
+              data = $("#tampil").val()+"?"+form.serialize()+"&m="+$("#tahun_1").val()+"&y="+$("#tahun_2").val();
+
+              if($("#tahun_1").val() == "" || $("#tahun_2").val() == ""){
+                toastr.warning('Tahun Tidak Boleh Ada Yang Kosong');
+                $(this).removeAttr("disabled"); $(this).text("Submit");
+                return false;
+              }else{
+                window.location = baseUrl+"/master_keuangan/neraca/perbandingan/"+data;
+              }
+            }
+
+            // window.location = baseUrl + "/master_keuangan/saldo_akun?" + form.serialize();
+          })
+
+    //end neraca
 
      // script for buku besar
 
