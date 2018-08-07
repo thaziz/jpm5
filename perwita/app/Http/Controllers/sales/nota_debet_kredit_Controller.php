@@ -8,7 +8,8 @@ use App\Http\Requests;
 use Auth;
 use Yajra\Datatables\Datatables;
 use carbon\Carbon;
-
+use App\d_jurnal;
+use App\d_jurnal_dt;
 
 class nota_debet_kredit_Controller extends Controller
 {
@@ -278,6 +279,142 @@ class nota_debet_kredit_Controller extends Controller
             }
 
           }
+          // JURNAL CN/DN
+          if ($request->jenis_debet == 'K') {
+            $jenis = "KREDIT";
+          }else{
+            $jenis = "DEBET";
+          }
+          $id_jurnal=d_jurnal::max('jr_id')+1;
+          $delete = d_jurnal::where('jr_ref',$request->nomor_cn_dn)->delete();
+          $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
+                        'jr_year'   => carbon::parse($request->tgl)->format('Y'),
+                        'jr_date'   => carbon::parse($request->tgl)->format('Y-m-d'),
+                        'jr_detail' => $jenis.' NOTA',
+                        'jr_ref'    => $request->nomor_cn_dn,
+                        'jr_note'   => 'DEBET KREDIT NOTA',
+                        'jr_insert' => carbon::now(),
+                        'jr_update' => carbon::now(),
+                        ]);
+          // PIUTANG
+          $akun_piutang_temp = [];
+          $nilai_piutang_temp = [];
+          $akun_pendapatan_temp = [];
+          $nilai_pendapatan_temp = [];
+          for ($i=0; $i < count($request->d_nomor); $i++) { 
+            $invoice = DB::table('invoice')
+                          ->where('i_nomor',$request->d_nomor[$i])
+                          ->first();
+            $invoice_d = DB::table('invoice_d')
+                          ->join('delivery_order','nomor','=','id_nomor_do')
+                          ->where('id_nomor_invoice',$request->d_nomor[$i])
+                          ->get();
+            for ($a=0; $a < count($invoice_d); $a++) { 
+              if ($invoice_d[$a]->pendapatan == 'PAKET') {
+                $akun_vendor = DB::table('d_akun')
+                                ->where('id_akun','like','4501'.'%')
+                                ->where('kode_cabang',$invoice_d[$a]->kode_cabang)
+                                ->first();
+
+                $akun_own = DB::table('d_akun')
+                                ->where('id_akun','like','4301'.'%')
+                                ->where('kode_cabang',$invoice_d[$a]->kode_cabang)
+                                ->first();
+                if ($invoice_d[$a]->total_vendo != 0) {
+                  array_push($akun_pendapatan_temp,$akun_vendor->id_akun);
+                  array_push($nilai_pendapatan_temp,$invoice_d[$a]->total_vendo);
+                }
+
+                if ($invoice_d[$a]->total_dpp != 0) {
+                  array_push($akun_pendapatan_temp,$akun_own->id_akun);
+                  array_push($nilai_pendapatan_temp,$invoice_d[$a]->total_dpp);
+                }
+              }elseif ($invoice_d[$a]->pendapatan == 'KARGO') {
+                $akun_vendor = DB::table('d_akun')
+                                ->where('id_akun','like','4401'.'%')
+                                ->where('kode_cabang',$invoice_d[$a]->kode_cabang)
+                                ->first();
+
+                $akun_own = DB::table('d_akun')
+                                ->where('id_akun','like','4201'.'%')
+                                ->where('kode_cabang',$invoice_d[$a]->kode_cabang)
+                                ->first();
+                if ($invoice_d[$a]->kode_subcon == 0) {
+                  array_push($akun_pendapatan_temp,$akun_vendor->id_akun);
+                  array_push($nilai_pendapatan_temp,$invoice_d[$a]->total_vendo);
+                }elseif ($invoice_d[$a]->kode_subcon != 0) {
+                  array_push($akun_pendapatan_temp,$akun_own->id_akun);
+                  array_push($nilai_pendapatan_temp,$invoice_d[$a]->total_dpp);
+                }
+              }elseif ($invoice_d[$a]->pendapatan == 'KORAN') {
+                $do_d = DB::table('delivery_order_d')
+                          ->where('dd_nomor',$invoice_d[$a]->nomor)
+                          ->get();
+                for ($c=0; $c < count($do_d); $c++) { 
+                  $temp = DB::table('item')
+                      ->where('kode',$do_d[$c]->dd_kode_item)
+                      ->first();
+                  if ($temp == null) {
+                    return response()->json(['Master Item Untuk Invoice Koran Tidak Ada']);
+                  }else{
+                    $akun = DB::table('d_akun')
+                                ->where('id_akun','like',substr($temp->acc_penjualan,0,4).'%')
+                                ->where('kode_cabang',$invoice_d[$a]->kode_cabang)
+                                ->first();
+                    array_push($akun_pendapatan_temp,$akun->id_akun);
+                    array_push($nilai_pendapatan_temp,$do_d[$c]->dd_total);
+                  }
+                }
+              }
+            }
+
+            array_push($akun_piutang_temp, $invoice->i_acc_piutang);
+            array_push($nilai_piutang_temp, round(filter_var($request->d_netto[$i], FILTER_SANITIZE_NUMBER_INT)/100));
+          }
+
+          $akun_piutang_fix = array_values(array_unique($akun_piutang_temp));
+          $nilai_piutang_fix = [];
+
+          $akun_pendapatan_fix = array_values(array_unique($akun_pendapatan_temp));
+          $nilai_pendapatan_fix = [];
+          // PIUTANG
+          for ($i=0; $i < count($akun_piutang_fix); $i++) { 
+            for ($a=0; $a < count($akun_piutang_temp); $a++) { 
+              if ($akun_piutang_temp[$a] == $akun_piutang_fix[$i]) {
+                if (!isset($nilai_piutang_fix[$i])) {
+                  $nilai_piutang_fix[$i] = 0;
+                }
+                $nilai_piutang_fix[$i]+=$nilai_piutang_temp[$a];
+              }
+            }
+          }
+          // PENDAPATAN
+          for ($i=0; $i < count($akun_pendapatan_fix); $i++) { 
+            for ($a=0; $a < count($akun_pendapatan_temp); $a++) { 
+              if ($akun_pendapatan_temp[$a] == $akun_pendapatan_fix[$i]) {
+                if (!isset($nilai_pendapatan_fix[$i])) {
+                  $nilai_pendapatan_fix[$i] = 0;
+                }
+                $nilai_pendapatan_fix[$i]+=$nilai_pendapatan_temp[$a];
+              }
+            }
+          }
+          // PPN
+          for ($i=0; $i < count($request->d_jenis_ppn); $i++) { 
+            # code...
+          }
+          $akun     = [];
+          $akun_val = [];
+
+
+          for ($i=0; $i < count($akun_piutang_fix); $i++) { 
+              array_push($akun,$akun_piutang_fix[$i]);
+              array_push($akun_val,$nilai_piutang_fix[$i]);
+          }
+        
+          dd($akun);
+
+
           return response()->json(['status'=>1]);
         }else{
           return response()->json(['status'=>2]);

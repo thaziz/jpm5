@@ -258,7 +258,7 @@
                                           <td>DPP</td>
                                           <td colspan="3"><input type="text" style="text-align: right" name="dpp_akhir" onkeyup="hitung_jumlah()" value="0,00"  class="dpp_akhir form-control"></td>
                                         </tr>
-                                        <tr class="ppn_td">
+                                        <tr class="ppn_td" hidden="">
                                             <td >Jenis PPN</td>
                                             <td >
                                                 <select class="form-control jenis_ppn_akhir" onchange="hitung_pajak_ppn()"  >
@@ -274,7 +274,7 @@
                                                 <input onkeyup="hitung_jumlah()" style="text-align: right" type="text" name="ppn" class="form-control ppn_akhir" value="0,00"  tabindex="-1" >
                                             </td>
                                         </tr>
-                                        <tr class="pph_td ">
+                                        <tr hidden="" class="pph_td ">
                                             <td>Pajak lain-lain</td>
                                             <td >
                                                 <select onchange="hitung_pajak_lain()"  class="pajak_lain_akhir form-control" name="kode_pajak_lain" id="pajak_lain_akhir" >
@@ -910,15 +910,18 @@
                +'&'+table_detail.$('input').serialize()
                +'&'+$('.table_pajak :input').serialize(),
           success:function(response){
-                swal({
-                    title: "Berhasil!",
-                    type: 'success',
-                    text: "Data berhasil disimpan",
-                    timer: 900,
-                   showConfirmButton: true
-                    },function(){
-                        window.location.href='../nota_debet_kredit';
-                });
+            if (response.status == 1) {
+              swal({
+                  title: "Berhasil!",
+                  type: 'success',
+                  text: "Data berhasil disimpan",
+                  timer: 900,
+                  showConfirmButton: true
+                  },function(){
+                      // window.location.href='../nota_debet_kredit';
+              });
+            }
+                
           },
           error:function(data){
             swal({

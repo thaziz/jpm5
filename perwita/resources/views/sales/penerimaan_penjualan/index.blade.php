@@ -124,8 +124,8 @@ $(document).ready(function() {
                  className: 'cssright'
               },
               {
-                 targets: 6,
-                 className: 'cssright'
+                 targets: 7,
+                 className: 'center'
               },
               {
                  targets: 9,
@@ -145,8 +145,8 @@ $(document).ready(function() {
             { "data": "jumlah_text"},
             { "data": "k_keterangan" },
             { "data": "pembayaran" },
+            { "data": "posting" },
             { "data": "aksi" },
-            { "data": "memorial_text" },
             ]
         });
 });
