@@ -9,7 +9,16 @@
     content: "\f02f"; 
     font-family: FontAwesome;
 
-  }
+  } 
+   #container {
+    height: 400px; 
+    min-width: 310px; 
+    max-width: 100%;
+    margin: 0 auto;
+    }
+    .highcharts-color-0{
+      color:red;
+    }
   .dataTables_filter, .dataTables_info { display: none; }
 
 </style>
@@ -18,7 +27,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Laporan DO Koran
+                    <h5> Laporan 
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
@@ -33,8 +42,7 @@
                 <div class="box-header">
                 </div><!-- /.box-header -->
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
-                  <div class="box-body">
-                    <table class="table table-bordered datatable table-striped">
+                    {{-- <table class="table table-bordered datatable table-striped">
                          <tr>
                         <td> Dimulai : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -48,16 +56,6 @@
                               </div> </td>
                       </tr>
                         <tr>
-                          {{--   <th style="width: 100px; padding-top: 16px"> Satuan </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            @foreach ($sat as $sat)
-                              <option value="{{ $sat->kode }}">{{ $sat->kode }} - {{ $sat->nama }}</option>
-                            @endforeach
-                           </select>
-                          </td>
- --}}
                            <th style="width: 100px; padding-top: 16px"> Customer </th>
                           <td colspan="3"> 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
@@ -70,9 +68,54 @@
                         </tr>
                        
                       <br>
-                      </table>
+                      </table> --}}
+                         <div class="form-row">
+                                    <div class="form-group col-md-2">
+                                      <input type="text" class="date form-control" readonly="" id="date_awal" name="">
+                                    </div>
+
+                                    <div class="form-group col-md-2">
+                                      <input type="text" class="date form-control" readonly="" id="date_akir" name="">
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+                                      <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control"   data-show-subtext="true" data-live-search="true" >
+                                          <option selected="" value="">- Pilih Customer -</option>
+                                          @foreach ($cus as $c)
+                                            <option value="{{ $c->kode }}" >{{ $c->kode }} - {{ $c->nama }}</option>
+                                          @endforeach
+                                      </select>
+                                    </div>
+
+
+                                    <div class="form-group col-md-2">
+                                      <button  class="btn btn-info" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </button>
+                                    </div>
+                                </div>
+
+                          <div>
+                            <div class="form-group col-md-4">
+                                <select class="cari_semua chosen-select-width laporan" id="jenis"  name="jenis">
+                                  <option value="INVOICE">INVOICE</option>
+                                  <option value="INVOICE BELUM TT">INVOICE BELUM TT</option>
+                                  <option value="INVOICE SESUDAH TT">INVOICE SESUDAH TT</option>
+                                  <option value="JARAK INVOICE DENGAN TT">JARAK INVOICE DENGAN TT</option>
+                                  <option value="ENTRY">ENTRY</option>
+                                </select>
+                              </div>
+
+                              <div class="form-group col-md-4">
+                                <select class="cari_semua chosen-select-width" id="cabang"  name="cabang">
+                                  <option></option>
+                                  @foreach ($cabang as $element)
+                                    <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
+                                  @endforeach
+                                </select>
+                              </div>
+                          </div> 
+
+
                       <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
-                    </div>
                 </form>
                 <div class="box-body">
                 <table id="addColumn" class="table table-bordered table-striped">

@@ -4,6 +4,34 @@
 
 @section('content')
 
+<style type="text/css">
+    .cssright { text-align: right; }
+    .center { text-align: center; }
+    .borderless td, .borderless th {
+    border: none;
+}
+/****** IGNORE ******/
+
+
+
+
+
+/****** CODE ******/
+
+.file-upload{display:block;text-align:center;font-family: Helvetica, Arial, sans-serif;font-size: 12px;}
+.file-upload .file-select{display:block;border: 2px solid #dce4ec;color: #34495e;cursor:pointer;height:40px;line-height:40px;text-align:left;background:#FFFFFF;overflow:hidden;position:relative;}
+.file-upload .file-select .file-select-button{background:#dce4ec;padding:0 10px;display:inline-block;height:40px;line-height:40px;}
+.file-upload .file-select .file-select-name{line-height:40px;display:inline-block;padding:0 10px;}
+.file-upload .file-select:hover{border-color:#34495e;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+.file-upload .file-select:hover .file-select-button{background:#34495e;color:#FFFFFF;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+.file-upload.active .file-select{border-color:#3fa46a;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+.file-upload.active .file-select .file-select-button{background:#3fa46a;color:#FFFFFF;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+.file-upload .file-select input[type=file]{z-index:100;cursor:pointer;position:absolute;height:100%;width:100%;top:0;left:0;opacity:0;filter:alpha(opacity=0);}
+.file-upload .file-select.file-select-disabled{opacity:0.65;}
+.file-upload .file-select.file-select-disabled:hover{cursor:default;display:block;border: 2px solid #dce4ec;color: #34495e;cursor:pointer;height:40px;line-height:40px;margin-top:5px;text-align:left;background:#FFFFFF;overflow:hidden;position:relative;}
+.file-upload .file-select.file-select-disabled:hover .file-select-button{background:#dce4ec;color:#666666;padding:0 10px;display:inline-block;height:40px;line-height:40px;}
+.file-upload .file-select.file-select-disabled:hover .file-select-name{line-height:40px;display:inline-block;padding:0 10px;}
+</style>
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> NOMOR SERI PAJAK </h2>
@@ -45,152 +73,23 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
-                    <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
-                        <div class="box-body">
-                       <!--  <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
-                            <div class="col-sm-2">
-                             <select id="bulan_id" name="bulan_id" class="form-control">
-                                                      <option value="">Pilih Bulan</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div>
-                           <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="tahun" class="col-sm-1 control-label">Tahun</label>
-                            <div class="col-sm-2">
-                             <select id="tahun" name="tahun" class="form-control">
-                                                      <option value="">Pilih Tahun</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div> -->
-
-                          <div class="row">
-                                <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
-                                  
-                                </table>
-                      <div class="col-xs-6">
-
-
-
-                      </div>
-
-
-
-                  </div>
-                </form>
                 <div class="box-body">
-                  <table id="seragam_table" class="table table-bordered table-striped">
+                  <table  class="table table_pajak table-bordered table-striped">
                     <thead>
-                        <tr>
-                            <th> Tanggal</th>
-                            <th> Nomor Depan</th>
-                            <th> Dari Nomor</th>
-                            <th> Sampai Nomor</th>
-                            <th> Aktif </th>
-                        </tr>
+                        <th>No</th>
+                        <th>Tanggal</th>
+                        <th>Nomor Pajak</th>
+                        <th>Download PDF</th>
+                        <th>Aktif</th>
+                        <th>Aksi</th>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>20/12/2016</td>
-                            <td>082132137</td>
-                            <td>08213213713415432413</td>
-                            <td>08213213713415499999</td>
-                            <td>
-                                <input type="checkbox" id="checkbox1">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>20/01/2017</td>
-                            <td>082442138</td>
-                            <td>08244213813415777565</td>
-                            <td>08213213713415499999</td>
-                            <td>
-                                <input type="checkbox" id="checkbox1">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>20/02/2017</td>
-                            <td>082135555</td>
-                            <td>08213555551341543241</td>
-                            <td>08213555571341549999</td>
-                            <td>
-                                <input type="checkbox" id="checkbox1">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>12/03/2016</td>
-                            <td>082199999</td>
-                            <td>08219999913415411111</td>
-                            <td>08219999913415455555</td>
-                            <td>
-                                <input type="checkbox" id="checkbox1">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>20/12/2016</td>
-                            <td>082132137</td>
-                            <td>08213213713415432413</td>
-                            <td>08213213713415492789</td>
-                            <td>
-                                <input type="checkbox" id="checkbox1">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>20/12/2016</td>
-                            <td>082132137</td>
-                            <td>08213213713415432413</td>
-                            <td>08213213713415489777</td>
-                            <td>
-                                <input type="checkbox" id="checkbox1">
-                            </td>
-                        </tr>
+                        
                     </tbody>
                   </table>
                 </div><!-- /.box-body -->
                 <!-- modal -->
-                <div id="modal" class="modal" >
-                  <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Insert Edit Biaya</h4>
-                      </div>
-                      <div class="modal-body">
-                        <form class="form-horizontal">
-                          <table id="table_data" class="table table-striped table-bordered table-hover">
-                            <tbody>
-                                <tr>
-                                    <td style="width:120px; padding-top: 0.4cm">Nomor Depan</td>
-                                    <td>
-                                        <input type="text" class="form-control" id="edkode" >
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Dari Nomor</td>
-                                    <td><input type="text" class="form-control" id="edsatuan"></td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Sampai Nomor</td>
-                                    <td><input type="text" class="form-control" id="edsatuan"></td>
-                                </tr>
-                            </tbody>
-                          </table>
-                        </form>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" id="btnsave">Save changes</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+             
                   <!-- modal -->
                 <div class="box-footer">
                   <div class="pull-right">
@@ -205,55 +104,320 @@
         </div>
     </div>
 </div>
+</div>
 
-
-
-<div class="row" style="padding-bottom: 50px;"></div>
-
-
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Faktur Pajak</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+          <table class="table table_input">
+              <tr>
+                  <td>Nomor Pajak</td>
+                  <td>
+                    <input type="text" class="form-control nomor_pajak" name="nomor_pajak">
+                    <input type="hidden" class="form-control id_old" name="id_old">
+                </td>
+              </tr>
+              <tr>
+                  <td>Tanggal Pajak</td>
+                  <td>
+                    <input type="text" placeholder="dd/mm/yyyy" class="form-control tanggal" name="tanggal">
+                </td>
+              </tr>
+              <tr>
+                <td>PDF (max 1MB)</td>
+                <td>
+                  <div class="file-upload">
+                    <div class="file-select">
+                      <div class="file-select-name" id="noFile">Choose PDF...</div> 
+                      <input type="file" name="image" onchange="loadFile(event)" id="chooseFile">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr hidden="">
+                <td>Preview</td>
+                <td align="left">
+                  <div class="preview_td">
+                      <img style="width: 150px;height: 200px;border:1px solid pink" id="output" >
+                  </div>
+                </td>
+              </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-primary save_pajak">Save Pajak</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 
 
 @section('extra_scripts')
+<script src="{{ asset('assets/vendors/mask_plugin/dist/jquery.mask.min.js') }}"></script>
 <script type="text/javascript">
-    $(document).on("click","#btn_add",function(){
-        $("#modal").modal("show");
-    });
-    $(document).on( "click",".btnedit", function() {
-        $("#modal").modal("show");
-    });
-    $(document).on( "click",".btndelete", function() {
-        if(!confirm("Hapus Data ?")) return false;
-    });
-    function hapusData(id) {
+$(document).ready(function(){
+    $('.nomor_pajak').mask("000.000-00.00000000", {placeholder: "___.___-__.________"});
 
-        $.ajax({
-            url: baseUrl + '/data-master/master-akun/delete/' + id,
-            type: 'get',
-            dataType: 'text',
-            //headers: {'X-XSRF-TOKEN': $_token},
-            success: function (response) {
-                if (response == 'sukses') {
-                    $('.alertBody').html('<div class="alert alert-success">' +
-                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-                            'Data Berhasil Di Hapus' +
-                            '</div>');
-                    $('.alertBody').show();
-                    $('.alertBody').delay(4000).slideUp(300);
-                    $("#hapus" + id).remove();
-                } else if (response == 'gagal') {
-                    $('.alertBody').html('<div class="alert alert-danger">' +
-                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-                            'Data Akun Sudah Digunakan' +
-                            '</div>');
-                    $('.alertBody').show();
-                    $('.alertBody').delay(4000).slideUp(300);
-                }
+    $('.table_pajak').DataTable({
+        processing: true,
+        // responsive:true,
+        serverSide: true,
+        "order": [[ 1, "desc" ],[ 0, "desc" ]],
+        ajax: {
+            url:'{{ route("datatable_nomor_seri_pajak") }}',
 
-            }
-        });
+        },
+        columnDefs: [
+          {
+             targets: 0,
+             className: 'center'
+          },
+          {
+             targets: 3,
+             className: 'center'
+          },
+          {
+             targets: 4,
+             className: 'center'
+          },
+          {
+             targets: 5,
+             className: 'center'
+          },
+        ],
+        "columns": [
+        { "data": 'DT_Row_Index'},
+        { "data": "nsp_tanggal" },
+        { "data": "nsp_nomor_pajak" },
+        { "data": "download"},
+        { "data": "aktif" },
+        { "data": "aksi" },
+        ]
+    });
+
+    $('.tanggal').datepicker({format:'dd/mm/yyyy'});
+})
+
+$(document).on("click","#btn_add",function(){
+    $('.table_input :input').val('');
+    $('.file-upload').removeClass('active');
+    $('#noFile').text('Choose PDF..');
+    $("#modal").modal("show");
+});
+
+$('#chooseFile').bind('change', function () {
+  var filename = $("#chooseFile").val();
+  var fsize = $('#chooseFile')[0].files[0].size;
+  if(fsize>1048576) //do something if file size more than 1 mb (1048576)
+  {
+      return false;
+  }
+  if (/^\s*$/.test(filename)) {
+    $(".file-upload").removeClass('active');
+    $("#noFile").text("No file chosen..."); 
+  }
+  else {
+    $(".file-upload").addClass('active');
+    $("#noFile").text(filename.replace("C:\\fakepath\\", "")); 
+  }
+});
+
+var loadFile = function(event) {
+  var fsize = $('#chooseFile')[0].files[0].size;
+  if(fsize>1048576) //do something if file size more than 1 mb (1048576)
+  {
+      iziToast.warning({
+        icon: 'fa fa-times',
+        message: 'File Is To Big!',
+      });
+      return false;
+  }
+  var reader = new FileReader();
+  reader.onload = function(){
+    var output = document.getElementById('output');
+    output.src = reader.result;
+  };
+  reader.readAsDataURL(event.target.files[0]);
+};
+
+$('.save_pajak').click(function(){
+    if ($('.nomor_pajak').val() == '') {
+        toastr.warning('Nomor Pajak Harus Diisi');
+        return false;
     }
+
+    if ($('.tanggal').val() == '') {
+        toastr.warning('Tanggal pajak harus diisi');
+        return false;
+    }
+    if ($('.id_old').val() == '') {
+        if ($('#chooseFile').val() == '') {
+            toastr.warning('Harap mengupload bukti pajak');
+            return false;
+        }
+    }
+    
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    var formdata = new FormData();  
+    formdata.append( 'files', $('#chooseFile')[0].files[0]);
+    $.ajax({
+          url:baseUrl + '/master_sales/save_pajak_invoice'+'?'+$('.table_input :input').serialize(),
+          data:formdata,
+          type:'POST',
+          dataType:'json',
+          processData: false,
+          contentType: false,
+          success:function(data){
+            $('.table_input :input').val('');
+            $('.file-upload').removeClass('active');
+            $('#noFile').text('Choose PDF..');
+            var table = $('.table_pajak').DataTable();
+            table.ajax.reload();
+            $("#modal").modal("hide");
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+    });
+})
+
+function hapus(id){
+        swal({
+        title: "Apakah anda yakin?",
+        text: "Hapus Data!",
+        type: "warning",
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false
+    },
+
+    function(){
+
+         $.ajax({
+          url:baseUrl + '/master_sales/hapus_faktur_pajak',
+          data:{id},
+          type:'get',
+          success:function(data){
+              swal({
+              title: "Berhasil!",
+                      type: 'success',
+                      text: "Data Berhasil Dihapus",
+                      timer: 2000,
+                      showConfirmButton: true
+                      },function(){
+               
+                        var table = $('.table_pajak').DataTable();
+                        table.ajax.reload();
+              });
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+      });
+    });
+}
+function edit(id) {
+    $.ajax({
+          url:baseUrl + '/master_sales/cari_id_pajak',
+          data:{id},
+          type:'get',
+          dataType:'json',
+          success:function(data){
+            $('.nomor_pajak').val(data.data.nsp_nomor_pajak);
+            $('.id_old').val(id);
+            $('.tanggal').val(data.tanggal);
+            $('.file-upload').addClass('active');
+            $('#noFile').text(data.data.nsp_pdf);
+            $("#modal").modal("show");
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+    });
+}
+
+
+function download_pdf(nomor) {
+    $.ajax({
+          url:baseUrl + '/master_sales/cari_faktur_pajak',
+          data:{nomor},
+          type:'get',
+          dataType:'json',
+          success:function(data){
+            if (data.data.nsp_pdf !=null) {
+               window.open('{{asset('perwita/storage/app')}}'+'/'+data.data.nsp_pdf);
+            }
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+    });
+}
+
+function cek(id,tes) {
+    var check = $(tes).is(':checked');
+
+    $.ajax({
+          url:baseUrl + '/master_sales/cek_nomor_pajak',
+          data:{id,check},
+          type:'get',
+          dataType:'json',
+          success:function(data){
+            
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+    });
+}
 
 </script>
 @endsection

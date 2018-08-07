@@ -83,6 +83,7 @@ Route::get('setting/sync_jurnal/biaya_penerus_kas', 'selaras_jurnal@biaya_peneru
 Route::get('setting/sync_jurnal/bukti_kas_keluar', 'selaras_jurnal@bukti_kas_keluar');
 Route::get('setting/sync_jurnal/invoice', 'selaras_jurnal@invoice');
 Route::get('setting/sync_jurnal/master_akun_fitur', 'selaras_jurnal@master_akun_fitur');
+Route::get('setting/sync_jurnal/nilai_invoice', 'selaras_jurnal@nilai_invoice');
 
 //***PEMBELIAN
 //***PEMBELIAN
@@ -1059,6 +1060,12 @@ Route::get('carideliveryorder_total/carideliveryorder_total','LaporanMasterContr
   //deial Entry
   Route::get('ajaxcarideliveryorder_total_entry/ajaxcarideliveryorder_total_entry','LaporanMasterController@ajaxcarideliveryorder_total_entry');
   //end off
+  //ajaxcarideliveryorder_non_customer
+  Route::get('ajaxcarideliveryorder_non_customer/ajaxcarideliveryorder_non_customer','LaporanMasterController@ajaxcarideliveryorder_non_customer');
+  //end off
+   //ajaxcarideliveryorder_belum_delivered_ok
+  Route::get('ajaxcarideliveryorder_belum_delivered_ok/ajaxcarideliveryorder_belum_delivered_ok','LaporanMasterController@ajaxcarideliveryorder_belum_delivered_ok');
+  //end off
   //deial mobil
   Route::get('ajaxcarideliveryorder_total_detailnopol/ajaxcarideliveryorder_total_detailnopol','LaporanMasterController@ajaxcarideliveryorder_total_detailnopol');
   //end off
@@ -1095,6 +1102,12 @@ Route::post('reportinvoice/reportinvoice', 'LaporanMasterController@reportinvoic
 Route::get('excelinvoice/excelinvoice', 'LaporanMasterController@excelinvoice')->name('excelinvoice');
 Route::get('carireport_invoice/carireport_invoice', 'LaporanMasterController@carireport_invoice')->name('carireport_invoice');
 Route::get('carientry_invoice/carientry_invoice', 'LaporanMasterController@carientry_invoice')->name('carientry_invoice');
+Route::get('carientry_invoice/carientry_invoice', 'LaporanMasterController@carientry_invoice')->name('carientry_invoice');
+//
+Route::get('cari_invoice_belum_tt/cari_invoice_belum_tt', 'LaporanMasterController@cari_invoice_belum_tt')->name('cari_invoice_belum_tt');
+Route::get('cari_invoice_sudah_tt/cari_invoice_sudah_tt', 'LaporanMasterController@cari_invoice_sudah_tt')->name('cari_invoice_sudah_tt');
+Route::get('cari_faktur_belum_tt/cari_faktur_belum_tt', 'LaporanMasterController@cari_faktur_belum_tt')->name('cari_faktur_belum_tt');
+Route::get('cari_jarak_invoice_dengan_tt/cari_jarak_invoice_dengan_tt', 'LaporanMasterController@cari_jarak_invoice_dengan_tt')->name('cari_jarak_invoice_dengan_tt');
 //END OF LAPORAN INVOICE
 
 //LAPORAN KWITANSI
@@ -1311,6 +1324,12 @@ Route::get('master_sales/kendaraan/{id}/hapus_data', 'master_sales\kendaraan_Con
 
 //Nomor seri pajak
 Route::get('master_sales/nomorseripajak','master_sales\nomor_seri_pajak_controller@index');
+Route::get('master_sales/datatable_nomor_seri_pajak','master_sales\nomor_seri_pajak_controller@datatable_nomor_seri_pajak')->name('datatable_nomor_seri_pajak');
+Route::post('master_sales/save_pajak_invoice', 'master_sales\nomor_seri_pajak_controller@save_pajak_invoice');
+Route::get('master_sales/cari_faktur_pajak', 'master_sales\nomor_seri_pajak_controller@cari_faktur_pajak');
+Route::get('master_sales/cari_id_pajak', 'master_sales\nomor_seri_pajak_controller@cari_id_pajak');
+Route::get('master_sales/hapus_faktur_pajak', 'master_sales\nomor_seri_pajak_controller@hapus_faktur_pajak');
+Route::get('master_sales/cek_nomor_pajak', 'master_sales\nomor_seri_pajak_controller@cek_nomor_pajak');
 
 
 //---WILAYAH----------
@@ -1322,7 +1341,7 @@ Route::get('sales/provinsi/tabel', 'wilayah\provinsi_Controller@table_data');
 Route::get('sales/provinsi/get_data', 'wilayah\provinsi_Controller@get_data');
 Route::post('sales/provinsi/save_data', 'wilayah\provinsi_Controller@save_data');
 Route::post('sales/provinsi/hapus_data', 'wilayah\provinsi_Controller@hapus_data');
-//end provinsi
+//end provinsi1
 
 
 //kota
@@ -1638,7 +1657,10 @@ Route::get('sales/invoice_form/{nilai}/terbilang', 'sales\invoice_Controller@pen
 Route::get('sales/datatable_invoice1', 'sales\invoice_Controller@datatable_invoice')->name('datatable_invoice1');
 Route::get('sales/invoice/jurnal', 'sales\invoice_Controller@jurnal1');
 Route::get('sales/cari_faktur_pajak', 'sales\invoice_Controller@cari_faktur_pajak');
+Route::get('sales/cari_nomor_pajak', 'sales\invoice_Controller@cari_nomor_pajak');
 // end invoice
+
+
 //FORM TANDA TERIMA PENJUALAN
 Route::get('sales/form_tanda_terima_penjualan/index', 'form_tanda_terima_penjualan_controller@index');
 Route::get('sales/form_tanda_terima_penjualan/nota', 'form_tanda_terima_penjualan_controller@nota');

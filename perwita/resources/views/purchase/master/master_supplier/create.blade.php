@@ -231,7 +231,7 @@
 
                           <tr>
                               <td style="width:300px"> Terikat Kontrak </td>
-                              <td>    <select class="form-control kontrak"  name="kontrak"> <option value="" selected required>  -- Pilih -- </option> <option value="YA"> Ya </option> <option value="TIDAK"> Tidak </option> </select>
+                              <td>    <select class="form-control kontrak"  name="kontrak" required> <option value="" selected >  -- Pilih -- </option> <option value="YA"> Ya </option> <option value="TIDAK"> Tidak </option> </select>
                           <br> <div class="nokontrak"> </div>
                            </td> </td>
                           </tr>
@@ -431,6 +431,9 @@
 
                 
           },
+          error : function(){
+            location.reload();
+          }
         })
 
    clearInterval(reset);
