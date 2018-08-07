@@ -15,6 +15,7 @@ use Yajra\Datatables\Datatables;
 // use Intervention\Image\ImageManagerStatic as Image;
 use File;
 use Storage;
+
 class invoice_Controller extends Controller
 {
 

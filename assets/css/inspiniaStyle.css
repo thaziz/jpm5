@@ -3832,6 +3832,106 @@ table.table-mail tr td {
   left: auto;
   right: 0;
 }
+/*Ari*/
+.rightbar-appear{
+  overflow-y: hidden;
+}
+
+.rightbar-btn-trigger{
+  position: fixed;
+  right: -1px;
+  z-index: 1;
+}
+.rightbar-btn-trigger button,.right-btn-trigger a{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    background: rgba(166, 166, 166, 0.4);
+    transition: 0.2s;
+    border: 1px solid #6a6d6f;
+}
+.rightbar-outer{
+  background-color: rgba(0,0,0,0.2);
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  z-index: 2002;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.5s;
+}
+.rightbar-outer-hidden{
+  display: none;
+}
+.rightbar{
+  width: 20vw;
+  height: 100vh;
+  background-color: #f7f7f7; 
+  position: fixed;
+  right: -1px;
+  top: 0;
+  bottom: 0;
+  z-index: 2003;
+  transition: 1s;
+  overflow-y: auto;
+}
+.rightbar-hidden{
+  right: -20vw;
+  transition: 1s;
+}
+
+.rightbar-head {
+        top: 0;
+    padding-top: 12px;
+    border-bottom: 1px solid #c3c3c3;
+    height: 50px;
+    position: fixed;
+    width: 100%;
+    background: white;
+}
+
+.rightbar-head h1,
+.rightbar-head h2,
+.rightbar-head h3,
+.rightbar-head h4,
+.rightbar-head h5,
+.rightbar-head h6{
+  text-align: center;
+      position: inherit;
+    margin-left: 15px;
+}
+
+.box-skin{
+  height: 15px;
+  width: 15px;
+  float: left;
+  margin-right: 10px;
+  border-radius:3px;
+  border: .5px solid #909090;
+}
+.list-skins {
+    padding: 10px;
+    border-bottom: 1px solid #e2e2e2;
+}
+.list-skins:hover {
+    background: #e2e2e2;
+}
+.rightbar-body{
+  margin-top: 50px;
+}
+
+button.btn-close-rightbar:hover, button.btn-close-rightbar:active {
+    color: gray;
+}
+button.btn-close-rightbar {
+        background: transparent;
+    border: hidden;
+        margin-left: 220px;
+    position: inherit;
+    color: black;
+    transition: 0.3s;
+    z-index: 2005;
+}
 /* BACKGROUNDS */
 .gray-bg {
   background-color: #f3f3f4;
@@ -3841,27 +3941,31 @@ table.table-mail tr td {
 }
 .navy-bg {
   background-color: #1ab394;
-  color: #ffffff;
+  /*color: #ffffff;*/
 }
 .blue-bg {
   background-color: #1c84c6;
-  color: #ffffff;
+  /*color: #ffffff;*/
 }
 .lazur-bg {
   background-color: #23c6c8;
-  color: #ffffff;
+  /*color: #ffffff;*/
 }
 .yellow-bg {
   background-color: #f8ac59;
-  color: #ffffff;
+  /*color: #ffffff;*/
 }
 .red-bg {
   background-color: #ed5565;
-  color: #ffffff;
+  /*color: #ffffff;*/
 }
 .black-bg {
   background-color: #262626;
 }
+.dark-blue-bg{
+  background-color: #384f5f;
+}
+/*irA*/
 .panel-primary {
   border-color: #1ab394;
 }

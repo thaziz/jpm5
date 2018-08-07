@@ -1112,6 +1112,9 @@ Route::get('cari_jarak_invoice_dengan_tt/cari_jarak_invoice_dengan_tt', 'Laporan
 
 //LAPORAN KWITANSI
 Route::get('sales/laporan_kwitansi','LaporanMasterController@kwitansi');
+Route::get('cari_ajaxkwitansi/cari_ajaxkwitansi', 'LaporanMasterController@cari_ajaxkwitansi')->name('cari_ajaxkwitansi');
+Route::get('cari_ajaxkwitansi/cari_ajaxkwitansi_belum_posting', 'LaporanMasterController@cari_ajaxkwitansi_belum_posting')->name('cari_ajaxkwitansi_belum_posting');
+Route::get('cari_ajaxkwitansi/cari_ajaxkwitansi_sudah_posting', 'LaporanMasterController@cari_ajaxkwitansi_sudah_posting')->name('cari_ajaxkwitansi_sudah_posting');
 Route::post('reportkwitansi/reportkwitansi', 'LaporanMasterController@reportkwitansi')->name('reportkwitansi');
 //END OF LAPORAN KWITANSI
 
