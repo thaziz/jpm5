@@ -66,6 +66,9 @@
     <!-- jQuery UI -->
     <script src="{{ asset('assets/vendors/jquery-ui/jquery-ui.min.js') }}"></script>
 
+    {{-- JS-COOKIES --}}
+    <script src="{{ asset('assets/js-cookie/js.cookie.js') }}"></script>
+
     <script>
 
         var regex_huruf = replace(/[A-Za-z$. ,-]/g, "");

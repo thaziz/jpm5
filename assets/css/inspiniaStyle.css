@@ -3832,6 +3832,10 @@ table.table-mail tr td {
   left: auto;
   right: 0;
 }
+/*Ari*/
+
+
+
 /* BACKGROUNDS */
 .gray-bg {
   background-color: #f3f3f4;
@@ -3841,27 +3845,28 @@ table.table-mail tr td {
 }
 .navy-bg {
   background-color: #1ab394;
-  color: #ffffff;
+  /*color: #ffffff;*/
 }
 .blue-bg {
   background-color: #1c84c6;
-  color: #ffffff;
+  /*color: #ffffff;*/
 }
 .lazur-bg {
   background-color: #23c6c8;
-  color: #ffffff;
+  /*color: #ffffff;*/
 }
 .yellow-bg {
   background-color: #f8ac59;
-  color: #ffffff;
+  /*color: #ffffff;*/
 }
 .red-bg {
   background-color: #ed5565;
-  color: #ffffff;
+  /*color: #ffffff;*/
 }
 .black-bg {
   background-color: #262626;
 }
+/*irA*/
 .panel-primary {
   border-color: #1ab394;
 }
