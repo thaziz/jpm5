@@ -523,6 +523,11 @@ class posting_pembayaran_Controller extends Controller
             ////////// JURNAL PEMBAYARAN CHEQUE/BG DAN TRANSFER
             if ($request->cb_jenis_pembayaran == 'F' or $request->cb_jenis_pembayaran == 'C') {
 
+                if ($request->cb_jenis_pembayaran == 'F') {
+                  $km =  get_id_jurnal('BM', $request->cb_cabang);
+                }else{
+                  $km = null;
+                }
                 $id_jurnal=d_jurnal::max('jr_id')+1;
                 $delete = d_jurnal::where('jr_ref',$nota)->delete();
                 $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
