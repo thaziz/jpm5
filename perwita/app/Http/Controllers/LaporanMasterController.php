@@ -4009,6 +4009,83 @@ class LaporanMasterController extends Controller
    //========================================= END OF ===========================================================//
 
 
+   //========================================= KWITANSI ===========================================================//
+
+   //cari_ajaxkwitansi
+   public function cari_ajaxkwitansi(Request $request)
+   {
+   	$awal = $request->awal;
+	$akir = $request->akir;
+	//invoice
+	if ($request->customer != '' || $request->customer != null) {
+		$customer_kwitansi = " AND k_kode_customer = '".$request->customer."' ";
+	}else{
+		$customer_kwitansi = '';
+	}
+	if ($request->cabang != '' || $request->cabang != null) {
+		$cabang_kwitansi = " AND k_kode_cabang = '".$request->cabang."' ";
+	}else{
+		$cabang_kwitansi = '';
+	}
+	//end
+
+	$data = DB::select("SELECT * from kwitansi where k_tanggal > '$awal' and k_tanggal < '$akir' $customer_kwitansi $cabang_kwitansi");
+	// return $data;		
+	return view('purchase/master/master_penjualan/laporan/lap_kwitansi/kwitansi/lap_kwitansi',compact('data','customer'));
+   }
+
+
+   //cari_ajaxkwitansi_belum_posting
+   public function cari_ajaxkwitansi_belum_posting(Request $request)
+   {
+   	$awal = $request->awal;
+	$akir = $request->akir;
+	//invoice
+	if ($request->customer != '' || $request->customer != null) {
+		$customer_kwitansi = " AND k_kode_customer = '".$request->customer."' ";
+	}else{
+		$customer_kwitansi = '';
+	}
+	if ($request->cabang != '' || $request->cabang != null) {
+		$cabang_kwitansi = " AND k_kode_cabang = '".$request->cabang."' ";
+	}else{
+		$cabang_kwitansi = '';
+	}
+	//end
+
+	$data = DB::select("SELECT * from kwitansi where k_tanggal > '$awal' and k_tanggal < '$akir' and k_nomor_posting is null $customer_kwitansi $cabang_kwitansi");
+	// return $data;		
+	return view('purchase/master/master_penjualan/laporan/lap_kwitansi/kwitansi_belum_posting/lap_kwitansi_belum_posting',compact('data','customer'));
+   }
+
+   //cari_ajaxkwitansi_sudah_posting
+   public function cari_ajaxkwitansi_sudah_posting(Request $request)
+   {
+   	$awal = $request->awal;
+	$akir = $request->akir;
+	//invoice
+	if ($request->customer != '' || $request->customer != null) {
+		$customer_kwitansi = " AND k_kode_customer = '".$request->customer."' ";
+	}else{
+		$customer_kwitansi = '';
+	}
+	if ($request->cabang != '' || $request->cabang != null) {
+		$cabang_kwitansi = " AND k_kode_cabang = '".$request->cabang."' ";
+	}else{
+		$cabang_kwitansi = '';
+	}
+	//end
+
+	$data = DB::select("SELECT * from kwitansi where k_tanggal > '$awal' and k_tanggal < '$akir' and k_nomor_posting is not null $customer_kwitansi $cabang_kwitansi");
+	// return $data;		
+	return view('purchase/master/master_penjualan/laporan/lap_kwitansi/kwitansi_sudah_posting/lap_kwitansi_sudah_posting',compact('data','customer'));
+   }
+
+
+
+
+   //========================================= END OF ===========================================================//
+
 
    }
 
