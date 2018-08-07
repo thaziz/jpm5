@@ -83,6 +83,7 @@ Route::get('setting/sync_jurnal/biaya_penerus_kas', 'selaras_jurnal@biaya_peneru
 Route::get('setting/sync_jurnal/bukti_kas_keluar', 'selaras_jurnal@bukti_kas_keluar');
 Route::get('setting/sync_jurnal/invoice', 'selaras_jurnal@invoice');
 Route::get('setting/sync_jurnal/master_akun_fitur', 'selaras_jurnal@master_akun_fitur');
+Route::get('setting/sync_jurnal/nilai_invoice', 'selaras_jurnal@nilai_invoice');
 
 //***PEMBELIAN
 //***PEMBELIAN

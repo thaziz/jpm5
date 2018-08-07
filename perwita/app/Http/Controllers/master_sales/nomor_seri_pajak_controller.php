@@ -15,7 +15,8 @@ use Auth;
 use Yajra\Datatables\Datatables;
 // use Intervention\Image\ImageManagerStatic as Image;
 use File;
-use Storage;
+use Illuminate\Support\Facades\Storage;
+use Exception;
 
 class nomor_seri_pajak_controller extends Controller
 {
@@ -77,54 +78,54 @@ class nomor_seri_pajak_controller extends Controller
     	if ($req->id_old == '') {
     		$req->id_old = 0;
     	}
-        $data = DB::table('nomor_seri_pajak')
-				  ->where('nsp_id',$req->id_old)
-				  ->first();
-		if ($data != null) {
+      $data = DB::table('nomor_seri_pajak')
+			  ->where('nsp_id',$req->id_old)
+			  ->first();
+  		if ($data != null) {
+  			$id = $req->id_old;
+          	if ($file != null) {
+          		unlink(storage_path('app/'.$data->nsp_pdf));  
+  	        	$filename = 'nomor_seri_pajak/faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension();
+  	        	Storage::put($filename,file_get_contents($req->file('files')));
+  	      	}else{
+  	      		$filename = $data->nsp_pdf;
+  	      	}
+          	$save = DB::table('nomor_seri_pajak')
+          				->where('nsp_id',$id)
+                    		->update([
+                    			'nsp_tanggal'	 => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+                    			'nsp_nomor_pajak'=> $req->nomor_pajak,
+                    			'nsp_pdf' 		 => $filename,
+                    			'updated_at'	 => carbon::now(),
+                    			'updated_by'	 => Auth::user()->m_name,
+                    		]);
+  	        return response()->json(['status'=>2]);
+  		}else{
 
-			$id = $req->id_old;
-        	if ($file != null) {
-        		unlink(storage_path('app/'.$data->nsp_pdf));  
-	        	$filename = 'nomor_seri_pajak/faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension();
-	        	Storage::put($filename,file_get_contents($req->file('files')));
-	      	}else{
-	      		$filename = $data->nsp_pdf;
-	      	}
-        	$save = DB::table('nomor_seri_pajak')
-        				->where('nsp_id',$id)
-                  		->update([
-                  			'nsp_tanggal'	 => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
-                  			'nsp_nomor_pajak'=> $req->nomor_pajak,
-                  			'nsp_pdf' 		 => $filename,
-                  			'updated_at'	 => carbon::now(),
-                  			'updated_by'	 => Auth::user()->m_name,
-                  		]);
-	        return response()->json(['status'=>2]);
-		}else{
+          	$id = DB::table('nomor_seri_pajak')->max('nsp_id')+1;
+          	if ($file != null) {
+  	        	$filename = 'nomor_seri_pajak/faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension();
+              try{
+                Storage::put($filename,file_get_contents($file));
+              }catch(Exception $error){
+                report($error);
+              }
+  	      	}
+  	      	$save = DB::table('nomor_seri_pajak')
+  	                  		->insert([
+  	                  			'nsp_id'		 => $id,
+  	                  			'nsp_tanggal'	 => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+  	                  			'nsp_nomor_pajak'=> $req->nomor_pajak,
+  	                  			'nsp_pdf' 		 => $filename,
+  	                  			'created_at'	 => carbon::now(),
+  	                  			'updated_at'	 => carbon::now(),
+  	                  			'created_by'	 => Auth::user()->m_name,
+  	                  			'updated_by'	 => Auth::user()->m_name,
+  	                  			'nsp_aktif' 	 => true
+  	                  		]);
 
-        	$id = DB::table('nomor_seri_pajak')->max('nsp_id')+1;
-        	if ($file != null) {
-	        	$filename = 'nomor_seri_pajak/faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension();
-	        	Storage::put($filename,file_get_contents($req->file('files')));
-	      	}
-
-	      	$save = DB::table('nomor_seri_pajak')
-	                  		->insert([
-	                  			'nsp_id'		 => $id,
-	                  			'nsp_tanggal'	 => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
-	                  			'nsp_nomor_pajak'=> $req->nomor_pajak,
-	                  			'nsp_pdf' 		 => $filename,
-	                  			'created_at'	 => carbon::now(),
-	                  			'updated_at'	 => carbon::now(),
-	                  			'created_by'	 => Auth::user()->m_name,
-	                  			'updated_by'	 => Auth::user()->m_name,
-	                  			'nsp_aktif' 	 => true
-	                  		]);
-
-			return response()->json(['status'=>1]);
-		}
-
-      	
+  			return response()->json(['status'=>1]);
+  		}
     }
 
     public function cari_faktur_pajak(request $req)

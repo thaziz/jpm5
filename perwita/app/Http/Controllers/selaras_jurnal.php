@@ -1854,4 +1854,21 @@ class selaras_jurnal  extends Controller
 
       return 'berhasil';
   }
+
+  public function nilai_invoice()
+  {
+    $data = DB::table('invoice')
+              ->get();
+
+    for ($i=0; $i < count($data); $i++) { 
+      $nilai = $data[$i]->i_total_tagihan;
+
+      $upd = DB::table('invoice')
+               ->where('i_nomor',$data[$i]->i_nomor)
+               ->update([
+                  'i_sisa_pelunasan' => $data[$i]->i_total_tagihan,
+                  'i_sisa_akhir'     => $data[$i]->i_total_tagihan,
+               ]);
+    }
+  }
 }

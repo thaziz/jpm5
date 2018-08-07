@@ -69,9 +69,9 @@
                                 <th>Akun Bank/Kas </th>
                                 <th>Customer</th>
                                 <th>Jumlah</th>
-                                <th>Memorial</th>
                                 <th>Keterangan </th>
                                 <th>Jenis Pembayaran </th>
+                                <th>Posting</th>
                                 <th style="width:8%"> Aksi </th>
                             </tr>
                         </thead>
@@ -143,10 +143,10 @@ $(document).ready(function() {
             { "data": "bank" },
             { "data": "customer" },
             { "data": "jumlah_text"},
-            { "data": "memorial_text" },
             { "data": "k_keterangan" },
             { "data": "pembayaran" },
             { "data": "aksi" },
+            { "data": "memorial_text" },
             ]
         });
 });
