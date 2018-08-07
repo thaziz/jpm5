@@ -1459,6 +1459,11 @@ class penerimaan_penjualan_Controller extends Controller
           // JURNAL
           if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'U' or $request->cb_jenis_pembayaran == 'C') {
 
+            if ($request->cb_jenis_pembayaran != 'C') {
+              $km =  get_id_jurnal('KM', $request->cb_cabang);
+            }else{
+              $km = null;
+            }
             $id_jurnal=d_jurnal::max('jr_id')+1;
             $delete = d_jurnal::where('jr_ref',$nota)->delete();
             $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
@@ -1469,6 +1474,7 @@ class penerimaan_penjualan_Controller extends Controller
                           'jr_note'   => 'KWITANSI '.$request->ed_keterangan,
                           'jr_insert' => carbon::now(),
                           'jr_update' => carbon::now(),
+                          'jr_no'     => $km,
                           ]);
           }
 
