@@ -279,7 +279,7 @@
 </div>
 
 <!-- modal -->
-<div id="modal_setting_table" class="modal">
+<div id="modal_setting_neraca" class="modal">
   <div class="modal-dialog" style="width: 30%">
     <div class="modal-content">
       <div class="modal-header">

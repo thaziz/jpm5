@@ -54,7 +54,7 @@
                 <td></td>
               </tr>
 
-                @foreach($data_detail as $data_detail_aktiva)
+                {{-- @foreach($data_detail as $data_detail_aktiva)
                   @if($data_detail_aktiva["id_parrent"] == $data_neraca_aktiva["nomor_id"])
                     <tr>
                       <td class="lv3">{{ $data_detail_aktiva["nama_referensi"] }}</td>
@@ -62,7 +62,7 @@
                       <td></td>
                     </tr>
                   @endif
-                @endforeach
+                @endforeach --}}
 
             @elseif($data_neraca_aktiva["jenis"] == 3)
               <tr>

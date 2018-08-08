@@ -67,7 +67,9 @@
     <script src="{{ asset('assets/vendors/highchart/highcharts-3d.js') }}"></script>
     
     {{-- END OF --}}
-    
+
+    <script src="{{ asset('assets/js-cookie/js.cookie.js') }}"></script>
+
     <script>
 
         var datepicker_today = $('.datepicker_today').datepicker({
@@ -291,4 +293,20 @@
 $(".mask_money_dn").maskMoney({thousands:'.', decimal:',', precision:-1});
 
 
+    </script>
+
+    <script type="text/javascript">
+
+
+        $('.rightbar-btn-trigger button').click(function(){
+            $('.rightbar-outer').removeClass('rightbar-outer-hidden');
+            $('.rightbar').removeClass('rightbar-hidden');
+            $('body').addClass('rightbar-appear');
+        });
+        $('.rightbar-outer, .btn-close-rightbar').click(function(){
+            $('.rightbar-outer').addClass('rightbar-outer-hidden');
+            $('.rightbar').addClass('rightbar-hidden');
+            $('body').removeClass('rightbar-appear');
+        });
+      
     </script>
