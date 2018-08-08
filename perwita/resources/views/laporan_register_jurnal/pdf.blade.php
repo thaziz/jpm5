@@ -1,7 +1,7 @@
 <!DOCTYPE html>
   <html>
     <head>
-      <title></title>
+      <title>laporan Register Jurnal</title>
 
 
         <link href="{{ asset('assets/vendors/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -123,8 +123,8 @@
           </div>
           <div class="col-md-5" style="background: none; padding: 10px 15px 5px 15px">
             <ul>
-              <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_register_jurnal').modal('show')"></i></li>
-              <li><i class="fa fa-print" style="cursor: pointer;" id="print"></i></li>
+              <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_register_jurnal').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Setting Register Jurnal"></i></li>
+              <li><i class="fa fa-print" style="cursor: pointer;" id="print" data-toggle="tooltip" data-placement="bottom" title="Print Laporan"></i></li>
             </ul>
           </div>
         </div>
@@ -341,6 +341,8 @@
 
       <script type="text/javascript">
         $(document).ready(function(){
+
+          $('[data-toggle="tooltip"]').tooltip({container : 'body'});
 
           baseUrl = '{{ url('/') }}';
 
