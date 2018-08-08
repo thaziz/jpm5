@@ -161,7 +161,9 @@ class invoice_pembetulan_controller extends Controller
         $akunPPH='';
         $d=[];
 
-
+        if ($tagihan_awal == $total_tagihan) {
+          return response()->json(['status'=>0,'pesan'=>'Invoice Tidak ada perubahan']);
+        }
         $request->netto_detail = str_replace(['Rp', '\\', '.', ' '], '', $request->netto_detail);
         $request->netto_detail =str_replace(',', '.', $request->netto_detail);
 
@@ -205,12 +207,12 @@ class invoice_pembetulan_controller extends Controller
             $ppn_type = 'npkp';
             $ppn_persen = 1;
             $nilaiPpn=1/101;
-            $akunPPN='2302';
+            $akunPPN='2301';
         } elseif ($request->cb_jenis_ppn == 5) {//include
             $ppn_type = 'npkp';
             $ppn_persen = 10;
             $nilaiPpn=10/110;
-            $akunPPN='2302';
+            $akunPPN='2398';
         }
 
 
@@ -259,8 +261,6 @@ class invoice_pembetulan_controller extends Controller
                                  ]);
 
         if ($request->cb_pendapatan == 'PAKET' or $request->cb_pendapatan == 'KARGO') {
-          // dd('asd');
-
           for ($i=0; $i < count($request->do_detail); $i++) { 
 
           $cari_id = DB::table('invoice_pembetulan_d')
@@ -315,7 +315,6 @@ class invoice_pembetulan_controller extends Controller
                    ->join('delivery_order','nomor','=','dd_nomor')
                    ->where('dd_id',$request->do_id[$i])
                    ->first();
-            // dd($request->do_id);
            $save_detail_invoice = DB::table('invoice_pembetulan_d')
                                     ->insert([
                                         'ipd_id'            => $cari_id,
@@ -420,23 +419,18 @@ class invoice_pembetulan_controller extends Controller
         $cari_invoice = DB::table('invoice')
                           ->where('i_nomor',$request->nota_invoice)
                           ->first();
-        // dd($request->all());
+
         if ($ppn_type == 'npkp') {
           $nilai_ppn = $ppn_persen/(100 + $ppn_persen) * $hasil;
           $cari_pph  = $hasil - $request->diskon2;
         }else{
           $nilai_ppn = $ppn_persen/100 * $hasil;
         }
-        // dd($hasil);
-
-
-        dd(round($hasil,2));
-        $hasil = $hasil - $nilai_ppn;
-        // dd($hasil);
+        $hasil_dpp = $hasil - $nilai_ppn;
         $save_cdd = DB::table('cn_dn_penjualan_d')
                       ->insert([
                         'cdd_id'              => $id,
-                        'cdd_nomor_invoice'   => $nota,
+                        'cdd_nomor_invoice'   => $request->nota_invoice,
                         'cdd_tanggal_invoice' => $cari_invoice->i_tanggal,
                         'cdd_jatuh_tempo'     => $cari_invoice->i_jatuh_tempo,
                         'cdd_dpp_awal'        => $cari_invoice->i_netto_detail,
@@ -446,8 +440,8 @@ class invoice_pembetulan_controller extends Controller
                         'cdd_jenis_ppn'       => $request->cb_jenis_ppn,
                         'cdd_jenis_pajak'     => 0,
                         'cdd_netto_awal'      => $cari_invoice->i_total_tagihan,
-                        'cdd_dpp_akhir'       => $hasil,
-                        'cdd_ppn_akhir'       => round($tes,2),
+                        'cdd_dpp_akhir'       => $hasil_dpp,
+                        'cdd_ppn_akhir'       => round($nilai_ppn,2),
                         'cdd_pph_akhir'       => 0,
                         'cdd_netto_akhir'     => $hasil,
                       ]);
@@ -478,29 +472,200 @@ class invoice_pembetulan_controller extends Controller
                                 'ip_ref' =>$nota,
                               ]);
 
-
-        // JURNAL
-        $nota = $request->nota_invoice;
-
+        // JURNAL CN/DN
+        if ($jenis == 'K') {
+          $jenis = "KREDIT";
+        }else{
+          $jenis = "DEBET";
+        }
         $id_jurnal=d_jurnal::max('jr_id')+1;
-        $delete = d_jurnal::where('jr_ref',$nota)->where('jr_note','INVOICE PEMBETULAN')->delete();
+        $delete = d_jurnal::where('jr_ref',$nota)->delete();
         $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
-                      'jr_year'   => carbon::parse(str_replace('/', '-', $tgl))->format('Y'),
-                      'jr_date'   => carbon::parse(str_replace('/', '-', $tgl))->format('Y-m-d'),
-                      'jr_detail' => 'INVOICE PEMBETULAN' .' '.$request->cb_pendapatan,
+                      'jr_year'   => carbon::now()->format('Y'),
+                      'jr_date'   => carbon::now()->format('Y-m-d'),
+                      'jr_detail' => $jenis.' NOTA',
                       'jr_ref'    => $nota,
-                      'jr_note'   => 'INVOICE PEMBETULAN',
+                      'jr_note'   => 'DEBET KREDIT NOTA',
                       'jr_insert' => carbon::now(),
                       'jr_update' => carbon::now(),
                       ]);
-        if ($jenis == 'K') {
+        // PIUTANG
+        $invoic = [];
+        $akun_piutang_temp = [];
+        $nilai_piutang_temp = [];
+        $akun_pendapatan_temp = [];
+        $nilai_pendapatan_temp = [];
+        $inv = $request->nota_invoice;
+        array_push($invoic,$inv);
+        for ($i=0; $i < count($invoic); $i++) { 
 
-          $akun = [];
-          $akun_val = [];
+          $tot_vendor  = 0;
+          $tot_own     = 0;
+          $akun_vendor = [];
+          $akun_own = [];
+          $invoice = DB::table('invoice')
+                        ->where('i_nomor',$invoic[$i])
+                        ->first();
+          
+          if ($invoice->i_pendapatan == 'PAKET') {
+            $akun_vendor = DB::table('d_akun')
+                              ->where('id_akun','like','4501'.'%')
+                              ->where('kode_cabang',$invoice->i_kode_cabang)
+                              ->first();
 
-          // $selisih = 
+            $akun_own = DB::table('d_akun')
+                            ->where('id_akun','like','4301'.'%')
+                            ->where('kode_cabang',$invoice->i_kode_cabang)
+                            ->first(); 
 
+            $invoice_d = DB::table('invoice_d')
+                        ->join('delivery_order','nomor','=','id_nomor_do')
+                        ->where('id_nomor_invoice',$invoic[$i])
+                        ->get();
+            for ($a=0; $a < count($invoice_d); $a++) { 
+              $tot_vendor += $invoice_d[$a]->total_vendo;
+              $tot_own += $invoice_d[$a]->total_dpp;
+            }
+            $tot_vendor1 = (filter_var($tagihan_awal-$total_tagihan,FILTER_SANITIZE_NUMBER_INT)/100)/$invoice->i_total_tagihan * $tot_vendor;
+            $tot_own1 = ($tagihan_awal-$total_tagihan)/$invoice->i_total_tagihan * $tot_own;
+            if (round($tot_vendor1) != 0) {
+              array_push($akun_pendapatan_temp, $akun_vendor->id_akun);
+              array_push($nilai_pendapatan_temp, $tot_vendor1);
+            }
+
+            if (round($tot_own1) != 0) {
+              array_push($akun_pendapatan_temp, $akun_own->id_akun);
+              array_push($nilai_pendapatan_temp, $tot_own1);
+            }
+          }else if ($invoice->i_pendapatan == 'KARGO') {
+             $akun_vendor = DB::table('d_akun')
+                              ->where('id_akun','like','4401'.'%')
+                              ->where('kode_cabang',$invoice->i_kode_cabang)
+                              ->first();
+
+            $akun_own = DB::table('d_akun')
+                            ->where('id_akun','like','4201'.'%')
+                            ->where('kode_cabang',$invoice->i_kode_cabang)
+                            ->first();
+
+            $invoice_d = DB::table('invoice_d')
+                        ->join('delivery_order','nomor','=','id_nomor_do')
+                        ->where('id_nomor_invoice',$invoic[$i])
+                        ->get();
+
+            for ($a=0; $a < count($invoice_d); $a++) { 
+              if ($invoice_d[$a]->kode_subcon == 'OWN') {
+                $tot_own += $invoice_d[$a]->total_net;
+              }else{
+                $tot_vendor += $invoice_d[$a]->total_net;
+              }
+            }
+            $tot_vendor1 = ($tagihan_awal-$total_tagihan)/$invoice->i_total_tagihan * $tot_vendor;
+            $tot_own1 = ($tagihan_awal-$total_tagihan)/$invoice->i_total_tagihan * $tot_own;
+            if (round($tot_vendor1) != 0) {
+              array_push($akun_pendapatan_temp, $akun_vendor->id_akun);
+              array_push($nilai_pendapatan_temp, $tot_vendor1);
+            }
+
+            if (round($tot_own1) != 0) {
+              array_push($akun_pendapatan_temp, $akun_own->id_akun);
+              array_push($nilai_pendapatan_temp, $tot_own1);
+            }
+          }else if ($invoice->i_pendapatan == 'KORAN') {
+
+            $invoice_d = DB::table('invoice_d')
+                        ->join('delivery_orderd','dd_id','=','id_nomor_do_dt')
+                        ->where('id_nomor_invoice',$invoic[$i])
+                        ->get();
+            $temp = DB::table('item')
+                  ->where('kode',$do_d->dd_kode_item)
+                  ->first();
+
+            $akun_koran = DB::table('d_akun')
+                              ->where('id_akun','like',substr($temp->acc_penjualan,0, 4).'%')
+                              ->where('kode_cabang',$invoice->i_kode_cabang)
+                              ->first();
+
+            $dpp = $tagihan_awal-$total_tagihan;
+            $total = $dpp/$invoice->i_total_tagihan * $invoice_d->dd_total;
+            array_push($akun_pendapatan_temp, $akun_koran);
+            array_push($nilai_pendapatan_temp, $total);
+          }
+
+          array_push($akun_piutang_temp, $invoice->i_acc_piutang);
+          array_push($nilai_piutang_temp, $tagihan_awal-$total_tagihan);
+        }
+        $akun_piutang_fix = array_values(array_unique($akun_piutang_temp));
+        $nilai_piutang_fix = [];
+        $akun_pendapatan_fix = array_values(array_unique($akun_pendapatan_temp));
+        $nilai_pendapatan_fix = [];
+        // PIUTANG
+        for ($i=0; $i < count($akun_piutang_fix); $i++) { 
+          for ($a=0; $a < count($akun_piutang_temp); $a++) { 
+            if ($akun_piutang_temp[$a] == $akun_piutang_fix[$i]) {
+              if (!isset($nilai_piutang_fix[$i])) {
+                $nilai_piutang_fix[$i] = 0;
+              }
+              $nilai_piutang_fix[$i]+=$nilai_piutang_temp[$a];
+            }
+          }
+        }
+        // PENDAPATAN
+        for ($i=0; $i < count($akun_pendapatan_fix); $i++) { 
+          for ($a=0; $a < count($akun_pendapatan_temp); $a++) { 
+            if ($akun_pendapatan_temp[$a] == $akun_pendapatan_fix[$i]) {
+              if (!isset($nilai_pendapatan_fix[$i])) {
+                $nilai_pendapatan_fix[$i] = 0;
+              }
+              $nilai_pendapatan_fix[$i]+=$nilai_pendapatan_temp[$a];
+            }
+          }
+        }
+        // PPN
+
+        for ($i=0; $i < count($akun_pendapatan_fix); $i++) { 
+          $array_sum = array_sum($nilai_pendapatan_fix);
+          $ppnnya    = round($nilai_ppn,2);
+          $hasilnya     = $ppnnya/$array_sum*$nilai_pendapatan_fix[$i];
+          $nilai_pendapatan_fix[$i]-=$hasilnya;
+        }
+
+        $akun_ppn_fix = [];
+        $nilai_ppn_fix = [];
+        $akun = DB::table('d_akun')
+                  ->where('id_akun','like',$akunPPN.'%')
+                  ->where('kode_cabang',$cabang)
+                  ->first();
+
+        array_push($akun_ppn_fix, $akun->id_akun);
+        array_push($nilai_ppn_fix,round($nilai_ppn,2));
+
+
+
+        $akun     = [];
+        $akun_val = [];
+
+
+        for ($i=0; $i < count($akun_piutang_fix); $i++) { 
+            array_push($akun,$akun_piutang_fix[$i]);
+            array_push($akun_val,$nilai_piutang_fix[$i]);
+        }
+
+        for ($i=0; $i < count($akun_pendapatan_fix); $i++) { 
+            array_push($akun,$akun_pendapatan_fix[$i]);
+            array_push($akun_val,$nilai_pendapatan_fix[$i]);
+        }
+
+        for ($i=0; $i < count($akun_ppn_fix); $i++) { 
+            array_push($akun,$akun_ppn_fix[$i]);
+            array_push($akun_val,$nilai_ppn_fix[$i]);
+        }
+
+        // dd($jenis);
+        if ($jenis == 'KREDIT') {
+          $data_akun = [];
           for ($i=0; $i < count($akun); $i++) { 
+
             $cari_coa = DB::table('d_akun')
                       ->where('id_akun',$akun[$i])
                       ->first();
@@ -511,14 +676,108 @@ class invoice_pembetulan_controller extends Controller
                 $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                 $data_akun[$i]['jrdt_detailid'] = $i+1;
                 $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = $akun_val[$i];
+                $data_akun[$i]['jrdt_value']    = -round($akun_val[$i]);
+                $data_akun[$i]['jrdt_statusdk'] = 'K';
+                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              }else{
+                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                $data_akun[$i]['jrdt_detailid'] = $i+1;
+                $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                $data_akun[$i]['jrdt_value']    = -round($akun_val[$i]);
+                $data_akun[$i]['jrdt_statusdk'] = 'D';
+                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              }
+            }else if (substr($akun[$i],0, 4)==2302 or substr($akun[$i],0, 4)==2398) {
+
+              if ($cari_coa->akun_dka == 'D') {
+                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                $data_akun[$i]['jrdt_detailid'] = $i+1;
+                $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
+                $data_akun[$i]['jrdt_statusdk'] = 'K';
+                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              }else{
+                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                $data_akun[$i]['jrdt_detailid'] = $i+1;
+                $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
+                $data_akun[$i]['jrdt_statusdk'] = 'D';
+                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              }
+            }else if (substr($akun[$i],0, 4)==2305 or substr($akun[$i],0, 4)==2306 or substr($akun[$i],0, 4)==2307 or substr($akun[$i],0, 4)==2308 or substr($akun[$i],0, 4)==2309) {
+
+              if ($cari_coa->akun_dka == 'D') {
+                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                $data_akun[$i]['jrdt_detailid'] = $i+1;
+                $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
                 $data_akun[$i]['jrdt_statusdk'] = 'D';
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }else{
                 $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                 $data_akun[$i]['jrdt_detailid'] = $i+1;
                 $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = $akun_val[$i];
+                $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
+                $data_akun[$i]['jrdt_statusdk'] = 'K';
+                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              }
+            }else if (substr($akun[$i],0, 4)==2301) {
+                if ($cari_coa->akun_dka == 'D') {
+                  $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                  $data_akun[$i]['jrdt_detailid'] = $i+1;
+                  $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                  $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
+                  $data_akun[$i]['jrdt_statusdk'] = 'K';
+                  $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                }else{
+                  $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                  $data_akun[$i]['jrdt_detailid'] = $i+1;
+                  $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                  $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
+                  $data_akun[$i]['jrdt_statusdk'] = 'D';
+                  $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                }
+              }else if (substr($akun[$i],0, 1)==4) {
+
+              if ($cari_coa->akun_dka == 'D') {
+                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                $data_akun[$i]['jrdt_detailid'] = $i+1;
+                $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                $data_akun[$i]['jrdt_value']    = -round($akun_val[$i]);
+                $data_akun[$i]['jrdt_statusdk'] = 'K';
+                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              }else{
+                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                $data_akun[$i]['jrdt_detailid'] = $i+1;
+                $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                $data_akun[$i]['jrdt_value']    = -round($akun_val[$i]);
+                $data_akun[$i]['jrdt_statusdk'] = 'D';
+                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              }
+            }
+          }
+        }else{
+          $data_akun = [];
+          for ($i=0; $i < count($akun); $i++) { 
+
+            $cari_coa = DB::table('d_akun')
+                      ->where('id_akun',$akun[$i])
+                      ->first();
+
+            if (substr($akun[$i],0, 1)==1) {
+              
+              if ($cari_coa->akun_dka == 'D') {
+                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                $data_akun[$i]['jrdt_detailid'] = $i+1;
+                $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
+                $data_akun[$i]['jrdt_statusdk'] = 'D';
+                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              }else{
+                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                $data_akun[$i]['jrdt_detailid'] = $i+1;
+                $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
                 $data_akun[$i]['jrdt_statusdk'] = 'K';
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }
@@ -528,48 +787,64 @@ class invoice_pembetulan_controller extends Controller
                 $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                 $data_akun[$i]['jrdt_detailid'] = $i+1;
                 $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = $akun_val[$i];
+                $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
                 $data_akun[$i]['jrdt_statusdk'] = 'D';
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }else{
                 $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                 $data_akun[$i]['jrdt_detailid'] = $i+1;
                 $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = $akun_val[$i];
+                $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
                 $data_akun[$i]['jrdt_statusdk'] = 'K';
+                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              }
+            }else if (substr($akun[$i],0, 4)==2305 or substr($akun[$i],0, 4)==2306 or substr($akun[$i],0, 4)==2307 or substr($akun[$i],0, 4)==2308 or substr($akun[$i],0, 4)==2309) {
+
+              if ($cari_coa->akun_dka == 'D') {
+                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                $data_akun[$i]['jrdt_detailid'] = $i+1;
+                $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                $data_akun[$i]['jrdt_value']    = -round($akun_val[$i]);
+                $data_akun[$i]['jrdt_statusdk'] = 'K';
+                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+              }else{
+                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                $data_akun[$i]['jrdt_detailid'] = $i+1;
+                $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                $data_akun[$i]['jrdt_value']    = -round($akun_val[$i]);
+                $data_akun[$i]['jrdt_statusdk'] = 'D';
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }
             }else if (substr($akun[$i],0, 4)==2301) {
+                if ($cari_coa->akun_dka == 'D') {
+                  $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                  $data_akun[$i]['jrdt_detailid'] = $i+1;
+                  $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                  $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
+                  $data_akun[$i]['jrdt_statusdk'] = 'D';
+                  $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                }else{
+                  $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                  $data_akun[$i]['jrdt_detailid'] = $i+1;
+                  $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                  $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
+                  $data_akun[$i]['jrdt_statusdk'] = 'K';
+                  $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                }
+              }else if (substr($akun[$i],0, 1)==4) {
 
               if ($cari_coa->akun_dka == 'D') {
                 $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                 $data_akun[$i]['jrdt_detailid'] = $i+1;
                 $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = $akun_val[$i];
+                $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
                 $data_akun[$i]['jrdt_statusdk'] = 'D';
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }else{
                 $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                 $data_akun[$i]['jrdt_detailid'] = $i+1;
                 $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = $akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'K';
-                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
-              }
-            }else if (substr($akun[$i],0, 1)==4) {
-
-              if ($cari_coa->akun_dka == 'D') {
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = $akun_val[$i];
-                $data_akun[$i]['jrdt_statusdk'] = 'D';
-                $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
-              }else{
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = $akun_val[$i];
+                $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
                 $data_akun[$i]['jrdt_statusdk'] = 'K';
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }
@@ -579,14 +854,14 @@ class invoice_pembetulan_controller extends Controller
                 $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                 $data_akun[$i]['jrdt_detailid'] = $i+1;
                 $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
+                $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
                 $data_akun[$i]['jrdt_statusdk'] = 'K';
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }else{
                 $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                 $data_akun[$i]['jrdt_detailid'] = $i+1;
                 $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = -$akun_val[$i];
+                $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
                 $data_akun[$i]['jrdt_statusdk'] = 'D';
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }
@@ -594,13 +869,9 @@ class invoice_pembetulan_controller extends Controller
           }
         }
 
-        
-
         $jurnal_dt = d_jurnal_dt::insert($data_akun);
 
         $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
-        // dd($lihat);
-
         return response()->json(['status' =>1, 'nota'=>$nota]);    
 
     });
@@ -754,7 +1025,6 @@ class invoice_pembetulan_controller extends Controller
         $invoice_pembetulan = DB::table('invoice')
                             ->where('i_nomor',$request->nota_invoice)
                             ->first();
-    // dd($invoice_pembetulan);
 
         $dataItem=[];
         $cabang=$request->cb_cabang;
@@ -848,9 +1118,7 @@ class invoice_pembetulan_controller extends Controller
               $delete = DB::table('invoice_pembetulan_d')
                           ->where('ipd_nomor_invoice',$request->nota_invoice)
                           ->delete();
-              // dd($request->all());
               if ($request->cb_pendapatan == 'PAKET' or $request->cb_pendapatan == 'KARGO') {
-                // dd('asd');
                 for ($i=0; $i < count($request->do_detail); $i++) { 
 
                 $cari_id = DB::table('invoice_pembetulan_d')
@@ -905,7 +1173,6 @@ class invoice_pembetulan_controller extends Controller
                          ->join('delivery_order','nomor','=','dd_nomor')
                          ->where('dd_id',$request->do_id[$i])
                          ->first();
-                  // dd($request->do_id);
                  $save_detail_invoice = DB::table('invoice_pembetulan_d')
                                           ->insert([
                                               'ipd_id'            => $cari_id,
