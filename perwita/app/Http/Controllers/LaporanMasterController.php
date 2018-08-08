@@ -975,6 +975,221 @@ class LaporanMasterController extends Controller
     		}
 
 
+    		public function ajaxcarideliveryorder_non_customer(Request $request )
+			{
+				// dd($request->all());
+    		if ($request->asal != '') {
+			$asal_fil = (int)$request->asal;
+			$asal = ' AND d.id_kota_asal = '.$asal_fil.'';
+			}else{
+				$asal = '';
+			}
+			//tujuan
+			if ($request->tujuan != '') {
+				$tujuan = " AND d.id_kota_tujuan = '".(int)$request->tujuan."' ";
+			}else{
+				$tujuan = '';
+			}
+			//cabang
+			if ($request->cabang != '') {
+				$cabang = " AND d.kode_cabang = '".$request->cabang."' ";
+			}else{
+				$cabang ='';
+			}
+			//tipe
+			if ($request->tipe != '') {
+				$tipe = " AND d.type_kiriman = '".$request->tipe."' ";
+			}else{
+				$tipe ='';
+			}
+			
+			if ($request->status != '' || $request->status != null) {
+				$status = " AND d.status = '".$request->status."' ";
+			}else{
+				$status = '';
+			}
+			
+			if ($request->pendapatan != '' || $request->pendapatan != null) {
+				$pendapatan = " AND d.pendapatan = '".$request->pendapatan."' ";
+			}else{
+				$pendapatan = '';
+			}
+
+			if ($request->jenis != '' || $request->jenis != null) {
+				$jenis = " AND d.jenis_pengiriman = '".$request->jenis."' ";
+			}else{
+				$jenis = '';
+			}
+			
+			if ($request->customer != '' || $request->customer != null) {
+			$customer = " AND d.kode_customer = '".$request->customer."' ";
+			}else{
+				$customer = '';
+			}
+				
+			$min = $request->min;
+			$max = $request->max;
+			
+
+			$data  = DB::select("SELECT d.kode_customer,d.pendapatan,d.total_dpp,d.diskon,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total,d.deskripsi	 
+				FROM delivery_order as d 
+				JOIN kota k ON k.id=d.id_kota_asal
+	            JOIN kota kk ON kk.id=d.id_kota_tujuan
+	            join customer c on d.kode_customer = c.kode 
+	            join cabang cc on d.kode_cabang = cc.kode 
+
+				WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' AND kode_customer = 'CS-008/00230' ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." ");
+			
+			$cek =	DB::select("SELECT d.kode_customer 
+				FROM delivery_order as d 
+				LEFT JOIN kota k ON k.id=d.id_kota_asal
+	            LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+	            join customer c on d.kode_customer = c.kode 
+	            join cabang cc on d.kode_cabang = cc.kode 
+
+				WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' AND kode_customer = 'CS-008/00230' ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." group by d.kode_customer");
+			for ($i=0; $i <count($cek) ; $i++) { 
+				$customer_foreach[$i] = DB::table('customer')->where('kode','=',$cek[$i]->kode_customer)->get(); 
+			}
+			// for ($i=0; $i <count($data) ; $i++) { 
+			// 	$total[$i] = $data[$i]->total_net;
+			// 	$total_netto[$i] = $data[$i]->total;
+			// 	$total_diskon[$i] = $data[$i]->diskon;
+			// 	$do[$i] = $data[$i]->nomor;
+			// }
+			// $total = array_sum($total);
+			// $total_netto = array_sum($total_netto);
+			// $total_diskon = array_sum($total_diskon);
+			// $do = array_sum($do);
+
+			if ($data == null) {
+   				return response()->json(['data'=>'0']); 
+   			}else{
+   				for ($i=0; $i <count($data) ; $i++) { 
+	   					$dat[$i] = $data[$i]->total_net;
+	   			}
+	   			for ($i=0; $i <count($data) ; $i++) { 
+	   					$dat1[$i] = $data[$i]->total;
+	   			}
+	   			for ($i=0; $i <count($data) ; $i++) { 
+	   					$dat2[$i] = $data[$i]->diskon;
+	   			}
+	   			for ($i=0; $i <count($data) ; $i++) { 
+	   					$dat3[$i] = $data[$i]->nomor;
+	   			}
+	   			
+	   			$total =  array_sum($dat1);
+
+	   			$total_net = array_sum($dat);
+	   			
+	   			$total_diskon = array_sum($dat2);
+
+	   			$do = count($dat3);
+   			}
+
+
+
+
+			// return $customer_foreach;
+    				return view('purchase/master/master_penjualan/laporan/do_total/rekap_non_customer/ajax_lap_nonrekapcustomer',compact('total','data','customer_foreach','min','max','asal','tujuan','cabang','tipe','status','pendapatan','jenis','total_net','total_netto','total_diskon','do'));
+			}
+
+			public function ajaxcarideliveryorder_belum_delivered_ok(Request $request )
+			{
+				// dd($request->all());
+    		if ($request->asal != '') {
+			$asal_fil = (int)$request->asal;
+			$asal = ' AND d.id_kota_asal = '.$asal_fil.'';
+			}else{
+				$asal = '';
+			}
+			//tujuan
+			if ($request->tujuan != '') {
+				$tujuan = " AND d.id_kota_tujuan = '".(int)$request->tujuan."' ";
+			}else{
+				$tujuan = '';
+			}
+			//cabang
+			if ($request->cabang != '') {
+				$cabang = " AND d.kode_cabang = '".$request->cabang."' ";
+			}else{
+				$cabang ='';
+			}
+			//tipe
+			if ($request->tipe != '') {
+				$tipe = " AND d.type_kiriman = '".$request->tipe."' ";
+			}else{
+				$tipe ='';
+			}
+			
+			if ($request->status != '' || $request->status != null) {
+				$status = " AND d.status = '".$request->status."' ";
+			}else{
+				$status = '';
+			}
+			
+			if ($request->pendapatan != '' || $request->pendapatan != null) {
+				$pendapatan = " AND d.pendapatan = '".$request->pendapatan."' ";
+			}else{
+				$pendapatan = '';
+			}
+
+			if ($request->jenis != '' || $request->jenis != null) {
+				$jenis = " AND d.jenis_pengiriman = '".$request->jenis."' ";
+			}else{
+				$jenis = '';
+			}
+			
+			if ($request->customer != '' || $request->customer != null) {
+			$customer = " AND d.kode_customer = '".$request->customer."' ";
+			}else{
+				$customer = '';
+			}
+				
+			$min = $request->min;
+			$max = $request->max;
+			
+
+			$data_awal  = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
+			   	join customer c on d.kode_customer = c.kode
+      
+				WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' AND status != 'DELIVERED oktober' ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." 
+				group by d.kode_customer,c.kode
+				order by d.kode_customer");
+
+			   		
+			   			if ($data_awal == null) {
+			   				return response()->json(['data'=>'0']); 
+			   			}else{
+			   				for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat[$i] = $data_awal[$i]->total_net;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat1[$i] = $data_awal[$i]->total;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat2[$i] = $data_awal[$i]->diskon;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat3[$i] = $data_awal[$i]->do;
+				   			}
+				   			
+				   			$total =  array_sum($dat1);
+
+				   			$total_net = array_sum($dat);
+				   			
+				   			$diskon = array_sum($dat2);
+
+				   			$do = array_sum($dat3);
+			   			}
+
+
+
+
+			// return $data_awal;
+    				return view('purchase/master/master_penjualan/laporan/do_total/rekap_belum_delivered_ok/ajax_lap_rekap_belum_delivered_ok',compact('total','data','customer_foreach','min','max','asal','tujuan','cabang','tipe','status','pendapatan','data_awal','total_net','total_netto','diskon','do'));
+			}
+
     
     		public function ajaxcarideliveryorder_total_rekapbulanan(Request $request)
     		{
@@ -2111,18 +2326,29 @@ class LaporanMasterController extends Controller
 
 	// END OF INVOICE
 
+	
+
+
 	//START KWITANSI
 
-		public function kwitansi(){
+	public function kwitansi(){
 		// return 'a';
 		$data = DB::table('kwitansi')->get();
+		$customer = DB::table('customer')->get();
+		$cabang = DB::table('cabang')->get();
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
 		$cus = DB::table('customer')->get();
 		$kota1 = DB::select("SELECT id, nama as asal from kota");
-		return view('purchase/master/master_penjualan/laporan/lap_kwitansi',compact('data','kota','kota1','ket','cus'));
+		return view('purchase/master/master_penjualan/laporan/lap_kwitansi',compact('data','kota','kota1','ket','cus','customer','cabang'));
 	}
-		public function reportkwitansi(Request $request){
+
+	public function FunctionName($value='')
+	{
+		# code...
+	}
+	
+	public function reportkwitansi(Request $request){
 		// return 'a';
 		$data = $request->a;	
    		// dd($data[0]);
@@ -3675,19 +3901,6 @@ class LaporanMasterController extends Controller
 		    "key: 0113b4ac84f7f9f40c548a7b4d04ac3f"
 		  ));
 
-		// curl_setopt_array($curl, array(
-		//   CURLOPT_URL => "https://api.rajaongkir.com/starter/province?id=12",
-		//   CURLOPT_RETURNTRANSFER => true,
-		//   CURLOPT_ENCODING => "",
-		//   CURLOPT_MAXREDIRS => 10,
-		//   CURLOPT_TIMEOUT => 30,
-		//   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-		//   CURLOPT_CUSTOMREQUEST => "GET",
-		//   CURLOPT_HTTPHEADER => array(
-		//     "key: 0113b4ac84f7f9f40c548a7b4d04ac3f"
-		//   ),
-		// ));
-
 		$response = curl_exec($curl);
 		$err = curl_error($curl);
 
@@ -3701,6 +3914,177 @@ class LaporanMasterController extends Controller
 
    }
 
+
+
+
+   //======================================== LAPORAN INVOICE ===================================================//
+   //cari_invoice_belum_tt
+   public function cari_invoice_belum_tt(Request $request)
+   {
+   	$awal = $request->awal;
+	$akir = $request->akir;
+	//invoice
+	if ($request->customer != '' || $request->customer != null) {
+		$customer_invoice = " AND i_kode_customer = '".$request->customer."' ";
+	}else{
+		$customer_invoice = '';
+	}
+	if ($request->cabang != '' || $request->cabang != null) {
+		$cabang_invoice = " AND i_kode_cabang = '".$request->cabang."' ";
+	}else{
+		$cabang_invoice = '';
+	}
+	//end
+
+	$customer = DB::select("SELECT i_kode_customer,nama from invoice inner join customer on customer.kode = invoice.i_kode_customer  where i_tanggal > '$awal' and i_tanggal < '$akir' and i_tanggal_tanda_terima is null $customer_invoice $cabang_invoice ");
+	// return $customer;
+	$data = DB::select("SELECT * from invoice where i_tanggal > '$awal' and i_tanggal < '$akir' and i_tanggal_tanda_terima is null $customer_invoice $cabang_invoice ");
+	// return $data;
+	for ($i=0; $i <count($data) ; $i++) { 
+		# code...
+	}
+
+	return view('purchase/master/master_penjualan/laporan/invoice/invoice_belum_tt/invoice_belum_ttinvoice',compact('data','customer'));
+   }
+
+   //cari_invoice_sudah_tt
+   public function cari_invoice_sudah_tt(Request $request)
+   {
+   	$awal = $request->awal;
+	$akir = $request->akir;
+	//invoice
+	if ($request->customer != '' || $request->customer != null) {
+		$customer_invoice = " AND i_kode_customer = '".$request->customer."' ";
+	}else{
+		$customer_invoice = '';
+	}
+	if ($request->cabang != '' || $request->cabang != null) {
+		$cabang_invoice = " AND i_kode_cabang = '".$request->cabang."' ";
+	}else{
+		$cabang_invoice = '';
+	}
+	//end
+
+	$customer = DB::select("SELECT i_kode_customer,nama from invoice inner join customer on customer.kode = invoice.i_kode_customer  where i_tanggal > '$awal' and i_tanggal < '$akir' and i_tanggal_tanda_terima is null $customer_invoice $cabang_invoice ");
+	// return $customer;
+	$dt = DB::select("SELECT * from invoice where i_tanggal > '$awal' and i_tanggal < '$akir' and i_tanggal_tanda_terima is not null $customer_invoice $cabang_invoice ");
+	// return $dt;
+	return view('purchase/master/master_penjualan/laporan/invoice/invoice_sudah_tt/invoice_sudah_ttinvoice',compact('dt','customer'));
+   }
+
+ 
+
+   //cari_jarak_invoice_dengan_tt
+   public function cari_jarak_invoice_dengan_tt(Request $request)
+   {
+   	$awal = $request->awal;
+	$akir = $request->akir;
+	//invoice
+	if ($request->customer != '' || $request->customer != null) {
+		$customer_invoice = " AND i_kode_customer = '".$request->customer."' ";
+	}else{
+		$customer_invoice = '';
+	}
+	if ($request->cabang != '' || $request->cabang != null) {
+		$cabang_invoice = " AND i_kode_cabang = '".$request->cabang."' ";
+	}else{
+		$cabang_invoice = '';
+	}
+	//end
+
+	$customer = DB::select("SELECT i_kode_customer,nama from invoice inner join customer on customer.kode = invoice.i_kode_customer  where i_tanggal > '$awal' and i_tanggal < '$akir' and i_tanggal_tanda_terima is not null $customer_invoice $cabang_invoice ");
+	// return $customer;
+	$data = DB::select("SELECT *,
+
+   (DATE_PART('day', i_tanggal_tanda_terima::date) - DATE_PART('day', i_tanggal::date)) as TGL,
+   (DATE_PART('month', i_tanggal_tanda_terima::date) - DATE_PART('month', i_tanggal::date)) as BLN,
+   (DATE_PART('year', i_tanggal_tanda_terima::date) - DATE_PART('year', i_tanggal::date)) as YR
+
+	from invoice where i_tanggal > '$awal' and i_tanggal < '$akir' and i_tanggal_tanda_terima is not null $customer_invoice $cabang_invoice");
+	// return $data;		
+	return view('purchase/master/master_penjualan/laporan/invoice/jarak_invoice_tt/jarak_invoice_tt',compact('data','customer'));
+   
+   }
+
+   //========================================= END OF ===========================================================//
+
+
+   //========================================= KWITANSI ===========================================================//
+
+   //cari_ajaxkwitansi
+   public function cari_ajaxkwitansi(Request $request)
+   {
+   	$awal = $request->awal;
+	$akir = $request->akir;
+	//invoice
+	if ($request->customer != '' || $request->customer != null) {
+		$customer_kwitansi = " AND k_kode_customer = '".$request->customer."' ";
+	}else{
+		$customer_kwitansi = '';
+	}
+	if ($request->cabang != '' || $request->cabang != null) {
+		$cabang_kwitansi = " AND k_kode_cabang = '".$request->cabang."' ";
+	}else{
+		$cabang_kwitansi = '';
+	}
+	//end
+
+	$data = DB::select("SELECT * from kwitansi where k_tanggal > '$awal' and k_tanggal < '$akir' $customer_kwitansi $cabang_kwitansi");
+	// return $data;		
+	return view('purchase/master/master_penjualan/laporan/lap_kwitansi/kwitansi/lap_kwitansi',compact('data','customer'));
+   }
+
+
+   //cari_ajaxkwitansi_belum_posting
+   public function cari_ajaxkwitansi_belum_posting(Request $request)
+   {
+   	$awal = $request->awal;
+	$akir = $request->akir;
+	//invoice
+	if ($request->customer != '' || $request->customer != null) {
+		$customer_kwitansi = " AND k_kode_customer = '".$request->customer."' ";
+	}else{
+		$customer_kwitansi = '';
+	}
+	if ($request->cabang != '' || $request->cabang != null) {
+		$cabang_kwitansi = " AND k_kode_cabang = '".$request->cabang."' ";
+	}else{
+		$cabang_kwitansi = '';
+	}
+	//end
+
+	$data = DB::select("SELECT * from kwitansi where k_tanggal > '$awal' and k_tanggal < '$akir' and k_nomor_posting is null $customer_kwitansi $cabang_kwitansi");
+	// return $data;		
+	return view('purchase/master/master_penjualan/laporan/lap_kwitansi/kwitansi_belum_posting/lap_kwitansi_belum_posting',compact('data','customer'));
+   }
+
+   //cari_ajaxkwitansi_sudah_posting
+   public function cari_ajaxkwitansi_sudah_posting(Request $request)
+   {
+   	$awal = $request->awal;
+	$akir = $request->akir;
+	//invoice
+	if ($request->customer != '' || $request->customer != null) {
+		$customer_kwitansi = " AND k_kode_customer = '".$request->customer."' ";
+	}else{
+		$customer_kwitansi = '';
+	}
+	if ($request->cabang != '' || $request->cabang != null) {
+		$cabang_kwitansi = " AND k_kode_cabang = '".$request->cabang."' ";
+	}else{
+		$cabang_kwitansi = '';
+	}
+	//end
+
+	$data = DB::select("SELECT * from kwitansi where k_tanggal > '$awal' and k_tanggal < '$akir' and k_nomor_posting is not null $customer_kwitansi $cabang_kwitansi");
+	// return $data;		
+	return view('purchase/master/master_penjualan/laporan/lap_kwitansi/kwitansi_sudah_posting/lap_kwitansi_sudah_posting',compact('data','customer'));
+   }
+
+
+
+
+   //========================================= END OF ===========================================================//
 
 
    }

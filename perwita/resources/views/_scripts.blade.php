@@ -57,7 +57,7 @@
     <script src="{{ asset('assets/js/chosen/chosen.jquery.js') }}"></script>
     <!-- mask money -->
     <script src="{{ asset('assets/js/jquery.maskMoney.js') }}"></script>
-
+    {{-- MASK PLUGIN --}}
     {{-- HIGHCHART --}}
     <script src="{{ asset('assets/vendors/exporting.js') }}"></script>
     <script src="{{ asset('assets/vendors/highcharts.js') }}"></script>
@@ -65,6 +65,9 @@
     {{-- END OF --}}
     <!-- jQuery UI -->
     <script src="{{ asset('assets/vendors/jquery-ui/jquery-ui.min.js') }}"></script>
+
+    {{-- JS-COOKIES --}}
+    <script src="{{ asset('assets/js-cookie/js.cookie.js') }}"></script>
 
     <script>
 

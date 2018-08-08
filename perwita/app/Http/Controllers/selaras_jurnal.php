@@ -1854,4 +1854,39 @@ class selaras_jurnal  extends Controller
 
       return 'berhasil';
   }
+
+  public function nilai_invoice()
+  {
+    // $data = DB::table('invoice')
+    //           ->get();
+
+    // for ($i=0; $i < count($data); $i++) { 
+    //   $nilai = $data[$i]->i_total_tagihan;
+
+    //   $upd = DB::table('invoice')
+    //            ->where('i_nomor',$data[$i]->i_nomor)
+    //            ->update([
+    //               'i_sisa_pelunasan' => $data[$i]->i_total_tagihan,
+    //               'i_sisa_akhir'     => $data[$i]->i_total_tagihan,
+    //            ]);
+    // }
+
+    $bpk = DB::table('biaya_penerus_kas')
+             ->where('bpk_comp','015')
+             ->get();
+
+    for ($i=0; $i < count($bpk); $i++) { 
+      $depan = substr($bpk[$i]->bpk_nota, 0,7);
+      $cabang = $bpk[$i]->bpk_comp;
+      $belakang = substr($bpk[$i]->bpk_nota,10,20);
+
+      $nota = $depan.$cabang.$belakang;
+
+      $upd = DB::table('biaya_penerus_kas')
+               ->where('bpk_nota',$bpk[$i]->bpk_nota)
+              ->update([
+                'bpk_nota'=>$nota
+              ]);
+    }
+  }
 }

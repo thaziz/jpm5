@@ -21,6 +21,8 @@ class laporan_neraca extends Controller
 
   public function index_neraca_single(Request $request, $throttle){
 
+    // return $request->all();
+
       $cabang = DB::table("cabang")->where("kode", $_GET["cab"])->select("nama")->first();
 
       if(Session::get("cabang") == "000")
@@ -111,6 +113,7 @@ class laporan_neraca extends Controller
                                 ->where("d_akun.group_neraca", $detail_dt->id_group)
                                 ->where("d_akun_saldo.tahun", $request->y)
                                 ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
+
                 }else{
                   $transaksi = DB::table("d_jurnal_dt")
                              ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
@@ -169,7 +172,7 @@ class laporan_neraca extends Controller
 
       // return json_encode($data_neraca);
 
-      return view("laporan_neraca.index.index_single")
+      return view("laporan_neraca.print_pdf.pdf_single")
              ->withThrottle($throttle)
              ->withRequest($request)
              ->withData_neraca($data_neraca)

@@ -8,7 +8,7 @@
 
 		  	<option value="{{ $value }}">Kode Akun</option>
 		  	<option value="{{ $value+1 }}">Nama Akun</option>
-		  	<option value="{{ $value+2 }}">Cabang</option>
+		  	{{-- <option value="{{ $value+2 }}">Cabang</option> --}}
 		  </select>
 		</div>
 	</div>
@@ -28,7 +28,6 @@
 
 					<th style="position: sticky;top: 0px;" width="15%">Kode Akun</th>
 					<th style="position: sticky;top: 0px;" width="60%">Nama Akun</th>
-					<th style="position: sticky;top: 0px;" width="20%">Cabang</th>
 				</tr>
 			</thead>
 
@@ -40,8 +39,8 @@
 						@endif
 
 						<td style="background: white;">{{ $akun->id_akun }}</td>
-						<td style="background: white;">{{ $akun->nama_akun }}</td>
-						<td style="background: white;">{{ $akun->nama }}</td>
+						<td style="background: white;">{{ $akun->main_name }}</td>
+						{{-- <td style="background: white;">{{ $akun->nama }}</td> --}}
 					</tr>
 				@endforeach
 			</tbody>

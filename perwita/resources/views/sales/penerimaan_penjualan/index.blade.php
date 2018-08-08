@@ -69,9 +69,9 @@
                                 <th>Akun Bank/Kas </th>
                                 <th>Customer</th>
                                 <th>Jumlah</th>
-                                <th>Memorial</th>
                                 <th>Keterangan </th>
                                 <th>Jenis Pembayaran </th>
+                                <th>Posting</th>
                                 <th style="width:8%"> Aksi </th>
                             </tr>
                         </thead>
@@ -124,8 +124,8 @@ $(document).ready(function() {
                  className: 'cssright'
               },
               {
-                 targets: 6,
-                 className: 'cssright'
+                 targets: 7,
+                 className: 'center'
               },
               {
                  targets: 9,
@@ -143,9 +143,9 @@ $(document).ready(function() {
             { "data": "bank" },
             { "data": "customer" },
             { "data": "jumlah_text"},
-            { "data": "memorial_text" },
             { "data": "k_keterangan" },
             { "data": "pembayaran" },
+            { "data": "posting" },
             { "data": "aksi" },
             ]
         });

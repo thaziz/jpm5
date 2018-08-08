@@ -7,6 +7,12 @@
 		return $pt_nama;
 	}
 
+	function cabang(){
+		$cabang = DB::table('cabang')->get();
+
+		return $cabang;
+	}
+
 	function print_tes(){
 		return "okee";
 	}

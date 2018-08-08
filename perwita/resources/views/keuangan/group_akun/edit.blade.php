@@ -57,7 +57,6 @@
           <th style="position: sticky;top: 0px;" width="5%">*</th>
           <th style="position: sticky;top: 0px;" width="15%">Kode Akun</th>
           <th style="position: sticky;top: 0px;" width="60%">Nama Akun</th>
-          <th style="position: sticky;top: 0px;" width="20%">Cabang</th>
         </tr>
       </thead>
 
@@ -66,8 +65,7 @@
             <tr>
               <td style="background: white;" class="text-center"><input type="checkbox" value="{{ $akun->id_akun }}" class="deleted_check" checked="true"></td>
               <td style="background: white;">{{ $akun->id_akun }}</td>
-              <td style="background: white;">{{ $akun->nama_akun }}</td>
-              <td style="background: white;">{{ $akun->nama }}</td>
+              <td style="background: white;">{{ $akun->main_name }}</td>
             </tr>
           @endforeach
       </tbody>

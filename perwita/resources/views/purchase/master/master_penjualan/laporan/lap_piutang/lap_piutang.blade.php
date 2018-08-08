@@ -101,12 +101,11 @@
                           <select class="chosen-select-width" name="laporan" id="laporan">
                             <option value="">- Pilih -</option>
                             <option value="Rekap per Customer">Rekap per Customer</option>
-                            <option value="Rekap per Customer Detail">Rekap per Customer Detail</option>
-                            <option value="Rekap per akun">Rekap per akun</option>
-                            <option value="Rekap per akun Detail">Rekap per akun Detail</option>
+                            {{-- <option value="Rekap per Customer Detail">Rekap per Customer Detail</option> --}}
+                            {{-- <option value="Rekap per akun">Rekap per akun</option> --}}
+                            {{-- <option value="Rekap per akun Detail">Rekap per akun Detail</option> --}}
                           </select>
                         </td>
-
                        <td>Cabang</td>
                         <td>
                           <select class="chosen-select-width" name="cabang" id="cabang">
@@ -222,19 +221,16 @@
           toastr.warning('data Tidak Diketemukan');
         }
         $('#disini').html(data);
-        $('#container').hide();
+        // $('#container').hide();
 
         $('.saldo').each(function(i){
-            var saldo_index = $('.saldo_'+i).val();
-
-            $('.debet_'+i).each(function(a){ 
-              saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+i).val());
-
-              console.log(parseFloat($('.kredit_'+0).val()));
-              console.log(i); 
+           var saldo_index = $('.saldo_'+i).val();
+           $('.debet_'+i).each(function(a){ 
+              saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+i).eq(a).val());
               var parent = $(this).parents('tr');
               $(parent).find('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
-            })  
+           })    
+           // $('.grand_'+i).text(accounting.formatMoney(saldo_index,"",0,'.',','));
         })
       }
     })

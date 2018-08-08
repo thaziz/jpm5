@@ -73,8 +73,10 @@
                             <option value=""  selected=""> --Laporan--</option>
                             <option value="DEFAULT">MASTER</option>
                             <option value="MASTER DETAIL">DO DETAIL</option>
+                            <option value="DO BELUM DELIOVERED OKE">DO BELUM DELIOVERED OKE</option>
                             <option value="rekap">REKAP CUSTOMER</option>
                             <option value="rekap_detail">REKAP CUSTOMER DETIL</option>
+                            <option value="non_customer">REKAP NON CUSTOMER</option>
                             <option value="REKAP BULANAN">REKAP BULANAN</option>
                             <option value="DETAIL ENTRY">DETAIL ENTRY</option>
                             <option value="DETAIL PER NOPOL">DETAIL PER NOPOL</option>
@@ -687,6 +689,42 @@
       //CARI REKAP PER SOPIR
       else if(laporan == 'REKAP PER SOPIR'){
         alert('UNKNOWN PROCCESS!! DONT TRY AGAIN !');
+      }
+      //CARI NON-CUSTOMER
+      else if(laporan == 'non_customer'){
+        $.ajax({
+            data: $('#cari_data').serialize(),
+            url: baseUrl + '/ajaxcarideliveryorder_non_customer/ajaxcarideliveryorder_non_customer',
+            type: "get",
+            success: function (response, textStatus, request) {
+              $('#replace').html(response);
+              if (response.data == '0') {
+                toastr.error('Data Tidak Diketemukan !');
+              }
+            },
+            error: function (ajaxContext) {
+              toastr.error('Export error: '+ajaxContext.responseText);
+            },
+            
+        });
+      }
+      //CARI DO BELUM DELIVERED OK
+      else if(laporan == 'DO BELUM DELIOVERED OKE'){
+        $.ajax({
+            data: $('#cari_data').serialize(),
+            url: baseUrl + '/ajaxcarideliveryorder_belum_delivered_ok/ajaxcarideliveryorder_belum_delivered_ok',
+            type: "get",
+            success: function (response, textStatus, request) {
+              $('#replace').html(response);
+              if (response.data == '0') {
+                toastr.error('Data Tidak Diketemukan !');
+              }
+            },
+            error: function (ajaxContext) {
+              toastr.error('Export error: '+ajaxContext.responseText);
+            },
+            
+        });
       }
 
     }
