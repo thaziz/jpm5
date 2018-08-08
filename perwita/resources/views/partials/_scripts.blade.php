@@ -298,6 +298,10 @@ $(".mask_money_dn").maskMoney({thousands:'.', decimal:',', precision:-1});
     <script type="text/javascript">
 
 
+      $(function(){
+        skinChanger();
+      });
+
         $('.rightbar-btn-trigger button').click(function(){
             $('.rightbar-outer').removeClass('rightbar-outer-hidden');
             $('.rightbar').removeClass('rightbar-hidden');
@@ -309,4 +313,43 @@ $(".mask_money_dn").maskMoney({thousands:'.', decimal:',', precision:-1});
             $('body').removeClass('rightbar-appear');
         });
       
+      $(document).ready(function(){
+        $sidebar = Cookies.get('sidebar_jpm5');
+
+        if ($sidebar) {
+          $('body').removeAttr('class').addClass('pace-done ' + $sidebar + '-bg-color');
+          $('.rightbar .rightbar-body .list-skins[data-theme="' + $sidebar + '"]').addClass('active');
+          $('.table:not(.no-random-color) thead').removeAttr('class').addClass($sidebar +'-bg-color');
+        } else {
+          $('body').addClass('deep-blue-bg-color');
+          $statement = $('.rightbar .rightbar-body .list-skins[data-theme="deep-blue"]').addClass('active');
+          $('.table:not(.no-random-color) thead').removeAttr('class').addClass('deep-blue-bg-color');
+        }
+      });
+        
+
+
+
+      function skinChanger(){
+        $('.rightbar .rightbar-body .list-skins').click(function(){
+          
+          $body = $('body');
+          $this = $(this);
+
+          var existTheme = $('.rightbar .rightbar-body .list-skins.active').data('theme');
+          $('.rightbar .rightbar-body .list-skins').removeClass('active');
+
+          $body.removeClass(existTheme + '-bg-color');
+          $this.addClass('active');
+
+          $body.addClass($this.data('theme')+'-bg-color');
+
+          
+          $('.table:not(.no-random-color) thead').removeAttr('class').addClass($this.data('theme')+'-bg-color');
+
+          Cookies.set('sidebar_jpm5', $this.data('theme'), { expires : 365 });
+
+        });
+      }
+
     </script>
