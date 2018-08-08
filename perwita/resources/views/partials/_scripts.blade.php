@@ -319,7 +319,7 @@ $(".mask_money_dn").maskMoney({thousands:'.', decimal:',', precision:-1});
         if ($sidebar) {
           $('body').removeAttr('class').addClass('pace-done ' + $sidebar + '-bg-color');
           $('.rightbar .rightbar-body .list-skins[data-theme="' + $sidebar + '"]').addClass('active');
-          $('.table:not(.no-random-color) thead').removeAttr('class').addClass($this.data('theme')+'-bg-color');
+          $('.table:not(.no-random-color) thead').removeAttr('class').addClass($sidebar +'-bg-color');
         } else {
           $('body').addClass('deep-blue-bg-color');
           $statement = $('.rightbar .rightbar-body .list-skins[data-theme="deep-blue"]').addClass('active');

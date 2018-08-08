@@ -3524,7 +3524,7 @@ body.body-small .footer.fixed {
 }
 .table-bordered > thead > tr > th,
 .table-bordered > thead > tr > td {
-  background-color: #F5F5F6;
+  /*background-color: #F5F5F6;*/
   border-bottom-width: 1px;
 }
 .table-bordered > thead > tr > th,
@@ -3542,7 +3542,7 @@ body.body-small .footer.fixed {
   vertical-align: middle;
  
     /*background:#2e7bb3;*/
-  color: inherit;
+  color: white;
   text-align: center;
 }
 
@@ -3944,6 +3944,67 @@ button.btn-close-rightbar {
     content: "\f00c";
     right: 10px;
     position: absolute;
+}
+/* BCKGROUND MINI-SIDEBAR */
+body.cyan-bg-color.mini-navbar .nav-second-level {
+  background-color: #005a66;
+}
+body.blue-bg-color.mini-navbar .nav-second-level {
+  background-color: #0e3f66;
+}
+body.light-blue-bg-color.mini-navbar .nav-second-level {
+  background-color: #014666;
+}
+body.yellow-bg-color.mini-navbar .nav-second-level {
+  background-color: #665e17;
+}
+body.pink-bg-color.mini-navbar .nav-second-level {
+  background-color: #660d2b;
+}
+body.purple-bg-color.mini-navbar .nav-second-level {
+  background-color: #5a1666;
+}
+body.deep-purple-bg-color.mini-navbar .nav-second-level {
+  background-color: #3a2166;
+}
+body.red-bg-color.mini-navbar .nav-second-level {
+  background-color: #661b15;
+}
+body.black-bg-color.mini-navbar .nav-second-level {
+  background-color: #262626;
+}
+body.indigo-bg-color.mini-navbar .nav-second-level {
+  background-color: #242e66;
+}
+body.teal-bg-color.mini-navbar .nav-second-level {
+  background-color: #00665c;
+}
+body.green-bg-color.mini-navbar .nav-second-level {
+  background-color: #2c662e;
+}
+body.light-green-bg-color.mini-navbar .nav-second-level {
+  background-color: #486627;
+}
+body.lime-bg-color.mini-navbar .nav-second-level {
+  background-color: #5e661b;
+}
+body.amber-bg-color.mini-navbar .nav-second-level {
+  background-color: #664d03;
+}
+body.orange-bg-color.mini-navbar .nav-second-level {
+  background-color: #663d00;
+}
+body.deep-orange-bg-color.mini-navbar .nav-second-level {
+  background-color: #66220d;
+}
+body.brown-bg-color.mini-navbar .nav-second-level {
+  background-color: #66483d;
+}
+body.blue-grey-bg-color.mini-navbar .nav-second-level {
+  background-color: #465b66;
+}
+body.deep-blue-bg-color.mini-navbar .nav-second-level{
+  background-color: #384f5f;
 }
 /* BACKGROUND SIDEBAR */
 .cyan-bg-color {
