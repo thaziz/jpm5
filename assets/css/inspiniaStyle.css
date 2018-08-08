@@ -3845,6 +3845,7 @@ table.table-mail tr td {
 .rightbar-btn-trigger{
   position: fixed;
   right: -1px;
+  top: 85px;
   z-index: 1;
 }
 .rightbar-btn-trigger button,.right-btn-trigger a{
