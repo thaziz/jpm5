@@ -191,7 +191,7 @@ class nota_debet_kredit_Controller extends Controller
     public function simpan_cn_dn(request $request)
     {
         // dd($request->all());
-      // dd($request->all());
+        // dd($request->all());
         return DB::transaction(function() use ($request) {  
 
         $cari_nota = DB::table('cn_dn_penjualan')
@@ -403,6 +403,7 @@ class nota_debet_kredit_Controller extends Controller
           for ($i=0; $i < count($request->d_jenis_ppn); $i++) { 
             # code...
           }
+          
           $akun     = [];
           $akun_val = [];
 
