@@ -351,11 +351,19 @@
 
     function hapus(parm) {
       var par   = $(parm).parents('tr');
-      var id    = $(par).find('.d_id').text();
+      var asal = $(par).find('.asal').val();
+      var tujuan = $(par).find('.tujuan').val();
+      var vendor_id = $(par).find('.vendor_id').val();
+      var jenis = $(par).find('.jenis').text();
+      var cabang = $(par).find('.cabang').val();
 
       if(!confirm("Hapus Data"+" ?")) return false;
         var value = {
-            id: id,
+            asal: asal,
+            tujuan: tujuan,
+            vendor_id: vendor_id,
+            jenis: jenis,
+            cabang: cabang,
             _token: "{{ csrf_token() }}"
         };
         $.ajax({

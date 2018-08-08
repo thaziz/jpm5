@@ -286,6 +286,7 @@ class do_paketController extends Controller
         }
       }
     	// return $vendor;
+      return response()->json($vendor);
     	return view('sales.do_new.ajax_modal_vendor',compact('vendor'));
     }
 //REPLACE HARGA VENDOR

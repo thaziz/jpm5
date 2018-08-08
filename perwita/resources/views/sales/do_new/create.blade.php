@@ -277,6 +277,13 @@
                                                     </td>
 
                                                 </tr>
+                                                <tr id="hidden_vendor">
+                                                    <td style="padding-top: 0.4cm">Vendor</td>
+                                                    <td colspan="5">
+                                                        <select class="chosen-select-width" name="do_vendor_tarif" id="do_vendor_tarif" onchange="Pilih_vendor()" >
+                                                        </select>
+                                                    </td>
+                                                </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm">Kas Besar</td>
                                                     <td colspan="5">
@@ -735,6 +742,8 @@ $('.radio-inline').click(function() {
    }else if($('.cek_vendor_tidak').is(':checked'))  {
         toastr.warning("Tarif vendor tidak aktif", "Pemberitahuan!")
         $('#tarif_vendor_bol').val('false');
+        $('#hidden_vendor').hide();
+
    }
 
 });
@@ -761,6 +770,7 @@ $('.radio-inline').click(function() {
         $("#jenis_kendaraan").hide();
         $("#komisi").hide();
         $("#jml_unit").hide();
+        $("#hidden_vendor").hide();
         $(".jenis_unit").hide();
     });
 
@@ -1040,9 +1050,19 @@ function hitung() {
     $(".cek_vendor_ya").click(function() {
         if ($('#do_kota_asal').val() == '' 
             || $('#do_kota_tujuan').val() == '' 
-            || $('#do_cabang').val() == '' ) {
+            || $('#do_cabang').val() == '' 
+            || $('#jenis_kiriman').find(':selected').val() == '') {
             toastr.error('Data Kurang Lengkap ,Ada data yg Tidak Boleh Kosong!!','Peringatan !');
+        if ($('#type_kiriman').find(':selected').val() != 'KILOGRAM') {
+            toastr.error('Type kiriman harus Kilogram!!','Peringatan !');
             $('.cek_vendor_ya').prop("checked",false);
+        }
+        if ($('#do_berat').val() == '0') {
+            toastr.error('Berat harus lebih dari 0s!!','Peringatan !');
+            $('.cek_vendor_ya').prop("checked",false);
+        }
+            $('.cek_vendor_ya').prop("checked",false);
+
         }else{
             var asal = $('#do_kota_asal').find(':selected').val();
             var tujuan = $('#do_kota_tujuan').find(':selected').val();
@@ -1058,12 +1078,26 @@ function hitung() {
                 data : {a:asal,b:tujuan,c:cabang,d:jenis,e:tipe,f:berat},
                 url : ('{{ route('cari_vendor_deliveryorder_paket') }}'),
                 success: function(data){   
-                    $('#drop').html(data);
+                    console.log(data);
+                    $('#hidden_vendor').show();
+                    // $('#drop').html(data);
+                    $('#do_vendor_tarif').empty(); //remove all child nodes 
+                    var append_pilih = '<option value="">- Pilih -</option>';
+                    $('#do_vendor_tarif').append(append_pilih);
+
+                    for (var i = 0; i < data.length; i++) {
+                        var append_baru = '<option value="'+data[i].id+'" data-vendor="'+data[i].id_tarif_vendor+'" data-waktu="'+data[i].waktu_vendor+'" data-nama="'+data[i].nama+'" data-tarif="'+data[i].tarif_vendor+'" >'+data[i].nama+' ( '+(accounting.formatMoney(data[i].waktu_vendor,"",0,'.',','))+' Hari ) '+' - '+(accounting.formatMoney(data[i].tarif_vendor,"",0,'.',','))+'</option>';
+                        $('#do_vendor_tarif').append(append_baru);
+                        
+                    }
+
+                    $('#do_vendor_tarif').trigger('chosen:updated');
                     $("#modal_vendor").modal("show");
                     $('#datatable').DataTable();
                 }})
             }else{
                 console.log('b');
+
             }
         }
     });
@@ -1081,27 +1115,25 @@ function hitung() {
 
 //PILIH VENDOR
     function Pilih_vendor(a){
+        // alert('a');
         //field
-        var id_vendor = $(a).find('.id_vendor').val();
-        var vendor_nama = $(a).find('.vendor_nama').val();
-        var vendor_tarif = $(a).find('.tarif_vendor').val();
+        var vendor_waktu = $('#do_vendor_tarif').find(':selected').data('vendor');
+        var vendor_id = $('#do_vendor_tarif').find(':selected').data('waktu');
+        var vendor_nama = $('#do_vendor_tarif').find(':selected').data('nama');
+        var vendor_tarif = $('#do_vendor_tarif').find(':selected').data('tarif');
         //checklist
         $("input[name='do_vendor']").prop('readonly',true);
         $("input[name='do_dpp']").prop('readonly',true);
         $("input[name='vendor_tarif']").prop('checked'  ,true);
 
-        //hiding
-        $("#modal_vendor").modal("hide");
-        
-
         if ($('.vendor_tarif').is(':checked') == true) {
             $("input[name='do_vendor']").val(accounting.formatMoney(vendor_tarif,"",0,'.',','));
         }
 
-        $("input[name='do_tarif_dasar']").val(accounting.formatMoney(vendor_tarif,"",0,'.',','));
+        $("#do_tarif_dasar").val(accounting.formatMoney(vendor_tarif,"",0,'.',','));
         hitung();
 
-        $('#id_tarif_vendor').val(id_vendor);
+        $('#id_tarif_vendor').val(vendor_id);
         $('#nama_tarif_vendor').val(vendor_nama);
     }
         
