@@ -283,7 +283,6 @@ class PurchaseController extends Controller
 	}
 
 	public function savespp(Request $request) {
-		
 		return DB::transaction(function() use ($request) {  
 			
 			$nospp = $request->nospp;
@@ -928,6 +927,7 @@ class PurchaseController extends Controller
 
 		if(Auth::user()->punyaAkses('Konfirmasi Order','all')){
 			$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = kode order by co_id desc");
+			
 
 		}
 		else {

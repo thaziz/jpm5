@@ -125,7 +125,7 @@ table, td, th {
 					Tanggal :
 				</div>
 				<div class="float-left border-bottom">
-					&nbsp; {{ Carbon\Carbon::parse($data['co'][0]->co_time_mng_pem_approved)->format('d-M-Y') }}
+					&nbsp; {{ Carbon\Carbon::parse($data['co'][0]->time_staffpemb)->format('d-M-Y') }}
 				</div>
 			</td>
 		</tr>
