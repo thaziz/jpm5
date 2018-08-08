@@ -221,17 +221,16 @@
           toastr.warning('data Tidak Diketemukan');
         }
         $('#disini').html(data);
-        $('#container').hide();
+        // $('#container').hide();
 
         $('.saldo').each(function(i){
-            var saldo_index = $('.saldo_'+i).val();
-
-            $('.debet_'+i).each(function(a){ 
-              saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+i).val());
-
+           var saldo_index = $('.saldo_'+i).val();
+           $('.debet_'+i).each(function(a){ 
+              saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+i).eq(a).val());
               var parent = $(this).parents('tr');
               $(parent).find('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
-            })  
+           })    
+           // $('.grand_'+i).text(accounting.formatMoney(saldo_index,"",0,'.',','));
         })
       }
     })

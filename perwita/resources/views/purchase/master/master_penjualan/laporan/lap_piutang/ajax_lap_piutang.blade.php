@@ -55,45 +55,30 @@
 
                                 @if ($data[$i]->flag == 'D')
                                   <td align="right">
-                                    <input type="hidden" name="" value="{{ $data[$i]->nominal }}" class="debet debet_{{ $i }}">
+                                    <input type="hidden" name="" value="{{ $data[$i]->nominal }}" class="debet debet_{{ $in }}">
                                     {{ $data[$i]->nominal }}
                                   </td>
                                   <td align="right">
-                                    <input type="hidden" name="" value="0" class="debet debet_{{ $i }}">
+                                    <input type="hidden" name="" value="0" class="kredit kredit_{{ $in }}">
                                     0
                                   </td>
                                 @else
                                   <td align="right">
-                                    <input type="hidden" name="" value="0" class="kredit kredit_{{ $i }}">
+                                    <input type="hidden" name="" value="0" class="debet debet_{{ $in }}">
                                     0
                                   </td>
                                   <td align="right">
-                                    <input type="hidden" name="" value="{{ $data[$i]->nominal }}" class="kredit kredit_{{ $i }}">
+                                    <input type="hidden" name="" value="{{ $data[$i]->nominal }}" class="kredit kredit_{{ $in }}">
                                     {{ $data[$i]->nominal }}
                                   </td>
                                 @endif
 
-                                <td class="total">
-
-                                </td>
+                                <td class="total"></td>
                               
                               </tr>
                             @endif
                           @endfor
                      @endforeach
-                     
-                       {{-- @foreach ($data as $i => $val)
-                          <tr>
-                            <td>{{ $i+1 }}</td>
-                            <td>{{ $data[$i]['kode'] }}</td>
-                          </tr>
-                       @endforeach --}}
-
-                     {{-- @foreach ($data as $index => $data_)
-                       <tr>
-                         
-                       </tr>
-                     @endforeach --}}
                     <tr>
                           <th colspan="3" align="right">total</th>
                           <td><input type="text" id="total_debet_ajax" readonly="" name="" style="text-align: right;font-weight: bold;border: none;"></td>

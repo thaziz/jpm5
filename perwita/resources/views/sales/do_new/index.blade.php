@@ -496,12 +496,11 @@ return false;
       if (min == '') {
                 toastr.warning("Pilih Tanggal Terlebih Dahulu", "Peringatan!")
                 return false;
-            }
+       }
       if (max == '') {
               toastr.warning("Pilih Tanggal Terlebih Dahulu", "Peringatan!")
               return false;
-
-          }
+      }
               $.ajax({
                   data: $('#cari_data').serialize(),
                   url: baseUrl + '/ajaxcarideliveryorder_total/ajaxcarideliveryorder_total',

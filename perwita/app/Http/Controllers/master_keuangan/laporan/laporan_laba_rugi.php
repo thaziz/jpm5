@@ -171,7 +171,7 @@ class laporan_laba_rugi extends Controller
 
       // return json_encode($data_neraca);
 
-      return view("laporan_laba_rugi.index.index_single")
+      return view("laporan_laba_rugi.print_pdf.pdf_single")
              ->withThrottle($throttle)
              ->withRequest($request)
              ->withData_neraca($data_neraca)

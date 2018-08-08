@@ -258,6 +258,7 @@
 
       $("#jenis").val(1);
       $("#type").val("A");
+      $('#type_ctn').css('display', '');
 
       // $(".select_validate").each(function(){
       //     $(this).val(1);

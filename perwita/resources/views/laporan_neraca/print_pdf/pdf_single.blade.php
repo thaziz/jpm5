@@ -1,7 +1,7 @@
 <!DOCTYPE html>
   <html>
     <head>
-      <title></title>
+      <title>laporan Neraca</title>
 
 
         <link href="{{ asset('assets/vendors/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -140,8 +140,8 @@
           </div>
           <div class="col-md-5" style="background: none; padding: 10px 15px 5px 15px">
             <ul>
-              <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_setting_neraca').modal('show')"></i></li>
-              <li><i class="fa fa-print" style="cursor: pointer;" id="print"></i></li>
+              <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_setting_neraca').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Setting Neraca"></i></li>
+              <li><i class="fa fa-print" style="cursor: pointer;" id="print" data-toggle="tooltip" data-placement="bottom" title="Print Laporan"></i></li>
             </ul>
           </div>
         </div>
@@ -323,7 +323,7 @@
               <td>
                 <table width="100%" style="font-size: 9pt;">
                   <tr id="{{ $data_neraca_aktiva["nomor_id"] }}">
-                    <td style="font-weight: bold; padding: 5px 10px; font-weight: bold">TOTAL AKTIVA</td>
+                    <td style="font-weight: bold; padding: 5px 10px; font-weight: bold" width="50%">TOTAL AKTIVA</td>
                     <td style="font-weight: 600; padding: 5px 10px;" class="text-right">
                       {{ ($total_aktiva >= 0) ? number_format($total_aktiva, 2) : "( ".number_format(str_replace("-", "", $total_aktiva), 2)." )" }}
                     </td>
@@ -334,7 +334,7 @@
               <td>
                 <table width="100%" style="font-size: 9pt;">
                   <tr id="{{ $data_neraca_aktiva["nomor_id"] }}">
-                    <td style="font-weight: bold; padding: 5px 10px; font-weight: bold">TOTAL PASIVA</td>
+                    <td style="font-weight: bold; padding: 5px 10px; font-weight: bold" width="50%">TOTAL PASIVA</td>
                     <td style="font-weight: 600; padding: 5px 10px;" class="text-right">
                       {{ ($total_pasiva >= 0) ? number_format($total_pasiva, 2) : "( ".number_format(str_replace("-", "", $total_pasiva), 2)." )" }}
                     </td>
@@ -448,6 +448,8 @@
 
       <script type="text/javascript">
         $(document).ready(function(){
+
+          $('[data-toggle="tooltip"]').tooltip({container : 'body'});
 
           baseUrl = '{{ url('/') }}';
 
