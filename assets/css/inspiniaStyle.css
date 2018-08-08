@@ -1596,6 +1596,8 @@ table.dataTable thead .sorting_asc_disabled,
 table.dataTable thead .sorting_desc_disabled {
   /*background: #005b9a;*/
   vertical-align: middle;
+  color: white;
+  font-weight: bold;
 }
 /*------*/
 .dataTables_wrapper {
