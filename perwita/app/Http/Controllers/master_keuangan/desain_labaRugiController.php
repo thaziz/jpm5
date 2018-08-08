@@ -31,7 +31,7 @@ class desain_labaRugiController extends Controller
 
     public function add(){
         $data_akun = DB::table("d_akun")->select("*")->get();
-        $data_group = DB::table("d_group_akun")->where("jenis_group", "Laba Rugi")->select("*")->orderBy("nama_group", "asc")->get();
+        $data_group = DB::table("d_group_akun")->where("jenis_group", 2)->select("*")->orderBy("nama_group", "asc")->get();
 
         // return json_encode($data_akun);
         // return json_encode($data_group);
@@ -64,7 +64,7 @@ class desain_labaRugiController extends Controller
                     "id_parrent"    => $dataNeraca["id_parrent"],
                     "level"         => $dataNeraca["level"],
                     "jenis"         => $dataNeraca["jenis"],
-                    "type"          => $dataNeraca["type"],
+                    "type"          => 'null',
                     "keterangan"    => $dataNeraca["keterangan"],
                 ]);
             }

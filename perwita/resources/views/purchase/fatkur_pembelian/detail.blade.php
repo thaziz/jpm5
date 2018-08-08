@@ -181,13 +181,36 @@
 
 
                       <tr>
-                        <td>  <button type="button" class="btn btn-primary" id="createmodal_pajakpo" data-toggle="modal" data-target="#myModal1">  Faktur Pajak</button> </div>   </td>
+                        <td>
+                          <b> Jenis PPN </b>
+                        </td>
+
+                        <td> 
+                        <div class="row">
+                          <div class="col-md-5">
+
+                            <select class="form-control jenisppn_po">
+                              <option value="T" @if($faktur->fp_jenisppn == 'T') selected="" @endif>
+                                TANPA
+                              </option>
+                              <option value="I" @if($faktur->fp_jenisppn == 'I') selected="" @endif>
+                                INCLUDE
+                              </option>
+                              <option value="E" @if($faktur->fp_jenisppn == 'E') selected="" @endif>
+                                EXCLUDE
+                              </option>
+                            </select>
+                          </div>
+                          <div class="col-md-5">
+                            <button type="button" class="btn btn-primary" id="createmodal_pajakpo" data-toggle="modal" data-target="#myModal1">  Faktur Pajak</button>
+                          </div>
+                        </div>   </td>   </td>
                       </tr>
                      
                       <tr>
                         <td> <b> PPn % </b> </td>
                         @if($faktur->fp_ppn != '')
-                          <td> <div class="row">  <div class="col-md-3"> <input type="text" class="form-control inputppn_po edit" value="{{$faktur->fp_inputppn}}" readonly="" name="inputppn_po"> </div>  <div class="col-md-9"> <input type="text" class="form-control hasilppn_po edit" readonly=""  style="text-align: right" name="hasilppn_po" value="{{ number_format($faktur->fp_ppn, 2) }}"> </div> </div>  </td>
+                          <td> <div class="row">  <div class="col-md-3"> <input type="text" class="form-control inputppn_po" value="{{$faktur->fp_inputppn}}" readonly="" name="inputppn_po"> </div>  <div class="col-md-9"> <input type="text" class="form-control hasilppn_po edit" readonly=""  style="text-align: right" name="hasilppn_po" value="{{ number_format($faktur->fp_ppn, 2) }}"> </div> </div>  </td>
                         
                         @else
                            <td> <div class="row">  <div class="col-md-3"> <input type="text" class="form-control inputppn_po" value="" name="inputppn_po"> </div>  <div class="col-md-9"> <input type="text" class="form-control hasilppn_po edit" readonly=""  style="text-align: right" name="hasilppn_po" value=""> </div> </div>  </td>
@@ -222,7 +245,7 @@
                         <td> <input type='text' class='form-control sisahutang_po' readonly="" name="sisapelunasan_po" style="text-align: right" value="{{ number_format($faktur->fp_sisapelunasan, 2) }}"> <input type='hidden' class='form-control fp_uangmuka' value="{{$faktur->fp_uangmuka}}"> </td>
                       </tr>
 
-                      <tr>  <td> <b> No Faktur </b> </td> <td> <div class="row"> <div class="col-xs-6"> <input type="text" class="form-control notandaterima" value="{{$data['no_tt'][0]->tt_noform}}" readonly="">   </div>   <div class="col-xs-6">  <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_tt" data-toggle="modal" data-target="#myModal_TT" type="button"> <i class="fa fa-book"> </i> &nbsp; Ganti Form Tanda Terima </button>  </div> </div> <input type="hidden" class="datatandaterima" name="datatandaterima"> </td>  </tr>
+                      <tr>  <td> <b> No Faktur </b> </td> <td> <div class="row"> <div class="col-xs-6"> <input type="text" class="form-control notandaterima" value="{{$data['no_tt'][0]->tt_noform}}" readonly="">   </div>   <div class="col-xs-6">  <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_tt" data-toggle="modal" data-target="#myModal_TT" type="button"> <i class="fa fa-book"> </i> &nbsp; Ganti Form Tanda Terima </button>  </div> </div> <input type="hidden" class="datatandaterima" name="datatandaterima" value="{{$data['no_tt'][0]->ttd_id}},{{$data['no_tt'][0]->ttd_detail}}"> </td>  </tr>
 
                       <tr> <td> <button class="btn btn-sm btn-primary" type="button" id="createmodal_um" data-target="#bayaruangmuka" data-toggle="modal"> Bayar dengan Uang Muka </button> </td> <td>
 
@@ -2405,6 +2428,11 @@
       val = accounting.formatMoney(val, "", 2, ",",'.');
       $(this).val(val);
 
+      jenisppn = $('.jenisppn_po').val();
+      if(jenisppn == 'T'){
+        $(this).val('');
+        return false;
+      }
 
       pph = $('.hasilpph_po').val();
       if(pph != ''){
@@ -3383,7 +3411,7 @@
           }
           else if(jenisppn == 'T') {
             if(pph == '' ){
-              $('.inputppn_po').val('');
+          
               $('.hasilppn_po').val('');
               $('.nettohutang_po').val(dpp);
               $('.dpp_po').val(dpp);
@@ -3400,7 +3428,7 @@
             }
 
             else{
-              $('.inputppn_po').val('');
+            
               $('.hasilppn_po').val('');
                total = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)).toFixed(2);
               $('.nettohutang_po').val(addCommas(total));

@@ -1512,6 +1512,10 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller
   Route::get('sales/deliveryorder_paket', 'do_new\do_paketController@index')->name('deliveryorder_paket');
       //datatable
       Route::get('sales/deliveryorder_paket/datatable_deliveryorder_paket', 'do_new\do_paketController@datatable_deliveryorder_paket')->name('datatable_deliveryorder_paket');
+      //cari ajax
+      Route::get('sales/ajax_index_deliveryorder_paket/ajax_index_deliveryorder_paket', 'do_new\do_paketController@ajax_index_deliveryorder_paket')->name('ajax_index_deliveryorder_paket');
+      //replace ajax
+      Route::get('sales/ajax_replace_index_deliveryorder_paket/ajax_replace_index_deliveryorder_paket', 'do_new\do_paketController@ajax_replace_index_deliveryorder_paket')->name('ajax_replace_index_deliveryorder_paket');
   //create
   Route::get('sales/deliveryorder_paket/create_deliveryorder_paket', 'do_new\do_paketController@create_deliveryorder_paket')->name('create_deliveryorder_paket');
       //cari nomor
@@ -1526,6 +1530,7 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller
       Route::get('sales/deliveryorder_paket/replace_vendor_deliveryorder_paket', 'do_new\do_paketController@replace_vendor_deliveryorder_paket')->name('replace_vendor_deliveryorder_paket');
       //simpan data
       Route::get('sales/deliveryorder_paket/save_deliveryorder_paket', 'do_new\do_paketController@save_deliveryorder_paket')->name('save_deliveryorder_paket');
+
       //cari akun kas besar
       Route::get('sales/deliveryorder_paket/cari_kas_besar_deliveryorder_paket', 'do_new\do_paketController@cari_kas_besar_deliveryorder_paket')->name('cari_kas_besar_deliveryorder_paket');
   //Edit

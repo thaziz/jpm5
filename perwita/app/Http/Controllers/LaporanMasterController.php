@@ -3967,9 +3967,9 @@ class LaporanMasterController extends Controller
 
 	$customer = DB::select("SELECT i_kode_customer,nama from invoice inner join customer on customer.kode = invoice.i_kode_customer  where i_tanggal > '$awal' and i_tanggal < '$akir' and i_tanggal_tanda_terima is null $customer_invoice $cabang_invoice ");
 	// return $customer;
-	$data = DB::select("SELECT * from invoice where i_tanggal > '$awal' and i_tanggal < '$akir' and i_tanggal_tanda_terima is not null $customer_invoice $cabang_invoice ");
-	// return $data;
-	return view('purchase/master/master_penjualan/laporan/invoice/invoice_sudah_tt/invoice_sudah_ttinvoice',compact('data','customer'));
+	$dt = DB::select("SELECT * from invoice where i_tanggal > '$awal' and i_tanggal < '$akir' and i_tanggal_tanda_terima is not null $customer_invoice $cabang_invoice ");
+	// return $dt;
+	return view('purchase/master/master_penjualan/laporan/invoice/invoice_sudah_tt/invoice_sudah_ttinvoice',compact('dt','customer'));
    }
 
  

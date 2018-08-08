@@ -263,8 +263,19 @@ class tarif_VendorController extends Controller
 
     public function hapus_data (Request $request) {
         $hapus='';
-        $id=$request->id;
-        $hapus = DB::table('tarif_vendor')->where('id' ,'=', $id)->delete();
+        // $id=$request->id;
+        $asal = $request->asal;
+        $tujuan = $request->tujuan;
+        $vendor = $request->vendor_id;
+        $cabang = $request->cabang;
+        // dd($request->all());
+        $data = DB::table('tarif_vendor')
+                        ->where('id_kota_asal_vendor','=',$asal)
+                        ->where('id_kota_tujuan_vendor','=',$tujuan)
+                        // ->where('vendor_id','=',$vendor)
+                        ->where('cabang_vendor','=',$cabang)
+                        ->delete();
+
         if($hapus == TRUE){
             $result['error']='';	
             $result['result']=1;

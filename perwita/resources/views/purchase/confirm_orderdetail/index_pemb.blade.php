@@ -205,9 +205,7 @@
                             <td> <b> Pemroses </b> </td>
                             <td class="disabled"> 
                                 <select class="form-control pemroses" name="pemroses">
-                                      <option value="KEUANGAN" >
-                                          PIHAK KEUANGAN
-                                      </option>
+                                      
                                       <option value="PEMBELIAN" selected="">
                                          PIHAK PEMBELIAN
                                       </option>
@@ -380,7 +378,7 @@
                       <td class="supid supplier{{$index}}" data-id="{{$index}}" data-supplier="{{$spptb->spptb_supplier}}"> 
                             <select class="input-sm form-control supplier{{$index}} sup" name="supplier3[]" disabled="" data-supplier="{{$spptb->spptb_supplier}}" data-id="{{$index}}">
                              @foreach($data['supplier'] as $sup)
-                              <option value="{{$sup->idsup}},{{$sup->syarat_kredit}}.{{$sup->kontrak}}" @if($spptb->spptb_supplier == $sup->idsup) selected="" @endif>  {{$sup->nama_supplier}} 
+                              <option value="{{$sup->idsup}},{{$sup->syarat_kredit}},{{$sup->kontrak}}" @if($spptb->spptb_supplier == $sup->idsup) selected="" @endif>  {{$sup->nama_supplier}} 
                              @endforeach
                             </select>
                           </div>
@@ -852,8 +850,6 @@
               console.log(data.sppdt_barang.length);
                       for(var n=0;n<data.sppdt_barang.length;n++){
                        var kodebrg =  $('.brg'+ n).data("kodeitem");
-                       console.log('kodebrg');
-                       console.log(kodebrg);
                           for(var i = 0 ; i <data.sppdt.length;i++){
                             if(kodebrg == data.sppdt[i].sppd_kodeitem) {
                                for(var j =0; j < data.spptb.length; j++){
@@ -866,10 +862,10 @@
                                                            '<label class="col-sm-1 control-label"> Rp </label>' + 
                                                             '<div class="col-xs-6">';
                                         
-                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+' hrga'+n+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.sppdt[i].sppd_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.sppdt[i].sppd_supplier+'"> <input type="hidden" value="'+addCommas(data.sppdt[i].sppd_harga)+'" class="hargahid hargahid'+i+'" data-brg="'+n+'" data-id="'+i+'"">  </div> <div class="datasup'+ i +'">  </div> ';
+                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+' hrga'+n+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.sppdt[i].sppd_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.sppdt[i].sppd_supplier+'" data-kontrak="'+data.sppdt[i].sppd_kontrak+'" data-hargaasli="'+data.sppdt[i].sppd_harga+'"> <input type="hidden" value="'+addCommas(data.sppdt[i].sppd_harga)+'" class="hargahid hargahid'+i+'" data-brg="'+n+'" data-id="'+i+'""> <input type="hidden" class="statuskontrak'+i+'" data-brg="'+n+'" data-id="'+i+'" value="'+data.sppdt[i].sppd_kontrak+'">  </div> <div class="datasup'+ i +'">  </div> ';
 
                                         tampilharga += '<div class="col-sm-2"> <div class="checkbox checkbox-primary ">' +
-                                            '<input id="cek" type="checkbox" value='+data.sppdt[i].sppd_supplier+' class="checkboxhrg checkbox'+n+'" data-val='+i+' data-id='+nourut+' required data-supplier='+data.sppdt[i].sppd_supplier+' data-harga='+data.sppdt[i].sppd_harga+' data-totalhrg='+data.spptb[j].spptb_totalbiaya+' data-n='+n+'>' +
+                                            '<input id="cek" type="checkbox" value='+data.sppdt[i].sppd_supplier+' class="checkboxhrg checkbox'+n+'" data-val='+i+' data-id='+nourut+' required data-supplier='+data.sppdt[i].sppd_supplier+' data-harga='+data.sppdt[i].sppd_harga+' data-totalhrg='+data.spptb[j].spptb_totalbiaya+' data-n='+n+' data-kontrak='+data.sppdt[i].sppd_kontrak+'>' +
                                             '<label for="checkbox'+nourut+'">' +  
                                             '<div class="suppliercek'+nourut+'">  </div> '                                           
                                             '</label>' +
@@ -884,8 +880,11 @@
                                           id = $(this).data('id');
                                           val = $(this).data('val');
                                           n = $(this).data('n');
+                                          supplier = $(this).data('supplier');
+                                          kontrak = $(this).data('kontrak');
                                                 $('.checkbox'+n).each(function(){
-                                                  if ($this.is(":checked")) {
+                                                  if($this.is(":checked")) {
+
                                                       rowsupplier = "<input type='hidden' value="+idsup+" name='datasup[]'>";
                                                       $('.suppliercek'+id).html(rowsupplier);
 
@@ -908,9 +907,15 @@
                                                         supplier = $(this).data('supplier');
                                                         if(supplier == idsup){
                                                           $(this).attr('disabled', false);
+                                                          if(kontrak == 'YA'){
+                                                            $('td[data-supplier="'+supplier+ '"]').addClass('disabled');
+                                                          }
+                                                          else {
+                                                             $('td[data-supplier="'+supplier+ '"]').removeClass('disabled');
+                                                          }
                                                         }
                                                       })
-
+                                                    
                                                   } else {
                                                         
                                                     hargaasli = $(this).data('harga');
@@ -918,6 +923,7 @@
                                                         dataid = $(this).data('id');
                                                         datan = $(this).data('brg');
                                                         nilai = $('.hargahid' + dataid).val();
+
                                                         if(datan == n){
                                                           if(dataid != val){
                                                             $(this).val(addCommas(nilai));
@@ -946,10 +952,18 @@
 
                                         $('.hrg').each(function(){
                                         $(this).change(function(){
-                                         
-                                          val = $(this).val();    
-                                          val = accounting.formatMoney(val, "", 2, ",",'.');
-                                          $(this).val(val);
+                                          kontrak = $(this).data('kontrak');
+                                          harga = $(this).data('hargaasli');
+                                          if(kontrak == 'YA'){
+                                            toastr.info("Barang termasuk kontrak, tidak bisa dirubah :)");
+                                            $(this).val(addCommas(harga));
+                                            return false;
+                                          }
+                                          else{
+                                            val = $(this).val();    
+                                            val = accounting.formatMoney(val, "", 2, ",",'.');
+                                            $(this).val(val);
+                                          }
                                         })
                                       })
 
@@ -1099,12 +1113,19 @@
       for(var n=0; n <  counthrg; n++) {
          $('.harga' + n).change(function(){
                 var id = $(this).data('id');
+                var kontrak = $(this).data('kontrak');
                 harga = $(this).val();
                 numhar = Math.round(harga).toFixed(2);
-                alert('test');
-                $('.harga' + id).val(addCommas(numhar));
-            
-              $('.simpan').prop("disabled" , true);
+               
+                if(kontrak == 'YA'){
+                  toastr.info("Tidak bisa mengedit harga, karena termasuk harga kontrak :)");
+                  return false;
+                }
+                else if(kontrak == 'TIDAK') {
+                  $('.harga' + id).val(addCommas(numhar));
+                  $('.simpan').prop("disabled" , true);
+
+                }
             })
       }
 
