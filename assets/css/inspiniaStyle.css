@@ -1594,7 +1594,7 @@ table.dataTable thead .sorting_asc:after,
 table.dataTable thead .sorting_desc,
 table.dataTable thead .sorting_asc_disabled,
 table.dataTable thead .sorting_desc_disabled {
-  background: #005b9a;
+  /*background: #005b9a;*/
   vertical-align: middle;
 }
 /*------*/
@@ -3259,7 +3259,7 @@ body.tour-open .animated {
 /*--ari--*/
 body {
   font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color:#384f5f;
+  
 
   font-size: 13px;
   color: #676a6c;
@@ -3541,8 +3541,8 @@ body.body-small .footer.fixed {
   border-bottom: 1px solid #DDDDDD;
   vertical-align: middle;
  
-    background:#2e7bb3;
-  color: white;
+    /*background:#2e7bb3;*/
+  color: inherit;
   text-align: center;
 }
 
@@ -3832,7 +3832,9 @@ table.table-mail tr td {
   left: auto;
   right: 0;
 }
-/*Ari*/
+/*-------------Ari-----------------*/
+
+
 .rightbar-appear{
   overflow-y: hidden;
 }
@@ -3874,6 +3876,7 @@ table.table-mail tr td {
   z-index: 2003;
   transition: 1s;
   overflow-y: auto;
+  color: black;
 }
 .rightbar-hidden{
   right: -20vw;
@@ -3881,11 +3884,11 @@ table.table-mail tr td {
 }
 
 .rightbar-head {
-        top: 0;
+    top: 0;
     padding-top: 12px;
     border-bottom: 1px solid #c3c3c3;
     height: 50px;
-    position: fixed;
+    position: absolute;
     width: 100%;
     background: white;
 }
@@ -3896,8 +3899,8 @@ table.table-mail tr td {
 .rightbar-head h4,
 .rightbar-head h5,
 .rightbar-head h6{
-  text-align: center;
-      position: inherit;
+    text-align: center;
+    /* position: inherit; */
     margin-left: 15px;
 }
 
@@ -3924,13 +3927,84 @@ button.btn-close-rightbar:hover, button.btn-close-rightbar:active {
     color: gray;
 }
 button.btn-close-rightbar {
-        background: transparent;
+    background: transparent;
     border: hidden;
-        margin-left: 220px;
-    position: inherit;
+    right: 10px;
+    top: 10px;
+    position: absolute;
     color: black;
     transition: 0.3s;
     z-index: 2005;
+}
+.list-skins.active {
+    background-color: #e2e2e2;
+}
+.list-skins.active::after {
+    font-family: FontAwesome;
+    content: "\f00c";
+    right: 10px;
+    position: absolute;
+}
+/* BACKGROUND SIDEBAR */
+.cyan-bg-color {
+  background-color: #005a66;
+}
+.blue-bg-color {
+  background-color: #0e3f66;
+}
+.light-blue-bg-color {
+  background-color: #014666;
+}
+.yellow-bg-color {
+  background-color: #665e17;
+}
+.pink-bg-color {
+  background-color: #660d2b;
+}
+.purple-bg-color {
+  background-color: #5a1666;
+}
+.deep-purple-bg-color {
+  background-color: #3a2166;
+}
+.red-bg-color {
+  background-color: #661b15;
+}
+.black-bg-color {
+  background-color: #262626;
+}
+.indigo-bg-color {
+  background-color: #242e66;
+}
+.teal-bg-color {
+  background-color: #00665c;
+}
+.green-bg-color {
+  background-color: #2c662e;
+}
+.light-green-bg-color {
+  background-color: #486627;
+}
+.lime-bg-color {
+  background-color: #5e661b;
+}
+.amber-bg-color {
+  background-color: #664d03;
+}
+.orange-bg-color {
+  background-color: #663d00;
+}
+.deep-orange-bg-color {
+  background-color: #66220d;
+}
+.brown-bg-color {
+  background-color: #66483d;
+}
+.blue-grey-bg-color {
+  background-color: #465b66;
+}
+.deep-blue-bg-color{
+  background-color: #384f5f;
 }
 /* BACKGROUNDS */
 .gray-bg {
@@ -3941,28 +4015,28 @@ button.btn-close-rightbar {
 }
 .navy-bg {
   background-color: #1ab394;
-  /*color: #ffffff;*/
+  color: #ffffff;
 }
 .blue-bg {
   background-color: #1c84c6;
-  /*color: #ffffff;*/
+  color: #ffffff;
 }
 .lazur-bg {
   background-color: #23c6c8;
-  /*color: #ffffff;*/
+  color: #ffffff;
 }
 .yellow-bg {
   background-color: #f8ac59;
-  /*color: #ffffff;*/
+  color: #ffffff;
 }
 .red-bg {
   background-color: #ed5565;
-  /*color: #ffffff;*/
+  color: #ffffff;
 }
 .black-bg {
   background-color: #262626;
 }
-.dark-blue-bg{
+.deep-blue-bg{
   background-color: #384f5f;
 }
 /*irA*/
