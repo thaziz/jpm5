@@ -931,9 +931,9 @@ class PurchaseController extends Controller
 
 		}
 		else {
-				$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang' order by co_id desc");	
+				$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang' and spp_cabang = kode order by co_id desc");	
 		}
-
+		$data['co'];
 
 		return view('purchase.confirm_order.index', compact('data'));
 	}
