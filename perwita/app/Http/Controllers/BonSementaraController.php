@@ -65,7 +65,7 @@ class BonSementaraController extends Controller
 
 		$data['bonsem'] = DB::select("select * from bonsem_pengajuan, cabang where bp_cabang = kode order by bp_id desc");
 		
-		
+		$data['bank'] = DB::select("select * from masterbank");
 
 		return view('purchase/bonsementara/indexcabang', compact('data'));
 	}
@@ -167,10 +167,17 @@ class BonSementaraController extends Controller
 
 	public function terimauang(Request $request){
 			$idbonsem = $request->idbonsem;
-
+			$kodebank = $request->bankcabang;
 			$updatepb = bonsempengajuan::find($idbonsem);
 			$updatepb->bp_terima = 'DONE';
 			$updatepb->save();
+
+
+
+			$datajurnal = [];
+		    $totalhutang = 0;
+		    $datajurnal[0]['idakun'] = $request->bankcabang;
+		    $datajurnal[0]['subtotal'] =
 
 			return 'sukses';
 

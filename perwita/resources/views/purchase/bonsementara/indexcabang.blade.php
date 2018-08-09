@@ -117,7 +117,7 @@
 
                  <!-- modal kacab-->
                             <div class="modal inmodal fade" id="modaluangterima" tabindex="-1" role="dialog"  aria-hidden="true">
-                              <div class="modal-dialog"  style="min-width: 800px !important; min-height: 400px">
+                              <div class="modal-dialog"  style="min-width: 900px !important; min-height: 900px">
                                   <div class="modal-content">
                                      <div class="modal-header">
                                          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
@@ -141,7 +141,7 @@
                                         <td> <input type='text' class='form-control nominalcabang' style="min-width: 120px; text-align: right;" readonly=""> </td>
                                         <td> <input type='text' class='form-control nominalkabag' style="min-width: 120px;text-align: right;"  readonly=""> </td>
                                         <td> <input type='text' class='form-control nominaladmin' style="min-width: 120px;text-align: right;" readonly=""> </td>
-                                        <td> <input type='text' class='form-control nominalmenkeu' style="min-width: 120px;text-align: right;" readonly=""> <input type="hidden" class="idbonsem"> </td>
+                                        <td> <input type='text' class='form-control nominalmenkeu' style="min-width: 120px;text-align: right;" readonly="" name='nominalkeu'> <input type="hidden" class="idbonsem"> </td>
                                     </tr>
                                   </table>
 
@@ -152,12 +152,18 @@
                                         <td> &nbsp; </td>
                                     </tr>
                                     <tr>
-                                        <td> Bank Cabang </td>
-                                        <td> <select class="chosen-select"> </select></td>
-                                        <td> <button class="btn btn-sm btn-success" type="button" id="terima"> Terima </button> </td>
+                                        <td> <b> Bank Cabang </b></td>
                                         <td> &nbsp; </td>
-                                        <td>
-
+                                        <td> <select class="form-control bankcabang" name="bankcabang">
+                                              @foreach($data['bank'] as $bank)
+                                              <option value="$bank->mb_kode"> {{$bank->mb_nama}}</option>
+                                              @endforeach
+                                            </select>
+                                        </td>
+                                      
+                                    </tr>
+                                    <tr>
+                                          <td> <button class="btn btn-sm btn-success" type="button" id="terima"> Terima </button>  &nbsp; 
                                             <button class="btn btn-sm btn-danger" type="button" id="batalterima"> Batal </button>
                                           </td>
                                           <td>
@@ -248,7 +254,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-white" data-dismiss="modal">Tutup</button>
                            
-                             <button type="submit"  class="simpan btn btn-success"> Simpan  </button>
+                             <button type="submit"  class="simpan btn btn-success" id="simpankacab"> Simpan  </button>
                             </form>
                         </div>
                        </div>
@@ -347,6 +353,24 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+   clearInterval(reset);
+    var reset =setInterval(function(){
+     $(document).ready(function(){
+      var config = {
+                '.chosen-select'           : {},
+                '.chosen-select-deselect'  : {allow_single_deselect:true},
+                '.chosen-select-no-single' : {disable_search_threshold:10},
+                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+                '.chosen-select-width'     : {width:"95%"}
+                }
+
+             for (var selector in config) {
+               $(selector).chosen(config[selector]);
+             }
+    })
+     },2000);
+
  $.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -361,11 +385,13 @@
 
   $('#terima').click(function(){   
      idbonsem = $('.idbonsem').val();
+     bankcabang = $('.bankcabang').val();
+     nominalkeu = $('.nominalkeu').val();
      $.ajax({
         url : baseUrl + '/bonsementaracabang/terimauang',
         type : "POST",
         dataType : "json",
-        data : {idbonsem},
+        data : {idbonsem,bankcabang},
         success : function(){
             alertSuccess();
             location.reload();
@@ -465,13 +491,7 @@ $('#statuskacab').submit(function(event){
           val =$('.nominal').val();
           
           nominal = val.replace(/,/g, '');
-         
-          /* if(parseFloat(kascabang) < parseFloat(nominal)){
-            toastr.info("Mohon maaf, Kas Kecil Cabang tidak mencukupi :) ");
-          
-            $(this).val('');
-            return false;
-           }*/
+        
 
         event.preventDefault();
           var post_url2 = $(this).attr("action");
@@ -652,6 +672,7 @@ function kacab(id) {
       if(response['pb'][0].bp_setujuadmin == 'SETUJU'){
       
         $('.edit').attr('readonly' , true);
+
       }
     }
   })

@@ -75,7 +75,8 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="text-right">
-                       
+                         <a class="btn btn-default" aria-hidden="true" href="{{ url('purchaseorder/purchaseorder')}}"> <i class="fa fa-arrow-circle-left"> </i> &nbsp; Kembali  </a> 
+
                     </div>
                 </div>
 
