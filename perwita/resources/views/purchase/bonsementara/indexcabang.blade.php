@@ -156,7 +156,7 @@
                                         <td> &nbsp; </td>
                                         <td> <select class="form-control bankcabang" name="bankcabang">
                                               @foreach($data['bank'] as $bank)
-                                              <option value="$bank->mb_kode"> {{$bank->mb_nama}}</option>
+                                              <option value="{{$bank->mb_kode}}"> {{$bank->mb_nama}}</option>
                                               @endforeach
                                             </select>
                                         </td>
@@ -386,15 +386,20 @@
   $('#terima').click(function(){   
      idbonsem = $('.idbonsem').val();
      bankcabang = $('.bankcabang').val();
-     nominalkeu = $('.nominalkeu').val();
+     nominalkeu = $('.nominalmenkeu').val();
      $.ajax({
         url : baseUrl + '/bonsementaracabang/terimauang',
         type : "POST",
         dataType : "json",
-        data : {idbonsem,bankcabang},
-        success : function(){
-            alertSuccess();
-            location.reload();
+        data : {idbonsem,bankcabang,nominalkeu},
+        success : function(response){
+            if(response == 'sukses'){
+              alertSuccess();
+              location.reload();
+            }
+        },
+        error : function(){
+            swal("Error", "Server Sedang Mengalami Masalah", "error");
         }
       })
   })

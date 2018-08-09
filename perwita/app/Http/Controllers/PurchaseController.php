@@ -931,7 +931,7 @@ class PurchaseController extends Controller
 
 		}
 		else {
-				$data['co']=DB::select("select * from confirm_order, spp where co_idspp = spp_id and co_cabang = '$cabang' and spp_statuskabag = 'SETUJU' order by co_id desc");	
+				$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang' order by co_id desc");	
 		}
 
 
@@ -7622,7 +7622,7 @@ public function kekata($x) {
 				$idjurnal = 1;
 			}
 			
-
+/*
 			$carimax = DB::select("select * from d_jurnal where jr_detail = 'BUKTI BANK KELUAR'");
 			$countcarimax = count($carimax);
 			if($countcarimax == 0){
@@ -7641,8 +7641,8 @@ public function kekata($x) {
 				$idbbk = str_pad($string, 4, '0', STR_PAD_LEFT);
 				
 				$jr_no = $nobbk1 . '/' . $nobbk2 . '/' . $idbbk;
-			}
-
+			}*/
+			$jr_no = get_id_jurnal('BK' , $cabang);
 
 			$year = date('Y');	
 			$date = date('Y-m-d');

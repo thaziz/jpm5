@@ -172,14 +172,72 @@ class BonSementaraController extends Controller
 			$updatepb->bp_terima = 'DONE';
 			$updatepb->save();
 
+			$nominalkeu =  str_replace(',', '', $request->nominalkeu);
 
+			$datapb = DB::select("select * from bonsem_pengajuan where bp_id = '$idbonsem'");
 
 			$datajurnal = [];
 		    $totalhutang = 0;
 		    $datajurnal[0]['idakun'] = $request->bankcabang;
-		    $datajurnal[0]['subtotal'] =
+		    $datajurnal[0]['subtotal'] = $nominalkeu;
+		    $datajurnal[0]['dk'] = 'D';
+		    $datajurnal[0]['detail'] = $datapb[0]->bp_keperluan;
 
-			return 'sukses';
+
+
+		    $datajurnal[1]['idakun'] = $datapb[0]->bp_akunhutang;
+		    $datajurnal[1]['subtotal'] = $nominalkeu;
+		    $datajurnal[1]['dk'] = 'K';
+		    $datajurnal[1]['detail'] = $datapb[0]->bp_keperluan;
+
+
+
+		
+			$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+			if(isset($lastidjurnal)) {
+				$idjurnal = $lastidjurnal;
+				$idjurnal = (int)$idjurnal + 1;
+			}
+			else {
+				$idjurnal = 1;
+			}
+		
+			$year = date('Y');	
+			$date = date('Y-m-d');
+			$jurnal = new d_jurnal();
+			$jurnal->jr_id = $idjurnal;
+	        $jurnal->jr_year = date('Y');
+	        $jurnal->jr_date = date('Y-m-d');
+	        $jurnal->jr_detail = 'BON SEMENTARA';
+	        $jurnal->jr_ref = $datapb[0]->bp_nota;
+	        $jurnal->jr_note = $datapb[0]->bp_keperluan;
+	        $jurnal->save();
+       	
+	    	$key  = 1;
+    		for($j = 0; $j < count($datajurnal); $j++){
+    			
+    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+				if(isset($lastidjurnaldt)) {
+					$idjurnaldt = $lastidjurnaldt;
+					$idjurnaldt = (int)$idjurnaldt + 1;
+				}
+				else {
+					$idjurnaldt = 1;
+				}
+
+    			$jurnaldt = new d_jurnal_dt();
+    			$jurnaldt->jrdt_jurnal = $idjurnal;
+    			$jurnaldt->jrdt_detailid = $key;
+    			$jurnaldt->jrdt_acc = $datajurnal[$j]['idakun'];
+    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
+    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
+    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
+    			$jurnaldt->save();
+    			$key++;
+    		} 
+
+
+			return json_encode('sukses');
 
 	}
 
