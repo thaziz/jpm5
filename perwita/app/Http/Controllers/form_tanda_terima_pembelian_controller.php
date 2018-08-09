@@ -297,7 +297,7 @@ class form_tanda_terima_pembelian_controller extends Controller
 				  ->orderBy('tt_idform','ASC')
 				  ->get();
 		}
-
+		dd($data);
         $data = collect($data);
         // return $data;
         return Datatables::of($data)
