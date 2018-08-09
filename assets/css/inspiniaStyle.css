@@ -4129,8 +4129,8 @@ body.brown-bg-color .table > thead{
 body.blue-grey-bg-color .table > thead{
   background-color: #465b66;
 }
-body.deep-blue-bg-color.table > thead{
-  background-color: #384f5f;
+body.deep-blue-bg-color .table > thead{
+  background-color: #384f5f !important;
 }
 /* BACKGROUNDS */
 .gray-bg {

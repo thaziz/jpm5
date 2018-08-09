@@ -141,7 +141,7 @@ class d_jurnal_controller extends Controller
         $jurnal->jr_date = date('Y-m-d');
         $jurnal->jr_detail = $request->jr_detail;
         $jurnal->jr_ref = $ref;
-        $jurnal->jr_note = $request->jr_note;
+        $jurnal->jr_note = $request->jr_detail;
         $jurnal->jr_no = $jr_no;
         $jurnal->jr_on_proses = 2;
 

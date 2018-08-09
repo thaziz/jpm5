@@ -317,7 +317,7 @@ $(".mask_money_dn").maskMoney({thousands:'.', decimal:',', precision:-1});
         $sidebar = Cookies.get('sidebar_jpm5');
 
         if ($sidebar) {
-          $('body').removeAttr('class').addClass('pace-done ' + $sidebar + '-bg-color');
+          $('body').removeAttr('class').addClass($sidebar + '-bg-color');
           $('.rightbar .rightbar-body .list-skins[data-theme="' + $sidebar + '"]').addClass('active');
           // $('.table:not(.no-random-color) thead').removeAttr('class').addClass($sidebar +'-bg-color');
         } else {

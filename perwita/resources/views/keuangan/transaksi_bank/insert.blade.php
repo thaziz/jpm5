@@ -82,7 +82,7 @@
         <td colspan="2">
           <select name="cabang" class="select_validate form-control chosen-select list-should-disabled" id="cabang">
             @foreach($cabangs as $cab)
-              <option value="{{$cab->kode}}">{{$cab->nama}}</option>
+              <option value="{{$cab->kode}}">{{ $cab->kode }} - {{$cab->nama}}</option>
             @endforeach
           </select>
         </td>
@@ -111,23 +111,17 @@
         </td>
       </tr>
 
+      <tr>
+        <td width="10%" class="text-left">Nama Transaksi</td>
+        <td width="35%" colspan="2">
+          <input type="text" class="form_validate form-control list-should-disabled currency" name="jr_nominal" placeholder="Masukkan Nama Transaksi" id="nominal">
+        </td>
+      </tr>
+
     </table>
   </div>
 
   <div class="col-md-5" style="border: 0px solid #ddd; border-radius: 5px;">
-
-    <div class="col-md-12" style="padding: 0px;">
-      <table border="0" id="form-table" class="col-md-12">
-
-        <tr>
-          <td width="20%" class="text-left" style="vertical-align: top; padding-top: 1em;">Catatan</td>
-          <td colspan="2">
-            <textarea name="jr_note" class="input-Validity upper form-control form_validate list-should-disabled" style="width:100%; resize: none; height: 100px;" placeholder="Masukkan Catatan Jurnal Disini" id="jr_note"></textarea>
-          </td>
-        </tr>
-
-      </table>
-    </div>
 
     <div class="col-md-12 m-t" style="padding: 10px; background: #eee;">
       <table border="0" id="form-table" class="col-md-12">
@@ -138,7 +132,7 @@
             <select class="select_validate form-control chosen-select list-should-disabled" id="akun_lawan">
               <option value="---"> -- Pilih Akun Lawan</option>
               @foreach($akun_all as $key => $data_akun)
-                <option value="{{ $data_akun->id_akun }}">{{ $data_akun->nama_akun }}</option>
+                <option value="{{ $data_akun->id_akun }}">{{ $data_akun->id_akun }} - {{ $data_akun->nama_akun }}</option>
               @endforeach
             </select>
           </td>
@@ -179,10 +173,10 @@
               100311001 - KAS BESAR JPM SURABAYA</td>
             <td class="text-right currency">
               <input type="hidden" name="akun[]" class="akunName" readonly>
-              <input class="form-control currency debet list-should-disabled" value="0" data-id="1" name="debet[]">
+              <input class="form-control currency debet list-should-disabled" value="0" data-id="1" name="debet[]" readonly id="debet_first">
             </td>
             <td class="text-right currency">
-              <input class="form-control currency kredit list-should-disabled" value="0" data-id="1" name="kredit[]" readonly>
+              <input class="form-control currency kredit list-should-disabled" value="0" data-id="1" name="kredit[]" readonly id="kredit_first">
             </td>
           </tr>
         </tbody>
@@ -232,6 +226,17 @@
     }
 
     $(this).maskFunc();
+
+    $("#nominal").keyup(function(evt){
+      evt.preventDefault();
+
+      if($("#jenis_transaksi").val() == 1)
+        $('#debet_first').val($(this).val());
+      else
+        $('#kredit_first').val($(this).val());
+
+      initiate_total();
+    })
 
     $('#simpan').click(function(evt){
       evt.stopImmediatePropagation();
