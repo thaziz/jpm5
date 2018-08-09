@@ -1,4 +1,4 @@
-@extends('main')
+  @extends('main')
 
 @section('title', 'dashboard')
 
@@ -83,7 +83,8 @@
                         <td colspan="2">
                           <select name="cabang" class="cabang form-control chosen-select-width">
                             @foreach ($cabang as $val)
-                              <option @if($val->kode == Auth::user()->kode_cabang) @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+
+                              <option @if($val->kode == Auth::user()->kode_cabang) selected="" @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
                             @endforeach
                           </select>
                         </td>
@@ -91,7 +92,7 @@
                         <td colspan="2" class="disabled">
                           <select name="cabang" class="cabang form-control chosen-select-width">
                             @foreach ($cabang as $val)
-                              <option @if($val->kode == Auth::user()->kode_cabang) @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                              <option @if($val->kode == Auth::user()->kode_cabang) selected="" @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
                             @endforeach
                           </select>
                         </td>
