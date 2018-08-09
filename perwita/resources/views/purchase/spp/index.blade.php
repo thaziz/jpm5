@@ -40,7 +40,7 @@
      <div class="col-md-2" style="min-height: 100px">
       <div class="alert alert-success alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-      <h2 style='text-align:center'> <b> {{$data['statuskabag']}} SPP  </b></h2> <h4 style='text-align:center'> Belum di ketahui oleh Keuangan </h4>
+      <h2 style='text-align:center'> <b> {{$data['statuskabag']}} SPP  </b></h2> <h4 style='text-align:center'> Belum di ketahui oleh Kepala Cabang </h4>
       </div>
     </div>
 

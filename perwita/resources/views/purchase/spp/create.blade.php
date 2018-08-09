@@ -335,7 +335,7 @@
 
 
 //      $(".suipd").chosen(config);
-      $(".kndraan").chosen(config);
+     
     })
      },2000);
 

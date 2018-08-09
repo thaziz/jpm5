@@ -168,7 +168,8 @@ class PurchaseController extends Controller
 			$data['disetujui'] = DB::table("spp")->where('spp_status' , '=' , 'DISETUJUI')->where('spp_cabang' , '=' , $cabang)->count();
 			$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->where('spp_cabang' , '=' , $cabang)->count();
 			$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->where('spp_cabang' , '=' , $cabang)->count();
-			$data['statuskabag'] = DB::table("spp")->where('spp_statuskabag' , '=' , 'BELUM MENGETAHUI')->count();
+
+			$data['statuskabag'] = DB::table("spp")->where('spp_statuskabag' , '=' , 'BELUM MENGETAHUI')->where('spp_cabang' , '=' , $cabang)->count();
 		}
 
 		return view('purchase.spp.index', compact('data'));
@@ -283,7 +284,6 @@ class PurchaseController extends Controller
 	}
 
 	public function savespp(Request $request) {
-		
 		return DB::transaction(function() use ($request) {  
 			
 			$nospp = $request->nospp;
@@ -928,12 +928,13 @@ class PurchaseController extends Controller
 
 		if(Auth::user()->punyaAkses('Konfirmasi Order','all')){
 			$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = kode order by co_id desc");
+			
 
 		}
 		else {
-				$data['co']=DB::select("select * from confirm_order, spp where co_idspp = spp_id and co_cabang = '$cabang' and spp_statuskabag = 'SETUJU' order by co_id desc");	
+				$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang' and spp_cabang = kode order by co_id desc");	
 		}
-
+		$data['co'];
 
 		return view('purchase.confirm_order.index', compact('data'));
 	}
@@ -1439,7 +1440,7 @@ public function purchase_order() {
 
 		if(Auth::user()->punyaAkses('Purchase Order','all')){
 			$data['po'] = DB::select("select * from pembelian_order, supplier, cabang where po_supplier = idsup and po_cabang = kode  and po_statusreturn = 'AKTIF' order by po_id desc");
-			$data['spp'] = DB::select("select * from  spp, supplier, cabang, confirm_order, confirm_order_tb where co_idspp = spp_id and staff_pemb = 'DISETUJUI' and man_keu = 'DISETUJUI' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup  and cotb_setuju = 'DISETUJUI'");
+			$data['spp'] = DB::select("select * from  spp, supplier, cabang, confirm_order, confirm_order_tb where co_idspp = spp_id and staff_pemb = 'DISETUJUI' and man_keu = 'DISETUJUI' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup  and cotb_setuju = 'BELUM DI SETUJUI'");
 
 			$data['countspp'] = count($data['spp']);
 			
@@ -1455,7 +1456,7 @@ public function purchase_order() {
 		}
 		else{
 			$data['po'] = DB::select("select * from pembelian_order, supplier, cabang where po_supplier = idsup and po_cabang = kode and po_cabang = '$cabang' and po_statusreturn = 'AKTIF' order by po_id desc");
-			$data['spp'] = DB::select("select * from  spp, supplier, cabang, confirm_order, confirm_order_tb where co_idspp = spp_id and man_keu = 'DISETUJUI' and staff_pemb = 'DISETUJUI' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup  and cotb_setuju = 'DISETUJUI'");
+			$data['spp'] = DB::select("select * from  spp, supplier, cabang, confirm_order, confirm_order_tb where co_idspp = spp_id and man_keu = 'DISETUJUI' and staff_pemb = 'DISETUJUI' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup  and cotb_setuju = 'BELUM DI SETUJUI'");
 
 			$data['countspp'] = count($data['spp']);
 			
@@ -7622,7 +7623,7 @@ public function kekata($x) {
 				$idjurnal = 1;
 			}
 			
-
+/*
 			$carimax = DB::select("select * from d_jurnal where jr_detail = 'BUKTI BANK KELUAR'");
 			$countcarimax = count($carimax);
 			if($countcarimax == 0){
@@ -7641,8 +7642,8 @@ public function kekata($x) {
 				$idbbk = str_pad($string, 4, '0', STR_PAD_LEFT);
 				
 				$jr_no = $nobbk1 . '/' . $nobbk2 . '/' . $idbbk;
-			}
-
+			}*/
+			$jr_no = get_id_jurnal('BK' , $cabang);
 
 			$year = date('Y');	
 			$date = date('Y-m-d');

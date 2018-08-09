@@ -35,36 +35,11 @@
     <div class="col-md-2">
       <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-        <h2 style='text-align:center'> <b> {{$data['countspp']}} SPP </b></h2> <h4 style='text-align:center'> belum di proses Staff Pembelian </h4>
+        <h2 style='text-align:center'> <b> {{$data['countspp']}} SPP </b></h2> <h4 style='text-align:center'> BELUM DI PROSES PO </h4>
       </div>
     </div>
 
-    <div class="col-md-2">
-      <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-        <h2 style='text-align:center'> <b> {{$data['poblmdiproses']}} PO </b></h2> <h4 style='text-align:center'> belum di proses Staff Keuangan </h4>
-      </div>
-    </div>
-
-    <div class="col-md-2">
-      <div class="alert alert-warning alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-        <h2 style='text-align:center'> <b> {{$data['posetuju']}} PO DISETUJUI </b></h2> <h4 style='text-align:center'> oleh Staff Keuangan </h4>
-      </div>
-    </div>
-    <div class="col-md-2">
-      <div class="alert alert-info alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-         <h2 style='text-align:center'> <b> {{$data['poditolak']}} PO DITOLAK </b></h2> <h4 style='text-align:center'> oleh  Staff Keuangan </h4>
-      </div>
-    </div>
-
-     <div class="col-md-2">
-      <div class="alert alert-info alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-         <h2 style='text-align:center'> <b> {{$data['porevisi']}} PO DIREVISI </b></h2> <h4 style='text-align:center'> oleh  Staff Keuangan </h4>
-      </div>
-    </div>
+   
   </div>
 
 
