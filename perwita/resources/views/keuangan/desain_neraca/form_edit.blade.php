@@ -435,7 +435,7 @@
             // console.log(data_neraca);
             // console.log(data_detail);
             form_reset();
-            grab_parrent();
+            // grab_parrent();
           })
 
       });
@@ -506,7 +506,7 @@
             // console.log(data_neraca);
             // console.log(data_detail);
             form_reset();
-            grab_parrent();
+            // grab_parrent();
           })
 
       });
@@ -753,7 +753,7 @@
 
         state = btn.data("for");
 
-        form_reset(); grab_parrent();
+        form_reset(); // grab_parrent();
       })
 
       $("#jenis").change(function(evt){
@@ -871,6 +871,8 @@
         $.each($.grep(data_neraca, function(a){ return a.nomor_id.substring(0, id.length) === id }), function(i, n){
           idx = data_neraca.findIndex(a => a.nomor_id === n.nomor_id);
 
+          // console.log(1);
+
           if(n.jenis == 2 || n.jenis == 3){
             delete_detail(n.nomor_id);
           }
@@ -880,10 +882,10 @@
 
         $('#'+state+'_tree').jstree().delete_node(id);
         form_reset();
-        grab_parrent();
+        // grab_parrent();
 
-        // console.log(data_neraca);
-        // console.log(data_detail);
+        console.log(data_neraca);
+        console.log(data_detail);
       })
 
       $("#masukkan").click(function(evt){
@@ -946,7 +948,7 @@
           // console.log(data_neraca);
           // console.log(data_detail);
           form_reset();
-          grab_parrent();
+          // grab_parrent();
         }
       })
 

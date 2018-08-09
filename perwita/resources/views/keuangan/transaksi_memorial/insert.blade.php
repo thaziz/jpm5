@@ -60,12 +60,22 @@
       <tr>
         <td width="20%" class="text-left">Jenis Transaksi <input type="hidden" name="type_transaksi" value="memorial" readonly /> </td>
         <td colspan="2">
-          <select name="jenis_transaksi" class="select_validate form-control list-should-disabled" id="jenis_transaksi" style="width: 40%; display: inline-block;">
+          <select name="jenis_transaksi" class="select_validate form-control list-should-disabled" style="width: 40%; display: inline-block;">
             <option value="1">Memorial</option>
           </select> &nbsp;&nbsp;&nbsp;&nbsp;
 
           <i class="fa fa-search" style="display: inline-block; cursor: pointer;" id="list-show"></i>&nbsp;&nbsp;&nbsp;
           <i class="fa fa-times text-danger" style="display: none; cursor: pointer;" id="list-reset"></i>
+        </td>
+      </tr>
+
+      <tr>
+        <td width="20%" class="text-left">Type Transaksi <input type="hidden" name="type_transaksi" value="memorial" readonly /> </td>
+        <td colspan="2">
+          <select class="select_validate form-control list-should-disabled" style="width: 40%; display: inline-block;" id="jenis_transaksi">
+            <option value="1">Debet</option>
+            <option value="2">Kredit</option>
+          </select> &nbsp;&nbsp;&nbsp;&nbsp;
         </td>
       </tr>
 
@@ -111,7 +121,7 @@
       </tr>
 
       <tr>
-        <td width="10%" class="text-left">Nama Transaksi</td>
+        <td width="10%" class="text-left">Nominal</td>
         <td width="35%" colspan="2">
           <input type="text" class="form_validate form-control list-should-disabled currency" name="jr_nominal" placeholder="Masukkan Nama Transaksi" id="nominal">
         </td>
@@ -267,7 +277,7 @@
           success: function(response){
             console.log(response);
             if(response.status == "berhasil"){
-              toastr.success('Data Jurnal Memorial Berhasil Disimpan');
+              toastr.success('Data Transaksi Memorial Berhasil Disimpan');
               btn.removeAttr("disabled");
               btn.text("Simpan");
 
@@ -345,14 +355,14 @@
 
       if(context.val() == 1){
         val =  $("#coa_1 input.kredit").val().replace(/\./g, '').split(',')[0];
-        $("#coa_1 input.debet").removeAttr('readonly');
-        $("#coa_1 input.kredit").attr('readonly', 'readonly');
+        // $("#coa_1 input.debet").removeAttr('readonly');
+        // $("#coa_1 input.kredit").attr('readonly', 'readonly');
         $("#coa_1 input.kredit").val(0);
         $("#coa_1 input.debet").val(val);
       }else{
         val =  $("#coa_1 input.debet").val().replace(/\./g, '').split(',')[0];
-        $("#coa_1 input.kredit").removeAttr('readonly');
-        $("#coa_1 input.debet").attr('readonly', 'readonly');
+        // $("#coa_1 input.kredit").removeAttr('readonly');
+        // $("#coa_1 input.debet").attr('readonly', 'readonly');
         $("#coa_1 input.debet").val(0);
         $("#coa_1 input.kredit").val(val);
       }
@@ -510,7 +520,9 @@
       $("#coa_1 input").val(0);
 
       $(".total_debet").val(0); 
-      $(".total_kredit").val(0)
+      $(".total_kredit").val(0);
+
+      $('.akunName').val($('#akun_transaksi').val());
 
       // $('#kode_cabang').trigger("chosen:updated");
       // $('#group_neraca').trigger("chosen:updated");
