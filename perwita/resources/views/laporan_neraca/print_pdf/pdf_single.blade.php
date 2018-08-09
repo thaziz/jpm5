@@ -141,6 +141,9 @@
           <div class="col-md-5" style="background: none; padding: 10px 15px 5px 15px">
             <ul>
               <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_setting_neraca').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Setting Neraca"></i></li>
+
+              <li><i class="fa fa-file-text" style="cursor: pointer;" onclick="window.open('{{ route("neraca_detail.index", $throttle."?m=".$request->m."&y=".$request->y."&cab=".$request->cab) }}', '_blank')" data-toggle="tooltip" data-placement="bottom" title="Buka Lampiran Neraca"></i></li>
+
               <li><i class="fa fa-print" style="cursor: pointer;" id="print" data-toggle="tooltip" data-placement="bottom" title="Print Laporan"></i></li>
             </ul>
           </div>
