@@ -886,11 +886,14 @@ class do_kargo_Controller extends Controller
     public function cari_kontrak(request $request)
     {
         // return $request->all();
-        $data = DB::table('kontrak_customer')
-                  ->join('kontrak_customer_d','kc_nomor','=','kcd_kode')
+      
+        $data = DB::table('customer')
+                  ->join('kontrak_customer','kc_kode_customer','=','kode')
+                  ->join('kontrak_customer_d','kcd_id','=','kc_id')
+                  ->where('kcd_jenis','KARGO')
                   ->where('kc_kode_customer',$request->customer_do)
                   ->where('kc_kode_cabang',$request->cabang)
-                  ->where('kcd_jenis','KARGO')
+                  ->orderBy('kode','ASC')
                   ->get();
         $customer = DB::table('customer')
                       ->where('kode',$request->customer_do)

@@ -115,8 +115,6 @@
                   </div>
                 </div><!-- /.box-body -->
 
-
-
                  <!-- modal kacab-->
                             <div class="modal inmodal fade" id="modaluangterima" tabindex="-1" role="dialog"  aria-hidden="true">
                               <div class="modal-dialog"  style="min-width: 800px !important; min-height: 400px">
@@ -152,6 +150,10 @@
                                     <tr>
                                         <td> Apakah Cabang sudah menerima uang ? </td>
                                         <td> &nbsp; </td>
+                                    </tr>
+                                    <tr>
+                                        <td> Bank Cabang </td>
+                                        <td> <select class="chosen-select"> </select></td>
                                         <td> <button class="btn btn-sm btn-success" type="button" id="terima"> Terima </button> </td>
                                         <td> &nbsp; </td>
                                         <td>

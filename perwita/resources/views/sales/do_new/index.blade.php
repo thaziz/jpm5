@@ -180,7 +180,7 @@
                         <tr>
                           <th style="width: 100px; padding-top: 16px"> Nomor </th>
                           <td > 
-                           <input type="text" name="do_nomor" class="form-control">
+                           <input type="text" name="do_nomor" id="do_nomor" class="form-control">
                           </td>
                         </tr>
                        
@@ -362,8 +362,6 @@
         window.location.href = baseUrl + '/data-master/master-akun/create'
     }
     function hapusData(id) {
-alert('ac');
-return false;
         $.ajax({
             url: baseUrl + '/data-master/master-akun/delete/' + id,
             type: 'get',
@@ -399,122 +397,38 @@ return false;
         autoclose: true,
         format: 'yyyy-mm-dd'
     });
-            $("#min").datepicker({format:"dd/mm/yyyy"});
-            $("#max").datepicker({format:"dd/mm/yyyy"});
-
-       function tgl(){
-         var tgl1   = $("#min").val();
-         var tgl2   = $("#max").val();
-          if(tgl1 != "" && tgl2 != ""){
-          }
-
-            $(document).ready(function(){
-        $.fn.dataTable.ext.search.push(
-        function (settings, data, dataIndex) {
-            var min = $('#min').datepicker("getDate");
-            // console.log(min);
-            var max = $('#max').datepicker("getDate");
-            // console.log(max);
-
-            var startDate = new Date(data[1]);
-            // console.log(startDate);
-
-            if (min == null || min == '' && max == null || max == '') { return true; }
-
-            if (startDate >= min && startDate <= max) { return true; }
-
-            if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;}
-            
-            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) { return true;}
-            
-            // if (startDate == min && startDate == max) { return true; }
-            return false;
-        }
-        );
-            $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-            $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-           
-
-            // Event listener to the two range filtering inputs to redraw on input
-            $('#min, #max').change(function () {
-                /*if($('#max').val() == '' || $('#max').val() == null ){
-                    $('#max').val(0);
-                }*/
-                table.draw();
-            });
-        });
-          }
-   
- 
-    $(document).ready(function() {
-        $('.tbl-item').DataTable();
-     
-        $('input.global_filter').on( 'keyup click', function () {
-            filterGlobal();
-        } );
-     
-        $('input.column_filter').on( 'keyup click', function () {
-            filterColumn( $(this).parents('tr').attr('data-column') );
-        } );
-    } );
-
-    function filterColumn () {
-    $('#addColumn').DataTable().column(5).search(
-        $('.select-picker1').val()).draw();    
-    }
-    function filterColumn1 () {
-        $('#addColumn').DataTable().column(6).search(
-            $('.select-picker2').val()).draw();    
-    }
-    function filterColumn2 () {
-        $('#addColumn').DataTable().column(8).search(
-            $('.select-picker3').val()).draw(); 
-     }
-     function filterColumn3 () {
-        $('#addColumn').DataTable().column(9).search(
-            $('.select-picker4').val()).draw(); 
-     }
-     function filterColumn4 () {
-        $('#addColumn').DataTable().column(7).search(
-            $('.select-picker5').val()).draw(); 
-     }
-      function filterColumn5 () {
-        $('#addColumn').DataTable().column(10).search(
-            $('.select-picker6').val()).draw(); 
-     }
-     $('#nama_pengirim').on( 'keyup', function () {
-         table.column(3).search( this.value ).draw();
-      });  
-     $('#nama_penerima').on( 'keyup', function () {
-        table.column(4).search( this.value ).draw();
-      });  
 
       function cari(){
       var min = $('#min').val();
       var max = $('#max').val();
-     
-      if (min == '') {
+      var nomor = $('#do_nomor').val();
+      if (nomor == '') {
+        if (min == '') {
                 toastr.warning("Pilih Tanggal Terlebih Dahulu", "Peringatan!")
                 return false;
        }
-      if (max == '') {
-              toastr.warning("Pilih Tanggal Terlebih Dahulu", "Peringatan!")
-              return false;
-      }
-              $.ajax({
-                  data: $('#cari_data').serialize(),
-                  url: baseUrl + '/ajaxcarideliveryorder_total/ajaxcarideliveryorder_total',
-                  type: "get",
-                  success: function (response, textStatus, request) {
-                    $('#replace').html(response);
-                    
-                  },
-                  error: function (ajaxContext) {
-                    toastr.error('Export error: '+ajaxContext.responseText);
-                  },
-                  
-              });
+        if (max == '') {
+                toastr.warning("Pilih Tanggal Terlebih Dahulu", "Peringatan!")
+                return false;
         }
+      }else{
+        
+      }
+      
+        $.ajax({
+            data: $('#cari_data').serialize(),
+            url: ('{{ route('ajax_replace_index_deliveryorder_paket') }}'),
+            type: "get",
+            success: function (response, textStatus, request) {
+              $('#replace').html(response);
+              
+            },
+            error: function (ajaxContext) {
+              toastr.error('Export error: '+ajaxContext.responseText);
+            },
+            
+        });
+      }
     
 
 

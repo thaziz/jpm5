@@ -256,9 +256,12 @@
                                         </tr>
                                         <tr>
                                           <td>DPP</td>
-                                          <td colspan="3"><input type="text" style="text-align: right" name="dpp_akhir" onkeyup="hitung_jumlah()" value="0,00"  class="dpp_akhir form-control"></td>
+                                          <td colspan="3">
+                                            <input type="text" style="text-align: right"  onkeyup="hitung_jumlah()" class="dpp_akhir_text form-control">
+                                            <input type="hidden" style="text-align: right" name="dpp_akhir" class="dpp_akhir form-control">
+                                          </td>
                                         </tr>
-                                        <tr class="ppn_td" hidden="">
+                                        <tr class="ppn_td" >
                                             <td >Jenis PPN</td>
                                             <td >
                                                 <select class="form-control jenis_ppn_akhir" onchange="hitung_pajak_ppn()"  >
@@ -274,7 +277,7 @@
                                                 <input onkeyup="hitung_jumlah()" style="text-align: right" type="text" name="ppn" class="form-control ppn_akhir" value="0,00"  tabindex="-1" >
                                             </td>
                                         </tr>
-                                        <tr hidden="" class="pph_td ">
+                                        <tr>
                                             <td>Pajak lain-lain</td>
                                             <td >
                                                 <select onchange="hitung_pajak_lain()"  class="pajak_lain_akhir form-control" name="kode_pajak_lain" id="pajak_lain_akhir" >
@@ -307,10 +310,10 @@
                                               <button onclick="append()" class="btn btn-default pull-right">
                                                 <i class="fa fa-plus"> Append</i>
                                               </button>
-
+{{-- 
                                               <button style="margin-right: 10px" onclick="cancel()" class="btn btn-default pull-right ">
                                                 <i class="fa fa-close"> Cancel</i>
-                                              </button>
+                                              </button> --}}
                                             </div>
                                           </td>
                                         </tr>
@@ -379,7 +382,7 @@
                   </div>
 
                   {{-- MODAL --}}
-                  <div id="riwayat" class="modal fade" role="dialog">
+                    <div id="riwayat" class="modal fade" role="dialog">
                       <div class="modal-dialog">
                         <div class="modal-content">
                           <div class="modal-header">
@@ -395,7 +398,7 @@
 
                       </div>
                     </div>
-                      </div>
+                    </div>
                   </div>
                 </div><!-- /.box-footer -->
               </div><!-- /.box -->
@@ -473,7 +476,7 @@
     })
     
 
-    $('.dpp_akhir').maskMoney({precision:2,thousands:'.',allowZero:true,decimal:','});
+    $('.dpp_akhir_text').maskMoney({precision:2,thousands:'.',allowZero:true,decimal:','});
     $('.ppn_akhir ').maskMoney({precision:2,thousands:'.',allowZero:true,decimal:','});
     $('.pph_akhir').maskMoney({precision:2,thousands:'.',allowZero:true,decimal:','});
 
@@ -552,13 +555,17 @@
       
     }
 
+    $('.dpp_akhir_text').keyup(function(){
+      var dpp_akhir_t   = $('.dpp_akhir_text').val();
+      $('.dpp_akhir').val(dpp_akhir_t);
+    })
+
     function hitung_jumlah() {
+      var dpp_akhir     = $('.dpp_akhir_text').val();
       var sisa_terbayar = $('.sisa_terbayar').val();
-      var dpp_akhir     = $('.dpp_akhir').val();
       var ppn_akhir     = $('.ppn_akhir').val();
       var pph_akhir     = $('.pph_akhir').val();
       var jenis_cd      = $('.jenis_cd').val();
-
       sisa_terbayar     = sisa_terbayar.replace(/[^0-9\-]+/g,"");
       dpp_akhir         = dpp_akhir.replace(/[^0-9\-]+/g,"");
       ppn_akhir         = ppn_akhir.replace(/[^0-9\-]+/g,"");
@@ -592,8 +599,6 @@
        if (hasil_netto < 0) {
         hasil_netto = 0;
         }
-      console.log(netto_total);
-      console.log(cb_jenis_ppn);
 
         if (cb_jenis_ppn == 1) {
 
@@ -609,7 +614,6 @@
             ppn = hasil_netto * 1.01 ;
             ppn_netto = ppn - hasil_netto;
             $('.ppn_akhir').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
-            
 
         }else if (cb_jenis_ppn == 3){
 
@@ -617,7 +621,8 @@
             ppn = 100/101 * hasil_netto ;
             ppn_netto = hasil_netto - ppn;
             $('.ppn_akhir').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
-           
+            $('.dpp_akhir_text').val(accounting.formatMoney(hasil_netto - ppn_netto,"",2,'.',','));
+           console.log($('.dpp_akhir_text').val());
 
         }else if (cb_jenis_ppn == 5){
 
@@ -625,7 +630,7 @@
             ppn = 100/110 * hasil_netto ;
             ppn_netto = hasil_netto - ppn ;
             $('.ppn_akhir').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
-           
+            $('.dpp_akhir_text').val(accounting.formatMoney(hasil_netto - ppn_netto,"",2,'.',','));
 
         }else if (cb_jenis_ppn == 4){
             var ppn = 0;
@@ -651,8 +656,8 @@
        if (pajak_lain == 0) {
 
         $('.pph_akhir').val(accounting.formatMoney(pajak_total,"",2,'.',','));
-
-        return 1;
+        hitung_jumlah();
+        return false;
        }
 
 
@@ -751,6 +756,8 @@
         return 1;
       }
      var nomor_invoice    = $('.nomor_invoice').val(); 
+     nomor_invoice_fix    = nomor_invoice.replace(/\//g, '');
+     var dpp_text         = $('.dpp_akhir_text').val(); 
      var dpp              = $('.dpp_akhir').val(); 
      var ppn_akhir        = $('.ppn_akhir').val(); 
      var pph_akhir        = $('.pph_akhir').val(); 
@@ -766,9 +773,10 @@
        table_detail.row.add([
 
           '<a onclick="histori(this)" class="d_nomor_text">'+nomor_invoice+'</a>'+
-          '<input type="hidden" class="d_nomor d_nomor_'+nomor_invoice+'" value="'+nomor_invoice+'" name="d_nomor[]">',
+          '<input type="hidden" class="d_nomor d_nomor_'+nomor_invoice_fix+'" value="'+nomor_invoice+'" name="d_nomor[]">',
 
-          '<p class="d_dpp_text">'+dpp+'</p>'+'<input type="hidden" class="d_dpp" value="'+dpp+'" name="d_dpp[]">',
+          '<p class="d_dpp_text">'+dpp_text+'</p>'+'<input type="hidden" class="d_dpp" value="'+dpp_text+'" name="d_dpp[]">'+
+          '<input type="hidden" class="d_dpp_old" value="'+dpp+'" name="d_dpp_old[]">',
 
           '<p class="d_ppn_text">'+ppn_akhir+'</p>'+
           '<input value="'+ppn_akhir+'"  type="hidden" class="d_ppn" name="d_ppn[]">'+
@@ -792,22 +800,23 @@
         $('.customer_td').addClass('disabled');
 
       }else{
-         var a            = $('.d_nomor_'+nomor_invoice);
+         var a            = $('.d_nomor_'+nomor_invoice_fix);
          var par          = $(a).parents('tr');
-         $(par).find('.d_dpp').val(dpp);
+         $(par).find('.d_dpp_old').val(dpp);
+         $(par).find('.d_dpp').val(dpp_text);
          $(par).find('.d_ppn').val(ppn_akhir);
          $(par).find('.d_jenis_ppn').val(jenis_ppn_akhir);
          $(par).find('.d_pajak_lain').val(pajak_lain_akhir);
          $(par).find('.d_pph').val(pph_akhir);
          $(par).find('.d_netto').val(netto_akhir);
-        console.log($(par).find('.d_ppn').val());
-         $(par).find('.d_dpp_text').text(dpp);
+         $(par).find('.d_dpp_text').text(dpp_text);
          $(par).find('.d_ppn_text').text(ppn_akhir);
          $(par).find('.d_pph_text').text(pph_akhir);
          $(par).find('.d_netto_text').text(netto_akhir);
 
       }
-
+      $('.jenis_ppn_akhir').val(4);
+      $('.pajak_lain_akhir').val(0);
       $('.riwayat input').val('');
       $('.riwayat ').find('.ppn_akhir').val('0,00');
       $('.riwayat ').find('.pph_akhir').val('0,00');
@@ -832,7 +841,8 @@
    function edit(a) {
      var par          = $(a).parents('tr');
      var d_nomor      = $(par).find('.d_nomor').val();
-     var d_dpp        = $(par).find('.d_dpp').val();
+     var d_dpp        = $(par).find('.d_dpp_old').val();
+     var d_dpp_text   = $(par).find('.d_dpp').val();
      var d_ppn        = $(par).find('.d_ppn').val();
      var d_jenis_ppn  = $(par).find('.d_jenis_ppn').val();
      var d_pajak_lain = $(par).find('.d_pajak_lain').val();
@@ -840,6 +850,7 @@
      var d_netto      = $(par).find('.d_netto').val();
 
      $('.dpp_akhir').val(d_dpp); 
+     $('.dpp_akhir_text').val(d_dpp_text); 
      $('.ppn_akhir').val(d_ppn); 
      $('.pph_akhir').val(d_pph); 
      $('.netto_akhir').val(d_netto); 
@@ -918,7 +929,7 @@
                   timer: 900,
                   showConfirmButton: true
                   },function(){
-                      // window.location.href='../nota_debet_kredit';
+                      window.location.href='../nota_debet_kredit';
               });
             }
                 

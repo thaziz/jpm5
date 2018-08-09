@@ -1454,5 +1454,127 @@ class do_paketController extends Controller
           return response()->json($data);
         }
     }
+  // ajax_index_deliveryorder_paket
+    public function ajax_index_deliveryorder_paket(Request $request)
+    {
+      // dd($request->all());
+    //asal
+    if ($request->asal != '') {
+      $asal_fil = (int)$request->asal;
+      $asal = ' AND d.id_kota_asal = '.$asal_fil.'';
+    }else{
+      $asal = '';
+    }
+    //tujuan
+    if ($request->tujuan != '') {
+      $tujuan = " AND d.id_kota_tujuan = '".(int)$request->tujuan."' ";
+    }else{
+      $tujuan = '';
+    }
+    //cabang
+    if ($request->cabang != '') {
+      $cabang = " AND d.kode_cabang = '".$request->cabang."' ";
+    }else{
+      $cabang ='';
+    }
+    //tipe
+    if ($request->tipe != '') {
+      $tipe = " AND d.type_kiriman = '".$request->tipe."' ";
+    }else{
+      $tipe ='';
+    }
+    //status
+    if ($request->status != '' || $request->status != null) {
+      $status = " AND d.status = '".$request->status."' ";
+    }else{
+      $status = '';
+    }
+    //pendapatan
+    if ($request->pendapatan != '' || $request->pendapatan != null) {
+      $pendapatan = " AND d.pendapatan = '".$request->pendapatan."' ";
+    }else{
+      $pendapatan = '';
+    }
+    //jenis
+    if ($request->jenis != '' || $request->jenis != null) {
+      $jenis = " AND d.jenis_pengiriman = '".$request->jenis."' ";
+    }else{
+      $jenis = '';
+    }
+    //customer
+    if ($request->customer != '' || $request->customer != null) {
+      $customer = " AND d.kode_customer = '".$request->customer."' ";
+    }else{
+      $customer = '';
+    }
+    
+    //jenis
 
+    
+    //customer
+    if ($request->max != '' || $request->max != null) {
+      $max = " AND d.tanggal <= '".$request->max."' ";
+    }else{
+      $max = '';
+    }
+    
+    if ($request->nomor != '' || $request->nomor != null) {
+      $nomor = "d.nomor = '".$request->nomor."' ";
+      if ($request->min != '' || $request->min != null) {
+      $min = "AND d.tanggal >= '".$request->min."' ";
+      }else{
+        $min = '';
+      }
+    }else{
+      $nomor = '';
+      if ($request->min != '' || $request->min != null) {
+      $min = "d.tanggal >= '".$request->min."' ";
+      }else{
+        $min = '';
+      }
+    }
+    // return $request->nomor;
+    // dd($request->all());
+    if ($nomor == '') {
+      // return 'a';
+        $data  = DB::select("SELECT d.kode_customer,d.pendapatan,d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total 
+        FROM delivery_order as d 
+        LEFT JOIN kota k ON k.id=d.id_kota_asal
+              LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+              join customer c on d.kode_customer = c.kode 
+              join cabang cc on d.kode_cabang = cc.kode 
+
+        WHERE ".$nomor." ".$min." ".$max." ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." ");
+    }else{
+        $data  = DB::select("SELECT d.kode_customer,d.pendapatan,d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total 
+        FROM delivery_order as d 
+        LEFT JOIN kota k ON k.id=d.id_kota_asal
+              LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+              join customer c on d.kode_customer = c.kode 
+              join cabang cc on d.kode_cabang = cc.kode 
+
+        WHERE ".$nomor." ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." ");
+    }
+    
+        $data = collect($data);
+
+        // return $data;
+    return Datatables::of($data)->make(true);
+    }
+    public function ajax_replace_index_deliveryorder_paket(Request $request)
+    { 
+    $min = $request->min;
+    $max = $request->max;
+    $asal =$request->asal;
+    $tujuan=$request->tujuan;
+    $cabang=$request->cabang;
+    $tipe=$request->tipe;
+    $status=$request->status;
+    $jenis=$request->jenis;
+    $pendapatan=$request->pendapatan;
+    $customer=$request->customer;
+    $nomor=$request->do_nomor;
+
+        return view('sales.do_new.ajax_index',compact('min','max','asal','tujuan','cabang','tipe','status','pendapatan','jenis','customer','nomor'));
+    }
 }

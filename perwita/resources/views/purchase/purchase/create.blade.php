@@ -566,14 +566,14 @@
 
                         '<td> ' +response.codt[i][j].codt_qtyapproved+' </td>' + //approval
                        
-                        '<td> <input type="number" class="form-control qtykirim" id="qtykirim'+nosup+'" name="qtykirim[]" data-id='+nosup+' required value=' +response.codt[i][j].codt_qtyapproved+' > <input type="hidden" class="qtyapproved'+nosup+'" value=' +response.codt[i][j].codt_qtyapproved+' data-id='+nosup+' name="qtyapproval[]" > <input type="hidden" class="status'+nosup+'" name="status[]"> <input type="hidden" value='+response.codt[i][j].spp_tipe+' name="spptipe"> </td>' + //jumlahdikirim
+                        '<td> <input type="number" class="form-control qtykirim" id="qtykirim'+nosup+'" name="qtykirim[]" data-id='+nosup+' required value=' +response.codt[i][j].codt_qtyapproved+' readonly> <input type="hidden" class="qtyapproved'+nosup+'" value=' +response.codt[i][j].codt_qtyapproved+' data-id='+nosup+' name="qtyapproval[]" > <input type="hidden" class="status'+nosup+'" name="status[]"> <input type="hidden" value='+response.codt[i][j].spp_tipe+' name="spptipe"> </td>' + //jumlahdikirim
 
-                        '<td > <input type="text" class="form-control harga harga'+nosup+'" value='+ addCommas(response.codt[i][j].codt_harga)+' data-id='+nosup+' name="harga[]"></td>' + //harga
+                        '<td > <input type="text" class="form-control harga harga'+nosup+'" value='+ addCommas(response.codt[i][j].codt_harga)+' data-id='+nosup+' name="harga[]" readonly></td>' + //harga
 
-                        '<td> <input type="text" class="form-control totalharga2 totalharga2'+nosup+'" readonly="" name="totalharga[]" data-id='+nosup+'>  </td>';
+                        '<td> <input type="text" class="form-control totalharga2 totalharga2'+nosup+'" readonly="" name="totalharga[]" data-id='+nosup+' readonly>  </td>';
 
                         if(response.spp[0][0].spp_tipe != 'J'){
-                          rowTable += '<td id="tdgudang"> <select class="form-control gudang" name="lokasikirim[]" class="tdgudang">';
+                          rowTable += '<td id="tdgudang"> <select class="form-control gudang" name="lokasikirim[]" class="tdgudang" readonly>';
                             for(key = 0; key < response.gudang.length; key++){
                               rowTable += '<option value='+response.gudang[key].mg_id+'>'+response.gudang[key].mg_namagudang+'</option></select></td>'
                             }
