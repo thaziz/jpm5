@@ -286,7 +286,7 @@ class form_tanda_terima_pembelian_controller extends Controller
     public function datatable()
     {
     	if (Auth::user()->punyaAkses('Form Tanda Terima Pembelian','all')) {
-			$data = DB::table('form_tt')
+			return$data = DB::table('form_tt')
 				  ->orderBy('tt_idform','ASC')
 				  ->get();
 		}else{
@@ -297,7 +297,7 @@ class form_tanda_terima_pembelian_controller extends Controller
 				  ->orderBy('tt_idform','ASC')
 				  ->get();
 		}
-		dd($data);
+		// dd($data);
         $data = collect($data);
         // return $data;
         return Datatables::of($data)
