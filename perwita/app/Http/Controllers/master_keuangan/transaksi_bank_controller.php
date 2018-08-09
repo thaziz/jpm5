@@ -82,7 +82,7 @@ class transaksi_bank_controller extends Controller
     }
 
     public function save_data(Request $request){
-       return json_encode($request->all());
+       // return json_encode($request->all());
 
        $response = [
             'status'    => 'berhasil',
@@ -139,7 +139,7 @@ class transaksi_bank_controller extends Controller
         $jurnal->jr_date = date('Y-m-d');
         $jurnal->jr_detail = $request->jr_detail;
         $jurnal->jr_ref = $ref;
-        $jurnal->jr_note = $request->jr_note;
+        $jurnal->jr_note = $request->jr_detail;
         $jurnal->jr_no = $jr_no;
         $jurnal->jr_on_proses = 2;
 
