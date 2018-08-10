@@ -386,7 +386,9 @@ Route::get('biaya_penerus/append_table', 'KasController@append_table');
 Route::get('buktikaskeluar/datatable_bk', 'KasController@datatable_bk')->name('datatable_bk');
 
 // BIAYA PENERUS LOADING/UNLOADING
-Route::get('biaya_penerus_loading/index', 'loadingController@index_loading');
+Route::get('biaya_penerus_loading/index', 'loadingController@index');
+Route::get('biaya_penerus_loading/append_table', 'loadingController@append_table');
+Route::get('biaya_penerus_loading/datatable_bk', 'loadingController@datatable_bk');
 Route::get('biaya_penerus_loading/create', 'loadingController@create_loading');
 Route::get('biaya_penerus_loading/edit', 'loadingController@edit_loading')->name('editkasloading');
 Route::post('biaya_penerus_loading/cariresi', 'loadingController@cariresi');

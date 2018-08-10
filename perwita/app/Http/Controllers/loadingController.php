@@ -12,33 +12,94 @@ use App\biaya_penerus_kas;
 use App\biaya_penerus_kas_detail;
 use App\d_jurnal;
 use App\d_jurnal_dt;
+use Yajra\Datatables\Datatables;
+
 class loadingController extends Controller
 {	
-	public function FunctionName($value='')
+	public function index(){
+		// aaddcc
+		$cabang = DB::table('cabang')
+                  ->get();
+		
+		return view('purchase/kas/index',compact('data','cabang'));
+	}
+	public function append_table(request $req)
 	{
-		# code...
+		$cab = $req->cabang;
+		return view('purchase.kas.table_kas',compact('cab'));
 	}
 
-    public function index_loading()
-    {	
-    	$cabang = Auth::user()->kode_cabang;
-    	if (Auth::user()->punyaAkses('Biaya Penerus Loading','all')) {
-    		$data = DB::table('biaya_penerus_kas')
-				->join('cabang','kode','=','bpk_comp')
-    				  ->where('bpk_jenis_biaya','LOADING')
-    				  ->get();
-    	}else{
-    		$data = DB::table('biaya_penerus_kas')
-				->join('cabang','kode','=','bpk_comp')
-    				  ->where('bpk_jenis_biaya','loading')
-    				  ->where('bpk_comp',$cabang)
-    				  ->get();
-    	}
+	public function datatable_bk(request $req)
+	{
 
-    	return view('purchase.kas.index_loading',compact('data'));
+		$nama_cabang = DB::table("cabang")
+						 ->where('kode',$req->cabang)
+						 ->first();
+
+		if ($nama_cabang != null) {
+			$cabang = 'and bpk_comp = '."'$req->cabang'";
+		}else{
+			$cabang = '';
+		}
 
 
-    }
+		if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
+			$sql = "SELECT * FROM biaya_penerus_kas  join cabang on kode = bpk_comp where bpk_nota != '0' $cabang";
+			$data = DB::select($sql);
+		}else{
+			$cabang = Auth::user()->kode_cabang;
+			$data = DB::table('biaya_penerus_kas')
+				  ->join('cabang','kode','=','bpk_comp')
+				  ->where('kode',$cabang)
+				  ->orderBy('bpk_id','ASC')
+				  ->get();
+		}
+
+        $data = collect($data);
+        // return $data;
+        return Datatables::of($data)
+                        ->addColumn('aksi', function ($data) {
+                            $a = '';
+                            if($data->bpk_status == 'Released' or Auth::user()->punyaAkses('Biaya Penerus Kas','ubah')){
+                                if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
+							$a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' => $data->bpk_id] ).'" title="edit"> Edit</a><br>';
+                                }
+                            }else{
+                              $a = '';
+                            }
+
+                            $c = '';
+                            if($data->bpk_status == 'Released' or Auth::user()->punyaAkses('Biaya Penerus Kas','hapus')){
+                                if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
+                                  $c = '<a class="fa fa-trash asw" align="center" onclick="hapus(\''.$data->bpk_id.'\')" title="hapus"> Hapus</a>';
+                                }
+                            }else{
+                              $c = '';
+                            }
+                            return $a . $c  ;
+                                   
+                        })
+                    
+                        ->addColumn('cabang', function ($data) {
+                          $kota = DB::table('cabang')
+                                    ->get();
+
+                          for ($i=0; $i < count($kota); $i++) { 
+                            if ($data->bpk_comp == $kota[$i]->kode) {
+                                return $kota[$i]->nama;
+                            }
+                          }
+                        })
+                        ->addColumn('tagihan', function ($data) {
+                          return number_format(round($data->bpk_tarif_penerus,0),2,',','.'  ); 
+                        })
+                        ->addColumn('print', function ($data) {
+                           return $a = ' <a class="fa asw fa-print" align="center"  title="edit" href="'.route('detailkas', ['id' => $data->bpk_id]).'"> detail</a><br>
+										<a class="fa asw fa-print" align="center"  title="print" href="'.route('buktikas', ['id' => $data->bpk_id]).'"> Bukti Kas</a>';
+                        })
+                        ->addIndexColumn()
+                        ->make(true);
+	}
 
     public function create_loading()
     {
