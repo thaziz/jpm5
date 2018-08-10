@@ -647,7 +647,7 @@ function(){
           $('.asd').attr('hidden',false);
           $('.process').addClass('disabled');
           $('.cari').addClass('disabled');
-        }else if (response.status == 3) {
+        }else if (response.status == '3') {
           swal({
               title: "Peringatan!",
               type: 'warning',
