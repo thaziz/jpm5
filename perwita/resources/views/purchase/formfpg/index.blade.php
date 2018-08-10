@@ -79,9 +79,9 @@
                         <td> {{$fpg->jenisbayar}} </td>
                        
                         <td> {{$fpg->fpg_keterangan}} </td>
-                        <td> {{$fpg->fpg_totalbayar}} </td>
+                        <td> {{number_format($fpg->fpg_totalbayar, 2)}} </td>
                         <td> - </td>
-                        <td> {{$fpg->fpg_cekbg}} </td>
+                        <td> {{number_format($fpg->fpg_cekbg , 2)}} </td>
                         
                         <td>
                                 @if(Auth::user()->punyaAkses('Form Permintaan Giro','ubah'))
