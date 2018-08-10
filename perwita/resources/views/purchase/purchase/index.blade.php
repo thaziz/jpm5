@@ -109,20 +109,18 @@
                           <td> 
                         
                             @if(Auth::user()->punyaAkses('Purchase Order','hapus'))
-                            @if($po->po_setujufinance == '')
+                          
                               <a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData({{$po->po_id}})">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
                               </a>
-                            @endif
+                         
                             @endif
 
                             @if(Auth::user()->punyaAkses('Purchase Order','print'))
                             @if($po->po_setujufinance != '')
                               <span class='label label-warning '> {{$po->po_setujufinance}}</span>
                             @endif
-                            @if($po->po_setujufinance == 'SETUJU')
-                            <a href="/jpm/purchaseorder/print/{{$po->po_id}}" class="btn btn-info"><i class="fa fa-print" aria-hidden="true"> </i></a>
-                            @endif
+                          
                            @endif
                           
                              </td>
@@ -358,6 +356,7 @@
 
    
    function hapusData(id){
+    alert(id);
     swal({
     title: "Apakah anda yakin?",
     text: "Hapus Data!",

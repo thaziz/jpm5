@@ -78,6 +78,10 @@
                               </tr>
                             @endif
                           @endfor
+                          <tr>
+                            <td colspan="5">Grand Total</td>
+                            <td class="grand grand_{{ $in }}"></td>
+                          </tr>
                      @endforeach
                     <tr>
                           <th colspan="3" align="right">total</th>

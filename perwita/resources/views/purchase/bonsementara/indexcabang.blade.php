@@ -95,15 +95,20 @@
 
                              <td> @if(Auth::user()->PunyaAkses('Bon Sementara Kabang','aktif'))
                                     @if($bonsem->bp_pelunasan == '0.00') 
-                                  <button class="btn btn-sm btn-danger" onclick="uangterima({{$bonsem->bp_id}})" data-toggle="modal" data-target="#modaluangterima"> <i class="fa fa-money"> </i> Terima Uang ? </button> </td>
-                                    @endif
+                                    <button class="btn btn-sm btn-danger" onclick="uangterima({{$bonsem->bp_id}})" data-toggle="modal" data-target="#modaluangterima"> <i class="fa fa-money"> </i> Terima Uang ? </button> </td>
+                                      @endif
                                   @endif
                              <td>
                                @if(Auth::user()->PunyaAkses('Bon Sementara Cabang','aktif'))
                                 @if($bonsem->bp_setujukacab != 'SETUJU')
                                 <button class="btn btn-warning btn-sm" onclick="editform({{$bonsem->bp_id}})" data-toggle="modal" data-target="#myModaledit"> <i class="fa fa-pencil"> </i>  </button>
                                 <button class="btn btn-danger btn-sm" onclick="hapusData({{$bonsem->bp_id}})"> <i class="fa fa-trash"> </i> </button>
+                                @else
+                                  @if($bonsem->status_pusat == 'UANG DI TERIMA')
+                                  <a onclick="lihatjurnal('{{$bonsem->bp_nota or null}}','BON SEMENTARA')" class="btn-xs btn-primary" aria-hidden="true"> Lihat Jurnal</a>
+                                  @endif
                                 @endif
+
                                 @endif
                               </td>
 
@@ -345,7 +350,32 @@
 
 
 <div class="row" style="padding-bottom: 50px;"></div>
-
+<div id="jurnal" class="modal" >
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h5 class="modal-title">Laporan Jurnal</h5>
+                        <h4 class="modal-title">No Faktur:  <u>{{$data['bonsem'][0]->bp_nota or null }}</u> </h4>
+                        
+                      </div>
+                      <div class="modal-body" style="padding: 15px 20px 15px 20px">   
+                          <table id="table_jurnal" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th> ID Akun </th>
+                                            <th> Akun</th>
+                                            <th> Debit</th>
+                                            <th> Kredit</th>
+                                            <th style="width:100px"> Uraian / Detail </th>                                         
+                                        </tr>
+                                    </thead>
+                                    
+                                </table>                            
+                          </div>                          
+                    </div>
+                  </div>
+                </div>
 
 @endsection
 
@@ -376,6 +406,62 @@
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
+
+function lihatjurnal($ref,$note){
+          nota = $ref;
+          detail = $note;
+
+          $.ajax({
+          url:baseUrl +'/bonsementaracabang/jurnalumum',
+          type:'post',
+          data:{nota,detail},
+          dataType : "json",
+          success:function(response){
+                console.log(response);
+                $('#jurnal').modal('show');
+                hasilpph = $('.hasilpph_po').val();
+                hasilppn = $('.hasilppn_po').val();
+
+                $('.loading').css('display', 'none');
+                $('.listjurnal').empty();
+                $totalDebit=0;
+                $totalKredit=0;
+                 
+                        for(key = 0; key < response.countjurnal; key++) {
+                           
+                          var rowtampil2 = "<tr class='listjurnal'>" +
+                          "<td> "+response.jurnal[key].id_akun+"</td>" +
+                          "<td> "+response.jurnal[key].nama_akun+"</td>";
+
+                          
+                            if(response.jurnal[key].dk == 'D'){
+                              $totalDebit = parseFloat($totalDebit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                              rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td>";
+                            }
+                            else {
+                              $totalKredit = parseFloat($totalKredit) + parseFloat(response.jurnal[key].jrdt_value);
+                              rowtampil2 += "<td> </td><td>"+accounting.formatMoney(response.jurnal[key].jrdt_value, "", 2, ",",'.')+"</td>";
+                            }
+                         
+                            rowtampil2 += "<td>"+response.jurnal[key].jrdt_detail+"</td>";
+                            $('#table_jurnal').append(rowtampil2);
+                        }
+                     var rowtampil1 = "</tbody>" +
+                      "<tfoot>" +
+                          "<tr class='listjurnal'> " +
+                                  "<th colspan='2'>Total</th>" +                        
+                                  "<th>"+accounting.formatMoney($totalDebit, "", 2, ",",'.')+"</th>" +
+                                  "<th>"+accounting.formatMoney($totalKredit,"",2,',','.')+"</th>" +
+                                  "<th>&nbsp</th>" +
+                          "<tr>" +
+                      "</tfoot>";
+                                     
+                   
+                      $('#table_jurnal').append(rowtampil1);
+              }
+        });
+   }
 
  $('.date').datepicker({
         autoclose: true,

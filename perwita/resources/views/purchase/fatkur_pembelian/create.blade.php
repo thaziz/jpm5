@@ -234,7 +234,7 @@
                                   </tr>
 
                                   <tr>
-                                    <td> Jatuh Tempo </td>
+                                    <td class="disabled"> Jatuh Tempo </td>
                                     <td>  <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo"  readonly="" required="" novalidate>
                                     </div></td>
@@ -914,7 +914,7 @@
                                           </tr>
 
                                           <tr>
-                                            <td> Jatuh Tempo </td>
+                                            <td class="disabled"> Jatuh Tempo </td>
                                             <td>  <div class="input-group date">
                                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_po"  readonly=""  novalidate name="jatuhtempo_po">
                                             </div></td>
@@ -990,12 +990,20 @@
 
                                             <tr>
                                               <td> Jenis PPN </td>
-                                              <td> <div class="row"> <div class="col-md-5">  <select class="form-control jenisppn_po"> </div><button type="button" class="btn btn-primary btn-sm" id="createmodal_pajakpo" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button> </div> </td>
+                                              <td> <div class="row"> <div class="col-md-5">
+                                                <select class="form-control jenisppn_po" name="jenisppn_po">
+                                                
+                                                <option value="T"> TANPA </option>
+                                                <option value="I"> INCLUDE </option>
+                                                <option value="E"> EXCLUDE </option>
+                                                </select>
+                                                </div>
+                                                <button type="button" class="btn btn-primary btn-sm" id="createmodal_pajakpo" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button> </div> </td>
                                             </tr>
                                             
                                             <tr>
                                               <td> PPn % </td>
-                                              <td> <div class="row">  <div class="col-md-3"> <input type="text" class="form-control inputppn_po" name="inputppn_po"> </div>  <div class="col-md-9"> <input type="text" class="form-control hasilppn_po"   style="text-align: right" name="hasilppn_po"> </div> </div>  </td>
+                                              <td> <div class="row">  <div class="col-md-3"> <input type="text" class="form-control inputppn_po" value="10" name="inputppn_po"  readonly=""> </div>  <div class="col-md-9"> <input type="text" class="form-control hasilppn_po"   style="text-align: right" name="hasilppn_po"> </div> </div>  </td>
                                             </tr>
 
                                             <tr>
@@ -1499,7 +1507,7 @@
 <script type="text/javascript">
   $('body').removeClass('fixed-sidebar');
   $("body").toggleClass("mini-navbar");
-    
+      
 
     $('.jenisppn_po').change(function(){
         jenisppn = $('.jenisppn_po').val();
@@ -5997,7 +6005,7 @@
 
                        inputppn = response.po[0][0].po_ppn;
                        
-                       inputppn_po = $('.inputppn_po').val(response.po[0][0].po_ppn);
+                       inputppn_po = $('.inputppn_po').val();
                
                        $('.jenisppn_po').val(response.po[0][0].po_jenisppn);
 

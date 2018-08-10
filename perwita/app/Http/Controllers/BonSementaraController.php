@@ -165,11 +165,23 @@ class BonSementaraController extends Controller
 		});		
 	}
 
+	public function jurnalumum (Request $request){
+		$id = $request->nota;
+		$detail = $request->detail;
+		$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk, jrdt_detail
+                        FROM d_akun a join d_jurnal_dt jd
+                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
+                        (select j.jr_id from d_jurnal j where jr_ref='$id' and jr_detail = '$detail')")); 
+		$data['countjurnal'] = count($data['jurnal']);
+ 		return json_encode($data);
+	}
+
 	public function terimauang(Request $request){
 			$idbonsem = $request->idbonsem;
 			$kodebank = $request->bankcabang;
 			$updatepb = bonsempengajuan::find($idbonsem);
 			$updatepb->bp_terima = 'DONE';
+			$updatepb->status_pusat = 'UANG DI TERIMA';
 			$updatepb->save();
 
 			$nominalkeu =  str_replace(',', '', $request->nominalkeu);
@@ -235,10 +247,7 @@ class BonSementaraController extends Controller
     			$jurnaldt->save();
     			$key++;
     		} 
-
-
 			return json_encode('sukses');
-
 	}
 
 	public function setujukacab(Request $request){
