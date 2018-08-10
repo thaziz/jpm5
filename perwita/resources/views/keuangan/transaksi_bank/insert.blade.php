@@ -512,7 +512,9 @@
       $("#coa_1 input").val(0);
 
       $(".total_debet").val(0); 
-      $(".total_kredit").val(0)
+      $(".total_kredit").val(0);
+
+      $('.akunName').val($('#akun_transaksi').val());
 
       // $('#kode_cabang').trigger("chosen:updated");
       // $('#group_neraca').trigger("chosen:updated");
