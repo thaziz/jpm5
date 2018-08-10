@@ -1054,7 +1054,7 @@ $('.modal_tt_subcon').click(function(){
       data: {cabang,agen_vendor},
       success:function(data){
         $('.div_tt').html(data);
-    $('#modal_tt_penerus').modal('show');
+    $('#modal_tt_subcon').modal('show');
       },error:function(){
         toastr.warning('Terjadi Kesalahan');
       }
@@ -1069,9 +1069,10 @@ function select_tt(a) {
 
     $('.tanda_terima').val(tt_form);
     $('.invoice_tt').val(tt_invoice);
+    $('.invoice_subcon').val(tt_invoice);
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
-  $('#modal_tt_penerus').modal('show');
+  $('#modal_tt_subcon').modal('show');
 }
 
 

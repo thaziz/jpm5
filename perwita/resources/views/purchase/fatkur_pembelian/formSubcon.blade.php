@@ -241,7 +241,7 @@
 		  </tr>
 		   <tr>
 		 	<td colspan="3">
-		 		<button class="btn btn-info modal_tt_subcon disabled pull-left" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+		 		<button class="btn btn-info modal_tt_subcon disabled pull-left" style="margin-right: 10px;" type="button" data-toggle="modal"  type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
 			    <button type="button" class="btn btn-primary pull-right append_subcon" onclick="cariSUB()"><i class="fa fa-plus">&nbsp;Append</i></button>
 			    <button type="button" style="margin-right: 20px" class="btn  pull-right" onclick="cancel_data()"><i class="fa fa-close">&nbsp;Clear</i></button>
 		 	</td>
@@ -817,7 +817,7 @@ $('.modal_tt_subcon').click(function(){
       data: {cabang,agen_vendor},
       success:function(data){
         $('.div_tt').html(data);
-		$('#modal_tt_penerus').modal('show');
+		$('#modal_tt_subcon').modal('show');
       },error:function(){
         toastr.warning('Terjadi Kesalahan');
       }
@@ -832,9 +832,11 @@ function select_tt(a) {
 
     $('.tanda_terima').val(tt_form);
     $('.invoice_tt').val(tt_invoice);
+    $('.invoice_subcon').val(tt_invoice);
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
-	$('#modal_tt_penerus').modal('show');
+    $('.save_subcon').removeClass('disabled');
+	$('#modal_tt_subcon').modal('show');
 }
 
 
