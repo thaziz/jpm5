@@ -746,7 +746,7 @@ class KasController extends Controller
 						 ->first();
 
 				if ($acc == null) {
-					return response()->json(['status'=>3,'data'=>'Terdapat Resi Yang Tidak Memiliki Akun Biaya']);
+					return response()->json(['status'=>'3','data'=>'Terdapat Resi Yang Tidak Memiliki Akun Biaya']);
 				}
 
 				$cari_id_pc = DB::table('patty_cash')
