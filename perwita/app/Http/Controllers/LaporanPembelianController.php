@@ -966,10 +966,20 @@ class LaporanPembelianController extends Controller
 		        $result_supplier[$v['supplier']] =& $v;
 		}
 
+		// return $array = array_values($result_supplier);
 
-		$array = array_values($result_supplier);		
-		
-		
+		// return 
+		if ($request->supplier == '') {
+			$array = array_values($result_supplier);
+		}else{
+			$re_supplier = DB::select("select fp_supplier , fp_jenisbayar from faktur_pembelian where fp_tgl BETWEEN '$tglawal' and '$tglakhir' and fp_jenisbayar = '6' or fp_jenisbayar = '7' or fp_jenisbayar = '9' and fp_supplier = '$request->supplier'");
+			$array = [];
+
+			$ar['supplier'] =  $re_supplier[0]->fp_supplier;
+			$ar['jenisbayar'] =  $re_supplier[0]->fp_jenisbayar;
+			array_push($array, $ar);
+		}
+		// return $array;
 	//	cari data supplier
 		$data['carisupp'] = array();
 		for($j = 0; $j < count($array); $j++){
@@ -996,6 +1006,7 @@ class LaporanPembelianController extends Controller
 		}
 
 		
+		return $carisupp;
 		$data['saldoawal'] = [];
 
 		//mencari semua supplier dgn id unique
@@ -1038,10 +1049,10 @@ class LaporanPembelianController extends Controller
 			$bbk = DB::select("select bbkd_supplier as supplier,  bbk_nota as nota, bbk_tgl as tgl, bbkd_nominal as nominal ,'K' as flag from bukti_bank_keluar_detail, bukti_bank_keluar where bbkd_idbbk = bbk_id and bbkd_akunhutang LIKE '2103%' and bbkd_supplier = '$idsup' and bbk_tgl BETWEEN '$tglawal' and '$tglakhir'");
 
 
-			$fp = DB::select("select  'D' as flag, fp_nofaktur as nota , fp_idsup as supplier, fp_tgl as tgl , fp_netto as nominal from faktur_pembelian where fp_jenisbayar = '$jenisbayar' and fp_supplier = '$idsup' and fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
+			$fp = DB::select("select  'D' as flag, fp_nofaktur as nota , fp_supplier as supplier, fp_tgl as tgl , fp_netto as nominal from faktur_pembelian where fp_jenisbayar = '$jenisbayar' and fp_supplier = '$idsup' and fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
 
 			
-			$um = DB::select("select 'K' as flag, fp_idsup as supplier, fp_nofaktur as nota, fp_tgl as tgl, fp_uangmuka as nominal from faktur_pembelian where fp_jenisbayar = '$jenisbayar' and fp_uangmuka != 0.00 and fp_supplier = '$idsup' and fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
+			$um = DB::select("select 'K' as flag, fp_supplier as supplier, fp_nofaktur as nota, fp_tgl as tgl, fp_uangmuka as nominal from faktur_pembelian where fp_jenisbayar = '$jenisbayar' and fp_uangmuka != 0.00 and fp_supplier = '$idsup' and fp_tgl BETWEEN '$tglawal' and '$tglakhir'");
 
 			$bkk = DB::select("select 'K' as flag , bkk_supplier as supplier, bkk_nota as nota, bkk_tgl as tgl, bkk_total as nominal from bukti_kas_keluar where bkk_jenisbayar = '$jenisbayar' and bkk_supplier = '$idsup' and bkk_tgl BETWEEN '$tglawal' and '$tglakhir'");
 
