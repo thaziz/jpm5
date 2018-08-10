@@ -408,12 +408,12 @@
 
                                                       <tr>
                                                         <th> Jumlah </th>
-                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount biayabg jumlahakunbg" style="text-align:right'"> </div> </td>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount biayabg jumlahakunbg" style="text-align:right'" readonly=""> </div> </td>
                                                       </tr>
 
                                                       <tr>
                                                         <th> Keterangan </th>
-                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  keteranganakunbg biayabg"> </div> </td>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  keteranganakunbg biayabg" readonly=""> </div> </td>
                                                       </tr>
                                                     </table>
                                                   </div>
@@ -1156,7 +1156,7 @@
                     $('.keteranganakunbiayafpg').val(response.fpg[0].fpg_keterangan);
                     $('.checkakunbg').val(response.fpg[0].fpgb_nocheckbg);
                     $('.idfpgbakunbg').val(response.fpg[0].fpgb_id);
-                    $('.jumlahakunbg').val(response.fpg[0].fpgb_nominal);
+                    $('.jumlahakunbg').val(addCommas(response.fpg[0].fpgb_nominal));
                     $('.keteranganakunbg').val(response.fpg[0].fpg_keterangan);
                   //  alert(response.fpg[0].fpgb_nocheckbg);
                 }
