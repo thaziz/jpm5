@@ -2024,7 +2024,7 @@
                             "<td>"+tgl+"</td>"+ // TGL
                             "<td>"+mbdt[i][0].mb_kode+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]'> </td>" + //BANK TUJUAN
                             "<td> <input type='text' class='form-control norekening' value='"+norekening+"'> </td>" + //NO REKENING TUJUAN
-                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]'> <input type='text' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'></td>" + //NAMA BANK TUJUAN
+                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]'> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'></td>" + //NAMA BANK TUJUAN
                             "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
                             "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
