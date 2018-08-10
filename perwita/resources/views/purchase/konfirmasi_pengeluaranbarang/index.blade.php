@@ -83,8 +83,8 @@
                       </tr>
                       @else
                       <td align="center"> 
-                          <a class="btn btn-success btn-sm" onclick="printing(this)" )}}/{{$val->pb_id}}><i class="fa fa-print" aria-hidden="true"></i> </a>
-                            <a onclick="lihatjurnal('{{$val->pb_nota}}','PENGELUARAN BARANG GUDANG')" class="btn-xs btn-primary" aria-hidden="true"> lihat jurnal </a>
+                          <a class="btn btn-success btn-sm" onclick="printing(this)" )}}/{{$val->pb_id}}><i class="fa fa-print" aria-hidden="true"></i> {{-- </a>
+                            <a onclick="lihatjurnal('{{$val->pb_nota}}','PENGELUARAN BARANG GUDANG')" class="btn-xs btn-primary" aria-hidden="true"> lihat jurnal </a> --}}
 
                       </td>
                       @endif
