@@ -1424,7 +1424,6 @@
                         }
                       }
                       
-          
 
                     $('#myModal5').modal('hide');
                       $('.check').attr('checked' , false);
@@ -1435,8 +1434,8 @@
                           $('.jatuhtempo').val(data.faktur[0][0].fp_jatuhtempo);
                           $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
-                          
-                           $('.sisatrbyr').val(addCommas(data.faktur[0][0].fp_sisapelunasan));
+                            
+                          $('.sisatrbyr').val(addCommas(data.faktur[0][0].fp_sisapelunasan));
                           $('.sisafaktur').val(addCommas(data.faktur[0][0].fp_sisapelunasan));
                           $('.pelunasan').attr('readonly' , false);
                           $('.jmlhfaktur').val(addCommas(data.faktur[0][0].fp_netto));
@@ -1446,6 +1445,21 @@
                           else {
                               $('.uangmukakanan').val(addCommas(data.faktur[0][0].fp_uangmuka)); 
                           }
+
+                          if(data.faktur[0][0].fp_creditnota == null){
+                            $('.cnkanan').val('0.00');
+                          }
+                          else {
+                            $('.cnkanan').val(addCommas(data.faktur[0][0].fp_creditnota));
+                          }
+
+                          if(data.faktur[0][0].fp_debitnota == null){
+                            $('.dnkanan').val('0.00');
+                          }
+                          else {
+                            $('.dnkanan').val(addCommas(data.faktur[0][0].fp_debitnota));
+                          }
+
                           $('.hutangdagang').val(data.faktur[0][0].fp_acchutang); 
                           $('.cabangfaktur').val(data.faktur[0][0].fp_comp);
 
@@ -2000,6 +2014,7 @@
                         kodebanktujuan = split[4];
                         norekening = split[3];
                         namabank = split[1];
+                        idbank = split[0];
 
                         if(metodebayar == 'CHECK/BG'){
                           for(var i =0 ; i < mbdt.length; i++ ){                    
@@ -2009,7 +2024,7 @@
                             "<td>"+tgl+"</td>"+ // TGL
                             "<td>"+mbdt[i][0].mb_kode+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]'> </td>" + //BANK TUJUAN
                             "<td> <input type='text' class='form-control norekening' value='"+norekening+"'> </td>" + //NO REKENING TUJUAN
-                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"'> </td>" + //NAMA BANK TUJUAN
+                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]'> <input type='text' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'></td>" + //NAMA BANK TUJUAN
                             "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
                             "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
@@ -3075,6 +3090,42 @@
             $('.ChequeBg').val(addCommas(val4));
           }
           
+            }
+            else if(jenisbayar == '12') {
+               idbank = $('.idbank').val();     
+                val = $(this).val();
+                
+                val = accounting.formatMoney(val, "", 2, ",",'.');
+
+               
+                if(idbank != ''){
+                    $('.nominalbank' + idbank).val(val);
+                    totalbayar = $('.totbayar').val();
+                    aslitotal = totalbayar.replace(/,/g, '');
+                }
+                else {
+                     $('.nominalbank1').val(val);
+                }
+
+              var jmlhnominal = 0;
+              $('.nominaltblbank').each(function(){
+               
+                totalbayar = $('.totbayar').val();
+                aslitotal = totalbayar.replace(/,/g, '');
+                id = $(this).data('id');
+                val = $(this).val();
+                 
+                 val2 = val.replace(/,/g, '');
+               
+                if(val2 != ''){
+                  jmlhnominal += parseFloat   (val2);
+                 
+                }
+               
+              })
+
+              $('.ChequeBg').val(addCommas(jmlhnominal));
+              $('.totbayar').val(addCommas(jmlhnominal));
             }
           }
       

@@ -329,6 +329,7 @@ Route::post('bonsementaracabang/updatekacab', 'BonSementaraController@updatekaca
 Route::post('bonsementaracabang/updatecabang', 'BonSementaraController@updatecabang');
 Route::get('bonsementaracabang/hapus/{id}', 'BonSementaraController@hapuscabang');
 Route::post('bonsementaracabang/terimauang', 'BonSementaraController@terimauang');
+Route::post('bonsementaracabang/jurnalumum', 'BonSementaraController@jurnalumum');
 
 
 Route::get('bonsementarapusat/bonsementarapusat', 'BonSementaraController@indexpusat');
