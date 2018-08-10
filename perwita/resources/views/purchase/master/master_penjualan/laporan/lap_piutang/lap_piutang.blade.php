@@ -230,8 +230,9 @@
               var parent = $(this).parents('tr');
               $(parent).find('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
            })    
-           // $('.grand_'+i).text(accounting.formatMoney(saldo_index,"",0,'.',','));
+        $('.grand_'+i).text(accounting.formatMoney(saldo_index,"",0,'.',','));
         })
+        
       }
     })
 

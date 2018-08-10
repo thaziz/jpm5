@@ -1,5 +1,5 @@
- <table id="addColumn"  class="table table-bordered table-striped">
-                    <thead>
+ <table id="addColumn"  class="table table-bordered table-striped no-random-color">
+                    <thead class="red-bg-color">
                         <tr>
                             <th> No DO</th>
                             <th> Tanggal </th>
@@ -72,6 +72,11 @@
                         '<td>cabang</td>'+
                         '<td>:</td>'+
                         '<td>'+d.cab+'</td>'+
+                    '</tr>'+
+                    '<tr>'+
+                        '<td>Aksi</td>'+
+                        '<td>:</td>'+
+                        '<td>'+d.button+'</td>'+
                     '</tr>'+
                     '</table>'
                       ;

@@ -718,8 +718,16 @@ class LaporanPembelianController extends Controller
 		    if (!isset($result_supplier[$v]))
 		        $result_supplier[$v] =& $v;
 		}
+		$re_supplier = DB::Table('supplier')->where('no_supplier','=',$request->supplier)->get();
 
-		$array = array_values($result_supplier);
+		if ($request->supplier == '') {
+			$array = array_values($result_supplier);
+		}else{
+			$array[0] = $re_supplier[0]->idsup;
+		}
+		// return $array;
+
+
 	//	cari data supplier
 		$data['carisupp'] = array();
 		for($j = 0; $j < count($array); $j++){
@@ -728,7 +736,7 @@ class LaporanPembelianController extends Controller
 			$carisupp = DB::select("select idsup , nama_supplier, no_supplier  from  supplier where idsup = '$idsupplier'");
 			array_push($data['carisupp'], $carisupp);
 		}
-
+		
 
 		$data['saldoawal'] = [];
 
@@ -813,6 +821,8 @@ class LaporanPembelianController extends Controller
 			
 		 json_encode($data);
 
+		 // return $data;
+
 		 return view('purchase/laporan_analisa_pembelian/lap_kartu_hutang/kartu_hutang/ajax_pencarian_supplier',compact('data','date'));
 	}
 
@@ -843,14 +853,20 @@ class LaporanPembelianController extends Controller
 		}
 
 	
-		$array = array_values($result_supplier);
-		
+		// $array = array_values($result_supplier);
+		$re_supplier = DB::Table('supplier')->where('no_supplier','=',$request->supplier)->get();
+
+		if ($request->supplier == '') {
+			$array = array_values($result_supplier);
+		}else{
+			$array[0] = $re_supplier[0]->idsup;
+		}
 	//	cari data supplier
 		$data['carisupp'] = array();
 		for($j = 0; $j < count($array); $j++){
 			
-						$idsupplier = $array[$j];
-						$carisupp = DB::select("select idsup , nama_supplier, no_supplier  from  supplier where idsup = '$idsupplier'");
+			$idsupplier = $array[$j];
+			$carisupp = DB::select("select idsup , nama_supplier, no_supplier  from  supplier where idsup = '$idsupplier'");
 			array_push($data['carisupp'], $carisupp);
 		}
 
@@ -1030,11 +1046,10 @@ class LaporanPembelianController extends Controller
 			$bkk = DB::select("select 'K' as flag , bkk_supplier as supplier, bkk_nota as nota, bkk_tgl as tgl, bkk_total as nominal from bukti_kas_keluar where bkk_jenisbayar = '$jenisbayar' and bkk_supplier = '$idsup' and bkk_tgl BETWEEN '$tglawal' and '$tglakhir'");
 
 
-			return $datas= array_merge( $fp, $um, $bkk , $bbk);
+			$datas= array_merge( $fp, $um, $bkk , $bbk);
 
 			array_push($data['kartuhutang'] , $datas);
 
-			return view('purchase/laporan_analisa_pembelian/lap_kartu_hutang/kartu_hutang/ajax_pencarian_supplier_detail',compact('data','date'));
 		}
 
 	//	return $data['kartuhutang'];
@@ -1058,7 +1073,9 @@ class LaporanPembelianController extends Controller
 			array_push($data['totalhutangkredit'] , $totalhutangkredit );
 		}
 
-		return json_encode($data);
+		json_encode($data);
+
+		return view('purchase/laporan_analisa_pembelian/lap_kartu_hutang/kartu_hutang/ajax_pencarian_akun',compact('data','date'));
 
 	}
 
