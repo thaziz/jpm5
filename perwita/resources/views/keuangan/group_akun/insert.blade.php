@@ -40,8 +40,8 @@
         <td class="text-center">Type Group</td>
         <td colspan="2">
           <select name="type" class="select_validate form-control" id="type">
-            <option value="A"> Aktiva</option>
-            <option value="P"> Pasiva</option>
+            <option value="A"> Aset</option>
+            <option value="P"> Liabilitas</option>
           </select>
         </td>
       </tr>
