@@ -94,6 +94,9 @@ class PengeluaranBarangController extends Controller
 		// dd($request);
    		return DB::transaction(function() use ($request) {  
 
+   			$cab = DB::table('cabang')
+   					 ->where('kode',$cabang)
+   					 ->first();
 			$valid = 0;
 			if ($request->keperluan != '') {
 				$valid += 1;
@@ -174,7 +177,11 @@ class PengeluaranBarangController extends Controller
 						$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
 					}
 					else if($jenisitem == 'A'){
-						$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
+						if ($cab->kode == '000') {
+							$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '7105%' and kode_cabang = '$cabang'");
+						}else{
+							$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
+						}
 					}
 					else if($jenisitem == 'C'){
 						$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
