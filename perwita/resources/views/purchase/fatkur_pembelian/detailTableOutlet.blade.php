@@ -240,7 +240,7 @@
 		    	$('.total_all_komisi').val(temp3);
 	    	}
 
- 			$('.save_update_outlet').addClass('disabled');
+ 			
 
 	 	}
 function check_parent(){
@@ -456,7 +456,8 @@ function select_tt(a) {
     $('.invoice_tt').val(tt_invoice);
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
-    $('#modal_tt_outlet').modal('hide');
+    $('#save_update_outlet').removeClass('disabled');
+    $('#modal_tt_penerus').modal('hide');
 }
  
 $.fn.serializeArray = function () {

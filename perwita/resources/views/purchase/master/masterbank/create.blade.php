@@ -124,9 +124,13 @@
                           <td> <input type="text" class="input-sm form-control" name="nmbank" required="" style="text-transform: uppercase" style="min-width:60%"> </td>
                         </tr>
                         <tr>
-                          <td> Cabang </td>
+                          <td> Cabang Bank </td>
                           <td> 
-                            <input type="text" class="input-sm form-control" name="cabang" required="" style="text-transform: uppercase" style="min-width:60%">
+                            <select class="form-control chosen-select">
+                              @foreach($data['cabang'] as $cabang)
+                                <option value="{{$cabang->kode}}"> {{$cabang->nama}} </option>
+                                @endforeach
+                            </select>
                           </td>
                         </tr>
                         </table>

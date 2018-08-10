@@ -834,7 +834,7 @@ function select_tt(a) {
     $('.invoice_tt').val(tt_invoice);
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
-	$('#modal_tt_subcon').modal('show');
+	$('#modal_tt_penerus').modal('show');
 }
 
 

@@ -523,6 +523,8 @@ class StockOpnameController extends Controller
                                   ->update([
                                     'sg_qty'  =>   $hasilqty
                                   ]);
+                $datadb = DB::select("select * from stock_opname , stock_opname_dt where ")
+
             }
             else if($status == 'lebih'){
                 /*   $iditem = $request->sg_item[$i];*/

@@ -20,7 +20,7 @@
 	      <td style="width: 100px">Tanggal Faktur</td>
 	      <td width="10">:</td>
 	      <td width="200">
-	        <input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="" readonly="" style="">
+	        <input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="{{ carbon\carbon::now()->format('d/m/Y') }}" readonly="" style="">
 	      </td>
 	     </tr>
 		  <tr>

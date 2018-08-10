@@ -408,12 +408,12 @@
 
                                                       <tr>
                                                         <th> Jumlah </th>
-                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount biayabg jumlahakunbg" style="text-align:right'"> </div> </td>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount biayabg jumlahakunbg" style="text-align:right'" readonly=""> </div> </td>
                                                       </tr>
 
                                                       <tr>
                                                         <th> Keterangan </th>
-                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  keteranganakunbg biayabg"> </div> </td>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  keteranganakunbg biayabg" readonly=""> </div> </td>
                                                       </tr>
                                                     </table>
                                                   </div>
@@ -624,7 +624,7 @@
                   "<td> <input type='text' class='form-control input-sm nofpgdetailbg' value="+nofpg+" name='nofpg[]' readonly style='min-width:200px'> <input type='hidden' class='idfpgakunbgdetail' value="+idfpg+" name='idfpg[]'> </td>" +
                   "<td> <input type='text' class='form-control input-sm accbiayaakundetailbg' value="+nocheckakunbg+" name='nocheck[]' readonly style='min-width:200px'> </td>" +
                   "<td> <input type='text' class='form-control input-sm nominalfpgdetailbg' value="+nominal+" name='nominalfpg[]' readonly style='min-width:200px;text-align:right'> </td>" +
-                  "<td> <input type='text' class='form-control input-sm keteranganbiayadetailbg' value='"+keteranganbiaya+"' name='keteranganfpg[]' readonly style='min-width:200px'> <input type='hidden' value='"+idfpgbakunbg+"' name='idfpgb[]'> </td>" +
+                  "<td> <input type='text' class='form-control input-sm keteranganbiayadetailbg' value='"+keteranganbiaya+"' name='keteranganfpg[]' readonly style='min-width:200px'> <input type='hidden' value='"+idfpgb+"' name='idfpgb[]'> </td>" +
                   "</td>" +
                   "<td> <button class='btn btn-xs btn-danger' type='button' onclick='hapus(this)'> <i class='fa fa-trash'> </i> </button></td>" +
                   "</tr>";
@@ -968,7 +968,7 @@
             dataType:'json',
             success : function(data){
                
-                 if(response.status = 'sukses'){
+                 if(data.status = 'sukses'){
                  
                   var d = new Date();
                   
@@ -993,7 +993,7 @@
                   //year2 ="Anafaradina";
 
                 
-                   nobbk = 'BK-' + month1 + year2 + '/' + comp + '/' +  data;
+                   nobbk = 'BK-' + month1 + year2 + '/' + comp + '/' +  data.data;
                 //  console.log(nospp);
                   $('.nobbk').val(nobbk);
                  }
@@ -1156,6 +1156,8 @@
                     $('.keteranganakunbiayafpg').val(response.fpg[0].fpg_keterangan);
                     $('.checkakunbg').val(response.fpg[0].fpgb_nocheckbg);
                     $('.idfpgbakunbg').val(response.fpg[0].fpgb_id);
+                    $('.jumlahakunbg').val(addCommas(response.fpg[0].fpgb_nominal));
+                    $('.keteranganakunbg').val(response.fpg[0].fpg_keterangan);
                   //  alert(response.fpg[0].fpgb_nocheckbg);
                 }
                 else {

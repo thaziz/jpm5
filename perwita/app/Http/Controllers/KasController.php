@@ -65,13 +65,14 @@ class KasController extends Controller
 
 
 		if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
-			$sql = "SELECT * FROM biaya_penerus_kas  join cabang on kode = bpk_comp where bpk_nota != '0' $cabang";
+			$sql = "SELECT * FROM biaya_penerus_kas  join cabang on kode = bpk_comp where bpk_nota != '0' and bpk_jenis_biaya != 'LOADING' $cabang";
 			$data = DB::select($sql);
 		}else{
 			$cabang = Auth::user()->kode_cabang;
 			$data = DB::table('biaya_penerus_kas')
 				  ->join('cabang','kode','=','bpk_comp')
 				  ->where('kode',$cabang)
+				  ->where('bpk_jenis_biaya','!=','LOADING')
 				  ->orderBy('bpk_id','ASC')
 				  ->get();
 		}
@@ -83,7 +84,7 @@ class KasController extends Controller
                             $a = '';
                             if($data->bpk_status == 'Released' or Auth::user()->punyaAkses('Biaya Penerus Kas','ubah')){
                                 if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
-$a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' => $data->bpk_id] ).'" title="edit"> Edit</a><br>';
+							$a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' => $data->bpk_id] ).'" title="edit"> Edit</a><br>';
                                 }
                             }else{
                               $a = '';
@@ -745,7 +746,7 @@ $a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' 
 						 ->first();
 
 				if ($acc == null) {
-					return response()->json(['status'=>3,'data'=>'Terdapat Resi Yang Tidak Memiliki Akun Biaya']);
+					return response()->json(['status'=>'3','data'=>'Terdapat Resi Yang Tidak Memiliki Akun Biaya']);
 				}
 
 				$cari_id_pc = DB::table('patty_cash')
