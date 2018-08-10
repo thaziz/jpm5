@@ -240,6 +240,7 @@
 		    	$('.total_all_komisi').val(temp3);
 	    	}
 
+ 			
 
 	 	}
 function check_parent(){
