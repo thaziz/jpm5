@@ -655,7 +655,6 @@ function(){
               timer: 900,
              showConfirmButton: true
               },function(){
-              toastr.warning('No DO telah diganti menjadi ' + response.nota)
           });
        }
 

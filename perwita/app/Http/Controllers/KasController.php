@@ -65,14 +65,14 @@ class KasController extends Controller
 
 
 		if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
-			$sql = "SELECT * FROM biaya_penerus_kas  join cabang on kode = bpk_comp where bpk_nota != '0' and bpk_jenis_biaya = 'LOADING' $cabang";
+			$sql = "SELECT * FROM biaya_penerus_kas  join cabang on kode = bpk_comp where bpk_nota != '0' and bpk_jenis_biaya != 'LOADING' $cabang";
 			$data = DB::select($sql);
 		}else{
 			$cabang = Auth::user()->kode_cabang;
 			$data = DB::table('biaya_penerus_kas')
 				  ->join('cabang','kode','=','bpk_comp')
 				  ->where('kode',$cabang)
-				  ->where('bpk_jenis_biaya','LOADING')
+				  ->where('bpk_jenis_biaya','!=','LOADING')
 				  ->orderBy('bpk_id','ASC')
 				  ->get();
 		}
@@ -746,7 +746,7 @@ class KasController extends Controller
 						 ->first();
 
 				if ($acc == null) {
-					return response()->json(['status'=>3,'data'=>'Terdapat Resi Yang Tidak Memiliki Akun Biaya']);
+					return response()->json(['status'=>'3','data'=>'Terdapat Resi Yang Tidak Memiliki Akun Biaya']);
 				}
 
 				$cari_id_pc = DB::table('patty_cash')

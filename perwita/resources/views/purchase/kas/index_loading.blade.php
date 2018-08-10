@@ -50,7 +50,7 @@
                      </h5>
                     @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','tambah'))
                       <div class="text-right">
-                       <a class="btn btn-success" aria-hidden="true" href="{{ url('biaya_penerus/createkas')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
+                       <a class="btn btn-success" aria-hidden="true" href="{{ url('biaya_penerus_loading/create')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
                       </div>
                     @endif
                 </div>
@@ -113,7 +113,7 @@
 $(document).ready(function(){
   var cabang = $('.cabang').val();
   $.ajax({
-      url:baseUrl + '/biaya_penerus/append_table',
+      url:baseUrl + '/biaya_penerus_loading/append_table',
       data:{cabang},
       type:'get',
       success:function(data){
@@ -134,7 +134,7 @@ function filtering() {
   var cabang = $('.cabang').val();
   var jenis_bayar = $('.jenis_bayar').val();
   $.ajax({
-      url:baseUrl + '/biaya_penerus/append_table',
+      url:baseUrl + '/biaya_penerus_loading/append_table',
       data:{cabang,jenis_bayar},
       type:'get',
       success:function(data){
