@@ -1559,7 +1559,15 @@ class do_paketController extends Controller
         $data = collect($data);
 
         // return $data;
-    return Datatables::of($data)->make(true);
+    return Datatables::of($data)
+              ->addColumn('button', function ($data) {
+                  return  '<div class="btn-group">'.
+                           '<a href="deliveryorder_paket/'.$data->nomor.'/edit_deliveryorder_paket" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>'.
+                            '<a href="deliveryorderform/'.$data->nomor.'/nota" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>'.
+                            '<a href="deliveryorder_paket/'.$data->nomor.'/hapus_deliveryorder_paket" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>'.
+                          '</div>';
+                })
+              ->make(true);
     }
     public function ajax_replace_index_deliveryorder_paket(Request $request)
     { 

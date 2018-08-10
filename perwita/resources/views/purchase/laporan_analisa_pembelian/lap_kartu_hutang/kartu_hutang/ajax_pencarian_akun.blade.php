@@ -11,16 +11,16 @@
   </tr> --}}
    @foreach ($data['carisupp'] as $index => $element)
      <tr>
-       <td colspan="7">Supplier : [{{ $data['carisupp'][$index][0]->no_supplier }}] {{ $data['carisupp'][$index][0]->nama_supplier }} </td>
+       <td colspan="7">Supplier : [{{ $data['carisupp'][$index]['supplier'][0]->kode }}]</td>
      </tr>
          <tr>
             <td>1</td>
-            <td>{{ $date }}</td>
+            <td>{{-- {{ $date }} --}}</td>
             <td colspan="5" align="right" class="saldo">{{ $data['saldoawal'][$index] }}</td>
         </tr>
       @foreach($data['kartuhutang'] as $index1 => $element1)
         @foreach($data['kartuhutang'][$index1] as $index2 => $element2)
-          @if ($data['kartuhutang'][$index1][$index2]->supplier == $data['carisupp'][$index][0]->idsup)
+          @if ($data['kartuhutang'][$index1][$index2]->supplier == $data['carisupp'][$index]['supplier'][0]->kode)
               <tr>
                <td>2</td>
                <td>{{ $data['kartuhutang'][$index][$index2]->tgl }}</td>

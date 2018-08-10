@@ -37,14 +37,19 @@ class mutasi_piutang_Controller extends Controller
 		    if (!isset($result_customer[$v['customer']]))
 		        $result_customer[$v['customer']] =& $v;
 		}
-		$array = array_values($result_customer);	
+    // dd($request->all());
+    if ($request->customer != '') {
+      $array[0] = $request->customer; 
+    }else{
+      $array = array_values($result_customer); 
+    }
 
     // if ($array != null) {
     //     $cus_invoice = "AND i_total_tagihan = $array[$i] "; 
     //   }else{
     //       $cus_invoice = '';
     //   }
-    
+
     $push_saldo       = [];
     $push_piutangbaru = [];
     $push_nota_debet  = [];
@@ -60,19 +65,33 @@ class mutasi_piutang_Controller extends Controller
 
       array_push($push_customer_lenght,$customer_lenght);
       // return $push_customer_lenght;
-      
-      $saldoawal[$i] = DB::table('invoice')
+      if ($request->cabang == '') {
+        $saldoawal[$i] = DB::table('invoice')
                         ->select(DB::raw('SUM(i_total_tagihan) as saldoawal'))
                         ->where('i_tanggal','>',$tglawal)
                         ->where('i_tanggal','<',$tglakhir)
                         ->where('i_kode_customer','=',$array[$i])
+                        // ->where('i_kode_cabang','=',)
                         ->get();
+      }else{
+        $saldoawal[$i] = DB::table('invoice')
+                        ->select(DB::raw('SUM(i_total_tagihan) as saldoawal'))
+                        ->where('i_tanggal','>',$tglawal)
+                        ->where('i_tanggal','<',$tglakhir)
+                        ->where('i_kode_customer','=',$array[$i])
+                        ->where('i_kode_cabang','=',$request->cabang)
+                        ->get();
+      }
+
 
       if ($saldoawal[$i][0]->saldoawal == null) {
           $saldoawal[$i][0]->saldoawal = 0;
       }else{
           $saldoawal[$i] = $saldoawal[$i];
       }
+      // return $saldoawal;
+
+
       $piutangbaru[$i] = DB::table('invoice')
                         ->select(DB::raw('SUM(i_total_tagihan) as piutang_baru'))
                         ->where('i_tanggal','>',$tglakhir)
@@ -84,14 +103,25 @@ class mutasi_piutang_Controller extends Controller
           $piutangbaru[$i] = $piutangbaru[$i];
       }
 
-
-      $notadebet[$i] = DB::table('cn_dn_penjualan')
+      if ($request->cabang == '') {
+        $notadebet[$i] = DB::table('cn_dn_penjualan')
                         ->select(DB::raw('SUM(cd_total) as nota_debet'))
                         ->where('cd_tanggal','>',$tglawal)
                         ->where('cd_tanggal','<',$tglakhir)
                         ->where('cd_jenis','=','D')
                         ->where('cd_customer','=',$array[$i])
                         ->get();
+      }else{
+        $notadebet[$i] = DB::table('cn_dn_penjualan')
+                        ->select(DB::raw('SUM(cd_total) as nota_debet'))
+                        ->where('cd_tanggal','>',$tglawal)
+                        ->where('cd_tanggal','<',$tglakhir)
+                        ->where('cd_jenis','=','D')
+                        ->where('cd_customer','=',$array[$i])
+                        ->where('cd_kode_cabang','=',$request->cabang)
+                        ->get();
+      }
+      
       
       if ($notadebet[$i][0]->nota_debet == null) {
           $notadebet[$i][0]->nota_debet = 0;
@@ -99,19 +129,34 @@ class mutasi_piutang_Controller extends Controller
           $notadebet[$i] = $notadebet[$i];
       }
 
-      $cash[$i] = DB::table('kwitansi')
+      if ($request->cabang == '') {
+        $cash[$i] = DB::table('kwitansi')
                         ->select(DB::raw('SUM(k_netto) as cash'))
                         ->where('k_tanggal','>',$tglawal)
                         ->where('k_tanggal','<',$tglakhir)
                         ->where('k_jenis_pembayaran','=','T')
                         ->where('k_kode_customer','=',$array[$i])
                         ->get();
+      }else{
+        $cash[$i] = DB::table('kwitansi')
+                        ->select(DB::raw('SUM(k_netto) as cash'))
+                        ->where('k_tanggal','>',$tglawal)
+                        ->where('k_tanggal','<',$tglakhir)
+                        ->where('k_jenis_pembayaran','=','T')
+                        ->where('k_kode_customer','=',$array[$i])
+                        ->where('k_kode_cabang','=',$request->cabang)
+                        ->get();
+      }
+      
       if ($cash[$i][0]->cash == null) {
           $cash[$i][0]->cash = 0;
       }else{
           $cash[$i] = $cash[$i];
       }
 
+      if ($request->cabang == '') {
+      }else{
+      }
       $cek_bg_trsn[$i] = DB::table('posting_pembayaran as pb')
                         ->select(DB::raw('SUM(pbdt.jumlah) as cek_bg_trsn'))
                         ->join('posting_pembayaran_d as pbdt','pb.nomor','=','pbdt.nomor_posting_pembayaran')
@@ -127,13 +172,25 @@ class mutasi_piutang_Controller extends Controller
           $cek_bg_trsn[$i] = $cek_bg_trsn[$i];
       }
 
-      $uangmuka[$i] = DB::table('kwitansi')
+      if ($request->cabang == '') {
+        $uangmuka[$i] = DB::table('kwitansi')
                         ->select(DB::raw('SUM(k_netto) as uangmuka'))
                         ->where('k_tanggal','>',$tglawal)
                         ->where('k_tanggal','<',$tglakhir)
                         ->where('k_jenis_pembayaran','=','U')
                         ->where('k_kode_customer','=',$array[$i])
                         ->get();
+      }else{
+        $uangmuka[$i] = DB::table('kwitansi')
+                        ->select(DB::raw('SUM(k_netto) as uangmuka'))
+                        ->where('k_tanggal','>',$tglawal)
+                        ->where('k_tanggal','<',$tglakhir)
+                        ->where('k_jenis_pembayaran','=','U')
+                        ->where('k_kode_customer','=',$array[$i])
+                        ->where('k_kode_cabang','=',$request->cabang)
+                        ->get();
+      }
+      
 
       if ($uangmuka[$i][0]->uangmuka == null) {
           $uangmuka[$i][0]->uangmuka = 0;
@@ -141,14 +198,25 @@ class mutasi_piutang_Controller extends Controller
           $uangmuka[$i] = $uangmuka[$i];
       }
 
-
-      $nota_kredit[$i] =  DB::table('cn_dn_penjualan')
+      if ($request->cabang == '') {
+        $nota_kredit[$i] =  DB::table('cn_dn_penjualan')
                         ->select(DB::raw('SUM(cd_total) as nota_kredit'))
                         ->where('cd_tanggal','>',$tglawal)
                         ->where('cd_tanggal','<',$tglakhir)
                         ->where('cd_jenis','=','K')
                         ->where('cd_customer','=',$array[$i])
-                        ->get();     
+                        ->get(); 
+      }else{
+        $nota_kredit[$i] =  DB::table('cn_dn_penjualan')
+                        ->select(DB::raw('SUM(cd_total) as nota_kredit'))
+                        ->where('cd_tanggal','>',$tglawal)
+                        ->where('cd_tanggal','<',$tglakhir)
+                        ->where('cd_jenis','=','K')
+                        ->where('cd_customer','=',$array[$i])
+                        ->where('cd_kode_cabang','=',$request->cabang)
+                        ->get(); 
+      }
+          
 
       if ($nota_kredit[$i][0]->nota_kredit == null) {
           $nota_kredit[$i][0]->nota_kredit = 0;
@@ -156,12 +224,23 @@ class mutasi_piutang_Controller extends Controller
           $nota_kredit[$i] = $nota_kredit[$i];
       } 
 
-      $sisa_uangmuka[$i] =  DB::table('uang_muka_penjualan')
+      if ($request->cabang == '') {
+        $sisa_uangmuka[$i] =  DB::table('uang_muka_penjualan')
                         ->select(DB::raw('SUM(sisa_uang_muka) as sisa_uangmuka'))
                         ->where('tanggal','>',$tglawal)
                         ->where('tanggal','<',$tglakhir)
                         ->where('kode_customer','=',$array[$i])
-                        ->get();     
+                        ->get(); 
+      }else{
+        $sisa_uangmuka[$i] =  DB::table('uang_muka_penjualan')
+                        ->select(DB::raw('SUM(sisa_uang_muka) as sisa_uangmuka'))
+                        ->where('tanggal','>',$tglawal)
+                        ->where('tanggal','<',$tglakhir)
+                        ->where('kode_customer','=',$array[$i])
+                        ->where('kode_cabang','=',$request->cabang)
+                        ->get(); 
+      }
+          
 
       if ($sisa_uangmuka[$i][0]->sisa_uangmuka == null) {
           $sisa_uangmuka[$i][0]->sisa_uangmuka = 0;
