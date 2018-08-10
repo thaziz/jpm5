@@ -628,7 +628,7 @@ function select_tt(a) {
     $('.invoice_tt').val(tt_invoice);
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
-    $('#modal_tt_outlet').modal('hide');
+    $('#modal_tt_penerus').modal('hide');
 }
 function print_penerus() {
   var idfaktur = $('.idfaktur').val();
