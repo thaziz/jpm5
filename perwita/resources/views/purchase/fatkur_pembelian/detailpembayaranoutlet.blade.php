@@ -423,7 +423,6 @@ function check_parent(){
 		$('.total_komisi_tambahan').val(temp2);
 		temp3 = accounting.formatMoney(temp3, "Rp ", 2, ".",',');
 		$('.total_all_komisi').val(temp3);
-	    $('#save_update_outlet').addClass('disabled');
 
 	}else{
 	  tar_das.splice(0,tar_das.length);
@@ -439,7 +438,6 @@ function check_parent(){
 	  $('.total_komisi_tambahan').val(temp2);
 	  temp3 = accounting.formatMoney(0, "Rp ", 2, ".",',');
 	  $('.total_all_komisi').val(temp3);
-	  $('#save_update_outlet').addClass('disabled');
 	}
 
 }
@@ -627,6 +625,7 @@ function select_tt(a) {
     $('.invoice_tt').val(tt_invoice);
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
+	$('#save_update_outlet').removeClass('disabled');
     $('#modal_tt_penerus').modal('hide');
 }
 function print_penerus() {

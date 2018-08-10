@@ -240,7 +240,6 @@
 		    	$('.total_all_komisi').val(temp3);
 	    	}
 
- 			$('.save_update_outlet').addClass('disabled');
 
 	 	}
 function check_parent(){
