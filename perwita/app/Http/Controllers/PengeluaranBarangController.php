@@ -683,6 +683,19 @@ class PengeluaranBarangController extends Controller
 	});
 	}
 
+
+
+	public function lihatjurnal(Request $request){
+		$lpb = $request->ref;
+		$note = $request->note;
+		$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk, jrdt_detail
+                        FROM d_akun a join d_jurnal_dt jd
+                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
+                        (select j.jr_id from d_jurnal j where jr_ref='$lpb')")); 
+		$data['countjurnal'] = count($data['jurnal']);
+ 		return json_encode($data);
+	}
+	
 	public function printing($id){
 		$data = DB::table('pengeluaran_barang')
 				  ->where('pb_id',$id)
