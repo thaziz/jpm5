@@ -31,7 +31,6 @@ class loadingController extends Controller
 
 	public function datatable_bk(request $req)
 	{
-
 		$nama_cabang = DB::table("cabang")
 						 ->where('kode',$req->cabang)
 						 ->first();
@@ -55,7 +54,7 @@ class loadingController extends Controller
 				  ->orderBy('bpk_id','ASC')
 				  ->get();
 		}
-
+		dd($data);
         $data = collect($data);
         // return $data;
         return Datatables::of($data)
