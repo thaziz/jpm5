@@ -592,7 +592,6 @@ $('.modal_outlet_tt').click(function(){
 	            	}else{
 	            		$('.totalterima_tt').val('Rp 0,00');
 	            	}
-	            	$('#save_update_outlet').removeClass('disabled');
 
 	            }
 	    })
