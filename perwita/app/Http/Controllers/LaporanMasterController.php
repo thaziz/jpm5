@@ -3014,7 +3014,7 @@ class LaporanMasterController extends Controller
 		//end
 		//posting pemaaran
 		if ($request->customer != '' || $request->customer != null) {
-			$customer_postingbayar = " AND posting_pembayaran_d.kode_customer = '".$request->customer."' ";
+			$customer_postingbayar = " AND kwitansi.k_kode_customer = '".$request->customer."' ";
 		}else{
 			$customer_postingbayar = '';
 		}
@@ -3033,7 +3033,7 @@ class LaporanMasterController extends Controller
 		
 	
 
-		 $data_invoice = DB::select("SELECT 'D' as flag,i_nomor  as kode,i_acc_piutang,i_kode_customer as customer,i_tanggal as tanggal,i_keterangan as keterangan,i_total_tagihan as nominal
+		$data_invoice = DB::select("SELECT 'D' as flag,i_nomor  as kode,i_acc_piutang,i_kode_cabang,i_kode_customer as customer,i_tanggal as tanggal,i_keterangan as keterangan,i_total_tagihan as nominal
 		 								from invoice 
 										where i_tanggal >= '$awal' 
   										and i_tanggal <= '$akir' 
@@ -3041,7 +3041,7 @@ class LaporanMasterController extends Controller
 										order by i_kode_customer");
 
 
-		$data_cn_dn = DB::select("SELECT cd_jenis as flag,cd_nomor as kode,cd_acc,cd_customer as customer,cd_tanggal as tanggal,cd_keterangan as keterangan,cd_total as nominal FROM cn_dn_penjualan 
+		$data_cn_dn = DB::select("SELECT cd_jenis as flag,cd_nomor as kode,cd_kode_cabang,cd_acc,cd_customer as customer,cd_tanggal as tanggal,cd_keterangan as keterangan,cd_total as nominal FROM cn_dn_penjualan 
   										where cd_tanggal >= '$awal' 
    										and cd_tanggal <= '$akir'
    										$customer_cndn $akun_cndn $cabang_cndn
@@ -3057,7 +3057,7 @@ class LaporanMasterController extends Controller
    										");
    		
    		
-   		$data_postingbayar = DB::select("SELECT 'K' as flag,nomor as kode,kode_acc,k_kode_customer as customer,k_tanggal as tanggal,k_keterangan as keterangan,posting_pembayaran.jumlah,k_netto as nominal FROM kwitansi 
+   		$data_postingbayar = DB::select("SELECT 'K' as flag,nomor as kode,kode_acc,posting_pembayaran.kode_cabang,k_kode_customer as customer,k_tanggal as tanggal,k_keterangan as keterangan,posting_pembayaran.jumlah,k_netto as nominal FROM kwitansi 
    										join posting_pembayaran_d on posting_pembayaran_d.nomor_penerimaan_penjualan = kwitansi.k_nomor
    										join posting_pembayaran on posting_pembayaran.nomor = posting_pembayaran_d.nomor_posting_pembayaran
    										where k_tanggal >= '$awal' 

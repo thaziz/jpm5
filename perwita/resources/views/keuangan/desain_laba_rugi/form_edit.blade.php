@@ -147,7 +147,7 @@
                             <tr>
                               <td width="15%" class="text-center">Level</td>
                               <td colspan="2" width="35%">
-                                <input type="number" id="level" class="form-control form_validate" max="2" min="0" value="1">
+                                <input type="number" id="level" class="form-control form_validate" max="3" min="0" value="1">
                               </td>
 
                               <td width="15%">
@@ -201,11 +201,11 @@
                                   <option value="---"> -- Dari Penjumlahan</option>
                                 </select>
 
-                                <select disabled id="detail_jenis" class="form-control" style="display:none;">
+                                {{-- <select disabled id="detail_jenis" class="form-control" style="display:none;">
                                   <option value="---"> -- Pilih Jenis</option>
                                   <option value="Pendapatan"> Pendapatan</option>
                                   <option value="Beban/Biaya"> Beban/Biaya</option>
-                                </select>
+                                </select> --}}
                               </td>
                             </tr>
 
@@ -356,8 +356,9 @@
       data = []; data_neraca = {!! $data_neraca !!}; data_detail = {!! $data_detail !!};
       data_akun = {!! $data_akun !!}; data_group = {!! $data_group !!};
 
-      console.log(data_neraca);
+      // console.log(data_neraca);
       // console.log(data_detail);
+      console.log(data_group);
 
       state = "aktiva"; chosen_group = "";
 
@@ -650,14 +651,18 @@
 
             input = $(this);
 
-            if(input.val() > 2){
-              alert("Level Tidak Boleh Lebih Dari 2");
+            if(input.val() > 3){
+              alert("Level Tidak Boleh Lebih Dari 3");
+              input.val(before);
+            }else if(input.val() > 2 && $.grep(data_neraca, function(i){ return i.level == 2 }).length == 0){
+              alert("Anda Harus Membuat Detail Level 2 Terlebih Dahulu Sebelum Membuat Level 3.");
               input.val(before);
             }else if(input.val() > 1 && data_neraca.length == 0){
               alert("Anda Harus Membuat Detail Level 1 Terlebih Dahulu Sebelum Membuat Level 2.");
               input.val(before);
             }else if(input.val() > 1){
               $("#parrent").removeAttr("disabled");
+              grab_parrent(($(this).val() - 1));
             }else if(input.val() == 1){
               $("#parrent").val("---"); $("#parrent").attr("disabled", "disabled");
               $("#parrent_name").val("---");
@@ -812,7 +817,7 @@
 
         id = $("#state_id").text()+""+$("#nomor_id").val();
 
-        $.each($.grep(data_neraca, function(a){ return a.nomor_id === id || a.id_parrent === id }), function(i, n){
+        $.each($.grep(data_neraca, function(a){ return a.nomor_id.substring(0, id.length) === id }), function(i, n){
           idx = data_neraca.findIndex(a => a.nomor_id === n.nomor_id);
 
           if(n.jenis == 2 || n.jenis == 3){
@@ -826,8 +831,8 @@
         form_reset();
         grab_parrent();
 
-        // console.log(data_neraca);
-        // console.log(data_detail);
+        console.log(data_neraca);
+        console.log(data_detail);
       })
 
       $("#masukkan").click(function(evt){
@@ -961,7 +966,7 @@
         }
 
         if(data_neraca.length > 0 ){
-          $.ajax(baseUrl+"/master_keuangan/desain_neraca/update/{{ $id }}",{
+          $.ajax(baseUrl+"/master_keuangan/desain_laba_rugi/update/{{ $id }}",{
             type: "post",
             timeout: 15000,
             data: {data_neraca: data_neraca, data_detail: data_detail, nama_desain: $("#nama_desain").val(), _token: "{{ csrf_token() }}" },
@@ -1103,10 +1108,10 @@
 
       }
 
-      function grab_parrent(){
+      function grab_parrent(parrentLevel = 2){
         html = '<option value="---">- Pilih Parrent</option>';
 
-        $.each($.grep(data_neraca, function(n){ return n.id_parrent == null && n.jenis == 1 }), function(i, n){
+        $.each($.grep(data_neraca, function(n){ return n.level == parrentLevel && n.jenis == 1 }), function(i, n){
           html = html+'<option value="'+n.nomor_id+'">'+n.nomor_id+'</option>';
         })
 
