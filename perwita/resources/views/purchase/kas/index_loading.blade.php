@@ -50,7 +50,7 @@
                      </h5>
                     @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','tambah'))
                       <div class="text-right">
-                       <a class="btn btn-success" aria-hidden="true" href="{{ url('biaya_penerus/createkas')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
+                       <a class="btn btn-success" aria-hidden="true" href="{{ url('biaya_penerus_loading/create')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
                       </div>
                     @endif
                 </div>
