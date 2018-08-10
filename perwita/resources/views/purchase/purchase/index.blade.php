@@ -118,7 +118,8 @@
 
                             @if(Auth::user()->punyaAkses('Purchase Order','print'))
                             @if($po->po_setujufinance != '')
-
+                            <a href="print/{{ $po->po_id }}">Print Data</a>
+                            {{-- <button class="btn-sm btn btn-primary edit" type="button" onclick="cetak()">  </button> --}}
                               <span class='label label-warning '> {{$po->po_setujufinance}}</span>
                             @endif
                               @if($po->po_setujufinance == 'SETUJU')
@@ -308,7 +309,7 @@
     function cetak(){
         var data = $('#form').serialize();
         @foreach($data['po'] as $index=>$po)
-        window.open(baseUrl + '?' + data ,"_blank");  
+        window.open(baseUrl++'purchaseorder/print/' + '?' + data ,"_blank");  
         @endforeach
     }
 
