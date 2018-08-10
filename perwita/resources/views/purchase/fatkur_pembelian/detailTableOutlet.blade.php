@@ -437,7 +437,7 @@ $('.modal_outlet_tt').click(function(){
       data: {cabang,agen_vendor},
       success:function(data){
         $('.div_tt').html(data);
-    	$('#modal_tt_penerus').modal('show');
+    	$('#modal_outlet_tt').modal('show');
       },error:function(){
         toastr.warning('Terjadi Kesalahan');
       }
@@ -457,7 +457,7 @@ function select_tt(a) {
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
     $('#save_update_outlet').removeClass('disabled');
-    $('#modal_tt_penerus').modal('hide');
+    $('#modal_outlet_tt').modal('hide');
 }
  
 $.fn.serializeArray = function () {
