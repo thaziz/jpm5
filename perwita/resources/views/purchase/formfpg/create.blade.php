@@ -1099,7 +1099,7 @@
                          }
 
 
-                       /*  $('.totbayar').val(val);*/
+                         $('.totbayar').val(addCommas(val));
                          $('.ChequeBg').val(addCommas(val));
                     })
                 }
