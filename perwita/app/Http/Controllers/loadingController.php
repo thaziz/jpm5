@@ -26,7 +26,7 @@ class loadingController extends Controller
 	public function append_table(request $req)
 	{
 		$cab = $req->cabang;
-		return view('purchase.kas.table_kas',compact('cab'));
+		return view('purchase.kas.table_loading',compact('cab'));
 	}
 
 	public function datatable_bk(request $req)
