@@ -48,7 +48,7 @@
  <tr>
  	<td style="width: 100px">No Invoice</td>
  	<td width="10">:</td>
- 	<td width="200"><input type="text" name="Invoice_biaya" class="form-control" style="" placeholder="No Invoice"></td>
+ 	<td width="200"><input type="text" name="Invoice_biaya" class="form-control Invoice_biaya" style="" placeholder="No Invoice"></td>
  </tr>
  <tr>
   <td style="width: 100px">Tanda terima</td>
@@ -523,6 +523,7 @@
 
     $('.tanda_terima').val(tt_form);
     $('.invoice_tt').val(tt_invoice);
+    $('.Invoice_biaya').val(tt_invoice);
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
     $('#modal_tt_penerus').modal('hide');

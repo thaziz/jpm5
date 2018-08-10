@@ -77,13 +77,19 @@
                         @if($val->pb_status != 'Approved')
                         <td align="center"> 
                           <a title="detail" class="btn btn-success btn-sm" href={{url('konfirmasipengeluaranbarang/detailkonfirmasipengeluaranbarang')}}/{{$val->pb_id}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>
+
+                           
                         </td>
                       </tr>
                       @else
                       <td align="center"> 
-                          <a class="btn btn-success btn-sm" onclick="printing(this)" )}}/{{$val->pb_id}}><i class="fa fa-print" aria-hidden="true"></i> </a>
+                          <a class="btn btn-success btn-sm" onclick="printing(this)" )}}/{{$val->pb_id}}><i class="fa fa-print" aria-hidden="true"></i> {{-- </a>
+                            <a onclick="lihatjurnal('{{$val->pb_nota}}','PENGELUARAN BARANG GUDANG')" class="btn-xs btn-primary" aria-hidden="true"> lihat jurnal </a> --}}
+
                       </td>
                       @endif
+
+
                       @endforeach
                     </tbody>             
                   </table>
@@ -104,7 +110,32 @@
 
 
 <div class="row" style="padding-bottom: 50px;"></div>
-
+<div id="jurnal" class="modal" >
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h5 class="modal-title">Laporan Jurnal</h5>
+                        <h4 class="modal-title">No Faktur:  <u>{{$data['faktur'][0]->fp_nofaktur or null }}</u> </h4>
+                        
+                      </div>
+                      <div class="modal-body" style="padding: 15px 20px 15px 20px">   
+                          <table id="table_jurnal" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th> ID Akun </th>
+                                            <th> Akun</th>
+                                            <th> Debit</th>
+                                            <th> Kredit</th>
+                                            <th style="width:100px"> Uraian / Detail </th>                                         
+                                        </tr>
+                                    </thead>
+                                    
+                                </table>                            
+                          </div>                          
+                    </div>
+                  </div>
+                </div>
 
 @endsection
 
@@ -132,5 +163,62 @@ function printing(par){
   var id = $(par).find('.pb_id').val();
   window.open("{{url('konfirmasipengeluaranbarang/printing')}}"+'/'+id)
 }
+
+
+function lihatjurnal($ref,$note){
+          nota = $ref;
+          detail = $note;
+
+          $.ajax({
+          url:baseUrl +'/fakturpembelian/jurnalumum',
+          type:'get',
+          data:{nota,detail},
+          dataType : "json",
+          success:function(response){
+                $('#jurnal').modal('show');
+                hasilpph = $('.hasilpph_po').val();
+                hasilppn = $('.hasilppn_po').val();
+
+             $('.loading').css('display', 'none');
+                $('.listjurnal').empty();
+                $totalDebit=0;
+                $totalKredit=0;
+                        console.log(response);
+                    
+                        for(key = 0; key < response.countjurnal; key++) {
+                           
+                          var rowtampil2 = "<tr class='listjurnal'>" +
+                          "<td> "+response.jurnal[key].id_akun+"</td>" +
+                          "<td> "+response.jurnal[key].nama_akun+"</td>";
+
+                          
+                            if(response.jurnal[key].dk == 'D'){
+                              $totalDebit = parseFloat($totalDebit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                              rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td>";
+                            }
+                            else {
+                              $totalKredit = parseFloat($totalKredit) + parseFloat(response.jurnal[key].jrdt_value);
+                              rowtampil2 += "<td> </td><td>"+accounting.formatMoney(response.jurnal[key].jrdt_value, "", 2, ",",'.')+"</td>";
+                            }
+                          
+
+                            rowtampil2 += "<td>"+response.jurnal[key].jrdt_detail+"</td>";
+                            $('#table_jurnal').append(rowtampil2);
+                        }
+                     var rowtampil1 = "</tbody>" +
+                      "<tfoot>" +
+                          "<tr class='listjurnal'> " +
+                                  "<th colspan='2'>Total</th>" +                        
+                                  "<th>"+accounting.formatMoney($totalDebit, "", 2, ",",'.')+"</th>" +
+                                  "<th>"+accounting.formatMoney($totalKredit,"",2,',','.')+"</th>" +
+                                  "<th>&nbsp</th>" +
+                          "<tr>" +
+                      "</tfoot>";
+                                     
+                   
+                      $('#table_jurnal').append(rowtampil1);
+              }
+        });
+   }
 </script>
 @endsection
