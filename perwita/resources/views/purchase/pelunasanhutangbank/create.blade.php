@@ -968,7 +968,7 @@
             dataType:'json',
             success : function(data){
                
-                 if(response.status = 'sukses'){
+                 if(data.status = 'sukses'){
                  
                   var d = new Date();
                   
@@ -993,7 +993,7 @@
                   //year2 ="Anafaradina";
 
                 
-                   nobbk = 'BK-' + month1 + year2 + '/' + comp + '/' +  data;
+                   nobbk = 'BK-' + month1 + year2 + '/' + comp + '/' +  data.data;
                 //  console.log(nospp);
                   $('.nobbk').val(nobbk);
                  }
