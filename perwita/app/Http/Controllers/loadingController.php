@@ -165,7 +165,6 @@ class loadingController extends Controller
 					  ->where('id_akun','like','5299'.'%')
 					  ->where('kode_cabang',$request->cabang)
 					  ->first();
-
 			if ($cari_akun == null) {
 				return response()->json(['status'=>3,'data'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia']);
 			}
