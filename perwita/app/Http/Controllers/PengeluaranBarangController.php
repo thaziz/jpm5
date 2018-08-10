@@ -95,7 +95,7 @@ class PengeluaranBarangController extends Controller
    		return DB::transaction(function() use ($request) {  
 
    			$cab = DB::table('cabang')
-   					 ->where('kode',$cabang)
+   					 ->where('kode',$request->cabang)
    					 ->first();
 			$valid = 0;
 			if ($request->keperluan != '') {
