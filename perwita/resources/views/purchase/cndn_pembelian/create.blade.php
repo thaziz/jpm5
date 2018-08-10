@@ -131,14 +131,14 @@
                             <td>
                               Supplier
                             </td>
-                            <td>
-                              <select class="form-control chosen-select-width jenisbayar2">
+                            <td class="jenisbayartd">
+                              <select class="form-control chosen-select-width jenisbayar2" name="supplier">
                                 @foreach($data['supplier'] as $supplier)
                                   <option value="{{$supplier->idsup}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}} </option>
                                 @endforeach
                               </select>
 
-                              <input type="hidden" class="supplier2" name="supplier">
+                             
                             </td>
                           </tr>
 
@@ -195,10 +195,10 @@
                             <tr>
                               <td> <b> Acc CN / DN </b> </td>
                               <td>
-                              <select class='form-control' name="accbiaya">
+                              <select class='form-control chosen-select' name="accbiaya">
                                 @foreach($data['akunbiaya'] as $akunbiaya)
-                                <option value="{{$akunbiaya->acc_biaya}}">
-                                  {{$akunbiaya->acc_biaya}} - {{$akunbiaya->nama}}
+                                <option value="{{$akunbiaya->id_akun}}">
+                                  {{$akunbiaya->id_akun}} - {{$akunbiaya->nama_akun}}
                                 </option>
                                 @endforeach
                               </select>
@@ -558,6 +558,24 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+  $(document).ready( function () {
+      var config2 = {
+                   '.chosen-select'           : {},
+                   '.chosen-select-deselect'  : {allow_single_deselect:true},
+                   '.chosen-select-no-single' : {disable_search_threshold:10},
+                   '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+                   '.chosen-select-width1'     : {width:"100%"}
+                 }
+                 for (var selector in config2) {
+                   $(selector).chosen(config2[selector]);
+                 }
+
+      $('.idsup').chosen(config2); 
+      $('.gudang').chosen(config2); 
+    
+    })
+
+
 
  function addCommas(nStr) {
             nStr += '';
@@ -631,15 +649,14 @@
     //alert(brutocn);
 
 
-     $('.jenisbayar2').addClass('disabled');
+     $('.jenisbayartd').addClass('disabled');
      $('.jenissup').addClass('disabled');
      $('.jeniscndn').addClass('disabled');
      $('.cabang').addClass('disabled');
     $('.cabang').prop('disabled', true).trigger("liszt:updated");
     $('.cabang').prop('disabled', true).trigger("chosen:updated");
 
-    $('.jenisbayar2').prop('disabled', true).trigger("liszt:updated");
-    $('.jenisbayar2').prop('disabled', true).trigger("chosen:updated");
+ 
 
     idfaktur = $('.idfakturheader').val();
      nofaktur = $('.nofakturheader').val();

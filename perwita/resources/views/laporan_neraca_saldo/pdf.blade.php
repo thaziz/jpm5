@@ -1,7 +1,7 @@
 <!DOCTYPE html>
   <html>
     <head>
-      <title></title>
+      <title>laporan Neraca Saldo</title>
 
 
         <link href="{{ asset('assets/vendors/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -16,65 +16,81 @@
         <!-- Toastr style -->
         <link href="{{ asset('assets/vendors/toastr/toastr.min.css')}}" rel="stylesheet">
 
+        <script type="text/javascript" src="{{ asset('assets/plugins/jquery-1.12.3.min.js') }}"></script>
+
       <style>
 
         @page { margin: 10px; }
-        body { margin: 10px; }
 
           .page_break { page-break-before: always; }
 
           .page-number:after { content: counter(page); }
 
-          #table-data{
-          font-size: 8pt;
-          margin-top: 10px;
-          border: 1px solid #555;
-          }
-          #table-data th{
-            text-align: center;
-            border: 1px solid #aaa;
-            border-collapse: collapse;
-            background: #ccc;
-            border-bottom: 3px solid #999;
-            padding: 3px;
+         #table-data{
+        font-size: 8pt;
+        margin-top: 10px;
+        border: 1px solid #555;
+        }
+        #table-data th{
+          text-align: center;
+          border: 1px solid #aaa;
+          border-collapse: collapse;
+          background: #ccc;
+          border-bottom: 2px solid #555;
+          padding: 5px;
+        }
+
+        #table-data td{
+          border-right: 1px solid #555;
+          padding: 5px;
+        }
+
+        #table-data td.currency{
+          text-align: right;
+          padding-right: 5px;
+        }
+
+        #table-data td.no-border{
+          border: 0px;
+        }
+
+        #table-data td.total{
+          background: #ccc;
+          padding: 5px;
+          font-weight: bold;
+        }
+
+        #table-data td.total.not-same{
+           color: red !important;
+           -webkit-print-color-adjust: exact;
+        }
+
+          #navigation ul{
+            float: right;
+            padding-right: 110px;
           }
 
-          #table-data td{
-            border-right: 1px solid #555;
+          #navigation ul li{
+            color: #fff;
+            font-size: 15pt;
+            list-style-type: none;
+            display: inline-block;
+            margin-left: 40px;
           }
 
-          #table-data td.currency{
-            text-align: right;
-            padding-right: 5px;
-          }
+           #form-table{
+              font-size: 8pt;
+            }
 
-          #table-data td.no-border{
-            border: 0px;
-          }
+            #form-table td{
+              padding: 5px 0px;
+            }
 
-          #table-data td.total{
-            background: #ccc;
-            padding: 5px;
-            font-weight: bold;
-          }
-
-          #table-data td.total.not-same{
-             color: red !important;
-             -webkit-print-color-adjust: exact;
-          }
-
-          #form-table{
-            background: none;
-          }
-
-          #form-table td{
-            padding: 5px;
-          }
-
-          #form-table td select, #form-table td input, #form-table td button{
-            border-radius: 0px;
-            font-size: 0.8em;
-          }
+            #form-table .form-control{
+              height: 30px;
+              width: 90%;
+              font-size: 8pt;
+            }
 
       </style>
 
@@ -84,73 +100,51 @@
             display: none;
           }
 
-          #table-data td.total{
-             background-color: #ccc !important;
-             -webkit-print-color-adjust: exact;
-          }
+        #table-data td.total{
+         background-color: #ccc !important;
+         -webkit-print-color-adjust: exact;
+      }
 
-          #table-data td.total.not-same{
-             color: red !important;
-             -webkit-print-color-adjust: exact;
-          }
+      #table-data td.not-same{
+         color: red !important;
+         -webkit-print-color-adjust: exact;
+      }
 
-          .page-break { display: block; page-break-before: always; }
+        .page-break { display: block; page-break-before: always; }
       </style>
 
     </head>
 
     <body style="background: #555;">
 
-      <div class="col-md-10 col-md-offset-1" style="background: white; padding: 10px;" id="navigation">
-        <form role="form" id="form-register-jurnal" method="POST" action="{{ route("register_jurnal.index_single") }}" target="_self">
-        <input type="hidden" value="{{ csrf_token() }}" name="_token" readonly>
-        <table id="form-table" border="0" width="100%">
-          <tbody>
-            <tr>
-              <td width="20%">
-                
-              </td>
-
-              <td width="20%">
-                
-              </td>
-
-              {{-- <td width="20%">
-                <input type="text" class="form-control tanggal_register register_validate" name="tanggal" placeholder="MM/YYYY" style="cursor: pointer; background: white;" readonly value="{{$request->tanggal}}">
-              </td> --}}
-
-              <td>
-                
-              </td>
-
-              {{-- <td width="20%">
-                <input type="text" class="form-control sampai_register register_validate" name="sampai" placeholder="MM/YYYY" style="cursor: pointer; background: white;" readonly required value="{{$request->sampai}}">
-              </td> --}}
-
-              <td width="9%" style="border-right: 1px solid #999;">
-                {{-- <button class="btn btn-primary btn-block" id="save_register">
-                  <i class="fa fa-check-circle"></i> &nbsp;Submit
-                </button> --}}
-              </td>
-
-              <td width="9%">
-                <button class="btn btn-success btn-block" id="print">
-                  <i class="fa fa-print"></i> &nbsp;Print
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        </form>
+      <div class="col-md-12" id="navigation" style="background: rgba(0, 0, 0, 0.4); box-shadow: 0px 2px 5px #444; position: fixed; z-index: 2">
+        <div class="row">
+          <div class="col-md-7" style="background: none; padding: 15px 15px; color: #fff; padding-left: 120px;">
+            PT Jawa Pratama Mandiri
+          </div>
+          <div class="col-md-5" style="background: none; padding: 10px 15px 5px 15px">
+            <ul>
+              <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_neraca_saldo').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Setting Register Jurnal"></i></li>
+              <li><i class="fa fa-print" style="cursor: pointer;" id="print" data-toggle="tooltip" data-placement="bottom" title="Print Laporan"></i></li>
+            </ul>
+          </div>
+        </div>
       </div>
 
-      <div class="col-md-12" style="background: white; padding: 10px 15px; margin-top: 20px;">
+      <div class="col-md-12" style="background: white; padding: 10px 15px; width: 1600px; margin-top: 80px;">
   
-        <table width="100%" border="0" style="font-size: 10pt; border-bottom: 1px solid #333;">
+        <table width="100%" border="0" style="border-bottom: 1px solid #333;">
           <thead>
             <tr>
-              <th style="text-align: left;">Laporan Neraca Saldo </th>
-              <th style="text-align: right;">PT. Jawa Pratama Mandiri</th>
+              <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Neraca Saldo  </th>
+            </tr>
+
+            <tr>
+              <th style="text-align: left; font-size: 12pt; font-weight: 500">PT Jawa Pratama Mandiri</th>
+            </tr>
+
+            <tr>
+              <th style="text-align: left; font-size: 8pt; font-weight: 500; padding-bottom: 10px;">(Angka Disajikan Dalam Rupiah, Kecuali Dinyatakan Lain)</th>
             </tr>
           </thead>
         </table>
@@ -158,92 +152,256 @@
         <table width="100%" border="0" style="font-size: 8pt;">
           <thead>
             <tr>
-              <td style="text-align: left;">Bulan Transaksi : </td>
-              <td style="text-align: right;"></td>
+              <td style="text-align: left; padding-top: 5px;">
+
+                Transaksi : 
+                  
+                @if($request['jenis'] == 'Bulan')
+                  Bulan {{ date_ind(explode('-', $request['d1'])[1]) }} {{ explode('-', $request['d1'])[0] }}
+                @else
+                  Tahun {{ $request['y1'] }}
+                @endif
+
+              </td>
+              
             </tr>
           </thead>
         </table>
 
         <table id="table-data" width="100%" border="0">
           <thead>
-            <tr>
-              <th rowspan="2" width="6%">Kode</th>
+           <tr>
+              {{-- <th rowspan="2" width="6%">Kode</th> --}}
               <th rowspan="2" width="12%">Nama Akun</th>
-              <th colspan="2" width="8%">Saldo Awal</th>
-              <th colspan="2" width="8%">Mutasi Bank</th>
-              <th colspan="2" width="8%">Mutasi Kas</th>
-              <th colspan="2" width="8%">Mutasi Memorial</th>
-              <th colspan="2" width="8%">Total Mutasi</th>
-              <th colspan="2" width="8%">Saldo Akhir</th>
+              <th colspan="2" width="10%">Saldo Awal</th>
+              <th colspan="2" width="10%">Mutasi Bank</th>
+              <th colspan="2" width="10%">Mutasi Kas</th>
+              <th colspan="2" width="10%">Mutasi Memorial</th>
+              <th colspan="2" width="10%">Total Mutasi</th>
+              <th colspan="2" width="10%">Saldo Akhir</th>
             </tr>
 
             <tr>
-              <th width="8%">Debet</th>
-              <th>Kredit</th>
+              <th width="6%">Debet</th>
+              <th width="6%">Kredit</th>
 
-              <th width="8%">Debet</th>
-              <th>Kredit</th>
+              <th width="6%">Debet</th>
+              <th width="6%">Kredit</th>
 
-              <th width="8%">Debet</th>
-              <th>Kredit</th>
+              <th width="6%">Debet</th>
+              <th width="6%">Kredit</th>
 
-              <th width="8%">Debet</th>
-              <th>Kredit</th>
+              <th width="6%">Debet</th>
+              <th width="6%">Kredit</th>
 
-              <th width="8%">Debet</th>
-              <th>Kredit</th>
+              <th width="6%">Debet</th>
+              <th width="6%">Kredit</th>
 
-              <th width="8%">Debet</th>
-              <th>Kredit</th>
+              <th width="6%">Debet</th>
+              <th width="6%">Kredit</th>
 
 
             </tr>
           </thead>
 
           <tbody>
-            <tr>
-              @foreach($data as $key => $okee)
+            
+            @foreach($data as $key => $okee)
                 <tr>
-                  <td style="padding: 5px; vertical-align: top;">{{ $okee->id_akun }}</td>
-                  <td style="padding: 5px;font-weight: 600;">{{ $okee->nama_akun }}</td>
-                  <td class="text-right" style="padding: 5px;">{{ number_format(0) }}</td>
-                  <td class="text-right" style="padding: 5px;">{{ number_format(0) }}</td>
-                  <td class="text-right" style="padding: 5px;">{{ number_format(0) }}</td>
-                  <td class="text-right" style="padding: 5px;">{{ number_format(0) }}</td>
-                  <td class="text-right" style="padding: 5px;">{{ number_format(0) }}</td>
-                  <td class="text-right" style="padding: 5px;">{{ number_format(0) }}</td>
-                  <td class="text-right" style="padding: 5px;">{{ number_format(0) }}</td>
-                  <td class="text-right" style="padding: 5px;">{{ number_format(0) }}</td>
-                  <td class="text-right" style="padding: 5px;">{{ number_format(0) }}</td>
-                  <td class="text-right" style="padding: 5px;">{{ number_format(0) }}</td>
-                  <td class="text-right" style="padding: 5px;">{{ number_format(0) }}</td>
-                  <td class="text-right" style="padding: 5px;">{{ number_format(0) }}</td>
+                  {{-- <td style="padding: 5px; vertical-align: top;">{{ $okee->id_akun }}</td> --}}
+                  <td style="padding: 5px;font-weight: normal;">{{ $okee->nama_akun }}</td>
+
+                  <?php 
+                    $deb = $kre = 0; $tot_deb = $tot_kred = 0;
+                    //if($okee->akun_dka == "D") {
+                      //if($data_detail[$okee->id_akun] < 0)
+                        //$kre = number_format($data_detail[$okee->id_akun]['saldo_akun'], 2);
+                      //else
+                        //$deb = number_format($data_detail[$okee->id_akun]['saldo_akun'], 2);
+                    //}else{
+                      //if($data_detail[$okee->id_akun] < 0)
+                        //$deb = number_format($data_detail[$okee->id_akun]['saldo_akun'], 2);
+                      //else
+                        //$kre = number_format($data_detail[$okee->id_akun]['saldo_akun'], 2);
+                    //}
+
+                    if($okee->akun_dka == "D")
+                      $deb = number_format($data_detail[$okee->id_akun]['saldo_akun'], 2);
+                    else
+                      $kre = number_format($data_detail[$okee->id_akun]['saldo_akun'], 2);
+                  ?>
+
+
+                  {{-- saldo awal --}}
+
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ $deb }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ $kre }}</td>
+
+                  {{-- Mutasi bank --}}
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_bank_D'], 2)) }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_bank_K'], 2)) }}</td>
+
+                  {{-- Mutasi Kas --}}
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_kas_D'], 2)) }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_kas_K'], 2)) }}</td>
+
+                  {{-- Mutasi memorial --}}
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_memorial_D'], 2)) }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_memorial_K'], 2)) }}</td>
+
+                  <?php 
+                    $tot_deb =  $data_detail[$okee->id_akun]['mutasi_bank_D'] + $data_detail[$okee->id_akun]['mutasi_kas_D'] + $data_detail[$okee->id_akun]['mutasi_memorial_D'];
+
+                    $tot_kre =  $data_detail[$okee->id_akun]['mutasi_bank_K'] + $data_detail[$okee->id_akun]['mutasi_kas_K'] + $data_detail[$okee->id_akun]['mutasi_memorial_K'];
+
+                    ?>
+
+                  {{-- total mutasi --}}
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($tot_deb, 2)) }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($tot_kre, 2)) }}</td>
+
+                  {{-- Saldo Akhir --}}
+                  <?php
+                    $sad = $ak = 0;
+
+                    if($okee->akun_dka == 'D')
+                      $sad = ($data_detail[$okee->id_akun]['saldo_akun'] + $tot_deb) + $tot_kre;
+                    else
+                      $ak = ($data_detail[$okee->id_akun]['saldo_akun'] + $tot_kre) + $tot_deb;
+                  ?>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ number_format($sad, 2) }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ number_format($ak, 2) }}</td>
                 </tr>
               @endforeach
-            </tr>
+            
           </tbody>
+        </table>
+
+        <table id="table" width="100%" border="0" style="font-size: 8pt; margin-top: 4px;">
+          <thead>
+            <tr>
+              
+            </tr>
+          </thead>
         </table>
 
       </div>
 
-      <script type="text/javascript" src="{{ asset('assets/plugins/jquery-1.12.3.min.js') }}"></script>
+      <!-- modal -->
+    <div id="modal_neraca_saldo" class="modal">
+      <div class="modal-dialog" style="width: 40%;">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Form Neraca Saldo</h4>
+            <input type="hidden" class="parrent"/>
+          </div>
+
+          <div class="modal-body" style="padding: 10px;">
+            <div class="row">
+              <form role="form" class="form-inline" id="form-neraca-saldo" method="POST" action="{{ route("neraca_saldo.index") }}" target="_self">
+                  <input type="hidden" value="{{ csrf_token() }}" name="_token" readonly>
+                  <table border="0" id="form-table" class="col-md-12">
+
+                    <tr>
+                      <td width="40%" class="text-center">Periode Neraca Saldo</td>
+                      <td colspan="3">
+                        <select class="form-control neraca_saldo select_validate" name="jenis" id="periode_neraca_saldo" style="width: 80%;">
+                          <option value="Bulan">Bulanan</option>
+                          <option value="Tahun">Tahunan</option>
+                        </select>
+                      </td>
+                    </tr>
+
+                    {{-- <tr>
+                      <td width="40%" class="text-center">Pilih Cabang</td>
+                      <td colspan="3">
+                        <select class="form-control buku_besar select_bukbes_validate" name="buku_besar_cabang" id="buku_besar_cabang" style="width: 80%;">
+
+                        </select>
+                        &nbsp;&nbsp; <small id="buku_besar_cabang_txt" style="display: none;"><i class="fa fa-hourglass-half"></i></small>
+                      </td>
+                    </tr> --}}
+
+                    <tr>
+                      <td width="20%" class="text-center">Masukkan <span id="state-masuk">Bulan</span></td>
+                      <td width="25%">
+                        <input type="text" class="form-control neraca_saldo form_neraca-saldo_validate neraca_saldo_tanggal first" name="d1" placeholder="MM/YYYY" style="width: 100%; cursor: pointer; background: white;" readonly>
+
+                        <input type="text" class="form-control neraca_saldo form_neraca-saldo_validate neraca_saldo_tahun first" name="y1" placeholder="YYYY" style="width: 90%; cursor: pointer; background: white; display: none;" readonly>
+                      <td>
+                    </tr>
+
+                  </table>
+              </form>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+              <button class="btn btn-primary btn-sm" id="proses_neraca_saldo" >Proses</button>
+          </div>
+        </div>
+      </div>
+    </div>
+      <!-- modal -->
+
       <script type="text/javascript" src="{{ asset('assets/vendors/bootstrap/js/bootstrap.min.js') }}"></script>
 
-        <!-- datepicker  --> 
-        <script src="{{ asset('assets/vendors/daterangepicker/moment.min.js') }}"></script>
-        <script src="{{ asset('assets/vendors/datapicker/bootstrap-datepicker.js') }}"></script>
-        <script src="{{ asset('assets/vendors/daterangepicker/daterangepicker.js') }}"></script>
+      <!-- datepicker  --> 
+      <script src="{{ asset('assets/vendors/daterangepicker/moment.min.js') }}"></script>
+      <script src="{{ asset('assets/vendors/datapicker/bootstrap-datepicker.js') }}"></script>
+      <script src="{{ asset('assets/vendors/daterangepicker/daterangepicker.js') }}"></script>
 
-        <!-- Toastr -->
-        <script src="{{ asset('assets/vendors/toastr/toastr.min.js') }}"></script>
+      <!-- Toastr -->
+      <script src="{{ asset('assets/vendors/toastr/toastr.min.js') }}"></script>
 
       <script type="text/javascript">
         $(document).ready(function(){
+
+          $('[data-toggle="tooltip"]').tooltip({container : 'body'});
+
+          $('.neraca_saldo_tanggal.first').datepicker( {
+              format: "yyyy-mm",
+              viewMode: "months", 
+              minViewMode: "months"
+          })
+
+          $('.neraca_saldo_tahun.first').datepicker( {
+              format: "yyyy",
+              viewMode: "years", 
+              minViewMode: "years"
+          })
+
+          $("#periode_neraca_saldo").change(function(evt){
+            evt.preventDefault();
+
+            periode = $(this);
+
+            $("#state-masuk").text(periode.val());
+            if(periode.val() == "Bulan"){
+              $(".neraca_saldo_tahun").css("display", "none");
+              $(".neraca_saldo_tanggal").css("display", "inline-block");
+            }else if(periode.val() == "Tahun"){
+              $(".neraca_saldo_tanggal").css("display", "none");
+              $(".neraca_saldo_tahun").css("display", "inline-block");
+            }
+          })
+
+          $('#proses_neraca_saldo').click(function(evt){
+            evt.preventDefault()
+
+            // if(validate_form_buku_besar() == true){
+              $("#form-neraca-saldo").submit();
+            // }
+          })
+
           $('#print').click(function(evt){
             evt.preventDefault();
 
             window.print();
           })
+
         })
       </script>
     </body>

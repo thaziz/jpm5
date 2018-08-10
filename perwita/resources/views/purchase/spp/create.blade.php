@@ -335,7 +335,7 @@
 
 
 //      $(".suipd").chosen(config);
-      $(".kndraan").chosen(config);
+     
     })
      },2000);
 
@@ -1089,7 +1089,7 @@
                       $('.barang').append(" <option value=''>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                          $('.barang').append("<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+"> <h5> "+obj.nama_masteritem+" </h5> </option>");
+                          $('.barang').append("<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+"> <h5> "+obj.kode_item+" - "+obj.nama_masteritem+" </h5> </option>");
                            $('.barang').trigger("chosen:updated");
                            $('.barang').trigger("liszt:updated");
                         })
@@ -1191,7 +1191,7 @@
           rowStr +=  "<option value=''> -- Data Kosong -- </option>";              
                       }
           rowStr += "</select> <br>  <div class='brgduplicate duplicate"+nourutbrg+"'> </div>   </td>" +
-                    "<td> <input type='number' class='input-sm form-control kuantitas qty"+counterId+"' name='qty[]' data-id='"+no+"' required > <input type='hidden' class='qty_request' name='qty_request[]' value='"+no+"'>  <br> <div> </div> </td>" + //qty
+                    "<td> <input type='number' class='input-sm form-control kuantitas qty"+counterId+"' name='qty[]' data-id='"+no+"' required > <input type='hidden' class='qty_request' name='qty_request[]' value='"+no+"'> <input type='hidden' class='statuskontraksupplier"+counterId+"' name='statuskontrak[]'> <br> <div> </div> </td>" + //qty
 
                     "<td> <div class='stock_gudang"+counterId+"'> <br> <br> <div> </div> </td>" + //stockgudang
 
@@ -1268,12 +1268,12 @@
 
             var val = $(this).val();
             var id = $(this).data('id');
-            var string = val.supduplicate(",");
+            var string = val.split(",");
             var bayar = string[1];
             var harga = string[5];
-            var contract = string[4];
+     //       var contract = string[4];
            // console.log(harga);
-  
+            contract = $('.statuskontraksupplier' + id).val();
             // toastr.info(val);
              numhar = Math.round(harga).toFixed(2);
 
@@ -1340,10 +1340,12 @@
              variable = jnsitem.split(",");
              jenisitem = variable[0];
               penerimaan = variable[1];
+              if(penerimaan == ' YA'){
+                if(gudang == ''){
+                  toastr.info('Harap Pilih Gudang :)');
+                  return false;
+                }
 
-              if(gudang == ''){
-                toastr.info('Harap Pilih Gudang :)');
-                return false;
               }
 
              $.ajax({
@@ -1385,7 +1387,7 @@
                      //$('.sup'+nourut).empty();
 
                     if(arrSupid.length > 0) { // terikat kontrak
-                     console.log('supplier terikat kontrak');
+                   // alert('test');
                       $('.sup' + nobarang).empty();
                       $.each(arrSupid, function(i , obj) {
                       
@@ -1394,7 +1396,9 @@
                         
                       $('.sup' + nobarang).trigger("chosen:updated");
                       $('.sup' + nobarang).trigger("liszt:updated");
-
+                      $('.statuskontraksupplier' + id).val('YA');
+                      $('.statuskontraksuppliers' + nobarang).val('YA');
+                    
 
                         supbtn = arrSupid;
 
@@ -1406,13 +1410,6 @@
 
                         console.log(string + 'string') 
 
-                        console.log(string[0] + '0');
-                        console.log(string[1] + '1');
-                        console.log(string[2] + '2');
-                        console.log(string[3] + '3');
-                        console.log(string[4] + '4');
-                        console.log(string[5] + '5');
-                        console.log(string[6] + '6');
                         idcntr = counterId - 1;
                 
                         if(string[4] == 'YA'){
@@ -1440,7 +1437,7 @@
                         $('.bayar' + id).val(syarat_kredit);
                     } // end arrSUpid
                     else { // TIDAK TERIKAT KONTRAK
-                     console.log('tdk ada terikat kontrak');
+                
                        $('.sup' + nobarang).empty();
                       $.each(supplier, function(i , obj) {
                       supbtn = supplier;
@@ -1462,7 +1459,8 @@
                         $('.hargabrg' + nobarang).val(addCommas(hrgbrg));
                      
                       });
-
+                       $('.statuskontraksupplier' + id).val('TIDAK');
+                       $('.statuskontraksuppliers' + nobarang).val('TIDAK')
                       $('.sup' + nobarang).trigger("chosen:updated");
                       $('.sup' + nobarang).trigger("liszt:updated");
                     }
@@ -1489,13 +1487,13 @@
       //TAMBAHDATASUPPLIER
      $('#add-btn-supp').click(function(){
               $('.cek_tb').attr('disabled', false);
-      $('.loadingjenis').css('display' , 'block');
+              $('.loadingjenis').css('display' , 'block');
 
               var idtrsup = no - 1;
               var lastarr = arrnobrg.slice(-1)[0];
               val2 = $('.brg' + lastarr).val();
               var string = val2.split(",");
-              var kodeitem2 = string[0];
+              var kodeitem = string[0];
               var hargabrgsup = string[2];
               urutsup++;
               var removesup = idremovesup - 1;
@@ -1517,10 +1515,10 @@
               $.ajax({
                 url : baseUrl + '/suratpermintaanpembelian/ajax_hargasupplier',
                 type : "GET",
-                data : {kodeitem2, gudang, penerimaan},
+                data : {kodeitem, gudang, penerimaan},
                 dataType : "json",
                 success : function(data) {
-      $('.loadingjenis').css('display' , 'none');
+             $('.loadingjenis').css('display' , 'none');
   					 
   					    hasilsupp = data.supplier //terikat kontrak
                 hasilmaster = data.mastersupplier // tdkterikatkontrak
@@ -1531,26 +1529,28 @@
 
       					var rowSup = "<tr id='supp-"+idtrsup+"' class='data-supplier supp-"+counterId+"'>";
       					rowSup += "<td></td> <td></td>  <td> </td> <td></td> <td>  </td>"+
-      							"<td> <input type='text' style='text-align:right' name='harga[]' data-id='"+counterId+"' class='input-sm form-control hrga hargabrg"+idtrsup+" harga"+counterId+"' data-id="+counterId+" data-no="+removesup+" '/></td>"+ //harga
-      							"<td><select id='supselect' class='form-control chosen-select select2 suipd suipl sup"+idtrsup+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' data-no='"+idtrsup+"' name='supplier[]' required=> <option value=''> -- Pilih Supplier -- </option>"; //SUpplier
+      							"<td> <input type='text' style='text-align:right' name='harga[]' data-id='"+counterId+"' class='input-sm form-control hrga hargabrg"+idtrsup+" harga"+counterId+"' data-id="+counterId+" data-no="+removesup+" '/>  <input type='hidden' class='statuskontraksupplier"+counterId+" statuskontraksuppliers"+idtrsup+"' name='statuskontrak[]'></td>"+ //harga
+      							"<td><select id='supselect' class='form-control chosen-select select2 suipd suipl sup"+idtrsup+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' data-no='"+idtrsup+"' name='supplier[]' required> <option value=''> -- Pilih Supplier -- </option>"; //SUpplier
       					
                 if(hasilsupp.length > 0){ //TERIKAT KONTRAK
                       $.each(hasilsupp, function(i , obj) {
-                        rowSup +=  "<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+idtrsup+","+obj.nama_supplier+","+obj.is_contract+","+obj.is_harga+","+obj.idsup+"' selected>"+obj.no_supplier+"-"+ obj.nama_supplier+"</option>";
+                        rowSup +=  "<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+idtrsup+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected>"+obj.no_supplier+"-"+ obj.nama_supplier+"</option>";
                       }) 
+                      $('.hrga' + idtrsup).attr('readonly' , true);                    
                 }
                 else {
                    $.each(hasilmaster, function(i , obj) {
-                        rowSup +=  "<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+idtrsup+","+obj.nama_supplier+","+obj.is_contract+","+obj.is_harga+","+obj.idsup+"' selected>"+obj.no_supplier+"-"+ obj.nama_supplier+"</option>";
+                        rowSup +=  "<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+idtrsup+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected>"+obj.no_supplier+"-"+ obj.nama_supplier+"</option>";
                       }) 
+                   
                 }
-
+                  
       					rowSup  +="</select><br> </td>"; //supplier
       					
       					rowSup +=  "<td> <button class='btn btn-sm btn-danger remove-btn' data-id='"+idtrsup+"' type='button'><i class='fa fa-trash'></i></button></td>";
       					rowSup += "</tr>";
-       
-      					if($('.brg' + idtrsup).val() != ''){
+                  
+               	if($('.brg' + idtrsup).val() != ''){
       						if($('tr#supp-'+ idtrsup).length < 2) {          
       							$('#table-data').append(rowSup);
 
@@ -1568,6 +1568,7 @@
                             else {
                               $('.hargabrg' + idtrsup).val(addCommas(string[5]));
                               $('.hargabrg' + idtrsup).attr('readonly' , true);
+                              $('.statuskontraksupplier' + counterId).val('YA')
                           }
                         }
                         else {
@@ -1577,6 +1578,7 @@
                             else {                          
                               $('.harga' + id).val(addCommas(string[5]));
                               $('.hargabrg' + idtrsup).val(addCommas(string[5]));
+                              
                           }
                         }
 
@@ -1599,40 +1601,41 @@
                        
                         $('.hargabrg' + idtrsup).val(addCommas(hargabrgsup));      
                         $('.bayar' + id).val(syarat_kredit);
-                      
+                         $('.statuskontraksupplier' + counterId).val('TIDAK')
                       }
       						  }
       						  else{
       						  toastr.info('Supplier telah mencapai batas maksimum');
       						}
       					}
-       
+
+              
+          $('.supplier' + counterId).change(function(){
+            val = $(this).val();
+            hargasupplier = val.split(",");
+ //           kontrak = hargasupplier[4];
+            id = $(this).data('id');
+            kontrak = $('.statuskontraksupplier' + id).val();
+            //alert(kontrak);
+            if(kontrak == 'YA'){
+              //alert('s');
+              harga = hargasupplier[5];
+              $('.harga' + id).val(addCommas(harga));
+            }
+          })
 
 					$(function(){
 						$('.harga' + counterId).change(function(){
 							var id = $(this).data('id');
-						
-
-               val = $(this).val();
-      
-             val = accounting.formatMoney(val, "", 2, ",",'.');
-             $(this).val(val);
-
-					//		$('.harga' + id).val(addCommas(numhar));
-
-						   $('.simpan').attr('disabled', true);
-                $('.cek_tb').attr('disabled', false);
-
+            //  alert(id);
+              val = $(this).val();      
+              val = accounting.formatMoney(val, "", 2, ",",'.');
+              $(this).val(val);
+						  $('.simpan').attr('disabled', true);
+              $('.cek_tb').attr('disabled', false);
 						})
 					}) 
-
-      
-					  $(function(){
-						$('.qty2' + counterId).change(function(){					 
-							var id = $(this).data('id');						  
-							harga = $(this).val();	 
-						})
-					}) 
+              
 
 				  // toastr.info('test');     
 					var val = $(this).val();
@@ -1642,10 +1645,10 @@
 					var harga = string[5];
 					var contract = string[4];
 				  //  console.log(val);
-					 $('.simpan').attr('disabled', true);
-            $('.cek_tb').attr('disabled', false);
+					$('.simpan').attr('disabled', true);
+          $('.cek_tb').attr('disabled', false);
 
-					  console.log(val);
+					 console.log(val);
 					 numhar = Math.round(harga).toFixed(2);
 
 					 if(contract == 'YA'){
@@ -1666,17 +1669,17 @@
 					 }
 
 					$('.bayar' + id).val(bayar);
-				}
-				})
+
+				} // end success
+				}) // end ajax
 			
-        
-
-
     counterId++;
     nourutsup2++;
    // nourutbrg++;
    /* countsup++;*/
-    })     
+    })      // end button tambah supplier
+  
+
 
     //hapusbarang
     $(document).on('click','.removes-btn',function(){
@@ -1717,12 +1720,10 @@
         idsup = split[6];
         index = valsup.indexOf(idsup);
         valsup.splice(index, 1);*/
-
-
         parent.remove();
-
   })
   
 
+  
 </script>
 @endsection

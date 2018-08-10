@@ -214,11 +214,8 @@
                                    </select>
                                   @elseif(Auth::user()->punyaAkses('Konfirmasi Order','aktif'))
                                      <select class="form-control pemroses" name="pemroses">
-                                          <option value="KEUANGAN">
+                                          <option value="KEUANGAN" selected="">
                                               PIHAK KEUANGAN
-                                          </option>
-                                          <option value="PEMBELIAN" selected="">
-                                              PIHAK PEMBELIAN
                                           </option>
                                        </select>
                                   @endif
@@ -242,13 +239,14 @@
                               <tr>
                                   <th> 
                                       @if($spp->staff_pemb == 'DISETUJUI')
+                                         <div style='text-align: center'>  <p class="label label-info" > DISETUJUI </p> </div>
                                       @else
                                         <div style='text-align: center'>  <p class="label label-danger" > BELUM DI PROSES </p> </div>
                                       @endif
                                   </th>
                                   <th>
                                     @if($spp->man_keu == 'DISETUJUI')
-                                    
+                                       <div style='text-align: center'>  <p class="label label-info" > DISETUJUI </p> </div>
                                     @else
                                       <div style='text-align: center'> <p class="label label-danger" style='text-align: center'> BELUM DI PROSES </p> </div>
                                     @endif
@@ -367,7 +365,7 @@
                     <tr class="data-supplier">
                       @foreach($data['spptb'] as $index=>$spptb)
                       <td class="supid supplier{{$index}}" data-id="{{$index}}" data-supplier="{{$spptb->spptb_supplier}}"> 
-                            <select class="input-sm form-control supplier{{$index}} sup" name="supplier3[]" disabled="" data-supplier="{{$spptb->spptb_supplier}}" data-id="{{$index}}">
+                            <select class="input-sm form-control supplier{{$index}} sup" name="supplier3[]" disabled="" data-supplier="{{$spptb->spptb_supplier}}" data-id="{{$index}}" style="color:#000">
                              @foreach($data['supplier'] as $sup)
                               <option value="{{$sup->idsup}},{{$sup->syarat_kredit}}" @if($spptb->spptb_supplier == $sup->idsup) selected="" @endif>  {{$sup->nama_supplier}} 
                              @endforeach
@@ -811,8 +809,8 @@
 
     $(function(){
       var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';
-        var idspp = $('.idspp').serialize();
-       
+        var idspp = $('.idspp').val();
+        pemroses = $('.pemroses').val();
         $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -821,12 +819,11 @@
 
         $.ajax({     
           type :"GET",
-          data : idspp,
+          data : {idspp,pemroses},
           url : url,
           dataType:'json',
           success : function(data){
-          console.log(data);
-
+       
             if(data.codt.length > 0) {
               $('#hargatable').each(function(){
                 for(var n=0; n < data.sppdt_barang.length; n++){
@@ -861,8 +858,6 @@
               console.log(data.sppdt_barang.length);
                       for(var n=0;n<data.sppdt_barang.length;n++){
                        var kodebrg =  $('.brg'+ n).data("kodeitem");
-                       console.log('kodebrg');
-                       console.log(kodebrg);
                           for(var i = 0 ; i <data.sppdt.length;i++){
                             if(kodebrg == data.sppdt[i].sppd_kodeitem) {
                                for(var j =0; j < data.spptb.length; j++){

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Print Konfirmasi Barang</title>
+	<title>Print Konfirmasi Order</title>
 	<style>
 *{
 	font-family: arial;
@@ -125,7 +125,7 @@ table, td, th {
 					Tanggal :
 				</div>
 				<div class="float-left border-bottom">
-					&nbsp; {{ Carbon\Carbon::parse($data['co'][0]->co_time_mng_pem_approved)->format('d-M-Y') }}
+					&nbsp; {{ Carbon\Carbon::parse($data['co'][0]->time_staffpemb)->format('d-M-Y') }}
 				</div>
 			</td>
 		</tr>
@@ -310,24 +310,20 @@ table, td, th {
 <table class="border-top-hidden" width="100%">
 		<tr>
 			<td class="footer" width="170px">
-				<div class="top-center" style="padding-bottom: 60px;">Penerima Barang</div>
+				<div class="top-center" style="padding-bottom: 60px;">Bagian Pembelian
+
+				</div>
 			</td>
-			<td width="170px">
-				<div class="top-center" style="padding-bottom: 60px;">Menyetujui</div>
-			</td>
-			<td width="205px">
-				<div class="top-center" style="padding-bottom: 60px;">Bagian Pembelian</div>
-			</td>
-			<td>
-				<div class="top-center" style="padding-bottom: 60px;">Bagian Hutang</div>
+			<td class="footer" width="170px">
+				<div class="top-center" style="padding-bottom: 60px;">Bagian Keuangan</div>
 			</td>
 		</tr>
 	</table>
 	<table class="border-hidden" width="100%" style="margin-top: 15px;">
 		<tr>
 			<td class="text-left border-left-hidden">1. Bagian Pembelian</td>
-			<td class="text-left border-left-hidden">2. Bagian Hutang</td>
-			<td class="text-left border-left-hidden">3. Bagian Gudang</td>
+			<td class="text-left border-left-hidden">1. Bagian Keuangan</td>
+			
 		</tr>
 	</table>
 </div>

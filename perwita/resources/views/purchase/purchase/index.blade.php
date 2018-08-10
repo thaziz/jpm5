@@ -5,7 +5,6 @@
 @section('content')
 
 
-
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Pembelian Order </h2>
@@ -36,36 +35,11 @@
     <div class="col-md-2">
       <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-        <h2 style='text-align:center'> <b> {{$data['countspp']}} SPP </b></h2> <h4 style='text-align:center'> belum di proses Staff Pembelian </h4>
+        <h2 style='text-align:center'> <b> {{$data['countspp']}} SPP </b></h2> <h4 style='text-align:center'> BELUM DI PROSES PO </h4>
       </div>
     </div>
 
-    <div class="col-md-2">
-      <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-        <h2 style='text-align:center'> <b> {{$data['poblmdiproses']}} PO </b></h2> <h4 style='text-align:center'> belum di proses Staff Keuangan </h4>
-      </div>
-    </div>
-
-    <div class="col-md-2">
-      <div class="alert alert-warning alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-        <h2 style='text-align:center'> <b> {{$data['posetuju']}} PO DISETUJUI </b></h2> <h4 style='text-align:center'> oleh Staff Keuangan </h4>
-      </div>
-    </div>
-    <div class="col-md-2">
-      <div class="alert alert-info alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-         <h2 style='text-align:center'> <b> {{$data['poditolak']}} PO DITOLAK </b></h2> <h4 style='text-align:center'> oleh  Staff Keuangan </h4>
-      </div>
-    </div>
-
-     <div class="col-md-2">
-      <div class="alert alert-info alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-         <h2 style='text-align:center'> <b> {{$data['porevisi']}} PO DIREVISI </b></h2> <h4 style='text-align:center'> oleh  Staff Keuangan </h4>
-      </div>
-    </div>
+   
   </div>
 
 
@@ -133,25 +107,20 @@
 
                           </td>
                           <td> 
-                           @if(Auth::user()->punyaAkses('Keuangan Purchase','aktif'))
-                            <button class="btn btn-sm btn-primary" onclick="proseskeuangan({{$po->po_id}})" type="button" id="createmodal" data-toggle="modal" data-target="#myModal2"> PROSES  </button> &nbsp;  
-                          @endif
-                          
+                        
                             @if(Auth::user()->punyaAkses('Purchase Order','hapus'))
-                            @if($po->po_setujufinance == '')
+                          
                               <a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData({{$po->po_id}})">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
                               </a>
-                            @endif
+                         
                             @endif
 
                             @if(Auth::user()->punyaAkses('Purchase Order','print'))
                             @if($po->po_setujufinance != '')
                               <span class='label label-warning '> {{$po->po_setujufinance}}</span>
                             @endif
-                            @if($po->po_setujufinance == 'DISETUJUI')
-                            <a href="/jpm/purchaseorder/print/{{$po->po_id}}" class="btn btn-info"><i class="fa fa-print" aria-hidden="true"> </i></a>
-                            @endif
+                          
                            @endif
                           
                              </td>
@@ -387,6 +356,7 @@
 
    
    function hapusData(id){
+    alert(id);
     swal({
     title: "Apakah anda yakin?",
     text: "Hapus Data!",
@@ -503,7 +473,6 @@ function(){
              
             })
 
-          
           }
           else {
              $('.checkbox7').prop('disabled' , false);

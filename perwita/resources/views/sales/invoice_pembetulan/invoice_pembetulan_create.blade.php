@@ -1076,7 +1076,7 @@
 
           $.ajax({
           url:baseUrl + '/sales/simpan_invoice_pembetulan',
-          type:'get',
+          type:'post',
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()

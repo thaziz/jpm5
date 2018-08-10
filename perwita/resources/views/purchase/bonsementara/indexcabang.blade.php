@@ -95,15 +95,20 @@
 
                              <td> @if(Auth::user()->PunyaAkses('Bon Sementara Kabang','aktif'))
                                     @if($bonsem->bp_pelunasan == '0.00') 
-                                  <button class="btn btn-sm btn-danger" onclick="uangterima({{$bonsem->bp_id}})" data-toggle="modal" data-target="#modaluangterima"> <i class="fa fa-money"> </i> Terima Uang ? </button> </td>
-                                    @endif
+                                    <button class="btn btn-sm btn-danger" onclick="uangterima({{$bonsem->bp_id}})" data-toggle="modal" data-target="#modaluangterima"> <i class="fa fa-money"> </i> Terima Uang ? </button> </td>
+                                      @endif
                                   @endif
                              <td>
                                @if(Auth::user()->PunyaAkses('Bon Sementara Cabang','aktif'))
                                 @if($bonsem->bp_setujukacab != 'SETUJU')
                                 <button class="btn btn-warning btn-sm" onclick="editform({{$bonsem->bp_id}})" data-toggle="modal" data-target="#myModaledit"> <i class="fa fa-pencil"> </i>  </button>
                                 <button class="btn btn-danger btn-sm" onclick="hapusData({{$bonsem->bp_id}})"> <i class="fa fa-trash"> </i> </button>
+                                @else
+                                  @if($bonsem->status_pusat == 'UANG DI TERIMA')
+                                  <a onclick="lihatjurnal('{{$bonsem->bp_nota or null}}','BON SEMENTARA')" class="btn-xs btn-primary" aria-hidden="true"> Lihat Jurnal</a>
+                                  @endif
                                 @endif
+
                                 @endif
                               </td>
 
@@ -115,11 +120,9 @@
                   </div>
                 </div><!-- /.box-body -->
 
-
-
                  <!-- modal kacab-->
                             <div class="modal inmodal fade" id="modaluangterima" tabindex="-1" role="dialog"  aria-hidden="true">
-                              <div class="modal-dialog"  style="min-width: 800px !important; min-height: 400px">
+                              <div class="modal-dialog"  style="min-width: 900px !important; min-height: 900px">
                                   <div class="modal-content">
                                      <div class="modal-header">
                                          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
@@ -143,7 +146,7 @@
                                         <td> <input type='text' class='form-control nominalcabang' style="min-width: 120px; text-align: right;" readonly=""> </td>
                                         <td> <input type='text' class='form-control nominalkabag' style="min-width: 120px;text-align: right;"  readonly=""> </td>
                                         <td> <input type='text' class='form-control nominaladmin' style="min-width: 120px;text-align: right;" readonly=""> </td>
-                                        <td> <input type='text' class='form-control nominalmenkeu' style="min-width: 120px;text-align: right;" readonly=""> <input type="hidden" class="idbonsem"> </td>
+                                        <td> <input type='text' class='form-control nominalmenkeu' style="min-width: 120px;text-align: right;" readonly="" name='nominalkeu'> <input type="hidden" class="idbonsem"> </td>
                                     </tr>
                                   </table>
 
@@ -152,10 +155,20 @@
                                     <tr>
                                         <td> Apakah Cabang sudah menerima uang ? </td>
                                         <td> &nbsp; </td>
-                                        <td> <button class="btn btn-sm btn-success" type="button" id="terima"> Terima </button> </td>
+                                    </tr>
+                                    <tr>
+                                        <td> <b> Bank Cabang </b></td>
                                         <td> &nbsp; </td>
-                                        <td>
-
+                                        <td> <select class="form-control bankcabang" name="bankcabang">
+                                              @foreach($data['bank'] as $bank)
+                                              <option value="{{$bank->mb_kode}}"> {{$bank->mb_nama}}</option>
+                                              @endforeach
+                                            </select>
+                                        </td>
+                                      
+                                    </tr>
+                                    <tr>
+                                          <td> <button class="btn btn-sm btn-success" type="button" id="terima"> Terima </button>  &nbsp; 
                                             <button class="btn btn-sm btn-danger" type="button" id="batalterima"> Batal </button>
                                           </td>
                                           <td>
@@ -246,7 +259,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-white" data-dismiss="modal">Tutup</button>
                            
-                             <button type="submit"  class="simpan btn btn-success"> Simpan  </button>
+                             <button type="submit"  class="simpan btn btn-success" id="simpankacab"> Simpan  </button>
                             </form>
                         </div>
                        </div>
@@ -337,7 +350,32 @@
 
 
 <div class="row" style="padding-bottom: 50px;"></div>
-
+<div id="jurnal" class="modal" >
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h5 class="modal-title">Laporan Jurnal</h5>
+                        <h4 class="modal-title">No Faktur:  <u>{{$data['bonsem'][0]->bp_nota or null }}</u> </h4>
+                        
+                      </div>
+                      <div class="modal-body" style="padding: 15px 20px 15px 20px">   
+                          <table id="table_jurnal" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th> ID Akun </th>
+                                            <th> Akun</th>
+                                            <th> Debit</th>
+                                            <th> Kredit</th>
+                                            <th style="width:100px"> Uraian / Detail </th>                                         
+                                        </tr>
+                                    </thead>
+                                    
+                                </table>                            
+                          </div>                          
+                    </div>
+                  </div>
+                </div>
 
 @endsection
 
@@ -345,11 +383,85 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+   clearInterval(reset);
+    var reset =setInterval(function(){
+     $(document).ready(function(){
+      var config = {
+                '.chosen-select'           : {},
+                '.chosen-select-deselect'  : {allow_single_deselect:true},
+                '.chosen-select-no-single' : {disable_search_threshold:10},
+                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+                '.chosen-select-width'     : {width:"95%"}
+                }
+
+             for (var selector in config) {
+               $(selector).chosen(config[selector]);
+             }
+    })
+     },2000);
+
  $.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
+
+function lihatjurnal($ref,$note){
+          nota = $ref;
+          detail = $note;
+
+          $.ajax({
+          url:baseUrl +'/bonsementaracabang/jurnalumum',
+          type:'post',
+          data:{nota,detail},
+          dataType : "json",
+          success:function(response){
+                console.log(response);
+                $('#jurnal').modal('show');
+                hasilpph = $('.hasilpph_po').val();
+                hasilppn = $('.hasilppn_po').val();
+
+                $('.loading').css('display', 'none');
+                $('.listjurnal').empty();
+                $totalDebit=0;
+                $totalKredit=0;
+                 
+                        for(key = 0; key < response.countjurnal; key++) {
+                           
+                          var rowtampil2 = "<tr class='listjurnal'>" +
+                          "<td> "+response.jurnal[key].id_akun+"</td>" +
+                          "<td> "+response.jurnal[key].nama_akun+"</td>";
+
+                          
+                            if(response.jurnal[key].dk == 'D'){
+                              $totalDebit = parseFloat($totalDebit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                              rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td>";
+                            }
+                            else {
+                              $totalKredit = parseFloat($totalKredit) + parseFloat(response.jurnal[key].jrdt_value);
+                              rowtampil2 += "<td> </td><td>"+accounting.formatMoney(response.jurnal[key].jrdt_value, "", 2, ",",'.')+"</td>";
+                            }
+                         
+                            rowtampil2 += "<td>"+response.jurnal[key].jrdt_detail+"</td>";
+                            $('#table_jurnal').append(rowtampil2);
+                        }
+                     var rowtampil1 = "</tbody>" +
+                      "<tfoot>" +
+                          "<tr class='listjurnal'> " +
+                                  "<th colspan='2'>Total</th>" +                        
+                                  "<th>"+accounting.formatMoney($totalDebit, "", 2, ",",'.')+"</th>" +
+                                  "<th>"+accounting.formatMoney($totalKredit,"",2,',','.')+"</th>" +
+                                  "<th>&nbsp</th>" +
+                          "<tr>" +
+                      "</tfoot>";
+                                     
+                   
+                      $('#table_jurnal').append(rowtampil1);
+              }
+        });
+   }
 
  $('.date').datepicker({
         autoclose: true,
@@ -359,14 +471,21 @@
 
   $('#terima').click(function(){   
      idbonsem = $('.idbonsem').val();
+     bankcabang = $('.bankcabang').val();
+     nominalkeu = $('.nominalmenkeu').val();
      $.ajax({
         url : baseUrl + '/bonsementaracabang/terimauang',
         type : "POST",
         dataType : "json",
-        data : {idbonsem},
-        success : function(){
-            alertSuccess();
-            location.reload();
+        data : {idbonsem,bankcabang,nominalkeu},
+        success : function(response){
+            if(response == 'sukses'){
+              alertSuccess();
+              location.reload();
+            }
+        },
+        error : function(){
+            swal("Error", "Server Sedang Mengalami Masalah", "error");
         }
       })
   })
@@ -463,13 +582,7 @@ $('#statuskacab').submit(function(event){
           val =$('.nominal').val();
           
           nominal = val.replace(/,/g, '');
-         
-          /* if(parseFloat(kascabang) < parseFloat(nominal)){
-            toastr.info("Mohon maaf, Kas Kecil Cabang tidak mencukupi :) ");
-          
-            $(this).val('');
-            return false;
-           }*/
+        
 
         event.preventDefault();
           var post_url2 = $(this).attr("action");
@@ -650,6 +763,7 @@ function kacab(id) {
       if(response['pb'][0].bp_setujuadmin == 'SETUJU'){
       
         $('.edit').attr('readonly' , true);
+
       }
     }
   })

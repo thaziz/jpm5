@@ -198,7 +198,7 @@
                 <div class="box-body">
                 <br>
                 <div style="overflow-x:auto;">
-                <table id="hargatable" class="table table-bordered" style="width:100%">
+                <table id="hargatable" class="table table-stripped table-bordered" style="width:100%">
                     <thead>
                      <tr>
                         <td style="vertical-align: center" rowspan="2"> No  </td>
