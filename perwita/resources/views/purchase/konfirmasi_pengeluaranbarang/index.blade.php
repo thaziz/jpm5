@@ -110,7 +110,32 @@
 
 
 <div class="row" style="padding-bottom: 50px;"></div>
-
+<div id="jurnal" class="modal" >
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h5 class="modal-title">Laporan Jurnal</h5>
+                        <h4 class="modal-title">No Faktur:  <u>{{$data['faktur'][0]->fp_nofaktur or null }}</u> </h4>
+                        
+                      </div>
+                      <div class="modal-body" style="padding: 15px 20px 15px 20px">   
+                          <table id="table_jurnal" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th> ID Akun </th>
+                                            <th> Akun</th>
+                                            <th> Debit</th>
+                                            <th> Kredit</th>
+                                            <th style="width:100px"> Uraian / Detail </th>                                         
+                                        </tr>
+                                    </thead>
+                                    
+                                </table>                            
+                          </div>                          
+                    </div>
+                  </div>
+                </div>
 
 @endsection
 
