@@ -148,7 +148,7 @@
             <td style="width: 100px">No Invoice</td>
             <td width="10">:</td>
             <td width="200">
-              <input type="text" name="Invoice_biaya" class="form-control Invoice_biaya" value="{{$cari_fp->fp_noinvoice}}" placeholder="No Invoice">
+              <input type="text" name="Invoice_biaya" readonly="" class="form-control invoice_tt" value="{{$cari_fp->fp_noinvoice}}" placeholder="No Invoice">
             </td>
            </tr>
            <tr>

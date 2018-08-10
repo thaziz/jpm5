@@ -140,6 +140,9 @@
             <hr>
           </table>
         </div>
+        <div class="col-sm-6">
+          <p style="color: red">Note:Maximal Data Adalah 5000<br>Gunakan Filter Tanggal Untuk Memilah Petty Cash Berdasarkan Range Tanggal</p>
+        </div>
       </div>
     </div>  
     <!-- body Patty Cash-->

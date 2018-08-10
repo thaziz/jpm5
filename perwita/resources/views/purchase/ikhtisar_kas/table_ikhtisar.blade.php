@@ -6,7 +6,7 @@
             <th><input type="checkbox" class="parent_check"></th>
             <th>Tanggal</th>
             <th>No Ref</th>
-            <th>Akun Biaya</th>
+            <th>Akun</th>
             <th>Nominal</th>
             <th>Keterangan</th>
             <th>User ID</th>
@@ -17,14 +17,16 @@
             <tr>
               <td align="center">
                 <input type="checkbox" name="checker[]" class="ck" >
-                <input type="hidden" name="id[]" class="id_table" value="{{$val->pc_id}}">
+                <input type="hidden" name="id[]" class="id_table" value="{{$val->nota}}">
               </td>
-              <td><?php echo date('d/m/Y',strtotime($val->pc_tgl));?></td>
-              <td>{{$val->pc_no_trans}}</td>
-              <td>{{$val->pc_akun}}</td>
-              <td align="right">{{'' . number_format($val->pc_kredit,2,',','.')}}</td>
-              <td>{{$val->pc_keterangan}}</td>
-              <td>{{$val->pc_user}}</td>
+              <td><?php echo date('d/m/Y',strtotime($val->tanggal));?></td>
+              <td>{{$val->nota}}</td>
+              <td>{{$val->akun_kas}}</td>
+              <td align="right">{{'' . number_format(round($val->nominal),2,',','.')}}
+                <input type="hidden" name="nominal[]" value="{{round($val->nominal)}}">
+              </td>
+              <td>{{$val->keterangan}}</td>
+              <td>{{$val->user}}</td>
             </tr>
             @endforeach
           </tbody>    
