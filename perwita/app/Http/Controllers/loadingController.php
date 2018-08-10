@@ -21,7 +21,7 @@ class loadingController extends Controller
 		$cabang = DB::table('cabang')
                   ->get();
 		
-		return view('purchase/kas/index',compact('data','cabang'));
+		return view('purchase/kas/index_loading',compact('data','cabang'));
 	}
 	public function append_table(request $req)
 	{
@@ -54,7 +54,6 @@ class loadingController extends Controller
 				  ->orderBy('bpk_id','ASC')
 				  ->get();
 		}
-		dd($data);
         $data = collect($data);
         // return $data;
         return Datatables::of($data)
