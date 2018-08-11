@@ -800,9 +800,6 @@ class kasKeluarController extends Controller
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
 					}
 				}if (substr($akun[$i],0, 4)>=1002) {
-					if ($car) {
-						# code...
-					}
 					if ($penanda[$i] == 'D') {
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
