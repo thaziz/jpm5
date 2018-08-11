@@ -270,7 +270,7 @@
  	<h3>Tabel Detail Resi</h3>
  	<hr>
         <button class="btn btn-primary btn_modal_sc disabled pull-right " type="button" > Bayar dengan Uang Muka </button>
-	    <button type="button" class="btn btn-primary pull-right  save_subcon disabled" id="save_subcon" onclick="save_subcon()" style="margin-right: 20px"><i class="fa fa-save"></i> Simpan Data</button>
+	    <button type="button" class="btn btn-primary pull-right save  save_subcon disabled" id="save_subcon" onclick="save_subcon()" style="margin-right: 20px"><i class="fa fa-save"></i> Simpan Data</button>
 	    <button type="button" style="margin-right: 20px" class="btn btn-warning pull-right print_subcon disabled" id="print_subcon" onclick="print_penerus()"><i class="fa fa-print"></i> Print</button>
 
 	    <table class="table table-bordered table-hover tabel_subcon">

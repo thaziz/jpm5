@@ -141,7 +141,7 @@
       <td colspan="3">
         <button type="button" class="btn btn-primary pull-right cari-pod" onclick="appendDO();"><i class="fa fa-search">&nbsp;Append</i></button>
 
-        <button type="button" class="btn btn-primary pull-right disabled save_biaya" style="margin-right: 20px" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
+        <button type="button" class="btn btn-primary pull-right disabled save save_biaya" style="margin-right: 20px" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
 
         <button class="btn btn-primary btn_modal_bp disabled" type="button" > Bayar dengan Uang Muka </button>
 
@@ -526,7 +526,7 @@
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
     $('#modal_tt_penerus').modal('hide');
-    $('.save_biaya').removeClass('disabled');
+    $('.save').removeClass('disabled');
     $('.save_subcon').removeClass('disabled');
     $('.save_update_outlet').removeClass('disabled');
   }
