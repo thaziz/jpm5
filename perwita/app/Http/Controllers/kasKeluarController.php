@@ -483,7 +483,7 @@ class kasKeluarController extends Controller
 
 				array_push($akun, $req->pt_akun_biaya[$i]);
 				array_push($akun_val, $req->pt_nominal[$i]);
-				if ($request->pt_debet[$i] == 'DEBET') {
+				if ($req->pt_debet[$i] == 'DEBET') {
 					array_push($penanda, "D");
 				}else{
 					array_push($penanda, "K");
@@ -768,7 +768,7 @@ class kasKeluarController extends Controller
 
 				array_push($akun, $req->pt_akun_biaya[$i]);
 				array_push($akun_val, $req->pt_nominal[$i]);
-				if ($request->pt_debet[$i] == 'DEBET') {
+				if ($req->pt_debet[$i] == 'DEBET') {
 					array_push($penanda, "D");
 				}else{
 					array_push($penanda, "K");
