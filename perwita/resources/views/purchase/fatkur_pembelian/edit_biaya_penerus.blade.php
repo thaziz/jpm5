@@ -70,7 +70,7 @@
       <div class="ibox-title"><h5>Detail Faktur Pembelian</h5>
         <a href="../fakturpembelian" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
         <a class="pull-right jurnal" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal Form</i></a>
-        <a class="pull-right jurnal_um" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal Uang Muka</i></a>
+        <a class="pull-right jurnal_um" onclick="jurnal_um()" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal Uang Muka</i></a>
       </div>
       <div class="ibox-content col-sm-12">
 
@@ -478,11 +478,11 @@
 </div><!-- /.modal -->
 
 
-<div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+{{-- <div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">JURNAL</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -495,7 +495,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> --}}
 @endsection
 @section('extra_scripts')
 <script type="text/javascript">
@@ -1299,7 +1299,7 @@ $('.bp_dibayar_um').maskMoney({
     }); 
   }
 
-  function jurnal_um() {
+  $('.jurnal_um').click(function(){
     var id = '{{ $id }}';
     $.ajax({
         url:baseUrl + '/fakturpembelian/biaya_penerus/jurnal_um',
@@ -1307,12 +1307,14 @@ $('.bp_dibayar_um').maskMoney({
         data:{id},
         success:function(data){
            $('.tabel_jurnal').html(data);
+           $('.modal_jurnal').modal('show');
         },
         error:function(data){
             // location.reload();
         }
-    }); 
-  }
+    });
+  })
+
 
 $('.jurnal').click(function(){
   $('.modal_jurnal').modal('show');
