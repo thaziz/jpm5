@@ -774,7 +774,7 @@ class kasKeluarController extends Controller
 					array_push($penanda, "K");
 				}
 			}
-
+			dd($penanda);
 			$data_akun = [];
 			for ($i=0; $i < count($akun); $i++) { 
 
