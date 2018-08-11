@@ -170,7 +170,7 @@
                                 </select>
                               </td>
                             </tr>
-                            <tr>
+                            <tr hidden>
                               <td width="120">DEBET/KREDIT</td>
                               <td>
                                 <select class="form-control dk_patty">

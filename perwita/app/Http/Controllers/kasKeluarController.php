@@ -489,7 +489,7 @@ class kasKeluarController extends Controller
 								  ->where('id_akun',$akun[$i])
 								  ->first();
 
-				if (substr($akun[$i],0, 1)==1) {
+				if (substr($akun[$i],0, 1)==1001) {
 					
 					if ($cari_coa->akun_dka == 'D') {
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
@@ -506,7 +506,7 @@ class kasKeluarController extends Controller
                 		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
 					}
-				}if (substr($akun[$i],0, 4)==1002) {
+				}if (substr($akun[$i],0, 4)>1002) {
 					
 					if ($cari_coa->akun_dka == 'D') {
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
@@ -709,7 +709,7 @@ class kasKeluarController extends Controller
 								  ->where('id_akun',$akun[$i])
 								  ->first();
 
-				if (substr($akun[$i],0, 1)==1) {
+				if (substr($akun[$i],0, 1)==1001) {
 					
 					if ($cari_coa->akun_dka == 'D') {
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
@@ -725,6 +725,23 @@ class kasKeluarController extends Controller
 						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
                 		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
+					}
+				}if (substr($akun[$i],0, 4)>1002) {
+					
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
 					}
 				}else if (substr($akun[$i],0, 1)>1) {
 
