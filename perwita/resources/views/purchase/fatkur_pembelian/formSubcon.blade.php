@@ -829,13 +829,12 @@ function select_tt(a) {
     var tt_invoice = $(a).find('.tt_invoice').text();
     var tt_id = $(a).find('.tt_id').val();
     var tt_dt = $(a).find('.tt_dt').val();
-    console.log($('.invoice_subcon').val(tt_invoice));
     $('.tanda_terima').val(tt_form);
     $('.invoice_tt').val(tt_invoice);
     $('.invoice_subcon').val(tt_invoice);
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
-    $('.save_subcon').removeClass('disabled');
+    $('.save').removeClass('disabled');
 	$('#modal_tt_penerus').modal('hide');
 }
 
