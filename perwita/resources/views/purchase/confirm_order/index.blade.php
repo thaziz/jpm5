@@ -31,19 +31,19 @@
 
 <div class="wrapper wrapper-content animated fadeInRight">
 
-    {{-- <div class="col-md-2" style="min-height: 100px">
+    <div class="col-md-2" style="min-height: 100px">
       <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-        <h2 style='text-align:center'> <b> {{$data['pembelian']}} SPP </b></h2> <h4 style='text-align:center'> Belum di proses Staff Pembelian </h4>
+        <h2 style='text-align:center'> <b> {{$data['pembelian'][0]->count}} SPP </b></h2> <h4 style='text-align:center'> Belum di proses Staff Pembelian </h4>
       </div>
     </div>
 
      <div class="col-md-2" style="min-height: 100px">
       <div class="alert alert-success alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-      <h2 style='text-align:center'> <b> {{$data['keuangan']}} SPP  </b></h2> <h4 style='text-align:center'> Belum di proses Keuangan </h4>
+      <h2 style='text-align:center'> <b> {{$data['keuangan'][0]->count}} SPP  </b></h2> <h4 style='text-align:center'> Belum di proses Keuangan </h4>
       </div>
-    </div> --}}
+    </div>
 
 
     <div class="row">

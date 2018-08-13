@@ -929,13 +929,20 @@ class PurchaseController extends Controller
 		if(Auth::user()->punyaAkses('Konfirmasi Order','all')){
 			$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = kode order by co_id desc");
 			
+			$data['pembelian'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and staff_pemb = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU'");
+
+			$data['keuangan'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and man_keu = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU'");
 
 		}
 		else {
-				$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang' and spp_cabang = kode order by co_id desc");	
+			$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang' and spp_cabang = kode order by co_id desc");	
+		
+			$data['pembelian'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and staff_pemb = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang'");
+
+			$data['keuangan'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and man_keu = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang'");
 		}
 		$data['co'];
-
+		/*dd($data);*/
 		return view('purchase.confirm_order.index', compact('data'));
 	}
 

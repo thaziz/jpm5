@@ -339,9 +339,12 @@ div.bottom
 				<br>
 				{{$data['spp'][0]->spp_namakabag}} 
 				</div>
-					@if($data['spp'][0]->spp_statuskabag != 'BELUM MENGETAHUI')
+					@if($data['spp'][0]->spp_statuskabag == 'BELUM MENGETAHUI')
 					<p> BELUM MENGETAHUI </p>
+					@else 
+					<p> MENGETAHUI </p>
 					@endif
+
 				<div class="bottom">Tanggal :
 					@if($data['spp'][0]->spp_statuskabag == 'SETUJU')
 				 {{ Carbon\Carbon::parse($data['spp'][0]->spp_timesetujukabag)->format('d-M-Y ') }}</div>
