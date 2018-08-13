@@ -6067,7 +6067,7 @@ public function purchase_order() {
 
 			$data['persediaan'] = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$idcabang'");
 
-			return $provinsi;
+			return $data;
 		}
 
 		public function update_fp(Request $request){
