@@ -41,7 +41,7 @@
  <tr>
  	<td style="width: 100px">No Invoice </td>
  	<td width="10">:</td>
-	<td width="200"><input type="text" name="invoice_subcon" class="form-control invoice_subcon" ></td>
+	<td width="200"><input type="text" name="invoice_subcon" readonly="" class="form-control invoice_tt" ></td>
  </tr>	
  <tr>
  	<td style="width: 100px">Keterangan </td>
@@ -270,7 +270,7 @@
  	<h3>Tabel Detail Resi</h3>
  	<hr>
         <button class="btn btn-primary btn_modal_sc disabled pull-right " type="button" > Bayar dengan Uang Muka </button>
-	    <button type="button" class="btn btn-primary pull-right save_subcon disabled" id="save_subcon" onclick="save_subcon()" style="margin-right: 20px"><i class="fa fa-save"></i> Simpan Data</button>
+	    <button type="button" class="btn btn-primary pull-right save  save_subcon disabled" id="save_subcon" onclick="save_subcon()" style="margin-right: 20px"><i class="fa fa-save"></i> Simpan Data</button>
 	    <button type="button" style="margin-right: 20px" class="btn btn-warning pull-right print_subcon disabled" id="print_subcon" onclick="print_penerus()"><i class="fa fa-print"></i> Print</button>
 
 	    <table class="table table-bordered table-hover tabel_subcon">
@@ -817,7 +817,7 @@ $('.modal_tt_subcon').click(function(){
       data: {cabang,agen_vendor},
       success:function(data){
         $('.div_tt').html(data);
-		$('#modal_tt_subcon').modal('show');
+		$('#modal_tt_penerus').modal('show');
       },error:function(){
         toastr.warning('Terjadi Kesalahan');
       }
@@ -829,14 +829,13 @@ function select_tt(a) {
     var tt_invoice = $(a).find('.tt_invoice').text();
     var tt_id = $(a).find('.tt_id').val();
     var tt_dt = $(a).find('.tt_dt').val();
-
     $('.tanda_terima').val(tt_form);
     $('.invoice_tt').val(tt_invoice);
     $('.invoice_subcon').val(tt_invoice);
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
-    $('.save_subcon').removeClass('disabled');
-	$('#modal_tt_subcon').modal('show');
+    $('.save').removeClass('disabled');
+	$('#modal_tt_penerus').modal('hide');
 }
 
 

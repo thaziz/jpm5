@@ -51,7 +51,7 @@
 				<tr>
 					<td colspan="2">
 						<button type="button" class="btn btn-primary tambah_data_vendor" ><i class="fa fa-plus"> Tambah Data</i></button>
-						<button type="button" class="btn btn-success simpan_data_vendor disabled" ><i class="fa fa-save"> Simpan Data</i></button>
+						<button type="button" class="btn btn-success  save simpan_data_vendor disabled" ><i class="fa fa-save"> Simpan Data</i></button>
 						<button type="button" class="btn btn-warning tt_vendor" ><i class="fa fa-book"> Form Tanda Terima</i></button>
 						<button type="button"  class="btn btn-primary uang_muka_vendor disabled" ><i class="fa fa-money"> Uang Muka</i></button>
 						<button type="button" onclick="print_penerus()"  class="btn btn-danger pull-right print_vendor" ><i class="fa fa-print"></i></button>
@@ -176,7 +176,8 @@ function select_tt(a) {
     $('.invoice_tt').val(tt_invoice);
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
-    $('#modal_tt_vendor').modal('hide');
+    $('#modal_tt_penerus').modal('hide');
+    $('.save').removeClass('disabled');
 }
 $('.append_vendor').click(function(){
 	var nomor_vendor = [];
