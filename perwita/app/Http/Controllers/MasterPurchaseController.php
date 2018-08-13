@@ -140,6 +140,79 @@ class MasterPurchaseController extends Controller
 	}
 	
 
+	public function getpersediaan(Request $request){
+		$updatestock = $request->updatestock;
+		$idgrupitem = $request->groupitem;
+	
+		$cabang = $request->cabang;
+	
+
+		$datagrup = DB::select("select * from jenis_item where kode_jenisitem = '$idgrupitem'");
+		$stock = $datagrup[0]->stock;
+		$data['stock'] = $stock;
+		if($stock == 'Y'){
+			if($updatestock == 'T'){
+				if($cabang == 000){
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '7%' and kode_cabang = '$cabang'");
+				}
+				else {
+					if($idgrupitem == 'P'){
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
+					}
+					else if($idgrupitem == 'S'){
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
+					}
+					else if($idgrupitem == 'A'){
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
+					}
+					else if($idgrupitem == 'C'){
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
+					}
+					else {
+						$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' ");
+					}
+				}
+			}
+			else if($updatestock == 'Y'){
+				if($idgrupitem == 'P'){
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1501%' and kode_cabang = '000'");
+					//return json_encode($data);
+				}
+				else if($idgrupitem == 'S'){
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1502%' and kode_cabang = '$cabang'");
+				}
+				else if($idgrupitem == 'A'){
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1503%' and kode_cabang = '$cabang'");
+				}
+				else if($idgrupitem == 'L'){
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1599%' and kode_cabang = '$cabang'");
+
+				}
+				else if($idgrupitem == 'C'){
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
+				}
+				else {
+					$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
+				}
+			}
+		}		
+		else {
+			if($idgrupitem == 'C'){
+				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '1604%'");
+			}
+			else if($idgrupitem == 'B'){
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' or id_akun LIKE '7%' or id_akun LIKE '8%' and kode_cabang = '$cabang'");
+			}
+			else {
+				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
+			}
+			
+		}
+
+		$data['akunmaster'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
+		return json_encode($data);
+	}
+
 	public function getaccpersediaan(Request $request){
 		$updatestock = $request->updatestock;
 		$groupitem = $request->groupitem;
@@ -147,23 +220,28 @@ class MasterPurchaseController extends Controller
 		$cabang = $request->cabang;
 		$idgrupitem = $explode[0];
 		$stock = $explode[1];
-
+		$data['stock'] = $stock;
 		if($stock == 'Y'){
 			if($updatestock == 'T'){
-				if($idgrupitem == 'P'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
-				}
-				else if($idgrupitem == 'S'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
-				}
-				else if($idgrupitem == 'A'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
-				}
-				else if($idgrupitem == 'C'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
+				if($cabang == 000){
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '7%' and kode_cabang = '$cabang'");
 				}
 				else {
-					$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' ");
+					if($idgrupitem == 'P'){
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
+					}
+					else if($idgrupitem == 'S'){
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
+					}
+					else if($idgrupitem == 'A'){
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
+					}
+					else if($idgrupitem == 'C'){
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
+					}
+					else {
+						$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' ");
+					}
 				}
 			}
 			else if($updatestock == 'Y'){
@@ -202,6 +280,7 @@ class MasterPurchaseController extends Controller
 			
 		}
 		
+				$data['akunmaster'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
 
 		
 		return json_encode($data);
