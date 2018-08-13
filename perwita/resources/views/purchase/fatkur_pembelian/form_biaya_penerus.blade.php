@@ -527,8 +527,6 @@
     $('.dt_tt').val(tt_dt);
     $('#modal_tt_penerus').modal('hide');
     $('.save').removeClass('disabled');
-    $('.save_subcon').removeClass('disabled');
-    $('.save_update_outlet').removeClass('disabled');
   }
 
 
