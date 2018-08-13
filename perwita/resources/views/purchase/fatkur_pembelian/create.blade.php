@@ -6233,21 +6233,35 @@
 
       cabang = $('.cabang').val();
       $.ajax({
-        data : {cabang},
+        data : {cabang, acc_persediaan, acc_hpp},
         url : baseUrl + '/fakturpembelian/getprovinsi',
         dataType : 'json',
         type : 'post',
         success : function(data){
-           cabang = $('.cabang').val();
-         
-          accpersediaan = acc_persediaan.substr(0,4);
-          accpersediaan = accpersediaan + data + cabang;
-          $('.acc_persediaan').val(accpersediaan);
+          cabang = $('.cabang').val();
+          groupitem = $('.groupitem').val();
 
-          acchpp = acc_hpp.substr(0,4);
-          acchpp = acchpp + data + cabang;
+          accpersediaan = response.persediaan[0].id_akun;
+          acchpp = response.hpp[0].id_akun;
+          if(accpersediaan.length != 0){
+              $('.acc_persediaan').val(accpersediaan);
+          }
+          else {
+            toastr.info("Mohon maaf, idakun yang di setting tidak ada dalam server :) ");
+            return false;
+          }
+          /*accpersediaan = acc_persediaan.substr(0,4);
+          accpersediaan = accpersediaan + data + cabang;*/
 
-          $('.acc_biaya').val(acchpp);
+/*          acchpp = acc_hpp.substr(0,4);
+/*          acchpp = acchpp + data + cabang; */
+          if(acchpp.length != 0){
+              $('.acc_biaya').val(acchpp);
+          }
+          else {
+            toastr.info("Mohon maaf,idakun yang di setting tidak ada dalam server :)" );
+            return false;
+          }
         }
       })
       if(qty != '') {

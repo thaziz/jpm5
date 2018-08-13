@@ -6049,16 +6049,23 @@ public function purchase_order() {
 		$data['fpdt'] = DB::select("select * from faktur_pembelian, faktur_pembeliandt, masteritem, mastergudang where fpdt_idfp = fp_idfaktur and fp_nofaktur = '$nofaktur' and fpdt_kodeitem = kode_item and fpdt_gudang = mg_id ");
 
 		return json_encode($data);
-
 	}
 
 		public function getprovinsi(Request $request){
 			$idcabang = $request->cabang;
+			$acchpp = substr($request->acc_hpp, 0,4);
+
+			$accpersediaan = substr($request->acc_persediaan, 0,4);
+
 			$data['cabang'] = DB::Select("select * from cabang where kode = '$idcabang'");
 			$idkota = $data['cabang'][0]->id_kota;
 
 			$data['provinsi'] = DB::select("select * from kota where id = '$idkota'");
 			$provinsi = $data['provinsi'][0]->id_provinsi;
+
+			$data['hpp'] = DB::select("select * from d_akun where id_akun LIKE '$acchpp' and kode_cabang = '$cabang'");
+
+			$data['persediaan'] = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$cabang'");
 
 			return $provinsi;
 		}
