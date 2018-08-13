@@ -929,13 +929,20 @@ class PurchaseController extends Controller
 		if(Auth::user()->punyaAkses('Konfirmasi Order','all')){
 			$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = kode order by co_id desc");
 			
+			$data['pembelian'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and staff_pemb = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU'");
+
+			$data['keuangan'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and man_keu = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU'");
 
 		}
 		else {
-				$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang' and spp_cabang = kode order by co_id desc");	
+			$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang' and spp_cabang = kode order by co_id desc");	
+		
+			$data['pembelian'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and staff_pemb = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang'");
+
+			$data['keuangan'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and man_keu = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang'");
 		}
 		$data['co'];
-
+		/*dd($data);*/
 		return view('purchase.confirm_order.index', compact('data'));
 	}
 
@@ -10132,9 +10139,6 @@ public function kekata($x) {
 			$data['fpg'] = DB::select("select *, cabang.kode as kodecabang, cabang.nama as namacabang  from fpg,cabang, masterbank, jenisbayar where idfpg = '$id' and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode");
 		}
 		else if($jenisbayar == '11'){
-			$data['fpg'] = DB::select("select *, cabang.kode as kodecabang, cabang.nama as kodesupplier , cabang.nama as namacabang, cabang.nama as namasupplier from fpg, masterbank, jenisbayar, cabang where  idfpg = '$id' and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode and fpg_agen = cabang.kode ");
-		}
-		else if($jenisbayar == '12'){
 			$data['fpg'] = DB::select("select *, cabang.kode as kodecabang, cabang.nama as kodesupplier , cabang.nama as namacabang, cabang.nama as namasupplier from fpg, masterbank, jenisbayar, cabang where  idfpg = '$id' and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode and fpg_agen = cabang.kode ");
 		}
 		//dd($data['fpg']);	
