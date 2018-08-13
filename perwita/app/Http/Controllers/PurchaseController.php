@@ -10430,7 +10430,7 @@ public function kekata($x) {
 						 	'ik_pelunasan' => $sisafaktur,	 	
 					 	]);	
 					}
-					else if($request->jenisbayar == 4){
+					else if($request->jenisbayar == 4){	
 						$nofaktur = $request->nofaktur[$i];
 						$dataum = DB::select("select * from d_uangmuka where um_nomorbukti = '$nofaktur'");
 						$sisaterpakai = $dataum[0]->um_sisaterpakai;
@@ -10442,6 +10442,8 @@ public function kekata($x) {
 						else {
 							$sisaterpakai2 = floatval($sisaterpakai) + floatval($pelunasan); 
 						}
+
+						return 'yes';
 
 						$updateum = DB::table('d_uangmuka')
 						->where('um_nomorbukti', $request->nofaktur[$i])

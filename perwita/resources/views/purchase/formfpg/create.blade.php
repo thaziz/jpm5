@@ -1068,7 +1068,12 @@
                   tgl = $('.tgl').val();
                   bank = $('.bank').val();
                   kodebank = bank.split(",");
-           
+                  
+
+                  if(kodebank == ''){
+                    toastr.info("Mohon pilih data bank terlebih dahulu :)");
+                    return false;
+                  }
                   jatuhtempo = $('.jatuhtempo').val();
                   nofpg = $('.nofpg').val();
 
