@@ -196,11 +196,17 @@ class MasterPurchaseController extends Controller
 			}
 		}		
 		else {
+
 			if($idgrupitem == 'C'){
 				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '1604%'");
 			}
 			else if($idgrupitem == 'B'){
-				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' or id_akun LIKE '7%' or id_akun LIKE '8%' and kode_cabang = '$cabang'");
+				if($cabang == 000){
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '7%' and  kode_cabang = '$cabang'");
+				}
+				else {
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' and kode_cabang = '$cabang'");
+				}
 			}
 			else {
 				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");

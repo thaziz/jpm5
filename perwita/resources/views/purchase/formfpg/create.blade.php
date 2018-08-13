@@ -661,7 +661,7 @@
                                     
                                    </tr>
                                     <tr>
-                                      <th> Acc Rekening </th>
+                                      <th> Akun Bank </th>
                                       <td> <select class="form-control selectOutlet chosen-select-width1 bank1 banktujuan" name="tujuanbank">
                                                
                                                     <option value=""> Pilih Data Bank </option>
@@ -1055,6 +1055,8 @@
                   $('.transferbank').show();
                   $('.tujuanbankacc').show();
                   $('.jenisbayarbankbg').prop({ checked: false }); 
+
+
                 }
                 else {
                   $('.jenisbayarbankbg').prop({ checked: false });           

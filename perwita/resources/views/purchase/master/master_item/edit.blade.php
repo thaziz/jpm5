@@ -70,13 +70,9 @@
                                 <td> <select class="form-control jenis_item" name="jenis_item"> 
                                 
                                     @foreach($data['jenisitem'] as $grupitem)
-                                      <option value="{{$grupitem->kode_jenisitem}}" @if($grupitem->keterangan_jenisitem == $item->keterangan_jenisitem)  selected="" @endif> {{$grupitem->keterangan_jenisitem}} </option>
-
-                                      
+                                      <option value="{{$grupitem->kode_jenisitem}}" @if($grupitem->keterangan_jenisitem == $item->keterangan_jenisitem)  selected="" @endif> {{$grupitem->keterangan_jenisitem}} </option>       
                                     @endforeach
                                     
-
-
                                 </select></td>
                               </tr>
                               <tr>
