@@ -146,7 +146,6 @@ class MasterPurchaseController extends Controller
 	
 		$cabang = $request->cabang;
 	
-
 		$datagrup = DB::select("select * from jenis_item where kode_jenisitem = '$idgrupitem'");
 		$stock = $datagrup[0]->stock;
 		$data['stock'] = $stock;
@@ -208,8 +207,11 @@ class MasterPurchaseController extends Controller
 			}
 			
 		}
+		$kodeitem = $request->kodeitem;
 
-		$data['akunmaster'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
+		$data['masteritem'] = DB::select("select * from masteritem where kode_item = '$kodeitem'");
+
+		
 		return json_encode($data);
 	}
 

@@ -10284,6 +10284,7 @@ public function kekata($x) {
 
 
 		return DB::transaction(function() use ($request) {  
+			$jenisbayar = $request->jenisbayar;
 			$time = Carbon::now();
 			//	$idbank = $request->idbank;
 				$formfpg = new formfpg();
@@ -10310,7 +10311,7 @@ public function kekata($x) {
 				$formfpg->fpg_tgl = $request->tglfpg;
 				$formfpg->fpg_jenisbayar = $request->jenisbayar;
 				$formfpg->fpg_totalbayar = $totalbayar;
-			//	$formfpg->fpg_uangmuka = $request->uangmuka;
+			
 				$formfpg->fpg_cekbg = $cekbg;
 				$formfpg->fpg_nofpg = $request->nofpg;
 				$formfpg->fpg_keterangan = strtoupper($request->keterangan);
@@ -10346,7 +10347,7 @@ public function kekata($x) {
 				
 				$formfpg->fpg_idbank = $idbank; 
 
-				if($request->jenisbayar = 12){
+				if($request->jenisbayar == 12){
 					$formfpg->fpg_acchutang = $request->hutangdagang;
 				}
 				else {
@@ -10365,6 +10366,8 @@ public function kekata($x) {
 				$formfpg->create_by = $request->username;
 				$formfpg->update_by = $request->username;
 				$formfpg->save();
+				
+
 
 				if($request->jenisbayar != 5){
 
@@ -10402,7 +10405,7 @@ public function kekata($x) {
 					$formfpg_dt->fpgdt_sisapelunasanumfp = $pelunasan;
 					$formfpg_dt->save();
 
-
+					
 					if($request->jenisbayar == 2 || $request->jenisbayar == 7 || $request->jenisbayar == 6  || $request->jenisbayar == 9) {
 						$updatefaktur = fakturpembelian::where('fp_nofaktur', '=', $request->nofaktur[$i]);
 						$updatefaktur->update([
@@ -10442,8 +10445,6 @@ public function kekata($x) {
 						else {
 							$sisaterpakai2 = floatval($sisaterpakai) + floatval($pelunasan); 
 						}
-
-						return 'yes';
 
 						$updateum = DB::table('d_uangmuka')
 						->where('um_nomorbukti', $request->nofaktur[$i])
