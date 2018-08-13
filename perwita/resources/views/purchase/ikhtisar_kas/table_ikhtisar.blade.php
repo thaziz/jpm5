@@ -1,4 +1,4 @@
-<h3>Tabel Detail Patty Cash</h3>
+<h3>Tabel Detail Ikhtisar Kas</h3>
   <hr>
       <table class="table table-bordered table-hover tabel_patty_cash">
           <thead align="center">
