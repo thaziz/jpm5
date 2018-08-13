@@ -6063,9 +6063,9 @@ public function purchase_order() {
 			$data['provinsi'] = DB::select("select * from kota where id = '$idkota'");
 			$provinsi = $data['provinsi'][0]->id_provinsi;
 
-			$data['hpp'] = DB::select("select * from d_akun where id_akun LIKE '$acchpp' and kode_cabang = '$cabang'");
+			$data['hpp'] = DB::select("select * from d_akun where id_akun LIKE '$acchpp' and kode_cabang = '$idcabang'");
 
-			$data['persediaan'] = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$cabang'");
+			$data['persediaan'] = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$idcabang'");
 
 			return $provinsi;
 		}
