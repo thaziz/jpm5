@@ -115,7 +115,7 @@
                       <td>Laporan</td>
                         <td>
                           <select class="chosen-select-width" name="laporan" id="laporan">
-                            <option value="">- Pilih -</option>
+                            {{-- <option value="">- Pilih -</option> --}}
                             <option value="Rekap">Rekap </option>
                           </select>
                         </td>
@@ -212,7 +212,6 @@
         var akun = $('#akun').val();
         var laporan = $('#laporan').val();
 
-        if (laporan == 'Rekap') {
 
           $.ajax({
             data:$('#search').serialize(),
@@ -223,15 +222,6 @@
               $('#container').hide();
             }
           })
-        }else if (laporan == 'Rekap per Customer Detail') {
-          alert('b');
-        }else if (laporan == 'Rekap per akun') {
-
-          alert('c');
-        }else if (laporan == 'Rekap per akun Detail') {
-
-        // alert('d');
-        }
         
      }
 
