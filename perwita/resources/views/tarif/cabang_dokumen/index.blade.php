@@ -259,7 +259,7 @@
                           <table class="table-striped table-bordered" > 
                               <thead>
                                   <tr >
-                                      <th style="padding: 7px; text-align: center;"  colspan="2">REGULAR</th>
+                                      <th style="padding: 7px; text-align: center;color: black;"  colspan="2">REGULAR</th>
                                   </tr>
                               </thead>
                               <tbody>
@@ -276,7 +276,7 @@
                           <table class="table-striped table-bordered" style="margin-left: 300px; margin-top: -124px; position: fixed; " > 
                               <thead>
                                   <tr>
-                                      <th style="padding: 7px; text-align: center;"  colspan="2">EXPRESS</th>
+                                      <th style="padding: 7px; text-align: center;color: black !important;"  colspan="2">EXPRESS</th>
                                   </tr>
                               </thead>
                               <tbody>
@@ -290,10 +290,10 @@
                                   </tr>
                               </tbody>
                           </table>
-                          <table class="table-striped table-bordered" style="margin-left: 600px; margin-top: -124px; position: fixed; " > 
+                          <table class="table-striped table-bordered" style="margin-left: 600px; margin-top: -124px;position: fixed;"> 
                               <thead>
                                   <tr>
-                                      <th style="padding: 7px; text-align: center;"  colspan="2">OUTLET</th>
+                                      <th style="padding: 7px; text-align: center; color: black !important;"  colspan="2">OUTLET</th>
                                   </tr>
                               </thead>
                               <tbody>
