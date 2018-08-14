@@ -44,7 +44,7 @@
 
 	    <table class="table table-bordered table-hover table_outlet" style="font-size: 12px; ">
 	    <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal"  type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
-	    <button type="button" class="btn btn-primary pull-right save_update_outlet" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
+	    <button type="button" class="btn btn-primary pull-right save save_update_outlet" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
 	    	
 	    <div class="loading text-center" style="display: none;">
           <img src="{{ asset('assets/img/loading1.gif') }}" width="100px">
@@ -458,6 +458,7 @@ function select_tt(a) {
     $('.dt_tt').val(tt_dt);
     $('#save_update_outlet').removeClass('disabled');
     $('#modal_outlet_tt').modal('hide');
+    $('.save').removeClass('disabled');
 }
  
 $.fn.serializeArray = function () {

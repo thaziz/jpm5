@@ -44,7 +44,7 @@
 	    <table class="table table-bordered table-hover table_outlet" style="font-size: 12px; ">
 	    <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal"  type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
         <button class="btn btn-primary btn_modal_ot disabled" type="button" > Bayar dengan Uang Muka </button>
-	    <button type="button" class="btn btn-primary pull-right save_update_outlet" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
+	    <button type="button" class="btn btn-primary pull-right save save_update_outlet" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
 	    	
 	    <div class="loading text-center" style="display: none;">
           <img src="{{ asset('assets/img/loading1.gif') }}" width="100px">
@@ -625,8 +625,9 @@ function select_tt(a) {
     $('.invoice_tt').val(tt_invoice);
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
-	$('#save_update_outlet').removeClass('disabled');
     $('#modal_tt_penerus').modal('hide');
+    $('#save_update_outlet').removeClass('disabled');
+    $('.save').removeClass('disabled');
 }
 function print_penerus() {
   var idfaktur = $('.idfaktur').val();

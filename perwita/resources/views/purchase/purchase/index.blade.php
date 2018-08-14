@@ -118,12 +118,11 @@
 
                             @if(Auth::user()->punyaAkses('Purchase Order','print'))
                             @if($po->po_setujufinance != '')
-                            <a href="print/{{ $po->po_id }}">Print Data</a>
-                            {{-- <button class="btn-sm btn btn-primary edit" type="button" onclick="cetak()">  </button> --}}
+                         
                               <span class='label label-warning '> {{$po->po_setujufinance}}</span>
                             @endif
                               @if($po->po_setujufinance == 'SETUJU')
-                            <button class="btn btn-sm btn-info print" type="button" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"> </i> </button>
+                            <a class="btn btn-sm btn-info print" type="button" href="print/{{ $po->po_id }}"> <i class="fa fa-print" aria-hidden="true"> </i> </a>
                             @endif
                            @endif
                           

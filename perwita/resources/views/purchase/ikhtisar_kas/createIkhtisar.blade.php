@@ -140,13 +140,13 @@
             <hr>
           </table>
         </div>
+        <div class="col-sm-6">
+          <p style="color: red">Note:Maximal Data Adalah 5000<br>Gunakan Filter Tanggal Untuk Memilah Petty Cash Berdasarkan Range Tanggal</p>
+        </div>
       </div>
     </div>  
     <!-- body Patty Cash-->
 <div class="ibox patty_cash" hidden="" style="padding-top: 10px;">
-      <div class="ibox-title">
-        <h5>Detail Patty Cash</h5>
-      </div>
   <div class=" ibox-content col-sm-12 tb_sb_hidden tabel_patty" >
   
   </div>

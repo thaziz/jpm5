@@ -73,7 +73,7 @@
     <div class="ibox">&nbsp;
       <div class="ibox-title">
         <h5>Laporan Patty Cash</h5>
-        <a href="../buktikaskeluar/index" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+        <a href="../index" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
       </div>
       <div class="ibox-content col-sm-12">
         <div class="col-sm-6">
@@ -145,7 +145,7 @@
             <th>Pilih</th>
             <th>Tanggal</th>
             <th>No Ref</th>
-            <th>Akun Biaya</th>
+            <th>Akun</th>
             <th>Nominal</th>
             <th>Keterangan</th>
             <th>User ID</th>
@@ -155,19 +155,19 @@
             @foreach($data_dt as $val)
             <tr>
               <td align="center">
-                <input type="checkbox" name="checker[]" class="ck" checked="" >
-                <input type="hidden" name="id_pc[]" class="id_table" value="{{$val->pc_id}}">
+                <input type="checkbox" checked="" name="checker[]" class="ck" >
+                <input type="hidden" name="id[]" class="id_table" value="{{$val->nota}}">
                 <input type="hidden" name="id_ikd[]" class="id_table" value="{{$val->ikd_ik_dt}}">
                 <input type="hidden" name="id_ik[]" class="id_table" value="{{$val->ikd_ik_id}}">
               </td>
-              <td><?php echo date('d/m/Y',strtotime($val->pc_tgl));?></td>
-              <td>{{$val->pc_no_trans}}</td>
-              <td>{{$val->pc_akun}}</td>
-   
-              <td>{{$val->pc_kredit}}</td>
-            
-              <td>{{$val->pc_keterangan}}</td>
-              <td>{{$val->pc_user}}</td>
+              <td><?php echo date('d/m/Y',strtotime($val->tanggal));?></td>
+              <td>{{$val->nota}}</td>
+              <td>{{$val->akun_kas}}</td>
+              <td align="right">{{'' . number_format(round($val->nominal),2,',','.')}}
+                <input type="hidden" name="nominal[]" value="{{round($val->nominal)}}">
+              </td>
+              <td>{{$val->keterangan}}</td>
+              <td>{{$val->user}}</td>
             </tr>
             @endforeach
           </tbody>    
@@ -241,8 +241,8 @@ function simpan(){
          data:$('.table_header :input').serialize()+'&'+tabel_patty.$('input').serialize(),
          type:'post',
       success:function(response){
-  
-          swal({
+        if (response.status == 1) {
+            swal({
             title: "Berhasil!",
                     type: 'success',
                     text: "Data berhasil disimpan",
@@ -250,10 +250,8 @@ function simpan(){
                    showConfirmButton: true
                     },function(){
                        location.href='../index';
-            });
-
-            
-
+            }); 
+        }
       },
       error:function(data){
         swal({

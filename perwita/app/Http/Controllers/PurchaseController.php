@@ -929,13 +929,20 @@ class PurchaseController extends Controller
 		if(Auth::user()->punyaAkses('Konfirmasi Order','all')){
 			$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = kode order by co_id desc");
 			
+			$data['pembelian'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and staff_pemb = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU'");
+
+			$data['keuangan'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and man_keu = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU'");
 
 		}
 		else {
-				$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang' and spp_cabang = kode order by co_id desc");	
+			$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang' and spp_cabang = kode order by co_id desc");	
+		
+			$data['pembelian'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and staff_pemb = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang'");
+
+			$data['keuangan'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and man_keu = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang'");
 		}
 		$data['co'];
-
+		/*dd($data);*/
 		return view('purchase.confirm_order.index', compact('data'));
 	}
 
@@ -6042,18 +6049,29 @@ public function purchase_order() {
 		$data['fpdt'] = DB::select("select * from faktur_pembelian, faktur_pembeliandt, masteritem, mastergudang where fpdt_idfp = fp_idfaktur and fp_nofaktur = '$nofaktur' and fpdt_kodeitem = kode_item and fpdt_gudang = mg_id ");
 
 		return json_encode($data);
-
 	}
 
 		public function getprovinsi(Request $request){
 			$idcabang = $request->cabang;
+			$acchpp = substr($request->acc_hpp, 0,4);
+			$accpersediaan = substr($request->acc_persediaan, 0,4);
+
+		
+		//	return json_encode($acchpp);
 			$data['cabang'] = DB::Select("select * from cabang where kode = '$idcabang'");
 			$idkota = $data['cabang'][0]->id_kota;
 
 			$data['provinsi'] = DB::select("select * from kota where id = '$idkota'");
 			$provinsi = $data['provinsi'][0]->id_provinsi;
 
-			return $provinsi;
+
+
+			$data['hpp'] = DB::select("select * from d_akun where id_akun LIKE '$acchpp%' and kode_cabang = '$idcabang'");
+
+		
+			$data['persediaan'] = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan%' and kode_cabang = '$idcabang'");
+
+			return $data;
 		}
 
 		public function update_fp(Request $request){
@@ -8239,7 +8257,7 @@ public function kekata($x) {
 				else if($idjenisbayar == '6' || $idjenisbayar == '7'  ){
 
 					if($cabang == 000){
-						$datas['fp']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian, form_tt, form_tt_d where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED' and tt_idform = ttd_id and ttd_faktur = fp_nofaktur " );
+						$datas['fp']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian, form_tt, form_tt_d where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED' and tt_idform = ttd_id and ttd_faktur = fp_nofaktur" );
 	
 						$datas['fp1']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian, form_tt, form_tt_d where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$nosupplier' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED'  and tt_idform = ttd_id and ttd_faktur = fp_nofaktur " );
 					}
@@ -10277,6 +10295,7 @@ public function kekata($x) {
 
 
 		return DB::transaction(function() use ($request) {  
+			$jenisbayar = $request->jenisbayar;
 			$time = Carbon::now();
 			//	$idbank = $request->idbank;
 				$formfpg = new formfpg();
@@ -10303,7 +10322,7 @@ public function kekata($x) {
 				$formfpg->fpg_tgl = $request->tglfpg;
 				$formfpg->fpg_jenisbayar = $request->jenisbayar;
 				$formfpg->fpg_totalbayar = $totalbayar;
-			//	$formfpg->fpg_uangmuka = $request->uangmuka;
+			
 				$formfpg->fpg_cekbg = $cekbg;
 				$formfpg->fpg_nofpg = $request->nofpg;
 				$formfpg->fpg_keterangan = strtoupper($request->keterangan);
@@ -10339,7 +10358,7 @@ public function kekata($x) {
 				
 				$formfpg->fpg_idbank = $idbank; 
 
-				if($request->jenisbayar = 12){
+				if($request->jenisbayar == 12){
 					$formfpg->fpg_acchutang = $request->hutangdagang;
 				}
 				else {
@@ -10358,6 +10377,8 @@ public function kekata($x) {
 				$formfpg->create_by = $request->username;
 				$formfpg->update_by = $request->username;
 				$formfpg->save();
+				
+
 
 				if($request->jenisbayar != 5){
 
@@ -10395,7 +10416,7 @@ public function kekata($x) {
 					$formfpg_dt->fpgdt_sisapelunasanumfp = $pelunasan;
 					$formfpg_dt->save();
 
-
+					
 					if($request->jenisbayar == 2 || $request->jenisbayar == 7 || $request->jenisbayar == 6  || $request->jenisbayar == 9) {
 						$updatefaktur = fakturpembelian::where('fp_nofaktur', '=', $request->nofaktur[$i]);
 						$updatefaktur->update([
@@ -10423,7 +10444,7 @@ public function kekata($x) {
 						 	'ik_pelunasan' => $sisafaktur,	 	
 					 	]);	
 					}
-					else if($request->jenisbayar == 4){
+					else if($request->jenisbayar == 4){	
 						$nofaktur = $request->nofaktur[$i];
 						$dataum = DB::select("select * from d_uangmuka where um_nomorbukti = '$nofaktur'");
 						$sisaterpakai = $dataum[0]->um_sisaterpakai;

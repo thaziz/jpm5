@@ -192,7 +192,7 @@
                                   <option value="DEBET">DEBET</option>
                                   <option value="KREDIT">KREDIT</option>
                                 </select>
-                              </td>
+                              </td> 
                             </tr>
                             <tr>
                               <td width="120">Keterangan</td>
@@ -832,7 +832,13 @@
   function hitung_pt() {
     var total = 0;
     $('.pt_nominal').each(function(){
-      total += parseInt($(this).val());
+      var par = $(this).parents('tr');
+      var debet = $(par).find('.pt_debet').val();
+      if (debet == 'DEBET') {
+        total += parseInt($(this).val());
+      }else{
+        total -= parseInt($(this).val());
+      }
     });
 
     $('.total').val(accounting.formatMoney(total,"", 2, ".",','));

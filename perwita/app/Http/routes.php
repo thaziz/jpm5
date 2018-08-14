@@ -581,6 +581,7 @@ Route::get('masteritem/edititem/{id}', 'MasterPurchaseController@edititem');
 Route::post('masteritem/updateitem/{id}', 'MasterPurchaseController@updateitem');
 Route::delete('masteritem/deleteitem/{id}', 'MasterPurchaseController@deleteitem');
 Route::get('masteritem/getaccpersediaan', 'MasterPurchaseController@getaccpersediaan');
+Route::get('masteritem/getpersediaan', 'MasterPurchaseController@getpersediaan');
 
 
 Route::get('masterbank/masterbank', 'MasterPurchaseController@masterbank');

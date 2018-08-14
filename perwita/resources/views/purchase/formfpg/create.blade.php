@@ -661,7 +661,7 @@
                                     
                                    </tr>
                                     <tr>
-                                      <th> Acc Rekening </th>
+                                      <th> Akun Bank </th>
                                       <td> <select class="form-control selectOutlet chosen-select-width1 bank1 banktujuan" name="tujuanbank">
                                                
                                                     <option value=""> Pilih Data Bank </option>
@@ -682,14 +682,15 @@
                                       <th> Nominal </th>                                      
                                       <td> <input type="text" class="input-sm form-control nominal nominaltujuanbank" style="text-align: right"> <input type="hidden" class="idbank"> </td>
 
-                                      <td> <div class="checkbox  checkbox-circle">
-                                                <input id="checkbox7" type="checkbox" name="setuju" required="" checked="">
-                                                <label for="checkbox7">
-                                                   Setuju
-                                                </label>
-                                            </div>
+                                      <td>
+                                            <button class="btn btn-success btn-xs" type="button" id="tbmhdatainet">
+                                            Tambah Data
+                                          </button>
                                       </td>
 
+                                      <td>
+                                       
+                                      </td>
                                     </tr>
                                     </table>
 
@@ -1017,6 +1018,9 @@
            }
 
       $('.jenisbayarbankbg').change(function(){
+          $('#tbmhdatainet').hide();
+          $('.nocheck').attr('readonly' , false);
+          $('.nominaltujuanbank').attr('readonly' , false);
           $this = $(this);
           jenisbayar = $('.jenisbayar').val();
            if ($this.is(":checked")) {
@@ -1047,6 +1051,8 @@
            }
       })
 
+      $('#tbmhdatainet').hide();
+
       $('.jenisbayarbankibaking').change(function(){
           $this = $(this);
           jenisbayar = $('.jenisbayar').val();
@@ -1055,6 +1061,15 @@
                   $('.transferbank').show();
                   $('.tujuanbankacc').show();
                   $('.jenisbayarbankbg').prop({ checked: false }); 
+
+                  banktujuan =$('.banktujuan').val();
+                  $('#tbmhdatainet').show();
+                 
+
+                
+                    $('.nocheck').attr('readonly' , true);
+                    $('.nominaltujuanbank').attr('readonly' , true);
+
                 }
                 else {
                   $('.jenisbayarbankbg').prop({ checked: false });           
@@ -1068,7 +1083,12 @@
                   tgl = $('.tgl').val();
                   bank = $('.bank').val();
                   kodebank = bank.split(",");
-           
+                  
+
+                  if(kodebank == ''){
+                    toastr.info("Mohon pilih data bank terlebih dahulu :)");
+                    return false;
+                  }
                   jatuhtempo = $('.jatuhtempo').val();
                   nofpg = $('.nofpg').val();
 

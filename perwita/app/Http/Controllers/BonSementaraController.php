@@ -165,7 +165,7 @@ class BonSementaraController extends Controller
 		});		
 	}
 
-	public function jurnalumum (Request $request){
+	public function jurnalumum(Request $request){
 		$id = $request->nota;
 		$detail = $request->detail;
 		$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk, jrdt_detail

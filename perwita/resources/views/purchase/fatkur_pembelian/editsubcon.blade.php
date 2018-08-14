@@ -149,7 +149,7 @@ No Faktur
  <tr>
   <td style="width: 100px">No Invoice </td>
   <td width="10">:</td>
-  <td width="200"><input type="text" value="{{$data->fp_noinvoice}}" name="invoice_subcon" class="form-control invoice_subcon" ></td>
+  <td width="200"><input type="text" readonly="" value="{{$data->fp_noinvoice}}" name="invoice_subcon" class="form-control invoice_tt" ></td>
  </tr>  
  <tr>
   <td style="width: 100px">Tanda terima</td>

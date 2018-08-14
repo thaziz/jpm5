@@ -344,23 +344,44 @@
               $('.acchpp').empty();
               if(stock == 'Y') {
                  if(updatestock == 'Y') {
-                      arrItem = response.akun;  
-                      $('.acchpp').empty();
-                      $('.acchpp').trigger("chosen:updated");
-                      $('.acchpp').trigger("liszt:updated");
+                      arrItem = response.akun;
 
-                      $('.accpersediaan').empty();
-                      $('.accpersediaan').append(" <option value=''>  -- Pilih id akun -- </option> ");
-                        $.each(arrItem, function(i , obj) {
-                  //        console.log(obj.is_kodeitem);
-                          $('.accpersediaan').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
-                        })
-                        $('.accpersediaan').trigger("chosen:updated");
-                        $('.accpersediaan').trigger("liszt:updated");
+                      if(arrItem.length != 0) {
+                        $('.acchpp').empty();
+                        $('.acchpp').trigger("chosen:updated");
+                        $('.acchpp').trigger("liszt:updated");
+
+                        $('.accpersediaan').empty();
+                        $('.accpersediaan').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                          $.each(arrItem, function(i , obj) {
+                    //        console.log(obj.is_kodeitem);
+                            $('.accpersediaan').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                          })
+                          $('.accpersediaan').trigger("chosen:updated");
+                          $('.accpersediaan').trigger("liszt:updated");
+                      }  
+                      else {
+                        arrMaster = response.akunmaster;
+                         $('.acchpp').empty();
+                        $('.acchpp').trigger("chosen:updated");
+                        $('.acchpp').trigger("liszt:updated");
+
+                        $('.accpersediaan').empty();
+                        $('.accpersediaan').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                          $.each(arrMaster, function(i , obj) {
+                    //        console.log(obj.is_kodeitem);
+                            $('.accpersediaan').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                          })
+                          $('.accpersediaan').trigger("chosen:updated");
+                          $('.accpersediaan').trigger("liszt:updated");
+
+                      }
+
 
               }
               else {
                   arrItem = response.akun;
+                  if(arrItem.length != 0) {
                       $('.accpersediaan').empty();
                       $('.accpersediaan').trigger("chosen:updated");
                       $('.accpersediaan').trigger("liszt:updated");
@@ -374,10 +395,29 @@
                         })
                       $('.acchpp').trigger("chosen:updated");
                       $('.acchpp').trigger("liszt:updated"); 
+                  }
+                  else {
+                      arrMaster = response.akunmaster;
+                      $('.accpersediaan').empty();
+                      $('.accpersediaan').trigger("chosen:updated");
+                      $('.accpersediaan').trigger("liszt:updated");
+
+                      $('.acchpp').empty();
+
+                      $('.acchpp').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                        $.each(arrMaster, function(i , obj) {
+                  //        console.log(obj.is_kodeitem);
+                          $('.acchpp').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                        })
+                      $('.acchpp').trigger("chosen:updated");
+                      $('.acchpp').trigger("liszt:updated"); 
+                  }
+
               } 
               }
               else {
                  arrItem = response.akun;
+                  if(arrItem.length != 0) {               
                       $('.accpersediaan').empty();
                       $('.accpersediaan').trigger("chosen:updated");
                       $('.accpersediaan').trigger("liszt:updated"); 
@@ -390,6 +430,22 @@
                         })
                       $('.acchpp').trigger("chosen:updated");
                       $('.acchpp').trigger("liszt:updated"); 
+                  }
+                  else {
+                    arrMaster = response.akunmaster;
+                     $('.accpersediaan').empty();
+                      $('.accpersediaan').trigger("chosen:updated");
+                      $('.accpersediaan').trigger("liszt:updated"); 
+
+                      $('.acchpp').empty();
+                      $('.acchpp').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                        $.each(arrMaster, function(i , obj) {
+                  //        console.log(obj.is_kodeitem);
+                          $('.acchpp').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                        })
+                      $('.acchpp').trigger("chosen:updated");
+                      $('.acchpp').trigger("liszt:updated"); 
+                  }
               }
                            
             }
@@ -414,49 +470,98 @@
               if(stock == 'Y'){
                  if(updatestock == 'Y') {
                       arrItem = response.akun;
-                      $('.acchpp').empty();
-                      $('.acchpp').trigger("chosen:updated");
-                      $('.acchpp').trigger("liszt:updated");
-                      
-                      $('.accpersediaan').append(" <option value=''>  -- Pilih id akun -- </option> ");
-                        $.each(arrItem, function(i , obj) {
-                  //        console.log(obj.is_kodeitem);
-                          $('.accpersediaan').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
-                        })
-                      $('.accpersediaan').trigger("chosen:updated");
-                      $('.accpersediaan').trigger("liszt:updated");
-                   
+                      if(arrItem.length != 0) {
+                        $('.acchpp').empty();
+                        $('.acchpp').trigger("chosen:updated");
+                        $('.acchpp').trigger("liszt:updated");
+                        
+                        $('.accpersediaan').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                          $.each(arrItem, function(i , obj) {
+                    //        console.log(obj.is_kodeitem);
+                            $('.accpersediaan').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                          })
+                        $('.accpersediaan').trigger("chosen:updated");
+                        $('.accpersediaan').trigger("liszt:updated");
+                      }
+                      else {
+                        arrMaster = response.akunmaster;
+                        $('.acchpp').empty();
+                        $('.acchpp').trigger("chosen:updated");
+                        $('.acchpp').trigger("liszt:updated");
+                        
+                        $('.accpersediaan').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                          $.each(arrMaster, function(i , obj) {
+                    //        console.log(obj.is_kodeitem);
+                            $('.accpersediaan').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                          })
+                        $('.accpersediaan').trigger("chosen:updated");
+                        $('.accpersediaan').trigger("liszt:updated");
+                      }
               }
               else {
                   arrItem = response.akun;
-                      $('.accpersediaan').empty();
-                      $('.accpersediaan').trigger("chosen:updated");
-                      $('.accpersediaan').trigger("liszt:updated");
+                      if(arrItem.length != 0) {
+                        $('.accpersediaan').empty();
+                        $('.accpersediaan').trigger("chosen:updated");
+                        $('.accpersediaan').trigger("liszt:updated");
 
-                      $('.acchpp').empty();
-                      $('.acchpp').append(" <option value=''>  -- Pilih id akun -- </option> ");
-                        $.each(arrItem, function(i , obj) {
-                  //        console.log(obj.is_kodeitem);
-                          $('.acchpp').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
-                        })
-                      $('.acchpp').trigger("chosen:updated");
-                      $('.acchpp').trigger("liszt:updated"); 
+                        $('.acchpp').empty();
+                        $('.acchpp').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                          $.each(arrItem, function(i , obj) {
+                    //        console.log(obj.is_kodeitem);
+                            $('.acchpp').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                          })
+                        $('.acchpp').trigger("chosen:updated");
+                        $('.acchpp').trigger("liszt:updated"); 
+                      }
+                      else {
+                        arrMaster = response.akunmaster;
+                        $('.accpersediaan').empty();
+                        $('.accpersediaan').trigger("chosen:updated");
+                        $('.accpersediaan').trigger("liszt:updated");
+
+                        $('.acchpp').empty();
+                        $('.acchpp').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                          $.each(arrMaster, function(i , obj) {
+                    //        console.log(obj.is_kodeitem);
+                            $('.acchpp').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                          })
+                        $('.acchpp').trigger("chosen:updated");
+                        $('.acchpp').trigger("liszt:updated"); 
+                      }
               } 
               }
               else {
                 arrItem = response.akun;
-                      $('.accpersediaan').empty();
-                      $('.accpersediaan').trigger("chosen:updated");
-                      $('.accpersediaan').trigger("liszt:updated"); 
-
-                      $('.acchpp').empty();
-                      $('.acchpp').append(" <option value=''>  -- Pilih id akun -- </option> ");
-                        $.each(arrItem, function(i , obj) {
-                  //        console.log(obj.is_kodeitem);
-                          $('.acchpp').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
-                        })
-                      $('.acchpp').trigger("chosen:updated");
-                      $('.acchpp').trigger("liszt:updated"); 
+                    if(arrItem.length != 0){
+                        $('.accpersediaan').empty();
+                        $('.accpersediaan').trigger("chosen:updated");
+                        $('.accpersediaan').trigger("liszt:updated"); 
+  
+                        $('.acchpp').empty();
+                        $('.acchpp').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                          $.each(arrItem, function(i , obj) {
+                    //        console.log(obj.is_kodeitem);
+                            $('.acchpp').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                          })
+                        $('.acchpp').trigger("chosen:updated");
+                        $('.acchpp').trigger("liszt:updated"); 
+                    }
+                    else {
+                      arrMaster = response.akunmaster;
+                        $('.accpersediaan').empty();
+                        $('.accpersediaan').trigger("chosen:updated");
+                        $('.accpersediaan').trigger("liszt:updated"); 
+  
+                        $('.acchpp').empty();
+                        $('.acchpp').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                          $.each(arrMaster, function(i , obj) {
+                    //        console.log(obj.is_kodeitem);
+                            $('.acchpp').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                          })
+                        $('.acchpp').trigger("chosen:updated");
+                        $('.acchpp').trigger("liszt:updated"); 
+                    }
               }
               
             }
