@@ -3039,7 +3039,7 @@ class LaporanMasterController extends Controller
   										and i_tanggal <= '$akir' 
 		 								$customer_invoice $akun_invoice $cabang_invoice
 										order by i_kode_customer");
-
+		return $data_invoice;
 
 		$data_cn_dn = DB::select("SELECT cd_jenis as flag,cd_nomor as kode,cd_kode_cabang,cd_acc,cd_customer as customer,cd_tanggal as tanggal,cd_keterangan as keterangan,cd_total as nominal FROM cn_dn_penjualan 
   										where cd_tanggal >= '$awal' 
@@ -3079,6 +3079,7 @@ class LaporanMasterController extends Controller
 			   							and i_tanggal <= '$akir' 
 										$customer_invoice $akun_invoice $cabang_invoice
 										");
+   			// return $saldo_ut;
    		}else{
    			$cus  =  DB::select("SELECT i_kode_customer as customer from invoice where i_tanggal BETWEEN '$awal' and '$akir'");
 
