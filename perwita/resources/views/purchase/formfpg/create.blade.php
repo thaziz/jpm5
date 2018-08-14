@@ -682,14 +682,15 @@
                                       <th> Nominal </th>                                      
                                       <td> <input type="text" class="input-sm form-control nominal nominaltujuanbank" style="text-align: right"> <input type="hidden" class="idbank"> </td>
 
-                                      <td> <div class="checkbox  checkbox-circle">
-                                                <input id="checkbox7" type="checkbox" name="setuju" required="" checked="">
-                                                <label for="checkbox7">
-                                                   Setuju
-                                                </label>
-                                            </div>
+                                      <td>
+                                            <button class="btn btn-success btn-xs" type="button" id="tbmhdatainet">
+                                            Tambah Data
+                                          </button>
                                       </td>
 
+                                      <td>
+                                       
+                                      </td>
                                     </tr>
                                     </table>
 
@@ -1017,6 +1018,9 @@
            }
 
       $('.jenisbayarbankbg').change(function(){
+          $('#tbmhdatainet').hide();
+          $('.nocheck').attr('readonly' , false);
+          $('.nominaltujuanbank').attr('readonly' , false);
           $this = $(this);
           jenisbayar = $('.jenisbayar').val();
            if ($this.is(":checked")) {
@@ -1047,6 +1051,8 @@
            }
       })
 
+      $('#tbmhdatainet').hide();
+
       $('.jenisbayarbankibaking').change(function(){
           $this = $(this);
           jenisbayar = $('.jenisbayar').val();
@@ -1056,6 +1062,13 @@
                   $('.tujuanbankacc').show();
                   $('.jenisbayarbankbg').prop({ checked: false }); 
 
+                  banktujuan =$('.banktujuan').val();
+                  $('#tbmhdatainet').show();
+                 
+
+                
+                    $('.nocheck').attr('readonly' , true);
+                    $('.nominaltujuanbank').attr('readonly' , true);
 
                 }
                 else {

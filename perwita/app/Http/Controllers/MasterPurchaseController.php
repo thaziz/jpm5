@@ -509,6 +509,7 @@ class MasterPurchaseController extends Controller
         $data->minstock = $request->minimum_stock;
         $data->acc_persediaan = $request->acc_persediaan;
         $data->acc_hpp = $request->acc_hpp;
+        $data->updatestock = $request->update_stock;
         $data->harga = $request->harga;
     	$data->kode_akun = $request->akun;
     	
