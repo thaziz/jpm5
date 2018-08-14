@@ -518,7 +518,7 @@
                                           <th> Kode Bank </th> <th> Nama Bank </th> <th> Cabang / Alamat </th> <th> No Account </th>
                                         </tr>
                                         <tr>
-                                          <td> <select class="form-control selectOutlet chosen-select-width1 bank" >
+                                          <td> <select class="form-control selectOutlet chosen-select-width1 bank bankasal" >
                                                
                                                     <option value=""> Pilih Data Bank </option>
 
@@ -1031,11 +1031,24 @@
         namabank = split[1];
         idbanktujuan = split[0];
        tgl = $('.tgl').val();
-        asalbank = $('.selectOutlet').val();
+      
+        asalbank = $('.bankasal').val();
         splitasal = asalbank.split(",");
-        kodebankasal = split[4];
-        idbankasal = split[0];
-       
+        kodebankasal = splitasal[4];
+        idbankasal = splitasal[0];
+        
+
+      
+
+        if(kodebankasal != kodebanktujuan){
+          if(kodebanktujuan.match(/1099.*/)){
+           
+          }
+          else{
+            toastr.info('salah');
+            return false;
+          }
+        }
 
            var row =  "<tr class='tblbank'> <td>"+noinet+"</td>" +
                       "<td>"+nofpg+"</td>" + // NO FPG
@@ -1241,6 +1254,7 @@
           return false;
         }
         else {
+          jenisbayar = $('.jenisbayar').val();
 
         event.preventDefault();
          var post_url2 = $(this).attr("action");
@@ -2088,6 +2102,16 @@
                         norekening = split[3];
                         namabank = split[1];
                         idbank = split[0];
+
+                        if(mbdt[i][0].mb_kode != kodebanktujuan){
+                          if(kodebanktujuan.match(/1099.*/)){
+
+                          }
+                          else{
+                            toastr.info('salah');
+                            return false;
+                          }
+                        }
 
                         if(metodebayar == 'CHECK/BG'){
                           for(var i =0 ; i < mbdt.length; i++ ){                    
