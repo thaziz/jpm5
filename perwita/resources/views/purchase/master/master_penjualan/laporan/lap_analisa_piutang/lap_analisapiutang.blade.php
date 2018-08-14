@@ -91,14 +91,25 @@
                         </td>
                       
                         <td>Cabang</td>
-                        <td>
+                        @if (Auth::user()->punyaAkses('Laporan Penjualan','cabang'))
+                          <td>
+                            <select class="chosen-select-width" name="cabang" id="cabang">
+                              <option value="">- Pilih -</option>
+                              @foreach ($cabang as $cab)
+                                <option @if(Auth::user()->kode_cabang == $cab->kode) selected="" @endif value="{{ $cab->kode }}">{{ $cab->kode }} - {{ $cab->nama }}</option>
+                              @endforeach
+                            </select>
+                          </td>
+                        @else
+                        <td class="disabled">
                           <select class="chosen-select-width" name="cabang" id="cabang">
                             <option value="">- Pilih -</option>
                             @foreach ($cabang as $cab)
-                              <option value="{{ $cab->kode }}">{{ $cab->kode }} - {{ $cab->nama }}</option>
+                              <option @if(Auth::user()->kode_cabang == $cab->kode) selected="" @endif value="{{ $cab->kode }}">{{ $cab->kode }} - {{ $cab->nama }}</option>
                             @endforeach
                           </select>
                         </td>
+                        @endif
                       </tr>
                       <tr>  
                       <td>Laporan</td>
@@ -159,6 +170,20 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+      $(document).ready(function(){
+        $.ajax({
+          data:$('#search').serialize(),
+          type:'get',
+          url: baseUrl + '/laporan_sales/analisa_piutang/piutang_dropdown',
+          success : function(data){
+            $('#akun').empty();
+            for (var i = 0; i < data.piutang.length; i++) {
+              $('#akun').append("<option value='"+data.piutang[i].id_akun+"'>"+data.piutang[i].id_akun+'-'+data.piutang[i].nama_akun+"</option>");
+              $('#akun').chosen().trigger("chosen:updated");
+            }
+          }
+        })
+      })
 
       $('.date').datepicker({
           autoclose: true,
