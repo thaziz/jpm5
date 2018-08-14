@@ -17,7 +17,7 @@ class tarif_VendorController extends Controller
         $cabang = Auth::user()->kode_cabang;
 
         if (Auth::user()->punyaAkses('Tarif Penerus Vendor','all')) {
-            $list = DB::table('tarif_vendor')->select('tarif_vendor.*','cabang.*','vendor.*')
+            $list = DB::table('tarif_vendor')
                             ->select('tarif_vendor.*','k1.nama as asal','k2.nama as tujuan','cabang.nama as nama_cab')
                             ->leftjoin('cabang','cabang.kode','=','tarif_vendor.cabang_vendor')
                             ->leftjoin('kota as k1','k1.id','=','tarif_vendor.id_kota_asal_vendor')
@@ -25,7 +25,7 @@ class tarif_VendorController extends Controller
                             ->leftjoin('vendor','vendor.kode','=','tarif_vendor.vendor_id')
                             ->get();
         }else{
-            $list = DB::table('tarif_vendor')->select('tarif_vendor.*','cabang.*','vendor.*')
+            $list = DB::table('tarif_vendor')
                             ->select('tarif_vendor.*','k1.nama as asal','k2.nama as tujuan','cabang.nama as nama_cab')
                             ->leftjoin('cabang','cabang.kode','=','tarif_vendor.cabang_vendor')
                             ->leftjoin('kota as k1','k1.id','=','tarif_vendor.id_kota_asal_vendor')
