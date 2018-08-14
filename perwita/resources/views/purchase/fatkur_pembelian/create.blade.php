@@ -6249,7 +6249,7 @@
           cabang = $('.cabang').val();
           groupitem = $('.groupitem').val();
 
-          if(acc_persediaan != ''){
+          if(acc_persediaan != 'null'){
                     if(data.persediaan.length > 0){
                       accpersediaan = data.persediaan[0].id_akun;
                        $('.acc_persediaan').val(accpersediaan);
