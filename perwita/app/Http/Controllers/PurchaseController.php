@@ -10529,13 +10529,23 @@ public function kekata($x) {
 
 					}
 					if($request->jenisbayar == '12'){
+						if($request->jenisbayarbank == 'INTERNET BANKING'){
+							$formfpg_bank->fpgb_nocheckbg = null;
+							$formfpg_bank->fpgb_norektujuan = $request->tujuannorekbank[$j];
+							$formfpg_bank->fpgb_nmrekeningtujuan = $request->tujuannamabank[$j];
+							$formfpg_bank->fpgb_banktujuan = $request->idbanktujuan[$j];
+							$formfpg_bank->fpgb_nmbanktujuan = $request->namabanktujuan[$j];
+							$formfpg_bank->fpgb_kodebanktujuan = $request->kodebanktujuan[$j];
+						}
+						else {
+							$formfpg_bank->fpgb_nocheckbg = $request->noseri[$j];
+							$formfpg_bank->fpgb_norektujuan = $request->tujuannorekbank[$j];
+							$formfpg_bank->fpgb_nmrekeningtujuan = $request->tujuannamabank[$j];
+							$formfpg_bank->fpgb_banktujuan = $request->idbanktujuan[$j];
+							$formfpg_bank->fpgb_nmbanktujuan = $request->namabanktujuan[$j];
+							$formfpg_bank->fpgb_kodebanktujuan = $request->kodebanktujuan[$j];
 
-						$formfpg_bank->fpgb_nocheckbg = $request->noseri[$j];
-						$formfpg_bank->fpgb_norektujuan = $request->tujuannorekbank[$j];
-						$formfpg_bank->fpgb_nmrekeningtujuan = $request->tujuannamabank[$j];
-						$formfpg_bank->fpgb_banktujuan = $request->idbanktujuan[$j];
-						$formfpg_bank->fpgb_nmbanktujuan = $request->namabanktujuan[$j];
-						$formfpg_bank->fpgb_kodebanktujuan = $request->kodebanktujuan[$j];
+						}
 					}
 					else {
 						$formfpg_bank->fpgb_nocheckbg = $request->noseri[$j];

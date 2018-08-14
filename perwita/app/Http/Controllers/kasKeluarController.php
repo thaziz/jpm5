@@ -19,6 +19,7 @@ use Auth;
 use Yajra\Datatables\Datatables;
 use App\d_jurnal;
 use App\d_jurnal_dt;
+use Exception;
 // use Datatables;
 ini_set('max_execution_time', 60000);
 
@@ -3375,38 +3376,42 @@ class kasKeluarController extends Controller
 						   ->where('bkk_id',$req->id)
 						   ->get();
 
-			for ($i=0; $i < count($cari_nota); $i++) { 
+			for ($i=0; $i < count($cari_nota); $i++) { 		
+				try{
 
-				if ($cari_nota[$i]->bkk_jenisbayar == 2 or $cari_nota[$i]->bkk_jenisbayar == 6 or $cari_nota[$i]->bkk_jenisbayar == 7 or $cari_nota[$i]->bkk_jenisbayar == 9) {
-					$cari_faktur = DB::table('faktur_pembelian')
-									 ->where('fp_nofaktur',$cari_nota[$i]->bkkd_ref)
-									 ->first();
-					$update_faktur =DB::table('faktur_pembelian')
-									  ->where('fp_nofaktur',$cari_nota[$i]->bkkd_ref)
-									  ->update([
-									  	'fp_sisapelunasan' => $cari_faktur->fp_sisapelunasan + $cari_nota[$i]->bkkd_total
-									  ]);
-				}elseif ($cari_nota[0]->bkk_jenisbayar == 3) {
-					$cari_faktur = DB::table('v_hutang')
-									 ->where('v_nomorbukti',$cari_nota[$i]->bkkd_ref)
-									 ->first();
-					$update_faktur =DB::table('v_hutang')
-									  ->where('v_nomorbukti',$cari_nota[$i]->bkkd_ref)
-									  ->update([
-									  	'v_pelunasan' => $cari_faktur->v_pelunasan + $cari_nota[$i]->bkkd_total
-									  ]);
-				}else if($cari_nota[0]->bkk_jenisbayar == 4){
-					$cari_faktur = DB::table('d_uangmuka')
-									 ->where('um_nomorbukti',$cari_nota[$i]->bkkd_ref)
-									 ->first();
+				}catch(Exception $err){
+					if ($cari_nota[$i]->bkk_jenisbayar == 2 or $cari_nota[$i]->bkk_jenisbayar == 6 or $cari_nota[$i]->bkk_jenisbayar == 7 or $cari_nota[$i]->bkk_jenisbayar == 9) {
+						$cari_faktur = DB::table('faktur_pembelian')
+										 ->where('fp_nofaktur',$cari_nota[$i]->bkkd_ref)
+										 ->first();
+						$update_faktur =DB::table('faktur_pembelian')
+										  ->where('fp_nofaktur',$cari_nota[$i]->bkkd_ref)
+										  ->update([
+										  	'fp_sisapelunasan' => $cari_faktur->fp_sisapelunasan + $cari_nota[$i]->bkkd_total
+										  ]);
+					}elseif ($cari_nota[0]->bkk_jenisbayar == 3) {
+						$cari_faktur = DB::table('v_hutang')
+										 ->where('v_nomorbukti',$cari_nota[$i]->bkkd_ref)
+										 ->first();
+						$update_faktur =DB::table('v_hutang')
+										  ->where('v_nomorbukti',$cari_nota[$i]->bkkd_ref)
+										  ->update([
+										  	'v_pelunasan' => $cari_faktur->v_pelunasan + $cari_nota[$i]->bkkd_total
+										  ]);
+					}else if($cari_nota[0]->bkk_jenisbayar == 4){
+						$cari_faktur = DB::table('d_uangmuka')
+										 ->where('um_nomorbukti',$cari_nota[$i]->bkkd_ref)
+										 ->first();
 
-					$update_faktur = DB::table('d_uangmuka')
-									  ->where('um_nomorbukti',$cari_nota[$i]->bkkd_ref)
-									  ->update([
-									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan + $cari_nota[$i]->bkkd_total,
-									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai - $cari_nota[$i]->bkkd_total
-									  ]);
+						$update_faktur = DB::table('d_uangmuka')
+										  ->where('um_nomorbukti',$cari_nota[$i]->bkkd_ref)
+										  ->update([
+										  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan + $cari_nota[$i]->bkkd_total,
+										  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai - $cari_nota[$i]->bkkd_total
+										  ]);
+					}
 				}
+				
 			}
 
 			$delete_jurnal = DB::table('d_jurnal')

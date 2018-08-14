@@ -818,14 +818,24 @@ class ikhtisarController extends Controller
 					  ->join('cabang','kode','=','ik_comp')
 					  ->where('ik_id',$id)
 					  ->first();
-
+					  
 			$start = Carbon::parse($data->ik_tgl_awal)->format('d/m/Y');
 			$end = Carbon::parse($data->ik_tgl_akhir)->format('d/m/Y');
 
-			$data_dt = DB::table('ikhtisar_kas_detail')
-					   ->join('patty_cash','ikd_pc_id','=','pc_id')
-					   ->where('ikd_ik_id',$id)
-					   ->get();
+			$bkk = DB::table('bukti_kas_keluar')
+					->join('ikhtisar_kas_detail','ikd_ref','=','bkk_nota')
+					->where('ikd_ik_id',$id)
+					->take(5000)
+					->orderBy('bkk_tgl','DESC')
+					->get();
+
+			$bpk = DB::table('biaya_penerus_kas')
+					->join('ikhtisar_kas_detail','ikd_ref','=','bpk_nota')
+					->where('ikd_ik_id',$id)
+					->take(5000)
+					->orderBy('bpk_tanggal','DESC')
+					->get();
+			$data_dt = array_merge($bkk,$bpk);	
 
 
 			$terbilang = $this->terbilang($data->ik_total,$style=3);
