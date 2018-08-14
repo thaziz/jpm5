@@ -6056,6 +6056,7 @@ public function purchase_order() {
 			$acchpp = substr($request->acc_hpp, 0,4);
 			$accpersediaan = substr($request->acc_persediaan, 0,4);
 
+		
 		//	return json_encode($acchpp);
 			$data['cabang'] = DB::Select("select * from cabang where kode = '$idcabang'");
 			$idkota = $data['cabang'][0]->id_kota;

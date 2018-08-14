@@ -6248,7 +6248,7 @@
                        $('.acc_biaya').val('');
                     }
                     else {
-                      toastr.info("Mohon maaf idakun"+acc_persediaan+"tidak ada dalam server :)");
+                      toastr.info("Mohon maaf idakun "+acc_persediaan+" tidak ada dalam server :)");
                       return false;
                     }
           }
@@ -6261,7 +6261,7 @@
               $('.acc_persediaan').val('');
             }
             else {
-              toastr.info("Mohon maaf idakun"+acc_hpp+" tidak ada dalam server :)");
+              toastr.info("Mohon maaf idakun "+acc_hpp+" tidak ada dalam server :)");
               return false;
             }
           }
