@@ -4241,7 +4241,13 @@
           var acc_persediaan = $('.acc_persediaan').val();
           var keterangan = $('.keteranganbawah').val();
          // alert(keterangan);
-      
+        
+
+         if(acc_biaya == '' && acc_persediaan == ''){
+          toastr.info("Tidak bisa menambah item, karena akun item kosong :) ");
+          return false;
+         }
+
           var penerimaan = $('.penerimaan').val();
           var nettoitem = $('.nettoitem').val();
           var grupitem = $('.groupitem').val();
@@ -5244,7 +5250,7 @@
 
 
         $(document).on('click','.removes-btn',function(){
-          alert('test');
+         // alert('test');
           var id = $(this).data('id');
          
 
