@@ -117,9 +117,9 @@ No Faktur
   <td style="width: 100px">Tanggal</td>
   <td width="10">:</td>
   <td width="200">
-    <input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="{{carbon\carbon::parse($data->fp_tgl)->format('d/m/Y')}}" readonly="" style="">
-    <input type="hidden" name="nota_id_tt" class="form-control nota_id_tt" value="{{$valid_cetak->tt_idform}}" readonly="" style="">
-    <input type="hidden" name="nota_no_tt" class="form-control nota_no_tt" value="{{$valid_cetak->tt_noform}}" readonly="" style="">
+    <input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="{{carbon\carbon::parse($data->fp_tgl)->format('d/m/Y') or null}}" readonly="" style="">
+    <input type="hidden" name="nota_id_tt" class="form-control nota_id_tt" value="{{$valid_cetak->tt_idform or null}}" readonly="" style="">
+    <input type="hidden" name="nota_no_tt" class="form-control nota_no_tt" value="{{$valid_cetak->tt_noform or null}}" readonly="" style="">
   </td>
  </tr>
  <tr>
@@ -155,10 +155,10 @@ No Faktur
   <td style="width: 100px">Tanda terima</td>
   <td width="10">:</td>
   <td width="200">
-    <input type="text" readonly="" name="tanda_terima" class="form-control tanda_terima" value="{{ $tt->tt_noform }}">
-    <input type="hidden" readonly="" name="invoice_tt" class="form-control invoice_tt" value="{{ $tt->ttd_invoice }}">
-    <input type="hidden" readonly="" name="id_tt" class="form-control id_tt" value="{{ $tt->ttd_id }}">
-    <input type="hidden" readonly="" name="dt_tt" class="form-control dt_tt" value="{{ $tt->ttd_detail }}">
+    <input type="text" readonly="" name="tanda_terima" class="form-control tanda_terima" value="{{ $tt->tt_noform or null}}">
+    <input type="hidden" readonly="" name="invoice_tt" class="form-control invoice_tt" value="{{ $tt->ttd_invoice or null}}">
+    <input type="hidden" readonly="" name="id_tt" class="form-control id_tt" value="{{ $tt->ttd_id or null}}">
+    <input type="hidden" readonly="" name="dt_tt" class="form-control dt_tt" value="{{ $tt->ttd_detail or null}}">
   </td>
  </tr>
  <tr>
