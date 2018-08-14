@@ -379,10 +379,9 @@ class KasController extends Controller
 		$tujuan = array_filter($tujuan);
 		$tujuan = array_values($tujuan);
 		$temp_data = $data;
-
-		for ($i=0; $i < $temp_data; $i++) { 
+		for ($i=0; $i < count($temp_data); $i++) { 
 			$akun = DB::table('d_akun')
-					  ->where('id_akun',substr($cari_persen->kode_akun, 0,4))
+					  ->where('id_akun','like',substr($cari_persen->kode_akun, 0,4).'%')
 					  ->where('kode_cabang',$temp_data[$i][0]->kode_cabang)
 					  ->first();
 			if ($akun == null) {
@@ -1675,7 +1674,7 @@ class KasController extends Controller
 		
 		$resi = array_values($resi);
 
-		
+
 		if ($jenis_biaya == '3') {
 			for ($i=0; $i < count($resi); $i++) { 
 				for ($a=0; $a < count($cari_resi); $a++) { 
@@ -1713,9 +1712,9 @@ class KasController extends Controller
 		$tujuan = array_values($tujuan);
 		$temp_data = $data;
 
-		for ($i=0; $i < $temp_data; $i++) { 
+		for ($i=0; $i < count($temp_data); $i++) { 
 			$akun = DB::table('d_akun')
-					  ->where('id_akun',substr($cari_persen->kode_akun, 0,4))
+					  ->where('id_akun','like',substr($cari_persen->kode_akun, 0,4).'%')
 					  ->where('kode_cabang',$temp_data[$i][0]->kode_cabang)
 					  ->first();
 			if ($akun == null) {
