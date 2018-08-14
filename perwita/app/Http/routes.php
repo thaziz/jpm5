@@ -1161,6 +1161,7 @@ Route::post('reportexcel_kartupiutang/reportexcel_kartupiutang', 'LaporanMasterC
 //analisa piutang
 Route::get('laporan_sales/analisa_piutang', 'laporan_sales\analisa_piutang_Controller@index');
 Route::get('laporan_sales/analisa_piutang/ajax_lap_analisa_piutang', 'laporan_sales\analisa_piutang_Controller@ajax_lap_analisa_piutang');
+Route::get('laporan_sales/analisa_piutang/piutang_dropdown', 'laporan_sales\analisa_piutang_Controller@piutang_dropdown');
 // end analisa piutang
 
 //---
