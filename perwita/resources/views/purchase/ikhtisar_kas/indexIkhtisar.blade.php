@@ -206,7 +206,7 @@ function(){
       url:baseUrl + '/ikhtisar_kas/hapus/'+id,
       type:'get',
       success:function(data){
-
+         if (data.status == 1) {
           swal({
           title: "Berhasil!",
                   type: 'success',
@@ -216,6 +216,17 @@ function(){
                   },function(){
                      location.reload();
           });
+        }else{
+          swal({
+          title: "Gagal Hapus!",
+                  type: 'error',
+                  text: "Data Gagal Dihapus",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+          });
+        }
+          
       },
       error:function(data){
 

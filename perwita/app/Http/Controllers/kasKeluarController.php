@@ -3378,8 +3378,6 @@ class kasKeluarController extends Controller
 
 			for ($i=0; $i < count($cari_nota); $i++) { 		
 				try{
-
-				}catch(Exception $err){
 					if ($cari_nota[$i]->bkk_jenisbayar == 2 or $cari_nota[$i]->bkk_jenisbayar == 6 or $cari_nota[$i]->bkk_jenisbayar == 7 or $cari_nota[$i]->bkk_jenisbayar == 9) {
 						$cari_faktur = DB::table('faktur_pembelian')
 										 ->where('fp_nofaktur',$cari_nota[$i]->bkkd_ref)
@@ -3410,6 +3408,8 @@ class kasKeluarController extends Controller
 										  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai - $cari_nota[$i]->bkkd_total
 										  ]);
 					}
+				}catch(Exception $err){
+					return response()->json(['status'=>0]);
 				}
 				
 			}
@@ -3425,6 +3425,7 @@ class kasKeluarController extends Controller
 			$delete_bkk   = DB::table('bukti_kas_keluar')
 							   ->where('bkk_nota',$cari_nota[0]->bkk_nota)
 							   ->delete();
+			return response()->json(['status'=>1]);
 
 			
 		});
