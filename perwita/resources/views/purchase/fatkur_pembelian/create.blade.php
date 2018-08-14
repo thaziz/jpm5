@@ -6241,29 +6241,32 @@
           cabang = $('.cabang').val();
           groupitem = $('.groupitem').val();
 
-          accpersediaan = response.persediaan[0].id_akun;
-          acchpp = response.hpp[0].id_akun;
-          if(accpersediaan.length != 0){
-              $('.acc_persediaan').val(accpersediaan);
+          if(acc_persediaan != ''){
+                    if(data.persediaan.length > 0){
+                      accpersediaan = data.persediaan[0].id_akun;
+                       $('.acc_persediaan').val(accpersediaan);
+                       $('.acc_biaya').val('');
+                    }
+                    else {
+                      toastr.info("Mohon maaf idakun"+acc_persediaan+"tidak ada dalam server :)");
+                      return false;
+                    }
           }
-          else {
-            toastr.info("Mohon maaf, idakun yang di setting tidak ada dalam server :) ");
-            return false;
-          }
-          /*accpersediaan = acc_persediaan.substr(0,4);
-          accpersediaan = accpersediaan + data + cabang;*/
 
-/*          acchpp = acc_hpp.substr(0,4);
-/*          acchpp = acchpp + data + cabang; */
-          if(acchpp.length != 0){
+
+          if(acc_hpp != 'null'){
+            if(data.hpp.length > 0){
+              acchpp = data.hpp[0].id_akun;
               $('.acc_biaya').val(acchpp);
+              $('.acc_persediaan').val('');
+            }
+            else {
+              toastr.info("Mohon maaf idakun"+acc_hpp+" tidak ada dalam server :)");
+              return false;
+            }
           }
-          else {
-            toastr.info("Mohon maaf,idakun yang di setting tidak ada dalam server :)" );
-            return false;
-          }
-        }
-      })
+
+    
       if(qty != '') {
         /*  if(diskon != '') {
             hasil = parseFloat(qty * harga);  
@@ -6288,6 +6291,8 @@
            /* alert('asas');
           }*/
       }
+    }
+    })
     })
 
     $('.idsup').change(function(){
