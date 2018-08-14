@@ -583,7 +583,7 @@
 
        if($temp == 0){
         if($('input.tolak'+id).is(':checked')){
-         // alert('test');
+      
         }
         else {
           toastr.info("Harap centang supplier yang dipilih");

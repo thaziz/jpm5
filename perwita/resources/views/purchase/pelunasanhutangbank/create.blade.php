@@ -969,7 +969,7 @@
             success : function(data){
                
                  if(data.status = 'sukses'){
-                 
+               
                   var d = new Date();
                   
                   //tahun
@@ -996,6 +996,26 @@
                    nobbk = 'BK-' + month1 + year2 + '/' + comp + '/' +  data.data;
                 //  console.log(nospp);
                   $('.nobbk').val(nobbk);
+
+                       kodebank = $('.kodebank').val();
+
+                       if(kodebank != ''){
+                          
+                          split = nobbk.split("-");
+                          bank = split[0];
+                          lain = split[1];
+                          if(parseInt(kodebank) < parseInt(10)){
+                              kodebank = '0' + kodebank;
+                          }
+                          
+                          str = bank.substr(0,2);
+                        
+                          nobbk = str + val + '-' + lain;
+                          $('.nobbk').val(nobbk);
+                       }
+
+
+
                  }
                  else {
                   location.reload();
