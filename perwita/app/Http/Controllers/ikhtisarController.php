@@ -456,7 +456,6 @@ class ikhtisarController extends Controller
 		}
 	}
 	public function simpan(request $request){
-			// dd($request->all());
 
    		return DB::transaction(function() use ($request) {  
 			for ($i=0; $i < count($request->checker); $i++) { 
@@ -538,6 +537,7 @@ class ikhtisarController extends Controller
 							$debet += $request->nominal[$i];
 						}
 		 			}
+
 					$save_ikhtisar = DB::table('ikhtisar_kas')
 									   ->insert([
 									   		'ik_id'   		=> $id,
@@ -602,7 +602,7 @@ class ikhtisarController extends Controller
 								
 							}else{
 								$bpk = DB::table('biaya_penerus_kas')
-									->where('bpk_nota',$request->id)
+									->where('bpk_nota',$request->id[$i])
 									->first();
 
 								$save_ikhtisar = DB::table('ikhtisar_kas_detail')
