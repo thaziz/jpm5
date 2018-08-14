@@ -130,7 +130,7 @@
                           
                       </tr>
                           <tr>
-                            <td class="updatedtock"> Update Stock {{$item->updatestock}} </td>
+                            <td class="updatedtock"> Update Stock  </td>
                             <td class="updatedtock"> <select class="form-control updatestock" name="update_stock" required=""> 
                               @if($item->updatestock == "T")
                                 <option value='T'  selected="" > T </option>
@@ -152,7 +152,7 @@
                           <tr>
                             <td> Acc HPP </td>
                             <td>
-                            <select class="chosen-select-width l acchpp" name="acc_pp" id="accpersediaan"> </select>
+                            <select class="chosen-select-width l acchpp" name="acc_hpp" id="accpersediaan"> </select>
 
                           </tr>
 
@@ -283,11 +283,11 @@
     updatestock = $('.updatestock').val();
     cabang = $('.cabang').val();
     kodeitem = $('.kodeitem').val();
-
+    groupitem = $('.jenis_item').val();
       $.ajax({
-        data : {kodejenis,updatestock,cabang,kodeitem},
+        data : {kodejenis,updatestock,cabang,kodeitem,groupitem},
         url : baseUrl + '/masteritem/getpersediaan',
-        type : "post",
+        type : "get",
         dataType : "json",
         success : function(response){
           stock = response.stock;
@@ -325,7 +325,7 @@
               } 
               }
               else {
-                alert('t');
+                //alert('t');
                 arrItem = response.akun;
            
                       $('.accpersediaan').empty();
@@ -416,17 +416,20 @@
 
 
    $('.updatestock').change(function(){
-    kodejenis = $(this).val();
+     kodejenis = $(this).val();
     updatestock = $('.updatestock').val();
     cabang = $('.cabang').val();
+    kodeitem = $('.kodeitem').val();
+    groupitem = $('.jenis_item').val();
+   
       $.ajax({
-        data : {kodejenis,updatestock,cabang},
-        url : baseUrl + '/masteritem/datajenisitem',
-        type : "post",
+        data : {kodejenis,updatestock,cabang,groupitem,kodeitem},
+        url : baseUrl + '/masteritem/getpersediaan',
+        type : "get",
         dataType : "json",
         success : function(response){
           stock = response.stock;
-          alert(stock);
+        
             if(stock == 'Y'){
                  if(updatestock == 'Y') {
                       arrItem = response.akun;
@@ -536,7 +539,7 @@
          
         },
         error : function(){
-          alert('test');
+      
           location.reload();
         }
       })

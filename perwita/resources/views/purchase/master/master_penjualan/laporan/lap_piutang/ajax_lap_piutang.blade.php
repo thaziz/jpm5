@@ -26,7 +26,7 @@
                               
                                 @if ($customer[$in][0]->kode == $saldo_ut[$in][0]->i_kode_customer)
                                   <td >Saldo Awal :</td>
-                                  <td colspan="5" align="right"><input type="hidden" value="{{ $saldo_ut[$in][0]->saldo }}" class="saldo saldo_{{ $in }}" name="">
+                                  <td colspan="5" align="right"><input type="hidden" value="0" class="saldo saldo_{{ $in }}" name="">
                                     {{ $saldo_ut[$in][0]->saldo }}</td>
                                 @endif
                               

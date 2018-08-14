@@ -6054,18 +6054,22 @@ public function purchase_order() {
 		public function getprovinsi(Request $request){
 			$idcabang = $request->cabang;
 			$acchpp = substr($request->acc_hpp, 0,4);
-
 			$accpersediaan = substr($request->acc_persediaan, 0,4);
 
+		
+		//	return json_encode($acchpp);
 			$data['cabang'] = DB::Select("select * from cabang where kode = '$idcabang'");
 			$idkota = $data['cabang'][0]->id_kota;
 
 			$data['provinsi'] = DB::select("select * from kota where id = '$idkota'");
 			$provinsi = $data['provinsi'][0]->id_provinsi;
 
-			$data['hpp'] = DB::select("select * from d_akun where id_akun LIKE '$acchpp' and kode_cabang = '$idcabang'");
 
-			$data['persediaan'] = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$idcabang'");
+
+			$data['hpp'] = DB::select("select * from d_akun where id_akun LIKE '$acchpp%' and kode_cabang = '$idcabang'");
+
+		
+			$data['persediaan'] = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan%' and kode_cabang = '$idcabang'");
 
 			return $data;
 		}
@@ -10525,13 +10529,18 @@ public function kekata($x) {
 
 					}
 					if($request->jenisbayar == '12'){
+						if($request->jenisbayarbank == 'INTERNET BANKING'){
 
-						$formfpg_bank->fpgb_nocheckbg = $request->noseri[$j];
-						$formfpg_bank->fpgb_norektujuan = $request->tujuannorekbank[$j];
-						$formfpg_bank->fpgb_nmrekeningtujuan = $request->tujuannamabank[$j];
-						$formfpg_bank->fpgb_banktujuan = $request->idbanktujuan[$j];
-						$formfpg_bank->fpgb_nmbanktujuan = $request->namabanktujuan[$j];
-						$formfpg_bank->fpgb_kodebanktujuan = $request->kodebanktujuan[$j];
+						}
+						else {
+							$formfpg_bank->fpgb_nocheckbg = $request->noseri[$j];
+							$formfpg_bank->fpgb_norektujuan = $request->tujuannorekbank[$j];
+							$formfpg_bank->fpgb_nmrekeningtujuan = $request->tujuannamabank[$j];
+							$formfpg_bank->fpgb_banktujuan = $request->idbanktujuan[$j];
+							$formfpg_bank->fpgb_nmbanktujuan = $request->namabanktujuan[$j];
+							$formfpg_bank->fpgb_kodebanktujuan = $request->kodebanktujuan[$j];
+
+						}
 					}
 					else {
 						$formfpg_bank->fpgb_nocheckbg = $request->noseri[$j];
