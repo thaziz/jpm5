@@ -6232,6 +6232,8 @@
       diskon = $('.diskon').val();
 
       cabang = $('.cabang').val();
+      $('.acc_persediaan').val('');
+      $('.acc_biaya').val('');
       $.ajax({
         data : {cabang, acc_persediaan, acc_hpp},
         url : baseUrl + '/fakturpembelian/getprovinsi',
