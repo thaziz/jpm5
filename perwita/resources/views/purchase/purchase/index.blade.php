@@ -118,9 +118,12 @@
 
                             @if(Auth::user()->punyaAkses('Purchase Order','print'))
                             @if($po->po_setujufinance != '')
+                         
                               <span class='label label-warning '> {{$po->po_setujufinance}}</span>
                             @endif
-                          
+                              @if($po->po_setujufinance == 'SETUJU')
+                            <a class="btn btn-sm btn-info print" type="button" href="print/{{ $po->po_id }}"> <i class="fa fa-print" aria-hidden="true"> </i> </a>
+                            @endif
                            @endif
                           
                              </td>
@@ -305,7 +308,7 @@
     function cetak(){
         var data = $('#form').serialize();
         @foreach($data['po'] as $index=>$po)
-        window.open(baseUrl + '?' + data ,"_blank");  
+        window.open(baseUrl++'purchaseorder/print/' + '?' + data ,"_blank");  
         @endforeach
     }
 

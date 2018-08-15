@@ -44,7 +44,7 @@
 
 	    <table class="table table-bordered table-hover table_outlet" style="font-size: 12px; ">
 	    <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal"  type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
-	    <button type="button" class="btn btn-primary pull-right save_update_outlet" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
+	    <button type="button" class="btn btn-primary pull-right save save_update_outlet" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
 	    	
 	    <div class="loading text-center" style="display: none;">
           <img src="{{ asset('assets/img/loading1.gif') }}" width="100px">
@@ -240,7 +240,7 @@
 		    	$('.total_all_komisi').val(temp3);
 	    	}
 
- 			$('.save_update_outlet').addClass('disabled');
+ 			
 
 	 	}
 function check_parent(){
@@ -437,7 +437,7 @@ $('.modal_outlet_tt').click(function(){
       data: {cabang,agen_vendor},
       success:function(data){
         $('.div_tt').html(data);
-    	$('#modal_tt_penerus').modal('show');
+    	$('#modal_outlet_tt').modal('show');
       },error:function(){
         toastr.warning('Terjadi Kesalahan');
       }
@@ -456,7 +456,9 @@ function select_tt(a) {
     $('.invoice_tt').val(tt_invoice);
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
-    $('#modal_tt_outlet').modal('hide');
+    $('#save_update_outlet').removeClass('disabled');
+    $('#modal_outlet_tt').modal('hide');
+    $('.save').removeClass('disabled');
 }
  
 $.fn.serializeArray = function () {

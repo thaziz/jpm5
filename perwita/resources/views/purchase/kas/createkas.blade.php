@@ -689,7 +689,16 @@ function(){
                   },function(){
         
           });
-        }
+        }else if (response.status == '3') {
+          swal({
+              title: "Peringatan!",
+              type: 'warning',
+              text: response.data,
+              timer: 900,
+             showConfirmButton: true
+              },function(){
+          });
+       }
         
       },
       error:function(data){

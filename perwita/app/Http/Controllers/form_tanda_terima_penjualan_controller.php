@@ -365,6 +365,16 @@ class form_tanda_terima_penjualan_controller extends Controller
     			  ->delete();
     	return Response::json(['status'=>1]);
     }
+
+
+
+
+    public function printing($id)
+    {
+    	return view('sales.form_tanda_terima.print_tt');
+    }
+
+    
     public function datatable()
     {
     	if (Auth::user()->punyaAkses('Form Tanda Terima Penjualan','all')) {
@@ -425,4 +435,5 @@ class form_tanda_terima_penjualan_controller extends Controller
                         ->addIndexColumn()
                         ->make(true);
     }
+
 }

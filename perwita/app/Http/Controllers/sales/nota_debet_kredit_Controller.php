@@ -430,6 +430,7 @@ class nota_debet_kredit_Controller extends Controller
           $akun_ppn_temp = [];
           $nilai_ppn_temp = [];
           for ($i=0; $i < count($request->d_jenis_ppn); $i++) { 
+
             $ppn_type = null;
             $ppn_persen = 0;
             if ($request->d_jenis_ppn[$i] == 1) {

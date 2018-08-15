@@ -194,5 +194,9 @@ function hapus(id){
     });
 }
 
+function printing(id)
+{
+  window.open('{{ url('sales/form_tanda_terima_penjualan/printing') }}'+'/'+id);
+}
 </script>
 @endsection

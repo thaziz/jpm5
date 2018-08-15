@@ -177,6 +177,7 @@ Route::get('pengeluaranbarang/save_pengeluaran', 'PengeluaranBarangController@sa
 Route::get('pengeluaranbarang/update_pengeluaran/{id}', 'PengeluaranBarangController@update_pengeluaran');
 Route::get('pengeluaranbarang/hapus/{id}', 'PengeluaranBarangController@hapus');
 Route::get('pengeluaranbarang/createpengeluaranbarang/get_gudang','PengeluaranBarangController@get_gudang');
+Route::get('pengeluaranbarang/lihatjurnal','PengeluaranBarangController@lihatjurnal');
 // konfirmasi pengeluaran barang
 Route::get('konfirmasipengeluaranbarang/konfirmasipengeluaranbarang' , 'PengeluaranBarangController@konfirmpengeluaranbarang');
 Route::get('konfirmasipengeluaranbarang/detailkonfirmasipengeluaranbarang/{id}' , 'PengeluaranBarangController@detailkonfirmpengeluaranbarang');
@@ -386,7 +387,9 @@ Route::get('biaya_penerus/append_table', 'KasController@append_table');
 Route::get('buktikaskeluar/datatable_bk', 'KasController@datatable_bk')->name('datatable_bk');
 
 // BIAYA PENERUS LOADING/UNLOADING
-Route::get('biaya_penerus_loading/index', 'loadingController@index_loading');
+Route::get('biaya_penerus_loading/index', 'loadingController@index');
+Route::get('biaya_penerus_loading/append_table', 'loadingController@append_table');
+Route::get('biaya_penerus_loading/datatable_bk', 'loadingController@datatable_bk')->name('data_loading');
 Route::get('biaya_penerus_loading/create', 'loadingController@create_loading');
 Route::get('biaya_penerus_loading/edit', 'loadingController@edit_loading')->name('editkasloading');
 Route::post('biaya_penerus_loading/cariresi', 'loadingController@cariresi');
@@ -578,6 +581,7 @@ Route::get('masteritem/edititem/{id}', 'MasterPurchaseController@edititem');
 Route::post('masteritem/updateitem/{id}', 'MasterPurchaseController@updateitem');
 Route::delete('masteritem/deleteitem/{id}', 'MasterPurchaseController@deleteitem');
 Route::get('masteritem/getaccpersediaan', 'MasterPurchaseController@getaccpersediaan');
+Route::get('masteritem/getpersediaan', 'MasterPurchaseController@getpersediaan');
 
 
 Route::get('masterbank/masterbank', 'MasterPurchaseController@masterbank');
@@ -1157,6 +1161,7 @@ Route::post('reportexcel_kartupiutang/reportexcel_kartupiutang', 'LaporanMasterC
 //analisa piutang
 Route::get('laporan_sales/analisa_piutang', 'laporan_sales\analisa_piutang_Controller@index');
 Route::get('laporan_sales/analisa_piutang/ajax_lap_analisa_piutang', 'laporan_sales\analisa_piutang_Controller@ajax_lap_analisa_piutang');
+Route::get('laporan_sales/analisa_piutang/piutang_dropdown', 'laporan_sales\analisa_piutang_Controller@piutang_dropdown');
 // end analisa piutang
 
 //---
@@ -1683,6 +1688,7 @@ Route::get('sales/form_tanda_terima_penjualan/ganti_jt', 'form_tanda_terima_penj
 Route::post('sales/form_tanda_terima_penjualan/cari_invoice', 'form_tanda_terima_penjualan_controller@cari_invoice')->name('cari_invoice');
 Route::post('sales/form_tanda_terima_penjualan/append_invoice', 'form_tanda_terima_penjualan_controller@append_invoice')->name('append_invoice');
 Route::get('sales/form_tanda_terima_penjualan/hapus', 'form_tanda_terima_penjualan_controller@hapus_tt_penjualan')->name('hapus_tt_penjualan');
+Route::get('sales/form_tanda_terima_penjualan/printing/{id}', 'form_tanda_terima_penjualan_controller@printing');
 
 
 

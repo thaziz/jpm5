@@ -89,7 +89,7 @@ div.bottom
 			<td colspan="9" style="text-align: left">
 				Diminta oleh bagian : {{$data['spp'][0]->spp_bagian}} <br>
 				Untuk keperluan : {{$data['spp'][0]->spp_keperluan}}<br>
-				Tanggal dibutuhkan : {{ Carbon\Carbon::parse($data['spp'][0]->created_at)->format('d-M-Y ') }}
+				Tanggal dibutuhkan : {{ Carbon\Carbon::parse($data['spp'][0]->spp_tgldibutuhkan)->format('d-M-Y ') }}
 			</td>
 		</tr>
 		<tr>
@@ -339,9 +339,12 @@ div.bottom
 				<br>
 				{{$data['spp'][0]->spp_namakabag}} 
 				</div>
-					@if($data['spp'][0]->spp_statuskabag != 'BELUM MENGETAHUI')
+					@if($data['spp'][0]->spp_statuskabag == 'BELUM MENGETAHUI')
 					<p> BELUM MENGETAHUI </p>
+					@else 
+					<p> MENGETAHUI </p>
 					@endif
+
 				<div class="bottom">Tanggal :
 					@if($data['spp'][0]->spp_statuskabag == 'SETUJU')
 				 {{ Carbon\Carbon::parse($data['spp'][0]->spp_timesetujukabag)->format('d-M-Y ') }}</div>

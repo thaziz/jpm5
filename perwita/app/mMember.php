@@ -70,7 +70,7 @@ class mMember extends Model implements AuthenticatableContract, CanResetPassword
     
     public function punyaAkses($fitur,$aksi){
       // select * from  join  on = where ubah =true
-
+        
          $cek = DB::table('d_mem')
                 ->join('hak_akses', 'level', '=', 'm_level')
                 ->where('menu', '=', $fitur)
@@ -83,5 +83,5 @@ class mMember extends Model implements AuthenticatableContract, CanResetPassword
         else
             return false;
     }
-  
+    
 }
