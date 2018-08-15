@@ -19,6 +19,10 @@
 <script type="text/javascript">
 
   $(document).ready(function(){
+    {{ dd($tidak_ada_akun) }}
+    @if (count($tidak_ada_akun) != 0)
+      toastr.warning('Terdapat Do Yang Tidak Memiliki Biaya');
+    @endif
     var cabang = '{{$cab}}';
     tableDetail = $('.tbl-penerimabarang').DataTable({
          processing: true,

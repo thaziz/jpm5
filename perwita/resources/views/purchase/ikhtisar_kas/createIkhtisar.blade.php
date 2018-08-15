@@ -131,6 +131,12 @@
               </td>
             </tr>
             <tr>
+              <td>Total</td>
+              <td>
+                  <input type="text" name="total" class="form-control total">                         
+              </td>
+            </tr>
+            <tr>
               <td colspan="2">
                 <button type="button" class="btn btn-warning" onclick="cari_patty()"><i class="fa fa-search">&nbsp;Search</i></button>  
                 <button type="button" class="btn btn-primary" onclick="simpan()"><i class="fa fa-save">&nbsp;Simpan</i></button>           
@@ -236,6 +242,17 @@ $('.cabang').change(function(){
     }
   });
 })
+
+function ck() {
+  var total = 0;
+  tabel_patty.$('.ck').each(function(){
+    if($(this).is(':checked') == true){
+      var par = $(this).parents('tr');
+      var nominal = $(par).find('.nominal');
+      total += (nominal*1);
+    }
+  })
+}
 
 function simpan(){
     $.ajax({

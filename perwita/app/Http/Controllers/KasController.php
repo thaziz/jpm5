@@ -272,7 +272,6 @@ class KasController extends Controller
 						   ->whereIn('nomor',$request->resi_array)
 						   ->orderBy('nomor','ASC')
 						   ->get();
-
 			$cari_loading = DB::table('delivery_order')
 						   ->where('pendapatan',$request->jenis_pembiayaan)
 						   ->whereIn('nomor',$request->resi_array)
@@ -341,6 +340,7 @@ class KasController extends Controller
 				}
 			}
 		}
+
 		$resi = array_values($resi);
 		if ($jenis_biaya == '3') {
 			for ($i=0; $i < count($resi); $i++) { 
@@ -372,7 +372,7 @@ class KasController extends Controller
 		   	$data[$i]   = $cari;
 		   	$tujuan[$i] = $cari1;
 		}
-
+		$tidak_ada_akun = [];
 		//Menjumlah tarif resi
 		$data = array_filter($data);
 		$data = array_values($data);
@@ -386,6 +386,7 @@ class KasController extends Controller
 					  ->first();
 			if ($akun == null) {
 				unset($data[$i]);
+				array_push($tidak_ada_akun, 'TIDAK');
 			}
 		}
 		$data = array_filter($data);
@@ -406,10 +407,14 @@ class KasController extends Controller
 		
 			$total_penerus =array_sum($penerus);
 			$total_penerus =round($total_penerus,2);
-			return view('purchase/kas/tabelBiayakas',compact('data','tujuan','total_tarif','kas_surabaya','penerus','total_penerus','tipe_data'));
+			return view('purchase/kas/tabelBiayakas',compact('data','tujuan','total_tarif','kas_surabaya','penerus','total_penerus','tipe_data',compact('tidak_ada_akun')));
 	
 		}else{
-			return response()->json(['status' => 0]);
+			if (count($tidak_ada_akun) != 0) {
+				return response()->json(['status' => 0,'pesan'=>"Terdapat Data Yang Tidak Memiliki Akun Biaya"]);
+			}else{
+				return response()->json(['status' => 0,'pesan'=>"Data Tidak Ada"]);
+			}
 		}
 	}
 	public function save_penerus(request $request){
@@ -1719,6 +1724,7 @@ class KasController extends Controller
 					  ->first();
 			if ($akun == null) {
 				unset($data[$i]);
+				array_push($tidak_ada_akun, 'TIDAK');
 			}
 		}
 		$data = array_filter($data);
@@ -1742,7 +1748,11 @@ class KasController extends Controller
 			return view('purchase/kas/tabelBiayakas',compact('data','tujuan','total_tarif','kas_surabaya','penerus','total_penerus','tipe_data'));
 	
 		}else{
-			return response()->json(['status' => 0]);
+			if (count($tidak_ada_akun) != 0) {
+				return response()->json(['status' => 0,'pesan'=>"Terdapat Data Yang Tidak Memiliki Akun Biaya"]);
+			}else{
+				return response()->json(['status' => 0,'pesan'=>"Data Tidak Ada"]);
+			}
 		}
 	}
 
