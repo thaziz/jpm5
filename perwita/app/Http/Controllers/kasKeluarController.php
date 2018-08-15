@@ -428,8 +428,8 @@ class kasKeluarController extends Controller
 
 				$id_pt = DB::table('patty_cash')
 						   ->max('pc_id')+1;
-
-				$patty_cash = DB::table('patty_cash')
+				if ($req->pt_debet[$i] ==  'DEBET') {
+					$patty_cash = DB::table('patty_cash')
 							->insert([
 								'pc_id'			=> $id_pt,
 								'pc_ref'  		=> $req->jenis_bayar,
@@ -448,6 +448,28 @@ class kasKeluarController extends Controller
 								'pc_edit'  		=> 'UNALLOWED',
 								'pc_reim'  		=> 'UNRELEASED',
 							]);	
+				}else{
+					$patty_cash = DB::table('patty_cash')
+							->insert([
+								'pc_id'			=> $id_pt,
+								'pc_ref'  		=> $req->jenis_bayar,
+								'pc_akun'  		=> $req->pt_akun_biaya[$i],
+								'pc_keterangan' => strtoupper($req->pt_keterangan[$i]),
+								'pc_debet' 		=> $req->pt_nominal[$i],
+								'pc_kredit' 	=> 0,
+								'updated_at' 	=> carbon::now(),
+								'created_at' 	=> carbon::now(),
+								'pc_akun_kas' 	=> $req->kas,
+								'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+								'pc_user'  		=> Auth::user()->m_name,
+								'pc_comp' 		=> $req->cabang,
+								'pc_asal_comp'	=> $req->cabang,
+								'pc_no_trans' 	=> $nota,
+								'pc_edit'  		=> 'UNALLOWED',
+								'pc_reim'  		=> 'UNRELEASED',
+							]);	
+				}
+				
 				
 			}
 
