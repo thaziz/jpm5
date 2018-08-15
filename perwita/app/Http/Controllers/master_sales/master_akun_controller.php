@@ -295,6 +295,10 @@ class master_akun_controller extends Controller
 
     public function insert_all()
     {
+
+      $del = DB::table('master_akun_fitur')
+               ->delete();
+               
       $cabang = DB::table('cabang')
                   ->get();
 
