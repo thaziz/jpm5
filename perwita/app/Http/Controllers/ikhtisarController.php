@@ -822,25 +822,31 @@ class ikhtisarController extends Controller
 			$start = Carbon::parse($data->ik_tgl_awal)->format('d/m/Y');
 			$end = Carbon::parse($data->ik_tgl_akhir)->format('d/m/Y');
 
+			$nomor = DB::table('ikhtisar_kas_detail')
+					->where('ikd_ik_id',$id)
+					->get();
+
 			$bkk = DB::table('bukti_kas_keluar')
 					->join('ikhtisar_kas_detail','ikd_ref','=','bkk_nota')
+					->join('patty_cash','pc_no_trans','=','bkk_nota')
 					->where('ikd_ik_id',$id)
-					->take(5000)
+					->where('pc_debet',0)
 					->orderBy('bkk_tgl','DESC')
 					->get();
 
 			$bpk = DB::table('biaya_penerus_kas')
 					->join('ikhtisar_kas_detail','ikd_ref','=','bpk_nota')
+					->join('patty_cash','pc_no_trans','=','bpk_nota')
 					->where('ikd_ik_id',$id)
-					->take(5000)
+					->where('pc_debet',0)
 					->orderBy('bpk_tanggal','DESC')
 					->get();
-			$data_dt = array_merge($bkk,$bpk);	
 
+			$data_dt = array_merge($bkk,$bpk);	
 
 			$terbilang = $this->terbilang($data->ik_total,$style=3);
 
-			return view('purchase.ikhtisar_kas.outputIkhtisar',compact('terbilang','data','start','end','id','data_dt'));
+			return view('purchase.ikhtisar_kas.outputIkhtisar',compact('terbilang','data','start','end','id','data_dt','nomor'));
 
 		}
 

@@ -250,14 +250,14 @@
         }
       })
 
-      $(".select_validate").each(function(i, e){
-        if($(this).val() == "---"){
-          a = false;
-          $(this).focus();
-          toastr.warning('Harap Lengkapi Data Diatas');
-          return false;
-        }
-      })
+      // $(".select_validate").each(function(i, e){
+      //   if($(this).val() == "---"){
+      //     a = false;
+      //     $(this).focus();
+      //     toastr.warning('Harap Lengkapi Data Diatas');
+      //     return false;
+      //   }
+      // })
 
       if($("#saldo").is(":checked") && $("#DEBET").val() == '0,00' && $("#KREDIT").val() == '0,00'){
         a = false;

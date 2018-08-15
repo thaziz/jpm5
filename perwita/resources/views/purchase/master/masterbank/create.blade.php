@@ -571,8 +571,7 @@
 
           tempcek = 1;
          
-
-          for(ds = 0; ds <= hasilurutcek; ds++){ // CEK DOUBLE 
+          for(ds = 0; ds <= arrnourutcek.length ; ds++){ // CEK DOUBLE 
             if(arrnourutcek[ds] == urutcek){
              tempcek = parseInt(tempcek) + 1;
               
@@ -592,7 +591,7 @@
 
 
           tempbg = 1;
-          for(ds = 0; ds <= hasilurutbg; ds++){ // CEK DOUBLE BG
+          for(ds = 0; ds <= arrnourutbg.length ; ds++){ // CEK DOUBLE BG
             if(arrnourutbg[ds] == urutbg){
              tempbg = parseInt(tempbg) + 1;
               
@@ -601,7 +600,7 @@
 
             }
             else {
-              for(i=1;i<=hasilurutbg;i++){
+              for(i=1;i<=arrnourutbg.length;i++){
                 if(arrnourutbg[ds + i] == urutbg){
                    tempbg = parseInt(tempbg) + 1;
                 }
@@ -636,7 +635,7 @@
           var tableBank = $('#tbl-cek').DataTable();
         
           var n = 1;
-        
+       
           for(var i = urutcek; i <= hasilurutcek; i++){ //ADD TABLE
             var html2 = "<tr>" + 
                         "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
@@ -699,6 +698,7 @@
             urutcek = $('.urutcek').val();           
             tglbukubg = $('#tglbukucek').val();
             hasilurutcek = $('.hasilurutcek').val();
+          
            // alert(urutcek + 'urutcek');
               if(noseri == ''){
                // alert('Mohon di isi no seri cek :)');
@@ -722,26 +722,20 @@
 
                   temp = 1;
                 
-                  for(ds = 0; ds < hasilurutcek; ds++){ // CEK DOUBLE
+                  for(ds = 0; ds < arrnourutcek.length; ds++){ // CEK DOUBLE
                     if(arrnourutcek[ds] == urutcek){
                      temp = parseInt(temp) + 1;
-                      
-                      console.log(arrnourutcek[ds] + 'urut');
-                      console.log(urutcek + 'urut2');
-
                     }
                     else {
-                      for(i=1;i<=hasilurutcek;i++){
+                      for(i=1;i<=arrnourutcek.length;i++){
                         if(arrnourutcek[ds + i] == urutcek){
                            temp = parseInt(temp) + 1;
                         }
                       }
                     }
-                    
-                  
                     urutcek++;
                   }
-                 
+
                   if(temp > 1 ){ // JIKA DOUBLE
                    // alert('No seri Cek sudah digunakan :)' );
                    toastr.info('No seri Cek sudah digunakan :)');
@@ -757,8 +751,9 @@
                   var tableBank = $('#tbl-cek').DataTable();
                 
                   var n = 1;
-                
-                  for(var i = urutcek; i <= hasilurutcek; i++){ //ADD TABLE
+                  
+
+                  for(var i = urutcek; parseInt(i) <= parseInt(hasilurutcek); i++){ //ADD TABLE
                     var html2 = "<tr>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                                 "<label></label>" +
@@ -824,12 +819,12 @@
 
                   temp = 1;
                 
-                  for(ds = 0; ds <= hasilurutbg; ds++){ // CEK DOUBLE
+                  for(ds = 0; ds <= arrnourutbg.length; ds++){ // CEK DOUBLE
                     if(arrnourutbg[ds] == urutbg){
                      temp = parseInt(temp) + 1;                      
                     }
                     else {
-                      for(i=1;i<=hasilurutbg;i++){
+                      for(i=1;i<=arrnourutbg.length;i++){
                         if(arrnourutbg[ds + i] == urutbg){
                            temp = parseInt(temp) + 1;
                         }

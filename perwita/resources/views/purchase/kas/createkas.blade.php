@@ -614,11 +614,9 @@ function search(){
       data: {head,data,resi_array},
       success:function(data){
         $('.resi_body').html('');
-        if(typeof data.status !== 'undefined'){
-                  console.log(data.status);
-          toastr.warning('data tidak ada/sudah ada');
-        }else if (data.status == 0){
-          toastr.warning('data sudah ada');
+        console.log(data.status);
+        if (data.status == 0){
+          toastr.warning(data.pesan);
         }else{
           $('.valid_key').attr('hidden',false);
           $('.resi_body').html(data);
