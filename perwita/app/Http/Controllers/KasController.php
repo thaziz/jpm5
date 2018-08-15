@@ -1405,7 +1405,7 @@ $a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' 
 			}
 			$total_harga=array_sum($harga_array);
 
-			$terbilang = $this->terbilang($total_harga,$style=3);
+			$terbilang = $this->terbilang(round($total_harga),$style=3);
 
 			if(count($harga_array)<10){
 				$td = 10-count($harga_array);

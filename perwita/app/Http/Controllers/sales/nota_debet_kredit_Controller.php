@@ -401,7 +401,7 @@ class nota_debet_kredit_Controller extends Controller
           }
           // PPN
           for ($i=0; $i < count($request->d_jenis_ppn); $i++) { 
-            # code...
+            # code... 
           }
           $akun     = [];
           $akun_val = [];

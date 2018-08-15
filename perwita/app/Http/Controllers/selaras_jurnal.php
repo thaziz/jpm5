@@ -808,6 +808,21 @@ class selaras_jurnal  extends Controller
                               ->where('bkk_id',$bkk[$i]->bkk_id)
                               ->get();
 
+                    for ($z=0; $z < count($detail); $z++) { 
+                      $cari_akun = DB::table('d_akun')
+                                     ->where('id_akun','like',substr($detail[$b]->bkkd_akun,0, 4).'%')
+                                     ->where('kode_cabang',$bkk[$i]->bkk_comp)
+                                     ->first();
+                      try{
+                        $dd = $cari_akun->id_akun;
+                      }catch(Exception $re){
+                        $detail = DB::table('bukti_kas_keluar_detail')
+                              ->where('bkkd_id',$detail[$z]->bkkd_id)
+                              ->delete();
+                      }
+                    }
+
+                    
   	                $delete_jurnal = DB::table('d_jurnal')
   	                               ->where('jr_ref',$bkk[$i]->bkk_nota)
   	                               ->delete();
@@ -901,7 +916,11 @@ class selaras_jurnal  extends Controller
 	                                   ->where('id_akun','like',substr($detail[$b]->bkkd_akun,0, 4).'%')
 	                                   ->where('kode_cabang',$bkk[$i]->bkk_comp)
 	                                   ->first();
-
+                      try{
+                        $dd = $cari_akun->id_akun;
+                      }catch(Exception $re){
+                        dd($detail[$b]->bkkd_akun);
+                      }
 	                    $save_patty = DB::table('patty_cash')
 	                           ->insert([
 	                                'pc_id'           => $cari_id_pc,
