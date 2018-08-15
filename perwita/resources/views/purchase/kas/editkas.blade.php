@@ -583,6 +583,7 @@ $('.tanggal').datepicker({
   var jk        = $('.jenis_kendaraan').val();
   var hasil = 0;
   var temp = 0;
+  var biaya_dll = $('.biaya_dll').val();
 
   if(km != "" && jk != "0"){
     hasil = km/bbm_liter;
