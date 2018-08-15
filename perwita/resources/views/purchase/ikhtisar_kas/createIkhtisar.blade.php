@@ -133,7 +133,7 @@
             <tr>
               <td>Total</td>
               <td>
-                  <input type="text" name="total" class="form-control total">                         
+                  <input readonly="" type="text" name="total" class="form-control total">                         
               </td>
             </tr>
             <tr>
@@ -248,10 +248,11 @@ function ck() {
   tabel_patty.$('.ck').each(function(){
     if($(this).is(':checked') == true){
       var par = $(this).parents('tr');
-      var nominal = $(par).find('.nominal');
+      var nominal = $(par).find('.nominal').val();
       total += (nominal*1);
     }
   })
+  $('.total').val(accounting.formatMoney(total,"", 2, ".",','))
 }
 
 function simpan(){

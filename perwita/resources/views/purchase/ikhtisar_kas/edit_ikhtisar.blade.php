@@ -112,6 +112,12 @@
               </td>
             </tr>
             <tr>
+              <td>Total</td>
+              <td>
+                  <input readonly="" type="text" name="total" value="{{"" . number_format($data->ik_total,2,",",".")}}" class="form-control total">                         
+              </td>
+            </tr>
+            <tr>
               <td>Approved</td>
               <td align="left">
                 @if($data->ik_status == 'APPROVED')
@@ -155,7 +161,7 @@
             @foreach($data_dt as $val)
             <tr>
               <td align="center">
-                <input type="checkbox" checked="" name="checker[]" class="ck" >
+                <input type="checkbox" checked="" name="checker[]" class="ck" onchange="ck()" >
                 <input type="hidden" name="id[]" class="id_table" value="{{$val->nota}}">
                 <input type="hidden" name="id_ikd[]" class="id_table" value="{{$val->ikd_ik_dt}}">
                 <input type="hidden" name="id_ik[]" class="id_table" value="{{$val->ikd_ik_id}}">
@@ -199,6 +205,19 @@ var tabel_patty = $('.tabel_patty_cash').DataTable({
     'searching':false
   })
 
+
+function ck() {
+  var total = 0;
+  tabel_patty.$('.ck').each(function(){
+    console.log('tes');
+    if($(this).is(':checked') == true){
+      var par = $(this).parents('tr');
+      var nominal = $(par).find('.nominal').val();
+      total += (nominal*1);
+    }
+  })
+  $('.total').val(accounting.formatMoney(total,"", 2, ".",','))
+}
 
 function simpan(){
     $.ajax({
