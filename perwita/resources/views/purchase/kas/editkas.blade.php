@@ -183,18 +183,18 @@
               <tr>
                 <td>Biaya Parkir & Tol</td>
                 <td>
-                  <input  onkeyup="hitung()" class="form-control biaya_dll" type="text" name="biaya_dll" value="Rp {{ number_format($data->bpk_biaya_lain,0) }}" placeholder="Biaya Lain Lain" >
+                  <input  onkeyup="hitung()" class="form-control biaya_dll" type="text" name="biaya_dll" value="Rp {{ number_format($data->bpk_biaya_lain,0,",",".") }}" placeholder="Biaya Lain Lain" >
                 </td>
               </tr>
             
               <tr>
                 <td>
                   Biaya Bahan Bakar :
-                  <input readonly="" class="form-control total_bbm" type="text" name="total_bbm" value="Rp {{ number_format($data->bpk_harga_bbm,0) }}" placeholder="" >
+                  <input readonly="" class="form-control total_bbm" type="text" name="total_bbm" value="Rp {{ number_format($data->bpk_harga_bbm,2,",",".") }}" placeholder="" >
                 </td>
                 <td style="color: red">
                   Total Biaya Keseluruhan :
-                  <input readonly="" class="form-control total" type="text" name="total" value="Rp 0">
+                  <input readonly="" class="form-control total" type="text" name="total" value="Rp {{ number_format($data->bpk_tarif_penerus,2,",",".") }}">
                 </td>
               </tr>
               <tr>
@@ -334,7 +334,6 @@ $('.tanggal').datepicker({
       $('.search').attr('disabled',false);
     }
     if(ini == 'PAKET'){
-  
       $('.pembiayaan_paket').attr('hidden',false);
       $('.pembiayaan_cargo').attr('hidden',true);
       $('.pembiayaan').attr('hidden',true);
@@ -351,16 +350,16 @@ $('.tanggal').datepicker({
     var jenis_pembiayaan = $('.jenis_pembiayaan').val();
     var pembiayaan = $('.pembiayaan').val();
     var km        = $('.kilometer').val();
-    var bbm_liter = parseInt($('.km_liter').val());
-    var harga_bbm = parseInt($('.bbm').val());
+    var bbm_liter = $('.km_liter').val();
+    var harga_bbm = $('.bbm').val();
     var jk        = $('.jenis_kendaraan').val();
     var hasil = 0;
     var temp = 0;
 
     if (jenis != 0 && nama_kas != 0 && jenis_pembiayaan != 0){
-        $('.search').attr('disabled',false);
-      }
-
+      $('.search').attr('disabled',false);
+    }
+    
     $.ajax({
       url:baseUrl + '/biaya_penerus/getbbm/'+id,
       type:'get',
@@ -369,44 +368,8 @@ $('.tanggal').datepicker({
         var harga_bbm = data.angkutan[0].mb_harga;
         $('.km_liter').val(bbm_liter);
         $('.bbm').val(harga_bbm);
-        
-        if(km != "" && jk != "0"){
-          parseInt(km);
-          hasil = km/bbm_liter;
-          hasil = hasil * harga_bbm;
-          hasil = hasil;
-          $('.total_bbm').val(accounting.formatMoney(hasil,"Rp ", 2, ".",','));
-
-
-          total[1] = hasil;
-          if(total[0]==undefined ){
-            total[0]=0;
-          }
-          total[1] = total[1].replace("Rp ","");
-          total[1] = total[1].replace(/[^0-9\.-]+/g,"");
-
-          for(var i = 0 ; i<total.length;i++){
-            temp+=parseFloat(total[i]);
-          }
-        
-          $('.total').val(accounting.formatMoney(temp,"Rp ", 2, ".",','));
-
-
-        }else if(km == ""){
-          $('.total_bbm').val(0);
-          total[1] = 0;
-          if(total[0]==undefined){
-            total[0]=0;
-          }
-          for(var i = 0 ; i<total.length;i++){
-            temp+=parseInt(total[i]);
-          }
-          $('.total').val(accounting.formatMoney(temp,"Rp ", 2, ".",','));
-        }
       }
-
     })
-    
     var id_nopol = "{{ $data->bpk_nopol }}";
     $.ajax({
           url:baseUrl + '/biaya_penerus/nopol',
@@ -423,7 +386,7 @@ $('.tanggal').datepicker({
     search();
     // jurnal();
   });
-   var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp '});
+   var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp ',thousand:'.'});
 
 
 
@@ -500,6 +463,7 @@ $('.tanggal').datepicker({
   var hasil = 0;
   var temp = 0;
   var biaya_dll = $('.biaya_dll').val();
+  biaya_dll = biaya_dll.replace(/[^0-9\-]+/g,"")*1;
 
   if (jenis != 0 && nama_kas != 0 && jenis_pembiayaan != 0){
       $('.search').attr('disabled',false);
@@ -529,7 +493,7 @@ $('.tanggal').datepicker({
             total[0]=0;
           }
           for(var i = 0 ; i<total.length;i++){
-            temp+=parseInt(total[i]);
+            temp+=total[i];
           }
           $('.total').val(accounting.formatMoney(temp,"Rp ", 2, ".",','));
         }
@@ -554,22 +518,12 @@ $('.tanggal').datepicker({
  var total = [];
  function hitung(){
   var bayar = $('.biaya_dll').val();
-  var hitung = bayar.replace(/[^0-9\.-]+/g,"");
-  total[0] = hitung;
-  var temp = 0;
-  
-   if(total[0]==""){
-      total[0]=0;
-    }
-  if(total[1] != undefined && total[1] != ""){
-   total[1] = total[1].replace("Rp ","");
-   total[1] = total[1].replace(/[^0-9\.-]+/g,"");
-  }
+   bayar = bayar.replace(/[^0-9\-]+/g,"")*1;
 
-   for(var i = 0 ; i<total.length;i++){
-        temp+=parseInt(total[i]);
-   }
-  $('.total').val(accounting.formatMoney(temp,"Rp ", 2, ".",','));
+  var total_bbm = $('.total_bbm').val();
+   total_bbm = total_bbm.replace(/[^0-9\-]+/g,"")/100;
+  
+  $('.total').val(accounting.formatMoney(total_bbm+bayar,"Rp ", 2, ".",','));
   $('.valid_key').attr('hidden',true);
   $('.resi_body').html('');
 
@@ -578,18 +532,19 @@ $('.tanggal').datepicker({
  function hitung_bbm(){
 
   var km        = $('.kilometer').val();
-  var bbm_liter = parseInt($('.km_liter').val());
-  var harga_bbm = parseInt($('.bbm').val());
+  var bbm_liter = $('.km_liter').val();
+  var harga_bbm = $('.bbm').val();
   var jk        = $('.jenis_kendaraan').val();
   var hasil = 0;
   var temp = 0;
   var biaya_dll = $('.biaya_dll').val();
-
+  biaya_dll = biaya_dll.replace(/[^0-9\-]+/g,"")*1;
   if(km != "" && jk != "0"){
     hasil = km/bbm_liter;
     hasil = hasil * harga_bbm;
+    console.log(hasil);
     $('.total_bbm').val(accounting.formatMoney(hasil,"Rp ", 2, ".",','));
-
+  
     $('.total').val(accounting.formatMoney(hasil+biaya_dll,"Rp ", 2, ".",','));
 
   }else if(km == ""){
@@ -629,11 +584,8 @@ function search(){
       data: {head,data,resi_array,id},
       success:function(data){
         $('.resi_body').html('');
-        if(typeof data.status !== 'undefined'){
-                  console.log(data.status);
-          toastr.warning('data tidak ada/sudah ada');
-        }else if (data.status == 0){
-          toastr.warning('data sudah ada');
+        if (data.status == 0){
+          toastr.warning(data.pesan);
         }else{
           $('.valid_key').attr('hidden',false);
           $('.resi_body').html(data);
