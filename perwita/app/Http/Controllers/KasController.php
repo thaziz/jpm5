@@ -456,8 +456,8 @@ class KasController extends Controller
 	    $akun_biaya = $cari_persen->kode_akun;
 
 
-	    $request->biaya_dll = filter_var($request->biaya_dll, FILTER_SANITIZE_NUMBER_FLOAT);
-	    $request->total_bbm = filter_var($request->total_bbm, FILTER_SANITIZE_NUMBER_FLOAT);
+	    $request->biaya_dll = filter_var($request->biaya_dll, FILTER_SANITIZE_NUMBER_INT);
+	    $request->total_bbm = filter_var($request->total_bbm, FILTER_SANITIZE_NUMBER_INT)/100;
 	    
 	    $terbayar   = [];
 	    $pembayaran = [];
@@ -598,11 +598,11 @@ class KasController extends Controller
 		  	'bpk_tipe_angkutan'  => $request->jenis_kendaraan,		
 		  	'created_at'		 => Carbon::now(),
 		  	'bpk_comp'	 		 => $request->cabang,
-		  	'bpk_tarif_penerus'	 => round($total_penerus_float,2),
+		  	'bpk_tarif_penerus'	 => $total_penerus_float,
 		  	'bpk_edit'	 		 => 'UNALLOWED',
-		  	'bpk_biaya_lain'	 => round($request->biaya_dll,2),
+		  	'bpk_biaya_lain'	 => $request->biaya_dll,
 		  	'bpk_jarak'	 		 => $request->km,
-		  	'bpk_harga_bbm'	     => round($request->total_bbm,2),
+		  	'bpk_harga_bbm'	     => $request->total_bbm,
 			'bpk_jenis_bbm'      => $cari_persen->jenis_bbm,
 			'bpk_acc_biaya'      => $cari_persen->kode_akun,
 		  	'created_by'		 => Auth::user()->m_name,
@@ -1050,7 +1050,8 @@ class KasController extends Controller
 	    	}
 	    }
 	    $total_penerus_float = array_sum($request->penerus);
-
+	    $request->biaya_dll = filter_var($request->biaya_dll, FILTER_SANITIZE_NUMBER_INT);
+	    $request->total_bbm = filter_var($request->total_bbm, FILTER_SANITIZE_NUMBER_INT)/100;
 		$nomor=$id;
 		biaya_penerus_kas::where('bpk_id',$request->id)->update([
 		  	'bpk_nota'  	  	 => $request->no_trans,
@@ -1067,11 +1068,11 @@ class KasController extends Controller
 		  	'bpk_tipe_angkutan'  => $request->jenis_kendaraan,		
 		  	'created_at'		 => Carbon::now(),
 		  	'bpk_comp'	 		 => $request->cabang,
-		  	'bpk_tarif_penerus'	 => round($total_penerus_float,2),
+		  	'bpk_tarif_penerus'	 => $total_penerus_float,
 		  	'bpk_edit'	 		 => 'UNALLOWED',
-		  	'bpk_biaya_lain'	 => round($request->biaya_dll,2),
+		  	'bpk_biaya_lain'	 => $request->biaya_dll,
 		  	'bpk_jarak'	 		 => $request->km,
-		  	'bpk_harga_bbm'	     => round($request->total_bbm,2),
+		  	'bpk_harga_bbm'	     => $request->total_bbm,
 			'bpk_jenis_bbm'      => $cari_persen->jenis_bbm,
 			'bpk_acc_biaya'      => $cari_persen->kode_akun,
 		  	'created_by'		 => Auth::user()->m_name,
