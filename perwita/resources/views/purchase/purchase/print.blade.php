@@ -427,16 +427,20 @@
       <tr>
             <table class="tandatangan border">
               <tr>
-                <th class="headtandatangan boldtandatangan">PT JAWA PRATAMA MANDIRI</th>
+                <th colspan="2" class="headtandatangan boldtandatangan" style="padding-bottom: 0;border-bottom: 1px solid black;">PT JAWA PRATAMA MANDIRI</th>
+              </tr>
+              <tr style="">
+                <td width="50%" colspan="border" style="padding-top: 70px;text-align: center;vertical-align: bottom;">(Purchase)</td>
+                <td width="50%" colspan="border" style="text-align: center;vertical-align: bottom;border-left: 1px solid black;">(Man Keu)</td>
               </tr>
               <tr>
-                <td class="border textleft">Tgl :</td>
+                <td colspan="2" class="border textleft">Tgl :</td>
               </tr>
               <tr>
-                <th class="headtandatangan boldtandatangan">SUPPLIER</th>
+                <th colspan="2" class="headtandatangan boldtandatangan" style="padding-bottom: 70px;">SUPPLIER</th>
               </tr>
                <tr>
-                <td class="border textleft">Tgl :</td>
+                <td colspan="2" class="border textleft">Tgl :</td>
               </tr>
             </table>
         </tr>

@@ -20,7 +20,7 @@
 
                                   <td >Saldo Awal :</td>
                                   <td colspan="5" align="right"><input type="hidden" value="0" class="saldo saldo_{{ $in }}" name="">
-                                    0</td>
+                                    {{ $saldo_ut[0]->saldo }}</td>
                   
                           </tr>
                           @for ($i = 0; $i <count($data) ; $i++)
@@ -46,20 +46,20 @@
 
                                 @if ($data[$i]->flag == 'D')
                                   <td align="right">
-                                    <input type="hidden" name="" value="{{ $data[$i]->nominal }}" class="debet debet_{{ $i }}">
+                                    <input type="hidden" name="" value="{{ $data[$i]->nominal }}" class="debet debet_{{ $in }}">
                                     {{ $data[$i]->nominal }}
                                   </td>
                                   <td align="right">
-                                    <input type="hidden" name="" value="0" class="debet debet_{{ $i }}">
+                                    <input type="hidden" name="" value="0" class="kredit kredit_{{ $in }}">
                                     0
                                   </td>
                                 @else
                                   <td align="right">
-                                    <input type="hidden" name="" value="0" class="kredit kredit_{{ $i }}">
+                                    <input type="hidden" name="" value="0" class="debet debet_{{ $in }}">
                                     0
                                   </td>
                                   <td align="right">
-                                    <input type="hidden" name="" value="{{ $data[$i]->nominal }}" class="kredit kredit_{{ $i }}">
+                                    <input type="hidden" name="" value="{{ $data[$i]->nominal }}" class="kredit kredit_{{ $in }}">
                                     {{ $data[$i]->nominal }}
                                   </td>
                                 @endif
@@ -71,6 +71,10 @@
                               </tr>
                             @endif
                           @endfor
+                          <tr>
+                            <td colspan="5">Grand Total</td>
+                            <td class="grand grand_{{ $in }}"></td>
+                          </tr>
                      @endforeach
                      
                        {{-- @foreach ($data as $i => $val)

@@ -1,7 +1,7 @@
  <table id="addColumn"  class="table table-bordered table-striped">
   <thead>
       <tr>
-          <th> No.s</th>
+          <th> No</th>
           <th> No INV</th>
           <th> cabang </th>
           <th> total netto </th>
@@ -10,12 +10,7 @@
       </tr>
   </thead>
   <tbody>
-    @foreach ($customer as $el)
-      <tr>
-        <th colspan="7">{{ $el->i_kode_customer }} - {{ $el->nama }}</th>
-      </tr>
-     @foreach ($data as $index => $element)
-      @if ($el->i_kode_customer == $element->i_kode_customer)
+     @foreach ($dt as $index => $element)
          <tr>
              <td>{{ $index+1 }}</td>
              <td>{{ $element->i_nomor }}</td>
@@ -24,9 +19,7 @@
              <td>{{ $element->i_diskon2  }}</td>
              <td>{{ $element->i_total_tagihan  }}</td>
          </tr>
-      @endif
-     @endforeach
-    @endforeach
+      @endforeach
   </tbody>
   <tr>
     <td colspan="7">Total net</td>

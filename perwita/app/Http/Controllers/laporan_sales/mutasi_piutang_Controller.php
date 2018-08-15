@@ -19,11 +19,82 @@ class mutasi_piutang_Controller extends Controller
   public function ajax_mutasipiutang_rekap(Request $request)
   {
 	  // dd($request->all());
-	  $tglawal = $request->min;
-	  $tglakhir = $request->max;
+	  $awal = $request->min;
+	  $akir = $request->max;
 
-	  $customer  =  DB::select("SELECT i_kode_customer from invoice where i_tanggal BETWEEN '$tglawal' and '$tglakhir'");
-	  
+    $array = '';
+
+    //invoice
+    if ($request->customer != '' || $request->customer != null) {
+      $customer_invoice = "AND i_kode_customer = '".$request->customer."' ";
+    }else{
+      $customer_invoice = "AND i_kode_customer = '".$array."'";
+    }
+    if ($request->akun != '' || $request->akun != null) {
+      $akun_invoice = " AND i_acc_piutang = '".$request->akun."' ";
+    }else{
+      $akun_invoice = '';
+    }
+    if ($request->cabang != '' || $request->cabang != null) {
+      $cabang_invoice = " AND i_kode_cabang = '".$request->cabang."' ";
+    }else{
+      $cabang_invoice = '';
+    }
+    //end
+    //cndn
+    if ($request->customer != '' || $request->customer != null) {
+      $customer_cndn = " AND cd_customer = '".$request->customer."' ";
+    }else{
+      $customer_cndn = '';
+    }
+    if ($request->akun != '' || $request->akun != null) {
+      $akun_cndn = " AND cd_acc = '".$request->akun."' ";
+    }else{
+      $akun_cndn = '';
+    }
+    if ($request->cabang != '' || $request->cabang != null) {
+      $cabang_cndn = " AND cd_kode_cabang = '".$request->cabang."' ";
+    }else{
+      $cabang_cndn = '';
+    }
+    //end
+    //Kwitansi
+    if ($request->customer != '' || $request->customer != null) {
+      $customer_kwitansi = " AND k_kode_customer = '".$request->customer."' ";
+    }else{
+      $customer_kwitansi = '';
+    }
+    if ($request->akun != '' || $request->akun != null) {
+      $akun_kwitansi = " AND kwitansi_d.kd_kode_akun_acc = '".$request->akun."' ";
+    }else{
+      $akun_kwitansi = '';
+    }
+    if ($request->cabang != '' || $request->cabang != null) {
+      $cabang_kwitansi = " AND k_kode_cabang = '".$request->cabang."' ";
+    }else{
+      $cabang_kwitansi = '';
+    }
+    //end
+    //posting pemabayaran
+    if ($request->customer != '' || $request->customer != null) {
+      $customer_postingbayar = " AND kwitansi.k_kode_customer = '".$request->customer."' ";
+    }else{
+      $customer_postingbayar = '';
+    }
+    if ($request->akun != '' || $request->akun != null) {
+      $akun_postingbayar = " AND posting_pembayaran_d.kode_acc = '".$request->akun."' ";
+    }else{
+      $akun_postingbayar = '';
+    }
+    if ($request->cabang != '' || $request->cabang != null) {
+      $cabang_postingbayar = " AND posting_pembayaran.kode_cabang = '".$request->cabang."' ";
+    }else{
+      $cabang_postingbayar = '';
+    }
+    //end
+
+	  $customer  =  DB::select("SELECT i_kode_customer from invoice where i_tanggal BETWEEN '$awal' and '$akir'");
+
 	  $arraycus = [];
 	   for($i = 0; $i < count($customer); $i++){
 			$cus_id['customer'] = $customer[$i]->i_kode_customer;	
@@ -37,143 +108,84 @@ class mutasi_piutang_Controller extends Controller
 		    if (!isset($result_customer[$v['customer']]))
 		        $result_customer[$v['customer']] =& $v;
 		}
-		$array = array_values($result_customer);	
 
-    // if ($array != null) {
-    //     $cus_invoice = "AND i_total_tagihan = $array[$i] "; 
-    //   }else{
-    //       $cus_invoice = '';
-    //   }
-    
-    $push_saldo       = [];
-    $push_piutangbaru = [];
-    $push_nota_debet  = [];
-    $push_cash        = [];
-    $push_cek_bg_trsn = [];
-    $push_uangmuka    = [];
-    $push_nota_kredit = [];
-    $push_customer_lenght = [];
+    if ($request->customer != '') {
+      $array[0] = $request->customer; 
+    }else{
+      $array = array_values($result_customer); 
+    }
 
     for ($i=0; $i <count($array) ; $i++) { 
-
-      $customer_lenght = DB::table('customer')->select('kode','nama')->where('kode',$array[$i])->get(); 
-
-      array_push($push_customer_lenght,$customer_lenght);
-      // return $push_customer_lenght;
-      
-      $saldoawal[$i] = DB::table('invoice')
-                        ->select(DB::raw('SUM(i_total_tagihan) as saldoawal'))
-                        ->where('i_tanggal','>',$tglawal)
-                        ->where('i_tanggal','<',$tglakhir)
-                        ->where('i_kode_customer','=',$array[$i])
-                        ->get();
-
-      if ($saldoawal[$i][0]->saldoawal == null) {
-          $saldoawal[$i][0]->saldoawal = 0;
-      }else{
-          $saldoawal[$i] = $saldoawal[$i];
-      }
-      $piutangbaru[$i] = DB::table('invoice')
-                        ->select(DB::raw('SUM(i_total_tagihan) as piutang_baru'))
-                        ->where('i_tanggal','>',$tglakhir)
-                        ->where('i_kode_customer','=',$array[$i])
-                        ->get();
-      if ($piutangbaru[$i][0]->piutang_baru == null) {
-          $piutangbaru[$i][0]->piutang_baru = 0;
-      }else{
-          $piutangbaru[$i] = $piutangbaru[$i];
-      }
+        $dtt = $array[$i]['customer'];
+        $customer[$i] = DB::table('customer')->select('kode','nama')->where('kode','=',$dtt)->get();
+    }
+    // return $customer;
 
 
-      $notadebet[$i] = DB::table('cn_dn_penjualan')
-                        ->select(DB::raw('SUM(cd_total) as nota_debet'))
-                        ->where('cd_tanggal','>',$tglawal)
-                        ->where('cd_tanggal','<',$tglakhir)
-                        ->where('cd_jenis','=','D')
-                        ->where('cd_customer','=',$array[$i])
-                        ->get();
-      
-      if ($notadebet[$i][0]->nota_debet == null) {
-          $notadebet[$i][0]->nota_debet = 0;
-      }else{
-          $notadebet[$i] = $notadebet[$i];
-      }
+    for ($i=0; $i <count($array) ; $i++) { 
+      $dtt = $customer[$i][0]->kode;
 
-      $cash[$i] = DB::table('kwitansi')
-                        ->select(DB::raw('SUM(k_netto) as cash'))
-                        ->where('k_tanggal','>',$tglawal)
-                        ->where('k_tanggal','<',$tglakhir)
-                        ->where('k_jenis_pembayaran','=','T')
-                        ->where('k_kode_customer','=',$array[$i])
-                        ->get();
-      if ($cash[$i][0]->cash == null) {
-          $cash[$i][0]->cash = 0;
-      }else{
-          $cash[$i] = $cash[$i];
-      }
+      $saldoawal = DB::select("SELECT sum(i_total_tagihan) as saldo,i_kode_customer from invoice 
+                    where i_tanggal >= '$awal' 
+                      and i_tanggal <= '$akir' 
+                      and i_kode_customer = '$dtt'
+                     $akun_invoice $cabang_invoice
+                    group by i_kode_customer");
 
-      $cek_bg_trsn[$i] = DB::table('posting_pembayaran as pb')
-                        ->select(DB::raw('SUM(pbdt.jumlah) as cek_bg_trsn'))
-                        ->join('posting_pembayaran_d as pbdt','pb.nomor','=','pbdt.nomor_posting_pembayaran')
-                        ->where('tanggal','>',$tglawal)
-                        ->where('tanggal','<',$tglakhir)
-                        // ->Where('jenis_pembayaran','=', 'C')
-                        ->where('kode_customer','=',$array[$i])
-                        ->get();
-
-      if ($cek_bg_trsn[$i][0]->cek_bg_trsn == null) {
-          $cek_bg_trsn[$i][0]->cek_bg_trsn = 0;
-      }else{
-          $cek_bg_trsn[$i] = $cek_bg_trsn[$i];
-      }
-
-      $uangmuka[$i] = DB::table('kwitansi')
-                        ->select(DB::raw('SUM(k_netto) as uangmuka'))
-                        ->where('k_tanggal','>',$tglawal)
-                        ->where('k_tanggal','<',$tglakhir)
-                        ->where('k_jenis_pembayaran','=','U')
-                        ->where('k_kode_customer','=',$array[$i])
-                        ->get();
-
-      if ($uangmuka[$i][0]->uangmuka == null) {
-          $uangmuka[$i][0]->uangmuka = 0;
-      }else{
-          $uangmuka[$i] = $uangmuka[$i];
-      }
+      return $saldoawal;
+                     
+      $data_piutangbaru = DB::select("SELECT sum(i_total_tagihan) as piutang_baru from invoice
+                    where i_tanggal > '$akir' 
+                    $customer_invoice $akun_invoice $cabang_invoice
+                    group by i_kode_customer order by i_kode_customer");
 
 
-      $nota_kredit[$i] =  DB::table('cn_dn_penjualan')
-                        ->select(DB::raw('SUM(cd_total) as nota_kredit'))
-                        ->where('cd_tanggal','>',$tglawal)
-                        ->where('cd_tanggal','<',$tglakhir)
-                        ->where('cd_jenis','=','K')
-                        ->where('cd_customer','=',$array[$i])
-                        ->get();     
 
-      if ($nota_kredit[$i][0]->nota_kredit == null) {
-          $nota_kredit[$i][0]->nota_kredit = 0;
-      }else{
-          $nota_kredit[$i] = $nota_kredit[$i];
-      } 
+      $data_cn_dn = DB::select("SELECT SUM(cd_total) as nota_debet FROM cn_dn_penjualan 
+                      where cd_tanggal >= '$awal' 
+                      and cd_tanggal <= '$akir'
+                      and cd_jenis <= 'D'
+                      $customer_cndn $akun_cndn $cabang_cndn
+                      ");
+    
+      $cash = DB::select("SELECT SUM(k_netto) as cash FROM kwitansi 
+                      where k_tanggal >= '$awal' 
+                      and k_tanggal <= '$akir'
+                      and k_jenis_pembayaran = 'T'
+                      $customer_kwitansi $akun_kwitansi $cabang_kwitansi
+                      ");
 
-      $sisa_uangmuka[$i] =  DB::table('uang_muka_penjualan')
-                        ->select(DB::raw('SUM(sisa_uang_muka) as sisa_uangmuka'))
-                        ->where('tanggal','>',$tglawal)
-                        ->where('tanggal','<',$tglakhir)
-                        ->where('kode_customer','=',$array[$i])
-                        ->get();     
+      $cek_bg_trsn = DB::select("SELECT SUM(posting_pembayaran_d.jumlah) as cek_bg_trsn FROM posting_pembayaran 
+                      join posting_pembayaran_d on posting_pembayaran.nomor = posting_pembayaran_d.nomor_posting_pembayaran
+                      where tanggal >= '$awal' 
+                      and tanggal <= '$akir'
+                      $customer_postingbayar $akun_postingbayar $cabang_postingbayar
+                      ");      
 
-      if ($sisa_uangmuka[$i][0]->sisa_uangmuka == null) {
-          $sisa_uangmuka[$i][0]->sisa_uangmuka = 0;
-      }else{
-          $sisa_uangmuka[$i] = $sisa_uangmuka[$i];
-      }                
+      $uangmuka = DB::select("SELECT SUM(k_netto) as uangmuka FROM kwitansi 
+                      where k_tanggal >= '$awal' 
+                      and k_tanggal <= '$akir'
+                      and k_jenis_pembayaran = 'U'
+                      ");
+
+      $nota_kredit = DB::select("SELECT SUM(cd_total) as nota_kredit FROM cn_dn_penjualan 
+                      where cd_tanggal >= '$awal' 
+                      and cd_tanggal <= '$akir'
+                      and cd_jenis = 'K'
+                      ");
+
+      $sisa_uangmuka = DB::select("SELECT SUM(sisa_uang_muka) as sisa_uangmuka FROM uang_muka_penjualan 
+                      where tanggal >= '$awal' 
+                      and tanggal <= '$akir'
+                      ");
 
     }
-    // return $customer_lenght;
+    // return array_merge($saldoawal,$data_piutangbaru,$cash);
+
+
     return view('purchase/master/master_penjualan/laporan/lap_mutasi_piutang/ajax_mutasipiutang_rekap',compact('saldoawal','data','array','piutangbaru','notadebet','cash','cek_bg_trsn','uangmuka','nota_kredit','sisa_uangmuka','push_customer_lenght'));
+
+    }
+
+    
   }
-  	  
-
-
-}

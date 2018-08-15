@@ -26,16 +26,26 @@ class laporan_register_jurnal extends Controller
     	$d1 = date_format(date_create($request->tanggal), "Y-m-d");
         $d2 = date_format(date_create($request->sampai), "Y-m-d");
 
-    	$range = ['1001', '1099']; $detail = [];
+    	$range = 'K'; $detail = [];
 
     	if($request->jenis == "bank")
-    		$range = ['1101', '1109'];
+    		$range = 'B';
+        elseif($request->jenis == "memorial")
+            $range = 'M';
 
-    	$data = DB::table('d_jurnal_dt')
-    				->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-    				->whereBetween("d_jurnal.jr_date", [$d1, $d2])
-    				->whereBetween(DB::raw("substring(d_jurnal_dt.jrdt_acc, 1, 4)"), $range)
-    				->select("d_jurnal.*")->distinct('d_jurnal.jr_id')->orderBy('d_jurnal.jr_date', 'asc')->get();
+
+    	// $data = DB::table('d_jurnal_dt')
+    	// 			->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
+    	// 			->whereBetween("d_jurnal.jr_date", [$d1, $d2])
+    	// 			->whereBetween(DB::raw("substring(d_jurnal_dt.jrdt_acc, 1, 4)"), $range)
+    	// 			->select("d_jurnal.*")->distinct('d_jurnal.jr_id')->orderBy('d_jurnal.jr_date', 'asc')->get();
+
+        $data = DB::table('d_jurnal_dt')
+                    ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
+                    ->whereBetween("d_jurnal.jr_date", [$d1, $d2])
+                    ->where(DB::raw('substring(d_jurnal.jr_no,1,1)'), $range)
+                    ->select("d_jurnal.*")->distinct('d_jurnal.jr_id')->orderBy('d_jurnal.jr_date', 'asc')->get();
+
 
     	// return json_encode($data);
 

@@ -107,7 +107,7 @@
                 </td>
                 @else
                 <td class="disabled">
-                    <select disabled="" class="form-control cabang_select" name="cabang">
+                    <select class="form-control cabang_select" name="cabang">
                         @foreach($cabang as $val)
                         @if(Auth::user()->kode_cabang == $val->kode)
                             <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
@@ -647,7 +647,7 @@ function(){
           $('.asd').attr('hidden',false);
           $('.process').addClass('disabled');
           $('.cari').addClass('disabled');
-        }else if (response.status == 3) {
+        }else if (response.status == '3') {
           swal({
               title: "Peringatan!",
               type: 'warning',
@@ -655,7 +655,6 @@ function(){
               timer: 900,
              showConfirmButton: true
               },function(){
-              toastr.warning('No DO telah diganti menjadi ' + response.nota)
           });
        }
 

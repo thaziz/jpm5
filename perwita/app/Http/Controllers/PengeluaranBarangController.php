@@ -94,6 +94,9 @@ class PengeluaranBarangController extends Controller
 		// dd($request);
    		return DB::transaction(function() use ($request) {  
 
+   			$cab = DB::table('cabang')
+   					 ->where('kode',$request->cabang)
+   					 ->first();
 			$valid = 0;
 			if ($request->keperluan != '') {
 				$valid += 1;
@@ -174,7 +177,11 @@ class PengeluaranBarangController extends Controller
 						$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
 					}
 					else if($jenisitem == 'A'){
-						$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
+						if ($cab->kode == '000') {
+							$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '7105%' and kode_cabang = '$cabang'");
+						}else{
+							$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
+						}
 					}
 					else if($jenisitem == 'C'){
 						$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
@@ -676,6 +683,19 @@ class PengeluaranBarangController extends Controller
 	});
 	}
 
+
+
+	public function lihatjurnal(Request $request){
+		$lpb = $request->ref;
+		$note = $request->note;
+		$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk, jrdt_detail
+                        FROM d_akun a join d_jurnal_dt jd
+                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
+                        (select j.jr_id from d_jurnal j where jr_ref='$lpb')")); 
+		$data['countjurnal'] = count($data['jurnal']);
+ 		return json_encode($data);
+	}
+	
 	public function printing($id){
 		$data = DB::table('pengeluaran_barang')
 				  ->where('pb_id',$id)

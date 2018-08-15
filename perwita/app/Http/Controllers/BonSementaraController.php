@@ -65,7 +65,7 @@ class BonSementaraController extends Controller
 
 		$data['bonsem'] = DB::select("select * from bonsem_pengajuan, cabang where bp_cabang = kode order by bp_id desc");
 		
-		
+		$data['bank'] = DB::select("select * from masterbank");
 
 		return view('purchase/bonsementara/indexcabang', compact('data'));
 	}
@@ -165,15 +165,89 @@ class BonSementaraController extends Controller
 		});		
 	}
 
+	public function jurnalumum(Request $request){
+		$id = $request->nota;
+		$detail = $request->detail;
+		$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk, jrdt_detail
+                        FROM d_akun a join d_jurnal_dt jd
+                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
+                        (select j.jr_id from d_jurnal j where jr_ref='$id' and jr_detail = '$detail')")); 
+		$data['countjurnal'] = count($data['jurnal']);
+ 		return json_encode($data);
+	}
+
 	public function terimauang(Request $request){
 			$idbonsem = $request->idbonsem;
-
+			$kodebank = $request->bankcabang;
 			$updatepb = bonsempengajuan::find($idbonsem);
 			$updatepb->bp_terima = 'DONE';
+			$updatepb->status_pusat = 'UANG DI TERIMA';
 			$updatepb->save();
 
-			return 'sukses';
+			$nominalkeu =  str_replace(',', '', $request->nominalkeu);
 
+			$datapb = DB::select("select * from bonsem_pengajuan where bp_id = '$idbonsem'");
+
+			$datajurnal = [];
+		    $totalhutang = 0;
+		    $datajurnal[0]['idakun'] = $request->bankcabang;
+		    $datajurnal[0]['subtotal'] = $nominalkeu;
+		    $datajurnal[0]['dk'] = 'D';
+		    $datajurnal[0]['detail'] = $datapb[0]->bp_keperluan;
+
+
+
+		    $datajurnal[1]['idakun'] = $datapb[0]->bp_akunhutang;
+		    $datajurnal[1]['subtotal'] = $nominalkeu;
+		    $datajurnal[1]['dk'] = 'K';
+		    $datajurnal[1]['detail'] = $datapb[0]->bp_keperluan;
+
+
+
+		
+			$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+			if(isset($lastidjurnal)) {
+				$idjurnal = $lastidjurnal;
+				$idjurnal = (int)$idjurnal + 1;
+			}
+			else {
+				$idjurnal = 1;
+			}
+		
+			$year = date('Y');	
+			$date = date('Y-m-d');
+			$jurnal = new d_jurnal();
+			$jurnal->jr_id = $idjurnal;
+	        $jurnal->jr_year = date('Y');
+	        $jurnal->jr_date = date('Y-m-d');
+	        $jurnal->jr_detail = 'BON SEMENTARA';
+	        $jurnal->jr_ref = $datapb[0]->bp_nota;
+	        $jurnal->jr_note = $datapb[0]->bp_keperluan;
+	        $jurnal->save();
+       	
+	    	$key  = 1;
+    		for($j = 0; $j < count($datajurnal); $j++){
+    			
+    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+				if(isset($lastidjurnaldt)) {
+					$idjurnaldt = $lastidjurnaldt;
+					$idjurnaldt = (int)$idjurnaldt + 1;
+				}
+				else {
+					$idjurnaldt = 1;
+				}
+
+    			$jurnaldt = new d_jurnal_dt();
+    			$jurnaldt->jrdt_jurnal = $idjurnal;
+    			$jurnaldt->jrdt_detailid = $key;
+    			$jurnaldt->jrdt_acc = $datajurnal[$j]['idakun'];
+    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
+    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
+    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
+    			$jurnaldt->save();
+    			$key++;
+    		} 
+			return json_encode('sukses');
 	}
 
 	public function setujukacab(Request $request){

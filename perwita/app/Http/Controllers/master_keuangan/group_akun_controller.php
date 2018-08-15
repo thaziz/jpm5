@@ -170,7 +170,7 @@ class group_akun_controller extends Controller
                     ->select(DB::raw('substring(id_akun, 1, 4) as id_akun'), 'main_name')
                     ->distinct(DB::raw('substring(id_akun, 1, 4)'))->orderBy('id_akun', 'asc')->get();
         else if($request->jenis == 2)
-            $data = DB::table('d_akun')->where('group_laba_rugi', $group->id_group)
+            $data = DB::table('d_akun')->where('group_laba_rugi', $request->id_group)
                     ->select(DB::raw('substring(id_akun, 1, 4) as id_akun'), 'main_name')
                     ->distinct(DB::raw('substring(id_akun, 1, 4)'))->orderBy('id_akun', 'asc')->get();
 

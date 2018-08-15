@@ -832,11 +832,18 @@
   function hitung_pt() {
     var total = 0;
     $('.pt_nominal').each(function(){
-      total += parseInt($(this).val());
+      var par = $(this).parents('tr');
+      var debet = $(par).find('.pt_debet').val();
+      if (debet == 'DEBET') {
+        total += parseInt($(this).val());
+      }else{
+        total -= parseInt($(this).val());
+      }
     });
 
     $('.total').val(accounting.formatMoney(total,"", 2, ".",','));
   }
+
   $('.append_petty').click(function(){
     var patty_nomor         = $('.patty_nomor').val();
     var akun_biaya          = $('.akun_biaya').val();

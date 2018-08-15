@@ -140,7 +140,7 @@
                           </tr>
 
                            <tr>
-                              <td>   Tanggals </td>
+                              <td>   Tanggal </td>
                               <td>
                                 <div class="input-group date">
                                   <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl" name="tgl" required="">
@@ -230,11 +230,11 @@
                                   <table class="table table-striped">
                                   <tr>
                                     <td width="150px"> No Invoice </td>
-                                    <td> <input type="text" class="form-control noinvoice" name="no_invoice" required="" novalidate> </td>
+                                    <td> <input type="text" class="form-control noinvoice" name="no_invoice" readonly="" novalidate> </td>
                                   </tr>
 
                                   <tr>
-                                    <td> Jatuh Tempo </td>
+                                    <td class="disabled"> Jatuh Tempo </td>
                                     <td>  <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo"  readonly="" required="" novalidate>
                                     </div></td>
@@ -415,13 +415,27 @@
                           </tr>
 
                            <tr> 
-                              <td> <button type="button" class="btn btn-sm btn-primary" id="createmodal" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button>      
+                              <td>
+                                Jenis PPN
+                              </td>
+                              <td>
+                                <div class="row">
+                                  <div class="col-md-4">
+                                <select class="form-control jenisppn" onchange="fungsippn()" name="jenisppn" required="">
+                                  <option value="T"> TANPA </option>
+                                  <option value="I"> INCLUDE </option>
+                                  <option value="E"> EXCLUDE </option>
+                                </select>
+                                  </div>
+                                <div class="col-md-6">
+                               <button type="button" class="btn btn-sm btn-primary" id="createmodal" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button> </div>
+                               </div>     
                               </td>
                           </tr>
 
                           <tr>
                             <td> PPn % </td>
-                            <td > <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputppn" name="inputppn"> </div>  <div class="col-md-8"> <input style='text-align: right' type="text" class="form-control hasilppn" name="hasilppn"> </div>  </div> </td>
+                            <td > <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputppn" name="inputppn" value="10" readonly=""> </div>  <div class="col-md-8"> <input style='text-align: right' type="text" class="form-control hasilppn" name="hasilppn"> </div>  </div> </td>
                           </tr>
 
                           <tr>
@@ -900,7 +914,7 @@
                                           </tr>
 
                                           <tr>
-                                            <td> Jatuh Tempo </td>
+                                            <td class="disabled"> Jatuh Tempo </td>
                                             <td>  <div class="input-group date">
                                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_po"  readonly=""  novalidate name="jatuhtempo_po">
                                             </div></td>
@@ -975,12 +989,21 @@
                                             </tr>
 
                                             <tr>
-                                              <td>   <button type="button" class="btn btn-primary btn-sm" id="createmodal_pajakpo" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button>  </td>
+                                              <td> Jenis PPN </td>
+                                              <td> <div class="row"> <div class="col-md-5">
+                                                <select class="form-control jenisppn_po" name="jenisppn_po">
+                                                
+                                                <option value="T"> TANPA </option>
+                                                <option value="I"> INCLUDE </option>
+                                                <option value="E"> EXCLUDE </option>
+                                                </select>
+                                                </div>
+                                                <button type="button" class="btn btn-primary btn-sm" id="createmodal_pajakpo" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button> </div> </td>
                                             </tr>
                                             
                                             <tr>
                                               <td> PPn % </td>
-                                              <td> <div class="row">  <div class="col-md-3"> <input type="text" class="form-control inputppn_po" name="inputppn_po"> </div>  <div class="col-md-9"> <input type="text" class="form-control hasilppn_po"   style="text-align: right" name="hasilppn_po"> </div> </div>  </td>
+                                              <td> <div class="row">  <div class="col-md-3"> <input type="text" class="form-control inputppn_po" value="10" name="inputppn_po"  readonly=""> </div>  <div class="col-md-9"> <input type="text" class="form-control hasilppn_po"   style="text-align: right" name="hasilppn_po"> </div> </div>  </td>
                                             </tr>
 
                                             <tr>
@@ -1410,7 +1433,7 @@
               <table class="table ">
                 <tr>
                   <td align="center">
-                   <h3>Tscal Jumlah Uang Muka</h3>
+                   <h3>Jumlah Uang Muka</h3>
                   </td>
                 </tr>
               <tr>
@@ -1484,7 +1507,299 @@
 <script type="text/javascript">
   $('body').removeClass('fixed-sidebar');
   $("body").toggleClass("mini-navbar");
- 
+      
+
+    $('.jenisppn_po').change(function(){
+        jenisppn = $('.jenisppn_po').val();
+        dpp = $('.dpp_po2').val();
+        numeric2 = dpp.replace(/,/g,'');
+        inputppn = $('.inputppn_po').val();
+
+        if(inputppn != ''){
+          hasilppn1 = parseFloat((parseFloat(inputppn) / 100) * numeric2);
+          hasilppn2 =   hasilppn1.toFixed(2);
+
+          $('.hasilppn_po').val(addCommas(hasilppn2));
+        }
+
+
+        pph = $('.hasilpph_po').val();
+        ppn = $('.hasilppn_po').val();
+        replacepph = pph.replace(/,/g,'');
+        replaceppn = ppn.replace(/,/g,'');
+        
+          if(ppn != ''){
+          if(jenisppn == 'E'){
+          //JIKA PPH TIDAK ADA 
+            if(pph == ''){
+              hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)).toFixed(2);
+
+              $('.nettohutang_po').val(addCommas(hasilnetto));
+              $('.dpp_po').val(dpp);
+
+               fpuangmuka = $('.totaljumlah').val();
+                  
+              if(fpuangmuka == ''){
+                $('.sisahutang_po').val(addCommas(hasilnetto));
+              }
+              else {
+                hasilsisahutang = parseFloat(parseFloat(hasilnetto) - parseFloat(fpuangmuka)).toFixed(2);
+                $('.sisahutang_po').val(addCommas(hasilsisahutang));
+              }
+            }
+            else{
+              hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn) - parseFloat(replacepph)).toFixed(2);
+              $('.nettohutang_po').val(addCommas(hasilnetto));
+              $('.dpp_po').val(dpp);
+
+               fpuangmuka = $('.totaljumlah').val();
+                  
+              if(fpuangmuka == ''){
+                $('.sisahutang_po').val(addCommas(hasilnetto));
+              }
+              else {
+                hasilsisahutang = parseFloat(parseFloat(hasilnetto) - parseFloat(fpuangmuka)).toFixed(2);
+                $('.sisahutang_po').val(addCommas(hasilsisahutang));
+              }
+            } 
+          }
+          else if(jenisppn == 'I'){
+          
+            if(pph == ''){   //PPH KOSONG PPN TIDAK KOSONG         
+              hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
+                           
+              $('.dpp_po').val(addCommas(hargadpp));
+              subtotal = $('.dpp_po').val();
+              subharga = subtotal.replace(/,/g, '');
+              hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
+       
+              $('.hasilppn_po').val(addCommas(hargappn));
+
+              total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
+              $('.nettohutang_po').val(addCommas(total));    
+
+              fpuangmuka = $('.totaljumlah').val();
+                  
+              if(fpuangmuka == ''){
+                $('.sisahutang_po').val(addCommas(total));
+              }
+              else {
+                hasilsisahutang = parseFloat(parseFloat(total) - parseFloat(fpuangmuka)).toFixed(2);
+                $('.sisahutang_po').val(addCommas(hasilsisahutang));
+              }
+
+            }
+            else{
+               hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
+                           
+              $('.dpp_po').val(addCommas(hargadpp));
+              subtotal = $('.dpp_po').val();
+              subharga = subtotal.replace(/,/g, '');
+              hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
+       
+              $('.hasilppn_po').val(addCommas(hargappn));
+
+              total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
+              $('.nettohutang_po').val(addCommas(total));  
+
+              fpuangmuka = $('.totaljumlah').val();
+                  
+              if(fpuangmuka == ''){
+                $('.sisahutang_po').val(addCommas(total));
+              }
+              else {
+                hasilsisahutang = parseFloat(parseFloat(total) - parseFloat(fpuangmuka)).toFixed(2);
+                $('.sisahutang_po').val(addCommas(hasilsisahutang));
+              }   
+            }
+          }
+          else if(jenisppn == 'T') {
+            if(pph == '' ){
+           //   $('.inputppn').val('');
+              $('.hasilppn_po').val('');
+              $('.nettohutang_po').val(dpp);
+              $('.dpp_po').val(dpp);
+
+              fpuangmuka = $('.totaljumlah').val();
+                  
+              if(fpuangmuka == ''){
+                $('.sisahutang_po').val(addCommas(dpp));
+              }
+              else {
+                hasilsisahutang = parseFloat(parseFloat(dpp) - parseFloat(fpuangmuka)).toFixed(2);
+                $('.sisahutang_po').val(addCommas(hasilsisahutang));
+              }
+            }
+
+            else{
+          //    $('.inputppn').val('');
+              $('.hasilppn_po').val('');
+               total = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)).toFixed(2);
+              $('.nettohutang_po').val(addCommas(total));
+              $('.dpp_po').val(dpp);
+
+              fpuangmuka = $('.totaljumlah').val();
+                  
+              if(fpuangmuka == ''){
+                $('.sisahutang_po').val(addCommas(total));
+              }
+              else {
+                hasilsisahutang = parseFloat(parseFloat(total) - parseFloat(fpuangmuka)).toFixed(2);
+                $('.sisahutang_po').val(addCommas(hasilsisahutang));
+              }
+            }
+           
+          }
+
+        }
+    })
+
+    function fungsippn(){
+        jenisppn = $('.jenisppn').val();
+        dpp = $('.dpp2').val();
+        numeric2 = dpp.replace(/,/g,'');
+        inputppn = $('.inputppn').val();
+
+        if(inputppn != ''){
+          hasilppn1 = parseFloat((parseFloat(inputppn) / 100) * numeric2);
+          hasilppn2 =   hasilppn1.toFixed(2);
+
+          $('.hasilppn').val(addCommas(hasilppn2));
+        }
+
+
+        pph = $('.hasilpph').val();
+        ppn = $('.hasilppn').val();
+        replacepph = pph.replace(/,/g,'');
+        replaceppn = ppn.replace(/,/g,'');
+        
+          if(ppn != ''){
+          if(jenisppn == 'E'){
+          //JIKA PPH TIDAK ADA 
+            if(pph == ''){
+              hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)).toFixed(2);
+
+              $('.nettohutang').val(addCommas(hasilnetto));
+              $('.dpp').val(dpp);
+
+               fpuangmuka = $('.totaljumlah').val();
+                  
+              if(fpuangmuka == ''){
+                $('.sisahutang').val(addCommas(hasilnetto));
+              }
+              else {
+                hasilsisahutang = parseFloat(parseFloat(hasilnetto) - parseFloat(fpuangmuka)).toFixed(2);
+                $('.sisahutang').val(addCommas(hasilsisahutang));
+              }
+            }
+            else{
+              hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn) - parseFloat(replacepph)).toFixed(2);
+              $('.nettohutang').val(addCommas(hasilnetto));
+              $('.dpp').val(dpp);
+
+               fpuangmuka = $('.totaljumlah').val();
+                  
+              if(fpuangmuka == ''){
+                $('.sisahutang').val(addCommas(hasilnetto));
+              }
+              else {
+                hasilsisahutang = parseFloat(parseFloat(hasilnetto) - parseFloat(fpuangmuka)).toFixed(2);
+                $('.sisahutang').val(addCommas(hasilsisahutang));
+              }
+            } 
+          }
+          else if(jenisppn == 'I'){
+          
+            if(pph == ''){   //PPH KOSONG PPN TIDAK KOSONG         
+              hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
+                           
+              $('.dpp').val(addCommas(hargadpp));
+              subtotal = $('.dpp').val();
+              subharga = subtotal.replace(/,/g, '');
+              hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
+       
+              $('.hasilppn').val(addCommas(hargappn));
+
+              total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
+              $('.nettohutang').val(addCommas(total));    
+
+              fpuangmuka = $('.totaljumlah').val();
+                  
+              if(fpuangmuka == ''){
+                $('.sisahutang').val(addCommas(total));
+              }
+              else {
+                hasilsisahutang = parseFloat(parseFloat(total) - parseFloat(fpuangmuka)).toFixed(2);
+                $('.sisahutang').val(addCommas(hasilsisahutang));
+              }
+
+            }
+            else{
+               hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
+                           
+              $('.dpp').val(addCommas(hargadpp));
+              subtotal = $('.dpp').val();
+              subharga = subtotal.replace(/,/g, '');
+              hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
+       
+              $('.hasilppn').val(addCommas(hargappn));
+
+              total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
+              $('.nettohutang').val(addCommas(total));  
+
+              fpuangmuka = $('.totaljumlah').val();
+                  
+              if(fpuangmuka == ''){
+                $('.sisahutang').val(addCommas(total));
+              }
+              else {
+                hasilsisahutang = parseFloat(parseFloat(total) - parseFloat(fpuangmuka)).toFixed(2);
+                $('.sisahutang').val(addCommas(hasilsisahutang));
+              }   
+            }
+          }
+          else if(jenisppn == 'T') {
+            if(pph == '' ){
+           //   $('.inputppn').val('');
+              $('.hasilppn').val('');
+              $('.nettohutang').val(dpp);
+              $('.dpp').val(dpp);
+
+              fpuangmuka = $('.totaljumlah').val();
+                  
+              if(fpuangmuka == ''){
+                $('.sisahutang').val(addCommas(dpp));
+              }
+              else {
+                hasilsisahutang = parseFloat(parseFloat(dpp) - parseFloat(fpuangmuka)).toFixed(2);
+                $('.sisahutang').val(addCommas(hasilsisahutang));
+              }
+            }
+
+            else{
+          //    $('.inputppn').val('');
+              $('.hasilppn').val('');
+               total = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)).toFixed(2);
+              $('.nettohutang').val(addCommas(total));
+              $('.dpp').val(dpp);
+
+              fpuangmuka = $('.totaljumlah').val();
+                  
+              if(fpuangmuka == ''){
+                $('.sisahutang').val(addCommas(total));
+              }
+              else {
+                hasilsisahutang = parseFloat(parseFloat(total) - parseFloat(fpuangmuka)).toFixed(2);
+                $('.sisahutang').val(addCommas(hasilsisahutang));
+              }
+            }
+           
+          }
+
+        }
+    }
+
+
     function findArrayMin(array, attr, value) {
                   for(var i = 0; i < array.length; i ++) {
                       if(array[i][attr] == value) {
@@ -1688,7 +2003,7 @@
                      $('.buttonsimpan_um').attr("disabled", false);                
                   }
                 }
-                else {
+                else if(a == 'PO') {
                    nettohutang2 = $('.nettohutang_po').val();
                  
                    nettohutangs = nettohutang2.replace(/,/g,'');
@@ -1784,7 +2099,7 @@
       if ( a == 'I'){
         idsup = $('.idsup').val();
       }
-      else {
+      else if(a == 'PO'){
         idsup = $('.idsup_po').val();
       }
     if(idsup == ''){
@@ -1999,7 +2314,7 @@
         hasilsisa = (parseFloat(sisahutang) - parseFloat(totalum)).toFixed(2);
         $('.sisahutang').val(addCommas(hasilsisa));
       }
-      else {
+      else if(a == 'PO') {
         sisahutang2 = $('.nettohutang_po').val();
         sisahutang = sisahutang2.replace(/,/g,'');
 
@@ -2072,8 +2387,18 @@
            // alert(notatt);
             notandaterima = notatt[2];
             //alert(notandaterima);
-      
-      
+            invoice = notatt[3];
+          
+            var a = $('ul#tabmenu').find('li.active').data('val');
+
+            if(a == 'I'){
+               $('.noinvoice').val(invoice);
+            }
+            else {
+              $('.noinvoice_po').val(invoice);
+              $('.no_invoice2_po').val(invoice);
+            }
+
             $('.inputtandaterima').val(checked[0]);
             $('.notandaterima').val(notandaterima);
             $('#myModal_TT').modal("toggle" );
@@ -2088,7 +2413,7 @@
       if(a == 'PO'){
         supplier = $('.idsup_po').val();
       }
-      else{
+      else if(a == 'I'){
          supplier = $('.idsup').val();
       }
 
@@ -2113,7 +2438,7 @@
                 // alert('ha');
                   var  html = "<tr> <td>"+nomor+"</td> <td>"+data['tt'][i].tt_supplier+"</td> <td>"+data['tt'][i].tt_noform+"</td> <td>"+data['tt'][i].tt_tglkembali+"</td> <td>"+data['tt'][i].ttd_invoice+"</td><td>"+addCommas(data['tt'][i].ttd_nominal)+"</td>";
 
-                  html += "<td><div class='checkbox'> <input type='checkbox' id="+data['tt'][i].tt_idform+","+data['tt'][i].ttd_detail+","+data['tt'][i].tt_noform+" class='check_tt' value='option1' aria-label='Single checkbox One'>" +
+                  html += "<td><div class='checkbox'> <input type='checkbox' id="+data['tt'][i].tt_idform+","+data['tt'][i].ttd_detail+","+data['tt'][i].tt_noform+","+data['tt'][i].ttd_invoice+" class='check_tt' value='option1' aria-label='Single checkbox One'>" +
                                       "<label></label>" +
                                       "</div> </td>" +
                                       "</tr>";              
@@ -2132,7 +2457,7 @@
       if(a == 'PO'){
         supplier = $('.idsup_po').val();
       }
-      else{
+      else if(a  == 'I'){
          supplier = $('.idsup').val();
       }
 
@@ -2157,7 +2482,7 @@
                 // alert('ha');
                   var  html = "<tr> <td>"+nomor+"</td> <td>"+data['tt'][i].tt_supplier+"</td> <td>"+data['tt'][i].tt_noform+"</td> <td>"+data['tt'][i].tt_tglkembali+"</td> <td>"+data['tt'][i].ttd_invoice+"</td><td>"+addCommas(data['tt'][i].ttd_nominal)+"</td>";
 
-                  html += "<td><div class='checkbox'> <input type='checkbox' id="+data['tt'][i].tt_idform+","+data['tt'][i].ttd_detail+","+data['tt'][i].tt_noform+" class='check_tt' value='option1' aria-label='Single checkbox One'>" +
+                  html += "<td><div class='checkbox'> <input type='checkbox' id="+data['tt'][i].tt_idform+","+data['tt'][i].ttd_detail+","+data['tt'][i].tt_noform+","+data['tt'][i].ttd_invoice+" class='check_tt' value='option1' aria-label='Single checkbox One'>" +
                                       "<label></label>" +
                                       "</div> </td>" +
                                       "</tr>";              
@@ -2339,6 +2664,13 @@
       val = $(this).val();    
       val = accounting.formatMoney(val, "", 2, ",",'.');
       $(this).val(val);
+
+
+      jenisppn = $('.jenisppn').val();
+      if(jenisppn == 'T'){
+        $(this).val('');
+        return false;
+      }
 
       pph = $('.hasilpph').val();
       if(pph != ''){
@@ -3909,7 +4241,13 @@
           var acc_persediaan = $('.acc_persediaan').val();
           var keterangan = $('.keteranganbawah').val();
          // alert(keterangan);
-      
+        
+
+         if(acc_biaya == '' && acc_persediaan == ''){
+          toastr.info("Tidak bisa menambah item, karena akun item kosong :) ");
+          return false;
+         }
+
           var penerimaan = $('.penerimaan').val();
           var nettoitem = $('.nettoitem').val();
           var grupitem = $('.groupitem').val();
@@ -4912,7 +5250,7 @@
 
 
         $(document).on('click','.removes-btn',function(){
-          alert('test');
+         // alert('test');
           var id = $(this).data('id');
          
 
@@ -5673,7 +6011,7 @@
 
                        inputppn = response.po[0][0].po_ppn;
                        
-                       inputppn_po = $('.inputppn_po').val(response.po[0][0].po_ppn);
+                       inputppn_po = $('.inputppn_po').val();
                
                        $('.jenisppn_po').val(response.po[0][0].po_jenisppn);
 
@@ -5900,24 +6238,43 @@
       diskon = $('.diskon').val();
 
       cabang = $('.cabang').val();
+      $('.acc_persediaan').val('');
+      $('.acc_biaya').val('');
       $.ajax({
-        data : {cabang},
+        data : {cabang, acc_persediaan, acc_hpp},
         url : baseUrl + '/fakturpembelian/getprovinsi',
         dataType : 'json',
         type : 'post',
         success : function(data){
-           cabang = $('.cabang').val();
-         
-          accpersediaan = acc_persediaan.substr(0,4);
-          accpersediaan = accpersediaan + data + cabang;
-          $('.acc_persediaan').val(accpersediaan);
+          cabang = $('.cabang').val();
+          groupitem = $('.groupitem').val();
 
-          acchpp = acc_hpp.substr(0,4);
-          acchpp = acchpp + data + cabang;
+          if(acc_persediaan != 'null'){
+                    if(data.persediaan.length > 0){
+                      accpersediaan = data.persediaan[0].id_akun;
+                       $('.acc_persediaan').val(accpersediaan);
+                       $('.acc_biaya').val('');
+                    }
+                    else {
+                      toastr.info("Mohon maaf idakun "+acc_persediaan+" tidak ada dalam server :)");
+                      return false;
+                    }
+          }
 
-          $('.acc_biaya').val(acchpp);
-        }
-      })
+
+          if(acc_hpp != 'null'){
+            if(data.hpp.length > 0){
+              acchpp = data.hpp[0].id_akun;
+              $('.acc_biaya').val(acchpp);
+              $('.acc_persediaan').val('');
+            }
+            else {
+              toastr.info("Mohon maaf idakun "+acc_hpp+" tidak ada dalam server :)");
+              return false;
+            }
+          }
+
+    
       if(qty != '') {
         /*  if(diskon != '') {
             hasil = parseFloat(qty * harga);  
@@ -5942,6 +6299,8 @@
            /* alert('asas');
           }*/
       }
+    }
+    })
     })
 
     $('.idsup').change(function(){
@@ -6025,7 +6384,7 @@
 
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                            $('#item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+"'>"+obj.kode_item+" - "+obj.nama_masteritem+"</option>");
+                            $('#item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.kode_item+" - "+obj.nama_masteritem+"</option>");
                            $("#item").trigger("chosen:updated");
                            $("#item").trigger("liszt:updated");
                         })
@@ -6253,7 +6612,7 @@
 
                   if(data.status == 'Terikat Kontrak') {
                     
-
+                    alert('as');
                     if(arrItem.length > 0) {
                       $('.harga').attr('readonly' , true);
                       $('.item').empty();

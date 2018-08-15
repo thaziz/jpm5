@@ -254,7 +254,8 @@ function(){
       url:baseUrl + '/fakturpembelian/hapusbiayapenerus/'+id,
       type:'get',
       success:function(data){
-        if(data.status == 1){
+        console.log(data.status);
+        if(data.status == '1'){
           swal({
           title: "Berhasil!",
                   type: 'success',
@@ -264,13 +265,15 @@ function(){
                   },function(){
                      location.reload();
           });
-        }else{
+        }else if(data.status == 3){
          swal({
-        title: "Data Tidak Bisa Dihapus",
-                type: 'error',
-                timer: 1000,
-                showConfirmButton: false
-    });
+            title: "Gagal Hapus!",
+            type: 'error',
+            text: data.pesan,
+            timer: 2000,
+            },function(){
+
+          });
         }
       },
       error:function(data){

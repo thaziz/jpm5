@@ -19,6 +19,7 @@ use Auth;
 use Yajra\Datatables\Datatables;
 use App\d_jurnal;
 use App\d_jurnal_dt;
+use Exception;
 // use Datatables;
 ini_set('max_execution_time', 60000);
 
@@ -298,10 +299,6 @@ class kasKeluarController extends Controller
 			$all   = DB::select("SELECT kode, nama from subcon order by kode "); 
 
 			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
-		} elseif($req->jenis_bayar == 9){
-			$all   = DB::select("SELECT kode, nama from subcon order by kode "); 
-
-			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		} elseif($req->jenis_bayar == 11){
 			$all   = DB::select("SELECT kode, nama from subcon order by kode "); 
 
@@ -478,14 +475,22 @@ class kasKeluarController extends Controller
 
 			$akun 	  = [];
 			$akun_val = [];
+			$penanda  = [];
 			array_push($akun, $req->kas);
 			array_push($akun_val, filter_var($req->total,FILTER_SANITIZE_NUMBER_INT)/100);
+			array_push($penanda,'K');
 
 			for ($i=0; $i < count($req->pt_akun_biaya); $i++) { 
 
 				array_push($akun, $req->pt_akun_biaya[$i]);
 				array_push($akun_val, $req->pt_nominal[$i]);
+				if ($req->pt_debet[$i] == 'DEBET') {
+					array_push($penanda, "D");
+				}else{
+					array_push($penanda, "K");
+				}
 			}
+
 			$data_akun = [];
 			for ($i=0; $i < count($akun); $i++) { 
 
@@ -493,39 +498,108 @@ class kasKeluarController extends Controller
 								  ->where('id_akun',$akun[$i])
 								  ->first();
 
-				if (substr($akun[$i],0, 1)==1) {
+				if (substr($akun[$i],0, 1)==1001) {
+					if ($cari_coa->akun_dka == 'D') {
+						if ($penanda[$i] == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+						}
+					}else{
+						if ($penanda[$i] == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+						}
+					}
+				}if (substr($akun[$i],0, 4)>1002) {
 					
 					if ($cari_coa->akun_dka == 'D') {
-						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-						$data_akun[$i]['jrdt_detailid']	= $i+1;
-						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						if ($penanda[$i] == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+						}
 					}else{
-						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-						$data_akun[$i]['jrdt_detailid']	= $i+1;
-						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						if ($penanda[$i] == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+						}
 					}
-				}else if (substr($akun[$i],0, 1)>1) {
-
+				}else if (substr($akun[$i],0, 1)>1002) {
 					if ($cari_coa->akun_dka == 'D') {
-						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-						$data_akun[$i]['jrdt_detailid']	= $i+1;
-						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						if ($penanda[$i] == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+						}
 					}else{
-						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-						$data_akun[$i]['jrdt_detailid']	= $i+1;
-						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						if ($penanda[$i] == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+						}
 					}
 				}
 			}
@@ -680,15 +754,21 @@ class kasKeluarController extends Controller
 
 			$akun 	  = [];
 			$akun_val = [];
+			$penanda  = [];
 			array_push($akun, $req->kas);
 			array_push($akun_val, filter_var($req->total,FILTER_SANITIZE_NUMBER_INT)/100);
+			array_push($penanda,'K');
 
 			for ($i=0; $i < count($req->pt_akun_biaya); $i++) { 
 
 				array_push($akun, $req->pt_akun_biaya[$i]);
 				array_push($akun_val, $req->pt_nominal[$i]);
+				if ($req->pt_debet[$i] == 'DEBET') {
+					array_push($penanda, "D");
+				}else{
+					array_push($penanda, "K");
+				}
 			}
-
 			$data_akun = [];
 			for ($i=0; $i < count($akun); $i++) { 
 
@@ -696,9 +776,9 @@ class kasKeluarController extends Controller
 								  ->where('id_akun',$akun[$i])
 								  ->first();
 
-				if (substr($akun[$i],0, 1)==1) {
+				if (substr($akun[$i],0, 4)==1001) {
 					
-					if ($cari_coa->akun_dka == 'D') {
+					if ($penanda[$i] == 'D') {
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
@@ -711,11 +791,10 @@ class kasKeluarController extends Controller
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
 						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
                 		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
 					}
-				}else if (substr($akun[$i],0, 1)>1) {
-
-					if ($cari_coa->akun_dka == 'D') {
+				}if (substr($akun[$i],0, 4)>=1002) {
+					if ($penanda[$i] == 'D') {
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
@@ -726,7 +805,24 @@ class kasKeluarController extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+					}
+				}else if (substr($akun[$i],0, 1)>1) {
+
+					if ($penanda[$i] == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
 						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
                 		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
 					}
@@ -1506,14 +1602,14 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_value'] 	= -round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_value'] 	= -round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 						}
@@ -1523,15 +1619,15 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
-							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_value'] 	= -round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
-							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_value'] 	= -round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 						}
 					}
@@ -1551,7 +1647,7 @@ class kasKeluarController extends Controller
 										'pc_akun'  		=> $cari_coa->id_akun,
 										'pc_keterangan' => strtoupper($req->keterangan_head),
 										'pc_debet' 		=> 0,
-										'pc_kredit' 	=> filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT),
+										'pc_kredit' 	=> round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT)),
 										'updated_at' 	=> carbon::now(),
 										'created_at' 	=> carbon::now(),
 										'pc_akun_kas' 	=> $req->kas,
@@ -1595,14 +1691,14 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_value'] 	= -round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_value'] 	= -round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 						}
@@ -1612,14 +1708,14 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_value'] 	= round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_value'] 	= round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 						}
@@ -1640,7 +1736,7 @@ class kasKeluarController extends Controller
 										'pc_akun'  		=> $cari_coa->id_akun,
 										'pc_keterangan' => strtoupper($req->keterangan_head),
 										'pc_debet' 		=> 0,
-										'pc_kredit' 	=> filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT),
+										'pc_kredit' 	=> round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT)),
 										'updated_at' 	=> carbon::now(),
 										'created_at' 	=> carbon::now(),
 										'pc_akun_kas' 	=> $req->kas,
@@ -3048,14 +3144,14 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_value'] 	= -round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_value'] 	= -round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
 						}
@@ -3065,14 +3161,14 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_value'] 	= -round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_value'] 	= -round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
 						}
@@ -3094,7 +3190,7 @@ class kasKeluarController extends Controller
 										'pc_akun'  		=> $cari_coa->id_akun,
 										'pc_keterangan' => strtoupper($req->keterangan_head),
 										'pc_debet' 		=> 0,
-										'pc_kredit' 	=> filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT),
+										'pc_kredit' 	=> round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT)),
 										'updated_at' 	=> carbon::now(),
 										'created_at' 	=> carbon::now(),
 										'pc_akun_kas' 	=> $req->kas,
@@ -3138,14 +3234,14 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_value'] 	= -round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_value'] 	= -round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
 						}
@@ -3155,14 +3251,14 @@ class kasKeluarController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_value'] 	= round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_value'] 	= round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT));
                 			$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
 						}
@@ -3183,7 +3279,7 @@ class kasKeluarController extends Controller
 										'pc_akun'  		=> $cari_coa->id_akun,
 										'pc_keterangan' => strtoupper($req->keterangan_head),
 										'pc_debet' 		=> 0,
-										'pc_kredit' 	=> filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT),
+										'pc_kredit' 	=> round(filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT)),
 										'updated_at' 	=> carbon::now(),
 										'created_at' 	=> carbon::now(),
 										'pc_akun_kas' 	=> $req->kas,
@@ -3280,38 +3376,42 @@ class kasKeluarController extends Controller
 						   ->where('bkk_id',$req->id)
 						   ->get();
 
-			for ($i=0; $i < count($cari_nota); $i++) { 
+			for ($i=0; $i < count($cari_nota); $i++) { 		
+				try{
+					if ($cari_nota[$i]->bkk_jenisbayar == 2 or $cari_nota[$i]->bkk_jenisbayar == 6 or $cari_nota[$i]->bkk_jenisbayar == 7 or $cari_nota[$i]->bkk_jenisbayar == 9) {
+						$cari_faktur = DB::table('faktur_pembelian')
+										 ->where('fp_nofaktur',$cari_nota[$i]->bkkd_ref)
+										 ->first();
+						$update_faktur =DB::table('faktur_pembelian')
+										  ->where('fp_nofaktur',$cari_nota[$i]->bkkd_ref)
+										  ->update([
+										  	'fp_sisapelunasan' => $cari_faktur->fp_sisapelunasan + $cari_nota[$i]->bkkd_total
+										  ]);
+					}elseif ($cari_nota[0]->bkk_jenisbayar == 3) {
+						$cari_faktur = DB::table('v_hutang')
+										 ->where('v_nomorbukti',$cari_nota[$i]->bkkd_ref)
+										 ->first();
+						$update_faktur =DB::table('v_hutang')
+										  ->where('v_nomorbukti',$cari_nota[$i]->bkkd_ref)
+										  ->update([
+										  	'v_pelunasan' => $cari_faktur->v_pelunasan + $cari_nota[$i]->bkkd_total
+										  ]);
+					}else if($cari_nota[0]->bkk_jenisbayar == 4){
+						$cari_faktur = DB::table('d_uangmuka')
+										 ->where('um_nomorbukti',$cari_nota[$i]->bkkd_ref)
+										 ->first();
 
-				if ($cari_nota[$i]->bkk_jenisbayar == 2 or $cari_nota[$i]->bkk_jenisbayar == 6 or $cari_nota[$i]->bkk_jenisbayar == 7 or $cari_nota[$i]->bkk_jenisbayar == 9) {
-					$cari_faktur = DB::table('faktur_pembelian')
-									 ->where('fp_nofaktur',$cari_nota[$i]->bkkd_ref)
-									 ->first();
-					$update_faktur =DB::table('faktur_pembelian')
-									  ->where('fp_nofaktur',$cari_nota[$i]->bkkd_ref)
-									  ->update([
-									  	'fp_sisapelunasan' => $cari_faktur->fp_sisapelunasan + $cari_nota[$i]->bkkd_total
-									  ]);
-				}elseif ($cari_nota[0]->bkk_jenisbayar == 3) {
-					$cari_faktur = DB::table('v_hutang')
-									 ->where('v_nomorbukti',$cari_nota[$i]->bkkd_ref)
-									 ->first();
-					$update_faktur =DB::table('v_hutang')
-									  ->where('v_nomorbukti',$cari_nota[$i]->bkkd_ref)
-									  ->update([
-									  	'v_pelunasan' => $cari_faktur->v_pelunasan + $cari_nota[$i]->bkkd_total
-									  ]);
-				}else if($cari_nota[0]->bkk_jenisbayar == 4){
-					$cari_faktur = DB::table('d_uangmuka')
-									 ->where('um_nomorbukti',$cari_nota[$i]->bkkd_ref)
-									 ->first();
-
-					$update_faktur = DB::table('d_uangmuka')
-									  ->where('um_nomorbukti',$cari_nota[$i]->bkkd_ref)
-									  ->update([
-									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan + $cari_nota[$i]->bkkd_total,
-									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai - $cari_nota[$i]->bkkd_total
-									  ]);
+						$update_faktur = DB::table('d_uangmuka')
+										  ->where('um_nomorbukti',$cari_nota[$i]->bkkd_ref)
+										  ->update([
+										  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan + $cari_nota[$i]->bkkd_total,
+										  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai - $cari_nota[$i]->bkkd_total
+										  ]);
+					}
+				}catch(Exception $err){
+					return response()->json(['status'=>0]);
 				}
+				
 			}
 
 			$delete_jurnal = DB::table('d_jurnal')
@@ -3325,6 +3425,7 @@ class kasKeluarController extends Controller
 			$delete_bkk   = DB::table('bukti_kas_keluar')
 							   ->where('bkk_nota',$cari_nota[0]->bkk_nota)
 							   ->delete();
+			return response()->json(['status'=>1]);
 
 			
 		});

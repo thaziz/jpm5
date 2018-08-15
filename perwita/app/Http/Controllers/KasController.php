@@ -65,13 +65,14 @@ class KasController extends Controller
 
 
 		if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
-			$sql = "SELECT * FROM biaya_penerus_kas  join cabang on kode = bpk_comp where bpk_nota != '0' $cabang";
+			$sql = "SELECT * FROM biaya_penerus_kas  join cabang on kode = bpk_comp where bpk_nota != '0' and bpk_jenis_biaya != 'LOADING' $cabang";
 			$data = DB::select($sql);
 		}else{
 			$cabang = Auth::user()->kode_cabang;
 			$data = DB::table('biaya_penerus_kas')
 				  ->join('cabang','kode','=','bpk_comp')
 				  ->where('kode',$cabang)
+				  ->where('bpk_jenis_biaya','!=','LOADING')
 				  ->orderBy('bpk_id','ASC')
 				  ->get();
 		}
@@ -83,7 +84,7 @@ class KasController extends Controller
                             $a = '';
                             if($data->bpk_status == 'Released' or Auth::user()->punyaAkses('Biaya Penerus Kas','ubah')){
                                 if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
-$a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' => $data->bpk_id] ).'" title="edit"> Edit</a><br>';
+							$a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' => $data->bpk_id] ).'" title="edit"> Edit</a><br>';
                                 }
                             }else{
                               $a = '';
@@ -377,7 +378,18 @@ $a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' 
 		$data = array_values($data);
 		$tujuan = array_filter($tujuan);
 		$tujuan = array_values($tujuan);
-
+		$temp_data = $data;
+		for ($i=0; $i < count($temp_data); $i++) { 
+			$akun = DB::table('d_akun')
+					  ->where('id_akun','like',substr($cari_persen->kode_akun, 0,4).'%')
+					  ->where('kode_cabang',$temp_data[$i][0]->kode_cabang)
+					  ->first();
+			if ($akun == null) {
+				unset($data[$i]);
+			}
+		}
+		$data = array_filter($data);
+		$data = array_values($data);
 		if (count($data) != 0) {
 			for ($i=0; $i < count($data); $i++) { 
 				$total_tarif+=$data[$i][0]->total_net;
@@ -745,7 +757,7 @@ $a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' 
 						 ->first();
 
 				if ($acc == null) {
-					return response()->json(['status'=>3,'data'=>'Terdapat Resi Yang Tidak Memiliki Akun Biaya']);
+					return response()->json(['status'=>'3','data'=>'Terdapat Resi Yang Tidak Memiliki Akun Biaya']);
 				}
 
 				$cari_id_pc = DB::table('patty_cash')
@@ -791,14 +803,14 @@ $a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' 
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i]);
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i]);
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
@@ -808,14 +820,14 @@ $a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' 
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= $akun_val[$i];
+						$data_akun[$i]['jrdt_value'] 	= round($akun_val[$i]);
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i]);
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
@@ -1273,14 +1285,14 @@ $a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' 
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i]);
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i]);
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
@@ -1290,15 +1302,15 @@ $a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' 
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= $akun_val[$i];
-						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i]);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= $akun_val[$i];
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i]);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
 				}
@@ -1661,6 +1673,8 @@ $a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' 
 		}
 		
 		$resi = array_values($resi);
+
+
 		if ($jenis_biaya == '3') {
 			for ($i=0; $i < count($resi); $i++) { 
 				for ($a=0; $a < count($cari_resi); $a++) { 
@@ -1696,7 +1710,19 @@ $a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' 
 		$data = array_values($data);
 		$tujuan = array_filter($tujuan);
 		$tujuan = array_values($tujuan);
+		$temp_data = $data;
 
+		for ($i=0; $i < count($temp_data); $i++) { 
+			$akun = DB::table('d_akun')
+					  ->where('id_akun','like',substr($cari_persen->kode_akun, 0,4).'%')
+					  ->where('kode_cabang',$temp_data[$i][0]->kode_cabang)
+					  ->first();
+			if ($akun == null) {
+				unset($data[$i]);
+			}
+		}
+		$data = array_filter($data);
+		$data = array_values($data);
 		if (count($data) != 0) {
 			for ($i=0; $i < count($data); $i++) { 
 				$total_tarif+=$data[$i][0]->total_net;

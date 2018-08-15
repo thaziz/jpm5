@@ -605,7 +605,7 @@
             input = $(this);
 
             if(input.val() > 3){
-              alert("Level Tidak Boleh Lebih Dari 2");
+              alert("Level Tidak Boleh Lebih Dari 3");
               input.val(before);
             }else if(input.val() > 2 && $.grep(data_neraca, function(i){ return i.level == 2 }).length == 0){
               alert("Anda Harus Membuat Detail Level 2 Terlebih Dahulu Sebelum Membuat Level 3.");
@@ -767,7 +767,7 @@
 
         id = $("#state_id").text()+""+$("#nomor_id").val();
 
-        $.each($.grep(data_neraca, function(a){ return a.nomor_id === id || a.id_parrent === id }), function(i, n){
+        $.each($.grep(data_neraca, function(a){ return a.nomor_id.substring(0, id.length) === id }), function(i, n){
           idx = data_neraca.findIndex(a => a.nomor_id === n.nomor_id);
 
           if(n.jenis == 2 || n.jenis == 3){

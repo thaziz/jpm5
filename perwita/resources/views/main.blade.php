@@ -42,6 +42,8 @@
 
 
             @include('partials._topnav')
+
+            @include('partials._rightbar')
             
             @if(cek_periode() == 0)
                 <div class="alert alert-danger">

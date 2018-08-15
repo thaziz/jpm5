@@ -31,7 +31,7 @@ class desain_labaRugiController extends Controller
 
     public function add(){
         $data_akun = DB::table("d_akun")->select("*")->get();
-        $data_group = DB::table("d_group_akun")->where("jenis_group", "Laba Rugi")->select("*")->orderBy("nama_group", "asc")->get();
+        $data_group = DB::table("d_group_akun")->where("jenis_group", 2)->select("*")->orderBy("nama_group", "asc")->get();
 
         // return json_encode($data_akun);
         // return json_encode($data_group);
@@ -64,7 +64,7 @@ class desain_labaRugiController extends Controller
                     "id_parrent"    => $dataNeraca["id_parrent"],
                     "level"         => $dataNeraca["level"],
                     "jenis"         => $dataNeraca["jenis"],
-                    "type"          => $dataNeraca["type"],
+                    "type"          => 'null',
                     "keterangan"    => $dataNeraca["keterangan"],
                 ]);
             }
@@ -117,7 +117,7 @@ class desain_labaRugiController extends Controller
         }
 
         $data_akun = DB::table("d_akun")->select("*")->get();
-        $data_group = DB::table("d_group_akun")->where("jenis_group", "Laba Rugi")->select("*")->orderBy("nama_group", "asc")->get();
+        $data_group = DB::table("d_group_akun")->where("jenis_group", "2")->select("*")->orderBy("nama_group", "asc")->get();
         $data_desain = DB::table("desain_laba_rugi")->where("id_desain", $id)->first();
         $data_neraca = DB::table("desain_laba_rugi_dt")->where("id_desain", $id)->get();
         $data_detail = DB::table("desain_laba_rugi_detail_dt")->where("id_desain", "$id")->get();
@@ -154,7 +154,7 @@ class desain_labaRugiController extends Controller
                 "id_parrent"    => $dataNeraca["id_parrent"],
                 "level"         => $dataNeraca["level"],
                 "jenis"         => $dataNeraca["jenis"],
-                "type"          => $dataNeraca["type"],
+                "type"          => 'null',
                 "keterangan"    => $dataNeraca["keterangan"],
             ]);
         }
@@ -205,36 +205,18 @@ class desain_labaRugiController extends Controller
             return '<center><small class="text-muted">Ups. Kami Tidak Bisa Menemukan Data Desain Ini. Cobalah Untuk Muat Ulang Halaman..</small></center>';
         }
 
+
         $dataDetail = DB::table("desain_laba_rugi_dt")
             ->join("desain_laba_rugi", "desain_laba_rugi.id_desain", "=", "desain_laba_rugi_dt.id_desain")
             ->where("desain_laba_rugi.id_desain", $id)
+            ->orderBy('nomor_id', 'asc')
             ->get();
 
         foreach ($dataDetail as $dataDetail) {
 
             $dataTotal = 0;
 
-            if($dataDetail->jenis == 2){
-                $data_detail_dt = DB::table("desain_laba_rugi_detail_dt")
-                              ->join("d_group_akun", "desain_laba_rugi_detail_dt.id_group", "=", "d_group_akun.id")
-                              ->where("desain_laba_rugi_detail_dt.id_parrent", $dataDetail->nomor_id)
-                              ->select("desain_laba_rugi_detail_dt.*", "d_group_akun.*")
-                              ->get();
-
-                foreach ($data_detail_dt as $detail_dt) {
-                    $data_detail[$no_detail] = [
-                        "id_referensi"      => $detail_dt->id_group,
-                        "nama_referensi"    => $detail_dt->nama_group,
-                        "id_parrent"        => $detail_dt->id_parrent,
-                        "nomor_id"          => $detail_dt->nomor_id,
-                        "total"             => "XXXX"
-                    ];
-
-                    $no_detail++;
-                }
-            }
-
-            $data_neraca[$no] = [
+            $data_neraca[count($data_neraca)] = [
                 "keterangan"        => $dataDetail->keterangan,
                 "type"              => $dataDetail->type,
                 "jenis"             => $dataDetail->jenis,
@@ -244,7 +226,6 @@ class desain_labaRugiController extends Controller
                 "total"             => "XXXX"
             ];
 
-            $no++;
         }
 
         // return json_encode($data_neraca);

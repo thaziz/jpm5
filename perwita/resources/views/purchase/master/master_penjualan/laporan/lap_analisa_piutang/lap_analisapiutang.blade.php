@@ -27,6 +27,9 @@
     border-color: #6d2db3;
     color: #FFFFFF;
   }
+  #addColumn{
+    font-size: 10px;
+  }
 </style>
   <meta name="csrf-token" content="{{ csrf_token() }}" /> 
 
@@ -64,7 +67,7 @@
                           <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                             <input name="min" id="min" type="text" class=" date form-control date_to date_range_filter
-                                date">
+                                date" value="{{ carbon\carbon::now()->subDay(30)->format('Y-m-d') }}">
                           </div> 
                         </td>  
                         <td> Diakhiri : </td> 
@@ -72,7 +75,7 @@
                           <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                             <input type="text" class=" date form-control date_to date_range_filter
-                                date" name="max" id="max"  >
+                                date" name="max" id="max" value="{{ carbon\carbon::now()->format('Y-m-d') }}">
                           </div> 
                         </td>
                       </tr>
@@ -87,34 +90,42 @@
                           </select>
                         </td>
                       
-                        <td>Acc Piutang</td>
-                        <td>
-                          <select class="chosen-select-width" name="akun" id="akun">
+                        <td>Cabang</td>
+                        @if (Auth::user()->punyaAkses('Laporan Penjualan','cabang'))
+                          <td>
+                            <select class="chosen-select-width" name="cabang" id="cabang">
+                              <option value="">- Pilih -</option>
+                              @foreach ($cabang as $cab)
+                                <option @if(Auth::user()->kode_cabang == $cab->kode) selected="" @endif value="{{ $cab->kode }}">{{ $cab->kode }} - {{ $cab->nama }}</option>
+                              @endforeach
+                            </select>
+                          </td>
+                        @else
+                        <td class="disabled">
+                          <select class="chosen-select-width" name="cabang" id="cabang">
                             <option value="">- Pilih -</option>
-                            @foreach ($piutang as $piu)
-                              <option value="{{ $piu->id_akun }}">{{ $piu->id_akun }} - {{ $piu->nama_akun }}</option>
+                            @foreach ($cabang as $cab)
+                              <option @if(Auth::user()->kode_cabang == $cab->kode) selected="" @endif value="{{ $cab->kode }}">{{ $cab->kode }} - {{ $cab->nama }}</option>
                             @endforeach
                           </select>
                         </td>
+                        @endif
                       </tr>
                       <tr>  
                       <td>Laporan</td>
                         <td>
                           <select class="chosen-select-width" name="laporan" id="laporan">
-                            <option value="">- Pilih -</option>
+                            {{-- <option value="">- Pilih -</option> --}}
                             <option value="Rekap">Rekap </option>
                           </select>
                         </td>
-
-                       <td>Cabang</td>
+                        <td>Acc Piutang</td>
                         <td>
-                          <select class="chosen-select-width" name="cabang" id="cabang">
-                            <option value="">- Pilih -</option>
-                            @foreach ($cabang as $cab)
-                              <option value="{{ $cab->kode }}">{{ $cab->kode }} - {{ $cab->nama }}</option>
-                            @endforeach
+                          <select class="chosen-select-width" name="akun" id="akun">
+                            <option value="">- Harap Memilih Cabang Dahulu -</option>
                           </select>
                         </td>
+                        
                       </tr>
                       <br>
                       </table>
@@ -127,42 +138,17 @@
                 </div>
 
 
-                <div class="box-body">
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <div class="drop">
-                    
-                  {{-- <table id="addColumn" class="table table-bordered table-striped tbl-item">
-                    <thead>
-                       <tr>
-                          <th align="center" rowspan="2" > No</th>
-                          <th align="center" colspan="2"> Customer</th>
-                          <th align="center" rowspan="2"> Saldo Awal</th>
-                          <th align="center" colspan="2"> DEBET</th>
-                          <th align="center" colspan="4"> Kota Tujuan</th>
-                          <th align="center" rowspan="2"> Saldo Akir</th>
-                          <th align="center" rowspan="2"> Sisa Uangmuka </th>
-                      </tr> 
-                      <tr>
-                          <th>Kode</th>
-                          <th>Nama</th>
-                          <th>Piutang Baru</th>
-                          <th>Nota Debet</th>
-                          <th>Byr Cash</th>
-                          <th>Byr.Cek/BG/Trans</th>
-                          <th>Byr Uang Muka</th>
-                          <th>Nota Kredit</th>
-                      </tr>       
-                    </thead>        
-                      
-                    </div>
-                  </table> --}}
-                </div><!-- /.box-body -->
-                <div class="box-footer">
-                  
-                </div><!-- /.box-footer --> 
+            <div class="box-body">
+              <br>
+              <br>
+              <br>
+              <br>
+              <div class="drop">
+              
+              </div><!-- /.box-body -->
+              <div class="box-footer">
+                  {{-- @include('purchase.master.master_penjualan.laporan.lap_analisa_piutang.ajax_analisapiutang_rekap') --}}
+              </div><!-- /.box-footer --> 
               </div><!-- /.box -->
             </div><!-- /.col -->
           </div><!-- /.row -->
@@ -184,53 +170,58 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-
-    $('.date').datepicker({
-        autoclose: true,
-        format: 'yyyy-mm-dd',
-    });
-    
-      function cari(){
-
-      var awal = $('#min').val();
-      var akir = $('#max').val();
-      var customer = $('#customer').val();
-      var akun = $('#akun').val();
-      var laporan = $('#laporan').val();
-
-     if (laporan == 'Rekap') {
-
-       $.ajax({
+      $(document).ready(function(){
+        $.ajax({
           data:$('#search').serialize(),
           type:'get',
-          url: baseUrl + '/laporan_sales/analisa_piutang/ajax_lap_analisa_piutang',
+          url: baseUrl + '/laporan_sales/analisa_piutang/piutang_dropdown',
           success : function(data){
-            $('.drop').html(data);
-            $('#container').hide();
-
-            // $('.saldo').each(function(i){
-            //     var saldo_index = $('.saldo_'+i).val();
-
-            //     $('.debet_'+i).each(function(a){ 
-            //       saldo_index = parseFloat(saldo_index) + parseFloat($(this).val()) - parseFloat($('.kredit_'+i).val());
-
-            //       console.log(parseFloat($('.kredit_'+0).val()));
-            //       console.log(i); 
-            //       var parent = $(this).parents('tr');
-            //       $(parent).find('.total').text(accounting.formatMoney(saldo_index,"",0,'.',','));
-            //     })  
-            // })
+            $('#akun').empty();
+            for (var i = 0; i < data.piutang.length; i++) {
+              $('#akun').append("<option value='"+data.piutang[i].id_akun+"'>"+data.piutang[i].id_akun+'-'+data.piutang[i].nama_akun+"</option>");
+              $('#akun').chosen().trigger("chosen:updated");
+            }
           }
         })
-     }else if (laporan == 'Rekap per Customer Detail') {
-      alert('b');
-     }else if (laporan == 'Rekap per akun') {
+      })
 
-      alert('c');
-     }else if (laporan == 'Rekap per akun Detail') {
+      $('.date').datepicker({
+          autoclose: true,
+          format: 'yyyy-mm-dd',
+      });
 
-      // alert('d');
-     }
+      $('#cabang').change(function(){
+        $.ajax({
+          data:$('#search').serialize(),
+          type:'get',
+          url: baseUrl + '/laporan_sales/analisa_piutang/piutang_dropdown',
+          success : function(data){
+            $('#akun').empty();
+            for (var i = 0; i < data.piutang.length; i++) {
+              $('#akun').append("<option value='"+data.piutang[i].id_akun+"'>"+data.piutang[i].id_akun+'-'+data.piutang[i].nama_akun+"</option>");
+              $('#akun').chosen().trigger("chosen:updated");
+            }
+          }
+        })
+      })
+
+      function cari(){
+        var awal = $('#min').val();
+        var akir = $('#max').val();
+        var customer = $('#customer').val();
+        var akun = $('#akun').val();
+        var laporan = $('#laporan').val();
+
+
+          $.ajax({
+            data:$('#search').serialize(),
+            type:'get',
+            url: baseUrl + '/laporan_sales/analisa_piutang/ajax_lap_analisa_piutang',
+            success : function(data){
+              $('.drop').html(data);
+              $('#container').hide();
+            }
+          })
         
      }
 

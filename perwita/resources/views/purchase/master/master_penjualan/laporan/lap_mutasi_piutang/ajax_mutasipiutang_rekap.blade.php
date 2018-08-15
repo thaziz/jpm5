@@ -25,9 +25,9 @@
                      @foreach ($array as $index => $e)
                        <tr>
                          <td><input type="hidden" name="" class="fore">{{ $index+1 }}</td>
-                         <td>{{ $push_customer_lenght[$index][0]->kode }}</td>
-                         <td>{{ $push_customer_lenght[$index][0]->nama }}</td>
-                         <td><input type="hidden" value="{{ $saldoawal[$index][0]->saldoawal }}" class="saldoawal_{{ $index }}" name="">
+                        {{--  <td>{{ $saldoawal[$index]->saldo }}</td>
+                         <td>{{ $saldoawal[$index]->saldo }}</td> --}}
+                        {{--  <td><input type="hidden" value="{{ $saldoawal[$index][0]->saldoawal }}" class="saldoawal_{{ $index }}" name="">
                           {{ $saldoawal[$index][0]->saldoawal }}
                          </td>
                          <td><input type="hidden" value="{{ $piutangbaru[$index][0]->piutang_baru }}" class="piutangbaru_{{ $index }}" name="">
@@ -49,7 +49,7 @@
                           {{ $nota_kredit[$index][0]->nota_kredit }}
                           </td>
                          <td class="total_{{ $index }}"></td>
-                         <td>{{ $sisa_uangmuka[$index][0]->sisa_uangmuka }}</td>
+                         <td>{{ $sisa_uangmuka[$index][0]->sisa_uangmuka }}</td> --}}
                        </tr>
                      @endforeach
 
