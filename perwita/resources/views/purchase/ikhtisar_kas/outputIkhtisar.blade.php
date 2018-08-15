@@ -259,7 +259,7 @@
      @endforeach
      <tr>
        <td colspan="5" class="right textleft"><strong>Terbilang: {{$terbilang}} Rupiah</strong><strong style="float:right;">Total :</strong></td>
-       <td class="textright ">{{'Rp. ' . number_format($data->ik_total,2,',','.')}}</td>
+       <td class="textright ">{{'Rp. ' . number_format(round($data->ik_total),2,',','.')}}</td>
      </tr>
    </table>
  </div>
