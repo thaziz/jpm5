@@ -466,10 +466,8 @@ $(document).ready(function(){
           parseInt(km);
           hasil = km/bbm_liter;
           hasil = hasil * harga_bbm;
-          hasil = Math.round(hasil);
-          hasil = hasil.toLocaleString();
-          hasil = 'Rp ' + hasil;
-          $('.total_bbm').val(hasil);
+          hasil = hasil;
+          $('.total_bbm').val(accounting.formatMoney(hasil,"Rp ", 2, ".",','));
 
 
           total[1] = hasil;
@@ -480,11 +478,10 @@ $(document).ready(function(){
           total[1] = total[1].replace(/[^0-9\.-]+/g,"");
 
           for(var i = 0 ; i<total.length;i++){
-            temp+=parseInt(total[i]);
+            temp+=parseFloat(total[i]);
           }
-          temp = temp.toLocaleString()
-          temp = 'Rp ' + temp;
-          $('.total').val(temp);
+        
+          $('.total').val(accounting.formatMoney(temp,"Rp ", 2, ".",','));
 
 
         }else if(km == ""){
@@ -496,10 +493,7 @@ $(document).ready(function(){
           for(var i = 0 ; i<total.length;i++){
             temp+=parseInt(total[i]);
           }
-          temp = temp.toLocaleString()
-          temp = 'Rp ' + temp;
-      
-          $('.total').val(temp);
+          $('.total').val(accounting.formatMoney(temp,"Rp ", 2, ".",','));
         }
       }
 
