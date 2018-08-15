@@ -499,6 +499,7 @@ $('.tanggal').datepicker({
   var jk        = $('.jenis_kendaraan').val();
   var hasil = 0;
   var temp = 0;
+  var biaya_dll = $('.biaya_dll').val();
 
   if (jenis != 0 && nama_kas != 0 && jenis_pembiayaan != 0){
       $('.search').attr('disabled',false);
@@ -514,28 +515,11 @@ $('.tanggal').datepicker({
         $('.bbm').val(harga_bbm);
         
         if(km != "" && jk != "0"){
-          parseInt(km);
           hasil = km/bbm_liter;
           hasil = hasil * harga_bbm;
-          hasil = Math.round(hasil);
-          hasil = hasil.toLocaleString();
-          hasil = 'Rp ' + hasil;
-          $('.total_bbm').val(hasil);
+          $('.total_bbm').val(accounting.formatMoney(hasil,"Rp ", 2, ".",','));
 
-
-          total[1] = hasil;
-          if(total[0]==undefined ){
-            total[0]=0;
-          }
-          total[1] = total[1].replace("Rp ","");
-          total[1] = total[1].replace(/[^0-9\.-]+/g,"");
-
-          for(var i = 0 ; i<total.length;i++){
-            temp+=parseInt(total[i]);
-          }
-          temp = temp.toLocaleString()
-          temp = 'Rp ' + temp;
-          $('.total').val(temp);
+          $('.total').val(accounting.formatMoney(hasil+biaya_dll,"Rp ", 2, ".",','));
 
 
         }else if(km == ""){
@@ -547,10 +531,7 @@ $('.tanggal').datepicker({
           for(var i = 0 ; i<total.length;i++){
             temp+=parseInt(total[i]);
           }
-          temp = temp.toLocaleString()
-          temp = 'Rp ' + temp;
-      
-          $('.total').val(temp);
+          $('.total').val(accounting.formatMoney(temp,"Rp ", 2, ".",','));
         }
       }
 
@@ -588,8 +569,7 @@ $('.tanggal').datepicker({
    for(var i = 0 ; i<total.length;i++){
         temp+=parseInt(total[i]);
    }
-  temp = temp.toLocaleString()
-  $('.total').val('Rp '+temp);
+  $('.total').val(accounting.formatMoney(temp,"Rp ", 2, ".",','));
   $('.valid_key').attr('hidden',true);
   $('.resi_body').html('');
 
@@ -605,25 +585,11 @@ $('.tanggal').datepicker({
   var temp = 0;
 
   if(km != "" && jk != "0"){
-    parseInt(km);
     hasil = km/bbm_liter;
     hasil = hasil * harga_bbm;
     $('.total_bbm').val(accounting.formatMoney(hasil,"Rp ", 2, ".",','));
 
-    total[1] = hasil;
-    if(total[0]==undefined ){
-      total[0]=0;
-    }
-    total[1] = total[1].replace("Rp ","");
-    total[1] = total[1].replace(/[^0-9\.-]+/g,"");
-
-    for(var i = 0 ; i<total.length;i++){
-      temp+=parseInt(total[i]);
-    }
-
-    $('.total').val(accounting.formatMoney(temp,"Rp ", 2, ".",','));
-
-
+    $('.total').val(accounting.formatMoney(hasil+biaya_dll,"Rp ", 2, ".",','));
 
   }else if(km == ""){
     $('.total_bbm').val(0);
@@ -632,10 +598,9 @@ $('.tanggal').datepicker({
       total[0]=0;
     }
     for(var i = 0 ; i<total.length;i++){
-      temp+=parseInt(total[i]);
+      temp+=total[i]*1;
     }
-    temp = temp.toLocaleString()
-    temp = 'Rp ' + temp;
+
     $('.total').val(accounting.formatMoney(temp,"Rp ", 2, ".",','));
 
   }
