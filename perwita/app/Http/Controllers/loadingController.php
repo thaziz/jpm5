@@ -61,7 +61,7 @@ class loadingController extends Controller
                             $a = '';
                             if($data->bpk_status == 'Released' or Auth::user()->punyaAkses('Biaya Penerus Kas','ubah')){
                                 if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
-							$a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' => $data->bpk_id] ).'" title="edit"> Edit</a><br>';
+							$a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkasloading', ['id' => $data->bpk_id] ).'" title="edit"> Edit</a><br>';
                                 }
                             }else{
                               $a = '';

@@ -1716,7 +1716,7 @@ class KasController extends Controller
 		$tujuan = array_filter($tujuan);
 		$tujuan = array_values($tujuan);
 		$temp_data = $data;
-
+		$tidak_ada_akun = [];
 		for ($i=0; $i < count($temp_data); $i++) { 
 			$akun = DB::table('d_akun')
 					  ->where('id_akun','like',substr($cari_persen->kode_akun, 0,4).'%')
