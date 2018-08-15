@@ -170,7 +170,7 @@
               <td>{{$val->nota}}</td>
               <td>{{$val->akun_kas}}</td>
               <td align="right">{{'' . number_format(round($val->nominal),2,',','.')}}
-                <input type="hidden" name="nominal[]" value="{{round($val->nominal)}}">
+                <input type="hidden" name="nominal[]" class="nominal" value="{{round($val->nominal)}}">
               </td>
               <td>{{$val->keterangan}}</td>
               <td>{{$val->user}}</td>
@@ -209,7 +209,6 @@ var tabel_patty = $('.tabel_patty_cash').DataTable({
 function ck() {
   var total = 0;
   tabel_patty.$('.ck').each(function(){
-    console.log('tes');
     if($(this).is(':checked') == true){
       var par = $(this).parents('tr');
       var nominal = $(par).find('.nominal').val();
