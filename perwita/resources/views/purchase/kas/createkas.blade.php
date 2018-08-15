@@ -550,13 +550,7 @@ $(document).ready(function(){
     parseInt(km);
     hasil = km/bbm_liter;
     hasil = hasil * harga_bbm;
-    hasil = Math.round(hasil);
-    hasil = hasil.toLocaleString();
-    hasil = 'Rp ' + hasil;
-
-
-    $('.total_bbm').val(hasil);
-
+    $('.total_bbm').val(accounting.formatMoney(hasil,"Rp ", 2, ".",','));
 
     total[1] = hasil;
     if(total[0]==undefined ){
@@ -568,9 +562,9 @@ $(document).ready(function(){
     for(var i = 0 ; i<total.length;i++){
       temp+=parseInt(total[i]);
     }
-    temp = temp.toLocaleString()
-    temp = 'Rp ' + temp;
-    $('.total').val(temp);
+
+    $('.total').val(accounting.formatMoney(temp,"Rp ", 2, ".",','));
+
 
 
   }else if(km == ""){
@@ -584,7 +578,8 @@ $(document).ready(function(){
     }
     temp = temp.toLocaleString()
     temp = 'Rp ' + temp;
-    $('.total').val(temp);
+    $('.total').val(accounting.formatMoney(temp,"Rp ", 2, ".",','));
+
   }
   $('.valid_key').attr('hidden',true);
   $('.resi_body').html('');
