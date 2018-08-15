@@ -76,7 +76,6 @@
 
 <script type="text/javascript">
 var datatable;
-
 datatable = $('.table_resi').DataTable({
             responsive: true,
             searching: false,
