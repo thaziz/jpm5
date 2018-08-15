@@ -230,7 +230,13 @@
                   <td width="40%" class="text-center">Pilih Cabang</td>
                   <td colspan="3">
                     <select class="form-control buku_besar select_bukbes_validate" name="buku_besar_cabang" id="buku_besar_cabang" style="width: 80%;">
+                      <option value="---">-- Pilih Cabang</option>
 
+                      @foreach(cabang() as $cab)
+                        @if($cab->kode == Session::get('cabang') || Session::get('cabang') == '000')
+                          <option value="{{ $cab->kode }}">{{ $cab->nama }}</option>
+                        @endif
+                      @endforeach
                     </select>
                     &nbsp;&nbsp; <small id="buku_besar_cabang_txt" style="display: none;"><i class="fa fa-hourglass-half"></i></small>
                   </td>

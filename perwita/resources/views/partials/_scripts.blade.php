@@ -183,30 +183,30 @@
            $("#buku_besar").click(function(evt){
                 evt.preventDefault();
                 $("#modal_buku_besar").modal("show");
-                html = '<option value="---">-- Pilih Cabang</option>'; $("#buku_besar_cabang_txt").fadeIn(100);
+                // html = '<option value="---">-- Pilih Cabang</option>'; $("#buku_besar_cabang_txt").fadeIn(100);
 
-                $.ajax(baseUrl+"/purchaseorder/grapcabang", {
-                   timeout: 15000,
-                   type: "get",
-                   dataType: 'json',
-                   success: function (data) {
-                       $.each(data, function(i, n){
-                            html = html + '<option value="'+n.kode+'">'+n.nama+'</option>';
-                       })
+                // $.ajax(baseUrl+"/purchaseorder/grapcabang", {
+                //    timeout: 15000,
+                //    type: "get",
+                //    dataType: 'json',
+                //    success: function (data) {
+                //        $.each(data, function(i, n){
+                //             html = html + '<option value="'+n.kode+'">'+n.nama+'</option>';
+                //        })
 
-                       $("#buku_besar_cabang").html(html);
-                       $("#buku_besar_cabang_txt").fadeOut(300);
-                   },
-                   error: function(request, status, err) {
-                      if (status == "timeout") {
-                        alert("Request Timeout. Gagal Mengambil Data Cabang.");
-                      }else {
-                        alert("Internal Server Error. Gagal Mengambil Data Cabang.");
-                      }
+                //        $("#buku_besar_cabang").html(html);
+                //        $("#buku_besar_cabang_txt").fadeOut(300);
+                //    },
+                //    error: function(request, status, err) {
+                //       if (status == "timeout") {
+                //         alert("Request Timeout. Gagal Mengambil Data Cabang.");
+                //       }else {
+                //         alert("Internal Server Error. Gagal Mengambil Data Cabang.");
+                //       }
 
-                      $(".cek").removeAttr("disabled");
-                  }
-                });
+                //       $(".cek").removeAttr("disabled");
+                //   }
+                // });
            })
 
            // buku besar end
