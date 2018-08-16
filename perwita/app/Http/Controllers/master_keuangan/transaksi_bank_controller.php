@@ -70,7 +70,7 @@ class transaksi_bank_controller extends Controller
 
         $cabang = DB::table('cabang')->select("kode")->first();
         $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '11')->get();
-        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '10')->get();
+        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1001')->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1003')->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1099')->get();
 
         // return json_encode($akun_real);
 
