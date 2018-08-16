@@ -638,7 +638,7 @@ class KasController extends Controller
 						'bpkd_tujuan'			=> $request->tujuan[$i],
 						'bpkd_status_resi'		=> $request->status[$i],
 						'bpkd_tarif'			=> $request->tarif[$i],
-						'bpkd_tarif_penerus'	=> round($request->penerus[$i],2),
+						'bpkd_tarif_penerus'	=> $request->penerus[$i],
 						'created_at'			=> Carbon::now(),
 						'bpk_comp'				=> $request->cabang,
 						'bpk_jenis_bbm'			=> $cari_persen->jenis_bbm,
@@ -662,7 +662,7 @@ class KasController extends Controller
 					'bpkd_tujuan'			=> $request->tujuan[$i],
 					'bpkd_status_resi'		=> $request->status[$i],
 					'bpkd_tarif'			=> $request->tarif[$i],
-					'bpkd_tarif_penerus'	=> round($request->penerus[$i],2),
+					'bpkd_tarif_penerus'	=> $request->penerus[$i],
 					'created_at'			=> Carbon::now(),
 					'bpk_comp'				=> $request->cabang,
 					'bpkd_pembiayaan'		=> $request->tarif[$i]
@@ -717,7 +717,7 @@ class KasController extends Controller
 				 $harga_array[$i] = ${'total'.$unik_asal[$i]};
 			}
 			for ($i=0; $i < count($harga_array); $i++) { 
-				 $jurnal[$i]['harga'] = round($harga_array[$i],2);
+				 $jurnal[$i]['harga'] = $harga_array[$i];
 				 $jurnal[$i]['asal'] = $unik_asal[$i];
 
 			}
@@ -811,14 +811,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i]);
+						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i]);
+						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
@@ -828,14 +828,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= round($akun_val[$i]);
+						$data_akun[$i]['jrdt_value'] 	= $akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i]);
+						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
@@ -1115,7 +1115,7 @@ class KasController extends Controller
 					'bpkd_tujuan'			=> $request->tujuan[$i],
 					'bpkd_status_resi'		=> $request->status[$i],
 					'bpkd_tarif'			=> $request->tarif[$i],
-					'bpkd_tarif_penerus'	=> round($request->penerus[$i],2),
+					'bpkd_tarif_penerus'	=> $request->penerus[$i],
 					'created_at'			=> Carbon::now(),
 					'bpk_comp'				=> $request->cabang,
 					'bpk_jenis_bbm'			=> $cari_persen->jenis_bbm,
@@ -1139,7 +1139,7 @@ class KasController extends Controller
 					'bpkd_tujuan'			=> $request->tujuan[$i],
 					'bpkd_status_resi'		=> $request->status[$i],
 					'bpkd_tarif'			=> $request->tarif[$i],
-					'bpkd_tarif_penerus'	=> round($request->penerus[$i],2),
+					'bpkd_tarif_penerus'	=> $request->penerus[$i],
 					'created_at'			=> Carbon::now(),
 					'bpk_comp'				=> $request->cabang,
 					'bpkd_pembiayaan'		=> $request->tarif[$i]
@@ -1197,7 +1197,7 @@ class KasController extends Controller
 				 $harga_array[$i] = ${'total'.$unik_asal[$i]};
 			}
 			for ($i=0; $i < count($harga_array); $i++) { 
-				 $jurnal[$i]['harga'] = round($harga_array[$i],2);
+				 $jurnal[$i]['harga'] = $harga_array[$i];
 				 $jurnal[$i]['asal'] = $unik_asal[$i];
 
 			}
@@ -1243,6 +1243,7 @@ class KasController extends Controller
 
 			array_push($akun, $request->nama_kas);
 			array_push($akun_val, $total_harga);
+
 			for ($i=0; $i < count($jurnal); $i++) { 
 				$acc = DB::table('d_akun')
 						 ->where('id_akun','like',$cari_akun .'%')
@@ -1281,7 +1282,6 @@ class KasController extends Controller
 				array_push($akun, $acc->id_akun);
 				array_push($akun_val, $jurnal[$i]['harga']);
 			}
-
 			// dd($akun_val);
 
 
@@ -1298,14 +1298,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i]);
+						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i]);
+						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
@@ -1315,14 +1315,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= round($akun_val[$i]);
+						$data_akun[$i]['jrdt_value'] 	= $akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= round($akun_val[$i]);
+						$data_akun[$i]['jrdt_value'] 	= $akun_val[$i];
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
@@ -1428,7 +1428,7 @@ class KasController extends Controller
 			for ($i=0; $i < count($harga_array); $i++) { 
 				 $harga_array[$i] = round($harga_array[$i]);
 			}
-			$total_harga=array_sum($harga_array);
+			$total_harga=round($cari_id[0]->bpk_tarif_penerus);
 
 			$terbilang = $this->terbilang(round($total_harga),$style=3);
 
@@ -1917,7 +1917,8 @@ class KasController extends Controller
 
 		$d = array_sum($d);
 		$k = array_sum($k);
-
+		$d = round($d);
+		$k = round($k);
 		return view('purchase.buktikaskeluar.jurnal',compact('data','d','k'));
 	}
 }
