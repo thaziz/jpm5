@@ -604,6 +604,7 @@ class ikhtisarController extends Controller
 									->first();
 
 							if ($bkk != null) {
+
 								$save_ikhtisar = DB::table('ikhtisar_kas_detail')
 								   ->insert([
 								   		'ikd_id'   		=> $ikd,
@@ -800,7 +801,7 @@ class ikhtisarController extends Controller
 			$cari = DB::table('ikhtisar_kas_detail')
 					  ->where('ikd_ik_id',$id)
 					  ->get();
-		
+			dd($cari);
 			for ($i=0; $i < count($cari); $i++) { 
 
 				$bkk = DB::table('bukti_kas_keluar')
@@ -853,21 +854,31 @@ class ikhtisarController extends Controller
 					->where('ikd_ik_id',$id)
 					->get();
 
-			$bkk = DB::table('bukti_kas_keluar')
-					->join('ikhtisar_kas_detail','ikd_ref','=','bkk_nota')
-					->join('patty_cash','pc_no_trans','=','bkk_nota')
+			$bkk = DB::table('ikhtisar_kas_detail')
+					->join('biaya_penerus_kas','ikd_ref','=','bpk_nota')
 					->where('ikd_ik_id',$id)
-					->where('pc_debet',0)
-					->orderBy('bkk_tgl','DESC')
+					->orderBy('ikd_id','ikd_ik_dt','ASC')
 					->get();
 
-			$bpk = DB::table('biaya_penerus_kas')
-					->join('ikhtisar_kas_detail','ikd_ref','=','bpk_nota')
-					->join('patty_cash','pc_no_trans','=','bpk_nota')
+			$bpk = DB::table('ikhtisar_kas_detail')
+					->join('bukti_kas_keluar','ikd_ref','=','bkk_nota')
 					->where('ikd_ik_id',$id)
-					->where('pc_debet',0)
-					->orderBy('bpk_tanggal','DESC')
+					->orderBy('ikd_id','ikd_ik_dt','ASC')
 					->get();
+
+			for ($i=0; $i < count($bkk); $i++) { 
+
+				$bkk[$i] = DB::table('bukti_kas_keluar')
+						 ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
+						 ->select('bkkd_keterangan as keterangan')
+						 ->where('bkk_nota',$bkk[$i]->bkk_nota)
+						 ->orderBy('ikd_id','ikd_ik_dt','ASC')
+						 ->get();
+
+
+			}
+
+
 
 			$data_dt = array_merge($bkk,$bpk);	
 

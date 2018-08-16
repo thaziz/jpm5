@@ -83,7 +83,7 @@
                     </form>
                 <div class="box-body" >
                     <div class="col-sm-6" style="margin-bottom: 250px;">
-                        <h3>AKUN PATTY CASH</h3>
+                        <h3>AKUN PETTY CASH</h3>
                         <table class="table">
                           {{ csrf_field() }}
                             <tr>
