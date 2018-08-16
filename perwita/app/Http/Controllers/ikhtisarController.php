@@ -880,7 +880,7 @@ class ikhtisarController extends Controller
 
 				$bpk[$i] = DB::table('biaya_penerus_kas')
 						 ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
-						 ->select('bpkd_keterangan as keterangan','bpkd_tarif_penerus as total','bpkd_tanggal as tanggal','bpkd_ as tanggal','bpkd_kode_cabang_awal as cabang')
+						 ->select('bpk_keterangan as keterangan','bpkd_tarif_penerus as total','bpkd_tanggal as tanggal','bpkd_ as tanggal','bpkd_kode_cabang_awal as cabang')
 						 ->where('bpk_nota',$bpk[$i]->bpk_nota)
 						 ->get();
 
