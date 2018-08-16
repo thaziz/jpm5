@@ -117,6 +117,14 @@
                           <td> Alamat </td>
                           <td> <input type="text" class="input-sm form-control edit2" name="alamat" required="" style="text-transform: uppercase" value="{{$banks->mb_alamat}}" readonly=""></td>
                         </tr>
+                        <tr>
+                          <td> Kelompok Bank </td>
+                          <td>  <select class="form-control chosen-select" name="kelompokbank" required="">
+                              @foreach($data['jenisbank'] as $jenisbank)
+                              <option value="{{$jenisbank->id}}" @if($jenisbank->id == $banks->mb_kelompok) selected="" @endif> {{$jenisbank->namabank}} </option>
+                              @endforeach
+                            </select> </td>
+                        </tr>
                       </table>
                       </div>
 

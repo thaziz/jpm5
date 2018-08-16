@@ -1190,12 +1190,12 @@
                         @endif
                         @if(Auth::user()->PunyaAkses('Master Bank','aktif'))
                         <li >
-                           {{--  <a class="sidebar master-perusahaan 
+                            <a class="sidebar master-perusahaan 
 
                         {{Request::is('masterbank/masterbank') ? 'active' : '' || 
                             Request::is('masterbank/masterbank/*') ? 'active' : ''}} 
 
-                        " href="{{ url('masterbank/masterbank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Master Bank </a> --}}
+                        " href="{{ url('masterbank/masterbank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Master Bank </a>
                         </li>
                         @endif
                         @if(Auth::user()->PunyaAkses('Master Activa','aktif'))
