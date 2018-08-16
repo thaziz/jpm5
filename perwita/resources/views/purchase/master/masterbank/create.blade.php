@@ -78,7 +78,7 @@
                           <td> Pengajuan dari Cabang : </td>
                           <td> 
                             @if(Auth::user()->punyaAkses('Master Bank','cabang'))
-                            <select class="form-control cabang" name="cabang" required="" style="min-width:60%">
+                            <select class="form-control chosen-select cabang" name="cabang" required="" style="min-width:60%">
                                 @foreach($data['cabang'] as $cabang)
                               <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                               @endforeach
@@ -153,6 +153,17 @@
                         <tr>
                           <td> Alamat </td>
                           <td> <input type="text" class="input-sm form-control" name="alamat" required="" style="text-transform: uppercase"></td>
+                        </tr>
+                        <tr>  
+                          <td> Kelompok Bank </td>
+                          <td>
+                            <select class="form-control chosen-select" name="kelompokbank" required=""> 
+                              <option value=""> Pilih Kelompok Bank </option>
+                              @foreach($data['jenisbank'] as $jenisbank)
+                              <option value="{{$jenisbank->id}}"> {{$jenisbank->namabank}} </option>
+                              @endforeach
+                            </select>
+                          </td>
                         </tr>
                       </table>
                       </div>
