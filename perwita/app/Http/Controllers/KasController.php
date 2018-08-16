@@ -265,27 +265,56 @@ class KasController extends Controller
 		$now 		  = Carbon::now()->format('Y-m-d');
 
 		for ($i=0; $i < count($request->resi_array); $i++) {
+			if ($jenis_biaya == '3') {
+				$cari_resi = DB::table('delivery_order')
+							   ->where('pendapatan',$request->jenis_pembiayaan)
+							   ->where('jenis_pengiriman','SHUTTLE')
+							   ->whereIn('nomor',$request->resi_array)
+							   ->orderBy('nomor','ASC')
+							   ->get();
+				$cari_loading = DB::table('delivery_order')
+							   ->where('pendapatan',$request->jenis_pembiayaan)
+							   ->whereIn('nomor',$request->resi_array)
+							   ->where('jenis_tarif',9)
+							   ->orderBy('nomor','ASC')
+							   ->get();
+				$cari_resi1 = DB::table('delivery_order')
+							   ->select('bpkd_no_resi')
+							   ->join('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
+							   ->where('pendapatan',$cari_persen->jenis_pendapatan)
+							   ->whereIn('nomor',$request->resi_array)
+							   ->groupBy('bpkd_no_resi')
+							   ->orderBy('bpkd_no_resi','ASC')
+							   ->get();
+			}else{
+				$cari_resi = DB::table('delivery_order')
+							   // ->where('pendapatan',$cari_persen->jenis_pendapatan)
+							   ->whereIn('nomor',$request->resi_array)
+							   ->orderBy('nomor','ASC')
+							   ->get();
 
-			$cari_resi = DB::table('delivery_order')
-						   // ->where('pendapatan',$cari_persen->jenis_pendapatan)
-						   ->whereIn('nomor',$request->resi_array)
-						   ->orderBy('nomor','ASC')
-						   ->get();
-			$cari_loading = DB::table('delivery_order')
-						   ->where('pendapatan',$request->jenis_pembiayaan)
-						   ->whereIn('nomor',$request->resi_array)
-						   ->where('jenis_tarif',9)
-						   ->orderBy('nomor','ASC')
-						   ->get();
-			$cari_resi1 = DB::table('delivery_order')
-						   ->select('bpkd_no_resi')
-						   ->join('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
-						   ->where('pendapatan',$cari_persen->jenis_pendapatan)
-						   ->whereIn('nomor',$request->resi_array)
-						   ->groupBy('bpkd_no_resi')
-						   ->orderBy('bpkd_no_resi','ASC')
-						   ->get();
 
+				$cari_shuttle = DB::table('delivery_order')
+							   ->where('pendapatan',$request->jenis_pembiayaan)
+							   ->where('jenis_pengiriman','SHUTTLE')
+							   ->whereIn('nomor',$request->resi_array)
+							   ->orderBy('nomor','ASC')
+							   ->get();
+				$cari_loading = DB::table('delivery_order')
+							   ->where('pendapatan',$request->jenis_pembiayaan)
+							   ->whereIn('nomor',$request->resi_array)
+							   ->where('jenis_tarif',9)
+							   ->orderBy('nomor','ASC')
+							   ->get();
+				$cari_resi1 = DB::table('delivery_order')
+							   ->select('bpkd_no_resi')
+							   ->join('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
+							   ->where('pendapatan',$cari_persen->jenis_pendapatan)
+							   ->whereIn('nomor',$request->resi_array)
+							   ->groupBy('bpkd_no_resi')
+							   ->orderBy('bpkd_no_resi','ASC')
+							   ->get();
+			}
 		}
 
 		for ($i=0; $i < count($cari_resi); $i++) { 
@@ -338,6 +367,17 @@ class KasController extends Controller
 				}
 			}
 		}
+
+		if ($jenis_biaya == '3') {
+			for ($i=0; $i < count($resi); $i++) { 
+				for ($a=0; $a < count($cari_shuttle); $a++) { 
+					if ($cari_shuttle[$a]->nomor == $resi[$i]) {
+						unset($resi[$i]);
+					}
+				}
+			}
+		}
+		
 
 		$resi = array_values($resi);
 		if ($jenis_biaya == '3') {
@@ -1591,30 +1631,78 @@ class KasController extends Controller
 		$now 		  = Carbon::now()->format('Y-m-d');
 
 		for ($i=0; $i < count($request->resi_array); $i++) { 
-			$cari_resi = DB::table('delivery_order')
-						   ->where('pendapatan',$cari_persen->jenis_pendapatan)
-						   ->whereIn('nomor',$request->resi_array)
-						   ->orderBy('nomor','ASC')
-						   ->get();
-			$cari_resi1 = DB::table('delivery_order')
-						   ->select('bpkd_no_resi')
-						   ->join('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
-						   ->where('pendapatan',$cari_persen->jenis_pendapatan)
-						   ->whereIn('nomor',$request->resi_array)
-						   ->groupBy('bpkd_no_resi')
-						   ->orderBy('bpkd_no_resi','ASC')
-						   ->get();
+			if ($jenis_biaya == '3') {
+				$cari_resi = DB::table('delivery_order')
+							   ->where('pendapatan',$request->jenis_pembiayaan)
+							   ->where('jenis_pengiriman','SHUTTLE')
+							   ->whereIn('nomor',$request->resi_array)
+							   ->orderBy('nomor','ASC')
+							   ->get();
 
-			$cari_loading = DB::table('delivery_order')
-						   ->where('pendapatan',$cari_persen->jenis_pendapatan)
-						   ->whereIn('nomor',$request->resi_array)
-						   ->where('jenis_tarif',9)
-						   ->orderBy('nomor','ASC')
-						   ->get();
+				$cari_resi1 = DB::table('delivery_order')
+							   ->select('bpkd_no_resi')
+							   ->join('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
+							   ->where('pendapatan',$cari_persen->jenis_pendapatan)
+							   ->whereIn('nomor',$request->resi_array)
+							   ->groupBy('bpkd_no_resi')
+							   ->orderBy('bpkd_no_resi','ASC')
+							   ->get();
 
-			$cari_resi2 = DB::table('biaya_penerus_kas_detail')
-						   	->where('bpkd_bpk_id',$request->id)
-						   ->get();
+				$cari_resi1 = DB::table('delivery_order')
+							   ->select('bpkd_no_resi')
+							   ->join('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
+							   ->where('pendapatan',$cari_persen->jenis_pendapatan)
+							   ->whereIn('nomor',$request->resi_array)
+							   ->groupBy('bpkd_no_resi')
+							   ->orderBy('bpkd_no_resi','ASC')
+							   ->get();
+
+				$cari_loading = DB::table('delivery_order')
+							   ->where('pendapatan',$cari_persen->jenis_pendapatan)
+							   ->whereIn('nomor',$request->resi_array)
+							   ->where('jenis_tarif',9)
+							   ->orderBy('nomor','ASC')
+							   ->get();
+
+				$cari_resi2 = DB::table('biaya_penerus_kas_detail')
+							   	->where('bpkd_bpk_id',$request->id)
+							   ->get();
+			}else{
+				$cari_resi = DB::table('delivery_order')
+							   ->where('pendapatan',$cari_persen->jenis_pendapatan)
+							   ->whereIn('nomor',$request->resi_array)
+							   ->orderBy('nomor','ASC')
+							   ->get();
+				$cari_resi1 = DB::table('delivery_order')
+							   ->select('bpkd_no_resi')
+							   ->join('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
+							   ->where('pendapatan',$cari_persen->jenis_pendapatan)
+							   ->whereIn('nomor',$request->resi_array)
+							   ->groupBy('bpkd_no_resi')
+							   ->orderBy('bpkd_no_resi','ASC')
+							   ->get();
+
+				$cari_resi1 = DB::table('delivery_order')
+							   ->select('bpkd_no_resi')
+							   ->join('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
+							   ->where('pendapatan',$cari_persen->jenis_pendapatan)
+							   ->whereIn('nomor',$request->resi_array)
+							   ->groupBy('bpkd_no_resi')
+							   ->orderBy('bpkd_no_resi','ASC')
+							   ->get();
+
+				$cari_loading = DB::table('delivery_order')
+							   ->where('pendapatan',$cari_persen->jenis_pendapatan)
+							   ->whereIn('nomor',$request->resi_array)
+							   ->where('jenis_tarif',9)
+							   ->orderBy('nomor','ASC')
+							   ->get();
+
+				$cari_resi2 = DB::table('biaya_penerus_kas_detail')
+							   	->where('bpkd_bpk_id',$request->id)
+							   ->get();
+			}
+			
 			
 		}
 		// return $cari_resi2;
@@ -1663,10 +1751,17 @@ class KasController extends Controller
 		$resi = array_unique($resi);
 		// return $resi;
 		
+		for ($i=0; $i < count($resi); $i++) { 
+			for ($a=0; $a < count($cari_shuttle); $a++) { 
+				if ($cari_shuttle[$a]->nomor == $resi[$i]) {
+					unset($resi[$i]);
+				}
+			}
+		}
 
 		
-		 $resi = array_unique($resi);
-		 $resi = array_values($resi);
+		$resi = array_unique($resi);
+		$resi = array_values($resi);
 
 		for ($i=0; $i < count($resi); $i++) { 
 			for ($a=0; $a < count($cari_loading); $a++) { 
@@ -1676,6 +1771,7 @@ class KasController extends Controller
 			}
 		}
 		
+		$resi = array_unique($resi);
 		$resi = array_values($resi);
 
 
