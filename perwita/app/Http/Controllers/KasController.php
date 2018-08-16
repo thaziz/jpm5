@@ -1428,7 +1428,7 @@ class KasController extends Controller
 			for ($i=0; $i < count($harga_array); $i++) { 
 				 $harga_array[$i] = round($harga_array[$i]);
 			}
-			$total_harga=round($cari_id->bpk_tarif_penerus);
+			$total_harga=round($cari_id[0]->bpk_tarif_penerus);
 
 			$terbilang = $this->terbilang(round($total_harga),$style=3);
 
