@@ -111,7 +111,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-sm-6" style="margin-bottom: 250px;">
+                   {{--  <div class="col-sm-6" style="margin-bottom: 250px;">
                         <h3>AKUN FAKTUR ITEM</h3>
                         <table class="table">
                           {{ csrf_field() }}
@@ -139,7 +139,7 @@
                                 
                             </tbody>
                         </table>
-                    </div>
+                    </div> --}}
                 </div><!-- /.box-body -->
                   </div><!-- /.box-footer -->
               </div><!-- /.box -->
@@ -172,7 +172,7 @@
                 $(selector).chosen(config[selector]);
             }
     $(document).ready(function(){
-    var cabang = $('.cabang').val();
+      var cabang = $('.cabang').val();
 
         $('.tabel_patty').DataTable({
           processing: true,
