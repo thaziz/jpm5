@@ -1243,6 +1243,7 @@ class KasController extends Controller
 
 			array_push($akun, $request->nama_kas);
 			array_push($akun_val, $total_harga);
+
 			for ($i=0; $i < count($jurnal); $i++) { 
 				$acc = DB::table('d_akun')
 						 ->where('id_akun','like',$cari_akun .'%')
@@ -1281,7 +1282,7 @@ class KasController extends Controller
 				array_push($akun, $acc->id_akun);
 				array_push($akun_val, $jurnal[$i]['harga']);
 			}
-
+			dd($jurnal);
 			// dd($akun_val);
 
 
