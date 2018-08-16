@@ -384,7 +384,7 @@ class KasController extends Controller
 					  ->first();
 			if ($akun == null) {
 				unset($data[$i]);
-				array_push($tidak_ada_akun, 'TIDAK');
+				array_push($tidak_ada_akun, $temp_data[$i][0]->kode_cabang);
 			}
 		}
 		$data = array_filter($data);
@@ -408,7 +408,8 @@ class KasController extends Controller
 	
 		}else{
 			if (count($tidak_ada_akun) != 0) {
-				return response()->json(['status' => 0,'pesan'=>"Terdapat Data Yang Tidak Memiliki Akun Biaya"]);
+				$array = implode(', ', $tidak_ada_akun);
+				return response()->json(['status' => 0,'pesan'=>"Terdapat Data Yang Tidak Memiliki Akun Biaya Untuk Kode Akun ".$array]);
 			}else{
 				return response()->json(['status' => 0,'pesan'=>"Data Tidak Ada"]);
 			}
@@ -1754,7 +1755,8 @@ class KasController extends Controller
 	
 		}else{
 			if (count($tidak_ada_akun) != 0) {
-				return response()->json(['status' => 0,'pesan'=>"Terdapat Data Yang Tidak Memiliki Akun Biaya"]);
+				$array = implode(', ', $tidak_ada_akun);
+				return response()->json(['status' => 0,'pesan'=>"Terdapat Data Yang Tidak Memiliki Akun Biaya Untuk Kode Akun ".$array]);
 			}else{
 				return response()->json(['status' => 0,'pesan'=>"Data Tidak Ada"]);
 			}
