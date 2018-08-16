@@ -1282,6 +1282,7 @@ class KasController extends Controller
 				array_push($akun, $acc->id_akun);
 				array_push($akun_val, $jurnal[$i]['harga']);
 			}
+			dd($jurnal);
 			// dd($akun_val);
 
 
@@ -1915,8 +1916,8 @@ class KasController extends Controller
 		$d = array_values($d);
 		$k = array_values($k);
 
-		$d = array_sum(round($d));
-		$k = array_sum(round($k));
+		$d = array_sum($d);
+		$k = array_sum($k);
 
 		return view('purchase.buktikaskeluar.jurnal',compact('data','d','k'));
 	}
