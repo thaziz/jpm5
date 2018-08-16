@@ -1282,7 +1282,6 @@ class KasController extends Controller
 				array_push($akun, $acc->id_akun);
 				array_push($akun_val, $jurnal[$i]['harga']);
 			}
-			dd($jurnal);
 			// dd($akun_val);
 
 
