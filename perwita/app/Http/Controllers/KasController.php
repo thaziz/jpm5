@@ -1916,8 +1916,8 @@ class KasController extends Controller
 		$d = array_values($d);
 		$k = array_values($k);
 
-		$d = array_sum($d);
-		$k = array_sum($k);
+		$d = array_sum(round($d));
+		$k = array_sum(round($k));
 
 		return view('purchase.buktikaskeluar.jurnal',compact('data','d','k'));
 	}
