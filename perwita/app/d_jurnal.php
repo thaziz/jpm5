@@ -16,7 +16,7 @@ class d_jurnal extends Model
     const CREATED_AT = 'jr_insert';
     
     
-    protected $fillable = ['jr_id', 'jr_year','jr_date', 'jr_detail','jr_ref','jr_note'];
+    protected $fillable = ['jr_id', 'jr_year','jr_date', 'jr_detail','jr_ref','jr_note','jr_no'];
 
 
     public function detail(){

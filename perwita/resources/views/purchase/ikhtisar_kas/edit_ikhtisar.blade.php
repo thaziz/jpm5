@@ -114,7 +114,7 @@
             <tr>
               <td>Total</td>
               <td>
-                  <input readonly="" type="text" name="total" value="{{"" . number_format($data->ik_total,2,",",".")}}" class="form-control total">                         
+                  <input style="font-size: 16px;font-weight: bold;color: red!important"  readonly="" type="text" name="total" value="{{"" . number_format($data->ik_total,2,",",".")}}" class="form-control total">                         
               </td>
             </tr>
             <tr>

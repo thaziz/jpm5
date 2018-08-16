@@ -1130,7 +1130,10 @@ class do_paketController extends Controller
             }
 
           $dt = Carbon::now();
-          
+          $bank = 'KM'.$request->akun_bank;
+
+          $km =  get_id_jurnal($bank, $request->cb_cabang);
+
           $simpan_utama = DB::table('d_jurnal')->insert([
                               'jr_id'=>$max,
                               'jr_year'=>$dt->year,
@@ -1140,6 +1143,7 @@ class do_paketController extends Controller
                               'jr_note'=>'DEVLIERY ORDER PAKET',
                               'jr_insert'=>$request->do_tanggal,
                               'jr_update'=>$dt,
+                              'jr_no'    =>$km,
                             ]);
           $acc            = [  $cari_akun[0]->id_akun
                               // ,$cari_akun_ppn[0]->id_akun

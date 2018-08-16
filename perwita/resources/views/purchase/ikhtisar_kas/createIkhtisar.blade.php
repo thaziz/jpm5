@@ -125,6 +125,15 @@
                 @endif
             </tr>
             <tr>
+              <td>Jenis Ikhtisar Kas</td>
+              <td>
+                  <select class="jenis_ik form-control" name="jenis_ik ">
+                    <option value="REGULER">REGULER</option>
+                    <option value="BONSEM">PENGEMBALIAN BONSEM</option>
+                  </select>                        
+              </td>
+            </tr>
+            <tr>
               <td>Keterangan</td>
               <td>
                   <input type="text" name="Keterangan" class="form-control">                         
@@ -133,7 +142,7 @@
             <tr>
               <td>Total</td>
               <td>
-                  <input readonly="" type="text" name="total" class="form-control total">                         
+                  <input style="font-size: 16px;font-weight: bold;color: red!important" readonly="" type="text" name="total" class="form-control total">                         
               </td>
             </tr>
             <tr>
@@ -189,6 +198,8 @@ $('.tanggal').change(function () {
       data:$('.table_header :input').serialize(),
       success:function(response){
         $('.nomor_ik').val(response.nota);
+      },error:function(){
+        location.reload();
       }
     });
  });

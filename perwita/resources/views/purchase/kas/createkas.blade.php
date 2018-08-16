@@ -448,6 +448,8 @@ $(document).ready(function(){
   var jk        = $('.jenis_kendaraan').val();
   var hasil = 0;
   var temp = 0;
+  var biaya_dll = $('.biaya_dll').val();
+  biaya_dll = biaya_dll.replace(/[^0-9\-]+/g,"")*1;
 
   if (jenis != 0 && nama_kas != 0 && jenis_pembiayaan != 0){
       $('.search').attr('disabled',false);
@@ -463,28 +465,11 @@ $(document).ready(function(){
         $('.bbm').val(harga_bbm);
         
         if(km != "" && jk != "0"){
-          parseInt(km);
           hasil = km/bbm_liter;
           hasil = hasil * harga_bbm;
-          hasil = Math.round(hasil);
-          hasil = hasil.toLocaleString();
-          hasil = 'Rp ' + hasil;
-          $('.total_bbm').val(hasil);
+          $('.total_bbm').val(accounting.formatMoney(hasil,"Rp ", 2, ".",','));
 
-
-          total[1] = hasil;
-          if(total[0]==undefined ){
-            total[0]=0;
-          }
-          total[1] = total[1].replace("Rp ","");
-          total[1] = total[1].replace(/[^0-9\.-]+/g,"");
-
-          for(var i = 0 ; i<total.length;i++){
-            temp+=parseInt(total[i]);
-          }
-          temp = temp.toLocaleString()
-          temp = 'Rp ' + temp;
-          $('.total').val(temp);
+          $('.total').val(accounting.formatMoney(hasil+biaya_dll,"Rp ", 2, ".",','));
 
 
         }else if(km == ""){
@@ -494,22 +479,20 @@ $(document).ready(function(){
             total[0]=0;
           }
           for(var i = 0 ; i<total.length;i++){
-            temp+=parseInt(total[i]);
+            temp+=total[i];
           }
-          temp = temp.toLocaleString()
-          temp = 'Rp ' + temp;
-      
-          $('.total').val(temp);
+          $('.total').val(accounting.formatMoney(temp,"Rp ", 2, ".",','));
         }
       }
 
     })
 
-  $.ajax({
+      $.ajax({
           url:baseUrl + '/biaya_penerus/nopol',
           data:{jenis},
           success:function(data){
               $('.nopol_td').html(data);
+
           },
           error:function(){
               location.reload();
@@ -521,23 +504,12 @@ $(document).ready(function(){
  var total = [];
  function hitung(){
   var bayar = $('.biaya_dll').val();
-  var hitung = bayar.replace(/[^0-9\.-]+/g,"");
-  total[0] = hitung;
-  var temp = 0;
-  
-   if(total[0]==""){
-      total[0]=0;
-    }
-  if(total[1] != undefined && total[1] != ""){
-   total[1] = total[1].replace("Rp ","");
-   total[1] = total[1].replace(/[^0-9\.-]+/g,"");
-  }
+   bayar = bayar.replace(/[^0-9\-]+/g,"")*1;
 
-   for(var i = 0 ; i<total.length;i++){
-        temp+=parseInt(total[i]);
-   }
-  temp = temp.toLocaleString()
-  $('.total').val('Rp '+temp);
+  var total_bbm = $('.total_bbm').val();
+   total_bbm = total_bbm.replace(/[^0-9\-]+/g,"")/100;
+  
+  $('.total').val(accounting.formatMoney(total_bbm+bayar,"Rp ", 2, ".",','));
   $('.valid_key').attr('hidden',true);
   $('.resi_body').html('');
 
@@ -546,38 +518,20 @@ $(document).ready(function(){
  function hitung_bbm(){
 
   var km        = $('.kilometer').val();
-  var bbm_liter = parseInt($('.km_liter').val());
-  var harga_bbm = parseInt($('.bbm').val());
+  var bbm_liter = $('.km_liter').val();
+  var harga_bbm = $('.bbm').val();
   var jk        = $('.jenis_kendaraan').val();
   var hasil = 0;
   var temp = 0;
-
+  var biaya_dll = $('.biaya_dll').val();
+  biaya_dll = biaya_dll.replace(/[^0-9\-]+/g,"")*1;
   if(km != "" && jk != "0"){
-    parseInt(km);
     hasil = km/bbm_liter;
     hasil = hasil * harga_bbm;
-    hasil = Math.round(hasil);
-    hasil = hasil.toLocaleString();
-    hasil = 'Rp ' + hasil;
-
-
-    $('.total_bbm').val(hasil);
-
-
-    total[1] = hasil;
-    if(total[0]==undefined ){
-      total[0]=0;
-    }
-    total[1] = total[1].replace("Rp ","");
-    total[1] = total[1].replace(/[^0-9\.-]+/g,"");
-
-    for(var i = 0 ; i<total.length;i++){
-      temp+=parseInt(total[i]);
-    }
-    temp = temp.toLocaleString()
-    temp = 'Rp ' + temp;
-    $('.total').val(temp);
-
+    console.log(hasil);
+    $('.total_bbm').val(accounting.formatMoney(hasil,"Rp ", 2, ".",','));
+  
+    $('.total').val(accounting.formatMoney(hasil+biaya_dll,"Rp ", 2, ".",','));
 
   }else if(km == ""){
     $('.total_bbm').val(0);
@@ -586,16 +540,15 @@ $(document).ready(function(){
       total[0]=0;
     }
     for(var i = 0 ; i<total.length;i++){
-      temp+=parseInt(total[i]);
+      temp+=total[i]*1;
     }
-    temp = temp.toLocaleString()
-    temp = 'Rp ' + temp;
-    $('.total').val(temp);
+
+    $('.total').val(accounting.formatMoney(temp,"Rp ", 2, ".",','));
+
   }
   $('.valid_key').attr('hidden',true);
   $('.resi_body').html('');
  }
-
 function search(){
   var resi = $('#resi').val();
   var head = $('.table_header :input').serializeArray();

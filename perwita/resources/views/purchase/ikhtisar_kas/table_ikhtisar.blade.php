@@ -43,8 +43,10 @@
     console.log($(this).is(':checked'));
     if ($(this).is(':checked') == true) {
       tabel_patty.$('.ck').prop('checked',true);
+      ck();
     }else{
       tabel_patty.$('.ck').prop('checked',false);
+      ck();
     }
   })
 </script>

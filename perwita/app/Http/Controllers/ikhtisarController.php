@@ -394,8 +394,6 @@ class ikhtisarController extends Controller
 	}
 
 	public function cari_patty(request $request){
-
-		// dd($request->all());
 		if (isset($request->rangepicker)) {
 
 			$tgl = explode('-',$request->rangepicker);
@@ -405,30 +403,58 @@ class ikhtisarController extends Controller
 					$tgl[1] = str_replace(' ', '', $tgl[1]);
 					$start  = Carbon::parse($tgl[0])->format('Y-m-d');
 					$end    = Carbon::parse($tgl[1])->format('Y-m-d');
+			if ($request->jenis_ik_ == 'BONSEM') {
+				$bkk = DB::table('bukti_kas_keluar')
+						->select('bkk_nota as nota','bkk_tgl as tanggal','bkk_akun_kas as akun_kas','bkk_keterangan as keterangan','created_by as user','bkk_total as nominal')
+						->where('bkk_comp',$request->cabang)
+						->where('bkk_tgl','>=',$start)
+						->where('bkk_tgl','<=',$end)
+						->where('bkk_status','RELEASED')
+						->take(5000)
+						->orderBy('bkk_tgl','DESC')
+						->get();
+				$cari = $bkk;
+				for ($i=0; $i < count($bkk); $i++) { 
+					$bkkd = DB::table('patty_cash')
+							  ->join('bukti_kas_keluar','bkk_nota','=','pc_no_trans')
+							  ->where('bkk_comp',$request->cabang)
+							  ->where('pc_akun','like','1002'.'%')
+							  ->where('bkk_nota',$bkk[$i]->nota)
+							  ->get();
+					if ($bkkd == null) {
+						unset($cari[$i]);
+					}
 
-			$bkk = DB::table('bukti_kas_keluar')
-					->select('bkk_nota as nota','bkk_tgl as tanggal','bkk_akun_kas as akun_kas','bkk_keterangan as keterangan','created_by as user','bkk_total as nominal')
-					->where('bkk_comp',$request->cabang)
-					->where('bkk_tgl','>=',$start)
-					->where('bkk_tgl','<=',$end)
-					->where('bkk_status','RELEASED')
-					->take(5000)
-					->orderBy('bkk_tgl','DESC')
-					->get();
-
-			$bpk = DB::table('biaya_penerus_kas')
-					->select('bpk_nota as nota','bpk_tanggal as tanggal','bpk_kode_akun as akun_kas','bpk_keterangan as keterangan','created_by as user','bpk_tarif_penerus as nominal')
-					->where('bpk_comp',$request->cabang)
-					->where('bpk_tanggal','>=',$start)
-					->where('bpk_tanggal','<=',$end)
-					->where('bpk_status','Released')
-					->take(5000)
-					->orderBy('bpk_tanggal','DESC')
-					->get();
-			$cari = array_merge($bkk,$bpk);			
-
-			$akun = DB::table('d_akun')
+				}
+				$cari = array_values($cari);
+				$akun = DB::table('d_akun')
 						  ->get();
+			}else{
+				$bkk = DB::table('bukti_kas_keluar')
+						->select('bkk_nota as nota','bkk_tgl as tanggal','bkk_akun_kas as akun_kas','bkk_keterangan as keterangan','created_by as user','bkk_total as nominal')
+						->where('bkk_comp',$request->cabang)
+						->where('bkk_tgl','>=',$start)
+						->where('bkk_tgl','<=',$end)
+						->where('bkk_status','RELEASED')
+						->take(5000)
+						->orderBy('bkk_tgl','DESC')
+						->get();
+
+				$bpk = DB::table('biaya_penerus_kas')
+						->select('bpk_nota as nota','bpk_tanggal as tanggal','bpk_kode_akun as akun_kas','bpk_keterangan as keterangan','created_by as user','bpk_tarif_penerus as nominal')
+						->where('bpk_comp',$request->cabang)
+						->where('bpk_tanggal','>=',$start)
+						->where('bpk_tanggal','<=',$end)
+						->where('bpk_status','Released')
+						->take(5000)
+						->orderBy('bpk_tanggal','DESC')
+						->get();
+				$cari = array_merge($bkk,$bpk);			
+
+				$akun = DB::table('d_akun')
+							  ->get();
+
+			}
 		return view('purchase.ikhtisar_kas.table_ikhtisar',compact('cari','akun'));
 
 		}else{
@@ -548,6 +574,7 @@ class ikhtisarController extends Controller
 									   		'ik_comp'		=> $request->cabang,
 									   		'ik_total'		=> $debet,
 									   		'ik_pelunasan'	=> $debet,
+									   		'ik_jenis'  	=> $request->jenis_ik_,
 									   		'ik_edit'		=> 'UNALLOWED',
 									   		'ik_status'		=> 'RELEASED',
 									   		'created_at'	=> Carbon::now(),
