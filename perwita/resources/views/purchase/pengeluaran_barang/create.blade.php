@@ -109,7 +109,7 @@
               </td>
             </tr>
             <tr>
-              <td>Data Gudang</td>
+              <td>Tujuan Gudang</td>
               <td>
                 <select class="form-control gudang_peminta" id="gudang" name="gudang_peminta" style="width:100%" >
                       

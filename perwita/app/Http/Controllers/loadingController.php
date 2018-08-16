@@ -61,7 +61,7 @@ class loadingController extends Controller
                             $a = '';
                             if($data->bpk_status == 'Released' or Auth::user()->punyaAkses('Biaya Penerus Kas','ubah')){
                                 if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
-							$a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' => $data->bpk_id] ).'" title="edit"> Edit</a><br>';
+							$a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkasloading', ['id' => $data->bpk_id] ).'" title="edit"> Edit</a><br>';
                                 }
                             }else{
                               $a = '';
@@ -406,7 +406,7 @@ class loadingController extends Controller
 					$save_patty = DB::table('patty_cash')
 						   ->insert([
 						   		'pc_id'			  => $cari_id_pc,
-						   		'pc_tgl'		  => str_replace('/', '-', $request->tN),
+						   		'pc_tgl'		  => carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 						   		'pc_ref'	 	  => 10,
 						   		'pc_akun' 		  => $acc->id_akun,
 						   		'pc_akun_kas' 	  => $request->nama_kas,
@@ -815,7 +815,7 @@ class loadingController extends Controller
 					$save_patty = DB::table('patty_cash')
 						   ->insert([
 						   		'pc_id'			  => $cari_id_pc,
-						   		'pc_tgl'		  => Carbon::now(),
+						   		'pc_tgl'		  => carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 						   		'pc_ref'	 	  => 10,
 						   		'pc_akun' 		  => $acc->id_akun,
 						   		'pc_akun_kas' 	  => $request->nama_kas,
