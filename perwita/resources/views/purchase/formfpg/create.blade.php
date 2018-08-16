@@ -661,7 +661,7 @@
                                     
                                    </tr>
                                     <tr>
-                                      <th> Akun Bank </th>
+                                      <th> Bank Tujuan </th>
                                       <td> <select class="form-control selectOutlet chosen-select-width1 bank1 banktujuan" name="tujuanbank">
                                                
                                                     <option value=""> Pilih Data Bank </option>
@@ -1040,19 +1040,17 @@
         
 
       
-        if(kodebankasal.match(/1099.*/)){
+        if(mbdt[i][0].mb_kode.match(/1099.*/)){
 
         }
-        else { 
-        if(kodebankasal != kodebanktujuan){
-          if(kodebanktujuan.match(/1099.*/)){
+        else {
+         if(mbdt[i][0].mb_nama.match(kodebanktujuan)){
            
           }
-          else{
-            toastr.info('Beda bank hanya bisa dilakukan Akun KAS BANK :)');
+          else {
+            toastr.info("Mohon maaf, akun yang bisa dipakai adalah akun kas bank :)");
             return false;
           }
-        }
         }
 
 
@@ -2024,8 +2022,7 @@
         lengthbank = $('.tblbank').length;
         databank = $('.bank').val();
         $('.valbank').val(databank);
-        $('.bank').prop('disabled' , true).trigger("liszt:updated");
-          $('.bank').prop('disabled', true).trigger("chosen:updated");;
+     
 
         $('.metodebayar').attr('disabled' , true);
 
@@ -2076,7 +2073,7 @@
                   type : "post",
                   dataType : "json",
                   success : function(data) {
-             
+
                     bank = $('.bank').val();
                     explode = bank.split(",");
                     kodebank = explode[4];
@@ -2143,8 +2140,7 @@
                         namabank = split[1];
                         idbank = split[0];
 
-                       
-
+                      
                         if(metodebayar == 'CHECK/BG'){
                           for(var i =0 ; i < mbdt.length; i++ ){
 
@@ -2152,14 +2148,12 @@
 
                               }
                               else {
-                               if(mbdt[i][0].mb_kode != kodebanktujuan){
-                                  if(kodebanktujuan.match(/1099.*/)){
-
-                                  }
-                                  else{
-                                    toastr.info('Jika beda bank maka bank tujuan harus akun kas bank :)');
-                                    return false;
-                                  }
+                               if(mbdt[i][0].mb_nama.match(regex)){
+                                 
+                                }
+                                else {
+                                  toastr.info("Mohon maaf, akun yang bisa dipakai adalah akun kas bank :)");
+                                  return false;
                                 }
                               }
 
@@ -2218,6 +2212,9 @@
                       $('.nominalbank1').val(nominalbank);
                       $('.ChequeBg').val(nominalbank);
                     }
+
+                    $('.bank').prop('disabled' , true).trigger("liszt:updated");
+                     $('.bank').prop('disabled', true).trigger("chosen:updated");
 
                       $(document).on('click','.remove-btn',function(){
 
