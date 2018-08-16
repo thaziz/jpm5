@@ -484,6 +484,8 @@ class kasKeluarController extends Controller
 							 ->where('idjenisbayar',$req->jenis_bayar)
 							 ->first();
 
+			$bank = 'KK';
+            $km =  get_id_jurnal($bank, $req->cabang);
 			$jurnal = d_jurnal::create(['jr_id'		=> $id_jurnal,
 										'jr_year'   => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y'),
 										'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
@@ -492,6 +494,7 @@ class kasKeluarController extends Controller
 										'jr_note'  	=> 'BUKTI KAS KELUAR '.strtoupper($req->keterangan_head),
 										'jr_insert' => carbon::now(),
 										'jr_update' => carbon::now(),
+										'jr_no'		=> $km,
 										]);
 
 
@@ -762,7 +765,8 @@ class kasKeluarController extends Controller
 			$jenis_bayar = DB::table('jenisbayar')
 							 ->where('idjenisbayar',$req->jenis_bayar)
 							 ->first();
-
+			$bank = 'KK';
+            $km =  get_id_jurnal($bank, $req->cabang);
 			$jurnal = d_jurnal::create(['jr_id'		=> $id_jurnal,
 										'jr_year'   => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y'),
 										'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
@@ -771,6 +775,7 @@ class kasKeluarController extends Controller
 										'jr_note'  	=> 'BUKTI KAS KELUAR '.strtoupper($req->keterangan_head),
 										'jr_insert' => carbon::now(),
 										'jr_update' => carbon::now(),
+										'jr_no'		=> $km,
 										]);
 
 
@@ -1582,7 +1587,8 @@ class kasKeluarController extends Controller
 			$jenis_bayar = DB::table('jenisbayar')
 							 ->where('idjenisbayar',$req->jenis_bayar)
 							 ->first();
-
+			$bank = 'KK';
+            $km =  get_id_jurnal($bank, $req->cabang);
 			$jurnal = d_jurnal::create(['jr_id'		=> $id_jurnal,
 										'jr_year'   => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y'),
 										'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
@@ -1591,6 +1597,7 @@ class kasKeluarController extends Controller
 										'jr_note'  	=> 'BUKTI KAS KELUAR '.strtoupper($req->keterangan_head),
 										'jr_insert' => carbon::now(),
 										'jr_update' => carbon::now(),
+										'jr_no'		=> $km,
 										]);
 
 			if ($req->jenis_bayar == 2 || $req->jenis_bayar == 6 || $req->jenis_bayar == 7  || $req->jenis_bayar == 9 || $req->jenis_bayar == 3)  {
@@ -3124,7 +3131,8 @@ class kasKeluarController extends Controller
 			$jenis_bayar = DB::table('jenisbayar')
 							 ->where('idjenisbayar',$req->jenis_bayar)
 							 ->first();
-
+			$bank = 'KK';
+            $km =  get_id_jurnal($bank, $req->cabang);
 			$jurnal = d_jurnal::create(['jr_id'		=> $id_jurnal,
 										'jr_year'   => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y'),
 										'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
@@ -3133,6 +3141,7 @@ class kasKeluarController extends Controller
 										'jr_note'  	=> 'BUKTI KAS KELUAR '.strtoupper($req->keterangan_head),
 										'jr_insert' => carbon::now(),
 										'jr_update' => carbon::now(),
+										'jr_no'		=> $km,
 										]);
 
 			if ($req->jenis_bayar == 2 || $req->jenis_bayar == 6 || $req->jenis_bayar == 7  || $req->jenis_bayar == 9 || $req->jenis_bayar == 3)  {

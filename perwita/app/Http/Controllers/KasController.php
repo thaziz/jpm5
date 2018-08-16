@@ -731,6 +731,9 @@ class KasController extends Controller
 			$jenis_bayar = DB::table('jenisbayar')
 							 ->where('idjenisbayar',10)
 							 ->first();
+			$bank = 'KK'.$request->akun_bank;
+
+            $km =  get_id_jurnal($bank, $request->cb_cabang);
 
 			$jurnal_save = d_jurnal::create(['jr_id'		=> $id_jurnal,
 										'jr_year'   => carbon::parse(str_replace('/', '-', $request->tN))->format('Y'),
@@ -740,6 +743,8 @@ class KasController extends Controller
 										'jr_note'  	=> 'BIAYA PENERUS KAS '.strtoupper($request->note),
 										'jr_insert' => carbon::now(),
 										'jr_update' => carbon::now(),
+										'jr_no'		=> $km,
+
 										]);
 
 			//IKI TOTAL KABEH HARGANE
@@ -1208,6 +1213,9 @@ class KasController extends Controller
 							 ->where('idjenisbayar',10)
 							 ->first();
 
+
+			$bank = 'KK'.$request->akun_bank;
+            $km =  get_id_jurnal($bank, $request->cb_cabang);
 			$jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 										'jr_year'   => carbon::parse(str_replace('/', '-', $request->tN))->format('Y'),
 										'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
@@ -1216,6 +1224,7 @@ class KasController extends Controller
 										'jr_note'  	=> 'BIAYA PENERUS KAS '.strtoupper($request->note),
 										'jr_insert' => carbon::now(),
 										'jr_update' => carbon::now(),
+										'jr_no'		=> $km,
 										]);
 
 			//IKI TOTAL KABEH HARGANE
