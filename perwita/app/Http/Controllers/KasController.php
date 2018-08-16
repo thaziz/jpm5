@@ -638,7 +638,7 @@ class KasController extends Controller
 						'bpkd_tujuan'			=> $request->tujuan[$i],
 						'bpkd_status_resi'		=> $request->status[$i],
 						'bpkd_tarif'			=> $request->tarif[$i],
-						'bpkd_tarif_penerus'	=> round($request->penerus[$i],2),
+						'bpkd_tarif_penerus'	=> $request->penerus[$i],
 						'created_at'			=> Carbon::now(),
 						'bpk_comp'				=> $request->cabang,
 						'bpk_jenis_bbm'			=> $cari_persen->jenis_bbm,
@@ -1115,7 +1115,7 @@ class KasController extends Controller
 					'bpkd_tujuan'			=> $request->tujuan[$i],
 					'bpkd_status_resi'		=> $request->status[$i],
 					'bpkd_tarif'			=> $request->tarif[$i],
-					'bpkd_tarif_penerus'	=> round($request->penerus[$i],2),
+					'bpkd_tarif_penerus'	=> $request->penerus[$i],
 					'created_at'			=> Carbon::now(),
 					'bpk_comp'				=> $request->cabang,
 					'bpk_jenis_bbm'			=> $cari_persen->jenis_bbm,
@@ -1139,7 +1139,7 @@ class KasController extends Controller
 					'bpkd_tujuan'			=> $request->tujuan[$i],
 					'bpkd_status_resi'		=> $request->status[$i],
 					'bpkd_tarif'			=> $request->tarif[$i],
-					'bpkd_tarif_penerus'	=> round($request->penerus[$i],2),
+					'bpkd_tarif_penerus'	=> $request->penerus[$i],
 					'created_at'			=> Carbon::now(),
 					'bpk_comp'				=> $request->cabang,
 					'bpkd_pembiayaan'		=> $request->tarif[$i]
@@ -1197,7 +1197,7 @@ class KasController extends Controller
 				 $harga_array[$i] = ${'total'.$unik_asal[$i]};
 			}
 			for ($i=0; $i < count($harga_array); $i++) { 
-				 $jurnal[$i]['harga'] = round($harga_array[$i],2);
+				 $jurnal[$i]['harga'] = $harga_array[$i];
 				 $jurnal[$i]['asal'] = $unik_asal[$i];
 
 			}
