@@ -126,7 +126,7 @@
                         <tr>
                           <td> Cabang Bank </td>
                           <td> 
-                            <select class="form-control chosen-select">
+                            <select class="form-control chosen-select" name="cabangbawah">
                               @foreach($data['cabang'] as $cabang)
                                 <option value="{{$cabang->kode}}"> {{$cabang->nama}} </option>
                                 @endforeach

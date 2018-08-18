@@ -527,6 +527,8 @@ Route::post('pelunasanhutangbank/lihatjurnal', 'PurchaseController@lihatjurnalpe
 Route::get('queryanalisa', 'Queryanalisa@view');
 
 
+Route::get('bankmasuk/bankmasuk' ,'BankMasukController@bankmasuk');
+
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');
 Route::get('bankkaslain/detailbankkaslain', 'PurchaseController@detailbankkaslain');

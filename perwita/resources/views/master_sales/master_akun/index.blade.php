@@ -111,6 +111,7 @@
                             </tbody>
                         </table>
                     </div>
+
                    {{--  <div class="col-sm-6" style="margin-bottom: 250px;">
                         <h3>AKUN FAKTUR ITEM</h3>
                         <table class="table">
@@ -119,8 +120,8 @@
                                 <td width="130">Nama Akun</td>
                                 <td class="item_td">
                                     <select  name="patty_cash" multiple="" class="item chosen-select-width form-control">
-                                        @foreach($akun as $i)
-                                            <option value="{{$i->id_akun}}">{{$i->id_akun}} - {{$i->nama_akun}}</option>
+                                        @foreach($item as $i)
+                                            <option value="{{$i->kode_item}}">{{$i->kode_item}} - {{$i->nama_masteritem}}</option>
                                         @endforeach
                                     </select>
                                 </td>

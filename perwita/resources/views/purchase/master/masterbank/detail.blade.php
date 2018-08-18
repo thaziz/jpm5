@@ -63,6 +63,10 @@
                       <table class="table" style="width:100%">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
                         <tr>
+                            <td> Pengajuan Cabang </td>
+                            <td> <input type="text" class="form-control" value="{{$banks->mb_cabangbank}} - {{$banks->nama}}"disabled></td>
+                        </tr>
+                        <tr>
                           <td style='width:100px'> Kode Bank </td>
                           <td> {{$banks->mb_id}} </td>
                         </tr>
@@ -77,10 +81,10 @@
                             </div>
                             <div class="col-sm-8">
                             
-                               <select class="form-control input-sm chosen-select-width bank" required="" disabled="">
+                               <select class="form-control input-sm chosen-select-width bank" required="" disabled=""> 
                           
-                                @foreach($data['banks'] as $bank)
-                                 <option value="{{$bank->id_akun}},{{$bank->nama_akun}}" @if($banks->mb_kode == $bank->id_akun) selected="" @endif> {{$bank->nama_akun}} </option>  
+                                @foreach($data['akun'] as $bank)
+                                 <option value="{{$bank->id_akun}}" @if($banks->mb_kode == $bank->id_akun) selected="" @endif> {{$bank->nama_akun}} </option>  
                                 @endforeach
                               </select>
                             </div>
@@ -416,7 +420,7 @@
           url : post_url2,
           dataType : 'json',
           success : function (response){
-           console.log(response);
+           
              if(response == 'sukses') {
                 alertSuccess(); 
                window.location.href = baseUrl + "/masterbank/masterbank";
@@ -521,6 +525,7 @@
     arrdatafpg = [];
      var tableBank = $('#tbl-cek').DataTable();
      trdatabaru = $('tr.databaru').length;
+
     // alert(trdatabaru);
      tempdfpg = 0;
      if(trdatabaru == 0){
@@ -543,7 +548,7 @@
 
         //alert(tempdfpg);
         if(tempdfpg == 0){
-        //  var remove = tableBank.rows('.datadatabase').remove().draw(false);
+         var remove = tableBank.rows('.datadatabase').remove().draw(false);
         }
         else {
           toastr.info('Tidak bisa menghapus, DATA SERI sudah digunakan untuk transaksi FPG :)');

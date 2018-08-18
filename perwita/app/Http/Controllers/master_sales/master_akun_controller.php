@@ -29,10 +29,13 @@ class master_akun_controller extends Controller
       $cabang = DB::table('cabang')
                   ->get();
 
+      $item = DB::table('masteritem')
+              ->get();
+
       $akun = DB::table('d_akun')
                 ->get();
       // $akun  = array_merge($akun1,$akun2);
-    	return view('master_sales.master_akun.index',compact('akun','akun_item','akun_patty','cabang'));
+    	return view('master_sales.master_akun.index',compact('akun','akun_item','akun_patty','cabang','item'));
     }
     public function datatable_akun(request $req)
     {
