@@ -893,12 +893,6 @@ class ikhtisarController extends Controller
 						  ->where("id_akun",'like',substr($bpk[$i][$a]->akun,0,4).'%')
 						  ->where('kode_cabang',$bpk[$i][$a]->cabang)
 						  ->first();
-					try{
-						$bpk[$i][$a]->akun = $temp->id_akun;
-					}catch(Exception $er){
-						dd($bpk[$i][$a]);
-					}
-
 				}
 			}
 
