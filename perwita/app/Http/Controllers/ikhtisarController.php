@@ -860,7 +860,6 @@ class ikhtisarController extends Controller
 					->where('ikd_ik_id',$id)
 					->orderBy('ikd_id','ikd_ik_dt','ASC')
 					->get();
-			dd($bpks);
 			$bkks = DB::table('ikhtisar_kas_detail')
 					->join('bukti_kas_keluar','ikd_ref','=','bkk_nota')
 					->where('ikd_ik_id',$id)
@@ -877,9 +876,7 @@ class ikhtisarController extends Controller
 						 ->where('bkk_nota',$bkks[$i]->bkk_nota)
 						 ->get();
 
-				if ($bkk[$i] == null) {
-					dd($bkks[$i]->bpk_nota);
-				}
+
 			}
 			$bpk = [];
 			for ($i=0; $i < count($bpks); $i++) { 
@@ -890,9 +887,7 @@ class ikhtisarController extends Controller
 						 ->select('bpk_keterangan as keterangan','bpkd_tarif_penerus as total','bpkd_tanggal as tanggal','bpkd_tanggal as tanggal','bpkd_kode_cabang_awal as cabang','bpk_acc_biaya as akun','bpk_nota as nota')
 						 ->where('bpk_nota',$bpks[$i]->bpk_nota)
 						 ->get();
-				if ($bpk[$i] == null) {
-					dd($bpks[$i]->bpk_nota);
-				}
+	
 				for ($a=0; $a < count($bpk[$i]); $a++) { 
 					$temp = DB::table('d_akun')
 						  ->where("id_akun",'like',substr($bpk[$i][$a]->akun,0,4).'%')
