@@ -802,7 +802,12 @@ class ikhtisarController extends Controller
 			$cari = DB::table('ikhtisar_kas_detail')
 					  ->where('ikd_ik_id',$id)
 					  ->get();
-			dd($cari);
+			$head = DB::table('ikhtisar_kas')
+						 ->where('ik_id',(int)$id)
+						 ->first();
+			if ($head->ik_pelunasan != $head->ik_total) {
+				return response()->json(['status'=>1,'pesan'=>'Data Sudah Ditarik FPG']);
+			}
 			for ($i=0; $i < count($cari); $i++) { 
 
 				$bkk = DB::table('bukti_kas_keluar')

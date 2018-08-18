@@ -148,7 +148,7 @@ class kasKeluarController extends Controller
                             $a = '';
                             if($data->bkk_status == 'RELEASED' or Auth::user()->punyaAkses('Bukti Kas Keluar','ubah')){
                                 if(cek_periode(carbon::parse($data->bkk_tgl)->format('m'),carbon::parse($data->bkk_tgl)->format('Y') ) != 0){
-                                  $a = '<a title="Edit" class="btn btn-xs btn-success" href='.url('buktikaskeluar/edit').'/'.$data->bkk_id.'>
+                                  $a = '<a title="Edit" class="btn btn-xs btn-warning" href='.url('buktikaskeluar/edit').'/'.$data->bkk_id.'>
                               			<i class="fa fa-arrow-right" aria-hidden="true"></i></a> ';
                                 }
                             }else{
@@ -158,14 +158,14 @@ class kasKeluarController extends Controller
                             $c = '';
                             if($data->bkk_status == 'RELEASED' or Auth::user()->punyaAkses('Bukti Kas Keluar','hapus')){
                                 if(cek_periode(carbon::parse($data->bkk_tgl)->format('m'),carbon::parse($data->bkk_tgl)->format('Y') ) != 0){
-                                  $c = '<a title="Hapus" class="btn btn-xs btn-success" onclick="hapus(\''.$data->bkk_id.'\')">
+                                  $c = '<a title="Hapus" class="btn btn-xs btn-danger" onclick="hapus(\''.$data->bkk_id.'\')">
 		                               <i class="fa fa-trash" aria-hidden="true"></i>
 		                               </a>';
                                 }
                             }else{
                               $c = '';
                             }
-                            return $a . $c  ;
+                            return '<div class="btn-group">' .$a . $c .'</div>' ;
                                    
                         })
                     
@@ -177,6 +177,13 @@ class kasKeluarController extends Controller
                             if ($data->bkk_comp == $kota[$i]->kode) {
                                 return $kota[$i]->nama;
                             }
+                          }
+                        })
+                        ->addColumn('status', function ($data) {
+                          if ($data->bkk_status == 'APPROVED') {
+                            return '<label class="label label-success">APPROVED</label>';
+                          }else{
+                            return '<label class="label label-warning">RELEASED</label>';
                           }
                         })
                         ->addColumn('tagihan', function ($data) {
@@ -3406,7 +3413,9 @@ class kasKeluarController extends Controller
 						   ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
 						   ->where('bkk_id',$req->id)
 						   ->get();
-
+			if ($cari_nota[0]->bkk_status == 'APPROVED') {
+				return response()->json(['status'=>1,'pesan'=>'Data Sudah Ditarik Ikhtisar']);
+			}
 			for ($i=0; $i < count($cari_nota); $i++) { 		
 				try{
 					if ($cari_nota[$i]->bkk_jenisbayar == 2 or $cari_nota[$i]->bkk_jenisbayar == 6 or $cari_nota[$i]->bkk_jenisbayar == 7 or $cari_nota[$i]->bkk_jenisbayar == 9) {
@@ -3456,7 +3465,7 @@ class kasKeluarController extends Controller
 			$delete_bkk   = DB::table('bukti_kas_keluar')
 							   ->where('bkk_nota',$cari_nota[0]->bkk_nota)
 							   ->delete();
-			return response()->json(['status'=>1]);
+			return response()->json(['status'=>2,'pesan'=>'Berhasil']);
 
 			
 		});

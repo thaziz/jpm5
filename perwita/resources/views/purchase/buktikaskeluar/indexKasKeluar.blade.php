@@ -195,7 +195,19 @@ function(){
       data:{id},
       type:'get',
       success:function(data){
-
+        if (data.status == '1') {
+          swal({
+          title: "Error!",
+                  type: 'warning',
+                  text: data.pesan,
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                    var tableDetail = $('.tbl-penerimabarang').DataTable();
+                    tableDetail.ajax.reload();
+                    return false;
+          });
+        }else if (data.status == '2'){
           swal({
           title: "Berhasil!",
                   type: 'success',
@@ -203,8 +215,10 @@ function(){
                   timer: 2000,
                   showConfirmButton: true
                   },function(){
-                     location.reload();
+                     var tableDetail = $('.tbl-penerimabarang').DataTable();
+                    tableDetail.ajax.reload();
           });
+        }
       },
       error:function(data){
 

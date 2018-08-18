@@ -112,6 +112,13 @@ class KasController extends Controller
                             }
                           }
                         })
+                        ->addColumn('status', function ($data) {
+                          if ($data->bpk_status == 'Approved') {
+                            return '<label class="label label-success">APPROVED</label>';
+                          }else{
+                            return '<label class="label label-warning">RELEASED</label>';
+                          }
+                        })
                         ->addColumn('tagihan', function ($data) {
                           return number_format(round($data->bpk_tarif_penerus,0),2,',','.'  ); 
                         })
@@ -1399,6 +1406,9 @@ class KasController extends Controller
 					->where('bpk_id',$id)
 					->first();
 
+		if ($cari->bpk_status == 'Approved') {
+			return response()->json(['status'=>1,'pesan'=>'Data Sudah Ditarik Ikhtisar']);
+		}
 		$delete_jurnal = DB::table('d_jurnal')
 							   ->where('jr_ref',$cari->bpk_nota)
 							   ->delete();
@@ -1409,6 +1419,7 @@ class KasController extends Controller
 		$delete1 = DB::table('biaya_penerus_kas_detail')
 					->where('bpkd_bpk_id',$id)
 					->delete();
+		return response()->json(['status'=>2,'pesan'=>'Berhasil']);
 	}
 	public function buktikas(request $request){
 		// dd($request);
