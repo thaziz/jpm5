@@ -902,6 +902,7 @@ class ikhtisarController extends Controller
 				}
 			}
 
+			dd($bpk);
 
 			$data_dt = array_merge($bkk,$bpk);	
 			$terbilang = $this->terbilang($data->ik_total,$style=3);
