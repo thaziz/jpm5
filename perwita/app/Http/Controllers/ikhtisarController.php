@@ -860,7 +860,7 @@ class ikhtisarController extends Controller
 					->where('ikd_ik_id',$id)
 					->orderBy('ikd_id','ikd_ik_dt','ASC')
 					->get();
-
+			dd($bpks);
 			$bkks = DB::table('ikhtisar_kas_detail')
 					->join('bukti_kas_keluar','ikd_ref','=','bkk_nota')
 					->where('ikd_ik_id',$id)
@@ -876,6 +876,10 @@ class ikhtisarController extends Controller
 						 ->select('bkkd_keterangan as keterangan','bkkd_total as total','bkk_tgl as tanggal','bkkd_akun as akun','bkk_nota as nota')
 						 ->where('bkk_nota',$bkks[$i]->bkk_nota)
 						 ->get();
+
+				if ($bkk[$i] == null) {
+					dd($bkks[$i]->bpk_nota);
+				}
 			}
 			$bpk = [];
 			for ($i=0; $i < count($bpks); $i++) { 
