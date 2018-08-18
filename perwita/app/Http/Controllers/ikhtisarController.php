@@ -866,6 +866,7 @@ class ikhtisarController extends Controller
 					->orderBy('ikd_id','ikd_ik_dt','ASC')
 					->get();
 
+			$bkk = [];
 
 			for ($i=0; $i < count($bkks); $i++) { 
 
@@ -875,7 +876,7 @@ class ikhtisarController extends Controller
 						 ->where('bkk_nota',$bkks[$i]->bkk_nota)
 						 ->get();
 			}
-
+			$bpk = [];
 			for ($i=0; $i < count($bpks); $i++) { 
 				
 
