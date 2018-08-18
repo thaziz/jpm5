@@ -19,6 +19,7 @@ use Auth;
 use App\d_jurnal;
 use App\d_jurnal_dt;
 // use Datatables;
+use Exception;
 use Yajra\Datatables\Datatables;
 
 
@@ -892,8 +893,11 @@ class ikhtisarController extends Controller
 						  ->where("id_akun",'like',substr($bpk[$i][$a]->akun,0,4).'%')
 						  ->where('kode_cabang',$bpk[$i][$a]->cabang)
 						  ->first();
-
-					$bpk[$i][$a]->akun = $temp->id_akun;
+					try{
+						$bpk[$i][$a]->akun = $temp->id_akun;
+					}catch(Exception $er){
+						dd($bpk[$i][$a]);
+					}
 
 				}
 			}
