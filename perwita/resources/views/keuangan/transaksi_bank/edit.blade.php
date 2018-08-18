@@ -53,20 +53,18 @@
 <div class="row">
   <form id="akun_form">
     <input type="hidden" readonly value="{{ csrf_token() }}" name="_token">
+    <input type="hidden" readonly value="{{ $data_jurnal->jr_id }}" name="id_transaksi">
     
   <div class="col-md-7" style="border: 0px solid #ddd; border-radius: 5px; padding: 10px;">
     <table border="0" id="form-table" class="col-md-12">
 
       <tr>
-        <td width="20%" class="text-left">Jenis Transaksi <input type="hidden" name="type_transaksi" value="bank" readonly /> </td>
+        <td width="20%" class="text-left">Jenis Transaksi <input type="hidden" name="type_transaksi" value="kas" readonly /> </td>
         <td colspan="2">
           <select name="jenis_transaksi" class="select_validate form-control list-should-disabled" id="jenis_transaksi" style="width: 40%; display: inline-block;">
-            <option value="1">Bank Masuk</option>
-            <option value="2">Bank Keluar</option>
+            <option value="1" {{ ( substr($data_jurnal->jr_no, 0, 2) == 'BM' ) ? 'selected' : '' }}>Bank Masuk</option>
+            <option value="2" {{ ( substr($data_jurnal->jr_no, 0, 2) == 'BK' ) ? 'selected' : '' }}>Bank Keluar</option>
           </select> &nbsp;&nbsp;&nbsp;&nbsp;
-
-          <i class="fa fa-search" style="display: inline-block; cursor: pointer;" id="list-show"></i>&nbsp;&nbsp;&nbsp;
-          <i class="fa fa-times text-danger" style="display: none; cursor: pointer;" id="list-reset"></i>
         </td>
       </tr>
 
@@ -82,14 +80,14 @@
         <td colspan="2">
           <select name="cabang" class="select_validate form-control chosen-select list-should-disabled" id="cabang">
             @foreach($cabangs as $cab)
-              <option value="{{$cab->kode}}">{{ $cab->kode }} - {{$cab->nama}}</option>
+              <option value="{{$cab->kode}}">{{$cab->kode}} - {{$cab->nama}}</option>
             @endforeach
           </select>
         </td>
       </tr>
 
       <tr>
-        <td width="10%" class="text-left">Pilih Akun Bank</td>
+        <td width="10%" class="text-left">Akun COA</td>
         <td colspan="2">
           <select class="select_validate form-control chosen-select akun list-should-disabled" id="akun_transaksi">
             <option value="---"> -- Pilih Akun Coa</option>
@@ -107,14 +105,14 @@
       <tr>
         <td width="10%" class="text-left">Nama Transaksi</td>
         <td width="35%" colspan="2">
-          <input type="text" class="form_validate form-control list-should-disabled" name="jr_detail" placeholder="Masukkan Nama Transaksi" id="jr_detail">
+          <input type="text" class="form_validate form-control list-should-disabled" name="jr_detail" placeholder="Masukkan Nama Transaksi" id="jr_detail" value="{{ $data_jurnal->jr_detail }}">
         </td>
       </tr>
 
       <tr>
-        <td width="10%" class="text-left">Nama Transaksi</td>
+        <td width="10%" class="text-left">Nominal</td>
         <td width="35%" colspan="2">
-          <input type="text" class="form_validate form-control list-should-disabled currency" name="jr_nominal" placeholder="Masukkan Nama Transaksi" id="nominal">
+          <input type="text" class="form-control list-should-disabled currency" id="nominal" name="jr_nominal" placeholder="Masukkan Nama Transaksi" value="{{ $data_detail[0]->jrdt_value }}">
         </td>
       </tr>
 
@@ -173,10 +171,10 @@
               100311001 - KAS BESAR JPM SURABAYA</td>
             <td class="text-right currency">
               <input type="hidden" name="akun[]" class="akunName" readonly>
-              <input class="form-control currency debet list-should-disabled" value="0" data-id="1" name="debet[]" readonly id="debet_first">
+              <input class="form-control currency debet first list-should-disabled" value="0" data-id="1" name="debet[]" id="debet_first" readonly>
             </td>
             <td class="text-right currency">
-              <input class="form-control currency kredit list-should-disabled" value="0" data-id="1" name="kredit[]" readonly id="kredit_first">
+              <input class="form-control currency kredit first list-should-disabled" value="0" data-id="1" name="kredit[]" readonly id="kredit_first">
             </td>
           </tr>
         </tbody>
@@ -205,6 +203,10 @@
   $(document).ready(function(){
 
     akun = {!! $akun_real !!}; var id = 1; var list = '';
+    akun_choice = '{{ $data_detail[0]->jrdt_acc }}';
+    detail = {!! $dd !!};
+
+    // alert(detail[0].jrdt_value);
 
     $(".chosen-select.akun").html(initiate_akun($("#cabang").val()));
     $('.chosen-select.akun').trigger("chosen:updated");
@@ -222,10 +224,14 @@
           allowMinus: false
       });
 
-      $(".chosen-select").chosen()
+      $(".chosen-select").chosen();
     }
 
     $(this).maskFunc();
+
+    $('#debet_first').val('{{ ( substr($data_jurnal->jr_no, 0, 2) == 'BM' ) ? $data_detail[0]->jrdt_value : 0 }}');
+    $('#kredit_first').val('{{ ( substr($data_jurnal->jr_no, 0, 2) == 'BK' ) ? $data_detail[0]->jrdt_value : 0 }}');
+    initiate_coa_lawan();
 
     $("#nominal").keyup(function(evt){
       evt.preventDefault();
@@ -254,26 +260,21 @@
         return;
       }
 
-      if($('#akun_transaksi').val() == null){
-        toastr.warning('Inputan Akun Bank Tidak Boleh Kosong');
-        btn.removeAttr("disabled");
-        return;
-      }
-
       if(validate_form()){
-        $.ajax(baseUrl+"/keuangan/transaksi_bank/save_data",{
+        $.ajax(baseUrl+"/keuangan/transaksi_bank/update",{
           type: "post",
           timeout: 15000,
           data: $("#akun_form").serialize(),
           dataType: 'json',
           success: function(response){
             console.log(response);
+            form_reset();
             if(response.status == "berhasil"){
               toastr.success('Data Transaksi Bank Berhasil Disimpan');
               btn.removeAttr("disabled");
               btn.text("Simpan");
 
-              form_reset();
+              // form_reset();
             }else if(response.status == "exist"){
               toastr.error('Kode Master Akun Sudah Ada Dengan Nama '+response.content+'. Silahkan Membuat Kode Akun Lagi.');
               btn.removeAttr("disabled");
@@ -347,14 +348,14 @@
 
       if(context.val() == 1){
         val =  $("#coa_1 input.kredit").val().replace(/\./g, '').split(',')[0];
-        $("#coa_1 input.debet").removeAttr('readonly');
-        $("#coa_1 input.kredit").attr('readonly', 'readonly');
+        // $("#coa_1 input.debet").removeAttr('readonly');
+        // $("#coa_1 input.kredit").attr('readonly', 'readonly');
         $("#coa_1 input.kredit").val(0);
         $("#coa_1 input.debet").val(val);
       }else{
         val =  $("#coa_1 input.debet").val().replace(/\./g, '').split(',')[0];
-        $("#coa_1 input.kredit").removeAttr('readonly');
-        $("#coa_1 input.debet").attr('readonly', 'readonly');
+        // $("#coa_1 input.kredit").removeAttr('readonly');
+        // $("#coa_1 input.debet").attr('readonly', 'readonly');
         $("#coa_1 input.debet").val(0);
         $("#coa_1 input.kredit").val(val);
       }
@@ -401,7 +402,7 @@
       if(list != $("#cabang").val())
         $("#overlay .modal-body").html('<center class="text-muted">Sedang Memuat ...</center>');
 
-      $.ajax(baseUrl+"/keuangan/transaksi_bank/list_transaksi?cab="+$("#cabang").val(), {
+      $.ajax(baseUrl+"/keuangan/jurnal_umum/list_transaksi?cab="+$("#cabang").val(), {
          timeout: 15000,
          dataType: "html",
          success: function (data) {
@@ -429,10 +430,45 @@
       $('.chosen-select#cabang').trigger("chosen:updated");
       $("#info-referensi").fadeOut(200);
       form_reset();
-
-      $('#coa_1 .name').text($("#akun_transaksi option:selected").text());
-      $('#coa_1 .akunName').val($("#akun_transaksi").val());
     })
+
+    function initiate_coa_lawan(){
+      // var html = '';
+
+      $.each(detail, function(i, n){
+        // console.log(n);
+        
+        if(i > 0){
+
+            debet = kredit = 0;
+            if(n.jrdt_statusdk == "D")
+              debet = n.jrdt_value.replace('-', '');
+            else
+              kredit = n.jrdt_value.replace('-', '');
+
+            var html = '<tr id="coa_'+(id + 1)+'" data-id="'+(id+1)+'" class="akun_lawan_wrap">'+
+                    '<td width="5%" class="text-center text-danger" style="cursor: pointer;">'+
+                      '<i class="fa fa-eraser delete_akun" data-id="'+(id+1)+'"></i>'+
+                    '</td>'+
+                    '<td class="name">'+
+                        '<input type="hidden" name="akun[]" value="'+n.jrdt_acc+'" readonly>'+n.jrdt_acc+' - '+n.nama_akun+'</td>'+
+                    '<td class="text-right currency">'+
+                      '<input class="form-control currency debet" name="debet[]" value="'+debet+'" data-id="'+(id+1)+'">'+
+                    '</td>'+
+                    '<td class="text-right currency">'+
+                      '<input class="form-control currency kredit" name="kredit[]" value="'+kredit+'" data-id="'+(id+1)+'">'+
+                    '</td>'+
+                  '</tr>';
+
+
+            $("#coa_detail").append(html);
+            $(this).maskFunc();
+            id++;
+        }
+      })
+
+      initiate_total();
+    }
 
     function generate_coa_transaksi(){
       $('#coa_1 .name').text($("#akun_transaksi option:selected").text());
@@ -485,6 +521,7 @@
       $(".kredit").each(function(idx){
        var num = $(this).val().replace(/\./g, '').split(',')[0];
        total += parseInt(num);
+       console.log(num);
       })
 
       $("input.total_kredit").val(total);
@@ -493,7 +530,8 @@
     function initiate_akun(cabang){
       html = "";
       $.each($.grep(akun, function(o){ return o.kode_cabang === cabang }), function(i, n){
-        html = html + '<option value="'+n.id_akun+'">'+n.id_akun+' - '+n.nama_akun+'</option>';
+        var data = (n.id_akun == akun_choice) ? 'selected' : '';
+        html = html + '<option value="'+n.id_akun+'" '+data+'>'+n.id_akun+' - '+n.nama_akun+'</option>';
       })
 
       return html;
@@ -513,7 +551,7 @@
 
       $(".total_debet").val(0); 
       $(".total_kredit").val(0);
-
+      
       $('.akunName').val($('#akun_transaksi').val());
 
       // $('#kode_cabang').trigger("chosen:updated");

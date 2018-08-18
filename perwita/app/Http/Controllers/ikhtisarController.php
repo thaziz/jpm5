@@ -604,6 +604,7 @@ class ikhtisarController extends Controller
 									->first();
 
 							if ($bkk != null) {
+
 								$save_ikhtisar = DB::table('ikhtisar_kas_detail')
 								   ->insert([
 								   		'ikd_id'   		=> $ikd,
@@ -800,7 +801,7 @@ class ikhtisarController extends Controller
 			$cari = DB::table('ikhtisar_kas_detail')
 					  ->where('ikd_ik_id',$id)
 					  ->get();
-		
+			dd($cari);
 			for ($i=0; $i < count($cari); $i++) { 
 
 				$bkk = DB::table('bukti_kas_keluar')
@@ -853,24 +854,50 @@ class ikhtisarController extends Controller
 					->where('ikd_ik_id',$id)
 					->get();
 
-			$bkk = DB::table('bukti_kas_keluar')
-					->join('ikhtisar_kas_detail','ikd_ref','=','bkk_nota')
-					->join('patty_cash','pc_no_trans','=','bkk_nota')
+			$bpk = DB::table('ikhtisar_kas_detail')
+					->join('biaya_penerus_kas','ikd_ref','=','bpk_nota')
 					->where('ikd_ik_id',$id)
-					->where('pc_debet',0)
-					->orderBy('bkk_tgl','DESC')
+					->orderBy('ikd_id','ikd_ik_dt','ASC')
 					->get();
 
-			$bpk = DB::table('biaya_penerus_kas')
-					->join('ikhtisar_kas_detail','ikd_ref','=','bpk_nota')
-					->join('patty_cash','pc_no_trans','=','bpk_nota')
+			$bkk = DB::table('ikhtisar_kas_detail')
+					->join('bukti_kas_keluar','ikd_ref','=','bkk_nota')
 					->where('ikd_ik_id',$id)
-					->where('pc_debet',0)
-					->orderBy('bpk_tanggal','DESC')
+					->orderBy('ikd_id','ikd_ik_dt','ASC')
 					->get();
+
+			for ($i=0; $i < count($bkk); $i++) { 
+
+				$bkk[$i] = DB::table('bukti_kas_keluar')
+						 ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
+						 ->select('bkkd_keterangan as keterangan','bkkd_total as total','bkk_tgl as tanggal','bkkd_akun as akun')
+						 ->where('bkk_nota',$bkk[$i]->bkk_nota)
+						 ->get();
+			}
+
+			for ($i=0; $i < count($bpk); $i++) { 
+				
+
+				$bpk[$i] = DB::table('biaya_penerus_kas')
+						 ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
+						 ->select('bpk_keterangan as keterangan','bpkd_tarif_penerus as total','bpkd_tanggal as tanggal','bpkd_ as tanggal','bpkd_kode_cabang_awal as cabang')
+						 ->where('bpk_nota',$bpk[$i]->bpk_nota)
+						 ->get();
+
+				for ($a=0; $a < count($bpk[$i]); $a++) { 
+					$temp = DB::table('d_akun')
+						  ->where("id_akun",'like',substr($bpk[$i][$a]->bpk_acc_biaya,0,4).'%')
+						  ->where('kode_cabang',$bpk[$i][$a]->cabang)
+						  ->first();
+
+					$bpk[$i][$a]->akun = $temp->id_akun;
+
+				}
+			}
+
+
 
 			$data_dt = array_merge($bkk,$bpk);	
-
 			$terbilang = $this->terbilang($data->ik_total,$style=3);
 
 			return view('purchase.ikhtisar_kas.outputIkhtisar',compact('terbilang','data','start','end','id','data_dt','nomor'));
