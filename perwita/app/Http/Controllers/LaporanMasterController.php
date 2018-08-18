@@ -2100,35 +2100,18 @@ class LaporanMasterController extends Controller
 			$cabang = '';
 		}
 
-		$sql1 = "SELECT * FROM bukti_kas_keluar JOIN jenisbayar on idjenisbayar = bkk_jenisbayar join cabang on kode = bkk_comp where bkk_nota != '0' $cabang $jenisbayar";
+		$sql1 = "SELECT * FROM invoice where i_nomor != '0' and i_tanggal >= '$awal' and i_tanggal <= '$akir' $customer";
 
 
-		$sql2 = "SELECT * FROM bukti_kas_keluar JOIN jenisbayar on idjenisbayar = bkk_jenisbayar join cabang on kode = bkk_comp where bkk_nota != '0' $cabang $jenisbayar";
+		$sql2 = "SELECT i_kode_customer, customer.nama as cus FROM invoice 
+				 join customer on customer.kode = invoice.i_kode_customer 
+				 where i_nomor != '0' $customer $cabang
+				 group by i_kode_customer,customer.nama";
 
-		$data = DB::table('invoice')
-		if ($customer != '') {
-			# code...
-		}
-		if ($customer != '') {
-			$data = DB::table('invoice')
-				->where('i_tanggal','>=',$awal)
-				->where('i_tanggal','<=',$akir)
-				->where('i_kode_customer','=',$customer)
-				->get();
-			$cust = DB::table('invoice')
-						->select('i_kode_customer','customer.nama as cus')
-						->join('customer','customer.kode','=','invoice.i_kode_customer')
-						->where('i_kode_customer','=',$customer)
-						->where('i_kode_cabang','=',$cabang)
-						->groupBy('i_kode_customer','customer.nama')
-						->get();
-		}else{
-			$data = DB::table('invoice')
-				->where('i_tanggal','>=',$awal)
-				->where('i_tanggal','<=',$akir)
-				->get();
-			$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->groupBy('i_kode_customer','customer.nama')->get();
-		}
+		$data = DB::select($sql1);
+		$cust = DB::select($sql2);
+
+
 
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
