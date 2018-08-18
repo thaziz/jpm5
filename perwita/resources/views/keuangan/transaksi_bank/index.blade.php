@@ -165,6 +165,10 @@
                                     <td class="text-center">{{ $dataAkun->jr_detail }}</td>
                                     <td class="text-center">{{ $dataAkun->jr_note }}</td>
                                     <td class="text-center">
+                                      <button class="btn btn-xs btn-primary edit_transaksi" data-toggle="tooltip" data-placement="left" title="Edit Transaksi" data-id="{{ $dataAkun->jr_id }}"><i class="fa fa-pencil-square fa-fw"></i></button>
+
+                                      <button class="btn btn-xs btn-primary delete" data-toggle="tooltip" data-placement="left" title="Hapus Transaksi" data-id="{{ $dataAkun->jr_id }}"><i class="fa fa-eraser fa-fw"></i></button>
+
                                       <button class="btn btn-xs btn-success lihat_jurnal" data-toggle="tooltip" data-placement="left" title="Lihat Jurnal" data-id="{{ $dataAkun->jr_id }}"><i class="fa fa-balance-scale"></i></button>
                                     </td>
                                     {{-- <th style="padding:8px 0px" class="text-center">Saldo</th> --}}
@@ -205,7 +209,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Form Tambah Data Transaksi Bank</h4>
+        <h4 class="modal-title">Tambah Transaksi Bank</h4>
         <input type="hidden" class="parrent"/>
       </div>
       <div class="modal-body">
@@ -298,6 +302,24 @@
             <button class="btn btn-primary btn-sm pull-right" id="submit_setting">Submit</button>
           </div>
         </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+  <!-- modal -->
+
+  <!-- modal -->
+<div id="modal_edit_transaksi" class="modal">
+  <div class="modal-dialog" style="width: 60%; min-height: 605px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Edit Transaksi Bank</h4>
+        <input type="hidden" class="id" id="id" readonly />
+      </div>
+      <div class="modal-body">
+        <center class="text-muted">Menyiapkan Form</center>
       </div>
 
     </div>
@@ -453,6 +475,64 @@
     $("#overlay").click(function(){
       $("#overlay").fadeOut(100);
     });
+
+    $(".edit_transaksi").click(function(evt){
+      evt.preventDefault();
+
+      $('#id').val($(this).data('id'));
+      $("#modal_edit_transaksi .modal-body").html('<center class="text-muted">Menyiapkan Form</center>');
+      $('#modal_edit_transaksi').modal('show');
+    })
+
+    $('#modal_edit_transaksi').on('shown.bs.modal', function(){
+        // alert($('#id').val());
+        $.ajax(baseUrl+"/keuangan/transaksi_bank/edit?id="+$('#id').val(), {
+           timeout: 15000,
+           dataType: "html",
+           success: function (data) {
+               $("#modal_edit_transaksi .modal-body").html(data);
+           },
+           error: function(request, status, err) {
+              if (status == "timeout") {
+                $("#modal_edit_transaksi .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
+              } else {
+                $("#modal_edit_transaksi .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
+              }
+          } 
+        });
+    })
+
+    $('#modal_edit_transaksi').on('hidden.bs.modal', function(){
+      $("#modal_edit_transaksi .modal-body").html('<center class="text-muted">Menyiapkan Form</center>');
+    })
+
+    $(".delete").click(function(evt){
+      evt.preventDefault();
+      
+      var confrm = confirm('Apakah Anda Yakin ??');
+
+      if(confirm){
+        $.ajax(baseUrl+"/keuangan/transaksi_bank/delete?id="+$(this).data('id'), {
+           timeout: 15000,
+           type: 'get',
+           dataType: "json",
+           success: function (data) {
+               if(data.status == 'berhasil'){
+                  alert('Data Berhasil Dihapus');
+                  location.reload();
+               }
+
+           },
+           error: function(request, status, err) {
+              if (status == "timeout") {
+                alert('Request Time Out . Data Gagal Dihapus')
+              } else {
+                alert('Internal Server Error . Data Gagal Dihapus')
+              }
+          } 
+        });
+      }
+    })
 
   })
 </script>

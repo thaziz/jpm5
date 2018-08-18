@@ -394,8 +394,6 @@ class ikhtisarController extends Controller
 	}
 
 	public function cari_patty(request $request){
-
-		// dd($request->all());
 		if (isset($request->rangepicker)) {
 
 			$tgl = explode('-',$request->rangepicker);
@@ -405,30 +403,58 @@ class ikhtisarController extends Controller
 					$tgl[1] = str_replace(' ', '', $tgl[1]);
 					$start  = Carbon::parse($tgl[0])->format('Y-m-d');
 					$end    = Carbon::parse($tgl[1])->format('Y-m-d');
+			if ($request->jenis_ik_ == 'BONSEM') {
+				$bkk = DB::table('bukti_kas_keluar')
+						->select('bkk_nota as nota','bkk_tgl as tanggal','bkk_akun_kas as akun_kas','bkk_keterangan as keterangan','created_by as user','bkk_total as nominal')
+						->where('bkk_comp',$request->cabang)
+						->where('bkk_tgl','>=',$start)
+						->where('bkk_tgl','<=',$end)
+						->where('bkk_status','RELEASED')
+						->take(5000)
+						->orderBy('bkk_tgl','DESC')
+						->get();
+				$cari = $bkk;
+				for ($i=0; $i < count($bkk); $i++) { 
+					$bkkd = DB::table('patty_cash')
+							  ->join('bukti_kas_keluar','bkk_nota','=','pc_no_trans')
+							  ->where('bkk_comp',$request->cabang)
+							  ->where('pc_akun','like','1002'.'%')
+							  ->where('bkk_nota',$bkk[$i]->nota)
+							  ->get();
+					if ($bkkd == null) {
+						unset($cari[$i]);
+					}
 
-			$bkk = DB::table('bukti_kas_keluar')
-					->select('bkk_nota as nota','bkk_tgl as tanggal','bkk_akun_kas as akun_kas','bkk_keterangan as keterangan','created_by as user','bkk_total as nominal')
-					->where('bkk_comp',$request->cabang)
-					->where('bkk_tgl','>=',$start)
-					->where('bkk_tgl','<=',$end)
-					->where('bkk_status','RELEASED')
-					->take(5000)
-					->orderBy('bkk_tgl','DESC')
-					->get();
-
-			$bpk = DB::table('biaya_penerus_kas')
-					->select('bpk_nota as nota','bpk_tanggal as tanggal','bpk_kode_akun as akun_kas','bpk_keterangan as keterangan','created_by as user','bpk_tarif_penerus as nominal')
-					->where('bpk_comp',$request->cabang)
-					->where('bpk_tanggal','>=',$start)
-					->where('bpk_tanggal','<=',$end)
-					->where('bpk_status','Released')
-					->take(5000)
-					->orderBy('bpk_tanggal','DESC')
-					->get();
-			$cari = array_merge($bkk,$bpk);			
-
-			$akun = DB::table('d_akun')
+				}
+				$cari = array_values($cari);
+				$akun = DB::table('d_akun')
 						  ->get();
+			}else{
+				$bkk = DB::table('bukti_kas_keluar')
+						->select('bkk_nota as nota','bkk_tgl as tanggal','bkk_akun_kas as akun_kas','bkk_keterangan as keterangan','created_by as user','bkk_total as nominal')
+						->where('bkk_comp',$request->cabang)
+						->where('bkk_tgl','>=',$start)
+						->where('bkk_tgl','<=',$end)
+						->where('bkk_status','RELEASED')
+						->take(5000)
+						->orderBy('bkk_tgl','DESC')
+						->get();
+
+				$bpk = DB::table('biaya_penerus_kas')
+						->select('bpk_nota as nota','bpk_tanggal as tanggal','bpk_kode_akun as akun_kas','bpk_keterangan as keterangan','created_by as user','bpk_tarif_penerus as nominal')
+						->where('bpk_comp',$request->cabang)
+						->where('bpk_tanggal','>=',$start)
+						->where('bpk_tanggal','<=',$end)
+						->where('bpk_status','Released')
+						->take(5000)
+						->orderBy('bpk_tanggal','DESC')
+						->get();
+				$cari = array_merge($bkk,$bpk);			
+
+				$akun = DB::table('d_akun')
+							  ->get();
+
+			}
 		return view('purchase.ikhtisar_kas.table_ikhtisar',compact('cari','akun'));
 
 		}else{
@@ -548,6 +574,7 @@ class ikhtisarController extends Controller
 									   		'ik_comp'		=> $request->cabang,
 									   		'ik_total'		=> $debet,
 									   		'ik_pelunasan'	=> $debet,
+									   		'ik_jenis'  	=> $request->jenis_ik_,
 									   		'ik_edit'		=> 'UNALLOWED',
 									   		'ik_status'		=> 'RELEASED',
 									   		'created_at'	=> Carbon::now(),
@@ -577,6 +604,7 @@ class ikhtisarController extends Controller
 									->first();
 
 							if ($bkk != null) {
+
 								$save_ikhtisar = DB::table('ikhtisar_kas_detail')
 								   ->insert([
 								   		'ikd_id'   		=> $ikd,
@@ -773,7 +801,7 @@ class ikhtisarController extends Controller
 			$cari = DB::table('ikhtisar_kas_detail')
 					  ->where('ikd_ik_id',$id)
 					  ->get();
-		
+			dd($cari);
 			for ($i=0; $i < count($cari); $i++) { 
 
 				$bkk = DB::table('bukti_kas_keluar')
@@ -826,24 +854,50 @@ class ikhtisarController extends Controller
 					->where('ikd_ik_id',$id)
 					->get();
 
-			$bkk = DB::table('bukti_kas_keluar')
-					->join('ikhtisar_kas_detail','ikd_ref','=','bkk_nota')
-					->join('patty_cash','pc_no_trans','=','bkk_nota')
+			$bpk = DB::table('ikhtisar_kas_detail')
+					->join('biaya_penerus_kas','ikd_ref','=','bpk_nota')
 					->where('ikd_ik_id',$id)
-					->where('pc_debet',0)
-					->orderBy('bkk_tgl','DESC')
+					->orderBy('ikd_id','ikd_ik_dt','ASC')
 					->get();
 
-			$bpk = DB::table('biaya_penerus_kas')
-					->join('ikhtisar_kas_detail','ikd_ref','=','bpk_nota')
-					->join('patty_cash','pc_no_trans','=','bpk_nota')
+			$bkk = DB::table('ikhtisar_kas_detail')
+					->join('bukti_kas_keluar','ikd_ref','=','bkk_nota')
 					->where('ikd_ik_id',$id)
-					->where('pc_debet',0)
-					->orderBy('bpk_tanggal','DESC')
+					->orderBy('ikd_id','ikd_ik_dt','ASC')
 					->get();
+
+			for ($i=0; $i < count($bkk); $i++) { 
+
+				$bkk[$i] = DB::table('bukti_kas_keluar')
+						 ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
+						 ->select('bkkd_keterangan as keterangan','bkkd_total as total','bkk_tgl as tanggal','bkkd_akun as akun')
+						 ->where('bkk_nota',$bkk[$i]->bkk_nota)
+						 ->get();
+			}
+
+			for ($i=0; $i < count($bpk); $i++) { 
+				
+
+				$bpk[$i] = DB::table('biaya_penerus_kas')
+						 ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
+						 ->select('bpk_keterangan as keterangan','bpkd_tarif_penerus as total','bpkd_tanggal as tanggal','bpkd_ as tanggal','bpkd_kode_cabang_awal as cabang')
+						 ->where('bpk_nota',$bpk[$i]->bpk_nota)
+						 ->get();
+
+				for ($a=0; $a < count($bpk[$i]); $a++) { 
+					$temp = DB::table('d_akun')
+						  ->where("id_akun",'like',substr($bpk[$i][$a]->bpk_acc_biaya,0,4).'%')
+						  ->where('kode_cabang',$bpk[$i][$a]->cabang)
+						  ->first();
+
+					$bpk[$i][$a]->akun = $temp->id_akun;
+
+				}
+			}
+
+
 
 			$data_dt = array_merge($bkk,$bpk);	
-
 			$terbilang = $this->terbilang($data->ik_total,$style=3);
 
 			return view('purchase.ikhtisar_kas.outputIkhtisar',compact('terbilang','data','start','end','id','data_dt','nomor'));

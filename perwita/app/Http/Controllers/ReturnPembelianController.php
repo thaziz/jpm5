@@ -124,11 +124,11 @@ class ReturnPembelianController extends Controller
 		$idpo = $request->idpo;
 		if(count($idpo) == 0){
 		
-			$data['po'] = DB::select("select * from pembelian_order where po_supplier = '$supplier' and po_idfaktur is null and po_setujufinance = 'DISETUJUI' and po_statusreturn = 'AKTIF' and po_cabang = '$cabang' and po_id != '$idpo' ");
+			$data['po'] = DB::select("select * from pembelian_order where po_supplier = '$supplier' and po_idfaktur is null and po_setujufinance = 'SETUJU' and po_statusreturn = 'AKTIF' and po_cabang = '$cabang' and po_id != '$idpo' ");
 			
 		}
 		else {
-			$data['po'] = DB::select("select * from pembelian_order where po_supplier = '$supplier' and po_idfaktur is null and po_setujufinance = 'DISETUJUI' and po_statusreturn = 'AKTIF' and po_cabang = '$cabang'  ");
+			$data['po'] = DB::select("select * from pembelian_order where po_supplier = '$supplier' and po_idfaktur is null and po_setujufinance = 'SETUJU' and po_statusreturn = 'AKTIF' and po_cabang = '$cabang'  ");
 				
 		}
 
@@ -450,7 +450,7 @@ class ReturnPembelianController extends Controller
 		$po->po_hasilppn = $hasilppn;
 		$po->po_statusreturn = 'AKTIF';
 		$po->create_by = $request->username;	
-		$po->po_setujufinance = 'DISETUJUI';
+		$po->po_setujufinance = 'SETUJU';
 		$po->po_keteranganfinance = $data['po'][0]->po_keteranganfinance;
 		$po->po_acchutangdagang = $data['po'][0]->po_acchutangdagang;
 		$po->po_cabangtransaksi = $data['po'][0]->po_cabangtransaksi;

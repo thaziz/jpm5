@@ -523,7 +523,7 @@
                                                     <option value=""> Pilih Data Bank </option>
 
                                                     @foreach($data['bank'] as $bank)
-                                                      <option value="{{$bank->mb_id}}, {{$bank->mb_nama}} , {{$bank->mb_cabang}} ,{{$bank->mb_accno}},{{$bank->mb_kode}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
+                                                      <option value="{{$bank->mb_id}}, {{$bank->mb_nama}} , {{$bank->mb_cabang}} ,{{$bank->mb_accno}},{{$bank->mb_kode}},{{$bank->mb_kelompok}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                                     @endforeach
                                                   
                                                 </select> </td>
@@ -661,13 +661,13 @@
                                     
                                    </tr>
                                     <tr>
-                                      <th> Akun Bank </th>
+                                      <th> Bank Tujuan </th>
                                       <td> <select class="form-control selectOutlet chosen-select-width1 bank1 banktujuan" name="tujuanbank">
                                                
                                                     <option value=""> Pilih Data Bank </option>
 
                                                     @foreach($data['bank'] as $bank)
-                                                      <option value="{{$bank->mb_id}}, {{$bank->mb_nama}} , {{$bank->mb_cabang}} ,{{$bank->mb_accno}},{{$bank->mb_kode}}"> {{$bank->mb_kode}}  </option>
+                                                      <option value="{{$bank->mb_id}}, {{$bank->mb_nama}} , {{$bank->mb_cabang}} ,{{$bank->mb_accno}},{{$bank->mb_kode}},{{$bank->mb_kelompok}}"> {{$bank->mb_kode}}  </option>
                                                     @endforeach
                                                   
                                                 </select>
@@ -1032,27 +1032,26 @@
         norekening = split[3];
         namabank = split[1];
         idbanktujuan = split[0];
+        kelompoktujuan = split[5];
        tgl = $('.tgl').val();
       
         splitasal = asalbank.split(",");
         kodebankasal = splitasal[4];
         idbankasal = splitasal[0];
-        
+        kelompok = splitasal[5];
 
       
         if(kodebankasal.match(/1099.*/)){
-
+          $('.kelompokbank').val('BEDA BANK');
         }
-        else { 
-        if(kodebankasal != kodebanktujuan){
-          if(kodebanktujuan.match(/1099.*/)){
-           
+        else {
+         if(kelompok == kelompoktujuan){
+            $('.kelompokbank').val('SAMA BANK');
           }
-          else{
-            toastr.info('Beda bank hanya bisa dilakukan Akun KAS BANK :)');
+          else {
+            toastr.info("Mohon maaf, tidak bisa beda bank :)");
             return false;
           }
-        }
         }
 
 
@@ -1063,12 +1062,20 @@
                       "<td>"+kodebankasal+"</td>" + // BANK ASAL
                       "<td><input type='text' class='form-control kodebankbg' value="+kodebanktujuan+" name='kodebanktujuan[]' readonly></td>"+ // KODEBANK
                        "<td> <input type='text' class='form-control norekening' value='"+norekening+"' readonly> </td>" + //NO REKENING TUJUAN
-                      "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbanktujuan+"' name='idbanktujuan[]' readonly></td>" + //NAMA BANK TUJUAN
+                      "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbanktujuan+"' name='idbanktujuan[]' readonly> <input type='hidden' class='kelompokbank' name='kelompokbank'>  </td>" + //NAMA BANK TUJUAN
                       "<td> <input type='text' data-id='"+noinet+"' class='input-sm form-control nominaltbltfbank nominaltbltfbank"+noinet+"'  name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
                       "<td> <button class='btn btn-danger remove-tfbtn' data-id='"+noinet+"'  data-idbankdt="+idbankasal+" type='button'><i class='fa fa-trash'></i></button></td></tr>"; //NOMINAL
               
             $('#tbl-tfbank').append(row);
-            noinet = 1;  
+         
+                if(kodebankasal.match(/1099.*/)){
+                  $('.kelompokbank').val('BEDA BANK');
+                }
+                else {
+                 if(kelompok == kelompoktujuan){
+                    $('.kelompokbank').val('SAMA BANK');
+                  }
+                }
 
                  $('.nominaltbltfbank').change(function(){
                     val = $(this).val();
@@ -2024,8 +2031,7 @@
         lengthbank = $('.tblbank').length;
         databank = $('.bank').val();
         $('.valbank').val(databank);
-        $('.bank').prop('disabled' , true).trigger("liszt:updated");
-          $('.bank').prop('disabled', true).trigger("chosen:updated");;
+     
 
         $('.metodebayar').attr('disabled' , true);
 
@@ -2076,7 +2082,7 @@
                   type : "post",
                   dataType : "json",
                   success : function(data) {
-             
+
                     bank = $('.bank').val();
                     explode = bank.split(",");
                     kodebank = explode[4];
@@ -2085,7 +2091,6 @@
                     $('#myModal2').modal('hide');
 
                     $('.checkcek').attr('checked' , false);
-
                     $('.nocheck').val(data.mbdt[0][0].mbdt_noseri);
 
                     nominalbank = $('.nominal').val();
@@ -2116,6 +2121,7 @@
                         namabank = split[1];
                         idbank = split[0];
 
+
                         for(var i =0 ; i < mbdt.length; i++ ){                    
                            var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
                             "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> "+mbdt[i][0].mbdt_noseri+ "</a> <input type='hidden' class='noseri"+nomrbnk+"' value='"+mbdt[i][0].mbdt_noseri+"' name='noseri[]'></td>"+ // NOSERI
@@ -2142,24 +2148,21 @@
                         norekening = split[3];
                         namabank = split[1];
                         idbank = split[0];
-
-                       
+                        kelompok = split[5];
 
                         if(metodebayar == 'CHECK/BG'){
                           for(var i =0 ; i < mbdt.length; i++ ){
-
+                             
                               if(mbdt[i][0].mb_kode.match(/1099.*/)){
-
+                                $('.kelompokbank').val('BEDA BANK');
                               }
                               else {
-                               if(mbdt[i][0].mb_kode != kodebanktujuan){
-                                  if(kodebanktujuan.match(/1099.*/)){
-
-                                  }
-                                  else{
-                                    toastr.info('Jika beda bank maka bank tujuan harus akun kas bank :)');
-                                    return false;
-                                  }
+                               if(mbdt[i][0].mb_kelompok == kelompok){
+                                 $('.kelompokbank').val('SAMA BANK');
+                                }
+                                else {
+                                  toastr.info("Mohon maaf, tidak bisa beda bank :)");
+                                  return false;
                                 }
                               }
 
@@ -2169,13 +2172,22 @@
                             "<td>"+tgl+"</td>"+ // TGL
                             "<td>"+mbdt[i][0].mb_kode+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]' readonly> </td>" + //BANK TUJUAN
                             "<td> <input type='text' class='form-control norekening' value='"+norekening+"' readonly> </td>" + //NO REKENING TUJUAN
-                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'></td>" + //NAMA BANK TUJUAN
+                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='hidden' class='kelompokbank' name='kelompokbank'> </td>" + //NAMA BANK TUJUAN
                             "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
                             "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
                             $('#tbl-tfbank').append(row);
                             arrnohapus.push(nomrbnk);
                             nomrbnk++;
+
+                              if(mbdt[i][0].mb_kode.match(/1099.*/)){
+                                $('.kelompokbank').val('BEDA BANK');
+                              }
+                              else {
+                               if(mbdt[i][0].mb_kelompok == kelompok){
+                                 $('.kelompokbank').val('SAMA BANK');
+                                }
+                              }
                           }
                         }
                       }
@@ -2218,6 +2230,9 @@
                       $('.nominalbank1').val(nominalbank);
                       $('.ChequeBg').val(nominalbank);
                     }
+
+                    $('.bank').prop('disabled' , true).trigger("liszt:updated");
+                     $('.bank').prop('disabled', true).trigger("chosen:updated");
 
                       $(document).on('click','.remove-btn',function(){
 

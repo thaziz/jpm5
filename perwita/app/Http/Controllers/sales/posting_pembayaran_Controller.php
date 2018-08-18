@@ -523,11 +523,13 @@ class posting_pembayaran_Controller extends Controller
             ////////// JURNAL PEMBAYARAN CHEQUE/BG DAN TRANSFER
             if ($request->cb_jenis_pembayaran == 'F' or $request->cb_jenis_pembayaran == 'C') {
 
-                if ($request->cb_jenis_pembayaran == 'F') {
-                  $km =  get_id_jurnal('BM', $request->cb_cabang);
-                }else{
-                  $km = null;
-                }
+                $bank = 'BM'.$request->akun_bank;
+
+                $km =  get_id_jurnal($bank, $request->cb_cabang);
+
+
+
+
                 $id_jurnal=d_jurnal::max('jr_id')+1;
                 $delete = d_jurnal::where('jr_ref',$nota)->delete();
                 $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
@@ -538,6 +540,7 @@ class posting_pembayaran_Controller extends Controller
                               'jr_note'   => 'POSTING PEMBAYARAN '.$request->ed_keterangan,
                               'jr_insert' => carbon::now(),
                               'jr_update' => carbon::now(),
+                              'jr_no'     => $km,
                               ]);
                 $temp_akun_piutang = [];
                 $temp_nominal_piutang = [];
@@ -720,6 +723,10 @@ class posting_pembayaran_Controller extends Controller
                 }
             }elseif($request->cb_jenis_pembayaran == 'T'){
 
+                $bank = 'BM'.$request->akun_bank;
+
+                $km =  get_id_jurnal($bank, $request->cb_cabang);
+
                 $id_jurnal=d_jurnal::max('jr_id')+1;
                 $delete = d_jurnal::where('jr_ref',$nota)->delete();
                 $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
@@ -730,6 +737,7 @@ class posting_pembayaran_Controller extends Controller
                               'jr_note'   => 'POSTING PEMBAYARAN '. strtoupper($request->ed_keterangan),
                               'jr_insert' => carbon::now(),
                               'jr_update' => carbon::now(),
+                              'jr_no'     => $km,
                               ]);
                 $temp_akun_piutang = [];
                 $temp_nominal_piutang = [];

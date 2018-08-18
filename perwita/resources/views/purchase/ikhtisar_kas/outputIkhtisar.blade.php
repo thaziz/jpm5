@@ -251,8 +251,7 @@
           @php
             $temp = 0;
           @endphp
-          @foreach($data_dt as $a=> $val)
-           @if ($val1->ikd_ref == $val->ikd_ref)
+          @foreach($data_dt[$i] as $a=> $val)
             <tr>
                @if ($temp == 0)
                 <td class="textleft bot right">{{$i+1}}</td>
@@ -262,13 +261,12 @@
                @else
                 <td class="textleft bot right"></td>
                @endif
-               <td class="textleft bot right">{{$data->ik_tgl_akhir}}</td>
-               <td class="textleft bot right">{{$val->ikd_ref}}</td>
-               <td class="textleft bot right">{{$val->pc_akun}}</td>
-               <td class="textleft bot right">{{$val->ikd_keterangan}}</td>
-               <td class="textright bot">{{'Rp. ' . number_format($val->ikd_nominal,2,',','.')}}</td>
+               <td class="textleft bot right">{{$data_dt[$i][$a]->tanggal}}</td>
+               <td class="textleft bot right">{{$val1->ikd_ref}}</td>
+               <td class="textleft bot right">{{$data_dt[$i][$a]->akun}}</td>
+               <td class="textleft bot right">{{$data_dt[$i][$a]->keterangan}}</td>
+               <td class="textright bot">{{'Rp. ' . number_format($data_dt[$i][$a]->total,2,',','.')}}</td>
              </tr>
-           @endif
           @endforeach
       @endforeach
        
