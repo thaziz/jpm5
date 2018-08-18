@@ -902,9 +902,9 @@ class ikhtisarController extends Controller
 				}
 			}
 
-			dd($nomor);
 
 			$data_dt = array_merge($bkk,$bpk);	
+			dd($data_dt);
 			$terbilang = $this->terbilang($data->ik_total,$style=3);
 
 			return view('purchase.ikhtisar_kas.outputIkhtisar',compact('terbilang','data','start','end','id','data_dt','nomor'));
