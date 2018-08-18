@@ -262,7 +262,7 @@
                 <td class="textleft bot right"></td>
                @endif
                <td class="textleft bot right">{{$data_dt[$i][$a]->tanggal}}</td>
-               <td class="textleft bot right">{{$val1->ikd_ref}}</td>
+               <td class="textleft bot right">{{$data_dt[$i][$a]->nota}}</td>
                <td class="textleft bot right">{{$data_dt[$i][$a]->akun}}</td>
                <td class="textleft bot right">{{$data_dt[$i][$a]->keterangan}}</td>
                <td class="textright bot">{{'Rp. ' . number_format($data_dt[$i][$a]->total,2,',','.')}}</td>
