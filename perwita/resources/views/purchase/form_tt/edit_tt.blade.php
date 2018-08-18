@@ -186,7 +186,7 @@
                     </table>
                   </form>
                   <div class="col-sm-12" align="right">
-                    <button class="btn btn-success"><i class="fa fa-save simpan_form"> Save</i></button>
+                    <button class="btn btn-success simpan_form"><i class="fa fa-save simpan_form"> Save</i></button>
                   </div>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
