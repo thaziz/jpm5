@@ -83,6 +83,43 @@ class d_jurnal_controller extends Controller
                 ->withAkun_all($akun_all);
     }
 
+    public function edit(Request $request){
+
+        $data = DB::table("d_jurnal")
+                ->where('d_jurnal.jr_id', $request->id)
+                ->select(DB::raw('substring(jr_no, 9, 3) as kode'))->first();
+
+        if(!$data)
+            return '<center class="text-muted">Data Transaksi Ini Tidak Bisa Kami Temukan</center>';
+
+        $cabangs = DB::table('cabang')->where("kode", $data->kode)->select("kode", "nama")->get();
+
+        $data_jurnal = DB::table("d_jurnal")
+                            ->where('d_jurnal.jr_id', $request->id)
+                            ->select("*")->first();
+
+        $data_detail = DB::table("d_jurnal_dt")
+                            ->join('d_akun', 'd_akun.id_akun', '=', 'd_jurnal_dt.jrdt_acc')
+                            ->where('jrdt_jurnal', $data_jurnal->jr_id)
+                            ->select('d_jurnal_dt.*', 'd_akun.nama_akun')->get();
+
+        $dd = json_encode($data_detail);
+
+
+        $cabang = DB::table('cabang')->select("kode")->first();
+        $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '10')->get();
+        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
+
+        return view("keuangan.jurnal.edit")
+                ->withCabangs($cabangs)
+                ->withCabang($cabang)
+                ->withAkun_real(json_encode($akun_real))
+                ->withAkun_all($akun_all)
+                ->withData_jurnal($data_jurnal)
+                ->withData_detail($data_detail)
+                ->withDd($dd);
+    }
+
     public function save_data(Request $request){
        // return json_encode($request->all());
 
@@ -186,6 +223,98 @@ class d_jurnal_controller extends Controller
         return json_encode($response);
 
     }
+
+    public function update(Request $request){
+       // return json_encode($request->all());
+
+       $response = [
+            'status'    => 'berhasil',
+            'content'   => $request->all()
+        ];
+
+        $rules = [
+            'jr_detail'     => 'required',
+            'total_debet'   => 'same:total_kredit'
+        ];
+
+        $messages = [
+            'jr_detail.required'    => 'Anda Diharuskan Memilih Transaksi Terlebih Dahulu.',
+            'total_debet.same'      => 'Pastikan Total Debet Dan Total Kredit Harus Seimbang.'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if($validator->fails()){
+            $response = [
+                'status'    => 'gagal',
+                'content'   => $validator->errors()->first()
+            ];
+
+            return json_encode($response);
+        }
+
+        $jurnal = d_jurnal::find($request->id_transaksi);
+        $jurnal->jr_date = date('Y-m-d');
+        $jurnal->jr_detail = $request->jr_detail;
+        $jurnal->jr_note = $request->jr_detail;
+        // $jurnal->jr_on_proses = 2;
+
+        if($jurnal->save()){
+
+            $deleted = DB::table('d_jurnal_dt')->where('jrdt_jurnal', $request->id_transaksi)->delete();
+
+            foreach ($request->akun as $key => $data_akun) {
+                $acc = DB::table("d_akun")->where("id_akun", $data_akun)->select("akun_dka")->first();
+                $debet = str_replace('.', '', explode(',', $request->debet[$key])[0]);
+                $kredit = str_replace('.', '', explode(',', $request->kredit[$key])[0]);
+
+                // return json_encode($acc->akun_dka);
+
+                if($debet != 0){
+                    $value = ($acc->akun_dka == "D") ? $debet : ($debet * -1);
+                    $pos = "D";
+                }else if($kredit != 0){
+                    $value = ($acc->akun_dka == "K") ? $kredit : ($kredit * -1);
+                    $pos = "K";
+                }else if($debet == 0 && $kredit == 0){
+                    $value = 0;
+                    $pos = $acc->akun_dka;
+                }
+
+                $jr_dt = new d_jurnal_dt;
+                $jr_dt->jrdt_jurnal = $request->id_transaksi;
+                $jr_dt->jrdt_detailid = ($key+1);
+                $jr_dt->jrdt_acc = $data_akun;
+                $jr_dt->jrdt_value = $value;
+                $jr_dt->jrdt_type = "-";
+                $jr_dt->jrdt_detail = "-";
+                $jr_dt->jrdt_statusdk = $pos;
+
+                $jr_dt->save();
+            }
+        }
+
+        if($jurnal->save()){
+
+        }
+
+        return json_encode($response);
+
+    }
+
+    public function delete(Request $request){
+       // return json_encode($request->all());
+
+       $response = [
+            'status'    => 'berhasil',
+        ];
+
+        $delete = DB::table('d_jurnal')->where('jr_id', $request->id)->delete();
+
+        return json_encode($response);
+
+    }
+
 
     public function getDetail($id){
     	$detail = DB::table("d_trans_dt")

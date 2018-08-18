@@ -2268,6 +2268,11 @@ Route::get('keuangan/jurnal_umum/add', [
   'as'   => 'jurnal.add'
 ]);
 
+Route::get('keuangan/jurnal_umum/edit', [
+  'uses' => 'master_keuangan\d_jurnal_controller@edit',
+  'as'   => 'jurnal.edit'
+]);
+
 Route::get('keuangan/jurnal_umum/detail/{id}', [
   'uses' => 'master_keuangan\d_jurnal_controller@getDetail',
   'as'   => 'jurnal.detail'
@@ -2276,6 +2281,16 @@ Route::get('keuangan/jurnal_umum/detail/{id}', [
 Route::post('keuangan/jurnal_umum/save_data', [
   'uses'  => 'master_keuangan\d_jurnal_controller@save_data',
   'as'    => 'jurnal.save'
+]);
+
+Route::post('keuangan/jurnal_umum/update', [
+  'uses'  => 'master_keuangan\d_jurnal_controller@update',
+  'as'    => 'jurnal.update'
+]);
+
+Route::get('keuangan/jurnal_umum/delete', [
+  'uses'  => 'master_keuangan\d_jurnal_controller@delete',
+  'as'    => 'jurnal.delete'
 ]);
 
 Route::get('keuangan/jurnal_umum/show-detail/{id}', [
