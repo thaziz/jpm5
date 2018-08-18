@@ -481,7 +481,6 @@
       evt.preventDefault();
 
       $('#id').val($(this).data('id'));
-      $("#modal_edit_transaksi .modal-body").html('<center class="text-muted">Menyiapkan Form</center>');
       $('#modal_edit_transaksi').modal('show');
     })
 
@@ -501,6 +500,10 @@
               }
           } 
         });
+    })
+
+    $('#modal_edit_transaksi').on('hidden.bs.modal', function(){
+      $("#modal_edit_transaksi .modal-body").html('<center class="text-muted">Menyiapkan Form</center>');
     })
 
     $(".delete").click(function(evt){
