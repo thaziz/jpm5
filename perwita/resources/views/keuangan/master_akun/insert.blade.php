@@ -78,42 +78,49 @@
       </tr>
 
       <tr>
-        <td width="15%" class="text-center">Group Neraca</td>
-        <td colspan="2">
-          <select name="group_neraca" class="select_validate form-control chosen-select" id="group_neraca">
-            <option value="---"> -- Pilih Group Neraca</option>
-
-            @foreach($group_neraca as $data_group_neraca)
-              @if($data_group_neraca->jenis_group == "Neraca/Balance Sheet")
-                <option value="{{ $data_group_neraca->id }}">{{ $data_group_neraca->nama_group }}</option>
-              @endif
-            @endforeach
-
-          </select>
-        </td>
-
-        <td width="15%" class="text-center">Group Laba Rugi</td>
-        <td colspan="2">
-          <select name="group_laba_rugi" class="select_validate_null form-control chosen-select" id="group_laba_rugi">
-            <option value="---"> -- Pilih Group Laba Rugi</option>
-
-            @foreach($group_neraca as $data_group_neraca)
-              @if($data_group_neraca->jenis_group == "Laba Rugi")
-                <option value="{{ $data_group_neraca->id }}">{{ $data_group_neraca->nama_group }}</option>
-              @endif
-            @endforeach
-
-          </select>
-        </td>
-      </tr>
-
-      <tr>
-        <td width="15%" class="text-center">Status Aktif</td>
-        <td colspan="2">
+        <td width="15%" class="text-center" style="padding-bottom: 15px;">Status Aktif</td>
+        <td colspan="2" style="padding-bottom: 15px;">
           <select name="status_aktif" class="select_validate form-control" id="status_aktif">
             <option value="---"> -- Pilih Status Aktif</option>
             <option value="1"> Aktif</option>
             <option value="2"> Tidak</option>
+          </select>
+        </td>
+
+        <td width="15%" class="text-center" style="padding-bottom: 15px;">&nbsp;</td>
+        <td colspan="2" style="padding-bottom: 15px;">
+          &nbsp;
+        </td>
+      </tr>
+
+      <tr><td colspan="5" style="background: #eee; padding: 0px 0px;">&nbsp;</td></tr>
+
+      <tr>
+        <td width="15%" class="text-center" style="padding-top: 15px;">Group Neraca</td>
+        <td colspan="2" style="padding-top: 15px;">
+          <select name="group_neraca" class="select_validate form-control chosen-select" id="group_neraca">
+            <option value="---"> -- Pilih Group Neraca</option>
+
+            @foreach($group_neraca as $data_group_neraca)
+              @if($data_group_neraca->jenis_group == "1")
+                <option value="{{ $data_group_neraca->id }}">{{ $data_group_neraca->nama_group }}</option>
+              @endif
+            @endforeach
+
+          </select>
+        </td>
+
+        <td width="15%" class="text-center" style="padding-top: 15px;">Group Laba Rugi</td>
+        <td colspan="2" style="padding-top: 15px;">
+          <select name="group_laba_rugi" class="select_validate_null form-control chosen-select" id="group_laba_rugi">
+            <option value="---"> -- Pilih Group Laba Rugi</option>
+
+            @foreach($group_neraca as $data_group_neraca)
+              @if($data_group_neraca->jenis_group == "2")
+                <option value="{{ $data_group_neraca->id }}">{{ $data_group_neraca->nama_group }}</option>
+              @endif
+            @endforeach
+
           </select>
         </td>
       </tr>

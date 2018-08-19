@@ -201,11 +201,11 @@
                                   <option value="---"> -- Dari Penjumlahan</option>
                                 </select>
 
-                                {{-- <select disabled id="detail_jenis" class="form-control" style="display:none;">
+                                <select disabled id="detail_jenis" class="form-control" style="display:none;">
                                   <option value="---"> -- Pilih Jenis</option>
                                   <option value="Pendapatan"> Pendapatan</option>
                                   <option value="Beban/Biaya"> Beban/Biaya</option>
-                                </select> --}}
+                                </select>
                               </td>
                             </tr>
 
@@ -493,10 +493,15 @@
             $("#keterangan").attr("readonly", "readonly");
           }else if(data_neraca[idx].jenis == 2 || data_neraca[idx].jenis == 3){
 
-            if(data_neraca[idx].jenis == 2)
+            if(data_neraca[idx].jenis == 2){
               $("#tambah_detail").removeAttr("disabled");
-            else
+              $("#detail_jenis").css("display", "inline-block"); $("#detail_jenis").removeAttr("disabled");
+              $('#detail_jenis').val(data_neraca[idx].type);
+            }
+            else{
               $("#tambah_detail").attr("disabled", "disabled");
+              $("#detail_jenis").css("display", "none"); $("#detail_jenis").attr("disabled", "disabled");
+            }
 
             $.each($.grep(data_detail, function(n){ return n.id_parrent == data_neraca[idx].nomor_id }), function(i, n){
               if(data_neraca[idx].jenis == 2){
@@ -529,96 +534,6 @@
           html = "";
 
           $.each($.grep(data_akun, function(n) { return n.group_laba_rugi === data_detail[idx].id_group }), function(i, n){
-            dk = (n.akun_dka == "D") ? "DEBET" : "KREDIT";
-            html = html + '<tr>'+
-                            '<td>'+n.id_akun+'</td>'+
-                            '<td class="text-center">'+n.nama_akun+'</td>'+
-                            '<td class="text-center">'+dk+'</td>'+
-                          '</tr>';
-          })
-
-          if($.grep(data_akun, function(n) { return n.group_neraca === data_detail[idx].id_group }).length == 0){
-            html = html + '<tr><td colspan="3" class="text-center" style="color:#ccc;"> Tidak Ada Anggota Akun Di Group Ini.</td></tr>'
-          }
-
-          $("#anggota_wrap").html(html);
-
-          form_reset();
-        }
-      });
-
-      $('#pasiva_tree').on("select_node.jstree", function (e, data) { 
-        // console.log(data);
-
-        if(data.node.type != "demo"){
-          $("#masukkan").attr("disabled", "disabled");
-          $("#hapus_detail").removeAttr("disabled");
-          $('#update_detail').removeAttr("disabled");
-          $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
-
-          idx = data_neraca.findIndex(n => n.nomor_id == data.node.id);
-          parrent = (data.node.parent == "#") ? data_neraca[idx].nomor_id.substring(0, data_neraca[idx].level) : data_neraca[idx].id_parrent+".";
-
-          // alert(parrent);
-
-          $("#cancel").css("display", "inline-block");
-          $("#level").val(data_neraca[idx].level); $("#level").attr("disabled", "disabled");
-          $("#state_id").text(parrent);
-          $("#nomor_id").val(data_neraca[idx].nomor_id.substring(parrent.length));
-          // $("#parrent").val((data_neraca[idx].id_parrent == null) ? "---" : data_neraca[idx].id_parrent);
-
-          if(data_neraca[idx].id_parrent == null){
-            $("#parrent_name").val("---");
-          }else{
-            $("#parrent_name").val(data_neraca[data_neraca.findIndex(n => n.nomor_id == data_neraca[idx].id_parrent)].keterangan);
-          }
-
-          $("#parrent").attr("disabled", "disabled");
-          $('#jenis').val(data_neraca[idx].jenis); $("#jenis").attr("disabled", "disabled");
-          $("#keterangan").val(data_neraca[idx].keterangan);
-
-          if(data_neraca[idx].jenis == 4){
-            $("#keterangan").attr("readonly", "readonly");
-          }else if(data_neraca[idx].jenis == 2 || data_neraca[idx].jenis == 3){
-
-            $("#group_show").html("");
-
-            if(data_neraca[idx].jenis == 2)
-              $("#tambah_detail").removeAttr("disabled");
-            else
-              $("#tambah_detail").attr("disabled", "disabled");
-            
-            $.each($.grep(data_detail, function(n){ return n.id_parrent == data_neraca[idx].nomor_id }), function(i, n){
-                if(data_neraca[idx].jenis == 2){
-                  html = html+'<tr id="'+n.id_group+'" data-nama = "'+n.nama+'" data-dari = "'+n.dari+'" class="search">'+
-                            '<td class="text-center">'+n.id_group+'</td>'+
-                            '<td class="text-center">'+n.nama+'</td>'+
-                            '<td class="text-center">'+n.dari+'</td>'+
-                            '<td class="text-center delete_detail" style="color:#ed5564; cursor:pointer;"><i class="fa fa-times"></i></td>'+
-                          '<tr>';
-                }
-                else{
-                  html = html+'<tr id="'+n.id_group+'" data-nama = "'+n.nama+'" data-dari = "'+n.dari+'" class="search">'+
-                            '<td class="text-center">'+n.id_group+'</td>'+
-                            '<td class="text-center">'+n.nama+'</td>'+
-                            '<td class="text-center">'+n.dari+'</td>'+
-                            '<td class="text-center" style="color:#ed5564;">-</td>'+
-                          '<tr>';
-                }
-
-                $("#group_show").append(html);
-            })
-
-          }
-
-        }else{
-          idx = data_detail.findIndex(n => n.nomor_id == data.node.id);
-          $("#modal_list_akun").modal("show");
-          $("#nama_group").text(data.node.data.id+" ("+data_detail[idx].id_group+")");
-
-          html = "";
-
-          $.each($.grep(data_akun, function(n) { return n.group_neraca === data_detail[idx].id_group }), function(i, n){
             dk = (n.akun_dka == "D") ? "DEBET" : "KREDIT";
             html = html + '<tr>'+
                             '<td>'+n.id_akun+'</td>'+
@@ -831,8 +746,8 @@
         form_reset();
         grab_parrent();
 
-        console.log(data_neraca);
-        console.log(data_detail);
+        // console.log(data_neraca);
+        // console.log(data_detail);
       })
 
       $("#masukkan").click(function(evt){
@@ -931,10 +846,17 @@
           }
         }
 
+        if($('#detail_jenis').val() == '---'){
+          alert('Pilih Detail Jenis Terlebih Dahulu');
+          $('#detail_jenis').focus();
+          return false;
+        }
+
         id = $("#state_id").text()+""+$("#nomor_id").val();
         idx = data_neraca.findIndex(n => n.nomor_id === id);
         node_ket = $("#keterangan").val().toUpperCase()+' ('+$("#state_id").text()+''+$("#nomor_id").val()+')';
         data_neraca[idx].keterangan = $("#keterangan").val();
+        data_neraca[idx].type = $("#detail_jenis").val();
 
         $('#'+state+'_tree').jstree('rename_node', id , node_ket);
 
@@ -1045,7 +967,7 @@
         $("#group_show").html("");
         $("#cancel").css("display", "none");
         $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
-        $("#detail_jenis").css("display", "none"); $("#detail_jenis").attr("disabled", "disabled");
+        $("#detail_jenis").css("display", "none"); $("#detail_jenis").attr("disabled", "disabled");$('#detail_jenis').val('---');
 
         grab_id();
       }

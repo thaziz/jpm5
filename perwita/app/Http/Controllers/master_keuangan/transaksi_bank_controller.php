@@ -64,9 +64,9 @@ class transaksi_bank_controller extends Controller
         // return json_encode($request->all());
 
         if($request->cab == 'all')
-    	   $cabangs = DB::table('cabang')->select("kode", "nama")->get();
+    	   $cabangs = DB::table('cabang')->select("kode", "nama")->orderBy('kode', 'asc')->get();
         else
-           $cabangs = DB::table('cabang')->where("kode", $request->cab)->select("kode", "nama")->get();
+           $cabangs = DB::table('cabang')->where("kode", $request->cab)->select("kode", "nama")->orderBy('kode', 'desc')->get();
 
         $cabang = DB::table('cabang')->select("kode")->first();
         $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '11')->get();

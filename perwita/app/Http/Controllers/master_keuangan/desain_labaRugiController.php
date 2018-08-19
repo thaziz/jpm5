@@ -64,7 +64,7 @@ class desain_labaRugiController extends Controller
                     "id_parrent"    => $dataNeraca["id_parrent"],
                     "level"         => $dataNeraca["level"],
                     "jenis"         => $dataNeraca["jenis"],
-                    "type"          => 'null',
+                    "type"          => (!is_null($dataNeraca['type'])) ? $dataNeraca['type'] : null,
                     "keterangan"    => $dataNeraca["keterangan"],
                 ]);
             }
@@ -154,7 +154,7 @@ class desain_labaRugiController extends Controller
                 "id_parrent"    => $dataNeraca["id_parrent"],
                 "level"         => $dataNeraca["level"],
                 "jenis"         => $dataNeraca["jenis"],
-                "type"          => 'null',
+                "type"          => $dataNeraca["type"],
                 "keterangan"    => $dataNeraca["keterangan"],
             ]);
         }
