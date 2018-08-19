@@ -73,7 +73,7 @@
 
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2>Desain Laba Rugi</h2>
+                    <h2>Desain Arus Kas</h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
@@ -85,10 +85,10 @@
                             <a>Keuangan</a>
                         </li>
                         <li>
-                            <a>Desain Laba Rugi</a>
+                            <a>Desain Arus Kas</a>
                         </li>
                         <li class="active">
-                            <strong> Create Desain Laba Rugi  </strong>
+                            <strong> Create Desain Arus Kas  </strong>
                         </li>
 
                     </ol>
@@ -103,7 +103,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Tambah Data Desain Laba Rugi
+                    <h5> Tambah Data Desain Arus Kas
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
@@ -116,7 +116,7 @@
                       <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 1px; padding: 10px; height: 500px; box-shadow: 0px 0px 10px #eee;">
                           <div class="tab-content">
                             <div role="tabpanel" class="tab-pane fade in active" id="aktiva">
-                              <span style="position: absolute; top: 50%; left: 35%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Laba Rugi</span>
+                              <span style="position: absolute; top: 50%; left: 35%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Arus Kas</span>
                               <div id="aktiva_tree" style="font-size: 8pt; height: 480px; background: none; overflow-x: hidden; overflow-y: scroll;">
                                   
                               </div>
@@ -130,7 +130,7 @@
 
                         <div class="col-md-6" style="padding:0px;">
                           <div class="btn-group">
-                              <button href="#aktiva" aria-controls="aktiva" role="tab" data-toggle="tab" class="btn btn-primary aktif btn-sm" data-for="aktiva" style="font-size: 8pt;" type="button">Laba Rugi</button>
+                              <button href="#aktiva" aria-controls="aktiva" role="tab" data-toggle="tab" class="btn btn-primary aktif btn-sm" data-for="aktiva" style="font-size: 8pt;" type="button">Arus Kas</button>
                           </div>
                         </div>
 
@@ -202,9 +202,11 @@
                                 </select>
 
                                 <select disabled id="detail_jenis" class="form-control" style="display:none;">
-                                  <option value="---"> -- Pilih Jenis</option>
-                                  <option value="Pendapatan"> Pendapatan</option>
-                                  <option value="Beban/Biaya"> Beban/Biaya</option>
+                                  <option value="---"> -- Pilih Jenis Perhitungan</option>
+                                  <option value="saldo_awal"> Saldo Awal</option>
+                                  <option value="mutasi_debet"> Mutasi Debet</option>
+                                  <option value="mutasi_kredit"> Mutasi Kredit</option>
+                                  <option value="saldo_akhir"> Saldo Akhir</option>
                                 </select>
                               </td>
                             </tr>
@@ -224,7 +226,7 @@
                         <div class="col-md-12 text-right" style="padding: 0px;">
                             <button class="btn btn-success btn-sm" id="masukkan" style="font-size:8pt;" type="button">Masukkan Ke Desain</button>
                             <button disabled class="btn btn-warning btn-sm" id="update_detail" style="font-size:8pt;" type="button">Update</button>
-                            <button disabled class="btn btn-primary btn-sm" id="tambah_detail" style="font-size:8pt;" type="button">Tambahkan Group Laba Rugi</button>
+                            <button disabled class="btn btn-primary btn-sm" id="tambah_detail" style="font-size:8pt;" type="button">Tambahkan Group Arus Kas</button>
                             <button disabled class="btn btn-danger btn-sm" id="hapus_detail" style="font-size:8pt;" type="button">Hapus</button>
                         </div>
 
@@ -253,7 +255,7 @@
                   <div class="row">
                     <div class="col-md-12 m-t">
                       <button class="btn btn-primary btn-sm pull-right" style="font-size: 8pt; margin-left: 5px;" id="simpan_desain">Simpan Desain</button>
-                      <a href="{{ route("desain_laba_rugi.index") }}" class="btn btn-default btn-sm pull-right" style="font-size: 8pt;" id="simpan_desain">Kembali</a>
+                      <a href="{{ route("desain_arus_kas.index") }}" class="btn btn-default btn-sm pull-right" style="font-size: 8pt;" id="simpan_desain">Kembali</a>
                     </div>
                   </div>
                 </div>
@@ -724,10 +726,10 @@
           if(jenis == 2){
             alpha = $("#detail_jenis").val();
             if($("#group_show").find(".search").length == 0){
-              alert("Harap Pilih Detail Group Laba Rugi Terlebih Dahulu.");
+              alert("Harap Pilih Detail Group Arus Kas Terlebih Dahulu.");
               return false;
             }else if($("#detail_jenis").val() == "---"){
-              alert("Harap Pilih Detail Jenis Laba Rugi Terlebih Dahulu.");
+              alert("Harap Pilih Detail Jenis Arus Kas Terlebih Dahulu.");
               $("#detail_jenis").focus()
               return false;
             }
@@ -787,7 +789,7 @@
 
         if(jenis == 2){
           if($("#group_show").find(".search").length == 0){
-            alert("Harap Pilih Detail Group Laba Rugi Terlebih Dahulu.");
+            alert("Harap Pilih Detail Group Arus Kas Terlebih Dahulu.");
             return false;
           }
         }else if(jenis == 3){
@@ -832,14 +834,14 @@
 
         if($("#nama_desain").val() == ""){
           $("#nama_desain").focus();
-          toastr.warning('Harap Mengisi Terlebih Dahulu Nama Desain Laba Rugi Ini.');
+          toastr.warning('Harap Mengisi Terlebih Dahulu Nama Desain Arus Kas Ini.');
           btn.text("Simpan Desain");
           btn.removeAttr("disabled");
           return false;
         }
 
         if(data_neraca.length > 0 ){
-          $.ajax(baseUrl+"/master_keuangan/desain_laba_rugi/save",{
+          $.ajax(baseUrl+"/master_keuangan/desain_arus_kas/save",{
             type: "post",
             timeout: 15000,
             data: {data_neraca: data_neraca, data_detail: data_detail, nama_desain: $("#nama_desain").val(), _token: "{{ csrf_token() }}" },
@@ -847,7 +849,7 @@
             success: function(response){
               console.log(response);
               if(response.status == "sukses"){
-                toastr.success('Data Desain Laba Rugi Disimpan');
+                toastr.success('Data Desain Arus Kas Disimpan');
                 btn.removeAttr("disabled");
                 btn.text("Simpan Desain");
                 empty_node();
@@ -875,7 +877,7 @@
             }
           })
         }else{
-          toastr.error('Desain Laba Rugi Yang Anda Buat Masih Kosong.');
+          toastr.error('Desain Arus Kas Yang Anda Buat Masih Kosong.');
           btn.removeAttr("disabled");
           btn.text("Simpan Desain");
         }
@@ -956,13 +958,13 @@
 
       function grab_detail_grup(id){
         html = "";
-        $.each($.grep(data_akun, function(n) { return n.group_laba_rugi == id }), function(i, n){
+        $.each($.grep(data_akun, function(n) { return n.id_akun.substring(0, 4) == id }), function(i, n){
           html = html+'<tr>'+
                   '<td>'+n.nama_akun+'</td>'+
                 '</tr>';
         })
 
-        if($.grep(data_akun, function(n) { return n.group_laba_rugi == id }).length == 0){
+        if($.grep(data_akun, function(n) { return n.id_akun.substring(0, 4) == id }).length == 0){
           html = html+'<tr>'+
                   '<td class="text-center">Tidak Ada Akun Di Group Ini</td>'+
                 '</tr>';

@@ -117,7 +117,7 @@
                           <div class="tab-content">
                             <div role="tabpanel" class="tab-pane fade in active" id="aktiva">
                               <span style="position: absolute; top: 50%; left: 35%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Laba Rugi</span>
-                              <div id="aktiva_tree" style="font-size: 8pt;">
+                              <div id="aktiva_tree" style="font-size: 8pt; height: 480px; background: none; overflow-x: hidden; overflow-y: scroll;">
                                   
                               </div>
                             </div>
@@ -1008,7 +1008,7 @@
                 '</tr>';
         })
 
-        if($.grep(data_akun, function(n) { return n.group_neraca == id }).length == 0){
+        if($.grep(data_akun, function(n) { return n.group_laba_rugi == id }).length == 0){
           html = html+'<tr>'+
                   '<td class="text-center">Tidak Ada Akun Di Group Ini</td>'+
                 '</tr>';

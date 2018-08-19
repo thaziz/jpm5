@@ -2593,6 +2593,51 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
 
   // End Desain Laba Rugi
 
+  // Desain Laba Rugi
+
+  Route::get('master_keuangan/desain_arus_kas', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@index',
+    'as'    => 'desain_arus_kas.index'
+  ]);
+
+  Route::get('master_keuangan/desain_arus_kas/add', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@add',
+    'as'    => 'desain_arus_kas.add'
+  ]);
+
+  Route::post('master_keuangan/desain_arus_kas/save', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@save',
+    'as'    => 'desain_arus_kas.save'
+  ]);
+
+  Route::get('master_keuangan/desain_arus_kas/aktifkan/{id}', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@setActive',
+    'as'    => 'desain_arus_kas.aktifkan'
+  ]);
+
+  Route::get('master_keuangan/desain_arus_kas/view/{id}', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@view',
+    'as'    => 'desain_arus_kas.view'
+  ]);
+
+  Route::get('master_keuangan/desain_arus_kas/edit/{id}', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@edit',
+    'as'    => 'desain_arus_kas.edit'
+  ]);
+
+  Route::post('master_keuangan/desain_arus_kas/update/{id}', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@update',
+    'as'    => 'desain_arus_kas.update'
+  ]);
+
+  Route::get('master_keuangan/desain_arus_kas/delete/{id}', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@delete',
+    'as'    => 'desain_arus_kas.delete'
+  ]);
+
+
+  // End Desain Laba Rugi
+
   // penerimaan
   Route::get('keuangan/penerimaan', 'operasional_keuangan\penerimaan_Controller@index');
   Route::get('keuangan/penerimaanform', 'operasional_keuangan\penerimaan_Controller@form');
