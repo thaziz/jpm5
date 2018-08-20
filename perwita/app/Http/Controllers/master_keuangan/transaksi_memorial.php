@@ -64,7 +64,7 @@ class transaksi_memorial extends Controller
         // return json_encode($request->all());
 
         if($request->cab == 'all')
-           $cabangs = DB::table('cabang')->select("kode", "nama")->get();
+           $cabangs = DB::table('cabang')->select("kode", "nama")->orderBy('kode', 'asc')->get();
         else
            $cabangs = DB::table('cabang')->where("kode", $request->cab)->select("kode", "nama")->get();
 

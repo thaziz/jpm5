@@ -26,6 +26,17 @@
         return $jr_no;
 	}
 
+	function get_total_neraca_parrent($id, $array){
+		$tot = 0;
+		foreach ($array as $key => $value) {
+			if(substr($value['nomor_id'], 0, strlen($id)) == $id && $value['jenis'] != 3 && $value['jenis'] != 4)
+				$tot += $value['total'];
+		}
+
+		return ($tot >= 0) ? number_format($tot, 2) : "(".number_format(str_replace("-", "", $tot), 2).")";
+		// return $tot;
+	}
+
 	function date_ind($date){
 		$ret = "";
 		switch ($date) {

@@ -8,7 +8,7 @@
       <th> Keterangan </th> 
       <th> Total </th>   
       <th> Print </th>   
-      {{-- <th> Allow Edit </th> --}}
+      <th> Status </th>
       <th> Aksi </th>
   </tr>
   </thead>
@@ -53,6 +53,7 @@
           { "data": "bkk_keterangan" },
           { "data": "tagihan" },
           { "data": "print"},
+          { "data": "status"},
           { "data": "aksi" },
           
           ]

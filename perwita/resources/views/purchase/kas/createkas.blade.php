@@ -191,7 +191,7 @@
               <tr>
                 <td>Biaya Parkir & Tol</td>
                 <td>
-                  <input  onkeyup="hitung()" class="form-control biaya_dll" type="text" name="biaya_dll" value="Rp " placeholder="Biaya Lain Lain" >
+                  <input  onkeyup="hitung()" class="form-control biaya_dll" type="text" name="biaya_dll" value="Rp 0" placeholder="Biaya Lain Lain" >
                 </td>
               </tr>
             
@@ -345,7 +345,7 @@ $(document).ready(function(){
         }
     })
 });
-   var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp '});
+   var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp ',allowZero:true,defaultZero: true});
 
    function ganti_nota() {
      var cabang = $('.cabang_select').val();

@@ -19,6 +19,7 @@ use Auth;
 use App\d_jurnal;
 use App\d_jurnal_dt;
 // use Datatables;
+use Exception;
 use Yajra\Datatables\Datatables;
 
 
@@ -801,7 +802,12 @@ class ikhtisarController extends Controller
 			$cari = DB::table('ikhtisar_kas_detail')
 					  ->where('ikd_ik_id',$id)
 					  ->get();
-			dd($cari);
+			$head = DB::table('ikhtisar_kas')
+						 ->where('ik_id',(int)$id)
+						 ->first();
+			if ($head->ik_pelunasan != $head->ik_total) {
+				return response()->json(['status'=>1,'pesan'=>'Data Sudah Ditarik FPG']);
+			}
 			for ($i=0; $i < count($cari); $i++) { 
 
 				$bkk = DB::table('bukti_kas_keluar')
@@ -854,47 +860,46 @@ class ikhtisarController extends Controller
 					->where('ikd_ik_id',$id)
 					->get();
 
-			$bpk = DB::table('ikhtisar_kas_detail')
+			$bpks = DB::table('ikhtisar_kas_detail')
 					->join('biaya_penerus_kas','ikd_ref','=','bpk_nota')
 					->where('ikd_ik_id',$id)
 					->orderBy('ikd_id','ikd_ik_dt','ASC')
 					->get();
-
-			$bkk = DB::table('ikhtisar_kas_detail')
+			$bkks = DB::table('ikhtisar_kas_detail')
 					->join('bukti_kas_keluar','ikd_ref','=','bkk_nota')
 					->where('ikd_ik_id',$id)
 					->orderBy('ikd_id','ikd_ik_dt','ASC')
 					->get();
 
-			for ($i=0; $i < count($bkk); $i++) { 
+			$bkk = [];
+
+			for ($i=0; $i < count($bkks); $i++) { 
 
 				$bkk[$i] = DB::table('bukti_kas_keluar')
 						 ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
-						 ->select('bkkd_keterangan as keterangan','bkkd_total as total','bkk_tgl as tanggal','bkkd_akun as akun')
-						 ->where('bkk_nota',$bkk[$i]->bkk_nota)
+						 ->select('bkkd_keterangan as keterangan','bkkd_total as total','bkk_tgl as tanggal','bkkd_akun as akun','bkk_nota as nota')
+						 ->where('bkk_nota',$bkks[$i]->bkk_nota)
 						 ->get();
-			}
 
-			for ($i=0; $i < count($bpk); $i++) { 
+
+			}
+			$bpk = [];
+			for ($i=0; $i < count($bpks); $i++) { 
 				
 
 				$bpk[$i] = DB::table('biaya_penerus_kas')
 						 ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
-						 ->select('bpk_keterangan as keterangan','bpkd_tarif_penerus as total','bpkd_tanggal as tanggal','bpkd_ as tanggal','bpkd_kode_cabang_awal as cabang')
-						 ->where('bpk_nota',$bpk[$i]->bpk_nota)
+						 ->select('bpk_keterangan as keterangan','bpkd_tarif_penerus as total','bpkd_tanggal as tanggal','bpkd_tanggal as tanggal','bpkd_kode_cabang_awal as cabang','bpk_acc_biaya as akun','bpk_nota as nota')
+						 ->where('bpk_nota',$bpks[$i]->bpk_nota)
 						 ->get();
-
+	
 				for ($a=0; $a < count($bpk[$i]); $a++) { 
 					$temp = DB::table('d_akun')
-						  ->where("id_akun",'like',substr($bpk[$i][$a]->bpk_acc_biaya,0,4).'%')
+						  ->where("id_akun",'like',substr($bpk[$i][$a]->akun,0,4).'%')
 						  ->where('kode_cabang',$bpk[$i][$a]->cabang)
 						  ->first();
-
-					$bpk[$i][$a]->akun = $temp->id_akun;
-
 				}
 			}
-
 
 
 			$data_dt = array_merge($bkk,$bpk);	

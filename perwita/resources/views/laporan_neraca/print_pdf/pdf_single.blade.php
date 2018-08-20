@@ -16,6 +16,8 @@
         <!-- Toastr style -->
         <link href="{{ asset('assets/vendors/toastr/toastr.min.css')}}" rel="stylesheet">
 
+        <link href="{{ asset('assets/vendors/bootstrap-treegrid/css/jquery.treegrid.css') }}" rel="stylesheet">
+
         <script type="text/javascript" src="{{ asset('assets/plugins/jquery-1.12.3.min.js') }}"></script>
 
       <style>
@@ -42,6 +44,7 @@
 
           #table-data td{
             border: 1px solid #ccc;
+            vertical-align: top;
           }
 
           #table-data td.currency{
@@ -73,11 +76,11 @@
           }
 
           #table-data-inside td.lv2{
-            padding: 5px 25px;
+            padding: 5px 10px;
           }
 
           #table-data-inside td.lv3{
-            padding: 5px 50px;
+            padding: 5px 10px;
             font-style: italic;
           }
 
@@ -184,7 +187,7 @@
           </thead>
         </table>
 
-        <table id="table-data" width="100%" border="0">
+        <table id="table-data" width="100%" border="0" style="min-height: 455px;">
           <thead>
             <tr>
               <th width="50%" class="text-left" style="border-right: 3px solid #ccc">Aktiva</th>
@@ -196,7 +199,7 @@
             
             <tr>
               <td style="border-right: 3px solid #ccc;">
-                <table id="table-data-inside" border="0" width="100%">
+                <table class="aktiva-tree" id="table-data-inside" border="0" width="100%">
                   <tbody>
                     
                       <?php $total_aktiva = 0; $total_pasiva = 0; ?>
@@ -210,8 +213,9 @@
                             ?>
                             
                             @if($data_neraca_aktiva["jenis"] == 1)
-                              <tr id="{{ $data_neraca_aktiva["nomor_id"] }}">
-                                <td colspan="2" class="{{ $level }}" style="font-weight: bold;">{{ $data_neraca_aktiva["keterangan"] }}</td>
+                              <tr class="treegrid-{{ str_replace('.', '-', $data_neraca_aktiva['nomor_id']) }} treegrid-parent-{{ str_replace('.', '-', $data_neraca_aktiva['parrent']) }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
+                                <td class="{{ $level }}" style="font-weight: bold;">{{ $data_neraca_aktiva["keterangan"] }}</td>
+                                <td class="money" style="display: none">{{ get_total_neraca_parrent($data_neraca_aktiva['nomor_id'], $data_neraca) }}</td>
                               </tr>
                             @elseif($data_neraca_aktiva["jenis"] == 2)
 
@@ -227,19 +231,19 @@
                                   @endif
                                 @endforeach
 
-                              <tr id="{{ $data_neraca_aktiva["nomor_id"] }}">
+                              <tr class="treegrid-{{ str_replace('.', '-', $data_neraca_aktiva['nomor_id']) }} treegrid-parent-{{ str_replace('.', '-', $data_neraca_aktiva['parrent']) }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
                                 <td class="{{ $level }}" width="60%">{{ $data_neraca_aktiva["keterangan"] }}</td>
                                 <td class="money">{{ ($totDetail >= 0) ? number_format($totDetail, 2) : "(".number_format(str_replace("-", "", $totDetail), 2).")" }}</td>
                               </tr>
                             @elseif($data_neraca_aktiva["jenis"] == 3)
-                              <tr id="{{ $data_neraca_aktiva["nomor_id"] }}">
+                              <tr class="treegrid-{{ str_replace('.', '-', $data_neraca_aktiva['nomor_id']) }} treegrid-parent-{{ str_replace('.', '-', $data_neraca_aktiva['parrent']) }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
                                 <td class="{{ $level }}" style="font-weight: 600; font-style: italic;">{{ $data_neraca_aktiva["keterangan"] }}</td>
                                 <td class="money total">
                                   {{ ($data_neraca_aktiva["total"] >= 0) ? number_format($data_neraca_aktiva["total"], 2) : "( ".number_format(str_replace("-", "", $data_neraca_aktiva["total"]), 2)." )" }}
                                 </td>
                               </tr>
                             @elseif($data_neraca_aktiva["jenis"] == 4)
-                              <tr>
+                              <tr class="treegrid-{{ str_replace('.', '-', $data_neraca_aktiva['nomor_id']) }} treegrid-parent-{{ str_replace('.', '-', $data_neraca_aktiva['parrent']) }}">
                                 <td class="{{ $level }}">&nbsp;</td>
                                 <td></td>
                               </tr>
@@ -259,7 +263,7 @@
               </td>
 
               <td>
-                <table id="table-data-inside" border="0" width="100%">
+                <table class="aktiva-tree" id="table-data-inside" border="0" width="100%">
                   <tbody>
                     
                       @foreach($data_neraca as $data_neraca_aktiva)
@@ -271,8 +275,9 @@
                           ?>
                           
                           @if($data_neraca_aktiva["jenis"] == 1)
-                            <tr id="{{ $data_neraca_aktiva["nomor_id"] }}">
-                              <td colspan="2" class="{{ $level }}" style="font-weight: bold;">{{ $data_neraca_aktiva["keterangan"] }}</td>
+                            <tr class="treegrid-{{ str_replace('.', '-', $data_neraca_aktiva['nomor_id']) }} treegrid-parent-{{ str_replace('.', '-', $data_neraca_aktiva['parrent']) }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
+                              <td class="{{ $level }}" style="font-weight: bold;">{{ $data_neraca_aktiva["keterangan"] }}</td>
+                              <td class="money" style="display: none;">{{ get_total_neraca_parrent($data_neraca_aktiva['nomor_id'], $data_neraca) }}</td>
                             </tr>
                           @elseif($data_neraca_aktiva["jenis"] == 2)
                             <?php $totDetail = 0 ?>
@@ -287,20 +292,20 @@
                                   @endif
                                 @endforeach
 
-                              <tr id="{{ $data_neraca_aktiva["nomor_id"] }}">
+                              <tr class="treegrid-{{ str_replace('.', '-', $data_neraca_aktiva['nomor_id']) }} treegrid-parent-{{ str_replace('.', '-', $data_neraca_aktiva['parrent']) }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
                                 <td class="{{ $level }}" width="60%">{{ $data_neraca_aktiva["keterangan"] }}</td>
                                 <td class="money">{{ ($totDetail >= 0) ? number_format($totDetail, 2) : "(".number_format(str_replace("-", "", $totDetail), 2).")" }}</td>
                               </tr>
 
                           @elseif($data_neraca_aktiva["jenis"] == 3)
-                            <tr id="{{ $data_neraca_aktiva["nomor_id"] }}">
+                            <tr class="treegrid-{{ str_replace('.', '-', $data_neraca_aktiva['nomor_id']) }} treegrid-parent-{{ str_replace('.', '-', $data_neraca_aktiva['parrent']) }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
                               <td class="{{ $level }}" style="font-weight: bold; font-style: italic;">{{ $data_neraca_aktiva["keterangan"] }}</td>
                               <td class="money total">
                                 {{ ($data_neraca_aktiva["total"] >= 0) ? number_format($data_neraca_aktiva["total"], 2) : "( ".number_format(str_replace("-", "", $data_neraca_aktiva["total"]), 2)." )" }}
                               </td>
                             </tr>
                           @elseif($data_neraca_aktiva["jenis"] == 4)
-                            <tr>
+                            <tr class="treegrid-{{ str_replace('.', '-', $data_neraca_aktiva['nomor_id']) }} treegrid-parent-{{ str_replace('.', '-', $data_neraca_aktiva['parrent']) }}">
                               <td class="{{ $level }}">&nbsp;</td>
                               <td></td>
                             </tr>
@@ -448,13 +453,42 @@
 
       <!-- Toastr -->
       <script src="{{ asset('assets/vendors/toastr/toastr.min.js') }}"></script>
+      <script src="{{ asset('assets/vendors/bootstrap-treegrid/js/jquery.treegrid.js') }}"></script>
 
       <script type="text/javascript">
         $(document).ready(function(){
 
+          $('.aktiva-tree').treegrid({
+            onCollapse: function() {
+                $(this).children('.money').first().fadeIn('200');
+            },
+            onExpand: function() {
+                $(this).children('.money').first().fadeOut('200');
+            }
+          });
+
           $('[data-toggle="tooltip"]').tooltip({container : 'body'});
 
           baseUrl = '{{ url('/') }}';
+
+          // $('.aktiva-tree').treegrid('getRootNodes').on('change', function(){
+          //    $(this).children('.money').first().fadeIn('200');
+          //    console.log(this);
+          // });
+
+          // $('.aktiva-tree').treegrid('getRootNodes').on('expand', function(){
+          //    $(this).children('.money').first().fadeOut('200');
+          //    console.log(this);
+          // });
+
+          // $('.pasiva-tree').treegrid('getRootNodes').on('collapse', function(){
+          //    $(this).children('.money').first().fadeIn('200');
+          //    // alert('okee');
+          // });
+
+          // $('.pasiva-tree').treegrid('getRootNodes').on('expand', function(){
+          //    $(this).children('.money').first().fadeOut('200');
+          // });
 
           // script for neraca
 

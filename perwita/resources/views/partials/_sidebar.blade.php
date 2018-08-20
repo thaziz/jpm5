@@ -2249,13 +2249,8 @@
                                 </li>
 
                             @endif
-                            @if(Auth::user()->PunyaAkses('Desain Neraca','aktif'))
 
-                                <li>
-                                    <a class="sidebar master-perusahaan {{Request::is('master_keuangan/desain_neraca') ? 'active' : '' || 
-                            Request::is('master_keuangan/desain_neraca/*') ? 'active' : ''   }}" href="{{ url('master_keuangan/desain_neraca')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Desain Neraca </a>
-                                </li>
-                            @endif
+
                             @if(Auth::user()->PunyaAkses('Desain Laba Rugi','aktif'))
 
                                 <li>
@@ -2263,6 +2258,20 @@
                             Request::is('master_keuangan/desain_neraca/*') ? 'active' : ''   }}" href="{{ url('master_keuangan/desain_laba_rugi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Desain Laba Rugi </a>
                                 </li>
                             @endif
+
+                                <li>
+                                    <a class="sidebar master-perusahaan {{Request::is('master_keuangan/desain_arus_kas') ? 'active' : '' || 
+                            Request::is('master_keuangan/desain_arus_kas/*') ? 'active' : ''   }}" href="{{ url('master_keuangan/desain_arus_kas')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Desain Arus Kas </a>
+                                </li>
+
+                             @if(Auth::user()->PunyaAkses('Desain Neraca','aktif'))
+
+                                <li>
+                                    <a class="sidebar master-perusahaan {{Request::is('master_keuangan/desain_neraca') ? 'active' : '' || 
+                            Request::is('master_keuangan/desain_neraca/*') ? 'active' : ''   }}" href="{{ url('master_keuangan/desain_neraca')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Desain Neraca </a>
+                                </li>
+                            @endif
+                            
                             </ul>
                         </li>
                         <!-- end operasional keuangan -->

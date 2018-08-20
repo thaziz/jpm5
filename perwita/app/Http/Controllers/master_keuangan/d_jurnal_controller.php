@@ -68,13 +68,15 @@ class d_jurnal_controller extends Controller
         // return json_encode($request->all());
 
         if($request->cab == 'all')
-    	   $cabangs = DB::table('cabang')->select("kode", "nama")->get();
+    	   $cabangs = DB::table('cabang')->select("kode", "nama")->orderBy('kode', 'asc')->get();
         else
            $cabangs = DB::table('cabang')->where("kode", $request->cab)->select("kode", "nama")->get();
 
         $cabang = DB::table('cabang')->select("kode")->first();
         $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '10')->get();
         $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
+
+        // return $cabangs;
 
         return view("keuangan.jurnal.insert")
     			->withCabangs($cabangs)

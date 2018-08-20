@@ -7,6 +7,7 @@
         <th> Biaya Penerus </th>
         <th> Keterangan </th>
         <th> Detail </th>   
+        <th> Status </th>   
         {{-- <th> Allow Edit </th> --}}
         <th> aksi </th>
   </tr>
@@ -20,7 +21,7 @@
 
   $(document).ready(function(){
     var cabang = '{{$cab}}';
-    tableDetail = $('.tbl-penerimabarang').DataTable({
+    $('.tbl-penerimabarang').DataTable({
          processing: true,
           // responsive:true,
           serverSide: true,
@@ -47,7 +48,7 @@
           { "data": "tagihan"},
           { "data": "bpk_keterangan"},
           { "data": "print" },
-          // { "data": "print"},
+          { "data": "status"},
           { "data": "aksi" },
           
           ]

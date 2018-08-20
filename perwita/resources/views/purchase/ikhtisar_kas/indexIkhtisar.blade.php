@@ -206,7 +206,19 @@ function(){
       url:baseUrl + '/ikhtisar_kas/hapus/'+id,
       type:'get',
       success:function(data){
-         if (data.status == 1) {
+         if (data.status == '1') {
+          swal({
+          title: "Error!",
+                  type: 'warning',
+                  text: data.pesan,
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                    var tableDetail = $('.tbl-penerimabarang').DataTable();
+                    tableDetail.ajax.reload();
+                    return false;
+          });
+        }else{
           swal({
           title: "Berhasil!",
                   type: 'success',
@@ -214,16 +226,8 @@ function(){
                   timer: 2000,
                   showConfirmButton: true
                   },function(){
-                     location.reload();
-          });
-        }else{
-          swal({
-          title: "Gagal Hapus!",
-                  type: 'error',
-                  text: "Data Gagal Dihapus",
-                  timer: 2000,
-                  showConfirmButton: true
-                  },function(){
+                     var tableDetail = $('.tbl-penerimabarang').DataTable();
+                    tableDetail.ajax.reload();
           });
         }
           

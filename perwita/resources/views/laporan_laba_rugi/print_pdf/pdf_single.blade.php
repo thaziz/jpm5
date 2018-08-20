@@ -216,9 +216,12 @@
                             @if($data_detail_aktiva["id_parrent"] == $data_neraca_aktiva["nomor_id"])
                                 <?php 
                                   $totDetail += $data_detail_aktiva["total"];
-                                  $total_aktiva += $data_detail_aktiva["total"];
+
+                                  if($data_neraca_aktiva["type"] == 'Pendapatan')
+                                    $total_aktiva += $data_detail_aktiva["total"];
+                                  else
+                                    $total_aktiva -= $data_detail_aktiva["total"];
                                 ?>
-                              </tr>
                             @endif
                           @endforeach
 
