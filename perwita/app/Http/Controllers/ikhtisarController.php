@@ -1079,6 +1079,7 @@ class ikhtisarController extends Controller
 						   	 	'ik_status' 	=> $status,
 						   	 	'ik_keterangan' => $request->Keterangan,
 						   	 	'ik_total' 		=> $debet,
+						   	 	'ik_pelunasan'	=> $debet,
 						   		'updated_by'	=> Auth::user()->m_name,
 								'updated_at'	=> Carbon::now(),
 						   	 ]);
