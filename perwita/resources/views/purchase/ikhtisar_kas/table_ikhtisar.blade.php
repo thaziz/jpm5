@@ -40,9 +40,9 @@
         @else
           <tbody class="">
             @foreach($cari as $val)
-            <tr>
+            <tr onclick="ck(this)">
               <td align="center">
-                <input type="checkbox" name="checker[]" class="ck" onchange="ck()">
+                <input type="checkbox" name="checker[]" class="ck" >
                 <input type="hidden" name="id[]" class="id_table" value="{{$val->nota}}">
               </td>
               <td><?php echo date('d/m/Y',strtotime($val->tanggal));?></td>

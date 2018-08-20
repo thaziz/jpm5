@@ -261,7 +261,13 @@ $('.cabang').change(function(){
   });
 })
 
-function ck() {
+function ck(a) {
+  var cek = $(a).find('.ck');
+  if (cek.is(':checked') == true) {
+    $(a).find('.ck').attr('checked',false);
+  }else{
+    $(a).find('.ck').attr('checked',true);
+  }
   var total = 0;
   tabel_patty.$('.ck').each(function(){
     if($(this).is(':checked') == true){
