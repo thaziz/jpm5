@@ -900,7 +900,7 @@ class ikhtisarController extends Controller
 							->take(5000)
 							->orderBy('bpk_tanggal','DESC')
 							->get();
-					$cari = array_merge($data_dt,$bkk,$bpk);	
+					$cari = array_merge($bkk,$bpk);	
 					$det_bkk = [];
 					$det_bpk = [];
 
