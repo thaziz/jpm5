@@ -933,7 +933,7 @@ $('.save').click(function(){
             
         }else if (response.status == 4) {
                 swal({
-                    title: "Akun Piutang Untuk Cabang Ini Belum Tersedia",
+                    title: "Akun Pendapataan Untuk Cabang Ini Belum Tersedia",
                             type: 'error',
                             timer: 900,
                             showConfirmButton: true
@@ -941,7 +941,7 @@ $('.save').click(function(){
                 });
         }else if (response.status == 5) {
                 swal({
-                    title: "Akun Pendapatan Untuk Cabang Ini Belum Tersedia",
+                    title: "Akun Piutang Untuk Cabang Ini Belum Tersedia",
                             type: 'error',
                             timer: 900,
                             showConfirmButton: true

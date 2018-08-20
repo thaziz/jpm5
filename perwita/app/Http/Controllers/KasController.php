@@ -929,6 +929,7 @@ class KasController extends Controller
 		$akun_kargo  = DB::table('master_persentase')
 					  ->where('cabang','GLOBAL')
 					  ->where('jenis_biaya',5)
+					  ->orWhere('jenis_biaya',6)
 					  ->where('cabang','GLOBAL')
 					  ->get();
 

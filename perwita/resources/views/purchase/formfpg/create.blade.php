@@ -667,7 +667,7 @@
                                                     <option value=""> Pilih Data Bank </option>
 
                                                     @foreach($data['bank'] as $bank)
-                                                      <option value="{{$bank->mb_id}}, {{$bank->mb_nama}} , {{$bank->mb_cabang}} ,{{$bank->mb_accno}},{{$bank->mb_kode}},{{$bank->mb_kelompok}}"> {{$bank->mb_kode}}  </option>
+                                                      <option value="{{$bank->mb_id}}+{{$bank->mb_nama}}+{{$bank->mb_cabang}}+{{$bank->mb_accno}}+{{$bank->mb_kode}}+{{$bank->mb_kelompok}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                                     @endforeach
                                                   
                                                 </select>
@@ -1027,7 +1027,7 @@
           toastr.info("Mohon maaf data bank asal / tujuan belum diisi :)");
           return false;
         }
-        split = banktujuan.split(",");
+        split = banktujuan.split("+");
         kodebanktujuan = split[4];
         norekening = split[3];
         namabank = split[1];
@@ -2115,7 +2115,7 @@
                         }
 
                         banktujuan = $('.banktujuan').val();
-                        split = banktujuan.split(",");
+                        split = banktujuan.split("+");
                         kodebanktujuan = split[4];
                         norekening = split[3];
                         namabank = split[1];
@@ -2143,7 +2143,7 @@
 
                       if(jenisbayar == '12') {
                         banktujuan = $('.banktujuan').val();
-                        split = banktujuan.split(",");
+                        split = banktujuan.split("+");
                         kodebanktujuan = split[4];
                         norekening = split[3];
                         namabank = split[1];
@@ -2152,7 +2152,7 @@
 
                         if(metodebayar == 'CHECK/BG'){
                           for(var i =0 ; i < mbdt.length; i++ ){
-                             
+                            
                               if(mbdt[i][0].mb_kode.match(/1099.*/)){
                                 $('.kelompokbank').val('BEDA BANK');
                               }
