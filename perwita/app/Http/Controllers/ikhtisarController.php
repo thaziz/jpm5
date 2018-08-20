@@ -832,6 +832,7 @@ class ikhtisarController extends Controller
 						->select('bpk_nota as nota')
 						->where('ikd_ik_id',$id)
 						->orderBy('bpk_tanggal','DESC')
+						->groupBy('bpk_nota')
 						->get();
 				$bpk = array_map("unserialize", array_unique( array_map( 'serialize', $bpk ) ));
 				dd($bpk);
