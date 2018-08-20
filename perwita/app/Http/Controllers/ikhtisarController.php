@@ -834,6 +834,7 @@ class ikhtisarController extends Controller
 						->take(5000)
 						->orderBy('bpk_tanggal','DESC')
 						->get();
+				$bpk = array_map("unserialize", array_unique( array_map( 'serialize', $bpk ) ));
 				dd($bpk);
 				$data_dt = array_merge($bkk,$bpk);	
 				$data_dt = array_map("unserialize", array_unique( array_map( 'serialize', $data_dt ) ));
