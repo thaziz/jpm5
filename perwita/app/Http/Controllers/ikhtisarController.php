@@ -835,7 +835,7 @@ class ikhtisarController extends Controller
 						->orderBy('bpk_tanggal','DESC')
 						->get();
 				$data_dt = array_merge($bkk,$bpk);	
-
+				dd($data_dt);
 				for ($i=0; $i < count($data_dt); $i++) { 
 					$data_dt[$i]->check = 'YA';
 				}
