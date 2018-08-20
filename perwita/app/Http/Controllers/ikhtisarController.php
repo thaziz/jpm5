@@ -826,7 +826,7 @@ class ikhtisarController extends Controller
 					->orderBy('bkk_tgl','DESC')
 					->get();
 
-				dd($bkk);
+				// dd($bkk);
 				$bpk = DB::table('ikhtisar_kas_detail')
 						->join('biaya_penerus_kas','ikd_ref','=','bpk_nota')
 						->select('bpk_nota as nota','bpk_tanggal as tanggal','bpk_kode_akun as akun_kas','bpk_keterangan as keterangan','created_by as user','bpk_tarif_penerus as nominal','ikd_ik_dt','ikd_ik_id')
