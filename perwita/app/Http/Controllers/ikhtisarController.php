@@ -901,6 +901,7 @@ class ikhtisarController extends Controller
 							->orderBy('bpk_tanggal','DESC')
 							->get();
 					$cari = array_merge($bkk,$bpk);	
+					dd($cari);
 					$det_bkk = [];
 					$det_bpk = [];
 
@@ -947,7 +948,6 @@ class ikhtisarController extends Controller
 
 				}
 				
-				dd($cari);
 				$akun = DB::table('d_akun')
 					   		->get();
 				return view('purchase.ikhtisar_kas.edit_ikhtisar',compact('akun','data','start','end','id','detail','cari'));
