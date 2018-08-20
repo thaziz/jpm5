@@ -43,6 +43,9 @@
   .my-bg{
     background: #f0b7d6;
   }
+  td{
+    vertical-align: top !important;
+  }
 </style>
 <!-- <link href="{{ asset('assets/vendors/chosen/chosen.css')}}" rel="stylesheet"> -->
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -234,6 +237,10 @@ function cari_patty(){
     success:function(response){
       if (response.status == 2) {
         toastr.warning('Harap isi dengan benar')
+        return 1;
+      }
+      if (response.status == 3) {
+        toastr.warning(response.message)
         return 1;
       }
       $('.tabel_patty').html(response);

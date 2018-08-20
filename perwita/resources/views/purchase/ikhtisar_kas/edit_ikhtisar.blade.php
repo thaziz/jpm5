@@ -92,6 +92,12 @@
               </td>
             </tr>
             <tr>
+              <td>Filter Tanggal</td>
+              <td>
+                <input readonly=""  class="form-control" type="text" value="{{carbon\carbon::parse($data->ik_tgl_awal)->format('d/m/Y')}} - {{carbon\carbon::parse($data->ik_tgl_akhir)->format('d/m/Y')}}" name="rangepicker"  >
+              </td>
+            </tr>
+            <tr>
               <td>Status</td>
               <td>
                 <input  class="form-control status" type="text" readonly="" value="Released"  >
@@ -158,24 +164,33 @@
             </tr>
           </thead> 
           <tbody class="">
-            @foreach($data_dt as $val)
-            <tr>
-              <td align="center">
-                <input type="checkbox" checked="" name="checker[]" class="ck" onchange="ck()" >
-                <input type="hidden" name="id[]" class="id_table" value="{{$val->nota}}">
-                <input type="hidden" name="id_ikd[]" class="id_table" value="{{$val->ikd_ik_dt}}">
-                <input type="hidden" name="id_ik[]" class="id_table" value="{{$val->ikd_ik_id}}">
-              </td>
-              <td><?php echo date('d/m/Y',strtotime($val->tanggal));?></td>
-              <td>{{$val->nota}}</td>
-              <td>{{$val->akun_kas}}</td>
-              <td align="right">{{'' . number_format(round($val->nominal),2,',','.')}}
-                <input type="hidden" name="nominal[]" class="nominal" value="{{round($val->nominal)}}">
-              </td>
-              <td>{{$val->keterangan}}</td>
-              <td>{{$val->user}}</td>
-            </tr>
+            @foreach ($cari as $i=>$val)
+              <tr>
+                <td align="center">
+                  <input type="checkbox" name="checker[]" class="ck" onchange="ck()" >
+                  <input type="hidden" name="id[]" class="id_table" value="{{$val->nota}}">
+                </td>
+                <td><?php echo date('d/m/Y',strtotime($val->tanggal));?></td>
+                <td>{{$val->nota}}</td>
+                @if ($data->ik_jenis != 'BONSEM')
+                  <td>
+                    <ul>
+                      @foreach($detail[$i] as $a=>$val2)
+                        <li>{{ $detail[$i][$a] }}</li>
+                      @endforeach
+                    </ul>
+                  </td>
+                @else
+                <td>{{$val->akun_kas}}</td>
+                @endif
+                <td align="right">{{'' . number_format(round($val->nominal),2,',','.')}}
+                  <input type="hidden" name="nominal[]" class="nominal" value="{{round($val->nominal)}}">
+                </td>
+                <td>{{$val->keterangan}}</td>
+                <td>{{$val->user}}</td>
+              </tr>
             @endforeach
+            
           </tbody>    
       </table>
   </div>
