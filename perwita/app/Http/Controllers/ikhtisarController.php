@@ -498,7 +498,7 @@ class ikhtisarController extends Controller
 							  ->where('kode_cabang',$bpkd[$a]->bpkd_kode_cabang_awal)
 							  ->first();
 						if ($temp == null) {
-							return Response()->json(['status' => 3, 'message' => 'Biaya '.substr($cari_bpk->bpk_acc_biaya,0,4).' Tidak Tersedia Untuk Cabang '.$bpkd[$a]->bpkd_kode_cabang_awal]);
+							return Response()->json(['status' => 3, 'message' => 'Biaya '.substr($cari_bpk->bpk_acc_biaya,0,4).' Tidak Tersedia Untuk Cabang '.$bpkd[$a]->bpkd_kode_cabang_awal].' NOTA:('.$cari_bpk->bpk_nota.')');
 						}
 						$det_bpk[$i][$a] = $temp->id_akun;
 					}
