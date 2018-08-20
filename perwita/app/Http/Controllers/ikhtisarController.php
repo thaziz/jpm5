@@ -831,10 +831,9 @@ class ikhtisarController extends Controller
 						->join('biaya_penerus_kas','ikd_ref','=','bpk_nota')
 						->select('bpk_nota as nota')
 						->where('ikd_ik_id',$id)
-						->groupBy('nota')
 						->orderBy('bpk_tanggal','DESC')
 						->get();
-				$bpk = array_map("unserialize", array_unique( array_map( 'serialize', $bpk ) ));
+				$bpk = array_map("serialize", array_unique( array_map( 'unserialize', $bpk ) ));
 				dd($bpk);
 				$data_dt = array_merge($bkk,$bpk);	
 				$data_dt = array_map("unserialize", array_unique( array_map( 'serialize', $data_dt ) ));
