@@ -197,7 +197,7 @@
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Hapus!",
     cancelButtonText: "Batal",
-    closeOnConfirm: false
+    closeOnConfirm: true
   },
 
 function(){

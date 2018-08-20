@@ -636,7 +636,7 @@ class loadingController extends Controller
 
 
 			$cari_akun = DB::table('d_akun')
-					  ->where('id_akun','like','5299'.'%')
+					  ->where('id_akun','like','5205'.'%')
 					  ->where('kode_cabang',$request->cabang)
 					  ->first();
 
