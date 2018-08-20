@@ -2143,7 +2143,7 @@
 
                       if(jenisbayar == '12') {
                         banktujuan = $('.banktujuan').val();
-                        split = banktujuan.split(",");
+                        split = banktujuan.split("+");
                         kodebanktujuan = split[4];
                         norekening = split[3];
                         namabank = split[1];
