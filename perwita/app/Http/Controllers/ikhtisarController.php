@@ -814,27 +814,28 @@ class ikhtisarController extends Controller
 				$start = Carbon::parse($data->ik_tgl_awal)->format('Y-m-d');
 				$end = Carbon::parse($data->ik_tgl_akhir)->format('Y-m-d');
 
-				$data_dt = DB::table('ikhtisar_kas_detail')
-						   ->join('patty_cash','ikd_pc_id','=','pc_id')
-						   ->where('ikd_ik_id',$id)
-						   ->get();
+				// $data_dt = DB::table('ikhtisar_kas_detail')
+				// 		   ->join('patty_cash','ikd_pc_id','=','pc_id')
+				// 		   ->where('ikd_ik_id',$id)
+				// 		   ->get();
 
-				$bkk = DB::table('bukti_kas_keluar')
-					->join('ikhtisar_kas_detail','ikd_ref','=','bkk_nota')
+				$bkk = DB::table('ikhtisar_kas_detail')
+					->join('bukti_kas_keluar','ikd_ref','=','bkk_nota')
 					->select('bkk_nota as nota','bkk_tgl as tanggal','bkk_akun_kas as akun_kas','bkk_keterangan as keterangan','created_by as user','bkk_total as nominal','ikd_ik_dt','ikd_ik_id')
 					->where('ikd_ik_id',$id)
 					->take(5000)
 					->orderBy('bkk_tgl','DESC')
 					->get();
 
-				$bpk = DB::table('biaya_penerus_kas')
-						->join('ikhtisar_kas_detail','ikd_ref','=','bpk_nota')
+				$bpk = DB::table('ikhtisar_kas_detail')
+						->join('biaya_penerus_kas','ikd_ref','=','bpk_nota')
 						->select('bpk_nota as nota','bpk_tanggal as tanggal','bpk_kode_akun as akun_kas','bpk_keterangan as keterangan','created_by as user','bpk_tarif_penerus as nominal','ikd_ik_dt','ikd_ik_id')
 						->where('ikd_ik_id',$id)
 						->take(5000)
 						->orderBy('bpk_tanggal','DESC')
 						->get();
 				$data_dt = array_merge($bkk,$bpk);	
+				$data_dt = array_map("unserialize", array_unique( array_map( 'serialize', $data_dt ) ));
 				dd($data_dt);
 				for ($i=0; $i < count($data_dt); $i++) { 
 					$data_dt[$i]->check = 'YA';
