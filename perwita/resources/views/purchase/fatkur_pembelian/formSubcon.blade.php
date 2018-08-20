@@ -921,60 +921,60 @@ function save_subcon(){
 }
 
 
-$('.simpan_subcon').click(function(){
-	var selectOutlet = $('.nama_sc').val();
-	var cabang = $('.cabang').val();
-	var totalterima_tt_subcon = $('.totalterima_tt_subcon').val();
- 	if (totalterima_tt_subcon == 'Rp 0,00') {
- 		toastr.warning('Nilai Tanda Terima Tidak Boleh Nol');
- 	}
-      swal({
-        title: "Apakah anda yakin?",
-        text: "Simpan Data!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Ya, Simpan!",
-        cancelButtonText: "Batal",
-        closeOnConfirm: true
-      },
-      function(){
-           $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-          $.ajax({
-          url:baseUrl + '/fakturpembelian/simpan_tt',
-          type:'get',
-          dataType:'json',
-          data:$('.tabel_tt_subcon :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
-          success:function(response){
-                swal({
-                    title: "Berhasil!",
-                    type: 'success',
-                    text: "Data berhasil disimpan",
-                    timer: 900,
-                    showConfirmButton: true
-                    },function(){
-                      $('.nota_id_tt').val(response.id);
-                      $('.nota_no_tt').val(response.no);
-                	  $('.save_subcon').removeClass('disabled');
-                    });
+// $('.simpan_subcon').click(function(){
+// 	var selectOutlet = $('.nama_sc').val();
+// 	var cabang = $('.cabang').val();
+// 	var totalterima_tt_subcon = $('.totalterima_tt_subcon').val();
+//  	if (totalterima_tt_subcon == 'Rp 0,00') {
+//  		toastr.warning('Nilai Tanda Terima Tidak Boleh Nol');
+//  	}
+//       swal({
+//         title: "Apakah anda yakin?",
+//         text: "Simpan Data!",
+//         type: "warning",
+//         showCancelButton: true,
+//         confirmButtonColor: "#DD6B55",
+//         confirmButtonText: "Ya, Simpan!",
+//         cancelButtonText: "Batal",
+//         closeOnConfirm: true
+//       },
+//       function(){
+//            $.ajaxSetup({
+//             headers: {
+//                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//                 }
+//             });
+//           $.ajax({
+//           url:baseUrl + '/fakturpembelian/simpan_tt',
+//           type:'get',
+//           dataType:'json',
+//           data:$('.tabel_tt_subcon :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
+//           success:function(response){
+//                 swal({
+//                     title: "Berhasil!",
+//                     type: 'success',
+//                     text: "Data berhasil disimpan",
+//                     timer: 900,
+//                     showConfirmButton: true
+//                     },function(){
+//                       $('.nota_id_tt').val(response.id);
+//                       $('.nota_no_tt').val(response.no);
+//                 	  $('.save_subcon').removeClass('disabled');
+//                     });
 
-          },
-          error:function(data){
-            swal({
-            title: "Terjadi Kesalahan",
-                    type: 'error',
-                    timer: 900,
-                   showConfirmButton: true
+//           },
+//           error:function(data){
+//             swal({
+//             title: "Terjadi Kesalahan",
+//                     type: 'error',
+//                     timer: 900,
+//                    showConfirmButton: true
 
-        });
-       }
-      });  
-     });
-})
+//         });
+//        }
+//       });  
+//      });
+// })
 
 
 function hitung_um_sc() {
