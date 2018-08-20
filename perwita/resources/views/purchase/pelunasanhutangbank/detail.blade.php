@@ -59,11 +59,15 @@
     @if(count($jurnal_dt)!=0)
                       <div class="pull-right">  
                      
-                          <a onclick="lihatjurnal()" class="btn-xs btn-primary" aria-hidden="true">
-                    
+                          <a onclick="lihatjurnal('BK')" class="btn-xs btn-primary" aria-hidden="true">
                             <i class="fa  fa-eye"> </i>
-                             &nbsp;  Lihat Jurnal  
+                             &nbsp;  Jurnal Bank Keluar  
                            </a> 
+                           &nbsp;
+                           <a onclick="lihatjurnal('BM')" class="btn-xs btn-primary" aria-hidden="true"><i class="fa  fa-eye"> </i>
+                             &nbsp;  Jurnal Bank Masuk  
+                           </a> 
+
                       </div>
     @endif
 
@@ -99,6 +103,7 @@
                              <input type="text" class="input-sm form-control nobbk" readonly="" name="nobbk" value="{{$data['bbk'][0]->bbk_nota}}">
                               <input type="hidden" class="input-sm form-control" readonly="" name="bbkid" value='{{$data['bbk'][0]->bbk_id}}'>
                               <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
+                              <input type="hidden" class="nobm" value="{{$data['bbk'][0]->bbk_notabm}}">
                             </td>
                           </tr>
 
@@ -376,7 +381,10 @@
                             <div class="modal-header">
                               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                               <h5 class="modal-title">Laporan Jurnal</h5>
-                              <h4 class="modal-title">No PO:  <u>{{$data['po'][0]->po_no or null }}</u> </h4>
+                              <input type="hidden" class="refbank">
+
+                              <h4 class="modal-title bk"> No BK:  <u> {{$data['bbk'][0]->bbk_nota or null }} </u> </h4>
+                              <h4 class="modal-title bm"> No BM:  <u> {{$data['bbk'][0]->bbk_notabm or null }} </u> </h4>
                               
                             </div>
                             <div class="modal-body" style="padding: 15px 20px 15px 20px">                            
@@ -1197,20 +1205,31 @@
       })
 
 
-  function lihatjurnal(){
+
+  function lihatjurnal(ref){
+
           $('.loading').css('display', 'block');
           id = $('.nobbk').val();
-
+          data = ref;
+          bm = $('.nobm').val();
           $.ajax({
           type : "post",
           url : baseUrl + '/pelunasanhutangbank/lihatjurnal',
-          data : {id},
+          data : {id,data,bm},
           dataType : "json",
           success : function(response){
                 console.log(response);
+                $('.refbank').val(ref);
                 /*$('#data-jurnal').html(response);*/
                 $('#jurnal').modal('show');
-
+                if(ref == 'BK'){
+                  $('.bm').hide();
+                  $('.bk').show();
+                }
+                else if(ref == 'BM'){
+                  $('.bm').show();
+                  $('.bk').hide();
+                }
                 $('#jurnal').modal('show'); 
              $('.loading').css('display', 'none');
                 $('.listjurnal').empty();

@@ -61,9 +61,14 @@ use App\bonsempengajuan;
 class BonSementaraController extends Controller
 {
 	public function index(){
-
-
-		$data['bonsem'] = DB::select("select * from bonsem_pengajuan, cabang where bp_cabang = kode order by bp_id desc");
+		$cabang = session::get('cabang');
+		if(Auth::user()->punyaAkses('Bon Sementara Cabang','all') || Auth::user()->punyaAkses('Bon Sementara Kabang','all') ){
+			$data['bonsem'] = DB::select("select * from bonsem_pengajuan, cabang where bp_cabang = kode order by bp_id desc");
+		}
+		else {
+			$data['bonsem'] = DB::select("select * from bonsem_pengajuan, cabang where bp_cabang = '$cabang' order by bp_id desc");
+		}
+		
 		
 		$data['bank'] = DB::select("select * from masterbank");
 

@@ -64,45 +64,23 @@
                            <table border="0" class="table table-stripped">
 
                           <tr>
-                           
-                               @if(Auth::user()->PunyaAkses('Pelunasan Hutang','aktif'))
-                            <tr>
-                            <td width="150px"> Cabang </td>
-                            <td>
-                              <select class='form-control chosen-select-width cabang' name="cabang">
-                                 
-
-                                  @foreach($data['cabang'] as $cabang)
-                                    <option value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                  @endforeach
-                                 </select>
+                           <td> Cabang </td>
+                               @if(Auth::user()->punyaAkses('Pelunasan Hutang','cabang'))
+                            <td class="cabang_td">  
+                            <select class="form-control chosen-select-width cabang" name="cabang">
+                                @foreach($data['cabang'] as $cabang)
+                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
+                              @endforeach
+                            </select>
                             </td>
-                            </tr>
                             @else
-                            <tr>
-                            <td width="150px"> Cabang </td>
-                            <td>
-                              <select class='form-control disabeld cabang' name="cabang">
-                                  <option value="">
-                                    Pilih Cabang
-                                  </option>
-
-                                  @foreach($data['cabang'] as $cabang)
-                                    @if($cabang->kode == Auth::user()->kode_cabang)
-                                    <option selected="" value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                    @else
-                                    <option value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                    @endif
-                                  @endforeach
-                                 </select>
-                            </td>
-                            </tr>
+                              <td class="disabled"> 
+                              <select class="form-control chosen-select-width disabled cabang" name="cabang">
+                                @foreach($data['cabang'] as $cabang)
+                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
+                                @endforeach
+                              </select> 
+                              </td>
                             @endif
                           </tr>
 
