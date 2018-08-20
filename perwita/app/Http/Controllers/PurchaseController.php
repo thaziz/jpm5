@@ -7525,7 +7525,7 @@ public function kekata($x) {
 
 					$idfpgb = $request->idfpgb[$i];
 
-					$updatebankmasuk = bank_masuk::where([['bm_nota', '=', $request->nofpg],['bm_idfpgb' , '=' , $idfpgb]]);
+					$updatebankmasuk = bank_masuk::where([['bm_nota', '=', $request->nofpg[$i]],['bm_idfpgb' , '=' , $idfpgb]]);
 					$updatebankmasuk->update([
 					 	'bm_status' => 'DITRANSFER', 
 					 	
@@ -10762,36 +10762,40 @@ public function kekata($x) {
 
 								if($request->jenisbayar == '12'){
 								//	return 'yesy';
-									$bankmasuk = new bank_masuk();
 
-									$lastid_bm = bank_masuk::max('bm_id');
-									if(isset($lastid_bm)){
-										$idbm = $lastid_bm;
-										$idbm = (int)$idbm + 1;
+									if($request->kelompokbank == 'BEDA BANK'){
+										$bankmasuk = new bank_masuk();
+	
+										$lastid_bm = bank_masuk::max('bm_id');
+										if(isset($lastid_bm)){
+											$idbm = $lastid_bm;
+											$idbm = (int)$idbm + 1;
+										}
+										else {
+											$idbm = 1;
+										}
+	
+										$bankasal = DB::select("select * from masterbank where mb_kode = '$kodebank'");
+										$cabangasal = $bankasal[0]->mb_cabangbank;
+										$kodetujuan = $request->kodebanktujuan[$j];
+										$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
+										$cabangtujuan = $banktujuan[0]->mb_cabangbank;
+	
+										$bankmasuk->bm_id = $idbm;
+										$bankmasuk->bm_bankasal = $kodebank;
+										$bankmasuk->bm_cabangasal = $cabangasal;
+										$bankmasuk->bm_cabangtujuan = $cabangtujuan;
+										$bankmasuk->bm_banktujuan = $kodetujuan;
+										$bankmasuk->bm_status = 'DIKIRIM';
+										$bankmasuk->created_by = $request->username;
+										$bankmasuk->updated_by = $request->username;
+										$bankmasuk->bm_nota = $request->nofpg;
+										$bankmasuk->bm_transaksi = $request->noseri[$j];
+										$bankmasuk->bm_jenisbayar = $request->jenisbayarbank;
+										$bankmasuk->bm_idfpgb = $idfpg_bank;
+										$bankmasuk->bm_nominal = $nominalbank;
+										$bankmasuk->save();
 									}
-									else {
-										$idbm = 1;
-									}
-
-									$bankasal = DB::select("select * from masterbank where mb_kode = '$kodebank'");
-									$cabangasal = $bankasal[0]->mb_cabangbank;
-									$kodetujuan = $request->kodebanktujuan[$j];
-									$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
-									$cabangtujuan = $banktujuan[0]->mb_cabangbank;
-
-									$bankmasuk->bm_id = $idbm;
-									$bankmasuk->bm_bankasal = $kodebank;
-									$bankmasuk->bm_cabangasal = $cabangasal;
-									$bankmasuk->bm_cabangtujuan = $cabangtujuan;
-									$bankmasuk->bm_banktujuan = $kodetujuan;
-									$bankmasuk->bm_status = 'DIKIRIM';
-									$bankmasuk->created_by = $request->username;
-									$bankmasuk->updated_by = $request->username;
-									$bankmasuk->bm_nota = $request->nofpg;
-									$bankmasuk->bm_transaksi = $request->noseri[$j];
-									$bankmasuk->bm_jenisbayar = $request->jenisbayarbank;
-									$bankmasuk->bm_idfpgb = $idfpg_bank;
-									$bankmasuk->save();
 								}
 						}	
 
@@ -10862,6 +10866,7 @@ public function kekata($x) {
 
 								if($request->jenisbayar == '12'){
 								//	return 'yesy';
+									if($request->kelompokbank == 'BEDA BANK') {
 									$bankmasuk = new bank_masuk();
 
 									$lastid_bm = bank_masuk::max('bm_id');
@@ -10891,7 +10896,9 @@ public function kekata($x) {
 									$bankmasuk->bm_transaksi = $request->noseri[$j];
 									$bankmasuk->bm_jenisbayar = $request->jenisbayarbank;
 									$bankmasuk->bm_idfpgb = $idfpg_bank;
+									$bankmasuk->bm_nominal = $nominalbank;
 									$bankmasuk->save();
+									}
 								}					
 					}
 					else {
