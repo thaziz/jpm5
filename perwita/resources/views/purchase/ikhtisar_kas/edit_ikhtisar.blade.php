@@ -169,7 +169,7 @@
                 <td align="center" onclick="ck(this)">
                   <input type="checkbox" @if (isset($val->check))
                     checked="" 
-                  @endif name="checker[]" class="ck" onchange="ck(this)" >
+                  @endif name="checker[]" class="ck" onchange="ceek(this)" >
                   <input type="hidden" name="id[]" class="id_table" value="{{$val->nota}}">
                 </td>
                 <td><?php echo date('d/m/Y',strtotime($val->tanggal));?></td>
