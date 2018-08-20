@@ -839,6 +839,7 @@ class ikhtisarController extends Controller
 				for ($i=0; $i < count($data_dt); $i++) { 
 					$data_dt[$i]->check = 'YA';
 				}
+
 				if ($data->ik_jenis == 'BONSEM') {
 					$bkk = DB::table('bukti_kas_keluar')
 							->select('bkk_nota as nota','bkk_tgl as tanggal','bkk_akun_kas as akun_kas','bkk_keterangan as keterangan','created_by as user','bkk_total as nominal')
@@ -946,7 +947,7 @@ class ikhtisarController extends Controller
 
 				}
 				
-
+				dd($cari);
 				$akun = DB::table('d_akun')
 					   		->get();
 				return view('purchase.ikhtisar_kas.edit_ikhtisar',compact('akun','data','start','end','id','detail','cari'));
