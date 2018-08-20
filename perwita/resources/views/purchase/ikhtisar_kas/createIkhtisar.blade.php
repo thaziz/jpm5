@@ -264,9 +264,9 @@ $('.cabang').change(function(){
 function ck(a) {
   var cek = $(a).find('.ck');
   if (cek.is(':checked') == true) {
-    $(a).find('.ck').attr('checked',false);
+    $(a).find('.ck').prop('checked',false);
   }else{
-    $(a).find('.ck').attr('checked',true);
+    $(a).find('.ck').prop('checked',true);
   }
   var total = 0;
   tabel_patty.$('.ck').each(function(){
@@ -279,6 +279,24 @@ function ck(a) {
   $('.total').val(accounting.formatMoney(total,"", 2, ".",','))
 }
 
+
+function ceek(a) {
+  var cek = $(a).is(':checked');
+  if (cek == true) {
+    $(a).prop('checked',false);
+  }else{
+    $(a).prop('checked',true);
+  }
+  var total = 0;
+  tabel_patty.$('.ck').each(function(){
+    if($(this).is(':checked') == true){
+      var par = $(this).parents('tr');
+      var nominal = $(par).find('.nominal').val();
+      total += (nominal*1);
+    }
+  })
+  $('.total').val(accounting.formatMoney(total,"", 2, ".",','))
+}
 function simpan(){
     $.ajax({
     url:baseUrl +'/ikhtisar_kas/simpan',

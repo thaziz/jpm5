@@ -16,8 +16,8 @@
           <tbody class="">
             @foreach($cari as $i=>$val)
             <tr>
-              <td align="center">
-                <input type="checkbox" name="checker[]" class="ck" onchange="ck()">
+              <td align="center"  onclick="ck(this)">
+                <input type="checkbox" name="checker[]" class="ck" onclick="ceek(this)">
                 <input type="hidden" name="id[]" class="id_table" value="{{$val->nota}}">
               </td>
               <td><?php echo date('d/m/Y',strtotime($val->tanggal));?></td>
@@ -38,11 +38,11 @@
             @endforeach
           </tbody>  
         @else
-          <tbody class="">
+          <tbody>
             @foreach($cari as $val)
-            <tr onclick="ck(this)">
-              <td align="center">
-                <input type="checkbox" name="checker[]" class="ck" >
+            <tr >
+              <td align="center"  onclick="ck(this)">
+                <input type="checkbox" name="checker[]" class="ck" onchange="ceek(this)">
                 <input type="hidden" name="id[]" class="id_table" value="{{$val->nota}}">
               </td>
               <td><?php echo date('d/m/Y',strtotime($val->tanggal));?></td>
