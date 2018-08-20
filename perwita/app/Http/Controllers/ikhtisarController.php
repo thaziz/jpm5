@@ -825,19 +825,21 @@ class ikhtisarController extends Controller
 					->where('ikd_ik_id',$id)
 					->orderBy('bkk_tgl','DESC')
 					->get();
-
-				// dd($bkk);
+				$bpk = DB::table('biaya_penerus_kas')
+						 ->select('bpk_nota')
+						 ->groupBy('bpk_nota')
+						 ->get();
+				dd($bpk);
 				$bpk = DB::table('ikhtisar_kas_detail')
 						->join('biaya_penerus_kas','ikd_ref','=','bpk_nota')
-						->select('bpk_nota as nota')
+						->select('bpk_nota as nota','bpk_tanggal as tanggal','bpk_kode_akun as akun_kas','bpk_keterangan as keterangan','created_by as user','bpk_tarif_penerus as nominal','ikd_ik_dt','ikd_ik_id')
 						->where('ikd_ik_id',$id)
+						->take(5000)
 						->orderBy('bpk_tanggal','DESC')
+						->groupBy('bpk_nota')
 						->get();
-				$bpk = array_map("serialize", array_unique( array_map( 'unserialize', $bpk ) ));
-				dd($bpk);
+				return dd($bpk);
 				$data_dt = array_merge($bkk,$bpk);	
-				$data_dt = array_map("unserialize", array_unique( array_map( 'serialize', $data_dt ) ));
-				dd($data_dt);
 				for ($i=0; $i < count($data_dt); $i++) { 
 					$data_dt[$i]->check = 'YA';
 				}
