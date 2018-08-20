@@ -123,6 +123,17 @@ class transaksi_memorial extends Controller
     public function save_data(Request $request){
        // return json_encode($request->all());
 
+       $date = explode('-', $request->jr_date);
+
+       if(!DB::table('d_periode_keuangan')->where('bulan', $date[1])->where('tahun', $date[2])->where('status', 'accessable')->first()){
+            $response = [
+                'status'    => 'blocked',
+                'content'   => 'null'
+            ];
+
+            return $response;
+       }
+
        $response = [
             'status'    => 'berhasil',
             'content'   => $request->all()
@@ -163,8 +174,8 @@ class transaksi_memorial extends Controller
 
         $jurnal = new d_jurnal;
         $jurnal->jr_id = ($id+1);
-        $jurnal->jr_year = date('Y');
-        $jurnal->jr_date = date('Y-m-d');
+        $jurnal->jr_year = $date[2];
+        $jurnal->jr_date = $request->jr_date;
         $jurnal->jr_detail = $request->jr_detail;
         $jurnal->jr_ref = $ref;
         $jurnal->jr_note = $request->jr_detail;
