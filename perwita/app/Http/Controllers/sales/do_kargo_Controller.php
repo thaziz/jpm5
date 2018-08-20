@@ -259,6 +259,7 @@ class do_kargo_Controller extends Controller
         $nota = DB::table('delivery_order')
                   ->where('nomor',$nomor)
                   ->get();
+        dd($nota);
         $kota = DB::table('kota')
                   ->get();
         $customer = DB::table('customer')

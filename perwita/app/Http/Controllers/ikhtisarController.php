@@ -732,14 +732,7 @@ class ikhtisarController extends Controller
 					for ($i=0; $i < count($request->checker); $i++) { 
 
 						$ikd = DB::table('ikhtisar_kas_detail')
-						->max('ikd_id');
-
-
-						if ($ikd != null) {
-							$ikd += 1;
-						}else{
-							$ikd = 1;
-						}
+								->max('ikd_id')+1;
 
 						if ($request->checker[$i] == 'on') {
 							$bkk = DB::table('bukti_kas_keluar')
@@ -818,8 +811,8 @@ class ikhtisarController extends Controller
 						  ->join('cabang','kode','=','ik_comp')
 						  ->first();
 
-				$start = Carbon::parse($data->ik_tgl_awal)->format('d/m/Y');
-				$end = Carbon::parse($data->ik_tgl_akhir)->format('d/m/Y');
+				$start = Carbon::parse($data->ik_tgl_awal)->format('Y-m-d');
+				$end = Carbon::parse($data->ik_tgl_akhir)->format('Y-m-d');
 
 				$data_dt = DB::table('ikhtisar_kas_detail')
 						   ->join('patty_cash','ikd_pc_id','=','pc_id')
@@ -843,10 +836,15 @@ class ikhtisarController extends Controller
 						->get();
 				$data_dt = array_merge($bkk,$bpk);	
 
+				for ($i=0; $i < count($data_dt); $i++) { 
+					$data_dt[$i]->check = 'YA';
+				}
 				if ($data->ik_jenis == 'BONSEM') {
 					$bkk = DB::table('bukti_kas_keluar')
 							->select('bkk_nota as nota','bkk_tgl as tanggal','bkk_akun_kas as akun_kas','bkk_keterangan as keterangan','created_by as user','bkk_total as nominal')
 							->where('bkk_comp',$data->ik_comp)
+							->where('bkk_tgl','>=',$start)
+							->where('bkk_tgl','<=',$end)
 							->where('bkk_status','RELEASED')
 							->take(5000)
 							->orderBy('bkk_tgl','DESC')
@@ -871,6 +869,8 @@ class ikhtisarController extends Controller
 					$bkk = DB::table('bukti_kas_keluar')
 							->select('bkk_nota as nota','bkk_tgl as tanggal','bkk_akun_kas as akun_kas','bkk_keterangan as keterangan','created_by as user','bkk_total as nominal')
 							->where('bkk_comp',$data->ik_comp)
+							->where('bkk_tgl','>=',$start)
+							->where('bkk_tgl','<=',$end)
 							->where('bkk_status','RELEASED')
 							->take(5000)
 							->orderBy('bkk_tgl','DESC')
@@ -893,76 +893,76 @@ class ikhtisarController extends Controller
 					$bpk = DB::table('biaya_penerus_kas')
 							->select('bpk_nota as nota','bpk_tanggal as tanggal','bpk_kode_akun as akun_kas','bpk_keterangan as keterangan','created_by as user','bpk_tarif_penerus as nominal')
 							->where('bpk_comp',$data->ik_comp)
+							->where('bpk_tanggal','>=',$start)
+							->where('bpk_tanggal','<=',$end)
 							->where('bpk_status','Released')
 							->take(5000)
 							->orderBy('bpk_tanggal','DESC')
 							->get();
-					$cari = array_merge($bkk,$bpk);		
+					$cari = array_merge($data_dt,$bkk,$bpk);	
 					$det_bkk = [];
 					$det_bpk = [];
 
-					for ($i=0; $i < count($bkk); $i++) { 
+					for ($i=0; $i < count($cari); $i++) { 
 
 						$cari_bkk = DB::table('bukti_kas_keluar')
-									  ->where('bkk_nota',$bkk[$i]->nota)
+									  ->where('bkk_nota',$cari[$i]->nota)
 									  ->first();
-						$bkkd = DB::table('bukti_kas_keluar_detail')
+						if ($cari_bkk != null) {
+							$bkkd = DB::table('bukti_kas_keluar_detail')
 								  ->where('bkkd_bkk_id',$cari_bkk->bkk_id)
 								  ->get();
-						for ($a=0; $a < count($bkkd); $a++) { 
-							$det_bkk[$i][$a] = $bkkd[$a]->bkkd_akun;
-						}
-						$det_bkk[$i] = array_unique($det_bkk[$i]);
-						$det_bkk[$i] = array_values($det_bkk[$i]);
-					}
-
-					for ($i=0; $i < count($bpk); $i++) { 
-
-						$cari_bpk = DB::table('biaya_penerus_kas')
-									  ->where('bpk_nota',$bpk[$i]->nota)
-									  ->first();
-						$bpkd = DB::table('biaya_penerus_kas_detail')
-								  ->where('bpkd_bpk_id',$cari_bpk->bpk_id)
-								  ->get();
-						for ($a=0; $a < count($bpkd); $a++) { 
-							$temp = DB::table('d_akun')
-								  ->where("id_akun",'like',substr($cari_bpk->bpk_acc_biaya,0,4).'%')
-								  ->where('kode_cabang',$bpkd[$a]->bpkd_kode_cabang_awal)
-								  ->first();
-							if ($temp == null) {
-								return Response()->json(['status' => 3, 'message' => 'Biaya '.substr($cari_bpk->bpk_acc_biaya,0,4).' Tidak Tersedia Untuk Cabang '.$bpkd[$a]->bpkd_kode_cabang_awal]);
+							for ($a=0; $a < count($bkkd); $a++) { 
+								$det_bkk[$i][$a] = $bkkd[$a]->bkkd_akun;
 							}
-							$det_bpk[$i][$a] = $temp->id_akun;
+							$det_bkk[$i] = array_unique($det_bkk[$i]);
+							$det_bkk[$i] = array_values($det_bkk[$i]);
+						}else{
+							$cari_bpk = DB::table('biaya_penerus_kas')
+									  ->where('bpk_nota',$cari[$i]->nota)
+									  ->first();
+							$bpkd = DB::table('biaya_penerus_kas_detail')
+									  ->where('bpkd_bpk_id',$cari_bpk->bpk_id)
+									  ->get();
+							for ($a=0; $a < count($bpkd); $a++) { 
+								$temp = DB::table('d_akun')
+									  ->where("id_akun",'like',substr($cari_bpk->bpk_acc_biaya,0,4).'%')
+									  ->where('kode_cabang',$bpkd[$a]->bpkd_kode_cabang_awal)
+									  ->first();
+								if ($temp == null) {
+									return Response()->json(['status' => 3, 'message' => 'Biaya '.substr($cari_bpk->bpk_acc_biaya,0,4).' Tidak Tersedia Untuk Cabang '.$bpkd[$a]->bpkd_kode_cabang_awal]);
+								}
+								$det_bpk[$i][$a] = $temp->id_akun;
+							}
+
+							$det_bpk[$i] = array_unique($det_bpk[$i]);
+							$det_bpk[$i] = array_values($det_bpk[$i]);
 						}
-
-						$det_bpk[$i] = array_unique($det_bpk[$i]);
-						$det_bpk[$i] = array_values($det_bpk[$i]);
+						
 					}
-
-
 					$detail = array_merge($det_bkk,$det_bpk);
+					$akun = DB::table('d_akun')
+								  ->get();
+
 				}
-		
+				
+
 				$akun = DB::table('d_akun')
 					   		->get();
-				return view('purchase.ikhtisar_kas.edit_ikhtisar',compact('akun','data','start','end','id','data_dt','detail','cari'));
+				return view('purchase.ikhtisar_kas.edit_ikhtisar',compact('akun','data','start','end','id','detail','cari'));
 			}
 			
 		}
 
 		public function update(request $request){
-
 	   		return DB::transaction(function() use ($request) {  
 	   			$val = [];
-				for ($i=0; $i < count($request->id_ikd); $i++) { 
+
+	   			$del = DB::table('ikhtisar_kas_detail')
+						 ->where('ikd_ik_id',$request->id_ik)
+						 ->delete();
+				for ($i=0; $i < count($request->id); $i++) { 
 					if ($request->checker[$i] == 'off') {
-
-						$del = DB::table('ikhtisar_kas_detail')
-							 ->where('ikd_ik_id',(int)$request->id_ik[$i])
-							 ->where('ikd_ik_dt',(int)$request->id_ikd[$i])
-							 ->delete();
-
-						
 
 						$bkk = DB::table('bukti_kas_keluar')
 									->where('bkk_nota',$request->id[$i])
@@ -980,7 +980,7 @@ class ikhtisarController extends Controller
 							
 						}else{
 							$bpk = DB::table('biaya_penerus_kas')
-								->where('bpk_nota',$request->id)
+								->where('bpk_nota',$request->id[$i])
 								->first();
 
 							$updt_bk = DB::table('biaya_penerus_kas')
@@ -991,13 +991,73 @@ class ikhtisarController extends Controller
 										'updated_by'	=> Auth::user()->m_name,
 									 ]);
 						}
+					}else{
+
+						$ikd = DB::table('ikhtisar_kas_detail')
+								->max('ikd_id')+1;
+
+						$bkk = DB::table('bukti_kas_keluar')
+								->where('bkk_nota',$request->id[$i])
+								->first();
+
+						if ($bkk != null) {
+
+							$save_ikhtisar = DB::table('ikhtisar_kas_detail')
+							   ->insert([
+							   		'ikd_id'   		=> $ikd,
+							   		'ikd_ik_id'   	=> $request->id_ik,
+							   		'ikd_pc_id'   	=> 0,
+							   		'ikd_ik_dt'   	=> $i+1,
+							   		'ikd_ref' 		=> $bkk->bkk_nota,
+							   		'ikd_akun' 		=> $bkk->bkk_akun_kas,
+							   		'ikd_nominal'  	=> round($bkk->bkk_total),
+							   		'ikd_keterangan'=> $bkk->bkk_keterangan,
+							   		'ikd_acc_hutang'=> $bkk->bkk_akun_kas,
+							   		'created_at'	=> Carbon::now(),
+							   		'updated_at'	=> Carbon::now(),
+							]);
+
+							$updt_bk = DB::table('bukti_kas_keluar')
+									 ->where('bkk_nota',$bkk->bkk_nota)
+									 ->update([
+									 	'bkk_status'    => 'APPROVED',
+									   	'updated_at'	=> Carbon::now(),
+									   	'updated_by'	=> Auth::user()->m_name,
+									 ]);
+							
+						}else{
+							$bpk = DB::table('biaya_penerus_kas')
+								->where('bpk_nota',$request->id[$i])
+								->first();
+
+							$save_ikhtisar = DB::table('ikhtisar_kas_detail')
+							   ->insert([
+							   		'ikd_id'   		=> $ikd,
+							   		'ikd_ik_id'   	=> $request->id_ik,
+							   		'ikd_pc_id'   	=> 0,
+							   		'ikd_ik_dt'   	=> $i+1,
+							   		'ikd_ref' 		=> $bpk->bpk_nota,
+							   		'ikd_akun' 		=> $bpk->bpk_kode_akun,
+							   		'ikd_nominal'  	=> $bpk->bpk_tarif_penerus,
+							   		'ikd_keterangan'=> $bpk->bpk_keterangan,
+							   		'ikd_acc_hutang'=> $bpk->bpk_kode_akun,
+							   		'created_at'	=> Carbon::now(),
+							   		'updated_at'	=> Carbon::now(),
+							]);
+
+							$updt_bk = DB::table('biaya_penerus_kas')
+									 ->where('bpk_nota',$bpk->bpk_nota)
+									 ->update([
+									 	'bpk_status'    => 'Approved',
+									   	'updated_at'	=> Carbon::now(),
+									   	'updated_by'	=> Auth::user()->m_name,
+									 ]);
+						}
 					}
 
 					array_push($val, $request->checker[$i]);
-
 				}
 
-					
 
 				if ($request->checked == 'on') {
 					$status = 'APPROVED';
