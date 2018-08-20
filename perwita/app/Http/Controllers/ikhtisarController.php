@@ -822,12 +822,11 @@ class ikhtisarController extends Controller
 				$bkk = DB::table('ikhtisar_kas_detail')
 					->join('bukti_kas_keluar','ikd_ref','=','bkk_nota')
 					->select('bkk_nota as nota','bkk_tgl as tanggal','bkk_akun_kas as akun_kas','bkk_keterangan as keterangan','created_by as user','bkk_total as nominal','ikd_ik_dt','ikd_ik_id')
-					// ->where('ikd_ik_id',$id)
-					->take(5000)
+					->where('ikd_ik_id',$id)
 					->orderBy('bkk_tgl','DESC')
 					->get();
 
-				// dd($bkk);
+				dd($bkk);
 				$bpk = DB::table('ikhtisar_kas_detail')
 						->join('biaya_penerus_kas','ikd_ref','=','bpk_nota')
 						->select('bpk_nota as nota','bpk_tanggal as tanggal','bpk_kode_akun as akun_kas','bpk_keterangan as keterangan','created_by as user','bpk_tarif_penerus as nominal','ikd_ik_dt','ikd_ik_id')
