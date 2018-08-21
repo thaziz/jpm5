@@ -64,10 +64,15 @@
                              &nbsp;  Jurnal Bank Keluar  
                            </a> 
                            &nbsp;
+
+                           @foreach($data['bbkd'] as $bbkd)
+                            @if($bbkd->bbkd_notabm != '')
                            <a onclick="lihatjurnal('BM')" class="btn-xs btn-primary" aria-hidden="true"><i class="fa  fa-eye"> </i>
                              &nbsp;  Jurnal Bank Masuk  
                            </a> 
+                           @endif
 
+                           @endforeach
                       </div>
     @endif
 
@@ -103,7 +108,7 @@
                              <input type="text" class="input-sm form-control nobbk" readonly="" name="nobbk" value="{{$data['bbk'][0]->bbk_nota}}">
                               <input type="hidden" class="input-sm form-control" readonly="" name="bbkid" value='{{$data['bbk'][0]->bbk_id}}'>
                               <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
-                              <input type="hidden" class="nobm" value="{{$data['bbk'][0]->bbk_notabm}}">
+                             
                             </td>
                           </tr>
 
@@ -249,7 +254,8 @@
                                                         
                                                         <tr class="transaksi data-{{$i}}" id="hslbank" class="transaksi" data-transaksi="{{$data['bbkd'][$i]->bbkd_nocheck}}">
                                                          <td> {{$i + 1}} </td>
-                                                         <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbk_nota}}" name="nofpg[]" readonly=""> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_idfpg}}" name="idfpg[]" readonly="">  </td>
+                                                         <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbk_nota}}" name="nofpg[]" readonly=""> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_idfpg}}" name="idfpg[]" readonly="">
+                                                           <input type="hidden" class="nobm" value="{{$bbkd->bbkd_notabm}}">  </td>
                                                          <td> <input type="text" class="form-control input-sm" value="{{ Carbon\Carbon::parse($data['bbkd'][$i]->bbkd_tglfpg)->format('d-M-Y ') }}" name="tgl[]" readonly="">  </td>
                                                          <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_nocheck}}" name="notransaksi[]" readonly="">  </td>
                                                          <td> <input type="text" class="form-control" name="jatuhtempo[]" readonly="" value="{{ Carbon\Carbon::parse($data['bbkd'][$i]->bbkd_jatuhtempo)->format('d-M-Y ') }}"> </td>
@@ -384,7 +390,7 @@
                               <input type="hidden" class="refbank">
 
                               <h4 class="modal-title bk"> No BK:  <u> {{$data['bbk'][0]->bbk_nota or null }} </u> </h4>
-                              <h4 class="modal-title bm"> No BM:  <u> {{$data['bbk'][0]->bbk_notabm or null }} </u> </h4>
+                              <h4 class="modal-title bm"> No BM:  <u> {{$data['bbkd'][0]->bbkd_notabm or null }} </u> </h4>
                               
                             </div>
                             <div class="modal-body" style="padding: 15px 20px 15px 20px">                            

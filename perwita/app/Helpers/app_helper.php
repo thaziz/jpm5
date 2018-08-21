@@ -155,4 +155,28 @@
 	} //JIKA COUNT == 1, maka belum tutup periode, jika ada maka tidak kosong
 
 	
+
+	function getnotabm($cabang){
+		$buland = date('m');
+        $tahund = date('Y');
+
+       $idbm = DB::select("select * from bank_masuk where bm_cabangasal = '$cabang'  and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_nota IS NOT NULL order by bm_id desc limit 1");
+
+	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
+		if(count($idbm) != 0) {		
+			$explode = explode("/", $idbm[0]->idbm);
+			$idbm = $explode[2];
+
+			$string = (int)$idspp + 1;
+			$idbm = str_pad($string, 4, '0', STR_PAD_LEFT);
+		}
+		else {		
+			$idbm = '0001';
+		}
+     
+        $notabm = 'BM' . '-' . $buland . $tahund . '/' . $cabang . '/' . $idbm;
+
+        return $notabm;
+	}
+
 ?>

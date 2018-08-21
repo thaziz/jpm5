@@ -77,13 +77,31 @@
                         <th> Jenis Bayar </th>
                         <th> No Seri Transaksi </th>
                         <th> Status </th>
+                        <th> Aksi </th>
+                        <th> Lihat Jurnal </th>
                        
                     </tr>
-                  
-
                     </thead>
                     <tbody>
-                    
+                        @foreach($data['bankmasuk'] as $key=>$bankmasuk)
+                        <tr>
+                        <td> {{$key + 1}} </td>
+                        <td> @if($bankmasuk->bm_nota != '')
+                                {{$bankmasuk->bm_nota}}
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td> {{$bankmasuk->bm_notatransaksi}} </td>
+                        <td> {{$bankmasuk->bm_bankasal}} </td>
+                        <td> {{$bankmasuk->bm_banktujuan}} </td>
+                        <td> {{number_format($bankmasuk->bm_nominal ,2)}} </td>
+                        <td> {{$bankmasuk->bm_jenisbayar}} </td>
+                        <td> {{$bankmasuk->bm_transaksi}}</td>
+                        <td> {{$bankmasuk->bm_status}}</td>
+                        <td> <a class="btn btn-success btn-sm"> <i class="fa fa-book"> </i> PROSES </a> </td>
+                    </tr>
+                        @endforeach
                     </tbody>
                    
                   </table>

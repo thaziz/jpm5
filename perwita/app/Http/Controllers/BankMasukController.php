@@ -64,12 +64,12 @@ class BankMasukController extends Controller
 	public function bankmasuk(){
 		$cabang = session::get('cabang');
 		if(Auth::user()->punyaAkses('Bank Masuk','all')) {
-			$data['bankmasuk'] = DB::select("select * from bank_masuk, cabang where bm_cabangasal = kode and bm_status = 'DITRANSFER' order by bm_id desc");
+			$data['bankmasuk'] = DB::select("select * from bank_masuk where  bm_status = 'DITRANSFER' or bm_status = 'DITERIMA' order by bm_id desc");
 			$data['belumdiproses'] = DB::table("bank_masuk")->where('bm_status' , '=' , 'DITRANSFER')->count();
 			$data['sudahdiproses'] = DB::table("bank_masuk")->where('bm_status' , '=' , 'DITERIMA')->count();
 		}
 		else {
-			$data['bankmasuk'] = DB::select("select * from bank_masuk, cabang where bm_cabangasal = $cabang and bm_status = 'DITRANSFER' order by bm_id desc");
+			$data['bankmasuk'] = DB::select("select * from bank_masuk where bm_cabangasal = $cabang and bm_status = 'DITRANSFER' or bm_status = 'DITERIMA' order by bm_id desc");
 			$data['belumdiproses'] = DB::table("bank_masuk")->where([['bm_status' , '=' , 'DITRANSFER'],['bm_cabangasal' , '=' , '$cabang']])->count();
 			$data['sudahdiproses'] = DB::table("bank_masuk")->where([['bm_status' , '=' , 'DITERIMA'],['bm_cabangasal' , '=' , '$cabang']])->count();
 		}
