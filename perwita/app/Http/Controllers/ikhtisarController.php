@@ -800,7 +800,7 @@ class ikhtisarController extends Controller
 										'updated_by'	=> Auth::user()->m_name,
 									 ]);
 						}
-					}else{
+					}elseif ($request->checker[$i] == 'on'){
 
 						$ikd = DB::table('ikhtisar_kas_detail')
 								->max('ikd_id')+1;
@@ -835,6 +835,7 @@ class ikhtisarController extends Controller
 									 ]);
 							
 						}else{
+
 							$bpk = DB::table('biaya_penerus_kas')
 								->where('bpk_nota',$request->id[$i])
 								->first();
@@ -853,6 +854,7 @@ class ikhtisarController extends Controller
 							   		'created_at'	=> Carbon::now(),
 							   		'updated_at'	=> Carbon::now(),
 							]);
+
 							$updt_bk = DB::table('biaya_penerus_kas')
 									 ->where('bpk_nota',$bpk->bpk_nota)
 									 ->update([
@@ -861,9 +863,7 @@ class ikhtisarController extends Controller
 									   	'updated_by'	=> Auth::user()->m_name,
 									 ]);
 
-							$updt_bk = DB::table('biaya_penerus_kas')
-									 ->where('bpk_nota',$bpk->bpk_nota)
-									 ->get();
+							
 
 						}
 					}
@@ -884,8 +884,11 @@ class ikhtisarController extends Controller
 						$debet += $request->nominal[$i];
 					}
 	 			}
-				
 
+				$updt_bk = DB::table('biaya_penerus_kas')
+									 ->where('bpk_status','Approved')
+									 ->get();
+				dd($updt_bk);
 				$updt = DB::table('ikhtisar_kas')
 							 ->where('ik_nota',$request->ik)
 						   	 ->update([
