@@ -1004,9 +1004,10 @@ class ikhtisarController extends Controller
 
 
 			}
+
 			$bpk = [];
+
 			for ($i=0; $i < count($bpks); $i++) { 
-				
 
 				$bpk[$i] = DB::table('biaya_penerus_kas')
 						 ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
@@ -1019,6 +1020,8 @@ class ikhtisarController extends Controller
 						  ->where("id_akun",'like',substr($bpk[$i][$a]->akun,0,4).'%')
 						  ->where('kode_cabang',$bpk[$i][$a]->cabang)
 						  ->first();
+
+					$bpk[$i][$a]->akun = $temp->id_akun;
 				}
 			}
 

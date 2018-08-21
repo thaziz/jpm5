@@ -43,6 +43,9 @@
   .my-bg{
     background: #f0b7d6;
   }
+  td{
+    vertical-align: top!important;
+  }
 </style>
 <!-- <link href="{{ asset('assets/vendors/chosen/chosen.css')}}" rel="stylesheet"> -->
 <div class="row wrapper border-bottom white-bg page-heading">
