@@ -1620,7 +1620,6 @@ class KasController extends Controller
 		    		  ->first();
 
 		    }
-		    
 		}else{
 
 			$cari_persen = DB::table('master_persentase')
