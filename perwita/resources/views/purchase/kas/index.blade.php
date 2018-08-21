@@ -49,9 +49,9 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','tambah'))
-                      <div class="text-right">
+          {{--             <div class="text-right">
                        <a class="btn btn-success" aria-hidden="true" href="{{ url('biaya_penerus/createkas')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
-                      </div>
+                      </div> --}}
                     @endif
                 </div>
                 <div class="ibox-content">
@@ -60,7 +60,8 @@
               <div class="box">
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
-                  <div class="col-sm-12" style="margin-bottom: 20px">
+                    UNDER MAINTENANCE
+                {{--   <div class="col-sm-12" style="margin-bottom: 20px">
                     <div class="col-sm-6">
                       <table cellpadding="3" cellspacing="0" border="0" class="table">
                         @if (Auth::user()->punyaAkses('Biaya Penerus Kas','cabang')) 
@@ -78,10 +79,10 @@
                         @endif
                       </table>
                     </div>
-                  </div>
-                <div class="box-body append_table">
+                  </div> --}}
+         {{--        <div class="box-body append_table">
 
-                </div><!-- /.box-body -->
+                </div><!-- /.box-body --> --}}
                 <div class="box-footer">
                   <div class="pull-right">
             
