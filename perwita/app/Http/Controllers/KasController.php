@@ -612,7 +612,7 @@ class KasController extends Controller
 				$bulan = Carbon::parse(str_replace('/', '-', $request->tN))->format('m');
 			    $tahun = Carbon::parse(str_replace('/', '-', $request->tN))->format('y');
 
-			    $cari_nota = DB::select("SELECT  substring(max(bpk_nota),12) as id from biaya_penerus_kas
+			    $cari_nota = DB::select("SELECT  substring(max(bpk_nota),13) as id from biaya_penerus_kas
 			                                    WHERE bpk_comp = '$request->cabang'
 			                                    AND to_char(bpk_tanggal,'MM') = '$bulan'
 			                                    AND to_char(bpk_tanggal,'YY') = '$tahun'
@@ -622,7 +622,7 @@ class KasController extends Controller
 
 				
 
-				$nota = 'BK' . $bulan . $tahun . '/' . $request->cabang . '/' .$index;
+				$nota = 'BPK' . $bulan . $tahun . '/' . $request->cabang . '/' .$index;
 			}
 		}elseif ($cari_nota == null) {
 			$nota = $request->no_trans;
@@ -1928,7 +1928,7 @@ class KasController extends Controller
 			    				
 							    $index = (integer)$index + 1;
 							    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
-								$nota = 'BK' . $bulan[$b] . carbon::parse($tahun[$a])->format('y'). '/' . $comp[$i] . '/' .$index;
+								$nota = 'BPK' . $bulan[$b] . carbon::parse($tahun[$a])->format('y'). '/' . $comp[$i] . '/' .$index;
 
 								$update = DB::table('biaya_penerus_kas')
 											->where('bpk_id',$data[$c]->bpk_id)
@@ -1951,7 +1951,7 @@ class KasController extends Controller
 	    $bulan = Carbon::parse(str_replace('/', '-', $request->tanggal))->format('m');
 	    $tahun = Carbon::parse(str_replace('/', '-', $request->tanggal))->format('y');
 
-	    $cari_nota = DB::select("SELECT  substring(max(bpk_nota),12) as id from biaya_penerus_kas
+	    $cari_nota = DB::select("SELECT  substring(max(bpk_nota),13) as id from biaya_penerus_kas
 	                                    WHERE bpk_comp = '$request->cabang'
 	                                    AND to_char(bpk_tanggal,'MM') = '$bulan'
 	                                    AND to_char(bpk_tanggal,'YY') = '$tahun'
@@ -1961,7 +1961,7 @@ class KasController extends Controller
 
 		
 
-		$nota = 'BK' . $bulan . $tahun . '/' . $request->cabang . '/' .$index;
+		$nota = 'BPK' . $bulan . $tahun . '/' . $request->cabang . '/' .$index;
 		/*dd($data['nofp']);*/
 
 		return response()->json(['nota' => $nota]);
