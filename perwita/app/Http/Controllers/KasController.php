@@ -83,7 +83,8 @@ class KasController extends Controller
                             $a = '';
                             if($data->bpk_status == 'Released' or Auth::user()->punyaAkses('Biaya Penerus Kas','ubah')){
                                 if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
-							$a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' => $data->bpk_id] ).'" title="edit"> Edit</a><br>';
+									$a = '<a title="Edit" class="btn btn-xs btn-warning" href="'.route('editkas', ['id' => $data->bpk_id] ).'">
+                              			<i class="fa fa-pencil" aria-hidden="true"></i></a> ';
                                 }
                             }else{
                               $a = '';
@@ -92,12 +93,17 @@ class KasController extends Controller
                             $c = '';
                             if($data->bpk_status == 'Released' or Auth::user()->punyaAkses('Biaya Penerus Kas','hapus')){
                                 if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
-                                  $c = '<a class="fa fa-trash asw" align="center" onclick="hapus(\''.$data->bpk_id.'\')" title="hapus"> Hapus</a>';
+
+                                  $c = '<a title="Hapus" class="btn btn-xs btn-danger"  onclick="hapus(\''.$data->bpk_id.'\')">
+		                               <i class="fa fa-trash" aria-hidden="true"></i>
+		                               </a>';
                                 }
                             }else{
                               $c = '';
                             }
-                            return $a . $c  ;
+
+                            $d = '<a class="btn btn-xs btn-success" onclick="lihat_jurnal(\''.$data->bpk_id.'\')" title="lihat jurnal"><i class="fa fa-eye"></i></a>';
+                            return '<div class="btn-group">'.$a . $c  .$d.'</div>';
                                    
                         })
                     
