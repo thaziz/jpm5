@@ -860,6 +860,12 @@ class ikhtisarController extends Controller
 									   	'updated_at'	=> Carbon::now(),
 									   	'updated_by'	=> Auth::user()->m_name,
 									 ]);
+
+							$updt_bk = DB::table('biaya_penerus_kas')
+									 ->where('bpk_nota',$bpk->bpk_nota)
+									 ->get();
+							dd($updt_bk);
+
 						}
 					}
 
