@@ -154,7 +154,7 @@ class selaras_jurnal  extends Controller
                                    ->where('kode_cabang',$filter_comp[$bpk[$i]->bpk_nota][$a])
                                    ->first();
                     if ($cari_akun == null) {
-                     dd($bpk[$i]->bpk_nota);
+                     dd($bpk[$i]->bpk_nota .' '. $bpk[$i]->bpk_acc_biaya .' '. $filter_comp[$bpk[$i]->bpk_nota][$a]);
                     }
                     $save_patty = DB::table('patty_cash')
                            ->insert([
