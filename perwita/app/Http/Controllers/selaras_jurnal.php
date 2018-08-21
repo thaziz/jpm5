@@ -153,6 +153,9 @@ class selaras_jurnal  extends Controller
                                    ->where('id_akun','like',substr($bpk[$i]->bpk_acc_biaya,0, 4).'%')
                                    ->where('kode_cabang',$filter_comp[$bpk[$i]->bpk_nota][$a])
                                    ->first();
+                    if ($cari_akun == null) {
+                     dd($bpk[$i]->bpk_nota);
+                    }
                     $save_patty = DB::table('patty_cash')
                            ->insert([
                                 'pc_id'           => $cari_id_pc,
