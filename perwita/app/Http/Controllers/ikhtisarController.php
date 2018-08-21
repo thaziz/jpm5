@@ -791,7 +791,9 @@ class ikhtisarController extends Controller
 							$bpk = DB::table('biaya_penerus_kas')
 								->where('bpk_nota',$request->id[$i])
 								->first();
-
+							if ($bpk->bpk_nota == 'BPK0818/009/011') {
+								dd($request->checker[$i]);
+							}
 							$updt_bk = DB::table('biaya_penerus_kas')
 									 ->where('bpk_nota',$bpk->bpk_nota)
 									 ->update([
