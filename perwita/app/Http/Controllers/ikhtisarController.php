@@ -853,7 +853,6 @@ class ikhtisarController extends Controller
 							   		'created_at'	=> Carbon::now(),
 							   		'updated_at'	=> Carbon::now(),
 							]);
-							dd($bpk);
 							$updt_bk = DB::table('biaya_penerus_kas')
 									 ->where('bpk_nota',$bpk->bpk_nota)
 									 ->update([
