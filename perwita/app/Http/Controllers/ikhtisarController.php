@@ -908,7 +908,7 @@ class ikhtisarController extends Controller
 							 ->where('ik_nota',$request->ik)
 						   	 ->delete();
 
-					return Response()->json(['status'=>2]);
+					return Response()->json(['status'=>1]);
 					
 
 				}
