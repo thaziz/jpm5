@@ -111,7 +111,11 @@ class selaras_jurnal  extends Controller
                                       ->where('id_akun','like',substr($bpk[$i]->bpk_kode_akun,0, 4).'%')
                                       ->where('kode_cabang',$bpk[$i]->bpk_comp)
                                       ->first();
-                    
+                
+                if ($cari_coa == null) {
+                  dd($bpk[$i]->bpk_nota .' '. $bpk[$i]->bpk_kode_akun .' '. $bpk[$i]->bpk_comp);
+                }
+
                 if ($cari_coa->akun_dka == 'D') {
                     $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
                     $data_akun[0]['jrdt_detailid']  = 1;
@@ -153,6 +157,9 @@ class selaras_jurnal  extends Controller
                                    ->where('id_akun','like',substr($bpk[$i]->bpk_acc_biaya,0, 4).'%')
                                    ->where('kode_cabang',$filter_comp[$bpk[$i]->bpk_nota][$a])
                                    ->first();
+                    if ($cari_akun == null) {
+                     dd($bpk[$i]->bpk_nota .' '. $bpk[$i]->bpk_acc_biaya .' '. $filter_comp[$bpk[$i]->bpk_nota][$a]);
+                    }
                     $save_patty = DB::table('patty_cash')
                            ->insert([
                                 'pc_id'           => $cari_id_pc,
