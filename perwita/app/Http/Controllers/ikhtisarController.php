@@ -767,7 +767,6 @@ class ikhtisarController extends Controller
 		public function update(request $request){
 	   		return DB::transaction(function() use ($request) {  
 	   			$val = [];
-
 	   			$del = DB::table('ikhtisar_kas_detail')
 						 ->where('ikd_ik_id',$request->id_ik)
 						 ->delete();
@@ -854,7 +853,7 @@ class ikhtisarController extends Controller
 							   		'created_at'	=> Carbon::now(),
 							   		'updated_at'	=> Carbon::now(),
 							]);
-
+							dd($bpk);
 							$updt_bk = DB::table('biaya_penerus_kas')
 									 ->where('bpk_nota',$bpk->bpk_nota)
 									 ->update([
