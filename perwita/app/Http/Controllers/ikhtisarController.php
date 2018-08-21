@@ -864,7 +864,6 @@ class ikhtisarController extends Controller
 							$updt_bk = DB::table('biaya_penerus_kas')
 									 ->where('bpk_nota',$bpk->bpk_nota)
 									 ->get();
-							dd($updt_bk);
 
 						}
 					}
