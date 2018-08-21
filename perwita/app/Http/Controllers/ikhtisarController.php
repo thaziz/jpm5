@@ -888,7 +888,6 @@ class ikhtisarController extends Controller
 				$updt_bk = DB::table('biaya_penerus_kas')
 									 ->where('bpk_status','Approved')
 									 ->get();
-				dd($updt_bk);
 				$updt = DB::table('ikhtisar_kas')
 							 ->where('ik_nota',$request->ik)
 						   	 ->update([
