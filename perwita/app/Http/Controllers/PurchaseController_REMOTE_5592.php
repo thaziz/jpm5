@@ -203,17 +203,14 @@ class PurchaseController extends Controller
 		$idspp = DB::select("select * from spp where spp_cabang = '$cabang'  and to_char(spp_tgldibutuhkan, 'MM') = '$bulan' and to_char(spp_tgldibutuhkan, 'YY') = '$tahun' order by spp_id desc limit 1");
 
 	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
-		if(count($idspp) != 0) {
-		
+		if(count($idspp) != 0) {		
 			$explode = explode("/", $idspp[0]->spp_nospp);
 			$idspp = $explode[2];
 
 			$string = (int)$idspp + 1;
 			$idspp = str_pad($string, 4, '0', STR_PAD_LEFT);
 		}
-
-		else {
-		
+		else {		
 			$idspp = '0001';
 		}
 
@@ -7397,13 +7394,14 @@ public function kekata($x) {
 		return json_encode($datainfo) ;
 	}
 	
+
 	public function simpanbbk (Request $request){
 		return DB::transaction(function() use ($request) { 
 
 		$tempdone = 0;
 		$bbk = new bukti_bank_keluar();
 		$cabang = $request->cabang;
-		$lastid =  bukti_bank_keluar::max('bbk_id');;
+		$lastid =  bukti_bank_keluar::max('bbk_id');
 		
 
 		$datajurnal = [];
@@ -7525,12 +7523,6 @@ public function kekata($x) {
 
 					$idfpgb = $request->idfpgb[$i];
 
-					$updatebankmasuk = bank_masuk::where([['bm_nota', '=', $request->nofpg[$i]],['bm_idfpgb' , '=' , $idfpgb]]);
-					$updatebankmasuk->update([
-					 	'bm_status' => 'DITRANSFER', 
-					 	
-				 	]);	
-
 					$datafpgb = DB::select("select * from fpg, fpg_cekbank where idfpg = fpgb_idfpg and fpgb_idfpg = '$idfpg' and fpgb_id = '$idfpgb'");
 					$akunbanktujuan = $datafpgb[0]->fpgb_kodebanktujuan;
 					$akunbankasal = $datafpgb[0]->fpg_kodebank;
@@ -7543,6 +7535,33 @@ public function kekata($x) {
 					$kelompokakun = $datafpgb[0]->fpg_kelompok;
 
 					if($kelompokakun == 'SAMA BANK'){
+
+						$notabm = getnotabm($cabang);
+						$refbm = explode("-", $notabm);
+
+						$kodebankd = $datafpgb[0]->fpgb_kodebank;
+						if($kodebankd < 10){
+							$kodebankd = '0' . $kodebankd;
+						}	
+						else {
+							$kodebankd = $kodebankd;
+						}
+
+						$kode = $refbm[0] . $kodebankd;
+						$notabm = $kode . '-' . $refbm[1];
+
+						$updatebankmasuk = bank_masuk::where([['bm_notatransaksi', '=', $request->nofpg[$i]],['bm_idfpgb' , '=' , $idfpgb]]);
+						$updatebankmasuk->update([
+						 	'bm_status' => 'DITERIMA', 
+						 	'bm_nota' => $notabm,	 	
+					 	]);
+
+						$updatebbkd = bukti_bank_keluar_dt::where([['bbkd_id' ,'=' , $idbbkd ],['bbkd_idbbk' , '=' , $idbbk]]);
+						$updatebbkd->update([
+							'bbkd_notabm' => $notabm,
+						]);
+
+
 						$akunkasbank = '109911000';
 						$datakasbank = DB::select("select * from d_akun where id_akun = '$akunkasbank'");
 						$akundkakasbank = $datakasbank[0]->akun_dka;
@@ -7601,39 +7620,7 @@ public function kekata($x) {
 
 						if(count($jurnalpbkeluar) != 0){
 
-								//GET NOTA
-								$buland = Carbon::now()->format('m');
-						        $tahund = Carbon::now()->format('y');
-
-						        $cari_nota = DB::select("SELECT count(bbk_id) as id from bukti_bank_keluar
-						                                        WHERE bbk_cabang = '$cabang'
-						                                        AND to_char(bbk_tgl,'MM') = '$buland'
-						                                        AND to_char(bbk_tgl,'YY') = '$tahund'
-						                                        AND bbk_notabm IS NOT NULL");
-						      
-						        $index = (integer)$cari_nota[0]->id + 1;
-						        $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-						        if((int)$datafpgb[0]->fpgb_kodebank < 10) {
-						        	$varbank = '0' . $datafpgb[0]->fpgb_kodebank;
-						        }
-						        else {
-						        	$varbank = $datafpgb[0]->fpgb_kodebank;
-						        }	
-
-						        $notabm = 'BM' . $varbank . '-' . $buland . $tahund . '/' . $cabang . '/' . $index;
-
-						        $updatebbk = bukti_bank_keluar::where('bbk_id', '=', $idbbk);
-								$updatebbk->update([
-								 	'bbk_notabm' => $notabm, 
-								 	
-							 	]);	
-
-							 	$updatebankmasuk = bank_masuk::where([['bm_notatransaksi', '=' , $datafpgb[0]->fpg_nofpg],['bm_idfpgb' , '=' , $idfpgb]]);
-							 	$updatebankmasuk->update([
-							 		'bm_nota' => $notabm,
-							 	]);	
-
-								$lastidjurnald = DB::table('d_jurnal')->max('jr_id'); 
+						       	$lastidjurnald = DB::table('d_jurnal')->max('jr_id'); 
 								if(isset($lastidjurnald)) {
 									$idjurnald = $lastidjurnald;
 									$idjurnald = (int)$idjurnald + 1;
@@ -7646,8 +7633,17 @@ public function kekata($x) {
 								$jr_no = get_id_jurnal('BM' , $cabang);
 
 								$ref = explode("-", $jr_no);
-								$kode = $ref[0] . $varbank;
-								$jr_ref = $kode . $ref[1];
+
+								$kodebankd = $datafpgb[0]->fpgb_kodebank;
+								if($kodebankd < 10){
+									$kodebankd = '0' . $kodebankd;
+								}	
+								else {
+									$kodebankd = $kodebankd;
+								}
+
+								$kode = $ref[0] . $kodebankd;
+								$jr_ref = $kode . '-' . $ref[1];
 
 								$year = date('Y');	
 								$date = date('Y-m-d');
@@ -7701,6 +7697,11 @@ public function kekata($x) {
 							$datajurnal[$i]['detail'] = $request->keterangan[$i];
 		
 						}
+
+						$updatebankmasuk = bank_masuk::where([['bm_notatransaksi', '=', $request->nofpg[$i]],['bm_idfpgb' , '=' , $idfpgb]]);
+						$updatebankmasuk->update([
+						 	'bm_nota' => 'DITRANSFER', 						 	
+					 	]);	
 					}
 
 				}
@@ -10580,7 +10581,7 @@ public function kekata($x) {
 				$formfpg->fpg_keterangan = strtoupper($request->keterangan);
 
 
-				if($request->jenisbayar == 5) {
+				if($request->jenisbayar == 5 || $request->jenisbayar == 12) {
 					//$formfpg->fpg_orang = $request->keterangantransfer;
 					$formfpg->fpg_keterangan = strtoupper($request->keterangantransfer);
 
@@ -10763,7 +10764,6 @@ public function kekata($x) {
 								if($request->jenisbayar == '12'){
 								//	return 'yesy';
 
-									if($request->kelompokbank == 'BEDA BANK'){
 										$bankmasuk = new bank_masuk();
 	
 										$lastid_bm = bank_masuk::max('bm_id');
@@ -10789,13 +10789,14 @@ public function kekata($x) {
 										$bankmasuk->bm_status = 'DIKIRIM';
 										$bankmasuk->created_by = $request->username;
 										$bankmasuk->updated_by = $request->username;
-										$bankmasuk->bm_nota = $request->nofpg;
+										$bankmasuk->bm_notatransaksi = $request->nofpg;
 										$bankmasuk->bm_transaksi = $request->noseri[$j];
 										$bankmasuk->bm_jenisbayar = $request->jenisbayarbank;
 										$bankmasuk->bm_idfpgb = $idfpg_bank;
 										$bankmasuk->bm_nominal = $nominalbank;
+										
 										$bankmasuk->save();
-									}
+									
 								}
 						}	
 
@@ -10866,7 +10867,10 @@ public function kekata($x) {
 
 								if($request->jenisbayar == '12'){
 								//	return 'yesy';
-									if($request->kelompokbank == 'BEDA BANK') {
+									
+									
+
+
 									$bankmasuk = new bank_masuk();
 
 									$lastid_bm = bank_masuk::max('bm_id');
@@ -10892,13 +10896,14 @@ public function kekata($x) {
 									$bankmasuk->bm_status = 'DIKIRIM';
 									$bankmasuk->created_by = $request->username;
 									$bankmasuk->updated_by = $request->username;
-									$bankmasuk->bm_nota = $request->nofpg;
+									$bankmasuk->bm_notatransaksi = $request->nofpg;
 									$bankmasuk->bm_transaksi = $request->noseri[$j];
 									$bankmasuk->bm_jenisbayar = $request->jenisbayarbank;
 									$bankmasuk->bm_idfpgb = $idfpg_bank;
 									$bankmasuk->bm_nominal = $nominalbank;
+									
 									$bankmasuk->save();
-									}
+									
 								}					
 					}
 					else {
