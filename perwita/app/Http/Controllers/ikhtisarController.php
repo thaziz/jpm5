@@ -936,11 +936,11 @@ class ikhtisarController extends Controller
 							 ]);
 					
 				}else{
-					if ($bpk != null) {
 						$bpk = DB::table('biaya_penerus_kas')
 								->where('bpk_nota',$cari[$i]->ikd_ref)
 								->first();
 
+					if ($bpk != null) {
 						$updt_bk = DB::table('biaya_penerus_kas')
 								 ->where('bpk_nota',$bpk->bpk_nota)
 								 ->update([
