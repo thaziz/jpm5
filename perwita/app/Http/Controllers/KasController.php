@@ -48,7 +48,13 @@ class KasController extends Controller
 		if ($req->flag =='global') {
 			$cab = $req->cabang;
 			$tanggal_awal = $req->tanggal_awal;
+			if ($tanggal_awal == '') {
+				$tanggal_awal = '0';
+			}
 			$tanggal_akhir = $req->tanggal_akhir;
+			if ($tanggal_akhir == '') {
+				$tanggal_akhir = '0';
+			}
 			$jenis_biaya   = $req->jenis_biaya;
 			$nota = '0';
 		}else{
@@ -64,10 +70,11 @@ class KasController extends Controller
 
 	public function datatable_bk(request $req)
 	{
-
 		$nama_cabang = DB::table("cabang")
 						 ->where('kode',$req->cabang)
 						 ->first();
+
+		$jenis_biaya = $req->jenis_biaya;
 
 		if ($nama_cabang != null) {
 			$cabang = 'and bpk_comp = '."'$req->cabang'";
@@ -76,17 +83,54 @@ class KasController extends Controller
 		}
 
 
-		if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
-			$sql = "SELECT * FROM biaya_penerus_kas  join cabang on kode = bpk_comp where bpk_nota != '0' and bpk_jenis_biaya != 'LOADING' $cabang";
-			$data = DB::select($sql);
+		if ($req->tanggal_awal != '0') {
+			$tgl_awal = carbon::parse($req->tanggal_awal)->format('Y-m-d');
+			$tanggal_awal = 'and bpk_tanggal >= '."'$tgl_awal'";
 		}else{
-			$cabang = Auth::user()->kode_cabang;
-			$data = DB::table('biaya_penerus_kas')
-				  ->join('cabang','kode','=','bpk_comp')
-				  ->where('kode',$cabang)
-				  ->where('bpk_jenis_biaya','!=','LOADING')
-				  ->orderBy('bpk_id','ASC')
-				  ->get();
+			$tanggal_awal = '';
+		}
+
+		if ($req->tanggal_akhir != '0') {
+			$tgl_akhir = carbon::parse($req->tanggal_akhir)->format('Y-m-d');
+			$tanggal_akhir = 'and bpk_tanggal <= '."'$tgl_akhir'";
+		}else{
+			$tanggal_akhir = '';
+		}
+
+		if ($req->jenis_biaya != '0') {
+			$jenis_biaya = 'and bpk_jenis_biaya = '."'$req->jenis_biaya'";
+		}else{
+			$jenis_biaya = '';
+		}
+
+
+		if ($req->nota != '0') {
+			if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
+				$data = DB::table('biaya_penerus_kas')
+						  ->join('cabang','kode','=','bpk_comp')
+						  ->where('bpk_nota','=',$req->nota)
+						  ->where('bpk_jenis_biaya','!=','LOADING')
+						  ->orderBy('bpk_id','ASC')
+						  ->get();
+			}else{
+				$cabang = Auth::user()->kode_cabang;
+				$data = DB::table('biaya_penerus_kas')
+						  ->join('cabang','kode','=','bpk_comp')
+						  ->where('kode',$cabang)
+						  ->where('bpk_nota','=',$req->nota)
+						  ->where('bpk_jenis_biaya','!=','LOADING')
+						  ->orderBy('bpk_id','ASC')
+						  ->get();
+			}
+		}else{
+			if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
+				$sql = "SELECT * FROM biaya_penerus_kas  join cabang on kode = bpk_comp where bpk_nota != '0' and bpk_jenis_biaya != 'LOADING' $cabang $tanggal_awal $tanggal_akhir $jenis_biaya";
+				$data = DB::select($sql);
+			}else{
+				$cabang = Auth::user()->kode_cabang;
+				$sql = "SELECT * FROM biaya_penerus_kas  join cabang on kode = bpk_comp where bpk_nota != '0' and bpk_jenis_biaya != 'LOADING' and bpk_comp = '$cabang' $tanggal_akhir $tanggal_akhir $jenis_biaya";
+				$data = DB::select($sql);
+			}
 		}
 
         $data = collect($data);

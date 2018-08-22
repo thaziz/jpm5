@@ -1,4 +1,4 @@
-<table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
+<table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang" style="width: 100%">
   <thead align="center">
    <tr>
         <th> No. BBM </th>
@@ -28,6 +28,7 @@
     $('.tbl-penerimabarang').DataTable({
          processing: true,
           // responsive:true,
+          searching:false,
           serverSide: true,
           "order": [[ 1, "desc" ],[ 0, "desc" ]],
           ajax: {
