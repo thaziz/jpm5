@@ -77,7 +77,7 @@
                           @if (Auth::user()->punyaAkses('Biaya Penerus Kas','cabang')) 
                             <td align="center">Cabang</td>
                             <td align="center">
-                              <select class="form-control cabang chosen-select-width" name="cabang">
+                              <select class="form-control cabang chosen-select-width" onchange="filtering()" name="cabang">
                                 <option value="0">Pilih - Cabang </option>
                                 @foreach ($cabang as $a)
                                   <option value="{{$a->kode}}">{{$a->nama}}</option>
@@ -87,7 +87,7 @@
                           @endif
                             <td align="center">Jenis Biaya</td>
                             <td align="center">
-                              <select class="form-control jenis_biaya chosen-select-width" name="jenis_biaya">
+                              <select  onchange="filtering()" class="form-control jenis_biaya chosen-select-width" name="jenis_biaya">
                                 <option value="0">Pilih - Biaya</option>
                                 <option value="PAKET">PAKET</option>
                                 <option value="KARGO">KARGO</option>
