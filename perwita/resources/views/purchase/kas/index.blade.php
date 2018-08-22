@@ -61,21 +61,51 @@
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
                   <div class="col-sm-12" style="margin-bottom: 20px">
-                    <div class="col-sm-6">
-                      <table cellpadding="3" cellspacing="0" border="0" class="table">
-                        @if (Auth::user()->punyaAkses('Biaya Penerus Kas','cabang')) 
-                        <tr id="filter_col1" data-column="0">
-                            <td>Cabang</td>
+                    <div class="col-sm-12">
+                      <table cellpadding="3" cellspacing="0" border="0" class="table filter table-bordered">
+                        <tr>
+                            <td align="center">Tanggal Awal</td>
                             <td align="center">
-                              <select onchange="filtering()" class="form-control cabang chosen-select-width">
+                              <input type="text" class="tanggal_awal form-control date" name="tanggal_awal">
+                            </td>
+                            <td align="center">Tanggal Akhir</td>
+                            <td align="center">
+                              <input type="text" class="tanggal_akhir form-control date" name="tanggal_akhir">
+                            </td>
+                        </tr>
+                        <tr id="filter_col1" data-column="0">
+                          @if (Auth::user()->punyaAkses('Biaya Penerus Kas','cabang')) 
+                            <td align="center">Cabang</td>
+                            <td align="center">
+                              <select class="form-control cabang chosen-select-width" name="cabang">
                                 <option value="0">Pilih - Cabang </option>
                                 @foreach ($cabang as $a)
                                   <option value="{{$a->kode}}">{{$a->nama}}</option>
                                 @endforeach
                               </select>
                             </td>
+                          @endif
+                            <td align="center">Jenis Biaya</td>
+                            <td align="center">
+                              <select class="form-control jenis_biaya chosen-select-width" name="jenis_biaya">
+                                <option value="0">Pilih - Biaya</option>
+                                <option value="PAKET">PAKET</option>
+                                <option value="KARGO">KARGO</option>
+                              </select>
+                            </td>
                         </tr>
-                        @endif
+                        <tr>
+                          <td colspan="2" align="right">
+                            Cari Berdasarkan Nota
+                          </td>
+                          <td>
+                            <input type="text" class="nota form-control" name="nota">
+                          </td>
+                          <td align="center">
+                            <button class="search btn btn-success" type="button" onclick="filtering_nota()"><i class="fa fa-search"> Cari Berdasarkan Nota</i></button>
+                            <button class="search btn btn-danger" type="button" onclick="filtering()"><i class="fa fa-search"> Cari</i></button>
+                          </td>
+                        </tr>
                       </table>
                     </div>
                   </div>
@@ -130,9 +160,10 @@
 
 $(document).ready(function(){
   var cabang = $('.cabang').val();
+  var jenis_biaya = $('.jenis_biaya').val();
   $.ajax({
       url:baseUrl + '/biaya_penerus/append_table',
-      data:{cabang},
+      data:$('.filter input').serialize()+'&flag=global'+'&cabang='+cabang+'&jenis_biaya='+jenis_biaya,
       type:'get',
       success:function(data){
         $('.append_table').html(data);
@@ -150,10 +181,32 @@ $(document).ready(function(){
 
 function filtering() {
   var cabang = $('.cabang').val();
-  var jenis_bayar = $('.jenis_bayar').val();
+  var jenis_biaya = $('.jenis_biaya').val();
   $.ajax({
       url:baseUrl + '/biaya_penerus/append_table',
-      data:{cabang,jenis_bayar},
+      data:$('.filter input').serialize()+'&flag=global'+'&cabang='+cabang+'&jenis_biaya='+jenis_biaya,
+      type:'get',
+      success:function(data){
+        $('.append_table').html(data);
+      },
+      error:function(data){
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+}
+
+function filtering_nota() {
+  if ($('.nota').val() == '') {
+    return toastr.warning('Kode Nota Harus Diisi');
+  }
+  $.ajax({
+      url:baseUrl + '/biaya_penerus/append_table',
+      data:$('.filter input').serialize()+'&flag=nota',
       type:'get',
       success:function(data){
         $('.append_table').html(data);

@@ -45,8 +45,21 @@ class KasController extends Controller
 	}
 	public function append_table(request $req)
 	{
-		$cab = $req->cabang;
-		return view('purchase.kas.table_kas',compact('cab'));
+		if ($req->flag =='global') {
+			$cab = $req->cabang;
+			$tanggal_awal = $req->tanggal_awal;
+			$tanggal_akhir = $req->tanggal_akhir;
+			$jenis_biaya   = $req->jenis_biaya;
+			$nota = '0';
+		}else{
+			$cab = '0';
+			$tanggal_awal  = '0';
+			$tanggal_akhir = '0';
+			$jenis_biaya   = '0';
+			$nota = $req->nota;
+		}
+
+		return view('purchase.kas.table_kas',compact('cab','tanggal_awal','tanggal_akhir','jenis_biaya','nota'));
 	}
 
 	public function datatable_bk(request $req)
