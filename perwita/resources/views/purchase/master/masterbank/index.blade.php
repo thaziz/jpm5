@@ -69,7 +69,7 @@
                       <td>  {{$index + 1}} </td>
                       <td> {{$bank->mb_kode}}</td>
                       <td> {{$bank->mb_nama}} </td>
-                      <td> {{$bank->mb_cabangbank}}</td>
+                      <td> {{$bank->mb_cabangbank}} - {{$bank->nama}}</td>
                       <td> {{$bank->mb_alamat}}</td>
                       <td> {{$bank->mb_accno}}</td>
                       <td> {{$bank->mb_namarekening}}</td>

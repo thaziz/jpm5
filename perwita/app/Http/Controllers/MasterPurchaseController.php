@@ -449,8 +449,8 @@ class MasterPurchaseController extends Controller
 	}
 	
 	public function masterbank(){
-		$data['bank'] = DB::select("select * from masterbank");
-	//	dd($data);
+		$data['bank'] = DB::select("select * from masterbank, cabang where mb_cabangbank = kode");
+	
 		return view('purchase/master/masterbank/index', compact('data'));
 	}
 
