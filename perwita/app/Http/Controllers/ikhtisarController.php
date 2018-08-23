@@ -280,43 +280,50 @@ class ikhtisarController extends Controller
 				$cari = array_merge($bkk,$bpk);		
 				$det_bkk = [];
 				$det_bpk = [];
-				
-				for ($i=0; $i < count($bkk); $i++) { 
 
-					$cari_bkk = DB::table('bukti_kas_keluar')
-								  ->where('bkk_nota',$bkk[$i]->nota)
-								  ->first();
-					$bkkd = DB::table('bukti_kas_keluar_detail')
-							  ->where('bkkd_bkk_id',$cari_bkk->bkk_id)
-							  ->get();
-					for ($a=0; $a < count($bkkd); $a++) { 
-						$det_bkk[$i][$a] = $bkkd[$a]->bkkd_akun;
+				for ($i=0; $i < count($bkk); $i++) { 
+					try{
+						$cari_bkk = DB::table('bukti_kas_keluar')
+									  ->where('bkk_nota',$bkk[$i]->nota)
+									  ->first();
+						$bkkd = DB::table('bukti_kas_keluar_detail')
+								  ->where('bkkd_bkk_id',$cari_bkk->bkk_id)
+								  ->get();
+						for ($a=0; $a < count($bkkd); $a++) { 
+							$det_bkk[$i][$a] = $bkkd[$a]->bkkd_akun;
+						}
+						$det_bkk[$i] = array_unique($det_bkk[$i]);
+						$det_bkk[$i] = array_values($det_bkk[$i]);
+					}catch(Exception $error){
+						return response()->json(['status'=>3,'message'=>'Terdapat Masalah Terhadap Nota '.$bkk[$i]->nota]);
 					}
-					$det_bkk[$i] = array_unique($det_bkk[$i]);
-					$det_bkk[$i] = array_values($det_bkk[$i]);
+					
 				}
 
 				for ($i=0; $i < count($bpk); $i++) { 
-
-					$cari_bpk = DB::table('biaya_penerus_kas')
-								  ->where('bpk_nota',$bpk[$i]->nota)
+					try{
+						$cari_bpk = DB::table('biaya_penerus_kas')
+									  ->where('bpk_nota',$bpk[$i]->nota)
+									  ->first();
+						$bpkd = DB::table('biaya_penerus_kas_detail')
+								  ->where('bpkd_bpk_id',$cari_bpk->bpk_id)
+								  ->get();
+						for ($a=0; $a < count($bpkd); $a++) { 
+							$temp = DB::table('d_akun')
+								  ->where("id_akun",'like',substr($cari_bpk->bpk_acc_biaya,0,4).'%')
+								  ->where('kode_cabang',$bpkd[$a]->bpkd_kode_cabang_awal)
 								  ->first();
-					$bpkd = DB::table('biaya_penerus_kas_detail')
-							  ->where('bpkd_bpk_id',$cari_bpk->bpk_id)
-							  ->get();
-					for ($a=0; $a < count($bpkd); $a++) { 
-						$temp = DB::table('d_akun')
-							  ->where("id_akun",'like',substr($cari_bpk->bpk_acc_biaya,0,4).'%')
-							  ->where('kode_cabang',$bpkd[$a]->bpkd_kode_cabang_awal)
-							  ->first();
-						if ($temp == null) {
-							return Response()->json(['status' => 3, 'message' => 'Biaya '.substr($cari_bpk->bpk_acc_biaya,0,4).' Tidak Tersedia Untuk Cabang '.$bpkd[$a]->bpkd_kode_cabang_awal].' NOTA:('.$cari_bpk->bpk_nota.')');
+							if ($temp == null) {
+								return Response()->json(['status' => 3, 'message' => 'Biaya '.substr($cari_bpk->bpk_acc_biaya,0,4).' Tidak Tersedia Untuk Cabang '.$bpkd[$a]->bpkd_kode_cabang_awal].' NOTA:('.$cari_bpk->bpk_nota.')');
+							}
+							$det_bpk[$i][$a] = $temp->id_akun;
 						}
-						$det_bpk[$i][$a] = $temp->id_akun;
-					}
 
-					$det_bpk[$i] = array_unique($det_bpk[$i]);
-					$det_bpk[$i] = array_values($det_bpk[$i]);
+						$det_bpk[$i] = array_unique($det_bpk[$i]);
+						$det_bpk[$i] = array_values($det_bpk[$i]);
+					}catch(Exception $error){
+						return response()->json(['status'=>3,'message'=>'Terdapat Masalah Terhadap Nota '.$bpk[$i]->nota]);
+					}
 				}
 
 
