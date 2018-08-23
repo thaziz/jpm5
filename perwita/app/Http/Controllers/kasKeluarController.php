@@ -175,7 +175,7 @@ class kasKeluarController extends Controller
 				$data = DB::select($sql);
 			}else{
 				$cabang = Auth::user()->kode_cabang;
-				$sql = "SELECT * FROM bukti_kas_keluar JOIN jenisbayar on idjenisbayar = bkk_jenisbayar join cabang on kode = bkk_comp where bkk_nota != '0' $cabang $tanggal_awal $tanggal_akhir $jenis_biaya";
+				$sql = "SELECT * FROM bukti_kas_keluar JOIN jenisbayar on idjenisbayar = bkk_jenisbayar join cabang on kode = bkk_comp where bkk_nota != '0' and bkk_comp = '$cabang' $tanggal_awal $tanggal_akhir $jenis_biaya";
 				$data = DB::select($sql);
 			}
 		}
@@ -3490,7 +3490,7 @@ class kasKeluarController extends Controller
 										  ]);
 					}
 				}catch(Exception $err){
-					return response()->json(['status'=>0]);
+
 				}
 				
 			}

@@ -160,6 +160,9 @@
 
 $(document).ready(function(){
   var cabang = $('.cabang').val();
+  if (cabang == 'undefined' || cabang == null || cabang == undefined) {
+    cabang = 0;
+  }
   var jenis_biaya = $('.jenis_biaya').val();
   $.ajax({
       url:baseUrl + '/biaya_penerus/append_table',
@@ -181,6 +184,9 @@ $(document).ready(function(){
 
 function filtering() {
   var cabang = $('.cabang').val();
+  if (cabang == 'undefined' || cabang == null || cabang == undefined) {
+    cabang = 0;
+  }
   var jenis_biaya = $('.jenis_biaya').val();
   $.ajax({
       url:baseUrl + '/biaya_penerus/append_table',
