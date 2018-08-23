@@ -264,7 +264,7 @@
             console.log(response);
             form_reset();
             if(response.status == "berhasil"){
-              toastr.success('Data Jurnal Memorial Berhasil Disimpan');
+              toastr.success('Data Transaksi Kas Berhasil Disimpan');
               btn.removeAttr("disabled");
               btn.text("Simpan");
 

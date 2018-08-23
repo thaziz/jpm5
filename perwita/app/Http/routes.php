@@ -527,6 +527,10 @@ Route::post('pelunasanhutangbank/lihatjurnal', 'PurchaseController@lihatjurnalpe
 Route::get('queryanalisa', 'Queryanalisa@view');
 
 
+Route::get('bankmasuk/bankmasuk' ,'BankMasukController@bankmasuk');
+Route::get('bankmasuk/databank' ,'BankMasukController@getdata');
+Route::post('bankmasuk/saveterima' ,'BankMasukController@saveterima');
+
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');
 Route::get('bankkaslain/detailbankkaslain', 'PurchaseController@detailbankkaslain');
@@ -1161,6 +1165,7 @@ Route::post('reportexcel_kartupiutang/reportexcel_kartupiutang', 'LaporanMasterC
 //analisa piutang
 Route::get('laporan_sales/analisa_piutang', 'laporan_sales\analisa_piutang_Controller@index');
 Route::get('laporan_sales/analisa_piutang/ajax_lap_analisa_piutang', 'laporan_sales\analisa_piutang_Controller@ajax_lap_analisa_piutang');
+Route::get('laporan_sales/analisa_piutang/piutang_dropdown', 'laporan_sales\analisa_piutang_Controller@piutang_dropdown');
 // end analisa piutang
 
 //---
@@ -2267,6 +2272,11 @@ Route::get('keuangan/jurnal_umum/add', [
   'as'   => 'jurnal.add'
 ]);
 
+Route::get('keuangan/jurnal_umum/edit', [
+  'uses' => 'master_keuangan\d_jurnal_controller@edit',
+  'as'   => 'jurnal.edit'
+]);
+
 Route::get('keuangan/jurnal_umum/detail/{id}', [
   'uses' => 'master_keuangan\d_jurnal_controller@getDetail',
   'as'   => 'jurnal.detail'
@@ -2275,6 +2285,16 @@ Route::get('keuangan/jurnal_umum/detail/{id}', [
 Route::post('keuangan/jurnal_umum/save_data', [
   'uses'  => 'master_keuangan\d_jurnal_controller@save_data',
   'as'    => 'jurnal.save'
+]);
+
+Route::post('keuangan/jurnal_umum/update', [
+  'uses'  => 'master_keuangan\d_jurnal_controller@update',
+  'as'    => 'jurnal.update'
+]);
+
+Route::get('keuangan/jurnal_umum/delete', [
+  'uses'  => 'master_keuangan\d_jurnal_controller@delete',
+  'as'    => 'jurnal.delete'
 ]);
 
 Route::get('keuangan/jurnal_umum/show-detail/{id}', [
@@ -2292,6 +2312,41 @@ Route::get('keuangan/jurnal_umum/list_transaksi', [
 
 
 
+// // transaksi Bank
+
+// Route::get('keuangan/transaksi_bank', [
+//   'uses' => 'master_keuangan\transaksi_bank_controller@index',
+//   'as'   => 'transaksi_bank.index'
+// ]);
+
+// Route::get('keuangan/transaksi_bank/add', [
+//   'uses' => 'master_keuangan\transaksi_bank_controller@add',
+//   'as'   => 'transaksi_bank.add'
+// ]);
+
+// Route::get('keuangan/transaksi_bank/detail/{id}', [
+//   'uses' => 'master_keuangan\transaksi_bank_controller@getDetail',
+//   'as'   => 'transaksi_bank.detail'
+// ]);
+
+// Route::post('keuangan/transaksi_bank/save_data', [
+//   'uses'  => 'master_keuangan\transaksi_bank_controller@save_data',
+//   'as'    => 'transaksi_bank.save'
+// ]);
+
+// Route::get('keuangan/transaksi_bank/show-detail/{id}', [
+//   'uses' => 'master_keuangan\transaksi_bank_controller@showDetail',
+//   'as'   => 'transaksi_bank.show-detail;'
+// ]);
+
+// Route::get('keuangan/transaksi_bank/list_transaksi', [
+//   'uses' => 'master_keuangan\transaksi_bank_controller@list_transaksi',
+//   'as'   => 'transaksi_bank.list-transaksi'
+// ]);
+
+// //end transaksi bank
+
+
 // transaksi Bank
 
 Route::get('keuangan/transaksi_bank', [
@@ -2304,39 +2359,9 @@ Route::get('keuangan/transaksi_bank/add', [
   'as'   => 'transaksi_bank.add'
 ]);
 
-Route::get('keuangan/transaksi_bank/detail/{id}', [
-  'uses' => 'master_keuangan\transaksi_bank_controller@getDetail',
-  'as'   => 'transaksi_bank.detail'
-]);
-
-Route::post('keuangan/transaksi_bank/save_data', [
-  'uses'  => 'master_keuangan\transaksi_bank_controller@save_data',
-  'as'    => 'transaksi_bank.save'
-]);
-
-Route::get('keuangan/transaksi_bank/show-detail/{id}', [
-  'uses' => 'master_keuangan\transaksi_bank_controller@showDetail',
-  'as'   => 'transaksi_bank.show-detail;'
-]);
-
-Route::get('keuangan/transaksi_bank/list_transaksi', [
-  'uses' => 'master_keuangan\transaksi_bank_controller@list_transaksi',
-  'as'   => 'transaksi_bank.list-transaksi'
-]);
-
-//end transaksi bank
-
-
-// transaksi Bank
-
-Route::get('keuangan/transaksi_bank', [
-  'uses' => 'master_keuangan\transaksi_bank_controller@index',
-  'as'   => 'transaksi_bank.index'
-]);
-
-Route::get('keuangan/transaksi_bank/add', [
-  'uses' => 'master_keuangan\transaksi_bank_controller@add',
-  'as'   => 'transaksi_bank.add'
+Route::get('keuangan/transaksi_bank/edit', [
+  'uses' => 'master_keuangan\transaksi_bank_controller@edit',
+  'as'   => 'transaksi_bank.edit'
 ]);
 
 Route::get('keuangan/transaksi_bank/detail/{id}', [
@@ -2347,6 +2372,16 @@ Route::get('keuangan/transaksi_bank/detail/{id}', [
 Route::post('keuangan/transaksi_bank/save_data', [
   'uses'  => 'master_keuangan\transaksi_bank_controller@save_data',
   'as'    => 'transaksi_bank.save'
+]);
+
+Route::post('keuangan/transaksi_bank/update', [
+  'uses'  => 'master_keuangan\transaksi_bank_controller@update',
+  'as'    => 'transaksi_bank.update'
+]);
+
+Route::get('keuangan/transaksi_bank/delete', [
+  'uses'  => 'master_keuangan\transaksi_bank_controller@delete',
+  'as'    => 'transaksi_bank.delete'
 ]);
 
 Route::get('keuangan/transaksi_bank/show-detail/{id}', [
@@ -2374,6 +2409,11 @@ Route::get('keuangan/transaksi_memorial/add', [
   'as'   => 'transaksi_memorial.add'
 ]);
 
+Route::get('keuangan/transaksi_memorial/edit', [
+  'uses' => 'master_keuangan\transaksi_memorial@edit',
+  'as'   => 'transaksi_memorial.edit'
+]);
+
 Route::get('keuangan/transaksi_memorial/detail/{id}', [
   'uses' => 'master_keuangan\transaksi_memorial@getDetail',
   'as'   => 'transaksi_memorial.detail'
@@ -2382,6 +2422,16 @@ Route::get('keuangan/transaksi_memorial/detail/{id}', [
 Route::post('keuangan/transaksi_memorial/save_data', [
   'uses'  => 'master_keuangan\transaksi_memorial@save_data',
   'as'    => 'transaksi_memorial.save'
+]);
+
+Route::post('keuangan/transaksi_memorial/update', [
+  'uses'  => 'master_keuangan\transaksi_memorial@update',
+  'as'    => 'transaksi_memorial.update'
+]);
+
+Route::get('keuangan/transaksi_memorial/delete', [
+  'uses'  => 'master_keuangan\transaksi_memorial@delete',
+  'as'    => 'transaksi_memorial.delete'
 ]);
 
 Route::get('keuangan/transaksi_memorial/show-detail/{id}', [
@@ -2540,6 +2590,51 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
   Route::get('master_keuangan/desain_laba_rugi/view/{id}', [
     'uses'  => 'master_keuangan\desain_labaRugiController@view',
     'as'    => 'desain_laba_rugi.view'
+  ]);
+
+
+  // End Desain Laba Rugi
+
+  // Desain Laba Rugi
+
+  Route::get('master_keuangan/desain_arus_kas', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@index',
+    'as'    => 'desain_arus_kas.index'
+  ]);
+
+  Route::get('master_keuangan/desain_arus_kas/add', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@add',
+    'as'    => 'desain_arus_kas.add'
+  ]);
+
+  Route::post('master_keuangan/desain_arus_kas/save', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@save',
+    'as'    => 'desain_arus_kas.save'
+  ]);
+
+  Route::get('master_keuangan/desain_arus_kas/aktifkan/{id}', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@setActive',
+    'as'    => 'desain_arus_kas.aktifkan'
+  ]);
+
+  Route::get('master_keuangan/desain_arus_kas/view/{id}', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@view',
+    'as'    => 'desain_arus_kas.view'
+  ]);
+
+  Route::get('master_keuangan/desain_arus_kas/edit/{id}', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@edit',
+    'as'    => 'desain_arus_kas.edit'
+  ]);
+
+  Route::post('master_keuangan/desain_arus_kas/update/{id}', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@update',
+    'as'    => 'desain_arus_kas.update'
+  ]);
+
+  Route::get('master_keuangan/desain_arus_kas/delete/{id}', [
+    'uses'  => 'master_keuangan\desain_arus_kas_controller@delete',
+    'as'    => 'desain_arus_kas.delete'
   ]);
 
 

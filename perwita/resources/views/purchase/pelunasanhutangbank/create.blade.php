@@ -64,45 +64,23 @@
                            <table border="0" class="table table-stripped">
 
                           <tr>
-                           
-                               @if(Auth::user()->PunyaAkses('Pelunasan Hutang','aktif'))
-                            <tr>
-                            <td width="150px"> Cabang </td>
-                            <td>
-                              <select class='form-control chosen-select-width cabang' name="cabang">
-                                 
-
-                                  @foreach($data['cabang'] as $cabang)
-                                    <option value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                  @endforeach
-                                 </select>
+                           <td> Cabang </td>
+                               @if(Auth::user()->punyaAkses('Pelunasan Hutang','cabang'))
+                            <td class="cabang_td">  
+                            <select class="form-control chosen-select-width cabang" name="cabang">
+                                @foreach($data['cabang'] as $cabang)
+                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
+                              @endforeach
+                            </select>
                             </td>
-                            </tr>
                             @else
-                            <tr>
-                            <td width="150px"> Cabang </td>
-                            <td>
-                              <select class='form-control disabeld cabang' name="cabang">
-                                  <option value="">
-                                    Pilih Cabang
-                                  </option>
-
-                                  @foreach($data['cabang'] as $cabang)
-                                    @if($cabang->kode == Auth::user()->kode_cabang)
-                                    <option selected="" value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                    @else
-                                    <option value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                    @endif
-                                  @endforeach
-                                 </select>
-                            </td>
-                            </tr>
+                              <td class="disabled"> 
+                              <select class="form-control chosen-select-width disabled cabang" name="cabang">
+                                @foreach($data['cabang'] as $cabang)
+                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
+                                @endforeach
+                              </select> 
+                              </td>
                             @endif
                           </tr>
 
@@ -969,7 +947,7 @@
             success : function(data){
                
                  if(data.status = 'sukses'){
-                 
+               
                   var d = new Date();
                   
                   //tahun
@@ -996,6 +974,26 @@
                    nobbk = 'BK-' + month1 + year2 + '/' + comp + '/' +  data.data;
                 //  console.log(nospp);
                   $('.nobbk').val(nobbk);
+
+                       kodebank = $('.kodebank').val();
+
+                       if(kodebank != ''){
+                          
+                          split = nobbk.split("-");
+                          bank = split[0];
+                          lain = split[1];
+                          if(parseInt(kodebank) < parseInt(10)){
+                              kodebank = '0' + kodebank;
+                          }
+                          
+                          str = bank.substr(0,2);
+                        
+                          nobbk = str + val + '-' + lain;
+                          $('.nobbk').val(nobbk);
+                       }
+
+
+
                  }
                  else {
                   location.reload();
@@ -1062,7 +1060,7 @@
       idfpgb = $('.idfpgb').val();
 
       row = "<tr class='transaksi bayar"+$nomr+"' id='datacek"+notransaksi+"' data-transaksi="+notransaksi+">" +
-          "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]' readonly> <input type='hidden' class='input-sm form-control' value='"+kodebank+"' name='akunkodebank' readonly> <input type='hidden' class='input-sm form-control' value='"+hutangdagang+"' name='hutangdagang[]' readonly> <input type='hidden' class='input-sm form-control' value='"+akunum+"' name='akunum[]' readonly> </td>" +
+          "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]' readonly> <input type='hidden' class='input-sm form-control' value='"+kodebank+"' name='akunkodebank' readonly> <input type='text' class='input-sm form-control' value='"+hutangdagang+"' name='hutangdagang[]' readonly> <input type='hidden' class='input-sm form-control' value='"+akunum+"' name='akunum[]' readonly> </td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+tgl+"' name='tgl[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+notransaksi+"' name='notransaksi[]' readonly>" +
           "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value='"+jatuhtempo+"' readonly> </td>" +

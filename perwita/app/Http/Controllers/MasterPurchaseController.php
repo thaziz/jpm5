@@ -159,7 +159,7 @@ class MasterPurchaseController extends Controller
 						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
 					}
 					else if($idgrupitem == 'S'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '$cabang' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
 					}
 					else if($idgrupitem == 'A'){
 						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
@@ -582,9 +582,9 @@ class MasterPurchaseController extends Controller
 			else {
 				$idbank = 1;	
 			}
-
+		$data['jenisbank'] = DB::select("select * from jenisbank");
 		$data['cabang'] = DB::select("select * from cabang");
-		$data['bank'] = DB::select("select * from d_akun where  (id_akun LIKE '10%' or id_akun LIKE '11%') and id_akun NOT IN (select mb_kode from masterbank where mb_kode is NOT NULL) ") ;
+		$data['bank'] = DB::select("select * from d_akun where  (id_akun BETWEEN '1101' and '1199') and id_akun NOT IN (select mb_kode from masterbank where mb_kode is NOT NULL) ") ;
 	//	dd($data);
 		return view('purchase/master/masterbank/create' , compact('data'));
 	}
@@ -600,7 +600,8 @@ class MasterPurchaseController extends Controller
 								'mb_alamat' => $request->alamat,
 								'mb_mshaktif' => $request->mshaktif,
 								'mb_namarekening' => $request->namarekening,
-								'mb_accno' => $request->norekening
+								'mb_accno' => $request->norekening,
+								'mb_kelompok' => $request->kelompokbank
 							]);
 
 		$tempdatafpg = 0;
@@ -765,14 +766,15 @@ class MasterPurchaseController extends Controller
 
 		
 
-		return json_encode('test');
+		return json_encode('sukses');
 	}
 
 	public function detailbank($id){
-		$data['bank'] = DB::select("select * from masterbank  where mb_id = '$id'");
+		$data['bank'] = DB::select("select * from masterbank, cabang  where mb_id = '$id' and mb_cabangbank = kode");
 		$data['bankdt'] = DB::select("select * from masterbank, masterbank_dt  where mbdt_idmb = mb_id and mbdt_idmb = '$id'");
-		$data['banks'] = DB::select("select id_akun, nama_akun from d_akun where  id_akun LIKE '10%'or id_akun LIKE '11%'  ");
-		//dd($data);
+		$data['akun'] =DB::select("select * from d_akun") ;
+		$data['jenisbank'] = DB::select("select * from jenisbank");
+		/*dd($data);*/
 
 		return view('purchase/master/masterbank/detail' , compact('data'));
 
@@ -806,12 +808,14 @@ class MasterPurchaseController extends Controller
 			$masterbank->mb_id = $idbank;
 			$masterbank->mb_kode = $request->kodebank;
 			$masterbank->mb_nama = strtoupper($request->nmbank);
-			$masterbank->mb_cabang = strtoupper($request->cabang);
+			$masterbank->mb_cabang = strtoupper($request->cabangbawah);
 			$masterbank->mb_accno = strtoupper($request->norekening);		
 			$masterbank->mb_alamat = strtoupper($request->alamat);
 			$masterbank->mb_namarekening = strtoupper($request->namarekening);
 			$masterbank->mb_namarekening = strtoupper($request->namarekening);
 			$masterbank->mb_bka = $dka[0]->akun_dka;
+			$masterbank->mb_kelompok = $request->kelompokbank;
+			$masterbank->mb_cabangbank = $request->cabang;
 			$masterbank->save();
 		}
 		else {
@@ -821,7 +825,8 @@ class MasterPurchaseController extends Controller
 		$masterbank->mb_nama = strtoupper($request->nmbank);
 		$masterbank->mb_cabang = strtoupper($request->cabang);
 		$masterbank->mb_accno = strtoupper($request->norekening);
-		
+		$masterbank->mb_kelompok = $request->kelompokbank;
+
 		$masterbank->mb_alamat = strtoupper($request->alamat);
 		if($request->input == 'CEK'){
 			$masterbank->mb_sericek = strtoupper($request->sericek);

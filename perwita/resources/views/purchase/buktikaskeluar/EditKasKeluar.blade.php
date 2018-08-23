@@ -831,7 +831,7 @@
   // PATTY CASH SCRIPT
   function hitung_pt() {
     var total = 0;
-    $('.pt_nominal').each(function(){
+    table_patty.$('.pt_nominal').each(function(){
       var par = $(this).parents('tr');
       var debet = $(par).find('.pt_debet').val();
       if (debet == 'DEBET') {
@@ -840,7 +840,7 @@
         total -= parseInt($(this).val());
       }
     });
-
+    console.log(total);
     $('.total').val(accounting.formatMoney(total,"", 2, ".",','));
   }
 

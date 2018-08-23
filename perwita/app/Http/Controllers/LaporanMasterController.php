@@ -2090,6 +2090,7 @@ class LaporanMasterController extends Controller
 		$akir = $request->akir;
 		$customer = $request->customer;
 
+
 		if ($request->customer != '' || $request->customer != null) {
 			$customer_invoice = " AND i_kode_customer = '".$request->customer."' ";
 		}else{
@@ -2117,6 +2118,35 @@ class LaporanMasterController extends Controller
 		// return $cust;
 		
 			
+
+		// $cabang   = $request->cabang;
+
+		// if ($customer != '') {
+		// 	$customer = 'and i_kode_customer = '."'$customer'";
+		// }else{
+		// 	$customer = '';
+		// }
+
+
+		// if ($cabang != '') {
+		// 	$cabang = 'and i_kode_cabang = '."'$cabang'";
+		// }else{
+		// 	$cabang = '';
+		// }
+
+		// $sql1 = "SELECT * FROM invoice where i_nomor != '0' and i_tanggal >= '$awal' and i_tanggal <= '$akir' $customer";
+
+
+		// $sql2 = "SELECT i_kode_customer, customer.nama as cus FROM invoice 
+		// 		 join customer on customer.kode = invoice.i_kode_customer 
+		// 		 where i_nomor != '0' $customer $cabang
+		// 		 group by i_kode_customer,customer.nama";
+
+		// $data = DB::select($sql1);
+		// $cust = DB::select($sql2);
+
+
+
 
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");

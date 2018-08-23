@@ -117,14 +117,14 @@
                           <div class="tab-content">
                             <div role="tabpanel" class="tab-pane fade in active" id="aktiva">
                               <span style="position: absolute; top: 50%; left: 28%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Neraca Aktiva</span>
-                              <div id="aktiva_tree" style="font-size: 8pt;">
+                              <div id="aktiva_tree" style="font-size: 8pt; height: 480px; background: none; overflow-x: hidden; overflow-y: scroll;">
                                   
                               </div>
                             </div>
 
                             <div role="tabpanel" class="tab-pane fade" id="pasiva">
                               <span style="position: absolute; top: 50%; left: 28%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Neraca Pasiva</span>
-                              <div id="pasiva_tree" style="font-size: 8pt;">
+                              <div id="pasiva_tree" style="font-size: 8pt; height: 480px; background: none; overflow-x: hidden; overflow-y: scroll;">
                                 
                               </div>
                             </div>

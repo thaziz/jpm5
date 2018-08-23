@@ -255,7 +255,7 @@
                                                                 <th style="width:100%"> Jumlah Bayar </th>
                                                               </tr>
 
-                                                              @if($data['jenisbayar'] != '5')
+                                                              @if($data['jenisbayar'] != '5' && $data['jenisbayar'] != '12')
                                                               <?php $n = 1?>
                                                               @for($j=0;$j< count($data['pembayaran']);$j++)
                                                                 @for($k=0; $k < count($data['pembayaran'][$j]); $k++)
@@ -623,25 +623,21 @@
                                     <fieldset>
                                         <input type="hidden" class="fpbgjenisbayarbank" value="">
 
+                                        @if($data['fpg_bank'][0]->fpgb_jenisbayarbank == 'INTERNET BANKING')
+                                       <div class="checkbox checkbox-info checkbox-circle">
+                                            <input id="jenisbayaribaking" type="checkbox" name="jenisbayarbank" value="INTERNET BANKING" class="metodebayar jenisbayarbankibaking" checked="">
+                                            <label for="jenisbayarbankcekbg">
+                                               Internet Banking
+                                            </label>
+                                        </div>
+                                        @else
                                         <div class="checkbox checkbox-info checkbox-circle">
                                             <input id="jenisbayarbankcekbg" type="checkbox" name="jenisbayarbank" value="CHECK/BG" class="metodebayar jenisbayarbankbg" checked="">
                                             <label for="jenisbayarbankcekbg">
                                                 Cheque / BG
                                             </label>
                                         </div>
-                                        <div class="checkbox checkbox-info checkbox-circle">
-                                            <input id="jenisbayarbanktf" type="checkbox"  name="jenisbayarbank" value="TF" class="metodebayar jenisbayarbankbgtf">
-                                            <label for="jenisbayarbanktf">
-                                               Transfer Bank Luar Rekening
-                                            </label>
-                                        </div>
-
-                                       <div class="checkbox checkbox-info checkbox-circle">
-                                            <input id="jenisbayarbanktfacc" type="checkbox"  name="jenisbayarbank" value="TFAkun" class="metodebayar jenisbayarbanktfacc">
-                                            <label for="jenisbayarbanktfacc">
-                                               Transfer Bank Account Bank
-                                            </label>
-                                        </div>
+                                       @endif
                                     </fieldset>
                                       <br>
                                       <br>
@@ -657,7 +653,7 @@
                                     <tr>
                                       <th> <h4> No Cheque / BG </h4> </th>
                                       <td> <input type="text" class="input-sm form-control nocheck" type="button" data-toggle="modal" data-target="#myModal2" id="getbank">
-                                      <input type="hidden" class="valjenisbayarbank" name="jenisbayarbank">
+                                      <input type="hidden" class="valjenisbayarbank" name="jenisbayarbank" value="{{$data['fpg_bank'][0]->fpgb_jenisbayarbank}}">
                                      </td>
                                       
                                       <th> Nominal </th>
@@ -789,8 +785,8 @@
 
                                 <div class="col-md-12" style="padding-top: 20px">
                                   <table class="table table-bordered" id="tbl-bank">
-
-                                    @if($data['fpg_bank'][0]->fpgb_jenisbayarbank == 'CHECK/BG')
+                                    @if($data['fpg'][0]->fpg_jenisbayar != '11' && $data['fpg'][0]->fpg_jenisbayar != '12')
+                                   
                                     <tr>
                                       <th> Nomor </th>
                                       <th> No Bukti </th>
@@ -859,12 +855,69 @@
                                       <th> Tanggal </th>
                                       <th> Asal Kode Bank </th>
                                       <th> Tujuan Kode Bank </th>
-                                      <th> No Rekening Tujuan </th>
-                                      <th> Nama Rekening </th>
+                                    
+                                      <th> Nama Bank Tujuan </th>
                                       <th> Periode </th>
                                       <th> Nominal </th>
                                       <th> Aksi </th>
                                       <th> RUSAK </th>
+
+                                       @for($i =0; $i < count($data['fpg_bank']); $i++)
+                                        @if($data['fpg_bank'][$i]->fpgb_cair == 'TIDAK')
+                                        <tr id="datas{{$i + 1}}" class='databank' data-id='{{$i + 1}}'>
+                                          <td> {{$i + 1}} </td>
+                                          <td> <banks2> {{$data['fpg_bank'][$i]->fpg_nofpg}} </banks2> </td>
+                                          <td class='fpgbank' data-nocheck='{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}'> <a class='noseri noseri2{{$i + 1}}'  data-id={{$i+1}}> {{$data['fpg_bank'][$i]->fpgb_nocheckbg}} </a> <input type='hidden' class="noseri{{$i + 1}}" value="{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" name='noseri[]'> </td>
+                                          <td> <banks2> {{$data['fpg_bank'][$i]->fpg_tgl}} </banks2> </td>
+                                          <td> <banks2> {{$data['fpg_bank'][$i]->mb_kode}} </banks2> </td>
+                                          <td> {{$data['fpg_bank'][$i]->fpgb_kodebanktujuan}}</td>
+                                        
+                                          <td> {{$data['fpg_bank'][$i]->fpgb_nmbanktujuan}}</td>
+                                          <td> <banks2> {{$data['fpg_bank'][$i]->fpgb_jatuhtempo}} </banks2> <input type='hidden' class="jatuhtempo{{$i + 1}}" value="{{$data['fpg_bank'][$i]->fpgb_jatuhtempo}}"> </td>
+                                          <td><input type='text' data-id="{{$i + 1}}" class="input-sm form-control nominaltblbank nominalbank{{$i + 1}} nominalcheck{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" readonly name='nominalbank[]' style="text-align:right" value="{{ number_format($data['fpg_bank'][$i]->fpgb_nominal, 2) }}">
+                                         
+                                          </td>
+                                          <td> 
+
+                                           </td> 
+
+                                        <td>
+                                           <div class="checkbox">
+                                              <input type="checkbox" data-id="{{$data['fpg_bank'][$i]->mb_id}}" data-nmr="{{$i + 1}}"  id="rusak" class="checkbox-danger rusak" value="RUSAK" aria-label="Single checkbox One" name="rusak[]" checked="" disabled="">
+                                              <label> RUSAK </label> <input type="hidden" name="valrusak[]"  class='valrusak{{$i + 1}}' >
+                                          </div>
+                                        </td>
+                                        </tr>
+                                        @else
+                                          <tr id="datas{{$i + 1}}" class='databank' data-id='{{$i + 1}}'>
+                                          <td> {{$i + 1}} </td>
+                                          <td> <bank{{$i + 1}}> {{$data['fpg_bank'][$i]->fpg_nofpg}} </bank> </td>
+                                          <td class='fpgbank' data-nocheck='{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}'> <a class='noseri noseri2{{$i + 1}}'  data-id={{$i+1}}> {{$data['fpg_bank'][$i]->fpgb_nocheckbg}} </a> <input type='hidden' class="noseri{{$i + 1}}" value="{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" name='noseri[]'> </td>
+                                          <td> <bank{{$i + 1}}> {{$data['fpg_bank'][$i]->fpg_tgl}} </bank> </td>
+                                          <td> <bank{{$i + 1}}> {{$data['fpg_bank'][$i]->mb_kode}} </bank> </td>
+                                           <td> {{$data['fpg_bank'][$i]->fpgb_kodebanktujuan}}</td>
+                                       
+                                          <td> {{$data['fpg_bank'][$i]->fpgb_nmbanktujuan}}</td>
+                                          <td> <bank{{$i + 1}}> {{$data['fpg_bank'][$i]->fpgb_jatuhtempo}} </bank> <input type='hidden' class="jatuhtempo{{$i + 1}}" value="{{$data['fpg_bank'][$i]->fpgb_jatuhtempo}}"> </td>
+                                          <td><input type='text' data-id="{{$i + 1}}" class="input-sm form-control nominaltblbank nominalbank{{$i + 1}} nominalcheck{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" readonly name='nominalbank[]' style="text-align:right" value="{{ number_format($data['fpg_bank'][$i]->fpgb_nominal, 2) }}">
+                                       
+                                          </td>
+                                          <td> 
+                                             <button class='btn btn-sm btn-danger remove-btn' data-id="{{$i + 1}}"  data-idbankdt="{{$data['fpg_bank'][$i]->mb_id}} " data-idfpgb="{{$data['fpg_bank'][$i]->fpgb_id}}" data-noseri="{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" data-kodebank="{{$data['fpg_bank'][$i]->mb_kode}}" type='button'><i class='fa fa-trash'></i> </button>  
+
+                                           </td> 
+
+                                        <td>
+                                           <div class="checkbox">
+                                              <input type="checkbox" data-id="{{$data['fpg_bank'][$i]->mb_id}}" data-nmr="{{$i + 1}}"  id="rusak" class="checkbox-danger rusak" value="RUSAK" aria-label="Single checkbox One" name="rusak[]" >
+                                              <label> RUSAK </label> <input type="hidden" name="valrusak[]"  class='valrusak{{$i + 1}}' >
+                                          </div>
+                                        </td>
+                                        </tr>
+
+                                        @endif
+                                      @endfor
+
                                     @endif
 
                                   </table>
@@ -929,14 +982,18 @@
     $('.tujuanbankacc').hide();
     $('.transferbank').hide();
 
-     //MENDAPATKAN JENISBAYAR
-    $('.metodebayar').change(function(){
-       val = $('.metodebayar:checked').val();
-        $('.valjenisbayarbank').val(val);       
-    })
+    
 
-    valjenisbayar = $('.metodebayar:checked').val();
-    $('.valjenisbayarbank').val(valjenisbayar);
+      valjenisbayar = $('valjenisbayarbank').val();
+     // alert(valjenisbayar);
+      $('.metodebayar').each(function(){
+        metodebayar = $('.metodebayar').val();
+
+        if(metodebayar == valjenisbayar) {
+          $(this).prop("checked");
+        }
+
+      })
 
      $('#getbank').click(function(){
        // alert('hei');

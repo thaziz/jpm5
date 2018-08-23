@@ -66,8 +66,8 @@ class form_tanda_terima_pembelian_controller extends Controller
     	$bulan = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('m');
 	    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
 
-	    $cari_nota = DB::select("SELECT  substring(max(tt_noform),12) as id from form_tt
-	                                    WHERE tt_idcabang = '$req->cabang'
+	    $cari_nota = DB::select("SELECT substring(max(tt_noform),12) as id from form_tt
+	                                    WHERE tt_idcabang = '$req->cabang'	
 	                                    AND to_char(tt_tgl,'MM') = '$bulan'
 	                                    AND to_char(tt_tgl,'YY') = '$tahun'");
 
@@ -132,7 +132,7 @@ class form_tanda_terima_pembelian_controller extends Controller
 				    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
 
 				    $cari_nota = DB::select("SELECT  substring(max(tt_noform),12) as id from form_tt
-				                                    WHERE tt_idcabang = '$req->cabang'
+				                                    WHERE tt_idcabang ='$req->cabang'
 				                                    AND to_char(tt_tgl,'MM') = '$bulan'
 				                                    AND to_char(tt_tgl,'YY') = '$tahun'");
 

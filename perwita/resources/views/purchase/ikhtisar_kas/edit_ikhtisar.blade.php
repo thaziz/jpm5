@@ -43,6 +43,9 @@
   .my-bg{
     background: #f0b7d6;
   }
+  td{
+    vertical-align: top!important;
+  }
 </style>
 <!-- <link href="{{ asset('assets/vendors/chosen/chosen.css')}}" rel="stylesheet"> -->
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -92,6 +95,12 @@
               </td>
             </tr>
             <tr>
+              <td>Filter Tanggal</td>
+              <td>
+                <input readonly=""  class="form-control" type="text" value="{{carbon\carbon::parse($data->ik_tgl_awal)->format('d/m/Y')}} - {{carbon\carbon::parse($data->ik_tgl_akhir)->format('d/m/Y')}}" name="rangepicker"  >
+              </td>
+            </tr>
+            <tr>
               <td>Status</td>
               <td>
                 <input  class="form-control status" type="text" readonly="" value="Released"  >
@@ -109,6 +118,12 @@
               <td>Keterangan</td>
               <td>
                   <input type="text" name="Keterangan" class="form-control" value="{{$data->ik_keterangan}}">                         
+              </td>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td>
+                  <input style="font-size: 16px;font-weight: bold;color: red!important"  readonly="" type="text" name="total" value="{{"" . number_format($data->ik_total,2,",",".")}}" class="form-control total">                         
               </td>
             </tr>
             <tr>
@@ -152,24 +167,35 @@
             </tr>
           </thead> 
           <tbody class="">
-            @foreach($data_dt as $val)
-            <tr>
-              <td align="center">
-                <input type="checkbox" checked="" name="checker[]" class="ck" >
-                <input type="hidden" name="id[]" class="id_table" value="{{$val->nota}}">
-                <input type="hidden" name="id_ikd[]" class="id_table" value="{{$val->ikd_ik_dt}}">
-                <input type="hidden" name="id_ik[]" class="id_table" value="{{$val->ikd_ik_id}}">
-              </td>
-              <td><?php echo date('d/m/Y',strtotime($val->tanggal));?></td>
-              <td>{{$val->nota}}</td>
-              <td>{{$val->akun_kas}}</td>
-              <td align="right">{{'' . number_format(round($val->nominal),2,',','.')}}
-                <input type="hidden" name="nominal[]" value="{{round($val->nominal)}}">
-              </td>
-              <td>{{$val->keterangan}}</td>
-              <td>{{$val->user}}</td>
-            </tr>
+            @foreach ($cari as $i=>$val)
+              <tr>
+                <td align="center" onclick="ck(this)">
+                  <input type="checkbox" @if (isset($val->check))
+                    checked="" 
+                  @endif name="checker[]" class="ck" onchange="ceek(this)" >
+                  <input type="hidden" name="id[]" class="id_table" value="{{$val->nota}}">
+                </td>
+                <td><?php echo date('d/m/Y',strtotime($val->tanggal));?></td>
+                <td>{{$val->nota}}</td>
+                @if ($data->ik_jenis != 'BONSEM')
+                  <td>
+                    <ul>
+                      @foreach($detail[$i] as $a=>$val2)
+                        <li>{{ $detail[$i][$a] }}</li>
+                      @endforeach
+                    </ul>
+                  </td>
+                @else
+                <td>{{$val->akun_kas}}</td>
+                @endif
+                <td align="right">{{'' . number_format(round($val->nominal),2,',','.')}}
+                  <input type="hidden" name="nominal[]" class="nominal" value="{{round($val->nominal)}}">
+                </td>
+                <td>{{$val->keterangan}}</td>
+                <td>{{$val->user}}</td>
+              </tr>
             @endforeach
+            
           </tbody>    
       </table>
   </div>
@@ -200,6 +226,43 @@ var tabel_patty = $('.tabel_patty_cash').DataTable({
   })
 
 
+function ck(a) {
+  var cek = $(a).find('.ck');
+  if (cek.is(':checked') == true) {
+    $(a).find('.ck').prop('checked',false);
+  }else{
+    $(a).find('.ck').prop('checked',true);
+  }
+  var total = 0;
+  tabel_patty.$('.ck').each(function(){
+    if($(this).is(':checked') == true){
+      var par = $(this).parents('tr');
+      var nominal = $(par).find('.nominal').val();
+      total += (nominal*1);
+    }
+  })
+  $('.total').val(accounting.formatMoney(total,"", 2, ".",','))
+}
+
+
+function ceek(a) {
+  var cek = $(a).is(':checked');
+  if (cek == true) {
+    $(a).prop('checked',false);
+  }else{
+    $(a).prop('checked',true);
+  }
+  var total = 0;
+  tabel_patty.$('.ck').each(function(){
+    if($(this).is(':checked') == true){
+      var par = $(this).parents('tr');
+      var nominal = $(par).find('.nominal').val();
+      total += (nominal*1);
+    }
+  })
+  $('.total').val(accounting.formatMoney(total,"", 2, ".",','))
+}
+
 function simpan(){
     $.ajax({
     url:baseUrl +'/ikhtisar_kas/update',
@@ -218,7 +281,7 @@ function simpan(){
 
 function simpan(){
 
-
+  var id = '{{ $data->ik_id }}';
   swal({
     title: "Apakah anda yakin?",
     text: "Simpan Data Ikhtisar!",
@@ -238,7 +301,7 @@ function simpan(){
 
       $.ajax({
          url:baseUrl +'/ikhtisar_kas/update',
-         data:$('.table_header :input').serialize()+'&'+tabel_patty.$('input').serialize(),
+         data:$('.table_header :input').serialize()+'&'+tabel_patty.$('input').serialize()+'&id_ik='+id,
          type:'post',
       success:function(response){
         if (response.status == 1) {

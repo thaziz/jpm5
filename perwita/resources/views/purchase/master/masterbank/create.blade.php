@@ -78,7 +78,7 @@
                           <td> Pengajuan dari Cabang : </td>
                           <td> 
                             @if(Auth::user()->punyaAkses('Master Bank','cabang'))
-                            <select class="form-control cabang" name="cabang" required="" style="min-width:60%">
+                            <select class="form-control chosen-select cabang" name="cabang" required="" style="min-width:60%">
                                 @foreach($data['cabang'] as $cabang)
                               <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                               @endforeach
@@ -126,7 +126,7 @@
                         <tr>
                           <td> Cabang Bank </td>
                           <td> 
-                            <select class="form-control chosen-select">
+                            <select class="form-control chosen-select" name="cabangbawah">
                               @foreach($data['cabang'] as $cabang)
                                 <option value="{{$cabang->kode}}"> {{$cabang->nama}} </option>
                                 @endforeach
@@ -153,6 +153,17 @@
                         <tr>
                           <td> Alamat </td>
                           <td> <input type="text" class="input-sm form-control" name="alamat" required="" style="text-transform: uppercase"></td>
+                        </tr>
+                        <tr>  
+                          <td> Kelompok Bank </td>
+                          <td>
+                            <select class="form-control chosen-select" name="kelompokbank" required=""> 
+                              <option value=""> Pilih Kelompok Bank </option>
+                              @foreach($data['jenisbank'] as $jenisbank)
+                              <option value="{{$jenisbank->id}}"> {{$jenisbank->namabank}} </option>
+                              @endforeach
+                            </select>
+                          </td>
                         </tr>
                       </table>
                       </div>
@@ -571,8 +582,7 @@
 
           tempcek = 1;
          
-
-          for(ds = 0; ds <= hasilurutcek; ds++){ // CEK DOUBLE 
+          for(ds = 0; ds <= arrnourutcek.length ; ds++){ // CEK DOUBLE 
             if(arrnourutcek[ds] == urutcek){
              tempcek = parseInt(tempcek) + 1;
               
@@ -592,7 +602,7 @@
 
 
           tempbg = 1;
-          for(ds = 0; ds <= hasilurutbg; ds++){ // CEK DOUBLE BG
+          for(ds = 0; ds <= arrnourutbg.length ; ds++){ // CEK DOUBLE BG
             if(arrnourutbg[ds] == urutbg){
              tempbg = parseInt(tempbg) + 1;
               
@@ -601,7 +611,7 @@
 
             }
             else {
-              for(i=1;i<=hasilurutbg;i++){
+              for(i=1;i<=arrnourutbg.length;i++){
                 if(arrnourutbg[ds + i] == urutbg){
                    tempbg = parseInt(tempbg) + 1;
                 }
@@ -636,7 +646,7 @@
           var tableBank = $('#tbl-cek').DataTable();
         
           var n = 1;
-        
+       
           for(var i = urutcek; i <= hasilurutcek; i++){ //ADD TABLE
             var html2 = "<tr>" + 
                         "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
@@ -699,6 +709,7 @@
             urutcek = $('.urutcek').val();           
             tglbukubg = $('#tglbukucek').val();
             hasilurutcek = $('.hasilurutcek').val();
+          
            // alert(urutcek + 'urutcek');
               if(noseri == ''){
                // alert('Mohon di isi no seri cek :)');
@@ -722,26 +733,20 @@
 
                   temp = 1;
                 
-                  for(ds = 0; ds < hasilurutcek; ds++){ // CEK DOUBLE
+                  for(ds = 0; ds < arrnourutcek.length; ds++){ // CEK DOUBLE
                     if(arrnourutcek[ds] == urutcek){
                      temp = parseInt(temp) + 1;
-                      
-                      console.log(arrnourutcek[ds] + 'urut');
-                      console.log(urutcek + 'urut2');
-
                     }
                     else {
-                      for(i=1;i<=hasilurutcek;i++){
+                      for(i=1;i<=arrnourutcek.length;i++){
                         if(arrnourutcek[ds + i] == urutcek){
                            temp = parseInt(temp) + 1;
                         }
                       }
                     }
-                    
-                  
                     urutcek++;
                   }
-                 
+
                   if(temp > 1 ){ // JIKA DOUBLE
                    // alert('No seri Cek sudah digunakan :)' );
                    toastr.info('No seri Cek sudah digunakan :)');
@@ -757,8 +762,9 @@
                   var tableBank = $('#tbl-cek').DataTable();
                 
                   var n = 1;
-                
-                  for(var i = urutcek; i <= hasilurutcek; i++){ //ADD TABLE
+                  
+
+                  for(var i = urutcek; parseInt(i) <= parseInt(hasilurutcek); i++){ //ADD TABLE
                     var html2 = "<tr>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                                 "<label></label>" +
@@ -824,12 +830,12 @@
 
                   temp = 1;
                 
-                  for(ds = 0; ds <= hasilurutbg; ds++){ // CEK DOUBLE
+                  for(ds = 0; ds <= arrnourutbg.length; ds++){ // CEK DOUBLE
                     if(arrnourutbg[ds] == urutbg){
                      temp = parseInt(temp) + 1;                      
                     }
                     else {
-                      for(i=1;i<=hasilurutbg;i++){
+                      for(i=1;i<=arrnourutbg.length;i++){
                         if(arrnourutbg[ds + i] == urutbg){
                            temp = parseInt(temp) + 1;
                         }

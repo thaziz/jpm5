@@ -247,19 +247,32 @@
        <th class="textcenter bot right top" width="40%">Keterangan</th>
        <th class="textcenter bot top">Credit</th>
      </tr>
-     @foreach($data_dt as $i => $val)
-     <tr>
-       <td class="textleft bot right">{{$i+1}}</td>
-       <td class="textleft bot right">{{$data->ik_tgl_akhir}}</td>
-       <td class="textleft bot right">{{$val->ikd_ref}}</td>
-       <td class="textleft bot right">{{$val->ikd_akun}}</td>
-       <td class="textleft bot right">{{$val->ikd_keterangan}}</td>
-       <td class="textright bot">{{'Rp. ' . number_format($val->ikd_nominal,2,',','.')}}</td>
-     </tr>
-     @endforeach
+      @foreach ($nomor as $i=>$val1)
+          @php
+            $temp = 0;
+          @endphp
+          @foreach($data_dt[$i] as $a=> $val)
+            <tr>
+               @if ($temp == 0)
+                <td class="textleft bot right">{{$i+1}}</td>
+                @php
+                  $temp += 1;
+                @endphp
+               @else
+                <td class="textleft bot right"></td>
+               @endif
+               <td class="textleft bot right">{{$data_dt[$i][$a]->tanggal}}</td>
+               <td class="textleft bot right">{{$data_dt[$i][$a]->nota}}</td>
+               <td class="textleft bot right">{{$data_dt[$i][$a]->akun}}</td>
+               <td class="textleft bot right">{{$data_dt[$i][$a]->keterangan}}</td>
+               <td class="textright bot">{{'Rp. ' . number_format($data_dt[$i][$a]->total,2,',','.')}}</td>
+             </tr>
+          @endforeach
+      @endforeach
+       
      <tr>
        <td colspan="5" class="right textleft"><strong>Terbilang: {{$terbilang}} Rupiah</strong><strong style="float:right;">Total :</strong></td>
-       <td class="textright ">{{'Rp. ' . number_format($data->ik_total,2,',','.')}}</td>
+       <td class="textright ">{{'Rp. ' . number_format(round($data->ik_total),2,',','.')}}</td>
      </tr>
    </table>
  </div>

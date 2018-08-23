@@ -831,7 +831,7 @@
   // PATTY CASH SCRIPT
   function hitung_pt() {
     var total = 0;
-    $('.pt_nominal').each(function(){
+    table_patty.$('.pt_nominal').each(function(){
       var par = $(this).parents('tr');
       var debet = $(par).find('.pt_debet').val();
       if (debet == 'DEBET') {
@@ -948,6 +948,15 @@
     var par = $(a).parents('tr');
     table_patty.row(par).remove().draw(false);
     toastr.info('Data Berhasil Di Hapus');
+    var temp = 0;
+    table_patty.$('.pt_debet').each(function(){
+      temp+=1;
+    })
+
+    if (temp == 0) {
+      $('#save_patty').addClass('disabled');
+    }
+
     hitung_pt();
   }
 

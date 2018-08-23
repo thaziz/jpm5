@@ -748,7 +748,6 @@ class BiayaPenerusController extends Controller
 				$valid_cetak = DB::table('form_tt')
 		       					 ->where('tt_nofp',$data->fp_nofaktur)
 		       					 ->first();
-		       	// dd($valid_cetak);
 
 		       	$cabang = DB::table('cabang')
 		       				->get();
@@ -817,8 +816,29 @@ class BiayaPenerusController extends Controller
 		 				->where('fp_idfaktur',$id)
 		 				->first();
 
+		 	$bkk = DB::table('bukti_kas_keluar_detail')
+		 			 ->join('bukti_kas_keluar','bkk_id','=','bkkd_bkk_id')
+		 			 ->select('bkk_nota as nota')
+		 			 ->where('bkkd_ref',$cari->fp_nofaktur)
+		 			 ->get();
 
+		 	$fpg = DB::table('fpg_dt')
+		 			 ->join('fpg','idfpg','=','fpgdt_idfpg')
+		 			 ->select('fpg_nofpg as nota')
+		 			 ->where('fpgdt_nofaktur',$cari->fp_nofaktur)
+		 			 ->get();	 
 
+		 	$all = array_merge($bkk,$fpg);
+
+		 	$text = '';
+
+		 	for ($i=0; $i < count($all); $i++) { 
+		 		$text.=$all[$i]->nota.' ';
+		 	}
+
+		 	if ($all != null) {
+		 		return response()->json(['status'=>3,'pesan'=>'Data Telah Dibiayai di '.$text]);
+		 	}
 		 	$delete_jurnal = DB::table('d_jurnal')
 							   ->where('jr_ref',$cari->fp_nofaktur)
 							   ->delete();

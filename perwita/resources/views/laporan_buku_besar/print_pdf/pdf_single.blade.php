@@ -170,7 +170,7 @@
         <table width="100%" border="0" style="border-bottom: 1px solid #333;">
           <thead>
             <tr>
-              <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Register Jurnal  </th>
+              <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Buku Besar  </th>
             </tr>
 
             <tr>

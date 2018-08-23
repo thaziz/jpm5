@@ -49,6 +49,7 @@ Use App\d_jurnal;
 use App\cndn;
 use App\cndn_dt;
 Use App\d_jurnal_dt;
+Use App\bank_masuk;
 use App\fakturpajakmasukan;
 use App\uangmukapembelian_fp;
 use App\uangmukapembeliandt_fp;
@@ -59,6 +60,7 @@ use Mail;
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 use Auth;
+use bonsempengajuan;
 
 class PurchaseController extends Controller
 {
@@ -201,17 +203,14 @@ class PurchaseController extends Controller
 		$idspp = DB::select("select * from spp where spp_cabang = '$cabang'  and to_char(spp_tgldibutuhkan, 'MM') = '$bulan' and to_char(spp_tgldibutuhkan, 'YY') = '$tahun' order by spp_id desc limit 1");
 
 	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
-		if(count($idspp) != 0) {
-		
+		if(count($idspp) != 0) {		
 			$explode = explode("/", $idspp[0]->spp_nospp);
 			$idspp = $explode[2];
 
 			$string = (int)$idspp + 1;
 			$idspp = str_pad($string, 4, '0', STR_PAD_LEFT);
 		}
-
-		else {
-		
+		else {		
 			$idspp = '0001';
 		}
 
@@ -4486,13 +4485,27 @@ public function purchase_order() {
  		return json_encode($data);
 	}
 
+	
+
 	public function lihatjurnalpelunasan(Request $request){
 		$id = $request->id;
-		$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk, jrdt_detail
-                        FROM d_akun a join d_jurnal_dt jd
-                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
-                        (select j.jr_id from d_jurnal j where jr_ref='$id')")); 
-		$data['countjurnal'] = count($data['jurnal']);
+		$datas = $request->data;
+		$bm = $request->bm;
+
+		if($datas == 'BK'){
+				$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk, jrdt_detail
+		                        FROM d_akun a join d_jurnal_dt jd
+		                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
+		                        (select j.jr_id from d_jurnal j where jr_ref='$id')")); 
+				$data['countjurnal'] = count($data['jurnal']);
+		}
+		else if($datas == 'BM'){
+				$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk, jrdt_detail
+		                        FROM d_akun a join d_jurnal_dt jd
+		                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
+		                        (select j.jr_id from d_jurnal j where jr_ref='$bm')")); 
+				$data['countjurnal'] = count($data['jurnal']);	
+		}
  		return json_encode($data);
 	}
 
@@ -5039,7 +5052,8 @@ public function purchase_order() {
 		$kodesupplier2 = $data[4];
 		$netto = str_replace(',', '', $request->nettohutang_po);
 		$nofaktur = $request->no_faktur;
-		$cabang = $request->cabang;
+		$cabanginput = $request->cabang;
+		$cabang = $request->cabangtransaksi;
 			//MEMBUAT NOFORMTT	
 			$time = Carbon::now();
 		//	$newtime = date('Y-M-d H:i:s', $time);  
@@ -5364,9 +5378,9 @@ public function purchase_order() {
 
 				$fatkurpembeliandt2->fpdt_accbiaya = $request->akunitem[$i];
 				$fatkurpembeliandt2->fpdt_totalharga =  $total;
-				
-
+				$fatkurpembeliandt2->fpdt_keterangan = $request->keteranganitem[$i];
 				$fatkurpembeliandt2->save();
+
 
 				$akunitem = $request->akunitem[$i];
 				$datakun = DB::select("select * from d_akun where id_akun = '$akunitem' and  kode_cabang = '$cabang'");
@@ -7383,21 +7397,30 @@ public function kekata($x) {
 		return json_encode($datainfo) ;
 	}
 	
+
 	public function simpanbbk (Request $request){
 		return DB::transaction(function() use ($request) { 
 
 		$tempdone = 0;
 		$bbk = new bukti_bank_keluar();
 		$cabang = $request->cabang;
-		$lastid =  bukti_bank_keluar::max('bbk_id');;
+		$lastid =  bukti_bank_keluar::max('bbk_id');
 		
 
 		$datajurnal = [];
+		$jurnalpb = [];
+		$jurnalpbkeluar = [];
+		$jurnalbonsem = [];
+		$jurnalbonsemkeluar = [];
 		$totalhutang = 0;
 
 		$kodebanks = $request->kodebank;
 		$databank = DB::select("select * from masterbank where mb_id = '$kodebanks'");
 		$akunhutangdagang = $databank[0]->mb_kode;
+
+
+
+		
 
 		if(isset($lastid)) {
 			$idbbk = $lastid;
@@ -7406,7 +7429,6 @@ public function kekata($x) {
 		else {
 			$idbbk = 1;
 		} 
-
 
 		$bbk->bbk_id = $idbbk;
 		$bbk->bbk_nota = $request->nobbk;
@@ -7433,9 +7455,8 @@ public function kekata($x) {
 		$bbk->bbk_akunbank = $akunhutangdagang;
 		$bbk->create_by = $request->username;
 		$bbk->update_by = $request->username;
+
 		$bbk->save();
-
-
 
 
 		//return count($request->nofpg);
@@ -7500,33 +7521,340 @@ public function kekata($x) {
 					]);
 				}
 
-
-
 				$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
-					$jenisbayar = $datafpg[0]->fpg_jenisbayar;
+				$jenisbayar = $datafpg[0]->fpg_jenisbayar;
 
 				if($jenisbayar == 12){
 
 					$idfpgb = $request->idfpgb[$i];
+
 					$datafpgb = DB::select("select * from fpg, fpg_cekbank where idfpg = fpgb_idfpg and fpgb_idfpg = '$idfpg' and fpgb_id = '$idfpgb'");
+					$akunbanktujuan = $datafpgb[0]->fpgb_kodebanktujuan;
+					$akunbankasal = $datafpgb[0]->fpg_kodebank;
+					$akundkagb = DB::select("select * from d_akun where id_akun = '$akunbanktujuan'");
+					$akundkagb = $akundkagb[0]->akun_dka;
+
+					$akundkasal = DB::select("select * from d_akun where id_akun = '$akunbankasal'");
+					$akundkasal = $akundkasal[0]->akun_dka;
+
+					$kelompokakun = $datafpgb[0]->fpg_kelompok;
+
+
+					if($kelompokakun == 'SAMA BANK'){
+						$time = Carbon::now();
+						$updatebankmasuk = bank_masuk::where([['bm_notatransaksi', '=', $request->nofpg[$i]],['bm_idfpgb' , '=' , $idfpgb]]);
+						$updatebankmasuk->update([
+						 	'bm_tglterima' => $time, 
+						 		 	
+					 	]);
+
+
+						$notabm = getnotabm($cabang);
+						$refbm = explode("-", $notabm);
+
+						$kodebankd = $datafpgb[0]->fpgb_kodebank;
+						if($kodebankd < 10){
+							$kodebankd = '0' . $kodebankd;
+						}	
+						else {
+							$kodebankd = $kodebankd;
+						}
+
+						$kode = $refbm[0] . $kodebankd;
+						$notabm = $kode . '-' . $refbm[1];
+
+						$updatebankmasuk = bank_masuk::where([['bm_notatransaksi', '=', $request->nofpg[$i]],['bm_idfpgb' , '=' , $idfpgb]]);
+						$updatebankmasuk->update([
+						 	'bm_status' => 'DITERIMA', 
+						 	'bm_nota' => $notabm,	 	
+					 	]);
+
+						$updatebbkd = bukti_bank_keluar_dt::where([['bbkd_id' ,'=' , $idbbkd ],['bbkd_idbbk' , '=' , $idbbk]]);
+						$updatebbkd->update([
+							'bbkd_notabm' => $notabm,
+						]);
+
+
+						$akunkasbank = '109911000';
+						$datakasbank = DB::select("select * from d_akun where id_akun = '$akunkasbank'");
+						$akundkakasbank = $datakasbank[0]->akun_dka;
+						if($akundkasal == 'K'){ //ASAL BANK
+							$jurnalpb[0]['id_akun'] = $akunbankasal;
+							$jurnalpb[0]['subtotal'] =  $nominal;
+							$jurnalpb[0]['dk'] = 'K';
+							$jurnalpb[0]['detail'] = $request->keterangan[$i];
+						}			
+						else {
+							$jurnalpb[0]['id_akun'] = $akunbankasal;
+							$jurnalpb[0]['subtotal'] = '-' . $nominal;
+							$jurnalpb[0]['dk'] = 'K';
+							$jurnalpb[0]['detail'] = $request->keterangan[$i];
+						}
+
+						if($akundkakasbank == 'D'){
+							$jurnalpb[1]['id_akun'] = $akunkasbank;
+							$jurnalpb[1]['subtotal'] =  $nominal;
+							$jurnalpb[1]['dk'] = 'D';
+							$jurnalpb[1]['detail'] = $request->keterangan[$i];
+						}
+						else {
+							$jurnalpb[1]['id_akun'] = $akunkasbank;
+							$jurnalpb[1]['subtotal'] = '-' . $nominal;
+							$jurnalpb[1]['dk'] = 'D';
+							$jurnalpb[1]['detail'] = $request->keterangan[$i];
+						}
+
+						//TUJUAN BANK
+						if($akundkagb == 'D'){
+							$jurnalpbkeluar[0]['id_akun'] = $akunbanktujuan;
+							$jurnalpbkeluar[0]['subtotal'] = $nominal;
+							$jurnalpbkeluar[0]['dk'] = 'D';
+							$jurnalpbkeluar[0]['detail'] = $request->keterangan[$i];	
+						}
+						else {
+							$jurnalpbkeluar[0]['id_akun'] = $akunbanktujuan;
+							$jurnalpbkeluar[0]['subtotal'] = '-' .$nominal;
+							$jurnalpbkeluar[0]['dk'] = 'D';
+							$jurnalpbkeluar[0]['detail'] = $request->keterangan[$i];
+						}
+
+						if($akundkakasbank == 'K'){
+							$jurnalpbkeluar[1]['id_akun'] = $akunkasbank;
+							$jurnalpbkeluar[1]['subtotal'] = $nominal;
+							$jurnalpbkeluar[1]['dk'] = 'K';
+							$jurnalpbkeluar[1]['detail'] = $request->keterangan[$i];
+						}
+						else {
+							$jurnalpbkeluar[1]['id_akun'] = $akunkasbank;
+							$jurnalpbkeluar[1]['subtotal'] = $nominal;
+							$jurnalpbkeluar[1]['dk'] = 'K';
+							$jurnalpbkeluar[1]['detail'] = $request->keterangan[$i];
+						}
+
+						if(count($jurnalpbkeluar) != 0){
+
+						       	$lastidjurnald = DB::table('d_jurnal')->max('jr_id'); 
+								if(isset($lastidjurnald)) {
+									$idjurnald = $lastidjurnald;
+									$idjurnald = (int)$idjurnald + 1;
+								}
+								else {
+									$idjurnald = 1;
+								}
+
+
+								$jr_no = get_id_jurnal('BM' , $cabang);
+
+								$ref = explode("-", $jr_no);
+
+								$kodebankd = $datafpgb[0]->fpgb_kodebank;
+								if($kodebankd < 10){
+									$kodebankd = '0' . $kodebankd;
+								}	
+								else {
+									$kodebankd = $kodebankd;
+								}
+
+								$kode = $ref[0] . $kodebankd;
+								$jr_ref = $kode . '-' . $ref[1];
+
+								$year = date('Y');	
+								$date = date('Y-m-d');
+								$jurnal = new d_jurnal();
+								$jurnal->jr_id = $idjurnald;
+						        $jurnal->jr_year = date('Y');
+						        $jurnal->jr_date = date('Y-m-d');
+						        $jurnal->jr_detail = 'BUKTI BANK MASUK';
+						        $jurnal->jr_ref = $notabm;
+						        $jurnal->jr_note = $request->keteranganheader;
+						        $jurnal->jr_no = $jr_no;
+						        $jurnal->save();
+
+						    $key = 1;
+							for($j = 0; $j < count($jurnalpbkeluar); $j++){
+	    			   			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+								if(isset($lastidjurnaldt)) {
+									$idjurnaldt = $lastidjurnaldt;
+									$idjurnaldt = (int)$idjurnaldt + 1;
+								}
+								else {
+									$idjurnaldt = 1;
+								}
+
+				    			$jurnaldt = new d_jurnal_dt();
+				    			$jurnaldt->jrdt_jurnal = $idjurnald;
+				    			$jurnaldt->jrdt_detailid = $key;
+				    			$jurnaldt->jrdt_acc = $jurnalpbkeluar[$j]['id_akun'];
+				    			$jurnaldt->jrdt_value = $jurnalpbkeluar[$j]['subtotal'];
+				    			$jurnaldt->jrdt_statusdk = $jurnalpbkeluar[$j]['dk'];
+				    			$jurnaldt->jrdt_detail = $jurnalpbkeluar[$j]['detail'];
+				    			$jurnaldt->save();
+				    			$key++;
+							}
+
+							
+						}
+
+					}
+					else if($kelompokakun == 'BEDA BANK') {
+						if($akundkagb == 'D'){
+							$datajurnal[$i]['id_akun'] = $akunbanktujuan;
+							$datajurnal[$i]['subtotal'] =  $nominal;
+							$datajurnal[$i]['dk'] = 'D';
+							$datajurnal[$i]['detail'] = $request->keterangan[$i];
+						}			
+						else {
+							$datajurnal[$i]['id_akun'] = $akunbanktujuan;
+							$datajurnal[$i]['subtotal'] = '-' . $nominal;
+							$datajurnal[$i]['dk'] = 'D';
+							$datajurnal[$i]['detail'] = $request->keterangan[$i];
+		
+						}
+
+						$updatebankmasuk = bank_masuk::where([['bm_notatransaksi', '=', $request->nofpg[$i]],['bm_idfpgb' , '=' , $idfpgb]]);
+						$updatebankmasuk->update([
+						 	'bm_status' => 'DITRANSFER', 						 	
+					 	]);	
+					}
+
+				}
+				else if($jenisbayar == '11'){
+					$idfpgb = $request->idfpgb[$i];
+					$datafpgb = DB::select("select * from fpg, fpg_cekbank where idfpg = fpgb_idfpg and fpgb_idfpg = '$idfpg' and fpgb_id = '$idfpgb'");
+					
+					$akunbankasal = $datafpgb[0]->fpg_kodebank;
+					$akundkasal = DB::select("select * from d_akun where id_akun = '$akunbankasal'");
+					$akundkasal = $akundkasal[0]->akun_dka;
+
+
 					$akunbanktujuan = $datafpgb[0]->fpgb_kodebanktujuan;
 					$akundkagb = DB::select("select * from d_akun where id_akun = '$akunbanktujuan'");
 					$akundkagb = $akundkagb[0]->akun_dka;
 
-					if($akundkagb == 'D'){
-						$datajurnal[$i]['id_akun'] = $akunbanktujuan;
-						$datajurnal[$i]['subtotal'] =  $nominal;
-						$datajurnal[$i]['dk'] = 'D';
-						$datajurnal[$i]['detail'] = $request->keterangan[$i];
+
+					$akunkasbank = '109911000';
+					$datakasbank = DB::select("select * from d_akun where id_akun = '$akunkasbank'");
+					$akundkakasbank = $datakasbank[0]->akun_dka;
+
+					//bankasal (BANK KELUAR)
+					if($akundkasal == 'K'){ //ASAL BANK
+							$jurnalbonsem[0]['id_akun'] = $akunbankasal;
+							$jurnalbonsem[0]['subtotal'] =  $nominal;
+							$jurnalbonsem[0]['dk'] = 'K';
+							$jurnalbonsem[0]['detail'] = $request->keterangan[$i];
 					}			
 					else {
-						$datajurnal[$i]['id_akun'] = $akunbanktujuan;
-						$datajurnal[$i]['subtotal'] = '-' . $nominal;
-						$datajurnal[$i]['dk'] = 'D';
-						$datajurnal[$i]['detail'] = $request->keterangan[$i];
-	
+						$jurnalbonsem[0]['id_akun'] = $akunbankasal;
+						$jurnalbonsem[0]['subtotal'] = '-' . $nominal;
+						$jurnalbonsem[0]['dk'] = 'K';
+						$jurnalbonsem[0]['detail'] = $request->keterangan[$i];
 					}
 
+					if($akundkakasbank == 'D'){
+						$jurnalbonsem[1]['id_akun'] = $akunkasbank;
+						$jurnalbonsem[1]['subtotal'] =  $nominal;
+						$jurnalbonsem[1]['dk'] = 'D';
+						$jurnalbonsem[1]['detail'] = $request->keterangan[$i];
+					}
+					else {
+						$jurnalbonsem[1]['id_akun'] = $akunkasbank;
+						$jurnalbonsem[1]['subtotal'] = '-' . $nominal;
+						$jurnalbonsem[1]['dk'] = 'D';
+						$jurnalbonsem[1]['detail'] = $request->keterangan[$i];
+					}
+
+					//TUJUAN BANK (BANK MASUK)
+					if($akundkakasbank == 'K'){
+						$jurnalbonsemkeluar[0]['id_akun'] = $akunkasbank;
+						$jurnalbonsemkeluar[0]['subtotal'] = $nominal;
+						$jurnalbonsemkeluar[0]['dk'] = 'K';
+						$jurnalbonsemkeluar[0]['detail'] = $request->keterangan[$i];
+					}
+					else {
+						$jurnalbonsemkeluar[0]['id_akun'] = $akunkasbank;
+						$jurnalbonsemkeluar[0]['subtotal'] = $nominal;
+						$jurnalbonsemkeluar[0]['dk'] = 'K';
+						$jurnalbonsemkeluar[0]['detail'] = $request->keterangan[$i];
+					}
+
+					if($akundkagb == 'D'){
+						$jurnalbonsemkeluar[1]['id_akun'] = $akunbanktujuan;
+						$jurnalbonsemkeluar[1]['subtotal'] = $nominal;
+						$jurnalbonsemkeluar[1]['dk'] = 'D';
+						$jurnalbonsemkeluar[1]['detail'] = $request->keterangan[$i];	
+					}
+					else {
+						$jurnalbonsemkeluar[1]['id_akun'] = $akunbanktujuan;
+						$jurnalbonsemkeluar[1]['subtotal'] = '-' .$nominal;
+						$jurnalbonsemkeluar[1]['dk'] = 'D';
+						$jurnalbonsemkeluar[1]['detail'] = $request->keterangan[$i];
+					}
+
+					if(count($jurnalbonsemkeluar) != 0){
+
+				       	$lastidjurnald = DB::table('d_jurnal')->max('jr_id'); 
+						if(isset($lastidjurnald)) {
+							$idjurnald = $lastidjurnald;
+							$idjurnald = (int)$idjurnald + 1;
+						}
+						else {
+							$idjurnald = 1;
+						}
+
+
+						$jr_no = get_id_jurnal('BM' , $cabang);
+
+						$ref = explode("-", $jr_no);
+
+						$kodebankd = $datafpgb[0]->fpgb_kodebank;
+						if($kodebankd < 10){
+							$kodebankd = '0' . $kodebankd;
+						}	
+						else {
+							$kodebankd = $kodebankd;
+						}
+
+						$kode = $ref[0] . $kodebankd;
+						$jr_ref = $kode . '-' . $ref[1];
+
+						$year = date('Y');	
+						$date = date('Y-m-d');
+						$jurnal = new d_jurnal();
+						$jurnal->jr_id = $idjurnald;
+				        $jurnal->jr_year = date('Y');
+				        $jurnal->jr_date = date('Y-m-d');
+				        $jurnal->jr_detail = 'BUKTI BANK MASUK';
+				        $jurnal->jr_ref = $notabm;
+				        $jurnal->jr_note = $request->keteranganheader;
+				        $jurnal->jr_no = $jr_no;
+				        $jurnal->save();
+
+				    $key = 1;
+					for($j = 0; $j < count($jurnalbonsemkeluar); $j++){
+			   			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+						if(isset($lastidjurnaldt)) {
+							$idjurnaldt = $lastidjurnaldt;
+							$idjurnaldt = (int)$idjurnaldt + 1;
+						}
+						else {
+							$idjurnaldt = 1;
+						}
+
+		    			$jurnaldt = new d_jurnal_dt();
+		    			$jurnaldt->jrdt_jurnal = $idjurnald;
+		    			$jurnaldt->jrdt_detailid = $key;
+		    			$jurnaldt->jrdt_acc = $jurnalbonsemkeluar[$j]['id_akun'];
+		    			$jurnaldt->jrdt_value = $jurnalbonsemkeluar[$j]['subtotal'];
+		    			$jurnaldt->jrdt_statusdk = $jurnalbonsemkeluar[$j]['dk'];
+		    			$jurnaldt->jrdt_detail = $jurnalbonsemkeluar[$j]['detail'];
+		    			$jurnaldt->save();
+		    			$key++;
+					}
+
+						
+					}
+
+										
 				}
 				else{
 
@@ -7662,27 +7990,7 @@ public function kekata($x) {
 			else {
 				$idjurnal = 1;
 			}
-			
-/*
-			$carimax = DB::select("select * from d_jurnal where jr_detail = 'BUKTI BANK KELUAR'");
-			$countcarimax = count($carimax);
-			if($countcarimax == 0){
-				$explode = explode("/", $request->nobbk);
-				$idbbk = $explode[2];
-				$nobbk1 = $explode[0];
-				$nobbk2 = $explode[1];
-				$jr_no = $nobbk1 . $nobbk2 . 0001;				
-			}
-			else {
-				$explode = explode("/", $request->nobbk);
-				$idbbk = $explode[2];
-				$nobbk1 = $explode[0];
-				$nobbk2 = $explode[1];
-				$string = (int)$countcarimax + 1;
-				$idbbk = str_pad($string, 4, '0', STR_PAD_LEFT);
-				
-				$jr_no = $nobbk1 . '/' . $nobbk2 . '/' . $idbbk;
-			}*/
+
 			$jr_no = get_id_jurnal('BK' , $cabang);
 
 			$year = date('Y');	
@@ -7697,28 +8005,31 @@ public function kekata($x) {
 	        $jurnal->jr_no = $jr_no;
 	        $jurnal->save();
        			
-
+	       
 	        $akundkahutang2 = DB::select("select * from d_akun where id_akun = '$akunhutangdagang'");
 	        $akundkahutang = $akundkahutang2[0]->akun_dka; 
-
-	        if($akundkahutang == 'D'){
-	           	$dataakun = array (
-				'id_akun' => $akunhutangdagang,
-				'subtotal' => '-' . $total,
-				'dk' => 'K',
-				'detail' => $request->keteranganheader,
-				);	
-	        }
-	        else {
-	        	$dataakun = array (
-				'id_akun' => $akunhutangdagang,
-				'subtotal' => $total,
-				'dk' => 'K',
-				'detail' => $request->keteranganheader,
-				);	
-	        }
+	        if(count($jurnalpbkeluar) == 0 || count($jurnalbonsem) == 0){
+	        	        if($akundkahutang == 'D'){
+	        	           	$dataakun = array (
+	        				'id_akun' => $akunhutangdagang,
+	        				'subtotal' => '-' . $total,
+	        				'dk' => 'K',
+	        				'detail' => $request->keteranganheader,
+	        				);	
+	        	        }
+	        	        else {
+	        	        	$dataakun = array (
+	        				'id_akun' => $akunhutangdagang,
+	        				'subtotal' => $total,
+	        				'dk' => 'K',
+	        				'detail' => $request->keteranganheader,
+	        				);	
+	        	        }
+	        	        array_push($datajurnal, $dataakun );
+	        	    }
 	        
-			array_push($datajurnal, $dataakun );
+
+			
     		$key  = 1;
     		for($j = 0; $j < count($datajurnal); $j++){
     			
@@ -7743,6 +8054,52 @@ public function kekata($x) {
 
 			}
 
+			//PB BANK KELUAR
+			$key = 1;
+			for($j = 0; $j < count($jurnalpb); $j++){
+	
+    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+				if(isset($lastidjurnaldt)) {
+					$idjurnaldt = $lastidjurnaldt;
+					$idjurnaldt = (int)$idjurnaldt + 1;
+				}
+				else {
+					$idjurnaldt = 1;
+				}
+
+    			$jurnaldt = new d_jurnal_dt();
+    			$jurnaldt->jrdt_jurnal = $idjurnal;
+    			$jurnaldt->jrdt_detailid = $key;
+    			$jurnaldt->jrdt_acc = $jurnalpb[$j]['id_akun'];
+    			$jurnaldt->jrdt_value = $jurnalpb[$j]['subtotal'];
+    			$jurnaldt->jrdt_statusdk = $jurnalpb[$j]['dk'];
+    			$jurnaldt->jrdt_detail = $jurnalpb[$j]['detail'];
+    			$jurnaldt->save();
+    			$key++;
+			}
+
+			//BONSEM BANK KELUAR
+			$key = 1;
+			for($j = 0; $j < count($jurnalbonsem); $j++){	
+    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+				if(isset($lastidjurnaldt)) {
+					$idjurnaldt = $lastidjurnaldt;
+					$idjurnaldt = (int)$idjurnaldt + 1;
+				}
+				else {
+					$idjurnaldt = 1;
+				}
+
+    			$jurnaldt = new d_jurnal_dt();
+    			$jurnaldt->jrdt_jurnal = $idjurnal;
+    			$jurnaldt->jrdt_detailid = $key;
+    			$jurnaldt->jrdt_acc = $jurnalbonsem[$j]['id_akun'];
+    			$jurnaldt->jrdt_value = $jurnalbonsem[$j]['subtotal'];
+    			$jurnaldt->jrdt_statusdk = $jurnalbonsem[$j]['dk'];
+    			$jurnaldt->jrdt_detail = $jurnalbonsem[$j]['detail'];
+    			$jurnaldt->save();
+    			$key++;
+			}
 
 			return json_encode($idbbk);
 		});		
@@ -8045,7 +8402,17 @@ public function kekata($x) {
 
 		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 		$data['jenisbayar'] = DB::select("select * from jenisbayar where idjenisbayar != '8'  and idjenisbayar != 10");
-		$data['bank'] = DB::select("select * from masterbank");
+
+		$cabang = session::get('cabang');
+
+		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
+			$data['bank'] = DB::select("select * from masterbank");
+		}
+		else {
+			$data['bank'] = DB::select("select * from masterbank where mb_cabangbank = '$cabang'");
+		}
+		
+		
 		$data['agen'] = DB::select("select * from agen where kategori = 'AGEN'");
 		$data['cabang'] = DB::select("select * from cabang");
 		$time = Carbon::now();
@@ -8092,15 +8459,20 @@ public function kekata($x) {
 
 
 	public function hapusfpg($id){
+
 		$data['fpg'] = DB::select("select * from fpg, fpg_dt where idfpg = fpgdt_idfpg and idfpg = '$id'");
+
+		$fpg = DB::select("select * from fpg where idfpg = '$id'");
+		$jenisbayar = $fpg[0]->fpg_jenisbayar;
 		for($i = 0; $i < count($data['fpg']); $i++){
 			$idfp = $data['fpg'][$i]->fpgdt_idfp;
 			$pelunasan = $data['fpg'][$i]->fpgdt_pelunasan;
 
-			$data['fp'] = DB::select("select * from faktur_pembelian where fp_idfaktur = '$idfp'");
-			$jenisbayar = $data['fp'][0]->fp_jenisbayar;
+			$jenisbayar = $data['fpg'][0]->fpg_jenisbayar;
 
 			if($jenisbayar == '2' || $jenisbayar == '6' || $jenisbayar == '7' || $jenisbayar == '9'){
+			$data['fp'] = DB::select("select * from faktur_pembelian where fp_idfaktur = '$idfp'");
+			//$jenisbayar = $data['fp'][0]->fp_jenisbayar;
 			$fppelunasan = $data['fp'][0]->fp_sisapelunasan;
 			$hasilpengurangan = (float)$fppelunasan + (float)$pelunasan;
 
@@ -8119,6 +8491,40 @@ public function kekata($x) {
 						]);
 				}
 			}
+			else if($jenisbayar == '4'){
+				$data['um'] =  DB::select("select * from d_uangmuka where um_id = '$idfp'");
+				$fppelunasan = $data['um'][0]->um_sisapelunasan;
+				$hasilpengurangan = (float)$fppelunasan + (float)$pelunasan;
+
+
+				$updateformfpg = d_uangmuka::where('um_id' , '=' , $idfp);
+				$updateformfpg->update([
+					'um_sisapelunasan' => $hasilpengurangan,					
+				]);
+			}
+			else if($jenisbayar == '1'){
+				$data['ik'] =  DB::select("select * from ikhtisar_kas where ik_id = '$idfp'");
+				$fppelunasan = $data['ik'][0]->ik_pelunasan;
+				$hasilpengurangan = (float)$fppelunasan + (float)$pelunasan;
+
+
+				$updateformfpg = ikhtisar_kas::where('ik_id' , '=' , $idfp);
+				$updateformfpg->update([
+					'ik_pelunasan' => $hasilpengurangan,					
+				]);
+			}
+			else if($jenisbayar == '11'){
+				$data['bonsem'] =  DB::select("select * from bonsem_pengajuan where bp_id = '$idfp'");
+				$fppelunasan = $data['bonsem'][0]->bp_pelunasan;
+				$hasilpengurangan = (float)$fppelunasan + (float)$pelunasan;
+
+
+				$updatebonsem = bonsempengajuan::where('bp_id' , '=' , $idfp);
+				$updatebonsem->update([
+					'bp_pelunasan' => $hasilpengurangan,					
+				]);
+			}
+			
 		}
 
 
@@ -8139,7 +8545,10 @@ public function kekata($x) {
 		}
 		
 		DB::delete("DELETE from fpg where idfpg = '$id'");
-
+		if($jenisbayar == '12'){
+					$nofpg = $fpg[0]->fpg_nofpg;
+					DB::delete("DELETE from bank_masuk where bm_nota = '$nofpg'");
+			}
 		return 'ok';
 	}
 
@@ -8155,7 +8564,7 @@ public function kekata($x) {
 			$data['fpg_bank'] = DB::select("select * from fpg_cekbank,fpg, masterbank where fpgb_idfpg = idfpg and fpgb_idfpg = '$id' and fpgb_kodebank = mb_id");
 			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
 		}
-		else if($jenisbayar == '5'){
+		else if($jenisbayar == '5' || $jenisbayar == '12'){
 			$data['fpg'] = DB::select("select *, cabang.nama as namacabang from fpg, cabang where fpg_cabang = cabang.kode and idfpg ='$id'");
 			$data['fpg_dt'] = DB::select("select * from fpg_dt, fpg, faktur_pembelian where fpgdt_idfpg = idfpg and fpgdt_idfpg = '$id'");
 			$data['fpg_bank'] = DB::select("select * from fpg_cekbank,fpg, masterbank where fpgb_idfpg = idfpg and fpgb_idfpg = '$id' and fpgb_kodebank = mb_id");
@@ -8388,7 +8797,7 @@ public function kekata($x) {
 					}
 
 				}
-				else if($idjenisbayar == '11') {
+				else if($idjenisbayar == '11') { // BON SEMENTARA
 					$datas['fp']  = DB::select("select * from bonsem_pengajuan, cabang where  bp_cabang = '$nosupplier' and bp_cabang = kode and bp_setujukeu = 'SETUJU' and bp_pelunasan != 0.00");
 
 					$datas['fp1']  = DB::select("select * from bonsem_pengajuan, cabang where  bp_cabang = '$nosupplier' and bp_cabang = kode and bp_setujukeu = 'SETUJU' and bp_pelunasan != 0.00");
@@ -8407,7 +8816,28 @@ public function kekata($x) {
 					else {
 						$data['fakturpembelian'] = $datas['fp1'];
 					}
-				}	
+				}
+				else if($idenisbayar == '13'){
+					$datas['fp']  = DB::select("select * from bonsem_pengajuan, cabang where  bp_cabang = '$nosupplier' and bp_cabang = kode and bp_setujukeu = 'SETUJU' and bp_pencairan != 0.00");
+
+					$datas['fp1']  = DB::select("select * from bonsem_pengajuan, cabang where  bp_cabang = '$nosupplier' and bp_cabang = kode and bp_setujukeu = 'SETUJU' and bp_pencairan != 0.00");
+
+					if(count($request->arrnofaktur) != 0){
+						for($i = 0 ; $i < count($datas['fp']); $i++){
+							for($j = 0; $j < count($request->arrnofaktur); $j++){
+								if($request->arrnofaktur[$j] == $datas['fp'][$i]->bp_nota){
+									unset($datas['fp1'][$i]);
+								}
+							}
+						}
+						$datas['fp1'] = array_values($datas['fp1']);
+           				$data['fakturpembelian'] = $datas['fp1'];
+					}
+					else {
+						$data['fakturpembelian'] = $datas['fp1'];
+					}
+				}
+
 
 			
 		return json_encode($data);
@@ -10113,6 +10543,7 @@ public function kekata($x) {
 		$fpg = DB::select("select * from fpg where idfpg = '$id'");
 		$jenisbayar = $fpg[0]->fpg_jenisbayar;
 		$data['jenisbayar'] = $fpg[0]->fpg_jenisbayar;
+
 		if($jenisbayar == '4'){
 			$fpg2 = DB::select("select * from fpg, d_uangmuka where idfpg = '$id' and fpg_agen = um_supplier");
 			$jenissup = $fpg2[0]->um_jenissup;
@@ -10151,6 +10582,9 @@ public function kekata($x) {
 		}
 		else if($jenisbayar == '11'){
 			$data['fpg'] = DB::select("select *, cabang.kode as kodecabang, cabang.nama as kodesupplier , cabang.nama as namacabang, cabang.nama as namasupplier from fpg, masterbank, jenisbayar, cabang where  idfpg = '$id' and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode and fpg_agen = cabang.kode ");
+		}
+		else if($jenisbayar == '12'){
+			$data['fpg'] = DB::select("select *, cabang.kode as kodecabang, cabang.nama as kodesupplier, cabang.nama as namacabang, cabang.nama as namasupplier from fpg, masterbank, jenisbayar, cabang where idfpg = '$id' and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode and fpg_agen = cabang.kode");
 		}
 		//dd($data['fpg']);	
 		$jenisbayar = $data['fpg'][0]->fpg_jenisbayar;
@@ -10280,6 +10714,7 @@ public function kekata($x) {
 
 			}
 		}
+		
 		else {
 
 			$data['fpg_bank'] = DB::select("select * from  fpg_cekbank, fpg, masterbank  where idfpg = '$id' and fpgb_idfpg = idfpg and fpgb_kodebank = mb_id");
@@ -10287,12 +10722,12 @@ public function kekata($x) {
 			$data['supplier'] = DB::select("select * from supplier");
 		}
 		
+		//dd($data);
 		return view('purchase/formfpg/detail', compact('data'));
 	}
 
 
 	public function saveformfpg(Request $request){
-
 
 		return DB::transaction(function() use ($request) {  
 			$jenisbayar = $request->jenisbayar;
@@ -10328,7 +10763,7 @@ public function kekata($x) {
 				$formfpg->fpg_keterangan = strtoupper($request->keterangan);
 
 
-				if($request->jenisbayar == 5) {
+				if($request->jenisbayar == 5 || $request->jenisbayar == 12) {
 					//$formfpg->fpg_orang = $request->keterangantransfer;
 					$formfpg->fpg_keterangan = strtoupper($request->keterangantransfer);
 
@@ -10360,9 +10795,10 @@ public function kekata($x) {
 
 				if($request->jenisbayar == 12){
 					$formfpg->fpg_acchutang = $request->hutangdagang;
+					$formfpg->fpg_kelompok = $request->kelompokbank;
 				}
 				else {
-					$formfpg->fpg_acchutang = $request->hutangbank;
+					$formfpg->fpg_acchutang = $request->hutangdagang;
 				}
 
 				if($request->hutangbank != ''){
@@ -10469,34 +10905,153 @@ public function kekata($x) {
 						->where('bp_nota', $request->nofaktur[$i])
 						->update([
 							'bp_pelunasan' => $sisafaktur,
-							'status_pusat' => 'PENCAIRAN'
+							'bp_pencairan' => $pelunasan,
 						]);	
 					}
 				}
 			}
 
 				if($request->jenisbayarbank == 'INTERNET BANKING') {
+					if($request->jenisbayar == '12' || $request->jenisbayar == '11'){
+						for($j=0; $j < count($request->kodebanktujuan); $j++){
+							$formfpg_bank = new formfpg_bank();
+							$lastidfpg_bank =  formfpg_bank::max('fpgb_id');;
+							if(isset($lastidfpg_bank)) {
+									$idfpg_bank = $lastidfpg_bank;
+									$idfpg_bank = (int)$idfpg_bank + 1;
+							}
+							else {
+									$idfpg_bank = 1;
+							} 
+								$nominalbank =  str_replace(',', '', $request->nominalbank[$j]);
+								$formfpg_bank->fpgb_idfpg = $idfpg;
+								$formfpg_bank->fpgb_id = $idfpg_bank;
+								$formfpg_bank->fpgb_kodebank = $idbank;
+								$formfpg_bank->fpgb_jenisbayarbank = $request->jenisbayarbank;
+								$formfpg_bank->fpgb_nominal = $nominalbank;
+								$formfpg_bank->fpgb_cair = 'IYA';
+								$formfpg_bank->fpgb_setuju = 'SETUJU';
 
-					$formfpg_bank = new formfpg_bank();
-					$lastidfpg_bank =  formfpg_bank::max('fpgb_id');;
-					if(isset($lastidfpg_bank)) {
-							$idfpg_bank = $lastidfpg_bank;
-							$idfpg_bank = (int)$idfpg_bank + 1;
+
+
+								$formfpg_bank->fpgb_nocheckbg = null;
+								$formfpg_bank->fpgb_norektujuan = $request->tujuannorekbank[$j];
+								$formfpg_bank->fpgb_nmrekeningtujuan = $request->tujuannamabank[$j];
+								$formfpg_bank->fpgb_banktujuan = $request->idbanktujuan[$j];
+								$formfpg_bank->fpgb_nmbanktujuan = $request->namabanktujuan[$j];
+								$formfpg_bank->fpgb_kodebanktujuan = $request->kodebanktujuan[$j];
+								$formfpg_bank->save();
+							
+
+								if($request->jenisbayar == '12'){
+								//	return 'yesy';
+										if($request->kelompokbank == 'SAMA'){
+											$bankmasuk = new bank_masuk();
+	
+											$lastid_bm = bank_masuk::max('bm_id');
+											if(isset($lastid_bm)){
+												$idbm = $lastid_bm;
+												$idbm = (int)$idbm + 1;
+											}
+											else {
+												$idbm = 1;
+											}
+		
+											$bankasal = DB::select("select * from masterbank where mb_kode = '$kodebank'");
+											$cabangasal = $bankasal[0]->mb_cabangbank;
+											$namaasal = $bankasal[0]->mb_nama;
+
+											$kodetujuan = $request->kodebanktujuan[$j];
+											$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
+											$cabangtujuan = $banktujuan[0]->mb_cabangbank;
+											$namatujuan = $banktujuan[0]->mb_nama;
+		
+											$bankmasuk->bm_id = $idbm;
+											$bankmasuk->bm_bankasal = $kodebank;
+											$bankmasuk->bm_cabangasal = $cabangasal;
+											$bankmasuk->bm_cabangtujuan = $cabangtujuan;
+											$bankmasuk->bm_banktujuan = $kodetujuan;
+											$bankmasuk->bm_status = 'DIKIRIM';
+											$bankmasuk->created_by = $request->username;
+											$bankmasuk->updated_by = $request->username;
+											$bankmasuk->bm_notatransaksi = $request->nofpg;
+											$bankmasuk->bm_transaksi = $request->noseri[$j];
+											$bankmasuk->bm_jenisbayar = $request->jenisbayarbank;
+											$bankmasuk->bm_idfpgb = $idfpg_bank;
+											$bankmasuk->bm_nominal = $nominalbank;
+											$bankmasuk->bm_keterangan = $request->keterangantransfer;
+											$bankmasuk->bm_namabankasal = $namaasal;
+											$bankmasuk->bm_namabanktujuan = $namatujuan;
+
+											$bankmasuk->save();
+										}
+										else {
+										$bankmasuk = new bank_masuk();
+	
+										$lastid_bm = bank_masuk::max('bm_id');
+										if(isset($lastid_bm)){
+											$idbm = $lastid_bm;
+											$idbm = (int)$idbm + 1;
+										}
+										else {
+											$idbm = 1;
+										}
+										
+										$akunkasbank = '109911000';
+										$bankasal = DB::select("select * from masterbank where mb_kode = '$kodebank'");
+										$cabangasal = $bankasal[0]->mb_cabangbank;
+										$namaasal = $bankasal[0]->mb_nama;
+										$kodetujuan = $request->kodebanktujuan[$j];
+										$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
+										$cabangtujuan = $banktujuan[0]->mb_cabangbank;
+										$namatujuan = $banktujuan[0]->mb_nama;
+
+										$bankmasuk->bm_id = $idbm;
+										$bankmasuk->bm_bankasal = $akunkasbank;
+										$bankmasuk->bm_cabangasal = $cabangasal;
+										$bankmasuk->bm_cabangtujuan = $cabangtujuan;
+										$bankmasuk->bm_banktujuan = $kodetujuan;
+										$bankmasuk->bm_status = 'DIKIRIM';
+										$bankmasuk->created_by = $request->username;
+										$bankmasuk->updated_by = $request->username;
+										$bankmasuk->bm_notatransaksi = $request->nofpg;
+										$bankmasuk->bm_transaksi = $request->noseri[$j];
+										$bankmasuk->bm_jenisbayar = $request->jenisbayarbank;
+										$bankmasuk->bm_idfpgb = $idfpg_bank;
+										$bankmasuk->bm_nominal = $nominalbank;
+										$bankmasuk->bm_keterangan = $request->keterangantransfer;
+										$bankmasuk->bm_namabankasal = $namaasal;
+										$bankmasuk->bm_namabanktujuan = $namatujuan;
+										$bankmasuk->save();
+									}
+									
+								} // endif jenisbayar 12
+
+						}	
+
 					}
 					else {
-							$idfpg_bank = 1;
-					} 
+						$formfpg_bank = new formfpg_bank();
+						$lastidfpg_bank =  formfpg_bank::max('fpgb_id');;
+						if(isset($lastidfpg_bank)) {
+								$idfpg_bank = $lastidfpg_bank;
+								$idfpg_bank = (int)$idfpg_bank + 1;
+						}
+						else {
+								$idfpg_bank = 1;
+						} 
 
-					$nominalbank =  str_replace(',', '', $request->nominalbank);
+						$nominalbank =  str_replace(',', '', $request->nominalbank);
 
-					$formfpg_bank->fpgb_idfpg = $idfpg;
-					$formfpg_bank->fpgb_id = $idfpg_bank;
-					$formfpg_bank->fpgb_kodebank = $idbank;
-					$formfpg_bank->fpgb_jenisbayarbank = $request->jenisbayarbank;
-					$formfpg_bank->fpgb_nominal = $nominalbank;
-					$formfpg_bank->fpgb_cair = 'IYA';
-					$formfpg_bank->fpgb_setuju = 'SETUJU';
-					$formfpg_bank->save();
+						$formfpg_bank->fpgb_idfpg = $idfpg;
+						$formfpg_bank->fpgb_id = $idfpg_bank;
+						$formfpg_bank->fpgb_kodebank = $idbank;
+						$formfpg_bank->fpgb_jenisbayarbank = $request->jenisbayarbank;
+						$formfpg_bank->fpgb_nominal = $nominalbank;
+						$formfpg_bank->fpgb_cair = 'IYA';
+						$formfpg_bank->fpgb_setuju = 'SETUJU';
+						$formfpg_bank->save();
+					}
 
 				}
 				else {
@@ -10528,11 +11083,8 @@ public function kekata($x) {
 						$formfpg_bank->fpgb_norekening = $request->namabank;
 
 					}
-					if($request->jenisbayar == '12'){
-						if($request->jenisbayarbank == 'INTERNET BANKING'){
+					if($request->jenisbayar == '12' || $request->jenisbayar == '11'){
 
-						}
-						else {
 							$formfpg_bank->fpgb_nocheckbg = $request->noseri[$j];
 							$formfpg_bank->fpgb_norektujuan = $request->tujuannorekbank[$j];
 							$formfpg_bank->fpgb_nmrekeningtujuan = $request->tujuannamabank[$j];
@@ -10540,7 +11092,89 @@ public function kekata($x) {
 							$formfpg_bank->fpgb_nmbanktujuan = $request->namabanktujuan[$j];
 							$formfpg_bank->fpgb_kodebanktujuan = $request->kodebanktujuan[$j];
 
-						}
+
+
+								if($request->jenisbayar == '12'){
+								//	return 'yesy';
+									if($request->kelompokbank == 'SAMA BANK'){
+										$bankmasuk = new bank_masuk();
+
+										$lastid_bm = bank_masuk::max('bm_id');
+										if(isset($lastid_bm)){
+											$idbm = $lastid_bm;
+											$idbm = (int)$idbm + 1;
+										}
+										else {
+											$idbm = 1;
+										}
+
+										$bankasal = DB::select("select * from masterbank where mb_kode = '$kodebank'");
+										$cabangasal = $bankasal[0]->mb_cabangbank;
+										$kodetujuan = $request->kodebanktujuan[$j];
+										$namaasal = $bankasal[0]->mb_nama;
+										$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
+										$cabangtujuan = $banktujuan[0]->mb_cabangbank;
+										$namatujuan = $banktujuan[0]->mb_nama;
+										$akunkasbank = '109911000';
+
+										$bankmasuk->bm_id = $idbm;
+										$bankmasuk->bm_bankasal = $akunkasbank;
+										$bankmasuk->bm_cabangasal = $cabangasal;
+										$bankmasuk->bm_cabangtujuan = $cabangtujuan;
+										$bankmasuk->bm_banktujuan = $kodetujuan;
+										$bankmasuk->bm_status = 'DIKIRIM';
+										$bankmasuk->created_by = $request->username;
+										$bankmasuk->updated_by = $request->username;
+										$bankmasuk->bm_notatransaksi = $request->nofpg;
+										$bankmasuk->bm_transaksi = $request->noseri[$j];
+										$bankmasuk->bm_jenisbayar = $request->jenisbayarbank;
+										$bankmasuk->bm_idfpgb = $idfpg_bank;
+										$bankmasuk->bm_nominal = $nominalbank;
+										$bankmasuk->bm_keterangan = $request->keterangantransfer;
+										$bankmasuk->bm_namabankasal = $namaasal;
+										$bankmasuk->bm_namabanktujuan = $namatujuan;
+										
+										$bankmasuk->save();
+									}
+									else {
+										$bankmasuk = new bank_masuk();
+
+										$lastid_bm = bank_masuk::max('bm_id');
+										if(isset($lastid_bm)){
+											$idbm = $lastid_bm;
+											$idbm = (int)$idbm + 1;
+										}
+										else {
+											$idbm = 1;
+										}
+
+										$bankasal = DB::select("select * from masterbank where mb_kode = '$kodebank'");
+										$cabangasal = $bankasal[0]->mb_cabangbank;
+										$namasal = $bankasal[0]->mb_nama;
+										$kodetujuan = $request->kodebanktujuan[$j];
+										$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
+										$cabangtujuan = $banktujuan[0]->mb_cabangbank;
+										$namatujuan = $banktujuan[0]->mb_nama;
+
+										$bankmasuk->bm_id = $idbm;
+										$bankmasuk->bm_bankasal = $kodebank;
+										$bankmasuk->bm_cabangasal = $cabangasal;
+										$bankmasuk->bm_cabangtujuan = $cabangtujuan;
+										$bankmasuk->bm_banktujuan = $kodetujuan;
+										$bankmasuk->bm_status = 'DIKIRIM';
+										$bankmasuk->created_by = $request->username;
+										$bankmasuk->updated_by = $request->username;
+										$bankmasuk->bm_notatransaksi = $request->nofpg;
+										$bankmasuk->bm_transaksi = $request->noseri[$j];
+										$bankmasuk->bm_jenisbayar = $request->jenisbayarbank;
+										$bankmasuk->bm_idfpgb = $idfpg_bank;
+										$bankmasuk->bm_nominal = $nominalbank;
+										$bankmasuk->bm_keterangan = $request->keterangantransfer;
+										$bankmasuk->bm_namabankasal = $namasal;
+										$bankmasuk->bm_namabanktujuan = $namatujuan;
+										$bankmasuk->save();
+									}
+								}					
 					}
 					else {
 						$formfpg_bank->fpgb_nocheckbg = $request->noseri[$j];

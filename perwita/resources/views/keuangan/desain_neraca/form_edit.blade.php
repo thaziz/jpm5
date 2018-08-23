@@ -115,16 +115,16 @@
                     <div class="col-md-6">
                       <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 1px; padding: 10px; height: 500px; box-shadow: 0px 0px 10px #eee;">
                           <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane fade in active" id="aktiva">
+                            <div role="tabpanel" class="tab-pane fade" id="aktiva">
                               <span style="position: absolute; top: 50%; left: 28%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Neraca Aktiva</span>
-                              <div id="aktiva_tree" style="font-size: 8pt;">
+                              <div id="aktiva_tree" style="font-size: 8pt; height: 480px; background: none; overflow-x: hidden; overflow-y: scroll;">
                                   
                               </div>
                             </div>
 
-                            <div role="tabpanel" class="tab-pane fade" id="pasiva">
+                            <div role="tabpanel" class="tab-pane fade in active" id="pasiva">
                               <span style="position: absolute; top: 50%; left: 28%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Neraca Pasiva</span>
-                              <div id="pasiva_tree" style="font-size: 8pt;">
+                              <div id="pasiva_tree" style="font-size: 8pt; height: 480px; background: none; overflow-x: hidden; overflow-y: scroll;">
                                 
                               </div>
                             </div>
@@ -137,9 +137,9 @@
 
                         <div class="col-md-6" style="padding:0px;">
                           <div class="btn-group">
-                              <button href="#aktiva" aria-controls="aktiva" role="tab" data-toggle="tab" class="btn btn-white aktif btn-sm switch" data-for="aktiva" style="font-size: 8pt;" type="button">Activa</button>
+                              <button href="#aktiva" aria-controls="aktiva" role="tab" data-toggle="tab" class="btn btn-white btn-sm switch" data-for="aktiva" style="font-size: 8pt;" type="button">Activa</button>
 
-                              <button href="#pasiva" aria-controls="pasiva" role="tab" data-toggle="tab" class="btn btn-white btn-sm switch" data-for="pasiva" style="font-size: 8pt;" type="button">Pasiva</button>
+                              <button href="#pasiva" aria-controls="pasiva" role="tab" data-toggle="tab" class="btn btn-white btn-sm switch aktif" data-for="pasiva" style="font-size: 8pt;" type="button">Pasiva</button>
                           </div>
                         </div>
 
@@ -391,55 +391,6 @@
         },
       });
 
-      $('#pasiva_tree').on('ready.jstree', function (e, data) {
-
-          state = "pasiva";
-
-          $.each($.grep(data_neraca, function(a){ return a.type === "pasiva" }), function(i, n) {
-            
-            level = n.level;
-            parrent = (n.id_parrent == "") ? null : n.id_parrent;
-            id = n.nomor_id;
-            jenis = n.jenis;
-            keterangan = n.keterangan.toUpperCase();
-
-            open = (jenis != "1") ? false : true;
-            type = "default";
-
-            if(jenis == "3")
-              type = "total";
-            else if(jenis == "4")
-              type = "space";
-
-            createNode(parrent, id, id, "last", keterangan, open, type);
-
-            if(jenis == 2 || jenis == 3){
-
-              $.each($.grep(data_detail, function(e){ return e.id_parrent === id }), function(i, n){
-
-                text = ""; ids = n.nomor_id; dari = n.dari;
-
-                if(n.dari == "Group Neraca"){
-                  dbbm = data_group.findIndex(a => a.id === n.id_group);
-                  text = data_group[dbbm].nama_group;
-                }else{
-                  dbbm = data_neraca.findIndex(a => a.nomor_id === n.id_group);
-                  text = data_neraca[dbbm].keterangan;
-                }
-                
-                createNode(id, ids, text, "last", text, open, "demo");
-
-              })
-            }
-
-            // console.log(data_neraca);
-            // console.log(data_detail);
-            form_reset();
-            // grab_parrent();
-          })
-
-      });
-
       $('#aktiva_tree').jstree({
         plugins: ["types"],
         "types" : {
@@ -508,6 +459,61 @@
             form_reset();
             // grab_parrent();
           })
+
+          state = 'pasiva';
+          form_reset();
+
+      });
+
+      $('#pasiva_tree').on('ready.jstree', function (e, data) {
+
+          state = "pasiva";
+
+          $.each($.grep(data_neraca, function(a){ return a.type === "pasiva" }), function(i, n) {
+            
+            level = n.level;
+            parrent = (n.id_parrent == "") ? null : n.id_parrent;
+            id = n.nomor_id;
+            jenis = n.jenis;
+            keterangan = n.keterangan.toUpperCase();
+
+            open = (jenis != "1") ? false : true;
+            type = "default";
+
+            if(jenis == "3")
+              type = "total";
+            else if(jenis == "4")
+              type = "space";
+
+            createNode(parrent, id, id, "last", keterangan, open, type);
+
+            if(jenis == 2 || jenis == 3){
+
+              $.each($.grep(data_detail, function(e){ return e.id_parrent === id }), function(i, n){
+
+                text = ""; ids = n.nomor_id; dari = n.dari;
+
+                if(n.dari == "Group Neraca"){
+                  dbbm = data_group.findIndex(a => a.id === n.id_group);
+                  text = data_group[dbbm].nama_group;
+                }else{
+                  dbbm = data_neraca.findIndex(a => a.nomor_id === n.id_group);
+                  text = data_neraca[dbbm].keterangan;
+                }
+                
+                createNode(id, ids, text, "last", text, open, "demo");
+
+              })
+            }
+
+            // console.log(data_neraca);
+            // console.log(data_detail);
+            form_reset();
+            // grab_parrent();
+          })
+
+          state = 'pasiva';
+          form_reset();
 
       });
 

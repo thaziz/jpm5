@@ -29,10 +29,13 @@ class master_akun_controller extends Controller
       $cabang = DB::table('cabang')
                   ->get();
 
+      $item = DB::table('masteritem')
+              ->get();
+
       $akun = DB::table('d_akun')
                 ->get();
       // $akun  = array_merge($akun1,$akun2);
-    	return view('master_sales.master_akun.index',compact('akun','akun_item','akun_patty','cabang'));
+    	return view('master_sales.master_akun.index',compact('akun','akun_item','akun_patty','cabang','item'));
     }
     public function datatable_akun(request $req)
     {
@@ -228,7 +231,9 @@ class master_akun_controller extends Controller
                     ->where('maf_cabang',$req->cabang)
                     ->get();
      
-        $akun = DB::table('d_akun')->get();
+        $akun = DB::table('d_akun')
+                  ->where('kode_cabang',$req->cabang)
+                  ->get();
        
       }else{
         $akun_patty = DB::table('master_akun_fitur')
@@ -236,7 +241,9 @@ class master_akun_controller extends Controller
                     ->where('maf_cabang',$req->cabang)
                     ->get();
 
-        $akun = DB::table('d_akun')->get();
+        $akun = DB::table('d_akun')
+                  ->where('kode_cabang',$req->cabang)
+                  ->get();
       }
 
       return view('master_sales.master_akun.dropdown_patty',compact('akun','akun_patty'));
@@ -252,14 +259,18 @@ class master_akun_controller extends Controller
                     ->where('maf_cabang',$req->cabang)
                     ->get();
      
-        $akun = DB::table('d_akun')->get();
+        $akun = DB::table('d_akun')
+                  ->where('kode_cabang',$req->cabang)
+                  ->get();
       }else{
         $akun_patty = DB::table('master_akun_fitur')
                     ->where('maf_group','1')
                     ->where('maf_cabang',$req->cabang)
                     ->get();
      
-        $akun = DB::table('d_akun')->get();
+        $akun = DB::table('d_akun')
+                  ->where('kode_cabang',$req->cabang)
+                  ->get();
       }
 
       return view('master_sales.master_akun.dropdown_item',compact('akun','akun_item'));
@@ -285,65 +296,68 @@ class master_akun_controller extends Controller
                ->delete();
     }
 
-    // public function insert_all()
-    // {
-    //   $cabang = DB::table('cabang')
-    //               ->get();
+    public function insert_all()
+    {
 
-      
+      $del = DB::table('master_akun_fitur')
+               ->delete();
+               
+      $cabang = DB::table('cabang')
+                  ->get();
 
-
-    //   for ($i=0; $i < count($cabang); $i++) { 
-
-
-    //     $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->where('kode_cabang',$cabang[$i]->kode)->get();
-    //     $akun2 = DB::table('d_akun')->where('id_akun','like','6%')->where('kode_cabang',$cabang[$i]->kode)->get();
-    //     $akun3 = DB::table('d_akun')->where('id_akun','like','7%')->where('kode_cabang',$cabang[$i]->kode)->get();
-    //     $akun4 = DB::table('d_akun')->where('id_akun','like','8%')->where('kode_cabang',$cabang[$i]->kode)->get();
-    //     $akun5 = DB::table('d_akun')->where('id_akun','like','9%')->where('kode_cabang',$cabang[$i]->kode)->get();
-    //     $akun  = array_merge($akun1,$akun2,$akun3,$akun4,$akun5);
-
-    //     for ($a=0; $a < count($akun); $a++) { 
-    //       $id = DB::table('master_akun_fitur')
-    //               ->max('maf_id')+1;
-
-    //       $save_maf = DB::table('master_akun_fitur')
-    //                       ->insert([
-    //                         'maf_id'        => $id,
-    //                         'maf_kode_akun' => $akun[$a]->id_akun,
-    //                         'maf_nama'      => $akun[$a]->nama_akun,
-    //                         'maf_group'     => 1,
-    //                         'maf_cabang'    => $cabang[$i]->kode,
-    //                      ]);
-    //     }
-    //   }
+      for ($i=0; $i < count($cabang); $i++) { 
 
 
+        $akun0 = DB::table('d_akun')->where('id_akun','like','1002%')->where('kode_cabang',$cabang[$i]->kode)->get();
+        $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->where('kode_cabang',$cabang[$i]->kode)->get();
+        $akun2 = DB::table('d_akun')->where('id_akun','like','6%')->where('kode_cabang',$cabang[$i]->kode)->get();
+        $akun3 = DB::table('d_akun')->where('id_akun','like','7%')->where('kode_cabang',$cabang[$i]->kode)->get();
+        $akun4 = DB::table('d_akun')->where('id_akun','like','8%')->where('kode_cabang',$cabang[$i]->kode)->get();
+        $akun5 = DB::table('d_akun')->where('id_akun','like','9%')->where('kode_cabang',$cabang[$i]->kode)->get();
+        $akun  = array_merge($akun0,$akun1,$akun2,$akun3,$akun4,$akun5);
 
-    //   for ($i=0; $i < count($cabang); $i++) { 
+        for ($a=0; $a < count($akun); $a++) { 
+          $id = DB::table('master_akun_fitur')
+                  ->max('maf_id')+1;
+
+          $save_maf = DB::table('master_akun_fitur')
+                          ->insert([
+                            'maf_id'        => $id,
+                            'maf_kode_akun' => $akun[$a]->id_akun,
+                            'maf_nama'      => $akun[$a]->nama_akun,
+                            'maf_group'     => 1,
+                            'maf_cabang'    => $cabang[$i]->kode,
+                         ]);
+        }
+      }
 
 
-    //     $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->where('kode_cabang',$cabang[$i]->kode)->get();
-    //     $akun2 = DB::table('d_akun')->where('id_akun','like','6%')->where('kode_cabang',$cabang[$i]->kode)->get();
-    //     $akun3 = DB::table('d_akun')->where('id_akun','like','7%')->where('kode_cabang',$cabang[$i]->kode)->get();
-    //     $akun4 = DB::table('d_akun')->where('id_akun','like','8%')->where('kode_cabang',$cabang[$i]->kode)->get();
-    //     $akun5 = DB::table('d_akun')->where('id_akun','like','9%')->where('kode_cabang',$cabang[$i]->kode)->get();
-    //     $akun  = array_merge($akun1,$akun2,$akun3,$akun4,$akun5);
 
-    //     for ($a=0; $a < count($akun); $a++) { 
-    //       $id = DB::table('master_akun_fitur')
-    //               ->max('maf_id')+1;
+      for ($i=0; $i < count($cabang); $i++) { 
 
-    //       $save_maf = DB::table('master_akun_fitur')
-    //                       ->insert([
-    //                         'maf_id'        => $id,
-    //                         'maf_kode_akun' => $akun[$a]->id_akun,
-    //                         'maf_nama'      => $akun[$a]->nama_akun,
-    //                         'maf_group'     => 2,
-    //                         'maf_cabang'    => $cabang[$i]->kode,
-    //                      ]);
-    //     }
-    //   }
 
-    // } 
+        $akun0 = DB::table('d_akun')->where('id_akun','like','1002%')->where('kode_cabang',$cabang[$i]->kode)->get();
+        $akun1 = DB::table('d_akun')->where('id_akun','like','1%')->where('kode_cabang',$cabang[$i]->kode)->get();
+        $akun2 = DB::table('d_akun')->where('id_akun','like','6%')->where('kode_cabang',$cabang[$i]->kode)->get();
+        $akun3 = DB::table('d_akun')->where('id_akun','like','7%')->where('kode_cabang',$cabang[$i]->kode)->get();
+        $akun4 = DB::table('d_akun')->where('id_akun','like','8%')->where('kode_cabang',$cabang[$i]->kode)->get();
+        $akun5 = DB::table('d_akun')->where('id_akun','like','9%')->where('kode_cabang',$cabang[$i]->kode)->get();
+        $akun  = array_merge($akun0,$akun1,$akun2,$akun3,$akun4,$akun5);
+
+        for ($a=0; $a < count($akun); $a++) { 
+          $id = DB::table('master_akun_fitur')
+                  ->max('maf_id')+1;
+
+          $save_maf = DB::table('master_akun_fitur')
+                          ->insert([
+                            'maf_id'        => $id,
+                            'maf_kode_akun' => $akun[$a]->id_akun,
+                            'maf_nama'      => $akun[$a]->nama_akun,
+                            'maf_group'     => 2,
+                            'maf_cabang'    => $cabang[$i]->kode,
+                         ]);
+        }
+      }
+
+    } 
 }

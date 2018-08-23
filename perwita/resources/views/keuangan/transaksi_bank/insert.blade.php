@@ -269,7 +269,7 @@
           success: function(response){
             console.log(response);
             if(response.status == "berhasil"){
-              toastr.success('Data Jurnal Memorial Berhasil Disimpan');
+              toastr.success('Data Transaksi Bank Berhasil Disimpan');
               btn.removeAttr("disabled");
               btn.text("Simpan");
 

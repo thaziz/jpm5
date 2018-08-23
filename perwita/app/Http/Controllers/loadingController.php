@@ -25,15 +25,37 @@ class loadingController extends Controller
 	}
 	public function append_table(request $req)
 	{
-		$cab = $req->cabang;
-		return view('purchase.kas.table_loading',compact('cab'));
+		if ($req->flag =='global') {
+			$cab = $req->cabang;
+			$tanggal_awal = $req->tanggal_awal;
+			if ($tanggal_awal == '') {
+				$tanggal_awal = '0';
+			}
+			$tanggal_akhir = $req->tanggal_akhir;
+			if ($tanggal_akhir == '') {
+				$tanggal_akhir = '0';
+			}
+			$jenis_biaya   = $req->jenis_biaya;
+			$nota = '0';
+		}else{
+			$cab = '0';
+			$tanggal_awal  = '0';
+			$tanggal_akhir = '0';
+			$jenis_biaya   = '0';
+			$nota = $req->nota;
+		}
+		
+		return view('purchase.kas.table_loading',compact('cab','tanggal_awal','tanggal_akhir','jenis_biaya','nota'));
 	}
+
 
 	public function datatable_bk(request $req)
 	{
 		$nama_cabang = DB::table("cabang")
 						 ->where('kode',$req->cabang)
 						 ->first();
+
+		$jenis_biaya = $req->jenis_biaya;
 
 		if ($nama_cabang != null) {
 			$cabang = 'and bpk_comp = '."'$req->cabang'";
@@ -42,18 +64,56 @@ class loadingController extends Controller
 		}
 
 
-		if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
-			$sql = "SELECT * FROM biaya_penerus_kas  join cabang on kode = bpk_comp where bpk_nota != '0' and bpk_jenis_biaya = 'LOADING' $cabang";
-			$data = DB::select($sql);
+		if ($req->tanggal_awal != '0') {
+			$tgl_awal = carbon::parse($req->tanggal_awal)->format('Y-m-d');
+			$tanggal_awal = 'and bpk_tanggal >= '."'$tgl_awal'";
 		}else{
-			$cabang = Auth::user()->kode_cabang;
-			$data = DB::table('biaya_penerus_kas')
-				  ->join('cabang','kode','=','bpk_comp')
-				  ->where('kode',$cabang)
-				  ->where('bpk_jenis_biaya','LOADING')
-				  ->orderBy('bpk_id','ASC')
-				  ->get();
+			$tanggal_awal = '';
 		}
+
+		if ($req->tanggal_akhir != '0') {
+			$tgl_akhir = carbon::parse($req->tanggal_akhir)->format('Y-m-d');
+			$tanggal_akhir = 'and bpk_tanggal <= '."'$tgl_akhir'";
+		}else{
+			$tanggal_akhir = '';
+		}
+
+		if ($req->jenis_biaya != '0') {
+			$jenis_biaya = 'and bpk_jenis_biaya = '."'$req->jenis_biaya'";
+		}else{
+			$jenis_biaya = '';
+		}
+
+
+		if ($req->nota != '0') {
+			if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
+				$data = DB::table('biaya_penerus_kas')
+						  ->join('cabang','kode','=','bpk_comp')
+						  ->where('bpk_nota','=',$req->nota)
+						  ->where('bpk_jenis_biaya','=','LOADING')
+						  ->orderBy('bpk_id','ASC')
+						  ->get();
+			}else{
+				$cabang = Auth::user()->kode_cabang;
+				$data = DB::table('biaya_penerus_kas')
+						  ->join('cabang','kode','=','bpk_comp')
+						  ->where('kode',$cabang)
+						  ->where('bpk_nota','=',$req->nota)
+						  ->where('bpk_jenis_biaya','=','LOADING')
+						  ->orderBy('bpk_id','ASC')
+						  ->get();
+			}
+		}else{
+			if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
+				$sql = "SELECT * FROM biaya_penerus_kas  join cabang on kode = bpk_comp where bpk_nota != '0' and bpk_jenis_biaya = 'LOADING' $cabang $tanggal_awal $tanggal_akhir $jenis_biaya";
+				$data = DB::select($sql);
+			}else{
+				$cabang = Auth::user()->kode_cabang;
+				$sql = "SELECT * FROM biaya_penerus_kas  join cabang on kode = bpk_comp where bpk_nota != '0' and bpk_jenis_biaya = 'LOADING' and bpk_comp = '$cabang' $tanggal_akhir $tanggal_akhir $jenis_biaya";
+				$data = DB::select($sql);
+			}
+		}
+
         $data = collect($data);
         // return $data;
         return Datatables::of($data)
@@ -61,7 +121,8 @@ class loadingController extends Controller
                             $a = '';
                             if($data->bpk_status == 'Released' or Auth::user()->punyaAkses('Biaya Penerus Kas','ubah')){
                                 if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
-							$a = '<a class="fa asw fa-pencil" align="center" href="'.route('editkas', ['id' => $data->bpk_id] ).'" title="edit"> Edit</a><br>';
+									$a = '<a title="Edit" class="btn btn-xs btn-warning" href="'.route('editkasloading', ['id' => $data->bpk_id] ).'">
+                              			<i class="fa fa-pencil" aria-hidden="true"></i></a> ';
                                 }
                             }else{
                               $a = '';
@@ -70,12 +131,17 @@ class loadingController extends Controller
                             $c = '';
                             if($data->bpk_status == 'Released' or Auth::user()->punyaAkses('Biaya Penerus Kas','hapus')){
                                 if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
-                                  $c = '<a class="fa fa-trash asw" align="center" onclick="hapus(\''.$data->bpk_id.'\')" title="hapus"> Hapus</a>';
+
+                                  $c = '<a title="Hapus" class="btn btn-xs btn-danger"  onclick="hapus(\''.$data->bpk_id.'\')">
+		                               <i class="fa fa-trash" aria-hidden="true"></i>
+		                               </a>';
                                 }
                             }else{
                               $c = '';
                             }
-                            return $a . $c  ;
+
+                            $d = '<a class="btn btn-xs btn-success" onclick="lihat_jurnal(\''.$data->bpk_id.'\')" title="lihat jurnal"><i class="fa fa-eye"></i></a>';
+                            return '<div class="btn-group">'.$a . $c  .$d.'</div>';
                                    
                         })
                     
@@ -87,6 +153,13 @@ class loadingController extends Controller
                             if ($data->bpk_comp == $kota[$i]->kode) {
                                 return $kota[$i]->nama;
                             }
+                          }
+                        })
+                        ->addColumn('status', function ($data) {
+                          if ($data->bpk_status == 'Approved') {
+                            return '<label class="label label-success">APPROVED</label>';
+                          }else{
+                            return '<label class="label label-warning">RELEASED</label>';
                           }
                         })
                         ->addColumn('tagihan', function ($data) {
@@ -222,7 +295,7 @@ class loadingController extends Controller
 
 
 			$cari_akun = DB::table('d_akun')
-					  ->where('id_akun','like','5299'.'%')
+					  ->where('id_akun','like','5205'.'%')
 					  ->where('kode_cabang',$request->cabang)
 					  ->first();
 			if ($cari_akun == null) {
@@ -406,7 +479,7 @@ class loadingController extends Controller
 					$save_patty = DB::table('patty_cash')
 						   ->insert([
 						   		'pc_id'			  => $cari_id_pc,
-						   		'pc_tgl'		  => str_replace('/', '-', $request->tN),
+						   		'pc_tgl'		  => carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 						   		'pc_ref'	 	  => 10,
 						   		'pc_akun' 		  => $acc->id_akun,
 						   		'pc_akun_kas' 	  => $request->nama_kas,
@@ -636,7 +709,7 @@ class loadingController extends Controller
 
 
 			$cari_akun = DB::table('d_akun')
-					  ->where('id_akun','like','5299'.'%')
+					  ->where('id_akun','like','5205'.'%')
 					  ->where('kode_cabang',$request->cabang)
 					  ->first();
 
@@ -815,7 +888,7 @@ class loadingController extends Controller
 					$save_patty = DB::table('patty_cash')
 						   ->insert([
 						   		'pc_id'			  => $cari_id_pc,
-						   		'pc_tgl'		  => Carbon::now(),
+						   		'pc_tgl'		  => carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 						   		'pc_ref'	 	  => 10,
 						   		'pc_akun' 		  => $acc->id_akun,
 						   		'pc_akun_kas' 	  => $request->nama_kas,

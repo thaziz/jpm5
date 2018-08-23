@@ -26,6 +26,17 @@
         return $jr_no;
 	}
 
+	function get_total_neraca_parrent($id, $array){
+		$tot = 0;
+		foreach ($array as $key => $value) {
+			if(substr($value['nomor_id'], 0, strlen($id)) == $id && $value['jenis'] != 3 && $value['jenis'] != 4)
+				$tot += $value['total'];
+		}
+
+		return ($tot >= 0) ? number_format($tot, 2) : "(".number_format(str_replace("-", "", $tot), 2).")";
+		// return $tot;
+	}
+
 	function date_ind($date){
 		$ret = "";
 		switch ($date) {
@@ -144,4 +155,28 @@
 	} //JIKA COUNT == 1, maka belum tutup periode, jika ada maka tidak kosong
 
 	
+
+	function getnotabm($cabang){
+		$buland = date('m');
+        $tahund = date('y');
+
+       $idbm = DB::select("select * from bank_masuk where bm_cabangasal = '$cabang'  and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_nota IS NOT NULL order by bm_id desc limit 1");
+
+	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
+		if(count($idbm) != 0) {		
+			$explode = explode("/", $idbm[0]->bm_nota);
+			$idbm = $explode[2];
+
+			$string = (int)$idbm + 1;
+			$idbm = str_pad($string, 4, '0', STR_PAD_LEFT);
+		}
+		else {		
+			$idbm = '0001';
+		}
+     
+        $notabm = 'BM' . '-' . $buland . $tahund . '/' . $cabang . '/' . $idbm;
+
+        return $notabm;
+	}
+
 ?>

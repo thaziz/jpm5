@@ -111,7 +111,11 @@ class selaras_jurnal  extends Controller
                                       ->where('id_akun','like',substr($bpk[$i]->bpk_kode_akun,0, 4).'%')
                                       ->where('kode_cabang',$bpk[$i]->bpk_comp)
                                       ->first();
-                    
+                
+                if ($cari_coa == null) {
+                  dd($bpk[$i]->bpk_nota .' '. $bpk[$i]->bpk_kode_akun .' '. $bpk[$i]->bpk_comp);
+                }
+
                 if ($cari_coa->akun_dka == 'D') {
                     $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
                     $data_akun[0]['jrdt_detailid']  = 1;
@@ -153,6 +157,9 @@ class selaras_jurnal  extends Controller
                                    ->where('id_akun','like',substr($bpk[$i]->bpk_acc_biaya,0, 4).'%')
                                    ->where('kode_cabang',$filter_comp[$bpk[$i]->bpk_nota][$a])
                                    ->first();
+                    if ($cari_akun == null) {
+                     dd($bpk[$i]->bpk_nota .' '. $bpk[$i]->bpk_acc_biaya .' '. $filter_comp[$bpk[$i]->bpk_nota][$a]);
+                    }
                     $save_patty = DB::table('patty_cash')
                            ->insert([
                                 'pc_id'           => $cari_id_pc,
@@ -184,14 +191,14 @@ class selaras_jurnal  extends Controller
                         $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
                         $data_akun[0]['jrdt_detailid']  = $dt;
                         $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-                        $data_akun[0]['jrdt_value']     = round($harga);
+                        $data_akun[0]['jrdt_value']     = $harga;
                         $data_akun[0]['jrdt_statusdk']  = 'D';
                 		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
                     }else{
                         $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
                         $data_akun[0]['jrdt_detailid']  = $dt;
                         $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-                        $data_akun[0]['jrdt_value']     = round($harga);
+                        $data_akun[0]['jrdt_value']     = $harga;
                         $data_akun[0]['jrdt_statusdk']  = 'k';
                 		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
                     }
@@ -399,7 +406,7 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-	                        $data_akun[0]['jrdt_value']     = -round($harga);
+	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'K';
                 			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
 
@@ -407,7 +414,7 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-	                        $data_akun[0]['jrdt_value']     = -round($harga);
+	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'D';
                 			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
 
@@ -599,7 +606,7 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-	                        $data_akun[0]['jrdt_value']     = -round($harga);
+	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'K';
                 			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
 
@@ -607,7 +614,7 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-	                        $data_akun[0]['jrdt_value']     = -round($harga);
+	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'D';
                 			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
 
@@ -776,7 +783,7 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-	                        $data_akun[0]['jrdt_value']     = -round($harga);
+	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'K';
                 			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
 
@@ -784,7 +791,7 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-	                        $data_akun[0]['jrdt_value']     = -round($harga);
+	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'D';
                 			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
 
@@ -807,7 +814,22 @@ class selaras_jurnal  extends Controller
                               ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
                               ->where('bkk_id',$bkk[$i]->bkk_id)
                               ->get();
+                 
+                    for ($z=0; $z < count($detail); $z++) { 
+                      $cari_akun = DB::table('d_akun')
+                                     ->where('id_akun','like',substr($detail[$z]->bkkd_akun,0, 4).'%')
+                                     ->where('kode_cabang',$bkk[$i]->bkk_comp)
+                                     ->first();
+                      try{
+                        $dd = $cari_akun->id_akun;
+                      }catch(Exception $re){
+                        $dels = DB::table('bukti_kas_keluar_detail')
+                              ->where('bkkd_id',$detail[$z]->bkkd_id)
+                              ->delete();
+                      }
+                    }
 
+                    
   	                $delete_jurnal = DB::table('d_jurnal')
   	                               ->where('jr_ref',$bkk[$i]->bkk_nota)
   	                               ->delete();
@@ -895,13 +917,20 @@ class selaras_jurnal  extends Controller
 	                $filter_comp[$bkk[$i]->bkk_nota] = array_values($filter_comp[$bkk[$i]->bkk_nota]);
 	                // SAVE PATTY_CASH
 	                for ($b=0; $b < count($detail); $b++) { 
+                      if ($detail[$b] == null) {
+                        dd($detail);
+                      }
                     	$cari_id_pc = DB::table('patty_cash')
                                  ->max('pc_id')+1;
 	                    $cari_akun = DB::table('d_akun')
 	                                   ->where('id_akun','like',substr($detail[$b]->bkkd_akun,0, 4).'%')
 	                                   ->where('kode_cabang',$bkk[$i]->bkk_comp)
 	                                   ->first();
-
+                      try{
+                        $dd = $cari_akun->id_akun;
+                      }catch(Exception $re){
+                        dd('detail yg akunnya gak ada '.$detail[$b]->bkkd_akun.' nota '.$bkk[$i]->bkk_nota);
+                      }
 	                    $save_patty = DB::table('patty_cash')
 	                           ->insert([
 	                                'pc_id'           => $cari_id_pc,
@@ -951,7 +980,7 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-	                        $data_akun[0]['jrdt_value']     = round($harga);
+	                        $data_akun[0]['jrdt_value']     = $harga;
 	                        $data_akun[0]['jrdt_statusdk']  = 'D';
                 			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
 
@@ -959,7 +988,7 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-	                        $data_akun[0]['jrdt_value']     = round($harga);
+	                        $data_akun[0]['jrdt_value']     = $harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'K';
                 			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
 
@@ -1127,7 +1156,7 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-	                        $data_akun[0]['jrdt_value']     = -round($harga);
+	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'K';
                 			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
 
@@ -1135,7 +1164,7 @@ class selaras_jurnal  extends Controller
 	                        $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
 	                        $data_akun[0]['jrdt_detailid']  = $dt;
 	                        $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-	                        $data_akun[0]['jrdt_value']     = -round($harga);
+	                        $data_akun[0]['jrdt_value']     = -$harga;
 	                        $data_akun[0]['jrdt_statusdk'] = 'D';
                 			$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
 

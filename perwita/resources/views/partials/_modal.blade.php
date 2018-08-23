@@ -230,7 +230,13 @@
                   <td width="40%" class="text-center">Pilih Cabang</td>
                   <td colspan="3">
                     <select class="form-control buku_besar select_bukbes_validate" name="buku_besar_cabang" id="buku_besar_cabang" style="width: 80%;">
+                      <option value="---">-- Pilih Cabang</option>
 
+                      @foreach(cabang() as $cab)
+                        @if($cab->kode == Session::get('cabang') || Session::get('cabang') == '000')
+                          <option value="{{ $cab->kode }}">{{ $cab->nama }}</option>
+                        @endif
+                      @endforeach
                     </select>
                     &nbsp;&nbsp; <small id="buku_besar_cabang_txt" style="display: none;"><i class="fa fa-hourglass-half"></i></small>
                   </td>
@@ -257,7 +263,7 @@
                 <tr>
                   <td width="40%" class="text-center">Kode Akun</td>
                   <td colspan="3">
-                    <select class="form-control buku_besar select_bukbes_validate" name="akun1" id="akun1" style="width: 35%;">
+                    <select class="form-control buku_besar select_bukbes_validate choosen_akun" name="akun1" id="akun1" style="width: 35%;">
 
                     </select>
                     <br><small id="buku_besar_akun1_txt"> &nbsp;Pilih Cabang Dahulu</small>
@@ -267,7 +273,7 @@
                 <tr>
                   <td width="40%" class="text-center">Sampai Dengan Akun</td>
                   <td colspan="3">
-                    <select class="form-control buku_besar select_bukbes_validate" name="akun2" id="akun2" style="width: 35%;">
+                    <select class="form-control buku_besar select_bukbes_validate choosen_akun" name="akun2" id="akun2" style="width: 35%;">
                       
                     </select>
                     <br><small id="buku_besar_akun2_txt"> &nbsp;Pilih Cabang Dahulu</small>
@@ -654,6 +660,8 @@
 
       akun = [];
 
+      $(".buku_besar.choosen_akun").chosen({ width: '80%' });
+
       $('.buku_besar_tanggal.sampai').datepicker( {
           format: "yyyy-mm",
           viewMode: "months", 
@@ -711,7 +719,7 @@
              dataType: 'json',
              success: function (data) {
                 $.each(data, function(i, n){
-                    html = html + '<option value="'+n.id_akun+'">'+n.id_akun+'</option>';
+                    html = html + '<option value="'+n.id_akun+'">'+n.id_akun+' - '+n.nama_akun+'</option>';
                 })
 
                 $("#akun1").html(html);
@@ -719,6 +727,8 @@
 
                 $("#buku_besar_akun1_txt").fadeOut(300);
                 $("#buku_besar_akun2_txt").fadeOut(300);
+
+                $('.buku_besar.choosen_akun').trigger("chosen:updated");
 
                 akun = data;
              },
@@ -751,19 +761,21 @@
             if(n.id_akun >= akun1.val())
               html = html + '<option value="'+n.id_akun+'">'+n.id_akun+'</option>';
             else
-              html = html + '<option value="'+n.id_akun+'" style="background:#ff4444; color:white;" disabled>'+n.id_akun+'</option>';
+              html = html + '<option value="'+n.id_akun+'" style="background:#ff4444; color:white;" disabled>'+n.id_akun+' - '+n.nama_akun+'</option>';
           })
           
           $("#akun2").html(html);
+          $('.buku_besar.choosen_akun').trigger("chosen:updated");
         }else{
           $("#buku_besar_akun1_txt").fadeOut(300);
           $("#buku_besar_akun2_txt").fadeOut(300);
 
           $.each(akun, function(i, n){
-            html = html + '<option value="'+n.id_akun+'">'+n.id_akun+'</option>';
+            html = html + '<option value="'+n.id_akun+'">'+n.id_akun+' - '+n.nama_akun+'</option>';
           })
           
           $("#akun2").html(html);
+          $('.buku_besar.choosen_akun').trigger("chosen:updated");
         }
       })
 

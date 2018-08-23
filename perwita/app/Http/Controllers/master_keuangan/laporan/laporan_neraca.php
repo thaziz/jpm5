@@ -155,7 +155,6 @@ class laporan_neraca extends Controller
                           ->get();
 
             foreach ($data_detail_dt as $detail_dt) {
-
                 $dataTotal += $data_neraca[$detail_dt->id_group]["total"];
             }
           }
@@ -173,7 +172,7 @@ class laporan_neraca extends Controller
           $no++;
       }
 
-      // return json_encode($data_detail);
+      // return json_encode($data_neraca);
 
       return view("laporan_neraca.print_pdf.pdf_single")
              ->withThrottle($throttle)

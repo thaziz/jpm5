@@ -197,7 +197,7 @@
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Hapus!",
     cancelButtonText: "Batal",
-    closeOnConfirm: false
+    closeOnConfirm: true
   },
 
 function(){
@@ -206,7 +206,19 @@ function(){
       url:baseUrl + '/ikhtisar_kas/hapus/'+id,
       type:'get',
       success:function(data){
-
+         if (data.status == '1') {
+          swal({
+          title: "Error!",
+                  type: 'warning',
+                  text: data.pesan,
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                    var tableDetail = $('.tbl-penerimabarang').DataTable();
+                    tableDetail.ajax.reload();
+                    return false;
+          });
+        }else{
           swal({
           title: "Berhasil!",
                   type: 'success',
@@ -214,8 +226,11 @@ function(){
                   timer: 2000,
                   showConfirmButton: true
                   },function(){
-                     location.reload();
+                     var tableDetail = $('.tbl-penerimabarang').DataTable();
+                    tableDetail.ajax.reload();
           });
+        }
+          
       },
       error:function(data){
 

@@ -155,8 +155,10 @@ class laporan_laba_rugi extends Controller
                           ->get();
 
             foreach ($data_detail_dt as $detail_dt) {
-
-                $dataTotal += $data_neraca[$detail_dt->id_group]["total"];
+                if($data_neraca[$detail_dt->id_group]["type"] == "Pendapatan")
+                  $dataTotal += $data_neraca[$detail_dt->id_group]["total"];
+                else
+                  $dataTotal -= $data_neraca[$detail_dt->id_group]["total"];
             }
           }
 
@@ -173,7 +175,7 @@ class laporan_laba_rugi extends Controller
           $no++;
       }
 
-      return json_encode($data_neraca);
+      // return json_encode($data_neraca);
 
       return view("laporan_laba_rugi.print_pdf.pdf_single")
              ->withThrottle($throttle)

@@ -2086,29 +2086,27 @@
                                         Request::is('cndnpembelian/cndnpembelian/*') ? 'active' : ''}}" href="{{ url('cndnpembelian/cndnpembelian')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> CN / DN Pembelian </a>
                                 </li>
                                 @endif
-                                @if(Auth::user()->PunyaAkses('Pelunasan Hutang','aktif'))
                                 
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('pelunasanhutangbank/pelunasanhutangbank') ? 'active' : '' || 
-                                        Request::is('pelunasanhutangbank/pelunasanhutangbank/*') ? 'active' : ''}}" href="{{ url('pelunasanhutangbank/pelunasanhutangbank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelunasan Hutang / Pembayaran Bank </a>
-                                </li>
-                                @endif
 
-<!--                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('formtandaterimatagihan/formtandaterimatagihan') ? 'active' : '' || 
-                                        Request::is('formtandaterimatagihan/formtandaterimatagihan/*') ? 'active' : ''}}" href="{{ url('formtandaterimatagihan/formtandaterimatagihan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Tanda Terima Tagihan (TTT)</a>
-                                </li>
- -->
-                             <!--    <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('formaju/formaju') ? 'active' : '' || 
-                                        Request::is('formaju/formaju/*') ? 'active' : ''}}" href="{{ url('formaju/formaju')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Pengajuan Cek / BG (AJU)</a>
-                                </li>
- -->                            
                                 @if(Auth::user()->PunyaAkses('Form Permintaan Giro','aktif'))
 
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('formfpg/formfpg') ? 'active' : '' || 
                                         Request::is('formfpg/formfpg/*') ? 'active' : ''}}" href="{{ url('formfpg/formfpg')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Permintaan Cek / BG (FPG)</a>
+                                </li>
+                                @endif
+
+                                @if(Auth::user()->PunyaAkses('Pelunasan Hutang','aktif'))
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('pelunasanhutangbank/pelunasanhutangbank') ? 'active' : '' || 
+                                        Request::is('pelunasanhutangbank/pelunasanhutangbank/*') ? 'active' : ''}}" href="{{ url('pelunasanhutangbank/pelunasanhutangbank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Transaksi Bank Keluar </a>
+                                </li>
+                                @endif
+
+                                 @if(Auth::user()->PunyaAkses('Bank Masuk','aktif'))
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('bankmasuk/bankmasuk') ? 'active' : '' || 
+                                        Request::is('bankmasuk/bankmasuk/*') ? 'active' : ''}}" href="{{ url('bankmasuk/bankmasuk')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Transaksi Bank Masuk </a>
                                 </li>
                                 @endif
 
@@ -2251,13 +2249,8 @@
                                 </li>
 
                             @endif
-                            @if(Auth::user()->PunyaAkses('Desain Neraca','aktif'))
 
-                                <li>
-                                    <a class="sidebar master-perusahaan {{Request::is('master_keuangan/desain_neraca') ? 'active' : '' || 
-                            Request::is('master_keuangan/desain_neraca/*') ? 'active' : ''   }}" href="{{ url('master_keuangan/desain_neraca')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Desain Neraca </a>
-                                </li>
-                            @endif
+
                             @if(Auth::user()->PunyaAkses('Desain Laba Rugi','aktif'))
 
                                 <li>
@@ -2265,6 +2258,20 @@
                             Request::is('master_keuangan/desain_neraca/*') ? 'active' : ''   }}" href="{{ url('master_keuangan/desain_laba_rugi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Desain Laba Rugi </a>
                                 </li>
                             @endif
+
+                                <li>
+                                    <a class="sidebar master-perusahaan {{Request::is('master_keuangan/desain_arus_kas') ? 'active' : '' || 
+                            Request::is('master_keuangan/desain_arus_kas/*') ? 'active' : ''   }}" href="{{ url('master_keuangan/desain_arus_kas')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Desain Arus Kas </a>
+                                </li>
+
+                             @if(Auth::user()->PunyaAkses('Desain Neraca','aktif'))
+
+                                <li>
+                                    <a class="sidebar master-perusahaan {{Request::is('master_keuangan/desain_neraca') ? 'active' : '' || 
+                            Request::is('master_keuangan/desain_neraca/*') ? 'active' : ''   }}" href="{{ url('master_keuangan/desain_neraca')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Desain Neraca </a>
+                                </li>
+                            @endif
+                            
                             </ul>
                         </li>
                         <!-- end operasional keuangan -->
