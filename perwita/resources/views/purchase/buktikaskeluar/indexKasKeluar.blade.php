@@ -169,6 +169,10 @@
 $(document).ready(function(){
 
   var cabang = $('.cabang').val();
+
+  if (cabang == 'undefined' || cabang == null || cabang == undefined) {
+    cabang = 0;
+  }
   var jenis_bayar = $('.jenis_bayar').val();
   $.ajax({
       url:baseUrl + '/buktikaskeluar/append_table',
@@ -190,6 +194,9 @@ $(document).ready(function(){
 
 function filtering() {
   var cabang = $('.cabang').val();
+  if (cabang == 'undefined' || cabang == null || cabang == undefined) {
+    cabang = 0;
+  }
   var jenis_bayar = $('.jenis_bayar').val();
   $.ajax({
       url:baseUrl + '/buktikaskeluar/append_table',
