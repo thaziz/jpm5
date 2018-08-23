@@ -961,7 +961,14 @@
   }
 
   function save_patty() {
+    var temp = 0;
+    table_patty.$('.pt_debet').each(function(){
+      temp+=1;
+    })
 
+    if (temp == 0) {
+      return toastr.warning('Tidak Ada Data Yang Akan Dibiayai');
+    }
     swal({
     title: "Apakah anda yakin?",
     text: "Simpan Bukti Kas Keluar!",
