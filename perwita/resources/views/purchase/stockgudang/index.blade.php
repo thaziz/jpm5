@@ -152,7 +152,7 @@
                     }
                     
                  row +=  "</td>" +
-                "<td>  <a class='btn btn-sm btn-info' href='url('pengeluaranbarang/createpengeluaranbarang')'> <i class='fa fa-plus'> </i> Buat SPPB </a> &nbsp; <a class='btn btn-sm btn-primary' href='url('suratpermintaanpembelian/createspp')'> <i class='fa fa-plus'> </i> Buat SPP</i> </a></td>" +
+                "<td>  <a class='btn btn-sm btn-info' href='url('pengeluaranbarang/pengeluaranbarang')'> <i class='fa fa-plus'> </i> Buat SPPB </a> &nbsp; <a class='btn btn-sm btn-primary' href='url('suratpermintaanpembelian/createspp')'> <i class='fa fa-plus'> </i> Buat SPP</i> </a></td>" +
               "</tr>";
          
                tablegudang.rows.add($(row)).draw();

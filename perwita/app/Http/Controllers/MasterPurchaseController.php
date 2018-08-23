@@ -295,124 +295,7 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function saveitem(Request $request) {
-		//dd($request);
-		$variable = explode(",", $request->jenis_item);
-		$jenisitem = $variable[0];
-
-		$id=masterItemPurchase::where('jenisitem' , $jenisitem)->max('kode_item'); 
-	//	dd($jenisitem);
-
-
-		$lastiditem = masterItemPurchase::max('iditem'); 				
-		if(isset($lastiditem)) {
 		
-				$iditem = $lastiditem;
-				$iditem = (int)$lastiditem + 1;
-		}
-		else {
-			$iditem = 1;	
-		}
-		
-		if($id) {
-			$string = explode("-",$id);
-			$jumlah = $string[1] + 1;
-		//	$iditem = $string[0] . '-' . $jumlah;
-
-		
-			$invID = str_pad($jumlah, 6, '0', STR_PAD_LEFT);
-
-			$data['id'] = $jenisitem . "-" . $invID;
-		}
-		else {
-			$data['id'] = $jenisitem . "-" .  '000001';
-		}
-
-		//dd($data['id']);
-		$comp_id = "C001";
-
-		$masteritem = new masterItemPurchase();
-		$masteritem->kode_item = $data['id'];
-		$masteritem->nama_masteritem = strtoupper(request()->nama_item);
-		$masteritem->iditem = $iditem;
-		$masteritem->comp_id = $request->cabang;
-		$masteritem->kode_akun = $request->akun;
-		if($jenisitem != 'J'){
-			$masteritem->minstock = strtoupper(request()->minimum_stock);
-		}
-		 $masteritem->acc_persediaan = $request->acc_persediaan;
-        $masteritem->acc_hpp = $request->acc_hpp;
-		
-
-		$masteritem->jenisitem = $jenisitem ;
-
-		$masteritem->updatestock = strtoupper(request()->update_stock);
-
-
-		$replacehrg = str_replace(',', '', $request->harga);
-		$masteritem->harga = $replacehrg;
-		$masteritem->unit1 = strtoupper(request()->unit1);
-		$masteritem->unit2 = strtoupper(request()->unit2);
-		$masteritem->unit3 = strtoupper(request()->unit3);
-	
-		$masteritem->unitstock = strtoupper(request()->unitstock);
-
-		if($request->konversi2 == '') {
-
-		}else{
-			$masteritem->konversi2 = strtoupper(request()->konversi2);
-
-		}
-		if($request->konversi3 == ''){
-
-		}
-		else {
-			$masteritem->konversi3 = strtoupper(request()->konversi3);
-		}
-
-		if($request->posisilantai != ''){
-			$masteritem->posisilantai = strtoupper(request()->posisilantai);
-		}
-		if($request->posisiruang != ''){
-			$masteritem->posisiruang = strtoupper(request()->posisiruang);
-		}
-		if($request->posisirak != ''){
-			$masteritem->posisirak = strtoupper(request()->posisirak);
-		}
-		if($request->posisikolom != ''){
-			$masteritem->posisikolom = strtoupper(request()->posisikolom);
-		}
-		
-			
-
-		/*if($request->file('imageUpload') == ''){
-            return 'file kosong';
-        }
-        else{
-            $childPath = 'img/item/'. $data['id'];
-            $path = $childPath;
-            $file = $request->file('imageUpload');
-            $name = 'item-'.$data['id'] .'.'.$file->getClientOriginalExtension();            
-            if (!File::exists($path))
-            {
-                if(File::makeDirectory($path,0777,true)){
-                    
-
-                    $imgPath = $childPath.'/'.$name;
-                }
-                else
-                    return "gagal upload foto";
-            }
-            else{
-            	
-                return 'gambar sudah ada';
-            }
-        }
-
-        	$masteritem->foto = $imgPath; */
-       		$masteritem->save();
-       	//	$file->move($path, $name);
-       			
-       		 return redirect('masteritem/masteritem');
 	} 
 
 
@@ -590,7 +473,7 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function updatemasterbank(Request $request){
-
+		return DB::transaction(function() use ($request) { 
 		//update di header
 		$data['header3'] = DB::table('masterbank')
 							->where('mb_id' , $request->mb_id)
@@ -760,13 +643,10 @@ class MasterPurchaseController extends Controller
 					$masterbankdt->mbdt_seri = 'CEK&BG';
 					$masterbankdt->mbdt_idmb = $request->mb_id;
 					$masterbankdt->save();
-
 				}
 			}
-
-		
-
 		return json_encode('sukses');
+		});
 	}
 
 	public function detailbank($id){
@@ -787,7 +667,7 @@ class MasterPurchaseController extends Controller
 
 	public function savemasterbank(Request $request){
 			
-
+		return DB::transaction(function() use ($request) { 
 			$lastidbank = masterbank::max('mb_id'); 				
 			if(isset($lastidbank)) {
 			
@@ -1010,6 +890,7 @@ class MasterPurchaseController extends Controller
 
 	//	dd($dka[0]->akun_dka);
 		return json_encode("sukses");
+		});
 	}
 
 
@@ -1099,7 +980,8 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function savesupplier(Request $request) {
-		/*dd($request);*/
+		return DB::transaction(function() use ($request) { 
+			/*dd($request);*/
 		$mastersupplier = new masterSupplierPurchase();
 		$cabang = $request->cabang;
 	/*	dd($request);*/
@@ -1214,8 +1096,8 @@ class MasterPurchaseController extends Controller
 
 			$itemsupplier->save();
 		}
-
-		return redirect('mastersupplier/mastersupplier');
+			return redirect('mastersupplier/mastersupplier');
+		});	
 	}
 
 
@@ -1247,12 +1129,14 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function updatesupplier($id, Request $request) {
-	/*	dd($request);*/
+		dd($request);
 		/*	*/
 
-		if($request->iskontrak == 'tdkeditkontrak') {	
+		return DB::transaction(function() use ($request) { 
+			if($request->kontrak == 'TIDAK') {	
 			$replaceplafon = str_replace(',', '', $request->plafon_kredit);
 
+			$id = $request->idsupplier;
 		/*dd('sama');*/
 			$statusactive = 'AKTIF';
 			$data = masterSupplierPurchase::find($id);
@@ -1367,7 +1251,7 @@ class MasterPurchaseController extends Controller
 
 			
 		}
-		else{
+		else if($request->kontrak == 'YA'){
 		/*	dd('tdksama');*/
 				$idsup = masterSupplierPurchase::max('idsup');
 
@@ -1458,6 +1342,7 @@ class MasterPurchaseController extends Controller
 
 	//	Session::flash('sukses', 'data item baru anda berhasil disimpan');
          return redirect('mastersupplier/mastersupplier');
+		});
 	}
 
 	public function deletesupplier($id) {
@@ -1480,7 +1365,7 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function updatekonfirmasisupplier($id, Request $request){
-
+		return DB::transaction(function() use ($request) { 
 		/*dd($request);*/
 		if($request->iskontrak == 'tdkeditkontrak') {	
 			$replaceplafon = str_replace(',', '', $request->plafon_kredit);
@@ -1688,6 +1573,7 @@ class MasterPurchaseController extends Controller
 		}
 		Session::flash('sukses', 'data item baru anda berhasil disimpan');
         return redirect('konfirmasisupplier/konfirmasisupplier');
+    });
 	}
 
 	public function detailkonfirmasisupplier($id) {
