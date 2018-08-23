@@ -948,6 +948,15 @@
     var par = $(a).parents('tr');
     table_patty.row(par).remove().draw(false);
     toastr.info('Data Berhasil Di Hapus');
+    var temp = 0;
+    table_patty.$('.pt_debet').each(function(){
+      temp+=1;
+    })
+
+    if (temp == 0) {
+      $('#save_patty').addClass('disabled');
+    }
+
     hitung_pt();
   }
 
