@@ -791,9 +791,9 @@ class ikhtisarController extends Controller
 							$bpk = DB::table('biaya_penerus_kas')
 								->where('bpk_nota',$request->id[$i])
 								->first();
-							if ($bpk->bpk_nota == 'BPK0818/009/011') {
-								dd($request->checker[$i]);
-							}
+							// if ($bpk->bpk_nota == 'BPK0818/009/011') {
+							// 	dd($request->checker[$i]);
+							// }
 							$updt_bk = DB::table('biaya_penerus_kas')
 									 ->where('bpk_nota',$bpk->bpk_nota)
 									 ->update([
@@ -908,7 +908,7 @@ class ikhtisarController extends Controller
 							 ->where('ik_nota',$request->ik)
 						   	 ->delete();
 
-					return Response()->json(['status'=>2]);
+					return Response()->json(['status'=>1]);
 					
 
 				}
@@ -1004,14 +1004,23 @@ class ikhtisarController extends Controller
 
 
 			}
+
 			$bpk = [];
+
 			for ($i=0; $i < count($bpks); $i++) { 
-				
 
 				$bpk[$i] = DB::table('biaya_penerus_kas')
 						 ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
 						 ->select('bpk_keterangan as keterangan','bpkd_tarif_penerus as total','bpkd_tanggal as tanggal','bpkd_tanggal as tanggal','bpkd_kode_cabang_awal as cabang','bpk_acc_biaya as akun','bpk_nota as nota')
 						 ->where('bpk_nota',$bpks[$i]->bpk_nota)
+						 ->get();
+
+
+				$asal[$i] = DB::table('biaya_penerus_kas')
+						 ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
+						 ->select('bpkd_kode_cabang_awal as cabang')
+						 ->where('bpk_nota',$bpks[$i]->bpk_nota)
+						 ->groupBy('bpkd_kode_cabang_awal')
 						 ->get();
 	
 				for ($a=0; $a < count($bpk[$i]); $a++) { 
@@ -1019,6 +1028,8 @@ class ikhtisarController extends Controller
 						  ->where("id_akun",'like',substr($bpk[$i][$a]->akun,0,4).'%')
 						  ->where('kode_cabang',$bpk[$i][$a]->cabang)
 						  ->first();
+
+					$bpk[$i][$a]->akun = $temp->id_akun;
 				}
 			}
 
