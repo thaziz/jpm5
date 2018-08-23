@@ -8407,6 +8407,7 @@ public function kekata($x) {
 
 		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
 			$data['bank'] = DB::select("select * from masterbank");
+		}
 		else {
 			$data['bank'] = DB::select("select * from masterbank where mb_cabangbank = '$cabang'");
 		}
