@@ -88,7 +88,7 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td>
-                                    <select class="form-control" name="cb_cabang" >
+                                    <select class="form-control chosen-select-width" name="cb_cabang" >
                                     @foreach ($cabang as $row)
                                         <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                     @endforeach

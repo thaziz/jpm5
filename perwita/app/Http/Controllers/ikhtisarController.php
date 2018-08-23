@@ -1012,7 +1012,7 @@ class ikhtisarController extends Controller
 
 			}
 
-			$bpk = [];
+			$asal = [];
 
 			for ($i=0; $i < count($bpks); $i++) { 
 
