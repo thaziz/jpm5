@@ -1040,18 +1040,21 @@
         idbankasal = splitasal[0];
         kelompok = splitasal[5];
 
-      
-        if(kodebankasal.match(/1099.*/)){
-          $('.kelompokbank').val('BEDA BANK');
-        }
-        else {
-         if(kelompok == kelompoktujuan){
-            $('.kelompokbank').val('SAMA BANK');
-          }
-          else {
-            toastr.info("Mohon maaf, tidak bisa beda bank :)");
-            return false;
-          }
+        jenisbayar = $('.jenisbayar').val();
+
+        if(jenisbayar == 12){
+            if(kodebankasal.match(/1099.*/)){
+              $('.kelompokbank').val('BEDA BANK');
+            }
+            else {
+             if(kelompok == kelompoktujuan){
+                $('.kelompokbank').val('SAMA BANK');
+              }
+              else {
+                toastr.info("Mohon maaf, tidak bisa beda bank :)");
+                return false;
+              }
+            }
         }
 
 
@@ -1128,7 +1131,7 @@
           $this = $(this);
           jenisbayar = $('.jenisbayar').val();
            if ($this.is(":checked")) {
-                if(jenisbayar == '12'){
+                if(jenisbayar == '12' || jenisbayar == '11'){
                     $('.transferbank').show();
                     $('.tujuanbankacc').show();
                     $('.jenisbayarbankibaking').prop({checked: false });
@@ -1145,7 +1148,7 @@
                 }
            }
            else {
-                if(jenisbayar == '12'){
+                if(jenisbayar == '12' || jenisbayar == '11'){
                   $('.ibanking').hide();
                   $('.checkbgtf').hide();
                 }
@@ -1229,7 +1232,7 @@
                 }
            }
            else {
-            if(jenisbayar == 12){
+            if(jenisbayar == 12 || jenisbayar == 11){
               $('.checkbgtf').hide();
               $('.ibanking').hide();
             }
@@ -2141,7 +2144,7 @@
                     }
                     else{
 
-                      if(jenisbayar == '12') {
+                      if(jenisbayar == '12' || jenisbayar == '11') {
                         banktujuan = $('.banktujuan').val();
                         split = banktujuan.split("+");
                         kodebanktujuan = split[4];
@@ -2222,7 +2225,7 @@
                     }
                     // IF CHECKBG
                   
-                    if(jenisbayar == '12'){
+                    if(jenisbayar == '12' == jenisbayar == '11'){
                       $('.nominalbank1').val(nominaltujuan);
                       $('.ChequeBg').val(nominaltujuan);  
                     }
@@ -3189,7 +3192,7 @@
           else {
 
           jenisbayar = $('.jenisbayar').val();
-          if(jenisbayar != '12'){
+          if(jenisbayar != '12' && jenisbayar != '11'){
             if(totalbayar == '') {
             
               toastr.info("Anda Belum menginputkan nilai pembayaran di transaksi :)");
@@ -3251,7 +3254,7 @@
           }
           
             }
-            else if(jenisbayar == '12') {
+            else if(jenisbayar == '12' || jenisbayar == '11') {
                idbank = $('.idbank').val();     
                 val = $(this).val();
                 

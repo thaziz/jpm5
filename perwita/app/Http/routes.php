@@ -528,6 +528,8 @@ Route::get('queryanalisa', 'Queryanalisa@view');
 
 
 Route::get('bankmasuk/bankmasuk' ,'BankMasukController@bankmasuk');
+Route::get('bankmasuk/databank' ,'BankMasukController@getdata');
+Route::post('bankmasuk/saveterima' ,'BankMasukController@saveterima');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');

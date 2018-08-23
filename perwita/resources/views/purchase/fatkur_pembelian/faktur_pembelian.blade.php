@@ -347,6 +347,7 @@
 				<td></td>
 			</tr>
 			<tr class="text-center"  style="height: 105px;vertical-align: top;">
+				@if(count($data['jurnal_dt']) != 0)
 				<td colspan="3" style="padding:20px"> Jurnal
 					<table width="90%" style="">
 						<tr>
@@ -384,6 +385,7 @@
 						</tr>
 					</table>
 				</td>
+				@endif
 				<td class="border-none-bottom" colspan="5"> 
 
 

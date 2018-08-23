@@ -163,6 +163,7 @@ class BonSementaraController extends Controller
 		$bp->created_by = $request->username;
 		$bp->updated_by = $request->username;
 		$bp->bp_akunhutang = $idakun;
+		$bp->bp_pencairan = 0.00;
 	
 		$bp->save();
 
