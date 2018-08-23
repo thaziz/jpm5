@@ -80,10 +80,11 @@ class PurchaseController extends Controller
        $request->jumlahharga;
        $request->ppn;
        $lokasigudang = [];
-      	$data2['po'] = DB::table('pembelian_order')
+      /*	$data2['po'] = DB::table('pembelian_order')
        								  ->join('supplier','supplier.idsup','=','pembelian_order.po_supplier')
        								  ->where('po_id','=',$id)
-       								  ->get();
+       								  ->get();*/
+     	$data2['po'] = DB::select("select *, pembelian_order.created_at as tglpo from pembelian_order, supplier where po_supplier = idsup and po_id = '$id'");
 
        	$sup = $data2['po'][0]->po_supplier;
 		$data2['supplier'] = DB::select("select * from supplier where active='AKTIF' and idsup = $sup ");
@@ -116,7 +117,7 @@ class PurchaseController extends Controller
 			$c = $value->no_kontrak;
 		}
 		foreach ($data2['po'] as $key => $value) {
-			$d = $value->created_at;
+			$d = $value->tglpo;
 		}
 		foreach ($data2['po'] as $key => $value) {
 			$e = $value->po_no;
