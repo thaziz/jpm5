@@ -1224,9 +1224,6 @@
                           toastr.info("Nominal harus sama dengan totalbayar :)");
                           return false;
                          }
-
-
-                         $('.totbayar').val(addCommas(val));
                          $('.ChequeBg').val(addCommas(val));
                     })
                 }

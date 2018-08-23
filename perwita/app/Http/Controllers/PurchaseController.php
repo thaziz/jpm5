@@ -5052,7 +5052,8 @@ public function purchase_order() {
 		$kodesupplier2 = $data[4];
 		$netto = str_replace(',', '', $request->nettohutang_po);
 		$nofaktur = $request->no_faktur;
-		$cabang = $request->cabang;
+		$cabanginput = $request->cabang;
+		$cabang = $request->cabangtransaksi;
 			//MEMBUAT NOFORMTT	
 			$time = Carbon::now();
 		//	$newtime = date('Y-M-d H:i:s', $time);  
@@ -5377,9 +5378,9 @@ public function purchase_order() {
 
 				$fatkurpembeliandt2->fpdt_accbiaya = $request->akunitem[$i];
 				$fatkurpembeliandt2->fpdt_totalharga =  $total;
-				
-
+				$fatkurpembeliandt2->fpdt_keterangan = $request->keteranganitem[$i];
 				$fatkurpembeliandt2->save();
+
 
 				$akunitem = $request->akunitem[$i];
 				$datakun = DB::select("select * from d_akun where id_akun = '$akunitem' and  kode_cabang = '$cabang'");
@@ -8401,7 +8402,16 @@ public function kekata($x) {
 
 		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 		$data['jenisbayar'] = DB::select("select * from jenisbayar where idjenisbayar != '8'  and idjenisbayar != 10");
-		$data['bank'] = DB::select("select * from masterbank");
+
+		$cabang = session::get('cabang');
+
+		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
+			$data['bank'] = DB::select("select * from masterbank");
+		else {
+			$data['bank'] = DB::select("select * from masterbank where mb_cabangbank = '$cabang'");
+		}
+		
+		
 		$data['agen'] = DB::select("select * from agen where kategori = 'AGEN'");
 		$data['cabang'] = DB::select("select * from cabang");
 		$time = Carbon::now();
@@ -10787,7 +10797,7 @@ public function kekata($x) {
 					$formfpg->fpg_kelompok = $request->kelompokbank;
 				}
 				else {
-					$formfpg->fpg_acchutang = $request->hutangbank;
+					$formfpg->fpg_acchutang = $request->hutangdagang;
 				}
 
 				if($request->hutangbank != ''){

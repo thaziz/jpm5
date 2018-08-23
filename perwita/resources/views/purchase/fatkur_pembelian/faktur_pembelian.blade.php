@@ -144,6 +144,8 @@
 			{{$data['judul'][0]->alamat}}
 		</fieldset>
 		<table width="100%" cellspacing="0" class="tabel" border="1px">
+
+
 			<tr class="text-center">
 				<td>No</td>
 				<td>Kode</td>
@@ -152,8 +154,10 @@
 				<td>Unit</td>
 				<td>Harga Satuan</td>
 				<td>Jumlah Harga</td>
+				@if($data['judul'][0]->fp_tipe != 'PO')
 				<td>Biaya</td>
 				<td>Netto</td>
+				@endif
 				<td>Keterangan</td>
 			</tr>
 			
@@ -166,8 +170,10 @@
 		       <td class="textright right"> {{$brg->unitstock}}</td>
 		       <td class="textright right"> {{number_format($brg->fpdt_harga, 2)}}</td>
 		       <td class="textright right"> {{number_format($brg->fpdt_totalharga, 2)}}</td>
+		       @if($data['judul'][0]->fp_tipe != 'PO')
 		       <td class="textright right"> {{number_format($brg->fpdt_biaya, 2)}}</td>
 		       <td class="textright right"> {{number_format($brg->fpdt_netto, 2)}}</td>
+		       @endif
 		       <td class="textleft right"> {{$brg->fpdt_keterangan}} </td>
 		     </tr>
 		     @endforeach
@@ -180,20 +186,10 @@
 				<td class="text-right"></td>
 				<td class="text-center"></td>
 				<td class="text-right"></td>
+				  @if($data['judul'][0]->fp_tipe != 'PO')
 				<td class="text-right"></td>
 				<td class="text-right"></td>
-				<td class="text-right"></td>
-				<td></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
-				<td class="text-right"></td>
-				<td class="text-center"></td>
-				<td class="text-right"></td>
-				<td class="text-right"></td>
-				<td class="text-right"></td>
+				@endif
 				<td class="text-right"></td>
 				<td></td>
 			</tr>
@@ -204,20 +200,10 @@
 				<td class="text-right"></td>
 				<td class="text-center"></td>
 				<td class="text-right"></td>
+				@if($data['judul'][0]->fp_tipe != 'PO')
 				<td class="text-right"></td>
 				<td class="text-right"></td>
-				<td class="text-right"></td>
-				<td></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
-				<td class="text-right"></td>
-				<td class="text-center"></td>
-				<td class="text-right"></td>
-				<td class="text-right"></td>
-				<td class="text-right"></td>
+				@endif
 				<td class="text-right"></td>
 				<td></td>
 			</tr>
@@ -228,20 +214,10 @@
 				<td class="text-right"></td>
 				<td class="text-center"></td>
 				<td class="text-right"></td>
+				  @if($data['judul'][0]->fp_tipe != 'PO')
 				<td class="text-right"></td>
 				<td class="text-right"></td>
-				<td class="text-right"></td>
-				<td></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
-				<td class="text-right"></td>
-				<td class="text-center"></td>
-				<td class="text-right"></td>
-				<td class="text-right"></td>
-				<td class="text-right"></td>
+				@endif
 				<td class="text-right"></td>
 				<td></td>
 			</tr>
@@ -252,20 +228,10 @@
 				<td class="text-right"></td>
 				<td class="text-center"></td>
 				<td class="text-right"></td>
+				  @if($data['judul'][0]->fp_tipe != 'PO')
 				<td class="text-right"></td>
 				<td class="text-right"></td>
-				<td class="text-right"></td>
-				<td></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
-				<td class="text-right"></td>
-				<td class="text-center"></td>
-				<td class="text-right"></td>
-				<td class="text-right"></td>
-				<td class="text-right"></td>
+				@endif
 				<td class="text-right"></td>
 				<td></td>
 			</tr>
@@ -276,8 +242,66 @@
 				<td class="text-right"></td>
 				<td class="text-center"></td>
 				<td class="text-right"></td>
+				  @if($data['judul'][0]->fp_tipe != 'PO')
 				<td class="text-right"></td>
 				<td class="text-right"></td>
+				@endif
+				<td class="text-right"></td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				<td class="text-right"></td>
+				<td class="text-center"></td>
+				<td class="text-right"></td>
+				  @if($data['judul'][0]->fp_tipe != 'PO')
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				@endif
+				<td class="text-right"></td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				<td class="text-right"></td>
+				<td class="text-center"></td>
+				<td class="text-right"></td>
+				  @if($data['judul'][0]->fp_tipe != 'PO')
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				@endif
+				<td class="text-right"></td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				<td class="text-right"></td>
+				<td class="text-center"></td>
+				<td class="text-right"></td>
+				  @if($data['judul'][0]->fp_tipe != 'PO')
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				@endif
+				<td class="text-right"></td>
+				<td></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				<td class="text-right"></td>
+				<td class="text-center"></td>
+				<td class="text-right"></td>
+				  @if($data['judul'][0]->fp_tipe != 'PO')
+				<td class="text-right"></td>
+				<td class="text-right"></td>
+				@endif
 				<td class="text-right"></td>
 				<td></td>
 			</tr>
@@ -288,21 +312,31 @@
 				<td class="text-right"></td>
 				<td class="text-center"></td>
 				<td class="text-right"></td>
+				  @if($data['judul'][0]->fp_tipe != 'PO')
 				<td class="text-right"></td>
 				<td class="text-right"></td>
+				@endif
 				<td class="text-right"></td>
 				<td></td>
 			</tr>
 			<tr class="border-none-bottom">
 				<td colspan="3"></td>
+				  @if($data['judul'][0]->fp_tipe != 'PO')
 				<td colspan="4">DPP</td>
+				@else 
+				<td colspan="2">DPP</td>	
+				@endif
 				<td class="border-none-left"></td>
 				<td class="text-right"> {{number_format($data['judul'][0]->fp_dpp, 2)}} </td>
 				<td></td>
 			</tr>
 			<tr class="border-none-bottom">
 				<td colspan="3"></td>
+				@if($data['judul'][0]->fp_tipe != 'PO')
 				<td colspan="4">Discount</td>
+				@else
+				<td colspan="2">Discount</td>
+				@endif
 				<td class="text-right border-none-left">
 					@if($data['judul'][0]->fp_discount == null)
 			           0%
@@ -315,7 +349,11 @@
 			</tr>
 			<tr class="border-none-bottom">
 				<td colspan="3"></td>
+				@if($data['judul'][0]->fp_tipe != 'PO')
 				<td colspan="4">PPn</td>
+				@else
+				<td colspan="2">PPn</td>
+				@endif
 				<td class="text-right border-none-left">
 					 @if($data['judul'][0]->fp_ppn == 0)
 		                0%
@@ -328,7 +366,11 @@
 			</tr>
 			<tr class="border-none-bottom" style="height: 50px;vertical-align: top;">
 				<td colspan="3"></td>
+				@if($data['judul'][0]->fp_tipe != 'PO')
 				<td colspan="4">PPH</td>
+				@else
+				<td colspan="2">PPH</td>
+				@endif
 				<td class="text-right border-none-left">
 					  @if($data['judul'][0]->fp_pph == 0)
 		                0%
@@ -341,14 +383,19 @@
 			</tr>
 			<tr>
 				<td colspan="3"></td>
+				@if($data['judul'][0]->fp_tipe != 'PO')
 				<td colspan="4">Netto</td>
+				@else
+				<td colspan="2">Netto</td>
+				@endif
 				<td class="border-none-left"></td>
 				<td class="text-right"> {{number_format($data['judul'][0]->fp_netto, 2)}} </td>
 				<td></td>
 			</tr>
 			<tr class="text-center"  style="height: 105px;vertical-align: top;">
-				@if(count($data['jurnal_dt']) != 0)
+				
 				<td colspan="3" style="padding:20px"> Jurnal
+					@if(count($data['jurnal_dt']) != 0)
 					<table width="90%" style="">
 						<tr>
 							<td> <b> ID AKUN </b> </td>
@@ -384,12 +431,21 @@
                      
 						</tr>
 					</table>
+						@else
+						<p> Tidak ada Jurnal </p>
+						@endif
 				</td>
-				@endif
+			
+
+				@if($data['judul'][0]->fp_tipe != 'PO')
 				<td class="border-none-bottom" colspan="5"> 
 
-
 				</td>
+				@else
+					<td class="border-none-bottom" colspan="3"> 
+
+				</td>			
+				@endif
 
 				<td>Dibuat</td>
 				<td>Diterima</td>
