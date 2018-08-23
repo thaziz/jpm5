@@ -280,7 +280,7 @@ class ikhtisarController extends Controller
 				$cari = array_merge($bkk,$bpk);		
 				$det_bkk = [];
 				$det_bpk = [];
-
+				
 				for ($i=0; $i < count($bkk); $i++) { 
 
 					$cari_bkk = DB::table('bukti_kas_keluar')

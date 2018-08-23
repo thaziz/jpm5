@@ -3490,7 +3490,6 @@ class kasKeluarController extends Controller
 										  ]);
 					}
 				}catch(Exception $err){
-					return response()->json(['status'=>0]);
 				}
 				
 			}
