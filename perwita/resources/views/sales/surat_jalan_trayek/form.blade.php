@@ -81,7 +81,7 @@
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td colspan="5">
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="ed_tanggal" value="{{ $data->tanggal or  date('Y-m-d') }}">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control date" name="ed_tanggal" value="{{ $data->tanggal or  date('Y-m-d') }}">
                                     </div>
                                 </td>
                             </tr>
@@ -215,6 +215,10 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+    $('.date').datepicker({
+        format:'yyyy-mm-dd'
+    });
     $(document).ready( function () {
         $("input[name='ed_tanggal']").focus();
         $("select[name='cb_cabang']").val('{{ $data->kode_cabang or ''  }}');
