@@ -97,7 +97,7 @@
                                 <td colspan="4">
                                     <select class="form-control chosen-select-width" name="cb_cabang" >
                                     @foreach ($cabang as $row)
-                                        <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                     @endforeach
                                     </select>
                                     <input type="hidden" name="ed_cabang" value="{{ $data->kode_cabang or null }}" >
@@ -226,8 +226,12 @@
     $('.date').datepicker({
         format:'yyyy-mm-dd'
     });
-    $('.').daterangepicker({
-        format:'yyyy-mm-dd'
+    $('.range_date').daterangepicker({
+        autoclose: true,
+          "opens": "left",
+          locale: {
+          format: 'YYYY-MM-DD'
+          }
     });
     $(document).ready( function () {
         $("input[name='ed_tanggal']").focus();
@@ -249,6 +253,7 @@
             "ordering": true,
             "info": false,
             "responsive": true,
+            
             "autoWidth": false,
             "pageLength": 10,
             "retrieve" : true,
@@ -283,6 +288,7 @@
     function tampil_data_do(){
         var rute = $("#cb_rute").val();
         var kode_cabang = $("input[name='ed_cabang']").val();
+        var range_date = $(".range_date").val();
   
         $('#table_data_do').DataTable({
             "lengthChange": true,
@@ -290,6 +296,8 @@
             "searching": true,
             "paging": true,
             "ordering": true,
+            processing: true,
+            serverSide: true,
             "info": false,
             "responsive": true,
             "autoWidth": false,
@@ -298,7 +306,7 @@
             "ajax": {
                 "url": baseUrl + "/sales/surat_jalan_trayek_form/tampil_do",
                 "type": "GET",
-                "data" : {kode_cabang,},
+                "data" : {kode_cabang,range_date},
             },
             "columns": [
             { "data": "nomor" },
