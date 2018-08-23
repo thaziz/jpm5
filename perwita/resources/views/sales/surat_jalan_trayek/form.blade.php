@@ -70,7 +70,7 @@
                         <tbody>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
-                                <td>
+                                <td colspan="4">
                                     <input type="text" name="ed_nomor" id="ed_nomor" class="form-control" readonly="readonly" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
                                     <input type="hidden" name="ed_nomor_old" class="form-control" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
                                     <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
@@ -79,18 +79,25 @@
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
-                                <td colspan="5">
+                                <td>
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="ed_tanggal" value="{{ $data->tanggal or  date('Y-m-d') }}">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control date" name="ed_tanggal" value="{{ $data->tanggal or  date('Y-m-d') }}">
+                                    </div>
+                                </td>
+                                <td style="padding-top: 0.4cm">Filter Tanggal</td>
+                                <td>
+                                    <div class="input-group ">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" class="range_date form-control" name="range_date" value="{{ carbon\carbon::now()->subDays(30)->format('Y-m-d') }} - {{ carbon\carbon::now()->format('Y-m-d') }}">
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td>
-                                    <select class="form-control" name="cb_cabang" >
+                                <td colspan="4">
+                                    <select class="form-control chosen-select-width" name="cb_cabang" >
                                     @foreach ($cabang as $row)
-                                        <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                     @endforeach
                                     </select>
                                     <input type="hidden" name="ed_cabang" value="{{ $data->kode_cabang or null }}" >
@@ -98,7 +105,7 @@
                             </tr>
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Rute</td>
-                                <td>
+                                <td colspan="4">
                                     <select class="chosen-select-width" name="cb_rute" id="cb_rute" >
                                         <option></option>
                                     @foreach ($rute as $row)
@@ -109,9 +116,9 @@
                                     <input type="hidden" name="ed_kode_rute" class="form-control" style="text-transform: uppercase" value="{{ $data->kode_rute or null }}" >
                                 </td>
                             </tr>
-                            <tr>
+                            <tr >
                                 <td style="padding-top: 0.4cm">Nopol</td>
-                                <td>
+                                <td colspan="4">
                                     <select class="chosen-select-width" id="cb_nopol" name="cb_nopol" style="width:100%">
                                         <option></option>
                                     @foreach ($kendaraan as $row)
@@ -123,13 +130,13 @@
                             </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Sopir</td>
-                                <td>
+                                <td colspan="4">
                                     <input type="text" name="ed_sopir" class="form-control" style="text-transform: uppercase" value="{{ $data->sopir or null }}" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
-                                <td>
+                                <td colspan="4">
                                     <input type="text" name="ed_keterangan" class="form-control" style="text-transform: uppercase" value="{{ $data->keterangan or null }}" >
                                 </td>
                             </tr>
@@ -215,6 +222,17 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+    $('.date').datepicker({
+        format:'yyyy-mm-dd'
+    });
+    $('.range_date').daterangepicker({
+        autoclose: true,
+          "opens": "left",
+          locale: {
+          format: 'YYYY-MM-DD'
+          }
+    });
     $(document).ready( function () {
         $("input[name='ed_tanggal']").focus();
         $("select[name='cb_cabang']").val('{{ $data->kode_cabang or ''  }}');
@@ -235,6 +253,7 @@
             "ordering": true,
             "info": false,
             "responsive": true,
+            
             "autoWidth": false,
             "pageLength": 10,
             "retrieve" : true,
@@ -269,16 +288,16 @@
     function tampil_data_do(){
         var rute = $("#cb_rute").val();
         var kode_cabang = $("input[name='ed_cabang']").val();
-        var value = {
-            rute: rute,
-            kode_cabang:kode_cabang,
-        };
+        var range_date = $(".range_date").val();
+  
         $('#table_data_do').DataTable({
             "lengthChange": true,
             "ordering": true,
             "searching": true,
             "paging": true,
             "ordering": true,
+            processing: true,
+            serverSide: true,
             "info": false,
             "responsive": true,
             "autoWidth": false,
@@ -287,7 +306,7 @@
             "ajax": {
                 "url": baseUrl + "/sales/surat_jalan_trayek_form/tampil_do",
                 "type": "GET",
-                "data" : value,
+                "data" : {kode_cabang,range_date},
             },
             "columns": [
             { "data": "nomor" },
