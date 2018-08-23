@@ -1014,6 +1014,14 @@ class ikhtisarController extends Controller
 						 ->select('bpk_keterangan as keterangan','bpkd_tarif_penerus as total','bpkd_tanggal as tanggal','bpkd_tanggal as tanggal','bpkd_kode_cabang_awal as cabang','bpk_acc_biaya as akun','bpk_nota as nota')
 						 ->where('bpk_nota',$bpks[$i]->bpk_nota)
 						 ->get();
+
+
+				$asal[$i] = DB::table('biaya_penerus_kas')
+						 ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
+						 ->select('bpkd_kode_cabang_awal as cabang')
+						 ->where('bpk_nota',$bpks[$i]->bpk_nota)
+						 ->groupBy('bpkd_kode_cabang_awal')
+						 ->get();
 	
 				for ($a=0; $a < count($bpk[$i]); $a++) { 
 					$temp = DB::table('d_akun')
