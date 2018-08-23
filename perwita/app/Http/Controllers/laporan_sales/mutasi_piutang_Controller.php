@@ -121,69 +121,75 @@ class mutasi_piutang_Controller extends Controller
     }
     // return $customer;
 
+    $dtt = [];
+    for ($i=0; $i <count($customer) ; $i++) { 
+      
+      $dtt[$i] = $customer[$i][0]->kode;
+      
+      $saldoawal[$i] = DB::select("SELECT sum(i_total_tagihan) as saldo,i_kode_customer as customer from invoice 
+                      where i_tanggal >= '$awal' 
+                        and i_tanggal <= '$akir' 
+                        and i_kode_customer = '$dtt[$i]'
+                       $akun_invoice $cabang_invoice
+                      group by i_kode_customer");
 
-    for ($i=0; $i <count($array) ; $i++) { 
-      $dtt = $customer[$i][0]->kode;
+      $piutangbaru[$i] = DB::select("SELECT sum(i_total_tagihan) as piutang_baru,i_kode_customer as customer from invoice
+                      where i_tanggal > '$akir' 
+                        and i_kode_customer = '$dtt[$i]'
+                      $akun_invoice $cabang_invoice
+                      group by i_kode_customer");
 
-      $saldoawal = DB::select("SELECT sum(i_total_tagihan) as saldo,i_kode_customer from invoice 
-                    where i_tanggal >= '$awal' 
-                      and i_tanggal <= '$akir' 
-                      and i_kode_customer = '$dtt'
-                     $akun_invoice $cabang_invoice
-                    group by i_kode_customer");
-
-      return $saldoawal;
-                     
-      $data_piutangbaru = DB::select("SELECT sum(i_total_tagihan) as piutang_baru from invoice
-                    where i_tanggal > '$akir' 
-                    $customer_invoice $akun_invoice $cabang_invoice
-                    group by i_kode_customer order by i_kode_customer");
-
-
-
-      $data_cn_dn = DB::select("SELECT SUM(cd_total) as nota_debet FROM cn_dn_penjualan 
+      $notadebet[$i] = DB::select("SELECT SUM(cd_total) as nota_debet,cd_customer as customer FROM cn_dn_penjualan 
                       where cd_tanggal >= '$awal' 
-                      and cd_tanggal <= '$akir'
-                      and cd_jenis <= 'D'
-                      $customer_cndn $akun_cndn $cabang_cndn
-                      ");
-    
-      $cash = DB::select("SELECT SUM(k_netto) as cash FROM kwitansi 
-                      where k_tanggal >= '$awal' 
-                      and k_tanggal <= '$akir'
-                      and k_jenis_pembayaran = 'T'
-                      $customer_kwitansi $akun_kwitansi $cabang_kwitansi
-                      ");
+                        and cd_tanggal <= '$akir'
+                        and cd_jenis <= 'D'
+                        and cd_customer = '$dtt[$i]'
+                      $akun_cndn $cabang_cndn
+                      group by cd_customer");
 
-      $cek_bg_trsn = DB::select("SELECT SUM(posting_pembayaran_d.jumlah) as cek_bg_trsn FROM posting_pembayaran 
+      $cash[$i] = DB::select("SELECT SUM(k_netto) as cash,k_kode_customer as customer FROM kwitansi
+                      left join kwitansi_d on kwitansi.k_id = kwitansi_d.kd_id
+                      where k_tanggal >= '$awal' 
+                        and k_tanggal <= '$akir'
+                        and k_jenis_pembayaran = 'T'
+                        and k_kode_customer = '$dtt[$i]'
+                      $akun_kwitansi $cabang_kwitansi
+                      group by k_kode_customer");
+
+      $cek_bg_trsn[$i] = DB::select("SELECT SUM(posting_pembayaran_d.jumlah) as cek_bg_trsn,kode_customer FROM posting_pembayaran 
                       join posting_pembayaran_d on posting_pembayaran.nomor = posting_pembayaran_d.nomor_posting_pembayaran
                       where tanggal >= '$awal' 
                       and tanggal <= '$akir'
-                      $customer_postingbayar $akun_postingbayar $cabang_postingbayar
-                      ");      
+                      and kode_customer = '$dtt[$i]'
+                      $akun_postingbayar $cabang_postingbayar
+                      group by kode_customer");      
 
-      $uangmuka = DB::select("SELECT SUM(k_netto) as uangmuka FROM kwitansi 
+      $uangmuka[$i] = DB::select("SELECT SUM(k_netto) as uangmuka,k_kode_customer FROM kwitansi 
                       where k_tanggal >= '$awal' 
                       and k_tanggal <= '$akir'
                       and k_jenis_pembayaran = 'U'
-                      ");
+                      and k_kode_customer = '$dtt[$i]'
+                      group by k_kode_customer");
 
-      $nota_kredit = DB::select("SELECT SUM(cd_total) as nota_kredit FROM cn_dn_penjualan 
+      $nota_kredit[$i] = DB::select("SELECT SUM(cd_total) as nota_kredit,cd_customer FROM cn_dn_penjualan 
                       where cd_tanggal >= '$awal' 
                       and cd_tanggal <= '$akir'
                       and cd_jenis = 'K'
-                      ");
+                      and cd_customer = '$dtt[$i]'
+                      group by cd_customer");
 
-      $sisa_uangmuka = DB::select("SELECT SUM(sisa_uang_muka) as sisa_uangmuka FROM uang_muka_penjualan 
+      $sisa_uangmuka[$i] = DB::select("SELECT SUM(sisa_uang_muka) as sisa_uangmuka,kode_customer FROM uang_muka_penjualan 
                       where tanggal >= '$awal' 
                       and tanggal <= '$akir'
-                      ");
+                      and kode_customer = '$dtt[$i]'
+                      group by kode_customer");
 
     }
+    // return [$sisa_uangmuka,$saldoawal];
     // return array_merge($saldoawal,$data_piutangbaru,$cash);
 
 
-    return view('purchase/master/master_penjualan/laporan/lap_mutasi_piutang/ajax_mutasipiutang_rekap',compact('saldoawal','data','array','piutangbaru','notadebet','cash','cek_bg_trsn','uangmuka','nota_kredit','sisa_uangmuka','push_customer_lenght'));
+    return view('purchase/master/master_penjualan/laporan/lap_mutasi_piutang/ajax_mutasipiutang_rekap',compact('saldoawal','data','array','piutangbaru','notadebet','cash','cek_bg_trsn','uangmuka','nota_kredit','sisa_uangmuka','push_customer_lenght','customer'));
 
     }
 

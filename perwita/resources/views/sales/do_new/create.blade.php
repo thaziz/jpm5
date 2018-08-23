@@ -964,7 +964,7 @@ function hitung() {
     var this_selected_value = $('#do_cabang').find(':selected').data('diskon');
         
     //--Regex
-    var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");
+    var jenis_ppn = jenis_ppn.replace(/[A-Za-z$. ,-]/g, "");    
     var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
     var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
     var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
