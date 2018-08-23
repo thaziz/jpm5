@@ -703,7 +703,7 @@ class MasterPurchaseController extends Controller
 		$masterbank->mb_id = $idbank;
 		$masterbank->mb_kode = $request->kodebank;
 		$masterbank->mb_nama = strtoupper($request->nmbank);
-		$masterbank->mb_cabang = strtoupper($request->cabang);
+		$masterbank->mb_cabang = strtoupper($request->cabangbawah);
 		$masterbank->mb_accno = strtoupper($request->norekening);
 		$masterbank->mb_kelompok = $request->kelompokbank;
 
@@ -744,6 +744,7 @@ class MasterPurchaseController extends Controller
 			$masterbank->mb_namarekening = strtoupper($request->namarekening);
 			$masterbank->mb_namarekening = strtoupper($request->namarekening);
 			$masterbank->mb_bka = $dka[0]->akun_dka;
+			$masterbank->mb_cabangbank = $request->cabang;
 			$masterbank->save();
 
 
