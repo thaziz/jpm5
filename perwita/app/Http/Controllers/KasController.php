@@ -138,22 +138,26 @@ class KasController extends Controller
         return Datatables::of($data)
                         ->addColumn('aksi', function ($data) {
                             $a = '';
-                            if($data->bpk_status == 'Released' or Auth::user()->punyaAkses('Biaya Penerus Kas','ubah')){
-                                if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
-									$a = '<a title="Edit" class="btn btn-xs btn-warning" href="'.route('editkas', ['id' => $data->bpk_id] ).'">
-                              			<i class="fa fa-pencil" aria-hidden="true"></i></a> ';
-                                }
+                            if(Auth::user()->punyaAkses('Biaya Penerus Kas','ubah')){
+                            	if ($data->bpk_status == 'Released') {
+                            		if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
+										$a = '<a title="Edit" class="btn btn-xs btn-warning" href="'.route('editkas', ['id' => $data->bpk_id] ).'">
+	                              			<i class="fa fa-pencil" aria-hidden="true"></i></a> ';
+	                                }
+                            	}
                             }else{
                               $a = '';
                             }
 
                             $c = '';
-                            if($data->bpk_status == 'Released' or Auth::user()->punyaAkses('Biaya Penerus Kas','hapus')){
-                                if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
+                            if(Auth::user()->punyaAkses('Biaya Penerus Kas','hapus')){
+                            	if ($data->bpk_status == 'Released') {
+	                                if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
 
-                                  $c = '<a title="Hapus" class="btn btn-xs btn-danger"  onclick="hapus(\''.$data->bpk_id.'\')">
-		                               <i class="fa fa-trash" aria-hidden="true"></i>
-		                               </a>';
+	                                  $c = '<a title="Hapus" class="btn btn-xs btn-danger"  onclick="hapus(\''.$data->bpk_id.'\')">
+			                               <i class="fa fa-trash" aria-hidden="true"></i>
+			                               </a>';
+	                                }
                                 }
                             }else{
                               $c = '';
