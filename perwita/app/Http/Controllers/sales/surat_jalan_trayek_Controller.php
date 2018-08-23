@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
+use Yajra\Datatables\Datatables;
 
 
 class surat_jalan_trayek_Controller extends Controller
@@ -166,6 +167,35 @@ class surat_jalan_trayek_Controller extends Controller
     
     public function tampil_do(Request $request){
         dd($request->all());
+        $tgl = explode('-',$request->range_date);
+        $tgl[0] = str_replace('/', '-', $tgl[0]);
+        $tgl[1] = str_replace('/', '-', $tgl[1]);
+        $tgl[0] = str_replace(' ', '', $tgl[0]);
+        $tgl[1] = str_replace(' ', '', $tgl[1]);
+        $start  = Carbon::parse($tgl[0])->format('Y-m-d');
+        $end    = Carbon::parse($tgl[1])->format('Y-m-d');
+
+        $data = DB::table('delivery_order')
+                  ->where('kode_cabang',$request->cabang)
+                  ->where('tanggal','>=',$start)
+                  ->where('tanggal','<=',$end)
+                  ->get();
+
+        $data = DB::collect($data);
+
+        return Datatables::of($data)
+                        ->addColumn('aksi', function ($data) {
+                           return '';
+                        })
+                        ->addColumn('tujuan', function ($data) {
+                           $tujuan = DB::table('delivery_order')
+                                        ->join('kota','id','=','id_kota_tujuan')
+                                        ->join('nomor',$data->nomor)
+                                        ->first();
+                            return $tujuan->nama;
+                        })
+                        ->addIndexColumn()
+                        ->make(true);
        
     }
 

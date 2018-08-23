@@ -210,12 +210,12 @@ class ikhtisarController extends Controller
 		if (isset($request->rangepicker)) {
 
 			$tgl = explode('-',$request->rangepicker);
-					$tgl[0] = str_replace('/', '-', $tgl[0]);
-					$tgl[1] = str_replace('/', '-', $tgl[1]);
-					$tgl[0] = str_replace(' ', '', $tgl[0]);
-					$tgl[1] = str_replace(' ', '', $tgl[1]);
-					$start  = Carbon::parse($tgl[0])->format('Y-m-d');
-					$end    = Carbon::parse($tgl[1])->format('Y-m-d');
+			$tgl[0] = str_replace('/', '-', $tgl[0]);
+			$tgl[1] = str_replace('/', '-', $tgl[1]);
+			$tgl[0] = str_replace(' ', '', $tgl[0]);
+			$tgl[1] = str_replace(' ', '', $tgl[1]);
+			$start  = Carbon::parse($tgl[0])->format('Y-m-d');
+			$end    = Carbon::parse($tgl[1])->format('Y-m-d');
 			$jenis = $request->jenis_ik_;
 			if ($jenis == 'BONSEM') {
 				$bkk = DB::table('bukti_kas_keluar')

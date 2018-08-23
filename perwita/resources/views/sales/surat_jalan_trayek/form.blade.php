@@ -95,7 +95,7 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="4">
-                                    <select class="form-control chosen-select-width" name="cb_cabang" >
+                                    <select class="form-control chosen-select-width cabang" name="cb_cabang" >
                                     @foreach ($cabang as $row)
                                         <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                     @endforeach
@@ -287,7 +287,7 @@
     
     function tampil_data_do(){
         var rute = $("#cb_rute").val();
-        var kode_cabang = $("input[name='ed_cabang']").val();
+        var cabang = $(".cabang").val();
         var range_date = $(".range_date").val();
   
         $('#table_data_do').DataTable({
@@ -306,7 +306,7 @@
             "ajax": {
                 "url": baseUrl + "/sales/surat_jalan_trayek_form/tampil_do",
                 "type": "GET",
-                "data" : {kode_cabang,range_date},
+                "data" : {cabang,range_date},
             },
             "columns": [
             { "data": "nomor" },
@@ -319,43 +319,44 @@
 
     $(document).on("click","#btnadd",function(){
         $("input[name='crud']").val('N');
-        $.ajax(
-        {
-            url :  baseUrl + "/sales/surat_jalan_trayek/save_data",
-            type: "POST",
-            dataType:"JSON",
-            data : $('#form_header').serialize() ,
-            success: function(data, textStatus, jqXHR)
-            {
-                if(data.crud == 'N'){
-                    if(data.result != 1){
-                        alert("Gagal menyimpan data!");
-                    }else{
-                        $("input[name='ed_nomor']").val(data.nomor);
-                        $("input[name='ed_nomor_old']").val(data.nomor);
+        tampil_data_do();
+        var table = $('#table_data_do').DataTable();
+        table.ajax.reload( null, false );
+        $("#modal").modal("show");
+        // $.ajax(
+        // {
+        //     url :  baseUrl + "/sales/surat_jalan_trayek/save_data",
+        //     type: "POST",
+        //     dataType:"JSON",
+        //     data : $('#form_header').serialize() ,
+        //     success: function(data, textStatus, jqXHR)
+        //     {
+        //         if(data.crud == 'N'){
+        //             if(data.result != 1){
+        //                 alert("Gagal menyimpan data!");
+        //             }else{
+        //                 $("input[name='ed_nomor']").val(data.nomor);
+        //                 $("input[name='ed_nomor_old']").val(data.nomor);
                         
-                    }
-                }else if(data.crud == 'E'){
-                    if(data.result != 1){
-                        swal("Error","Can't update data, error : "+data.error,"error");
-                    }else{
-                        $("input[name='ed_nomor']").val(data.nomor);
-                        $("input[name='ed_nomor_old']").val(data.nomor);
+        //             }
+        //         }else if(data.crud == 'E'){
+        //             if(data.result != 1){
+        //                 swal("Error","Can't update data, error : "+data.error,"error");
+        //             }else{
+        //                 $("input[name='ed_nomor']").val(data.nomor);
+        //                 $("input[name='ed_nomor_old']").val(data.nomor);
                         
-                    }
-                }else{
-                     swal("Error","invalid order","error");
-                }
-                tampil_data_do();
-                var table = $('#table_data_do').DataTable();
-                table.ajax.reload( null, false );
-                $("#modal").modal("show");
-            },
-            error: function(jqXHR, textStatus, errorThrown)
-            {
-              // swal("Error!", textStatus, "error");
-            }
-        });
+        //             }
+        //         }else{
+        //              swal("Error","invalid order","error");
+        //         }
+                
+        //     },
+        //     error: function(jqXHR, textStatus, errorThrown)
+        //     {
+        //       // swal("Error!", textStatus, "error");
+        //     }
+        // });
     });
 
     $(document).on("click","#btnsimpan",function(){
