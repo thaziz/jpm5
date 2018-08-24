@@ -33,6 +33,65 @@ class surat_jalan_trayek_Controller extends Controller
         echo json_encode($datax);
     }
 
+    public function datatable_sjt()
+    {
+        // $nama_cabang = DB::table("cabang")
+        //      ->where('kode',$req->cabang)
+        //      ->first();
+
+        // if ($nama_cabang != null) {
+        //   $cabang = 'and i_kode_cabang = '."'$req->cabang'";
+        // }else{
+        //   $cabang = '';
+        // }
+
+        if (Auth::user()->punyaAkses('Surat Jalan By Trayek','all')) {
+            $sql = "SELECT * FROM surat_jalan_trayek  where nomor != '0' ";
+            $data = DB::select($sql);
+        }else{
+            $cabang = auth::user()->kode_cabang;
+            $data = DB::table('surat_jalan_trayek')
+                      ->where('kode_cabang',$cabang)
+                      ->get();
+        }
+
+        $data = collect($data);
+
+        // return $data;
+        return Datatables::of($data)
+                        ->addColumn('aksi', function ($data) {
+                            $a = '';
+                            $b = '';
+                            $c = '';
+
+                            if(Auth::user()->punyaAkses('Surat Jalan By Trayek','ubah')){
+                                $a = '<a href="'.url('sales/surat_jalan_trayek_form/edit/'.$data->nomor).'" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>';
+                            }
+
+                            if(Auth::user()->punyaAkses('Surat Jalan By Trayek','print')){
+                                $b = '<a href="'.url('sales/surat_jalan_trayek_form/nota/'.$data->nomor).'" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>';
+                            }
+
+
+                            if(Auth::user()->punyaAkses('Surat Jalan By Trayek','hapus')){
+                                $c = '<a href="'.url('sales/surat_jalan_trayek_form/hapus_data') .'" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>';
+                            }
+
+                            return '<div class="btn-group">'.$a . $b .$c.'</div>' ;
+                                   
+                        })
+                        ->addColumn('cabang', function ($data) {
+                          $kota = DB::table('cabang')
+                                    ->get();
+                          for ($i=0; $i < count($kota); $i++) { 
+                            if ($data->kode_cabang == $kota[$i]->kode) {
+                                return $kota[$i]->nama;
+                            }
+                          }
+                        })
+                        ->addIndexColumn()
+                        ->make(true);
+    }
     public function ganti_nota(request $req)
     {
         $bulan = Carbon::parse($req->tanggal)->format('m');
@@ -52,6 +111,8 @@ class surat_jalan_trayek_Controller extends Controller
         $nota = 'SJT' . $req->cabang . $bulan . $tahun . $index;
         return response()->json(['nota'=>$nota]);
     }
+
+
     public function save_data (Request $request) {
         // dd($request->all());
         return DB::transaction(function() use ($request){
@@ -82,6 +143,9 @@ class surat_jalan_trayek_Controller extends Controller
                 $save = DB::table('surat_jalan_trayek')
                           ->insert($data);
             }else{
+                $id_kendaraan = DB::table('kendaraan')
+                                  ->where('nopol',strtoupper($request->ed_nopol))
+                                  ->first();
                 $data = array(
                     'nomor' => strtoupper($request->ed_nomor),
                     'tanggal' => strtoupper($request->tanggal),
@@ -89,7 +153,7 @@ class surat_jalan_trayek_Controller extends Controller
                     'keterangan' => strtoupper($request->ed_keterangan),
                     'kode_cabang' => strtoupper($request->ed_cabang),
                     'kode_rute' => strtoupper($request->ed_kode_rute),
-                    'id_kendaraan' => strtoupper($request->cb_nopol),
+                    'id_kendaraan' => $id_kendaraan->id,
                     'nopol' => strtoupper($request->ed_nopol),
                     'sopir' => strtoupper($request->ed_sopir),
                     'update_by' => Auth::user()->m_name,
@@ -123,13 +187,15 @@ class surat_jalan_trayek_Controller extends Controller
         });
     }
     public function hapus_data_detail (Request $request) {
-        $do = DB::table('delivery_order')
-                ->where('nomor',$request->id)
-                ->first();
-
         $update = DB::table('delivery_order')
-                ->where('nomor',$id)
-                ->delete();
+                    ->where('nomor',$request->id)
+                    ->update([
+                        'no_surat_jalan_trayek'=> null,
+                    ]);
+        $delete = DB::table('surat_jalan_trayek_d')
+                    ->where('nomor_do',$request->id)
+                    ->delete();
+
         return response()->json(['status'=>1]);
     }
 
@@ -155,7 +221,21 @@ class surat_jalan_trayek_Controller extends Controller
         return view('sales.surat_jalan_trayek.form',compact('kota','data','cabang','jml_detail','rute','kendaraan' ));
     }
 
-    
+    public function edit($nomor)
+    {
+        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+        $rute = DB::select(" SELECT kode,nama FROM rute ORDER BY nama ASC ");
+        $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
+        if ($nomor != null) {
+            $data = DB::table('surat_jalan_trayek')->where('nomor', $nomor)->first();
+            $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM surat_jalan_trayek_d WHERE nomor_surat_jalan_trayek ='$nomor' "))->first();
+        }else{
+            $data = null;
+            $jml_detail = 0;
+        }
+        return view('sales.surat_jalan_trayek.edit',compact('kota','data','cabang','jml_detail','rute','kendaraan'));
+    }
     
     public function tampil_do(Request $request){
         $tgl = explode('-',$request->range_date);
