@@ -323,11 +323,13 @@
         var cabang = $(".cabang").val();
         var range_date = $(".range_date").val();
   
+        var range_date = $('.range_date').val();
+        var cabang  = $('.cabang').val();
         $('#table_data_do').DataTable({
             "lengthChange": true,
             "ordering": true,
-            "searching": true,
-            "paging": true,
+            "searching": false,
+            "paging": false,
             "ordering": true,
             "info": false,
             "responsive": true,
@@ -391,31 +393,10 @@
 
 
     $(document).on("click","#btnadd",function(){
-        var range_date = $('.range_date').val();
-        var cabang  = $('.cabang').val();
-        $('#table_data_do').DataTable({
-            "lengthChange": true,
-            "ordering": true,
-            "searching": false,
-            "paging": false,
-            "ordering": true,
-            "info": false,
-            "responsive": true,
-            "autoWidth": false,
-            "pageLength": 10,
-            "retrieve" : true,
-            "ajax": {
-                "url": baseUrl + "/sales/surat_jalan_trayek_form/tampil_do",
-                "type": "GET",
-                "data" : {cabang,range_date},
-            },
-            "columns": [
-            { "data": "nomor" },
-            { "data": "tanggal" },
-            { "data": "tujuan" },
-            { "data": "button" },
-            ]
-        });
+        
+        var table = $('#table_data_do').DataTable();
+        table.ajax.reload();
+        tampil_data_do();
 
         $('#modal').modal('show');
     });
