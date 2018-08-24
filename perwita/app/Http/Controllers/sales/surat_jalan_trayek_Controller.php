@@ -177,6 +177,7 @@ class surat_jalan_trayek_Controller extends Controller
                   ->where('kode_cabang',$request->cabang)
                   ->where('tanggal','>=',$start)
                   ->where('tanggal','<=',$end)
+                  ->take(1000)
                   ->get();
         for ($i=0; $i < count($data); $i++) { 
             $kota = DB::table('kota')
@@ -186,6 +187,7 @@ class surat_jalan_trayek_Controller extends Controller
                 if ($kota[$a]->id == $data[$i]->id_kota_tujuan) {
                     $tujuan = $kota[$a]->nama;
                 }
+         
             }
             $data[$i]->button = $button;
             $data[$i]->tujuan = $tujuan;

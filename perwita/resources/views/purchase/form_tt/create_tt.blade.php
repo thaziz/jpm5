@@ -69,7 +69,7 @@
                         <td width="300"><input type="text" readonly="" name="nomor" class="nomor form-control"></td>
                         <td width="150">Pihak Ketiga</td>
                         <td colspan="2">
-                          <select  name="supplier" class="supplier form-control chosen-select-width">
+                          <select  name="supplier" onchange="supplier()" class="supplier form-control chosen-select-width">
                               <option value="0">Pilih - Supplier</option>
                             @foreach ($all as $val)
                               <option value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
@@ -99,7 +99,7 @@
                         @endif
                         <td width="150">Tanggal</td>
                         <td width="300">
-                          <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
+                          <input type="text" onblur="supplier()" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
                         </td>
                       </tr>
                       <tr>
@@ -227,8 +227,8 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-  $('.supplier').change(function(){
-    var supplier = $(this).val();
+  function supplier() {
+    var supplier = $('.supplier').val();
     var tanggal = $('.tanggal').val();
     $.ajax({
       url  : '{{ route('ganti_jt_pembelian') }}',
@@ -238,7 +238,8 @@
         $('.tanggal_kembali').val(data.tgl);
       }
     })
-  })
+  }
+
 
   function nota() {
     var cabang = $('.cabang').val();
