@@ -96,7 +96,7 @@
                                 </td>
                             </tr>
                             @if (Auth::user()->punyaAkses('Surat Jalan By Trayek','cabang'))
-                                <tr>
+                                <tr class="tr_cabang">
                                     <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                     <td colspan="4">
                                         <select class="form-control chosen-select-width cabang" name="cb_cabang" onchange="ganti_nota()" >
@@ -125,7 +125,7 @@
                                 </tr>
                             @endif
                             
-                            <tr>
+                            <tr class="tr_rute">
                                 <td style="width:110px; padding-top: 0.4cm">Rute</td>
                                 <td colspan="4">
                                     <select class="chosen-select-width" name="cb_rute" id="cb_rute" >
@@ -138,7 +138,7 @@
                                     <input type="hidden" name="ed_kode_rute" class="form-control" style="text-transform: uppercase" value="{{ $data->kode_rute or null }}" >
                                 </td>
                             </tr>
-                            <tr >
+                            <tr class="tr_nopol">
                                 <td style="padding-top: 0.4cm">Nopol</td>
                                 <td colspan="4">
                                     <select class="chosen-select-width" id="cb_nopol" name="cb_nopol" style="width:100%">
@@ -153,7 +153,7 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Sopir</td>
                                 <td colspan="4">
-                                    <input type="text" name="ed_sopir" class="form-control" style="text-transform: uppercase" value="{{ $data->sopir or null }}" >
+                                    <input type="text" name="ed_sopir" class="form-control ed_sopir" style="text-transform: uppercase" value="{{ $data->sopir or null }}" >
                                 </td>
                             </tr>
                             <tr>
@@ -244,7 +244,7 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-
+    var array_simpan = [];
     $('.tanggal').datepicker({
         format:'yyyy-mm-dd'
     });
@@ -413,7 +413,23 @@
         var tanggal = $('.tanggal').val();
         var cabang  = $('.cabang').val();
         var rute  = $('#cb_rute').val();
+        var nopol  = $('#cb_nopol').val();
+        var sopir  = $('.ed_sopir').val();
         var tabel = $('#table_data_do').DataTable();
+
+
+        if (rute == '') {
+            return toastr.warning('Rute Harus Dipilih');
+        }
+
+        if (nopol == '') {
+            return toastr.warning('Nopol Harus Dipilih');
+        }
+        if (sopir == '') {
+            return toastr.warning('Supir Harus Dipilih');
+        }
+
+
         tabel.$('.check').each(function(){
             if ($(this).is(':checked') == true) {
                 var par = $(this).parents('tr');
@@ -427,7 +443,13 @@
             dataType : 'json',
             type : 'post',
             success:function(response){
-                
+                $('#modal').modal('hide');
+                $('#ed_nomor').prop('readonly',true);
+                $('.tr_cabang').addClass('disabled');
+                $('.tr_rute').addClass('disabled');
+                $('.tr_nopol').addClass('disabled');
+                var table2 = $('#table_data').DataTable();
+                table2.ajax.reload();
             },
             error:function(){
                 toastr.warning('Terjadi Kesalahan');
