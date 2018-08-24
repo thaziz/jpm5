@@ -206,7 +206,7 @@
                                     <td>   <select class="form-control idsup chosen-select-width1" name="supplier" required="" novalidate> 
                                             <option value=""> -- Pilih Supplier -- </option>
                                         @foreach($data['supplier'] as $supplier)
-                                            <option value="{{$supplier->idsup}},{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}},{{$supplier->acc_hutang}},{{$supplier->no_supplier}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
+                                            <option value="{{$supplier->idsup}}+{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}}+{{$supplier->acc_hutang}}+{{$supplier->no_supplier}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
                                         @endforeach
                                         </select>
                                        
@@ -887,7 +887,7 @@
                                             <td>   <select class="form-control idsup_po chosen-select-width" name="supplier_po" novalidate required=""> 
                                                     <option value=""> -- Pilih Supplier -- </option>
                                                 @foreach($data['supplier'] as $supplier)
-                                                    <option value="{{$supplier->idsup}},{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}},{{$supplier->acc_hutang}},{{$supplier->no_supplier}}" data-accHutang="{{$supplier->acc_hutang}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
+                                                    <option value="{{$supplier->idsup}}+{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}}+{{$supplier->acc_hutang}}+{{$supplier->no_supplier}}" data-accHutang="{{$supplier->acc_hutang}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
                                                 @endforeach
                                                 </select>                                        
                                             </td>
@@ -2417,7 +2417,7 @@
          supplier = $('.idsup').val();
       }
 
-      string = supplier.split(",");
+      string = supplier.split("+");
       invoice = $('.noinvoice').val();
 
       if(supplier == ''){
@@ -2461,7 +2461,7 @@
          supplier = $('.idsup').val();
       }
 
-      string = supplier.split(",");
+      string = supplier.split("+");
       invoice = $('.noinvoice').val();
 
       if(supplier == ''){
@@ -5525,7 +5525,7 @@
         else {
 
             supplieracc = $('.idsup_po').val();
-            split = supplieracc.split(",");
+            split = supplieracc.split("+");
             acchutang= split[3];
           
 //            $('.acchutangdagang_po').val(acchutang);
@@ -5707,7 +5707,7 @@
     if(val != ''){
 
 
-    var string = val.split(",");
+    var string = val.split("+");
     syaratkredit = string[1];
 
        var months = new Array(12);
@@ -6309,7 +6309,7 @@
        grupitem = $('.groupitem').val();
 
       // alert(updatestock);
-       var string = idsupplier.split(",");
+       var string = idsupplier.split("+");
        var idsup = string[0];
        var acchutangdagang = string[3];
        console.log(idsup);
