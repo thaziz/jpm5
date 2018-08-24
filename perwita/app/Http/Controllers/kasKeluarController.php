@@ -3486,6 +3486,7 @@ class kasKeluarController extends Controller
 				$delete_bkk   = DB::table('bukti_kas_keluar')
 								   ->where('bkk_nota',$bkk->bkk_nota)
 								   ->delete();
+				return response()->json(['status'=>2,'pesan'=>'Berhasil']);
 			}
 
 			if ($cari_nota[0]->bkk_status == 'APPROVED') {
