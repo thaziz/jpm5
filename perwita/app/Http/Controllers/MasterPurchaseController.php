@@ -1130,11 +1130,10 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function updatesupplier($id, Request $request) {
-		dd($request);
+		
 		/*	*/
 
 		return DB::transaction(function() use ($request) { 
-			if($request->kontrak == 'TIDAK') {	
 			$replaceplafon = str_replace(',', '', $request->plafon_kredit);
 
 			$id = $request->idsupplier;
@@ -1152,7 +1151,6 @@ class MasterPurchaseController extends Controller
 			$data->syarat_kredit = strtoupper($request->syarat_kredit);
 			$data->plafon = strtoupper($replaceplafon);
 			$data->currency = strtoupper($request->matauang);
-			$data->pajak_npwp = strtoupper($request->npwp);
 		
 			$data->kodepos = strtoupper($request->kodepos);
 			$data->idcabang = strtoupper($request->idcabang);
@@ -1170,25 +1168,24 @@ class MasterPurchaseController extends Controller
 				$data->namapajak = $request->namapajak;
 				$data->telppajak = $request->telppajak;
 				$data->alamatpajak = $request->alamatpajak;
-
+				$data->nik = $request->nik;
+				$data->pajak_npwp = $request->npwp;
 			}
 			else {
 				$data->namapajak = null;
 				$data->telppajak = null;
 				$data->alamatpajak = null;
-				$data->noseri_pajak = null;
 				$data->pajak_npwp = null;
+				$data->nik = null;
 			}
 			$data->save();
 
-			if($data->kontrak == 'TIDAK'){
 				$idsupplier = $request->idsupplier;
 				DB::delete("DELETE from  itemsupplier where is_idsup = '$idsupplier'");	
-			}
-			else if($data->kontrak == 'YA'){
+			
 				for($i=0; $i<count($request->brg); $i++){
 				
-				if(count($request->databarang) > 0) {
+		
 					$iditemsup = itemsupplier::max('is_id');
 
 					if(isset($iditemsup)){
@@ -1201,148 +1198,19 @@ class MasterPurchaseController extends Controller
 					//echo($iditemsup);
 					$itemsupplier = new itemsupplier();
 					$replacehrga = str_replace(',', '', $request->harga[$i]);
+					$item = explode("+", $request->brg[$i]);
+
 				//	dd($replacehrga);
 					$itemsupplier->is_id =$iditemsup;
-					$itemsupplier->is_kodeitem = strtoupper($request->brg[$i]);
+					$itemsupplier->is_kodeitem = strtoupper($item[0]);
 					$itemsupplier->is_harga = $replacehrga;
 					$itemsupplier->is_supplier = strtoupper($request->nosupplier);
 					$itemsupplier->is_idsup = $data->idsup;
 					$itemsupplier->is_updatestock = $request->updatestock[$i];
 					$itemsupplier->save();
-				}
-				else {
-				if(empty($request->iditemsup[$i])){
-				//	dd('ok');
-					$iditemsup = itemsupplier::max('is_id');
-
-					if(isset($iditemsup)){
-						$iditemsup = (int)$iditemsup + 1;
-					}
-					else {
-						$iditemsup = 1;
-					}
-
-				//	echo($iditemsup);
-					$itemsupplier = new itemsupplier();
-					$replacehrga = str_replace(',', '', $request->harga[$i]);
-				//	dd($replacehrga);
-					$itemsupplier->is_id =$iditemsup;
-					$itemsupplier->is_kodeitem = strtoupper($request->brg[$i]);
-					$itemsupplier->is_harga = $replacehrga;
-					$itemsupplier->is_supplier = strtoupper($request->nosupplier);
-					$itemsupplier->is_idsup = $data->idsup;
-					$itemsupplier->is_updatestock = $request->updatestock[$i];
-					$itemsupplier->save();
-
-				}
-				else {
-				//	echo($request->iditemsup[$i]);
-					$updateitem = itemsupplier::where([['is_id', '=', $request->iditemsup[$i]] , ['is_idsup' , '=' , $request->idsupplier]]);
-					$replacehrg = str_replace(',', '', $request->harga[$i]);
-				//	dd($replacehrg);
-					$updateitem->update([
-						'is_kodeitem' => $request->brg[$i],
-						'is_harga' => $replacehrg
-					]);
-
-				}
-			}
-			}
-			}
-
-			
-		}
-		else if($request->kontrak == 'YA'){
-		/*	dd('tdksama');*/
-				$idsup = masterSupplierPurchase::max('idsup');
-
-				if(isset($idsup)){
-
-					$idsup = (int)$idsup + 1;
-				}
-				else {
-					$idsup = 1;
-				}
-
-			$status = 'BELUM DI SETUJUI';
-			$aktif = 'AKTIF';
-
-			
-			$mastersupplier = new masterSupplierPurchase();
-
-			$mastersupplier->no_supplier = strtoupper($request->nosupplier);
-			$mastersupplier->idsup = $idsup;
-			$mastersupplier->nama_supplier = strtoupper($request->nama_supplier);
-			$mastersupplier->alamat = strtoupper($request->alamat);
-			$mastersupplier->kota = strtoupper($request->kota);
-			$mastersupplier->telp = strtoupper($request->notelp);
-			$mastersupplier->kota = strtoupper($request->kota);
-			$mastersupplier->propinsi = strtoupper($request->provinsi);
-			$mastersupplier->contact_person = strtoupper($request->cp);
-			$mastersupplier->syarat_kredit = strtoupper($request->syarat_kredit);
-			$mastersupplier->plafon = strtoupper($request->plafon_kredit);
-			$mastersupplier->currency = strtoupper($request->matauang);
-			$mastersupplier->pajak_npwp = strtoupper($request->npwp);
-
-			$mastersupplier->kodepos = strtoupper($request->kodepos);
-			$mastersupplier->status = strtoupper($status);
-			$mastersupplier->kontrak = $request->kontrak;
-			$mastersupplier->idcabang = $request->idcabang;
-			$mastersupplier->nama_cp = $request->nm_cp;
-			$mastersupplier->active = $aktif;
-
-			
-			$data->acc_hutang = $request->acc_hutangdagang;
-			$data->acc_csf = $request->acc_csf;
-			
-
-			if($request->kontrak == 'YA') {
-				$mastersupplier->no_kontrak = strtoupper($request->no_kontrak);
-			}
-			else {
-				$mastersupplier->no_kontrak = '';
-
-			}
-			$mastersupplier->save();	
-
-
-			for($j=0; $j < count($request->brg); $j++){
-				$itemsupplier = new itemsupplier();
-
-					//menghitung id sppdt
-				$lastiditem = itemsupplier::max('is_id'); 				
-				if(isset($lastiditem)) {
 				
-					$idis = $lastiditem;
-					$idis = (int)$lastiditem + 1;
-				}
-				else {
-					$idis = 1;
-				
-				}
-
-				$replacehrga = str_replace(',', '', $request->harga[$j]);
-		//	dd($replacehrga);
-				$itemsupplier->is_id =$idis;
-				$itemsupplier->is_kodeitem = strtoupper($request->brg[$j]);
-				$itemsupplier->is_harga = $replacehrga;
-				$itemsupplier->is_supplier = strtoupper($request->nosupplier);
-				$itemsupplier->is_idsup = $idsup;
-				$itemsupplier->save();
-
-				$updateitem = masterSupplierPurchase::where([['no_supplier', '=', $request->nosupplier], ['idsup' , '<>' , $idsup ]] );
-
-				$statusaktif = 'TIDAK AKTIF';
-
-				$updateitem->update([
-				 	'active' => $statusaktif,
-				 //	'sppd_qtyrequest' => $request->qtyrequest[$n],	
-			 	]);	
 			}
-		}
-
-	//	Session::flash('sukses', 'data item baru anda berhasil disimpan');
-         return redirect('mastersupplier/mastersupplier');
+        return redirect('mastersupplier/mastersupplier');
 		});
 	}
 
@@ -1368,9 +1236,9 @@ class MasterPurchaseController extends Controller
 	public function updatekonfirmasisupplier($id, Request $request){
 		return DB::transaction(function() use ($request) { 
 		/*dd($request);*/
-		if($request->iskontrak == 'tdkeditkontrak') {	
-			$replaceplafon = str_replace(',', '', $request->plafon_kredit);
+		$replaceplafon = str_replace(',', '', $request->plafon_kredit);
 
+			$id = $request->idsupplier;
 		/*dd('sama');*/
 			$statusactive = 'AKTIF';
 			$data = masterSupplierPurchase::find($id);
@@ -1385,8 +1253,7 @@ class MasterPurchaseController extends Controller
 			$data->syarat_kredit = strtoupper($request->syarat_kredit);
 			$data->plafon = strtoupper($replaceplafon);
 			$data->currency = strtoupper($request->matauang);
-			$data->pajak_npwp = strtoupper($request->npwp);
-			
+		
 			$data->kodepos = strtoupper($request->kodepos);
 			$data->idcabang = strtoupper($request->idcabang);
 			$data->kontrak = strtoupper($request->kontrak);	
@@ -1394,7 +1261,7 @@ class MasterPurchaseController extends Controller
 			$data->acc_hutang = $request->acc_hutangdagang;
 			$data->acc_csf = $request->acc_csf;
 			$data->active = $statusactive;
-			$data->status = $request->setuju;
+			$data->status = $request->status;
 
 			if($request->nokontrak != '') {
 				$data->no_kontrak = strtoupper($request->nokontrak);
@@ -1404,25 +1271,24 @@ class MasterPurchaseController extends Controller
 				$data->namapajak = $request->namapajak;
 				$data->telppajak = $request->telppajak;
 				$data->alamatpajak = $request->alamatpajak;
-
+				$data->nik = $request->nik;
+				$data->pajak_npwp = $request->npwp;
 			}
 			else {
 				$data->namapajak = null;
 				$data->telppajak = null;
 				$data->alamatpajak = null;
-				
 				$data->pajak_npwp = null;
+				$data->nik = null;
 			}
 			$data->save();
 
-			if($data->kontrak == 'TIDAK'){
 				$idsupplier = $request->idsupplier;
 				DB::delete("DELETE from  itemsupplier where is_idsup = '$idsupplier'");	
-			}
-			else if($data->kontrak == 'YA'){
+			
 				for($i=0; $i<count($request->brg); $i++){
 				
-				if(count($request->databarang) > 0) {
+		
 					$iditemsup = itemsupplier::max('is_id');
 
 					if(isset($iditemsup)){
@@ -1435,144 +1301,19 @@ class MasterPurchaseController extends Controller
 					//echo($iditemsup);
 					$itemsupplier = new itemsupplier();
 					$replacehrga = str_replace(',', '', $request->harga[$i]);
+					$item = explode("+", $request->brg[$i]);
+
 				//	dd($replacehrga);
 					$itemsupplier->is_id =$iditemsup;
-					$itemsupplier->is_kodeitem = strtoupper($request->brg[$i]);
+					$itemsupplier->is_kodeitem = strtoupper($item[0]);
 					$itemsupplier->is_harga = $replacehrga;
 					$itemsupplier->is_supplier = strtoupper($request->nosupplier);
 					$itemsupplier->is_idsup = $data->idsup;
 					$itemsupplier->is_updatestock = $request->updatestock[$i];
 					$itemsupplier->save();
-				}
-				else {
-				if(empty($request->iditemsup[$i])){
-				//	dd('ok');
-					$iditemsup = itemsupplier::max('is_id');
-
-					if(isset($iditemsup)){
-						$iditemsup = (int)$iditemsup + 1;
-					}
-					else {
-						$iditemsup = 1;
-					}
-
-				//	echo($iditemsup);
-					$itemsupplier = new itemsupplier();
-					$replacehrga = str_replace(',', '', $request->harga[$i]);
-				//	dd($replacehrga);
-					$itemsupplier->is_id =$iditemsup;
-					$itemsupplier->is_kodeitem = strtoupper($request->brg[$i]);
-					$itemsupplier->is_harga = $replacehrga;
-					$itemsupplier->is_supplier = strtoupper($request->nosupplier);
-					$itemsupplier->is_idsup = $data->idsup;
-					$itemsupplier->is_updatestock = $request->updatestock[$i];
-					$itemsupplier->save();
-
-				}
-				else {
-				//	echo($request->iditemsup[$i]);
-					$updateitem = itemsupplier::where([['is_id', '=', $request->iditemsup[$i]] , ['is_idsup' , '=' , $request->idsupplier]]);
-					$replacehrg = str_replace(',', '', $request->harga[$i]);
-				//	dd($replacehrg);
-					$updateitem->update([
-						'is_kodeitem' => $request->brg[$i],
-						'is_harga' => $replacehrg
-					]);
-
-				}
-			}
-			}
-			}
-
-			
-		}
-		else{
-		/*	dd('tdksama');*/
-				$idsup = masterSupplierPurchase::max('idsup');
-
-				if(isset($idsup)){
-
-					$idsup = (int)$idsup + 1;
-				}
-				else {
-					$idsup = 1;
-				}
-
-			$status = 'BELUM DI SETUJUI';
-			$aktif = 'AKTIF';
-
-			
-			$mastersupplier = new masterSupplierPurchase();
-
-			$mastersupplier->no_supplier = strtoupper($request->nosupplier);
-			$mastersupplier->idsup = $idsup;
-			$mastersupplier->nama_supplier = strtoupper($request->nama_supplier);
-			$mastersupplier->alamat = strtoupper($request->alamat);
-			$mastersupplier->kota = strtoupper($request->kota);
-			$mastersupplier->telp = strtoupper($request->notelp);
-			$mastersupplier->kota = strtoupper($request->kota);
-			$mastersupplier->propinsi = strtoupper($request->provinsi);
-			$mastersupplier->contact_person = strtoupper($request->cp);
-			$mastersupplier->syarat_kredit = strtoupper($request->syarat_kredit);
-			$mastersupplier->plafon = strtoupper($request->plafon_kredit);
-			$mastersupplier->currency = strtoupper($request->matauang);
-			$mastersupplier->pajak_npwp = strtoupper($request->npwp);
-	
-			$mastersupplier->kodepos = strtoupper($request->kodepos);
-			$mastersupplier->status = strtoupper($status);
-			$mastersupplier->kontrak = $request->kontrak;
-			$mastersupplier->idcabang = $request->idcabang;
-			$mastersupplier->nama_cp = $request->nm_cp;
-			$mastersupplier->active = $aktif;			
-			$data->acc_hutang = $request->acc_hutangdagang;
-			$data->acc_csf = $request->acc_csf;
-			
-
-			if($request->kontrak == 'YA') {
-				$mastersupplier->no_kontrak = strtoupper($request->no_kontrak);
-			}
-			else {
-				$mastersupplier->no_kontrak = '';
-
-			}
-			$mastersupplier->save();	
-
-
-			for($j=0; $j < count($request->brg); $j++){
-				$itemsupplier = new itemsupplier();
-
-					//menghitung id sppdt
-				$lastiditem = itemsupplier::max('is_id'); 				
-				if(isset($lastiditem)) {
 				
-					$idis = $lastiditem;
-					$idis = (int)$lastiditem + 1;
-				}
-				else {
-					$idis = 1;
-				
-				}
-
-				$replacehrga = str_replace(',', '', $request->harga[$j]);
-		//	dd($replacehrga);
-				$itemsupplier->is_id =$idis;
-				$itemsupplier->is_kodeitem = strtoupper($request->brg[$j]);
-				$itemsupplier->is_harga = $replacehrga;
-				$itemsupplier->is_supplier = strtoupper($request->nosupplier);
-				$itemsupplier->is_idsup = $idsup;
-				$itemsupplier->save();
-
-				$updateitem = masterSupplierPurchase::where([['no_supplier', '=', $request->nosupplier], ['idsup' , '<>' , $idsup ]] );
-
-				$statusaktif = 'TIDAK AKTIF';
-
-				$updateitem->update([
-				 	'active' => $statusaktif,
-				 //	'sppd_qtyrequest' => $request->qtyrequest[$n],	
-			 	]);	
 			}
-		}
-		Session::flash('sukses', 'data item baru anda berhasil disimpan');
+		
         return redirect('konfirmasisupplier/konfirmasisupplier');
     });
 	}

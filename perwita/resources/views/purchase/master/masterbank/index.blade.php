@@ -58,7 +58,7 @@
                       <th> Nama Bank </th>
                       <th> Cabang </th>
                       <th> Alamat </th>
-                      <th> No Account </th>
+                      <th> No Rekening </th>
                       <th> Nama Rekening </th> 
                       <th> Aksi </th>                
                     </tr>
