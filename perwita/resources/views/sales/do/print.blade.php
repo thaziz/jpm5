@@ -141,8 +141,8 @@
 						<td>&nbsp</td>
 					</tr>
 					<tr>
-						<td >Colly :3</td>
-						<td >Kg: 70</td>
+						<td >Colly : {{ number_format($nota->koli, 0, ",", ".") }}</td>
+						<td >Kg: {{ number_format($nota->berat, 0, ",", ".") }}</td>
 					</tr>
 					<tr>
 						<td colspan="3">Jenis Kiriman / Type of Shipment</td>
@@ -163,7 +163,7 @@
 					
 					<tr>
 						<td>Total</td>
-						<td class="bold">{{ number_format($nota->total, 0, ",", ".") }}</td>
+						<td class="bold">{{ number_format($nota->total_net, 0, ",", ".") }}</td>
 					</tr>
 					<tr >
 						<td colspan="3">Keterangan Khusus:</td>
