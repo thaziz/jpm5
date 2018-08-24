@@ -52,6 +52,7 @@ class surat_jalan_trayek_Controller extends Controller
         return response()->json(['nota'=>$nota]);
     }
     public function save_data (Request $request) {
+        dd($request->all());
         $simpan='';
         $crud = $request->crud_h;
         $nomor_old = $request->ed_nomor_old;
@@ -183,6 +184,7 @@ class surat_jalan_trayek_Controller extends Controller
             $kota = DB::table('kota')
                       ->get();
             $button = '<input type="checkbox" class="form-control check">';
+            $do     = $data[$i]->nomor.'<input type="hidden" class="form-control nomor_do" value="'.$data[$i]->nomor.'" class="nomor_do[]">';
             for ($a=0; $a < count($kota); $a++) { 
                 if ($kota[$a]->id == $data[$i]->id_kota_tujuan) {
                     $tujuan = $kota[$a]->nama;
@@ -191,6 +193,7 @@ class surat_jalan_trayek_Controller extends Controller
             }
             $data[$i]->button = $button;
             $data[$i]->tujuan = $tujuan;
+            $data[$i]->nomor  = $do;
         }
         $data = array('data' => $data);
         echo json_encode($data);

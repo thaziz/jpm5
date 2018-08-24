@@ -75,7 +75,7 @@
                         </td>
                         <td width="150">Customer</td>
                         <td colspan="2" class="customer_td">
-                          <select  name="customer" onchange="customer()" class="customer form-control chosen-select-width">
+                          <select  name="customer" onchange="custo()" class="customer form-control chosen-select-width">
                               <option value="0">Pilih - Customer</option>
                             @foreach ($customer as $val)
                               <option value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
@@ -104,7 +104,7 @@
                         @endif
                         <td width="150">Tanggal</td>
                         <td width="300">
-                          <input type="text" onblur="customer()" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
+                          <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
                         </td>
                       </tr>
                       <tr>
@@ -209,7 +209,7 @@
 <script type="text/javascript">
   var array_simpan = [0];
 
-  function customer() {
+  function custo() {
     var customer = $('.customer').val();
     var tanggal = $('.tanggal').val();
     $.ajax({
@@ -284,6 +284,7 @@
 
   $('.tanggal').change(function () {
       nota();
+      custo();
   });
 
   $('.cabang').change(function(){

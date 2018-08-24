@@ -71,7 +71,7 @@
                         <td width="300"><input type="text" readonly="" name="nomor" class="nomor form-control" value="{{ $data->ft_nota }}"></td>
                         <td width="150">Customer</td>
                         <td colspan="2" class="disabled">
-                          <select  name="customer" class="customer form-control chosen-select-width">
+                          <select  name="customer" onchange="custo()" class="customer form-control chosen-select-width">
                               <option value="0">Pilih - Customer</option>
                             @foreach ($customer as $val)
                               <option @if($data->ft_customer == $val->kode) selected="" @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
@@ -88,7 +88,7 @@
                             @endforeach
                           </select>
                         </td>
-                        <td width="150">Tanggal</td>
+                        <td width="150">Tanggal Diterima</td>
                         <td width="300" class="disabled">
                           <input type="text" readonly="" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::parse($data->ft_tanggal)->format('d/m/Y') }}">
                         </td>
@@ -193,7 +193,7 @@
 @section('extra_scripts')
 <script type="text/javascript">
 var array_simpan = [0];
-
+  
   var index = 1 ;
   var table = $('.table_tt').DataTable({
     searching:true,
@@ -213,6 +213,19 @@ var array_simpan = [0];
         },
     ],
   });
+
+  function custo() {
+    var customer = $('.customer').val();
+    var tanggal = $('.tanggal').val();
+    $.ajax({
+      url  : '{{ route('ganti_jt') }}',
+      data : {customer,tanggal},
+      dataType:'json',
+      success:function(data){
+        $('.jatuh_tempo').val(data.tgl);
+      }
+    })
+  }
   $('#tanggal_detil').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
       $('#tanggal_detil').change();
       $(this).datepicker('hide');
@@ -225,6 +238,7 @@ var array_simpan = [0];
 
   $('.tanggal').change(function () {
       nota();
+      custo();
   });
 
   $('.cabang').change(function(){

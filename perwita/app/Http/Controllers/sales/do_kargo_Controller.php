@@ -318,7 +318,7 @@ class do_kargo_Controller extends Controller
                   ->where('kendaraan.tipe_angkutan',$request->tipe_angkutan)
                   ->where('kendaraan.status','SUB')
                   // ->where('kode_cabang',$request->cabang_select)
-                  ->where('kendaraan.kode_subcon',$request->nama_subcon)
+                  ->where('kendaraan.kode_subcon',strtoupper($request->nama_subcon))
                   ->get();
         }
         
