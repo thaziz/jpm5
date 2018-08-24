@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
+use Yajra\Datatables\Datatables;
 
 
 class surat_jalan_trayek_Controller extends Controller
@@ -165,44 +166,37 @@ class surat_jalan_trayek_Controller extends Controller
     
     
     public function tampil_do(Request $request){
-        $id = $request->rute;
-        $kode_cabang=$request->kode_cabang;
-        $rute = DB::table('rute_d')->where('kode_rute', $id)->select('id_kota');
-        $jml_kota = $rute->count();
-        $rute = $rute->get();
-        $id_kota=1;
-        $sql1='';
-        $i=0;
-        $union_all ="  UNION ALL ";
-        foreach ($rute as $data) {
-            $id_kota = $data->id_kota;
-            $sql = "    SELECT d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
-                        FROM delivery_order d
-                        LEFT JOIN kota k ON k.id=d.id_kota_asal
-                        LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
-                        -- WHERE NOT EXISTS (SELECT * FROM surat_jalan_trayek_d sjd WHERE d.nomor=sjd.nomor_do )
-                        AND d.id_kota_tujuan='$id_kota' AND d.kode_cabang='$kode_cabang' " ;
-            $i++;
-            if ($i==$jml_kota) {
-                $union_all ="";
-            }
-            $sql1 =$sql1.$sql.$union_all ;
-        }
-        // dd($sql1);
-        $list = DB::select(DB::raw($sql1));
-        
-        $data = array();
-        foreach ($list as $r) {
-            $data[] = (array) $r;
-        }
-        $i=0;
-        foreach ($data as $key) {
-            // add new button
-            $data[$i]['button'] = '<input type="checkbox"  id="'.$data[$i]['nomor'].'" class="btnpilih" >';
-            $i++;
-        }
-        $datax = array('data' => $data);
-        echo json_encode($datax);
+        dd($request->all());
+        $tgl = explode('-',$request->range_date);
+        $tgl[0] = str_replace('/', '-', $tgl[0]);
+        $tgl[1] = str_replace('/', '-', $tgl[1]);
+        $tgl[0] = str_replace(' ', '', $tgl[0]);
+        $tgl[1] = str_replace(' ', '', $tgl[1]);
+        $start  = Carbon::parse($tgl[0])->format('Y-m-d');
+        $end    = Carbon::parse($tgl[1])->format('Y-m-d');
+
+        $data = DB::table('delivery_order')
+                  ->where('kode_cabang',$request->cabang)
+                  ->where('tanggal','>=',$start)
+                  ->where('tanggal','<=',$end)
+                  ->get();
+
+        $data = DB::collect($data);
+
+        return Datatables::of($data)
+                        ->addColumn('aksi', function ($data) {
+                           return '';
+                        })
+                        ->addColumn('tujuan', function ($data) {
+                           $tujuan = DB::table('delivery_order')
+                                        ->join('kota','id','=','id_kota_tujuan')
+                                        ->join('nomor',$data->nomor)
+                                        ->first();
+                            return $tujuan->nama;
+                        })
+                        ->addIndexColumn()
+                        ->make(true);
+       
     }
 
     public function cetak_nota($nomor=null) {

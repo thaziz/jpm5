@@ -222,7 +222,7 @@ $('.reportrange').daterangepicker({
 
 
 var tabel_patty = $('.tabel_patty_cash').DataTable({
-    'searching':false
+  
   })
 
 

@@ -90,10 +90,7 @@
                                 @endforeach
                               </select> 
                             @endif
-
-                                 <input type="hidden" class="valcabang" name="cabang">
-
-                                 </td>
+                             </td>
                         </tr>
 
                         <tr>

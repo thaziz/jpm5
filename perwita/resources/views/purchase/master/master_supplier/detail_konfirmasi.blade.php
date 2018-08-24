@@ -404,7 +404,7 @@
                             <tr id="dataitem item-{{$index}}" class="dataitem item-{{$index}}"> 
                               <td> {{$index + 1}} <input type="hidden" name="iditemsup[]" value="{{$item->is_id}}"> </td>
                               <td> 
-                              <select class="form-control brg tablebarang" disabled="" name="brg[]">
+                              <select class="form-control brg tablebarang" disabled="" name="brg[]" onchange="brg()">
                                @foreach($data['barang'] as $brg) 
                                  <option value="{{$brg->kode_item}}" @if($item->is_kodeitem == $brg->kode_item) selected="" @endif>  {{$brg->nama_masteritem}} </option>
                                 @endforeach
@@ -450,6 +450,8 @@
                           <input class="btn btn-warning" name="setuju" value="TIDAK SETUJU" type="submit">
 
                         @endif
+
+                         <div class="perbaruidata"> </div> 
                     </form>             
 
                 </div>
@@ -475,6 +477,9 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+
+   
 
     $('.simpandata').click(function(){
       
@@ -529,6 +534,8 @@
     })
 
 
+  
+
 //EDIT DATA
 $(function(){
   $('.edit').click(function(){
@@ -567,7 +574,7 @@ $(function(){
 
     var rowdelete = '<input type="submit" id="submit" name="submit" value="PERBARUI" class="btn btn-success">';
 
-    $('.simpandata').html(rowdelete);
+    $('.perbaruidata').html(rowdelete);
     
       $notable = $('tr#dataitem').length;
      $no = $notable + 1;
@@ -577,7 +584,7 @@ $(function(){
 
     var rowBrg = "<tr id='dataitem item-"+$no+"' class='dataitem item-"+$no+"'>" +
                   "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
-                  "<td> <select class='form-control' name='brg[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
+                  "<td> <select class='form-control brg' name='brg[]' >  @foreach($data['item'] as $item) <option value='{{$item->kode_item}},{{$item->harga}}'> {{$item->nama_masteritem}} </option> @endforeach </select>" +
                    "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
                    "<td> <select class='form-control' name='updatestock[]'> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
                   "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a>"+$no+"</td>" +
@@ -606,15 +613,20 @@ $(function(){
               var parent = $('.item-'+id);
 
              parent.remove();
-          })
+          });
+
+
 
 
     })
 
   })
 })
-
   
+  $('.brg').change(function(){
+    alert('test');
+  });
+
 
    $(function(){
             $('.provinsi').change(function(){
@@ -660,7 +672,7 @@ $(function(){
 
     var rowBrg = "<tr id='dataitem item-"+$no+"' class='item-"+$no+"'>" +
                   "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
-                  "<td> <select class='form-control' name='brg[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
+                  "<td> <select class='form-control brg' name='brg[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
                    "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
                    "<td> <select class='form-control' name='updatestock[]'> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
                   "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a></td>" +
