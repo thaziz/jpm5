@@ -115,6 +115,7 @@ class form_tanda_terima_penjualan_controller extends Controller
 						->insert([
 							'ft_id' 			=> $id,
 							'ft_tanggal' 		=> carbon::parse(str_replace('/','-',$req->tanggal))->format('Y-m-d'),
+							'ft_tanggal_terima'	=> carbon::parse(str_replace('/','-',$req->tanggal))->format('Y-m-d'),
 							'ft_lainlain' 		=> $req->lain,
 							'ft_jatuh_tempo' 	=> carbon::parse(str_replace('/','-',$req->jatuh_tempo))->format('Y-m-d'),
 							'created_at' 		=> carbon::now(),
@@ -205,7 +206,7 @@ class form_tanda_terima_penjualan_controller extends Controller
 			$save = DB::table('form_tt_penjualan')
 						->where('ft_nota',$req->nomor)
 						->update([
-							'ft_tanggal' 		=> carbon::parse(str_replace('/','-',$req->tanggal))->format('Y-m-d'),
+							'ft_tanggal_terima' => carbon::parse(str_replace('/','-',$req->tanggal))->format('Y-m-d'),
 							'ft_lainlain' 		=> $req->lain,
 							'ft_jatuh_tempo' 	=> carbon::parse(str_replace('/','-',$req->jatuh_tempo))->format('Y-m-d'),
 							'created_at' 		=> carbon::now(),
@@ -292,6 +293,7 @@ class form_tanda_terima_penjualan_controller extends Controller
 	    $jt = $cus->syarat_kredit;
 	    $tgl = str_replace('/', '-' ,$req->tanggal);
 	    $tgl = Carbon::parse($tgl)->format('Y-m-d');
+
 	    $tgl = Carbon::parse($tgl)->subDays(-$jt)->format('d/m/Y');
 
 	    return response()->json([
