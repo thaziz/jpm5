@@ -296,10 +296,21 @@ class kasKeluarController extends Controller
 
 	public function akun_biaya_dropdown(request $req)
 	{
-		$akun = DB::table('master_akun_fitur')
+		if (isset($req->id)) {
+			if (Auth::user()->punyaAkses('Bukti Kas Keluar','cabang')) {
+				$akun = DB::table('master_akun_fitur')
+				  ->where('maf_group','1')
+				  ->where('maf_cabang',$req->cabang)
+				  ->orWhere('maf_cabang','000')
+				  ->get();
+			}
+		}else{
+			$akun = DB::table('master_akun_fitur')
 				  ->where('maf_group','1')
 				  ->where('maf_cabang',$req->cabang)
 				  ->get();
+		}
+		
 
 		return view('purchase.buktikaskeluar.akun_biaya_dropdown',compact('akun'));
 	}
