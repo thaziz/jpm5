@@ -310,7 +310,6 @@
         $('#table_data_do').DataTable({
             "lengthChange": true,
             "ordering": false,
-            "info": false,
             "responsive": true,
             "autoWidth": false,
             "bProcessing": true,
@@ -457,6 +456,18 @@
         });
     });
 
+    function hapus(id) {
+        url:baseUrl+'/sales/surat_jalan_trayek/hapus_data_detail?'+'id='+id,
+        dataType : 'json',
+        type : 'post',
+        success:function(response){
+            var table2 = $('#table_data').DataTable();
+            table2.ajax.reload();
+        },
+        error:function(){
+            toastr.warning('Terjadi Kesalahan');
+        }
+    }
 
 </script>
 @endsection

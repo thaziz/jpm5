@@ -25,7 +25,7 @@ class surat_jalan_trayek_Controller extends Controller
         foreach ($data as $key) {
             // add new button
             $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['id'].'" name="'.$data[$i]['nomor_do'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                                        <button type="button" onclick="hapus(\''.$data[$i]['nomor_do'].'\')" name="'.$data[$i]['nomor_do'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
                                     </div> ';
             $i++;
         }
@@ -106,50 +106,31 @@ class surat_jalan_trayek_Controller extends Controller
                         ->where('nomor',$request->array_check[$i])
                         ->first();
 
+                $update = DB::table('delivery_order')
+                        ->where('nomor',$request->array_check[$i])
+                        ->update([
+                            'no_surat_jalan_trayek'=> strtoupper($request->ed_nomor),
+                        ]);
+
                 $data = array(
                     'nomor_surat_jalan_trayek' => $request->ed_nomor,
                     'nomor_do' => strtoupper($request->array_check[$i]),
                 );
+
                 $simpan = DB::table('surat_jalan_trayek_d')->insert($data);
             }
             return response()->json(['status'=>1]);
         });
     }
-
-    public function save_data_detail (Request $request) {
-        $simpan='';
-        $nomor = strtoupper($request->nomor);
-        $hitung = count($request->nomor_do);
-        for ($i=0; $i < $hitung; $i++) {
-            $data = array(
-                'nomor_surat_jalan_trayek' => $nomor,
-                'nomor_do' => strtoupper($request->nomor_do[$i]),
-            );
-            $simpan = DB::table('surat_jalan_trayek_d')->insert($data);
-            //DB::table('surat_jalan_trayek_d')->insert($data);
-        } 
-        $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM surat_jalan_trayek_d WHERE nomor_surat_jalan_trayek='$nomor' "))->first();
-        $result['error']='';
-        $result['result']=1;
-        $result['jml_detail']=$jml_detail->jumlah;
-        echo json_encode($result);
-    }
-
     public function hapus_data_detail (Request $request) {
-        $hapus='';
-        $id=$request->id;
-        $hapus = DB::table('surat_jalan_trayek_d')->where('id' ,'=', $id)->delete();
-        $nomor = strtoupper($request->nomor);
-        $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM surat_jalan_trayek_d WHERE nomor_surat_jalan_trayek='$nomor' "))->first();
-        if($hapus == TRUE){
-            $result['error']='';
-            $result['result']=1;
-            $result['jml_detail']=$jml_detail->jumlah;
-        }else{
-            $result['error']=$hapus;
-            $result['result']=0;
-        }
-        echo json_encode($result);
+        $do = DB::table('delivery_order')
+                ->where('nomor',$request->id)
+                ->first();
+
+        $update = DB::table('delivery_order')
+                ->where('nomor',$id)
+                ->delete();
+        return response()->json(['status'=>1]);
     }
 
     public function index(){
@@ -189,6 +170,7 @@ class surat_jalan_trayek_Controller extends Controller
                   ->where('kode_cabang',$request->cabang)
                   ->where('tanggal','>=',$start)
                   ->where('tanggal','<=',$end)
+                  ->where('no_surat_jalan_trayek','=',null)
                   ->take(1000)
                   ->get();
         for ($i=0; $i < count($data); $i++) { 
