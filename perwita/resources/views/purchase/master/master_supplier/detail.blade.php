@@ -87,7 +87,7 @@
                                   </td>
                                   <td width="400px">
                                      <input type="text" class="form-control input-sm namasupplier" name="nama_supplier" value="{{$sup->nama_supplier}}" readonly="">
-                                      <input type="text" class="form-control input-sm namasupplier" name="idsupplier" value="{{$sup->idsup}}" readonly="">
+                                      <input type="hidden" class="form-control input-sm namasupplier" name="idsupplier" value="{{$sup->idsup}}" readonly="">
                                   </td>
                               </tr>
 
@@ -166,7 +166,7 @@
                             </td>
 
                             <td>
-                                <span class="label label-info "> {{$sup->status}} </span>
+                                <span class="label label-info"> {{$sup->status}} </span>
                             </td>
                           </tr>
                       </table>                          
@@ -396,7 +396,7 @@
                             <tr id="dataitem item-{{$index}}" class="dataitem item-{{$index}}"> 
                               <td> {{$index + 1}} <input type="hidden" name="iditemsup[]" value="{{$item->is_id}}"> </td>
                               <td> 
-                              <select class="form-control brg tablebarang" disabled="" name="brg[]" data-id="{{$index}}">
+                              <select class="form-control brg tablebarang" name="brg[]" data-id="{{$index}}">
                                @foreach($data['barang'] as $brg) 
                                  <option value="{{$brg->kode_item}}+{{$brg->harga}}+{{$brg->updatestock}}" @if($item->is_kodeitem == $brg->kode_item) selected="" @endif>  {{$brg->nama_masteritem}} </option>
                                 @endforeach
@@ -475,7 +475,7 @@
       if(kontrak == 'YA'){
       //       RRRZ(kontrak);
               if(tr == 0){
-                alert(tr);
+              //  alert(tr);
         toastr.info('jenis Supplier adalah Kontrak, Mohon Tambah Data Barang :) ');
         return false;
       }        
@@ -557,11 +557,10 @@ $(function(){
 
     $('.simpandata').html(rowdelete);
     
-      $notable = $('tr#dataitem').length;
+      $notable = $('tr.dataitem').length;
      $no = $notable + 1;
     $('#tmbh_data_barang').click(function(){
-                     
-    $no++;
+    
 
     var rowBrg = "<tr id='dataitem item-"+$no+"' class='dataitem item-"+$no+"'>" +
                   "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
@@ -570,7 +569,7 @@ $(function(){
                    "<td> <select class='form-control updatestock"+$no+"' name='updatestock[]' readonly> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
                   "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a></td>" +
                   "</tr>";   
-
+     $no++;               
    $("#addColumn").append(rowBrg);
 
      $(function(){
@@ -601,7 +600,7 @@ $(function(){
             explode = val.split("+");
             harga = explode[1];
             updatestock = explode[2];
-            alert(val);
+            //alert(val);
             dataid = $(this).data('id');
             $('.hrg' + dataid).val(addCommas(harga));
             $('.updatestock' + dataid).val(updatestock);
@@ -915,11 +914,7 @@ $('.cabang').change(function(){
             }
             else {
               $('.nokontrak').empty();
-              $('.nokontrak2').empty();
-               $('.tmbhdatabarang').hide();
-               $('.tablebarang').hide();
-               $('#addColumn').attr('disabled' , true);
-              
+             
             }
         })
 
