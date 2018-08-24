@@ -5049,7 +5049,7 @@ public function purchase_order() {
 		return DB::transaction(function() use ($request) {   
 			/*dd($request->all());*/
 		$variable = $request->supplier_po;
-		$data = explode(",", $variable);
+		$data = explode("+", $variable);
 		$idsup = $data[0];
 		$kodesupplier2 = $data[4];
 		$netto = str_replace(',', '', $request->nettohutang_po);
@@ -6097,7 +6097,7 @@ public function purchase_order() {
 		$nofaktur = $request->nofakturitem;
 		$jumlahtotal = $request->jumlahtotal;
 		$variable = $request->idsupitem;
-		$data = explode(",", $variable);
+		$data = explode("+", $variable);
 		$idsup = $data[0];
 		$netto = str_replace(',', '', $request->nettohutang);
 		$cabang = $request->cabang;
