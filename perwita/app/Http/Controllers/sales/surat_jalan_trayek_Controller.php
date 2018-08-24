@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Yajra\Datatables\Datatables;
 use carbon\carbon;
-
+use Auth;
+use Exception;
 class surat_jalan_trayek_Controller extends Controller
 {
     public function table_data_detail (Request $request) {
@@ -52,57 +53,67 @@ class surat_jalan_trayek_Controller extends Controller
         return response()->json(['nota'=>$nota]);
     }
     public function save_data (Request $request) {
-        dd($request->all());
-        $simpan='';
-        $crud = $request->crud_h;
-        $nomor_old = $request->ed_nomor_old;
-        $data = array(
-                'nomor' => strtoupper($request->ed_nomor),
-                'tanggal' => strtoupper($request->ed_tanggal),
-                'nama_rute' => strtoupper($request->ed_nama_rute),
-                'keterangan' => strtoupper($request->ed_keterangan),
-                'kode_cabang' => strtoupper($request->ed_cabang),
-                'kode_rute' => strtoupper($request->ed_kode_rute),
-                'id_kendaraan' => strtoupper($request->cb_nopol),
-                'nopol' => strtoupper($request->ed_nopol),
-                'sopir' => strtoupper($request->ed_sopir),
-            );
+        // dd($request->all());
+        return DB::transaction(function() use ($request){
+            $cari = DB::table('surat_jalan_trayek')
+                      ->where('nomor',$request->ed_nomor)
+                      ->first();
 
-        if ($crud == 'N' and $nomor_old =='') {
-            //auto number
-            if ($data['nomor'] ==''){
-                $tanggal = strtoupper($request->ed_tanggal);
-                $kode_cabang = strtoupper($request->ed_cabang);
-                $tanggal = date_create($tanggal);
-                $tanggal = date_format($tanggal,'ym');
-                $sql = "	SELECT CAST(MAX(SUBSTRING (nomor FROM '....$')) AS INTEGER) + 1 nomor
-                            FROM surat_jalan_trayek WHERE to_char(tanggal, 'YYMM')='$tanggal' AND kode_cabang='$kode_cabang' ";
-                $list = collect(\DB::select($sql))->first();
-                if ($list->nomor == ''){
-                    //$data['nomor']='SJT-'.$kode_cabang.'-'.$tanggal.'-00001';
-                    $data['nomor']='SJT'.$kode_cabang.$tanggal.'00001';
-                } else{
-                    $kode  = substr_replace('00000',$list->nomor,-strlen($list->nomor)); 
-                    $data['nomor']='SJT'.$kode_cabang.$tanggal.$kode;
-                }
+            if ($cari == null) {
+                $id_kendaraan = DB::table('kendaraan')
+                                  ->where('nopol',strtoupper($request->ed_nopol))
+                                  ->first();
+                $data = array(
+                    'nomor' => strtoupper($request->ed_nomor),
+                    'tanggal' => strtoupper($request->tanggal),
+                    'nama_rute' => strtoupper($request->ed_nama_rute),
+                    'keterangan' => strtoupper($request->ed_keterangan),
+                    'kode_cabang' => strtoupper($request->ed_cabang),
+                    'kode_rute' => strtoupper($request->ed_kode_rute),
+                    'id_kendaraan' => $id_kendaraan->id,
+                    'nopol' => strtoupper($request->ed_nopol),
+                    'sopir' => strtoupper($request->ed_sopir),
+                    'create_by' => Auth::user()->m_name,
+                    'update_by' => Auth::user()->m_name,
+                    'created_at'=>carbon::now(),
+                    'update_at'=>carbon::now(),
+                );
+
+                $save = DB::table('surat_jalan_trayek')
+                          ->insert($data);
+            }else{
+                $data = array(
+                    'nomor' => strtoupper($request->ed_nomor),
+                    'tanggal' => strtoupper($request->tanggal),
+                    'nama_rute' => strtoupper($request->ed_nama_rute),
+                    'keterangan' => strtoupper($request->ed_keterangan),
+                    'kode_cabang' => strtoupper($request->ed_cabang),
+                    'kode_rute' => strtoupper($request->ed_kode_rute),
+                    'id_kendaraan' => strtoupper($request->cb_nopol),
+                    'nopol' => strtoupper($request->ed_nopol),
+                    'sopir' => strtoupper($request->ed_sopir),
+                    'update_by' => Auth::user()->m_name,
+                    'update_at'=>carbon::now(),
+                );
+
+                $save = DB::table('surat_jalan_trayek')
+                          ->where('nomor',$request->ed_nomor)
+                          ->update($data);
             }
-            // end auto number
 
-           $simpan = DB::table('surat_jalan_trayek')->insert($data);
+            for ($i=0; $i < count($request->array_check); $i++) { 
+                $do = DB::table('delivery_order')
+                        ->where('nomor',$request->array_check[$i])
+                        ->first();
 
-        } else {
-            $simpan = DB::table('surat_jalan_trayek')->where('nomor', $nomor_old)->update($data);
-        }
-        if($simpan == TRUE){
-            $result['error']='';
-            $result['result']=1;
-            $result['nomor']=$data['nomor'];
-        }else{
-            $result['error']=$data;
-            $result['result']=0;
-        }
-        $result['crud']=$crud;
-        echo json_encode($result);
+                $data = array(
+                    'nomor_surat_jalan_trayek' => $request->ed_nomor,
+                    'nomor_do' => strtoupper($request->array_check[$i]),
+                );
+                $simpan = DB::table('surat_jalan_trayek_d')->insert($data);
+            }
+            return response()->json(['status'=>1]);
+        });
     }
 
     public function save_data_detail (Request $request) {
