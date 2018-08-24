@@ -58,7 +58,7 @@
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
                                     <input type="text" name="ed_nomor" id="ed_nomor" class="form-control ed_nomor" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
-                                    <input type="hidden" name="ed_nomor_old" class="form-control" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
+                                    <input type="hidden" name="ed_nomor_old" class="form-control ed_nomor_old" id="ed_nomor_old" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
                                     <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                     <input type="hidden" class="form-control" name="ed_tampil" >
                                     <input type="hidden" class="form-control success" name="success" >
