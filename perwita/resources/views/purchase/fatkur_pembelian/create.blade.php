@@ -206,7 +206,7 @@
                                     <td>   <select class="form-control idsup chosen-select-width1" name="supplier" required="" novalidate> 
                                             <option value=""> -- Pilih Supplier -- </option>
                                         @foreach($data['supplier'] as $supplier)
-                                            <option value="{{$supplier->idsup}}+{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}}+{{$supplier->acc_hutang}}+{{$supplier->no_supplier}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
+                                            <option value="{{$supplier->idsup}}+{{$supplier->syarat_kredit}}+{{$supplier->nama_supplier}}+{{$supplier->acc_hutang}}+{{$supplier->no_supplier}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
                                         @endforeach
                                         </select>
                                        
@@ -887,7 +887,7 @@
                                             <td>   <select class="form-control idsup_po chosen-select-width" name="supplier_po" novalidate required=""> 
                                                     <option value=""> -- Pilih Supplier -- </option>
                                                 @foreach($data['supplier'] as $supplier)
-                                                    <option value="{{$supplier->idsup}}+{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}}+{{$supplier->acc_hutang}}+{{$supplier->no_supplier}}" data-accHutang="{{$supplier->acc_hutang}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
+                                                    <option value="{{$supplier->idsup}}+{{$supplier->syarat_kredit}}+{{$supplier->nama_supplier}}+{{$supplier->acc_hutang}}+{{$supplier->no_supplier}}" data-accHutang="{{$supplier->acc_hutang}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
                                                 @endforeach
                                                 </select>                                        
                                             </td>
