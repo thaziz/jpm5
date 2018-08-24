@@ -5,6 +5,9 @@
 @section('content')
 <style type="text/css">
       .id {display:none; }
+      .center{
+        text-align: center;
+      }
     </style>
 
 
@@ -202,7 +205,7 @@
 
 <!-- modal -->
 <div id="modal" class="modal" >
-  <div class="modal-dialog">
+  <div class="modal-dialog" style="width: 60%">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -216,7 +219,7 @@
                             <th>Nomor Order</th>
                             <th>Tgl Order</th>
                             <th>Tujuan</th>
-                            <th>Aksi</th>
+                            <th align="center"><input type="checkbox" class="parent_check form-control"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -278,7 +281,8 @@
             { "data": "alamat_penerima" },
             { "data": "type_kiriman" },
             { "data": "button" },
-            ]
+            ],
+            
         });
         
         var config = {
@@ -303,6 +307,34 @@
             }
         });
 
+        $('#table_data_do').DataTable({
+            "lengthChange": true,
+            "ordering": true,
+            "info": false,
+            "responsive": true,
+            "autoWidth": false,
+            "bProcessing": true,
+            "pageLength": 10,
+            "retrieve" : true,
+            "ajax": {
+                "url": baseUrl + "/sales/surat_jalan_trayek_form/tampil_do",
+                "type": "GET",
+                "data" : {cabang : function () { return $('.cabang').val()},range_date : function () { return $('.range_date').val()}},
+            },
+            "columns": [
+            { "data": "nomor" },
+            { "data": "tanggal" },
+            { "data": "tujuan" },
+            { "data": "button" },
+            ],
+            columnDefs: [
+              {
+                 targets: 3,
+                 className: 'center'
+              },
+            ],
+        });
+
     });
     
     function ganti_nota() {
@@ -318,38 +350,6 @@
             }
         });
     }
-    function tampil_data_do(){
-        var rute = $("#cb_rute").val();
-        var cabang = $(".cabang").val();
-        var range_date = $(".range_date").val();
-  
-        var range_date = $('.range_date').val();
-        var cabang  = $('.cabang').val();
-        $('#table_data_do').DataTable({
-            "lengthChange": true,
-            "ordering": true,
-            "searching": false,
-            "paging": false,
-            "ordering": true,
-            "info": false,
-            "responsive": true,
-            "autoWidth": false,
-            "pageLength": 10,
-            "retrieve" : true,
-            "ajax": {
-                "url": baseUrl + "/sales/surat_jalan_trayek_form/tampil_do",
-                "type": "GET",
-                "data" : {cabang,range_date},
-            },
-            "columns": [
-            { "data": "nomor" },
-            { "data": "tanggal" },
-            { "data": "tujuan" },
-            { "data": "button" },
-            ]
-        });
-    }
-
 
 
     $(document).on("click","#btnsimpan",function(){
@@ -395,9 +395,8 @@
     $(document).on("click","#btnadd",function(){
         
         var table = $('#table_data_do').DataTable();
-        table.ajax.reload();
-        tampil_data_do();
-
+        table.clear().draw();
+        table.ajax.reload(null,true);
         $('#modal').modal('show');
     });
 
