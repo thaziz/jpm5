@@ -167,7 +167,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btnadd" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Tambah</button>
-                            <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <button type="button" class="btn btn-success " id="kembali" ><i class="fa fa-arrow-left"></i> Kembali</button>
                         </div>
                     </div>
                 </form>
@@ -309,7 +309,7 @@
 
         $('#table_data_do').DataTable({
             "lengthChange": true,
-            "ordering": true,
+            "ordering": false,
             "info": false,
             "responsive": true,
             "autoWidth": false,
@@ -391,17 +391,48 @@
         $("input[name='ed_nama_rute']").val($nama_rute);
     });
 
+    $('.parent_check').change(function(){
+        var tab = $('#table_data_do').DataTable();
+        if ($(this).is(':checked') == true) {
+            tab.$('.check').prop('checked',true);
+        }else{
+            tab.$('.check').prop('checked',false);
+        }
+    })
 
     $(document).on("click","#btnadd",function(){
-        
+        $('.parent_check').prop('checked',false);
         var table = $('#table_data_do').DataTable();
         table.clear().draw();
         table.ajax.reload(null,true);
         $('#modal').modal('show');
     });
 
-    $(document).on( "click",".btndelete", function() {
-
+    $(document).on( "click","#btnsave", function() {
+        var array_check =[];
+        var tanggal = $('.tanggal').val();
+        var cabang  = $('.cabang').val();
+        var rute  = $('#cb_rute').val();
+        var tabel = $('#table_data_do').DataTable();
+        tabel.$('.check').each(function(){
+            if ($(this).is(':checked') == true) {
+                var par = $(this).parents('tr');
+                var nomor_do  = $(par).find('.nomor_do').val()
+                array_check.push(nomor_do);
+            }
+        })
+        $.ajax({
+            data:{array_check,tanggal,cabang,rute},
+            url:baseUrl+'/sales/surat_jalan_trayek_form/save_data?'+$('#form_header input').serialize(),
+            dataType : 'json',
+            type : 'post',
+            success:function(response){
+                
+            },
+            error:function(){
+                toastr.warning('Terjadi Kesalahan');
+            }
+        });
     });
 
 
