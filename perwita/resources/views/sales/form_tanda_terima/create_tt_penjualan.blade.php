@@ -75,7 +75,7 @@
                         </td>
                         <td width="150">Customer</td>
                         <td colspan="2" class="customer_td">
-                          <select  name="customer" class="customer form-control chosen-select-width">
+                          <select  name="customer" onchange="customer()" class="customer form-control chosen-select-width">
                               <option value="0">Pilih - Customer</option>
                             @foreach ($customer as $val)
                               <option value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
@@ -87,7 +87,7 @@
                         <td>Cabang</td>
                         @if(Auth::user()->punyaAkses('Form Tanda Terima Pembelian','cabang'))
                         <td colspan="2" class="cabang_td">
-                          <select name="cabang" class="cabang form-control chosen-select-width">
+                          <select name="cabang"  class="cabang form-control chosen-select-width">
                             @foreach ($cabang as $val)
                               <option @if($val->kode == Auth::user()->kode_cabang)selected="" @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
                             @endforeach
@@ -104,7 +104,7 @@
                         @endif
                         <td width="150">Tanggal</td>
                         <td width="300">
-                          <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
+                          <input type="text" onblur="customer()" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
                         </td>
                       </tr>
                       <tr>
@@ -208,8 +208,9 @@
 @section('extra_scripts')
 <script type="text/javascript">
   var array_simpan = [0];
-  $('.customer').change(function(){
-    var customer = $(this).val();
+
+  function customer() {
+    var customer = $('.customer').val();
     var tanggal = $('.tanggal').val();
     $.ajax({
       url  : '{{ route('ganti_jt') }}',
@@ -219,7 +220,8 @@
         $('.jatuh_tempo').val(data.tgl);
       }
     })
-  })
+  }
+
   function nota() {
     var cabang = $('.cabang').val();
     var tanggal = $('.tanggal').val();
