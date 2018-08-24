@@ -690,7 +690,7 @@
     $.ajax({
         url:baseUrl + '/buktikaskeluar/akun_biaya_dropdown',
         type:'get',
-        data:{cabang},
+        data:{cabang,id},
         success:function(data){
            $('.akun_biaya_td').html(data);
         },

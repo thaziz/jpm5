@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Yajra\Datatables\Datatables;
-
+use carbon\carbon;
 
 class surat_jalan_trayek_Controller extends Controller
 {
@@ -32,18 +32,25 @@ class surat_jalan_trayek_Controller extends Controller
         echo json_encode($datax);
     }
 
-    public function get_data (Request $request) {
-        $id =$request->input('kode');
-        $data = DB::table('surat_jalan_trayek')->where('kode', $id)->first();
-        echo json_encode($data);
+    public function ganti_nota(request $req)
+    {
+        $bulan = Carbon::parse($req->tanggal)->format('m');
+        $tahun = Carbon::parse($req->tanggal)->format('y');
+        // $update = DB::table('invoice')
+        //             ->update(['create_at'=>carbon::now()
+        //           ]);
+        // return 'asd';
+        $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from surat_jalan_trayek
+                                        WHERE kode_cabang = '$req->cabang'
+                                        AND nomor like 'SJT%'
+                                        AND to_char(tanggal,'MM') = '$bulan'
+                                        AND to_char(tanggal,'YY') = '$tahun'
+                                        ");
+        $index = (integer)$cari_nota[0]->id + 1;
+        $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+        $nota = 'SJT' . $req->cabang . $bulan . $tahun . $index;
+        return response()->json(['nota'=>$nota]);
     }
-
-    public function get_data_detail (Request $request) {
-        $id =$request->input('id');
-        $data = DB::table('surat_jalan_trayek_d')->where('id', $id)->first();
-        echo json_encode($data);
-    }
-
     public function save_data (Request $request) {
         $simpan='';
         $crud = $request->crud_h;
@@ -95,14 +102,6 @@ class surat_jalan_trayek_Controller extends Controller
         }
         $result['crud']=$crud;
         echo json_encode($result);
-    }
-
-    public function hapus_data($nomor_surat_jalan_trayek=null){
-        DB::beginTransaction();
-        DB::table('surat_jalan_trayek_d')->where('kode_surat_jalan_trayek' ,'=', $nomor_surat_jalan_trayek)->delete();
-        DB::table('surat_jalan_trayek')->where('kode' ,'=', $nomor_surat_jalan_trayek)->delete();
-        DB::commit();
-        return redirect('sales/surat_jalan_trayek');
     }
 
     public function save_data_detail (Request $request) {
@@ -166,7 +165,6 @@ class surat_jalan_trayek_Controller extends Controller
     
     
     public function tampil_do(Request $request){
-        dd($request->all());
         $tgl = explode('-',$request->range_date);
         $tgl[0] = str_replace('/', '-', $tgl[0]);
         $tgl[1] = str_replace('/', '-', $tgl[1]);
@@ -180,23 +178,20 @@ class surat_jalan_trayek_Controller extends Controller
                   ->where('tanggal','>=',$start)
                   ->where('tanggal','<=',$end)
                   ->get();
-
-        $data = DB::collect($data);
-
-        return Datatables::of($data)
-                        ->addColumn('aksi', function ($data) {
-                           return '';
-                        })
-                        ->addColumn('tujuan', function ($data) {
-                           $tujuan = DB::table('delivery_order')
-                                        ->join('kota','id','=','id_kota_tujuan')
-                                        ->join('nomor',$data->nomor)
-                                        ->first();
-                            return $tujuan->nama;
-                        })
-                        ->addIndexColumn()
-                        ->make(true);
-       
+        for ($i=0; $i < count($data); $i++) { 
+            $kota = DB::table('kota')
+                      ->get();
+            $button = '<input type="checkbox" class="form-control check">';
+            for ($a=0; $a < count($kota); $a++) { 
+                if ($kota[$a]->id == $data[$i]->id_kota_tujuan) {
+                    $tujuan = $kota[$a]->nama;
+                }
+            }
+            $data[$i]->button = $button;
+            $data[$i]->tujuan = $tujuan;
+        }
+        $data = array('data' => $data);
+        echo json_encode($data);
     }
 
     public function cetak_nota($nomor=null) {

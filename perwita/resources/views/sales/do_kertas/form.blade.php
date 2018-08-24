@@ -57,8 +57,8 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_nomor" id="ed_nomor" class="form-control" readonly="readonly" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
-                                    <input type="hidden" name="ed_nomor_old" class="form-control" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
+                                    <input type="text" name="ed_nomor" id="ed_nomor" class="form-control ed_nomor" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
+                                    <input type="hidden" name="ed_nomor_old" class="form-control ed_nomor_old" id="ed_nomor_old" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
                                     <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                     <input type="hidden" class="form-control" name="ed_tampil" >
                                     <input type="hidden" class="form-control success" name="success" >
@@ -349,7 +349,14 @@
 var array_kontrak    = [];
 var array_kontrak_id = [];
 
-
+$(".ed_nomor").keypress(function (e) {
+ //if the letter is not digit then display error and don't type anything
+   if (e.which != 8 && e.which != 0  && (e.which < 48 ) && e.which != 46  ) {
+      //display error message
+      
+             return false;
+    }
+});
 var table_detail = $('#table_detail').DataTable( {
         ordering:false,
         "columns": [
@@ -399,23 +406,24 @@ $(document).ready(function(){
         dataType:'json',
         success:function(data){
             $('#ed_nomor').val(data.nota);
+            $('#ed_nomor_old').val(data.nota);
         },
         error:function(){
             // location.reload();
         }
     })
 
-    $.ajax({
-        url:baseUrl + '/sales/nomor_do_kertas',
-        data:{cabang},
-        dataType:'json',
-        success:function(data){
-            $('#ed_nomor').val(data.nota);
-        },
-        error:function(){
-            // location.reload();
-        }
-    })
+    // $.ajax({
+    //     url:baseUrl + '/sales/nomor_do_kertas',
+    //     data:{cabang},
+    //     dataType:'json',
+    //     success:function(data){
+    //         $('#ed_nomor').val(data.nota);
+    //     },
+    //     error:function(){
+    //         // location.reload();
+    //     }
+    // })
    
      
 });
@@ -427,7 +435,10 @@ function ganti_nota(){
         data:{cabang},
         dataType:'json',
         success:function(data){
-            $('#ed_nomor').val(data.nota);
+            if ($('#ed_nomor').val() == $('#ed_nomor_old').val()) {
+                $('#ed_nomor').val(data.nota);
+                $('#ed_nomor_old').val(data.nota);
+            }
         },
         error:function(){
             // location.reload();

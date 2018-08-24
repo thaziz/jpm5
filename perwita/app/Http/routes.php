@@ -1626,6 +1626,7 @@ Route::get('sales/updatestatusordercabang', function(){
 // surat jalan by trayek
 Route::get('sales/surat_jalan_trayek', 'sales\surat_jalan_trayek_Controller@index');
 Route::get('sales/surat_jalan_trayek_form/tampil_do', 'sales\surat_jalan_trayek_Controller@tampil_do');
+Route::get('sales/surat_jalan_trayek_form/ganti_nota', 'sales\surat_jalan_trayek_Controller@ganti_nota');
 Route::get('sales/surat_jalan_trayek_form', 'sales\surat_jalan_trayek_Controller@form');
 Route::get('sales/surat_jalan_trayek_form/{nomor}/edit', 'sales\surat_jalan_trayek_Controller@form');
 Route::get('sales/surat_jalan_trayek_form/{nomor}/hapus_data', 'sales\surat_jalan_trayek_Controller@hapus_data');
