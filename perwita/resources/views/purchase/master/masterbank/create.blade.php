@@ -900,10 +900,19 @@
      } 
     }    
   })
+  function pad(number, length) {
+   
+    var str = '' + number;
+    while (str.length < length) {
+        str = '0' + str;
+    }
+   
+    return str;
 
+}
 
   hasil = 0;
-  $('.urutcek').keyup(function(){
+  $('.urutcek').change(function(){
     val = $(this).val();
     if(val == ''){
     //  alert('Mohon isi val nya :)'); 
@@ -912,8 +921,27 @@
        $('.hasilurutcek').val('');      
     }
     else {
-      hasil = parseInt(val) + 24;
-      $('.hasilurutcek').val(hasil);      
+      str = val.search('0');
+      lengthval = str.length;
+      if(val.indexOf(str) == 0){
+        $temp0 = 0;
+        alert(lengthval);
+        for(i = 0; i < lengthval; i++){
+          
+          if(val.indexOf(str) == i){
+            $temp0 = $temp0 + 1;
+          }
+        }  
+
+          alert($temp0);
+          hasil = parseInt(val) + 24;
+          hasil = pad(val, $temp0);
+         $('.hasilurutcek').val(hasil); 
+      }
+      else {
+        hasil = parseInt(val) + 24;
+        $('.hasilurutcek').val(hasil);      
+    }
     }
   })
 

@@ -382,7 +382,9 @@ class MasterPurchaseController extends Controller
            
             $data->foto = $pathPic;
         }
-*/
+*/		
+
+        $harga = str_replace(",", "", $request->harga);
         $data->nama_masteritem = $request->nama_item;
     
 		$jenisitem = $request->jenis_item;
@@ -393,7 +395,7 @@ class MasterPurchaseController extends Controller
         $data->acc_persediaan = $request->acc_persediaan;
         $data->acc_hpp = $request->acc_hpp;
         $data->updatestock = $request->update_stock;
-        $data->harga = $request->harga;
+        $data->harga = $harga;
     	$data->kode_akun = $request->akun;
     	
 	    $data->unit1 = $request->unit1;
