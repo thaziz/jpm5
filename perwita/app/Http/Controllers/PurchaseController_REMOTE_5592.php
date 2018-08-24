@@ -6848,7 +6848,7 @@ public function purchase_order() {
 			$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; 
 
 			$supplier = $request->supplier;
-			$explode = explode("," , $supplier);
+			$explode = explode("+" , $supplier);
 			$nosupplier = $explode[4];
 			if($request->edit == 'edit'){
 				$nofaktur = $request->nofaktur;
@@ -7031,7 +7031,7 @@ public function kekata($x) {
 	
 	public function supplierfaktur(Request $request){
 		$variable = $request->idsup;
-		$data = explode(",", $variable);
+		$data = explode("+", $variable);
 		$idsup = $data[0];
 		$cabang = $request->cabang;
 
@@ -10027,7 +10027,7 @@ public function kekata($x) {
 
 	public function getum(Request $request){
 		$idsup = $request->idsup;
-		$explode = explode("," , $idsup);
+		$explode = explode("+" , $idsup);
 		$nosupplier = $explode[4];
 		$cabang = $request->cabang;
 

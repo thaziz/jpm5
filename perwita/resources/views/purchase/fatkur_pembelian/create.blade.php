@@ -6343,7 +6343,7 @@
        else {
           $.ajax({    
             type :"post",
-            data : {idsup, updatestock, groupitem, stock },
+            data : {idsup, updatestock, groupitem, stock},
             url : baseUrl + '/fakturpembelian/updatestockbarang',
             dataType:'json',
             success : function(data){
