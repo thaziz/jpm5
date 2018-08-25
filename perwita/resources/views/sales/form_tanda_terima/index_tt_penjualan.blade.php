@@ -138,7 +138,7 @@
             "columns": [
             { "data": "DT_Row_Index",},
             { "data": "ft_nota" },
-            { "data": "ft_tanggal" },
+            { "data": "tanggal_buat" },
             { "data": "ft_total",render: $.fn.dataTable.render.number( '.', '.', 0, '' )},
             { "data": "ft_customer" },
             { "data": "print" },
