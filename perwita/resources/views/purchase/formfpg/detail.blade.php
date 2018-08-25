@@ -147,7 +147,7 @@
 
                             <tr>
                               <th> Keterangan </th>
-                              <td> <input type='text' class='form-control' name="keterangan" value="{{$fpg->fpg_keterangan}}" readonly=""></td>
+                              <td> <input type='text' class='form-control' name="keterangan" value="{{$fpg->fpg_keterangan}}"></td>
                             </tr>
                           </table>
 

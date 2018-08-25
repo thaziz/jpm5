@@ -8565,6 +8565,8 @@ public function kekata($x) {
 			 	'mbdt_nominal' => null,
 			 	'mbdt_tglstatus' => null,
 		 	]);	
+
+
 		}
 		
 		DB::delete("DELETE from fpg where idfpg = '$id'");
@@ -11253,7 +11255,8 @@ public function kekata($x) {
 		$updatefpg->update([
 			'fpg_totalbayar' => $totalbayar,
 			'fpg_cekbg' => $cekbg,
-			'update_by' => $request->username
+			'update_by' => $request->username,
+			'fpg_keterangan' => $request->keterangan,
 			]);	
 
 	
