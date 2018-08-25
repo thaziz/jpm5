@@ -167,7 +167,9 @@
                     <div class="row">
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btnadd" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Tambah</button>
-                            <button type="button" class="btn btn-success " id="kembali" ><i class="fa fa-arrow-left"></i> Kembali</button>
+                            <a href="../sales/surat_jalan_trayek">
+                                <button type="button" class="btn btn-success "  id="kembali" ><i class="fa fa-arrow-left"></i> Kembali</button>
+                            </a>
                         </div>
                     </div>
                 </form>
@@ -259,10 +261,7 @@
         $('#table_data').DataTable({
             "lengthChange": true,
             "ordering": true,
-            "searching": false,
-            "paging": false,
             "ordering": true,
-            "info": false,
             "responsive": true,
             
             "autoWidth": false,
@@ -273,6 +272,12 @@
                 "type": "GET",
                 "data" : { nomor : function () { return $('#ed_nomor').val()}},
             },
+            columnDefs: [
+              {
+                 targets: 6,
+                 className: 'center'
+              }
+            ],
             "columns": [
             { "data": "id" , render: $.fn.dataTable.render.number( '.'),"sClass": "id" },
             { "data": "nomor_do" },
@@ -310,7 +315,6 @@
         $('#table_data_do').DataTable({
             "lengthChange": true,
             "ordering": false,
-            "info": false,
             "responsive": true,
             "autoWidth": false,
             "bProcessing": true,
@@ -352,28 +356,6 @@
     }
 
 
-    $(document).on("click","#btnsimpan",function(){
-        $("select[name='cb_rute']").prop('disabled', false).trigger("chosen:updated");
-        $("input[name='crud']").val('N');
-        $.ajax(
-        {
-            url :  baseUrl + "/sales/surat_jalan_trayek/save_data",
-            type: "POST",
-            dataType:"JSON",
-            data : $('#form_header').serialize() ,
-            success: function(data, textStatus, jqXHR)
-            {
-             
-            },
-            error: function(jqXHR, textStatus, errorThrown)
-            {
-              // swal("Error!", textStatus, "error");
-            }
-        });
-        
-        
-    });
-
     $("select[name='cb_cabang']").change(function(){
         var data = $(this).val();
         $("input[name='ed_cabang']").val(data);
@@ -402,6 +384,7 @@
 
     $(document).on("click","#btnadd",function(){
         $('.parent_check').prop('checked',false);
+        $('search').val('');
         var table = $('#table_data_do').DataTable();
         table.clear().draw();
         table.ajax.reload(null,true);
@@ -457,6 +440,20 @@
         });
     });
 
+    function hapus(id) {
+        $.ajax({
+            dataType:'json',
+            url: baseUrl+'/sales/surat_jalan_trayek/hapus_data_detail?id='+id,
+            type:'get',
+            success:function(response){
+                var table2 = $('#table_data').DataTable();
+                table2.ajax.reload();
+            },
+            error:function(){
+                toastr.warning('Terjadi Kesalahan');
+            }
+        });
+    }
 
 </script>
 @endsection

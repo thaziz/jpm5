@@ -25,7 +25,7 @@ class surat_jalan_trayek_Controller extends Controller
         foreach ($data as $key) {
             // add new button
             $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['id'].'" name="'.$data[$i]['nomor_do'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                                        <button type="button" onclick="hapus(\''.$data[$i]['nomor_do'].'\')" name="'.$data[$i]['nomor_do'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
                                     </div> ';
             $i++;
         }
@@ -33,6 +33,65 @@ class surat_jalan_trayek_Controller extends Controller
         echo json_encode($datax);
     }
 
+    public function datatable_sjt()
+    {
+        // $nama_cabang = DB::table("cabang")
+        //      ->where('kode',$req->cabang)
+        //      ->first();
+
+        // if ($nama_cabang != null) {
+        //   $cabang = 'and i_kode_cabang = '."'$req->cabang'";
+        // }else{
+        //   $cabang = '';
+        // }
+
+        if (Auth::user()->punyaAkses('Surat Jalan By Trayek','all')) {
+            $sql = "SELECT * FROM surat_jalan_trayek  where nomor != '0' ";
+            $data = DB::select($sql);
+        }else{
+            $cabang = auth::user()->kode_cabang;
+            $data = DB::table('surat_jalan_trayek')
+                      ->where('kode_cabang',$cabang)
+                      ->get();
+        }
+
+        $data = collect($data);
+
+        // return $data;
+        return Datatables::of($data)
+                        ->addColumn('aksi', function ($data) {
+                            $a = '';
+                            $b = '';
+                            $c = '';
+
+                            if(Auth::user()->punyaAkses('Surat Jalan By Trayek','ubah')){
+                                $a = '<a href="'.url('sales/surat_jalan_trayek_form/edit/'.$data->nomor).'" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>';
+                            }
+
+                            if(Auth::user()->punyaAkses('Surat Jalan By Trayek','print')){
+                                $b = '<a href="'.url('sales/surat_jalan_trayek_form/nota/'.$data->nomor).'" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>';
+                            }
+
+
+                            if(Auth::user()->punyaAkses('Surat Jalan By Trayek','hapus')){
+                                $c = '<a href="'.url('sales/surat_jalan_trayek_form/hapus_data') .'" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>';
+                            }
+
+                            return '<div class="btn-group">'.$a . $b .$c.'</div>' ;
+                                   
+                        })
+                        ->addColumn('cabang', function ($data) {
+                          $kota = DB::table('cabang')
+                                    ->get();
+                          for ($i=0; $i < count($kota); $i++) { 
+                            if ($data->kode_cabang == $kota[$i]->kode) {
+                                return $kota[$i]->nama;
+                            }
+                          }
+                        })
+                        ->addIndexColumn()
+                        ->make(true);
+    }
     public function ganti_nota(request $req)
     {
         $bulan = Carbon::parse($req->tanggal)->format('m');
@@ -52,6 +111,8 @@ class surat_jalan_trayek_Controller extends Controller
         $nota = 'SJT' . $req->cabang . $bulan . $tahun . $index;
         return response()->json(['nota'=>$nota]);
     }
+
+
     public function save_data (Request $request) {
         // dd($request->all());
         return DB::transaction(function() use ($request){
@@ -82,6 +143,9 @@ class surat_jalan_trayek_Controller extends Controller
                 $save = DB::table('surat_jalan_trayek')
                           ->insert($data);
             }else{
+                $id_kendaraan = DB::table('kendaraan')
+                                  ->where('nopol',strtoupper($request->ed_nopol))
+                                  ->first();
                 $data = array(
                     'nomor' => strtoupper($request->ed_nomor),
                     'tanggal' => strtoupper($request->tanggal),
@@ -89,7 +153,7 @@ class surat_jalan_trayek_Controller extends Controller
                     'keterangan' => strtoupper($request->ed_keterangan),
                     'kode_cabang' => strtoupper($request->ed_cabang),
                     'kode_rute' => strtoupper($request->ed_kode_rute),
-                    'id_kendaraan' => strtoupper($request->cb_nopol),
+                    'id_kendaraan' => $id_kendaraan->id,
                     'nopol' => strtoupper($request->ed_nopol),
                     'sopir' => strtoupper($request->ed_sopir),
                     'update_by' => Auth::user()->m_name,
@@ -106,50 +170,33 @@ class surat_jalan_trayek_Controller extends Controller
                         ->where('nomor',$request->array_check[$i])
                         ->first();
 
+                $update = DB::table('delivery_order')
+                        ->where('nomor',$request->array_check[$i])
+                        ->update([
+                            'no_surat_jalan_trayek'=> strtoupper($request->ed_nomor),
+                        ]);
+
                 $data = array(
                     'nomor_surat_jalan_trayek' => $request->ed_nomor,
                     'nomor_do' => strtoupper($request->array_check[$i]),
                 );
+
                 $simpan = DB::table('surat_jalan_trayek_d')->insert($data);
             }
             return response()->json(['status'=>1]);
         });
     }
-
-    public function save_data_detail (Request $request) {
-        $simpan='';
-        $nomor = strtoupper($request->nomor);
-        $hitung = count($request->nomor_do);
-        for ($i=0; $i < $hitung; $i++) {
-            $data = array(
-                'nomor_surat_jalan_trayek' => $nomor,
-                'nomor_do' => strtoupper($request->nomor_do[$i]),
-            );
-            $simpan = DB::table('surat_jalan_trayek_d')->insert($data);
-            //DB::table('surat_jalan_trayek_d')->insert($data);
-        } 
-        $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM surat_jalan_trayek_d WHERE nomor_surat_jalan_trayek='$nomor' "))->first();
-        $result['error']='';
-        $result['result']=1;
-        $result['jml_detail']=$jml_detail->jumlah;
-        echo json_encode($result);
-    }
-
     public function hapus_data_detail (Request $request) {
-        $hapus='';
-        $id=$request->id;
-        $hapus = DB::table('surat_jalan_trayek_d')->where('id' ,'=', $id)->delete();
-        $nomor = strtoupper($request->nomor);
-        $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM surat_jalan_trayek_d WHERE nomor_surat_jalan_trayek='$nomor' "))->first();
-        if($hapus == TRUE){
-            $result['error']='';
-            $result['result']=1;
-            $result['jml_detail']=$jml_detail->jumlah;
-        }else{
-            $result['error']=$hapus;
-            $result['result']=0;
-        }
-        echo json_encode($result);
+        $update = DB::table('delivery_order')
+                    ->where('nomor',$request->id)
+                    ->update([
+                        'no_surat_jalan_trayek'=> null,
+                    ]);
+        $delete = DB::table('surat_jalan_trayek_d')
+                    ->where('nomor_do',$request->id)
+                    ->delete();
+
+        return response()->json(['status'=>1]);
     }
 
     public function index(){
@@ -174,7 +221,21 @@ class surat_jalan_trayek_Controller extends Controller
         return view('sales.surat_jalan_trayek.form',compact('kota','data','cabang','jml_detail','rute','kendaraan' ));
     }
 
-    
+    public function edit($nomor)
+    {
+        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+        $rute = DB::select(" SELECT kode,nama FROM rute ORDER BY nama ASC ");
+        $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
+        if ($nomor != null) {
+            $data = DB::table('surat_jalan_trayek')->where('nomor', $nomor)->first();
+            $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM surat_jalan_trayek_d WHERE nomor_surat_jalan_trayek ='$nomor' "))->first();
+        }else{
+            $data = null;
+            $jml_detail = 0;
+        }
+        return view('sales.surat_jalan_trayek.edit',compact('kota','data','cabang','jml_detail','rute','kendaraan'));
+    }
     
     public function tampil_do(Request $request){
         $tgl = explode('-',$request->range_date);
@@ -189,6 +250,7 @@ class surat_jalan_trayek_Controller extends Controller
                   ->where('kode_cabang',$request->cabang)
                   ->where('tanggal','>=',$start)
                   ->where('tanggal','<=',$end)
+                  ->where('no_surat_jalan_trayek','=',null)
                   ->take(1000)
                   ->get();
         for ($i=0; $i < count($data); $i++) { 

@@ -297,28 +297,23 @@
 	<div class="wrapper">
 		<div class="position-fixed">
 			<table class="inlineTable">
-				<td>
-					<img class="img" width="200" height="100" src="/jpm/perwita/img/logo_jpm.png">
-				</td>
+		      <td><img class="img" width="160" height="100" src="{{ asset('perwita/storage/app/upload/images.jpg') }}"></td>
 			</table>
 			<table class="inlineTable sizeheader" style="margin-bottom: 10px;">
 				<tr>
-					<th class="bold sizebig">PT. JAWA PRATAMA MANDIRI</th>
+					<th class="bold sizebig">{{perusahaan()->mp_nama}}</th>
 				</tr>
 				<tr>
 					<td>&nbsp;</td>
 				</tr>
 				<tr>
-					<td>Gedung Graha Pena</td>
+					<td>{{perusahaan()->mp_alamat}}</td>
 				</tr>
 				<tr>
-					<td>Jl. A Yani 88 Surabaya</td>
+					<td>Telp.{{perusahaan()->mp_tlp}}</td>
 				</tr>
 				<tr>
-					<td>Telp.(031) 8986777, 89868888</td>
-				</tr>
-				<tr>
-					<td>Fax. (031) 89839999</td>
+					<td>Email.: ekspedisi@jawapos.co.id</td>
 				</tr>
 			</table>
 			<table class="inlineTable sizeheader pull-right">
@@ -346,7 +341,7 @@
 				</tr>
 				@endforeach
 			</table>
-			<table class="inlineTable" style="margin-left: 50%;margin-top: -10%;">
+			<table class="inlineTable" style="margin-left: 40%;margin-top: -10%;">
 				<tr>
 					<td class="suratjalansize textcenter">SURAT JALAN</td>
 				</tr>
@@ -440,3 +435,6 @@
 </body>
 
 </html>
+<script type="text/javascript">
+  window.print();
+</script>
