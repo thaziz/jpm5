@@ -425,6 +425,9 @@ class form_tanda_terima_penjualan_controller extends Controller
                             }
                           }
                         })
+                        ->addColumn('tanggal_buat', function ($data) {
+                          return carbon::parse($data->created_at)->format('Y-m-d');
+                        })
                         ->addColumn('tagihan', function ($data) {
                           return number_format($data->ft_total,2,',','.'  ); 
                         })
