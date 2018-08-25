@@ -136,7 +136,7 @@ class analisa_piutang_Controller extends Controller
                 }
             }
             if ($invoice[$i]->i_jatuh_tempo_tt != null) {
-                $tanggal_jatuh_tempo = strtotime($req->max) - strtotime($invoice_temp[$i]->i_jatuh_tempo_tt);
+                $tanggal_jatuh_tempo = strtotime($req->max) - strtotime($invoice[$i]->i_jatuh_tempo_tt);
                 $tanggal_jatuh_tempo = $tanggal_jatuh_tempo/86400;
                 array_push($umur,$tanggal_jatuh_tempo);
                 if ($tanggal_jatuh_tempo < 0) {
@@ -213,7 +213,7 @@ class analisa_piutang_Controller extends Controller
                     array_push($invoice_360,$invoice[$i]->i_sisa_akhir);
                 }
             }elseif ($invoice[$i]->i_jatuh_tempo_tt == null){
-                $tanggal_jatuh_tempo = strtotime($req->max) - strtotime($invoice_temp[$i]->i_jatuh_tempo);
+                $tanggal_jatuh_tempo = strtotime($req->max) - strtotime($invoice[$i]->i_jatuh_tempo);
                 $tanggal_jatuh_tempo = $tanggal_jatuh_tempo/86400;
                 array_push($umur,$tanggal_jatuh_tempo);
                 if ($tanggal_jatuh_tempo < 0) {

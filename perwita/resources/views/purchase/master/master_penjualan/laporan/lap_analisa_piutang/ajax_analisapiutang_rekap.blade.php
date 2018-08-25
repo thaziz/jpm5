@@ -3,6 +3,7 @@
      <tr>
         <th align="center"> Invoice</th>
         <th align="center"> Customer</th>
+        <th align="center"> Tanggal</th>
         <th align="center"> Jatuh Tempo</th>
         <th align="center"> Saldo Awal</th>
         <th align="center"> Terbayar</th>
@@ -24,6 +25,7 @@
       <tr>
         <td>{{ $data->i_nomor }}</td>
         <td>{{ $data->i_kode_customer }}</td>
+        <td>{{ $data->i_tanggal }}</td>
         @if ($data->i_jatuh_tempo_tt != null)
           <td>{{ $data->i_jatuh_tempo_tt }}</td>
         @else
