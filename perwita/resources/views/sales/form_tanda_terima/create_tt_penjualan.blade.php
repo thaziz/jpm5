@@ -102,9 +102,19 @@
                           </select>
                         </td>
                         @endif
-                        <td width="150">Tanggal</td>
+                        <td width="150">Tanggal Terima</td>
                         <td width="300">
                           <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Tanggal</td>
+                        <td colspan="2">
+                          <input type="text" me="" value="{{ carbon\carbon::now()->format('d/m/Y') }}" readonly="" class="form-control">
+                        </td>
+                        <td>Jatuh Tempo</td>
+                        <td >
+                          <input type="text" name="jatuh_tempo" value="" readonly="" class="jatuh_tempo form-control">
                         </td>
                       </tr>
                       <tr>
@@ -146,13 +156,8 @@
                         </td>
                       </tr>
                       <tr>
-                        <td>Lain-lain</td>
-                        <td colspan="2"><input type="text" class="lain form-control" name="lain"></td>
-                      
-                        <td>Jatuh Tempo</td>
-                        <td>
-                          <input type="text" name="jatuh_tempo" value="" readonly="" class="jatuh_tempo form-control">
-                        </td>
+                        <td>Lain - Lain</td>
+                        <td colspan="4"><input type="text" class="lain form-control" name="lain"></td>
                       </tr>
                       <tr>
                         <td colspan="2">

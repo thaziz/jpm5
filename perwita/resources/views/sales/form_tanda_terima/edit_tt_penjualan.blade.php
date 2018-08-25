@@ -94,6 +94,16 @@
                         </td>
                       </tr>
                       <tr>
+                        <td>Tanggal</td>
+                        <td  colspan="2">
+                          <input type="text" me="" value="{{ carbon\carbon::parse($data->created_at)->format('d/m/Y') }}" readonly="" class="form-control">
+                        </td>
+                        <td>Jatuh Tempo</td>
+                        <td>
+                          <input type="text" name="jatuh_tempo" value="{{ Carbon\carbon::parse($data->ft_jatuh_tempo)->format('d/m/Y') }}" readonly="" class="jatuh_tempo form-control">
+                        </td>
+                      </tr>
+                      <tr>
                         <td colspan="5">
                           <div class="row">
                             <div class="col-sm-3"> 
@@ -132,13 +142,8 @@
                         </td>
                       </tr>
                       <tr>
-                        <td>Lain-lain</td>
-                        <td colspan="2"><input type="text" class="lain form-control" name="lain" value="{{ $data->ft_lainlain }}"></td>
-                      
-                        <td>Jatuh Tempo</td>
-                        <td>
-                          <input type="text" name="jatuh_tempo" readonly="" class="jatuh_tempo form-control" value="{{ Carbon\carbon::parse($data->ft_jatuh_tempo)->format('d/m/Y') }}">
-                        </td>
+                        <td>Lain - Lain</td>
+                        <td colspan="4"><input type="text" class="lain form-control" name="lain"></td>
                       </tr>
                       <tr>
                         <td colspan="2">
