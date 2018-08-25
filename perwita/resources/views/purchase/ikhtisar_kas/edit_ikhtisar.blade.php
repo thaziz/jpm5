@@ -177,7 +177,6 @@
                 </td>
                 <td><?php echo date('d/m/Y',strtotime($val->tanggal));?></td>
                 <td>{{$val->nota}}</td>
-                @if ($data->ik_jenis != 'BONSEM')
                   <td>
                     <ul>
                       @foreach($detail[$i] as $a=>$val2)
@@ -185,9 +184,6 @@
                       @endforeach
                     </ul>
                   </td>
-                @else
-                <td>{{$val->akun_kas}}</td>
-                @endif
                 <td align="right">{{'' . number_format(round($val->nominal),2,',','.')}}
                   <input type="hidden" name="nominal[]" class="nominal" value="{{round($val->nominal)}}">
                 </td>

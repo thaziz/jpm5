@@ -929,7 +929,10 @@ class selaras_jurnal  extends Controller
                       try{
                         $dd = $cari_akun->id_akun;
                       }catch(Exception $re){
-                        dd('detail yg akunnya gak ada '.$detail[$b]->bkkd_akun.' nota '.$bkk[$i]->bkk_nota);
+                        $delete = DB::table("bukti_kas_keluar")
+                                    ->where('bkk_id',$bkk[$i]->bkk_id)
+                                    ->delete();
+                        return 'Selaras Gagal Silahkan Coba Lagi '.$bkk[$i]->bkk_id.' '.$detail[$b]->bkkd_akun;
                       }
 	                    $save_patty = DB::table('patty_cash')
 	                           ->insert([
