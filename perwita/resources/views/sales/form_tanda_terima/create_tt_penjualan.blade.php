@@ -34,13 +34,13 @@
               <a>Home</a>
           </li>
           <li>
-              <a>Purchase</a>
+              <a>Penjualan</a>
           </li>
           <li>
-            <a>Transaksi Hutang</a>
+            <a>Transaksi Penjualan</a>
           </li>
           <li class="active">
-              <strong>Form Tanda Terima Pembelian</strong>
+              <strong>Form Tanda Terima Penjualan</strong>
           </li>
 
       </ol>

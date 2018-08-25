@@ -26,20 +26,20 @@
   }*/
 </style>
 <div class="row wrapper border-bottom white-bg page-heading">
-  <div class="col-lg-10">
+    <div class="col-lg-10">
       <h2> Form Tanda Terima </h2>
       <ol class="breadcrumb">
           <li>
               <a>Home</a>
           </li>
           <li>
-              <a>Purchase</a>
+              <a>Penjualan</a>
           </li>
           <li>
-            <a>Transaksi Hutang</a>
+            <a>Transaksi Penjualan</a>
           </li>
           <li class="active">
-              <strong>Form Tanda Terima Pembelian</strong>
+              <strong>Form Tanda Terima Penjualan</strong>
           </li>
 
       </ol>
@@ -89,8 +89,8 @@
                           </select>
                         </td>
                         <td width="150">Tanggal Diterima</td>
-                        <td width="300" class="disabled">
-                          <input type="text" readonly="" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::parse($data->ft_tanggal)->format('d/m/Y') }}">
+                        <td width="300" class="">
+                          <input type="text"  class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::parse($data->ft_tanggal)->format('d/m/Y') }}">
                         </td>
                       </tr>
                       <tr>
@@ -242,12 +242,12 @@ var array_simpan = [0];
   });
 
   $('.tanggal').change(function () {
-      nota();
+      // nota();
       custo();
   });
 
   $('.cabang').change(function(){
-      nota();
+      // nota();
   });
   $('.tanggal_kembali').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
       $('.tanggal_kembali').change();

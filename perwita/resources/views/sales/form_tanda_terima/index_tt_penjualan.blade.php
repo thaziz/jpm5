@@ -70,6 +70,7 @@
                         <tr>
                           <th>No</th>
                           <th>Nomor</th>
+                          <th>Cabang</th>
                           <th>Tanggal</th>
                           <th>Tanggal Terima</th>
                           <th>Jatuh Tempo</th>
@@ -140,6 +141,7 @@
             "columns": [
             { "data": "DT_Row_Index",},
             { "data": "ft_nota" },
+            { "data": "cabang" },
             { "data": "tanggal_buat"},
             { "data": "ft_tanggal"},
             { "data": "ft_jatuh_tempo"},
