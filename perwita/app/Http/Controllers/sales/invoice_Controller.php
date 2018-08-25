@@ -233,9 +233,9 @@ class invoice_Controller extends Controller
         // return $push;
         $terbilang = $this->penyebut($head->i_total_tagihan);
         if ($head->i_pendapatan == 'PAKET' or $head->i_pendapatan == 'KARGO') {
-          return view('sales.invoice.print',compact('head','detail','terbilang','push','master_bank '));
+          return view('sales.invoice.print',compact('head','detail','terbilang','push','master_bank'));
         }else{
-          return view('sales.invoice.print_1',compact('head','detail','terbilang','push','master_bank '));
+          return view('sales.invoice.print_1',compact('head','detail','terbilang','push','master_bank'));
         }
     }
 
