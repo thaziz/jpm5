@@ -463,7 +463,7 @@ class MasterPurchaseController extends Controller
 	   $data->unit2 = $request->unit2;
     	
         $data->unit3 = $request->unit3;
-        $data->unitstock = $request->unit3;
+        $data->unitstock = $request->unitstock;
        	if($request->konversi2 == '') {
 
 		}else{
