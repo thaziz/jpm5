@@ -380,10 +380,7 @@ class MasterPurchaseController extends Controller
 			$masteritem->posisikolom = strtoupper(request()->posisikolom);
 		}
 		
-			
 
-
-        	$masteritem->foto = $imgPath; */
        		$masteritem->save();
        	//	$file->move($path, $name);
        			
