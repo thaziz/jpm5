@@ -449,7 +449,7 @@
 				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_pajak_lain, 2, ",", ".") }}</td>
 			</tr>
 			<tr>
-				<td class="borderrighttabel akirkanan textleft" width="26%">A/C : 61-.089797.9</td>
+				<td class="borderrighttabel akirkanan textleft" width="26%">A/C : {{ $master_bank->mb_accno }}</td>
 				<td class="borderrighttabel textcenter" width="26%">(Finance Manager)</td>
 				<td class="borderrighttabel textcenter" width="26.2%" style="margin-bottom: 10px;">(Account Dept)</td>
 				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">Jumlah</td>
