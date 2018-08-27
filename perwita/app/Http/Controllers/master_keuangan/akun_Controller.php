@@ -238,7 +238,7 @@ class akun_Controller extends Controller
     }
 
     public function update_data(Request $request){
-        // return json_encode($request->all());
+        return json_encode($request->all());
         $response = [
             'status'    => 'sukses',
             'content'   => $request->all()
