@@ -84,8 +84,9 @@
                       @else
                       <td align="center"> 
                           <a class="btn btn-success btn-sm" onclick="printing(this)" )}}/{{$val->pb_id}}><i class="fa fa-print" aria-hidden="true"></i> </a>
+                            @if($val->pb_status == 'PEMAKAIAN REGULER')
                             <a onclick="lihatjurnal('{{$val->pb_nota}}','PENGELUARAN BARANG GUDANG')" class="btn-xs btn-primary" aria-hidden="true"> lihat jurnal </a>
-
+                            @endif
                       </td>
                       @endif
 
