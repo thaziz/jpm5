@@ -159,7 +159,7 @@ class MasterPurchaseController extends Controller
 						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5311%' and kode_cabang = '$cabang'");
 					}
 					else if($idgrupitem == 'S'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '$cabang' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' and id_akun LIKE '6113%' and kode_cabang = '$cabang'");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '$cabang' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' or id_akun LIKE '6113%' and kode_cabang = '$cabang'");
 					}
 					else if($idgrupitem == 'A'){
 						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
@@ -239,7 +239,7 @@ class MasterPurchaseController extends Controller
 						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5311%' and kode_cabang = '$cabang'");
 					}
 					else if($idgrupitem == 'S'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '$cabang' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' and id_akun LIKE '6113%' and kode_cabang = '$cabang'");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '$cabang' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' or id_akun LIKE '6113%' and kode_cabang = '$cabang'");
 					}
 					else if($idgrupitem == 'A'){
 						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
