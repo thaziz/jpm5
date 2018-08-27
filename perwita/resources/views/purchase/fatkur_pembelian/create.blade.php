@@ -161,14 +161,14 @@
                             <li  id="tmbhdatapo" data-val='PO'> <button class="btn btn-default tmbhdatapo" data-toggle="tab" href="#tab-2" >Data PO </button>
                             </li>
                             <!-- TAB BIAYA PENERUS -->
-                            <li  id="tmbhdatapenerus" data-val='P'><button class="btn btn-default tmbhdatapenerus" data-toggle="tab" href="#tab-3">Biaya Penerus Hutang</button>
+                            <li  id="tmbhdatapenerus" data-val='P'><button class="btn btn-default tmbhdatapenerus" data-toggle="tab" href="#tab-3">Biaya Penerus Dan Vendor Hutang</button>
                             </li>
                             <li  id="tmbhdataoutlet" data-val='O'><button class="btn btn-default tmbhdataoutlet" data-toggle="tab" href="#tab-4">Pembayaran Outlet</button>
                             </li>
                             <li  id="tmbhdatasubcon" data-val='SC'><button class="btn btn-default tmbhdatasubcon" data-toggle="tab" href="#tab-5">Pembayaran Subcon</button>
                             </li>
-                            <li  id="tmbhdatavendor" data-val='V'><button class="btn btn-default tmbhdatavendor" data-toggle="tab" href="#tab-6">Pembayaran Vendor</button>
-                            </li>
+                      {{--       <li  id="tmbhdatavendor" data-val='V'><button class="btn btn-default tmbhdatavendor" data-toggle="tab" href="#tab-6">Pembayaran Vendor</button>
+                            </li> --}}
                         </ul>
                         
                         <!-- KONTEN TANPA PO -->
