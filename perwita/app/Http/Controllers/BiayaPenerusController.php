@@ -227,6 +227,7 @@ class BiayaPenerusController extends Controller
 					  ->where('tt_supplier',$req->agen_vendor)
 					  ->where('tt_idcabang',$req->cabang)
 					  ->where('ttd_faktur',null)
+					  ->orWhere('ttd_faktur',$req->nofaktur)
 					  ->get();
 
 		    return view('purchase.pembayaran_vendor.table_tt',compact('data'));
@@ -2306,7 +2307,15 @@ class BiayaPenerusController extends Controller
 					 ->where('ksd_id',$request->id)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
-
+		$jenis_tarif = DB::table('jenis_tarif')
+						 ->get();
+		for ($i=0; $i < count($jenis_tarif); $i++) { 
+			for ($a=0; $a < count($kontrak); $a++) { 
+				if ($jenis_tarif[$i]->jt_id == $kontrak[$a]->ksd_jenis_tarif) {
+					$kontrak[$a]->jenis_tarif = $jenis_tarif[$i]->jt_nama_tarif;
+				}
+			}
+		}
 		$asal = DB::table('kontrak_subcon_dt')
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('kota','id','=','ksd_asal')
@@ -2333,6 +2342,7 @@ class BiayaPenerusController extends Controller
 			$fix[$i]['ksd_harga'] = number_format($kontrak[$i]->ksd_harga,2,',','.'	); 
 			$fix[$i]['ksd_harga2'] = $kontrak[$i]->ksd_harga; 
 			$fix[$i]['ksd_jenis_tarif'] = $kontrak[$i]->ksd_jenis_tarif;
+			$fix[$i]['jenis_tarif'] = $kontrak[$i]->jenis_tarif;
 			$fix[$i]['ksd_asal'] = $asal[$i]->asal;
 			$fix[$i]['ksd_tujuan'] = $tujuan[$i]->tujuan;
 			$fix[$i]['no_asal'] = $asal[$i]->ksd_asal;
@@ -2354,6 +2364,16 @@ class BiayaPenerusController extends Controller
 				 ->where('ksd_id',$request->d_ksd_id)
 				 ->orderBy('ksd_ks_dt','ASC')
 				 ->get();
+
+		$jenis_tarif = DB::table('jenis_tarif')
+						 ->get();
+		for ($i=0; $i < count($jenis_tarif); $i++) { 
+			for ($a=0; $a < count($kontrak); $a++) { 
+				if ($jenis_tarif[$i]->jt_id == $kontrak[$a]->ksd_jenis_tarif) {
+					$kontrak[$a]->jenis_tarif = $jenis_tarif[$i]->jt_nama_tarif;
+				}
+			}
+		}
 
 		$asal = DB::table('kontrak_subcon_dt')
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
@@ -2425,6 +2445,7 @@ class BiayaPenerusController extends Controller
 			$fix[$i]['ksd_harga2'] = $kontrak[$i]->ksd_harga; 
 			$fix[$i]['ksd_jenis_tarif'] = $kontrak[$i]->ksd_jenis_tarif;
 			$fix[$i]['ksd_asal'] = $asal[$i]->asal;
+			$fix[$i]['jenis_tarif'] = $kontrak[$i]->jenis_tarif;
 			$fix[$i]['ksd_tujuan'] = $tujuan[$i]->tujuan;
 			$fix[$i]['no_asal'] = $asal[$i]->ksd_asal;
 			$fix[$i]['no_tujuan'] = $tujuan[$i]->ksd_tujuan;

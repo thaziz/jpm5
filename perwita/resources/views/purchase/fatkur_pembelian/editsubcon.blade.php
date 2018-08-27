@@ -277,7 +277,7 @@ No Faktur
       <td width="10">:</td>
       <td width="200">
         <div class="input-group" style="width: 100%">
-                  <input onkeyup="hitung_jumlah()" style="width: 100%" class="form-control sc_jumlah" type="text" value="" >
+                  <input readonly="" style="width: 100%" class="form-control sc_jumlah" type="text" value="" >
               </div>
       </td>
      </tr>
@@ -296,7 +296,7 @@ No Faktur
       <td width="10">:</td>
       <td width="200">
 
-        <input type="text" name="tarif_subcon" class="form-control sc_tarif_subcon" readonly=""  >
+        <input type="text" name="tarif_subcon" class="form-control sc_tarif_subcon_name" readonly=""  >
         <input type="hidden" name="kode_tarif_subcon" class="form-control sc_tarif_subcon" style="width: 250px;">
       </td>
       </tr>
@@ -702,6 +702,8 @@ function hitung_jumlah() {
 }
 function pilih_kontrak(asd){
   var id = $(asd).find('.id_kontrak').val();
+  var jumlah = $('.sc_jumlah').val();
+  
 
   $.ajax({
     url : baseUrl +'/fakturpembelian/pilih_kontrak',
@@ -714,14 +716,14 @@ function pilih_kontrak(asd){
         $('.sc_biaya_subcon').val(response.subcon_dt[0].ksd_harga);
         $('.sc_biaya_subcon_dt').val(response.subcon_dt[0].ksd_harga2);
         $('.id_subcon').val(response.subcon_dt[0].ksd_id);
-        $('.sc_jumlah').val('1');
+        $('.sc_jumlah').val(jumlah);
         $('.dt_subcon').val(response.subcon_dt[0].ksd_dt);
         $('.sc_tarif_subcon').val(response.subcon_dt[0].ksd_jenis_tarif);
+        $('.sc_tarif_subcon_name').val(response.subcon_dt[0].jenis_tarif)
         $('.sc_asal_subcon').val(response.subcon_dt[0].ksd_asal);
         $('.sc_tujuan_subcon').val(response.subcon_dt[0].ksd_tujuan);
         $('.sc_kendaraan_subcon').val(response.subcon_dt[0].ksd_angkutan);
         $('.table_filter_subcon').removeClass('disabled');
-
         $('.sc_no_asal_subcon').val(response.subcon_dt[0].no_asal);
         $('.sc_no_tujuan_subcon').val(response.subcon_dt[0].no_tujuan);
         $('.sc_no_kendaraan_subcon').val(response.subcon_dt[0].ksd_id_angkutan);
@@ -803,6 +805,7 @@ function cariSUB(){
   var sc_asal_subcon = $('.sc_asal_subcon').val();
   var sc_tujuan_subcon = $('.sc_tujuan_subcon').val();
   var sc_tarif_subcon = $('.sc_tarif_subcon').val();
+  var sc_tarif_subcon_name = $('.sc_tarif_subcon_name').val();
   var sc__do_memo = $('.sc__do_memo').val();
   var m_seq = $('.m_seq').val();
   var sc_akun = $('.sc_akun').val();
@@ -831,7 +834,7 @@ function cariSUB(){
 
                   '<p class="d_tujuan_subcon_text">'+sc_tujuan_subcon+'</p>'+'<input type="hidden" name="d_tujuan_subcon[]" class="d_tujuan_subcon" value="'+sc_tujuan_subcon+'" >',
 
-                  '<p class="d_jenis_tarif_subcon_text">'+sc_tarif_subcon+'</p>'+'<input type="hidden" name="d_jenis_tarif_subcon[]" class="d_jenis_tarif_subcon" value="'+sc_tarif_subcon+'" >',
+                  '<p class="d_jenis_tarif_subcon_text">'+sc_tarif_subcon_name+'</p>'+'<input type="hidden" name="d_jenis_tarif_subcon[]" class="d_jenis_tarif_subcon" value="'+sc_tarif_subcon+'" >',
 
                   '<p class="d_akun_text">'+sc_akun+'</p>'+'<input type="hidden" class="d_akun" name=d_akun[]" value="'+sc_akun+'">',
 
@@ -884,7 +887,7 @@ function cariSUB(){
     $(par).find('.d_harga_subcon_text').text(sc_total);
     $(par).find('.d_asal_subcon_text').text(sc_asal_subcon);
     $(par).find('.d_tujuan_subcon_text').text(sc_tujuan_subcon);
-    $(par).find('.d_jenis_tarif_subcon_text').text(sc_tarif_subcon);
+    $(par).find('.d_jenis_tarif_subcon_text').text(sc_tarif_subcon_name);
     $(par).find('.d_memo_subcon_text').text(sc__do_memo);
       toastr.success('Update Berhasil, Silahkan Membuat Form Tanda Terima.');
       $('.table_resi input').val('');
@@ -1018,6 +1021,7 @@ function edit_subcon(a) {
         $('.id_subcon').val(response.kontrak[0].ksd_id);
         $('.dt_subcon').val(response.kontrak[0].ksd_dt);
         $('.sc_tarif_subcon').val(response.kontrak[0].ksd_jenis_tarif);
+        $('.sc_tarif_subcon_name').val(response.kontrak[0].jenis_tarif);
         $('.sc_asal_subcon').val(response.kontrak[0].ksd_asal);
         $('.sc_tujuan_subcon').val(response.kontrak[0].ksd_tujuan);
         $('.sc_kendaraan_subcon').val(response.kontrak[0].ksd_angkutan);
@@ -1047,14 +1051,15 @@ function edit_subcon(a) {
 }
 
 $('.modal_tt_subcon').click(function(){
-  var cabang = $('.cabang').val();
+    var cabang      = $('.cabang').val();
     var agen_vendor = $('.nama_sc').val();
+    var nofaktur    = $('.nofaktur').val();
     $.ajax({
       url:baseUrl +'/fakturpembelian/nota_tt',
-      data: {cabang,agen_vendor},
+      data: {cabang,agen_vendor,nofaktur},
       success:function(data){
         $('.div_tt').html(data);
-    $('#modal_tt_subcon').modal('show');
+    $('#modal_tt_penerus').modal('show');
       },error:function(){
         toastr.warning('Terjadi Kesalahan');
       }
@@ -1072,7 +1077,8 @@ function select_tt(a) {
     $('.invoice_subcon').val(tt_invoice);
     $('.id_tt').val(tt_id);
     $('.dt_tt').val(tt_dt);
-  $('#modal_tt_subcon').modal('show');
+    $('.save').removeClass('disabled');
+    $('#modal_tt_penerus').modal('hide');
 }
 
 
