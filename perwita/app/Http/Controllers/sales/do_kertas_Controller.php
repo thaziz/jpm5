@@ -64,7 +64,7 @@ class do_kertas_Controller extends Controller
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
         $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
         $angkutan = DB::select(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC ");
-        $customer = DB::select(" SELECT kode,nama,alamat,telpon FROM customer ORDER BY nama ASC ");
+        $customer = DB::select(" SELECT kode,nama,alamat,telpon FROM customer where pic_status = 'AKTIF' ORDER BY nama ASC ");
         $item = DB::select(" SELECT kode,nama,harga,kode_satuan,acc_penjualan FROM item ORDER BY nama ASC ");
         if ($nomor != null) {
             $data = DB::table('delivery_order')->where('nomor', $nomor)->first();
@@ -371,7 +371,7 @@ class do_kertas_Controller extends Controller
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
         $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
         $angkutan = DB::select(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC ");
-        $customer = DB::select(" SELECT kode,nama,alamat,telpon FROM customer ORDER BY nama ASC ");
+        $customer = DB::select(" SELECT kode,nama,alamat,telpon FROM customer where pic_status = 'AKTIF' ORDER BY nama ASC ");
         $item = DB::select(" SELECT kode,nama,harga,kode_satuan,acc_penjualan FROM item ORDER BY nama ASC ");
  
 

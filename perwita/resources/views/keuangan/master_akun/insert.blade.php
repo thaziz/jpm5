@@ -83,7 +83,7 @@
           <select name="status_aktif" class="select_validate form-control" id="status_aktif">
             <option value="---"> -- Pilih Status Aktif</option>
             <option value="1"> Aktif</option>
-            <option value="2"> Tidak</option>
+            <option value="0"> Tidak</option>
           </select>
         </td>
 
