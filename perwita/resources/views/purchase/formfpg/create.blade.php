@@ -1092,8 +1092,13 @@
                         jumlahtf = parseFloat(parseFloat(jumlahtf) + parseFloat(nominaltf2)).toFixed(2);
                       })
 
-                      $('.totbayar').val(addCommas(jumlahtf));
-                      $('.ChequeBg').val(addCommas(jumlahtf));
+                      if(jenisbayar == 12){
+                        $('.totbayar').val(addCommas(jumlahtf));
+                        $('.ChequeBg').val(addCommas(jumlahtf));  
+                      }
+                      else if(jenisbayar == 11) {
+                        $('.ChequeBg').val(addCommas(jumlahtf));  
+                      }
                   })
 
                  $('.remove-tfbtn').click(function(){
