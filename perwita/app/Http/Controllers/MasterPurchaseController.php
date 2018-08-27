@@ -288,14 +288,103 @@ class MasterPurchaseController extends Controller
 			
 		}
 		
-				$data['akunmaster'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
+		$data['akunmaster'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
 
 		
 		return json_encode($data);
 	}
 
 	public function saveitem(Request $request) {
+		//dd($request);
+		$variable = explode(",", $request->jenis_item);
+		$jenisitem = $variable[0];
+
+		$id=masterItemPurchase::where('jenisitem' , $jenisitem)->max('kode_item'); 
+	//	dd($jenisitem);
+
+
+		$lastiditem = masterItemPurchase::max('iditem'); 				
+		if(isset($lastiditem)) {
 		
+				$iditem = $lastiditem;
+				$iditem = (int)$lastiditem + 1;
+		}
+		else {
+			$iditem = 1;	
+		}
+		
+		if($id) {
+			$string = explode("-",$id);
+			$jumlah = $string[1] + 1;
+		//	$iditem = $string[0] . '-' . $jumlah;
+
+		
+			$invID = str_pad($jumlah, 6, '0', STR_PAD_LEFT);
+
+			$data['id'] = $jenisitem . "-" . $invID;
+		}
+		else {
+			$data['id'] = $jenisitem . "-" .  '000001';
+		}
+
+		//dd($data['id']);
+		$comp_id = "C001";
+
+		$masteritem = new masterItemPurchase();
+		$masteritem->kode_item = $data['id'];
+		$masteritem->nama_masteritem = strtoupper(request()->nama_item);
+		$masteritem->iditem = $iditem;
+		$masteritem->comp_id = $request->cabang;
+		$masteritem->kode_akun = $request->akun;
+		$masteritem->minstock = strtoupper(request()->minimum_stock);
+		 $masteritem->acc_persediaan = $request->acc_persediaan;
+        $masteritem->acc_hpp = $request->acc_hpp;
+		
+
+		$masteritem->jenisitem = $jenisitem ;
+
+		$masteritem->updatestock = strtoupper(request()->update_stock);
+
+
+		$replacehrg = str_replace(',', '', $request->harga);
+		$masteritem->harga = $replacehrg;
+		$masteritem->unit1 = strtoupper(request()->unit1);
+		$masteritem->unit2 = strtoupper(request()->unit2);
+		$masteritem->unit3 = strtoupper(request()->unit3);
+	
+		$masteritem->unitstock = strtoupper(request()->unitstock);
+
+		if($request->konversi2 == '') {
+
+		}else{
+			$masteritem->konversi2 = strtoupper(request()->konversi2);
+
+		}
+		if($request->konversi3 == ''){
+
+		}
+		else {
+			$masteritem->konversi3 = strtoupper(request()->konversi3);
+		}
+
+		if($request->posisilantai != ''){
+			$masteritem->posisilantai = strtoupper(request()->posisilantai);
+		}
+		if($request->posisiruang != ''){
+			$masteritem->posisiruang = strtoupper(request()->posisiruang);
+		}
+		if($request->posisirak != ''){
+			$masteritem->posisirak = strtoupper(request()->posisirak);
+		}
+		if($request->posisikolom != ''){
+			$masteritem->posisikolom = strtoupper(request()->posisikolom);
+		}
+		
+
+       		$masteritem->save();
+       	//	$file->move($path, $name);
+       			
+       		 return redirect('masteritem/masteritem');
 	} 
 
 
@@ -353,36 +442,9 @@ class MasterPurchaseController extends Controller
 
 
 
-      /*  if($file != ""){
+     
 
-            $childPath = 'img/item/'.$id;
-            $path = $childPath;
-            $name = 'item-'.$id.'.'.$file->getClientOriginalExtension();
-            
-        
-            if($data->foto != ""){     
-               
-               // if(File::delete(public_path().'/'.$pathPic)){
-                    $file->move($path, $name);
-                    $imgPath = $childPath.'/'.$name;
-                    //return "okee1";
-              //  }
-
-            }
-            else{
-                $file->move($path, $name);
-                $imgPath = $childPath.'/'.$name;
-                //return $imgPath;
-            }
-
-            $data->foto = $imgPath;
-
-        }
-        else{
-           
-            $data->foto = $pathPic;
-        }
-*/
+        $harga = str_replace(",", "", $request->harga);
         $data->nama_masteritem = $request->nama_item;
     
 		$jenisitem = $request->jenis_item;
@@ -393,7 +455,7 @@ class MasterPurchaseController extends Controller
         $data->acc_persediaan = $request->acc_persediaan;
         $data->acc_hpp = $request->acc_hpp;
         $data->updatestock = $request->update_stock;
-        $data->harga = $request->harga;
+        $data->harga = $harga;
     	$data->kode_akun = $request->akun;
     	
 	    $data->unit1 = $request->unit1;
@@ -401,7 +463,7 @@ class MasterPurchaseController extends Controller
 	   $data->unit2 = $request->unit2;
     	
         $data->unit3 = $request->unit3;
-        $data->unitstock = $request->unit3;
+        $data->unitstock = $request->unitstock;
        	if($request->konversi2 == '') {
 
 		}else{

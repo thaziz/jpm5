@@ -3,6 +3,7 @@
      <tr>
         <th align="center"> Invoice</th>
         <th align="center"> Customer</th>
+        <th align="center"> Tanggal</th>
         <th align="center"> Jatuh Tempo</th>
         <th align="center"> Saldo Awal</th>
         <th align="center"> Terbayar</th>
@@ -23,11 +24,12 @@
     @foreach ($invoice as $i=>$data)
       <tr>
         <td>{{ $data->i_nomor }}</td>
-        <td>{{ $data->i_kode_customer }}</td>
+        <td width="90">{{ $data->i_kode_customer }}</td>
+        <td width="75">{{ $data->i_tanggal }}</td>
         @if ($data->i_jatuh_tempo_tt != null)
-          <td>{{ $data->i_jatuh_tempo_tt }}</td>
+          <td width="75">{{ $data->i_jatuh_tempo_tt }}</td>
         @else
-          <td>{{ $data->i_jatuh_tempo }}</td>
+          <td width="75">{{ $data->i_jatuh_tempo }}</td>
         @endif
         <td>{{ number_format($data->i_total_tagihan, 2, ",", ".") }}</td>
         <td>{{ number_format($data->i_total_tagihan-$data->i_sisa_akhir, 2, ",", ".") }}</td>
@@ -46,7 +48,7 @@
   </tbody>  
   <tfoot>
       <tr>
-        <td colspan="3"><b>Total :</b></td>
+        <td colspan="4"><b>Total :</b></td>
         <td><b>{{ number_format($total_invoice,2,",",".") }}</b></td>
         <td><b>{{ number_format($total_terbayar,2,",",".") }}</b></td>
         <td><b>{{ number_format($total_sisa_saldo,2,",",".") }}</b></td>

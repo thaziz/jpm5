@@ -419,7 +419,7 @@
 				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_diskon2, 2, ",", ".") }}</td>
 			</tr>
 			<tr>
-				<td class="borderrighttabel textleft" width="26%">Pt. Jawa Pratama Mandiri</td>
+				<td class="borderrighttabel textleft" width="26%">{{ $master_bank->mb_namarekening }}</td>
 				<td class="textleft borderrighttabel" width="26%">&nbsp;</td>
 				<td class="textright borderrighttabel" width="26.2%">&nbsp;</td>
 				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">Netto</td>
@@ -449,7 +449,7 @@
 				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_pajak_lain, 2, ",", ".") }}</td>
 			</tr>
 			<tr>
-				<td class="borderrighttabel akirkanan textleft" width="26%">A/C : 61-.089797.9</td>
+				<td class="borderrighttabel akirkanan textleft" width="26%">A/C : {{ $master_bank->mb_accno }}</td>
 				<td class="borderrighttabel textcenter" width="26%">(Finance Manager)</td>
 				<td class="borderrighttabel textcenter" width="26.2%" style="margin-bottom: 10px;">(Account Dept)</td>
 				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">Jumlah</td>

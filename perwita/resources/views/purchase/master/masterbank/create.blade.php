@@ -497,11 +497,11 @@
    
   })
 
- arrnourutcek = [];
- arrnourutbg = [];
- uniquenourutCek = [];
- arrnourut2cek = [];
- arrnourut2bg = [];
+  arrnourutcek = [];
+  arrnourutbg = [];
+  uniquenourutCek = [];
+  arrnourut2cek = [];
+  arrnourut2bg = [];
   $('#buatseri').click(function(){
     //alert(hel);
     if($('#sericek').prop('checked') == true && $('#sericekbg').prop('checked') == true ) { // CEK DOUBLE
@@ -582,10 +582,6 @@
           for(ds = 0; ds <= arrnourutcek.length ; ds++){ // CEK DOUBLE 
             if(arrnourutcek[ds] == urutcek){
              tempcek = parseInt(tempcek) + 1;
-              
-              console.log(arrnourutcek[ds] + 'urut');
-              console.log(urutcek + 'urut2');
-
             }
             else {
               for(i=1;i<=hasilurutcek;i++){
@@ -602,10 +598,6 @@
           for(ds = 0; ds <= arrnourutbg.length ; ds++){ // CEK DOUBLE BG
             if(arrnourutbg[ds] == urutbg){
              tempbg = parseInt(tempbg) + 1;
-              
-              console.log(arrnourutbg[ds] + 'urut');
-              console.log(urutbg + 'urut2');
-
             }
             else {
               for(i=1;i<=arrnourutbg.length;i++){
@@ -643,8 +635,45 @@
           var tableBank = $('#tbl-cek').DataTable();
         
           var n = 1;
-       
+          
+
+
+          $temp0 = 0; 
+          val = $('.urutcek').val();
+          str = val.search('0');  
+          if(val.indexOf(str) == 0){ // CEK jika depan nya ada 0 urutcek
+            lengthval = urutcek.length;            
+            for(i = 0; i < lengthval; i++){          
+              if(val.indexOf('0' , i) == i){
+                $temp0 = parseInt($temp0) + 1;
+              }
+              else {
+               i = lengthval;
+              }
+            }  
+          }
+
+          $tempbg = 0;
+          strbg = urutbg.search('0');
+          if(urutbg.indexOf(strbg) == 0){
+            lengthbg = urutbg.length;
+            for(i = 0; i < lengthbg; i++){
+              if(urutbg.indexOf('0' , i) == i){
+                $tempbg = parseInt($tempbg) + 1;
+              }
+              else {
+                i = lengthbg;
+              }
+            }
+          }
+          
           for(var i = urutcek; i <= hasilurutcek; i++){ //ADD TABLE
+            if($temp0 != 0){
+              urutcek = pad(urutcek, lengthval);
+            }
+            else {
+              urutcek = urutcek;
+            }
             var html2 = "<tr>" + 
                         "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                         "<label></label>" +
@@ -669,6 +698,12 @@
 
 
             for(var j = urutbg; j <= hasilurutbg; j++){ //LOOPING BG
+              if($tempbg != 0){
+                urutbg = pad(hasilurutbg, lengthbg);
+              }
+              else {
+                urutbg = urutbg;
+              }
               var html3 = "<tr>" + 
                         "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                         "<label></label>" +
@@ -759,9 +794,30 @@
                   var tableBank = $('#tbl-cek').DataTable();
                 
                   var n = 1;
-                  
+                  $temp0 = 0; 
+                  val = $('.urutcek').val();
+                  str = val.search('0');  
+                  if(val.indexOf(str) == 0){ // CEK jika depan nya ada 0 urutcek
+                    lengthval = urutcek.length;            
+                    for(i = 0; i < lengthval; i++){          
+                      if(val.indexOf('0' , i) == i){
+                        $temp0 = parseInt($temp0) + 1;
+                      }
+                      else {
+                       i = lengthval;
+                      }
+                    }  
+                  }
 
                   for(var i = urutcek; parseInt(i) <= parseInt(hasilurutcek); i++){ //ADD TABLE
+
+
+                    if($temp0 != 0){
+                      urutcek = pad(urutcek,$lengthval);
+                    }
+                    else{
+                      urutcek = urutcek;
+                    }
                     var html2 = "<tr>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                                 "<label></label>" +
@@ -858,8 +914,31 @@
                   var tableBank = $('#tbl-cek').DataTable();
                 
                   var n = 1;
-                
+                  
+                  $tempbg = 0;
+                  strbg = urutbg.search('0');
+                  if(urutbg.indexOf(strbg) == 0){
+                    lengthbg = urutbg.length;
+                    for(i = 0; i < lengthbg; i++){
+                      if(urutbg.indexOf('0' , i) == i){
+                        $tempbg = parseInt($tempbg) + 1;
+                      }
+                      else {
+                        i = lengthbg;
+                      }
+                    }
+                  }
+
+
                   for(var i = urutbg; i <= hasilurutbg; i++){ //ADD TABLE
+
+                    if($tempbg != 0){
+                      urutbg = pad(urutbg, lengthbg);
+                    }
+                    else {
+                      urutbg = urutbg;
+                    }
+
                     var html2 = "<tr>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                                 "<label></label>" +
@@ -901,6 +980,10 @@
     }    
   })
 
+  function pad (str, max) {
+  str = str.toString();
+  return str.length < max ? pad("0" + str, max) : str;
+}
 
   hasil = 0;
   $('.urutcek').keyup(function(){
@@ -912,8 +995,28 @@
        $('.hasilurutcek').val('');      
     }
     else {
-      hasil = parseInt(val) + 24;
-      $('.hasilurutcek').val(hasil);      
+      str = val.search('0');
+      lengthval = val.length;
+      if(val.indexOf(str) == 0){
+        $temp0 = 0;
+    
+        for(i = 0; i < lengthval; i++){          
+          if(val.indexOf('0' , i) == i){
+            $temp0 = parseInt($temp0) + 1;
+          }
+          else {
+           i = lengthval;
+          }
+        }  
+          hasil = parseInt(val) + 24;
+          hasil = pad(hasil, lengthval);
+         
+         $('.hasilurutcek').val(hasil); 
+      }
+      else {
+        hasil = parseInt(val) + 24;
+        $('.hasilurutcek').val(hasil);      
+      }
     }
   })
 
@@ -924,8 +1027,27 @@
        $('.hasilurutbg').val('');      
     }
     else {
-      hasil = parseInt(val) + 24;
-      $('.hasilurutbg').val(hasil);      
+      str = val.search('0');
+      lengthval = val.length;
+      if(val.indexOf(str) == 0){
+        $temp0 = 0;   
+        for(i = 0; i < lengthval; i++){          
+          if(val.indexOf('0' , i) == i){
+            $temp0 = parseInt($temp0) + 1;
+          }
+          else {
+           i = lengthval;
+          }
+        }  
+          hasil = parseInt(val) + 24;
+          hasil = pad(hasil, lengthval);
+         
+         $('.hasilurutbg').val(hasil); 
+      }
+      else {
+        hasil = parseInt(val) + 24;
+        $('.hasilurutbg').val(hasil);      
+      }
     }
   })
 

@@ -76,15 +76,15 @@ class analisa_piutang_Controller extends Controller
         // dd($invoice);
         $invoice_temp = $invoice;
         for ($i=0; $i < count($invoice_temp); $i++) { 
-            if ($invoice_temp[$i]->i_jatuh_tempo_tt != null) {
-                if (carbon::parse($invoice_temp[$i]->i_jatuh_tempo_tt)->toDateTimeString() < carbon::parse($req->min)->toDateTimeString()) {
-                    if (carbon::parse($invoice_temp[$i]->i_jatuh_tempo_tt)->toDateTimeString() > carbon::parse($req->max)->toDateTimeString()) {
+            if ($invoice_temp[$i]->i_tanggal_tanda_terima != null) {
+                if (carbon::parse($invoice_temp[$i]->i_tanggal_tanda_terima)->toDateTimeString() < carbon::parse($req->min)->toDateTimeString()) {
+                    if (carbon::parse($invoice_temp[$i]->i_tanggal_tanda_terima)->toDateTimeString() > carbon::parse($req->max)->toDateTimeString()) {
                         unset($invoice[$i]);
                     }
                 }else{
                     unset($invoice[$i]);
                 }
-            }elseif ($invoice_temp[$i]->i_jatuh_tempo_tt == null){
+            }elseif ($invoice_temp[$i]->i_tanggal_tanda_terima == null){
                 if (carbon::parse($req->min)->toDateTimeString() <  carbon::parse($invoice_temp[$i]->i_tanggal)->toDateTimeString()) {
                     if (carbon::parse($invoice_temp[$i]->i_tanggal)->toDateTimeString() > carbon::parse($req->max)->toDateTimeString()) {
                         unset($invoice[$i]);
@@ -136,7 +136,7 @@ class analisa_piutang_Controller extends Controller
                 }
             }
             if ($invoice[$i]->i_jatuh_tempo_tt != null) {
-                $tanggal_jatuh_tempo = strtotime($req->max) - strtotime($invoice_temp[$i]->i_jatuh_tempo_tt);
+                $tanggal_jatuh_tempo = strtotime($req->max) - strtotime($invoice[$i]->i_jatuh_tempo_tt);
                 $tanggal_jatuh_tempo = $tanggal_jatuh_tempo/86400;
                 array_push($umur,$tanggal_jatuh_tempo);
                 if ($tanggal_jatuh_tempo < 0) {
@@ -213,7 +213,7 @@ class analisa_piutang_Controller extends Controller
                     array_push($invoice_360,$invoice[$i]->i_sisa_akhir);
                 }
             }elseif ($invoice[$i]->i_jatuh_tempo_tt == null){
-                $tanggal_jatuh_tempo = strtotime($req->max) - strtotime($invoice_temp[$i]->i_jatuh_tempo);
+                $tanggal_jatuh_tempo = strtotime($req->max) - strtotime($invoice[$i]->i_jatuh_tempo);
                 $tanggal_jatuh_tempo = $tanggal_jatuh_tempo/86400;
                 array_push($umur,$tanggal_jatuh_tempo);
                 if ($tanggal_jatuh_tempo < 0) {

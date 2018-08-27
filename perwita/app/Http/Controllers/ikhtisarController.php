@@ -681,6 +681,27 @@ class ikhtisarController extends Controller
 
 					}
 					$cari = array_values($cari);
+					$cari = array_merge($data_dt,$bkk);	
+
+
+					for ($i=0; $i < count($cari); $i++) { 
+
+						$cari_bkk = DB::table('bukti_kas_keluar')
+									  ->where('bkk_nota',$cari[$i]->nota)
+									  ->first();
+						if ($cari_bkk != null) {
+							$bkkd = DB::table('bukti_kas_keluar_detail')
+								  ->where('bkkd_bkk_id',$cari_bkk->bkk_id)
+								  ->get();
+							for ($a=0; $a < count($bkkd); $a++) { 
+								$det_bkk[$i][$a] = $bkkd[$a]->bkkd_akun;
+							}
+							$det_bkk[$i] = array_unique($det_bkk[$i]);
+							$det_bkk[$i] = array_values($det_bkk[$i]);
+						}
+					}
+					
+				$detail = $det_bkk;
 					$akun = DB::table('d_akun')
 							  ->get();
 				}else{

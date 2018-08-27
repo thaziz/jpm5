@@ -1510,10 +1510,11 @@ public function purchase_order() {
 			}	
 			else {
 							$data['spp'][] = DB::select("select * from mastergudang, spp, spp_totalbiaya, confirm_order, confirm_order_tb, supplier , cabang where co_idspp = spp_id and spp_id = '$idspp' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup and active = 'AKTIF' and idsup = '$nosupplier' and cotb_supplier = '$nosupplier' and spptb_idspp = '$idspp' and spptb_idspp = spp_id and spp_lokasigudang = mg_id and spptb_supplier = cotb_supplier and cotb_id = '$idcotb' and co_id = '$idco' and cotb_idco = co_id");
+							$data['gudang'] = DB::select("select * from mastergudang where mg_id = '$gudang'");
 			}	
 			
 			$data['codt'][] = DB::select("select * from confirm_order, masteritem,  confirm_order_dt , confirm_order_tb, spp where co_idspp = '$idspp' and codt_idco = co_id and cotb_idco = co_id and co_idspp = spp_id and codt_supplier = cotb_supplier and codt_supplier = '$nosupplier' and codt_kodeitem = kode_item and cotb_id = '$idcotb' and co_id = '$idco' ");
-			$data['gudang'] = DB::select("select * from mastergudang where mg_id = '$gudang'");
+			
 		}
 		return json_encode($data);
 	}
@@ -2034,8 +2035,29 @@ public function purchase_order() {
 
 	public function penerimaanbarang() {
 
+		$cabang = session::get('cabang');
+
+		$gudangcomp = DB::select("select * from mastergudang where mg_cabang = '$cabang'");
+		$idgudang = $gudangcomp[0]->mg_id;
+		$data['idgudang'] = $idgudang;
+		$data['terima'] = DB::select("select * from barang_terima where bt_gudang = '$idgudang'");
+
+		for($i= 0; $i < count($data['terima']); $i++) {
+			$tipe = $data['terima'][$i]->bt_flag;
+			$idbt = $data['terima'][$i]->bt_id;
+			if($tipe == 'PBG'){
+				$terimages = DB::select("select *, nama as namasupplier from barang_terima, cabang where bt_gudang = '$idgudang' and bt_agen = kode and bt_id = '$idbt' and bt_flag = '$tipe'");		
+			}
+			else {
+				$terimages = DB::select("select *, nama_supplier as namasupplier from barang_terima, supplier where bt_gudang = '$idgudang' and bt_supplier = idsup and bt_id = '$idbt' and bt_flag = '$tipe'");		
+			}
+			$data['flag'][] = $tipe;
+			$data['terimasaja'][] = $terimages;
+		}
+		
+
 		$data['gudang'] = DB::select("select * from mastergudang");
-		$data['terima'] = DB::select("select * from barang_terima, supplier where bt_supplier = idsup ");
+	
 
 	/*	$data['penerimaan'] = DB::select("select LEFT(po_no, 2) as flag ,po_no as nobukti, po_supplier as supplier, nama_supplier as nmsupplier , po_id as id, string_agg(pb_status,',') as p   from supplier, pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id  where po_supplier = idsup and po_tipe != 'J' and po_setujufinance = 'DISETUJUI' group by po_id , po_no, nama_supplier  UNION select LEFT(fp_nofaktur, 2) as flag, fp_nofaktur as nobukti, fp_idsup as supplier , nama_supplier as nmsupplier, fp_idfaktur as id , string_agg(pb_status,',') as p  from supplier, faktur_pembelian LEFT OUTER JOIN penerimaan_barang on fp_idfaktur = pb_fp where fp_tipe != 'J' and fp_tipe != 'PO' and fp_idsup = idsup group by nobukti, supplier , nmsupplier , id order by id desc"); //kurang session login company
 		
@@ -5048,7 +5070,7 @@ public function purchase_order() {
 		return DB::transaction(function() use ($request) {   
 			/*dd($request->all());*/
 		$variable = $request->supplier_po;
-		$data = explode(",", $variable);
+		$data = explode("+", $variable);
 		$idsup = $data[0];
 		$kodesupplier2 = $data[4];
 		$netto = str_replace(',', '', $request->nettohutang_po);
@@ -6096,7 +6118,7 @@ public function purchase_order() {
 		$nofaktur = $request->nofakturitem;
 		$jumlahtotal = $request->jumlahtotal;
 		$variable = $request->idsupitem;
-		$data = explode(",", $variable);
+		$data = explode("+", $variable);
 		$idsup = $data[0];
 		$netto = str_replace(',', '', $request->nettohutang);
 		$cabang = $request->cabang;
@@ -6847,7 +6869,7 @@ public function purchase_order() {
 			$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; 
 
 			$supplier = $request->supplier;
-			$explode = explode("," , $supplier);
+			$explode = explode("+" , $supplier);
 			$nosupplier = $explode[4];
 			if($request->edit == 'edit'){
 				$nofaktur = $request->nofaktur;
@@ -7030,7 +7052,7 @@ public function kekata($x) {
 	
 	public function supplierfaktur(Request $request){
 		$variable = $request->idsup;
-		$data = explode(",", $variable);
+		$data = explode("+", $variable);
 		$idsup = $data[0];
 		$cabang = $request->cabang;
 
@@ -8543,6 +8565,8 @@ public function kekata($x) {
 			 	'mbdt_nominal' => null,
 			 	'mbdt_tglstatus' => null,
 		 	]);	
+
+
 		}
 		
 		DB::delete("DELETE from fpg where idfpg = '$id'");
@@ -10026,7 +10050,7 @@ public function kekata($x) {
 
 	public function getum(Request $request){
 		$idsup = $request->idsup;
-		$explode = explode("," , $idsup);
+		$explode = explode("+" , $idsup);
 		$nosupplier = $explode[4];
 		$cabang = $request->cabang;
 
@@ -11231,7 +11255,8 @@ public function kekata($x) {
 		$updatefpg->update([
 			'fpg_totalbayar' => $totalbayar,
 			'fpg_cekbg' => $cekbg,
-			'update_by' => $request->username
+			'update_by' => $request->username,
+			'fpg_keterangan' => $request->keterangan,
 			]);	
 
 	

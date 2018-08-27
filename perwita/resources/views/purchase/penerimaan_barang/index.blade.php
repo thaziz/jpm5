@@ -62,7 +62,7 @@
 												<select class="form-control gudang">
 														<option value=""> Pilih Gudang </option>
 													@foreach($data['gudang'] as $gudang)
-														<option value="{{$gudang->mg_id}}"> {{$gudang->mg_namagudang}} </option>
+														<option value="{{$gudang->mg_id}}"@if($gudang->mg_id == $data['idgudang']) selected="" @endif> {{$gudang->mg_namagudang}} </option>
 													@endforeach
 												</select>
 											</td>
@@ -79,13 +79,20 @@
 									<th> No Transaksi </th>
 								  
 									<th> Supplier </th>
-									<th> Status </th>
-							   
+									<th> Status </th>							   
 									<th> Aksi </th>						  
 								</tr>					  
 								</thead>
 								<tbody>
-								
+									@for($j = 0; $j < count($data['terimasaja']); $j++)
+									<tr> <td> {{$j + 1}} </td>
+
+
+	                                <td> {{$data['terimasaja'][$j][0]->bt_notransaksi}}</td>
+									<td>  {{$data['terimasaja'][$j][0]->namasupplier}} </td>
+									<td> <span class='label label-info'> {{$data['terimasaja'][$j][0]->bt_statuspenerimaan}} </span> </td>
+									<td>      <a class='btn btn-sm btn-success' href="url('penerimaanbarang/detailterimabarang/{{$data['terimasaja'][$j][0]->bt_id}}')"> <i class='fa fa-arrow-right' aria-hidden='true'></i></a></td>
+									@endfor
 								</tbody>   
 							</table>
 							</div><!-- /.box-body -->

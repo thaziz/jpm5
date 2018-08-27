@@ -3470,6 +3470,25 @@ class kasKeluarController extends Controller
 						   ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
 						   ->where('bkk_id',$req->id)
 						   ->get();
+
+			if ($cari_nota == null) {
+				$bkk = DB::table('bukti_kas_keluar')
+						   ->where('bkk_id',$req->id)
+						   ->first();
+				$delete_jurnal = DB::table('d_jurnal')
+							   ->where('jr_ref',$bkk->bkk_nota)
+								   ->delete();
+
+				$delete_patty = DB::table('patty_cash')
+								   ->where('pc_no_trans',$bkk->bkk_nota)
+								   ->delete();
+
+				$delete_bkk   = DB::table('bukti_kas_keluar')
+								   ->where('bkk_nota',$bkk->bkk_nota)
+								   ->delete();
+				return response()->json(['status'=>2,'pesan'=>'Berhasil']);
+			}
+
 			if ($cari_nota[0]->bkk_status == 'APPROVED') {
 				return response()->json(['status'=>1,'pesan'=>'Data Sudah Ditarik Ikhtisar']);
 			}

@@ -431,7 +431,7 @@
          <table width="100%">
          @foreach($data['fpg_bank'] as $bg)
           <tr>
-           <td style="text-align: center"> {{$bg->fpgb_nocheckbg}}</td>
+           <td style="text-align: center"> {{$bg->fpgb_jenisbayarbank}} -  {{$bg->fpgb_nocheckbg}}</td>
           </tr>
           @endforeach
          </table>

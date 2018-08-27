@@ -99,7 +99,7 @@
                         @endif
                         <td width="150">Tanggal</td>
                         <td width="300">
-                          <input type="text" onblur="supplier()" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
+                          <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
                         </td>
                       </tr>
                       <tr>
@@ -287,11 +287,12 @@
 
   $('.tanggal').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
       $('.tanggal').change();
-      $(this).datepicker('hide');
+      $(this).datepicker('hide'); 
   });
 
   $('.tanggal').change(function () {
       nota();
+      supplier();
   });
 
   $('.cabang').change(function(){

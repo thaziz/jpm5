@@ -5,6 +5,7 @@
 @section('content')
 <style type="text/css">
     .cssright { text-align: right; }
+    .center { text-align: center; }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -66,25 +67,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data as $row)
-                            <tr>
-                                <td>{{ $row->nomor }}</td>
-                                <td>{{ $row->tanggal }}</td>
-                                <td>{{ $row->kode_rute }}</td>
-                                <td>{{ $row->nama_rute }}</td>
-                                <td>{{ $row->cabang }}</td>
-                                <td class="text-center">
-                                    <div class="btn-group">
-                                        <a href="{{ url('sales/surat_jalan_trayek_form/'.$row->nomor.'/nota') }}" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>
-                                        <a href="{{ url('sales/surat_jalan_trayek_form/'.$row->nomor.'/edit') }}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
-                                        <a href="{{ url('sales/surat_jalan_trayek_form/'.$row->nomor.'/hapus_data') }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
 
                         </tbody>
-
                     </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
@@ -116,18 +100,28 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-    $(document).ready( function () {
-        $('#tabel_data').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": false,
-            "responsive": true,
-            "autoWidth": false,
-            "pageLength": 10,
-            "retrieve" : true,
-      });
+    $('#tabel_data').DataTable({
+        processing: true,
+        // responsive:true,
+        serverSide: true,
+        ajax: {
+            url:'{{ route("datatable_sjt") }}',
+        },
+        columnDefs: [
+          {
+             targets: 5,
+             className: 'center'
+          }
+        ],
+        "columns": [
+        { "data": "nomor" },
+        { "data": "tanggal" },
+        { "data": "kode_rute" },
+        { "data": "nama_rute"},
+        { "data": "cabang" },
+        { "data": "aksi" },
+        
+        ]
     });
 
 

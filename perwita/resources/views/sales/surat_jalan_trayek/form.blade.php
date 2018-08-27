@@ -96,7 +96,7 @@
                                 </td>
                             </tr>
                             @if (Auth::user()->punyaAkses('Surat Jalan By Trayek','cabang'))
-                                <tr>
+                                <tr class="tr_cabang">
                                     <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                     <td colspan="4">
                                         <select class="form-control chosen-select-width cabang" name="cb_cabang" onchange="ganti_nota()" >
@@ -125,7 +125,7 @@
                                 </tr>
                             @endif
                             
-                            <tr>
+                            <tr class="tr_rute">
                                 <td style="width:110px; padding-top: 0.4cm">Rute</td>
                                 <td colspan="4">
                                     <select class="chosen-select-width" name="cb_rute" id="cb_rute" >
@@ -138,7 +138,7 @@
                                     <input type="hidden" name="ed_kode_rute" class="form-control" style="text-transform: uppercase" value="{{ $data->kode_rute or null }}" >
                                 </td>
                             </tr>
-                            <tr >
+                            <tr class="tr_nopol">
                                 <td style="padding-top: 0.4cm">Nopol</td>
                                 <td colspan="4">
                                     <select class="chosen-select-width" id="cb_nopol" name="cb_nopol" style="width:100%">
@@ -153,7 +153,7 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Sopir</td>
                                 <td colspan="4">
-                                    <input type="text" name="ed_sopir" class="form-control" style="text-transform: uppercase" value="{{ $data->sopir or null }}" >
+                                    <input type="text" name="ed_sopir" class="form-control ed_sopir" style="text-transform: uppercase" value="{{ $data->sopir or null }}" >
                                 </td>
                             </tr>
                             <tr>
@@ -167,7 +167,9 @@
                     <div class="row">
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btnadd" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Tambah</button>
-                            <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <a href="../sales/surat_jalan_trayek">
+                                <button type="button" class="btn btn-success "  id="kembali" ><i class="fa fa-arrow-left"></i> Kembali</button>
+                            </a>
                         </div>
                     </div>
                 </form>
@@ -244,7 +246,7 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-
+    var array_simpan = [];
     $('.tanggal').datepicker({
         format:'yyyy-mm-dd'
     });
@@ -259,10 +261,7 @@
         $('#table_data').DataTable({
             "lengthChange": true,
             "ordering": true,
-            "searching": false,
-            "paging": false,
             "ordering": true,
-            "info": false,
             "responsive": true,
             
             "autoWidth": false,
@@ -273,6 +272,12 @@
                 "type": "GET",
                 "data" : { nomor : function () { return $('#ed_nomor').val()}},
             },
+            columnDefs: [
+              {
+                 targets: 6,
+                 className: 'center'
+              }
+            ],
             "columns": [
             { "data": "id" , render: $.fn.dataTable.render.number( '.'),"sClass": "id" },
             { "data": "nomor_do" },
@@ -309,8 +314,7 @@
 
         $('#table_data_do').DataTable({
             "lengthChange": true,
-            "ordering": true,
-            "info": false,
+            "ordering": false,
             "responsive": true,
             "autoWidth": false,
             "bProcessing": true,
@@ -352,28 +356,6 @@
     }
 
 
-    $(document).on("click","#btnsimpan",function(){
-        $("select[name='cb_rute']").prop('disabled', false).trigger("chosen:updated");
-        $("input[name='crud']").val('N');
-        $.ajax(
-        {
-            url :  baseUrl + "/sales/surat_jalan_trayek/save_data",
-            type: "POST",
-            dataType:"JSON",
-            data : $('#form_header').serialize() ,
-            success: function(data, textStatus, jqXHR)
-            {
-             
-            },
-            error: function(jqXHR, textStatus, errorThrown)
-            {
-              // swal("Error!", textStatus, "error");
-            }
-        });
-        
-        
-    });
-
     $("select[name='cb_cabang']").change(function(){
         var data = $(this).val();
         $("input[name='ed_cabang']").val(data);
@@ -391,19 +373,87 @@
         $("input[name='ed_nama_rute']").val($nama_rute);
     });
 
+    $('.parent_check').change(function(){
+        var tab = $('#table_data_do').DataTable();
+        if ($(this).is(':checked') == true) {
+            tab.$('.check').prop('checked',true);
+        }else{
+            tab.$('.check').prop('checked',false);
+        }
+    })
 
     $(document).on("click","#btnadd",function(){
-        
+        $('.parent_check').prop('checked',false);
+        $('search').val('');
         var table = $('#table_data_do').DataTable();
         table.clear().draw();
         table.ajax.reload(null,true);
         $('#modal').modal('show');
     });
 
-    $(document).on( "click",".btndelete", function() {
+    $(document).on( "click","#btnsave", function() {
+        var array_check =[];
+        var tanggal = $('.tanggal').val();
+        var cabang  = $('.cabang').val();
+        var rute  = $('#cb_rute').val();
+        var nopol  = $('#cb_nopol').val();
+        var sopir  = $('.ed_sopir').val();
+        var tabel = $('#table_data_do').DataTable();
 
+
+        if (rute == '') {
+            return toastr.warning('Rute Harus Dipilih');
+        }
+
+        if (nopol == '') {
+            return toastr.warning('Nopol Harus Dipilih');
+        }
+        if (sopir == '') {
+            return toastr.warning('Supir Harus Dipilih');
+        }
+
+
+        tabel.$('.check').each(function(){
+            if ($(this).is(':checked') == true) {
+                var par = $(this).parents('tr');
+                var nomor_do  = $(par).find('.nomor_do').val()
+                array_check.push(nomor_do);
+            }
+        })
+        $.ajax({
+            data:{array_check,tanggal,cabang,rute},
+            url:baseUrl+'/sales/surat_jalan_trayek_form/save_data?'+$('#form_header input').serialize(),
+            dataType : 'json',
+            type : 'post',
+            success:function(response){
+                $('#modal').modal('hide');
+                $('#ed_nomor').prop('readonly',true);
+                $('.tr_cabang').addClass('disabled');
+                $('.tr_rute').addClass('disabled');
+                $('.tr_nopol').addClass('disabled');
+                var table2 = $('#table_data').DataTable();
+                table2.ajax.reload();
+            },
+            error:function(){
+                toastr.warning('Terjadi Kesalahan');
+            }
+        });
     });
 
+    function hapus(id) {
+        $.ajax({
+            dataType:'json',
+            url: baseUrl+'/sales/surat_jalan_trayek/hapus_data_detail?id='+id,
+            type:'get',
+            success:function(response){
+                var table2 = $('#table_data').DataTable();
+                table2.ajax.reload();
+            },
+            error:function(){
+                toastr.warning('Terjadi Kesalahan');
+            }
+        });
+    }
 
 </script>
 @endsection
