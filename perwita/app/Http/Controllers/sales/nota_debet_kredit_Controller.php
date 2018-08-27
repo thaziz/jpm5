@@ -79,7 +79,8 @@ class nota_debet_kredit_Controller extends Controller
         $cabang = DB::select(DB::raw(" SELECT * FROM cabang"));
 
         $customer = DB::table('customer')
-                            ->get();
+                      ->where('pic_status','=','AKTIF')
+                      ->get();
 
         $cabang = DB::table('cabang')
                     ->get();
@@ -800,7 +801,8 @@ class nota_debet_kredit_Controller extends Controller
           $cabang = DB::select(DB::raw(" SELECT * FROM cabang"));
 
           $customer = DB::table('customer')
-                              ->get();
+                        ->where('pic_status','=','AKTIF')
+                        ->get();
 
           $cabang = DB::table('cabang')
                       ->get();

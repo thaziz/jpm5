@@ -119,6 +119,7 @@ class do_kargo_Controller extends Controller
 
 
         $customer = DB::table('customer')
+                      ->where('pic_status','AKTIF')
                       ->get();
         $kontrak_customer = DB::table('customer')
                               ->join('kontrak_customer','kc_kode_customer','=','kode')
@@ -262,6 +263,7 @@ class do_kargo_Controller extends Controller
         $kota = DB::table('kota')
                   ->get();
         $customer = DB::table('customer')
+                      ->where('pic_status','AKTIF')
                       ->get(); 
 
         for ($i=0; $i < count($kota); $i++) { 
@@ -455,6 +457,7 @@ class do_kargo_Controller extends Controller
     public function drop_cus(request $request)
     {
         $customer = DB::table('customer')
+                      ->where('pic_status','AKTIF')
                       ->where('cabang',$request->cabang)
                       ->get();
         return view('master_sales.kontrak.dropdown_customer',compact('customer'));
@@ -897,6 +900,7 @@ class do_kargo_Controller extends Controller
                   ->orderBy('kode','ASC')
                   ->get();
         $customer = DB::table('customer')
+                      ->where('pic_status','AKTIF')
                       ->where('kode',$request->customer_do)
                       ->first();
 

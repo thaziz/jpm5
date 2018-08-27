@@ -169,6 +169,7 @@ class invoice_Controller extends Controller
         $customer = DB::table('customer')
                       ->where('nama','!=','NON MEMBER')
                       ->where('nama','!=','NON CUSTOMER')
+                      ->where('pic_status','=','AKTIF')
                       ->get();
 
         $cabang   = DB::table('cabang')
@@ -1673,7 +1674,9 @@ public function edit_invoice($id)
                 ->get();
 
       $customer = DB::table('customer')
-                  ->get();
+                    ->where('pic_status','=','AKTIF')
+                    ->get();
+                    
       $kota     = DB::table('kota')
                       ->get();     
       $cabang   = DB::table('cabang')

@@ -192,7 +192,7 @@ class penerimaan_penjualan_Controller extends Controller
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
         $rute = DB::select(" SELECT kode,nama FROM rute ORDER BY nama ASC ");
         $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
-        $customer = DB::select(" SELECT kode,nama,cabang FROM customer ORDER BY nama ASC ");
+        $customer = DB::select(" SELECT kode,nama,cabang FROM customer where pic_status = 'AKTIF' ORDER BY nama ASC ");
         $akun = DB::table('d_akun')
                   ->get();
         $akun_biaya = DB::table('akun_biaya')
@@ -1216,7 +1216,7 @@ class penerimaan_penjualan_Controller extends Controller
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
         $rute = DB::select(" SELECT kode,nama FROM rute ORDER BY nama ASC ");
         $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
-        $customer = DB::select(" SELECT kode,nama,cabang FROM customer ORDER BY nama ASC ");
+        $customer = DB::select(" SELECT kode,nama,cabang FROM customer where pic_status = 'AKTIF' ORDER BY nama ASC ");
 
         $akun = DB::table('d_akun')
                   ->get();
