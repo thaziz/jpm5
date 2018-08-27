@@ -325,6 +325,7 @@
 
 
           cabang = $('.cabang').val();
+        
           split = groupitem.split(",");
           stock = split[1];
           jenis = split[0];
@@ -460,7 +461,7 @@
           groupitem = $('.jenis_item').val();
           split = groupitem.split(",");
           stock = split[1];
-
+          cabang = $('.cabang').val();
           $.ajax({
             data : {updatestock,groupitem,cabang},
             url : baseUrl + '/masteritem/getaccpersediaan',
