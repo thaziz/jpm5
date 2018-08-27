@@ -1060,7 +1060,7 @@
       idfpgb = $('.idfpgb').val();
 
       row = "<tr class='transaksi bayar"+$nomr+"' id='datacek"+notransaksi+"' data-transaksi="+notransaksi+">" +
-          "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]' readonly> <input type='hidden' class='input-sm form-control' value='"+kodebank+"' name='akunkodebank' readonly> <input type='text' class='input-sm form-control' value='"+hutangdagang+"' name='hutangdagang[]' readonly> <input type='hidden' class='input-sm form-control' value='"+akunum+"' name='akunum[]' readonly> </td>" +
+          "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]' readonly> <input type='hidden' class='input-sm form-control' value='"+kodebank+"' name='akunkodebank' readonly> <input type='hidden' class='input-sm form-control' value='"+hutangdagang+"' name='hutangdagang[]' readonly> <input type='hidden' class='input-sm form-control' value='"+akunum+"' name='akunum[]' readonly> </td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+tgl+"' name='tgl[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+notransaksi+"' name='notransaksi[]' readonly>" +
           "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value='"+jatuhtempo+"' readonly> </td>" +

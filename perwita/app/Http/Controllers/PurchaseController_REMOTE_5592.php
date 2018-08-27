@@ -7547,7 +7547,7 @@ public function kekata($x) {
 				$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
 				$jenisbayar = $datafpg[0]->fpg_jenisbayar;
 
-				if($jenisbayar == 12){
+				if($jenisbayar == 12 || $jenisbayar == 11){
 
 					$idfpgb = $request->idfpgb[$i];
 
@@ -10818,7 +10818,7 @@ public function kekata($x) {
 				
 				$formfpg->fpg_idbank = $idbank; 
 
-				if($request->jenisbayar == 12){
+				if($request->jenisbayar == 12 || $request->jenisbayar == 11){
 					$formfpg->fpg_acchutang = $request->hutangdagang;
 					$formfpg->fpg_kelompok = $request->kelompokbank;
 				}

@@ -1042,7 +1042,7 @@
 
         jenisbayar = $('.jenisbayar').val();
 
-        if(jenisbayar == 12){
+        if(jenisbayar == 12 || jenisbayar == 11){
             if(kodebankasal.match(/1099.*/)){
               $('.kelompokbank').val('BEDA BANK');
             }
@@ -1849,7 +1849,7 @@
                                arrnofaktur.push(val);
                             }
                     }
-                    else if( jenisbayar == '11'){
+                    else if(jenisbayar == '11'){
                          $('.nofaktur').val(data.faktur[0][0].bp_nota);
                           $('.tgl').val(data.faktur[0][0].bp_tgl);
 /*                          $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
@@ -1891,6 +1891,70 @@
 
 
                                   "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].bp_pelunasan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
+
+                                  "<td> <input type='text' class='input-sm form-control' name='fpgdt_keterangan[]'> </td>" +
+
+                                  "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].bp_nota+" data-idfaktur="+data.faktur[i][0].bp_id+" type='button'><i class='fa fa-trash'></i></button> </td>" +
+                                  "</tr>";
+
+                            $('.tbl-item').append(row);
+                            jumlahfaktur = jumlahfaktur + parseFloat(sisapelunasan);
+                            jumlahfakturs = jumlahfaktur.toFixed(2);
+                       }
+                            tblitem = $('.field').length;
+                       //     console.log('tblitem2' + tblitem);
+                             arrnofaktur = [];
+           
+                            var nmr2 = 1;
+                            for(var z =0; z < tblitem; z++ ){
+                              val = $('.nofaktur'+nmr2 ).val();
+                         //     console.log(val + 'val');
+                              nmr2++;
+                               arrnofaktur.push(val);
+                            }
+                    }
+                    else if(jenisbayar == '13'){
+                      $('.nofaktur').val(data.faktur[0][0].bp_nota);
+                          $('.tgl').val(data.faktur[0][0].bp_tgl);
+/*                          $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
+*/                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
+                         // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
+                          
+                          $('.sisatrbyr').val(addCommas(data.faktur[0][0].bp_pelunasan));
+                          $('.sisafaktur').val(addCommas(data.faktur[0][0].bp_pelunasan));
+                          $('.pelunasan').attr('readonly' , false);
+                          $('.jmlhfaktur').val(addCommas(data.faktur[0][0].bp_nominalkeu));
+                          $('.hutangdagang').val(data.faktur[0][0].bp_akunhutang); 
+                            $('.cabangfaktur').val(data.faktur[0][0].bp_akunhutang);
+
+
+                     //LOOPING DATA NO FAKTUR 
+
+                    for(var i = 0 ; i < data.faktur.length; i++){
+                       nmr++;
+                        totalpembayaranfp = 0;
+                        for(var l=0;l<data.pembayaran[i].length;l++){
+                            pelunasanfp = data.pembayaran[i][l].pelunasan;
+                           // alert(pelunasan);
+                            totalpembayaranfp = parseFloat(parseFloat(totalpembayaranfp) + parseFloat(pelunasanfp)).toFixed(2);
+                        }
+
+
+                        sisapelunasan = data.faktur[i][0].fp_sisapelunasan;
+                       var row = "<tr class='field field"+nmr+"' id='field"+nmr+"' data-id='"+nmr+"' data-nota='"+data.faktur[i][0].bp_nota+"'> <td>"+nmr+"</td>" + //nmr
+                                 "<td> <a class='nofp nofp"+nmr+"' data-id='"+nmr+"' data-idfaktur="+data.faktur[i][0].bp_id+">"+data.faktur[i][0].bp_nota+" </a><input type='hidden' class='datanofaktur nofaktur"+nmr+"' value="+data.faktur[i][0].bp_nota+" name='nofaktur[]'> <input type='hidden' class='datanofaktur'  value="+data.faktur[i][0].bp_id+" name='idfaktur[]'>  </td>"+  //nofaktur
+                                  "<td>"+data.faktur[i][0].bp_tgl+" <input type='hidden' class='tgl"+nmr+"' value="+data.faktur[i][0].bp_tgl+"></td>" + //tgl
+
+                                  "<td style='text-align:center'> - </td>" + //jatuhtempo
+
+                                  "<td>"+addCommas(data.faktur[i][0].bp_pencairan)+" <input type='hidden' class='sisapelunasan"+nmr+"' value="+data.faktur[i][0].bp_pencairan+"> </td> <input type='hidden' class='netto"+nmr+"' value="+data.faktur[i][0].bp_pencairan+" name='netto[]'> </td>"+ //netto
+
+                                   "<td> <input type='text' class='input-sm pelunasanitem pelunasan"+nmr+" form-control' style='text-align:right' readonly data-id="+nmr+" name='pelunasan[]'>   </td>" +   //pelunasan         
+
+                                   "<td> <input type='text' class='input-sm pembayaranitem pembayaranitem"+data.faktur[i][0].bp_id+" form-control' style='text-align:right' readonly data-id="+nmr+" name='pembayaran[]' value="+addCommas(totalpembayaranfp)+"> </td>" +
+
+
+                                  "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].bp_pencairan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
 
                                   "<td> <input type='text' class='input-sm form-control' name='fpgdt_keterangan[]'> </td>" +
 
@@ -2101,46 +2165,6 @@
                     
                     metodebayar = $('.metodebayar:checked').val();
                     jenisbayar = $('.jenisbayar').val();
-
-                    if(jenisbayar == 11){
-                      if(metodebayar == 'CHECK/BG'){
-                        jenisbayar = $('.jenisbayar').val();
-                        if(jenisbayar == 5){
-                          $('.jthtmpo_bank').attr('disabled' , true);
-                          //$('.hari_bank').attr('disabled', true);
-                          jatuhtempo = $('.jthtmpo_bank').val();
-                        }
-                        else {
-                          jatuhtempo = $('.jthtmpo_bank').val();      
-                        }
-
-                        banktujuan = $('.banktujuan').val();
-                        split = banktujuan.split("+");
-                        kodebanktujuan = split[4];
-                        norekening = split[3];
-                        namabank = split[1];
-                        idbank = split[0];
-
-
-                        for(var i =0 ; i < mbdt.length; i++ ){                    
-                           var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
-                            "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> "+mbdt[i][0].mbdt_noseri+ "</a> <input type='hidden' class='noseri"+nomrbnk+"' value='"+mbdt[i][0].mbdt_noseri+"' name='noseri[]'></td>"+ // NOSERI
-
-                            "<td>"+tgl+"</td>"+ // TGL
-                            "<td>"+mbdt[i][0].mb_kode+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]' readonly> </td>" + //BANK TUJUAN
-                            "<td> <input type='text' class='form-control norekening' value='"+norekening+"' readonly> </td>" + //NO REKENING TUJUAN
-                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'></td>" + //NAMA BANK TUJUAN
-                            "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
-                            "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
-
-                            $('#tbl-tfbank').append(row);
-                            arrnohapus.push(nomrbnk);
-                            nomrbnk++;
-                        }
-                      }
-                    }
-                    else{
-
                       if(jenisbayar == '12' || jenisbayar == '11') {
                         banktujuan = $('.banktujuan').val();
                         split = banktujuan.split("+");
@@ -2172,7 +2196,7 @@
                             "<td>"+tgl+"</td>"+ // TGL
                             "<td>"+mbdt[i][0].mb_kode+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]' readonly> </td>" + //BANK TUJUAN
                             "<td> <input type='text' class='form-control norekening' value='"+norekening+"' readonly> </td>" + //NO REKENING TUJUAN
-                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='hidden' class='kelompokbank' name='kelompokbank'> </td>" + //NAMA BANK TUJUAN
+                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='text' class='kelompokbank' name='kelompokbank'> </td>" + //NAMA BANK TUJUAN
                             "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
                             "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
@@ -2219,7 +2243,7 @@
                         }
                        }
                       }
-                    }
+                    
                     // IF CHECKBG
                   
                     if(jenisbayar == '12' == jenisbayar == '11'){
@@ -2627,7 +2651,7 @@
 
             
               var idjenisbayar = $('.jenisbayar').val();
-              if(idjenisbayar == '1' || idjenisbayar == '11'){
+              if(idjenisbayar == '1' || idjenisbayar == '11' || idjenisbayar == '13'){
                 nosupplier = cabang;
               } 
               else {
@@ -2864,6 +2888,36 @@
                               console.log(n +'n');
                              } 
                       }
+                      else if(jenisbayar == '13'){
+                         $('.supfaktur').show();
+                        $('.invfaktur').show();
+                        var tablefaktur = $('#tbl-faktur').DataTable();
+                        tablefaktur.clear().draw();
+
+                           for(var i = 0; i < fp.length; i++){    
+                             
+                                 var html2 = "<tr class='data"+n+"' id='data"+fp[i].bp_nota+"'> <td>"+n+"</td>" +
+                                               "<td>"+fp[i].nama+"</td>" +
+                                              "<td>"+fp[i].bp_nota+"</td>" +
+                                              "<td> - </td>" +                                       
+                                            
+                                              "<td>"+fp[i].nama +"</td>"+
+                                              "<td> - </td>" +
+                                              "<td> - </td>" +
+                                              "<td>"+addCommas(fp[i].bp_pencairan)+"</td> ";
+
+                                           
+                                            html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].bp_id+","+fp[i].bp_nota+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                          "<label></label>" +
+                                          "</div></td>";
+                                              
+                               html2 +=  "</tr>"; 
+                               tablefaktur.rows.add($(html2)).draw(); 
+                              n++; 
+
+                              console.log(n +'n');
+                             } 
+                      }
                     },
 					error : function(){
 					//	location.reload();
@@ -2882,185 +2936,9 @@
           $('.hsljenisbayar').val(idsup);
     }
 
-		/*$('.jenisbayar2').change(function(){
-              var idsup = $(this).val();
-              var idjenisbayar = $('.jenisbayar').val();
-              var cabang = $('.cabang').val();
-              $('.hsljenisbayar').val(idsup);
-                $.ajax({
-                  url : baseUrl + '/formfpg/changesupplier',
-                  data : {idsup, idjenisbayar},
-                  type : "get",
-                  dataType : "json",
-                  success : function(data) {
-                    var fp = data.fakturpembelian;
-                    $('.jthtmpo_bank').val(fp[0].fp_jatuhtempo);
-                    //$('.hari_bank').val(fp[0].fp_jatuhtempo);
+		
 
-                     //tambah data ke table data po
-                    var tablefaktur = $('#tbl-faktur').DataTable();
-                    tablefaktur.clear().draw();
-                    var n = 1;
-                    if(idjenisbayar == '2' ){
-                      $('.supfaktur').show();
-                      $('.invfaktur').show();
-                        for(var i = 0; i < fp.length; i++){   
-                                  
-                          var html2 = "<tr class='data"+n+"' id='data"+fp[i].fp_nofaktur+"'> <td>"+n+"</td>" +
-                                           "<td>"+fp[i].nama+"</td>" +
-                                          "<td>"+fp[i].fp_nofaktur+"</td>" +
-                                          "<td>"+fp[i].fp_noinvoice+"</td>" +                                       
-                                        
-                                          "<td>"+fp[i].nama_supplier +"</td>"+
-                                          "<td>"+fp[i].tt_noform+"</td>";
-                                          if(idjenisbayar != '7'){
-                                              html2 +=  "<td>"+fp[i].fp_jatuhtempo+"</td>";
-                                          }
-                                          else {
-                                            html2 +=  "<td>- </td>";
-                                          }
-                                         html2 += "<td>"+addCommas(fp[i].fp_sisapelunasan)+"</td> ";
-
-                                       
-                                        html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].fp_idfaktur+","+fp[i].fp_nofaktur+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
-                                      "<label></label>" +
-                                      "</div></td>";
-                                          
-                           html2 +=  "</tr>"; 
-                           tablefaktur.rows.add($(html2)).draw(); 
-                          n++; 
-
-                          console.log(n +'n');
-                         }      
-
-                        $('.hutangdagang').val(fp[0].acc_hutang);                       
-                    }
-                    else if(idjenisbayar == '6' || idjenisbayar == '7'|| idjenisbayar == '9') {
-                      $('.supfaktur').show();
-                      $('.invfaktur').show();
-                      for(var i = 0; i < fp.length; i++){   
-                                  
-                          var html2 = "<tr class='data"+n+"' id='data"+fp[i].fp_nofaktur+"'> <td>"+n+"</td>" +
-                                           "<td>"+fp[i].namacabang+"</td>" +
-                                          "<td>"+fp[i].fp_nofaktur+"</td>" +
-                                          "<td> - </td>";                                   
-                                          if(idjenisbayar == '9') {
-                                  html2 +=  "<td>"+fp[i].namavendor +"</td>";                                            
-                                          }
-                                          else {
-                                  html2 += "<td>"+fp[i].namaoutlet+"</td>";
-                                          }
-
-                                          html2 += "<td> - </td>";
-                                          if(idjenisbayar == 6){
-                                            html2 += "<td>"+fp[i].fp_jatuhtempo+"</td>";
-                                          }
-                                          else {
-                                            html2 += "<td> - </td>";
-                                          }
-
-                                       html2 += "<td>"+addCommas(fp[i].fp_sisapelunasan)+"</td> ";
-
-                                       
-                                        html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].fp_idfaktur+","+fp[i].fp_nofaktur+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
-                                      "<label></label>" +
-                                      "</div></td>";
-                                          
-                           html2 +=  "</tr>"; 
-                           tablefaktur.rows.add($(html2)).draw(); 
-                          n++; 
-
-                          console.log(n +'n');
-                         }      
-
-                        $('.hutangdagang').val(fp[0].acc_hutang);     
-                    }
-                    else if(idjenisbayar == '3'){
-                      $('.supfaktur').show();
-                      $('.invfaktur').show();
-                       for(var i = 0; i < fp.length; i++){   
-                                  
-                          var html2 = "<tr class='data"+n+"' id='data"+fp[i].v_nomorbukti+"'> <td>"+n+"</td>" +
-                                           "<td>"+fp[i].nama+"</td>" +
-                                          "<td>"+fp[i].v_nomorbukti+"</td>" +
-                                          "<td> - </td>" +                                       
-                                        
-                                          "<td>"+fp[i].nama_supplier +"</td>"+
-                                          "<td> - </td>" +
-                                          "<td>"+fp[i].v_tempo+"</td>" +
-                                          "<td>"+fp[i].v_pelunasan+"</td> ";
-
-                                       
-                                        html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].v_id+","+fp[i].v_nomorbukti+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
-                                      "<label></label>" +
-                                      "</div></td>";
-                                          
-                           html2 +=  "</tr>"; 
-                           tablefaktur.rows.add($(html2)).draw(); 
-                          n++; 
-
-                          console.log(n +'n');
-                         }   
-                    }
-                    else if(idjenisbayar == '4'){
-                      $('.invfaktur').hide();
-                      $('.supfaktur').hide();
-                      for(var i = 0; i < fp.length; i++){   
-                    
-                          var html2 = "<tr class='data"+n+"' id='data"+fp[i].um_nomorbukti+"'>"+
-                                          " <td>"+n+"</td>" +
-                                          "<td>"+fp[i].nama+"</td>" +
-                                          "<td>"+fp[i].um_nomorbukti+"</td>" +
-                                          " <td class='invfaktur'> </td> <td class='supfaktur'> </td>" +
-                                          "<td> - </td>" +
-                                          "<td> - </td>" +
-                                          "<td>"+fp[i].um_pelunasan+"</td> ";
-                                        html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].um_id+","+fp[i].um_nomorbukti+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
-                                      "<label></label>" +
-                                      "</div></td>";
-                                          
-                           html2 +=  "</tr>"; 
-                         
-                           tablefaktur.rows.add($(html2)).draw(); 
-                          n++; 
-
-                          console.log(n +'n');
-                         } 
-                           $('.invfaktur').hide();
-                      $('.supfaktur').hide(); 
-                    }
-                                         
-                    else if(idjenisbayar == '1'){
-                       for(var i = 0; i < fp.length; i++){                                   
-                          var html2 = "<tr class='data"+n+"' id='data"+fp[i].ik_nota+"'> <td>"+n+"</td>" +
-                                           "<td>"+fp[i].nama+"</td>" +
-                                          "<td>"+fp[i].ik_nota+"</td>" +
-                                          "<td> - </td>" +                                       
-                                        
-                                          "<td>"+fp[i].nama +"</td>"+
-                                          "<td> - </td>" +
-                                          "<td> - </td>" +
-                                          "<td>"+fp[i].ik_pelunasan+"</td> ";
-
-                                       
-                                        html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].ik_id+","+fp[i].ik_nota+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
-                                      "<label></label>" +
-                                      "</div></td>";
-                                          
-                           html2 +=  "</tr>"; 
-                           tablefaktur.rows.add($(html2)).draw(); 
-                          n++; 
-
-                          console.log(n +'n');
-                         } 
-                    }
-                   
-                      }
-                    
-                })
-            })*/
-
-      if(idjenis == '2' || idjenis == '3' || idjenis == '4' || idjenis == '5' || idjenis == '6' || idjenis == '7' || idjenis == '8' || idjenis == '9' || idjenis == '1' || idjenis == '11') { // HUTANG DAGANG SUPPLIER
+      if(idjenis == '2' || idjenis == '3' || idjenis == '4' || idjenis == '5' || idjenis == '6' || idjenis == '7' || idjenis == '8' || idjenis == '9' || idjenis == '1' || idjenis == '11' || idjenis == '13') { // HUTANG DAGANG SUPPLIER
         $('.tbl-jenisbayar').show();
         $('.deskirpsijenisbayar').hide();
         $("#jurnal").show(); 
