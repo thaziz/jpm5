@@ -81,9 +81,13 @@
                                 <td style="width:110px; padding-top: 0.4cm">Subcon <b>*</b></td>
                                 <td colspan="3">
                                     <select class="form-control subcon chosen-select-width" name="cb_subcon" >
-                                        <option value="0">NON SUBCON</option>
+                                            <option value="0" selected="">NON SUBCON</option>
                                     @foreach ($subcon as $row)
-                                        <option value="{{$row->kode}}">{{$row->kode}} - {{$row->nama}}</option>
+                                        @if ($row->kode == isset($data->kode_subcon) )
+                                            <option value="{{$row->kode}}" selected="">{{$row->kode}} - {{$row->nama}}</option>
+                                        @else
+                                            <option value="{{$row->kode}}">{{$row->kode}} - {{$row->nama}}</option>
+                                        @endif
                                     @endforeach
                                     </select>
                                 </td>
@@ -351,6 +355,7 @@
             data : $('#form_header').serialize() ,
             success: function(data, textStatus, jqXHR)
             {
+                
                 if(data.crud == 'N'){
                     if(data.result != 1){
                         alert("Gagal menyimpan data!");
@@ -363,8 +368,10 @@
                     }else{
                         window.location.href = baseUrl + '/master_sales/kendaraan';
                     }
+                }else if(data.status == 'ada'){
+                     alert("NOPOL SUDAH ADA ,TERIMAKASIH DAN SAMPAI JUMPA LAGI!");
                 }else{
-                    swal("Error","invalid order","error");
+                     swal("Error","invalid order","error");
                 }
             },
             error: function(jqXHR, textStatus, errorThrown)
