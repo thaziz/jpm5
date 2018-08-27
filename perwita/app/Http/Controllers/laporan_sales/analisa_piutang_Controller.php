@@ -76,15 +76,15 @@ class analisa_piutang_Controller extends Controller
         // dd($invoice);
         $invoice_temp = $invoice;
         for ($i=0; $i < count($invoice_temp); $i++) { 
-            if ($invoice_temp[$i]->i_jatuh_tempo_tt != null) {
-                if (carbon::parse($invoice_temp[$i]->i_jatuh_tempo_tt)->toDateTimeString() < carbon::parse($req->min)->toDateTimeString()) {
-                    if (carbon::parse($invoice_temp[$i]->i_jatuh_tempo_tt)->toDateTimeString() > carbon::parse($req->max)->toDateTimeString()) {
+            if ($invoice_temp[$i]->i_tanggal_tanda_terima != null) {
+                if (carbon::parse($invoice_temp[$i]->i_tanggal_tanda_terima)->toDateTimeString() < carbon::parse($req->min)->toDateTimeString()) {
+                    if (carbon::parse($invoice_temp[$i]->i_tanggal_tanda_terima)->toDateTimeString() > carbon::parse($req->max)->toDateTimeString()) {
                         unset($invoice[$i]);
                     }
                 }else{
                     unset($invoice[$i]);
                 }
-            }elseif ($invoice_temp[$i]->i_jatuh_tempo_tt == null){
+            }elseif ($invoice_temp[$i]->i_tanggal_tanda_terima == null){
                 if (carbon::parse($req->min)->toDateTimeString() <  carbon::parse($invoice_temp[$i]->i_tanggal)->toDateTimeString()) {
                     if (carbon::parse($invoice_temp[$i]->i_tanggal)->toDateTimeString() > carbon::parse($req->max)->toDateTimeString()) {
                         unset($invoice[$i]);
