@@ -86,7 +86,7 @@
 
           <select name="status_aktif" class="select_validate form-control" id="status_aktif">
             <option value="1" {{ $a }}> Aktif</option>
-            <option value="2" {{ $t }}> Tidak</option>
+            <option value="0" {{ $t }}> Tidak</option>
           </select>
         </td>
       </tr>
