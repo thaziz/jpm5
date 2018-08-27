@@ -59,9 +59,9 @@
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
-                                <td >
+                                <td class="disabled">
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control ed_tanggal" name="ed_tanggal" value="{{ $data->tanggal}}">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control ed_tanggal" name="ed_tanggal" readonly="" value="{{ $data->tanggal}}">
                                     </div>
                                 </td>
                             </tr>
@@ -406,13 +406,17 @@ $('#append').click(function(){
     var cabang = $('.cabang').val();
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
     var nomor = [];
+    var tanggal = [];
+    var ed_tanggal = $('.ed_tanggal').val();
 if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B') {
     $('.tanda').each(function(){
         var check = $(this).is(':checked');
         if (check == true) {
             var par   = $(this).parents('tr');
             var inv   = $(par).find('.kwitansi_modal').val();
+            var tgl   = $(par).find('.tanggal').text();
             nomor.push(inv);
+            tanggal.push(tgl);
             array_simpan.push(inv);
 
         }  
@@ -423,31 +427,38 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembaya
         data : {nomor,cabang,nomor,cb_jenis_pembayaran},
         dataType:'json',
         success:function(data){
-            for (var i = 0; i < data.data.length; i++) {
-                if (cb_jenis_pembayaran == 'F') {
-                    var cek = '<input type="text" value="" class="form-control d_cek" name="d_cek[]">';
-                }else{
-                    var cek = '<input readonly type="text" value="" class="form-control d_cek" name="d_cek[]">';
+            if (data.status == '1') {
+                for (var i = 0; i < data.data.length; i++) {
+                    if (cb_jenis_pembayaran == 'F') {
+                        var cek = '<input type="text" value="" class="form-control d_cek" name="d_cek[]">';
+                    }else{
+                        var cek = '<input readonly type="text" value="" class="form-control d_cek" name="d_cek[]">';
 
+                    }
+                    table_data.row.add([
+                        data.data[i].k_nomor+'<input type="hidden" value="'+data.data[i].k_nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
+
+                        data.data[i].nama+'<input type="hidden" value="'+data.data[i].kode+'" class="form-control d_customer" name="d_customer[]">'+
+                        '<input type="hidden" value="'+data.data[i].k_kode_akun+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
+
+                        accounting.formatMoney(data.data[i].k_netto,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].k_netto+'" class="form-control d_netto" name="d_netto[]">',
+                        cek,
+
+                        '<input type="text" class="form-control d_keterangan" placeholder="keterangan..." name="d_keterangan[]">',
+
+                        '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+                    ]).draw();
                 }
-                table_data.row.add([
-                    data.data[i].k_nomor+'<input type="hidden" value="'+data.data[i].k_nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
-
-                    data.data[i].nama+'<input type="hidden" value="'+data.data[i].kode+'" class="form-control d_customer" name="d_customer[]">'+
-                    '<input type="hidden" value="'+data.data[i].k_kode_akun+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
-
-                    accounting.formatMoney(data.data[i].k_netto,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].k_netto+'" class="form-control d_netto" name="d_netto[]">',
-                    cek,
-
-                    '<input type="text" class="form-control d_keterangan" placeholder="keterangan..." name="d_keterangan[]">',
-
-                    '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
-                ]).draw();
+                $('#modal').modal('hide');
+                hitung();
+                $('.cb_jenis_pembayaran').addClass('disabled');
+                $('.cabang_td').addClass('disabled');
+                $('.tanggal_td').addClass('disabled');
+                $('.ed_tanggal').prop('readonly',true);
+            }else if(data.status == '0'){
+                return toastr.warning('Tanggal Kwitansi Tidak Boleh Melebihi Tanggal Posting');
+                $('#modal').modal('hide');
             }
-            $('#modal').modal('hide');
-            hitung();
-            $('.cb_jenis_pembayaran').addClass('disabled');
-            $('.cabang_td').addClass('disabled');
         }
     })
 
