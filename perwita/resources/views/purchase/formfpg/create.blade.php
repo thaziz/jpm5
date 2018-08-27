@@ -1925,7 +1925,7 @@
                           $('.pelunasan').attr('readonly' , false);
                           $('.jmlhfaktur').val(addCommas(data.faktur[0][0].bp_nominalkeu));
                           $('.hutangdagang').val(data.faktur[0][0].bp_akunhutang); 
-                            $('.cabangfaktur').val(data.faktur[0][0].bp_akunhutang);
+                          $('.cabangfaktur').val(data.faktur[0][0].bp_akunhutang);
 
 
                      //LOOPING DATA NO FAKTUR 

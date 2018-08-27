@@ -10357,11 +10357,11 @@ public function kekata($x) {
 				$nofaktur = $request->nofaktur2[$i];
 
 				$data['faktur'][] = DB::select("select * from bonsem_pengajuan where bp_id = '$idfp1'");
-				$data['pembayaran'][] = DB::select("select fpg_nofpg as nofpg, fpg_tgl as tgl, fpgdt_pelunasan as pelunasan, bp_nota as nofaktur, bp_id as idfp from fpg,fpg_dt, bonsem_pengajuan where fpgdt_idfp ='$idfp1' and fpgdt_idfpg = idfpg and fpgdt_idfp = bp_id and fpgdt_nofaktur = bp_nota union select bkk_nota as nofpg, bkk_tgl as tgl, bkkd_total as pelunasan, bkkd_ref as nofaktur, bp_id as idfp from bukti_kas_keluar, bukti_kas_keluar_detail, bonsem_pengajuan where bkkd_bkk_id = bkk_id and bkkd_ref = '$nofaktur' and bkkd_ref = bp_nota");
+				/*$data['pembayaran'][] = DB::select("select fpg_nofpg as nofpg, fpg_tgl as tgl, fpgdt_pelunasan as pelunasan, bp_nota as nofaktur, bp_id as idfp from fpg,fpg_dt, bonsem_pengajuan where fpgdt_idfp ='$idfp1' and fpgdt_idfpg = idfpg and fpgdt_idfp = bp_id and fpgdt_nofaktur = bp_nota union select bkk_nota as nofpg, bkk_tgl as tgl, bkkd_total as pelunasan, bkkd_ref as nofaktur, bp_id as idfp from bukti_kas_keluar, bukti_kas_keluar_detail, bonsem_pengajuan where bkkd_bkk_id = bkk_id and bkkd_ref = '$nofaktur' and bkkd_ref = bp_nota");*/
 			}
 
 
-			$data['perhitunganfaktur'] = array();
+			/*$data['perhitunganfaktur'] = array();
 				$perhitunganfaktur = 0;
 
 			for($kz = 0; $kz < count($data['pembayaran']); $kz++){
@@ -10378,7 +10378,7 @@ public function kekata($x) {
 
 				}
 				array_push($data['perhitunganfaktur'], $perhitunganfaktur);
-			}
+			}*/
 		}
 
 		return json_encode($data);
