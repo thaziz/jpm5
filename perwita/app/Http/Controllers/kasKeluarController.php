@@ -303,6 +303,11 @@ class kasKeluarController extends Controller
 				  ->where('maf_cabang',$req->cabang)
 				  ->orWhere('maf_cabang','000')
 				  ->get();
+			}else{
+				$akun = DB::table('master_akun_fitur')
+				  ->where('maf_group','1')
+				  ->where('maf_cabang',$req->cabang)
+				  ->get();
 			}
 		}else{
 			$akun = DB::table('master_akun_fitur')
