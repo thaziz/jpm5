@@ -110,7 +110,7 @@
                       <tr>
                         <td>Tanggal</td>
                         <td colspan="2">
-                          <input type="text" me="" value="{{ carbon\carbon::now()->format('d/m/Y') }}" readonly="" class="form-control tgl">
+                          <input type="text" name="tgl" value="{{ carbon\carbon::now()->format('d/m/Y') }}" readonly="" class="form-control tgl">
                         </td>
                         <td>Jatuh Tempo</td>
                         <td >
