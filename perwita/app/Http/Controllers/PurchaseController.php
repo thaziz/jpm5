@@ -60,7 +60,7 @@ use Mail;
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 use Auth;
-use bonsempengajuan;
+use App\bonsempengajuan;
 
 class PurchaseController extends Controller
 {
@@ -7384,6 +7384,9 @@ public function kekata($x) {
 		else if($jenisbayar == '12'){
 			$data['fpg'] = DB::select("select * from fpg, fpg_cekbank, cabang, masterbank, jenisbayar where idfpg = '$idfpg' and fpg_jenisbayar = idjenisbayar and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpgb_id = '$idfpgb' and fpgb_idfpg = idfpg and idfpg = '$idfpg' and fpg_cabang = kode");
 		}
+		else if($jenisbayar == '13'){ //PENCAIRAN BONSEM
+			$data['fpg'] = DB::select("select * from fpg, fpg_cekbank, cabang, masterbank, jenisbayar where idfpg = '$idfpg' and fpg_jenisbayar = idjenisbayar and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpgb_id = '$idfpgb' and fpgb_idfpg = idfpg and idfpg = '$idfpg' and fpg_cabang = kode");
+		}
 	}
 		/*$data['fpgbank'] = DB::select("select * from fpg_cekbank , fpg where fpdb_id = '$idfpgb' and fpgb_idfpg = idfpg and idfpg = '$idfpg' and fpdb_id = '$idfpgb' and fpgb_idfpg = idfpg and idfpg = '$idfpg'");*/
 
@@ -7484,7 +7487,6 @@ public function kekata($x) {
 
 		//return count($request->nofpg);
 		if($request->flag == 'CEKBG'){
-
 			$akunkodebank = $request->akunkodebank;
 			for($i = 0; $i < count($request->nofpg); $i++){
 				$bbkdt = new bukti_bank_keluar_dt();
@@ -7754,9 +7756,9 @@ public function kekata($x) {
 				else if($jenisbayar == '13'){
 					$datafpgdt = DB::select("select * from fpg, fpg_dt where idfpg = '$idfpg' and fpgdt_idfpg = idfpg");
 					for($i = 0 ; $i < count($datafpgdt); $i++){
-						$notabonsem = $datafpgdt[$i]->bp_nota;
+						$notabonsem = $datafpgdt[$i]->fpgdt_nofaktur;
 						$date =  date('Y-m-d');
-						$updatebonsem = bonsem_pengajuan::where('bp_nota' , '=' , $notabonsem);
+						$updatebonsem = bonsempengajuan::where('bp_nota' , '=' , $notabonsem);
 						$updatebonsem->update([
 							'bp_timepencairan' => $date,
 							'bp_statusend' =>'CAIR',
