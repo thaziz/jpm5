@@ -60,6 +60,10 @@ class kendaraan_Controller extends Controller
         $id = $request->ed_id;
         $crud = $request->crud_h;
         // dd($request->all());
+        $cek = DB::table('kendaraan')->where('nopol',$request->ed_nopol)->get();
+        if ($cek > 0 ) {
+            return response()->json(['status'=>'ada']);
+        }
         $data = array(
                 'nopol' => strtoupper($request->ed_nopol),
                 'divisi' => strtoupper($request->cb_divisi),

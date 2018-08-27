@@ -627,7 +627,7 @@
             }
             else {
               $('.nokontrak').empty();
-              $('.hslkontrak').hide();
+            
             }
         })
 

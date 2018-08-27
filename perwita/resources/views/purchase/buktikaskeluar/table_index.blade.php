@@ -20,8 +20,11 @@
 <script type="text/javascript">
 
   $(document).ready(function(){
-    var cabang = '{{$cab}}';
-    var jenis_bayar = '{{$jenisbayar}}';
+    var cabang        = '{{$cab}}';
+    var tanggal_awal  = '{{ $tanggal_awal }}';
+    var tanggal_akhir = '{{ $tanggal_akhir }}';
+    var jenis_biaya   = '{{ $jenis_biaya }}';
+    var nota          = '{{ $nota }}';
     tableDetail = $('.tbl-penerimabarang').DataTable({
          processing: true,
           // responsive:true,
@@ -29,7 +32,7 @@
           "order": [[ 1, "desc" ],[ 0, "desc" ]],
           ajax: {
               url:'{{ route("datatable_bkk") }}',
-              data:{cabang,jenis_bayar}
+              data:{cabang,tanggal_awal,tanggal_akhir,jenis_biaya,nota}
           },
           columnDefs: [
             {

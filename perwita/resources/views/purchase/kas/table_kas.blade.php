@@ -1,4 +1,4 @@
-<table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
+<table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang" style="width: 100%">
   <thead align="center">
    <tr>
         <th> No. BBM </th>
@@ -20,15 +20,20 @@
 <script type="text/javascript">
 
   $(document).ready(function(){
-    var cabang = '{{$cab}}';
+    var cabang        = '{{$cab}}';
+    var tanggal_awal  = '{{ $tanggal_awal }}';
+    var tanggal_akhir = '{{ $tanggal_akhir }}';
+    var jenis_biaya   = '{{ $jenis_biaya }}';
+    var nota          = '{{ $nota }}';
     $('.tbl-penerimabarang').DataTable({
          processing: true,
           // responsive:true,
+          searching:false,
           serverSide: true,
           "order": [[ 1, "desc" ],[ 0, "desc" ]],
           ajax: {
               url:'{{ route("datatable_bk") }}',
-              data:{cabang}
+              data:{cabang,tanggal_awal,tanggal_akhir,jenis_biaya,nota}
           },
           columnDefs: [
             {

@@ -528,6 +528,8 @@ Route::get('queryanalisa', 'Queryanalisa@view');
 
 
 Route::get('bankmasuk/bankmasuk' ,'BankMasukController@bankmasuk');
+Route::get('bankmasuk/databank' ,'BankMasukController@getdata');
+Route::post('bankmasuk/saveterima' ,'BankMasukController@saveterima');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');
@@ -1624,18 +1626,22 @@ Route::get('sales/updatestatusordercabang', function(){
 // surat jalan by trayek
 Route::get('sales/surat_jalan_trayek', 'sales\surat_jalan_trayek_Controller@index');
 Route::get('sales/surat_jalan_trayek_form/tampil_do', 'sales\surat_jalan_trayek_Controller@tampil_do');
+Route::get('sales/surat_jalan_trayek_form/ganti_nota', 'sales\surat_jalan_trayek_Controller@ganti_nota');
 Route::get('sales/surat_jalan_trayek_form', 'sales\surat_jalan_trayek_Controller@form');
-Route::get('sales/surat_jalan_trayek_form/{nomor}/edit', 'sales\surat_jalan_trayek_Controller@form');
+Route::get('sales/surat_jalan_trayek_form/edit/{nomor}', 'sales\surat_jalan_trayek_Controller@edit');
 Route::get('sales/surat_jalan_trayek_form/{nomor}/hapus_data', 'sales\surat_jalan_trayek_Controller@hapus_data');
 Route::get('sales/surat_jalan_trayek_form/tabel_data_detail', 'sales\surat_jalan_trayek_Controller@table_data_detail');
 Route::get('sales/surat_jalan_trayek/tabel', 'sales\surat_jalan_trayek_Controller@table_data');
 Route::get('sales/surat_jalan_trayek/get_data', 'sales\surat_jalan_trayek_Controller@get_data');
 Route::get('sales/surat_jalan_trayek/get_data_detail', 'sales\surat_jalan_trayek_Controller@get_data_detail');
-Route::post('sales/surat_jalan_trayek/save_data', 'sales\surat_jalan_trayek_Controller@save_data');
+Route::post('sales/surat_jalan_trayek_form/save_data', 'sales\surat_jalan_trayek_Controller@save_data');
 Route::post('sales/surat_jalan_trayek/save_data_detail', 'sales\surat_jalan_trayek_Controller@save_data_detail');
 Route::post('sales/surat_jalan_trayek/hapus_data', 'sales\surat_jalan_trayek_Controller@hapus_data');
-Route::post('sales/surat_jalan_trayek/hapus_data_detail', 'sales\surat_jalan_trayek_Controller@hapus_data_detail');
-Route::get('sales/surat_jalan_trayek_form/{nomor}/nota', 'sales\surat_jalan_trayek_Controller@cetak_nota');
+Route::get('sales/surat_jalan_trayek/hapus_data_detail', 'sales\surat_jalan_trayek_Controller@hapus_data_detail');
+Route::get('sales/surat_jalan_trayek_form/nota/{nomor}', 'sales\surat_jalan_trayek_Controller@cetak_nota');
+
+Route::get('sales/surat_jalan_trayek_form/datatable_sjt', 'sales\surat_jalan_trayek_Controller@datatable_sjt')->name('datatable_sjt');
+
 // end surat jalan by trayek
 
 

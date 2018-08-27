@@ -496,7 +496,7 @@ function lihatjurnal($ref,$note){
         
             swal({
             title: "Apakah anda yakin?",
-            text: "Simpan Data Faktur Pembelian!",
+            text: "Simpan Data!",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -585,7 +585,7 @@ $('#statuskacab').submit(function(event){
         
             swal({
             title: "Apakah anda yakin?",
-            text: "Simpan Data Faktur Pembelian!",
+            text: "Simpan Data!",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",

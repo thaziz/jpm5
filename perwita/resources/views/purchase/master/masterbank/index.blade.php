@@ -58,7 +58,7 @@
                       <th> Nama Bank </th>
                       <th> Cabang </th>
                       <th> Alamat </th>
-                      <th> No Account </th>
+                      <th> No Rekening </th>
                       <th> Nama Rekening </th> 
                       <th> Aksi </th>                
                     </tr>
@@ -69,7 +69,7 @@
                       <td>  {{$index + 1}} </td>
                       <td> {{$bank->mb_kode}}</td>
                       <td> {{$bank->mb_nama}} </td>
-                      <td> {{$bank->mb_cabang}}</td>
+                      <td> {{$bank->mb_cabangbank}} - {{$bank->nama}}</td>
                       <td> {{$bank->mb_alamat}}</td>
                       <td> {{$bank->mb_accno}}</td>
                       <td> {{$bank->mb_namarekening}}</td>

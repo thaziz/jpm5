@@ -173,7 +173,14 @@
                             </td>
 
                             <td>
-                                <span class="label label-info "> {{$sup->status}} </span>
+                                <select class="form-control" name="status">
+                                  <option value="SETUJU">
+                                    SETUJU
+                                  </option>
+                                  <option value="TIDAK SETUJU">
+                                    TIDAK SETUJU
+                                  </option>
+                                </select>
                             </td>
                           </tr>
                       </table>                          
@@ -404,16 +411,16 @@
                             <tr id="dataitem item-{{$index}}" class="dataitem item-{{$index}}"> 
                               <td> {{$index + 1}} <input type="hidden" name="iditemsup[]" value="{{$item->is_id}}"> </td>
                               <td> 
-                              <select class="form-control brg tablebarang" disabled="" name="brg[]">
+                              <select class="form-control brg tablebarang"  name="brg[]" data-id="{{$index}}">
                                @foreach($data['barang'] as $brg) 
-                                 <option value="{{$brg->kode_item}}" @if($item->is_kodeitem == $brg->kode_item) selected="" @endif>  {{$brg->nama_masteritem}} </option>
+                                 <option value="{{$brg->kode_item}}+{{$brg->harga}}+{{$brg->updatestock}}" @if($item->is_kodeitem == $brg->kode_item) selected="" @endif>  {{$brg->nama_masteritem}} </option>
                                 @endforeach
                               </select>
 
                               </td>
-                              <td> <input type="text" class="form-control hrg harga{{$index}} tablebarang" value=" {{number_format($item->is_harga, 2)}}" readonly="" name="harga[]"> </td>
+                              <td> <input type="text" class="form-control hrg harga{{$index}} tablebarang" value="{{number_format($item->is_harga, 2)}}" readonly="" name="harga[]"> </td>
 
-                              <td> <select class="form-control tablebarang" name="updatestock[]"> <option value="Y"> Ya </option> <option value="T"> Tidak </option> </select> </td>
+                              <td> <select class="form-control tablebarang updatestock{{$index}}" name="updatestock[]" readonly=""> <option value="Y"> Ya </option> <option value="T"> Tidak </option> </select> </td>
                               <td> <a class="btn btn-danger removes-btn" data-id="{{$index}}"> <i class="fa fa-trash"> </i> </a> </td>
                             </tr>
                             @endforeach
@@ -450,6 +457,8 @@
                           <input class="btn btn-warning" name="setuju" value="TIDAK SETUJU" type="submit">
 
                         @endif
+
+                         <div class="perbaruidata"> </div> 
                     </form>             
 
                 </div>
@@ -475,6 +484,9 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+
+   
 
     $('.simpandata').click(function(){
       
@@ -529,6 +541,8 @@
     })
 
 
+  
+
 //EDIT DATA
 $(function(){
   $('.edit').click(function(){
@@ -551,7 +565,7 @@ $(function(){
     $('#pajak_pph').attr('disabled' , false);
     $('#pajak_ppn').attr('disabled' , false);
     $('.brg').attr('disabled' , false);
-    $('.hrg').attr('readonly' , false);
+  
     $('#idcabang').attr('disabled', false);
     $('.ubah').attr('readonly' , false);
     $('.ubah').attr('disabled' , false);
@@ -567,20 +581,20 @@ $(function(){
 
     var rowdelete = '<input type="submit" id="submit" name="submit" value="PERBARUI" class="btn btn-success">';
 
-    $('.simpandata').html(rowdelete);
+    $('.perbaruidata').html(rowdelete);
     
-      $notable = $('tr#dataitem').length;
+      $notable = $('tr.dataitem').length;
      $no = $notable + 1;
     $('#tmbh_data_barang').click(function(){
                      
-    $no++;
+   
 
     var rowBrg = "<tr id='dataitem item-"+$no+"' class='dataitem item-"+$no+"'>" +
                   "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
-                  "<td> <select class='form-control' name='brg[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
-                   "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
-                   "<td> <select class='form-control' name='updatestock[]'> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
-                  "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a>"+$no+"</td>" +
+                  "<td> <select class='form-control brg' name='brg[]' data-id="+$no+">  @foreach($data['item'] as $item) <option value='{{$item->kode_item}}+{{$item->harga}}+{{$item->updatestock}}'> {{$item->nama_masteritem}} </option> @endforeach </select>" +
+                   "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"' readonly> </td>" +
+                   "<td> <select class='form-control updatestock"+$no+"' name='updatestock[]' readonly> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
+                  "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a></td>" +
                   "</tr>";   
 
    $("#addColumn").append(rowBrg);
@@ -606,15 +620,36 @@ $(function(){
               var parent = $('.item-'+id);
 
              parent.remove();
-          })
+          });
 
+
+         $('.brg').change(function(){
+            val = $(this).val();
+            explode = val.split("+");
+            harga = explode[1];
+            updatestock = explode[2];
+          
+            dataid = $(this).data('id');
+            $('.hrg' + dataid).val(addCommas(harga));
+            $('.updatestock' + dataid).val(updatestock);
+         });
 
     })
 
   })
 })
-
   
+      $('.brg').change(function(){
+            val = $(this).val();
+            explode = val.split("+");
+            harga = explode[1];
+            updatestock = explode[2];
+            
+            dataid = $(this).data('id');
+            $('.harga' + dataid).val(addCommas(harga));
+            $('.updatestock' + dataid).val(updatestock);
+         });
+
 
    $(function(){
             $('.provinsi').change(function(){
@@ -660,7 +695,7 @@ $(function(){
 
     var rowBrg = "<tr id='dataitem item-"+$no+"' class='item-"+$no+"'>" +
                   "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
-                  "<td> <select class='form-control' name='brg[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
+                  "<td> <select class='form-control brg' name='brg[]'>  @foreach($data['item'] as $item) <option value='{{$item->kode_item}}+{{$item->harga}}+{{$item->updatestock}}'> {{$item->nama_masteritem}} </option> @endforeach </select>" +
                    "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
                    "<td> <select class='form-control' name='updatestock[]'> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
                   "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a></td>" +
@@ -899,7 +934,7 @@ $('.cabang').change(function(){
             var id = $(this).data('id');
           //  console.log(data);
             datakontrak = $('.datakontraksup').val();
-            alert(datakontrak);
+          
             if(data == "YA") {
                 if(datakontrak == "YA"){
                
@@ -919,9 +954,9 @@ $('.cabang').change(function(){
 
               $('.nokontrak').empty();
              
-               $('.tmbhdatabarang').attr('disabled' , true);
+              /* $('.tmbhdatabarang').attr('disabled' , true);
                $('.tablebarang').hide();
-               $('#addColumn').attr('disabled' , true);
+               $('#addColumn').attr('disabled' , true);*/
               
             }
         })

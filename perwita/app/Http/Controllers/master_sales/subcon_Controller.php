@@ -96,7 +96,7 @@ class subcon_Controller extends Controller
         if ($crud == 'N') {
              $data = array(
                 'id_subcon' =>$idsubconkode,
-                'kode' => $kodekode,
+                'kode' => strtoupper($kodekode),
                 'cabang' => $request->cabang,
                 'nama' => strtoupper($request->ed_nama),                
                 'nomor_kontrak' => strtoupper($request->ed_nomor_kontrak),

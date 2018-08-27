@@ -524,7 +524,7 @@
             '<tr> <td>  Keperluan  </th> <td> : </td> <td>'+response.spp[i][0].spp_keperluan+'</td> </tr>' +
             '<tr> <td>  Tgl di Butuhkan </td> <td> : </td> <td>'+response.spp[i][0].spp_tgldibutuhkan+'</td> </tr>' +
             '<tr> <td> Pembayaran </td> <td> : </td> <td> '+response.spp[i][0].spptb_bayar+' hari </td> </tr>' +
-            '<tr> <td> Total Biaya di Perlukan </td> <td> : </td><th> Rp '+ addCommas(response.spp[i][0].cotb_totalbiaya) +'</th> </tr>' +
+            '<tr> <td> Total Biaya di Perlukan </td> <td> : </td><td> Rp '+ addCommas(response.spp[i][0].cotb_totalbiaya) +'</td> </tr>' +
             '<tr> <td> Cabang Pemohon </td> <td> :  </td> <td>'+response.spp[i][0].nama  +'</td> </tr>';
 
             if(response.spp[i][0].mg_namagudang == undefined) {
@@ -555,6 +555,7 @@
                     '</thead>' +
                     '<tbody>'; 
           
+
           for(var j=0; j < response.codt[i].length; j++){
                     no = 1 + j;
               
@@ -596,14 +597,16 @@
 
                       $('.tablespp').append(rowTable);
 
-                    
+                      if(response.spp[0][0].spp_tipe != 'J'){
                       for(var k = 0; k < response.gudang.length; k++){
                           if(response.gudang[k].mg_cabang == response.spp[0][0].spp_lokasigudang){
                               $('.gudang').val(response.gudang[k].mg_id );
                               console.log('gudang');                        
                           }
                       }
+                    }
 
+     //   alert(response.spp[0][0].spp_tipe);              
         if(response.spp[0][0].spp_tipe == 'J'){
           $('#tdgudang').hide();
         }

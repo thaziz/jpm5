@@ -70,7 +70,10 @@
                         <tr>
                           <th>No</th>
                           <th>Nomor</th>
+                          <th>Cabang</th>
                           <th>Tanggal</th>
+                          <th>Tanggal Terima</th>
+                          <th>Jatuh Tempo</th>
                           <th>Total Terima</th>
                           <th>Kode Pihak Ketiga</th>
                           <th>Print</th>
@@ -138,7 +141,10 @@
             "columns": [
             { "data": "DT_Row_Index",},
             { "data": "ft_nota" },
-            { "data": "ft_tanggal" },
+            { "data": "cabang" },
+            { "data": "tanggal_buat"},
+            { "data": "ft_tanggal"},
+            { "data": "ft_jatuh_tempo"},
             { "data": "ft_total",render: $.fn.dataTable.render.number( '.', '.', 0, '' )},
             { "data": "ft_customer" },
             { "data": "print" },

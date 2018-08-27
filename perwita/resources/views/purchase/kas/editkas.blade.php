@@ -155,7 +155,7 @@
                 <td hidden="" class="pembiayaan_paket">
                    <select class="form-control " name="pembiayaan_paket" >
                     @foreach($akun_paket as $val)
-                     <option @if($data->bpk_pembiayaan == $val->kode) selected="" @endif value="{{ $val->kode }}">{{ $val->kode}} - {{ $val->nama }}</option>
+                     <option @if($data->bpk_pembiayaan == $val->kode) selected="" @endif value="{{ $val->jenis_bbm }}">{{ $val->kode}} - {{ $val->nama }}</option>
                     @endforeach
                    </select>
                 </td>
@@ -163,7 +163,7 @@
                 <td hidden="" class="pembiayaan_cargo">
                     <select class="form-control " name="pembiayaan_cargo" >
                      @foreach($akun_kargo as $val)
-                     <option @if($data->bpk_pembiayaan == $val->kode) selected="" @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                     <option @if($data->bpk_pembiayaan == $val->kode) selected="" @endif value="{{ $val->jenis_bbm }}">{{ $val->kode }} - {{ $val->nama }}</option>
                     @endforeach
                     </select>
                 </td>

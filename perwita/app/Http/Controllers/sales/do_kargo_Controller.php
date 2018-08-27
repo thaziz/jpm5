@@ -318,7 +318,7 @@ class do_kargo_Controller extends Controller
                   ->where('kendaraan.tipe_angkutan',$request->tipe_angkutan)
                   ->where('kendaraan.status','SUB')
                   // ->where('kode_cabang',$request->cabang_select)
-                  ->where('kendaraan.kode_subcon',$request->nama_subcon)
+                  ->where('kendaraan.kode_subcon',strtoupper($request->nama_subcon))
                   ->get();
         }
         
@@ -413,11 +413,12 @@ class do_kargo_Controller extends Controller
         $bulan  = Carbon::now()->format('m');
         $tahun  = Carbon::now()->format('y');
         $cabang = $request->cabang;
-         $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from delivery_order
+        $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from delivery_order
                                         WHERE kode_cabang = '$cabang'
                                         AND to_char(created_at,'MM') = '$bulan'
                                         AND nomor like 'KGO%'
-                                        AND to_char(created_at,'YY') = '$tahun'");
+                                        AND to_char(created_at,'YY') = '$tahun'
+                                        ");
 
         $index = (integer)$cari_nota[0]->id + 1;
         $index = str_pad($index, 5, '0', STR_PAD_LEFT);

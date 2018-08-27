@@ -43,6 +43,9 @@
   .my-bg{
     background: #f0b7d6;
   }
+  td{
+    vertical-align: top!important;
+  }
 </style>
 <!-- <link href="{{ asset('assets/vendors/chosen/chosen.css')}}" rel="stylesheet"> -->
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -174,7 +177,6 @@
                 </td>
                 <td><?php echo date('d/m/Y',strtotime($val->tanggal));?></td>
                 <td>{{$val->nota}}</td>
-                @if ($data->ik_jenis != 'BONSEM')
                   <td>
                     <ul>
                       @foreach($detail[$i] as $a=>$val2)
@@ -182,9 +184,6 @@
                       @endforeach
                     </ul>
                   </td>
-                @else
-                <td>{{$val->akun_kas}}</td>
-                @endif
                 <td align="right">{{'' . number_format(round($val->nominal),2,',','.')}}
                   <input type="hidden" name="nominal[]" class="nominal" value="{{round($val->nominal)}}">
                 </td>
@@ -219,7 +218,7 @@ $('.reportrange').daterangepicker({
 
 
 var tabel_patty = $('.tabel_patty_cash').DataTable({
-    'searching':false
+  
   })
 
 

@@ -25,31 +25,31 @@
                      @foreach ($array as $index => $e)
                        <tr>
                          <td><input type="hidden" name="" class="fore">{{ $index+1 }}</td>
-                        {{--  <td>{{ $saldoawal[$index]->saldo }}</td>
-                         <td>{{ $saldoawal[$index]->saldo }}</td> --}}
-                        {{--  <td><input type="hidden" value="{{ $saldoawal[$index][0]->saldoawal }}" class="saldoawal_{{ $index }}" name="">
-                          {{ $saldoawal[$index][0]->saldoawal }}
+                         <td>{{ $customer[$index][0]->kode }}</td>
+                         <td>{{ $customer[$index][0]->nama }}</td>
+                         <td><input type="hidden" value="{{ $saldoawal[$index][0]->saldo or 0}}" class="saldoawal_{{ $index }}" name="">
+                          {{ $saldoawal[$index][0]->saldo or 0}}
                          </td>
-                         <td><input type="hidden" value="{{ $piutangbaru[$index][0]->piutang_baru }}" class="piutangbaru_{{ $index }}" name="">
-                          {{ $piutangbaru[$index][0]->piutang_baru }}
+                         <td><input type="hidden" value="{{ $piutangbaru[$index][0]->piutang_baru or 0}}" class="piutangbaru_{{ $index }}" name="">
+                          {{ $piutangbaru[$index][0]->piutang_baru or 0}}
                          </td>
-                         <td><input type="hidden" value="{{ $notadebet[$index][0]->nota_debet }}" class="notadebet_{{ $index }}" name="">
-                          {{ $notadebet[$index][0]->nota_debet }}
+                         <td><input type="hidden" value="{{ $notadebet[$index][0]->nota_debet or 0}}" class="notadebet_{{ $index }}" name="">
+                          {{ $notadebet[$index][0]->nota_debet or 0}}
                          </td>
-                         <td><input type="hidden" value="{{ $cash[$index][0]->cash  }}" class="cash_{{ $index }}" name="">
-                          {{ $cash[$index][0]->cash }}
+                         <td><input type="hidden" value="{{ $cash[$index][0]->cash  or 0}}" class="cash_{{ $index }}" name="">
+                          {{ $cash[$index][0]->cash or 0}}
                          </td>
-                         <td><input type="hidden" value="{{ $cek_bg_trsn[$index][0]->cek_bg_trsn }}" class="cek_bg_trsn_{{ $index }}" name="">
-                          {{ $cek_bg_trsn[$index][0]->cek_bg_trsn }}
+                         <td><input type="hidden" value="{{ $cek_bg_trsn[$index][0]->cek_bg_trsn  or 0}}" class="cek_bg_trsn_{{ $index }}" name="">
+                          {{ $cek_bg_trsn[$index][0]->cek_bg_trsn  or 0}}
                           </td>
-                         <td><input type="hidden" value="{{ $uangmuka[$index][0]->uangmuka }}" class="uangmuka_{{ $index }}" name="">
-                          {{ $uangmuka[$index][0]->uangmuka }}
+                         <td><input type="hidden" value="{{ $uangmuka[$index][0]->uangmuka or 0}}" class="uangmuka_{{ $index }}" name="">
+                          {{ $uangmuka[$index][0]->uangmuka or 0}}
                          </td>
-                         <td><input type="hidden" value="{{ $nota_kredit[$index][0]->nota_kredit }}" class="nota_kredit_{{ $index }}" name="">
-                          {{ $nota_kredit[$index][0]->nota_kredit }}
+                         <td><input type="hidden" value="{{ $nota_kredit[$index][0]->nota_kredit or 0}}" class="nota_kredit_{{ $index }}" name="">
+                          {{ $nota_kredit[$index][0]->nota_kredit or 0}}
                           </td>
                          <td class="total_{{ $index }}"></td>
-                         <td>{{ $sisa_uangmuka[$index][0]->sisa_uangmuka }}</td> --}}
+                         <td>{{ $sisa_uangmuka[$index][0]->sisa_uangmuka or 0}}</td>
                        </tr>
                      @endforeach
 

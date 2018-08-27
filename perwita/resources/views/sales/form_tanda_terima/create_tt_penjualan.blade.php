@@ -34,13 +34,13 @@
               <a>Home</a>
           </li>
           <li>
-              <a>Purchase</a>
+              <a>Penjualan</a>
           </li>
           <li>
-            <a>Transaksi Hutang</a>
+            <a>Transaksi Penjualan</a>
           </li>
           <li class="active">
-              <strong>Form Tanda Terima Pembelian</strong>
+              <strong>Form Tanda Terima Penjualan</strong>
           </li>
 
       </ol>
@@ -75,7 +75,7 @@
                         </td>
                         <td width="150">Customer</td>
                         <td colspan="2" class="customer_td">
-                          <select  name="customer" class="customer form-control chosen-select-width">
+                          <select  name="customer" onchange="custo()" class="customer form-control chosen-select-width">
                               <option value="0">Pilih - Customer</option>
                             @foreach ($customer as $val)
                               <option value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
@@ -87,7 +87,7 @@
                         <td>Cabang</td>
                         @if(Auth::user()->punyaAkses('Form Tanda Terima Pembelian','cabang'))
                         <td colspan="2" class="cabang_td">
-                          <select name="cabang" class="cabang form-control chosen-select-width">
+                          <select name="cabang"  class="cabang form-control chosen-select-width">
                             @foreach ($cabang as $val)
                               <option @if($val->kode == Auth::user()->kode_cabang)selected="" @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
                             @endforeach
@@ -102,9 +102,19 @@
                           </select>
                         </td>
                         @endif
-                        <td width="150">Tanggal</td>
+                        <td width="150">Tanggal Terima</td>
                         <td width="300">
                           <input type="text" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::now()->format('d/m/Y') }}">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Tanggal</td>
+                        <td colspan="2">
+                          <input type="text" me="" value="{{ carbon\carbon::now()->format('d/m/Y') }}" readonly="" class="form-control">
+                        </td>
+                        <td>Jatuh Tempo</td>
+                        <td >
+                          <input type="text" name="jatuh_tempo" value="" readonly="" class="jatuh_tempo form-control">
                         </td>
                       </tr>
                       <tr>
@@ -146,13 +156,8 @@
                         </td>
                       </tr>
                       <tr>
-                        <td>Lain-lain</td>
-                        <td colspan="2"><input type="text" class="lain form-control" name="lain"></td>
-                      
-                        <td>Jatuh Tempo</td>
-                        <td>
-                          <input type="text" name="jatuh_tempo" value="" readonly="" class="jatuh_tempo form-control">
-                        </td>
+                        <td>Lain - Lain</td>
+                        <td colspan="4"><input type="text" class="lain form-control" name="lain"></td>
                       </tr>
                       <tr>
                         <td colspan="2">
@@ -208,8 +213,9 @@
 @section('extra_scripts')
 <script type="text/javascript">
   var array_simpan = [0];
-  $('.customer').change(function(){
-    var customer = $(this).val();
+
+  function custo() {
+    var customer = $('.customer').val();
     var tanggal = $('.tanggal').val();
     $.ajax({
       url  : '{{ route('ganti_jt') }}',
@@ -219,7 +225,8 @@
         $('.jatuh_tempo').val(data.tgl);
       }
     })
-  })
+  }
+
   function nota() {
     var cabang = $('.cabang').val();
     var tanggal = $('.tanggal').val();
@@ -282,6 +289,7 @@
 
   $('.tanggal').change(function () {
       nota();
+      custo();
   });
 
   $('.cabang').change(function(){

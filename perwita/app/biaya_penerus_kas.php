@@ -33,6 +33,7 @@ class biaya_penerus_kas extends Model
 							  	'bpk_acc_biaya',
 							  	'updated_by',
 							  	'bpk_jenis_bbm',
+							  	'bpk_kode_master_persen',
 							  	'bpk_harga_bbm'
 						);
   

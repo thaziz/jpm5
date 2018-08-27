@@ -87,6 +87,7 @@
                                   </td>
                                   <td width="400px">
                                      <input type="text" class="form-control input-sm namasupplier" name="nama_supplier" value="{{$sup->nama_supplier}}" readonly="">
+                                      <input type="hidden" class="form-control input-sm namasupplier" name="idsupplier" value="{{$sup->idsup}}" readonly="">
                                   </td>
                               </tr>
 
@@ -165,7 +166,7 @@
                             </td>
 
                             <td>
-                                <span class="label label-info "> {{$sup->status}} </span>
+                                <span class="label label-info"> {{$sup->status}} </span>
                             </td>
                           </tr>
                       </table>                          
@@ -395,16 +396,16 @@
                             <tr id="dataitem item-{{$index}}" class="dataitem item-{{$index}}"> 
                               <td> {{$index + 1}} <input type="hidden" name="iditemsup[]" value="{{$item->is_id}}"> </td>
                               <td> 
-                              <select class="form-control brg tablebarang" disabled="" name="brg[]">
+                              <select class="form-control brg tablebarang" name="brg[]" data-id="{{$index}}">
                                @foreach($data['barang'] as $brg) 
-                                 <option value="{{$brg->kode_item}}" @if($item->is_kodeitem == $brg->kode_item) selected="" @endif>  {{$brg->nama_masteritem}} </option>
+                                 <option value="{{$brg->kode_item}}+{{$brg->harga}}+{{$brg->updatestock}}" @if($item->is_kodeitem == $brg->kode_item) selected="" @endif>  {{$brg->nama_masteritem}} </option>
                                 @endforeach
                               </select>
 
                               </td>
                               <td> <input type="text" class="form-control hrg harga{{$index}} tablebarang" value=" {{number_format($item->is_harga, 2)}}" readonly="" name="harga[]"> </td>
 
-                              <td> <select class="form-control tablebarang" name="updatestock[]"> <option value="Y"> Ya </option> <option value="T"> Tidak </option> </select> </td>
+                              <td> <select class="form-control updatestock updatestock{{$index}} tablebarang" name="updatestock[]" readonly=""> <option value="Y"> Ya </option> <option value="T"> Tidak </option> </select> </td>
                               <td> <a class="btn btn-danger removes-btn" data-id="{{$index}}"> <i class="fa fa-trash"> </i> </a> </td>
                             </tr>
                             @endforeach
@@ -474,7 +475,7 @@
       if(kontrak == 'YA'){
       //       RRRZ(kontrak);
               if(tr == 0){
-                alert(tr);
+              //  alert(tr);
         toastr.info('jenis Supplier adalah Kontrak, Mohon Tambah Data Barang :) ');
         return false;
       }        
@@ -538,7 +539,7 @@ $(function(){
     $('#pajak_pph').attr('disabled' , false);
     $('#pajak_ppn').attr('disabled' , false);
     $('.brg').attr('disabled' , false);
-    $('.hrg').attr('readonly' , false);
+
     $('#idcabang').attr('disabled', false);
     $('.ubah').attr('readonly' , false);
     $('.ubah').attr('disabled' , false);
@@ -556,20 +557,19 @@ $(function(){
 
     $('.simpandata').html(rowdelete);
     
-      $notable = $('tr#dataitem').length;
+      $notable = $('tr.dataitem').length;
      $no = $notable + 1;
     $('#tmbh_data_barang').click(function(){
-                     
-    $no++;
+    
 
     var rowBrg = "<tr id='dataitem item-"+$no+"' class='dataitem item-"+$no+"'>" +
                   "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
-                  "<td> <select class='form-control' name='brg[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
-                   "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
-                   "<td> <select class='form-control' name='updatestock[]'> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
-                  "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a>"+$no+"</td>" +
+                  "<td> <select class='form-control brg' name='brg[]' data-id="+$no+" >  @foreach($data['item'] as $item) <option value='{{$item->kode_item}}+{{$item->harga}}+{{$item->updatestock}}'> {{$item->nama_masteritem}} </option> @endforeach </select>" +
+                   "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"' readonly> </td>" +
+                   "<td> <select class='form-control updatestock"+$no+"' name='updatestock[]' readonly> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
+                  "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a></td>" +
                   "</tr>";   
-
+     $no++;               
    $("#addColumn").append(rowBrg);
 
      $(function(){
@@ -595,12 +595,33 @@ $(function(){
              parent.remove();
           })
 
+         $('.brg').change(function(){
+            val = $(this).val();
+            explode = val.split("+");
+            harga = explode[1];
+            updatestock = explode[2];
+            //alert(val);
+            dataid = $(this).data('id');
+            $('.hrg' + dataid).val(addCommas(harga));
+            $('.updatestock' + dataid).val(updatestock);
+         });
+
 
     })
 
   })
 })
-
+  
+ $('.brg').change(function(){
+    val = $(this).val();
+    explode = val.split("+");
+    harga = explode[1];
+    updatestock = explode[2];
+ 
+    dataid = $(this).data('id');
+    $('.harga' + dataid).val(addCommas(harga));
+    $('.updatestock' + dataid).val(updatestock);
+ })
   
 
    $(function(){
@@ -893,11 +914,7 @@ $('.cabang').change(function(){
             }
             else {
               $('.nokontrak').empty();
-              $('.nokontrak2').empty();
-               $('.tmbhdatabarang').hide();
-               $('.tablebarang').hide();
-               $('#addColumn').attr('disabled' , true);
-              
+             
             }
         })
 

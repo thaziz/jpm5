@@ -160,7 +160,7 @@
                       <tr>
                         <td class="updatedtock"> Update Stock </td>
                         <td class="updatedtock"> <select class="form-control k updatestock" name="update_stock"> 
-                          <option value='T'  selected="" > T </option>
+                          <option value='T'  selected=""> T </option>
                           <option value='Y' > Y </option>
                         </select>
                       </tr>
@@ -755,6 +755,17 @@
              $('.n').focus();
             });
             return false;
+          }
+
+          jenis_item = $('.jenis_item').val();
+          string = jenis_item.split(",");
+          stock = string[1];
+          if(stock != 'T') {
+           updatestock =  $('.updatestock').val();
+           if(updatestock == ''){
+            toastr.info('Kolom updatestock harus diisi :)');
+            return false;
+           }
           }
         /*  if (o == '') {
             toastr.info('Kolom Lantai Harus Di isi');

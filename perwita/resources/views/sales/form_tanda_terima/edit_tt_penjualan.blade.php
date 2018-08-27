@@ -26,20 +26,20 @@
   }*/
 </style>
 <div class="row wrapper border-bottom white-bg page-heading">
-  <div class="col-lg-10">
+    <div class="col-lg-10">
       <h2> Form Tanda Terima </h2>
       <ol class="breadcrumb">
           <li>
               <a>Home</a>
           </li>
           <li>
-              <a>Purchase</a>
+              <a>Penjualan</a>
           </li>
           <li>
-            <a>Transaksi Hutang</a>
+            <a>Transaksi Penjualan</a>
           </li>
           <li class="active">
-              <strong>Form Tanda Terima Pembelian</strong>
+              <strong>Form Tanda Terima Penjualan</strong>
           </li>
 
       </ol>
@@ -71,7 +71,7 @@
                         <td width="300"><input type="text" readonly="" name="nomor" class="nomor form-control" value="{{ $data->ft_nota }}"></td>
                         <td width="150">Customer</td>
                         <td colspan="2" class="disabled">
-                          <select  name="customer" class="customer form-control chosen-select-width">
+                          <select  name="customer" onchange="custo()" class="customer form-control chosen-select-width">
                               <option value="0">Pilih - Customer</option>
                             @foreach ($customer as $val)
                               <option @if($data->ft_customer == $val->kode) selected="" @endif value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
@@ -88,9 +88,19 @@
                             @endforeach
                           </select>
                         </td>
-                        <td width="150">Tanggal</td>
-                        <td width="300" class="disabled">
-                          <input type="text" readonly="" class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::parse($data->ft_tanggal)->format('d/m/Y') }}">
+                        <td width="150">Tanggal Diterima</td>
+                        <td width="300" class="">
+                          <input type="text"  class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::parse($data->ft_tanggal)->format('d/m/Y') }}">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Tanggal</td>
+                        <td  colspan="2">
+                          <input type="text" me="" value="{{ carbon\carbon::parse($data->created_at)->format('d/m/Y') }}" readonly="" class="form-control">
+                        </td>
+                        <td>Jatuh Tempo</td>
+                        <td>
+                          <input type="text" name="jatuh_tempo" value="{{ Carbon\carbon::parse($data->ft_jatuh_tempo)->format('d/m/Y') }}" readonly="" class="jatuh_tempo form-control">
                         </td>
                       </tr>
                       <tr>
@@ -132,13 +142,8 @@
                         </td>
                       </tr>
                       <tr>
-                        <td>Lain-lain</td>
-                        <td colspan="2"><input type="text" class="lain form-control" name="lain" value="{{ $data->ft_lainlain }}"></td>
-                      
-                        <td>Jatuh Tempo</td>
-                        <td>
-                          <input type="text" name="jatuh_tempo" readonly="" class="jatuh_tempo form-control" value="{{ Carbon\carbon::parse($data->ft_jatuh_tempo)->format('d/m/Y') }}">
-                        </td>
+                        <td>Lain - Lain</td>
+                        <td colspan="4"><input type="text" class="lain form-control" name="lain"></td>
                       </tr>
                       <tr>
                         <td colspan="2">
@@ -193,7 +198,7 @@
 @section('extra_scripts')
 <script type="text/javascript">
 var array_simpan = [0];
-
+  
   var index = 1 ;
   var table = $('.table_tt').DataTable({
     searching:true,
@@ -213,6 +218,19 @@ var array_simpan = [0];
         },
     ],
   });
+
+  function custo() {
+    var customer = $('.customer').val();
+    var tanggal = $('.tanggal').val();
+    $.ajax({
+      url  : '{{ route('ganti_jt') }}',
+      data : {customer,tanggal},
+      dataType:'json',
+      success:function(data){
+        $('.jatuh_tempo').val(data.tgl);
+      }
+    })
+  }
   $('#tanggal_detil').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
       $('#tanggal_detil').change();
       $(this).datepicker('hide');
@@ -224,11 +242,12 @@ var array_simpan = [0];
   });
 
   $('.tanggal').change(function () {
-      nota();
+      // nota();
+      custo();
   });
 
   $('.cabang').change(function(){
-      nota();
+      // nota();
   });
   $('.tanggal_kembali').datepicker({format:'dd/mm/yyyy'}).on('changeDate', function (ev) {
       $('.tanggal_kembali').change();
