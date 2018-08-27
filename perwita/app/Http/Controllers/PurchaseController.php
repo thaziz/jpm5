@@ -7527,7 +7527,6 @@ public function kekata($x) {
 					]);
 
 
-
 				$dataallfpg = DB::select("select * from fpg, fpg_cekbank where idfpg = '$idfpg' and fpgb_idfpg = idfpg");
 				for($x = 0; $x < count($dataallfpg); $x++){
 					$done = $dataallfpg[$x]->fpgb_posting;
@@ -7543,6 +7542,11 @@ public function kekata($x) {
 						'fpg_posting' => 'DONE',
 					]);
 				}
+
+
+			
+
+
 
 				$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
 				$jenisbayar = $datafpg[0]->fpg_jenisbayar;
@@ -7563,10 +7567,11 @@ public function kekata($x) {
 					$kelompokakun = $datafpgb[0]->fpg_kelompok;
 
 
+
+
 					if($kelompokakun == 'SAMA BANK'){
 						$time = Carbon::now();
 
-					
 							$updatebankmasuk = bank_masuk::where([['bm_notatransaksi', '=', $request->nofpg[$i]],['bm_idfpgb' , '=' , $idfpgb]]);
 							$updatebankmasuk->update([
 							 	'bm_tglterima' => $time, 
@@ -7746,8 +7751,20 @@ public function kekata($x) {
 					}
 
 				}
+				else if($jenisbayar == '13'){
+					$datafpgdt = DB::select("select * from fpg, fpg_dt where idfpg = '$idfpg' and fpgdt_idfpg = idfpg");
+					for($i = 0 ; $i < count($datafpgdt); $i++){
+						$notabonsem = $datafpgdt[$i]->bp_nota;
+						
+						$updatebonsem = bonsem_pengajuan::where('bp_nota' , '=' , $notabonsem);
+						$updatebonsem->update([
+							'bp_timepencairan' =>
+							'bp_statusend' =>
+						])
+					}
+				}
 				
-				else{
+				else {
 
 				$akunhutangdagang2 = $request->hutangdagang[$i];
 				$datajurnal2 = DB::select("select * from d_akun where id_akun = '$akunhutangdagang2'");
@@ -10360,7 +10377,7 @@ public function kekata($x) {
 				/*$data['pembayaran'][] = DB::select("select fpg_nofpg as nofpg, fpg_tgl as tgl, fpgdt_pelunasan as pelunasan, bp_nota as nofaktur, bp_id as idfp from fpg,fpg_dt, bonsem_pengajuan where fpgdt_idfp ='$idfp1' and fpgdt_idfpg = idfpg and fpgdt_idfp = bp_id and fpgdt_nofaktur = bp_nota union select bkk_nota as nofpg, bkk_tgl as tgl, bkkd_total as pelunasan, bkkd_ref as nofaktur, bp_id as idfp from bukti_kas_keluar, bukti_kas_keluar_detail, bonsem_pengajuan where bkkd_bkk_id = bkk_id and bkkd_ref = '$nofaktur' and bkkd_ref = bp_nota");*/
 			}
 
-
+			$data['pembayaran'][0] = 0;
 			/*$data['perhitunganfaktur'] = array();
 				$perhitunganfaktur = 0;
 
@@ -10803,6 +10820,27 @@ public function kekata($x) {
 					}
 					else if($request->jenisbayar == 11){
 
+						$nofaktur = $request->nofaktur[$i];
+						$databonsem = DB::select("select * from bonsem_pengajuan where bp_nota = '$nofaktur'");
+
+						$pencairan = $databonsem[0]->bp_pencairan;
+
+						if($pencairan == null){
+							$temp = 0; 
+							$pencairan2 = $temp + $pelunasan;
+						}
+						else {
+							$pencairan2 = floatval($pencairan) + floatval($pelunasan); 
+						}
+
+						$updatebp = DB::table('bonsem_pengajuan')
+						->where('bp_nota', $request->nofaktur[$i])
+						->update([
+							'bp_pelunasan' => $sisafaktur,
+							'bp_pencairan' => $pencairan2,
+						]);	
+					}
+					else if($request->jenisbayar == 13){
 						$nofaktur = $request->nofaktur[$i];
 						$databonsem = DB::select("select * from bonsem_pengajuan where bp_nota = '$nofaktur'");
 
