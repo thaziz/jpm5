@@ -167,8 +167,8 @@
                             </li>
                             <li  id="tmbhdatasubcon" data-val='SC'><button class="btn btn-default tmbhdatasubcon" data-toggle="tab" href="#tab-5">Pembayaran Subcon</button>
                             </li>
-                            <li  id="tmbhdatavendor" data-val='V'><button class="btn btn-default tmbhdatavendor" data-toggle="tab" href="#tab-6">Pembayaran Vendor</button>
-                            </li>
+                      {{--       <li  id="tmbhdatavendor" data-val='V'><button class="btn btn-default tmbhdatavendor" data-toggle="tab" href="#tab-6">Pembayaran Vendor</button>
+                            </li> --}}
                         </ul>
                         
                         <!-- KONTEN TANPA PO -->
