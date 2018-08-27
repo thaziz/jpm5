@@ -701,7 +701,7 @@ class ikhtisarController extends Controller
 						}
 					}
 					
-					$detail = $det_bkk;
+				$detail = $det_bkk;
 					$akun = DB::table('d_akun')
 							  ->get();
 				}else{

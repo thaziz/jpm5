@@ -89,7 +89,7 @@
 
 
 	                                <td> {{$data['terimasaja'][$j][0]->bt_notransaksi}}</td>
-									<td>  {{$data['terimasaja'][$j][0]->nama_supplier}} </td>
+									<td>  {{$data['terimasaja'][$j][0]->namasupplier}} </td>
 									<td> <span class='label label-info'> {{$data['terimasaja'][$j][0]->bt_statuspenerimaan}} </span> </td>
 									<td>      <a class='btn btn-sm btn-success' href="url('penerimaanbarang/detailterimabarang/{{$data['terimasaja'][$j][0]->bt_id}}')"> <i class='fa fa-arrow-right' aria-hidden='true'></i></a></td>
 									@endfor
