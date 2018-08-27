@@ -138,7 +138,7 @@
                 </tr>
                 <tr>
                   <td>No Invoice</td>
-                  <td><input type="text" value="{{$bp->fp_noinvoice}}" class="form-control no_invoice" name="no_invoice"></td>
+                  <td><input type="text" value="{{$bp->fp_noinvoice}}" readonly="" class="form-control no_invoice" name="no_invoice"></td>
                 </tr>
                 <tr>
                   <td style="width: 100px">Tanda terima</td>
@@ -160,7 +160,7 @@
                 <tr>
                   <td colspan="2">
                     <button type="button" class="btn btn-primary tambah_data_vendor" ><i class="fa fa-plus"> Tambah Data</i></button>
-                    <button type="button" class="btn btn-success simpan_data_vendor disabled" ><i class="fa fa-save"> Update Data</i></button>
+                    <button type="button" class="btn btn-success simpan_data_vendor" ><i class="fa fa-save"> Update Data</i></button>
                     <button type="button" class="btn btn-warning tt_vendor" ><i class="fa fa-book"> Form Tanda Terima</i></button>
                     <button type="button"  class="btn btn-primary uang_muka_vendor" ><i class="fa fa-money"> Uang Muka</i></button>
                     <button type="button" onclick="print_penerus()"  class="btn btn-danger pull-right print_vendor" ><i class="fa fa-print"></i></button>

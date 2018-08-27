@@ -117,7 +117,7 @@ No Faktur
   <td style="width: 100px">Tanggal</td>
   <td width="10">:</td>
   <td width="200">
-    <input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="{{carbon\carbon::parse($data->fp_tgl)->format('d/m/Y') or null}}" readonly="" style="">
+    <input type="text" name="tgl_biaya_head" class="form-control" value="{{carbon\carbon::parse($data->fp_tgl)->format('d/m/Y') }}" readonly="" style="">
     <input type="hidden" name="nota_id_tt" class="form-control nota_id_tt" value="{{$valid_cetak->tt_idform or null}}" readonly="" style="">
     <input type="hidden" name="nota_no_tt" class="form-control nota_no_tt" value="{{$valid_cetak->tt_noform or null}}" readonly="" style="">
   </td>
@@ -572,7 +572,7 @@ No Faktur
 </div><!-- /.modal -->
 
 @include('purchase.pembayaran_vendor.modal_do_vendor')
-
+{{-- 
 <div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
         <div class="modal-content">
@@ -590,7 +590,7 @@ No Faktur
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
 @endsection
 @section('extra_scripts')
 <script type="text/javascript">
@@ -892,7 +892,7 @@ function cariSUB(){
       toastr.success('Update Berhasil, Silahkan Membuat Form Tanda Terima.');
       $('.table_resi input').val('');
       $('.table_kontrak input').val('');
-      $('.save_subcon').addClass('disabled');
+      // $('.save_subcon').addClass('disabled');
   }
   $('.head1').addClass('disabled');
   $('.subcon_td').addClass('disabled');
@@ -946,7 +946,7 @@ function cariSUB(){
         $('.m_seq').val(m_seq);
         $('.modal_tt_subcon').removeClass('disabled');
         $('.modal_tt_subcon').removeClass('disabled');
-        $('.save_subcon').addClass('disabled');
+        // $('.save_subcon').addClass('disabled');
          hitung_subcon();
       }
   })
@@ -1130,29 +1130,10 @@ function save_subcon(){
                   timer: 900,
                  showConfirmButton: true
                   },function(){
-                $.ajax({
-                      url:baseUrl + '/fakturpembelian/simpan_tt',
-                      type:'get',
-                      dataType:'json',
-                      data:$('.tabel_tt_subcon :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head_subcon :input').serialize()+'&cabang='+cabang,
-                      success:function(response){
-                            toastr.info('Tanda Terima Telah Disimpan');
-
-                      },
-                      error:function(data){
-                        swal({
-                        title: "Terjadi Kesalahan",
-                                type: 'error',
-                                timer: 900,
-                               showConfirmButton: true
-
-                    });
-                   }
-                  });
-                $('.print_subcon').removeClass('disabled');
-                $('.save_subcon').addClass('disabled');
-                $('.modal_tt_subcon').addClass('disabled');
-                $('.append_subcon').addClass('disabled');
+                  $('.print_subcon').removeClass('disabled');
+                  // $('.save_subcon').addClass('disabled');
+                  $('.modal_tt_subcon').addClass('disabled');
+                  $('.append_subcon').addClass('disabled');
           });
       }
       },
