@@ -121,7 +121,7 @@ class transaksi_memorial extends Controller
     }
 
     public function save_data(Request $request){
-       // return json_encode($request->all());
+       // return json_encode(date('Y-m-d', strtotime($request->jr_date)));
 
        $date = explode('-', $request->jr_date);
 
@@ -163,12 +163,13 @@ class transaksi_memorial extends Controller
         $id = DB::table("d_jurnal")->max("jr_id");
 
        if($request->type_transaksi == "memorial"){
-            $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TM")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
+            $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 2)"), "TM")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
 
             $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
-            $ref = "TM-".date("my")."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
+            $ref = "TM-".date("my", strtotime($request->jr_date))."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
             $jr_no = get_id_jurnal('MM', $request->cabang);
 
+            // return json_encode($jr);
             // return json_encode($jr_no." __ ".$ref);
        }
 
