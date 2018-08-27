@@ -64,6 +64,7 @@ class invoice_pembetulan_controller extends Controller
  	public function invoice_pembetulan_create()
  	{
  		    $customer = DB::table('customer')
+                      ->where('pic_status','=','AKTIF')
                       ->get();
 
         $cabang   = DB::table('cabang')
@@ -881,6 +882,7 @@ class invoice_pembetulan_controller extends Controller
   {
     if (Auth::user()->punyaAkses('Invoice Pembetulan','ubah')) {
        $customer = DB::table('customer')
+                      ->where('pic_status','=','AKTIF')
                       ->get();
 
         $cabang   = DB::table('cabang')
