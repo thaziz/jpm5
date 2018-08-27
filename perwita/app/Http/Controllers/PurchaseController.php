@@ -7755,12 +7755,12 @@ public function kekata($x) {
 					$datafpgdt = DB::select("select * from fpg, fpg_dt where idfpg = '$idfpg' and fpgdt_idfpg = idfpg");
 					for($i = 0 ; $i < count($datafpgdt); $i++){
 						$notabonsem = $datafpgdt[$i]->bp_nota;
-						
+						$date =  date('Y-m-d');
 						$updatebonsem = bonsem_pengajuan::where('bp_nota' , '=' , $notabonsem);
 						$updatebonsem->update([
-							'bp_timepencairan' =>
-							'bp_statusend' =>
-						])
+							'bp_timepencairan' => $date,
+							'bp_statusend' =>'CAIR',
+						]);
 					}
 				}
 				
