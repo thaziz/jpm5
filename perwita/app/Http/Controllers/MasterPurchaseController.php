@@ -298,6 +298,7 @@ class MasterPurchaseController extends Controller
 		//dd($request);
 		$variable = explode(",", $request->jenis_item);
 		$jenisitem = $variable[0];
+		$stock = $variable[1];
 
 		$id=masterItemPurchase::where('jenisitem' , $jenisitem)->max('kode_item'); 
 	//	dd($jenisitem);
@@ -336,8 +337,11 @@ class MasterPurchaseController extends Controller
 		$masteritem->iditem = $iditem;
 		$masteritem->comp_id = $request->cabang;
 		$masteritem->kode_akun = $request->akun;
-		$masteritem->minstock = strtoupper(request()->minimum_stock);
-		 $masteritem->acc_persediaan = $request->acc_persediaan;
+
+		if($stock == 'Y'){
+			$masteritem->minstock = strtoupper(request()->minimum_stock);	
+		}
+		$masteritem->acc_persediaan = $request->acc_persediaan;
         $masteritem->acc_hpp = $request->acc_hpp;
 		
 

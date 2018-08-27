@@ -1920,10 +1920,10 @@
 */                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
                           
-                          $('.sisatrbyr').val(addCommas(data.faktur[0][0].bp_pelunasan));
-                          $('.sisafaktur').val(addCommas(data.faktur[0][0].bp_pelunasan));
+                          $('.sisatrbyr').val(addCommas(data.faktur[0][0].bp_pencairan));
+                          $('.sisafaktur').val(addCommas(data.faktur[0][0].bp_pencairan));
                           $('.pelunasan').attr('readonly' , false);
-                          $('.jmlhfaktur').val(addCommas(data.faktur[0][0].bp_nominalkeu));
+                          $('.jmlhfaktur').val(addCommas(data.faktur[0][0].bp_pencairan));
                           $('.hutangdagang').val(data.faktur[0][0].bp_akunhutang); 
                           $('.cabangfaktur').val(data.faktur[0][0].bp_akunhutang);
 
@@ -3185,6 +3185,14 @@
       
       $(this).val(formatval);
       vas = $(this).val();
+      jenisbayar = $('.jenisbayar').val();
+      if(jenisbayar == '13'){
+        if(vas != sisa_terbayar){
+          toastr.info("Anda harus mengisi dengan nominal yang sama dengan jumlah faktur :)");
+          $(this).val('');
+          return false;
+        }
+      }
 
    //   alert(id + 'id');
  
