@@ -4058,13 +4058,13 @@ public function purchase_order() {
 		//	dd($data);	
 		}
 		}
-		else {
+		else if($flag == 'PBG') {
 			$data['flag'] = 'PBG';
 
 
 			$data['cabang'] = DB::select("select * from cabang");
 		
-			$data['header'] = DB::select("select * from barang_terima , cabang, gudang where bt_id = '$id' and bt_agen = kode and bt_gudang = mg_id");
+			$data['header'] = DB::select("select * from barang_terima , cabang, mastergudang where bt_id = '$id' and bt_agen = kode and bt_gudang = mg_id");
 
 			$idgudang = $data['header'][0]->bt_gudang;
 
@@ -7567,8 +7567,7 @@ public function kekata($x) {
 
 							$updatebankmasuk = bank_masuk::where([['bm_notatransaksi', '=', $request->nofpg[$i]],['bm_idfpgb' , '=' , $idfpgb]]);
 							$updatebankmasuk->update([
-							 	'bm_tglterima' => $time, 
-							 		 	
+							 	'bm_tglterima' => $time,							 		 	
 						 	]);
 						
 
@@ -10860,12 +10859,11 @@ public function kekata($x) {
 							$pencairan2 = floatval($pencairan) + floatval($pelunasan); 
 						}
 
-						$updatebp = DB::table('bonsem_pengajuan')
+						/*$updatebp = DB::table('bonsem_pengajuan')
 						->where('bp_nota', $request->nofaktur[$i])
 						->update([
-							'bp_pelunasan' => $sisafaktur,
 							'bp_pencairan' => $pencairan2,
-						]);	
+						]);	*/
 					}
 				}
 			}

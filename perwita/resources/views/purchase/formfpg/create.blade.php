@@ -2201,7 +2201,7 @@
                             "<td>"+tgl+"</td>"+ // TGL
                             "<td>"+mbdt[i][0].mb_kode+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]' readonly> </td>" + //BANK TUJUAN
                             "<td> <input type='text' class='form-control norekening' value='"+norekening+"' readonly> </td>" + //NO REKENING TUJUAN
-                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='text' class='kelompokbank' name='kelompokbank'> </td>" + //NAMA BANK TUJUAN
+                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='hidden' class='kelompokbank' name='kelompokbank'> </td>" + //NAMA BANK TUJUAN
                             "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
                             "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
@@ -3081,7 +3081,7 @@
            
                idbank = $('.idbank').val();  
                val = $(this).val();
-                alert(idbank);
+               // alert(idbank);
                val = accounting.formatMoney(val, "", 2, ",",'.');
                $(this).val(val);
           
