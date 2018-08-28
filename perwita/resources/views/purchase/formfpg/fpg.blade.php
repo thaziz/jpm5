@@ -312,7 +312,7 @@
       </tr>
       <tr>
         <td> @if($data['fpg'][0]->fpg_jenisbayar != '5')
-         {{$data['fpg'][0]->alamat}}</td>
+             {{$data['fpg'][0]->alamatsupplier}} <br>  {{$data['fpg'][0]->telpsupplier}} </td>
 
         @else
           <!-- {{$data['fpg'][0]->fpg_orang}} -->

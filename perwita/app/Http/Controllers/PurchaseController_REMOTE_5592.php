@@ -8454,19 +8454,19 @@ public function kekata($x) {
 
 		$jenisbayar = $fpg[0]->fpg_jenisbayar;
 		if($jenisbayar == '2'){
-			$data['fpg'] = DB::select("select *, cabang.nama as namacabang  from fpg, supplier, cabang where idfpg ='$id' and fpg_supplier = idsup and fpg_cabang = cabang.kode");
+			$data['fpg'] = DB::select("select *, cabang.nama as namacabang , supplier.alamat as alamatsupplier, supplier.telp as telpsupplier from fpg, supplier, cabang where idfpg ='$id' and fpg_supplier = idsup and fpg_cabang = cabang.kode");
 			$data['fpg_dt'] = DB::select("select * from fpg_dt, fpg, faktur_pembelian where fpgdt_idfpg = idfpg and fpgdt_idfpg = '$id' and fpgdt_idfp = fp_idfaktur");
 			$data['fpg_bank'] = DB::select("select * from fpg_cekbank,fpg, masterbank where fpgb_idfpg = idfpg and fpgb_idfpg = '$id' and fpgb_kodebank = mb_id");
 			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
 		}
 		else if($jenisbayar == '5' || $jenisbayar == '12'){
-			$data['fpg'] = DB::select("select *, cabang.nama as namacabang from fpg, cabang where fpg_cabang = cabang.kode and idfpg ='$id'");
+			$data['fpg'] = DB::select("select *, cabang.nama as namacabang from fpg, cabang, cabang.alamat as alamatsupplier, cabang.telepon as telpsupplier where fpg_cabang = cabang.kode and idfpg ='$id'");
 			$data['fpg_dt'] = DB::select("select * from fpg_dt, fpg, faktur_pembelian where fpgdt_idfpg = idfpg and fpgdt_idfpg = '$id'");
 			$data['fpg_bank'] = DB::select("select * from fpg_cekbank,fpg, masterbank where fpgb_idfpg = idfpg and fpgb_idfpg = '$id' and fpgb_kodebank = mb_id");
 			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
 		}
 		else if($jenisbayar == '6' || $jenisbayar == '7' ){
-			$data['fpg'] = DB::select("select *, cabang.nama as namacabang from fpg, agen, cabang where idfpg ='$id' and fpg_agen = agen.kode and fpg_cabang as cabang.kode");
+			$data['fpg'] = DB::select("select *, cabang.nama as namacabang, cabang.alamat as alamatsupplier, cabang.telepon as telpsupplier from fpg, agen, cabang where idfpg ='$id' and fpg_agen = agen.kode and fpg_cabang as cabang.kode");
 			$data['fpg_dt'] = DB::select("select * from fpg_dt, fpg, faktur_pembelian where fpgdt_idfpg = idfpg and fpgdt_idfpg = '$id' and fpgdt_idfp = fp_idfaktur");
 			$data['fpg_bank'] = DB::select("select * from fpg_cekbank,fpg, masterbank where fpgb_idfpg = idfpg and fpgb_idfpg = '$id' and fpgb_kodebank = mb_id");
 			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
@@ -8479,13 +8479,13 @@ public function kekata($x) {
 			$jenissup = $fpg2[0]->um_jenissup;
 			$data['jenissup'] = $jenissup;
 			if($jenissup == 'supplier'){	
-				$data['fpg'] = DB::select("select *, cabang.nama as namacabang from cabang,fpg,supplier, masterbank, jenisbayar where idfpg = '$id' and fpg_agen = no_supplier and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode");
+				$data['fpg'] = DB::select("select *, cabang.nama as namacabang, supplier.alamat as alamatsupplier, supplier.telp as telpsupplier from cabang,fpg,supplier, masterbank, jenisbayar where idfpg = '$id' and fpg_agen = no_supplier and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode");
 			}
 			else if($jenissup == 'agen'){
-				$data['fpg'] = DB::select("select *, cabang.nama as namacabang from cabang,fpg,agen, masterbank, jenisbayar where idfpg = '$id' and fpg_agen = kode and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode");	
+				$data['fpg'] = DB::select("select *, cabang.nama as namacabang, cabang.alamat as alamatsupplier, cabang.telepon as telpsupplier from cabang,fpg,agen, masterbank, jenisbayar where idfpg = '$id' and fpg_agen = kode and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode");	
 			}
 			else if($jenissup == 'subcon'){
-				$data['fpg'] = DB::select("select *,cabang.nama as namacabang from cabang,fpg,subcon, masterbank, jenisbayar where idfpg = '$id' and fpg_agen = kode and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode");	
+				$data['fpg'] = DB::select("select *,cabang.nama as namacabang, cabang.alamat as alamatsupplier, cabang.telepon as telpsupplier from cabang,fpg,subcon, masterbank, jenisbayar where idfpg = '$id' and fpg_agen = kode and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode");	
 			}
 
 			$data['fpg_dt'] = DB::select("select * from fpg_dt, fpg, d_uangmuka where fpgdt_idfpg = idfpg and fpgdt_idfpg = '$id' and fpgdt_idfp = um_id");
@@ -8505,13 +8505,13 @@ public function kekata($x) {
 			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
 		}
 		else if($jenisbayar == '9'){
-			$data['fpg'] = DB::select("select *, cabang.nama as namacabang from cabang,fpg, subcon where idfpg ='$id' and fpg_agen = subcon.kode and fpg_cabang = cabang.kode");
+			$data['fpg'] = DB::select("select *, cabang.nama as namacabang, cabang.alamat as alamatsupplier, cabang.telepon as telpsupplier from cabang,fpg, subcon where idfpg ='$id' and fpg_agen = subcon.kode and fpg_cabang = cabang.kode");
 			$data['fpg_dt'] = DB::select("select * from fpg_dt, fpg, faktur_pembelian where fpgdt_idfpg = idfpg and fpgdt_idfpg = '$id' and fpgdt_idfp = fp_idfaktur");
 			$data['fpg_bank'] = DB::select("select * from fpg_cekbank,fpg, masterbank where fpgb_idfpg = idfpg and fpgb_idfpg = '$id' and fpgb_kodebank = mb_id");
 			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
 		}
 		else if($jenisbayar == '1'){
-			$data['fpg'] = DB::select("select *, cabang.nama as namacabang from fpg, ikhtisar_kas, cabang where idfpg ='$id' and fpg_agen = cabang.kode");
+			$data['fpg'] = DB::select("select *, cabang.nama as namacabang, cabang.alamat as alamatsupplier, cabang.telepon as telpsupplier from fpg, ikhtisar_kas, cabang where idfpg ='$id' and fpg_agen = cabang.kode");
 			$data['fpg_dt'] = DB::select("select * from fpg_dt, fpg, faktur_pembelian where fpgdt_idfpg = idfpg and fpgdt_idfpg = '$id' and fpgdt_idfp = fp_idfaktur");
 			$data['fpg_bank'] = DB::select("select * from fpg_cekbank,fpg, masterbank where fpgb_idfpg = idfpg and fpgb_idfpg = '$id' and fpgb_kodebank = mb_id");
 			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	

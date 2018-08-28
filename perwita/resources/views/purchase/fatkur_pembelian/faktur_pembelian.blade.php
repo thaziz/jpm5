@@ -97,7 +97,7 @@
 	<div class="div-width">
 		<table class="border-none" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
-				<td width="1%"><img src="" width="120px" height="75px"></td>
+				<td width="1%"><img src="{{asset('perwita/storage/app/upload/images.jpg') }}" width="120px" height="75px"></td>
 				<td class="s16 text-left">
 					<text class="bold">PT. Jawa Pratama Mandiri</text><br>
 					<small>
