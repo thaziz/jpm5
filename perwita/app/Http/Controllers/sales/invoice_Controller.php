@@ -295,6 +295,12 @@ class invoice_Controller extends Controller
                               ->update([
                                 'nsp_aktif'=>false
                                ]);
+          }else{
+            $update_status = DB::table('invoice')
+                               ->where('i_nomor',$id)
+                               ->update([
+                                'i_statusprint'=>'Printed',
+                               ]);
           }
           
         }
