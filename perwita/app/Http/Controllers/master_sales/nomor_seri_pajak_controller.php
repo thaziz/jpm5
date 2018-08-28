@@ -17,12 +17,17 @@ use Yajra\Datatables\Datatables;
 use File;
 use Illuminate\Support\Facades\Storage;
 use Exception;
+set_time_limit(60000);
 
 class nomor_seri_pajak_controller extends Controller
 {
     public function index()
     {
-        return view('master_sales.nomor_seri_pajak.index');
+        $data = DB::table('nomor_seri_pajak')
+                      ->where('nsp_aktif',true)
+                      ->get();
+        $data = count($data);
+        return view('master_sales.nomor_seri_pajak.index',compact('data'));
     }
 
     public function datatable_nomor_seri_pajak()
@@ -45,12 +50,6 @@ class nomor_seri_pajak_controller extends Controller
                             $b = '';
                             $c = '';
 
-                            if(Auth::user()->punyaAkses('Nomor Seri Pajak','ubah')){
-                                $a = '<button type="button" onclick="edit(\''.$data->nsp_id.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
-                            }else{
-                              $a = '';
-                            }
-
                             if(Auth::user()->punyaAkses('Nomor Seri Pajak','hapus')){
                                 $c = '<button type="button" onclick="hapus(\''.$data->nsp_id.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
                             }else{
@@ -63,9 +62,11 @@ class nomor_seri_pajak_controller extends Controller
                           	return '<button onclick="download_pdf(\''.$data->nsp_id.'\')" type="button" class="simpan_pdf btn btn-primary"><i class="fa fa-download"></i></button>';
                         })->addColumn('aktif', function ($data) {
                         	if ($data->nsp_aktif == true) {
-                          		return '<input type="checkbox" onchange="cek(\''.$data->nsp_id.'\',this)" checked class="check form-control">';
+                          		// return '<input type="checkbox" onchange="cek(\''.$data->nsp_id.'\',this)" checked class="check form-control">';
+                            return '<label class="label label-primary">AKTIF</label>';
                         	}else{
-                          		return '<input type="checkbox"  onchange="cek(\''.$data->nsp_id.'\',this)" class="check form-control">';
+                          		// return '<input type="checkbox"  onchange="cek(\''.$data->nsp_id.'\',this)" class="check form-control">';
+                            return '<label class="label label-danger">TERPAKAI</label>';
                         	}
                         })
                         ->addIndexColumn()
@@ -74,58 +75,46 @@ class nomor_seri_pajak_controller extends Controller
     }
     public function save_pajak_invoice(Request $req)
     {
-    	$file = $req->file('files');
-    	if ($req->id_old == '') {
-    		$req->id_old = 0;
-    	}
-      $data = DB::table('nomor_seri_pajak')
-			  ->where('nsp_id',$req->id_old)
-			  ->first();
-  		if ($data != null) {
-  			$id = $req->id_old;
-          	if ($file != null) {
-          		unlink(storage_path('app/'.$data->nsp_pdf));  
-  	        	$filename = 'nomor_seri_pajak/faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension();
-  	        	Storage::put($filename,file_get_contents($req->file('files')));
-  	      	}else{
-  	      		$filename = $data->nsp_pdf;
-  	      	}
-          	$save = DB::table('nomor_seri_pajak')
-          				->where('nsp_id',$id)
-                    		->update([
-                    			'nsp_tanggal'	 => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
-                    			'nsp_nomor_pajak'=> $req->nomor_pajak,
-                    			'nsp_pdf' 		 => $filename,
-                    			'updated_at'	 => carbon::now(),
-                    			'updated_by'	 => Auth::user()->m_name,
-                    		]);
-  	        return response()->json(['status'=>2]);
-  		}else{
+      return DB::transaction(function() use ($req) {  
+        $awal  = (integer)$req->nomor_pajak_awal;
+        $akhir = (integer)$req->nomor_pajak_akhir;
+        $kembar = [];
+        if ($awal > $akhir) {
+          return response()->json(['status'=>0,'pesan'=>'Range Pajak Awal Tidak Boleh Lebih Besar Dari Range Pajak Akhir']);
+        }
+        $count = $akhir - $awal;
+        if ($count > 5000) {
+          return response()->json(['status'=>0,'pesan'=>'Maksimal Data Adalah 5000']);
+        }
 
-          	$id = DB::table('nomor_seri_pajak')->max('nsp_id')+1;
-          	if ($file != null) {
-  	        	$filename = 'nomor_seri_pajak/faktur_pajak_'.$id.'.'.$file->getClientOriginalExtension();
-              try{
-                Storage::put($filename,file_get_contents($file));
-              }catch(Exception $error){
-                report($error);
-              }
-  	      	}
-  	      	$save = DB::table('nomor_seri_pajak')
-  	                  		->insert([
-  	                  			'nsp_id'		 => $id,
-  	                  			'nsp_tanggal'	 => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
-  	                  			'nsp_nomor_pajak'=> $req->nomor_pajak,
-  	                  			'nsp_pdf' 		 => $filename,
-  	                  			'created_at'	 => carbon::now(),
-  	                  			'updated_at'	 => carbon::now(),
-  	                  			'created_by'	 => Auth::user()->m_name,
-  	                  			'updated_by'	 => Auth::user()->m_name,
-  	                  			'nsp_aktif' 	 => true
-  	                  		]);
+        for ($i=0; $i < $count; $i++) { 
+          $awalan = $awal + $i+1;
+          $awalan = str_pad($awalan, 8, '0', STR_PAD_LEFT);
+          $nomor_pajak = $req->nomor_pajak_1.'.'.$req->nomor_pajak_2.'.'.$awalan;
+          $cek = DB::table('nomor_seri_pajak')
+                  ->where('nsp_nomor_pajak',$nomor_pajak)
+                  ->first();
+          if ($cek == null) {
+            $id = DB::table('nomor_seri_pajak')
+                  ->max('nsp_id')+1;
+            $save = DB::table('nomor_seri_pajak')
+                          ->insert([
+                            'nsp_id'          => $id,
+                            'nsp_tanggal'     => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+                            'nsp_nomor_pajak' => $nomor_pajak,
+                            'created_at'      => carbon::now(),
+                            'updated_at'      => carbon::now(),
+                            'created_by'      => Auth::user()->m_name,
+                            'updated_by'      => Auth::user()->m_name,
+                            'nsp_aktif'       => true
+                          ]);
+          }else{
+            array_push($kembar, $nomor_pajak);
+          }
+        }
 
-  			return response()->json(['status'=>1]);
-  		}
+  			return response()->json(['status'=>1,'kembar'=>$kembar]);
+  		});
     }
 
     public function cari_faktur_pajak(request $req)

@@ -376,6 +376,12 @@ class posting_pembayaran_Controller extends Controller
         // return $request->sall();
         if ($request->cb_jenis_pembayaran != 'U') {
 
+            for ($i=0; $i < count($request->tanggal); $i++) { 
+              if (strtotime($request->tanggal[$i]) > strtotime($request->ed_tanggal)) {
+                return response()->json(['status'=>'0']);
+              }
+            }
+
             $kw = DB::table('kwitansi')
                       ->join('customer','kode','=','k_kode_customer')
                       ->select('k_nomor','k_tanggal','k_netto','nama')
@@ -389,7 +395,7 @@ class posting_pembayaran_Controller extends Controller
                       ->get();
 
             $data = array_merge($kw,$do);
-            return response()->json(['data'=>$data]);
+            return response()->json(['status'=>'1','data'=>$data]);
         }else{
 
             $data = DB::table('uang_muka_penjualan')
@@ -398,7 +404,7 @@ class posting_pembayaran_Controller extends Controller
                   ->get();
 
 
-            return response()->json(['data'=>$data]);
+            return response()->json(['status'=>'1','data'=>$data]);
         }
        
     }
@@ -406,7 +412,7 @@ class posting_pembayaran_Controller extends Controller
     {
         return DB::transaction(function() use ($request) {  
 
-            
+
             $akun        = DB::table('masterbank')
                              ->where('mb_id',$request->akun_bank)
                              ->first();
@@ -465,6 +471,9 @@ class posting_pembayaran_Controller extends Controller
 
 
             for ($i=0; $i < count($request->d_nomor_kwitansi); $i++) { 
+
+
+
                 $id = DB::table('posting_pembayaran_d')
                         ->max('id');
                 if ($id == null) {
@@ -627,18 +636,18 @@ class posting_pembayaran_Controller extends Controller
                 $akun_val = [];
 
                 
-                if ($request->cb_jenis_pembayaran == 'F') {
-                  array_push($akun, $master_bank->mb_kode);
-                  array_push($akun_val, $request->ed_jumlah);
-                }else{
-                  $cari_akun = DB::table('d_akun')
-                               ->where('id_akun','LIKE','2498%')
-                               ->where('kode_cabang',$request->cb_cabang)
-                               ->first();
+                // if ($request->cb_jenis_pembayaran == 'F') {
+                array_push($akun, $master_bank->mb_kode);
+                array_push($akun_val, $request->ed_jumlah);
+                // }else{
+                //   $cari_akun = DB::table('d_akun')
+                //                ->where('id_akun','LIKE','2498%')
+                //                ->where('kode_cabang',$request->cb_cabang)
+                //                ->first();
 
-                  array_push($akun, $cari_akun->id_akun);
-                  array_push($akun_val, $request->ed_jumlah);
-                }        
+                //   array_push($akun, $cari_akun->id_akun);
+                //   array_push($akun_val, $request->ed_jumlah);
+                // }        
                 
 
                 for ($i=0; $i < count($fix_akun_piutang); $i++) { 
@@ -845,7 +854,6 @@ class posting_pembayaran_Controller extends Controller
                 $jurnal_dt = d_jurnal_dt::insert($data_akun);
                 $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
             }
-            // dd($lihat);
             return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
 
             

@@ -85,14 +85,13 @@ class form_tanda_terima_penjualan_controller extends Controller
 			$cari_nota = DB::table('form_tt_penjualan')
 						   ->where('ft_nota',$req->nomor)
 						   ->first();
-						   
 			if ($cari_nota != null) {
 
 				if ($cari_nota->updated_by == $user) {
 					return 'Data Sudah Ada';
 				}else{
-					$bulan = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('m');
-				    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
+					$bulan = Carbon::parse(str_replace('/', '-', $req->tgl))->format('m');
+				    $tahun = Carbon::parse(str_replace('/', '-', $req->tgl))->format('y');
 
 				    $cari_nota = DB::select("SELECT  substring(max(ft_nota),12) as id from form_tt_penjualan
 	                                    WHERE ft_kode_cabang = '$req->cabang'

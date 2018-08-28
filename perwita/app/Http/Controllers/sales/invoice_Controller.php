@@ -22,8 +22,8 @@ class invoice_Controller extends Controller
     public function datatable_invoice(Request $req)
     {
         $nama_cabang = DB::table("cabang")
-             ->where('kode',$req->cabang)
-             ->first();
+                 ->where('kode',$req->cabang)
+                 ->first();
 
         if ($nama_cabang != null) {
           $cabang = 'and i_kode_cabang = '."'$req->cabang'";
@@ -31,16 +31,62 @@ class invoice_Controller extends Controller
           $cabang = '';
         }
 
-        if (Auth::user()->punyaAkses('Invoice','all')) {
-            $sql = "SELECT * FROM invoice  join cabang on kode = i_kode_cabang where i_nomor != '0' $cabang";
-            $data = DB::select($sql);
+
+        if ($req->tanggal_awal != '0') {
+          $tgl_awal = carbon::parse($req->tanggal_awal)->format('Y-m-d');
+          $tanggal_awal = 'and i_tanggal >= '."'$tgl_awal'";
         }else{
-            $cabang = auth::user()->kode_cabang;
-            $data = DB::table('invoice')
-                      ->join('customer','kode','=','i_kode_customer')
-                      ->where('i_kode_cabang',$cabang)
-                      ->get();
+          $tanggal_awal = '';
         }
+
+        if ($req->tanggal_akhir != '0') {
+          $tgl_akhir = carbon::parse($req->tanggal_akhir)->format('Y-m-d');
+          $tanggal_akhir = 'and i_tanggal <= '."'$tgl_akhir'";
+        }else{
+          $tanggal_akhir = '';
+        }
+
+        if ($req->jenis_biaya != '0') {
+          $jenis_biaya = 'and i_pendapatan = '."'$req->jenis_biaya'";
+        }else{
+          $jenis_biaya = '';
+        }
+
+
+        if ($req->nota != '0') {
+          if (Auth::user()->punyaAkses('Invoice','all')) {
+            $data = DB::table('invoice')
+                  ->where('i_nomor','=',$req->nota)
+                  ->get();
+            if ($data == null) {
+              $data = DB::table('invoice')
+                  ->where('i_faktur_pajak','=',$req->nota)
+                  ->get();
+            }
+          }else{
+            $cabang = Auth::user()->kode_cabang;
+            $data = DB::table('invoice')
+                  ->where('i_kode_cabang',$cabang)
+                  ->where('i_nomor','=',$req->nota)
+                  ->get();
+            if ($data == null) {
+              $data = DB::table('invoice')
+                  ->where('i_kode_cabang',$cabang)
+                  ->where('i_faktur_pajak','=',$req->nota)
+                  ->get();
+            }  
+          }
+        }else{
+          if (Auth::user()->punyaAkses('Invoice','all')) {
+            $sql = "SELECT * FROM invoice  join cabang on kode = i_kode_cabang where i_nomor != '0' $cabang $tanggal_awal $tanggal_akhir $jenis_biaya order by invoice.create_at DESC";
+
+            $data = DB::select($sql);
+          }else{
+            $sql = "SELECT * FROM invoice  join cabang on kode = i_kode_cabang where i_nomor != '0' $cabang $tanggal_awal $tanggal_akhir $jenis_biaya order by invoice.create_at DESC";
+            $data = DB::select($sql);
+          }
+        }
+
 
         $data = collect($data);
 
@@ -78,7 +124,7 @@ class invoice_Controller extends Controller
                             }
 
 
-                            $d = '<button title="lihat jurnal" type="button" onclick="lihat_jurnal(\''.$data->i_nomor.'\')" class="btn btn-xs btn-success btnjurnal"><i class="fa fa-eye"></i></button>';
+                            $d = '<button title="lihat jurnal" type="button" onclick="lihat_jurnal(\''.$data->i_nomor.'\')" class="btn btn-xs btn-primary btnjurnal"><i class="fa fa-eye"></i></button>';
                  
                             return '<div class="btn-group">'.$a . $b .$c .$d.'</div>' ;
                                    
@@ -94,10 +140,10 @@ class invoice_Controller extends Controller
                           }
                         })
                         ->addColumn('faktur_pajak', function ($data) {
-                          if ($data->i_faktur_pajak == null) {
-                            return '<button class="btn btn-danger" onclick="faktur_pajak(\''.$data->i_nomor.'\')">Tambah Faktur Pajak</button>';
+                          if ($data->i_faktur_pajak != null) {
+                            return '<button class="btn btn-success" onclick="faktur_pajak(\''.$data->i_nomor.'\')">'.$data->i_faktur_pajak.'</button>';
                           }else{
-                            return '<button class="btn btn-primary" onclick="faktur_pajak(\''.$data->i_nomor.'\')">Tambah Faktur Pajak</button>';
+                            return '<button class="btn btn-danger">BELUM TERFAKTUR PAJAK</button>';
                           }
                         })
                         ->addColumn('cabang', function ($data) {
@@ -142,8 +188,27 @@ class invoice_Controller extends Controller
 
     public function append_table(request $req)
     {
+      // dd($req->all());
+      if ($req->flag =='global') {
       $cab = $req->cabang;
-      return view('sales.invoice.table_invoice',compact('cab'));
+      $tanggal_awal = $req->tanggal_awal;
+      if ($tanggal_awal == '') {
+        $tanggal_awal = '0';
+      }
+      $tanggal_akhir = $req->tanggal_akhir;
+      if ($tanggal_akhir == '') {
+        $tanggal_akhir = '0';
+      }
+      $jenis_biaya   = $req->jenis_biaya;
+      $nota = '0';
+    }else{
+      $cab = '0';
+      $tanggal_awal  = '0';
+      $tanggal_akhir = '0';
+      $jenis_biaya   = '0';
+      $nota = $req->nota;
+    }
+      return view('sales.invoice.table_invoice',compact('cab','tanggal_awal','tanggal_akhir','jenis_biaya','nota'));
     }
 
     public function index(){
@@ -211,12 +276,27 @@ class invoice_Controller extends Controller
                     ->get();
         }
         $counting = count($detail); 
-  
-        $update_status = DB::table('invoice')
-                           ->where('i_nomor',$id)
-                           ->update([
-                            'i_statusprint'=>'Printed'
-                           ]);
+
+        if ($head->i_faktur_pajak == null) {
+          $faktur_pajak = DB::table('nomor_seri_pajak')
+                            ->where('nsp_aktif',true)
+                            ->orderBy('nsp_id','ASC')
+                            ->first();
+
+          $update_status = DB::table('invoice')
+                             ->where('i_nomor',$id)
+                             ->update([
+                              'i_statusprint'=>'Printed',
+                              'i_faktur_pajak'=>$faktur_pajak->nsp_nomor_pajak
+                             ]);
+
+          $update_pajak = DB::table('nomor_seri_pajak')
+                            ->where('nsp_nomor_pajak',$faktur_pajak->nsp_nomor_pajak)
+                            ->update([
+                              'nsp_aktif'=>false
+                             ]);
+        }
+        
                            
         if ($counting < 30) {
           $hitung =30 - $counting;
@@ -1963,12 +2043,24 @@ public function update_invoice(request $request)
 
     public function pajak_invoice(request $request)
     {
+
         $id = $request->invoice;
-        $save = DB::table('invoice')
-                  ->where('i_nomor',$request->invoice)
+        $data = DB::table('nomor_seri_pajak')
+                  ->where('nsp_nomor_pajak',$request->nomor_pajak)
+                  ->first();
+
+        $file = $request->file('file');
+        if ($file != null) {
+          $filename = 'nomor_seri_pajak/faktur_pajak_'.$data->nsp_id.'.'.$file->getClientOriginalExtension();
+          Storage::put($filename,file_get_contents($file));
+        }else{
+          $filename = $data->nsp_pdf;
+        }
+
+        $save = DB::table('nomor_seri_pajak')
+                  ->where('nsp_nomor_pajak',$request->nomor_pajak)
                   ->update([
-                    'i_faktur_pajak'=>$request->nomor_pajak,
-                    'i_id_pajak'=>$request->id_pajak
+                    'nsp_pdf'=>$filename,
                   ]);
 
         return response()->json(['status'=>1]);
@@ -1993,7 +2085,7 @@ public function update_invoice(request $request)
     public function cari_faktur_pajak(request $req)
     {
         $data = DB::table('nomor_seri_pajak')
-                ->join('invoice','i_id_pajak','=','nsp_id')
+                ->join('invoice','i_faktur_pajak','=','nsp_nomor_pajak')
                 ->where('i_nomor',$req->nomor)
                 ->first();
         return response()->json(['data'=>$data]);

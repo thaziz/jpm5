@@ -59,10 +59,11 @@ class kendaraan_Controller extends Controller
         $simpan='';
         $id = $request->ed_id;
         $crud = $request->crud_h;
-        // dd($request->all());
         $cek = DB::table('kendaraan')->where('nopol','=',$request->ed_nopol)->get();
-        if ($cek != null ) {
-            return response()->json(['status'=>'ada']);
+        if ($request->status == 'CREATE') {
+            if ($cek != null ) {
+                return response()->json(['status'=>'ada']);
+            }
         }
         $data = array(
                 'nopol' => strtoupper($request->ed_nopol),
@@ -132,7 +133,7 @@ class kendaraan_Controller extends Controller
                     LEFT JOIN tipe_angkutan t ON t.kode=k.tipe_angkutan where k.status = 'DPT' or k.status = 'OWN' ";
         $data =  DB::select($sql);
 
-        $sql = "    SELECT k.id,k.nopol,t.nama tipe_angkutan,k.gps,k.kode_cabang, c.nama nama_cabang, k.status FROM kendaraan k
+        $sql = "    SELECT k.id,k.nopol,t.nama tipe_angkutan,k.gps,k.kode_cabang, c.nama nama_cabang, k.status,k.kode_subcon FROM kendaraan k
                     LEFT JOIN cabang c ON c.kode=k.kode_cabang
                     LEFT JOIN tipe_angkutan t ON t.kode=k.tipe_angkutan where k.status = 'SUB'  ";
         $data1 =  DB::select($sql);

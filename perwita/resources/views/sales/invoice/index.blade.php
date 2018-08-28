@@ -81,25 +81,56 @@
                 <div class="box-header">
                 <div class="box-body">
                   <div class="col-sm-12">
-                    <div class="col-sm-6">
-                      <table cellpadding="3" cellspacing="0" border="0" class="table">
-                        @if (Auth::user()->punyaAkses('Invoice','cabang')) 
-                        <tr id="filter_col1" data-column="0">
-                            <td>Cabang</td>
+                    <div class="col-sm-12">
+                      <table cellpadding="3" cellspacing="0" border="0" class="table filter table-bordered">
+                        <tr>
+                            <td align="center">Tanggal Awal</td>
                             <td align="center">
-                              <select onchange="filtering()" class="form-control cabang chosen-select-width">
+                              <input type="text" class="tanggal_awal form-control date" name="tanggal_awal">
+                            </td>
+                            <td align="center">Tanggal Akhir</td>
+                            <td align="center">
+                              <input type="text" class="tanggal_akhir form-control date" name="tanggal_akhir">
+                            </td>
+                        </tr>
+                        <tr id="filter_col1" data-column="0">
+                          @if (Auth::user()->punyaAkses('Biaya Penerus Kas','cabang')) 
+                            <td align="center">Cabang</td>
+                            <td >
+                              <select class="form-control cabang chosen-select-width" onchange="filtering()" name="cabang">
                                 <option value="0">Pilih - Cabang </option>
                                 @foreach ($cabang as $a)
                                   <option value="{{$a->kode}}">{{$a->kode}} - {{$a->nama}}</option>
                                 @endforeach
                               </select>
                             </td>
+                          @endif
+                            <td align="center">Jenis Pembayaran</td>
+                            <td align="center">
+                              <select onchange="filtering()" class="form-control jenis_bayar chosen-select-width">
+                                <option value="0">Pilih - Jenis </option>
+                                <option value="PAKET">PAKET</option>
+                                <option value="KORAN">KORAN</option>
+                                <option value="KARGO">KARGO</option>
+                              </select>
+                            </td>
                         </tr>
-                        @endif
+                        <tr>
+                          <td colspan="2" align="right">
+                            Cari Berdasarkan Nota / Nomor Seri Pajak
+                          </td>
+                          <td>
+                            <input type="text" class="nota form-control" name="nota">
+                          </td>
+                          <td align="center">
+                            <button class="search btn btn-success" type="button" onclick="filtering_nota()"><i class="fa fa-search"> Cari Berdasarkan Nota/Pajak</i></button>
+                            <button class="search btn btn-danger" type="button" onclick="filtering()"><i class="fa fa-search"> Cari</i></button>
+                          </td>
+                        </tr>
                       </table>
                     </div>
                   </div>
-                  <div class="col-sm-12 append_table">
+                  <div class="col-sm-12 append_table" style="overflow-x: scroll;">
                     
                   </div>
                     
@@ -134,9 +165,9 @@
         <div class="modal-body">
           <table class="table table_pajak">
               <tr>
-                  <td>Nomor Pajak</td>
+                  <td width="350">Nomor Pajak</td>
                   <td>
-                    <input type="text" placeholder="klik disini untuk memilih faktur" class="form-control nomor_pajak" name="nomor_pajak">
+                    <input readonly="" type="text" placeholder="klik disini untuk memilih faktur" class="form-control nomor_pajak" name="nomor_pajak">
                     <input type="hidden" class="form-control id_pajak" name="id_pajak">
                     <input type="hidden" class="form-control invoice" name="invoice">
                 </td>
@@ -150,14 +181,23 @@
                 </td>
               </tr>
               <tr>
-                <td align="right" colspan="2">
-                  <button type="button" class="simpan_pdf btn btn-primary">Download PDF</button>
+                <td align="left" class="preview_div">
+                  Upload PDF
+                  <div class="file-upload upl_1" style="width: 100%;">
+                      <div class="file-select">
+                          <div class="file-select-button fileName" >PDF</div>
+                          <div class="file-select-name noFile tag_image_1" >PDF OR IMAGE</div> 
+                          <input type="file" class="chooseFile upload_pdf" name="image">
+                      </div>
+                  </div>
+                <td align="right">
+                  <button type="button" class="simpan_pdf btn btn-danger">Download PDF</button>
                 </td>
               </tr>
           </table>
         </div>
         <div class="modal-footer">
-        <button type="button" class="btn btn-secondary save_pajak" data-dismiss="modal">Save Pajak</button>
+        <button type="button" class="btn btn-secondary save_pajak" data-dismiss="modal">Save PDF</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -213,9 +253,13 @@
 
     $(document).ready(function(){
       var cabang = $('.cabang').val();
+      if (cabang == 'undefined' || cabang == null || cabang == undefined) {
+        cabang = 0;
+      }
+      var jenis_bayar = $('.jenis_bayar').val();
       $.ajax({
           url:baseUrl + '/sales/invoice/append_table',
-          data:{cabang},
+          data:$('.filter input').serialize()+'&flag=global'+'&cabang='+cabang+'&jenis_biaya='+jenis_bayar,
           type:'get',
           success:function(data){
             $('.append_table').html(data);
@@ -231,27 +275,52 @@
       });
     })
 
-    function filtering() {
-      var cabang = $('.cabang').val();
-      var jenis_bayar = $('.jenis_bayar').val();
-      $.ajax({
-          url:baseUrl + '/sales/invoice/append_table',
-          data:{cabang,jenis_bayar},
-          type:'get',
-          success:function(data){
-            $('.append_table').html(data);
-          },
-          error:function(data){
-            swal({
-            title: "Terjadi Kesalahan",
-                    type: 'error',
-                    timer: 2000,
-                    showConfirmButton: false
-        });
-       }
-      });
-    }
 
+function filtering() {
+  var cabang = $('.cabang').val();
+  if (cabang == 'undefined' || cabang == null || cabang == undefined) {
+    cabang = 0;
+  }
+  var jenis_bayar = $('.jenis_bayar').val();
+  $.ajax({
+      url:baseUrl + '/sales/invoice/append_table',
+      data:$('.filter input').serialize()+'&flag=global'+'&cabang='+cabang+'&jenis_biaya='+jenis_bayar,
+      type:'get',
+      success:function(data){
+        $('.append_table').html(data);
+      },
+      error:function(data){
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+}
+
+function filtering_nota() {
+  if ($('.nota').val() == '') {
+    return toastr.warning('Kode Nota Harus Diisi');
+  }
+  $.ajax({
+      url:baseUrl + '/sales/invoice/append_table',
+      data:$('.filter input').serialize()+'&flag=nota',
+      type:'get',
+      success:function(data){
+        $('.append_table').html(data);
+      },
+      error:function(data){
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+}
     $(document).on("click","#btn_add_order",function(){
         window.location.href = baseUrl + '/sales/invoice_form'
     });
@@ -273,15 +342,23 @@
 
     function ngeprint(id){
         var id = id.replace(/\//g, "-");
-        var w = window.open(baseUrl+'/sales/cetak_nota/'+id);
-        // var interval = setInterval(function(){ 
-        $(w).ready(function(){
-          var table = $('#tabel_data').DataTable();
-          table.ajax.reload(); 
-        })
-        
-        // }, 5000);
-        // clearInterval(interval);
+        $.ajax({
+          url:baseUrl + '/sales/cetak_nota/'+id,
+          type:'get',
+          success:function(data){
+            var w = window.open(baseUrl+'/sales/cetak_nota/'+id);
+            var table = $('#tabel_data').DataTable();
+            table.ajax.reload( null, false );
+          },
+          error:function(data){
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+      });
     }
 
     function hapus(id){
@@ -312,7 +389,7 @@
                       showConfirmButton: true
                       },function(){
                          var table = $('#tabel_data').DataTable();
-                         table.ajax.reload();
+                         table.ajax.reload( null, false );
               });
           },
           error:function(data){
@@ -341,6 +418,13 @@ function faktur_pajak(nomor) {
               $('.nomor_pajak').val(data.data.i_faktur_pajak);
               $('.id_pajak').val(data.data.i_id_pajak);
             }
+            if (data.data.nsp_pdf != null) {
+              $('.noFile').text(data.data.nsp_pdf);
+              $('.file-upload').addClass('active');
+            }else{
+              $('.noFile').text('Belum Upload PDF');
+              $('.file-upload').removeClass('active');
+            }
             $('#modal_pajak').modal('show');
           },
           error:function(data){
@@ -357,57 +441,48 @@ function faktur_pajak(nomor) {
 
 
 
-$('#chooseFile').bind('change', function () {
-  var filename = $("#chooseFile").val();
-  var fsize = $('#chooseFile')[0].files[0].size;
-  if(fsize>1048576) //do something if file size more than 1 mb (1048576)
-  {
-      return false;
-  }
-  if (/^\s*$/.test(filename)) {
-    $(".file-upload").removeClass('active');
-    $("#noFile").text("No file chosen..."); 
-  }
-  else {
-    $(".file-upload").addClass('active');
-    $("#noFile").text(filename.replace("C:\\fakepath\\", "")); 
-  }
-});
-
-var loadFile = function(event) {
-  var fsize = $('#chooseFile')[0].files[0].size;
-  if(fsize>1048576) //do something if file size more than 1 mb (1048576)
-  {
-      iziToast.warning({
-        icon: 'fa fa-times',
-        message: 'File Is To Big!',
-      });
-      return false;
-  }
-  var reader = new FileReader();
-  reader.onload = function(){
-    var output = document.getElementById('output');
-    output.src = reader.result;
-  };
-  reader.readAsDataURL(event.target.files[0]);
-};
-
-
-$('.nomor_pajak').focus(function(){
-  var invoice = $('.invoice').val();
-    $.ajax({
-        url:baseUrl + '/sales/cari_nomor_pajak',
-        type:'get',
-        data:{invoice},
-        success:function(data){
-           $('.append_modal').html(data);
-           $('#modal_faktur_pajak').modal('show');
-        },
-        error:function(data){
-            // location.reload();
+     {{-- GAMBAR --}}
+    $('.chooseFile').bind('change', function () {
+        var filename = $(this).val();
+        var fsize = $(this)[0].files[0].size;
+        if(fsize>1048576) //do something if file size more than 1 mb (1048576)
+        {
+          iziToast.warning({
+            icon: 'fa fa-times',
+            message: 'File Is To Big!',
+          });
+          return false;
         }
-    }); 
-})
+        var parent = $(this).parents(".preview_div");
+        if (/^\s*$/.test(filename)) {
+            $(parent).find('.file-upload').removeClass('active');
+            $(parent).find(".noFile").text("No file chosen..."); 
+        }
+        else {
+            $(parent).find('.file-upload').addClass('active');
+            $(parent).find(".noFile").text(filename.replace("C:\\fakepath\\", "")); 
+        }
+        load(parent,this);
+    });
+
+    function load(parent,file) {
+        var fsize = $(file)[0].files[0].size;
+        if(fsize>2048576) //do something if file size more than 1 mb (1048576)
+        {
+          iziToast.warning({
+            icon: 'fa fa-times',
+            message: 'File Is To Big!',
+          });
+          return false;
+        }
+        var reader = new FileReader();
+        reader.onload = function(e){
+            $(parent).find('.output').attr('src',e.target.result);
+        };
+        reader.readAsDataURL(file.files[0]);
+    }
+
+
 $('.save_pajak').click(function(){
 
     $.ajaxSetup({
@@ -415,24 +490,27 @@ $('.save_pajak').click(function(){
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    var file_data = $('.upload_pdf').prop('files')[0];
+    var formData = new FormData();
+    formData.append('file', file_data);
     $.ajax({
           url:baseUrl + '/sales/pajak_invoice'+'?'+$('.table_pajak :input').serialize(),
           type:'POST',
           dataType:'json',
+          data:formData,
           processData: false,
           contentType: false,
           success:function(data){
               swal({
               title: "Berhasil!",
                       type: 'success',
-                      text: "Data Berhasil Dihapus",
+                      text: "Simpan PDF Berhasil",
                       timer: 2000,
                       showConfirmButton: true
                       },function(){
                         $('.invoice').val('');
                          var table = $('#tabel_data').DataTable();
-                         table.ajax.reload();
+                         table.ajax.reload( null, false );
               });
           },
           error:function(data){

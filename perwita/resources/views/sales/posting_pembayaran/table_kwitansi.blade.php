@@ -14,7 +14,7 @@
                         {{$val->k_nomor}}
                         <input type="hidden" class="kwitansi_modal" name="" value="{{$val->k_nomor}}">
                     </td>
-                    <td>{{$val->k_tanggal}}</td>
+                    <td class="tanggal">{{$val->k_tanggal}}</td>
                     <td align="right">{{number_format($val->k_netto, 2, ",", ".")}}</td>
                     <td align="center">
                         <input class="tanda" type="checkbox"  name="tanda">
