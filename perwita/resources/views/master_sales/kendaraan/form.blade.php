@@ -347,12 +347,19 @@
     
 
     $(document).on("click","#btnsimpan",function(){
+
+        @if (isset($data->nopol))
+            var status = 'EDIT';
+        @else
+            var status = 'CREATE';
+        @endif
+
         $.ajax(
         {
             url :  baseUrl + "/master_sales/kendaraan/save_data",
             type: "POST",
             dataType:"JSON",
-            data : $('#form_header').serialize() ,
+            data : $('#form_header').serialize()+'&status='+status,
             success: function(data, textStatus, jqXHR)
             {
                 
