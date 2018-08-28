@@ -66,7 +66,7 @@ class nomor_seri_pajak_controller extends Controller
                             return '<label class="label label-primary">AKTIF</label>';
                         	}else{
                           		// return '<input type="checkbox"  onchange="cek(\''.$data->nsp_id.'\',this)" class="check form-control">';
-                            return '<label class="label label-danger">TIDAK AKTIF</label>';
+                            return '<label class="label label-danger">TERPAKAI</label>';
                         	}
                         })
                         ->addIndexColumn()

@@ -161,7 +161,7 @@ class kasKeluarController extends Controller
 						  ->get();
 			}else{
 				$cabang = Auth::user()->kode_cabang;
-				$data = DB::table('biaya_penerus_kas')
+				$data = DB::table('bukti_kas_keluar')
 						  ->join('jenisbayar','idjenisbayar','=','bkk_jenisbayar')
 						  ->where('bkk_comp',$cabang)
 						  ->where('bkk_nota','=',$req->nota)
