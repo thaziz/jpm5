@@ -2393,6 +2393,7 @@
 
             if(a == 'I'){
                $('.noinvoice').val(invoice);
+               $('.noinvoiceitem').val(invoice);
             }
             else {
               $('.noinvoice_po').val(invoice);
