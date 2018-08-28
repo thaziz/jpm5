@@ -283,8 +283,11 @@ class surat_jalan_trayek_Controller extends Controller
     
         $rute = DB::select("    SELECT * FROM rute h,rute_d d
                                         WHERE h.kode=d.kode_rute  AND h.kode='$head->kode_rute' ");
-        //dd($rute);
-        return view('sales.surat_jalan_trayek.print',compact('head','detail','rute'));
+
+        for ($i=0; $i < count($rute); $i++) { 
+            $last = $rute[$i]->kota;
+        }
+        return view('sales.surat_jalan_trayek.print',compact('head','detail','rute','last'));
     }
 
     public function hapus_data(Request $req)
