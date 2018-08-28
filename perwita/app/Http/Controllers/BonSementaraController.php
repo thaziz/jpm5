@@ -70,7 +70,7 @@ class BonSementaraController extends Controller
 		}
 		
 		
-		$data['bank'] = DB::select("select * from masterbank");
+		$data['bank'] = DB::select("select * from masterbank where mb_cabangbank = '$cabang'");
 
 		return view('purchase/bonsementara/indexcabang', compact('data'));
 	}
@@ -196,17 +196,42 @@ class BonSementaraController extends Controller
 
 			$datajurnal = [];
 		    $totalhutang = 0;
-		    $datajurnal[0]['idakun'] = $request->bankcabang;
-		    $datajurnal[0]['subtotal'] = $nominalkeu;
-		    $datajurnal[0]['dk'] = 'D';
-		    $datajurnal[0]['detail'] = $datapb[0]->bp_keperluan;
+
+		    $akunbank = $request->bankcabang;
+		    $dataakunbank = DB::select("select * from d_akun where id_akun = '$akunbank'");
+		    $bankdka = $dataakunbank[0]->akun_dka;
+
+		    if($bankdka == 'D'){
+		    	$datajurnal[0]['idakun'] = $request->bankcabang;
+			    $datajurnal[0]['subtotal'] = $nominalkeu;
+			    $datajurnal[0]['dk'] = 'D';
+			    $datajurnal[0]['detail'] = $datapb[0]->bp_keperluan;
+		    }
+		    else {
+		    	$datajurnal[0]['idakun'] = $request->bankcabang;
+			    $datajurnal[0]['subtotal'] = '-' . $nominalkeu;
+			    $datajurnal[0]['dk'] = 'D';
+			    $datajurnal[0]['detail'] = $datapb[0]->bp_keperluan;
+		    }
+
+		    $bonsemcabang = $datapb[0]->bp_akunhutang;
+		    $dataakunhutang = DB::select("select * from d_akun where id_akun = '$bonsemcabang'");
+		    $hutangdka = $dataakunhutang[0]->akun_dka;
+		    	
+		    if($hutangdka == 'K'){
+			    $datajurnal[1]['idakun'] = $datapb[0]->bp_akunhutang;
+			    $datajurnal[1]['subtotal'] = $nominalkeu;
+			    $datajurnal[1]['dk'] = 'K';
+			    $datajurnal[1]['detail'] = $datapb[0]->bp_keperluan;
+		    }
+		    else {
+		    	$datajurnal[1]['idakun'] = $datapb[0]->bp_akunhutang;
+			    $datajurnal[1]['subtotal'] = '-' . $nominalkeu;
+			    $datajurnal[1]['dk'] = 'K';
+			    $datajurnal[1]['detail'] = $datapb[0]->bp_keperluan;
+		    }
 
 
-
-		    $datajurnal[1]['idakun'] = $datapb[0]->bp_akunhutang;
-		    $datajurnal[1]['subtotal'] = $nominalkeu;
-		    $datajurnal[1]['dk'] = 'K';
-		    $datajurnal[1]['detail'] = $datapb[0]->bp_keperluan;
 
 
 

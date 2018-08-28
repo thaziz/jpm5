@@ -99,7 +99,7 @@
                         <td> {{$bankmasuk->bm_jenisbayar}}</td>
                         <td> <span class="label label-info"> {{$bankmasuk->bm_status}} </span></td>
                         <td> @if($bankmasuk->bm_status == 'DITERIMA')
-                                 <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"><i class="fa  fa-eye"> </i>
+                                 <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i>
                              &nbsp;  Jurnal &nbsp;
                            </a>
                             @else

@@ -4058,13 +4058,13 @@ public function purchase_order() {
 		//	dd($data);	
 		}
 		}
-		else {
+		else if($flag == 'PBG') {
 			$data['flag'] = 'PBG';
 
 
 			$data['cabang'] = DB::select("select * from cabang");
 		
-			$data['header'] = DB::select("select * from barang_terima , cabang, gudang where bt_id = '$id' and bt_agen = kode and bt_gudang = mg_id");
+			$data['header'] = DB::select("select * from barang_terima , cabang, mastergudang where bt_id = '$id' and bt_agen = kode and bt_gudang = mg_id");
 
 			$idgudang = $data['header'][0]->bt_gudang;
 
@@ -7443,10 +7443,7 @@ public function kekata($x) {
 		$kodebanks = $request->kodebank;
 		$databank = DB::select("select * from masterbank where mb_id = '$kodebanks'");
 		$akunhutangdagang = $databank[0]->mb_kode;
-
-
-
-		
+	
 
 		if(isset($lastid)) {
 			$idbbk = $lastid;
@@ -7488,6 +7485,7 @@ public function kekata($x) {
 		//return count($request->nofpg);
 		if($request->flag == 'CEKBG'){
 			$akunkodebank = $request->akunkodebank;
+
 			for($i = 0; $i < count($request->nofpg); $i++){
 				$bbkdt = new bukti_bank_keluar_dt();
 				
@@ -7545,11 +7543,6 @@ public function kekata($x) {
 					]);
 				}
 
-
-			
-
-
-
 				$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
 				$jenisbayar = $datafpg[0]->fpg_jenisbayar;
 
@@ -7569,15 +7562,12 @@ public function kekata($x) {
 					$kelompokakun = $datafpgb[0]->fpg_kelompok;
 
 
-
-
 					if($kelompokakun == 'SAMA BANK'){
 						$time = Carbon::now();
 
 							$updatebankmasuk = bank_masuk::where([['bm_notatransaksi', '=', $request->nofpg[$i]],['bm_idfpgb' , '=' , $idfpgb]]);
 							$updatebankmasuk->update([
-							 	'bm_tglterima' => $time, 
-							 		 	
+							 	'bm_tglterima' => $time,							 		 	
 						 	]);
 						
 
@@ -7603,7 +7593,7 @@ public function kekata($x) {
 							 	'bm_nota' => $notabm,	 	
 						 	]);
 						
-
+							
 						$updatebbkd = bukti_bank_keluar_dt::where([['bbkd_id' ,'=' , $idbbkd ],['bbkd_idbbk' , '=' , $idbbk]]);
 						$updatebbkd->update([
 							'bbkd_notabm' => $notabm,
@@ -7755,8 +7745,8 @@ public function kekata($x) {
 				}
 				else if($jenisbayar == '13'){
 					$datafpgdt = DB::select("select * from fpg, fpg_dt where idfpg = '$idfpg' and fpgdt_idfpg = idfpg");
-					for($i = 0 ; $i < count($datafpgdt); $i++){
-						$notabonsem = $datafpgdt[$i]->fpgdt_nofaktur;
+					for($j = 0 ; $j < count($datafpgdt); $j++){
+						$notabonsem = $datafpgdt[$j]->fpgdt_nofaktur;
 						$date =  date('Y-m-d');
 						$updatebonsem = bonsempengajuan::where('bp_nota' , '=' , $notabonsem);
 						$updatebonsem->update([
@@ -7764,10 +7754,28 @@ public function kekata($x) {
 							'bp_statusend' =>'CAIR',
 						]);
 					}
+
+					$akunhutangdagang2 = $request->hutangdagang[$i];
+					$datajurnal2 = DB::select("select * from d_akun where id_akun = '$akunhutangdagang2'");
+					$akundka = $datajurnal2[0]->akun_dka;
+
+						if($akundka == 'D'){
+							$datajurnal[$i]['id_akun'] = $akunhutangdagang2;
+							$datajurnal[$i]['subtotal'] =  $nominal;
+							$datajurnal[$i]['dk'] = 'D';
+							$datajurnal[$i]['detail'] = $request->keterangan[$i];
+						}			
+						else {
+							$datajurnal[$i]['id_akun'] = $akunhutangdagang2;
+							$datajurnal[$i]['subtotal'] = '-' . $nominal;
+							$datajurnal[$i]['dk'] = 'D';
+							$datajurnal[$i]['detail'] = $request->keterangan[$i];
+		
+						}
 				}
 				
 				else {
-
+				
 				$akunhutangdagang2 = $request->hutangdagang[$i];
 				$datajurnal2 = DB::select("select * from d_akun where id_akun = '$akunhutangdagang2'");
 				$akundka = $datajurnal2[0]->akun_dka;
@@ -7786,8 +7794,6 @@ public function kekata($x) {
 	
 					}
 				}
-				/*return $nominal;
-*/
 			}
 		}
 		else if($request->flag == 'BIAYA') {
@@ -7914,8 +7920,7 @@ public function kekata($x) {
 	        $jurnal->jr_note = $request->keteranganheader;
 	        $jurnal->jr_no = $jr_no;
 	        $jurnal->save();
-       			
-	     
+       	
 	        $akundkahutang2 = DB::select("select * from d_akun where id_akun = '$akunhutangdagang'");
 	        $akundkahutang = $akundkahutang2[0]->akun_dka; 
 	        if(count($jurnalpbkeluar) == 0){
@@ -7938,8 +7943,6 @@ public function kekata($x) {
 	        	        array_push($datajurnal, $dataakun );
 	        	    }
 	     
-
-			
     		$key  = 1;
     		for($j = 0; $j < count($datajurnal); $j++){
     			
@@ -8250,7 +8253,7 @@ public function kekata($x) {
 			}
 		}
 
-		DB::delete("DELETE from  d_jurnal where jr_ref = '$nobbk' and jr_detail = 'POSTING BANK'");
+		DB::delete("DELETE from  d_jurnal where jr_ref = '$nobbk' and jr_detail = 'BUKTI BANK KELUAR'");
 		DB::delete("DELETE from bukti_bank_keluar where bbk_id = '$id'");
 
 		return 'ok';
@@ -8708,9 +8711,9 @@ public function kekata($x) {
 					}
 				}
 				else if($idjenisbayar == '13'){
-					$datas['fp']  = DB::select("select * from bonsem_pengajuan, cabang where  bp_cabang = '$nosupplier' and bp_cabang = kode and bp_setujukeu = 'SETUJU' and bp_pencairan != 0.00");
+					$datas['fp']  = DB::select("select * from bonsem_pengajuan, cabang where  bp_cabang = '$nosupplier' and bp_cabang = kode and bp_setujukeu = 'SETUJU' and bp_pencairan != 0.00 and bp_statusend IS NULL");
 
-					$datas['fp1']  = DB::select("select * from bonsem_pengajuan, cabang where  bp_cabang = '$nosupplier' and bp_cabang = kode and bp_setujukeu = 'SETUJU' and bp_pencairan != 0.00");
+					$datas['fp1']  = DB::select("select * from bonsem_pengajuan, cabang where  bp_cabang = '$nosupplier' and bp_cabang = kode and bp_setujukeu = 'SETUJU' and bp_pencairan != 0.00 and bp_statusend IS NULL");
 
 					if(count($request->arrnofaktur) != 0){
 						for($i = 0 ; $i < count($datas['fp']); $i++){
@@ -10856,12 +10859,11 @@ public function kekata($x) {
 							$pencairan2 = floatval($pencairan) + floatval($pelunasan); 
 						}
 
-						$updatebp = DB::table('bonsem_pengajuan')
+						/*$updatebp = DB::table('bonsem_pengajuan')
 						->where('bp_nota', $request->nofaktur[$i])
 						->update([
-							'bp_pelunasan' => $sisafaktur,
 							'bp_pencairan' => $pencairan2,
-						]);	
+						]);	*/
 					}
 				}
 			}

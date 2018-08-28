@@ -89,7 +89,7 @@
                              </td>
 
                              <td> @if(Auth::user()->PunyaAkses('Bon Sementara Kabang','aktif'))
-                                    @if($bonsem->bp_pelunasan == '0.00') 
+                                    @if($bonsem->bp_statusend == 'CAIR') 
                                     <button class="btn btn-sm btn-danger" onclick="uangterima({{$bonsem->bp_id}})" data-toggle="modal" data-target="#modaluangterima"> <i class="fa fa-money"> </i> Terima Uang ? </button> </td>
                                       @endif
                                   @endif
@@ -100,7 +100,7 @@
                                 <button class="btn btn-danger btn-sm" onclick="hapusData({{$bonsem->bp_id}})"> <i class="fa fa-trash"> </i> </button>
                                 @else
                                   @if($bonsem->status_pusat == 'UANG DI TERIMA')
-                                  <a onclick="lihatjurnal('{{$bonsem->bp_nota or null}}','BON SEMENTARA')" class="btn-xs btn-primary" aria-hidden="true"> Lihat Jurnal</a>
+                                  <button onclick="lihatjurnal('{{$bonsem->bp_nota or null}}','BON SEMENTARA')" class=" btn btn-xs btn-primary"> <i class="fa fa-eye"> </i> Jurnal </button>
                                   @endif
                                 @endif
 
@@ -121,7 +121,7 @@
                                   <div class="modal-content">
                                      <div class="modal-header">
                                          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
-                                      <h4 class="modal-title"> Terima Uang  </h4>
+                                      <h4 class="modal-title"> Tarik Kas  </h4>
 
                                      </div>
                             
@@ -156,7 +156,7 @@
                                         <td> &nbsp; </td>
                                         <td> <select class="form-control bankcabang" name="bankcabang">
                                               @foreach($data['bank'] as $bank)
-                                              <option value="{{$bank->mb_kode}}"> {{$bank->mb_nama}}</option>
+                                              <option value="{{$bank->mb_kode}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}}</option>
                                               @endforeach
                                             </select>
                                         </td>
@@ -436,7 +436,7 @@ function lihatjurnal($ref,$note){
                             }
                             else {
                               $totalKredit = parseFloat($totalKredit) + parseFloat(response.jurnal[key].jrdt_value);
-                              rowtampil2 += "<td> </td><td>"+accounting.formatMoney(response.jurnal[key].jrdt_value, "", 2, ",",'.')+"</td>";
+                              rowtampil2 += "<td> </td><td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td>";
                             }
                          
                             rowtampil2 += "<td>"+response.jurnal[key].jrdt_detail+"</td>";
