@@ -1939,6 +1939,7 @@
         '<input readonly  type="text" class="fp_sisa_akhir right form-control" value="'+accounting.formatMoney(fp_sisapelunasan,"", 0, ".",',')+'" name="fp_sisa_akhir[]">',
 
         '<p class="fp_keterangan_text">'+fp_keterangan+'</p>',
+        '<input type="hidden" class="fp_keterangan" name="fp_keterangan[]" value="'+fp_keterangan+'">',
 
         '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
       ]).draw();
