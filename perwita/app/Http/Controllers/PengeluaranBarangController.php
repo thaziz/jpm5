@@ -170,7 +170,8 @@ class PengeluaranBarangController extends Controller
 								'updated_at'   		=> Carbon::now(),
 								'pb_status'   		=> 'Released',
 								'pb_comp'			=> $request->cabang,
-								'pb_jenis_keluar'	=> $request->jp
+								'pb_jenis_keluar'	=> $request->jp,
+								'pb_gudang_cabang'	=> $request->gudang_peminta
 							]);
 
 

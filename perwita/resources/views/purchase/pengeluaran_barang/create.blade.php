@@ -479,6 +479,31 @@ function simpan(){
   if (total == 0) {
     return toastr.warning('Tidak Ada Permintaan Pengeluaran Barang, Gagal Simpan');
   }
+  
+  if ($('.jenis_keluar').val() == 'Pemakaian Reguler') {
+      var jenis_keluar = 0;
+      $('.akun_biaya').each(function(){
+         if ($(this).val() == null) {
+             jenis_keluar+=1;
+         }
+      })
+
+      if (jenis_keluar != 0) {
+        return toastr.warning('Terdapat Akun Yang Kosong/Cabang Tidak Memiliki Akun Untuk Item Ini');
+      }
+  }
+  
+  var stock_gudang = 0;
+  $('.stock_gudang').each(function(){
+     if ($(this).val() == '0') {
+        stock_gudang+=1;
+     }
+  })
+
+  if (stock_gudang != 0) {
+    return toastr.warning('Terdapat Stock Gudang Yang Kosong');
+  }
+
    swal({
     title: "Apakah anda yakin?",
     text: "Simpan Data Pengeluaran Barang!",
