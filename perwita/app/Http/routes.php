@@ -170,6 +170,7 @@ Route::get('penerimaanbarang/lihatjurnal', 'PurchaseController@lihatjurnal');
 // PENGELUARAN BARANG
 Route::get('pengeluaranbarang/pengeluaranbarang', 'PengeluaranBarangController@index');
 Route::get('pengeluaranbarang/edit/{id}', 'PengeluaranBarangController@edit');
+Route::get('pengeluaranbarang/akun_biaya_dropdown', 'PengeluaranBarangController@akun_biaya_dropdown');
 Route::get('pengeluaranbarang/cari_stock', 'PengeluaranBarangController@cari_stock');
 Route::get('pengeluaranbarang/createpengeluaranbarang', 'PengeluaranBarangController@create');
 Route::get('pengeluaranbarang/ganti_nota', 'PengeluaranBarangController@ganti_nota');
