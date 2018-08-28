@@ -318,7 +318,9 @@
 			</table>
 			<table class="inlineTable sizeheader pull-right">
 				<tr>
-					<th class="bold sizebiger">KAB.MALANG</th>
+					<th class="bold sizebiger">
+						{{$last}}
+					</th>
 				</tr>
 			</table>
 		</div>
