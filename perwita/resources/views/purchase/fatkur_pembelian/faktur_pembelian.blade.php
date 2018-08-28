@@ -141,7 +141,9 @@
 		<fieldset style="margin-bottom: 5px;">
 			<legend class="italic">Diterima Dari :</legend>
 			{{$data['judul'][0]->nama_supplier}} [{{$data['judul'][0]->no_supplier}}]  <br>
-			{{$data['judul'][0]->alamat}}
+			{{$data['judul'][0]->alamat}} <br>
+			{{$data['judul'][0]->telp}}
+
 		</fieldset>
 		<table width="100%" cellspacing="0" class="tabel" border="1px">
 
