@@ -4963,7 +4963,7 @@ public function purchase_order() {
 		$data_tt = DB::select("select * from form_tt , form_tt_d where tt_idform = ttd_id");
 		$data['no_tt'] = DB::select("select * from form_tt, form_tt_d where ttd_faktur = '$jurnalRef' and tt_idform = ttd_id "); 
 		
-		dd($data);
+		
 		if($datas['fakturs'] == null){ //FP
 			$data['status'] = 'FP';			
 			$data['fakturdtpo'] = DB::select("select * from faktur_pembeliandt , faktur_pembelian, masteritem, supplier where fpdt_idfp = fp_idfaktur and fp_idfaktur = '$id' and fpdt_kodeitem = kode_item and fp_idsup = idsup");
