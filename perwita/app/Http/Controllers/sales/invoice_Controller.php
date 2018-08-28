@@ -282,19 +282,21 @@ class invoice_Controller extends Controller
                             ->where('nsp_aktif',true)
                             ->orderBy('nsp_id','ASC')
                             ->first();
+          if ($faktur_pajak != null) {
+            $update_status = DB::table('invoice')
+                               ->where('i_nomor',$id)
+                               ->update([
+                                'i_statusprint'=>'Printed',
+                                'i_faktur_pajak'=>$faktur_pajak->nsp_nomor_pajak
+                               ]);
 
-          $update_status = DB::table('invoice')
-                             ->where('i_nomor',$id)
-                             ->update([
-                              'i_statusprint'=>'Printed',
-                              'i_faktur_pajak'=>$faktur_pajak->nsp_nomor_pajak
-                             ]);
-
-          $update_pajak = DB::table('nomor_seri_pajak')
-                            ->where('nsp_nomor_pajak',$faktur_pajak->nsp_nomor_pajak)
-                            ->update([
-                              'nsp_aktif'=>false
-                             ]);
+            $update_pajak = DB::table('nomor_seri_pajak')
+                              ->where('nsp_nomor_pajak',$faktur_pajak->nsp_nomor_pajak)
+                              ->update([
+                                'nsp_aktif'=>false
+                               ]);
+          }
+          
         }
         
                            
