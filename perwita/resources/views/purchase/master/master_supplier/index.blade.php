@@ -93,7 +93,7 @@
                     <tr>
                       <td> {{$sp->no_supplier}} </td>
                       <td > {{$sp->nama_supplier}} </td>
-                      <td> {{$sp->alamat}} </td>
+                      <td> {{$sp->alamatsupplier}} </td>
                       <td> {{$sp->nama2}} </td>
                
                       <td> {{$sp->idcabang}} </td>
