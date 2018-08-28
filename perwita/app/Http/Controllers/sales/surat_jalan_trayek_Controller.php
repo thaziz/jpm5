@@ -291,23 +291,25 @@ class surat_jalan_trayek_Controller extends Controller
 
     public function hapus_data(Request $req)
     {
-        $data = DB::table('surat_jalan_trayek_d')
-                  ->where('nomor_surat_jalan_trayek',$req->id)
-                  ->get();
+        return DB::transaction(function() use ($request){
+            $data = DB::table('surat_jalan_trayek_d')
+                      ->where('nomor_surat_jalan_trayek',$req->id)
+                      ->get();
 
-        for ($i=0; $i < count($data); $i++) { 
-            $do = DB::table('delivery_order')
-                    ->where('nomor',$data[$i]->nomor_do)
-                    ->update([
-                        'no_surat_jalan_trayek' => null
-                    ]);
-        }
+            for ($i=0; $i < count($data); $i++) { 
+                $do = DB::table('delivery_order')
+                        ->where('nomor',$data[$i]->nomor_do)
+                        ->update([
+                            'no_surat_jalan_trayek' => null
+                        ]);
+            }
 
-        $data = DB::table('surat_jalan_trayek')
-                  ->where('nomor',$req->id)
-                  ->delete();
-        Session::flash('message', "BERHASIL DIHAPUS");
-        return redirect()->back();
+            $data = DB::table('surat_jalan_trayek')
+                      ->where('nomor',$req->id)
+                      ->delete();
+            Session::flash('message', "BERHASIL DIHAPUS");
+            return redirect()->back();
+        });
     }
 
 
