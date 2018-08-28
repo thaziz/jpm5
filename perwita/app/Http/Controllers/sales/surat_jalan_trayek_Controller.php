@@ -183,6 +183,8 @@ class surat_jalan_trayek_Controller extends Controller
 
                 $simpan = DB::table('surat_jalan_trayek_d')->insert($data);
             }
+            $simpan = DB::table('surat_jalan_trayek_d')->where('nomor_surat_jalan_trayek',$request->ed_nomor)->get();
+            // dd($simpan);
             return response()->json(['status'=>1]);
         });
     }

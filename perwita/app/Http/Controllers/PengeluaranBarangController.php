@@ -421,7 +421,7 @@ class PengeluaranBarangController extends Controller
 						 ->where('sm_stock',$request->sg_id[$i])
 						 ->where('sm_sisa','!=','0')
 						 ->where('sm_mutcat','=','1')
-						 ->orderBy('sm_date','ASC')
+						 ->orderBy('sm_date','DESC')
 						 ->get();
 						 
 			$kurang = $request->jumlah_setuju[$i];
