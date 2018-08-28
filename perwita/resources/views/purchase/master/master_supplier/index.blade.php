@@ -53,7 +53,6 @@
     </div>
 
 
-  </div>
 
 
     <div class="row">
@@ -69,14 +68,10 @@
 
                 </div>
                 <div class="ibox-content">
-                        <div class="row">
-            <div class="col-xs-12">
-              
-              <div class="box" id="seragam_box">
-               
-                    
-                <div class="box-body">
-                
+            <div class="row">
+            <div class="col-xs-12">              
+              <div class="box" id="seragam_box">   
+                <div class="box-body">                
                   <table id="addColumn" class="table table-bordered table-striped tbl-item">
                     <thead>
                      <tr>
@@ -90,10 +85,8 @@
                         <th  style="width:70px"> Contact Person </th>
                         <th  style="width:50px"> Status </th>
                         <th style="width:50px"> Aksi </th>
-                    </tr>
-                 
-                    </thead>
-                    
+                    </tr>                 
+                    </thead>                    
                     <tbody>
 
                     @foreach($data as $sp)
@@ -129,9 +122,7 @@
                     </tr>
                    
                     @endforeach
-
                     </tbody>
-                   
                   </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
@@ -145,6 +136,7 @@
         </div>
     </div>
 </div>
+
 
 
 
