@@ -9,6 +9,7 @@ use Yajra\Datatables\Datatables;
 use carbon\carbon;
 use Auth;
 use Exception;
+use Session;
 class surat_jalan_trayek_Controller extends Controller
 {
     public function table_data_detail (Request $request) {
@@ -74,7 +75,7 @@ class surat_jalan_trayek_Controller extends Controller
 
 
                             if(Auth::user()->punyaAkses('Surat Jalan By Trayek','hapus')){
-                                $c = '<a href="'.url('sales/surat_jalan_trayek_form/hapus_data') .'" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>';
+                                $c = '<a href="'.url('sales/surat_jalan_trayek/hapus_data?id='.$data->nomor) .'" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>';
                             }
 
                             return '<div class="btn-group">'.$a . $b .$c.'</div>' ;
@@ -183,6 +184,8 @@ class surat_jalan_trayek_Controller extends Controller
 
                 $simpan = DB::table('surat_jalan_trayek_d')->insert($data);
             }
+            $simpan = DB::table('surat_jalan_trayek_d')->where('nomor_surat_jalan_trayek',$request->ed_nomor)->get();
+            // dd($simpan);
             return response()->json(['status'=>1]);
         });
     }
@@ -282,6 +285,27 @@ class surat_jalan_trayek_Controller extends Controller
                                         WHERE h.kode=d.kode_rute  AND h.kode='$head->kode_rute' ");
         //dd($rute);
         return view('sales.surat_jalan_trayek.print',compact('head','detail','rute'));
+    }
+
+    public function hapus_data(Request $req)
+    {
+        $data = DB::table('surat_jalan_trayek_d')
+                  ->where('nomor_surat_jalan_trayek',$req->id)
+                  ->get();
+
+        for ($i=0; $i < count($data); $i++) { 
+            $do = DB::table('delivery_order')
+                    ->where('nomor',$data[$i]->nomor_do)
+                    ->update([
+                        'no_surat_jalan_trayek' => null
+                    ]);
+        }
+
+        $data = DB::table('surat_jalan_trayek')
+                  ->where('nomor',$req->id)
+                  ->delete();
+        Session::flash('message', "BERHASIL DIHAPUS");
+        return redirect()->back();
     }
 
 
