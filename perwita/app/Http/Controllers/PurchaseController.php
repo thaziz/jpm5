@@ -6245,7 +6245,7 @@ public function purchase_order() {
 				$fatkurpembelian->fp_tgl = $request->tglitem;
 				$fatkurpembelian->fp_idsup = $idsup;
 				$fatkurpembelian->fp_keterangan = strtoupper($request->keteranganheader);
-				$fatkurpembelian->fp_noinvoice = $request->noinvoice;
+				$fatkurpembelian->fp_noinvoice = $request->no_invoice;
 				$fatkurpembelian->fp_jatuhtempo = $request->jatuhtempoitem;
 				$fatkurpembelian->fp_jumlah = $total;
 
