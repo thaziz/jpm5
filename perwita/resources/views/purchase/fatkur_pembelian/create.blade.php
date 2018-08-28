@@ -910,7 +910,7 @@
                                           <table class="table table-striped">
                                           <tr>
                                             <td width="150px"> No Invoice </td>
-                                            <td> <input type="text" class="form-control noinvoice_po" novalidate required="" name="no_invoice_po"> </td>
+                                            <td> <input type="text" class="form-control noinvoice_po" novalidate required=""> </td>
                                           </tr>
 
                                           <tr>
@@ -2393,6 +2393,7 @@
 
             if(a == 'I'){
                $('.noinvoice').val(invoice);
+               $('.noinvoiceitem').val(invoice);
             }
             else {
               $('.noinvoice_po').val(invoice);
