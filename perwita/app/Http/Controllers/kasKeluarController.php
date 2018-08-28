@@ -3452,14 +3452,17 @@ class kasKeluarController extends Controller
 					  ->first();
 
 		$tgl = Carbon::parse($cari_bkk_id->bkk_tgl)->format('d/m/y');
-
-	    $cari_bkk_dt = DB::table('bukti_kas_keluar')
-					  ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
-					  ->join('cabang','kode','=','bkk_comp')
-					  ->join('d_akun','id_akun','=','bkk_akun_kas')
-					  ->join('jenisbayar','idjenisbayar','=','bkk_jenisbayar')
-					  ->where('bkk_id',$req->id)
-					  ->get();
+		if ($cari_bkk_id->bkk_jenisbayar == 2 or $cari_bkk_id->bkk_jenisbayar == 6 or $cari_bkk_id->bkk_jenisbayar == 7 or $cari_bkk_id->bkk_jenisbayar == 9)   {
+			$cari_bkk_dt = DB::table('bukti_kas_keluar_detail')
+							  ->join('faktur_pembelian','bkkd_ref','=','fp_nofaktur')
+							  ->where('bkkd_bkk_id',$req->id)
+							  ->get();
+		}else{
+			$cari_bkk_dt = DB::table('bukti_kas_keluar_detail')
+							  ->where('bkkd_bkk_id',$req->id)
+							  ->get();
+		}
+	    
 
 		$terbilang = $this->terbilang($cari_bkk_id->bkk_total,$style=3);
 			  

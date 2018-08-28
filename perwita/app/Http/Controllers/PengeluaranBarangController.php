@@ -51,13 +51,13 @@ class PengeluaranBarangController extends Controller
 
 	public function ganti_nota(request $req)
 	{
-		$bulan = Carbon::now()->format('m');
-	    $tahun = Carbon::now()->format('y');
+		$bulan = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('m');
+	    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
 
-	    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),14) as id from bukti_kas_keluar
-	                                    WHERE bkk_comp = '$req->cabang'
-	                                    AND to_char(bkk_tgl,'MM') = '$bulan'
-	                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
+	    $cari_nota = DB::select("SELECT  substring(max(pb_nota),14) as id from pengeluaran_barang
+	                                    WHERE pb_comp = '$req->cabang'
+	                                    AND to_char(pb_tgl,'MM') = '$bulan'
+	                                    AND to_char(pb_tgl,'YY') = '$tahun'");
 
 	    $index = (integer)$cari_nota[0]->id + 1;
 	    $index = str_pad($index, 4, '0', STR_PAD_LEFT);
@@ -88,6 +88,11 @@ class PengeluaranBarangController extends Controller
 				  ->first();
 
 		return response()->json(['data'=>$data,'jenis' => $jenis]);
+	}
+
+	public function akun_biaya_dropdown(Request $req)
+	{
+
 	}
 
 	public function save_pengeluaran(request $request){
