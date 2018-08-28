@@ -597,13 +597,27 @@ class PengeluaranBarangController extends Controller
 					//	return $hppitem;
 					}
 
+					$hutangpersediaan = $datapbd[$i]->pbd_akunhutangpersediaan;
+					$datahutangpersediaan = DB::select("select * from d_akun where id_akun = '$hutangpersediaan'");
+					$akundkapersediaan = $datahutangpersediaan[0]->akun_dka;
 
-					$dataakun = array (
-						'id_akun' => $datapbd[$i]->pbd_akunhutangpersediaan,
-						'subtotal' => $hppitem,
-						'dk' => 'D',
-						'detail' => $datapb[0]->pb_keperluan,
-					);	
+					if($akundkapersediaan == 'K'){
+						$dataakun = array (
+							'id_akun' => $datapbd[$i]->pbd_akunhutangpersediaan,
+							'subtotal' => $hppitem,
+							'dk' => 'K',
+							'detail' => $datapb[0]->pb_keperluan,
+						);	
+
+					}
+					else {
+						$dataakun = array (
+							'id_akun' => $datapbd[$i]->pbd_akunhutangpersediaan,
+							'subtotal' => '-' . $hppitem,
+							'dk' => 'K',
+							'detail' => $datapb[0]->pb_keperluan,
+						);
+					}
 
 					array_push($datajurnal, $dataakun);
 				}
@@ -619,12 +633,27 @@ class PengeluaranBarangController extends Controller
 						$hppitem = floatval($harga) * floatval($qty);
 					}
 
-					$dataakun = array (
-						'id_akun' => $datapbd[$m]->pbd_akunhutangbiaya,
-						'subtotal' => $hppitem,
-						'dk' => 'D',
-						'detail' => $datapb[0]->pb_keperluan,
-					);	
+					$hutangbiaya = $datapbd[$m]->pbd_akunhutangbiaya;
+					$databiaya = DB::select("select * from d_akun where id_akun = '$hutangbiaya'");
+					$biayadka = $databiaya[0]->akun_dka;
+
+					if($biayadka == 'D'){
+						$dataakun = array (
+							'id_akun' => $datapbd[$m]->pbd_akunhutangbiaya,
+							'subtotal' => $hppitem,
+							'dk' => 'D',
+							'detail' => $datapb[0]->pb_keperluan,
+						);	
+					}
+					else {
+						$dataakun = array (
+							'id_akun' => $datapbd[$m]->pbd_akunhutangbiaya,
+							'subtotal' => '-' . $hppitem,
+							'dk' => 'D',
+							'detail' => $datapb[0]->pb_keperluan,
+						);	
+
+					}
 
 					array_push($datajurnal, $dataakun);
 				}
