@@ -976,20 +976,20 @@ class kasKeluarController extends Controller
 					if ($req->cabang == '000') {
 
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
-							  ->where('fp_idsup',$supplier->idsup)
-							  ->where('fp_tgl','>=',$tgl[0])
-							  ->where('fp_tgl','<=',$tgl[1])
-							  ->where('fp_sisapelunasan','!=',0)
-							  ->whereNotIn('fp_nofaktur',$req->valid)
-							  ->get();
+								  ->where('fp_idsup',$supplier->idsup)
+								  ->where('fp_tgl','>=',$tgl[0])
+								  ->where('fp_tgl','<=',$tgl[1])
+								  ->where('fp_sisapelunasan','!=',0)
+								  ->where('fp_pending_status','APPROVED')
+								  ->whereNotIn('fp_nofaktur',$req->valid)
+								  ->get();
 					}else{
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->where('fp_idsup',$supplier->idsup)
 							  ->where('fp_comp',$req->cabang)
 							  ->where('fp_tgl','>=',$tgl[0])
 							  ->where('fp_tgl','<=',$tgl[1])
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
@@ -1000,20 +1000,20 @@ class kasKeluarController extends Controller
 
 					if ($req->cabang == '000') {
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->where('fp_supplier',$req->supplier_faktur)
 							  ->where('fp_tgl','>=',$tgl[0])
 							  ->where('fp_tgl','<=',$tgl[1])
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
 					}else{
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->where('fp_supplier',$req->supplier_faktur)
 							  ->where('fp_comp',$req->cabang)
 							  ->where('fp_tgl','>=',$tgl[0])
 							  ->where('fp_tgl','<=',$tgl[1])
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
@@ -1035,20 +1035,20 @@ class kasKeluarController extends Controller
 
 					if ($req->cabang == '000') {
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->where('fp_idsup',$supplier->idsup)
 							  ->where('fp_tgl','>=',$tgl[0])
 							  ->where('fp_tgl','<=',$tgl[1])
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
 					}else{
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->where('fp_idsup',$supplier->idsup)
 							  ->where('fp_comp',$req->cabang)
 							  ->where('fp_tgl','>=',$tgl[0])
 							  ->where('fp_tgl','<=',$tgl[1])
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
@@ -1058,20 +1058,20 @@ class kasKeluarController extends Controller
 
 					if ($req->cabang == '000') {
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->where('fp_supplier',$req->supplier_faktur)
 							  ->where('fp_jatuhtempo','>=',$tgl[0])
 							  ->where('fp_jatuhtempo','<=',$tgl[1])
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
 					}else{
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->where('fp_supplier',$req->supplier_faktur)
 							  ->where('fp_comp',$req->cabang)
 							  ->where('fp_jatuhtempo','>=',$tgl[0])
 							  ->where('fp_jatuhtempo','<=',$tgl[1])
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
@@ -1090,18 +1090,18 @@ class kasKeluarController extends Controller
 
 					if ($req->cabang == '000') {
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->where('fp_idsup',$supplier->idsup)
 							  ->where('fp_nofaktur',$req->faktur_nomor)
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
 					}else{
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->where('fp_idsup',$supplier->idsup)
 							  ->where('fp_nofaktur',$req->faktur_nomor)
 							  ->where('fp_comp',$req->cabang)
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
@@ -1111,18 +1111,18 @@ class kasKeluarController extends Controller
 
 					if ($req->cabang == '000') {
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->where('fp_supplier',$req->supplier_faktur)
 							  ->where('fp_nofaktur',$req->faktur_nomor)
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
 					}else{
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->where('fp_supplier',$req->supplier_faktur)
 							  ->where('fp_nofaktur',$req->faktur_nomor)
 							  ->where('fp_comp',$req->cabang)
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
@@ -1279,7 +1279,6 @@ class kasKeluarController extends Controller
 	{	
 		if ($req->jenis_bayar == 2 or $req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
 			$data = DB::table('faktur_pembelian')
-				  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 				  ->whereIn('fp_nofaktur',$req->check_array)
 				  ->get();
 
@@ -1303,7 +1302,6 @@ class kasKeluarController extends Controller
 		if ($req->jenis_bayar == 2 or $req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
 
 			$data = DB::table('faktur_pembelian')
-				  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 				  ->whereIn('fp_nofaktur',$req->check_array)
 				  ->get();
 
@@ -1928,22 +1926,22 @@ class kasKeluarController extends Controller
 						  ->first();
 					if ($req->cabang == '000') {
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->select('fp_nofaktur')
 							  ->where('fp_idsup',$supplier->idsup)
 							  ->where('fp_tgl','>=',$tgl[0])
 							  ->where('fp_tgl','<=',$tgl[1])
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
 					}else{
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->select('fp_nofaktur')
 							  ->where('fp_idsup',$supplier->idsup)
 							  ->where('fp_comp',$req->cabang)
 							  ->where('fp_tgl','>=',$tgl[0])
 							  ->where('fp_tgl','<=',$tgl[1])
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
@@ -1964,7 +1962,6 @@ class kasKeluarController extends Controller
 
 						if ($req->cabang == '000') {
 							$bkkd_fp = DB::table('faktur_pembelian')
-								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  	  ->select('fp_nofaktur')
 								  ->where('fp_idsup',$supplier->idsup)
 								  ->where('fp_tgl','>=',$tgl[0])
@@ -1973,7 +1970,6 @@ class kasKeluarController extends Controller
 								  ->get();
 						}else{
 							$bkkd_fp = DB::table('faktur_pembelian')
-								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  	  ->select('fp_nofaktur')
 								  ->where('fp_idsup',$supplier->idsup)
 								  ->where('fp_comp',$req->cabang)
@@ -1999,7 +1995,6 @@ class kasKeluarController extends Controller
 					$unik = array_unique($data);
 
 					$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->whereIn('fp_nofaktur',$unik)
 							  ->get();
 							  
@@ -2021,11 +2016,11 @@ class kasKeluarController extends Controller
 
 				}elseif ($req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
 					$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->select('fp_nofaktur')
 							  ->where('fp_comp',$req->cabang)
 							  ->where('fp_tgl','>=',$tgl[0])
 							  ->where('fp_tgl','<=',$tgl[1])
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
@@ -2045,7 +2040,6 @@ class kasKeluarController extends Controller
 
 						if ($req->cabang == '000') {
 							$bkkd_fp = DB::table('faktur_pembelian')
-								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  	  ->select('fp_nofaktur')
 							  	  ->where('fp_supplier',$req->supplier_faktur)
 								  ->where('fp_tgl','>=',$tgl[0])
@@ -2054,7 +2048,6 @@ class kasKeluarController extends Controller
 								  ->get();
 						}else{
 							$bkkd_fp = DB::table('faktur_pembelian')
-								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  	  ->select('fp_nofaktur')
 							  	  ->where('fp_supplier',$req->supplier_faktur)
 								  ->where('fp_comp',$req->cabang)
@@ -2080,7 +2073,6 @@ class kasKeluarController extends Controller
 					$unik = array_unique($data);
 
 					$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->whereIn('fp_nofaktur',$unik)
 							  ->get();
 					if (isset($req->nota)) {
@@ -2114,22 +2106,22 @@ class kasKeluarController extends Controller
 
 					if ($req->cabang == '000') {
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->select('fp_nofaktur')
 							  ->where('fp_idsup',$supplier->idsup)
 							  ->where('fp_jatuhtempo','>=',$tgl[0])
 							  ->where('fp_jatuhtempo','<=',$tgl[1])
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
 					}else{
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->select('fp_nofaktur')
 							  ->where('fp_idsup',$supplier->idsup)
 							  ->where('fp_comp',$req->cabang)
 							  ->where('fp_jatuhtempo','>=',$tgl[0])
 							  ->where('fp_jatuhtempo','<=',$tgl[1])
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
@@ -2153,7 +2145,6 @@ class kasKeluarController extends Controller
 
 						if ($req->cabang == '000') {
 							$bkkd_fp = DB::table('faktur_pembelian')
-								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  	  ->select('fp_nofaktur')
 							  	  ->where('fp_idsup',$supplier->idsup)
 								  ->where('fp_jatuhtempo','>=',$tgl[0])
@@ -2162,7 +2153,6 @@ class kasKeluarController extends Controller
 								  ->get();
 						}else{
 							$bkkd_fp = DB::table('faktur_pembelian')
-								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  	  ->select('fp_nofaktur')
 							  	  ->where('fp_idsup',$supplier->idsup)
 								  ->where('fp_comp',$req->cabang)
@@ -2186,7 +2176,6 @@ class kasKeluarController extends Controller
 					$unik = array_unique($data);
 
 					$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->whereIn('fp_nofaktur',$unik)
 							  ->get();
 
@@ -2209,22 +2198,22 @@ class kasKeluarController extends Controller
 
 					if ($req->cabang == '000') {
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->select('fp_nofaktur')
 							  ->where('fp_supplier',$req->supplier_faktur)
 							  ->where('fp_jatuhtempo','>=',$tgl[0])
 							  ->where('fp_jatuhtempo','<=',$tgl[1])
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
 					}else{
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->select('fp_nofaktur')
 							  ->where('fp_supplier',$req->supplier_faktur)
 							  ->where('fp_comp',$req->cabang)
 							  ->where('fp_jatuhtempo','>=',$tgl[0])
 							  ->where('fp_jatuhtempo','<=',$tgl[1])
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
@@ -2246,7 +2235,6 @@ class kasKeluarController extends Controller
 
 						if ($req->cabang == '000') {
 							$bkkd_fp = DB::table('faktur_pembelian')
-								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  	  ->select('fp_nofaktur')
 							  	  ->where('fp_supplier',$req->supplier_faktur)
 								  ->where('fp_jatuhtempo','>=',$tgl[0])
@@ -2255,7 +2243,6 @@ class kasKeluarController extends Controller
 								  ->get();
 						}else{
 							$bkkd_fp = DB::table('faktur_pembelian')
-								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  	  ->select('fp_nofaktur')
 							  	  ->where('fp_supplier',$req->supplier_faktur)
 								  ->where('fp_comp',$req->cabang)
@@ -2280,7 +2267,6 @@ class kasKeluarController extends Controller
 					$unik = array_unique($data);
 
 					$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->whereIn('fp_nofaktur',$unik)
 							  ->get();
 					if (isset($req->nota)) {
@@ -2309,20 +2295,20 @@ class kasKeluarController extends Controller
 							  ->first();
 					if ($req->cabang == '000') {
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->select('fp_nofaktur')
 							  ->where('fp_idsup',$supplier->idsup)
 							  ->where('fp_nofaktur',$req->faktur_nomor)
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
 					}else{
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->select('fp_nofaktur')
 							  ->where('fp_idsup',$supplier->idsup)
 							  ->where('fp_nofaktur',$req->faktur_nomor)
 							  ->where('fp_comp',$req->cabang)
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
@@ -2345,7 +2331,6 @@ class kasKeluarController extends Controller
 
 						if ($req->cabang == '000') {
 							$bkkd_fp = DB::table('faktur_pembelian')
-								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  	  ->select('fp_nofaktur')
 							  	  ->where('fp_idsup',$supplier->idsup)
 							      ->where('fp_nofaktur',$req->faktur_nomor)
@@ -2353,7 +2338,6 @@ class kasKeluarController extends Controller
 								  ->get();
 						}else{
 							$bkkd_fp = DB::table('faktur_pembelian')
-								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  	  ->select('fp_nofaktur')
 							  	  ->where('fp_idsup',$supplier->idsup)
 							      ->where('fp_nofaktur',$req->faktur_nomor)
@@ -2376,7 +2360,6 @@ class kasKeluarController extends Controller
 
 					$unik = array_unique($data);
 					$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->whereIn('fp_nofaktur',$unik)
 							  ->get();
 
@@ -2399,20 +2382,20 @@ class kasKeluarController extends Controller
 
 					if ($req->cabang == '000') {
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->select('fp_nofaktur')
 							  ->where('fp_supplier',$req->supplier_faktur)
 							  ->where('fp_nofaktur',$req->faktur_nomor)
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
 					}else{
 						$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->select('fp_nofaktur')
 							  ->where('fp_supplier',$req->supplier_faktur)
 							  ->where('fp_nofaktur',$req->faktur_nomor)
 							  ->where('fp_comp',$req->cabang)
+							  ->where('fp_pending_status','APPROVED')
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
@@ -2434,7 +2417,6 @@ class kasKeluarController extends Controller
 
 						if ($req->cabang == '000') {
 							$bkkd_fp = DB::table('faktur_pembelian')
-								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  	  ->select('fp_nofaktur')
 							  	  ->where('fp_supplier',$req->supplier_faktur)
 							      ->where('fp_nofaktur',$req->faktur_nomor)
@@ -2442,7 +2424,6 @@ class kasKeluarController extends Controller
 								  ->get();
 						}else{
 							$bkkd_fp = DB::table('faktur_pembelian')
-								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  	  ->select('fp_nofaktur')
 							  	  ->where('fp_supplier',$req->supplier_faktur)
 							      ->where('fp_nofaktur',$req->faktur_nomor)
@@ -2466,7 +2447,6 @@ class kasKeluarController extends Controller
 					$unik = array_unique($data);
 
 					$data = DB::table('faktur_pembelian')
-							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  ->whereIn('fp_nofaktur',$unik)
 							  ->get();
 

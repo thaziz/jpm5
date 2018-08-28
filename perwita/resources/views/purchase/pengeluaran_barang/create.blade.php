@@ -64,8 +64,8 @@
               <td>Jenis Pengeluaran</td>
               <td>
                 <select class="jenis_keluar form-control" name="jp">
-                  <option>Moving Gudang</option>
-                  <option>Pemakaian Reguler</option>
+                  <option value="Moving Gudang">Moving Gudang</option>
+                  <option value="Pemakaian Reguler">Pemakaian Reguler</option>
                 </select>
               </td>
             </tr>
@@ -291,8 +291,8 @@ function append(p){
                 +'@endforeach'
                 +'</select>'
                 +'</td>'
-                +'<td>'
-                +'<select class="form-control akun_biaya chosen-select-width">'
+                +'<td class="td_biaya">'
+                +'<select class="akun_biaya form-control chosen-select-width5" name="akun_biaya[]">'
                 +'</select>'
                 +'</td>'
                 +'<td align="center">'
@@ -317,20 +317,23 @@ function append(p){
 
     $('.clone_barang').append(html);
 
+    var config5 = {
+               '.chosen-select'           : {},
+               '.chosen-select-deselect'  : {allow_single_deselect:true},
+               '.chosen-select-no-single' : {disable_search_threshold:10},
+               '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+               '.chosen-select-width5'     : {width:"100% !important"}
+              }
 
     for (var selector in config5) {
      $(selector).chosen(config5[selector]);
     }  
-    // $('.clone_append').each(function(){
-    //   count_append += 1;
-    // });
-    // if (count_append == 1) {
-    //   $('.clone_append').html(append_plus);
-    // }
+
   $('.cari_stock').change(function(){
   var id = $(this).val();
   var par = $(this).parents('tr');
   var cabang = $('.cabang').val();
+  var akun_biaya = $(par).find('.akun_biaya')
   $.ajax({
     url:baseUrl + '/pengeluaranbarang/cari_stock',
     data:{id,cabang},
@@ -363,6 +366,7 @@ function append(p){
         $(par).find('.satuan').val('None');
       }
       akun_biaya_dropdown(id,par,cabang);
+      akun_biaya.trigger('chosen:update');
     },
     error:function(){
       toastr.warning('Terjadi Kesalahan');
@@ -379,11 +383,22 @@ function remove_append(p){
 
 
 function akun_biaya_dropdown(id,par,cabang) {
+  var jenis_keluar = $('.jenis_keluar').val();
   $.ajax({
     url:baseUrl + '/pengeluaranbarang/akun_biaya_dropdown',
     data:{id,cabang},
     success:function(response){
-      
+      if (jenis_keluar == 'Pemakaian Reguler') {
+        var akun_biaya = $(par).find('.akun_biaya')
+        akun_biaya.html('');
+        var kecamatan = '';
+        for (var i = 0; i < response.data.length; i++) {
+          kecamatan +=  '<option value="'+response.data[i].id_akun+'">'+response.data[i].id_akun+'-'+response.data[i].nama_akun+'</option>';
+        }            
+
+        akun_biaya.html(kecamatan);
+        akun_biaya.trigger('chosen:updated');
+      }
     },
     error:function(){
       toastr.warning('Terjadi Kesalahan');
@@ -448,7 +463,22 @@ function cariDATA(){
 }
 
 function simpan(){
-
+  var total = 0;
+  $('.diminta').each(function(){
+     total += $(this).val();
+  })
+  if ($('.keperluan').val() == '') {
+    return toastr.warning('Keperluan Harus Diisi');
+  }
+  if ($('#gudang').val() == null) {
+    return toastr.warning('Gudang Tujuan Harus Diisi');
+  }
+  if ($('.peminta').val() == '') {
+    return toastr.warning('Nama Peminta Harus Diisi');
+  }
+  if (total == 0) {
+    return toastr.warning('Tidak Ada Permintaan Pengeluaran Barang, Gagal Simpan');
+  }
    swal({
     title: "Apakah anda yakin?",
     text: "Simpan Data Pengeluaran Barang!",
