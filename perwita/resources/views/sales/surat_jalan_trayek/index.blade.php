@@ -34,6 +34,16 @@
 
                 </div>
             </div>
+@if (Session::has('message'))
+    <div class="wrapper wrapper-content animated fadeInRight">
+      <div class="col-md-12">
+        <div class="alert alert-info alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+          <h2 style="text-align:center"> <b></b></h2> <h4 style="text-align:left">DATA BERHASIL DIHAPUS</h4>
+        </div>
+      </div>
+    </div>
+@endif
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
