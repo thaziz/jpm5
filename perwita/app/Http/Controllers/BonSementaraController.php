@@ -196,19 +196,21 @@ class BonSementaraController extends Controller
 
 			$datajurnal = [];
 		    $totalhutang = 0;
+		    $cabangpb = $datapb[0]->bp_cabang;
 
 		    $akunbank = $request->bankcabang;
-		    $dataakunbank = DB::select("select * from d_akun where id_akun = '$akunbank'");
+		    $dataakunbank = DB::select("select * from d_akun where id_akun LIKE '1101%' and kode_cabang = '$cabangpb'");
 		    $bankdka = $dataakunbank[0]->akun_dka;
+		    $akunkaskecil = $dataakunbank[0]->id_akun;
 
 		    if($bankdka == 'D'){
-		    	$datajurnal[0]['idakun'] = $request->bankcabang;
+		    	$datajurnal[0]['idakun'] = $akunkaskecil;
 			    $datajurnal[0]['subtotal'] = $nominalkeu;
 			    $datajurnal[0]['dk'] = 'D';
 			    $datajurnal[0]['detail'] = $datapb[0]->bp_keperluan;
 		    }
 		    else {
-		    	$datajurnal[0]['idakun'] = $request->bankcabang;
+		    	$datajurnal[0]['idakun'] = $akunkaskecil;
 			    $datajurnal[0]['subtotal'] = '-' . $nominalkeu;
 			    $datajurnal[0]['dk'] = 'D';
 			    $datajurnal[0]['detail'] = $datapb[0]->bp_keperluan;
@@ -230,9 +232,6 @@ class BonSementaraController extends Controller
 			    $datajurnal[1]['dk'] = 'K';
 			    $datajurnal[1]['detail'] = $datapb[0]->bp_keperluan;
 		    }
-
-
-
 
 
 		

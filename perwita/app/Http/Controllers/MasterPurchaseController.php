@@ -980,13 +980,13 @@ class MasterPurchaseController extends Controller
 		$cabang = session::get('cabang');
 
 		if(Auth::user()->punyaAkses('Master Supplier','all')){
-			$data = DB::select("select * from supplier, kota, provinsi, cabang where supplier.kota = kota.id and supplier.propinsi = provinsi.id and active='AKTIF' and idcabang = kode");
+			$data = DB::select("select *, supplier.alamat as alamatsupplier from supplier, kota, provinsi, cabang where supplier.kota = kota.id and supplier.propinsi = provinsi.id and active='AKTIF' and idcabang = kode");
 			$count['blmsetuju'] =  DB::table("supplier")->where('status' , '=' , 'BELUM DI SETUJUI')->count();
 			$count['sudahsetuju'] = DB::table("supplier")->where('status' , '=' , 'SETUJU')->count();
 			$count['tidaksetuju'] = DB::table("supplier")->where('status' , '=' , 'TIDAK SETUJU')->count();
 		}
 		else {
-			$data = DB::select("select * from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and active='AKTIF' and idcabang = '$cabang'");
+			$data = DB::select("select *, supplier.alamat as alamatsupplier from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and active='AKTIF' and idcabang = '$cabang'");
 			$count['blmsetuju'] =  DB::table("supplier")->where([['status' , '=' , 'BELUM DI SETUJUI'],['idcabang' , '=' , '$cabang']])->count();
 			$count['sudahsetuju'] = DB::table("supplier")->where([['status' , '=' , 'SETUJU'],['idcabang' , '=' , '$cabang']])->count();
 			$count['tidaksetuju'] = DB::table("supplier")->where([['status' , '=' , 'TIDAK SETUJU'], ['idcabang' , '=' , '$cabang']])->count();
