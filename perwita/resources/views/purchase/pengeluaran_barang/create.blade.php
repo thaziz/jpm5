@@ -332,11 +332,6 @@ function append(p){
                '.chosen-select-width5'     : {width:"100% !important"}
               }
 
- for (var selector in config5) {
-   $(selector).chosen(config5[selector]);
- } 
-
-  cari_stock();
 }
 
 function remove_append(p){
