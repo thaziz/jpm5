@@ -115,7 +115,6 @@ class surat_jalan_trayek_Controller extends Controller
 
 
     public function save_data (Request $request) {
-        // dd($request->all());
         return DB::transaction(function() use ($request){
             $cari = DB::table('surat_jalan_trayek')
                       ->where('nomor',$request->ed_nomor)
@@ -130,7 +129,7 @@ class surat_jalan_trayek_Controller extends Controller
                     'tanggal' => strtoupper($request->tanggal),
                     'nama_rute' => strtoupper($request->ed_nama_rute),
                     'keterangan' => strtoupper($request->ed_keterangan),
-                    'kode_cabang' => strtoupper($request->ed_cabang),
+                    'kode_cabang' => strtoupper($request->cabang),
                     'kode_rute' => strtoupper($request->ed_kode_rute),
                     'id_kendaraan' => $id_kendaraan->id,
                     'nopol' => strtoupper($request->ed_nopol),
@@ -152,7 +151,7 @@ class surat_jalan_trayek_Controller extends Controller
                     'tanggal' => strtoupper($request->tanggal),
                     'nama_rute' => strtoupper($request->ed_nama_rute),
                     'keterangan' => strtoupper($request->ed_keterangan),
-                    'kode_cabang' => strtoupper($request->ed_cabang),
+                    'kode_cabang' => strtoupper($request->cabang),
                     'kode_rute' => strtoupper($request->ed_kode_rute),
                     'id_kendaraan' => $id_kendaraan->id,
                     'nopol' => strtoupper($request->ed_nopol),
@@ -292,23 +291,25 @@ class surat_jalan_trayek_Controller extends Controller
 
     public function hapus_data(Request $req)
     {
-        $data = DB::table('surat_jalan_trayek_d')
-                  ->where('nomor_surat_jalan_trayek',$req->id)
-                  ->get();
+        return DB::transaction(function() use ($request){
+            $data = DB::table('surat_jalan_trayek_d')
+                      ->where('nomor_surat_jalan_trayek',$req->id)
+                      ->get();
 
-        for ($i=0; $i < count($data); $i++) { 
-            $do = DB::table('delivery_order')
-                    ->where('nomor',$data[$i]->nomor_do)
-                    ->update([
-                        'no_surat_jalan_trayek' => null
-                    ]);
-        }
+            for ($i=0; $i < count($data); $i++) { 
+                $do = DB::table('delivery_order')
+                        ->where('nomor',$data[$i]->nomor_do)
+                        ->update([
+                            'no_surat_jalan_trayek' => null
+                        ]);
+            }
 
-        $data = DB::table('surat_jalan_trayek')
-                  ->where('nomor',$req->id)
-                  ->delete();
-        Session::flash('message', "BERHASIL DIHAPUS");
-        return redirect()->back();
+            $data = DB::table('surat_jalan_trayek')
+                      ->where('nomor',$req->id)
+                      ->delete();
+            Session::flash('message', "BERHASIL DIHAPUS");
+            return redirect()->back();
+        });
     }
 
 

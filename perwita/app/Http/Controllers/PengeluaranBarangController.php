@@ -91,8 +91,30 @@ class PengeluaranBarangController extends Controller
 	}
 
 	public function akun_biaya_dropdown(Request $req)
-	{
+	{	
 
+		$idgrupitem = DB::table('masteritem')
+						->where('kode_item',$req->id)
+						->first();
+		dd($idgrupitem);
+		$idgrupitem = $idgrupitem->jenisitem;
+		if($idgrupitem == 'P'){
+			$data = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$req->cabang'");
+		}
+		else if($idgrupitem == 'S'){
+			$data = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$req->cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$req->cabang' ");
+		}
+		else if($idgrupitem == 'A'){
+			$data = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$req->cabang'");
+		}
+		else if($idgrupitem == 'C'){
+			$data = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$req->cabang'");
+		}
+		else {
+			$data = DB::select("select * from d_akun where kode_cabang = '$cabang' ");
+		}
+
+		return response()->json(['data'=>$data]);
 	}
 
 	public function save_pengeluaran(request $request){

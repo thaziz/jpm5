@@ -149,7 +149,7 @@
             <tbody class="clone_barang">
               <tr>
                 <td width="300">
-                  <select class="form-control chosen-select-width5" onchange="cari_stock(this)" name="nama_barang[]">
+                  <select class="form-control chosen-select-width5 cari_stock" name="nama_barang[]">
                     <option value="0" >- Pilih Barang -</option>
                     @foreach($item as $val)
                     <option value="{{$val->kode_item}}">{{$val->kode_item}} - {{$val->nama_masteritem}}</option>
@@ -226,7 +226,7 @@ function ganti_nota() {
   var tanggal = $('.tgl').val();
         $.ajax({
             type: "GET",
-            data : {cabang,tgl},
+            data : {cabang,tanggal},
             url : baseUrl + "/pengeluaranbarang/ganti_nota",
             dataType:'json',
             success: function(data)
@@ -270,16 +270,138 @@ var config5 = {
    $(selector).chosen(config5[selector]);
  }  
 
-function cari_stock(par) {
-  var id = $(par).val();
-  var par = $(par).parents('tr');
+function append(p){
+ 
+  var par = $(p).parents('tr');
+  var count_append = 0;
+
+                  
+  var append = '<button class="btn btn-default btn-sm append" onclick="remove_append(this)"><a class="fa fa-minus"></a></button>';
+  var append_plus = '<button class="btn btn-default btn-sm append" onclick="append(this)"><a class="fa fa-plus"></a></button>';
+
+  // $(par).find('.clone_append').html(append);
+  // console.log(data);
+  // tabel_barang.row.add(data);
+    var html    ='<tr>'
+                +'<td>'
+                +'<select class="form-control chosen-select-width5 cari_stock" name="nama_barang[]">'
+                +'<option value="0" >- Pilih Barang -</option>'
+                +'@foreach($item as $val)'
+                +'<option value="{{$val->kode_item}}">{{$val->kode_item}} - {{$val->nama_masteritem}}</option>'
+                +'@endforeach'
+                +'</select>'
+                +'</td>'
+                +'<td>'
+                +'<select class="form-control akun_biaya chosen-select-width">'
+                +'</select>'
+                +'</td>'
+                +'<td align="center">'
+                +'<input type="text" name="nopol[]" value=""  class="form-control nopol" readonly="" onkeyup="cariDATA()">'
+                +'</td>'
+                +'<td align="center">'
+                +'<input type="text" readonly="" value="0" name="stock_gudang[]"  class="form-control stock_gudang">'
+                +'</td>'
+                +'<td align="center">'
+                +'<input type="number" name="diminta[]" class="form-control diminta">'
+                +'</td>'
+                +'<td align="center">'
+                +'<input type="text" readonly="" class="form-control satuan">'
+                +'</td>'
+                +'<td align="center" class="clone_append">'
+                +'<div class="btn btn-group">'
+                +append_plus
+                +append
+                +'</div>'
+                +'</td>'
+                +'</tr>';
+
+    $('.clone_barang').append(html);
+
+
+    for (var selector in config5) {
+     $(selector).chosen(config5[selector]);
+    }  
+    // $('.clone_append').each(function(){
+    //   count_append += 1;
+    // });
+    // if (count_append == 1) {
+    //   $('.clone_append').html(append_plus);
+    // }
+  $('.cari_stock').change(function(){
+  var id = $(this).val();
+  var par = $(this).parents('tr');
+  var cabang = $('.cabang').val();
+  $.ajax({
+    url:baseUrl + '/pengeluaranbarang/cari_stock',
+    data:{id,cabang},
+    success:function(response){
+
+      if (response.data != 1) {
+        $(par).find('.stock_gudang').val(response.data[0].sg_qty);
+        $(par).find('.satuan').val(response.data[0].unitstock);
+
+        if (response.jenis.jenisitem == 'S') {
+          $(par).find('.nopol').val('');
+          $(par).find('.nopol').attr('readonly',false);
+        }else{
+          $(par).find('.nopol').val('');
+          $(par).find('.nopol').attr('readonly',true);
+        }
+      }else{
+
+        if (response.jenis.jenisitem == 'S') {
+          $(par).find('.nopol').val('');
+          $(par).find('.nopol').attr('readonly',false);
+
+        }else{
+          $(par).find('.nopol').val('');
+          $(par).find('.nopol').attr('readonly',true);
+
+        }
+
+        $(par).find('.stock_gudang').val(0);
+        $(par).find('.satuan').val('None');
+      }
+      akun_biaya_dropdown(id,par,cabang);
+    },
+    error:function(){
+      toastr.warning('Terjadi Kesalahan');
+    }
+  })
+});
+}
+
+function remove_append(p){
+  var par = $(p).parents('tr');
+
+  $(par).remove();
+}
+
+
+function akun_biaya_dropdown(id,par,cabang) {
+  $.ajax({
+    url:baseUrl + '/pengeluaranbarang/akun_biaya_dropdown',
+    data:{id,cabang},
+    success:function(response){
+      
+    },
+    error:function(){
+      toastr.warning('Terjadi Kesalahan');
+    }
+  })
+}
+
+
+ $('.cari_stock').change(function(){
+  var id = $(this).val();
+  var par = $(this).parents('tr');
   var cabang = $('.cabang').val();
 
   $.ajax({
     url:baseUrl + '/pengeluaranbarang/cari_stock',
     data:{id,cabang},
     success:function(response){
-      // console.log(response.data[0].sg_qty);
+      
       if (response.data != 1) {
         $(par).find('.stock_gudang').val(response.data[0].sg_qty);
         $(par).find('.satuan').val(response.data[0].unitstock);
@@ -305,44 +427,13 @@ function cari_stock(par) {
         $(par).find('.stock_gudang').val(0);
         $(par).find('.satuan').val('None');
       }
+      akun_biaya_dropdown(id,par,cabang);
     },
     error:function(){
       toastr.warning('Terjadi Kesalahan');
     }
   })
-}
-
-
-function append(p){
- 
-  var par = p.parentNode.parentNode;
-  var count_append = 0;
-
-                  
-  var append = '<button class="btn btn-default btn-sm append" onclick="remove_append(this)"><a class="fa fa-minus"></a></button>';
-  var append_plus = '<button class="btn btn-default btn-sm append" onclick="append(this)"><a class="fa fa-plus"></a></button>';
-
-  $(par).find('.clone_append').html(append);
-  // console.log(data);
-  // tabel_barang.row.add(data);
-
-  $('.clone_barang').append(html);
-
-
-  for (var selector in config5) {
-   $(selector).chosen(config5[selector]);
-  }  
-
-  cari_stock();
-}
-
-function remove_append(p){
-  var par = p.parentNode.parentNode;
-
-  $(par).remove();
-}
-
-
+});
 
 function cariDATA(){
 
