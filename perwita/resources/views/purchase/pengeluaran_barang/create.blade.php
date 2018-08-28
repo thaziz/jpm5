@@ -147,7 +147,7 @@
               <th style="text-align: center;" class="warna">Aksi</th>
             </thead>
             <tbody class="clone_barang">
-              <tr>
+              <tr class="tr_awal">
                 <td width="300">
                   <select class="form-control chosen-select-width5" onchange="cari_stock(this)" name="nama_barang[]">
                     <option value="0" >- Pilih Barang -</option>
@@ -315,23 +315,26 @@ function cari_stock(par) {
 
 function append(p){
  
-  var par = p.parentNode.parentNode;
+  var par = $('.tr_awal').eq(0);
   var count_append = 0;
 
                   
   var append = '<button class="btn btn-default btn-sm append" onclick="remove_append(this)"><a class="fa fa-minus"></a></button>';
   var append_plus = '<button class="btn btn-default btn-sm append" onclick="append(this)"><a class="fa fa-plus"></a></button>';
 
-  $(par).find('.clone_append').html(append);
-  // console.log(data);
-  // tabel_barang.row.add(data);
+  $(par).clone(true,true).appendTo('.clone_barang');
 
-  $('.clone_barang').append(html);
+  var config5 = {
+               '.chosen-select'           : {},
+               '.chosen-select-deselect'  : {allow_single_deselect:true},
+               '.chosen-select-no-single' : {disable_search_threshold:10},
+               '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+               '.chosen-select-width5'     : {width:"100% !important"}
+              }
 
-
-  for (var selector in config5) {
+ for (var selector in config5) {
    $(selector).chosen(config5[selector]);
-  }  
+ } 
 
   cari_stock();
 }
