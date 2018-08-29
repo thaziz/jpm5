@@ -1030,9 +1030,7 @@ class KasController extends Controller
 		// $delete = DB::table('biaya_penerus_kas')
 		// 			->where('bpk_id',$request->id)
 		// 			->delete();
-		$delete1 = DB::table('biaya_penerus_kas_detail')
-					->where('bpkd_bpk_id',$request->id)
-					->delete();
+		
 
 		if ($request->jenis_pembiayaan == 'PAKET') {
 
@@ -1145,6 +1143,9 @@ class KasController extends Controller
 		  return response()->json(['status' => '2','minimal' => $sisa]);
 		}
 
+		$delete1 = DB::table('biaya_penerus_kas_detail')
+					->where('bpkd_bpk_id',$request->id)
+					->delete();
 	   	// dd($total_tarif);
 
 		if($request->jenis_pembiayaan=='PAKET'){
