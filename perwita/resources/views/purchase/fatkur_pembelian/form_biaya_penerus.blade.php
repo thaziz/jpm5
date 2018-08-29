@@ -354,7 +354,7 @@
 
   function hitung() {
     var temp = 0;
-    $('.bayar_biaya').each(function(){
+    datatable1.$('.bayar_biaya').each(function(){
       temp+=parseInt($(this).val());
     })
     $('.total_jml').val(accounting.formatMoney(temp, "", 2, ".",','));
@@ -419,7 +419,6 @@
 
   $('.nominal').on('keydown', function(e) {
     if (e.which == 13) {
-      console.log('asd');
       appendDO();
         e.preventDefault();
     }
