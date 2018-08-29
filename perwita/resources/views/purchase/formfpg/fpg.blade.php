@@ -457,9 +457,9 @@
      </tr>
      <tr height="25px">
        <td colspan="2" class="top right">Total Faktur Pembelian </td>
-       <td class="textright top right">{{ number_format($data['fpg'][0]->fpg_totalbayar, 2) }} </td>
+       <td class="textright top right"> <b> {{ number_format($data['fpg'][0]->fpg_totalbayar, 2) }} </b> </td>
        <td colspan="3" class="textright top right">Total Cek/BG</td>
-       <td class="textright top right">{{ number_format($data['fpg'][0]->fpg_cekbg, 2) }} </td>
+       <td class="textright top right"> <b> {{ number_format($data['fpg'][0]->fpg_cekbg, 2) }} </b> </td>
      </tr>
      <tr height="25px">
        <td colspan="7" class="textleft top">Terbilang : {{$data['katauang']}} Rupiah </td>

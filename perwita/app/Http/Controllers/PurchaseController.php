@@ -4825,6 +4825,7 @@ public function purchase_order() {
 		$groupitem = $request->groupitem;
 		$stock = $request->stock;
 		
+
 	//	return $groupitem;
 		$barang= DB::select("select * from itemsupplier, masteritem where is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem'");
 		//return json_encode($barang);
@@ -4961,7 +4962,7 @@ public function purchase_order() {
   		$jurnalRef=$data['faktur'][0]->fp_nofaktur;
 		$datas['fakturs'] = DB::select("select * from faktur_pembeliandt , pembelian_order, faktur_pembelian, supplier, masteritem where fpdt_idfp = fp_idfaktur and fp_idfaktur = '$id' and fp_idsup = idsup and fpdt_kodeitem = kode_item and fpdt_idpo = po_id");
 		$data_tt = DB::select("select * from form_tt , form_tt_d where tt_idform = ttd_id");
-		$data['no_tt'] = DB::select("select * from form_tt, form_tt_d where ttd_faktur = '$jurnalRef' and tt_idform = ttd_id "); 
+		$data['no_tt'] = DB::select("select * from form_tt, form_tt_d where ttd_faktur = '$jurnalRef' and tt_idform = ttd_id"); 
 		
 		
 		if($datas['fakturs'] == null){ //FP
@@ -10647,7 +10648,7 @@ public function kekata($x) {
 			$data['supplier'] = DB::select("select * from supplier");
 		}
 		
-		//dd($data);
+		
 		return view('purchase/formfpg/detail', compact('data'));
 	}
 

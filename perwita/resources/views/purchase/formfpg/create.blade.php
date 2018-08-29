@@ -626,7 +626,7 @@
 
                                       <th> Periode </th>
                                       <td> <div class="input-group date">
-                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl" name="tglfpg" required="">
+                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl" required="">
                                           </div>
                                       </td>
 

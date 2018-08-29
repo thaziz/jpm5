@@ -73,7 +73,7 @@
                               <tr>
                                 <th> Tanggal </th>
                                 <td>  
-                                      <div class="input-group date">
+                                      <div class="input-group">
                                           <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl" name="tglfpg" required="" value="{{ Carbon\Carbon::parse($fpg->fpg_tgl)->format('d-M-Y ') }}" disabled=""> <input type="hidden"  name="tglfpg" required="" value="{{$fpg->fpg_tgl}}">
                                       </div>
                                </td>

@@ -6442,7 +6442,7 @@
        idsupplier = $('.idsup').val();
        grupitem = $('.groupitem').val();
        
-       var string = idsupplier.split(",");
+       var string = idsupplier.split("+");
        var idsup = string[0];
        console.log(idsup);
 
