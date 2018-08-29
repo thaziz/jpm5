@@ -433,18 +433,23 @@ class KasController extends Controller
 		// return $resi;
 		$resi = array_unique($resi);
 		$resi = array_values($resi);
-		for ($i=0; $i < count($resi); $i++) { 
+		$temp_resi = $resi;
+		for ($i=0; $i < count($temp_resi); $i++) { 
 			for ($a=0; $a < count($cari_loading); $a++) { 
-				if ($cari_loading[$a]->nomor == $resi[$i]) {
+				if ($cari_loading[$a]->nomor == $temp_resi[$i]) {
 					unset($resi[$i]);
 				}
 			}
 		}
+		
+		$resi = array_unique($resi);
+		$resi = array_values($resi);
+		$temp_resi = $resi;
 
 		if ($jenis_biaya == '3') {
-			for ($i=0; $i < count($resi); $i++) { 
+			for ($i=0; $i < count($temp_resi); $i++) { 
 				for ($a=0; $a < count($cari_shuttle); $a++) { 
-					if ($cari_shuttle[$a]->nomor == $resi[$i]) {
+					if ($cari_shuttle[$a]->nomor == $temp_resi[$i]) {
 						unset($resi[$i]);
 					}
 				}
@@ -452,11 +457,13 @@ class KasController extends Controller
 		}
 		
 
+		$resi = array_unique($resi);
 		$resi = array_values($resi);
+		$temp_resi = $resi;
 		if ($jenis_biaya == '3') {
-			for ($i=0; $i < count($resi); $i++) { 
+			for ($i=0; $i < count($temp_resi); $i++) { 
 				for ($a=0; $a < count($cari_resi); $a++) { 
-					if ($cari_resi[$a]->nomor == $resi[$i]) {
+					if ($cari_resi[$a]->nomor == $temp_resi[$i]) {
 						if (  $now <= $cari_resi[$a]->awal_shutle or $now >= $cari_resi[$a]->akhir_shutle ) {
 							unset($resi[$i]);
 						}
