@@ -2040,7 +2040,7 @@
         '<p class="pt_seq_text">'+seq+'</p>'+
         '<input type="hidden" name="pt_seq[]" class="pt_seq_'+seq+' pt_seq" value="'+seq+'">',
 
-        '<p class="pt_akun_biaya_text">'+akun_biaya_text+'</p>'+
+        '<p class="pt_akun_biaya_text">'+akun_biaya+ ' - ' +akun_biaya_text+'</p>'+
         '<input type="hidden" name="pt_akun_biaya[]" class="pt_akun_biaya" value="'+akun_biaya+'">',
 
         '<p class="pt_nominal_text">'+accounting.formatMoney(nominal_patty,"", 0, ".",',')+'</p>'+
