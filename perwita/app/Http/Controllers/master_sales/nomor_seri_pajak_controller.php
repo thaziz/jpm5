@@ -139,11 +139,10 @@ class nomor_seri_pajak_controller extends Controller
     	$data = DB::table('nomor_seri_pajak')
                   ->where('nsp_id',$req->id)
                   ->first();
-        unlink(storage_path('app/'.$data->nsp_pdf));  
 
-        $data = DB::table('nomor_seri_pajak')
-                  ->where('nsp_id',$req->id)
-                  ->delete();
+      $data = DB::table('nomor_seri_pajak')
+                ->where('nsp_id',$req->id)
+                ->delete();
 		return response()->json(['status'=>1]);
     }
 
