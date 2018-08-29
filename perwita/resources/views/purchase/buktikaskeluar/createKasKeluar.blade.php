@@ -1267,6 +1267,34 @@
               '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
             ]).draw();
             valid.push(data.data[i].um_nomorbukti);
+          }else if(jenis_bayar == 11){
+            var fp_terbayar = parseFloat(data.data[i].v_hasil) - parseFloat(data.data[i].v_pelunasan);
+
+            tabel_faktur.row.add([
+              '<a onclick="detail_faktur(this)" class="fp_faktur_text">'+data.data[i].v_nomorbukti+'</a>'+
+              '<input type="hidden" value="'+data.data[i].v_nomorbukti+'" class="fp_faktur" name="fp_faktur[]">'+
+              '<input type="hidden" value="'+data.data[i].v_id+'" class="fp_id fp_'+data.data[i].v_id+'">',
+
+              '<p class="fp_tanggal_text">'+data.data[i].v_tgl+'</p>',
+
+              '<p class="fp_akun_text">2101</p>',
+
+              '<p class="fp_total_text">'+accounting.formatMoney(data.data[i].v_hasil,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_total" name="fp_total[]" value="'+data.data[i].v_hasil+'">',
+
+              '<p class="fp_terbayar_text">'+accounting.formatMoney(fp_terbayar,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_terbayar" name="fp_terbayar[]" value="'+fp_terbayar+'">',
+
+              '<input readonly value="0" type="text" class="fp_pelunasan form-control" name="fp_pelunasan[]">',
+
+              '<input readonly  type="text" class="fp_sisa_akhir form-control" value="'+accounting.formatMoney(data.data[i].v_pelunasan,"", 0, ".",',')+'" name="fp_sisa_akhir[]">',
+
+              '<p class="fp_keterangan_text">'+data.data[i].v_keterangan+'</p>'+
+              '<input type="hidden" class="fp_keterangan" name="fp_keterangan[]" value="'+data.data[i].v_keterangan+'">',
+
+              '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
+            ]).draw();
+            valid.push(data.data[i].v_nomorbukti);
           }
         }
 
@@ -1316,6 +1344,23 @@
           $('.pelunasan_detail').eq(0).val(0);
           $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
           var fp_faktur     = data.data[0].um_nomorbukti;
+        }else if(jenis_bayar == 11){
+          var terbayar =parseFloat(data.data[0].v_hasil) - parseFloat(data.data[0].v_pelunasan) 
+                       + parseFloat(0) 
+                       - parseFloat(0) 
+                       + parseFloat(0);
+
+          $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].v_hasil,"", 2, ".",','));
+          $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
+          $('.pelunasan_um').eq(0).val(0);
+          $('.debet_detail').eq(0).val(0);
+          $('.kredit_detail').eq(0).val(0);
+          $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data[0].v_pelunasan,"", 2, ".",','));
+          $('.flag_detail').eq(0).val(data.data[0].v_id);
+          var total = parseFloat(data.data[0].v_pelunasan) - 0; 
+          $('.pelunasan_detail').eq(0).val(0);
+          $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
+          var fp_faktur     = data.data[0].v_nomorbukti;
         }
 
         $.ajax({
@@ -1465,8 +1510,18 @@
           $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
         }else if(jenis_bayar == 4){
           var terbayar =  parseFloat(data.data.um_jumlah) -  parseFloat(data.data.um_sisapelunasan);
-                       
-
+          $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data.um_jumlah,"", 2, ".",','));
+          $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
+          $('.pelunasan_um').eq(0).val(0);
+          $('.debet_detail').eq(0).val(0);
+          $('.kredit_detail').eq(0).val(0);
+          $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data.um_sisapelunasan,"", 2, ".",','));
+          $('.flag_detail').eq(0).val(data.data.um_id);
+          var total = parseFloat(data.data.um_sisapelunasan) - parseFloat(fp_pelunasan); 
+          $('.pelunasan_detail').eq(0).val(accounting.formatMoney(fp_pelunasan,"", 0, ".",','));
+          $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
+        }else if(jenis_bayar == 11){
+          var terbayar =  parseFloat(data.data.um_jumlah) -  parseFloat(data.data.um_sisapelunasan);
           $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data.um_jumlah,"", 2, ".",','));
           $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
           $('.pelunasan_um').eq(0).val(0);

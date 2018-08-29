@@ -189,8 +189,8 @@ class KasController extends Controller
                           return number_format(round($data->bpk_tarif_penerus,0),2,',','.'  ); 
                         })
                         ->addColumn('print', function ($data) {
-                           return $a = ' <a class="fa asw fa-print" align="center"  title="edit" href="'.route('detailkas', ['id' => $data->bpk_id]).'"> detail</a><br>
-										<a class="fa asw fa-print" align="center"  title="print" href="'.route('buktikas', ['id' => $data->bpk_id]).'"> Bukti Kas</a>';
+                           return $a = ' <a class="fa asw fa-print" align="center" onclick="detailkas(\''.$data->bpk_id.'\')"  title="edit"> detail</a><br>
+										<a class="fa asw fa-print" align="center" onclick="buktikas(\''.$data->bpk_id.'\')" title="print"> Bukti Kas</a>';
                         })
                         ->addIndexColumn()
                         ->make(true);

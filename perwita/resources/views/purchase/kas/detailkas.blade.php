@@ -58,6 +58,7 @@
 		<thead align="center" style="font-size: 12px;">
 			<tr>
 			<th>No</th>
+			<th>Nomor Do</th>
 			<th>Tgl.Order</th>
 			<th width="100">Kota Asal</th>
 			<th width="75">Nama Pengirim</th>
@@ -71,6 +72,7 @@
 			@foreach($cari_dt as $i=>$val)
 			<tr style="font-size: 11px">
 			<td align="center">{{$i+1}}</td>	
+			<td>{{$val->bpkd_no_resi}}</td>
 			<td><?php echo date('d/m/Y',strtotime($val->bpkd_tanggal)) ?></td>
 			<td>{{$val->nama}}</td>
 			<td>{{$val->bpkd_pengirim}}</td>
@@ -81,16 +83,16 @@
 			</tr>
 			@endforeach
 			<tr>
-			<td align="right" colspan="6">Total :</td>
+			<td align="right" colspan="7">Total :</td>
 			<td align="right" style="font-size: 12px;">{{"Rp " . number_format($cari[0]->bpk_total_tarif,2,",",".")}}</td>
 			<td style="font-size: 12px;" align="right">{{"Rp " . number_format($total_harga,2,",",".")}}</td>
 			</tr>
 			<tr>
-				<td align="center" colspan="4">Driver :</td>
+				<td align="center" colspan="5">Driver :</td>
 				<td align="center" colspan="4">Mengetahui :</td>
 			</tr>
 			<tr>
-				<td align="center" colspan="4" height="75"></td>
+				<td align="center" colspan="5" height="75"></td>
 				<td align="center" colspan="4" height="75"></td>
 			</tr>
 		</tbody>
