@@ -965,7 +965,9 @@
     table_patty.$('.pt_debet').each(function(){
       temp+=1;
     })
-
+    if ($('.total').val()*1 < 0) {
+      return toastr.warning('Total Tidak Boleh Minus');
+    }
     if (temp == 0) {
       return toastr.warning('Tidak Ada Data Yang Akan Dibiayai');
     }
