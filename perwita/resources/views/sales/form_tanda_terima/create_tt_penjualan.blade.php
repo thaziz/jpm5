@@ -70,7 +70,7 @@
                       <tr>
                         <td width="150">Kode Transaksi</td>
                         <td width="300">
-                          <input type="text" name="nomor" class="nomor form-control" >
+                          <input type="text" readonly="" name="nomor" class="nomor form-control" >
                           <input type="hidden" name="nomor_old" class="nomor_old form-control" >
                         </td>
                         <td width="150">Customer</td>
