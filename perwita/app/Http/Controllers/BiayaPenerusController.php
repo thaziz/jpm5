@@ -221,14 +221,24 @@ class BiayaPenerusController extends Controller
 		}
 
 		public function nota_tt(request $req)
-		{
-			$data = DB::table('form_tt')
-					  ->join('form_tt_d','ttd_id','=','tt_idform')
-					  ->where('tt_supplier',$req->agen_vendor)
-					  ->where('tt_idcabang',$req->cabang)
-					  ->where('ttd_faktur',null)
-					  ->orWhere('ttd_faktur',$req->nofaktur)
-					  ->get();
+		{	
+			if (!isset($req->nofaktur)) {
+				$data = DB::table('form_tt')
+						  ->join('form_tt_d','ttd_id','=','tt_idform')
+						  ->where('tt_supplier',$req->agen_vendor)
+						  ->where('tt_idcabang',$req->cabang)
+						  ->where('ttd_faktur',null)
+						  ->get();
+			}else{
+				$data = DB::table('form_tt')
+						  ->join('form_tt_d','ttd_id','=','tt_idform')
+						  ->where('tt_supplier',$req->agen_vendor)
+						  ->where('tt_idcabang',$req->cabang)
+						  ->where('ttd_faktur',null)
+						  ->orWhere('ttd_faktur',$req->nofaktur)
+						  ->get();
+			}
+			
 
 		    return view('purchase.pembayaran_vendor.table_tt',compact('data'));
 		}
