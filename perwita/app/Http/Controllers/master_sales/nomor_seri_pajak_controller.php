@@ -87,8 +87,8 @@ class nomor_seri_pajak_controller extends Controller
           return response()->json(['status'=>0,'pesan'=>'Maksimal Data Adalah 5000']);
         }
 
-        for ($i=0; $i < $count; $i++) { 
-          $awalan = $awal + $i+1;
+        for ($i=0; $i <= $count; $i++) { 
+          $awalan = $awal + $i;
           $awalan = str_pad($awalan, 8, '0', STR_PAD_LEFT);
           $nomor_pajak = $req->nomor_pajak_1.'.'.$req->nomor_pajak_2.'.'.$awalan;
           $cek = DB::table('nomor_seri_pajak')
