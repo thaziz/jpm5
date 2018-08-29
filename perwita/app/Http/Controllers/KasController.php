@@ -1181,7 +1181,7 @@ class KasController extends Controller
 		biaya_penerus_kas::where('bpk_id',$request->id)->update([
 		  	'bpk_nota'  	  	 	 => $request->no_trans,
 		  	'bpk_jenis_biaya' 	 	 => $request->jenis_pembiayaan,
-		  	'bpk_pembiayaan'  	 	 => $pembiayaan,
+		  	'bpk_pembiayaan'  	 	 => $kode_persen,
 		  	'bpk_total_tarif' 	 	 => round($request->total_tarif,2),
 		  	'bpk_tanggal'     	 	 => Carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 		  	'bpk_nopol'		  	 	 => strtoupper($request->nopol),
