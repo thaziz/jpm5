@@ -193,7 +193,7 @@ class BonSementaraController extends Controller
 			$nominalkeu =  str_replace(',', '', $request->nominalkeu);
 
 			$now = Date("Y-m-d");
-			if(parseFloat($nominalkeu) < 10000000.00){
+			/*if(parseFloat($nominalkeu) < 10000000.00){
 				$tiga = 3;
 				$3day = date('Y-m-d', strtotime($now. ' + 3 days'));
 				$temp = 1;
@@ -201,7 +201,7 @@ class BonSementaraController extends Controller
 
 					$3day = date('Y-m-d', strtotime($now. ' + 3 days'));
 				}
-			}
+			}*/
 
 
 			$datapb = DB::select("select * from bonsem_pengajuan where bp_id = '$idbonsem'");
