@@ -404,7 +404,7 @@
 					<td class="textleft bot right"> {{$row->nama_penerima}} </td>
 					<td class="textleft bot right"> {{$row->alamat_penerima}} {{$row->telpon_penerima}}</td>
 					<td class="textleft bot right"> {{$row->type_kiriman}} </td>
-					@if ($head->type_kiriman == 'KILOGRAM')
+					@if ($row->type_kiriman == 'KILOGRAM')
 					<td style="text-align:right" class="textright textleft bot right"> 
 						{{ number_format($row->koli, 0, ",", ".") }} 
 					</td>
