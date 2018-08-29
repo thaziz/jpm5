@@ -1845,7 +1845,7 @@ class KasController extends Controller
 		
 		$resi = array_unique($resi);
 		$resi = array_values($resi);
-		dd($cari_loading);
+		dd($resi);
 		for ($i=0; $i < count($resi); $i++) { 
 			for ($a=0; $a < count($cari_loading); $a++) { 
 				if ($cari_loading[$a]->nomor == $resi[$i]) {
