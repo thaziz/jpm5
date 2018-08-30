@@ -2647,28 +2647,31 @@ class BiayaPenerusController extends Controller
 
 
 			}
-			// dd($jurnal);
-
 			// //JURNAL
+
+			$delete_jurnal = DB::table('d_jurnal')
+							   ->where('jr_ref',$request->nofaktur)
+							   ->delete();
+
 			$id_jurnal=d_jurnal::max('jr_id')+1;
 			// dd($id_jurnal);
 			$jenis_bayar = DB::table('jenisbayar')
 							 ->where('idjenisbayar',9)
 							 ->first();
+
 			if ($status == "APPROVED") {
 				$save_jurnal = d_jurnal::create(['jr_id'	=> $id_jurnal,
-											'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
-											'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
-											'jr_detail' => $jenis_bayar->jenisbayar,
-											'jr_ref'  	=> $request->nofaktur,
-											'jr_note'  	=> 'BIAYA SUBCON '.strtoupper($request->keterangan_subcon),
-											'jr_insert' => carbon::now(),
-											'jr_update' => carbon::now(),
-											]);
+												'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
+												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
+												'jr_detail' => $jenis_bayar->jenisbayar,
+												'jr_ref'  	=> $request->nofaktur,
+												'jr_note'  	=> 'BIAYA SUBCON '.strtoupper($request->keterangan_subcon),
+												'jr_insert' => carbon::now(),
+												'jr_update' => carbon::now(),
+												]);
 			}
-		
 
-
+ 
 			$akun 	  = [];
 			$akun_val = [];
 			array_push($akun, $akun_hutang->id_akun);
@@ -2721,15 +2724,15 @@ class BiayaPenerusController extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->keterangan_subcon);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->keterangan_subcon);
 					}
 				}
