@@ -618,7 +618,7 @@
 
     if($('#sericek').prop('checked') == true && $('#sericekbg').prop('checked') == true ) { // CEK DOUBLE
      // alert('double');
-        var inputseri = '<input type="hidden" name="input" value="centangdua">';
+        var inputseri = '<input type="text" name="input" value="centangdua">';
         $('.inputseri').html(inputseri);
 
         //cek
@@ -809,7 +809,7 @@
       if($("#sericek").prop('checked') == true ){ //SERI CEK
 	//	alert('sericek');
 
-        var inputseri = '<input type="hidden" name="input" value="CEK">';
+        var inputseri = '<input type="text" name="input" value="CEK">';
         $('.inputseri').html(inputseri);
 
 
@@ -908,7 +908,7 @@
 
       if($('#sericekbg').prop('checked') == true){ ////SERI BG
 //	alert('true');
-           var inputseri = '<input type="hidden" name="input" value="BG">';
+           var inputseri = '<input type="text" name="input" value="BG">';
         $('.inputseri').html(inputseri);
 
         idbank = $('.idbank').val();

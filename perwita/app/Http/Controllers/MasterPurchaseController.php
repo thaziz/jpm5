@@ -552,7 +552,6 @@ class MasterPurchaseController extends Controller
 								'mb_accno' => $request->norekening,
 								'mb_kelompok' => $request->kelompokbank
 							]);
-
 		$tempdatafpg = 0;
 
 		/*$idbank = $request->mb_id;
