@@ -305,7 +305,6 @@ class master_akun_controller extends Controller
                     ->get();
      
         $akun = DB::table('d_akun')
-                  ->where('kode_cabang',$req->cabang)
                   ->get();
        
       }else{
