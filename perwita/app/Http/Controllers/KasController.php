@@ -2075,17 +2075,17 @@ class KasController extends Controller
     public function jurnal(request $req)
 	{
 
-		// $bpk = DB::table("biaya_penerus_kas")
-		// 		 ->get();
+		$bpk = DB::table("biaya_penerus_kas")
+				 ->get();
 
-		// for ($i=0; $i < count($bpk); $i++) { 
-		// 	$bpk = DB::table("biaya_penerus_kas")
-		// 		 ->where('bpk_id',$bpk[$i]->bpk_id)
-		// 		 ->update([
-		// 		 	'bpk_tarif_penerus'=>round($bpk[$i]->bpk_tarif_penerus)
-		// 		 ]);
-		// }
-
+		for ($i=0; $i < count($bpk); $i++) { 
+			$bpk = DB::table("biaya_penerus_kas")
+				 ->where('bpk_id',$bpk[$i]->bpk_id)
+				 ->update([
+				 	'bpk_tarif_penerus'=>round($bpk[$i]->bpk_tarif_penerus)
+				 ]);
+		}
+		return 'asd';
 		$bkk = DB::table('biaya_penerus_kas')	
 				 ->where('bpk_id',$req->id)
 				 ->first();
