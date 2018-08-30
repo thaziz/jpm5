@@ -711,7 +711,7 @@ class KasController extends Controller
 		  	'bpk_nota'  	  	 	 => $nota,
 		  	'bpk_jenis_biaya' 	 	 => $request->jenis_pembiayaan,
 		  	'bpk_pembiayaan'  	 	 => $pembiayaan,
-		  	'bpk_total_tarif' 	 	 => round($request->total_tarif,2),
+		  	'bpk_total_tarif' 	 	 => round($request->total_tarif,0),
 		  	'bpk_tanggal'     	 	 => Carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 		  	'bpk_nopol'		  	 	 => strtoupper($request->nopol),
 		  	'bpk_status'	  	 	 => 'Released',
@@ -841,7 +841,7 @@ class KasController extends Controller
 				 $harga_array[$i] = ${'total'.$unik_asal[$i]};
 			}
 			for ($i=0; $i < count($harga_array); $i++) { 
-				 $jurnal[$i]['harga'] = $harga_array[$i];
+				 $jurnal[$i]['harga'] = round($harga_array[$i],2);
 				 $jurnal[$i]['asal'] = $unik_asal[$i];
 
 			}
