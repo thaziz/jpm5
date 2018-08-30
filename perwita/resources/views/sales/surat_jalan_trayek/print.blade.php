@@ -418,7 +418,7 @@
 				</tr>
 				@endforeach
 				<tr>
-					<td height="30"class="right textright top bot" colspan="7">Total :</td>
+					<td height="30"class="right textright top bot" colspan="8">Total :</td>
 					<td style="text-align:right" class="textcenter top bot">{{$jml}} &nbsp</td>
 				</tr>
 			</table>
