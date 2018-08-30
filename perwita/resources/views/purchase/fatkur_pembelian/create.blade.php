@@ -131,7 +131,7 @@
                           No Faktur
                             </td>
                             <td>
-                               <input type="text" class="form-control nofaktur" name="nofaktur" required="">
+                               <input type="text" class="form-control nofaktur" name="nofaktur" required="" readonly="">
                                <input type="hidden" class="form-control idfaktur" name="idfaktur" required="" readonly="">
                             
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
