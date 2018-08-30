@@ -4047,7 +4047,7 @@
           function(){
           var accPph=$(".pajakpph").find(':selected').data('acc');            
         $.ajax({
-          type : "GET",          
+          type : "POST",          
           data : form_data2+'&accPph='+accPph+form_data3,
           url : post_url2,
           dataType : 'json',

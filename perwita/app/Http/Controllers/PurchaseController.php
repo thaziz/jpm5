@@ -4827,7 +4827,7 @@ public function purchase_order() {
 		
 
 	//	return $groupitem;
-		$barang= DB::select("select * from itemsupplier, masteritem where is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem'");
+		$barang= DB::select("select * from master_akun_fitur, itemsupplier, masteritem where and maf_kode_akun = kode_item and is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem'");
 		//return json_encode($barang);
 
 		if(count($barang) > 0) {
