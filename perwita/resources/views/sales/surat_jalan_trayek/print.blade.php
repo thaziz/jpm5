@@ -407,7 +407,7 @@
 					<td class="textleft bot right"> {{$row->type_kiriman}} </td>
 					<td class="textleft bot right" style="width: 50px !important;text-align: center"> {{$row->berat}} </td>
 					@if ($row->type_kiriman == 'KILOGRAM')
-					<td style="text-align:right;width: 50px !important;" class="textright textleft bot right"> 
+					<td style="text-align:center;width: 50px !important;" class="textright textleft bot right"> 
 						{{ number_format($row->koli, 0, ",", ".") }} 
 					</td>
 					@else
