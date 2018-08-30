@@ -305,7 +305,7 @@ class do_paketController extends Controller
     public function cari_harga_reguler_deliveryorder_paket(Request $request)
     {
         // dd($request->all());
-        $asal = $request->input('kota_asal');
+        $asal = $request->input('asal');
         $tujuan = $request->input('tujuan');
         $kecamatan = $request->input('kecamatan');
         $pendapatan = $request->input('pendapatan');
@@ -358,6 +358,7 @@ class do_paketController extends Controller
                     'jumlah_data' => $result['jumlah_data'],
                 ]);
             }
+            
             else{
                 return response()->json([
                     'status' => 'kosong'
