@@ -112,12 +112,12 @@
                         </table>
                     </div>
 
-                   {{--  <div class="col-sm-6" style="margin-bottom: 250px;">
+                    <div class="col-sm-6" style="margin-bottom: 250px;">
                         <h3>AKUN FAKTUR ITEM</h3>
                         <table class="table">
                           {{ csrf_field() }}
                             <tr>
-                                <td width="130">Nama Akun</td>
+                                <td width="130">Nama Item</td>
                                 <td class="item_td">
                                     <select  name="patty_cash" multiple="" class="item chosen-select-width form-control">
                                         @foreach($item as $i)
@@ -140,7 +140,7 @@
                                 
                             </tbody>
                         </table>
-                    </div> --}}
+                    </div>
                 </div><!-- /.box-body -->
                   </div><!-- /.box-footer -->
               </div><!-- /.box -->
@@ -320,9 +320,20 @@
             url:baseUrl + '/master_sales/save_akun_item',
             type:'get',
             data:{patty,cabang},
+            dataType : "json",
             success:function(data){
-               var item = $('.tabel_item').DataTable();
+              if(data == 'akun persediaan kosong') {
+                toastr.info('Kode akun persediaan tidak ada pada cabang ' + cabang);
+              }
+              else if(data == 'akun hpp kosong') {
+                toastr.info('Kode akun hpp tidak ada pada cabang ' + cabang);
+
+              }
+              else {
+                 var item = $('.tabel_item').DataTable();
                item.ajax.reload();
+              }
+              
             },
             error:function(data){
                 swal({

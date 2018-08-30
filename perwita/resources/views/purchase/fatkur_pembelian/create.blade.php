@@ -131,7 +131,7 @@
                           No Faktur
                             </td>
                             <td>
-                               <input type="text" class="form-control nofaktur" name="nofaktur" required="">
+                               <input type="text" class="form-control nofaktur" name="nofaktur" required="" readonly="">
                                <input type="hidden" class="form-control idfaktur" name="idfaktur" required="" readonly="">
                             
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -161,14 +161,14 @@
                             <li  id="tmbhdatapo" data-val='PO'> <button class="btn btn-default tmbhdatapo" data-toggle="tab" href="#tab-2" >Data PO </button>
                             </li>
                             <!-- TAB BIAYA PENERUS -->
-                            <li  id="tmbhdatapenerus" data-val='P'><button class="btn btn-default tmbhdatapenerus" data-toggle="tab" href="#tab-3">Biaya Penerus Hutang</button>
+                            <li  id="tmbhdatapenerus" data-val='P'><button class="btn btn-default tmbhdatapenerus" data-toggle="tab" href="#tab-3">Biaya Penerus Dan Vendor Hutang</button>
                             </li>
                             <li  id="tmbhdataoutlet" data-val='O'><button class="btn btn-default tmbhdataoutlet" data-toggle="tab" href="#tab-4">Pembayaran Outlet</button>
                             </li>
                             <li  id="tmbhdatasubcon" data-val='SC'><button class="btn btn-default tmbhdatasubcon" data-toggle="tab" href="#tab-5">Pembayaran Subcon</button>
                             </li>
-                            <li  id="tmbhdatavendor" data-val='V'><button class="btn btn-default tmbhdatavendor" data-toggle="tab" href="#tab-6">Pembayaran Vendor</button>
-                            </li>
+                      {{--       <li  id="tmbhdatavendor" data-val='V'><button class="btn btn-default tmbhdatavendor" data-toggle="tab" href="#tab-6">Pembayaran Vendor</button>
+                            </li> --}}
                         </ul>
                         
                         <!-- KONTEN TANPA PO -->
@@ -422,7 +422,7 @@
                                 <div class="row">
                                   <div class="col-md-4">
                                 <select class="form-control jenisppn" onchange="fungsippn()" name="jenisppn" required="">
-                                  <option value="T"> TANPA </option>
+                                  <option value="T" selected=""> TANPA </option>
                                   <option value="I"> INCLUDE </option>
                                   <option value="E"> EXCLUDE </option>
                                 </select>
@@ -2393,6 +2393,7 @@
 
             if(a == 'I'){
                $('.noinvoice').val(invoice);
+               $('.noinvoiceitem').val(invoice);
             }
             else {
               $('.noinvoice_po').val(invoice);
@@ -4046,7 +4047,7 @@
           function(){
           var accPph=$(".pajakpph").find(':selected').data('acc');            
         $.ajax({
-          type : "GET",          
+          type : "POST",          
           data : form_data2+'&accPph='+accPph+form_data3,
           url : post_url2,
           dataType : 'json',
@@ -6441,7 +6442,7 @@
        idsupplier = $('.idsup').val();
        grupitem = $('.groupitem').val();
        
-       var string = idsupplier.split(",");
+       var string = idsupplier.split("+");
        var idsup = string[0];
        console.log(idsup);
 

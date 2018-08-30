@@ -904,15 +904,15 @@ class pembayaran_vendor_controller extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($cari_fp->fp_keterangan);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($cari_fp->fp_keterangan);
 						}
 					}
@@ -977,6 +977,10 @@ class pembayaran_vendor_controller extends Controller
 			$cari_bp = DB::table('biaya_penerus')
 						 ->where('bp_faktur',$req->nofaktur)
 						 ->first();
+
+			$cari_fp = DB::table('faktur_pembelian')
+							 ->where('fp_nofaktur',$req->nofaktur)
+							 ->first();
 			$delete = DB::table('biaya_penerus_dt')
 						->where('bpd_bpid',$cari_bp->bp_id)
 						->delete();
@@ -1015,17 +1019,17 @@ class pembayaran_vendor_controller extends Controller
 
 
 			$tt_upd = DB::table('form_tt_d')
-					  ->where('ttd_faktur',$request->nofaktur)
+					  ->where('ttd_faktur',$req->nofaktur)
 					  ->update([
 					  	'ttd_faktur'=>null
 					  ]);
 
 			$tt = DB::table('form_tt_d')
-						->where('ttd_detail',$request->dt_tt)
-						->where('ttd_id',$request->id_tt)
-						->where('ttd_invoice',$request->invoice_tt)
+						->where('ttd_detail',$req->dt_tt)
+						->where('ttd_id',$req->id_tt)
+						->where('ttd_invoice',$req->invoice_tt)
 						->update([
-							'ttd_faktur' => $request->nofaktur,
+							'ttd_faktur' => $req->nofaktur,
 						]);
 			
 			$cari_dt=DB::table('biaya_penerus_dt')		
@@ -1142,15 +1146,15 @@ class pembayaran_vendor_controller extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->Keterangan_biaya);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->Keterangan_biaya);
 					}
 				}

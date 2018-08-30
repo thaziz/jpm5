@@ -60,8 +60,8 @@ class form_tanda_terima_penjualan_controller extends Controller
 
 	    $cari_nota = DB::select("SELECT  substring(max(ft_nota),12) as id from form_tt_penjualan
 	                                    WHERE ft_kode_cabang = '$req->cabang'
-	                                    AND to_char(ft_tanggal,'MM') = '$bulan'
-	                                    AND to_char(ft_tanggal,'YY') = '$tahun'");
+	                                    AND to_char(created_at,'MM') = '$bulan'
+	                                    AND to_char(created_at,'YY') = '$tahun'");
 
 	    $index = (integer)$cari_nota[0]->id + 1;
 	    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
@@ -85,19 +85,18 @@ class form_tanda_terima_penjualan_controller extends Controller
 			$cari_nota = DB::table('form_tt_penjualan')
 						   ->where('ft_nota',$req->nomor)
 						   ->first();
-						   
 			if ($cari_nota != null) {
 
 				if ($cari_nota->updated_by == $user) {
 					return 'Data Sudah Ada';
 				}else{
-					$bulan = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('m');
-				    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
+					$bulan = Carbon::parse(str_replace('/', '-', $req->tgl))->format('m');
+				    $tahun = Carbon::parse(str_replace('/', '-', $req->tgl))->format('y');
 
 				    $cari_nota = DB::select("SELECT  substring(max(ft_nota),12) as id from form_tt_penjualan
 	                                    WHERE ft_kode_cabang = '$req->cabang'
-	                                    AND to_char(ft_tanggal,'MM') = '$bulan'
-	                                    AND to_char(ft_tanggal,'YY') = '$tahun'");
+	                                    AND to_char(created_at,'MM') = '$bulan'
+	                                    AND to_char(created_at,'YY') = '$tahun'");
 
 				    $index = (integer)$cari_nota[0]->id + 1;
 				    $index = str_pad($index, 3, '0', STR_PAD_LEFT);

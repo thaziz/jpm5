@@ -29,6 +29,32 @@
             </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
+
+   <div class="col-md-2">
+      <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <h2 style='text-align:center'> <b> {{$count['blmsetuju']}} DATA </b></h2> <h4 style='text-align:center'> BELUM DI SETUJUI </h4>
+      </div>
+    </div>   
+  
+
+    <div class="col-md-2">
+      <div class="alert alert-success alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <h2 style='text-align:center'> <b> {{$count['sudahsetuju']}} DATA </b></h2> <h4 style='text-align:center'> SUDAH DI SETUJUI </h4>
+      </div>
+    </div>   
+
+    <div class="col-md-2">
+      <div class="alert alert-info alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <h2 style='text-align:center'> <b> {{$count['tidaksetuju']}} DATA </b></h2> <h4 style='text-align:center'> TIDAK DI SETUJUI </h4>
+      </div>
+    </div>
+
+
+
+
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
@@ -42,14 +68,10 @@
 
                 </div>
                 <div class="ibox-content">
-                        <div class="row">
-            <div class="col-xs-12">
-              
-              <div class="box" id="seragam_box">
-               
-                    
-                <div class="box-body">
-                
+            <div class="row">
+            <div class="col-xs-12">              
+              <div class="box" id="seragam_box">   
+                <div class="box-body">                
                   <table id="addColumn" class="table table-bordered table-striped tbl-item">
                     <thead>
                      <tr>
@@ -63,17 +85,15 @@
                         <th  style="width:70px"> Contact Person </th>
                         <th  style="width:50px"> Status </th>
                         <th style="width:50px"> Aksi </th>
-                    </tr>
-                 
-                    </thead>
-                    
+                    </tr>                 
+                    </thead>                    
                     <tbody>
 
                     @foreach($data as $sp)
                     <tr>
                       <td> {{$sp->no_supplier}} </td>
                       <td > {{$sp->nama_supplier}} </td>
-                      <td> {{$sp->alamat}} </td>
+                      <td> {{$sp->alamatsupplier}} </td>
                       <td> {{$sp->nama2}} </td>
                
                       <td> {{$sp->idcabang}} </td>
@@ -102,9 +122,7 @@
                     </tr>
                    
                     @endforeach
-
                     </tbody>
-                   
                   </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
@@ -118,6 +136,7 @@
         </div>
     </div>
 </div>
+
 
 
 

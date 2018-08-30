@@ -644,7 +644,9 @@ class ikhtisarController extends Controller
 					->where('ikd_ik_id',$id)
 					->orderBy('bkk_tgl','DESC')
 					->get();
-	
+
+				$bkk = array_map("unserialize", array_unique(array_map("serialize", $bkk)));
+
 				$bpk = DB::table('ikhtisar_kas_detail')
 						->join('biaya_penerus_kas','ikd_ref','=','bpk_nota')
 						->select('bpk_nota as nota','bpk_tanggal as tanggal','bpk_kode_akun as akun_kas','bpk_keterangan as keterangan','created_by as user','bpk_tarif_penerus as nominal','ikd_ik_dt','ikd_ik_id')
@@ -652,6 +654,9 @@ class ikhtisarController extends Controller
 						->take(5000)
 						->orderBy('bpk_tanggal','DESC')
 						->get();
+
+				$bpk = array_map("unserialize", array_unique(array_map("serialize", $bpk)));
+
 				$data_dt = array_merge($bkk,$bpk);	
 				for ($i=0; $i < count($data_dt); $i++) { 
 					$data_dt[$i]->check = 'YA';
@@ -798,6 +803,7 @@ class ikhtisarController extends Controller
 	   			$del = DB::table('ikhtisar_kas_detail')
 						 ->where('ikd_ik_id',$request->id_ik)
 						 ->delete();
+	   			// dd($del);
 				for ($i=0; $i < count($request->id); $i++) { 
 					if ($request->checker[$i] == 'off') {
 
@@ -900,7 +906,10 @@ class ikhtisarController extends Controller
 
 					array_push($val, $request->checker[$i]);
 				}
-
+				// $del = DB::table('ikhtisar_kas_detail')
+				// 		 ->where('ikd_ik_id',$request->id_ik)
+				// 		 ->get();
+	   			// dd($del);
 
 				if ($request->checked == 'on') {
 					$status = 'APPROVED';

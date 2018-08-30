@@ -7,6 +7,7 @@
             <th>Asal Tarif</th>
             <th>Tujuan Tarif</th>
             <th>Jenis Tarif</th>
+            <th>Jenis Kendaraan</th>
             <th>Biaya Kontrak</th>
         </tr>
     </thead>
@@ -29,6 +30,10 @@
             <td style="text-align: right">
                 {{$val->jt_nama_tarif}}
                 <input type="hidden" value="{{$val->kcd_jenis_tarif}}" class="kcd_jenis_tarif">
+            </td>
+            <td>
+                {{$val->nama_angkutan}}
+                <input type="hidden" value="{{$val->kcd_kode_angkutan}}" class="kcd_kode_angkutan">
             </td>
             <td style="text-align: right">
                 {{number_format($val->kcd_harga, 0, ",", ".")}}

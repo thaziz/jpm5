@@ -626,7 +626,7 @@
 
                                       <th> Periode </th>
                                       <td> <div class="input-group date">
-                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl" name="tglfpg" required="">
+                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl" required="">
                                           </div>
                                       </td>
 
@@ -1066,7 +1066,7 @@
                       "<td><input type='text' class='form-control kodebankbg' value="+kodebanktujuan+" name='kodebanktujuan[]' readonly></td>"+ // KODEBANK
                        "<td> <input type='text' class='form-control norekening' value='"+norekening+"' readonly> </td>" + //NO REKENING TUJUAN
                       "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbanktujuan+"' name='idbanktujuan[]' readonly> <input type='hidden' class='kelompokbank' name='kelompokbank'>  </td>" + //NAMA BANK TUJUAN
-                      "<td> <input type='text' data-id='"+noinet+"' class='input-sm form-control nominaltbltfbank nominaltbltfbank"+noinet+"'  name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
+                      "<td> <input type='text' data-id='"+noinet+"' class='input-sm form-control nominaltbltfbank nominaltbltfbank"+noinet+"'  name='nominalbank[]' style='text-align:right'> </td>" + //NOMINAL
                       "<td> <button class='btn btn-danger remove-tfbtn' data-id='"+noinet+"'  data-idbankdt="+idbankasal+" type='button'><i class='fa fa-trash'></i></button></td></tr>"; //NOMINAL
               
             $('#tbl-tfbank').append(row);
@@ -1092,8 +1092,13 @@
                         jumlahtf = parseFloat(parseFloat(jumlahtf) + parseFloat(nominaltf2)).toFixed(2);
                       })
 
-                      $('.totbayar').val(addCommas(jumlahtf));
-                      $('.ChequeBg').val(addCommas(jumlahtf));
+                      if(jenisbayar == 12){
+                        $('.totbayar').val(addCommas(jumlahtf));
+                        $('.ChequeBg').val(addCommas(jumlahtf));  
+                      }
+                      else if(jenisbayar == 11) {
+                        $('.ChequeBg').val(addCommas(jumlahtf));  
+                      }
                   })
 
                  $('.remove-tfbtn').click(function(){
@@ -1204,27 +1209,35 @@
                    var row = "<tr class='tblbank'> <td> 1 </td>  <td>"+nofpg+"</td>" + // NO FPG
                         "<td>"+tgl+"</td>"+
                         "<td> <input type='text' class='form-control kodebankbg' value="+kodebank[4]+" name='kodebankbg' readonly></td>"+ // TGL
-                        "<td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"' readonly> </td> <td> <input type='text'  class='input-sm form-control nominaltblibank' name='nominalbank' style='text-align:right' required > </td>" + //JATUH TEMPO
+                        "<td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"' readonly> </td> <td> <input type='text'  class='input-sm form-control nominaltblibank' name='nominalbank' style='text-align:right'> </td>" + //JATUH TEMPO
                         "<td>  </td> </tr>"; //NOMINAL
                       
                     $('#tbl-ibank').append(row);
 
                     $('.nominaltblibank').change(function(){
-                        //alert('as');
+                      
                         totbayar = $('.totbayar').val();
                         kodebank = $('.kodebankbg').val();
 
                         val = $(this).val();
+                        val = accounting.formatMoney(val, "", 2, ",",'.');
+                        $(this).val(val);
+                          jenisbayar = $('.jenisbayar').val();
+                          if(jenisbayar != '5'){
+
+                             totbayar = totbayar.replace(/,/g,'');
+                             val = val.replace(/,/g,'');
+                             if(parseFloat(totbayar) < parseFloat(val)) {
+                              toastr.info("Nominal harus sama dengan totalbayar :)");
+                              return false;
+                             }
+                             $('.ChequeBg').val(addCommas(val));
+                          }
+                          else {
+                            $('.totbayar').val(val);
+                            $('.ChequeBg').val(val);
+                          }
                         
-                         val = accounting.formatMoney(val, "", 2, ",",'.');
-                         $(this).val(val);
-                         totbayar = totbayar.replace(/,/g,'');
-                         val = val.replace(/,/g,'');
-                         if(parseFloat(totbayar) < parseFloat(val)) {
-                          toastr.info("Nominal harus sama dengan totalbayar :)");
-                          return false;
-                         }
-                         $('.ChequeBg').val(addCommas(val));
                     })
                 }
            }
@@ -2196,7 +2209,7 @@
                             "<td>"+tgl+"</td>"+ // TGL
                             "<td>"+mbdt[i][0].mb_kode+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]' readonly> </td>" + //BANK TUJUAN
                             "<td> <input type='text' class='form-control norekening' value='"+norekening+"' readonly> </td>" + //NO REKENING TUJUAN
-                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='text' class='kelompokbank' name='kelompokbank'> </td>" + //NAMA BANK TUJUAN
+                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='hidden' class='kelompokbank' name='kelompokbank'> </td>" + //NAMA BANK TUJUAN
                             "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
                             "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
@@ -3076,7 +3089,7 @@
            
                idbank = $('.idbank').val();  
                val = $(this).val();
-                alert(idbank);
+               // alert(idbank);
                val = accounting.formatMoney(val, "", 2, ",",'.');
                $(this).val(val);
           

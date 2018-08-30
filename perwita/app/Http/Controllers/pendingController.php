@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -86,10 +85,12 @@ class pendingController extends Controller
 			$percent = DB::table('agen')
 					->where('kode',$header->fp_supplier)
 					->first();
+			$percent->komisi = $percent->komisi_agen;
 		}else{
 			$percent = DB::table('vendor')
 					->where('kode',$header->fp_supplier	)
 					->first();
+			$percent->komisi = $percent->komisi_vendor;
 		}
 
 		// return $percent;

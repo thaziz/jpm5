@@ -55,6 +55,14 @@
              </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
+  <div class="col-md-2" style="min-height: 100px">
+    <div class="alert alert-info alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <h2 style="text-align:center"> <b>{{ $data }}</b></h2> <h4 style="text-align:center">Nomor Seri Pajak Yang Aktif</h4>
+    </div>
+  </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
@@ -66,14 +74,12 @@
                        <button  type="button" class="btn btn-success " id="btn_add" name="btnok"><i class="glyphicon glyphicon-plus"></i>Tambah Data</button>
                     </div>
                 </div>
-                <div class="ibox-content">
-                        <div class="row">
+            <div class="ibox-content">
+            <div class="row">
             <div class="col-xs-12">
 
               <div class="box" id="seragam_box">
-                <div class="box-header">
-                </div><!-- /.box-header -->
-                <div class="box-body">
+                <div class="box-body">   
                   <table  class="table table_pajak table-bordered table-striped">
                     <thead>
                         <th>No</th>
@@ -120,33 +126,30 @@
               <tr>
                   <td>Nomor Pajak</td>
                   <td>
-                    <input type="text" class="form-control nomor_pajak" name="nomor_pajak">
+                    <input type="text" class="form-control nomor_pajak_1" name="nomor_pajak_1" >
                     <input type="hidden" class="form-control id_old" name="id_old">
+                  </td>
+                  <td colspan="2">
+                    <input type="text" class="form-control nomor_pajak_2" name="nomor_pajak_2">
+                  </td>
+                  
+              </tr>
+              <tr>
+                <td>Range Nomor Pajak</td>
+                <td>
+                  <input type="text" class="form-control nomor_pajak_awal" name="nomor_pajak_awal">
+                </td>
+                <td width="10" align="center">
+                  <p>-</p>
+                </td>
+                <td>
+                  <input type="text" class="form-control nomor_pajak_akhir" name="nomor_pajak_akhir">
                 </td>
               </tr>
               <tr>
                   <td>Tanggal Pajak</td>
-                  <td>
-                    <input type="text" placeholder="dd/mm/yyyy" class="form-control tanggal" name="tanggal">
-                </td>
-              </tr>
-              <tr>
-                <td>PDF (max 1MB)</td>
-                <td>
-                  <div class="file-upload">
-                    <div class="file-select">
-                      <div class="file-select-name" id="noFile">Choose PDF...</div> 
-                      <input type="file" name="image" onchange="loadFile(event)" id="chooseFile">
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr hidden="">
-                <td>Preview</td>
-                <td align="left">
-                  <div class="preview_td">
-                      <img style="width: 150px;height: 200px;border:1px solid pink" id="output" >
-                  </div>
+                  <td colspan="3">
+                    <input type="text" placeholder="dd/mm/yyyy" value="{{ carbon\carbon::now()->format('d/m/Y') }}" class="form-control tanggal" name="tanggal">
                 </td>
               </tr>
           </table>
@@ -166,7 +169,10 @@
 <script src="{{ asset('assets/vendors/mask_plugin/dist/jquery.mask.min.js') }}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-    $('.nomor_pajak').mask("000.000-00.00000000", {placeholder: "___.___-__.________"});
+    $('.nomor_pajak_1').mask("000", {placeholder: "TIGA DIGIT AWAL"});
+    $('.nomor_pajak_2').mask("00", {placeholder: "DUA DIGIT PAJAK"});
+    $('.nomor_pajak_awal').mask("00000000", {placeholder: "RANGE DIGIT AWAL"});
+    $('.nomor_pajak_akhir').mask("00000000", {placeholder: "RANGE DIGIT AKHIR"});
 
     $('.table_pajak').DataTable({
         processing: true,
@@ -209,7 +215,7 @@ $(document).ready(function(){
 })
 
 $(document).on("click","#btn_add",function(){
-    $('.table_input :input').val('');
+    $('.table_input :input').not('.tanggal').val('');
     $('.file-upload').removeClass('active');
     $('#noFile').text('Choose PDF..');
     $("#modal").modal("show");
@@ -273,32 +279,38 @@ $('.save_pajak').click(function(){
         }
     });
 
-    var formdata = new FormData();  
-    formdata.append( 'files', $('#chooseFile')[0].files[0]);
     $.ajax({
-          url:baseUrl + '/master_sales/save_pajak_invoice'+'?'+$('.table_input :input').serialize(),
-          data:formdata,
-          type:'POST',
-          dataType:'json',
-          processData: false,
-          contentType: false,
-          success:function(data){
-            $('.table_input :input').val('');
+        url:baseUrl + '/master_sales/save_pajak_invoice',
+        data:$('.table_input :input').serialize(),
+        type:'POST',
+        dataType:'json',
+        success:function(data){
+          console.log(data.status);
+          if (data.status == '1') {
             $('.file-upload').removeClass('active');
             $('#noFile').text('Choose PDF..');
             var table = $('.table_pajak').DataTable();
             table.ajax.reload();
             $("#modal").modal("hide");
-          },
-          error:function(data){
-
+          }else if (data.status == '0'){
             swal({
-            title: "Terjadi Kesalahan",
-                    type: 'error',
-                    timer: 2000,
-                    showConfirmButton: false
-        });
-       }
+              title: "Terjadi Kesalahan",
+              type: 'warning',
+              text: data.pesan,
+              timer: 2000,
+              showConfirmButton: false
+            });
+          }
+        },
+        error:function(data){
+
+          swal({
+          title: "Terjadi Kesalahan",
+                  type: 'error',
+                  timer: 2000,
+                  showConfirmButton: false
+          });
+        }
     });
 })
 
@@ -346,31 +358,31 @@ function hapus(id){
       });
     });
 }
-function edit(id) {
-    $.ajax({
-          url:baseUrl + '/master_sales/cari_id_pajak',
-          data:{id},
-          type:'get',
-          dataType:'json',
-          success:function(data){
-            $('.nomor_pajak').val(data.data.nsp_nomor_pajak);
-            $('.id_old').val(id);
-            $('.tanggal').val(data.tanggal);
-            $('.file-upload').addClass('active');
-            $('#noFile').text(data.data.nsp_pdf);
-            $("#modal").modal("show");
-          },
-          error:function(data){
+// function edit(id) {
+//     $.ajax({
+//           url:baseUrl + '/master_sales/cari_id_pajak',
+//           data:{id},
+//           type:'get',
+//           dataType:'json',
+//           success:function(data){
+//             $('.nomor_pajak').val(data.data.nsp_nomor_pajak);
+//             $('.id_old').val(id);
+//             $('.tanggal').val(data.tanggal);
+//             $('.file-upload').addClass('active');
+//             $('#noFile').text(data.data.nsp_pdf);
+//             $("#modal").modal("show");
+//           },
+//           error:function(data){
 
-            swal({
-            title: "Terjadi Kesalahan",
-                    type: 'error',
-                    timer: 2000,
-                    showConfirmButton: false
-        });
-       }
-    });
-}
+//             swal({
+//             title: "Terjadi Kesalahan",
+//                     type: 'error',
+//                     timer: 2000,
+//                     showConfirmButton: false
+//         });
+//        }
+//     });
+// }
 
 
 function download_pdf(nomor) {

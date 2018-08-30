@@ -189,8 +189,8 @@ class KasController extends Controller
                           return number_format(round($data->bpk_tarif_penerus,0),2,',','.'  ); 
                         })
                         ->addColumn('print', function ($data) {
-                           return $a = ' <a class="fa asw fa-print" align="center"  title="edit" href="'.route('detailkas', ['id' => $data->bpk_id]).'"> detail</a><br>
-										<a class="fa asw fa-print" align="center"  title="print" href="'.route('buktikas', ['id' => $data->bpk_id]).'"> Bukti Kas</a>';
+                           return $a = ' <a class="fa asw fa-print" align="center" onclick="detailkas(\''.$data->bpk_id.'\')"  title="edit"> detail</a><br>
+										<a class="fa asw fa-print" align="center" onclick="buktikas(\''.$data->bpk_id.'\')" title="print"> Bukti Kas</a>';
                         })
                         ->addIndexColumn()
                         ->make(true);
@@ -433,18 +433,23 @@ class KasController extends Controller
 		// return $resi;
 		$resi = array_unique($resi);
 		$resi = array_values($resi);
-		for ($i=0; $i < count($resi); $i++) { 
+		$temp_resi = $resi;
+		for ($i=0; $i < count($temp_resi); $i++) { 
 			for ($a=0; $a < count($cari_loading); $a++) { 
-				if ($cari_loading[$a]->nomor == $resi[$i]) {
+				if ($cari_loading[$a]->nomor == $temp_resi[$i]) {
 					unset($resi[$i]);
 				}
 			}
 		}
+		
+		$resi = array_unique($resi);
+		$resi = array_values($resi);
+		$temp_resi = $resi;
 
 		if ($jenis_biaya == '3') {
-			for ($i=0; $i < count($resi); $i++) { 
+			for ($i=0; $i < count($temp_resi); $i++) { 
 				for ($a=0; $a < count($cari_shuttle); $a++) { 
-					if ($cari_shuttle[$a]->nomor == $resi[$i]) {
+					if ($cari_shuttle[$a]->nomor == $temp_resi[$i]) {
 						unset($resi[$i]);
 					}
 				}
@@ -452,11 +457,13 @@ class KasController extends Controller
 		}
 		
 
+		$resi = array_unique($resi);
 		$resi = array_values($resi);
+		$temp_resi = $resi;
 		if ($jenis_biaya == '3') {
-			for ($i=0; $i < count($resi); $i++) { 
+			for ($i=0; $i < count($temp_resi); $i++) { 
 				for ($a=0; $a < count($cari_resi); $a++) { 
-					if ($cari_resi[$a]->nomor == $resi[$i]) {
+					if ($cari_resi[$a]->nomor == $temp_resi[$i]) {
 						if (  $now <= $cari_resi[$a]->awal_shutle or $now >= $cari_resi[$a]->akhir_shutle ) {
 							unset($resi[$i]);
 						}
@@ -1030,9 +1037,7 @@ class KasController extends Controller
 		// $delete = DB::table('biaya_penerus_kas')
 		// 			->where('bpk_id',$request->id)
 		// 			->delete();
-		$delete1 = DB::table('biaya_penerus_kas_detail')
-					->where('bpkd_bpk_id',$request->id)
-					->delete();
+		
 
 		if ($request->jenis_pembiayaan == 'PAKET') {
 
@@ -1145,6 +1150,9 @@ class KasController extends Controller
 		  return response()->json(['status' => '2','minimal' => $sisa]);
 		}
 
+		$delete1 = DB::table('biaya_penerus_kas_detail')
+					->where('bpkd_bpk_id',$request->id)
+					->delete();
 	   	// dd($total_tarif);
 
 		if($request->jenis_pembiayaan=='PAKET'){
@@ -1181,7 +1189,7 @@ class KasController extends Controller
 		biaya_penerus_kas::where('bpk_id',$request->id)->update([
 		  	'bpk_nota'  	  	 	 => $request->no_trans,
 		  	'bpk_jenis_biaya' 	 	 => $request->jenis_pembiayaan,
-		  	'bpk_pembiayaan'  	 	 => $pembiayaan,
+		  	'bpk_pembiayaan'  	 	 => $kode_persen,
 		  	'bpk_total_tarif' 	 	 => round($request->total_tarif,2),
 		  	'bpk_tanggal'     	 	 => Carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 		  	'bpk_nopol'		  	 	 => strtoupper($request->nopol),
@@ -1832,10 +1840,11 @@ class KasController extends Controller
 		$resi = array_values($resi);
 		$resi = array_unique($resi);
 		// return $resi;
+		$temp_resi = $resi;
 		
-		for ($i=0; $i < count($resi); $i++) { 
+		for ($i=0; $i < count($temp_resi); $i++) { 
 			for ($a=0; $a < count($cari_shuttle); $a++) { 
-				if ($cari_shuttle[$a]->nomor == $resi[$i]) {
+				if ($cari_shuttle[$a]->nomor == $temp_resi[$i]) {
 					unset($resi[$i]);
 				}
 			}
@@ -1844,10 +1853,10 @@ class KasController extends Controller
 		
 		$resi = array_unique($resi);
 		$resi = array_values($resi);
-
-		for ($i=0; $i < count($resi); $i++) { 
+		$temp_resi = $resi;
+		for ($i=0; $i < count($temp_resi); $i++) { 
 			for ($a=0; $a < count($cari_loading); $a++) { 
-				if ($cari_loading[$a]->nomor == $resi[$i]) {
+				if ($cari_loading[$a]->nomor == $temp_resi[$i]) {
 					unset($resi[$i]);
 				}
 			}
@@ -1855,12 +1864,13 @@ class KasController extends Controller
 		
 		$resi = array_unique($resi);
 		$resi = array_values($resi);
+		$temp_resi = $resi;
 
 
 		if ($jenis_biaya == '3') {
-			for ($i=0; $i < count($resi); $i++) { 
+			for ($i=0; $i < count($temp_resi); $i++) { 
 				for ($a=0; $a < count($cari_resi); $a++) { 
-					if ($cari_resi[$a]->nomor == $resi[$i]) {
+					if ($cari_resi[$a]->nomor == $temp_resi[$i]) {
 						if (  $now <= $cari_resi[$a]->awal_shutle or $now >= $cari_resi[$a]->akhir_shutle ) {
 							unset($resi[$i]);
 						}

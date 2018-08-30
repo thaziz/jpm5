@@ -170,6 +170,7 @@ Route::get('penerimaanbarang/lihatjurnal', 'PurchaseController@lihatjurnal');
 // PENGELUARAN BARANG
 Route::get('pengeluaranbarang/pengeluaranbarang', 'PengeluaranBarangController@index');
 Route::get('pengeluaranbarang/edit/{id}', 'PengeluaranBarangController@edit');
+Route::get('pengeluaranbarang/akun_biaya_dropdown', 'PengeluaranBarangController@akun_biaya_dropdown');
 Route::get('pengeluaranbarang/cari_stock', 'PengeluaranBarangController@cari_stock');
 Route::get('pengeluaranbarang/createpengeluaranbarang', 'PengeluaranBarangController@create');
 Route::get('pengeluaranbarang/ganti_nota', 'PengeluaranBarangController@ganti_nota');
@@ -347,7 +348,7 @@ Route::get('fakturpembelian/pilih_kontrak_all', 'BiayaPenerusController@pilih_ko
 Route::get('fakturpembelian/caripodsubcon', 'BiayaPenerusController@caripodsubcon');
 Route::get('fakturpembelian/subcon_save', 'BiayaPenerusController@subcon_save');
 Route::post('fakturpembelian/subcon_save', 'BiayaPenerusController@subcon_save');
-Route::get('fakturpembelian/subcon_update', 'BiayaPenerusController@subcon_update');
+Route::post('fakturpembelian/subcon_update', 'BiayaPenerusController@subcon_update');
 Route::get('master_subcon/cari_kontrak', 'BiayaPenerusController@cari_kontrak');
 Route::get('fakturpembelian/getpembayaransubcon', 'BiayaPenerusController@getpembayaransubcon')->name('getpembayaransubcon');
 Route::get('fakturpembelian/cari_subcon', 'BiayaPenerusController@cari_subcon');
@@ -517,7 +518,7 @@ Route::get('pelunasanhutangbank/pelunasanhutangbank', 'PurchaseController@peluna
 Route::get('pelunasanhutangbank/createpelunasanbank', 'PurchaseController@createpelunasanbank');
 Route::get('pelunasanhutangbank/detailpelunasanbank/{id}', 'PurchaseController@detailpelunasanbank');
 Route::get('pelunasanhutangbank/nocheck', 'PurchaseController@nocheckpelunasanhutangbank');
-Route::post('pelunasanhutangbank/getnota', 'PurchaseController@getnobbk');
+Route::get('pelunasanhutangbank/getnota', 'PurchaseController@getnobbk');
 Route::post('pelunasanhutangbank/getcek', 'PurchaseController@getcek');
 Route::post('pelunasanhutangbank/simpan', 'PurchaseController@simpanbbk');
 Route::get('pelunasanhutangbank/cetak/{id}', 'PurchaseController@cetakbbk');
@@ -1636,7 +1637,7 @@ Route::get('sales/surat_jalan_trayek/get_data', 'sales\surat_jalan_trayek_Contro
 Route::get('sales/surat_jalan_trayek/get_data_detail', 'sales\surat_jalan_trayek_Controller@get_data_detail');
 Route::post('sales/surat_jalan_trayek_form/save_data', 'sales\surat_jalan_trayek_Controller@save_data');
 Route::post('sales/surat_jalan_trayek/save_data_detail', 'sales\surat_jalan_trayek_Controller@save_data_detail');
-Route::post('sales/surat_jalan_trayek/hapus_data', 'sales\surat_jalan_trayek_Controller@hapus_data');
+Route::get('sales/surat_jalan_trayek/hapus_data', 'sales\surat_jalan_trayek_Controller@hapus_data');
 Route::get('sales/surat_jalan_trayek/hapus_data_detail', 'sales\surat_jalan_trayek_Controller@hapus_data_detail');
 Route::get('sales/surat_jalan_trayek_form/nota/{nomor}', 'sales\surat_jalan_trayek_Controller@cetak_nota');
 

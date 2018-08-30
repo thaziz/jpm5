@@ -714,7 +714,7 @@
    
       $('.cabang2').val(cabang);
        $.ajax({
-          type : "post",
+          type : "get",
           data : {cabang},
           url : baseUrl + '/pelunasanhutangbank/getnota',
           dataType : 'json',
@@ -940,7 +940,7 @@
      $('.cabang').change(function(){    
       var comp = $(this).val();
         $.ajax({    
-            type :"post",
+            type :"get",
             data : {comp},
             url : baseUrl + '/pelunasanhutangbank/getnota',
             dataType:'json',

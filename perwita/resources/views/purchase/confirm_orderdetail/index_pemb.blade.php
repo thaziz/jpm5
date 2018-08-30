@@ -181,7 +181,14 @@
                               <input type="text" class="form-control" readonly="" value="{{$spp->spp_keperluan}}">
                             </td>
                           </tr>
-
+                           <tr>
+                            <td>
+                             <b> Keterangan </b>
+                            </td>
+                            <td>
+                              <input type="text" class="form-control" readonly="" value="{{$spp->spp_keterangan}}">
+                            </td>
+                          </tr>
                           <tr>
                             <td>
                             <b> Cabang </b>
@@ -257,7 +264,7 @@
                                   </th>
                                   <th>
                                     @if($spp->man_keu == 'DISETUJUI')
-                                    
+                                       <div style='text-align: center'>  <p class="label label-info" > {{$spp->man_keu}} </p> </div>
                                     @else
                                       <div style='text-align: center'> <p class="label label-danger" style='text-align: center'> BELUM DI PROSES </p> </div>
                                     @endif

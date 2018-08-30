@@ -355,7 +355,11 @@
          <table width="100%">
          @foreach($cari_bkk_dt as $no=>$val) 
           <tr>
-           <td>{{$val->bkkd_keterangan}}</td>
+            @if ($val->bkkd_keterangan == '' or $val->bkkd_keterangan == null)
+              <td>{{$val->fp_keterangan}}</td>
+            @else
+              <td>{{$val->bkkd_keterangan}}</td>
+            @endif
           </tr>
           @endforeach
          </table>
@@ -385,7 +389,7 @@
      </tr>
      <tr height="25px">
        <td colspan="5" class="top right textright">J u m l a h :</td>
-       <td class="textright top right">{{'Rp. ' . number_format($val->bkk_total,2,',','.')}}</td>
+       <td class="textright top right">{{'Rp. ' . number_format($cari_bkk_id->bkk_total,2,',','.')}}</td>
      </tr>
      <tr height="25px">
        <td colspan="7" class="textleft top">Terbilang : {{$terbilang}}</td>

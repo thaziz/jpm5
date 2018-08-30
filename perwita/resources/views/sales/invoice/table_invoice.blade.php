@@ -1,4 +1,4 @@
-<table style="font-size: 12px" id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
+<table style="font-size: 10px;width: 100%;" id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
     <thead>
         <tr>
             <th>Nomor</th>
@@ -20,14 +20,19 @@
 </table>
 
 <script type="text/javascript">
-var cabang = '{{$cab}}';
+var cabang        = '{{$cab}}';
+var tanggal_awal  = '{{ $tanggal_awal }}';
+var tanggal_akhir = '{{ $tanggal_akhir }}';
+var jenis_biaya   = '{{ $jenis_biaya }}';
+var nota          = '{{ $nota }}';
 $('#tabel_data').DataTable({
     processing: true,
     // responsive:true,
     serverSide: true,
+    ordering:false,
     ajax: {
         url:'{{ route("datatable_invoice1") }}',
-        data:{cabang}
+        data:{cabang,tanggal_awal,tanggal_akhir,jenis_biaya,nota}
 
     },
     columnDefs: [
@@ -40,7 +45,7 @@ $('#tabel_data').DataTable({
          className: 'cssright'
       },
       {
-         targets:7,
+         targets:8,
          className: 'center'
       },
       {

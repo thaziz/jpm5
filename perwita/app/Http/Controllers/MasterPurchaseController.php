@@ -156,16 +156,16 @@ class MasterPurchaseController extends Controller
 				}
 				else {
 					if($idgrupitem == 'P'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5311%' and kode_cabang = '$cabang'");
 					}
 					else if($idgrupitem == 'S'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '$cabang' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '$cabang' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' or id_akun LIKE '6113%' and kode_cabang = '$cabang'");
 					}
 					else if($idgrupitem == 'A'){
 						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
 					}
 					else if($idgrupitem == 'C'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6102%' and kode_cabang = '$cabang'");
 					}
 					else {
 						$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' ");
@@ -236,16 +236,16 @@ class MasterPurchaseController extends Controller
 				}
 				else {
 					if($idgrupitem == 'P'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5311%' and kode_cabang = '$cabang'");
 					}
 					else if($idgrupitem == 'S'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '$cabang' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' or id_akun LIKE '6113%' and kode_cabang = '$cabang'");
 					}
 					else if($idgrupitem == 'A'){
 						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
 					}
 					else if($idgrupitem == 'C'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6102%' and kode_cabang = '$cabang'");
 					}
 					else {
 						$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' ");
@@ -552,7 +552,6 @@ class MasterPurchaseController extends Controller
 								'mb_accno' => $request->norekening,
 								'mb_kelompok' => $request->kelompokbank
 							]);
-
 		$tempdatafpg = 0;
 
 		/*$idbank = $request->mb_id;
@@ -977,12 +976,22 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function mastersupplier() {
+		$cabang = session::get('cabang');
 
-		
-		
-		$data = DB::select("select * from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and active='AKTIF'");
+		if(Auth::user()->punyaAkses('Master Supplier','all')){
+			$data = DB::select("select *, supplier.alamat as alamatsupplier from supplier, kota, provinsi, cabang where supplier.kota = kota.id and supplier.propinsi = provinsi.id and active='AKTIF' and idcabang = kode");
+			$count['blmsetuju'] =  DB::table("supplier")->where('status' , '=' , 'BELUM DI SETUJUI')->count();
+			$count['sudahsetuju'] = DB::table("supplier")->where('status' , '=' , 'SETUJU')->count();
+			$count['tidaksetuju'] = DB::table("supplier")->where('status' , '=' , 'TIDAK SETUJU')->count();
+		}
+		else {
+			$data = DB::select("select *, supplier.alamat as alamatsupplier from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and active='AKTIF' and idcabang = '$cabang'");
+			$count['blmsetuju'] =  DB::table("supplier")->where([['status' , '=' , 'BELUM DI SETUJUI'],['idcabang' , '=' , '$cabang']])->count();
+			$count['sudahsetuju'] = DB::table("supplier")->where([['status' , '=' , 'SETUJU'],['idcabang' , '=' , '$cabang']])->count();
+			$count['tidaksetuju'] = DB::table("supplier")->where([['status' , '=' , 'TIDAK SETUJU'], ['idcabang' , '=' , '$cabang']])->count();
+		}
 
-		return view('purchase/master/master_supplier/index', compact('data'));
+		return view('purchase/master/master_supplier/index', compact('data', 'count'));
 	}
 	
 	public function getacchutang(Request $request) {
@@ -1291,11 +1300,25 @@ class MasterPurchaseController extends Controller
 
 
 	public function konfirmasisupplier() {
-		$data['supp'] = DB::select("select * from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id");
+		$cabang = session::get('cabang');
+
+
+
+		if(Auth::user()->punyaAkses('Konfirmasi Supplier','all')){
+		$data['supp'] = DB::select("select * from supplier, cabang, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and idcabang = kode");
 
 		$data['disetujui'] = DB::table("supplier")->where('status' , '=' , 'SETUJU')->count();
 		$data['belumdisetujui'] = DB::table("supplier")->where('status' , '=' , 'BELUM DI SETUJUI')->count();
 		$data['tidakdisetujui'] = DB::table("supplier")->where('status' , '=' , 'TIDAK SETUJU')->count();
+		}
+		else {
+			$data['supp'] = DB::select("select * from supplier, cabang, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and idcabang = '$cabang'");
+
+			$data['disetujui'] = DB::table("supplier")->where([['status' , '=' , 'SETUJU'], ['idcabang' , '=' , '$cabang']])->count();
+			$data['belumdisetujui'] = DB::table("supplier")->where([['status' , '=' , 'BELUM DI SETUJUI'],['idcabang' , '=' , '$cabang']])->count();
+			$data['tidakdisetujui'] = DB::table("supplier")->where([['status' , '=' , 'TIDAK SETUJU'],['idcabang' , '=' , '$cabang']])->count();
+		}
+		
 		return view('purchase/master/master_supplier/index_konfirmasi', compact('data'));
 	}
 

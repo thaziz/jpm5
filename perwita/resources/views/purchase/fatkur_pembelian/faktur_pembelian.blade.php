@@ -97,7 +97,7 @@
 	<div class="div-width">
 		<table class="border-none" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
-				<td width="1%"><img src="" width="120px" height="75px"></td>
+				<td width="1%"><img src="{{asset('perwita/storage/app/upload/images.jpg') }}" width="120px" height="75px"></td>
 				<td class="s16 text-left">
 					<text class="bold">PT. Jawa Pratama Mandiri</text><br>
 					<small>
@@ -141,7 +141,9 @@
 		<fieldset style="margin-bottom: 5px;">
 			<legend class="italic">Diterima Dari :</legend>
 			{{$data['judul'][0]->nama_supplier}} [{{$data['judul'][0]->no_supplier}}]  <br>
-			{{$data['judul'][0]->alamat}}
+			{{$data['judul'][0]->alamat}} <br>
+			{{$data['judul'][0]->telp}}
+
 		</fieldset>
 		<table width="100%" cellspacing="0" class="tabel" border="1px">
 
