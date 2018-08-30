@@ -129,7 +129,7 @@ class selaras_jurnal  extends Controller
                     $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
                     $data_akun[0]['jrdt_value']     = -$bpk[$i]->bpk_tarif_penerus;
                     $data_akun[0]['jrdt_statusdk'] = 'D';
-                	$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
+                	  $data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
                 }
                 
                 $jurnal_dt = d_jurnal_dt::insert($data_akun);
@@ -145,7 +145,7 @@ class selaras_jurnal  extends Controller
                     for ($b=0; $b < count($detail); $b++) { 
                         if ($filter_comp[$bpk[$i]->bpk_nota][$a] == $detail[$b]->bpkd_kode_cabang_awal and
                             $bpk[$i]->bpk_nota == $detail[$b]->bpk_nota) {
-                            $harga+=$detail[$b]->bpkd_tarif_penerus;
+                            $harga+=round($detail[$b]->bpkd_tarif_penerus);
                         }
                     }
 

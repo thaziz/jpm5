@@ -934,14 +934,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i],2);
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i],2);
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
@@ -951,14 +951,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= $akun_val[$i];
+						$data_akun[$i]['jrdt_value'] 	= round($akun_val[$i],2);
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i],2);
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
@@ -1325,7 +1325,7 @@ class KasController extends Controller
 				 $harga_array[$i] = ${'total'.$unik_asal[$i]};
 			}
 			for ($i=0; $i < count($harga_array); $i++) { 
-				 $jurnal[$i]['harga'] = $harga_array[$i];
+				 $jurnal[$i]['harga'] = round($harga_array[$i]);
 				 $jurnal[$i]['asal'] = $unik_asal[$i];
 
 			}
@@ -1368,10 +1368,8 @@ class KasController extends Controller
 			$delete = DB::table('patty_cash')
 					   ->where('pc_no_trans',$request->no_trans)
 					   ->delete();
-
 			array_push($akun, $request->nama_kas);
 			array_push($akun_val, $total_harga);
-
 			for ($i=0; $i < count($jurnal); $i++) { 
 				$acc = DB::table('d_akun')
 						 ->where('id_akun','like',$cari_akun .'%')
@@ -1426,14 +1424,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i],2);
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_value'] 	= -round($akun_val[$i],2);
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
@@ -1443,14 +1441,14 @@ class KasController extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= $akun_val[$i];
+						$data_akun[$i]['jrdt_value'] 	= round($akun_val[$i],2);
 						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-						$data_akun[$i]['jrdt_value'] 	= $akun_val[$i];
+						$data_akun[$i]['jrdt_value'] 	= round($akun_val[$i],2);
 						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 					}
