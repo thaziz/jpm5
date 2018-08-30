@@ -2089,18 +2089,18 @@ class KasController extends Controller
 		$bkk = DB::table('biaya_penerus_kas')	
 				 ->where('bpk_id',$req->id)
 				 ->first();
-		// $data= DB::table('d_jurnal')
-		// 		 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
-		// 		 ->join('d_akun','jrdt_acc','=','id_akun')
-		// 		 ->where('jr_ref',$bkk->bpk_nota)
-		// 		 ->get();
-
 		$data= DB::table('d_jurnal')
 				 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
 				 ->join('d_akun','jrdt_acc','=','id_akun')
-				 ->where('jr_ref','like','BPK%')
-				 ->where('jr_date','>=','2018-07-30')
+				 ->where('jr_ref',$bkk->bpk_nota)
 				 ->get();
+
+		// $data= DB::table('d_jurnal')
+		// 		 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
+		// 		 ->join('d_akun','jrdt_acc','=','id_akun')
+		// 		 ->where('jr_ref','like','BPK%')
+		// 		 ->where('jr_date','>=','2018-07-30')
+		// 		 ->get();
 
 		$head= DB::table('d_jurnal')
 				 ->where('jr_ref','like','BPK%')
