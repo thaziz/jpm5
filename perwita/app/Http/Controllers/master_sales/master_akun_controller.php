@@ -164,11 +164,15 @@ class master_akun_controller extends Controller
 
           $data = DB::table('d_akun')
                   ->where('id_akun','like', $akun . '%')
+                  ->where('kode_cabang' , '=' , $req->cabang)
                   ->get();
+
+
           for ($i=0; $i < count($data); $i++) { 
             $cari = DB::table('master_akun_fitur')
                       ->where('maf_kode_akun',$data[$i]->id_akun)
                       ->get();
+
             if ($cari != null) {
 
               $id = DB::table('master_akun_fitur')
@@ -199,28 +203,96 @@ class master_akun_controller extends Controller
             return response()->json(['status' => 2]);
           }
 
-          $akun = DB::table('d_akun')
-                    ->where('id_akun',$req->patty)
+
+
+          $dataakun = $akun = DB::table('masteritem')
+                     ->where('kode_item','=', $req->patty)                 
                     ->first();  
+        //  dd($dataakun);
 
-          $id = DB::table('master_akun_fitur')
-                  ->max('maf_id');
-          if ($id == null) {
-            $id = 1;
-          }else{
-            $id+=1;
+          $akunpersediaan2 = $dataakun->acc_persediaan;
+          $akunhpp2 = $dataakun->acc_hpp;
+
+          if($akunpersediaan2 != null) {
+            $accpersediaan = substr($akunpersediaan2, 0,4);
+            $akunpersediaan = DB::table('d_akun')
+                         ->where('id_akun','like', $accpersediaan . '%')
+                        ->where('kode_cabang' , '=' , $req->cabang)
+                        ->first(); 
           }
+          else if($akunhpp2 != null){
+            $acchpp = substr($akunhpp2, 0,4);
+             $akunhpp = DB::table('d_akun')
+                         ->where('id_akun','like', $acchpp . '%')
+                        ->where('kode_cabang' , '=' , $req->cabang)
+                        ->first(); 
+          }
+         
 
-          $save_maf = DB::table('master_akun_fitur')
-                        ->insert([
-                          'maf_id'        => $id,
-                          'maf_kode_akun' => $akun->id_akun,
-                          'maf_nama'      => $akun->nama_akun,
-                          'maf_group'     => 2,
-                          'maf_cabang'    => $req->cabang,
-                       ]);
+         
+
+          if(count($akunpersediaan2) != null) {
+           
+            if(count($akunpersediaan) == 0) {
+               return json_encode('akun persediaan kosong');
+            }
+            else {
+               $id = DB::table('master_akun_fitur')
+                  ->max('maf_id');
+                if ($id == null) {
+                  $id = 1;
+                }else{
+                  $id+=1;
+                }
+
+               $save_maf = DB::table('master_akun_fitur')
+                      ->insert([
+                        'maf_id'        => $id,
+                        'maf_kode_akun' => $req->patty,
+                        'maf_nama'      => $dataakun->nama_masteritem,
+                        'maf_group'     => 2,
+                        'maf_cabang'    => $req->cabang,
+                        'maf_acc_persediaan'    => $akunpersediaan->id_akun,
+                     ]);
+              return json_encode('sukses');
+            }
+           
+          }
+          else if(count($akunhpp2) != null) {
+            if(count($akunhpp) == 0){             
+              return json_encode('akun hpp kosong');
+            }
+            else {
+                 $id = DB::table('master_akun_fitur')
+                  ->max('maf_id');
+                if ($id == null) {
+                  $id = 1;
+                }else{
+                  $id+=1;
+                }
+
+                $save_maf = DB::table('master_akun_fitur')
+                      ->insert([
+                        'maf_id'        => $id,
+                        'maf_kode_akun' => $req->patty,
+                        'maf_nama'      => $dataakun->nama_masteritem,
+                        'maf_group'     => 2,
+                        'maf_cabang'    => $req->cabang,
+                        'maf_acc_hpp'    => $akunhpp->id_akun,
+                     ]);
+              return json_encode('sukses');
+            }         
+          }
+          else {
+         
+          
+
+            return json_encode('sukses');
+          }
         } 
       });
+
+
     }
 
     public function ganti_akun_patty(request $req)
@@ -259,8 +331,7 @@ class master_akun_controller extends Controller
                     ->where('maf_cabang',$req->cabang)
                     ->get();
      
-        $akun = DB::table('d_akun')
-                  ->where('kode_cabang',$req->cabang)
+        $akun = DB::table('masteritem')
                   ->get();
       }else{
         $akun_patty = DB::table('master_akun_fitur')
@@ -268,8 +339,7 @@ class master_akun_controller extends Controller
                     ->where('maf_cabang',$req->cabang)
                     ->get();
      
-        $akun = DB::table('d_akun')
-                  ->where('kode_cabang',$req->cabang)
+        $akun = DB::table('masteritem')
                   ->get();
       }
 

@@ -320,9 +320,20 @@
             url:baseUrl + '/master_sales/save_akun_item',
             type:'get',
             data:{patty,cabang},
+            dataType : "json",
             success:function(data){
-               var item = $('.tabel_item').DataTable();
+              if(data == 'akun persediaan kosong') {
+                toastr.info('Kode akun persediaan tidak ada pada cabang ' + cabang);
+              }
+              else if(data == 'akun hpp kosong') {
+                toastr.info('Kode akun hpp tidak ada pada cabang ' + cabang);
+
+              }
+              else {
+                 var item = $('.tabel_item').DataTable();
                item.ajax.reload();
+              }
+              
             },
             error:function(data){
                 swal({
