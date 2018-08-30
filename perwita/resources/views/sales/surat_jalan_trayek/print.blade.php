@@ -388,6 +388,7 @@
 					<th class="textcenter bot right top">Penerima</th>
 					<th class="textcenter bot right top">Alamat & Telp Penerima</th>
 					<th class="textcenter bot right top">Type</th>
+					<th class="textcenter bot right top">Kg</th>
 					<th class="textcenter bot top">QTY</th>
 				</tr>
 				@php 
@@ -404,12 +405,13 @@
 					<td class="textleft bot right"> {{$row->nama_penerima}} </td>
 					<td class="textleft bot right"> {{$row->alamat_penerima}} {{$row->telpon_penerima}}</td>
 					<td class="textleft bot right"> {{$row->type_kiriman}} </td>
+					<td class="textleft bot right" style="width: 50px !important;text-align: center"> {{$row->berat}} </td>
 					@if ($row->type_kiriman == 'KILOGRAM')
-					<td style="text-align:right" class="textright textleft bot right"> 
+					<td style="text-align:center;width: 50px !important;" class="textright textleft bot right"> 
 						{{ number_format($row->koli, 0, ",", ".") }} 
 					</td>
 					@else
-					<td style="text-align:right" class="textright textleft bot right"> 
+					<td style="text-align:center;width: 50px !important;" class="textright textleft bot right"> 
 						{{ number_format($row->jumlah, 0, ",", ".") }} 
 					</td>
 					@endif
@@ -417,7 +419,14 @@
 				@endforeach
 				<tr>
 					<td height="30"class="right textright top bot" colspan="7">Total :</td>
-					<td style="text-align:right" class="textcenter top bot">{{$jml}} &nbsp</td>
+					@php
+						$temp = 0;
+						foreach($detail as $row){
+							$temp+=$row->berat;
+						}
+						echo '<td style="text-align:center;" class="textcenter right top bot">'.$temp.'&nbsp</td>'
+					@endphp
+					<td style="text-align:center" class="textcenter top bot">{{$jml}} &nbsp</td>
 				</tr>
 			</table>
 		</div>

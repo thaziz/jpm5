@@ -904,7 +904,7 @@
             });
           $.ajax({
           url:baseUrl + '/fakturpembelian/update_agen',
-          type:'get',
+          type:'post',
           data:$('.head_biaya :input').serialize()
                +'&'+datatable1.$('input').serialize(),
           success:function(response){

@@ -27,6 +27,7 @@ class master_akun_controller extends Controller
                     ->get();
       
       $cabang = DB::table('cabang')
+                  ->orderBy('kode','ASC')
                   ->get();
 
       $item = DB::table('masteritem')
@@ -99,6 +100,7 @@ class master_akun_controller extends Controller
           for ($i=0; $i < count($data); $i++) { 
             $cari = DB::table('master_akun_fitur')
                       ->where('maf_kode_akun',$data[$i]->id_akun)
+                      ->where('maf_cabang',$req->cabang)
                       ->get();
                       
             if ($cari == null) {
@@ -126,6 +128,7 @@ class master_akun_controller extends Controller
         }else{
           $cari = DB::table('master_akun_fitur')
                   ->where('maf_kode_akun',$req->patty)
+                  ->where('maf_cabang',$req->cabang)
                   ->first();
 
           if ($cari != null) {
@@ -297,14 +300,14 @@ class master_akun_controller extends Controller
 
     public function ganti_akun_patty(request $req)
     { 
-      if ($req->cabang =='GLOBAL') {
+      if ($req->cabang =='GLOBAL' or $req->cabang == '018' or $req->cabang == '000') {
         $akun_patty = DB::table('master_akun_fitur')
                     ->where('maf_group','1')
                     ->where('maf_cabang',$req->cabang)
                     ->get();
      
         $akun = DB::table('d_akun')
-                  ->where('kode_cabang',$req->cabang)
+                  ->orderBy('id_akun','ASC')
                   ->get();
        
       }else{
@@ -315,6 +318,7 @@ class master_akun_controller extends Controller
 
         $akun = DB::table('d_akun')
                   ->where('kode_cabang',$req->cabang)
+                  ->orderBy('id_akun','ASC')
                   ->get();
       }
 
