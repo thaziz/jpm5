@@ -34,6 +34,7 @@ use Dompdf\Dompdf;
 use Auth;
 use Yajra\Datatables\Datatables;
 
+set_time_limit(60000);
 class KasController extends Controller
 {
 	public function index(){
@@ -1325,7 +1326,7 @@ class KasController extends Controller
 				 $harga_array[$i] = ${'total'.$unik_asal[$i]};
 			}
 			for ($i=0; $i < count($harga_array); $i++) { 
-				 $jurnal[$i]['harga'] = round($harga_array[$i]);
+				 $jurnal[$i]['harga'] = round($harga_array[$i],2);
 				 $jurnal[$i]['asal'] = $unik_asal[$i];
 
 			}
@@ -2073,15 +2074,37 @@ class KasController extends Controller
 
     public function jurnal(request $req)
 	{
+
+		// $bpk = DB::table("biaya_penerus_kas")
+		// 		 ->get();
+
+		// for ($i=0; $i < count($bpk); $i++) { 
+		// 	$bpk = DB::table("biaya_penerus_kas")
+		// 		 ->where('bpk_id',$bpk[$i]->bpk_id)
+		// 		 ->update([
+		// 		 	'bpk_tarif_penerus'=>round($bpk[$i]->bpk_tarif_penerus)
+		// 		 ]);
+		// }
+
 		$bkk = DB::table('biaya_penerus_kas')	
 				 ->where('bpk_id',$req->id)
 				 ->first();
+		// $data= DB::table('d_jurnal')
+		// 		 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
+		// 		 ->join('d_akun','jrdt_acc','=','id_akun')
+		// 		 ->where('jr_ref',$bkk->bpk_nota)
+		// 		 ->get();
+
 		$data= DB::table('d_jurnal')
 				 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
 				 ->join('d_akun','jrdt_acc','=','id_akun')
-				 ->where('jr_ref',$bkk->bpk_nota)
+				 ->where('jr_ref','like','BPK%')
+				 ->where('jr_date','>=','2018-07-30')
 				 ->get();
 
+		$head= DB::table('d_jurnal')
+				 ->where('jr_ref','like','BPK%')
+				 ->get();
 
 		$d = [];
 		$k = [];
@@ -2098,6 +2121,37 @@ class KasController extends Controller
 				$k[$i] = $data[$i]->jrdt_value;
 			}
 		}
+		// $bpk = [];
+		// for ($i=0; $i < count($head); $i++) { 
+		// 	$bpk[$i] = $data = DB::table('d_jurnal')
+		// 						 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
+		// 						 ->join('d_akun','jrdt_acc','=','id_akun')
+		// 						 ->where('jr_ref',$head[$i]->jr_ref)
+		// 						 ->get();
+		// }
+
+		// $tidak_sama = [];
+		// for ($i=0; $i < count($bpk); $i++) { 
+		// 	$d = 0;
+		// 	$k = 0;
+		// 	for ($a=0; $a < count($bpk[$i]); $a++) { 
+		// 		if ($bpk[$i][$a]->jrdt_statusdk == 'D') {
+		// 			$d += $bpk[$i][$a]->jrdt_value;
+		// 		}else{
+		// 			$k += $bpk[$i][$a]->jrdt_value;
+		// 		}
+		// 	}
+		// 	if ($k < 0) {
+		// 		$k*=-1;
+		// 	}
+		// 	if ($d != $k) {
+		// 		array_push($tidak_sama, $bpk[$i][0]->jr_ref);
+		// 	}
+		// }
+		// $tidak_sama = array_unique($tidak_sama);
+		// $tidak_sama = array_values($tidak_sama);
+		// dd($tidak_sama);
+
 		$d = array_values($d);
 		$k = array_values($k);
 
