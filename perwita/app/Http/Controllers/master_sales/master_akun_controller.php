@@ -297,7 +297,7 @@ class master_akun_controller extends Controller
 
     public function ganti_akun_patty(request $req)
     { 
-      if ($req->cabang =='GLOBAL') {
+      if ($req->cabang =='GLOBAL' or $req->cabang == '018' or $req->cabang == '000') {
         $akun_patty = DB::table('master_akun_fitur')
                     ->where('maf_group','1')
                     ->where('maf_cabang',$req->cabang)
