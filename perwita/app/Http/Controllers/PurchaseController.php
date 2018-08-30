@@ -463,7 +463,7 @@ class PurchaseController extends Controller
 				$explode = explode("," , $idbarang);
 				$idbrang = $explode[0];
 			
-				array_push($arrbrg , $idbrang);
+				array_push($arrbrg , $idbrang);	
 				
 			}
 		/*	dd($arrbrg);*/

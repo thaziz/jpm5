@@ -112,12 +112,12 @@
                         </table>
                     </div>
 
-                   {{--  <div class="col-sm-6" style="margin-bottom: 250px;">
+                    <div class="col-sm-6" style="margin-bottom: 250px;">
                         <h3>AKUN FAKTUR ITEM</h3>
                         <table class="table">
                           {{ csrf_field() }}
                             <tr>
-                                <td width="130">Nama Akun</td>
+                                <td width="130">Nama Item</td>
                                 <td class="item_td">
                                     <select  name="patty_cash" multiple="" class="item chosen-select-width form-control">
                                         @foreach($item as $i)
@@ -140,7 +140,7 @@
                                 
                             </tbody>
                         </table>
-                    </div> --}}
+                    </div>
                 </div><!-- /.box-body -->
                   </div><!-- /.box-footer -->
               </div><!-- /.box -->
