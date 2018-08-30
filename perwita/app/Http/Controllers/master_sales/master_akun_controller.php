@@ -27,6 +27,7 @@ class master_akun_controller extends Controller
                     ->get();
       
       $cabang = DB::table('cabang')
+                  ->orderBy('kode','ASC')
                   ->get();
 
       $item = DB::table('masteritem')
