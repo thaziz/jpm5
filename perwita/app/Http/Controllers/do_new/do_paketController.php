@@ -304,15 +304,15 @@ class do_paketController extends Controller
 //CARI HARGA REGULER DO PAKET TANPA VENDOR DAN TANPA KONTRAK
     public function cari_harga_reguler_deliveryorder_paket(Request $request)
     {
-        // dd($request->all());
-        $asal = $request->input('asal');
-        $tujuan = $request->input('tujuan');
-        $kecamatan = $request->input('kecamatan');
-        $pendapatan = $request->input('pendapatan');
-        $tipe = $request->input('tipe');
-        $jenis = $request->input('jenis');
-        $angkutan = $request->input('angkutan');
-        $cabang = $request->input('cabang');
+      // dd($request->all());
+        $asal = $request->kota_asal;
+        $tujuan = $request->tujuan;
+        $kecamatan = $request->kecamatan;
+        $pendapatan = $request->pendapatan;
+        $tipe = $request->tipe;
+        $jenis = $request->jenis;
+        $angkutan = $request->angkutan;
+        $cabang = $request->cabang;
         $biaya_penerus = null;
 
 //============= DOKUMEN START =============================================\\
