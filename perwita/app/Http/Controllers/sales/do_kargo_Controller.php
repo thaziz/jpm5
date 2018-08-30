@@ -388,8 +388,10 @@ class do_kargo_Controller extends Controller
                       ->orderBy('kcd_id','ASC')
                       ->get();
             $kota = DB::table('kota')
-
                       ->get();
+
+            $tipe_angkutan = DB::table('tipe_angkutan')
+                               ->get()
 
 
             for ($i=0; $i < count($kota); $i++) { 
@@ -402,8 +404,17 @@ class do_kargo_Controller extends Controller
                         $data[$a]->nama_tujuan = $kota[$i]->nama;
                     }
                 }
- 
             }
+
+            for ($i=0; $i < $tipe_angkutan; $i++) { 
+              for ($a=0; $a < count($data); $a++) { 
+                if ($data[$a]->kcd_kode_angkutan == $tipe_angkutan[$i]->kode) {
+                  $data[$a]->nama_angkutan = $tipe_angkutan[$i]->nama;
+                }
+              }
+            }
+
+
             $kontrak = 1;
             // return $data;
         }
