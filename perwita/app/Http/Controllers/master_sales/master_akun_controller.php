@@ -100,6 +100,7 @@ class master_akun_controller extends Controller
           for ($i=0; $i < count($data); $i++) { 
             $cari = DB::table('master_akun_fitur')
                       ->where('maf_kode_akun',$data[$i]->id_akun)
+                      ->where('maf_cabang',$req->cabang)
                       ->get();
                       
             if ($cari == null) {
@@ -127,6 +128,7 @@ class master_akun_controller extends Controller
         }else{
           $cari = DB::table('master_akun_fitur')
                   ->where('maf_kode_akun',$req->patty)
+                  ->where('maf_cabang',$req->cabang)
                   ->first();
 
           if ($cari != null) {
