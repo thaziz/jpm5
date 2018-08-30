@@ -548,8 +548,6 @@
       dataType : 'json',
       success : function(response){
 
-     
-
         $('.acc_hutangdagang').empty();
           $('.acc_hutangdagang').append(" <option value=''>  -- Pilih id akun -- </option> ");
             $.each(response, function(i , obj) {

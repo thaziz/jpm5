@@ -150,7 +150,7 @@
 
                           <tr>
                             <td> <b> Keterangan </b></td>
-                            <td> <input type="text" class="form-control keterangan" value="{{$spp->spp_keperluan}}" readonly=""> </td>
+                            <td> <input type="text" class="form-control keterangan" value="{{$spp->spp_keterangan}}" readonly=""> </td>
                           </tr>
                           </table>
 
