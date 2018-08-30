@@ -388,6 +388,7 @@
 					<th class="textcenter bot right top">Penerima</th>
 					<th class="textcenter bot right top">Alamat & Telp Penerima</th>
 					<th class="textcenter bot right top">Type</th>
+					<th class="textcenter bot right top">Kg</th>
 					<th class="textcenter bot top">QTY</th>
 				</tr>
 				@php 
@@ -404,6 +405,7 @@
 					<td class="textleft bot right"> {{$row->nama_penerima}} </td>
 					<td class="textleft bot right"> {{$row->alamat_penerima}} {{$row->telpon_penerima}}</td>
 					<td class="textleft bot right"> {{$row->type_kiriman}} </td>
+					<td class="textleft bot right"> {{$row->berat}} </td>
 					@if ($row->type_kiriman == 'KILOGRAM')
 					<td style="text-align:right" class="textright textleft bot right"> 
 						{{ number_format($row->koli, 0, ",", ".") }} 
