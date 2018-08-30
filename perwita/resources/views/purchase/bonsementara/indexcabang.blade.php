@@ -446,8 +446,8 @@ function lihatjurnal($ref,$note){
                       "<tfoot>" +
                           "<tr class='listjurnal'> " +
                                   "<th colspan='2'>Total</th>" +                        
-                                  "<th>"+accounting.formatMoney($totalDebit, "", 2, ",",'.')+"</th>" +
-                                  "<th>"+accounting.formatMoney($totalKredit,"",2,',','.')+"</th>" +
+                                  "<th>"+accounting.formatMoney(Math.abs($totalDebit), "", 2, ",",'.')+"</th>" +
+                                  "<th>"+accounting.formatMoney(Math.abs($totalKredit),"",2,',','.')+"</th>" +
                                   "<th>&nbsp</th>" +
                           "<tr>" +
                       "</tfoot>";

@@ -518,7 +518,7 @@ Route::get('pelunasanhutangbank/pelunasanhutangbank', 'PurchaseController@peluna
 Route::get('pelunasanhutangbank/createpelunasanbank', 'PurchaseController@createpelunasanbank');
 Route::get('pelunasanhutangbank/detailpelunasanbank/{id}', 'PurchaseController@detailpelunasanbank');
 Route::get('pelunasanhutangbank/nocheck', 'PurchaseController@nocheckpelunasanhutangbank');
-Route::post('pelunasanhutangbank/getnota', 'PurchaseController@getnobbk');
+Route::get('pelunasanhutangbank/getnota', 'PurchaseController@getnobbk');
 Route::post('pelunasanhutangbank/getcek', 'PurchaseController@getcek');
 Route::post('pelunasanhutangbank/simpan', 'PurchaseController@simpanbbk');
 Route::get('pelunasanhutangbank/cetak/{id}', 'PurchaseController@cetakbbk');

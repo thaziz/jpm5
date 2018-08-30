@@ -422,7 +422,7 @@
                                 <div class="row">
                                   <div class="col-md-4">
                                 <select class="form-control jenisppn" onchange="fungsippn()" name="jenisppn" required="">
-                                  <option value="T"> TANPA </option>
+                                  <option value="T" selected=""> TANPA </option>
                                   <option value="I"> INCLUDE </option>
                                   <option value="E"> EXCLUDE </option>
                                 </select>

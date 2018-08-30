@@ -97,17 +97,17 @@
                           </tr>
                           <tr>
                             <td> <h4> Hutang Dagang (D)  </h4> </td>
-                            <td> <input type='text' class="input-sm form-control" readonly="" name="hutangdagang"> </td>
+                            <td> <input type='text' class="input-sm form-control" readonly="" name="hutangdagang" value="{{$fpg->fpg_acchutang}}"> </td>
                           </tr>
 
                           <tr>
                             <td> <h4> Hutang Cek / BG (K) </h4> </td>
-                            <td> <input type='text' readonly="" name="hutangcekbg" class='hutang input-sm form-control'> </td>
+                            <td> <input type='text' readonly="" name="hutangcekbg" class='hutang input-sm form-control' value="{{$fpg->fpg_kodebank}}"> </td>
                           </tr>
 
                           <tr>
                             <td> <h4> Uang Muka </h4> </td>
-                            <td> <input type="text" readonly="" name="uangmuka" class="input-sm form-control"> </td>
+                            <td> <input type="text" readonly="" name="uangmuka" class="input-sm form-control" value="{{$fpg->fpg_accum}}"> </td>
                           </tr>
                           </table>
                         </div>                    
@@ -526,6 +526,53 @@
                                           </tr>
                                               @endforeach
 
+                                          @elseif($data['fpg'][0]->fpg_jenisbayar == 11)
+                                           @foreach($data['fpgd'] as $index=>$fpgd)
+                                            <tr class='field dataitemfaktur' id="field{{$index + 1}}" data-nota="{{$fpgd->bp_nota}}">
+                                            <td> {{$index + 1}} </td>
+                                            <td> <a class='nofp nofp{{$index + 1}}' data-id="{{$index + 1}}"> {{$fpgd->fpgdt_nofaktur}} </a>   <input type='hidden' class="datanofaktur nofaktur{{$index + 1}}" value="{{$fpgd->fpgdt_nofaktur}}" name='nofaktur[]'>  <input type='hidden'  value="{{$fpgd->fpgdt_id}}" name='idfaktur[]'> </td>
+                                            <td> {{ Carbon\Carbon::parse($fpgd->fpgdt_tgl)->format('d-M-Y ') }}  </td> <!-- Format Tgl -->
+                                            <td> - </td> 
+                                            <td> {{ number_format($fpgd->bp_nominalkeu, 2) }}  </td>                                            <!-- NETTO -->
+
+                                            <td class='fakturitem{{$index + 1}}' data-pelunasanfaktur="{{ number_format($fpgd->fpgdt_pelunasan, 2)}}" data-sisapelunasanfaktur="{{ number_format($fpgd->bp_pelunasan, 2)}}"> <input type='hidden' class="sisapelunasan{{$index + 1}}" value="{{ number_format($fpgd->bp_pelunasan, 2)}}"> <input type='text' class="input-sm form-control pelunasanitem pelunasan{{$index + 1}}" style='text-align:right' readonly data-id="{{$index + 1}}" name="pelunasan[]" value="{{number_format($fpgd->fpgdt_pelunasan, 2)}}"> <input type='hidden' class="netto{{$index + 1}}" value="{{ number_format($fpgd->bp_nominalkeu, 2)}}" name='netto[]'></td>  <!-- PELUNASAN -->
+
+                                            <td class='pembayarankanan{{$index + 1}}' data-pembayaranaslifaktur="{{ number_format($data['perhitungan'][$index], 2) }}">  <input type='text' class='input-sm pembayaranitem pembayaranitem{{$index + 1}} form-control' style='text-align:right' readonly data-id="{{$index + 1}}" name='pembayaran[]' value="{{ number_format($data['perhitungan'][$index], 2) }}">  </td> <!-- PEMBAYARAN -->
+
+
+                                            <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}" value="{{ number_format($fpgd->bp_pelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
+                                            <!-- SISA PELUNASAN -->
+
+                                            <td> <input type='text' class='input-sm form-control keteranganitem{{$index + 1}}' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td>
+
+                                            <td> <button class='btn btn-danger removes-btn' data-id="{{$index + 1}}" data-nmrfaktur="+nmrf[i]+" data-faktur="{{$fpgd->fpgdt_nofaktur}}" data-idfpgdt="{{$fpgd->fpgdt_id}}" data-idfp="{{$fpgd->fpgdt_idfp}}" type='button'><i class='fa fa-trash'></i></button> </td>
+
+                                          </tr>
+                                              @endforeach
+
+                                          @elseif($data['fpg'][0]->fpg_jenisbayar == 13)
+                                             @foreach($data['fpgd'] as $index=>$fpgd)
+                                            <tr class='field dataitemfaktur' id="field{{$index + 1}}" data-nota="{{$fpgd->bp_nota}}">
+                                            <td> {{$index + 1}} </td>
+                                            <td> <a class='nofp nofp{{$index + 1}}' data-id="{{$index + 1}}"> {{$fpgd->fpgdt_nofaktur}} </a>   <input type='hidden' class="datanofaktur nofaktur{{$index + 1}}" value="{{$fpgd->fpgdt_nofaktur}}" name='nofaktur[]'>  <input type='hidden'  value="{{$fpgd->fpgdt_id}}" name='idfaktur[]'> </td>
+                                            <td> {{ Carbon\Carbon::parse($fpgd->fpgdt_tgl)->format('d-M-Y ') }}  </td> <!-- Format Tgl -->
+                                            <td> - </td> 
+                                            <td> {{ number_format($fpgd->bp_nominalkeu, 2) }}  </td>                                            <!-- NETTO -->
+
+                                            <td class='fakturitem{{$index + 1}}' data-pelunasanfaktur="{{ number_format($fpgd->fpgdt_pelunasan, 2)}}" data-sisapelunasanfaktur="{{ number_format($fpgd->bp_pelunasan, 2)}}"> <input type='hidden' class="sisapelunasan{{$index + 1}}" value="{{ number_format($fpgd->bp_pelunasan, 2)}}"> <input type='text' class="input-sm form-control pelunasanitem pelunasan{{$index + 1}}" style='text-align:right' readonly data-id="{{$index + 1}}" name="pelunasan[]" value="{{number_format($fpgd->fpgdt_pelunasan, 2)}}"> <input type='hidden' class="netto{{$index + 1}}" value="{{ number_format($fpgd->bp_nominalkeu, 2)}}" name='netto[]'></td>  <!-- PELUNASAN -->
+
+                                            <td class='pembayarankanan{{$index + 1}}' data-pembayaranaslifaktur="{{ number_format($data['perhitungan'][$index], 2) }}">  <input type='text' class='input-sm pembayaranitem pembayaranitem{{$index + 1}} form-control' style='text-align:right' readonly data-id="{{$index + 1}}" name='pembayaran[]' value="{{ number_format($data['perhitungan'][$index], 2) }}">  </td> <!-- PEMBAYARAN -->
+
+
+                                            <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}" value="{{ number_format($fpgd->bp_pelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
+                                            <!-- SISA PELUNASAN -->
+
+                                            <td> <input type='text' class='input-sm form-control keteranganitem{{$index + 1}}' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td>
+
+                                            <td> <button class='btn btn-danger removes-btn' data-id="{{$index + 1}}" data-nmrfaktur="+nmrf[i]+" data-faktur="{{$fpgd->fpgdt_nofaktur}}" data-idfpgdt="{{$fpgd->fpgdt_id}}" data-idfp="{{$fpgd->fpgdt_idfp}}" type='button'><i class='fa fa-trash'></i></button> </td>
+
+                                          </tr>
+                                              @endforeach
                                           @endif
                                        </table>
 

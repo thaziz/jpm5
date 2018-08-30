@@ -1215,21 +1215,29 @@
                     $('#tbl-ibank').append(row);
 
                     $('.nominaltblibank').change(function(){
-                        //alert('as');
+                      
                         totbayar = $('.totbayar').val();
                         kodebank = $('.kodebankbg').val();
 
                         val = $(this).val();
+                        val = accounting.formatMoney(val, "", 2, ",",'.');
+                        $(this).val(val);
+                          jenisbayar = $('.jenisbayar').val();
+                          if(jenisbayar != '5'){
+
+                             totbayar = totbayar.replace(/,/g,'');
+                             val = val.replace(/,/g,'');
+                             if(parseFloat(totbayar) < parseFloat(val)) {
+                              toastr.info("Nominal harus sama dengan totalbayar :)");
+                              return false;
+                             }
+                             $('.ChequeBg').val(addCommas(val));
+                          }
+                          else {
+                            $('.totbayar').val(val);
+                            $('.ChequeBg').val(val);
+                          }
                         
-                         val = accounting.formatMoney(val, "", 2, ",",'.');
-                         $(this).val(val);
-                         totbayar = totbayar.replace(/,/g,'');
-                         val = val.replace(/,/g,'');
-                         if(parseFloat(totbayar) < parseFloat(val)) {
-                          toastr.info("Nominal harus sama dengan totalbayar :)");
-                          return false;
-                         }
-                         $('.ChequeBg').val(addCommas(val));
                     })
                 }
            }

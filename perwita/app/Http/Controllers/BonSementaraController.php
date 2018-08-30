@@ -183,6 +183,8 @@ class BonSementaraController extends Controller
 	}
 
 	public function terimauang(Request $request){
+			return DB::transaction(function() use ($request) { 
+
 			$idbonsem = $request->idbonsem;
 			$kodebank = $request->bankcabang;
 			$updatepb = bonsempengajuan::find($idbonsem);
@@ -193,17 +195,49 @@ class BonSementaraController extends Controller
 			$nominalkeu =  str_replace(',', '', $request->nominalkeu);
 
 			$now = Date("Y-m-d");
-			/*if(parseFloat($nominalkeu) < 10000000.00){
+			if(floatval($nominalkeu) < 10000000.00){
+
 				$tiga = 3;
-				$3day = date('Y-m-d', strtotime($now. ' + 3 days'));
 				$temp = 1;
 				for($i = 0;$i < $tiga; $i++){
+					$tigahari = date('Y-m-d', strtotime($now . " +  {$temp} days"));
+					
+					$day = date('D' , strtotime($tigahari));
+					
+					if($day != 'Sun'){
+						
+					}
+					else {
+						$tiga = $tiga + 1;
+					}
 
-					$3day = date('Y-m-d', strtotime($now. ' + 3 days'));
+					$temp++;
 				}
-			}*/
+			}
+			else if(floatval($nominalkeu) > 10000000.00){
+				$tiga = 7;
+				$temp = 1;
+				for($i = 0;$i < $tiga; $i++){
+					$tigahari = date('Y-m-d', strtotime($now . " +  {$temp} days"));
+					
+					$day = date('D' , strtotime($tigahari));
+					
+					if($day != 'Sun'){
+						
+					}
+					else {
+						$tiga = $tiga + 1;
+					}
 
+					$temp++;
+				}
 
+			}
+
+			$updatepb = bonsempengajuan::find($idbonsem);
+			$updatepb->bp_jatuhtempo = $tigahari;
+			$updatepb->save();
+			
 			$datapb = DB::select("select * from bonsem_pengajuan where bp_id = '$idbonsem'");
 
 			$datajurnal = [];
@@ -289,7 +323,9 @@ class BonSementaraController extends Controller
     			$jurnaldt->save();
     			$key++;
     		} 
-			return json_encode('sukses');
+    		return json_encode('sukses');
+    	});
+			
 	}
 
 	public function setujukacab(Request $request){
