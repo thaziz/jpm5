@@ -1,7 +1,7 @@
 <select  name="patty_cash" class="item chosen-select-width2 form-control">
         <option value="0">Pilih - Akun</option>
     @foreach($akun as $i)
-        <option value="{{$i->id_akun}}">{{$i->id_akun}} - {{$i->nama_akun}}</option>
+        <option value="{{$i->kode_item}}">{{$i->kode_item}} - {{$i->nama_masteritem}}</option>
     @endforeach
 </select>
 <script>
