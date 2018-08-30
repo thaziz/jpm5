@@ -391,7 +391,7 @@ class do_kargo_Controller extends Controller
                       ->get();
 
             $tipe_angkutan = DB::table('tipe_angkutan')
-                               ->get()
+                               ->get();
 
 
             for ($i=0; $i < count($kota); $i++) { 
