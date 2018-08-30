@@ -6897,24 +6897,21 @@ public function purchase_order() {
         
     /*  return $bulan . $tahun;*/
 		if($flag == ''){
-				$faktur = DB::select("select * from faktur_pembelian where  to_char(fp_tgl, 'MM') = '$bulan' and to_char(fp_tgl, 'YY') = '$tahun' and fp_comp = '$cabang' and fp_nofaktur LIKE '%/I-%' order by fp_idfaktur desc limit 1");
+				$faktur = DB::select("select substr(MAX(fp_nofaktur), 14) as nota from faktur_pembelian where  to_char(fp_tgl, 'MM') = '$bulan' and to_char(fp_tgl, 'YY') = '$tahun' and fp_comp = '$cabang' and fp_nofaktur LIKE '%/I-%'");
 
 		}
 		else {
 
-		$faktur = DB::select("select * from faktur_pembelian where  to_char(fp_tgl, 'MM') = '$bulan' and to_char(fp_tgl, 'YY') = '$tahun' and fp_comp = '$cabang' and fp_nofaktur LIKE '%/$flag-%' order by fp_idfaktur desc limit 1");
+		$faktur = DB::select("select substr(MAX(fp_nofaktur), 14) as nota from faktur_pembelian where  to_char(fp_tgl, 'MM') = '$bulan' and to_char(fp_tgl, 'YY') = '$tahun' and fp_comp = '$cabang' and fp_nofaktur LIKE '%/$flag-%'");
 
 		}
 
 		//return $faktur;
 		if(count($faktur) > 0) {
 		
-			$explode = explode("/", $faktur[0]->fp_nofaktur);
-			$idfaktur3 = $explode[2];
-			$string = explode("-", $idfaktur3);
-			$idfaktur2 = $string[1];
+			
 
-			$idfaktur = (int)$idfaktur2 + 1;
+			$idfaktur = (int)$faktur[0]->nota + 1;
 			$data['idfaktur'] = str_pad($idfaktur, 4, '0', STR_PAD_LEFT);
 			
 			//return $data['idfaktur'];
