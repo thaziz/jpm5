@@ -82,7 +82,8 @@ class invoice_Controller extends Controller
 
             $data = DB::select($sql);
           }else{
-            $sql = "SELECT * FROM invoice  join cabang on kode = i_kode_cabang where i_nomor != '0' $cabang $tanggal_awal $tanggal_akhir $jenis_biaya order by invoice.create_at DESC";
+            $cabang = Auth::user()->kode_cabang;
+            $sql = "SELECT * FROM invoice  join cabang on kode = i_kode_cabang where i_nomor != '0' and i_kode_cabang = '$cabang' $tanggal_awal $tanggal_akhir $jenis_biaya order by invoice.create_at DESC";
             $data = DB::select($sql);
           }
         }

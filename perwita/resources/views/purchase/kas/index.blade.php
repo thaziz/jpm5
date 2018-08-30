@@ -322,5 +322,12 @@ $('.jurnal').click(function(){
   }); 
 })
 
+
+function detailkas(id) {
+  window.open('{{ url('biaya_penerus/detailkas') }}?id='+id);
+}
+function buktikas(id) {
+  window.open('{{ url('biaya_penerus/buktikas') }}?id='+id);
+}
 </script>
 @endsection

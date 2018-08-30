@@ -404,7 +404,15 @@
 					<td class="textleft bot right"> {{$row->nama_penerima}} </td>
 					<td class="textleft bot right"> {{$row->alamat_penerima}} {{$row->telpon_penerima}}</td>
 					<td class="textleft bot right"> {{$row->type_kiriman}} </td>
-					<td style="text-align:right" class="textright textleft bot right"> {{ number_format($row->jumlah, 0, ",", ".") }} </td>
+					@if ($row->type_kiriman == 'KILOGRAM')
+					<td style="text-align:right" class="textright textleft bot right"> 
+						{{ number_format($row->koli, 0, ",", ".") }} 
+					</td>
+					@else
+					<td style="text-align:right" class="textright textleft bot right"> 
+						{{ number_format($row->jumlah, 0, ",", ".") }} 
+					</td>
+					@endif
 				</tr>
 				@endforeach
 				<tr>
