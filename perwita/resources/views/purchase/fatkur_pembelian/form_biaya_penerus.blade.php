@@ -560,7 +560,7 @@
             });
           $.ajax({
           url:baseUrl + '/fakturpembelian/save_agen',
-          type:'get',
+          type:'post',
           data:$('.head1 :input').serialize()
               +'&'+$('.head_biaya :input').serialize()
               +'&'+datatable1.$('input').serialize(),
