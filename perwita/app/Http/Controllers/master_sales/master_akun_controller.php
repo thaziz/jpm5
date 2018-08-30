@@ -305,6 +305,7 @@ class master_akun_controller extends Controller
                     ->get();
      
         $akun = DB::table('d_akun')
+                  ->orderBy('id_akun','ASC')
                   ->get();
        
       }else{
@@ -315,6 +316,7 @@ class master_akun_controller extends Controller
 
         $akun = DB::table('d_akun')
                   ->where('kode_cabang',$req->cabang)
+                  ->orderBy('id_akun','ASC')
                   ->get();
       }
 
