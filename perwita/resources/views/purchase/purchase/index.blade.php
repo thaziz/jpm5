@@ -272,7 +272,7 @@
 
   //$('.labelkeuangand').hide();
 
-    tableDetail = $('.tbl-purchase').DataTable({
+    tableDetail = $('#addColumn').DataTable({
             responsive: true,
             searching: true,
             //paging: false,

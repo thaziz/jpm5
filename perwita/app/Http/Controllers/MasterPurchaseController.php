@@ -998,6 +998,7 @@ class MasterPurchaseController extends Controller
 			$count['tidaksetuju'] = DB::select("select count(*) from supplier where status = 'TIDAK SETUJU' and idcabang = '$cabang'");
 		}
 
+	
 		return view('purchase/master/master_supplier/index', compact('data', 'count'));
 	}
 	
