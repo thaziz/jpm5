@@ -221,13 +221,24 @@ class BiayaPenerusController extends Controller
 		}
 
 		public function nota_tt(request $req)
-		{
-			$data = DB::table('form_tt')
-					  ->join('form_tt_d','ttd_id','=','tt_idform')
-					  ->where('tt_supplier',$req->agen_vendor)
-					  ->where('tt_idcabang',$req->cabang)
-					  ->where('ttd_faktur',null)
-					  ->get();
+		{	
+			if (!isset($req->nofaktur)) {
+				$data = DB::table('form_tt')
+						  ->join('form_tt_d','ttd_id','=','tt_idform')
+						  ->where('tt_supplier',$req->agen_vendor)
+						  ->where('tt_idcabang',$req->cabang)
+						  ->where('ttd_faktur',null)
+						  ->get();
+			}else{
+				$data = DB::table('form_tt')
+						  ->join('form_tt_d','ttd_id','=','tt_idform')
+						  ->where('tt_supplier',$req->agen_vendor)
+						  ->where('tt_idcabang',$req->cabang)
+						  ->where('ttd_faktur',null)
+						  ->orWhere('ttd_faktur',$req->nofaktur)
+						  ->get();
+			}
+			
 
 		    return view('purchase.pembayaran_vendor.table_tt',compact('data'));
 		}
@@ -502,15 +513,15 @@ class BiayaPenerusController extends Controller
 								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 								$data_akun[$i]['jrdt_detailid']	= $i+1;
 								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-								$data_akun[$i]['jrdt_statusdk'] = 'K';
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_statusdk'] = 'D';
 								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
 							}else{
 								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 								$data_akun[$i]['jrdt_detailid']	= $i+1;
 								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-								$data_akun[$i]['jrdt_statusdk'] = 'D';
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_statusdk'] = 'K';
 								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
 							}
 						}
@@ -623,11 +634,11 @@ class BiayaPenerusController extends Controller
 						->first();
 
 				// return $um;
-				if ($bp->bp_tipe_vendor == "AGEN") {
+				// if ($bp->bp_tipe_vendor == "AGEN") {
 					return view('purchase/fatkur_pembelian/edit_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um','tt'));
-				}else{
-					return view('purchase/pembayaran_vendor/edit_vendor',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um','tt'));
-				}
+				// }else{
+				// 	return view('purchase/pembayaran_vendor/edit_vendor',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um','tt'));
+				// }
 
 			} elseif ($cari_fp->fp_jenisbayar == 7){
 
@@ -1236,14 +1247,14 @@ class BiayaPenerusController extends Controller
 								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 								$data_akun[$i]['jrdt_detailid']	= $i+1;
 								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
 								$data_akun[$i]['jrdt_statusdk'] = 'D';
 								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
 							}else{
 								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 								$data_akun[$i]['jrdt_detailid']	= $i+1;
 								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
 								$data_akun[$i]['jrdt_statusdk'] = 'K';
 								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
 							}
@@ -1941,15 +1952,15 @@ class BiayaPenerusController extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->note);
 					}
 				}
@@ -2203,15 +2214,15 @@ class BiayaPenerusController extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->note);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->note);
 					}
 				}
@@ -2306,7 +2317,15 @@ class BiayaPenerusController extends Controller
 					 ->where('ksd_id',$request->id)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
-
+		$jenis_tarif = DB::table('jenis_tarif')
+						 ->get();
+		for ($i=0; $i < count($jenis_tarif); $i++) { 
+			for ($a=0; $a < count($kontrak); $a++) { 
+				if ($jenis_tarif[$i]->jt_id == $kontrak[$a]->ksd_jenis_tarif) {
+					$kontrak[$a]->jenis_tarif = $jenis_tarif[$i]->jt_nama_tarif;
+				}
+			}
+		}
 		$asal = DB::table('kontrak_subcon_dt')
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('kota','id','=','ksd_asal')
@@ -2333,6 +2352,7 @@ class BiayaPenerusController extends Controller
 			$fix[$i]['ksd_harga'] = number_format($kontrak[$i]->ksd_harga,2,',','.'	); 
 			$fix[$i]['ksd_harga2'] = $kontrak[$i]->ksd_harga; 
 			$fix[$i]['ksd_jenis_tarif'] = $kontrak[$i]->ksd_jenis_tarif;
+			$fix[$i]['jenis_tarif'] = $kontrak[$i]->jenis_tarif;
 			$fix[$i]['ksd_asal'] = $asal[$i]->asal;
 			$fix[$i]['ksd_tujuan'] = $tujuan[$i]->tujuan;
 			$fix[$i]['no_asal'] = $asal[$i]->ksd_asal;
@@ -2354,6 +2374,16 @@ class BiayaPenerusController extends Controller
 				 ->where('ksd_id',$request->d_ksd_id)
 				 ->orderBy('ksd_ks_dt','ASC')
 				 ->get();
+
+		$jenis_tarif = DB::table('jenis_tarif')
+						 ->get();
+		for ($i=0; $i < count($jenis_tarif); $i++) { 
+			for ($a=0; $a < count($kontrak); $a++) { 
+				if ($jenis_tarif[$i]->jt_id == $kontrak[$a]->ksd_jenis_tarif) {
+					$kontrak[$a]->jenis_tarif = $jenis_tarif[$i]->jt_nama_tarif;
+				}
+			}
+		}
 
 		$asal = DB::table('kontrak_subcon_dt')
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
@@ -2425,6 +2455,7 @@ class BiayaPenerusController extends Controller
 			$fix[$i]['ksd_harga2'] = $kontrak[$i]->ksd_harga; 
 			$fix[$i]['ksd_jenis_tarif'] = $kontrak[$i]->ksd_jenis_tarif;
 			$fix[$i]['ksd_asal'] = $asal[$i]->asal;
+			$fix[$i]['jenis_tarif'] = $kontrak[$i]->jenis_tarif;
 			$fix[$i]['ksd_tujuan'] = $tujuan[$i]->tujuan;
 			$fix[$i]['no_asal'] = $asal[$i]->ksd_asal;
 			$fix[$i]['no_tujuan'] = $tujuan[$i]->ksd_tujuan;
@@ -2616,28 +2647,31 @@ class BiayaPenerusController extends Controller
 
 
 			}
-			// dd($jurnal);
-
 			// //JURNAL
+
+			$delete_jurnal = DB::table('d_jurnal')
+							   ->where('jr_ref',$request->nofaktur)
+							   ->delete();
+
 			$id_jurnal=d_jurnal::max('jr_id')+1;
 			// dd($id_jurnal);
 			$jenis_bayar = DB::table('jenisbayar')
 							 ->where('idjenisbayar',9)
 							 ->first();
+
 			if ($status == "APPROVED") {
 				$save_jurnal = d_jurnal::create(['jr_id'	=> $id_jurnal,
-											'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
-											'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
-											'jr_detail' => $jenis_bayar->jenisbayar,
-											'jr_ref'  	=> $request->nofaktur,
-											'jr_note'  	=> 'BIAYA SUBCON '.strtoupper($request->keterangan_subcon),
-											'jr_insert' => carbon::now(),
-											'jr_update' => carbon::now(),
-											]);
+												'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
+												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
+												'jr_detail' => $jenis_bayar->jenisbayar,
+												'jr_ref'  	=> $request->nofaktur,
+												'jr_note'  	=> 'BIAYA SUBCON '.strtoupper($request->keterangan_subcon),
+												'jr_insert' => carbon::now(),
+												'jr_update' => carbon::now(),
+												]);
 			}
-		
 
-
+ 
 			$akun 	  = [];
 			$akun_val = [];
 			array_push($akun, $akun_hutang->id_akun);
@@ -2690,15 +2724,15 @@ class BiayaPenerusController extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->keterangan_subcon);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->keterangan_subcon);
 					}
 				}
@@ -2975,15 +3009,15 @@ class BiayaPenerusController extends Controller
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->keterangan_subcon);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->keterangan_subcon);
 					}
 				}
@@ -3955,15 +3989,15 @@ public function update_bp_um(request $req)
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($cari_fp->fp_keterangan);
 					}else{
 						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 						$data_akun[$i]['jrdt_detailid']	= $i+1;
 						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-						$data_akun[$i]['jrdt_statusdk'] = 'D';
+						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
 						$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($cari_fp->fp_keterangan);
 					}
 				}

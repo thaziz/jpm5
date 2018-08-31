@@ -132,7 +132,7 @@
                             <td> <b> Supplier </b> </td>
                             <td> <input type="text" class="form-control" readonly="" value="{{$faktur->nama_supplier}}">
                                  <input type="hidden" class="form-control idsup" readonly="" value="{{$faktur->idsup}}">
-                                 <input type="hidden" class="form-control idsup2" readonly="" value="{{$faktur->idsup}},{{$faktur->syarat_kredit}},{{$faktur->nama_supplier}},{{$faktur->acc_hutang}},{{$faktur->no_supplier}}">
+                                 <input type="hidden" class="form-control idsup2" readonly="" value="{{$faktur->idsup}}+{{$faktur->syarat_kredit}}+{{$faktur->nama_supplier}}+{{$faktur->acc_hutang}}+{{$faktur->no_supplier}}">
                                  
                             </td>
                            
@@ -1521,7 +1521,7 @@
     $('#createmodal_tt').click(function(){
       cabang = $('.cabang').val();
       supplier = $('.idsup2').val();
-      string = supplier.split(",");
+      string = supplier.split("+");
       edit = 'edit';
       nofaktur = $('.nofaktur').val();
       if(supplier == ''){

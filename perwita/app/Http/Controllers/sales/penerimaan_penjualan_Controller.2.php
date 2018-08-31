@@ -669,7 +669,7 @@ class penerimaan_penjualan_Controller extends Controller
                               ->get();
 
           // JURNAL
-          if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'U' or $request->cb_jenis_pembayaran == 'C') {
+          if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'U') {
 
             $km =  get_id_jurnal('KM', $request->cb_cabang);
     
@@ -711,7 +711,7 @@ class penerimaan_penjualan_Controller extends Controller
                 }
               }
             }
-          }else if($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'C'){
+          }else if($request->cb_jenis_pembayaran == 'T'){
             $akun_temp_total = [];
             for ($i=0; $i < count($request->i_nomor); $i++) { 
               $cari_akun = DB::table('invoice')
@@ -853,7 +853,7 @@ class penerimaan_penjualan_Controller extends Controller
           }
           $penanda_fix = array_values($penanda_fix);
           $data_akun = [];
-          if ($request->cb_jenis_pembayaran != 'F') {
+          if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'U') {
             for ($i=0; $i < count($akun); $i++) { 
               $cari_coa = DB::table('d_akun')
                         ->where('id_akun',$akun[$i])
@@ -978,7 +978,7 @@ class penerimaan_penjualan_Controller extends Controller
           }
           
 
-          if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'U') {
+          if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'U') {
             $jurnal_dt = d_jurnal_dt::insert($data_akun);
             $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
           // dd($lihat);
@@ -1452,12 +1452,12 @@ class penerimaan_penjualan_Controller extends Controller
                               ->get();
 
           // JURNAL
-          if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'U' or $request->cb_jenis_pembayaran == 'C') {
+          $delete = d_jurnal::where('jr_ref',$nota)->delete();
+          if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'U') {
 
             $km =  get_id_jurnal('KM', $request->cb_cabang);
     
             $id_jurnal=d_jurnal::max('jr_id')+1;
-            $delete = d_jurnal::where('jr_ref',$nota)->delete();
             $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
                           'jr_year'   => carbon::parse($tgl)->format('Y'),
                           'jr_date'   => carbon::parse($tgl)->format('Y-m-d'),
@@ -1494,7 +1494,7 @@ class penerimaan_penjualan_Controller extends Controller
                 }
               }
             }
-          }else if($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'C'){
+          }else if($request->cb_jenis_pembayaran == 'T'){
             $akun_temp_total = [];
             for ($i=0; $i < count($request->i_nomor); $i++) { 
               $cari_akun = DB::table('invoice')
@@ -1637,7 +1637,7 @@ class penerimaan_penjualan_Controller extends Controller
           }
           $penanda_fix = array_values($penanda_fix);
           $data_akun = [];
-          if ($request->cb_jenis_pembayaran != 'F') {
+          if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'U') {
             for ($i=0; $i < count($akun); $i++) { 
               $cari_coa = DB::table('d_akun')
                         ->where('id_akun',$akun[$i])
@@ -1761,10 +1761,10 @@ class penerimaan_penjualan_Controller extends Controller
             }
           }
 
-          if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'U') {
+          if ($request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'U') {
             $jurnal_dt = d_jurnal_dt::insert($data_akun);
+            $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
           }
-          $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
 
           // dd($lihat);
           return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);

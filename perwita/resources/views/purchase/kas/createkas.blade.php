@@ -528,6 +528,7 @@ $(document).ready(function(){
   if(km != "" && jk != "0"){
     hasil = km/bbm_liter;
     hasil = hasil * harga_bbm;
+    hasil = parseInt(hasil);
     console.log(hasil);
     $('.total_bbm').val(accounting.formatMoney(hasil,"Rp ", 2, ".",','));
   

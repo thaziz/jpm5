@@ -9,6 +9,7 @@ use Yajra\Datatables\Datatables;
 use carbon\carbon;
 use Auth;
 use Exception;
+use Session;
 class surat_jalan_trayek_Controller extends Controller
 {
     public function table_data_detail (Request $request) {
@@ -74,7 +75,7 @@ class surat_jalan_trayek_Controller extends Controller
 
 
                             if(Auth::user()->punyaAkses('Surat Jalan By Trayek','hapus')){
-                                $c = '<a href="'.url('sales/surat_jalan_trayek_form/hapus_data') .'" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>';
+                                $c = '<a href="'.url('sales/surat_jalan_trayek/hapus_data?id='.$data->nomor) .'" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>';
                             }
 
                             return '<div class="btn-group">'.$a . $b .$c.'</div>' ;
@@ -114,7 +115,6 @@ class surat_jalan_trayek_Controller extends Controller
 
 
     public function save_data (Request $request) {
-        // dd($request->all());
         return DB::transaction(function() use ($request){
             $cari = DB::table('surat_jalan_trayek')
                       ->where('nomor',$request->ed_nomor)
@@ -129,7 +129,7 @@ class surat_jalan_trayek_Controller extends Controller
                     'tanggal' => strtoupper($request->tanggal),
                     'nama_rute' => strtoupper($request->ed_nama_rute),
                     'keterangan' => strtoupper($request->ed_keterangan),
-                    'kode_cabang' => strtoupper($request->ed_cabang),
+                    'kode_cabang' => strtoupper($request->cabang),
                     'kode_rute' => strtoupper($request->ed_kode_rute),
                     'id_kendaraan' => $id_kendaraan->id,
                     'nopol' => strtoupper($request->ed_nopol),
@@ -151,7 +151,7 @@ class surat_jalan_trayek_Controller extends Controller
                     'tanggal' => strtoupper($request->tanggal),
                     'nama_rute' => strtoupper($request->ed_nama_rute),
                     'keterangan' => strtoupper($request->ed_keterangan),
-                    'kode_cabang' => strtoupper($request->ed_cabang),
+                    'kode_cabang' => strtoupper($request->cabang),
                     'kode_rute' => strtoupper($request->ed_kode_rute),
                     'id_kendaraan' => $id_kendaraan->id,
                     'nopol' => strtoupper($request->ed_nopol),
@@ -183,6 +183,8 @@ class surat_jalan_trayek_Controller extends Controller
 
                 $simpan = DB::table('surat_jalan_trayek_d')->insert($data);
             }
+            $simpan = DB::table('surat_jalan_trayek_d')->where('nomor_surat_jalan_trayek',$request->ed_nomor)->get();
+            // dd($simpan);
             return response()->json(['status'=>1]);
         });
     }
@@ -280,8 +282,34 @@ class surat_jalan_trayek_Controller extends Controller
     
         $rute = DB::select("    SELECT * FROM rute h,rute_d d
                                         WHERE h.kode=d.kode_rute  AND h.kode='$head->kode_rute' ");
-        //dd($rute);
-        return view('sales.surat_jalan_trayek.print',compact('head','detail','rute'));
+
+        for ($i=0; $i < count($rute); $i++) { 
+            $last = $rute[$i]->kota;
+        }
+        return view('sales.surat_jalan_trayek.print',compact('head','detail','rute','last'));
+    }
+
+    public function hapus_data(Request $req)
+    {
+        return DB::transaction(function() use ($request){
+            $data = DB::table('surat_jalan_trayek_d')
+                      ->where('nomor_surat_jalan_trayek',$req->id)
+                      ->get();
+
+            for ($i=0; $i < count($data); $i++) { 
+                $do = DB::table('delivery_order')
+                        ->where('nomor',$data[$i]->nomor_do)
+                        ->update([
+                            'no_surat_jalan_trayek' => null
+                        ]);
+            }
+
+            $data = DB::table('surat_jalan_trayek')
+                      ->where('nomor',$req->id)
+                      ->delete();
+            Session::flash('message', "BERHASIL DIHAPUS");
+            return redirect()->back();
+        });
     }
 
 

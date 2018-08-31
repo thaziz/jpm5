@@ -1,5 +1,4 @@
 <select style="display: inline-block; " class="form-control nama_kas chosen-select-width1" name="nama_kas">
-   <option selected=""  value="0">- pilih-akun -</option>
    @foreach($data as $val)
    <option value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
    @endforeach

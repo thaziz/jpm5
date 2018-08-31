@@ -51,13 +51,13 @@ class PengeluaranBarangController extends Controller
 
 	public function ganti_nota(request $req)
 	{
-		$bulan = Carbon::now()->format('m');
-	    $tahun = Carbon::now()->format('y');
+		$bulan = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('m');
+	    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
 
-	    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),14) as id from bukti_kas_keluar
-	                                    WHERE bkk_comp = '$req->cabang'
-	                                    AND to_char(bkk_tgl,'MM') = '$bulan'
-	                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
+	    $cari_nota = DB::select("SELECT  substring(max(pb_nota),14) as id from pengeluaran_barang
+	                                    WHERE pb_comp = '$req->cabang'
+	                                    AND to_char(pb_tgl,'MM') = '$bulan'
+	                                    AND to_char(pb_tgl,'YY') = '$tahun'");
 
 	    $index = (integer)$cari_nota[0]->id + 1;
 	    $index = str_pad($index, 4, '0', STR_PAD_LEFT);
@@ -88,6 +88,35 @@ class PengeluaranBarangController extends Controller
 				  ->first();
 
 		return response()->json(['data'=>$data,'jenis' => $jenis]);
+	}
+
+	public function akun_biaya_dropdown(Request $req)
+	{	
+
+		$idgrupitem = DB::table('masteritem')
+						->where('kode_item',$req->id)
+						->first();
+		$idgrupitem = $idgrupitem->jenisitem;
+		if($idgrupitem == 'P'){
+			$data = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$req->cabang'");
+		}
+		else if($idgrupitem == 'S'){
+			$data = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$req->cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$req->cabang' ");
+		}
+		else if($idgrupitem == 'A'){
+			if ($req->cabang !='000') {
+				$data = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$req->cabang'");
+			}else{
+				$data = DB::select("select * from d_akun where id_akun LIKE '7105%' and kode_cabang = '$req->cabang'");
+			}
+		}
+		else if($idgrupitem == 'C'){
+			$data = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$req->cabang'");
+		}else {
+			$data = DB::select("select * from d_akun where kode_cabang = '$req->cabang' ");
+		}
+
+		return response()->json(['data'=>$data]);
 	}
 
 	public function save_pengeluaran(request $request){
@@ -141,7 +170,8 @@ class PengeluaranBarangController extends Controller
 								'updated_at'   		=> Carbon::now(),
 								'pb_status'   		=> 'Released',
 								'pb_comp'			=> $request->cabang,
-								'pb_jenis_keluar'	=> $request->jp
+								'pb_jenis_keluar'	=> $request->jp,
+								'pb_gudang_cabang'	=> $request->gudang_peminta
 							]);
 
 
@@ -170,27 +200,6 @@ class PengeluaranBarangController extends Controller
 
 					$akunpersediaan = $datakun2[0]->id_akun;
 
-					if($jenisitem == 'P'){
-						$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
-					}
-					else if($jenisitem == 'S'){
-						$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
-					}
-					else if($jenisitem == 'A'){
-						if ($cab->kode == '000') {
-							$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '7105%' and kode_cabang = '$cabang'");
-						}else{
-							$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
-						}
-					}
-					else if($jenisitem == 'C'){
-						$akunbiaya = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
-					}
-					else {
-						$akunbiaya = DB::select("select * from d_akun where kode_cabang = '$cabang' ");
-					}
-
-					$akunbiaya2 = $akunbiaya[0]->id_akun;
 
 					if ($request->stock_gudang[$i] != 0) {
 						$save_dt = DB::table('pengeluaran_barang_dt')
@@ -202,7 +211,7 @@ class PengeluaranBarangController extends Controller
 									 	'pbd_jumlah_barang' => $request->diminta[$i],
 									 	'pbd_nopol' 		=> $request->nopol[$i],
 									 	'pbd_akunhutangpersediaan' => $akunpersediaan,
-									 	'pbd_akunhutangbiaya' => $akunbiaya2,
+									 	'pbd_akunhutangbiaya' => $request->akun_biaya[$i],
 									 ]);
 					}
 					
@@ -597,13 +606,27 @@ class PengeluaranBarangController extends Controller
 					//	return $hppitem;
 					}
 
+					$hutangpersediaan = $datapbd[$i]->pbd_akunhutangpersediaan;
+					$datahutangpersediaan = DB::select("select * from d_akun where id_akun = '$hutangpersediaan'");
+					$akundkapersediaan = $datahutangpersediaan[0]->akun_dka;
 
-					$dataakun = array (
-						'id_akun' => $datapbd[$i]->pbd_akunhutangpersediaan,
-						'subtotal' => $hppitem,
-						'dk' => 'D',
-						'detail' => $datapb[0]->pb_keperluan,
-					);	
+					if($akundkapersediaan == 'K'){
+						$dataakun = array (
+							'id_akun' => $datapbd[$i]->pbd_akunhutangpersediaan,
+							'subtotal' => $hppitem,
+							'dk' => 'K',
+							'detail' => $datapb[0]->pb_keperluan,
+						);	
+
+					}
+					else {
+						$dataakun = array (
+							'id_akun' => $datapbd[$i]->pbd_akunhutangpersediaan,
+							'subtotal' => '-' . $hppitem,
+							'dk' => 'K',
+							'detail' => $datapb[0]->pb_keperluan,
+						);
+					}
 
 					array_push($datajurnal, $dataakun);
 				}
@@ -619,12 +642,27 @@ class PengeluaranBarangController extends Controller
 						$hppitem = floatval($harga) * floatval($qty);
 					}
 
-					$dataakun = array (
-						'id_akun' => $datapbd[$m]->pbd_akunhutangbiaya,
-						'subtotal' => $hppitem,
-						'dk' => 'D',
-						'detail' => $datapb[0]->pb_keperluan,
-					);	
+					$hutangbiaya = $datapbd[$m]->pbd_akunhutangbiaya;
+					$databiaya = DB::select("select * from d_akun where id_akun = '$hutangbiaya'");
+					$biayadka = $databiaya[0]->akun_dka;
+
+					if($biayadka == 'D'){
+						$dataakun = array (
+							'id_akun' => $datapbd[$m]->pbd_akunhutangbiaya,
+							'subtotal' => $hppitem,
+							'dk' => 'D',
+							'detail' => $datapb[0]->pb_keperluan,
+						);	
+					}
+					else {
+						$dataakun = array (
+							'id_akun' => $datapbd[$m]->pbd_akunhutangbiaya,
+							'subtotal' => '-' . $hppitem,
+							'dk' => 'D',
+							'detail' => $datapb[0]->pb_keperluan,
+						);	
+
+					}
 
 					array_push($datajurnal, $dataakun);
 				}

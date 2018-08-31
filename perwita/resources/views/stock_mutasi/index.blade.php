@@ -58,6 +58,8 @@
                         <th style="text-align: center;"> Tanggal </th>
                         <th style="text-align: center;"> Keterangan </th>
                         <th style="text-align: center;"> Qty </th>
+                        <th style="text-align: center;"> Harga </th>
+
                         <th style="text-align: center;"> SPPTB </th>
                         <th style="text-align: center;"> LPB </th>
                       </tr>
@@ -69,6 +71,7 @@
                           <td>{{ Carbon\Carbon::parse($val->sm_date)->format('d-M-Y H:i:s') }}</td>
                           <td>{{$val->keterangan}}</td>
                           <td>{{$val->sm_qty}}</td>
+                          <td style="text-align: right"> {{number_format($val->sm_hpp , 2)}} </td>
                             @if($val->sm_spptb == null)
                               <td> - </td>
                             @else

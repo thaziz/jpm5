@@ -57,15 +57,15 @@
             <tr>
               <td>Tanggal</td>
               <td>
-                <input type="text" name="tgl" class="form-control date input-sm"  value="{{$now}}">
+                <input type="text" name="tgl" class="form-control tanggal date input-sm"  value="{{$now}}">
               </td>
             </tr>
             <tr>
               <td>Jenis Pengeluaran</td>
               <td>
                 <select class="jenis_keluar form-control" name="jp">
-                  <option>Moving Gudang</option>
-                  <option>Pemakaian Reguler</option>
+                  <option value="Moving Gudang">Moving Gudang</option>
+                  <option value="Pemakaian Reguler">Pemakaian Reguler</option>
                 </select>
               </td>
             </tr>
@@ -139,6 +139,7 @@
           <table class="table tabel_barang table-bordered table-striped" >
             <thead >
               <th style="text-align: center;" class="warna">Nama Barang</th>
+              <th style="text-align: center;" class="warna">Akun Biaya</th>
               <th style="text-align: center;" class="warna">Nopol Kendaraan</th>
               <th style="text-align: center;" class="warna">Stock Gudang</th>
               <th style="text-align: center;" class="warna">Jumlah Diminta</th>
@@ -153,6 +154,11 @@
                     @foreach($item as $val)
                     <option value="{{$val->kode_item}}">{{$val->kode_item}} - {{$val->nama_masteritem}}</option>
                     @endforeach
+                  </select>
+                </td>
+                <td width="300" class="akun_biaya_dropdown">
+                  <select class="form-control akun_biaya chosen-select-width">
+                    
                   </select>
                 </td>
                 <td align="center">
@@ -198,10 +204,59 @@ $('.date').datepicker({
     format: 'dd/mm/yyyy'
 });
     
-// var tabel_barang  = $('.tabel_barang').DataTable({
-//                   'searching' :false,
-//               });
+$(document).ready(function(){
+  var cabang = $('.cabang').val();
+  var tanggal = $('.tgl').val();
+        $.ajax({
+            type: "GET",
+            data : {cabang,tanggal},
+            url : baseUrl + "/pengeluaranbarang/ganti_nota",
+            dataType:'json',
+            success: function(data)
+            {   
+              $('.no_sppb').val(data.nota);
+            }
+        })
 
+  getCabang();
+});
+
+function ganti_nota() {
+  var cabang = $('.cabang').val();
+  var tanggal = $('.tgl').val();
+        $.ajax({
+            type: "GET",
+            data : {cabang,tanggal},
+            url : baseUrl + "/pengeluaranbarang/ganti_nota",
+            dataType:'json',
+            success: function(data)
+            {   
+              $('.no_sppb').val(data.nota);
+            }
+        })
+}
+
+ function getCabang(){
+
+    var cabang = $('#cabang').val();
+    $.ajax({
+        type: "GET",
+        data : {gudang: cabang},
+        url : baseUrl + "/pengeluaranbarang/createpengeluaranbarang/get_gudang",
+        dataType:'json',
+        success: function(data)
+        {   
+          var kecamatan = '<option value="" selected="" disabled="">-- Pilih Gudang --</option>';
+
+          $.each(data, function(i,n){
+                kecamatan = kecamatan + '<option value="'+n.mg_id+'">'+n.mg_namagudang+'</option>';
+          });
+
+          $('#gudang').addClass('form-control chosen-select-width');
+          $('#gudang').html(kecamatan);
+        }
+    })
+}
 
 var config5 = {
                '.chosen-select'           : {},
@@ -217,14 +272,14 @@ var config5 = {
 
 function append(p){
  
-  var par = p.parentNode.parentNode;
+  var par = $(p).parents('tr');
   var count_append = 0;
 
                   
   var append = '<button class="btn btn-default btn-sm append" onclick="remove_append(this)"><a class="fa fa-minus"></a></button>';
   var append_plus = '<button class="btn btn-default btn-sm append" onclick="append(this)"><a class="fa fa-plus"></a></button>';
 
-  $(par).find('.clone_append').html(append);
+  // $(par).find('.clone_append').html(append);
   // console.log(data);
   // tabel_barang.row.add(data);
     var html    ='<tr>'
@@ -234,6 +289,10 @@ function append(p){
                 +'@foreach($item as $val)'
                 +'<option value="{{$val->kode_item}}">{{$val->kode_item}} - {{$val->nama_masteritem}}</option>'
                 +'@endforeach'
+                +'</select>'
+                +'</td>'
+                +'<td class="td_biaya">'
+                +'<select class="akun_biaya form-control chosen-select-width5" name="akun_biaya[]">'
                 +'</select>'
                 +'</td>'
                 +'<td align="center">'
@@ -249,30 +308,32 @@ function append(p){
                 +'<input type="text" readonly="" class="form-control satuan">'
                 +'</td>'
                 +'<td align="center" class="clone_append">'
-                +'<button class="btn btn-default btn-sm" onclick="append(this)"><a class="fa fa-plus"></a></button>&nbsp;'
+                +'<div class="btn btn-group">'
+                +append_plus
+                +append
+                +'</div>'
                 +'</td>'
                 +'</tr>';
 
     $('.clone_barang').append(html);
 
+    var config5 = {
+               '.chosen-select'           : {},
+               '.chosen-select-deselect'  : {allow_single_deselect:true},
+               '.chosen-select-no-single' : {disable_search_threshold:10},
+               '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+               '.chosen-select-width5'     : {width:"100% !important"}
+              }
 
     for (var selector in config5) {
      $(selector).chosen(config5[selector]);
     }  
-    // $('.clone_append').each(function(){
-    //   count_append += 1;
-    // });
-    // if (count_append == 1) {
-    //   $('.clone_append').html(append_plus);
-    // }
+
   $('.cari_stock').change(function(){
   var id = $(this).val();
   var par = $(this).parents('tr');
   var cabang = $('.cabang').val();
-
-
-
-
+  var akun_biaya = $(par).find('.akun_biaya')
   $.ajax({
     url:baseUrl + '/pengeluaranbarang/cari_stock',
     data:{id,cabang},
@@ -304,6 +365,8 @@ function append(p){
         $(par).find('.stock_gudang').val(0);
         $(par).find('.satuan').val('None');
       }
+      akun_biaya_dropdown(id,par,cabang);
+      akun_biaya.trigger('chosen:update');
     },
     error:function(){
       toastr.warning('Terjadi Kesalahan');
@@ -313,73 +376,47 @@ function append(p){
 }
 
 function remove_append(p){
-  var par = p.parentNode.parentNode;
+  var par = $(p).parents('tr');
 
   $(par).remove();
 }
 
-$(document).ready(function(){
-  var cabang = $('.cabang').val();
-        $.ajax({
-            type: "GET",
-            data : {cabang},
-            url : baseUrl + "/pengeluaranbarang/ganti_nota",
-            dataType:'json',
-            success: function(data)
-            {   
-              $('.no_sppb').val(data.nota);
-            }
-        })
 
-  getCabang();
-});
+function akun_biaya_dropdown(id,par,cabang) {
+  var jenis_keluar = $('.jenis_keluar').val();
+  $.ajax({
+    url:baseUrl + '/pengeluaranbarang/akun_biaya_dropdown',
+    data:{id,cabang},
+    success:function(response){
+      if (jenis_keluar == 'Pemakaian Reguler') {
+        var akun_biaya = $(par).find('.akun_biaya')
+        akun_biaya.html('');
+        var kecamatan = '';
+        for (var i = 0; i < response.data.length; i++) {
+          kecamatan +=  '<option value="'+response.data[i].id_akun+'">'+response.data[i].id_akun+'-'+response.data[i].nama_akun+'</option>';
+        }            
 
-function ganti_nota() {
-  var cabang = $('.cabang').val();
-        $.ajax({
-            type: "GET",
-            data : {cabang},
-            url : baseUrl + "/pengeluaranbarang/ganti_nota",
-            dataType:'json',
-            success: function(data)
-            {   
-              $('.no_sppb').val(data.nota);
-            }
-        })
+        akun_biaya.html(kecamatan);
+        akun_biaya.trigger('chosen:updated');
+      }
+    },
+    error:function(){
+      toastr.warning('Terjadi Kesalahan');
+    }
+  })
 }
 
- function getCabang(){
-
-        var cabang = $('#cabang').val();
-        $.ajax({
-            type: "GET",
-            data : {gudang: cabang},
-            url : baseUrl + "/pengeluaranbarang/createpengeluaranbarang/get_gudang",
-            dataType:'json',
-            success: function(data)
-            {   
-              var kecamatan = '<option value="" selected="" disabled="">-- Pilih Gudang --</option>';
-
-              $.each(data, function(i,n){
-                    kecamatan = kecamatan + '<option value="'+n.mg_id+'">'+n.mg_namagudang+'</option>';
-              });
-
-              $('#gudang').addClass('form-control chosen-select-width');
-              $('#gudang').html(kecamatan);
-            }
-        })
-    }
 
  $('.cari_stock').change(function(){
   var id = $(this).val();
   var par = $(this).parents('tr');
- var cabang = $('.cabang').val();
+  var cabang = $('.cabang').val();
 
   $.ajax({
     url:baseUrl + '/pengeluaranbarang/cari_stock',
     data:{id,cabang},
     success:function(response){
-      // console.log(response.data[0].sg_qty);
+      
       if (response.data != 1) {
         $(par).find('.stock_gudang').val(response.data[0].sg_qty);
         $(par).find('.satuan').val(response.data[0].unitstock);
@@ -405,6 +442,7 @@ function ganti_nota() {
         $(par).find('.stock_gudang').val(0);
         $(par).find('.satuan').val('None');
       }
+      akun_biaya_dropdown(id,par,cabang);
     },
     error:function(){
       toastr.warning('Terjadi Kesalahan');
@@ -425,6 +463,46 @@ function cariDATA(){
 }
 
 function simpan(){
+  var total = 0;
+  $('.diminta').each(function(){
+     total += $(this).val();
+  })
+  if ($('.keperluan').val() == '') {
+    return toastr.warning('Keperluan Harus Diisi');
+  }
+  if ($('#gudang').val() == null) {
+    return toastr.warning('Gudang Tujuan Harus Diisi');
+  }
+  if ($('.peminta').val() == '') {
+    return toastr.warning('Nama Peminta Harus Diisi');
+  }
+  if (total == 0) {
+    return toastr.warning('Tidak Ada Permintaan Pengeluaran Barang, Gagal Simpan');
+  }
+  
+  if ($('.jenis_keluar').val() == 'Pemakaian Reguler') {
+      var jenis_keluar = 0;
+      $('.akun_biaya').each(function(){
+         if ($(this).val() == null) {
+             jenis_keluar+=1;
+         }
+      })
+
+      if (jenis_keluar != 0) {
+        return toastr.warning('Terdapat Akun Yang Kosong/Cabang Tidak Memiliki Akun Untuk Item Ini');
+      }
+  }
+  
+  var stock_gudang = 0;
+  $('.stock_gudang').each(function(){
+     if ($(this).val() == '0') {
+        stock_gudang+=1;
+     }
+  })
+
+  if (stock_gudang != 0) {
+    return toastr.warning('Terdapat Stock Gudang Yang Kosong');
+  }
 
    swal({
     title: "Apakah anda yakin?",

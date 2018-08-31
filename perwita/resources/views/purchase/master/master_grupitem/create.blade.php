@@ -56,7 +56,7 @@
 
                           <tr>
                             <td width="200px"> Kode Jenis Item </td>
-                            <td> <input type="text"   class="form-control kode" name="kodejenisitem" > </td>
+                            <td> <input type="text" class="form-control kode" name="kodejenisitem" > </td>
                           </tr>
 
                        

@@ -4106,6 +4106,15 @@
                return false;
     }
    });
+
+
+   $("#ed_nomor").keypress(function (e) {
+     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && (e.which < 65 || e.which > 90) && (e.which < 97 || e.which > 122)) {
+            return false;
+    }
+   });
+
+
    
 
    function convertToRupiah(angka) {

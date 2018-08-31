@@ -70,7 +70,7 @@ table, td, th {
 <div class="div-width">
 	<table style="border:hidden;" width="100%">
 		<tr style="border:hidden;">
-			<td style="border:hidden;" width="125px" rowspan="2"><img src="" width="125px" height="60px"></td>
+			<td style="border:hidden;" width="125px" rowspan="2"><img src="{{ asset('perwita/storage/app/upload/images.jpg') }}" width="125px" height="60px"></td>
 			<td style="border:hidden;text-align: left" class="tebal">PT. Jawa Pratama Mandiri</td>
 			<td align="center" width="280px" class="tebal" style="text-decoration: underline;border:hidden;text-align: left;">
 				BUKTI BANK KELUAR

@@ -70,7 +70,7 @@ class BonSementaraController extends Controller
 		}
 		
 		
-		$data['bank'] = DB::select("select * from masterbank");
+		$data['bank'] = DB::select("select * from masterbank where mb_cabangbank = '$cabang'");
 
 		return view('purchase/bonsementara/indexcabang', compact('data'));
 	}
@@ -183,6 +183,8 @@ class BonSementaraController extends Controller
 	}
 
 	public function terimauang(Request $request){
+			return DB::transaction(function() use ($request) { 
+
 			$idbonsem = $request->idbonsem;
 			$kodebank = $request->bankcabang;
 			$updatepb = bonsempengajuan::find($idbonsem);
@@ -192,22 +194,90 @@ class BonSementaraController extends Controller
 
 			$nominalkeu =  str_replace(',', '', $request->nominalkeu);
 
+			$now = Date("Y-m-d");
+			if(floatval($nominalkeu) < 10000000.00){
+
+				$tiga = 3;
+				$temp = 1;
+				for($i = 0;$i < $tiga; $i++){
+					$tigahari = date('Y-m-d', strtotime($now . " +  {$temp} days"));
+					
+					$day = date('D' , strtotime($tigahari));
+					
+					if($day != 'Sun'){
+						
+					}
+					else {
+						$tiga = $tiga + 1;
+					}
+
+					$temp++;
+				}
+			}
+			else if(floatval($nominalkeu) > 10000000.00){
+				$tiga = 7;
+				$temp = 1;
+				for($i = 0;$i < $tiga; $i++){
+					$tigahari = date('Y-m-d', strtotime($now . " +  {$temp} days"));
+					
+					$day = date('D' , strtotime($tigahari));
+					
+					if($day != 'Sun'){
+						
+					}
+					else {
+						$tiga = $tiga + 1;
+					}
+
+					$temp++;
+				}
+
+			}
+
+			$updatepb = bonsempengajuan::find($idbonsem);
+			$updatepb->bp_jatuhtempo = $tigahari;
+			$updatepb->save();
+			
 			$datapb = DB::select("select * from bonsem_pengajuan where bp_id = '$idbonsem'");
 
 			$datajurnal = [];
 		    $totalhutang = 0;
-		    $datajurnal[0]['idakun'] = $request->bankcabang;
-		    $datajurnal[0]['subtotal'] = $nominalkeu;
-		    $datajurnal[0]['dk'] = 'D';
-		    $datajurnal[0]['detail'] = $datapb[0]->bp_keperluan;
+		    $cabangpb = $datapb[0]->bp_cabang;
 
+		    $akunbank = $request->bankcabang;
+		    $dataakunbank = DB::select("select * from d_akun where id_akun LIKE '1101%' and kode_cabang = '$cabangpb'");
+		    $bankdka = $dataakunbank[0]->akun_dka;
+		    $akunkaskecil = $dataakunbank[0]->id_akun;
 
+		    if($bankdka == 'D'){
+		    	$datajurnal[0]['idakun'] = $akunkaskecil;
+			    $datajurnal[0]['subtotal'] = $nominalkeu;
+			    $datajurnal[0]['dk'] = 'D';
+			    $datajurnal[0]['detail'] = $datapb[0]->bp_keperluan;
+		    }
+		    else {
+		    	$datajurnal[0]['idakun'] = $akunkaskecil;
+			    $datajurnal[0]['subtotal'] = '-' . $nominalkeu;
+			    $datajurnal[0]['dk'] = 'D';
+			    $datajurnal[0]['detail'] = $datapb[0]->bp_keperluan;
+		    }
 
-		    $datajurnal[1]['idakun'] = $datapb[0]->bp_akunhutang;
-		    $datajurnal[1]['subtotal'] = $nominalkeu;
-		    $datajurnal[1]['dk'] = 'K';
-		    $datajurnal[1]['detail'] = $datapb[0]->bp_keperluan;
-
+		    $bonsemcabang = $datapb[0]->bp_akunhutang;
+		    $dataakunhutang = DB::select("select * from d_akun where id_akun = '$bonsemcabang'");
+		    $hutangdka = $dataakunhutang[0]->akun_dka;
+		    	
+		    if($hutangdka == 'K'){
+			    $datajurnal[1]['idakun'] = $datapb[0]->bp_akunhutang;
+			    $datajurnal[1]['subtotal'] = $nominalkeu;
+			    $datajurnal[1]['dk'] = 'K';
+			    $datajurnal[1]['detail'] = $datapb[0]->bp_keperluan;
+		    }
+		    else {
+		    	$datajurnal[1]['idakun'] = $datapb[0]->bp_akunhutang;
+			    $datajurnal[1]['subtotal'] = '-' . $nominalkeu;
+			    $datajurnal[1]['dk'] = 'K';
+			    $datajurnal[1]['detail'] = $datapb[0]->bp_keperluan;
+		    }
 
 
 		
@@ -253,7 +323,9 @@ class BonSementaraController extends Controller
     			$jurnaldt->save();
     			$key++;
     		} 
-			return json_encode('sukses');
+    		return json_encode('sukses');
+    	});
+			
 	}
 
 	public function setujukacab(Request $request){

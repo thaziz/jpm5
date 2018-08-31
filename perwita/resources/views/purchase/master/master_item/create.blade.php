@@ -72,13 +72,13 @@
                          @if(Auth::user()->punyaAkses('Master Supplier','cabang'))
                             <select class="form-control  cabang" name="cabang">
                                 @foreach($data['cabang'] as $cabang)
-                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->kode}}  - {{$cabang->nama}} </option>
                               @endforeach
                             </select>
                             @else
                               <select class="form-control disabled cabang" name="cabang">
                                 @foreach($data['cabang'] as $cabang)
-                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->kode}} - {{$cabang->nama}} </option>
                                 @endforeach
                               </select> 
                             @endif
@@ -325,6 +325,7 @@
 
 
           cabang = $('.cabang').val();
+        
           split = groupitem.split(",");
           stock = split[1];
           jenis = split[0];
@@ -460,7 +461,7 @@
           groupitem = $('.jenis_item').val();
           split = groupitem.split(",");
           stock = split[1];
-
+          cabang = $('.cabang').val();
           $.ajax({
             data : {updatestock,groupitem,cabang},
             url : baseUrl + '/masteritem/getaccpersediaan',

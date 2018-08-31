@@ -113,7 +113,7 @@
                             <button class="search btn btn-danger" type="button" onclick="filtering()"><i class="fa fa-search"> Cari</i></button>
                           </td>
                         </tr>
-                      </table>
+                    </table>
                   </div>
                   <div class="col-sm-12 append_table">
                     

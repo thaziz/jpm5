@@ -72,7 +72,7 @@ div.bottom
 <div class="div-width">
 	<table width="100%">
 		<tr>
-			<td width="125px"><img src="{{ asset('perwita/storage/app/upload/images.jpg') }}"  width="200" height="100"></td>
+			<td width="125px"><img src="{{asset('perwita/storage/app/upload/images.jpg') }}"  width="200" height="100"></td>
 			<td align="center" width="410px"><h2>SURAT PERMINTAAN PEMBELIAN</h2></td>
 			
 			<td class="top" width="240px">No SPP : {{$data['spp'][0]->spp_nospp}} <br>Tanggal Input : {{ Carbon\Carbon::parse($data['spp'][0]->tglinput)->format('d-M-Y ') }}

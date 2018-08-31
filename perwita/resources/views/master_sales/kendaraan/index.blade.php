@@ -103,6 +103,7 @@
                                 <th> Tipe </th>
                                 <th> GPS </th>
                                 <th> Cabang </th>
+                                <th> Subcon </th>
                                 <th> Status </th>
                                 <th style="width:12%"> Aksi </th>
                             </tr>
@@ -114,6 +115,7 @@
                                 <td>{{ $row->tipe_angkutan }}</td>
                                 <td>{{ $row->gps }}</td>
                                 <td>{{ $row->nama_cabang }}</td>
+                                <td>{{ $row->kode_subcon }}</td>
                                 <td>{{ $row->status }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">

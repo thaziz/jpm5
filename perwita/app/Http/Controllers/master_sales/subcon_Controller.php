@@ -135,6 +135,12 @@ class subcon_Controller extends Controller
                 'csf_code' => $request->csf_code,
             );
             $simpan = DB::table('subcon')->where('kode', $request->ed_kode_old)->update($data);
+
+            $update = DB::table("kendaraan")
+                        ->where('kode_subcon',$request->ed_kode)
+                        ->update([
+                          'kode_subcon'=>$request->ed_kode
+                        ]);
         }
         if($simpan == TRUE){
             $result['error']='';

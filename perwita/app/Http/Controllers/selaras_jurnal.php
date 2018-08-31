@@ -23,7 +23,7 @@ class selaras_jurnal  extends Controller
         return DB::transaction(function() use ($req) {  
 
             $bpk = DB::table('biaya_penerus_kas')
-                     ->select('bpk_nota','bpk_comp','created_by','bpk_tanggal','bpk_kode_akun','bpk_acc_biaya','bpk_keterangan','bpk_tarif_penerus')
+                     ->select('bpk_id','bpk_nota','bpk_comp','created_by','bpk_tanggal','bpk_kode_akun','bpk_acc_biaya','bpk_keterangan','bpk_tarif_penerus')
                      ->orderBy('bpk_id','ASC')
                      ->get();
 
@@ -33,13 +33,10 @@ class selaras_jurnal  extends Controller
                      ->orderBy('bpk_id','ASC')
                      ->get();
 
-            $detail = DB::table('biaya_penerus_kas')
-                     ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
-                     ->orderBy('bpk_id','ASC')
-                     ->get();
+            
 
             $delete_jurnal = DB::table('d_jurnal')
-                               ->where('jr_note','BIAYA PENERUS KAS')
+                               ->where('jr_ref','like','BPK%')
                                ->delete();
             
             $comp = array_map("unserialize", array_unique( array_map( 'serialize', $comp ) ));
@@ -120,16 +117,16 @@ class selaras_jurnal  extends Controller
                     $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
                     $data_akun[0]['jrdt_detailid']  = 1;
                     $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-                    $data_akun[0]['jrdt_value']     = -$bpk[$i]->bpk_tarif_penerus;
+                    $data_akun[0]['jrdt_value']     = -round($bpk[$i]->bpk_tarif_penerus);
                     $data_akun[0]['jrdt_statusdk'] = 'K';
                 	  $data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
                 }else{
                     $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
                     $data_akun[0]['jrdt_detailid']  = 1;
                     $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-                    $data_akun[0]['jrdt_value']     = -$bpk[$i]->bpk_tarif_penerus;
+                    $data_akun[0]['jrdt_value']     = -round($bpk[$i]->bpk_tarif_penerus);
                     $data_akun[0]['jrdt_statusdk'] = 'D';
-                	$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
+                	  $data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
                 }
                 
                 $jurnal_dt = d_jurnal_dt::insert($data_akun);
@@ -138,6 +135,11 @@ class selaras_jurnal  extends Controller
                                 ->where('jrdt_jurnal',$id_jurnal)
                                 ->get();
 
+                $detail = DB::table('biaya_penerus_kas')
+                     ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
+                     ->where('bpk_id',$bpk[$i]->bpk_id)
+                     ->orderBy('bpk_id','ASC')
+                     ->get();
                 for ($a=0; $a < count($filter_comp[$bpk[$i]->bpk_nota]); $a++) { 
                     $harga = 0;
 
@@ -145,7 +147,7 @@ class selaras_jurnal  extends Controller
                     for ($b=0; $b < count($detail); $b++) { 
                         if ($filter_comp[$bpk[$i]->bpk_nota][$a] == $detail[$b]->bpkd_kode_cabang_awal and
                             $bpk[$i]->bpk_nota == $detail[$b]->bpk_nota) {
-                            $harga+=$detail[$b]->bpkd_tarif_penerus;
+                            $harga+=round($detail[$b]->bpkd_tarif_penerus,2);
                         }
                     }
 
@@ -175,7 +177,7 @@ class selaras_jurnal  extends Controller
                                 'pc_debet'        => 0,
                                 'pc_user'         => $bpk[$i]->created_by,
                                 'pc_no_trans'     => $bpk[$i]->bpk_nota,
-                                'pc_kredit'       => $harga,
+                                'pc_kredit'       => round($harga),
                                 'created_at'      => Carbon::now(),
                                 'updated_at'      => Carbon::now()
                     ]);

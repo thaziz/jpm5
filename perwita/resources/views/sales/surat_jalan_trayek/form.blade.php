@@ -131,7 +131,7 @@
                                     <select class="chosen-select-width" name="cb_rute" id="cb_rute" >
                                         <option></option>
                                     @foreach ($rute as $row)
-                                        <option value="{{ $row->kode }}">{{ $row->nama }}</option>
+                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
                                     @endforeach
                                     </select>
                                     <input type="hidden" name="ed_nama_rute" class="form-control" style="text-transform: uppercase" value="{{ $data->nama_rute or null }}" >

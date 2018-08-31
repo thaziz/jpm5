@@ -126,7 +126,6 @@
                 <td>Akun Kas</td>
                 <td class="form-inline akun_kas_td">
                  <select style="display: inline-block; " class="form-control nama_kas chosen-select-width1" name="nama_kas">
-                     <option selected=""  value="0">- pilih-akun -</option>
                      @foreach($akun_kas as $val)
                      <option @if($val->id_akun == $data->bpk_kode_akun) selected="" @endif value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
                      @endforeach
@@ -542,6 +541,7 @@ $('.tanggal').datepicker({
   if(km != "" && jk != "0"){
     hasil = km/bbm_liter;
     hasil = hasil * harga_bbm;
+    hasil = parseInt(hasil);
     console.log(hasil);
     $('.total_bbm').val(accounting.formatMoney(hasil,"Rp ", 2, ".",','));
   

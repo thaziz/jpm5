@@ -70,7 +70,7 @@
                       <tr>
                         <td width="150">Kode Transaksi</td>
                         <td width="300">
-                          <input type="text" name="nomor" class="nomor form-control" >
+                          <input type="text" readonly="" name="nomor" class="nomor form-control" >
                           <input type="hidden" name="nomor_old" class="nomor_old form-control" >
                         </td>
                         <td width="150">Customer</td>
@@ -110,7 +110,7 @@
                       <tr>
                         <td>Tanggal</td>
                         <td colspan="2">
-                          <input type="text" me="" value="{{ carbon\carbon::now()->format('d/m/Y') }}" readonly="" class="form-control">
+                          <input type="text" name="tgl" value="{{ carbon\carbon::now()->format('d/m/Y') }}" readonly="" class="form-control tgl">
                         </td>
                         <td>Jatuh Tempo</td>
                         <td >
@@ -229,7 +229,7 @@
 
   function nota() {
     var cabang = $('.cabang').val();
-    var tanggal = $('.tanggal').val();
+    var tanggal = $('.tgl').val();
     $.ajax({
       url  : '{{ url('sales/form_tanda_terima_penjualan/nota') }}',
       data : {cabang,tanggal},

@@ -353,6 +353,7 @@ class do_kargo_Controller extends Controller
                       ->where('jenis',$request->jenis_tarif)
                       ->where('kode_cabang',$request->cabang_select)
                       ->where('kode_angkutan',$request->tipe_angkutan)
+                      ->orderBy('tarif_cabang_kargo.kode','ASC')
                       ->get();
 
             $asal = DB::table('tarif_cabang_kargo')
@@ -362,6 +363,7 @@ class do_kargo_Controller extends Controller
                       ->where('jenis',$request->jenis_tarif)
                       ->where('kode_cabang',$request->cabang_select)
                       ->where('kode_angkutan',$request->tipe_angkutan)
+                      ->orderBy('tarif_cabang_kargo.kode','ASC')
                       ->get();
 
             $tujuan = DB::table('tarif_cabang_kargo')
@@ -387,9 +389,12 @@ class do_kargo_Controller extends Controller
                       ->where('kcd_jenis','KARGO')
                       ->orderBy('kcd_id','ASC')
                       ->get();
-            $kota = DB::table('kota')
 
+            $kota = DB::table('kota')
                       ->get();
+
+            $tipe_angkutan = DB::table('tipe_angkutan')
+                               ->get();
 
 
             for ($i=0; $i < count($kota); $i++) { 
@@ -402,8 +407,16 @@ class do_kargo_Controller extends Controller
                         $data[$a]->nama_tujuan = $kota[$i]->nama;
                     }
                 }
- 
             }
+            for ($i=0; $i < count($tipe_angkutan); $i++) { 
+              for ($a=0; $a < count($data); $a++) { 
+                if ($data[$a]->kcd_kode_angkutan == $tipe_angkutan[$i]->kode) {
+                  $data[$a]->nama_angkutan = $tipe_angkutan[$i]->nama;
+                }
+              }
+            }
+
+
             $kontrak = 1;
             // return $data;
         }

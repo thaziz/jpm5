@@ -251,6 +251,7 @@ function ceek(a) {
   var total = 0;
   tabel_patty.$('.ck').each(function(){
     if($(this).is(':checked') == true){
+      console.log($(this).is(':checked'));
       var par = $(this).parents('tr');
       var nominal = $(par).find('.nominal').val();
       total += (nominal*1);

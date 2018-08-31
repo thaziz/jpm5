@@ -27,6 +27,7 @@
             serverSide: true,
             ajax: {
                 url:'{{ route("datatable_ikhtisar") }}',
+                data:{cabang}
             },
             columnDefs: [
               {

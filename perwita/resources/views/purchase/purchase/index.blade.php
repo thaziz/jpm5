@@ -37,9 +37,7 @@
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
         <h2 style='text-align:center'> <b> {{$data['countspp']}} SPP </b></h2> <h4 style='text-align:center'> BELUM DI PROSES PO </h4>
       </div>
-    </div>
-
-   
+    </div>   
   </div>
 
 
