@@ -4824,10 +4824,10 @@ public function purchase_order() {
 		$updatestock = $request->updatestock;
 		$groupitem = $request->groupitem;
 		$stock = $request->stock;
-		
+		$cabang = $request->cabang;
 
 	//	return $groupitem;
-		$barang= DB::select("select * from master_akun_fitur, itemsupplier, masteritem where and maf_kode_akun = kode_item and is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem'");
+		$barang= DB::select("select * from master_akun_fitur, itemsupplier, masteritem where maf_kode_akun = kode_item and is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem' and maf_cabang = '$cabang'");
 		//return json_encode($barang);
 
 		if(count($barang) > 0) {
@@ -4837,11 +4837,11 @@ public function purchase_order() {
 		}
 		else {
 			if($stock == 'Y'){
-				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where updatestock = '$updatestock' and jenisitem = '$groupitem' and maf_kode_akun = kode_item");
+				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where updatestock = '$updatestock' and jenisitem = '$groupitem' and maf_kode_akun = kode_item and maf_cabang = '$cabang'");
 				$data['status'] = 'Tidak Terikat Kontrak';
 			}
 			else {
-				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where jenisitem = '$groupitem' and maf_kode_akun = kode_item");
+				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where jenisitem = '$groupitem' and maf_kode_akun = kode_item and maf_cabang = '$cabang'");
 				$data['status'] = 'Tidak Terikat Kontrak';	
 			}
 
