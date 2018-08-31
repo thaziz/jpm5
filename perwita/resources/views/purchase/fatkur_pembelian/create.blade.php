@@ -6308,7 +6308,7 @@
        updatestock = $('.updatestock').val();
        idsupplier = $(this).val();
        grupitem = $('.groupitem').val();
-
+       cabang = $('.cabang').val();
       // alert(updatestock);
        var string = idsupplier.split("+");
        var idsup = string[0];
@@ -6344,12 +6344,10 @@
        else {
           $.ajax({    
             type :"post",
-            data : {idsup, updatestock, groupitem, stock},
+            data : {idsup, updatestock, groupitem, stock, cabang},
             url : baseUrl + '/fakturpembelian/updatestockbarang',
             dataType:'json',
             success : function(data){
-
-
 
               if(tanggal != '') {
                syaratkredit = parseInt(data.supplier[0].syarat_kredit);
@@ -6441,11 +6439,11 @@
        updatestock = $('.updatestock').val();
        idsupplier = $('.idsup').val();
        grupitem = $('.groupitem').val();
-       
+       cabang = $('.cabang').val();
        var string = idsupplier.split("+");
        var idsup = string[0];
        console.log(idsup);
-
+       cabang = $('.cabang').val();
 
        var variable = grupitem.split(",");
        var groupitem = variable[0];
@@ -6462,7 +6460,7 @@
            $('td#tdgudang').hide();
            $.ajax({    
             type :"post",
-            data : {idsup, groupitem, stock, updatestock},
+            data : {idsup, groupitem, stock, updatestock, cabang},
             url : baseUrl + '/fakturpembelian/updatestockbarang',
             dataType:'json',
             success : function(data){
@@ -6526,7 +6524,7 @@
 
           $.ajax({    
             type :"post",
-            data : {idsup, updatestock, groupitem, stock},
+            data : {idsup, updatestock, groupitem, stock, cabang},
             url : baseUrl + '/fakturpembelian/updatestockbarang',
             dataType:'json',
             success : function(data){
@@ -6593,7 +6591,7 @@
        var string = idsupplier.split(",");
        var idsup = string[0];
        console.log(idsup);
-
+       cabang = $('.cabang').val();
 
        var variable = grupitem.split(",");
        var groupitem = variable[0];
@@ -6605,7 +6603,7 @@
        else {
           $.ajax({    
             type :"post",
-            data : {idsup, updatestock, groupitem, stock},
+            data : {idsup, updatestock, groupitem, stock, cabang},
             url : baseUrl + '/fakturpembelian/updatestockbarang',
             dataType:'json',
             success : function(data){

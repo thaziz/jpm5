@@ -1748,6 +1748,13 @@
                             </li>
                             @endif
                             
+
+                             @if(Auth::user()->PunyaAkses('Bank Masuk','aktif'))
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('bankmasuk/bankmasuk') ? 'active' : '' || 
+                                        Request::is('bankmasuk/bankmasuk/*') ? 'active' : ''}}" href="{{ url('bankmasuk/bankmasuk')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Transaksi Bank Masuk </a>
+                                </li>
+                                @endif
                             </ul>
                         </li>
                            
@@ -2113,12 +2120,7 @@
                                 </li>
                                 @endif
 
-                                 @if(Auth::user()->PunyaAkses('Bank Masuk','aktif'))
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('bankmasuk/bankmasuk') ? 'active' : '' || 
-                                        Request::is('bankmasuk/bankmasuk/*') ? 'active' : ''}}" href="{{ url('bankmasuk/bankmasuk')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Transaksi Bank Masuk </a>
-                                </li>
-                                @endif
+                                
 
 <!--                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan') ? 'active' : '' || 

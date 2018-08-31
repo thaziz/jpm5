@@ -269,8 +269,8 @@
       evt.preventDefault();
 
       btn = $(this);
-      // btn.attr("disabled", "disabled");
-      // btn.text("Menyimpan...");
+      btn.attr("disabled", "disabled");
+      btn.text("Menyimpan...");
 
       if($(".total_debet").val() != $(".total_kredit").val()){
         alert("Total Debet Kredit Harus Sama");

@@ -634,11 +634,11 @@ class BiayaPenerusController extends Controller
 						->first();
 
 				// return $um;
-				if ($bp->bp_tipe_vendor == "AGEN") {
+				// if ($bp->bp_tipe_vendor == "AGEN") {
 					return view('purchase/fatkur_pembelian/edit_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um','tt'));
-				}else{
-					return view('purchase/pembayaran_vendor/edit_vendor',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um','tt'));
-				}
+				// }else{
+				// 	return view('purchase/pembayaran_vendor/edit_vendor',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id','nota','um','tt'));
+				// }
 
 			} elseif ($cari_fp->fp_jenisbayar == 7){
 

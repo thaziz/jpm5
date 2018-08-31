@@ -175,11 +175,10 @@
           <thead>
             <tr>
               <td style="text-align: left; padding-top: 5px;">
-                Transaksi :
                 @if($throttle == 'bulan')
-                  Bulan {{ date_ind($request->m)." ".$request->y }}
+                  Laporan Per Akhir Bulan {{ date_ind($request->m)." ".$request->y }}
                 @elseif($throttle == 'tahun')
-                  Tahun {{ $request->y }}
+                  Laporan Per Akhir Tahun {{ $request->y }}
                 @endif
               </td>
               

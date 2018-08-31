@@ -125,6 +125,17 @@ class d_jurnal_controller extends Controller
     public function save_data(Request $request){
        // return json_encode($request->all());
 
+       $date = explode('-', $request->jr_date);
+
+       if(!DB::table('d_periode_keuangan')->where('bulan', $date[1])->where('tahun', $date[2])->where('status', 'accessable')->first()){
+            $response = [
+                'status'    => 'blocked',
+                'content'   => 'null'
+            ];
+
+            return $response;
+       }
+
        $response = [
             'status'    => 'berhasil',
             'content'   => $request->all()
@@ -155,29 +166,31 @@ class d_jurnal_controller extends Controller
 
        if($request->type_transaksi == "kas"){
             if($request->jenis_transaksi == 1){
-                $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKM")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
+                $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKM")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y', strtotime($request->jr_date)))->orderBy('jr_insert', 'desc')->first();
 
                 $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
-                $ref = "TKM-".date("my")."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
-                $jr_no = get_id_jurnal('KM', $request->cabang);
+                $ref = "TKM-".date("my", strtotime($request->jr_date))."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
+                $jr_no = get_id_jurnal('KM', $request->cabang, $request->jr_date);
 
-                // return json_encode($jr_no." __ ".$ref);
+                // return json_encode($jr);
+                // return json_encode($jr_no.' __ '.$ref);
             }
             else{
                $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKK")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
 
                 $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
-                $ref = "TKK-".date("my")."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
-                $jr_no = get_id_jurnal('KK', $request->cabang);
+                $ref = "TKK-".date("my", strtotime($request->jr_date))."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
+                $jr_no = get_id_jurnal('KK', $request->cabang, $request->jr_date);
 
+                // return json_encode($jr);
                 // return json_encode($jr_no." __ ".$ref);
             }
        }
 
         $jurnal = new d_jurnal;
         $jurnal->jr_id = ($id+1);
-        $jurnal->jr_year = date('Y');
-        $jurnal->jr_date = date('Y-m-d');
+        $jurnal->jr_year = $date[2];
+        $jurnal->jr_date = $request->jr_date;
         $jurnal->jr_detail = $request->jr_detail;
         $jurnal->jr_ref = $ref;
         $jurnal->jr_note = $request->jr_detail;
@@ -256,7 +269,6 @@ class d_jurnal_controller extends Controller
         }
 
         $jurnal = d_jurnal::find($request->id_transaksi);
-        $jurnal->jr_date = date('Y-m-d');
         $jurnal->jr_detail = $request->jr_detail;
         $jurnal->jr_note = $request->jr_detail;
         // $jurnal->jr_on_proses = 2;

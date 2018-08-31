@@ -849,10 +849,11 @@
   function tt_penerus() {
 
     var cabang = $('.cabang').val();
-    var agen_vendor = $('.agen_vendor ').val();
+    var agen_vendor = $('.agen_vendor').val();
+    var nofaktur = $('.nofaktur').val();
     $.ajax({
       url:baseUrl +'/fakturpembelian/nota_tt',
-      data: {cabang,agen_vendor},
+      data: {cabang,agen_vendor,nofaktur},
       success:function(data){
         $('.div_tt').html(data);
         $('#modal_tt_penerus').modal('show');

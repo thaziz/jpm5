@@ -61,7 +61,7 @@
       <tr>
         <td width="20%" class="text-left">Jenis Transaksi <input type="hidden" name="type_transaksi" value="kas" readonly /> </td>
         <td colspan="2">
-          <select name="jenis_transaksi" class="select_validate form-control list-should-disabled" id="jenis_transaksi" style="width: 40%; display: inline-block;">
+          <select name="jenis_transaksi" class="select_validate form-control list-should-disabled" id="jenis_transaksi" style="width: 40%; display: inline-block;" disabled>
             <option value="1" {{ ( substr($data_jurnal->jr_no, 0, 2) == 'BM' ) ? 'selected' : '' }}>Bank Masuk</option>
             <option value="2" {{ ( substr($data_jurnal->jr_no, 0, 2) == 'BK' ) ? 'selected' : '' }}>Bank Keluar</option>
           </select> &nbsp;&nbsp;&nbsp;&nbsp;
@@ -120,6 +120,20 @@
   </div>
 
   <div class="col-md-5" style="border: 0px solid #ddd; border-radius: 5px;">
+
+    <div class="col-md-12 m-t" style="padding: 10px;">
+      <table border="0" id="form-table" class="col-md-12">
+
+        <tr>
+          <td width="25%" class="text-left">Tanggal</td>
+          <td colspan="2">
+            <input type="text" class="form_validate form-control date_memorial" name="jr_date" placeholder="Tanggal Transaksi ?" id="jr_date" disabled style="cursor: pointer;" value="{{ $data_jurnal->jr_date }}">
+          </td>
+        </tr>
+          
+
+      </table>
+    </div>
 
     <div class="col-md-12 m-t" style="padding: 10px; background: #eee;">
       <table border="0" id="form-table" class="col-md-12">
