@@ -426,7 +426,13 @@
 						}
 						echo '<td style="text-align:center;" class="textcenter right top bot">'.$temp.'&nbsp</td>'
 					@endphp
-					<td style="text-align:center" class="textcenter top bot">{{$jml}} &nbsp</td>
+					@php
+						$temp = 0;
+						foreach($detail as $row){
+							$temp+=$row->koli;
+						}
+						echo '<td style="text-align:center;" class="textcenter top bot">'.$temp.'&nbsp</td>'
+					@endphp
 				</tr>
 			</table>
 		</div>
