@@ -531,7 +531,7 @@
                               <td> {{$data['pbgdt'][$x]->unitstock}}</td>
                               
                               <td>  {{ (int) $data['pbgdt'][$x]->pbd_disetujui}} </td> <!--qty dikirim -->
-                              <input type="hidden" value="{{$data['pbgdt'][$x]->pbd_disetujui}}" class=qtykirim<?php echo $n?> data-id=<?php echo $n ?> name="qtydikirim[]">
+                              <input type="hidden" value="{{(int)$data['pbgdt'][$x]->pbd_disetujui}}" class=qtykirim<?php echo $n?> data-id=<?php echo $n ?> name="qtydikirim[]">
                               <input type="hidden" value="{{$data['pbgdt'][$x]->pbd_nama_barang}}" name="kodeitem[]" class="item kodeitem{{$x}}"> <!--kodeitem-->
                              
                          <input type="hidden" name="accpersediaan[]" value="{{$data['pbgdt'][$x]->acc_persediaan}}">
@@ -1730,14 +1730,19 @@
      
  
     $('#lengkap').change(function(){   
-
+      flag = $('.flag').val();
       if($(this).is(':checked')) {
         var qtykirimlength = $('.databarang').length;      
         for(var i = 0 ; i < qtykirimlength; i++){ 
    /*     alert(qtykirimlength);   */    
           val = $('.qtykirim' + i).val();
           id = $('.qtykirim' + i).data('id');
-          console.log(id);
+         
+          if(flag == 'PBG'){         
+            angka = val.split(",");
+            val2 = angka[0];
+            
+          }
           $('#qtyterima' + id).val(val);
         }           
       }

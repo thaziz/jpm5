@@ -408,7 +408,7 @@ class PengeluaranBarangController extends Controller
 				$datapb = DB::select("select * from pengeluaran_barang where pb_id = '$idtransaksi'");
 				$idsupplier = $datapb[0]->pb_comp;
 				$jeniskeluar = $datapb[0]->pb_jenis_keluar;
-				
+				$gudang = $datapb[0]->pb_gudang_cabang;
 				if($jeniskeluar == 'Moving Gudang') {
 					$barangterima = new barang_terima();
 					$barangterima->bt_id = $idbarangterima;
@@ -417,7 +417,7 @@ class PengeluaranBarangController extends Controller
 					$barangterima->bt_agen = $idsupplier;
 					$barangterima->bt_idtransaksi = $idtransaksi;
 					$barangterima->bt_statuspenerimaan = 'BELUM DI TERIMA';
-					$barangterima->bt_gudang = $request->nama_gudang[$i];
+					$barangterima->bt_gudang = $gudang;
 					$barangterima->bt_tipe = 'S';
 					$barangterima->bt_cabangpo = $datapb[0]->pb_peminta;
 					$barangterima->save();
