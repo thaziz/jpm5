@@ -993,9 +993,9 @@ class MasterPurchaseController extends Controller
 		else {
 			$data = DB::select("select *, supplier.alamat as alamatsupplier from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and active='AKTIF' and idcabang = '$cabang'");
 			
-			$count['blmsetuju'] = DB::select("select * from supplier where status = 'BELUM DI SETUJUI' and idcabang = '$cabang'");
-			$count['sudahsetuju'] = DB::select("select * from supplier where status = 'SETUJU' and idcabang = '$cabang'");
-			$count['tidaksetuju'] = DB::select("select * from supplier where status = 'TIDAK SETUJU' and idcabang = '$cabang'");
+			$count['blmsetuju'] = DB::select("select count(*) from supplier where status = 'BELUM DI SETUJUI' and idcabang = '$cabang'");
+			$count['sudahsetuju'] = DB::select("select count(*) from supplier where status = 'SETUJU' and idcabang = '$cabang'");
+			$count['tidaksetuju'] = DB::select("select count(*) from supplier where status = 'TIDAK SETUJU' and idcabang = '$cabang'");
 		}
 
 		return view('purchase/master/master_supplier/index', compact('data', 'count'));

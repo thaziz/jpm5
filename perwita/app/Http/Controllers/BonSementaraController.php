@@ -194,49 +194,7 @@ class BonSementaraController extends Controller
 
 			$nominalkeu =  str_replace(',', '', $request->nominalkeu);
 
-			$now = Date("Y-m-d");
-			if(floatval($nominalkeu) < 10000000.00){
-
-				$tiga = 3;
-				$temp = 1;
-				for($i = 0;$i < $tiga; $i++){
-					$tigahari = date('Y-m-d', strtotime($now . " +  {$temp} days"));
-					
-					$day = date('D' , strtotime($tigahari));
-					
-					if($day != 'Sun'){
-						
-					}
-					else {
-						$tiga = $tiga + 1;
-					}
-
-					$temp++;
-				}
-			}
-			else if(floatval($nominalkeu) > 10000000.00){
-				$tiga = 7;
-				$temp = 1;
-				for($i = 0;$i < $tiga; $i++){
-					$tigahari = date('Y-m-d', strtotime($now . " +  {$temp} days"));
-					
-					$day = date('D' , strtotime($tigahari));
-					
-					if($day != 'Sun'){
-						
-					}
-					else {
-						$tiga = $tiga + 1;
-					}
-
-					$temp++;
-				}
-
-			}
-
-			$updatepb = bonsempengajuan::find($idbonsem);
-			$updatepb->bp_jatuhtempo = $tigahari;
-			$updatepb->save();
+			
 			
 			$datapb = DB::select("select * from bonsem_pengajuan where bp_id = '$idbonsem'");
 
@@ -245,7 +203,7 @@ class BonSementaraController extends Controller
 		    $cabangpb = $datapb[0]->bp_cabang;
 
 		    $akunbank = $request->bankcabang;
-		    $dataakunbank = DB::select("select * from d_akun where id_akun LIKE '1101%' and kode_cabang = '$cabangpb'");
+		    $dataakunbank = DB::select("select * from d_akun where id_akun LIKE '1001%' and kode_cabang = '$cabangpb'");
 		    $bankdka = $dataakunbank[0]->akun_dka;
 		    $akunkaskecil = $dataakunbank[0]->id_akun;
 
@@ -360,6 +318,50 @@ class BonSementaraController extends Controller
 			
 			$data['kaskecil'] = DB::select("select * from d_akun_saldo where id_akun = '$idakun' and bulan = '$month'");
 
+
+			$now = Date("Y-m-d");
+			if(floatval($nominalkeu) < 10000000.00){
+
+				$tiga = 3;
+				$temp = 1;
+				for($i = 0;$i < $tiga; $i++){
+					$tigahari = date('Y-m-d', strtotime($now . " +  {$temp} days"));
+					
+					$day = date('D' , strtotime($tigahari));
+					
+					if($day != 'Sun'){
+						
+					}
+					else {
+						$tiga = $tiga + 1;
+					}
+
+					$temp++;
+				}
+			}
+			else if(floatval($nominalkeu) > 10000000.00){
+				$tiga = 7;
+				$temp = 1;
+				for($i = 0;$i < $tiga; $i++){
+					$tigahari = date('Y-m-d', strtotime($now . " +  {$temp} days"));
+					
+					$day = date('D' , strtotime($tigahari));
+					
+					if($day != 'Sun'){
+						
+					}
+					else {
+						$tiga = $tiga + 1;
+					}
+
+					$temp++;
+				}
+
+			}
+
+			$updatepb = bonsempengajuan::find($idpb);
+			$updatepb->bp_jatuhtempo = $tigahari;
+			$updatepb->save();
 			return json_encode($data);
 		});
 	}
