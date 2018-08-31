@@ -64,7 +64,14 @@
                         <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
                         <tr>
                             <td> Pengajuan Cabang </td>
-                            <td> <input type="text" class="form-control" value="{{$banks->mb_cabangbank}} - {{$banks->nama}}"disabled></td>
+                            <td> <select class="form-control chosen-select" name="cabangbank">
+                              @foreach($data['cabang'] as $cabang)
+                                  <option value="{{$cabang->kode}}">
+                                    {{$cabang->kode}} - {{$cabang->nama}}
+                                  </option>
+                                  @endforeach
+                            </select>
+                            </td>
                         </tr>
                         <tr>
                           <td style='width:100px'> Kode Bank </td>
@@ -692,13 +699,9 @@
           tempcek = 1;
          
 
-          for(ds = 0; ds < hasilurutcek; ds++){ // CEK DOUBLE 
+          for(ds = 0; ds < arrnourutcek.length; ds++){ // CEK DOUBLE 
             if(arrnourutcek[ds] == urutcek){
              tempcek = parseInt(tempcek) + 1;
-              
-              console.log(arrnourutcek[ds] + 'urut');
-              console.log(urutcek + 'urut2');
-
             }
             else {
               for(i=1;i<=hasilurutcek;i++){
@@ -712,16 +715,13 @@
 
 
           tempbg = 1;
-          for(ds = 0; ds < hasilurutbg; ds++){ // CEK DOUBLE BG
+          for(ds = 0; ds < arrnourutbg.length; ds++){ // CEK DOUBLE BG
             if(arrnourutbg[ds] == urutbg){
              tempbg = parseInt(tempbg) + 1;
               
-              console.log(arrnourutbg[ds] + 'urut');
-              console.log(urutbg + 'urut2');
-
             }
             else {
-              for(i=1;i<=hasilurutbg;i++){
+              for(i=1;i<=arrnourutbg.length;i++){
                 if(arrnourutbg[ds + i] == urutbg){
                    tempbg = parseInt(tempbg) + 1;
                 }
@@ -1021,8 +1021,13 @@
   })
 
 
+ function pad (str, max) {
+  str = str.toString();
+  return str.length < max ? pad("0" + str, max) : str;
+}
+
   hasil = 0;
-  $('.urutcek').change(function(){
+  $('.urutcek').keyup(function(){
     val = $(this).val();
     if(val == ''){
     //  alert('Mohon isi val nya :)'); 
@@ -1031,20 +1036,59 @@
        $('.hasilurutcek').val('');      
     }
     else {
-      hasil = parseInt(val) + 25;
-      $('.hasilurutcek').val(hasil);      
+      str = val.search('0');
+      lengthval = val.length;
+      if(val.indexOf(str) == 0){
+        $temp0 = 0;
+    
+        for(i = 0; i < lengthval; i++){          
+          if(val.indexOf('0' , i) == i){
+            $temp0 = parseInt($temp0) + 1;
+          }
+          else {
+           i = lengthval;
+          }
+        }  
+          hasil = parseInt(val) + 24;
+          hasil = pad(hasil, lengthval);
+         
+         $('.hasilurutcek').val(hasil); 
+      }
+      else {
+        hasil = parseInt(val) + 24;
+        $('.hasilurutcek').val(hasil);      
+      }
     }
   })
 
-  $('.urutbg').change(function(){
+  $('.urutbg').keyup(function(){
     val = $(this).val();
     if(val == ''){
       alert('Mohon isi val nya :)'); 
        $('.hasilurutbg').val('');      
     }
     else {
-      hasil = parseInt(val) + 25;
-      $('.hasilurutbg').val(hasil);      
+      str = val.search('0');
+      lengthval = val.length;
+      if(val.indexOf(str) == 0){
+        $temp0 = 0;   
+        for(i = 0; i < lengthval; i++){          
+          if(val.indexOf('0' , i) == i){
+            $temp0 = parseInt($temp0) + 1;
+          }
+          else {
+           i = lengthval;
+          }
+        }  
+          hasil = parseInt(val) + 24;
+          hasil = pad(hasil, lengthval);
+         
+         $('.hasilurutbg').val(hasil); 
+      }
+      else {
+        hasil = parseInt(val) + 24;
+        $('.hasilurutbg').val(hasil);      
+      }
     }
   })
 

@@ -584,7 +584,7 @@
              tempcek = parseInt(tempcek) + 1;
             }
             else {
-              for(i=1;i<=hasilurutcek;i++){
+              for(i=1;i<=arrnourutcek.length;i++){
                 if(arrnourutcek[ds + i] == urutcek){
                    tempcek = parseInt(tempcek) + 1;
                 }

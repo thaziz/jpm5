@@ -327,11 +327,13 @@
               }
               else if(data == 'akun hpp kosong') {
                 toastr.info('Kode akun hpp tidak ada pada cabang ' + cabang);
-
+              }
+              else if(data == 'tidak ada akun'){
+                toastr.info('Item tidak memiliki kode akun persediaan / hpp');
               }
               else {
                  var item = $('.tabel_item').DataTable();
-               item.ajax.reload();
+                 item.ajax.reload();
               }
               
             },

@@ -578,12 +578,12 @@
       $no++;
 
       var rowBrg = "<tr id='dataitem item-"+$no+"' class='dataitem item-"+$no+"'>" +
-                    "<td> <b>" + $no +"</b> </td>" +               
-                    "<td> <select class='form-control chosen-select' name='idbarang[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}>  {{$item->kode_item}} - {{$item->nama_masteritem}} </option> @endforeach </select>" +
-                     "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
-                     "<td> <select class='form-control' name='updatestock[]'> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
-                    "<td> <a class='btn btn-danger removes-btn' data-id="+$no+"> <i class='fa fa-trash'> </i>  </a> </td>" +
-                    "</tr>";
+                  "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
+                  "<td> <select class='form-control brg' name='brg[]' data-id="+$no+" >  @foreach($data['item'] as $item) <option value='{{$item->kode_item}}+{{$item->harga}}+{{$item->updatestock}}'> {{$item->nama_masteritem}} </option> @endforeach </select>" +
+                   "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
+                   "<td> <select class='form-control updatestock"+$no+"' name='updatestock[]' readonly> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
+                  "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a></td>" +
+                  "</tr>";
 
         /*var rowBrg = "<tr> <td colspan='4'> <select class='form-control'> <option value=''> Ana </option> <option value=''> Arief </option> </select> </td> </tr>";*/
 
@@ -607,7 +607,18 @@
              // alert(length + 'length');
               var parent = $('.item-'+id);
              parent.remove();
-          })
+          });
+
+        $('.brg').change(function(){
+            val = $(this).val();
+            explode = val.split("+");
+            harga = explode[1];
+            updatestock = explode[2];
+            //alert(val);
+            dataid = $(this).data('id');
+            $('.hrg' + dataid).val(addCommas(harga));
+            $('.updatestock' + dataid).val(updatestock);
+         });
 
     })
   

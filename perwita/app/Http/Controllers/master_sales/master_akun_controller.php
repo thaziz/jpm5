@@ -234,8 +234,7 @@ class master_akun_controller extends Controller
 
          
 
-          if(count($akunpersediaan2) != null) {
-           
+          if($akunpersediaan2 != null) {           
             if(count($akunpersediaan) == 0) {
                return json_encode('akun persediaan kosong');
             }
@@ -261,7 +260,7 @@ class master_akun_controller extends Controller
             }
            
           }
-          else if(count($akunhpp2) != null) {
+          else if($akunhpp2 != null) {
             if(count($akunhpp) == 0){             
               return json_encode('akun hpp kosong');
             }
@@ -287,10 +286,7 @@ class master_akun_controller extends Controller
             }         
           }
           else {
-         
-          
-
-            return json_encode('sukses');
+            return json_encode('tidak ada akun');
           }
         } 
       });
