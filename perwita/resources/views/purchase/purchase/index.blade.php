@@ -306,7 +306,7 @@
     function cetak(){
         var data = $('#form').serialize();
         @foreach($data['po'] as $index=>$po)
-        window.open(baseUrl++'purchaseorder/print/' + '?' + data ,"_blank");  
+        window.open(baseUrl+'purchaseorder/print/' + '?' + data ,"_blank");  
         @endforeach
     }
 
