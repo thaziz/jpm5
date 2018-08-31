@@ -66,7 +66,7 @@
                             <td> Pengajuan Cabang </td>
                             <td> <select class="form-control chosen-select" name="cabangbank">
                               @foreach($data['cabang'] as $cabang)
-                                  <option value="{{$cabang->kode}}">
+                                  <option value="{{$cabang->kode}}" @if($cabang->kode == $banks->mb_cabangbank) selected='' @endif>
                                     {{$cabang->kode}} - {{$cabang->nama}}
                                   </option>
                                   @endforeach
