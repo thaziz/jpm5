@@ -2276,16 +2276,7 @@ public function purchase_order() {
 					$idspp = $request->idspp[$i];
 					$idpodt = $request->idpodt[$i];
 
-					/*$selectdikirim = DB::select("select * from pembelian_orderdt where podt_idpo = '$no_po' and podt_kodeitem = '$iditem2' and podt_idspp='$idspp' ");
-					$quantitikirim = (int)$selectdikirim[0]->podt_qtykirim;
-					dd($quantitikirim);
-
-					if($quantitikirim  == $request->qtyterima[$i]){
-						$status = "LENGKAP";
-					}
-					else {
-						$status = "TIDAK LENGKAP";
-					}*/
+				
 
 					//melihatqtydisetiapitem
 				$select = DB::select("select * from penerimaan_barangdt where pbdt_item = '$iditem2' and pbdt_po = '$no_po' and pbdt_idspp = '$idspp' "); 
@@ -2296,8 +2287,6 @@ public function purchase_order() {
 				$quantitikirim = (int)$selectdikirim[0]->podt_qtykirim;
 				$qty = $request->qtyterima[$i];
 				$qtyditerima = (int)$qty;
-
-
 
 				//membuat status
 				if($qtyditerima == $quantitikirim) {
@@ -3563,10 +3552,52 @@ public function purchase_order() {
 		    			$key++;
 		    		}   
 			}
+			else if($flag == 'PBG'){
+				$idpbg = $request->idpbg;
+				$datapsm = DB::select("select * from pengeluaran_stock_mutasi where psm_pb_id = '$idpbg'");
+				$datapb = DB::select("select * from pengeluaran_barang where pb_id = '$idpbg'");
+				$cabangasal = $datapb[0]->pb_comp;
+				$gudang = $datapb[0]->pb_gudang_cabang;
+				$datacomp = DB::select("select * from mastergudang where mg_id = '$gudang'");
+				$cabangtujuan = $datacomp->mg_cabang;
+				$datajurnalpbg = [];
+				
+				for($j = 0; $j < count($datapsm); $j++){
+					$item = $datapsm[$j]->psm_item;
+					$dataitem = DB::select("select * from masteritem where kode_item = '$item'");
+					$accpersediaan = $dataitem[0]->accpersediaan;
+
+					$accpersediaan = substr($accpersediaan, 0,4);
+					$dataakunasal = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan%' and kode_cabang = '$cabangasal'");
+					$akunasal = $dataakunasal[0]->id_akun;
+
+					$dataakuntujuan = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan%' and kode_cabang = '$cabangtujuan'");
+					$akuntujuan = $dataakuntujuan[0]->id_akun;
+
+				
+					$totalhutang = 0;
+					for($i = 0; $i < count($request->accpersediaan); $i++){
+						$totalharga = $request->qtyterima[$i] * $request->jumlahharga[$i];
+
+						$datajurnalpbg[$i]['id_akun'] = $request->accpersediaan[$i];
+						$datajurnalpbg[$i]['subtotal'] = $totalharga;
+						$datajurnalpbg[$i]['dk'] = 'D';
+
+						$totalhutang = $totalhutang + $totalharga;
+					}	
 
 
-		
-		 			
+					$dataakun = array (
+						'id_akun' => $request->acchutangsupplierpo,
+						'subtotal' => $totalhutang,
+						'dk' => 'K',
+						);
+
+					array_push($datajurnal, $dataakun );
+
+	
+				}
+			}
 
 		} // jika stock iya
 		$dataInfo=['status'=>'sukses'];        
@@ -7061,7 +7092,7 @@ public function kekata($x) {
 	
 			}		
 			else {
-				$data['po'] = DB::select("select  LEFT(po_no,2) as flag , po_cabangtransaksi as cabang, po_id as id , po_no as nobukti, pb_po, po_tipe as penerimaan, po_totalharga as totalharga , po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J' and po_cabang = '$cabang' and po_statusreturn = 'AKTIF' and pb_terfaktur IS null union select  LEFT(po_no,2) as flag , po_cabangtransaksi as cabang, po_id as id , po_no as nobukti, po_id, po_tipe as penerimaan, po_totalharga as totalharga, po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id and po_supplier = '$idsup' where po_tipe = 'J' and po_cabang = '$cabang' and po_idfaktur IS null and po_statusreturn = 'AKTIF'  order  by id desc");
+				$data['po'] = DB::select("select  LEFT(po_no,2) as flag , po_cabangtransaksi as cabang, po_id as id , po_no as nobukti, pb_po, po_tipe as penerimaan, po_totalharga as totalharga , po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J' and po_cabangtransaksi = '$cabang' and po_statusreturn = 'AKTIF' and pb_terfaktur IS null union select  LEFT(po_no,2) as flag , po_cabangtransaksi as cabang, po_id as id , po_no as nobukti, po_id, po_tipe as penerimaan, po_totalharga as totalharga, po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id and po_supplier = '$idsup' where po_tipe = 'J' and po_cabangtransaksi = '$cabang' and po_idfaktur IS null and po_statusreturn = 'AKTIF'  order  by id desc");
 			}
 			
 			
