@@ -834,9 +834,9 @@ class LaporanMasterController extends Controller
 
         
 
-		$myFile= Excel::create("filename", function($excel) use($data) {
-		   $excel->setTitle('title');
-		   $excel->sheet('sheet 1', function($sheet) use($data) {
+			$myFile= Excel::create("filename", function($excel) use($data) {
+		    $excel->setTitle('title');
+		    $excel->sheet('sheet 1', function($sheet) use($data) {
 		   	$sheetArray = array();
 		   	$sheetArray[] = array('No DO','Tanggal','Pengirim','Penerima','Kota Asal','Kota Tujuan','Tipe','Status','Cabang','Tarif Keseluruhan');
 

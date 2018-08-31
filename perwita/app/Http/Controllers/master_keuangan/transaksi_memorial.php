@@ -255,7 +255,6 @@ class transaksi_memorial extends Controller
         }
 
         $jurnal = d_jurnal::find($request->id_transaksi);
-        $jurnal->jr_date = date('Y-m-d');
         $jurnal->jr_detail = $request->jr_detail;
         $jurnal->jr_note = $request->jr_detail;
         // $jurnal->jr_on_proses = 2;

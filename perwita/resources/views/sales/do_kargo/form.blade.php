@@ -20,6 +20,7 @@
 .form-control{
     text-transform: uppercase;
 }
+
 </style>
 
 
@@ -40,7 +41,7 @@
                 <div class="box-header">
                 </div><!-- /.box-header -->
                         <div class="col-sm-12">
-                            <form class="col-sm-6"> 
+                            <form class="col-sm-6" style=""> 
                                 <table class="table table-bordered tabel_header table-striped"> 
                                     <tr>
                                         <td style="width: 150px;">Nomor</td>
@@ -196,18 +197,18 @@
                                     </tr>
                                 </table>
                             </form>
-                            <form class="col-sm-6" style="margin-bottom: 80px">
+                            <form class="col-sm-6" style="margin-bottom: 80px;">
                                 <table class="table table-bordered table-striped tabel_detail">
                                     <tr>
                                         <td>Nopol</td>
-                                        <td class="nopol_dropdown" colspan="2">
+                                        <td class="nopol_dropdown" colspan="3">
                                             <select name="tipe_kendaraan" class="form-control tipe_kendaraan chosen-select-width input-sm">
                                                 <option></option>
                                             </select>
                                         </td>
-                                        <td>
+                                       {{--  <td>
                                             <button type="button" class=" buat_nopol btn btn-warning"><i class="fa fa-car"> Buat Nopol</i></button>
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                     <tr>
                                         <td>Nama Subcon</td>
@@ -305,7 +306,7 @@
                             </form>
                         </div>
                         <div class="col-sm-12" >
-                            <form class="col-sm-6">
+                            <form class="col-sm-6" style="">
                                 <table class="table table-bordered table-striped tabel_pengirim">
                                     <tr>
                                         <td align="center" colspan="2">
