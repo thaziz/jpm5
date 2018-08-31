@@ -260,8 +260,8 @@
       evt.preventDefault();
 
       btn = $(this);
-      // btn.attr("disabled", "disabled");
-      // btn.text("Menyimpan...");
+      btn.attr("disabled", "disabled");
+      btn.text("Menyimpan...");
 
       if($(".total_debet").val() != $(".total_kredit").val()){
         alert("Total Debet Kredit Harus Sama");
@@ -284,7 +284,7 @@
               btn.removeAttr("disabled");
               btn.text("Simpan");
 
-              // form_reset();
+              form_reset();
             }else if(response.status == "exist"){
               toastr.error('Kode Master Akun Sudah Ada Dengan Nama '+response.content+'. Silahkan Membuat Kode Akun Lagi.');
               btn.removeAttr("disabled");
