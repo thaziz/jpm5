@@ -8584,9 +8584,9 @@ public function kekata($x) {
 				if($idjenisbayar == '2' ){
 
 					if($cabang == 000){
-						$datas['fp'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' order by fp_idfaktur asc");
+						$datas['fp'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00'  and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' order by fp_idfaktur asc");
 	
-						$datas['fp1'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' order by fp_idfaktur asc");
+						$datas['fp1'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' order by fp_idfaktur asc");
 					}
 					else{
 						$datas['fp'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' order by fp_idfaktur asc");
@@ -8724,9 +8724,9 @@ public function kekata($x) {
 					}
 				}
 				else if($idjenisbayar == '1'){ //GIRO KAS KECIL
-					$datas['fp']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$nosupplier' and ik_comp = kode and ik_status = 'APPROVED'");
+					$datas['fp']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$nosupplier' and ik_comp = $cabang and ik_status = 'APPROVED'");
 
-					$datas['fp1']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$nosupplier' and ik_comp = kode and ik_status = 'APPROVED' and ik_pelunasan != 0.00");
+					$datas['fp1']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$nosupplier' and ik_comp = $cabang and ik_status = 'APPROVED' and ik_pelunasan != 0.00");
 
 					if(count($request->arrnofaktur) != 0){
 						for($i = 0 ; $i < count($datas['fp']); $i++){

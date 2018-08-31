@@ -540,7 +540,7 @@ class MasterPurchaseController extends Controller
 
 	public function updatemasterbank(Request $request){
 		return DB::transaction(function() use ($request) { 
-		//update di header
+		
 		$data['header3'] = DB::table('masterbank')
 							->where('mb_id' , $request->mb_id)
 							->update([
@@ -550,31 +550,22 @@ class MasterPurchaseController extends Controller
 								'mb_mshaktif' => $request->mshaktif,
 								'mb_namarekening' => $request->namarekening,
 								'mb_accno' => $request->norekening,
-								'mb_kelompok' => $request->kelompokbank
+								'mb_kelompok' => $request->kelompokbank,
+								'mb_cabangbank' => $request->cabangbank,
 							]);
 		$tempdatafpg = 0;
 
-		/*$idbank = $request->mb_id;
-		for($hs = 0; $hs < count($request->noseridatabase); $hs++){
-			$datambdt['database'] = DB::select("select * from masterbank_dt where mb_id = '$idbank'");
-			for($hx = 0; $hx < count($datambdt['database']); $hx++){
-				$noseri = $datambdt['database'][$hx]->mbdt_noseri;
-				if($noseri){
-					DB::delete("DELETE from  masterbank_dt where mb_id = '$idbbk'");	
-				}
-			}
-		}
-
-
-		for($h = 0; $h < count($request->noseridatabase); $h++){
-			if($request->databasefpg[$h] != ' '){
-				$tempdatafpg = $tempdatafpg + 1;
-			}
-		}*/
+		
 
 		
 			if($request->input == 'CEK'){
 				$banyaknyaseri = $request->nosericek;
+				$updatecekbank = DB::table('masterbank')
+							->where('mb_id' , $request->mb_id)
+							->update([
+								'mb_tglbukucek' => $request->tglbukucek,
+							]);
+
 				for($i = 10; $i < count($banyaknyaseri);$i++){
 					$masterbankdt = new masterbank_dt();
 
@@ -601,6 +592,12 @@ class MasterPurchaseController extends Controller
 			}
 			else if($request->input == 'BG'){
 				$banyaknyaseri = $request->noseribg;
+				$updatebgbank = DB::table('masterbank')
+							->where('mb_id' , $request->mb_id)
+							->update([
+								'mb_tglbukubg' => $request->tglbukubg,
+							]);
+
 				for($i = 10; $i < count($banyaknyaseri);$i++){
 					$masterbankdt = new masterbank_dt();
 
@@ -630,6 +627,14 @@ class MasterPurchaseController extends Controller
 				$countcek = count($banyaknyasericek);
 				$temp = 0;
 				
+				$updatebgbank = DB::table('masterbank')
+							->where('mb_id' , $request->mb_id)
+							->update([
+								'mb_tglbukubg' => $request->tglbukubg,
+								'mb_tglbukucek' => $request->tglbukucek,
+							]);
+
+
 				if($countcek % 25 == 0){
 					$temp = 0;
 				}else {
@@ -719,6 +724,7 @@ class MasterPurchaseController extends Controller
 		$data['bankdt'] = DB::select("select * from masterbank, masterbank_dt  where mbdt_idmb = mb_id and mbdt_idmb = '$id'");
 		$data['akun'] =DB::select("select * from d_akun") ;
 		$data['jenisbank'] = DB::select("select * from jenisbank");
+		$data['cabang'] = DB::select("select * from cabang");
 		/*dd($data);*/
 
 		return view('purchase/master/masterbank/detail' , compact('data'));
