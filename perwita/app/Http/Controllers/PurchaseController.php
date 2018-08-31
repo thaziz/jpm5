@@ -4837,11 +4837,11 @@ public function purchase_order() {
 		}
 		else {
 			if($stock == 'Y'){
-				$data['barang']= DB::select("select * from masteritem where updatestock = '$updatestock' and jenisitem = '$groupitem'");
+				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where updatestock = '$updatestock' and jenisitem = '$groupitem' and maf_kode_akun = kode_item");
 				$data['status'] = 'Tidak Terikat Kontrak';
 			}
 			else {
-				$data['barang']= DB::select("select * from masteritem where jenisitem = '$groupitem'");
+				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where jenisitem = '$groupitem' and maf_kode_akun = kode_item");
 				$data['status'] = 'Tidak Terikat Kontrak';	
 			}
 
