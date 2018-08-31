@@ -42,8 +42,8 @@ class laporan_register_jurnal extends Controller
 
         $data = DB::table('d_jurnal_dt')
                     ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                    ->whereBetween("d_jurnal.jr_date", [$d1, $d2])
-                    ->where(DB::raw('substring(d_jurnal.jr_no,1,1)'), $range)
+                    // ->whereBetween("d_jurnal.jr_date", [$d1, $d2])
+                    ->where(DB::raw('substring(d_jurnal.jr_no,1,1)'), 'K')
                     ->select("d_jurnal.*")->distinct('d_jurnal.jr_id')->orderBy('d_jurnal.jr_date', 'asc')->get();
 
 

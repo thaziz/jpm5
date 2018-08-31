@@ -123,6 +123,20 @@
 
   <div class="col-md-5" style="border: 0px solid #ddd; border-radius: 5px;">
 
+    <div class="col-md-12 m-t" style="padding: 10px;">
+      <table border="0" id="form-table" class="col-md-12">
+
+        <tr>
+          <td width="25%" class="text-left">Tanggal</td>
+          <td colspan="2">
+            <input type="text" class="form_validate form-control date_memorial" name="jr_date" placeholder="Tanggal Transaksi ?" id="jr_date" readonly style="cursor: pointer;">
+          </td>
+        </tr>
+          
+
+      </table>
+    </div>
+
     <div class="col-md-12 m-t" style="padding: 10px; background: #eee;">
       <table border="0" id="form-table" class="col-md-12">
 
@@ -226,6 +240,9 @@
     }
 
     $(this).maskFunc();
+    $('.date_memorial').datepicker({
+      format: "dd-mm-yyyy",
+    })
 
     $("#nominal").keyup(function(evt){
       evt.preventDefault();
@@ -243,8 +260,8 @@
       evt.preventDefault();
 
       btn = $(this);
-      btn.attr("disabled", "disabled");
-      btn.text("Menyimpan...");
+      // btn.attr("disabled", "disabled");
+      // btn.text("Menyimpan...");
 
       if($(".total_debet").val() != $(".total_kredit").val()){
         alert("Total Debet Kredit Harus Sama");
@@ -276,6 +293,10 @@
               form_reset();
             }else if(response.status == "exist"){
               toastr.error('Kode Master Akun Sudah Ada Dengan Nama '+response.content+'. Silahkan Membuat Kode Akun Lagi.');
+              btn.removeAttr("disabled");
+              btn.text("Simpan");
+            }else if(response.status == "blocked"){
+              toastr.error('Akses Untuk Bulan Transaksi Yang Anda Inputkan Tidak Bisa Diakses. Data Tidak Bisa Kami Simpan');
               btn.removeAttr("disabled");
               btn.text("Simpan");
             }

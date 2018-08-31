@@ -66,7 +66,12 @@
           </select>
         </td>
 
-        <td width="15%" class="text-center">Type</td>
+        <td width="15%" class="text-center hide_me">Saldo Pembuka</td>
+        <td colspan="2" class="hide_me">
+          <input type="text" name="opening_balance" class="form-control currency text-right" value="0">
+        </td>
+
+        {{-- <td width="15%" class="text-center">Type</td>
         <td colspan="2">
           <select name="type_akun" class="select_validate form-control" id="type_akun">
             <option value="---"> -- Pilih Type Akun</option>
@@ -74,7 +79,7 @@
             <option value="OCF">OCF</option>
             <option value="FCF">FCF</option>
           </select>
-        </td>
+        </td> --}}
       </tr>
 
       <tr>
@@ -134,12 +139,12 @@
     </table>
   </div>
 
-  <div class="col-md-12 m-t-lg" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
-      <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Form Isian Saldo Akun</small></span>
+  <div class="col-md-12 m-t-lg" {{-- style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;" --}}>
+      {{-- <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Form Isian Opening Balnce</small></span> --}}
       
-    <div id="saldo_not_all" style="display: inline;">
-      <input type="checkbox" id="saldo" name="saldo" style="margin-top: 10px;"> &nbsp;<small>Akun Ini Memiliki Saldo. (<b>Apabila Saldo Akun 0, Maka Tidak Perlu Memilih Opsi Ini</b>)</small>
-      <table id="form-table" width="100%" border="1" style="margin-top: 10px;">
+    {{-- <div id="saldo_not_all" style="display: inline;"> --}}
+      {{-- <input type="checkbox" id="saldo" name="saldo" style="margin-top: 10px;"> &nbsp;<small>Akun Ini Memiliki Saldo. (<b>Apabila Saldo Akun 0, Maka Tidak Perlu Memilih Opsi Ini</b>)</small> --}}
+      {{-- <table id="form-table" width="100%" border="1" style="margin-top: 10px;">
         <thead>
           <tr>
             <th class="text-center" width="26%" style="padding: 5px 0px; border:1px solid #eee">Keterangan</th>
@@ -149,7 +154,7 @@
         </thead>
         <tbody>
           <tr>
-            <td class="text-center" style="padding: 3px 0px; border:1px solid #eee">Saldo Awal</td>
+            <td class="text-center" style="padding: 3px 0px; border:1px solid #eee">Opening Balance</td>
             <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
               <center>
                 <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_debet" value="0" style="width: 85%;" id="DEBET" onkeyup="if(this.value != 'Rp 0,00'){$('#KREDIT').val(0)}">
@@ -163,12 +168,12 @@
             </td>
           </tr>
         </tbody>
-      </table>
-    </div>
+      </table> --}}
+    {{-- </div> --}}
 
-    <div id="saldo_all" class="text-center" style="padding: 10px 5px; display: none;">
+    {{-- <div id="saldo_all" class="text-center" style="padding: 10px 5px; display: none;">
       <small class="text-muted">Apabila Anda Memilih Semua Cabang, Maka Anda Diharuskan Mengisi Saldo Awal Di Halaman Saldo Akun.</small>
-    </div>
+    </div> --}}
   </div>
 
   </form>
@@ -212,6 +217,7 @@
       if($(this).val() == "*"){
         $("#add_kode").val("---");$("#add_nama").val("---");
         $("#saldo_not_all").css("display", "none");
+        $(".hide_me").css("visibility", "hidden");
         $("#saldo_all").css("display", "inline-block");
         $("#share").prop('checked', true);
       }else if($(this).val() !== "---"){
@@ -219,7 +225,8 @@
         $("#add_kode").val(cabang[idx].id_provinsi+''+cabang[idx].kode_cabang);
         $("#add_nama").val(cabang[idx].nama_cabang);
         $("#saldo_all").css("display", "none");
-        $("#saldo_not_all").css("display", "inline");
+        $("#saldo_not_all").css("display", "table-cell");
+        $(".hide_me").css("visibility", "visible");
         $("#share").prop('checked', false);
       }
       else{
@@ -242,8 +249,8 @@
       evt.preventDefault();
 
       btn = $(this);
-      btn.attr("disabled", "disabled");
-      btn.text("Menyimpan...");
+      // btn.attr("disabled", "disabled");
+      // btn.text("Menyimpan...");
 
       if(validate_form()){
         $.ajax(baseUrl+"/master_keuangan/akun/save_data",{

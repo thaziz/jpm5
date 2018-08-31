@@ -59,7 +59,12 @@
           </select>
         </td>
 
-        <td width="15%" class="text-center">Type</td>
+        <td width="15%" class="text-center hide_me">Saldo Pembuka</td>
+        <td colspan="2" class="hide_me">
+          <input type="text" name="opening_balance" class="form-control currency text-right" value="{{ $data->opening_balance }}">
+        </td>
+
+       {{--  <td width="15%" class="text-center">Type</td>
         <td colspan="2">
 
           <select name="type_akun" class="select_validate form-control" id="type_akun">
@@ -67,12 +72,12 @@
             <option value="OCF">OCF</option>
             <option value="FCF">FCF</option>
           </select>
-        </td>
+        </td> --}}
       </tr>
 
       <tr>
-        <td width="15%" class="text-center">Status Aktif</td>
-        <td colspan="2">
+        <td width="15%" class="text-center" style="padding-bottom: 15px;">Status Aktif</td>
+        <td colspan="2" style="padding-bottom: 15px;">
           <?php $status = ($data->is_active == "1") ? "Aktif" : "Tidak Aktif"; ?>
           {{-- <input type="text" class="form-control" id="status" name="status" readonly value="{{ $status }}"> --}}
 
@@ -89,17 +94,24 @@
             <option value="0" {{ $t }}> Tidak</option>
           </select>
         </td>
+
+        <td width="15%" class="text-center" style="padding-bottom: 15px;">&nbsp;</td>
+        <td colspan="2" style="padding-bottom: 15px;">
+          &nbsp;
+        </td>
       </tr>
 
+      <tr><td colspan="5" style="background: #eee; padding: 0px 0px;">&nbsp;</td></tr>
+
       <tr>
-        <td width="15%" class="text-center">Group Neraca</td>
-        <td colspan="2">
+        <td width="15%" class="text-center" style="padding-top: 15px;">Group Neraca</td>
+        <td colspan="2" style="padding-top: 15px;">
           <select name="group_neraca" class="select_validate form-control chosen-select" id="group_neraca">
-            <option value="---"> -- Pilih Group Neraca</option>
+            <option value="---"> -- Belum Dipilih</option>
 
             @foreach($group_neraca as $data_group_neraca)
               <?php $selected = ($data->group_neraca == $data_group_neraca->id) ? "selected" : "" ?>
-              @if($data_group_neraca->jenis_group == "Neraca/Balance Sheet")
+              @if($data_group_neraca->jenis_group == "1")
                 <option value="{{ $data_group_neraca->id }}" {{ $selected }}>{{ $data_group_neraca->nama_group }}</option>
               @endif
             @endforeach
@@ -107,14 +119,14 @@
           </select>
         </td>
 
-        <td width="15%" class="text-center">Group Laba Rugi</td>
-        <td colspan="2">
+        <td width="15%" class="text-center" style="padding-top: 15px;">Group Laba Rugi</td>
+        <td colspan="2" style="padding-top: 15px;">
           <select name="group_laba_rugi" class="select_validate_null form-control chosen-select" id="group_laba_rugi">
             <option value="---"> -- Belum Di Pilih</option>
 
             @foreach($group_neraca as $data_group_neraca)
               <?php $selected = ($data->group_laba_rugi == $data_group_neraca->id) ? "selected" : "" ?>
-              @if($data_group_neraca->jenis_group == "Laba Rugi")
+              @if($data_group_neraca->jenis_group == "2")
                 <option value="{{ $data_group_neraca->id }}" {{ $selected }}>{{ $data_group_neraca->nama_group }}</option>
               @endif
             @endforeach

@@ -71,33 +71,43 @@ class laporan_neraca extends Controller
                              ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
                              ->join("d_jurnal", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
                              ->where("d_akun.group_neraca", $detail_dt->id_group)
-                             ->where(DB::raw("date_part('month', jr_date)"), $date)
+                             ->where(DB::raw("date_part('month', jr_date)"), '<=', $date)
                              ->where("d_jurnal.jr_year", $request->y)
                              ->select(DB::raw("sum(jrdt_value) as total"))->first();
 
-                  $saldo_awal = DB::table("d_akun_saldo")
-                                ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                  $saldo_awal = DB::table("d_akun")
                                 ->where("d_akun.group_neraca", $detail_dt->id_group)
-                                ->where("d_akun_saldo.bulan", $request->m)
-                                ->where("d_akun_saldo.tahun", $request->y)
-                                ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
+                                ->select(DB::raw("sum(opening_balance) as saldo"))->first();
+
+                  // return json_encode($saldo_awal);
+
+                  // $saldo_awal = DB::table("d_akun_saldo")
+                  //               ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                  //               ->where("d_akun.group_neraca", $detail_dt->id_group)
+                  //               ->where("d_akun_saldo.bulan", $request->m)
+                  //               ->where("d_akun_saldo.tahun", $request->y)
+                  //               ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
                 }else{
                   $transaksi = DB::table("d_jurnal_dt")
                              ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
                              ->join("d_jurnal", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
                              ->where("d_akun.group_neraca", $detail_dt->id_group)
                              ->where("d_akun.kode_cabang", $_GET["cab"])
-                             ->where(DB::raw("date_part('month', jr_date)"), $date)
+                             ->where(DB::raw("date_part('month', jr_date)"), '<=', $date)
                              ->where("d_jurnal.jr_year", $request->y)
                              ->select(DB::raw("sum(jrdt_value) as total"))->first();
 
-                  $saldo_awal = DB::table("d_akun_saldo")
-                                ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                  $saldo_awal = DB::table("d_akun")
                                 ->where("d_akun.group_neraca", $detail_dt->id_group)
-                                ->where("d_akun.kode_cabang", $_GET["cab"])
-                                ->where("d_akun_saldo.bulan", $request->m)
-                                ->where("d_akun_saldo.tahun", $request->y)
-                                ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
+                                ->select(DB::raw("sum(opening_balance) as saldo"))->first();
+
+                  // $saldo_awal = DB::table("d_akun_saldo")
+                  //               ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                  //               ->where("d_akun.group_neraca", $detail_dt->id_group)
+                  //               ->where("d_akun.kode_cabang", $_GET["cab"])
+                  //               ->where("d_akun_saldo.bulan", $request->m)
+                  //               ->where("d_akun_saldo.tahun", $request->y)
+                  //               ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
                 }
 
                 $total_akhir = (is_null($transaksi->total)) ? (0 + $saldo_awal->saldo) : ($transaksi->total + $saldo_awal->saldo);
@@ -108,14 +118,18 @@ class laporan_neraca extends Controller
                              ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
                              ->join("d_jurnal", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
                              ->where("d_akun.group_neraca", $detail_dt->id_group)
-                             ->where("d_jurnal.jr_year", $request->y)
+                             ->where("d_jurnal.jr_year", '<=', $request->y)
                              ->select(DB::raw("sum(jrdt_value) as total"))->first();
 
-                  $saldo_awal = DB::table("d_akun_saldo")
-                                ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                  $saldo_awal = DB::table("d_akun")
                                 ->where("d_akun.group_neraca", $detail_dt->id_group)
-                                ->where("d_akun_saldo.tahun", $request->y)
-                                ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
+                                ->select(DB::raw("sum(opening_balance) as saldo"))->first();
+
+                  // $saldo_awal = DB::table("d_akun_saldo")
+                  //               ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                  //               ->where("d_akun.group_neraca", $detail_dt->id_group)
+                  //               ->where("d_akun_saldo.tahun", $request->y)
+                  //               ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
 
                 }else{
                   $transaksi = DB::table("d_jurnal_dt")
@@ -123,15 +137,19 @@ class laporan_neraca extends Controller
                              ->join("d_jurnal", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
                              ->where("d_akun.group_neraca", $detail_dt->id_group)
                              ->where('d_akun.kode_cabang', $_GET["cab"])
-                             ->where("d_jurnal.jr_year", $request->y)
+                             ->where("d_jurnal.jr_year", '<=', $request->y)
                              ->select(DB::raw("sum(jrdt_value) as total"))->first();
 
-                  $saldo_awal = DB::table("d_akun_saldo")
-                                ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                  $saldo_awal = DB::table("d_akun")
                                 ->where("d_akun.group_neraca", $detail_dt->id_group)
-                                ->where('d_akun.kode_cabang', $_GET["cab"])
-                                ->where("d_akun_saldo.tahun", $request->y)
-                                ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
+                                ->select(DB::raw("sum(opening_balance) as saldo"))->first();
+
+                  // $saldo_awal = DB::table("d_akun_saldo")
+                  //               ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                  //               ->where("d_akun.group_neraca", $detail_dt->id_group)
+                  //               ->where('d_akun.kode_cabang', $_GET["cab"])
+                  //               ->where("d_akun_saldo.tahun", $request->y)
+                  //               ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
                 }
 
                 $total_akhir = (is_null($transaksi->total)) ? (0 + $saldo_awal->saldo) : ($transaksi->total + $saldo_awal->saldo);

@@ -130,17 +130,20 @@ class akun_Controller extends Controller
                     $akun->group_neraca = $request->group_neraca;
                     $akun->group_laba_rugi = $request->group_laba_rugi;
                     $akun->shareable = "1";
+                    $akun->opening_balance = 0;
 
-                    if($akun->save()){
-                        $saldo = new master_akun_saldo;
-                        $saldo->id_akun = $request->kode_akun.''.$prov->id.''.$data_cabang->kode;
-                        $saldo->tahun = date("Y");
-                        $saldo->is_active = 1;
-                        $saldo->bulan = date("m");
-                        $saldo->saldo_akun = 0;
+                    $akun->save();
 
-                        $saldo->save();
-                    }
+                    // if($akun->save()){
+                    //     $saldo = new master_akun_saldo;
+                    //     $saldo->id_akun = $request->kode_akun.''.$prov->id.''.$data_cabang->kode;
+                    //     $saldo->tahun = date("Y");
+                    //     $saldo->is_active = 1;
+                    //     $saldo->bulan = date("m");
+                    //     $saldo->saldo_akun = 0;
+
+                    //     $saldo->save();
+                    // }
                 }
 
             }
@@ -180,36 +183,39 @@ class akun_Controller extends Controller
             $akun->group_neraca = $request->group_neraca;
             $akun->group_laba_rugi = $request->group_laba_rugi;
             $akun->shareable = "1";
+            $akun->opening_balance = str_replace(".", "", explode(",", $request->opening_balance)[0]);
 
-            if($akun->save()){
-                if(isset($request->saldo)){
-                    $saldo = new master_akun_saldo;
-                    $saldo->id_akun = "aaa";
-                    $saldo->tahun = date("Y");
-                    $saldo->is_active = 1;
-                    $saldo->bulan = date("m");
+            $akun->save();
 
-                    $saldo_debet = str_replace(".", "", explode(",", $request->saldo_debet)[0]);
-                    $saldo_kredit = str_replace(".", "", explode(",", $request->saldo_kredit)[0]);
+            // if($akun->save()){
+            //     if(isset($request->saldo)){
+            //         $saldo = new master_akun_saldo;
+            //         $saldo->id_akun = "aaa";
+            //         $saldo->tahun = date("Y");
+            //         $saldo->is_active = 1;
+            //         $saldo->bulan = date("m");
 
-                    if($saldo_debet == 0){
-                        $saldo->saldo_akun = ($request->posisi_dk == "D") ? ($saldo_kredit * -1) : $saldo_kredit;
-                    }else if($saldo_kredit == 0){
-                        $saldo->saldo_akun = ($request->posisi_dk == "D") ? $saldo_debet : ($saldo_debet * -1);
-                    }
+            //         $saldo_debet = str_replace(".", "", explode(",", $request->saldo_debet)[0]);
+            //         $saldo_kredit = str_replace(".", "", explode(",", $request->saldo_kredit)[0]);
 
-                    $saldo->save();
-                }else{
-                    $saldo = new master_akun_saldo;
-                    $saldo->id_akun = $request->kode_akun."".$request->add_kode;
-                    $saldo->tahun = date("Y");
-                    $saldo->is_active = 1;
-                    $saldo->bulan = date("m");
-                    $saldo->saldo_akun = 0;
+            //         if($saldo_debet == 0){
+            //             $saldo->saldo_akun = ($request->posisi_dk == "D") ? ($saldo_kredit * -1) : $saldo_kredit;
+            //         }else if($saldo_kredit == 0){
+            //             $saldo->saldo_akun = ($request->posisi_dk == "D") ? $saldo_debet : ($saldo_debet * -1);
+            //         }
 
-                    $saldo->save();
-                }
-            }
+            //         $saldo->save();
+            //     }else{
+            //         $saldo = new master_akun_saldo;
+            //         $saldo->id_akun = $request->kode_akun."".$request->add_kode;
+            //         $saldo->tahun = date("Y");
+            //         $saldo->is_active = 1;
+            //         $saldo->bulan = date("m");
+            //         $saldo->saldo_akun = 0;
+
+            //         $saldo->save();
+            //     }
+            // }
         }
 
         return json_encode($response);
@@ -238,7 +244,7 @@ class akun_Controller extends Controller
     }
 
     public function update_data(Request $request){
-        return json_encode($request->all());
+        // return json_encode($request->all());
         $response = [
             'status'    => 'sukses',
             'content'   => $request->all()
@@ -246,6 +252,11 @@ class akun_Controller extends Controller
 
         $akun = master_akun::find($request->kode_akun);
         $akun->nama_akun = $request->nama_akun;
+        $akun->akun_dka = $request->posisi_dk;
+        $akun->is_active = $request->status_aktif;
+        $akun->group_neraca = $request->group_neraca;
+        $akun->group_laba_rugi = $request->group_laba_rugi;
+        $akun->opening_balance = str_replace(".", "", explode(",", $request->opening_balance)[0]);
 
         if($akun->save()){
             return json_encode($response);
