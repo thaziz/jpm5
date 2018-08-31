@@ -166,21 +166,21 @@ class d_jurnal_controller extends Controller
 
        if($request->type_transaksi == "kas"){
             if($request->jenis_transaksi == 1){
-                $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKM")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
+                $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKM")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y', strtotime($request->jr_date)))->orderBy('jr_insert', 'desc')->first();
 
                 $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
                 $ref = "TKM-".date("my", strtotime($request->jr_date))."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
-                $jr_no = get_id_jurnal('KM', $request->cabang);
+                $jr_no = get_id_jurnal('KM', $request->cabang, $request->jr_date);
 
                 // return json_encode($jr);
-                // return json_encode($jr_no." __ ".$ref);
+                // return json_encode($jr_no.' __ '.$ref);
             }
             else{
                $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKK")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
 
                 $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
                 $ref = "TKK-".date("my", strtotime($request->jr_date))."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
-                $jr_no = get_id_jurnal('KK', $request->cabang);
+                $jr_no = get_id_jurnal('KK', $request->cabang, $request->jr_date);
 
                 // return json_encode($jr);
                 // return json_encode($jr_no." __ ".$ref);
@@ -189,8 +189,8 @@ class d_jurnal_controller extends Controller
 
         $jurnal = new d_jurnal;
         $jurnal->jr_id = ($id+1);
-        $jurnal->jr_year = date('Y');
-        $jurnal->jr_date = date('Y-m-d');
+        $jurnal->jr_year = $date[2];
+        $jurnal->jr_date = $request->jr_date;
         $jurnal->jr_detail = $request->jr_detail;
         $jurnal->jr_ref = $ref;
         $jurnal->jr_note = $request->jr_detail;

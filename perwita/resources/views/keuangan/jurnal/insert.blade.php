@@ -279,7 +279,6 @@
           dataType: 'json',
           success: function(response){
             console.log(response);
-            form_reset();
             if(response.status == "berhasil"){
               toastr.success('Data Transaksi Kas Berhasil Disimpan');
               btn.removeAttr("disabled");
