@@ -11319,6 +11319,47 @@ public function kekata($x) {
 			'fpg_keterangan' => $request->keterangan,
 			]);	
 
+		//deletenofaktur
+		$jenisbayar = $request->jenisbayarheader;
+		if($jenisbayar == '2' || $jenisbayar == '6' || $jenisbayar == '7' || $jenisbayar == '9'){
+			$idfpgdt = $request->idfpgdt;
+			$idfp = $request->idfp;
+			$pelunasan = $request->pelunasan;
+
+			$pelunasan2 = str_replace(',', '', $pelunasan);
+			
+
+			$deletefpgdt = DB::table('fpg_dt')->where('fpgdt_id' , '=' , $idfpgdt)->delete();
+			$datafaktur = DB::select("select * from faktur_pembelian where fp_idfaktur = '$idfp'");
+			$fp_pelunasan = $datafaktur[0]->fp_sisapelunasan;
+
+			$penjumlahan = (float)$fp_pelunasan + (float)$pelunasan2;
+			$updatefaktur = fakturpembelian::where('fp_idfaktur', '=' , $idfp);
+					$updatefaktur->update([
+						'fp_sisapelunasan' => $penjumlahan,
+						'fp_edit' => 'ALLOWED',
+					]);
+		}
+		else if($jenisbayar == '1'){
+			$idfpgdt = $request->idfpgdt;
+			$idfp = $request->idfp;
+			$pelunasan = $request->pelunasan;
+
+			$pelunasan2 = str_replace(',', '', $pelunasan);
+			
+
+			$deletefpgdt = DB::table('fpg_dt')->where('fpgdt_id' , '=' , $idfpgdt)->delete();
+			$datafaktur = DB::select("select * from faktur_pembelian where fp_idfaktur = '$idfp'");
+			$fp_pelunasan = $datafaktur[0]->fp_sisapelunasan;
+
+			$penjumlahan = (float)$fp_pelunasan + (float)$pelunasan2;
+			$updatefaktur = fakturpembelian::where('fp_idfaktur', '=' , $idfp);
+					$updatefaktur->update([
+						'fp_sisapelunasan' => $penjumlahan,
+						'fp_edit' => 'ALLOWED',
+					]);
+		}
+
 	
 		for($j=0;$j<count($request->nofaktur);$j++){
 			$idfp = $request->idfaktur[$j];
@@ -11490,8 +11531,6 @@ public function kekata($x) {
 				$updatefaktur->update([
 					'fp_sisapelunasan' => $penjumlahan
 				]);
-
-		return 'ok';
 	}
 
 
