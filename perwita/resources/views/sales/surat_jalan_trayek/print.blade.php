@@ -427,9 +427,13 @@
 						echo '<td style="text-align:center;" class="textcenter right top bot">'.$temp.'&nbsp</td>'
 					@endphp
 					@php
-						$temp = 0;
+						$temp1 = 0;
 						foreach($detail as $row){
-							$temp+=$row->koli;
+							if ($row->type_kiriman == 'KILOGRAM') {
+								$temp1+=$row->koli;
+							}else{
+								$temp1+=$row->jumlah;
+							}
 						}
 						echo '<td style="text-align:center;" class="textcenter top bot">'.$temp.'&nbsp</td>'
 					@endphp
