@@ -185,172 +185,120 @@ class do_kertas_Controller extends Controller
         // dd($request->all());
         return DB::transaction(function() use ($request) { 
 
-            $cari_do = DB::table('delivery_order')
-                      ->where('nomor',$request->ed_nomor)
-                      ->first();
+            
             $tgl = str_replace('/', '-', $request->ed_tanggal);
             $tgl = carbon::parse($tgl)->format('Y-m-d');
 
-            if ($cari_do == null) {
-                $save_head = DB::table('delivery_order')
-                               ->insert([
-                                'nomor'             => str_replace(' ','',strtoupper($request->ed_nomor)),
-                                'tanggal'           => $tgl,
-                                'kode_customer'     => $request->customer,
-                                'pendapatan'        => 'KORAN',
-                                'kode_cabang'       => $request->cb_cabang,
-                                'diskon'            => $request->ed_diskon_m,
-                                'total_net'         => $request->total_net_m,
-                                'total'             => $request->ed_total_m+$request->ed_diskon_m,
-                                'biaya_tambahan'    => filter_var($request->biaya_tambahan, FILTER_SANITIZE_NUMBER_INT),
-                                'jenis'             => 'KORAN',
-                                'kontrak'           => $request->check,
-                                'status_do'         => 'Released',
-                                'created_by'        =>  Auth::user()->m_name,
-                                'created_at'        =>  Carbon::now(),
-                                'updated_by'        =>  Auth::user()->m_name,
-                                'updated_at'        =>  Carbon::now(),
-                                
-                               ]);
-
-                for ($i=0; $i < count($request->d_kode_item); $i++) { 
-                    $id = DB::table('delivery_orderd')
-                            ->max('dd_id');
-                    if ($id != null) {
-                        $id+=1;
-                    }else{
-                        $id =1;
-                    }
-                    // dd($request->all());
-                    if ($request->d_kcd_dt[$i] == '') {
-                        $d_kcd_dt[$i] = 0;
-                    }else{
-                        $d_kcd_dt[$i] = $request->d_kcd_dt[$i];
-                    }
-                    $kcd = DB::table('kontrak_customer_d')
-                             ->where('kcd_kode',$request->d_kode_item[$i])
-                             ->where('kcd_dt',$d_kcd_dt[$i])
-                             ->first();
-                    if ($kcd!=null) {
-                        $grup = $kcd->kcd_grup;
-                    }else{
-                        $kcd = DB::table('item')
-                             ->where('kode',$request->d_kode_item[$i])
-                             ->first();
-                        $grup = $kcd->kode_grup_item;
-                    }
-                    $save_detail = DB::table('delivery_orderd')
-                                 ->insert([
-                                    'dd_id' => $id,
-                                    'dd_nomor' => str_replace(' ','',strtoupper($request->ed_nomor)),
-                                    'dd_nomor_dt' => $i+1,
-                                    'dd_kode_item' => strtoupper($request->d_kode_item[$i]),
-                                    'dd_kode_satuan' => strtoupper($request->d_satuan[$i]),
-                                    'dd_jumlah' => $request->d_jumlah[$i],
-                                    'dd_harga' => $request->d_harga[$i],
-                                    'dd_diskon' => $request->d_diskon[$i],
-                                    'dd_total' => $request->d_netto[$i],
-                                    'dd_id_kota_asal' => $request->d_asal[$i],
-                                    'dd_id_kontrak'   => $d_kcd_dt[$i],
-                                    'dd_id_kota_tujuan' => $request->d_tujuan[$i],
-                                    'dd_keterangan' => strtoupper($request->d_keterangan[$i]),
-                                    'dd_acc_penjualan' => strtoupper($request->d_acc_penjualan[$i]),
-                                    'dd_csf_penjualan' => strtoupper($request->d_csf_penjualan[$i]),
-                                    'dd_acc_piutang' => strtoupper($request->d_acc_piutang[$i]),
-                                    'dd_csf_piutang' => strtoupper($request->d_csf_piutang[$i]),
-                                    'dd_grup' => strtoupper( $grup),
-
-
-                                 ]);
-                }
-                return response()->json(['status'=>1,'berhasil'=>'success']);
-            }else{
-                $bulan  = Carbon::now()->format('m');
-                $tahun  = Carbon::now()->format('y');
-                $cabang = $request->cb_cabang;
-                $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from delivery_order
-                                                WHERE kode_cabang = '$cabang'
-                                                AND to_char(tanggal,'MM') = '$bulan'
-                                                AND jenis = 'KORAN'
-                                                AND to_char(tanggal,'YY') = '$tahun'");
-
-                $index = (integer)$cari_nota[0]->id + 1;
-                $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-
-                $nota = 'KRN' . $cabang . $bulan . $tahun . $index;
-
-                $save_head = DB::table('delivery_order')
-                               ->insert([
-                                'nomor'             => str_replace(' ','',strtoupper($nota)),
-                                'tanggal'           => $tgl,
-                                'kode_customer'     => $request->customer,
-                                'pendapatan'        => 'KORAN',
-                                'diskon'            => $request->ed_diskon_m,
-                                'kontrak'           => $request->check,
-                                'kode_cabang'       => $request->cb_cabang,
-                                'total_net'         => $request->total_net_m,
-                                'total'             => $request->ed_total_m+$request->ed_diskon_m,
-                                'biaya_tambahan'    => filter_var($request->biaya_tambahan, FILTER_SANITIZE_NUMBER_INT),
-                                'jenis'             => 'KORAN',
-                                'created_by'        =>  Auth::user()->m_name,
-                                'created_at'        =>  Carbon::now(),
-                                'updated_by'         =>  Auth::user()->m_name,
-                                'updated_at'         =>  Carbon::now(),
-                                'status_do'         => 'Released'
-                               ]);
-                for ($i=0; $i < count($request->d_kode_item); $i++) { 
-                    $id = DB::table('delivery_orderd')
-                            ->max('dd_id');
-                    if ($id != null) {
-                        $id+=1;
-                    }else{
-                        $id =1;
-                    }
-
-                    if ($request->d_kcd_dt[$i] == '') {
-                        $d_kcd_dt[$i] = 0;
-                    }else{
-                        $d_kcd_dt[$i] = $request->d_kcd_dt[$i];
-                    }
-                    $kcd = DB::table('kontrak_customer_d')
-                             ->where('kcd_kode',$request->d_kode_item[$i])
-                             ->where('kcd_dt',$d_kcd_dt[$i])
-                             ->first();
-                    if ($kcd!=null) {
-                        $grup = $kcd->kcd_grup;
-                    }else{
-                        $kcd = DB::table('item')
-                             ->where('kode',$request->d_kode_item[$i])
-                             ->first();
-                        $grup = $kcd->kode_grup_item;
-                    }
-                    $save_detail = DB::table('delivery_orderd')
-                                 ->insert([
-                                    'dd_id' => $id,
-                                    'dd_nomor' => str_replace(' ','',strtoupper($nota)),
-                                    'dd_nomor_dt' => $i+1,
-                                    'dd_kode_item' => strtoupper($request->d_kode_item[$i]),
-                                    'dd_kode_satuan' => strtoupper($request->d_satuan[$i]),
-                                    'dd_jumlah' => $request->d_jumlah[$i],
-                                    'dd_harga' => $request->d_harga[$i],
-                                    'dd_diskon' => $request->d_diskon[$i],
-                                    'dd_total' => $request->d_netto[$i],
-                                    'dd_id_kontrak'   => $d_kcd_dt[$i],
-                                    'dd_id_kota_asal' => $request->d_asal[$i],
-                                    'dd_id_kota_tujuan' => $request->d_tujuan[$i],
-                                    'dd_keterangan' => strtoupper($request->d_keterangan[$i]),
-                                    'dd_acc_penjualan' => strtoupper($request->d_acc_penjualan[$i]),
-                                    'dd_csf_penjualan' => strtoupper($request->d_csf_penjualan[$i]),
-                                    'dd_acc_piutang' => strtoupper($request->d_acc_piutang[$i]),
-                                    'dd_csf_piutang' => strtoupper($request->d_csf_piutang[$i]),
-                                    'dd_grup' => strtoupper( $grup),
-
-                                 ]);
-                }
-
-                    return response()->json(['nota'=>$nota,'status'=>2,'berhasil'=>'success']);
-
+            $user = Auth::user()->m_name;
+            if (Auth::user()->m_name == null) {
+              return response()->json([
+                'status'=>0,
+                'message'=>'Nama User Anda Belum Ada, Silahkan Hubungi Pihak Terkait'
+              ]);
             }
+
+            $cari_do = DB::table('delivery_order')
+                      ->where('nomor',$request->ed_nomor)
+                      ->first();
+            if ($cari_nota != null) {
+              if ($cari_nota->updated_by == $user) {
+                return 'Data Sudah Ada';
+              }else{
+                  $bulan = Carbon::now()->format('m');
+                  $tahun = Carbon::now()->format('y');
+
+                  $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from delivery_order
+                                        WHERE kode_cabang = '$cabang'
+                                        AND to_char(created_at,'MM') = '$bulan'
+                                        AND jenis = 'KORAN'
+                                        AND nomor like 'KRN%'
+                                        AND to_char(created_at,'YY') = '$tahun'");
+
+                  $index = (integer)$cari_nota[0]->id + 1;
+                  $index = str_pad($index, 3, '0', STR_PAD_LEFT);
+
+                
+                  $nota = 'KRN' . $bulan . $tahun . '/' . $cabang . '/' .$index;
+
+
+              }
+            }elseif ($cari_nota == null) {
+              $nota = $request->nota_invoice;
+            }
+
+            $save_head = DB::table('delivery_order')
+                           ->insert([
+                            'nomor'             => str_replace(' ','',strtoupper($nota)),
+                            'tanggal'           => $tgl,
+                            'kode_customer'     => $request->customer,
+                            'pendapatan'        => 'KORAN',
+                            'kode_cabang'       => $request->cb_cabang,
+                            'diskon'            => $request->ed_diskon_m,
+                            'total_net'         => $request->total_net_m,
+                            'total'             => $request->ed_total_m+$request->ed_diskon_m,
+                            'biaya_tambahan'    => filter_var($request->biaya_tambahan, FILTER_SANITIZE_NUMBER_INT),
+                            'jenis'             => 'KORAN',
+                            'kontrak'           => $request->check,
+                            'status_do'         => 'Released',
+                            'created_by'        =>  Auth::user()->m_name,
+                            'created_at'        =>  Carbon::now(),
+                            'updated_by'        =>  Auth::user()->m_name,
+                            'updated_at'        =>  Carbon::now(),
+                            
+                           ]);
+
+            for ($i=0; $i < count($request->d_kode_item); $i++) { 
+                $id = DB::table('delivery_orderd')
+                        ->max('dd_id');
+                if ($id != null) {
+                    $id+=1;
+                }else{
+                    $id =1;
+                }
+                // dd($request->all());
+                if ($request->d_kcd_dt[$i] == '') {
+                    $d_kcd_dt[$i] = 0;
+                }else{
+                    $d_kcd_dt[$i] = $request->d_kcd_dt[$i];
+                }
+                $kcd = DB::table('kontrak_customer_d')
+                         ->where('kcd_kode',$request->d_kode_item[$i])
+                         ->where('kcd_dt',$d_kcd_dt[$i])
+                         ->first();
+                if ($kcd!=null) {
+                    $grup = $kcd->kcd_grup;
+                }else{
+                    $kcd = DB::table('item')
+                         ->where('kode',$request->d_kode_item[$i])
+                         ->first();
+                    $grup = $kcd->kode_grup_item;
+                }
+                $save_detail = DB::table('delivery_orderd')
+                             ->insert([
+                                'dd_id' => $id,
+                                'dd_nomor' => str_replace(' ','',strtoupper($nota)),
+                                'dd_nomor_dt' => $i+1,
+                                'dd_kode_item' => strtoupper($request->d_kode_item[$i]),
+                                'dd_kode_satuan' => strtoupper($request->d_satuan[$i]),
+                                'dd_jumlah' => $request->d_jumlah[$i],
+                                'dd_harga' => $request->d_harga[$i],
+                                'dd_diskon' => $request->d_diskon[$i],
+                                'dd_total' => $request->d_netto[$i],
+                                'dd_id_kota_asal' => $request->d_asal[$i],
+                                'dd_id_kontrak'   => $d_kcd_dt[$i],
+                                'dd_id_kota_tujuan' => $request->d_tujuan[$i],
+                                'dd_keterangan' => strtoupper($request->d_keterangan[$i]),
+                                'dd_acc_penjualan' => strtoupper($request->d_acc_penjualan[$i]),
+                                'dd_csf_penjualan' => strtoupper($request->d_csf_penjualan[$i]),
+                                'dd_acc_piutang' => strtoupper($request->d_acc_piutang[$i]),
+                                'dd_csf_piutang' => strtoupper($request->d_csf_piutang[$i]),
+                                'dd_grup' => strtoupper( $grup),
+
+
+                             ]);
+            }
+
+            return response()->json(['status'=>1,'berhasil'=>'success']);
         });
 
     }
