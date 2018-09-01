@@ -435,7 +435,7 @@
 								$temp1+=$row->jumlah;
 							}
 						}
-						echo '<td style="text-align:center;" class="textcenter top bot">'.$temp.'&nbsp</td>'
+						echo '<td style="text-align:center;" class="textcenter top bot">'.$temp1.'&nbsp</td>'
 					@endphp
 				</tr>
 			</table>
