@@ -197,7 +197,7 @@ class do_kertas_Controller extends Controller
               ]);
             }
 
-            $cari_do = DB::table('delivery_order')
+            $cari_nota = DB::table('delivery_order')
                       ->where('nomor',$request->ed_nomor)
                       ->first();
             if ($cari_nota != null) {
