@@ -205,7 +205,7 @@
           </thead>
 
           <tbody>
-            
+            <?php $tot_saldo_d = $tot_saldo_k = $tot_mb_d = $tot_mb_k = $tot_mk_d = $tot_mk_k = $tot_mm_d = $tot_mm_k = $tot_mutasi_d = $tot_mutasi_k = $tot_salda_d = $tot_salda_k = 0 ?>
             @foreach($data as $key => $okee)
                 <tr>
                   {{-- <td style="padding: 5px; vertical-align: top;">{{ $okee->id_akun }}</td> --}}
@@ -234,20 +234,23 @@
 
                   {{-- saldo awal --}}
 
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ $deb }}</td>
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ $kre }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ ($deb >= 0) ? $deb : '('.$deb.')' }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ ($kre >= 0) ? $kre : '('.$kre.')' }}</td>
 
                   {{-- Mutasi bank --}}
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_bank_D'], 2)) }}</td>
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_bank_K'], 2)) }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ ($data_detail[$okee->id_akun]['mutasi_bank_D'] >= 0) ? str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_bank_D'], 2)) : '('.str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_bank_D'], 2)).')' }}</td>
+
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ ($data_detail[$okee->id_akun]['mutasi_bank_K'] >= 0) ? str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_bank_K'], 2)) : '('.str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_bank_K'], 2)).')' }}</td>
 
                   {{-- Mutasi Kas --}}
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_kas_D'], 2)) }}</td>
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_kas_K'], 2)) }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ ($data_detail[$okee->id_akun]['mutasi_kas_D'] >= 0) ? str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_kas_D'], 2)) : '('.str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_kas_D'], 2)).')' }}</td>
+
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ ($data_detail[$okee->id_akun]['mutasi_kas_K'] >= 0) ? str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_kas_K'], 2)) : '('.str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_kas_K'], 2)).')' }}</td>
 
                   {{-- Mutasi memorial --}}
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_memorial_D'], 2)) }}</td>
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_memorial_K'], 2)) }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ ($data_detail[$okee->id_akun]['mutasi_memorial_D'] >= 0) ? str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_memorial_D'], 2)) : '('.str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_memorial_D'], 2)).')' }}</td>
+
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ ($data_detail[$okee->id_akun]['mutasi_memorial_K'] >= 0) ? str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_memorial_K'], 2)) : '('.str_replace('-', '', number_format($data_detail[$okee->id_akun]['mutasi_memorial_K'], 2)).')' }}</td>
 
                   <?php 
                     $tot_deb =  $data_detail[$okee->id_akun]['mutasi_bank_D'] + $data_detail[$okee->id_akun]['mutasi_kas_D'] + $data_detail[$okee->id_akun]['mutasi_memorial_D'];
@@ -257,31 +260,69 @@
                     ?>
 
                   {{-- total mutasi --}}
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($tot_deb, 2)) }}</td>
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ str_replace('-', '', number_format($tot_kre, 2)) }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ ($tot_deb >= 0) ? str_replace('-', '', number_format($tot_deb, 2)) : '('.str_replace('-', '', number_format($tot_deb, 2)).')' }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ ($tot_kre >= 0) ? str_replace('-', '', number_format($tot_kre, 2)) : '('.str_replace('-', '', number_format($tot_kre, 2)).')' }}</td>
 
                   {{-- Saldo Akhir --}}
                   <?php
                     $sad = $ak = 0;
 
-                    if($okee->akun_dka == 'D')
-                      $sad = ($data_detail[$okee->id_akun]['saldo_akun'] + $tot_deb) + $tot_kre;
-                    else
-                      $ak = ($data_detail[$okee->id_akun]['saldo_akun'] + $tot_kre) + $tot_deb;
+                    if($okee->akun_dka == 'D'){
+                      if(($data_detail[$okee->id_akun]['saldo_akun'] + $tot_deb) + $tot_kre < 0)
+                        $ak = ($data_detail[$okee->id_akun]['saldo_akun'] + $tot_deb) + $tot_kre;
+                      else
+                        $sad = ($data_detail[$okee->id_akun]['saldo_akun'] + $tot_deb) + $tot_kre;
+                    }
+                    else{
+                      if(($data_detail[$okee->id_akun]['saldo_akun'] + $tot_deb) + $tot_kre < 0)
+                        $sad = ($data_detail[$okee->id_akun]['saldo_akun'] + $tot_kre) + $tot_deb;
+                      else
+                        $ak = ($data_detail[$okee->id_akun]['saldo_akun'] + $tot_deb) + $tot_kre;
+                    }
                   ?>
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ number_format($sad, 2) }}</td>
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ number_format($ak, 2) }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ ($sad >= 0) ? str_replace('-', '', number_format($sad, 2)) : '('.str_replace('-', '', number_format($sad, 2)).')' }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ ($ak >= 0) ? str_replace('-', '', number_format($ak, 2)) : '('.str_replace('-', '', number_format($ak, 2)).')' }}</td>
+
+                  <?php
+                    $tot_saldo_d += $deb;
+                    $tot_salda_k += $kre;
+                    $tot_mb_d += $data_detail[$okee->id_akun]['mutasi_bank_D'];
+                    $tot_mb_k += $data_detail[$okee->id_akun]['mutasi_bank_K'];
+                    $tot_mk_d += $data_detail[$okee->id_akun]['mutasi_kas_D'];
+                    $tot_mk_k += $data_detail[$okee->id_akun]['mutasi_kas_K'];
+                    $tot_mm_d += $data_detail[$okee->id_akun]['mutasi_memorial_D'];
+                    $tot_mm_k += $data_detail[$okee->id_akun]['mutasi_memorial_K'];
+                    $tot_mutasi_d += $tot_deb;
+                    $tot_mutasi_k += $tot_kre;
+                    $tot_salda_d += $sad;
+                    $tot_salda_k += $ak;
+
+                  ?>
                 </tr>
               @endforeach
+
+              <tr>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-center">Grand Total</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format($tot_saldo_d, 2) }}</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format($tot_saldo_k, 2) }}</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format($tot_mb_d, 2) }}</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format($tot_mb_k, 2) }}</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format($tot_mk_d, 2) }}</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format($tot_mk_k, 2) }}</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format($tot_mm_d, 2) }}</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format($tot_mm_k, 2) }}</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format($tot_mutasi_d, 2) }}</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format($tot_mutasi_k, 2) }}</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format($tot_salda_d, 2) }}</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format($tot_salda_k, 2) }}</td>
+              </tr>
             
           </tbody>
         </table>
 
         <table id="table" width="100%" border="0" style="font-size: 8pt; margin-top: 4px;">
           <thead>
-            <tr>
-              
-            </tr>
+
           </thead>
         </table>
 
