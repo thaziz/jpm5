@@ -127,14 +127,14 @@ class selaras_jurnal  extends Controller
                     $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
                     $data_akun[0]['jrdt_detailid']  = 1;
                     $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-                    $data_akun[0]['jrdt_value']     = -round($total);
+                    $data_akun[0]['jrdt_value']     = -$total;
                     $data_akun[0]['jrdt_statusdk'] = 'K';
                 	  $data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
                 }else{
                     $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
                     $data_akun[0]['jrdt_detailid']  = 1;
                     $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-                    $data_akun[0]['jrdt_value']     = -round($total);
+                    $data_akun[0]['jrdt_value']     = -$total;
                     $data_akun[0]['jrdt_statusdk'] = 'D';
                 	  $data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
                 }
