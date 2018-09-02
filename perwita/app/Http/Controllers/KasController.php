@@ -524,7 +524,7 @@ class KasController extends Controller
 				$hasil_1 += round($hasil,2);
 				$penerus[$i]=$hasil;
 			}
-			$selisih = $data[$i][0]->total_net - $hasil_1;
+			$selisih = $kas_surabaya - $hasil_1;
 
 			$rand = count($penerus);
 
@@ -1944,7 +1944,7 @@ class KasController extends Controller
 				$hasil_1 += round($hasil,2);
 				$penerus[$i]=$hasil;
 			}
-			$selisih = $data[$i][0]->total_net - $hasil_1;
+			$selisih = $kas_surabaya - $hasil_1;
 
 			$rand = count($penerus);
 
