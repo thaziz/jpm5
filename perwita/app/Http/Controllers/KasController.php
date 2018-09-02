@@ -520,8 +520,14 @@ class KasController extends Controller
 		//menghitung tarif penerus
 			for ($i=0; $i < count($data); $i++) { 
 				$hasil=($kas_surabaya/$total_tarif)*$data[$i][0]->total_net;
+				$hasil_1 = array_sum(round($hasil,2));
 				$penerus[$i]=$hasil;
 			}
+			$selisih = $data[$i][0]->total_net - $hasil_1;
+
+			$rand = count($penerus);
+
+			$penerus[0] += $selisih; 
 		
 			$total_penerus =array_sum($penerus);
 			$total_penerus =$total_penerus;
