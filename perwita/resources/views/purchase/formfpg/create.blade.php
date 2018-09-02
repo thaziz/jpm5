@@ -2005,14 +2005,15 @@
 
                 creditnota = $('.creditnota' + id).val();
                 debitnota = $('.debitnota' + id).val();
-                if(creditnota == null){
+                alert(creditnota)
+                if(creditnota == 'null'){
                   creditnota = '0.00';
                 }
                 else {
                   creditnota = creditnota;
                 }
 
-                if(debitnota == null){
+                if(debitnota == 'null'){
                   debitnota = '0.00';
                 }
                 else {
@@ -2614,7 +2615,7 @@
                           $('.jenisbayar2').trigger("liszt:updated");
                         } 
                     }
-                    else if(idjenis == '1'){
+                    else if(idjenis == '1' || idjenis == '11' || idjenis == '13' ){
                         $('.jenisbayar2').val(cabang);
                    
                         $('.jenisbayar2').attr('disabled' , true);

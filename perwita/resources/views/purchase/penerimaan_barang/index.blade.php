@@ -153,7 +153,7 @@
 									
             var n = 1;
              for(var j = 0; j < data.terimasaja.length; j++){   
-	         
+	         		
 	                var html2 = "<tr> <td>"+ n +" </td>" +
 	                                "<td>  "+data.terimasaja[j][0].bt_notransaksi+"</td>" +
 									"<td>  "+data.terimasaja[j][0].nama_supplier+" </td>" +
@@ -193,7 +193,7 @@
 			console.log(data.terimasaja.length);
             var n = 1;
             for(var j = 0; j < data.terimasaja.length; j++){   
-	                
+	            
 	                var html2 = "<tr> <td>"+ n +" </td>" +
 	                                "<td>  "+data.terimasaja[j][0].bt_notransaksi+"</td>" +
 									"<td>  "+data.terimasaja[j][0].namasupplier+" </td>" +

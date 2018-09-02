@@ -399,11 +399,18 @@
         var nopol  = $('#cb_nopol').val();
         var sopir  = $('.ed_sopir').val();
         var tabel = $('#table_data_do').DataTable();
+        var ed_nomor = $('#ed_nomor').val();
 
+
+        if (ed_nomor == '') {
+            return toastr.warning('Nota Tidak Boleh Kosong');
+        }
 
         if (rute == '') {
             return toastr.warning('Rute Harus Dipilih');
         }
+
+        
 
         if (nopol == '') {
             return toastr.warning('Nopol Harus Dipilih');
