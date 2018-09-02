@@ -1947,9 +1947,11 @@ class KasController extends Controller
 			dd($hasil_1);
 			$selisih = $kas_surabaya - $hasil_1;
 
-			$rand = count($penerus);
+			if ($selisih > 0 ) {
+				$penerus[0] += $selisih; 
+			}
 
-			$penerus[0] += $selisih; 
+
 		
 			$total_penerus =array_sum($penerus);
 			$total_penerus =$total_penerus;
