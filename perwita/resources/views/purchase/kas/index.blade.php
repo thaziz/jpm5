@@ -104,6 +104,8 @@
                           <td align="center">
                             <button class="search btn btn-success" type="button" onclick="filtering_nota()"><i class="fa fa-search"> Cari Berdasarkan Nota</i></button>
                             <button class="search btn btn-danger" type="button" onclick="filtering()"><i class="fa fa-search"> Cari</i></button>
+
+                            <button class=" btn btn-warning jurnal_all" type="button" ><i class="fa fa-eye"></i></button>
                           </td>
                         </tr>
                       </table>
@@ -312,6 +314,21 @@ $('.jurnal').click(function(){
       url:baseUrl + '/biaya_penerus/jurnal',
       type:'get',
       data:{id},
+      success:function(data){
+         $('.tabel_jurnal').html(data);
+         $('.modal_jurnal').modal('show');
+      },
+      error:function(data){
+          // location.reload();
+      }
+  }); 
+})
+$('.jurnal_all').click(function(){
+  var cabang = $('.cabang').val();
+  $.ajax({
+      url:baseUrl + '/biaya_penerus/jurnal_all',
+      type:'get',
+      data:{cabang},
       success:function(data){
          $('.tabel_jurnal').html(data);
          $('.modal_jurnal').modal('show');

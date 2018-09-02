@@ -94,6 +94,8 @@ class selaras_jurnal  extends Controller
                                  ->where('idjenisbayar',10)
                                  ->first();
 
+                $bank = 'KK';
+                $kk =  get_id_jurnal($bank, $req->cabang);
                 $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
                                             'jr_year'   => carbon::parse($bpk[$i]->bpk_tanggal)->format('Y'),
                                             'jr_date'   => carbon::parse($bpk[$i]->bpk_tanggal)->format('Y-m-d'),
@@ -102,13 +104,21 @@ class selaras_jurnal  extends Controller
                                             'jr_note'   => 'BIAYA PENERUS KAS',
                                             'jr_insert' => carbon::now(),
                                             'jr_update' => carbon::now(),
+                                            'jr_no' => $kk,
                                             ]);
 
                 $cari_coa = DB::table('d_akun')
                                       ->where('id_akun','like',substr($bpk[$i]->bpk_kode_akun,0, 4).'%')
                                       ->where('kode_cabang',$bpk[$i]->bpk_comp)
                                       ->first();
-                
+                $cari_bpkd = DB::table('biaya_penerus_kas_detail')
+                               ->where('bpkd_bpk_id',$bpk[$i]->bpk_id)
+                               ->get();
+                $total = 0;
+                for ($v=0; $v < count($cari_bpkd); $v++) { 
+                  $total+=round($cari_bpkd[$v]->bpkd_tarif_penerus,2);
+                }
+
                 if ($cari_coa == null) {
                   dd($bpk[$i]->bpk_nota .' '. $bpk[$i]->bpk_kode_akun .' '. $bpk[$i]->bpk_comp);
                 }
@@ -117,14 +127,14 @@ class selaras_jurnal  extends Controller
                     $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
                     $data_akun[0]['jrdt_detailid']  = 1;
                     $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-                    $data_akun[0]['jrdt_value']     = -round($bpk[$i]->bpk_tarif_penerus);
+                    $data_akun[0]['jrdt_value']     = -$total;
                     $data_akun[0]['jrdt_statusdk'] = 'K';
                 	  $data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
                 }else{
                     $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
                     $data_akun[0]['jrdt_detailid']  = 1;
                     $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-                    $data_akun[0]['jrdt_value']     = -round($bpk[$i]->bpk_tarif_penerus);
+                    $data_akun[0]['jrdt_value']     = -$total;
                     $data_akun[0]['jrdt_statusdk'] = 'D';
                 	  $data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bpk[$i]->bpk_keterangan);
                 }
@@ -303,7 +313,8 @@ class selaras_jurnal  extends Controller
 	                $jenis_bayar = DB::table('jenisbayar')
 	                                 ->where('idjenisbayar',2)
 	                                 ->first();
-
+                  $bank = 'KK';
+                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp);
 	                $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 	                                            'jr_year'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y'),
 	                                            'jr_date'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y-m-d'),
@@ -311,7 +322,8 @@ class selaras_jurnal  extends Controller
 	                                            'jr_ref'    => $bkk[$i]->bkk_nota,
 	                                            'jr_note'   => 'BUKTI KAS KELUAR',
 	                                            'jr_insert' => carbon::now(),
-	                                            'jr_update' => carbon::now(),
+                                              'jr_update' => carbon::now(),
+	                                            'jr_no' => $kk,
 	                                            ]);
 
 	                $cari_coa = DB::table('d_akun')
@@ -506,7 +518,8 @@ class selaras_jurnal  extends Controller
 	                $jenis_bayar = DB::table('jenisbayar')
 	                                 ->where('idjenisbayar',6)
 	                                 ->first();
-
+                  $bank = 'KK';
+                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp);
 	                $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 	                                            'jr_year'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y'),
 	                                            'jr_date'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y-m-d'),
@@ -515,6 +528,7 @@ class selaras_jurnal  extends Controller
 	                                            'jr_note'   => 'BUKTI KAS KELUAR',
 	                                            'jr_insert' => carbon::now(),
 	                                            'jr_update' => carbon::now(),
+                                              'jr_no' => $kk,
 	                                            ]);
 
 	                $cari_coa = DB::table('d_akun')
@@ -680,7 +694,8 @@ class selaras_jurnal  extends Controller
 	                $jenis_bayar = DB::table('jenisbayar')
 	                                 ->where('idjenisbayar',7)
 	                                 ->first();
-
+                  $bank = 'KK';
+                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp);
 	                $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 	                                            'jr_year'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y'),
 	                                            'jr_date'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y-m-d'),
@@ -689,6 +704,7 @@ class selaras_jurnal  extends Controller
 	                                            'jr_note'   => 'BUKTI KAS KELUAR',
 	                                            'jr_insert' => carbon::now(),
 	                                            'jr_update' => carbon::now(),
+                                              'jr_no' => $kk,
 	                                            ]);
 
 	                $cari_coa = DB::table('d_akun')
@@ -867,7 +883,8 @@ class selaras_jurnal  extends Controller
 	                $jenis_bayar = DB::table('jenisbayar')
 	                                 ->where('idjenisbayar',8)
 	                                 ->first();
-
+                  $bank = 'KK';
+                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp);
 	                $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 	                                            'jr_year'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y'),
 	                                            'jr_date'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y-m-d'),
@@ -876,6 +893,7 @@ class selaras_jurnal  extends Controller
 	                                            'jr_note'   => 'BUKTI KAS KELUAR',
 	                                            'jr_insert' => carbon::now(),
 	                                            'jr_update' => carbon::now(),
+                                              'jr_no' => $kk,
 	                                            ]);
 
 	                $cari_coa = DB::table('d_akun')
@@ -1056,7 +1074,8 @@ class selaras_jurnal  extends Controller
 	                $jenis_bayar = DB::table('jenisbayar')
 	                                 ->where('idjenisbayar',9)
 	                                 ->first();
-
+                  $bank = 'KK';
+                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp);
 	                $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 	                                            'jr_year'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y'),
 	                                            'jr_date'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y-m-d'),
@@ -1065,6 +1084,7 @@ class selaras_jurnal  extends Controller
 	                                            'jr_note'   => 'BUKTI KAS KELUAR',
 	                                            'jr_insert' => carbon::now(),
 	                                            'jr_update' => carbon::now(),
+                                              'jr_no' => $kk,
 	                                            ]);
 
 	                $cari_coa = DB::table('d_akun')
