@@ -953,7 +953,7 @@
   }
 
   function save_patty() {
-    if ($('.total').val() < 0) {
+    if ($('.total').val()*1 < 0) {
       return toastr.warning('Total Tidak Boleh Minus');
     }
     var temp = 0;

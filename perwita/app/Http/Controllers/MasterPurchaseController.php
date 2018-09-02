@@ -986,9 +986,9 @@ class MasterPurchaseController extends Controller
 
 		if(Auth::user()->punyaAkses('Master Supplier','all')){
 			$data = DB::select("select *, supplier.alamat as alamatsupplier from supplier, kota, provinsi, cabang where supplier.kota = kota.id and supplier.propinsi = provinsi.id and active='AKTIF' and idcabang = kode");
-			$count['blmsetuju'] =  DB::table("supplier")->where('status' , '=' , 'BELUM DI SETUJUI')->count();
-			$count['sudahsetuju'] = DB::table("supplier")->where('status' , '=' , 'SETUJU')->count();
-			$count['tidaksetuju'] = DB::table("supplier")->where('status' , '=' , 'TIDAK SETUJU')->count();
+		$count['blmsetuju'] = DB::select("select count(*) from supplier where status = 'BELUM DI SETUJUI'");
+			$count['sudahsetuju'] = DB::select("select count(*) from supplier where status = 'SETUJU'");
+			$count['tidaksetuju'] = DB::select("select count(*) from supplier where status = 'TIDAK SETUJU'");
 		}
 		else {
 			$data = DB::select("select *, supplier.alamat as alamatsupplier from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and active='AKTIF' and idcabang = '$cabang'");
@@ -998,6 +998,7 @@ class MasterPurchaseController extends Controller
 			$count['tidaksetuju'] = DB::select("select count(*) from supplier where status = 'TIDAK SETUJU' and idcabang = '$cabang'");
 		}
 
+	
 		return view('purchase/master/master_supplier/index', compact('data', 'count'));
 	}
 	

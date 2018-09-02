@@ -411,7 +411,7 @@
                             <tr id="dataitem item-{{$index}}" class="dataitem item-{{$index}}"> 
                               <td> {{$index + 1}} <input type="hidden" name="iditemsup[]" value="{{$item->is_id}}"> </td>
                               <td> 
-                              <select class="form-control brg tablebarang"  name="brg[]" data-id="{{$index}}">
+                              <select class="form-control brg tablebarang chosen-select"  name="brg[]" data-id="{{$index}}">
                                @foreach($data['barang'] as $brg) 
                                  <option value="{{$brg->kode_item}}+{{$brg->harga}}+{{$brg->updatestock}}" @if($item->is_kodeitem == $brg->kode_item) selected="" @endif>  {{$brg->nama_masteritem}} </option>
                                 @endforeach
@@ -591,7 +591,7 @@ $(function(){
 
     var rowBrg = "<tr id='dataitem item-"+$no+"' class='dataitem item-"+$no+"'>" +
                   "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
-                  "<td> <select class='form-control brg' name='brg[]' data-id="+$no+">  @foreach($data['item'] as $item) <option value='{{$item->kode_item}}+{{$item->harga}}+{{$item->updatestock}}'> {{$item->nama_masteritem}} </option> @endforeach </select>" +
+                  "<td> <select class='form-control brg chosen-select' name='brg[]' data-id="+$no+">  @foreach($data['item'] as $item) <option value='{{$item->kode_item}}+{{$item->harga}}+{{$item->updatestock}}'> {{$item->nama_masteritem}} </option> @endforeach </select>" +
                    "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
                    "<td> <select class='form-control updatestock"+$no+"' name='updatestock[]' readonly> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
                   "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a></td>" +
@@ -1018,6 +1018,29 @@ $('.cabang').change(function(){
       $('.kota').chosen(config);
     })
      },2000);
- 
+  
+    clearInterval(reset);
+    var reset =setInterval(function(){
+     $(document).ready(function(){
+      var config = {
+                '.chosen-select'           : {},
+                '.chosen-select-deselect'  : {allow_single_deselect:true},
+                '.chosen-select-no-single' : {disable_search_threshold:10},
+                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+                '.chosen-select-width'     : {width:"100%"}
+                }
+
+             for (var selector in config) {
+               $(selector).chosen(config[selector]);
+             }
+
+
+      $(".acc_hutangdagang").chosen(config);
+      $(".acc_csf").chosen(config);
+      $('.cabang').chosen(config);
+    })
+     },2000);
+
+  
 </script>
 @endsection
