@@ -1944,7 +1944,7 @@ class KasController extends Controller
 				$hasil_1 += round($hasil,2);
 				$penerus[$i]=$hasil;
 			}
-			dd($kas_surabaya);
+			dd($hasil_1);
 			$selisih = $kas_surabaya - $hasil_1;
 
 			$rand = count($penerus);
