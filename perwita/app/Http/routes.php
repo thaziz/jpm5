@@ -1683,6 +1683,7 @@ Route::get('sales/invoice/jurnal', 'sales\invoice_Controller@jurnal1');
 Route::get('sales/cari_faktur_pajak', 'sales\invoice_Controller@cari_faktur_pajak');
 Route::get('sales/cari_nomor_pajak', 'sales\invoice_Controller@cari_nomor_pajak');
 // end invoice
+Route::get('sales/invoice/jurnal_all', 'sales\invoice_Controller@jurnal_all');
 
 
 //FORM TANDA TERIMA PENJUALAN

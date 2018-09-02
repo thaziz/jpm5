@@ -2183,7 +2183,7 @@ class KasController extends Controller
 					 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
 					 ->join('d_akun','jrdt_acc','=','id_akun')
 					 ->where('jr_ref','like','BPK%')
-					 ->where('jr_date','>=','2018-07-30')
+					 // ->where('jr_date','>=','2018-07-30')
 					 ->get();
 			
 
