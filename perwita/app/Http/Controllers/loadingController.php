@@ -265,7 +265,7 @@ class loadingController extends Controller
 				$hasil = $data[$i][0]->total_net;
 				$penerus[$i]=(float)$hasil;
 			}
-		
+			
 			$total_penerus =array_sum($penerus);
 			$total_penerus =round($total_penerus,2);
 			$total_tarif   =round($total_penerus,2);
@@ -372,6 +372,7 @@ class loadingController extends Controller
 			}
 			
 
+				array_push($akun_val, round($total_harga,2));
 			$cari_id_pc = DB::table('patty_cash')
 						 ->max('pc_id');
 
@@ -461,7 +462,7 @@ class loadingController extends Controller
 				$jumlah   = [];
 
 				array_push($akun, $request->nama_kas);
-				array_push($akun_val, $total_harga);
+				array_push($akun_val, round($total_harga,2));
 				for ($i=0; $i < count($jurnal); $i++) { 
 					$acc = DB::table('d_akun')
 							 ->where('id_akun','like',$cari_akun .'%')
@@ -869,7 +870,7 @@ class loadingController extends Controller
 						   ->delete();
 
 				array_push($akun, $request->nama_kas);
-				array_push($akun_val, $total_harga);
+				array_push($akun_val, round($total_harga,2));
 				for ($i=0; $i < count($jurnal); $i++) { 
 					$acc = DB::table('d_akun')
 							 ->where('id_akun','like',$cari_akun .'%')
@@ -920,7 +921,6 @@ class loadingController extends Controller
 
 
 					if (substr($akun[$i],0, 1)==1) {
-						
 						if ($cari_coa->akun_dka == 'D') {
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
@@ -937,19 +937,18 @@ class loadingController extends Controller
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 						}
 					}else if (substr($akun[$i],0, 1)>1) {
-
 						if ($cari_coa->akun_dka == 'D') {
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+							$data_akun[$i]['jrdt_value'] 	= $akun_val[$i];
 							$data_akun[$i]['jrdt_statusdk'] = 'D';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+							$data_akun[$i]['jrdt_value'] 	= $akun_val[$i];
 							$data_akun[$i]['jrdt_statusdk'] = 'K';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun.' '. strtoupper($request->note);
 						}

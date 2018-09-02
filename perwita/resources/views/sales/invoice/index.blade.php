@@ -125,6 +125,7 @@
                           <td align="center">
                             <button class="search btn btn-success" type="button" onclick="filtering_nota()"><i class="fa fa-search"> Cari Berdasarkan Nota/Pajak</i></button>
                             <button class="search btn btn-danger" type="button" onclick="filtering()"><i class="fa fa-search"> Cari</i></button>
+                            <button class=" btn btn-warning jurnal_all" type="button" ><i class="fa fa-eye"></i></button>
                           </td>
                         </tr>
                       </table>
@@ -565,6 +566,20 @@ function lihat_jurnal(id){
         }
     }); 
 }
+
+$('.jurnal_all').click(function(){
+  $.ajax({
+      url:baseUrl + '/sales/invoice/jurnal_all',
+      type:'get',
+      success:function(data){
+         $('.tabel_jurnal').html(data);
+         $('#modal_jurnal').modal('show');
+      },
+      error:function(data){
+          // location.reload();
+      }
+  }); 
+})
 
 function pilih_pajak(a) {
   var nomor = $(a).find('.nsp_nomor_pajak').val();

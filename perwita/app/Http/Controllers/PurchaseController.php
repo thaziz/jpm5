@@ -10539,7 +10539,7 @@ public function kekata($x) {
 		elseif($idjenis == '9'){ // SUBCON
 			$data['isi'] = DB::select("select * from subcon ");
 		}
-		elseif($idjenis == '1'){
+		elseif($idjenis == '1' || $idjenis == '11' || $idjenis == '13'){
 			$data['isi'] = DB::select("select * from cabang");
  		}
 

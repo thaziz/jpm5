@@ -200,7 +200,7 @@ class PengeluaranBarangController extends Controller
 
 					$akunpersediaan = $datakun2[0]->id_akun;
 
-
+					// dd($request->all());
 					if ($request->stock_gudang[$i] != 0) {
 						$save_dt = DB::table('pengeluaran_barang_dt')
 									 ->insert([

@@ -2615,7 +2615,7 @@
                           $('.jenisbayar2').trigger("liszt:updated");
                         } 
                     }
-                    else if(idjenis == '1'){
+                    else if(idjenis == '1' || idjenis == '11' || idjenis == '13' ){
                         $('.jenisbayar2').val(cabang);
                    
                         $('.jenisbayar2').attr('disabled' , true);

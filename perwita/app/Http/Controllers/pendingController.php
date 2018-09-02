@@ -235,10 +235,7 @@ class pendingController extends Controller
 									  ->first();
 
 					if ($id_akun == null) {
-						$id_akun = DB::table('d_akun')
-									  ->where('id_akun','like','5315%')
-									  ->where('kode_cabang','000')
-									  ->first();
+						return response()->json(['status'=>0,'pesan'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia'])
 					}
 					array_push($akun, $id_akun->id_akun);
 					array_push($akun_val, $jurnal[$i]['harga']);
@@ -274,15 +271,15 @@ class pendingController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
-							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->keterangan);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
-							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->keterangan);
 						}
 					}
@@ -430,10 +427,7 @@ class pendingController extends Controller
 									  ->first();
 
 					if ($id_akun == null) {
-						$id_akun = DB::table('d_akun')
-									  ->where('id_akun','like','5315%')
-									  ->where('kode_cabang','000')
-									  ->first();
+						return response()->json(['status'=>0,'pesan'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia'])
 					}
 					array_push($akun, $id_akun->id_akun);
 					array_push($akun_val, $jurnal[$i]['harga']);
@@ -469,15 +463,15 @@ class pendingController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
-							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->keterangan);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
-							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->keterangan);
 						}
 					}
@@ -727,10 +721,7 @@ class pendingController extends Controller
 									  ->first();
 
 					if ($id_akun == null) {
-						$id_akun = DB::table('d_akun')
-									  ->where('id_akun','like','5210%')
-									  ->where('kode_cabang','000')
-									  ->first();
+						return response()->json(['status'=>0,'pesan'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia'])
 					}
 					array_push($akun, $id_akun->id_akun);
 					array_push($akun_val, $jurnal[$i]['harga']);
@@ -766,15 +757,15 @@ class pendingController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
-							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->keterangan);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
-							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->keterangan);
 						}
 					}
@@ -928,10 +919,7 @@ class pendingController extends Controller
 									  ->first();
 
 					if ($id_akun == null) {
-						$id_akun = DB::table('d_akun')
-									  ->where('id_akun','like','5210%')
-									  ->where('kode_cabang','000')
-									  ->first();
+						return response()->json(['status'=>0,'pesan'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia'])
 					}
 					array_push($akun, $id_akun->id_akun);
 					array_push($akun_val, $jurnal[$i]['harga']);
@@ -967,15 +955,15 @@ class pendingController extends Controller
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
-							$data_akun[$i]['jrdt_statusdk'] = 'K';
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->keterangan);
 						}else{
 							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 							$data_akun[$i]['jrdt_detailid']	= $i+1;
 							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
-							$data_akun[$i]['jrdt_statusdk'] = 'D';
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_FLOAT);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
 							$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->keterangan);
 						}
 					}

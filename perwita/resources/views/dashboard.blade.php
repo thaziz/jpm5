@@ -47,7 +47,9 @@
 @section('extra_scripts')
   <script type="text/javascript">
     
-   
+      @if(Session::has('sukses'))
+        alert('{{ Session::get('sukses') }}');
+      @endif
 
   </script>
 @endsection
