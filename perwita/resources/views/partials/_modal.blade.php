@@ -373,8 +373,8 @@
         <input type="hidden" class="parrent"/>
       </div>
 
+      <form id="data_setting" method="post" action="{{ route('periode_keuangan.setting') }}">
       <div class="modal-body" style="padding: 10px;">
-        <form id="data_setting">
           <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly>
           <table class="table table-bordered table striped table-periode">
             <thead>
@@ -392,7 +392,7 @@
                 ?>
                 <tr class="text-center">
                   <td>
-                    <input class="cek" type="checkbox" id="{{ $periode->id }}" name="{{ $periode->id }}" {{ ($periode->status == "locked") ? 'checked' : '' }} title="{{ $title }}">
+                    <input type="checkbox" id="{{ $periode->id }}" name="checked[]" {{ ($periode->status == "locked") ? 'checked' : '' }} title="{{ $title }}" value="{{ $periode->id }}">
                   </td>
                   <td>{{ $periode->bulan }}</td>
                   <td>{{ $periode->tahun }}</td>
@@ -400,13 +400,13 @@
               @endforeach
             </tbody>
           </table>
-        </form>
       </div>
 
       <div class="modal-footer text-center">
-          <span>&nbsp;</span>
-          <small id="sts" class="text-center text-navy text-muted" style="display: none; font-weight: bold;">Sedang Merubah Status...</small>
+          <button class="btn btn-primary btn-xs" type="submit">Simpan Perubahan</button>
       </div>
+
+      </form>
     </div>
   </div>
 </div>
@@ -500,48 +500,48 @@
      //    });
      // })
 
-     $(".cek").change(function(){
+     // $(".cek").change(function(){
 
-        $(".cek").attr("disabled", "disabled");
-        $id = $(this).attr("id"); $val = ""; $title = "";
+     //    $(".cek").attr("disabled", "disabled");
+     //    $id = $(this).attr("id"); $val = ""; $title = "";
 
-        $("#sts").text("Sedang Merubah Status...");
-        $("#sts").fadeIn(100);
+     //    $("#sts").text("Sedang Merubah Status...");
+     //    $("#sts").fadeIn(100);
 
-        if($(this).is(":checked")){
-          $val = "locked";
-          $title = "Hilangkan Centang Untuk Membuka Kunci";
-        }else{
-          $val = "accessable"
-          $title = "Centang Untuk Membuka Kunci";
-        }
+     //    if($(this).is(":checked")){
+     //      $val = "locked";
+     //      $title = "Hilangkan Centang Untuk Membuka Kunci";
+     //    }else{
+     //      $val = "accessable"
+     //      $title = "Centang Untuk Membuka Kunci";
+     //    }
 
-        $.ajax(baseUrl+"/master_keuangan/periode_keuangan/setting", {
-           timeout: 10000,
-           type: "post",
-           data: {id: $id, val: $val, _token: '{{ csrf_token() }}' },
-           dataType: 'json',
-           success: function (data) {
-               // console.log(data);
-              if(data.status == "sukses"){
-                $("#sts").text("Berhasil");
-                $("#sts").fadeOut(2000);
-                $("#"+$id).attr("title", $title);
-              }
+     //    $.ajax(baseUrl+"/master_keuangan/periode_keuangan/setting", {
+     //       timeout: 10000,
+     //       type: "post",
+     //       data: {id: $id, val: $val, _token: '{{ csrf_token() }}' },
+     //       dataType: 'json',
+     //       success: function (data) {
+     //           // console.log(data);
+     //          if(data.status == "sukses"){
+     //            $("#sts").text("Berhasil");
+     //            $("#sts").fadeOut(2000);
+     //            $("#"+$id).attr("title", $title);
+     //          }
 
-              $(".cek").removeAttr("disabled");
-           },
-           error: function(request, status, err) {
-              if (status == "timeout") {
-                alert("Request Timeout. Data Gagal Diubah");
-              }else {
-                alert("Internal Server Error. Data Gagal Diubah");
-              }
+     //          $(".cek").removeAttr("disabled");
+     //       },
+     //       error: function(request, status, err) {
+     //          if (status == "timeout") {
+     //            alert("Request Timeout. Data Gagal Diubah");
+     //          }else {
+     //            alert("Internal Server Error. Data Gagal Diubah");
+     //          }
 
-              $(".cek").removeAttr("disabled");
-          }
-        });
-     })
+     //          $(".cek").removeAttr("disabled");
+     //      }
+     //    });
+     // })
 
     // script for neraca
 
