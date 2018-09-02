@@ -518,6 +518,7 @@ class KasController extends Controller
 			$kas_surabaya = $total_bbm;
 
 		//menghitung tarif penerus
+			$hasil_1 = 0;
 			for ($i=0; $i < count($data); $i++) { 
 				$hasil=($kas_surabaya/$total_tarif)*$data[$i][0]->total_net;
 				$hasil_1 += round($hasil,2);
@@ -1937,6 +1938,7 @@ class KasController extends Controller
 			$kas_surabaya = $total_bbm;
 
 		//menghitung tarif penerus
+			$hasil_1 = 0;
 			for ($i=0; $i < count($data); $i++) { 
 				$hasil=($kas_surabaya/$total_tarif)*$data[$i][0]->total_net;
 				$hasil_1 += round($hasil,2);
