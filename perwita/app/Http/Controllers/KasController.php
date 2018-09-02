@@ -522,14 +522,16 @@ class KasController extends Controller
 			for ($i=0; $i < count($data); $i++) { 
 				$hasil=($kas_surabaya/$total_tarif)*$data[$i][0]->total_net;
 				$hasil_1 += round($hasil,2);
-				$penerus[$i]=$hasil;
+				$penerus[$i]=round($hasil,2);
 			}
 			$selisih = $kas_surabaya - $hasil_1;
 
-			$rand = count($penerus);
 
 			$penerus[0] += $selisih; 
-		
+			if ($selisih > 0 ) {
+				$penerus[0] += $selisih; 
+			}
+
 			$total_penerus =array_sum($penerus);
 			$total_penerus =$total_penerus;
 			return view('purchase/kas/tabelBiayakas',compact('data','tujuan','total_tarif','kas_surabaya','penerus','total_penerus','tipe_data',compact('tidak_ada_akun')));
@@ -1942,9 +1944,9 @@ class KasController extends Controller
 			for ($i=0; $i < count($data); $i++) { 
 				$hasil=($kas_surabaya/$total_tarif)*$data[$i][0]->total_net;
 				$hasil_1 += round($hasil,2);
-				$penerus[$i]=$hasil;
+				$penerus[$i]=round($hasil,2);
 			}
-			dd($hasil_1);
+			// dd($hasil_1);
 			$selisih = $kas_surabaya - $hasil_1;
 
 			if ($selisih > 0 ) {
