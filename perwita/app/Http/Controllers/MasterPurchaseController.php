@@ -1177,6 +1177,7 @@ class MasterPurchaseController extends Controller
 			$itemsupplier->is_harga = $replacehrg;
 			$itemsupplier->is_idsup = $mastersupplier->idsup;
 			$itemsupplier->is_updatestock = $request->updatestock[$i];
+			$itemsupplier->is_keteranganitem = $request->keteranganitem[$i];
 
 			$itemsupplier->save();
 		}
@@ -1290,6 +1291,7 @@ class MasterPurchaseController extends Controller
 					$itemsupplier->is_supplier = strtoupper($request->nosupplier);
 					$itemsupplier->is_idsup = $data->idsup;
 					$itemsupplier->is_updatestock = $request->updatestock[$i];
+					$itemsupplier->is_keteranganitem = $request->keteranganitem[$i];
 					$itemsupplier->save();
 				
 			}
@@ -1407,6 +1409,7 @@ class MasterPurchaseController extends Controller
 					$itemsupplier->is_supplier = strtoupper($request->nosupplier);
 					$itemsupplier->is_idsup = $data->idsup;
 					$itemsupplier->is_updatestock = $request->updatestock[$i];
+					$itemsupplier->is_keteranganitem = $request->keteranganitem[$i];
 					$itemsupplier->save();
 				
 			}

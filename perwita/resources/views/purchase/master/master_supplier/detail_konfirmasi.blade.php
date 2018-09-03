@@ -404,6 +404,7 @@
                               <th style="width:250px"> Barang </th>
                               <th> Harga </th>
                               <th> Update Stock </th>
+                              <th> Keterangan </th>
                               <th> </th>
                             </tr>
 
@@ -421,6 +422,7 @@
                               <td> <input type="text" class="form-control  hrg harga{{$index}} tablebarang" value="{{number_format($item->is_harga, 2)}}"  name="harga[]"> </td>
 
                               <td> <select class="form-control tablebarang updatestock{{$index}}" name="updatestock[]" readonly=""> <option value="Y"> Ya </option> <option value="T"> Tidak </option> </select> </td>
+                              <td> <input type='text' class='form-control' name='keteranganitem' value="{{$item->is_keteranganitem}}"> </td>
                               <td> <a class="btn btn-danger removes-btn" data-id="{{$index}}"> <i class="fa fa-trash"> </i> </a> </td>
                             </tr>
                             @endforeach
@@ -435,6 +437,7 @@
                                   <th style="width:250px"> Barang </th>
                                   <th> Harga </th>
                                   <th> Update Stock </th>
+                                  <th> Keterangan </th>
                                   <th> </th>
                                 </tr>
                               </table>
@@ -601,6 +604,7 @@ $(function(){
                   "<td> <select class='form-control brg chosen-select' name='brg[]' data-id="+$no+">  @foreach($data['item'] as $item) <option value='{{$item->kode_item}}+{{$item->harga}}+{{$item->updatestock}}'> {{$item->nama_masteritem}} </option> @endforeach </select>" +
                    "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
                    "<td> <select class='form-control updatestock"+$no+"' name='updatestock[]' readonly> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
+                   "<td> <input type='text' class='form-control' name='keteranganitem[]'> </td>" +
                   "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a></td>" +
                   "</tr>";   
 
@@ -693,48 +697,6 @@ $(function(){
             
     })
 
-
-   $notable = $('tr#dataitem').length;
-     $no = $notable + 1;
-    $('#tmbh_data_barang').click(function(){
-                     
-    $no++;
-
-    var rowBrg = "<tr id='dataitem item-"+$no+"' class='item-"+$no+"'>" +
-                  "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
-                  "<td> <select class='form-control brg' name='brg[]'>  @foreach($data['item'] as $item) <option value='{{$item->kode_item}}+{{$item->harga}}+{{$item->updatestock}}'> {{$item->nama_masteritem}} </option> @endforeach </select>" +
-                   "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
-                   "<td> <select class='form-control' name='updatestock[]'> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
-                  "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a></td>" +
-                  "</tr>";   
-
-   $("#addColumn").append(rowBrg);
-
-     $(function(){
-            $('.hrg' + $no).change(function(){
-                var id = $(this).data('id');
-
-                harga = $(this).val();
-                $this = $(this);
-                
-                numhar = Math.round(harga).toFixed(2);
-         
-                $this.val(addCommas(numhar));
-
-            })
-        })      
-
-        $(document).on('click','.removes-btn',function(){
-    //      alert('hei')
-              var id = $(this).data('id');
-    
-              var parent = $('.item-'+id);
-
-             parent.remove();
-          })
-
-
-    })
 
     $('.plafonkredit').change(function(){
        val = $(this).val();
