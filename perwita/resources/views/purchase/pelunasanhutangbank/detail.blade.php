@@ -64,7 +64,7 @@
                              &nbsp;  Jurnal Bank Keluar  
                            </a> 
                            &nbsp;
-
+                           @if($data['bbk'][0]->bbk_flag == 'CECKBG')
                            @foreach($data['bbkd'] as $bbkd)
                             @if($bbkd->bbkd_notabm != '')
                            <a onclick="lihatjurnal('BM')" class="btn-xs btn-primary" aria-hidden="true"><i class="fa  fa-eye"> </i>
@@ -73,6 +73,7 @@
                            @endif
 
                            @endforeach
+                           @endif
                       </div>
     @endif
 

@@ -539,7 +539,7 @@
 
                                         <div class="checkbox checkbox-info checkbox-circle">
                                             <input id="jenisbayaribaking" type="checkbox" name="jenisbayarbank" value="INTERNET BANKING" class="metodebayar jenisbayarbankibaking">
-                                            <label for="jenisbayarbankcekbg">
+                                            <label for="jenisbayaribaking">
                                                Internet Banking
                                             </label>
                                         </div>
@@ -983,7 +983,7 @@
         $this = $(this);
           if ($this.is(":checked")) {           
            $('.checkbgtf').hide();
-           $('.tujuanbank').show();
+           $('.tujuanbank').hide();
            $('.transferbank').show();
           }
           else {       
@@ -1028,8 +1028,9 @@
 
         if(banktujuan == '' || asalbank == ''){
           toastr.info("Mohon maaf data bank asal / tujuan belum diisi :)");
+          $('.jenisbayarbankibaking').prop({checked: false });
           return false;
-          
+
         }
         split = banktujuan.split("+");
         kodebanktujuan = split[4];

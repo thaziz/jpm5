@@ -88,6 +88,7 @@ table, td, th {
 				Dibayar Kepada : {{$data['bbk'][0]->mb_nama}}
 			</td>
 		</tr>
+		
 	</table>
 
 	@if($data['bbk'][0]->bbk_flag == 'BIAYA')
@@ -247,7 +248,166 @@ table, td, th {
 
 		</tr>
 	</table>
-	@else
+	@elseif($data['bbk'][0]->bbk_flag == 'BGAKUN')
+	<table width="100%">
+		<tr>
+			<td colspan="2" width="40px" class="tebal">Cheque / BG</td>
+			<td rowspan="2" width="190px" class="tebal">Nama Bank</td>
+			<td rowspan="2" width="100px" class="tebal">Nilai Cek / BG</td>
+			<td colspan="2" class="tebal">Kode Account</td>
+			<td rowspan="2" class="tebal" width="170px">Keterangan / Tindak lanjut yang akan dilakukan</td>
+			<td rowspan="2" class="tebal">D/K</td>
+			<td rowspan="2" class="tebal" width="150px">Rupiah</td>
+		</tr>
+		<tr>
+			<td class="tebal">Nomor</td>
+			<td class="tebal">Tanggal</td>
+			<td width="65px" class="tebal">CF</td>
+			<td width="65px" class="tebal">AK</td>
+
+		</tr>
+			@foreach($data['detail'] as $detail)
+		<tr>
+		
+			<td > {{ Carbon\Carbon::parse($data['bbk'][0]->bbk_tgl)->format('d-M-Y ') }} </td>
+			<td> {{$detail->bbkab_nocheck}} </td>
+			<td> {{$detail->mb_nama}} </td>
+			<td>{{ number_format($detail->bbkab_nominal, 2) }} </td>
+			<td> {{$detail->mb_kode}} </td>
+			<td>  {{$detail->mb_kode}}</td>
+			<td> {{$detail->bbkab_keteranganfpg}}</td>
+			<td> {{$detail->akun_dka}}</td>
+			<td> {{ number_format($detail->bbkab_nominal, 2) }} </td>
+		</tr>
+		@endforeach
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+		<td colspan="9" class="tebal top">Terbilang : {{$data['terbilang']}} rupiah</td>
+		</tr>
+	</table>
+
+
+	@elseif($data['bbk'][0]->bbk_flag == 'CEKBG')
 	<table width="100%">
 		<tr>
 			<td colspan="2" width="40px" class="tebal">Cheque / BG</td>

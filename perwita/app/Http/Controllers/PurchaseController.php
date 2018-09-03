@@ -7274,7 +7274,14 @@ public function kekata($x) {
 	public function createpelunasanbank() {
 		$data['bank'] = DB::select("select * from masterbank");
 		$data['cabang'] = DB::select("select * from cabang");
-		$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' or id_akun LIKE '7%' or id_akun LIKE '8%' or id_akun LIKE '16%'");
+		$cabang = session::get('cabang');
+		if($cabang == 000){
+			$data['akun'] = DB::select("select * from d_akun");
+		}
+		else {
+			$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%'");
+		}
+	
 		return view('purchase/pelunasanhutangbank/create', compact('data'));
 	}
 
@@ -7286,6 +7293,9 @@ public function kekata($x) {
 
 		if($flag == 'CEKBG'){
 			$data['detail'] = DB::select("select * from bukti_bank_keluar_detail , bukti_bank_keluar, d_akun, masterbank where bbkd_idbbk = bbk_id and bbk_id = '$id' and bbk_kodebank = mb_id and id_akun = mb_kode");
+		}
+		else if($flag == 'BGAKUN'){
+			$data['detail'] = DB::select("select * from bukti_bank_keluar_akunbg , bukti_bank_keluar, d_akun, masterbank where bbkab_idbbk = bbk_id and bbk_id = '$id' and bbk_kodebank = mb_id and id_akun = mb_kode");
 		}
 		else {
 			$data['detail'] = DB::select("select * from bukti_bank_keluar_biaya, bukti_bank_keluar, d_akun where bbkb_idbbk = bbk_id and bbk_id = '$id' and bbkb_akun = id_akun");
