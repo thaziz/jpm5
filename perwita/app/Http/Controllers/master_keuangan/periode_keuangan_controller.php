@@ -10,6 +10,7 @@ use App\master_akun_saldo;
 
 use App\d_periode_keuangan;
 use DB;
+use Session;
 
 class periode_keuangan_controller extends Controller
 {
@@ -22,17 +23,20 @@ class periode_keuangan_controller extends Controller
         ];
 
         $cek = DB::table('d_periode_keuangan')->where('bulan', $request->bulan)->where("tahun", $request->tahun)->first();
+
+        // return json_encode($cek);
+
         if(count($cek) > 0){
             $response = [
                 'status' => 'exist',
             ];
             return 'Periode Sudah Ada';
-            return json_encode($response);
+            // return json_encode($response);
         }
 
-        $cek2 = DB::table('d_periode_keuangan')->select("*")->limit(1)->first();
+        // $cek2 = DB::table('d_periode_keuangan')->select("*")->limit(1)->first();
 
-        // return 'okee';
+        // return json_encode(value);
         // return json_encode($request->bulan.' dan '.$request->tahun);
 
         if($request->bulan < date("m") || $request->tahun < date("Y")){
@@ -40,7 +44,7 @@ class periode_keuangan_controller extends Controller
                 'status' => 'past_insert',
             ];
 
-            return 'Periode Sudah Ada';
+            return 'Periode Sudah Berlalu';
         }
 
         $id = (DB::table("d_periode_keuangan")->max("id") == null) ? 1 : (DB::table("d_periode_keuangan")->max("id")+1);
@@ -79,11 +83,16 @@ class periode_keuangan_controller extends Controller
             'status' => 'sukses',
         ];
 
-        $periode = d_periode_keuangan::find($request->id);
-        $periode->status = $request->val;
+        DB::table('d_periode_keuangan')->whereIn('id', $request->checked)->update([
+        	'status'	=> 'locked'
+        ]);
 
-        if($periode->save())
-            return json_encode($response);
+        DB::table('d_periode_keuangan')->whereNotIn('id', $request->checked)->update([
+        	'status'	=> 'accessable'
+        ]);
+
+        Session::flash('sukses', 'Setting Periode Berhasil Diupdate');
+        return redirect()->back();
     }
 
 

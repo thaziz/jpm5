@@ -389,6 +389,7 @@ Route::get('biaya_penerus/carinopol', 'KasController@carinopol')->name('carinopo
 Route::get('biaya_penerus/jurnal', 'KasController@jurnal');
 Route::get('biaya_penerus/append_table', 'KasController@append_table');
 Route::get('buktikaskeluar/datatable_bk', 'KasController@datatable_bk')->name('datatable_bk');
+Route::get('biaya_penerus/jurnal_all', 'KasController@jurnal_all');
 
 // BIAYA PENERUS LOADING/UNLOADING
 Route::get('biaya_penerus_loading/index', 'loadingController@index');
@@ -1685,6 +1686,7 @@ Route::get('sales/invoice/jurnal', 'sales\invoice_Controller@jurnal1');
 Route::get('sales/cari_faktur_pajak', 'sales\invoice_Controller@cari_faktur_pajak');
 Route::get('sales/cari_nomor_pajak', 'sales\invoice_Controller@cari_nomor_pajak');
 // end invoice
+Route::get('sales/invoice/jurnal_all', 'sales\invoice_Controller@jurnal_all');
 
 
 //FORM TANDA TERIMA PENJUALAN
