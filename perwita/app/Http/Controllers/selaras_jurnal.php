@@ -846,16 +846,13 @@ class selaras_jurnal  extends Controller
                     $total = 0;
                     for ($z=0; $z < count($detail); $z++) { 
                       $cari_akun = DB::table('d_akun')
-                                     ->where('id_akun','like',substr($detail[$z]->bkkd_akun,0, 4).'%')
-                                     ->where('kode_cabang',$bkk[$i]->bkk_comp)
+                                     ->where('id_akun','like',$detail[$z]->bkkd_akun.'%')
                                      ->first();
                       $total+=$detail[$z]->bkkd_total;
                       try{
                         $dd = $cari_akun->id_akun;
                       }catch(Exception $re){
-                        $dels = DB::table('bukti_kas_keluar_detail')
-                              ->where('bkkd_id',$detail[$z]->bkkd_id)
-                              ->delete();
+                        
                       }
                     }
 
