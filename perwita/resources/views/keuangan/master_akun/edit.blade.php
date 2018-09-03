@@ -95,9 +95,9 @@
           </select>
         </td>
 
-        <td width="15%" class="text-center" style="padding-bottom: 15px;">&nbsp;</td>
-        <td colspan="2" style="padding-bottom: 15px;">
-          &nbsp;
+        <td width="15%" class="text-center hide_me">Tanggal Saldo</td>
+        <td colspan="2" class="hide_me">
+          <input type="text" name="opening_date" class="form-control only_date" readonly value="{{ $data->opening_date }}" placeholder="Pilih Tanggal Saldo">
         </td>
       </tr>
 
@@ -151,6 +151,10 @@
     $('[data-toggle="tooltip"]').tooltip();
 
     // console.log(cabang);
+
+    $('.only_date').datepicker({
+      format: 'yyyy-mm-dd'
+    });
 
     $("#type_akun").val('{{ $data->type_akun }}');
 

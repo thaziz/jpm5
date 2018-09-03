@@ -228,8 +228,8 @@
 						?>
 
 						<td>&nbsp;</td>
-						<td class="currency total {{$not}}">{{ $tot_debet }}</td>
-						<td class="currency total no-border {{$not}}">{{ $tot_kredit }}</td>
+						<td class="currency total {{$not}}">{{ number_format($tot_debet, 2) }}</td>
+						<td class="currency total no-border {{$not}}">{{ number_format($tot_kredit, 2) }}</td>
 					</tr>
 
 				@endforeach
