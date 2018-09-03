@@ -116,7 +116,7 @@
                         </tr>
                     </table>
                   </div>
-                  <div class="col-sm-12 append_table">
+                  <div class="col-sm-12 append_table table-responsive" style="overflow-y: scroll;">
                     
                   </div>
                 </div><!-- /.box-body -->
@@ -146,7 +146,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
         </div>
-        <div class="modal-body tabel_jurnal">
+        <div class="modal-body tabel_jurnal table-responsive" >
           
         </div>
         <div class="modal-footer">

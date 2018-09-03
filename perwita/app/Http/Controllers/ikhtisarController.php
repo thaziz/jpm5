@@ -656,8 +656,10 @@ class ikhtisarController extends Controller
 			$bpk = array_map("unserialize", array_unique(array_map("serialize", $bpk)));
 
 			$data_dt = array_merge($bkk,$bpk);	
+			$used = [];
 			for ($i=0; $i < count($data_dt); $i++) { 
 				$data_dt[$i]->check = 'YA';
+				$used[$i] = $data_dt[$i]->nota;
 			}
 
 			if ($data->ik_jenis == 'BONSEM') {
@@ -667,6 +669,7 @@ class ikhtisarController extends Controller
 						->where('bkk_tgl','>=',$start)
 						->where('bkk_tgl','<=',$end)
 						->where('bkk_status','RELEASED')
+						->whereNotIn('bkk_nota',$used)
 						->take(5000)
 						->orderBy('bkk_tgl','DESC')
 						->get();
@@ -677,6 +680,7 @@ class ikhtisarController extends Controller
 							  ->where('bkk_comp',$data->ik_comp)
 							  ->where('pc_akun','like','1002'.'%')
 							  ->where('bkk_nota',$bkk[$i]->nota)
+							  ->whereNotIn('bkk_nota',$used)
 							  ->get();
 					if ($bkkd == null) {
 						unset($cari[$i]);
@@ -714,6 +718,7 @@ class ikhtisarController extends Controller
 						->where('bkk_tgl','>=',$start)
 						->where('bkk_tgl','<=',$end)
 						->where('bkk_status','RELEASED')
+						->whereNotIn('bkk_nota',$used)
 						->take(5000)
 						->orderBy('bkk_tgl','DESC')
 						->get();
@@ -738,6 +743,7 @@ class ikhtisarController extends Controller
 						->where('bpk_tanggal','>=',$start)
 						->where('bpk_tanggal','<=',$end)
 						->where('bpk_status','Released')
+						->whereNotIn('bpk_nota',$used)
 						->take(5000)
 						->orderBy('bpk_tanggal','DESC')
 						->get();
@@ -802,13 +808,7 @@ class ikhtisarController extends Controller
 						 ->delete();
 					
 				for ($i=0; $i < count($request->id); $i++) { 
-					if (condition) {
-						# code...
-					}
 					if ($request->checker[$i] == 'off') {
-						if ($request->id[$i] == 'BKK0818/001/006') {
-							dd($request->checker[$i]);
-						}	
 						$bkk = DB::table('bukti_kas_keluar')
 									->where('bkk_nota',$request->id[$i])
 									->first();
@@ -908,10 +908,10 @@ class ikhtisarController extends Controller
 
 					array_push($val, $request->checker[$i]);
 				}
-				$del = DB::table('bukti_kas_keluar')
+	/*			$del = DB::table('bukti_kas_keluar')
 						 ->where('bkk_nota','BKK0818/001/006')
 						 ->get();
-	   			dd($del);
+	   			dd($del);*/
 
 				if ($request->checked == 'on') {
 					$status = 'APPROVED';

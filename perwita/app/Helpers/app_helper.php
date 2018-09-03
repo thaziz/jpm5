@@ -188,4 +188,37 @@
         return $notabm;
 	}
 
+	function check_jurnal($nota)
+	{
+		$data = DB::table('d_jurnal')
+				 ->join('d_jurnal_dt','jr_id','=','jrdt_jurnal')
+				 ->where('jr_ref',$nota)
+				 ->get();
+
+		$d = 0;
+		$k = 0;
+
+		for ($i=0; $i < count($data); $i++) { 
+			if ($data[$i]->jrdt_status_dka == 'D') {
+				if ($data[$i]->jrdt_value < 0) {
+					$temp = $data[$i]->jrdt_value * -1;
+				}
+
+				$d+=$temp;
+			}else{
+				if ($data[$i]->jrdt_value < 0) {
+					$temp = $data[$i]->jrdt_value * -1;
+				}
+
+				$k+=$temp;
+			}
+		}
+
+		if ($d != $k) {
+			return 0;
+		}else{
+			return 1;
+		}
+	}
+
 ?>
