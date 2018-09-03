@@ -86,7 +86,7 @@
                                   Nama Supplier
                                   </td>
                                   <td width="400px">
-                                     <input type="text" class="form-control input-sm namasupplier" name="nama_supplier" value="{{$sup->nama_supplier}}" readonly="">
+                                     <input type="text" class="form-control input-sm namasupplier nmsupplier" name="nama_supplier" value="{{$sup->nama_supplier}}" readonly="">
                                       <input type="hidden" class="form-control input-sm namasupplier" name="idsupplier" value="{{$sup->idsup}}" readonly="">
                                   </td>
                               </tr>
@@ -485,6 +485,16 @@
     })
      },2000);
 
+     $('.nmsupplier').change(function(){
+        val = $(this).val();
+        
+        if(val.indexOf(',') > -1){         
+           test =  val.replace(/,/g , '');
+           $(this).val(test);
+           toastr.info("Mohon maaf nama tidak boleh ada comma :)");
+        }
+
+    
     $('.simpandata').click(function(){
       
       var tr = $('tr.dataitem').length;

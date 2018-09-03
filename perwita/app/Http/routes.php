@@ -85,6 +85,9 @@ Route::get('setting/sync_jurnal/invoice', 'selaras_jurnal@invoice');
 Route::get('setting/sync_jurnal/master_akun_fitur', 'selaras_jurnal@master_akun_fitur');
 Route::get('setting/sync_jurnal/nilai_invoice', 'selaras_jurnal@nilai_invoice');
 
+Route::get('jurnalselaras/jurnalselaras', 'jurnal_pembelian@index');
+Route::get('jurnalselaras/fakturpembelian', 'jurnal_pembelian@fakturpembelian');
+
 //***PEMBELIAN
 //***PEMBELIAN
 // Route::get('tes' , 'sales\invoice_Controller@index');
