@@ -3959,6 +3959,7 @@ class kasKeluarController extends Controller
 			$data= DB::table('d_jurnal')
 				 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
 				 ->join('d_akun','jrdt_acc','=','id_akun')
+				 ->where('jr_ref','like','BKK%')
 				 ->get();
 			
 
