@@ -7460,7 +7460,7 @@ public function kekata($x) {
 
 		$datainfo =['status' => 'sukses' , 'data' => $idbbk];
 
-		return json_encode($idbbk) ;
+		return json_encode($datainfo) ;
 	}
 	
 
