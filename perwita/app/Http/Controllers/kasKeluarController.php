@@ -219,6 +219,8 @@ class kasKeluarController extends Controller
 
                             return '<div class="btn-group">' .$a . $c .$d.'</div>' ;
                                    
+
+                                   
                         })
                     
                         ->addColumn('cabang', function ($data) {
