@@ -699,12 +699,12 @@
           tempcek = 1;
          
 
-          for(ds = 0; ds < arrnourutcek.length; ds++){ // CEK DOUBLE 
+          for(ds = 0; ds < arrnourut2cek.length; ds++){ // CEK DOUBLE 
             if(arrnourutcek[ds] == urutcek){
              tempcek = parseInt(tempcek) + 1;
             }
             else {
-              for(i=1;i<=hasilurutcek;i++){
+              for(i=1;i<=arrnourut2cek.length;i++){
                 if(arrnourutcek[ds + i] == urutcek){
                    tempcek = parseInt(tempcek) + 1;
                 }
@@ -715,13 +715,13 @@
 
 
           tempbg = 1;
-          for(ds = 0; ds < arrnourutbg.length; ds++){ // CEK DOUBLE BG
+          for(ds = 0; ds < arrnourut2bg.length; ds++){ // CEK DOUBLE BG
             if(arrnourutbg[ds] == urutbg){
              tempbg = parseInt(tempbg) + 1;
               
             }
             else {
-              for(i=1;i<=arrnourutbg.length;i++){
+              for(i=1;i<=arrnourut2bg.length;i++){
                 if(arrnourutbg[ds + i] == urutbg){
                    tempbg = parseInt(tempbg) + 1;
                 }
@@ -842,7 +842,7 @@
 
                   temp = 1;
                 
-                  for(ds = 0; ds < hasilurutcek; ds++){ // CEK DOUBLE
+                  for(ds = 0; ds < arrnourutcek.length; ds++){ // CEK DOUBLE
                     if(arrnourutcek[ds] == urutcek){
                      temp = parseInt(temp) + 1;
                       
@@ -851,7 +851,7 @@
 
                     }
                     else {
-                      for(i=1;i<=hasilurutcek;i++){
+                      for(i=1;i<=arrnourutcek.length;i++){
                         if(arrnourutcek[ds + i] == urutcek){
                            temp = parseInt(temp) + 1;
                         }
@@ -945,12 +945,12 @@
 
                   temp = 1;
                 
-                  for(ds = 0; ds < hasilurutbg; ds++){ // CEK DOUBLE
+                  for(ds = 0; ds < arrnourutbg.length; ds++){ // CEK DOUBLE
                     if(arrnourutbg[ds] == urutbg){
                      temp = parseInt(temp) + 1;                      
                     }
                     else {
-                      for(i=1;i<=hasilurutbg;i++){
+                      for(i=1;i<=arrnourutbg.length;i++){
                         if(arrnourutbg[ds + i] == urutbg){
                            temp = parseInt(temp) + 1;
                         }
