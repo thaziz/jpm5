@@ -94,7 +94,7 @@
                                   Nama Supplier
                                   </td>
                                   <td width="400px">
-                                     <input type="text" class="form-control input-sm namasupplier" name="nama_supplier" value="{{$sup->nama_supplier}}" readonly="">
+                                     <input type="text" class="form-control input-sm namasupplier nmsupplier" name="nama_supplier" value="{{$sup->nama_supplier}}" readonly="">
                                   </td>
                               </tr>
 

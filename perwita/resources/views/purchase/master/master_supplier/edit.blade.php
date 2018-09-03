@@ -66,7 +66,7 @@
                             Nama Supplier
                             </td>
                             <td>
-                               <input type="text" class="form-control" name="nama_supplier" value="{{$sup->nama_supplier}}">
+                               <input type="text" class="form-control nmsupplier" name="nama_supplier" value="{{$sup->nama_supplier}}">
                             </td>
                           </tr>
 

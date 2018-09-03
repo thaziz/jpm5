@@ -186,7 +186,7 @@
 
                             <tr>
                               <th> Keterangan </th>
-                              <td> <input type='text' class='form-control' name="keterangan"></td>
+                              <td> <input type='text' class='form-control keterangan' name="keterangan"></td>
                             </tr>
                           </table>
 
@@ -811,6 +811,12 @@
       $('.transferbank').hide();
       $('.ibanking').hide();
 
+
+      $('.keterangan').change(function(){
+        keterangan = $(this).val();
+        $('.keterangandetail').val(keterangan);
+      })
+
       //MENDAPATKAN NO FPG
        cabang = $('.cabang').val();
         $('.valcabang').val(cabang);
@@ -934,15 +940,12 @@
             return false;
           }
         }
-
-        // alert('hei');
-        bank = $('.bank').val();
-       // alert(bank);
-        if(bank == ''){
-          toastr.info("Data Bank Belum diisi :)");
-          return false;
-        }
-
+          bank = $('.bank').val();
+         // alert(bank);
+          if(bank == ''){
+            toastr.info("Data Bank Belum diisi :)");
+            return false;
+          }
       })
 
       nomrbnk = 1;   
@@ -1629,7 +1632,7 @@
 
                                   "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].fp_sisapelunasan)+" readonly name='sisapelunasan[]' style='text-align:right'> <input type='hidden' class='debitnota"+nmr+"' value="+data.faktur[i][0].fp_debitnota+"> <input type='hidden' class='creditnota"+nmr+"' value="+data.faktur[i][0].fp_creditnota+"> </td>" + //sisapelunasan
 
-                                  "<td> <input type='text' class='input-sm form-control' name='fpgdt_keterangan[]'> </td>" +
+                                  "<td> <input type='text' class='input-sm form-control keterangandetail' name='fpgdt_keterangan[]'> </td>" +
 
                                   "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].fp_nofaktur+" data-idfaktur="+data.faktur[i][0].fp_idfaktur+" type='button'><i class='fa fa-trash'></i></button> </td>" +
                                   "</tr>";
@@ -1698,7 +1701,7 @@
 
                                   "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].v_pelunasan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
 
-                                  "<td> <input type='text' class='input-sm form-control' name='fpgdt_keterangan[]'> </td>" +
+                                  "<td> <input type='text' class='input-sm form-control keterangandetail' name='fpgdt_keterangan[]'> </td>" +
 
                                   "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].v_nomorbukti+" data-idfaktur="+data.faktur[i][0].v_id+" type='button'><i class='fa fa-trash'></i></button> </td>" +
                                   "</tr>";
@@ -1769,7 +1772,7 @@
 
                                   "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].um_sisapelunasan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
 
-                                  "<td> <input type='text' class='input-sm form-control' name='fpgdt_keterangan[]'> </td>" +
+                                  "<td> <input type='text' class='input-sm form-control keterangandetail' name='fpgdt_keterangan[]'> </td>" +
 
                                   "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].um_nomorbukti+" data-idfaktur="+data.faktur[i][0].um_id+" type='button'><i class='fa fa-trash'></i></button> </td>" +
                                   "</tr>";
@@ -1834,7 +1837,7 @@
 
                                   "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].ik_pelunasan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
 
-                                  "<td> <input type='text' class='input-sm form-control' name='fpgdt_keterangan[]'> </td>" +
+                                  "<td> <input type='text' class='input-sm form-control keterangandetail' name='fpgdt_keterangan[]'> </td>" +
 
                                   "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].ik_nota+" data-idfaktur="+data.faktur[i][0].ik_id+" type='button'><i class='fa fa-trash'></i></button> </td>" +
                                   "</tr>";
@@ -1905,7 +1908,7 @@
 
                                   "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].bp_pelunasan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
 
-                                  "<td> <input type='text' class='input-sm form-control' name='fpgdt_keterangan[]'> </td>" +
+                                  "<td> <input type='text' class='input-sm form-control keterangandetail' name='fpgdt_keterangan[]'> </td>" +
 
                                   "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].bp_nota+" data-idfaktur="+data.faktur[i][0].bp_id+" type='button'><i class='fa fa-trash'></i></button> </td>" +
                                   "</tr>";
@@ -1969,7 +1972,7 @@
 
                                   "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].bp_pencairan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
 
-                                  "<td> <input type='text' class='input-sm form-control' name='fpgdt_keterangan[]'> </td>" +
+                                  "<td> <input type='text' class='input-sm form-control keterangandetail' name='fpgdt_keterangan[]'> </td>" +
 
                                   "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].bp_nota+" data-idfaktur="+data.faktur[i][0].bp_id+" type='button'><i class='fa fa-trash'></i></button> </td>" +
                                   "</tr>";
@@ -1990,8 +1993,10 @@
                                arrnofaktur.push(val);
                             }
                     }
-	
-						
+					 
+                  keteranganheader = $('.keterangan').val();
+                  $('.keterangandetail').val(keteranganheader);
+
 //                        alert(hasilsisaterbayar);
 
               $('.nofp').click(function(){
