@@ -332,7 +332,7 @@ $('#btn_kwitansi').click(function(){
     var cabang = $('.cabang').val();
     var akun_bank = $('.akun_bank').val();
     var id = 0;
-    if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B' || cb_jenis_pembayaran == 'T') {
+    if (cb_jenis_pembayaran == 'C'  || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B' || cb_jenis_pembayaran == 'T') {
         $.ajax({
             url  :baseUrl+'/sales/posting_pembayaran_form/cari_kwitansi',
             data : {id,cabang,cb_jenis_pembayaran,array_simpan,akun_bank,nomor},
@@ -351,8 +351,7 @@ $('#btn_kwitansi').click(function(){
               $('#modal').modal('show');
             }
         })
-    }else{
-        console.log('asdf');
+    }else if (cb_jenis_pembayaran == 'L'){
         $('#modal_kas').modal('show');
     }
     

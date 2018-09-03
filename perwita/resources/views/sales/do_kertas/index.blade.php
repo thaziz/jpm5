@@ -4,7 +4,8 @@
 
 @section('content')
 <style type="text/css">
-    .cssright { text-align: right; }
+    .right { text-align: right; }
+    .center { text-align: center; }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -67,37 +68,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data as $row)
-                            <tr>
-                                <td><a href="{{ url('sales/detail_do_kertas')}}/{{$row->nomor}}">{{ $row->nomor }}</a></td>
-                                <td>{{ $row->tanggal }}</td>
-                                <td>{{ $row->nama_cabang }}</td>
-                                <td>{{ $row->nama }}</td>
-                                <td style="text-align:right"> {{ number_format($row->diskon, 0, ",", ".") }} </td>
-                                <td style="text-align:right"> {{ number_format($row->total_net, 0, ",", ".") }} </td>
-                                <td class="text-center">
-                                    <div class="btn-group">
-                                        @if($row->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order Koran','ubah'))
-                                            @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
-                                            <a type="button" href="{{ url('sales/edit_do_kertas')}}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
-                                            @endif
-                                        @endif
-
-
-                                        @if(Auth::user()->punyaAkses('Delivery Order Koran','print'))
-                                            <button type="button" onclick="print('{{$row->nomor}}')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>
-                                        @endif
-
-                                        @if($row->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order Koran','hapus'))
-                                            @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
-                                            <button type="button" onclick="hapus('{{$row->nomor}}')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>
-                                            @endif
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-
                         </tbody>
 
                     </table>
@@ -131,20 +101,42 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-    $(document).ready( function () {
-        $('#tabel_data').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": false,
-            "responsive": true,
-            "autoWidth": false,
-            "pageLength": 10,
-            "retrieve" : true,
-      });
-    });
+     $(document).ready( function () {
 
+         $('#tabel_data').DataTable({
+            processing: true,
+            // responsive:true,
+            serverSide: true,
+            ajax: {
+                url:'{{ route("datatable_do_kertas") }}',
+            },
+            columnDefs: [
+              {
+                 targets: 5,
+                 className: 'right'
+              },
+              {
+                 targets: 4,
+                 className: 'right'
+              },
+              {
+                 targets:6,
+                 className: 'center'
+              },
+            ],
+            "columns": [
+            { "data": "nomor" },
+            { "data": "tanggal" },
+            { "data": "cabang"},
+            { "data": "customer" },
+            { "data": "diskon" },
+            { "data": "total_net"},
+            { "data": "aksi" },
+            
+            ]
+      });
+      $.fn.dataTable.ext.errMode = 'throw';
+    });
 
     $(document).on("click","#btn_add_order",function(){
         window.location.href = baseUrl + '/sales/deliveryorderkertas_form'
@@ -201,6 +193,10 @@
        }
       });
     });
+}
+
+function edit(ted) {
+  location.href = '{{ url('sales/edit_do_kertas') }}/'+ted;
 }
 </script>
 @endsection

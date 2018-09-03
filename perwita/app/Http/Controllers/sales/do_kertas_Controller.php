@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Carbon\carbon;
 use Auth;
+use Yajra\Datatables\Datatables;
 
 
 class do_kertas_Controller extends Controller
@@ -59,6 +60,102 @@ class do_kertas_Controller extends Controller
         return view('sales.do_kertas.index',compact('data'));
     }
 
+    public function datatable_do_kertas()
+    {
+
+      $cabang = auth::user()->kode_cabang;
+      if (Auth::user()->punyaAkses('Delivery Order','all')) {
+          $data = DB::table('delivery_order')
+                    ->join('cabang','kode','=','kode_cabang')
+                    ->where('jenis','KORAN')
+                    ->orderBy('tanggal','DESC')
+                    ->get();
+      }else{
+          $data = DB::table('delivery_order')
+                    ->join('cabang','kode','=','kode_cabang')
+                    ->where('jenis','KORAN')
+                    ->where('kode_cabang',$cabang)
+                    ->orderBy('tanggal','DESC')
+                    ->get();
+      }
+        // return $data;
+        $data = collect($data);
+        // return $data;
+
+        return Datatables::of($data)
+                        ->addColumn('aksi', function ($data) {
+
+                            if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah')){
+                                if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
+                                  $a = '<button type="button" onclick="edit(\''.$data->nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
+                                }else{
+                                  $a = '';
+                                }
+                            }else{
+                              $a = '';
+                            }
+
+                            if(Auth::user()->punyaAkses('Delivery Order','print')){
+                                $b = '<button type="button" onclick="print(\''.$data->nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
+                            }else{
+                              $b = '';
+                            }
+
+
+                            if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','hapus')){
+                                if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
+                                  $c = '<button type="button" onclick="hapus(\''.$data->nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
+                                }else{
+                                  $c = '';
+                                }
+                            }else{
+                              $c = '';
+                            }
+                            return $a . $b .$c  ;
+                            
+
+                                   
+                        })
+                        ->addColumn('customer', function ($data) {
+                          $kota = DB::table('customer')
+                                    ->get();
+
+                          for ($i=0; $i < count($kota); $i++) { 
+                            if ($data->kode_customer == $kota[$i]->kode) {
+                                return $kota[$i]->nama;
+                            }
+                          }
+                        })
+                        ->addColumn('cabang', function ($data) {
+                          $kota = DB::table('cabang')
+                                    ->get();
+
+                          for ($i=0; $i < count($kota); $i++) { 
+                            if ($data->kode_cabang == $kota[$i]->kode) {
+                                return $kota[$i]->nama;
+                            }
+                          }
+                        })
+                        ->addColumn('tujuan', function ($data) {
+                          $kota = DB::table('kota')
+                                    ->get();
+
+                          for ($i=0; $i < count($kota); $i++) { 
+                            if ($data->id_kota_tujuan == $kota[$i]->id) {
+                                return $kota[$i]->nama;
+                            }
+                          }
+                        })
+                        ->addColumn('total_net', function ($data) {
+                          return number_format($data->total_net,2,',','.'  ); 
+                        })
+                        ->addColumn('diskon', function ($data) {
+                          return number_format($data->diskon,2,',','.'  ); 
+                        })
+                        ->addIndexColumn()
+                        ->make(true);
+    }
+
     public function form($nomor=null){
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
@@ -77,6 +174,7 @@ class do_kertas_Controller extends Controller
     }
 
     
+
     
 
     public function cetak_nota($nomor=null) {
@@ -223,7 +321,7 @@ class do_kertas_Controller extends Controller
 
               }
             }elseif ($cari_nota == null) {
-              $nota = $request->nota_invoice;
+              $nota = $request->ed_nomor;
             }
 
             $save_head = DB::table('delivery_order')
@@ -303,7 +401,11 @@ class do_kertas_Controller extends Controller
 
     }
     public function hapus_do_kertas(request $request)
-    {
+    {   
+
+        $hapus = DB::table('delivery_orderd')
+                   ->where('dd_nomor',$request->id)
+                   ->delete();
         $hapus = DB::table('delivery_order')
                    ->where('nomor',$request->id)
                    ->delete();

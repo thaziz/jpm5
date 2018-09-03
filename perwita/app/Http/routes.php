@@ -1612,6 +1612,7 @@ Route::post('sales/update_do_kertas', 'sales\do_kertas_Controller@update_do_kert
 Route::get('sales/detail_do_kertas/{id}', 'sales\do_kertas_Controller@detail_do_kertas');
 Route::get('sales/ganti_item', 'sales\do_kertas_Controller@ganti_item');
 Route::get('sales/cari_kontrak_kertas', 'sales\do_kertas_Controller@cari_kontrak_kertas');
+Route::get('sales/datatable_do_kertas', 'sales\do_kertas_Controller@datatable_do_kertas')->name('datatable_do_kertas');
 
 // end delivery order kertas
 
