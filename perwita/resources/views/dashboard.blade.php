@@ -15,6 +15,7 @@
 
         <div class="row border-bottom white-bg dashboard-header">
           <center> <span style="font-size:18px;">Hai, {{ Auth::user()->m_name }} Selamat Bekerja</span> </center>
+          <center><span style="font-size:18px;">Mohon Maaf Untuk Jurnal Sedang Dilakukan Perbaikan, Terima Kasih</span></center>
         </div>
    
 

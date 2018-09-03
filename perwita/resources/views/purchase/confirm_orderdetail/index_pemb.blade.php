@@ -42,6 +42,10 @@
     .hargatable {
       width: 800px; margin: 0 auto;
     }
+
+    .chosen-drop {
+      color : black;
+    }
    /* #table_form td,
     #table_form th{
       padding:10px 0px;
@@ -383,7 +387,7 @@
                     <tr class="data-supplier">
                       @foreach($data['spptb'] as $index=>$spptb)
                       <td class="supid supplier{{$index}}" data-id="{{$index}}" data-supplier="{{$spptb->spptb_supplier}}"> 
-                            <select class="input-sm form-control supplier{{$index}} sup" name="supplier3[]" disabled="" data-supplier="{{$spptb->spptb_supplier}}" data-id="{{$index}}" style="color:#000">
+                            <select class="input-sm form-control chosen-select  supplier{{$index}} sup" name="supplier3[]"  data-supplier="{{$spptb->spptb_supplier}}" data-id="{{$index}}" style="color:black" disabled="">
                              @foreach($data['supplier'] as $sup)
                               <option value="{{$sup->idsup}},{{$sup->syarat_kredit}},{{$sup->kontrak}}" @if($spptb->spptb_supplier == $sup->idsup) selected="" @endif>  {{$sup->nama_supplier}} 
                              @endforeach
@@ -493,6 +497,24 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+     $(document).ready(function(){
+      var config = {
+                '.chosen-select'           : {},
+                '.chosen-select-deselect'  : {allow_single_deselect:true},
+                '.chosen-select-no-single' : {disable_search_threshold:10},
+                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+                '.chosen-select-width'     : {width:"95%"}
+                }
+
+             for (var selector in config) {
+               $(selector).chosen(config[selector]);
+             }
+    })
+  
+
+
+
   $('.kettolak').attr('readonly' , true);
      $('#statuskeuangan').hide();
   prosespembelian = $('.prosespembelian').val();
@@ -882,6 +904,7 @@
 
 
                                          $('input[class^="checkbox"]').change(function(){
+                                          
                                            var $this = $(this);
                                           idsup = $(this).val();
                                           id = $(this).data('id');
@@ -913,12 +936,21 @@
                                                       $('.sup').each(function(){
                                                         supplier = $(this).data('supplier');
                                                         if(supplier == idsup){
-                                                          $(this).attr('disabled', false);
+                                                          $(this).attr('disabled' , false);
+                                                            $(this).trigger("chosen:updated");
+                                                              $(this).trigger("liszt:updated");
+
                                                           if(kontrak == 'YA'){
                                                             $('td[data-supplier="'+supplier+ '"]').addClass('disabled');
+                                                              $('td[data-supplier="'+supplier+ '"]').trigger("chosen:updated");
+                                                              $('td[data-supplier="'+supplier+ '"]').trigger("liszt:updated");
                                                           }
                                                           else {
                                                              $('td[data-supplier="'+supplier+ '"]').removeClass('disabled');
+                                                              $('td[data-supplier="'+supplier+ '"]').trigger("chosen:updated");
+                                                              $('td[data-supplier="'+supplier+ '"]').trigger("liszt:updated");
+
+                                                             
                                                           }
                                                         }
                                                       })
@@ -951,6 +983,8 @@
                                                         supplier = $(this).data('supplier');
                                                         if(supplier == idsup){
                                                           $(this).attr('disabled', true);
+                                                           $(this).trigger("chosen:updated");
+                                                              $(this).trigger("liszt:updated");
                                                         }
                                                       })
                                                   }

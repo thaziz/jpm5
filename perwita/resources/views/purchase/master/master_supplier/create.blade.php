@@ -101,7 +101,7 @@
                             Nama Supplier
                             </td>
                             <td>
-                               <input type="text" class="input-sm form-control" name="nama_supplier" required="">                            
+                               <input type="text" class="input-sm form-control nmsupplier" name="nama_supplier" required="">                            
                             </td>
                           </tr>
 
@@ -353,6 +353,16 @@
             }
             return x1 + x2;
     }
+      $('.nmsupplier').change(function(){
+        val = $(this).val();
+        
+        if(val.indexOf(',') > -1){         
+           test =  val.replace(/,/g , '');
+           $(this).val(test);
+           toastr.info("Mohon maaf nama tidak boleh ada comma :)");
+        }
+       
+      })
 
       $('.cabang').change(function(){
          cabang = $('.cabang').val();

@@ -522,7 +522,7 @@ class KasController extends Controller
 			for ($i=0; $i < count($data); $i++) { 
 				$hasil=($kas_surabaya/$total_tarif)*$data[$i][0]->total_net;
 				$hasil_1 += round($hasil,2);
-				$penerus[$i]=round($hasil,2);
+				$penerus[$i]=round($hasil,2) ;
 			}
 			$selisih = $kas_surabaya - $hasil_1;
 

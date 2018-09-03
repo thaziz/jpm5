@@ -1369,7 +1369,7 @@
                       kodeitem = $(this).data('kodeitem');
                       idpbdt = $(this).data('idpbdt');
                       rowidpbdt = "<input type='text' value="+idpbdt+" >";
-                      
+                     
                       $('.idpbdt').val(idpbdt);
                       console.log(kodeitem);
                       sppid = $(this).data('spp');
@@ -1377,14 +1377,17 @@
                       //appendkodeitem
                       qtykirim = $('.qtykirim2' + id).val();
                       qtyterima = $('.qtyterima3' + id).val();
+                      $(this).val(qtykirim);
+                      toastr.info("qty barang harus lengkap :)");
                       $('.kodeitem4' + id).val(kodeitem);
-                      
-                      console.log(qtykirim + 'qtykirim');
+                      val = qtykirim;
+                     
                       harga = $('.harga' + id).val();
                       harga2 = harga.replace(/,/g, '');
 
                       biaya = parseFloat(harga2 * val).toFixed(2);
                       $('.biaya' + id).val(addCommas(biaya)); 
+
 
 
                       po_id = $('.po_id').val();

@@ -915,7 +915,10 @@ function cariSUB(){
       type:'get',
       dataType:'json',
       success:function(response){
-
+        if (response.status == 0) {
+          toastr.warning(response.pesan);
+          return false;
+        }
         subcon.row.add([
                   m_seq+'<input type="hidden" class="seq_sub sub_seq_'+d_resi_subcon+'"  value="'+m_seq+'" >'+
                   '<input type="hidden" name="d_ksd_id[]" class="d_ksd_id"  value="'+d_ksd_id+'" >',

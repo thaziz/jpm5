@@ -659,7 +659,15 @@
                                         </tr>
                                         @foreach($data['fpg'] as $fpg)
                                         <tr>
-                                          <td> <input type="text" class="form-control kodebank" readonly="" value="{{$fpg->mb_kode}} " name="kodebank">   <input type="hidden" class="form-control mbid" readonly="" value="{{$fpg->mb_id}} " name="idbank"> </td>
+                                          <td> 
+                                            <select class="form-control selectOutlet chosen-select-width1 bank bankasal" > <option value=""> Pilih Data Bank </option>
+                                                @foreach($data['bank'] as $bank)
+                                                  <option value="{{$bank->mb_id}}, {{$bank->mb_nama}} , {{$bank->mb_cabang}} ,{{$bank->mb_accno}},{{$bank->mb_kode}},{{$bank->mb_kelompok}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
+                                                  @endforeach
+                                            </select>
+                                            <input type="hidden" class="form-control kodebank" readonly="" value="{{$fpg->mb_kode}} " name="kodebank">  
+                                            <input type="hidden" class="form-control mbid" readonly="" value="{{$fpg->mb_id}} " name="idbank"> </td>
+
                                           <td> <input type="text" class="form-control nmbank" readonly="" value="{{$fpg->mb_nama}}"> </td> <td> <input type="text" class="form-control cbgbank" readonly="" value="{{$fpg->mb_cabang}}"> </td> <td> <input type="text" class="form-control account" readonly="" value="{{$fpg->mb_accno}}"> </td>                                          
                                         </tr>
                                         @endforeach
@@ -677,8 +685,22 @@
                                                Internet Banking
                                             </label>
                                         </div>
+
+                                          <div class="checkbox checkbox-info checkbox-circle">
+                                            <input id="jenisbayarbankcekbg" type="checkbox" name="jenisbayarbank" value="CHECK/BG" class="metodebayar jenisbayarbankbg" disabled="">
+                                            <label for="jenisbayarbankcekbg">
+                                                Cheque / BG
+                                            </label>
+                                        </div>
                                         @else
-                                        <div class="checkbox checkbox-info checkbox-circle">
+                                          <div class="checkbox checkbox-info checkbox-circle">
+                                            <input id="jenisbayaribaking" type="checkbox" name="jenisbayarbank" value="INTERNET BANKING" class="metodebayar jenisbayarbankibaking" disabled="">
+                                            <label for="jenisbayarbankcekbg">
+                                               Internet Banking
+                                            </label>
+                                        </div>
+
+                                          <div class="checkbox checkbox-info checkbox-circle">
                                             <input id="jenisbayarbankcekbg" type="checkbox" name="jenisbayarbank" value="CHECK/BG" class="metodebayar jenisbayarbankbg" checked="">
                                             <label for="jenisbayarbankcekbg">
                                                 Cheque / BG
@@ -687,8 +709,7 @@
                                        @endif
                                     </fieldset>
                                       <br>
-                                      <br>
-                                <!--       <div class="pull-left"> <button class="btn btn-info"> <i class="fa fa-plus" aria-hidden="true"></i> Tambah Data Bank </button> </div> -->
+                                      <br>                              
                                 </div>
 
                                   <div class="col-md-6 checkbgtf">
@@ -825,15 +846,13 @@
 
                                     </tr>
                                     </table>
-
-
                                 </div>
 
-
+                                
                                 <div class="col-md-12" style="padding-top: 20px">
                                   <table class="table table-bordered" id="tbl-bank">
                                     @if($data['fpg'][0]->fpg_jenisbayar != '11' && $data['fpg'][0]->fpg_jenisbayar != '12')
-                                   
+                                      
                                     <tr>
                                       <th> Nomor </th>
                                       <th> No Bukti </th>
@@ -895,7 +914,7 @@
                                         @endif
                                       @endfor
 
-                                    @else 
+                                    @else {{-- Jika Kode 11 atau 12 --}}
                                       <th> Nomor </th>
                                       <th> No Bukti </th>
                                       <th> No Cek / BG </th>
@@ -1023,7 +1042,93 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-          
+    
+     $('.jenisbayarbankibaking').change(function(){
+          $this = $(this);
+          jenisbayar = $('.jenisbayar').val();
+           if ($this.is(":checked")) {
+                if(jenisbayar == '12' || jenisbayar == '11'){
+                  $('.transferbank').show();
+                  $('.tujuanbankacc').show();
+                  $('.jenisbayarbankbg').prop({ checked: false }); 
+
+                  banktujuan =$('.banktujuan').val();
+                  $('#tbmhdatainet').show();
+                  $('.nocheck').attr('readonly' , true);
+                  $('.nominaltujuanbank').attr('readonly' , true);
+                }
+                else {
+                  $('.jenisbayarbankbg').prop({ checked: false });           
+                  $('.tujuanbank').hide();
+                  $('.tujuanbankacc').hide();
+                  $('.transferbank').hide();
+                  $('.checkbgtf').hide();
+                  $('.ibanking').show();
+                  $('#tbl-ibank').show();
+
+                  tgl = $('.tgl').val();
+                  bank = $('.bank').val();
+                  kodebank = bank.split(",");
+                  
+
+                  if(kodebank == ''){
+                    toastr.info("Mohon pilih data bank terlebih dahulu :)");
+                    return false;
+                  }
+                  jatuhtempo = $('.jatuhtempo').val();
+                  nofpg = $('.nofpg').val();
+
+                  $('tr.tblbank').remove();
+
+                   var row = "<tr class='tblbank'> <td> 1 </td>  <td>"+nofpg+"</td>" + // NO FPG
+                        "<td>"+tgl+"</td>"+
+                        "<td> <input type='text' class='form-control kodebankbg' value="+kodebank[4]+" name='kodebankbg' readonly></td>"+ // TGL
+                        "<td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"' readonly> </td> <td> <input type='text'  class='input-sm form-control nominaltblibank' name='nominalbank' style='text-align:right'> </td>" + //JATUH TEMPO
+                        "<td>  </td> </tr>"; //NOMINAL
+                      
+                    $('#tbl-ibank').append(row);
+
+                    $('.nominaltblibank').change(function(){
+                      
+                        totbayar = $('.totbayar').val();
+                        kodebank = $('.kodebankbg').val();
+
+                        val = $(this).val();
+                        val = accounting.formatMoney(val, "", 2, ",",'.');
+                        $(this).val(val);
+                          jenisbayar = $('.jenisbayar').val();
+                          if(jenisbayar != '5'){
+
+                             totbayar = totbayar.replace(/,/g,'');
+                             val = val.replace(/,/g,'');
+                             if(parseFloat(totbayar) < parseFloat(val)) {
+                              toastr.info("Nominal harus sama dengan totalbayar :)");
+                              return false;
+                             }
+                             $('.ChequeBg').val(addCommas(val));
+                          }
+                          else {
+                            $('.totbayar').val(val);
+                            $('.ChequeBg').val(val);
+                          }
+                        
+                    })
+                }
+           }
+           else {
+            if(jenisbayar == 12 || jenisbayar == 11){
+              $('.checkbgtf').hide();
+              $('.ibanking').hide();
+            }
+            else {
+              $('.checkbgtf').show();
+              $('.ibanking').hide();
+            }
+
+           }
+      })
+
+
     //DATA BANK
     $('.tujuanbank').hide();
     $('.tujuanbankacc').hide();
@@ -1339,7 +1444,7 @@
           success : function (response){
            
                 alertSuccess(); 
-               window.location.href = baseUrl + "/formfpg/formfpg";
+              window.location.href = baseUrl + "/formfpg/formfpg";
            
           },
           error : function(){
@@ -2280,17 +2385,7 @@
                     $('.nominal').val(addCommas(dikurangi));
                     parent.remove();
 
-
-                     $.ajax({
-                        type : "post",
-                        data : {idfpgdt,idfp,pelunasan},
-                        url : baseUrl+'/formfpg/deletedetailformfpg',
-                        dataType : 'json',
-                        success : function (response){
-                          
-                            
-                        }
-                   }) //END AJAX
+                 
                 })
 
 
@@ -2617,16 +2712,6 @@
 
             parent.remove();
 
-             $.ajax({
-                type : "post",
-                data : {kodebank,noseri,idfpgb,mbid},
-                url : baseUrl+'/formfpg/deletedetailbankformfpg',
-                dataType : 'json',
-                success : function (response){
-                  
-                    
-                }
-           }) //END AJAX
         })
 
     //CLICK NO SERI
@@ -2655,17 +2740,21 @@
 
      //bank
      $('.bank').change(function(){
-      val = $(this).val();
+       val = $(this).val();
       string = val.split(",");
       namabank = string[1];
       alamat = string[2];
       account = string[3];
       id = string[0];
+      kodebank = string[4];
 
-
+      $('.valbank').val(val);
       $('.nmbank').val(namabank);
       $('.cbgbank').val(alamat);
       $('.account').val(account);
+      $('.kodebankbg').val(string[4]);
+      $('.mbid').val(id);
+      $('.kodebank').val(kodebank);
 
       $.ajax({
           type : "post",

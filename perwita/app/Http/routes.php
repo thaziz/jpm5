@@ -85,6 +85,9 @@ Route::get('setting/sync_jurnal/invoice', 'selaras_jurnal@invoice');
 Route::get('setting/sync_jurnal/master_akun_fitur', 'selaras_jurnal@master_akun_fitur');
 Route::get('setting/sync_jurnal/nilai_invoice', 'selaras_jurnal@nilai_invoice');
 
+Route::get('jurnalselaras/jurnalselaras', 'jurnal_pembelian@index');
+Route::get('jurnalselaras/fakturpembelian', 'jurnal_pembelian@fakturpembelian');
+
 //***PEMBELIAN
 //***PEMBELIAN
 // Route::get('tes' , 'sales\invoice_Controller@index');
@@ -1612,6 +1615,7 @@ Route::post('sales/update_do_kertas', 'sales\do_kertas_Controller@update_do_kert
 Route::get('sales/detail_do_kertas/{id}', 'sales\do_kertas_Controller@detail_do_kertas');
 Route::get('sales/ganti_item', 'sales\do_kertas_Controller@ganti_item');
 Route::get('sales/cari_kontrak_kertas', 'sales\do_kertas_Controller@cari_kontrak_kertas');
+Route::get('sales/datatable_do_kertas', 'sales\do_kertas_Controller@datatable_do_kertas')->name('datatable_do_kertas');
 
 // end delivery order kertas
 
@@ -1864,6 +1868,7 @@ Route::get('sales/posting_pembayaran_edit/{id}', 'sales\posting_pembayaran_Contr
 Route::get('sales/posting_pembayaran_hapus', 'sales\posting_pembayaran_Controller@posting_pembayaran_hapus');
 Route::get('sales/posting_pembayaran_print/{id}', 'sales\posting_pembayaran_Controller@posting_pembayaran_print');
 Route::get('sales/datatable_posting', 'sales\posting_pembayaran_Controller@datatable_posting')->name('datatable_posting');
+Route::get('sales/posting_pembayaran_form/akun_dropdown', 'sales\posting_pembayaran_Controller@akun_dropdown');
 
 
 
