@@ -470,7 +470,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>s
 </div>
 
 
@@ -484,7 +484,14 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-
+     $('.nmsupplier').change(function(){
+        val = $(this).val();
+        
+        if(val.indexOf(',') > -1){         
+           test =  val.replace(/,/g , '');
+           $(this).val(test);
+           toastr.info("Mohon maaf nama tidak boleh ada comma :)");
+        }
 
    
 

@@ -914,7 +914,7 @@
                                                         supplier = $(this).data('supplier');
                                                         if(supplier == idsup){
                                                           $(this).attr('disabled', false);
-                                                          alert(kontrak);
+                                                          
                                                           if(kontrak == 'YA'){
                                                             $('td[data-supplier="'+supplier+ '"]').addClass('disabled');
                                                           }
