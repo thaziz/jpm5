@@ -7294,6 +7294,9 @@ public function kekata($x) {
 		if($flag == 'CEKBG'){
 			$data['detail'] = DB::select("select * from bukti_bank_keluar_detail , bukti_bank_keluar, d_akun, masterbank where bbkd_idbbk = bbk_id and bbk_id = '$id' and bbk_kodebank = mb_id and id_akun = mb_kode");
 		}
+		else if($flag == 'BGAKUN'){
+			$data['detail'] = DB::select("select * from bukti_bank_keluar_akunbg , bukti_bank_keluar, d_akun, masterbank where bbkab_idbbk = bbk_id and bbk_id = '$id' and bbk_kodebank = mb_id and id_akun = mb_kode");
+		}
 		else {
 			$data['detail'] = DB::select("select * from bukti_bank_keluar_biaya, bukti_bank_keluar, d_akun where bbkb_idbbk = bbk_id and bbk_id = '$id' and bbkb_akun = id_akun");
 		}

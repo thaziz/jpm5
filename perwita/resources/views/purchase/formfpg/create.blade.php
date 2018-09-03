@@ -983,7 +983,7 @@
         $this = $(this);
           if ($this.is(":checked")) {           
            $('.checkbgtf').hide();
-           $('.tujuanbank').show();
+           $('.tujuanbank').hide();
            $('.transferbank').show();
           }
           else {       
