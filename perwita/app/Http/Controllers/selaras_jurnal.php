@@ -960,8 +960,8 @@ class selaras_jurnal  extends Controller
                     	$cari_id_pc = DB::table('patty_cash')
                                  ->max('pc_id')+1;
 	                    $cari_akun = DB::table('d_akun')
-	                                   ->where('id_akun','like',substr($detail[$b]->bkkd_akun,0, 4).'%')
-	                                   ->where('kode_cabang',$bkk[$i]->bkk_comp)
+	                                   ->where('id_akun','like',$detail[$b]->bkkd_akun.'%')
+	                                   // ->where('kode_cabang',$bkk[$i]->bkk_comp)
 	                                   ->first();
                       try{
                         $dd = $cari_akun->id_akun;
