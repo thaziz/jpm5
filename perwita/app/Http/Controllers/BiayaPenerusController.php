@@ -2405,7 +2405,9 @@ class BiayaPenerusController extends Controller
 		$do     = DB::table('delivery_order')
 					->where('nomor',$request->d_resi_subcon)
 					->first();
-
+		if ($do == null) {
+			return response()->json(['status'=>0,'pesan'=>'Nomor Do Untuk Faktur Ini Telah Dihapus Harap Menghubungi Pihak Terkait']);
+		}
 
 		$jenis_tarif = DB::table('jenis_tarif')
 						 ->get();
@@ -2587,6 +2589,12 @@ class BiayaPenerusController extends Controller
 						  	  'pbd_csf'	 		 => $request->d_akun[$i],
 						  	  'pbd_status'		 => $pending[$i],
 				]);
+
+				$updt = DB::table('delivery_order')
+						  ->where('nomor',$request->d_resi_subcon[$i])
+						  ->update([
+						  	'status_do'=>'Approved'
+						  ]);
 			}
 
 			$tt = DB::table('form_tt_d')
@@ -2763,10 +2771,26 @@ class BiayaPenerusController extends Controller
 				$cari_id += 1;
 			}
 
+			
 
 			$valid = DB::table('faktur_pembelian')
 						 ->where('fp_nofaktur',$request->nofaktur)
 						 ->first();
+
+			$cari_do = DB::table('pembayaran_subcon')
+						 ->join('pembayaran_subcon_dt','pb_id','=','pbd_pb_id')
+						 ->where('pb_faktur',$request->nofaktur)
+						 ->get();
+
+			for ($i=0; $i < count($cari_do); $i++) { 
+				$updt = DB::table('delivery_order')
+						  ->where('nomor',$cari_do[$i]->pbd_resi)
+						  ->update([
+						  	'status_do'=>'Released'
+						  ]);
+			}
+
+
 
 			$acc_hutang = DB::table('subcon')
 							->where('kode',$request->nama_subcon)
@@ -2864,6 +2888,12 @@ class BiayaPenerusController extends Controller
 						  	  'pbd_csf'	 		 => $request->d_akun[$i],
 						  	  'pbd_status'		 => $pending[$i],
 				]);
+
+				$updt = DB::table('delivery_order')
+						  ->where('nomor',$request->d_resi_subcon[$i])
+						  ->update([
+						  	'status_do'=>'Approved'
+						  ]);
 			}
 
 			$tt_upd = DB::table('form_tt_d')
@@ -2969,10 +2999,7 @@ class BiayaPenerusController extends Controller
 								  ->first();
 
 				if ($id_akun == null) {
-					$id_akun = DB::table('d_akun')
-								  ->where('id_akun','like','5210%')
-								  ->where('kode_cabang','000')
-								  ->first();
+					return response()->json(['status'=>0,'pesan'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia']);
 				}
 
 				array_push($akun, $id_akun->id_akun);
