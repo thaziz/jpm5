@@ -184,29 +184,35 @@ class kasKeluarController extends Controller
         return Datatables::of($data)
                         ->addColumn('aksi', function ($data) {
                             $a = '';
-                            if(Auth::user()->punyaAkses('Bukti Kas Keluar','ubah')){
-                            	if ($data->bkk_status == 'RELEASED') {
+                        	if ($data->bkk_status == 'RELEASED' or Auth::user()->punyaAkses('Bukti Kas Keluar','ubah')) {
+                        		if(cek_periode(carbon::parse($data->bkk_tgl)->format('m'),carbon::parse($data->bkk_tgl)->format('Y') ) != 0){
+                                  $a = '<a title="Edit" class="btn btn-xs btn-warning" href='.url('buktikaskeluar/edit').'/'.$data->bkk_id.'>
+                              			<i class="fa fa-arrow-right" aria-hidden="true"></i></a> ';
+                                }
+                            }else{
+                              	if ($data->bkk_status == 'RELEASED') {
                             		if(cek_periode(carbon::parse($data->bkk_tgl)->format('m'),carbon::parse($data->bkk_tgl)->format('Y') ) != 0){
 	                                  $a = '<a title="Edit" class="btn btn-xs btn-warning" href='.url('buktikaskeluar/edit').'/'.$data->bkk_id.'>
 	                              			<i class="fa fa-arrow-right" aria-hidden="true"></i></a> ';
 	                                }
                             	}
-                            }else{
-                              $a = '';
                             }
 
                             $c = '';
-                            if(Auth::user()->punyaAkses('Bukti Kas Keluar','hapus')){
-                            	if ($data->bkk_status == 'RELEASED') {
+                        	if ($data->bkk_status == 'RELEASED' or Auth::user()->punyaAkses('Bukti Kas Keluar','hapus')) {
+                                if(cek_periode(carbon::parse($data->bkk_tgl)->format('m'),carbon::parse($data->bkk_tgl)->format('Y') ) != 0){
+                                  $c = '<a title="Hapus" class="btn btn-xs btn-danger" onclick="hapus(\''.$data->bkk_id.'\')">
+		                               <i class="fa fa-trash" aria-hidden="true"></i>
+		                               </a>';
+                                }
+                            }else{
+                              	if ($data->bkk_status == 'RELEASED') {
 	                                if(cek_periode(carbon::parse($data->bkk_tgl)->format('m'),carbon::parse($data->bkk_tgl)->format('Y') ) != 0){
 	                                  $c = '<a title="Hapus" class="btn btn-xs btn-danger" onclick="hapus(\''.$data->bkk_id.'\')">
 			                               <i class="fa fa-trash" aria-hidden="true"></i>
 			                               </a>';
 	                                }
                             	}
-                                
-                            }else{
-                              $c = '';
                             }
 
                             $d = '<a class="btn btn-xs btn-success" onclick="lihat_jurnal(\''.$data->bkk_id.'\')" title="lihat jurnal"><i class="fa fa-eye"></i></a>';
