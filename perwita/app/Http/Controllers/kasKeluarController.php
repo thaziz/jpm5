@@ -192,7 +192,12 @@ class kasKeluarController extends Controller
 	                                }
                             	}
                             }else{
-                              $a = '';
+                              	if ($data->bkk_status == 'RELEASED') {
+                            		if(cek_periode(carbon::parse($data->bkk_tgl)->format('m'),carbon::parse($data->bkk_tgl)->format('Y') ) != 0){
+	                                  $a = '<a title="Edit" class="btn btn-xs btn-warning" href='.url('buktikaskeluar/edit').'/'.$data->bkk_id.'>
+	                              			<i class="fa fa-arrow-right" aria-hidden="true"></i></a> ';
+	                                }
+                            	}
                             }
 
                             $c = '';
@@ -206,7 +211,13 @@ class kasKeluarController extends Controller
                             	}
                                 
                             }else{
-                              $c = '';
+                              	if ($data->bkk_status == 'RELEASED') {
+	                                if(cek_periode(carbon::parse($data->bkk_tgl)->format('m'),carbon::parse($data->bkk_tgl)->format('Y') ) != 0){
+	                                  $c = '<a title="Hapus" class="btn btn-xs btn-danger" onclick="hapus(\''.$data->bkk_id.'\')">
+			                               <i class="fa fa-trash" aria-hidden="true"></i>
+			                               </a>';
+	                                }
+                            	}
                             }
 
                             $d = '<a class="btn btn-xs btn-success" onclick="lihat_jurnal(\''.$data->bkk_id.'\')" title="lihat jurnal"><i class="fa fa-eye"></i></a>';
