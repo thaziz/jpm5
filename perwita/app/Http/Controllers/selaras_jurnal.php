@@ -966,7 +966,7 @@ class selaras_jurnal  extends Controller
                       try{
                         $dd = $cari_akun->id_akun;
                       }catch(Exception $re){
-                        dd(substr($detail[$b]->bkkd_akun,0, 4));
+                        dd($detail[$b]->bkkd_akun.' '.$bkk[$i]->bkk_comp.' '.$bkk[$i]->bkk_id);
                         $delete = DB::table("bukti_kas_keluar")
                                     ->where('bkk_id',$bkk[$i]->bkk_id)
                                     ->delete();
