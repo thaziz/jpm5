@@ -1004,8 +1004,8 @@ class selaras_jurnal  extends Controller
 
 	                    
 	                    $cari_akun = DB::table('d_akun')
-	                                   ->where('id_akun','like',substr($filter_comp[$bkk[$i]->bkk_nota][$a],0, 4).'%')
-	                                   ->where('kode_cabang',$bkk[$i]->bkk_comp)
+	                                   ->where('id_akun','like',$filter_comp[$bkk[$i]->bkk_nota][$a].'%')
+	                                   // ->where('kode_cabang',$bkk[$i]->bkk_comp)
 	                                   ->first();
 
 	                    $cari_coa = DB::table('d_akun')
