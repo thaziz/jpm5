@@ -42,6 +42,10 @@
     .hargatable {
       width: 800px; margin: 0 auto;
     }
+
+    .chosen-drop {
+      color : black;
+    }
    /* #table_form td,
     #table_form th{
       padding:10px 0px;
@@ -365,7 +369,7 @@
                     <tr class="data-supplier">
                       @foreach($data['spptb'] as $index=>$spptb)
                       <td class="supid supplier{{$index}}" data-id="{{$index}}" data-supplier="{{$spptb->spptb_supplier}}"> 
-                            <select class="input-sm form-control supplier{{$index}} sup" name="supplier3[]" disabled="" data-supplier="{{$spptb->spptb_supplier}}" data-id="{{$index}}" style="color:#000">
+                            <select class="input-sm form-control chosen-select supplier{{$index}} sup" name="supplier3[]" disabled="" data-supplier="{{$spptb->spptb_supplier}}" data-id="{{$index}}" style="color:#000">
                              @foreach($data['supplier'] as $sup)
                               <option value="{{$sup->idsup}},{{$sup->syarat_kredit}}" @if($spptb->spptb_supplier == $sup->idsup) selected="" @endif>  {{$sup->nama_supplier}} 
                              @endforeach
@@ -475,6 +479,30 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+   clearInterval(reset);
+    var reset =setInterval(function(){
+     $(document).ready(function(){
+      var config = {
+                '.chosen-select'           : {},
+                '.chosen-select-deselect'  : {allow_single_deselect:true},
+                '.chosen-select-no-single' : {disable_search_threshold:10},
+                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+                '.chosen-select-width'     : {width:"95%"}
+                }
+
+             for (var selector in config) {
+               $(selector).chosen(config[selector]);
+             }
+
+
+      $(".acc_hutangdagang").chosen(config);
+      $(".acc_csf").chosen(config);
+      //$('.cabang').chosen(config);
+      $('.kota').chosen(config);
+    })
+     },2000);
+  
   $('.kettolak').attr('readonly' , true);
      $('#statuskeuangan').hide();
   prosespembelian = $('.prosespembelian').val();
@@ -870,10 +898,10 @@
                                                            '<label class="col-sm-1 control-label"> Rp </label>' + 
                                                             '<div class="col-xs-6">';
                                         
-                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+' hrga'+n+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.sppdt[i].sppd_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.sppdt[i].sppd_supplier+'"> <input type="hidden" value="'+addCommas(data.sppdt[i].sppd_harga)+'" class="hargahid hargahid'+i+'" data-brg="'+n+'" data-id="'+i+'"">  </div> <div class="datasup'+ i +'">  </div> ';
+                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+' hrga'+n+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.sppdt[i].sppd_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.sppdt[i].sppd_supplier+'" data-kontrak="'+data.sppdt[i].sppd_kontrak+'"> <input type="hidden" value="'+addCommas(data.sppdt[i].sppd_harga)+'" class="hargahid hargahid'+i+'" data-brg="'+n+'" data-id="'+i+'"">  </div> <div class="datasup'+ i +'">  </div> ';
 
                                         tampilharga += '<div class="col-sm-2"> <div class="checkbox checkbox-primary ">' +
-                                            '<input id="cek" type="checkbox" value='+data.sppdt[i].sppd_supplier+' class="checkboxhrg checkbox'+n+'" data-val='+i+' data-id='+nourut+' required data-supplier='+data.sppdt[i].sppd_supplier+' data-harga='+data.sppdt[i].sppd_harga+' data-totalhrg='+data.spptb[j].spptb_totalbiaya+' data-n='+n+'>' +
+                                            '<input id="cek" type="checkbox" value='+data.sppdt[i].sppd_supplier+' class="checkboxhrg checkbox'+n+'" data-val='+i+' data-id='+nourut+' required data-supplier='+data.sppdt[i].sppd_supplier+' data-harga='+data.sppdt[i].sppd_harga+' data-totalhrg='+data.spptb[j].spptb_totalbiaya+' data-n='+n+' data-kontrak="'+data.sppdt[i].sppd_kontrak+'">' +
                                             '<label for="checkbox'+nourut+'">' +  
                                             '<div class="suppliercek'+nourut+'">  </div> '                                           
                                             '</label>' +
@@ -888,6 +916,7 @@
                                           id = $(this).data('id');
                                           val = $(this).data('val');
                                           n = $(this).data('n');
+                                            kontrak = $(this).data('kontrak');
                                                 $('.checkbox'+n).each(function(){
                                                   if ($this.is(":checked")) {
                                                       rowsupplier = "<input type='hidden' value="+idsup+" name='datasup[]'>";
@@ -912,6 +941,21 @@
                                                         supplier = $(this).data('supplier');
                                                         if(supplier == idsup){
                                                           $(this).attr('disabled', false);
+                                                             $(this).trigger("chosen:updated");
+                                                              $(this).trigger("liszt:updated");
+
+                                                          if(kontrak == 'YA'){
+                                                            $('td[data-supplier="'+supplier+ '"]').addClass('disabled');
+                                                              $('td[data-supplier="'+supplier+ '"]').trigger("chosen:updated");
+                                                              $('td[data-supplier="'+supplier+ '"]').trigger("liszt:updated");
+                                                          }
+                                                          else {
+                                                             $('td[data-supplier="'+supplier+ '"]').removeClass('disabled');
+                                                              $('td[data-supplier="'+supplier+ '"]').trigger("chosen:updated");
+                                                              $('td[data-supplier="'+supplier+ '"]').trigger("liszt:updated");
+
+                                                             
+                                                          }
                                                         }
                                                       })
 
