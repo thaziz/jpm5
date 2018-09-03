@@ -97,7 +97,7 @@
                               <tr>
                                 <td> Ke Dua </td>
                                 <td> <input type="text" class="form-control e qtydua" name="unit2" value="{{$item->unit2}}"> </td>
-                                <td> <div class='form-group'> <label class='col-sm-3 col-sm-3 control-label'> 1 PCS </label> <div class='col-sm-6'> <input type='text' class='form-control biaya'  name='konversi2' value="{{$item->konversi3}}">  </div> </div>
+                                <td> <div class='form-group'> <label class='col-sm-3 col-sm-3 control-label'> 1 PCS </label> <div class='col-sm-6'> <input type='text' class='form-control biaya'  name='konversi2' value="{{$item->konversi2}}">  </div> </div>
                                 </td>
                               </tr>
 

@@ -471,27 +471,27 @@ class MasterPurchaseController extends Controller
        	if($request->konversi2 == '') {
 
 		}else{
-			$data->konversi2 = strtoupper(request()->konversi2);
+			$data->konversi2 = strtoupper($request->konversi2);
 
 		}
 		if($request->konversi3 == ''){
 
 		}
 		else {
-			$data->konversi3 = strtoupper(request()->konversi3);
+			$data->konversi3 = strtoupper($request->konversi3);
 		}
 
 		if($request->posisilantai != ''){
-			$data->posisilantai = strtoupper(request()->posisilantai);
+			$data->posisilantai = strtoupper($request->posisilantai);
 		}
 		if($request->posisiruang != ''){
-			$data->posisiruang = strtoupper(request()->posisiruang);
+			$data->posisiruang = strtoupper($request->posisiruang);
 		}
 		if($request->posisirak != ''){
-			$data->posisirak = strtoupper(request()->posisirak);
+			$data->posisirak = strtoupper($request->posisirak);
 		}
 		if($request->posisikolom != ''){
-			$data->posisikolom = strtoupper(request()->posisikolom);
+			$data->posisikolom = strtoupper($request->posisikolom);
 		}
       
 		

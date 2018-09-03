@@ -1029,6 +1029,7 @@
         if(banktujuan == '' || asalbank == ''){
           toastr.info("Mohon maaf data bank asal / tujuan belum diisi :)");
           return false;
+          
         }
         split = banktujuan.split("+");
         kodebanktujuan = split[4];
