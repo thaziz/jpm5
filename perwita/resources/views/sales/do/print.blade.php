@@ -50,7 +50,7 @@
 		<table class="inlineTable">
 			<tr>
 				<td>
-					<img style="margin-right: 100px;" width="100" height="50" src="/jpm/perwita/img/logo_jpm.png">
+					<img style="margin-right: 100px;" width="100" height="50" src="{{ asset('perwita/storage/app/upload/images.jpg') }}">
 				</td>
 				<td>
 					{{--  <img style="margin-right: 100px;" src="/jpm/perwita/img/logo_jpm.png" width="50" height="50">  --}}

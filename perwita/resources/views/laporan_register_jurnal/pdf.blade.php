@@ -223,13 +223,13 @@
 						<?php
 							$not = "";
 
-							if($tot_debet != $tot_kredit)
+							if(number_format($tot_debet, 2) != number_format($tot_kredit, 2))
 								$not = "not-same"
 						?>
 
 						<td>&nbsp;</td>
-						<td class="currency total {{$not}}">{{ number_format($tot_debet, 2) }}</td>
-						<td class="currency total no-border {{$not}}">{{ number_format($tot_kredit, 2) }}</td>
+						<td class="currency total {{$not}}">{{ $tot_debet }}</td>
+						<td class="currency total no-border {{$not}}">{{ $tot_kredit }}</td>
 					</tr>
 
 				@endforeach
