@@ -269,8 +269,9 @@ table, td, th {
 			@foreach($data['detail'] as $detail)
 		<tr>
 		
-			<td colspan="2"> {{ Carbon\Carbon::parse($data['bbk'][0]->bbk_tgl)->format('d-M-Y ') }} </td>
+			<td > {{ Carbon\Carbon::parse($data['bbk'][0]->bbk_tgl)->format('d-M-Y ') }} </td>
 			<td> {{$detail->bbkab_nocheck}} </td>
+			<td> {{$detail->mb_nama}} </td>
 			<td>{{ number_format($detail->bbkab_nominal, 2) }} </td>
 			<td> {{$detail->mb_kode}} </td>
 			<td>  {{$detail->mb_kode}}</td>
