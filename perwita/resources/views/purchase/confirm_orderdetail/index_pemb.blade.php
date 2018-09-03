@@ -43,7 +43,7 @@
       width: 800px; margin: 0 auto;
     }
 
-    .chosen-select {
+    .chosen-drop {
       color : black;
     }
    /* #table_form td,
