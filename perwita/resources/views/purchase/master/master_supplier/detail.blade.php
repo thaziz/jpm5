@@ -471,7 +471,7 @@
                 '.chosen-select-deselect'  : {allow_single_deselect:true},
                 '.chosen-select-no-single' : {disable_search_threshold:10},
                 '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                '.chosen-select-width'     : {width:"100%"}
+                '.chosen-select-width'     : {width:"95%"}
                 }
 
              for (var selector in config) {
@@ -479,11 +479,11 @@
              }
 
 
-      $(".acc_hutangdagang").chosen(config);
-      $(".acc_csf").chosen(config);
-      $('.cabang').chosen(config);
+//      $(".suipd").chosen(config);
+     
     })
      },2000);
+
 
      $('.nmsupplier').change(function(){
         val = $(this).val();
@@ -493,7 +493,7 @@
            $(this).val(test);
            toastr.info("Mohon maaf nama tidak boleh ada comma :)");
         }
-
+      })
     
     $('.simpandata').click(function(){
       
@@ -984,28 +984,7 @@ $('.cabang').change(function(){
     }
   })
 
-  clearInterval(reset);
-    var reset =setInterval(function(){
-     $(document).ready(function(){
-      var config = {
-                '.chosen-select'           : {},
-                '.chosen-select-deselect'  : {allow_single_deselect:true},
-                '.chosen-select-no-single' : {disable_search_threshold:10},
-                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                '.chosen-select-width'     : {width:"95%"}
-                }
-
-             for (var selector in config) {
-               $(selector).chosen(config[selector]);
-             }
-
-
-      $(".acc_hutangdagang").chosen(config);
-      $(".acc_csf").chosen(config);
-      //$('.cabang').chosen(config);
-      $('.kota').chosen(config);
-    })
-     },2000);
+  
  
 </script>
 @endsection
