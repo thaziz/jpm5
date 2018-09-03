@@ -302,7 +302,7 @@ class loadingController extends Controller
 				return response()->json(['status'=>3,'data'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia']);
 			}
 
-	        if($cari_data == 0){
+	        if($cari_data == null){
 				biaya_penerus_kas::create([
 				  	'bpk_id'      	  	 => $id,
 				  	'bpk_nota'  	  	 => $request->no_trans,
@@ -372,7 +372,6 @@ class loadingController extends Controller
 			}
 			
 
-				array_push($akun_val, round($total_harga,2));
 			$cari_id_pc = DB::table('patty_cash')
 						 ->max('pc_id');
 

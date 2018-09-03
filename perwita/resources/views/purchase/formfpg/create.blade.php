@@ -539,7 +539,7 @@
 
                                         <div class="checkbox checkbox-info checkbox-circle">
                                             <input id="jenisbayaribaking" type="checkbox" name="jenisbayarbank" value="INTERNET BANKING" class="metodebayar jenisbayarbankibaking">
-                                            <label for="jenisbayarbankcekbg">
+                                            <label for="jenisbayaribaking">
                                                Internet Banking
                                             </label>
                                         </div>
@@ -550,12 +550,14 @@
                                                 Cheque / BG
                                             </label>
                                         </div>
+
+                                         <div class="checkbox checkbox-info checkbox-circle">
+                                            <input id="jenisbayarbanktf" type="checkbox" name="jenisbayarbank" value="TRANSFER PRIBADI" class="metodebayar jenisbayarbanktf" checked="">
+                                            <label for="jenisbayarbanktf">
+                                                Transfer Pribadi
+                                            </label>
+                                        </div>
                                      
-
-                                      
-
-
-
                                     </fieldset>
                                       <br>
                                       <br>
@@ -977,19 +979,17 @@
 
       })
 
-       $('.jenisbayarbankbgtf').change(function(){
+       $('.jenisbayarbanktf').change(function(){
         $this = $(this);
-          if ($this.is(":checked")) {
-           
+          if ($this.is(":checked")) {           
            $('.checkbgtf').hide();
-           $('.tujuanbank').show();
+           $('.tujuanbank').hide();
            $('.transferbank').show();
           }
-          else {
-         
+          else {       
            $('.tujuanbank').hide();
            $('.tujuanbankacc').hide();
-            $('.transferbank').hide();
+           $('.transferbank').hide();
           }
       })
 
@@ -1028,7 +1028,9 @@
 
         if(banktujuan == '' || asalbank == ''){
           toastr.info("Mohon maaf data bank asal / tujuan belum diisi :)");
+          $('.jenisbayarbankibaking').prop({checked: false });
           return false;
+
         }
         split = banktujuan.split("+");
         kodebanktujuan = split[4];
@@ -1143,6 +1145,42 @@
                     $('.transferbank').show();
                     $('.tujuanbankacc').show();
                     $('.jenisbayarbankibaking').prop({checked: false });
+                    
+                }
+                else {
+                  $('.jenisbayarbankibaking').prop({checked: false });
+                  $('.tujuanbank').hide();
+                  $('.tujuanbankacc').hide();
+                  $('.transferbank').hide();
+                  $('.checkbgtf').show();
+                  $('.ibanking').hide();
+                  $('#tbl-bank').show();
+                }
+           }
+           else {
+                if(jenisbayar == '12' || jenisbayar == '11'){
+                  $('.ibanking').hide();
+                  $('.checkbgtf').hide();
+                }
+                else {
+                  $('.ibanking').hide();
+                }
+           }
+      })
+
+
+       $('.jenisbayarbanktf').change(function(){
+          $('#tbmhdatainet').hide();
+          $('.nocheck').attr('readonly' , true);
+          $('.nominaltujuanbank').attr('readonly' , false);
+          $this = $(this);
+          jenisbayar = $('.jenisbayar').val();
+           if ($this.is(":checked")) {
+                if(jenisbayar == '12' || jenisbayar == '11'){
+                    $('.transferbank').show();
+                    $('.tujuanbank').show();
+                    $('.jenisbayarbankibaking').prop({checked: false });
+                    $('.jenisbayarbank//').prop({checked: false });
                     
                 }
                 else {

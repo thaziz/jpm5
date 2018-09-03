@@ -389,6 +389,7 @@
                               <th style="width:250px"> Barang </th>
                               <th> Harga </th>
                               <th> Update Stock </th>
+                              <th> Keterangan </th>
                               <th> </th>
                             </tr>
 
@@ -405,7 +406,8 @@
                               </td>
                               <td> <input type="text" class="form-control tablebarang hrg harga{{$index}} tablebarang" value=" {{number_format($item->is_harga, 2)}}"  name="harga[]"> </td>
 
-                              <td> <select class="form-control updatestock updatestock{{$index}} tablebarang" name="updatestock[]" readonly=""> <option value="Y"> Ya </option> <option value="T"> Tidak </option> </select> </td>
+                              <td> <select class="form-control updatestock updatestock{{$index}} tablebarang" name="updatestock[]" readonly=""> <option value="Y"> Ya </option> <option value="T"> Tidak </option> </select> </td>                            
+                              <td> <input type='text' class='form-control' name="keteranganitem[]" value="{{$item->is_keteranganitem}}"> </td>
                               <td> <a class="btn btn-danger removes-btn" data-id="{{$index}}"> <i class="fa fa-trash"> </i> </a> </td>
                             </tr>
                             @endforeach
@@ -420,6 +422,7 @@
                                   <th style="width:250px"> Barang </th>
                                   <th> Harga </th>
                                   <th> Update Stock </th>
+                                  <th> Keterangan Item </th>
                                   <th> </th>
                                 </tr>
                               </table>
@@ -471,7 +474,7 @@
                 '.chosen-select-deselect'  : {allow_single_deselect:true},
                 '.chosen-select-no-single' : {disable_search_threshold:10},
                 '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                '.chosen-select-width'     : {width:"100%"}
+                '.chosen-select-width'     : {width:"95%"}
                 }
 
              for (var selector in config) {
@@ -479,11 +482,11 @@
              }
 
 
-      $(".acc_hutangdagang").chosen(config);
-      $(".acc_csf").chosen(config);
-      $('.cabang').chosen(config);
+//      $(".suipd").chosen(config);
+     
     })
      },2000);
+
 
      $('.nmsupplier').change(function(){
         val = $(this).val();
@@ -493,7 +496,7 @@
            $(this).val(test);
            toastr.info("Mohon maaf nama tidak boleh ada comma :)");
         }
-
+      })
     
     $('.simpandata').click(function(){
       
@@ -598,6 +601,7 @@ $(function(){
                   "<td> <select class='form-control brg' name='brg[]' data-id="+$no+" >  @foreach($data['item'] as $item) <option value='{{$item->kode_item}}+{{$item->harga}}+{{$item->updatestock}}'> {{$item->nama_masteritem}} </option> @endforeach </select>" +
                    "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
                    "<td> <select class='form-control updatestock"+$no+"' name='updatestock[]' readonly> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
+                   "<td> <input type='text' class='form-control' name='keteranganitem[]'> </td>" +
                   "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a></td>" +
                   "</tr>";   
      $no++;               
@@ -691,47 +695,7 @@ $(function(){
     })
 
 
-   $notable = $('tr#dataitem').length;
-     $no = $notable + 1;
-    $('#tmbh_data_barang').click(function(){
-                     
-    $no++;
-
-    var rowBrg = "<tr id='dataitem item-"+$no+"' class='item-"+$no+"'>" +
-                  "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
-                  "<td> <select class='form-control chosen-select' name='brg[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
-                   "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
-                   "<td> <select class='form-control' name='updatestock[]'> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
-                  "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a></td>" +
-                  "</tr>";   
-
-   $("#addColumn").append(rowBrg);
-
-     $(function(){
-            $('.hrg' + $no).change(function(){
-                var id = $(this).data('id');
-
-                harga = $(this).val();
-                $this = $(this);
-                
-                numhar = Math.round(harga).toFixed(2);
-         
-                $this.val(addCommas(numhar));
-
-            })
-        })      
-
-        $(document).on('click','.removes-btn',function(){
-    //      alert('hei')
-              var id = $(this).data('id');
-    
-              var parent = $('.item-'+id);
-
-             parent.remove();
-          })
-
-
-    })
+  
 
     $('.plafonkredit').change(function(){
        val = $(this).val();
@@ -984,28 +948,7 @@ $('.cabang').change(function(){
     }
   })
 
-  clearInterval(reset);
-    var reset =setInterval(function(){
-     $(document).ready(function(){
-      var config = {
-                '.chosen-select'           : {},
-                '.chosen-select-deselect'  : {allow_single_deselect:true},
-                '.chosen-select-no-single' : {disable_search_threshold:10},
-                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                '.chosen-select-width'     : {width:"95%"}
-                }
-
-             for (var selector in config) {
-               $(selector).chosen(config[selector]);
-             }
-
-
-      $(".acc_hutangdagang").chosen(config);
-      $(".acc_csf").chosen(config);
-      //$('.cabang').chosen(config);
-      $('.kota').chosen(config);
-    })
-     },2000);
+  
  
 </script>
 @endsection

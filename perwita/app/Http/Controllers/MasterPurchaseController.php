@@ -471,27 +471,27 @@ class MasterPurchaseController extends Controller
        	if($request->konversi2 == '') {
 
 		}else{
-			$data->konversi2 = strtoupper(request()->konversi2);
+			$data->konversi2 = strtoupper($request->konversi2);
 
 		}
 		if($request->konversi3 == ''){
 
 		}
 		else {
-			$data->konversi3 = strtoupper(request()->konversi3);
+			$data->konversi3 = strtoupper($request->konversi3);
 		}
 
 		if($request->posisilantai != ''){
-			$data->posisilantai = strtoupper(request()->posisilantai);
+			$data->posisilantai = strtoupper($request->posisilantai);
 		}
 		if($request->posisiruang != ''){
-			$data->posisiruang = strtoupper(request()->posisiruang);
+			$data->posisiruang = strtoupper($request->posisiruang);
 		}
 		if($request->posisirak != ''){
-			$data->posisirak = strtoupper(request()->posisirak);
+			$data->posisirak = strtoupper($request->posisirak);
 		}
 		if($request->posisikolom != ''){
-			$data->posisikolom = strtoupper(request()->posisikolom);
+			$data->posisikolom = strtoupper($request->posisikolom);
 		}
       
 		
@@ -1177,6 +1177,7 @@ class MasterPurchaseController extends Controller
 			$itemsupplier->is_harga = $replacehrg;
 			$itemsupplier->is_idsup = $mastersupplier->idsup;
 			$itemsupplier->is_updatestock = $request->updatestock[$i];
+			$itemsupplier->is_keteranganitem = $request->keteranganitem[$i];
 
 			$itemsupplier->save();
 		}
@@ -1290,6 +1291,7 @@ class MasterPurchaseController extends Controller
 					$itemsupplier->is_supplier = strtoupper($request->nosupplier);
 					$itemsupplier->is_idsup = $data->idsup;
 					$itemsupplier->is_updatestock = $request->updatestock[$i];
+					$itemsupplier->is_keteranganitem = $request->keteranganitem[$i];
 					$itemsupplier->save();
 				
 			}
@@ -1407,6 +1409,7 @@ class MasterPurchaseController extends Controller
 					$itemsupplier->is_supplier = strtoupper($request->nosupplier);
 					$itemsupplier->is_idsup = $data->idsup;
 					$itemsupplier->is_updatestock = $request->updatestock[$i];
+					$itemsupplier->is_keteranganitem = $request->keteranganitem[$i];
 					$itemsupplier->save();
 				
 			}

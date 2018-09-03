@@ -1447,7 +1447,7 @@ Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_controller@ha
 Route::post('sales/deliveryorderform/hapus_data_detail', 'sales\do_controller@hapus_data_detail');
 Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_controller@form_update_status');
 Route::post('sales/deliveryorderform/save_update_status', 'sales\do_controller@save_update_status');
-Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_controller@cetak_nota');
+Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
 
 Route::get('cari_kodenomor/cari_kodenomor', 'sales\do_controller@cari_kodenomor');
 Route::get('sales/cari_replacekontrakcustomer', 'sales\do_controller@cari_replacekontrakcustomer');
