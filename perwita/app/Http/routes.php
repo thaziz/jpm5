@@ -1868,6 +1868,7 @@ Route::get('sales/posting_pembayaran_edit/{id}', 'sales\posting_pembayaran_Contr
 Route::get('sales/posting_pembayaran_hapus', 'sales\posting_pembayaran_Controller@posting_pembayaran_hapus');
 Route::get('sales/posting_pembayaran_print/{id}', 'sales\posting_pembayaran_Controller@posting_pembayaran_print');
 Route::get('sales/datatable_posting', 'sales\posting_pembayaran_Controller@datatable_posting')->name('datatable_posting');
+Route::get('sales/posting_pembayaran_form/akun_dropdown', 'sales\posting_pembayaran_Controller@akun_dropdown');
 
 
 
