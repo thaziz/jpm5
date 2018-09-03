@@ -7447,7 +7447,7 @@ public function kekata($x) {
 		//return $mon;
 		$idbbk = DB::select("select * from bukti_bank_keluar where bbk_cabang = '$comp'  and to_char(bbk_tgl, 'MM') = '$bulan' and to_char(bbk_tgl, 'YY') = '$tahun' order by bbk_id desc limit 1");
 
-		/*//return $idbbk;
+		//return $idbbk;
 		if(count($idbbk) > 0) {		
 			$explode = explode("/", $idbbk[0]->bbk_nota);
 			$idbbk = $explode[2];
@@ -7457,7 +7457,7 @@ public function kekata($x) {
 		else {
 			$idbbk = '0001';
 		}
-*/
+
 		$datainfo =['status' => 'sukses' , 'data' => $idbbk];
 
 		return json_encode($idbbk) ;
