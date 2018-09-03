@@ -112,7 +112,7 @@
                           <tr>
                             <td> Tanggal </td>
                             <td>  <div class="input-group date" >
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="tglbbk">
+                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tglbbk" name="tglbbk">
                               </div> </td>
                             </td>
                           </tr>
@@ -542,6 +542,53 @@
         }
     });
 
+
+    $('.date').change(function(){
+      cabang = $('.cabang').val();
+      tgl = $('.tglbbk').val();
+    
+       $.ajax({
+          type : "get",
+          data : {cabang,tgl},
+          url : baseUrl + '/pelunasanhutangbank/getnota',
+          dataType : 'json',
+          success : function (response){     
+              if(response.status = 'sukses'){
+                var d = new Date(tgl);                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
+
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+                 nofaktur = 'BK' + '-' + month + year2 + '/' + cabang + '/' +  response.data ;
+                $('.nobbk').val(nofaktur);
+              }
+              else {
+                location.reload();
+              }
+               
+              
+          },
+          eror : function(){
+            location.reload();
+          }
+        })
+    })
+
       $nomor = 1;
     $('#tmbhdatabgakun').click(function(){
 
@@ -711,16 +758,16 @@
     //GET NO BBK
     cabang = $('.cabang').val();
     $('.valcabang').val(cabang);
-   
+      tgl = $('.tglbbk').val();
       $('.cabang2').val(cabang);
        $.ajax({
           type : "get",
-          data : {cabang},
+          data : {cabang,tgl},
           url : baseUrl + '/pelunasanhutangbank/getnota',
           dataType : 'json',
           success : function (response){     
               if(response.status = 'sukses'){
-                var d = new Date();                
+                var d = new Date(tgl);                
                 //tahun
                 var year = d.getFullYear();
                 //bulan
@@ -939,16 +986,17 @@
 
      $('.cabang').change(function(){    
       var comp = $(this).val();
+      var tgl = $('.tglbbk').val();
         $.ajax({    
             type :"get",
-            data : {comp},
+            data : {comp,tgl},
             url : baseUrl + '/pelunasanhutangbank/getnota',
             dataType:'json',
             success : function(data){
                
                  if(data.status = 'sukses'){
                
-                  var d = new Date();
+                  var d = new Date(tgl);
                   
                   //tahun
                   var year = d.getFullYear();

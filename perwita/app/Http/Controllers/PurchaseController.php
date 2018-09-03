@@ -7435,11 +7435,12 @@ public function kekata($x) {
 	public function getnobbk(Request $request){
 		$comp = $request->cabang;
 
+		$tgl = $request->tgl;
 		//return $comp;
 		/*$idbbk = DB::select("select * from bukti_bank_keluar where bbk_cabang = '$comp'");*/
 	
-		$bulan = Carbon::now()->format('m');
-        $tahun = Carbon::now()->format('y');
+		$bulan = Carbon::parse($tgl)->format('m');
+        $tahun = Carbon::parse($tgl)->format('y');
 
 
 
