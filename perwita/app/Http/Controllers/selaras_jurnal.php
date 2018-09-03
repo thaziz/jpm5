@@ -230,7 +230,16 @@ class selaras_jurnal  extends Controller
     {
         return DB::transaction(function() use ($req) {  
 
+
+            $cari = DB::select("SELECT bkk_nota from bukti_kas_keluar join bukti_kas_keluar_detail on bkk_id = bkkd_bkk_id
+                               where bkkd_akun NOT in (select id_akun from d_akun) group by bkk_nota ");
+            $nota = [];
+            for ($i=0; $i < count($cari); $i++) { 
+              $nota[$i] = $cari[$i]->bkk_nota;
+            }
+
             $bkk = DB::table('bukti_kas_keluar')
+                     ->whereNotIn('bkk_nota',$nota)
                      ->orderBy('bkk_id','ASC')
                      ->get();
 
@@ -260,8 +269,10 @@ class selaras_jurnal  extends Controller
     
             // RE INITIALIZE BKK
             $bkk = DB::table('bukti_kas_keluar')
+                     ->whereNotIn('bkk_nota',$nota)
                      ->orderBy('bkk_id','ASC')
                      ->get();
+
             for ($i=0; $i < count($bkk); $i++) { 
 
                 if ($bkk[$i]->bkk_jenisbayar == 2) {
@@ -292,7 +303,7 @@ class selaras_jurnal  extends Controller
                     $save_patty = DB::table('patty_cash')
                            ->insert([
                                 'pc_id'           => $cari_id_pc,
-                                'pc_tgl'          => $bpk[$i]->bkk_tgl,
+                                'pc_tgl'          => $bkk[$i]->bkk_tgl,
                                 'pc_ref'          => 10,
                                 'pc_akun'         => $bkk[$i]->bkk_akun_kas,
                                 'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
@@ -388,7 +399,7 @@ class selaras_jurnal  extends Controller
 	                    $save_patty = DB::table('patty_cash')
 	                           ->insert([
 	                                'pc_id'           => $cari_id_pc,
-	                                'pc_tgl'          => $bpk[$i]->bkk_tgl,
+	                                'pc_tgl'          => $bkk[$i]->bkk_tgl,
 	                                'pc_ref'          => 2,
 	                                'pc_akun'         => $cari_akun->id_akun,
 	                                'pc_akun_kas'     => $bkk[$i]->bkk_akun_kas,
@@ -832,12 +843,13 @@ class selaras_jurnal  extends Controller
                               ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
                               ->where('bkk_id',$bkk[$i]->bkk_id)
                               ->get();
-                 
+                    $total = 0;
                     for ($z=0; $z < count($detail); $z++) { 
                       $cari_akun = DB::table('d_akun')
                                      ->where('id_akun','like',substr($detail[$z]->bkkd_akun,0, 4).'%')
                                      ->where('kode_cabang',$bkk[$i]->bkk_comp)
                                      ->first();
+                      $total+=$detail[$z]->bkkd_total;
                       try{
                         $dd = $cari_akun->id_akun;
                       }catch(Exception $re){
@@ -871,7 +883,7 @@ class selaras_jurnal  extends Controller
                                 'pc_comp'         => $bkk[$i]->bkk_comp,
                                 'pc_edit'         => 'UNALLOWED',
                                 'pc_reim'         => 'UNRELEASED',
-                                'pc_debet'        => $bkk[$i]->bkk_total,
+                                'pc_debet'        => $total,
                                 'pc_user'         => $bkk[$i]->created_by,
                                 'pc_no_trans'     => $bkk[$i]->bkk_nota,
                                 'pc_kredit'       => 0,
@@ -900,30 +912,35 @@ class selaras_jurnal  extends Controller
                                   ->where('id_akun','like',substr($bkk[$i]->bkk_akun_kas,0, 4).'%')
                                   ->where('kode_cabang',$bkk[$i]->bkk_comp)
                                   ->first();
-	                    
-	                if ($cari_coa->akun_dka == 'D') {
-	                    $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
-	                    $data_akun[0]['jrdt_detailid']  = 1;
-	                    $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-	                    $data_akun[0]['jrdt_value']     = -$bkk[$i]->bkk_total;
-	                    $data_akun[0]['jrdt_statusdk'] = 'K';
-              	  		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+	               try{
+                  if ($cari_coa->akun_dka == 'D') {
+                      $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
+                      $data_akun[0]['jrdt_detailid']  = 1;
+                      $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
+                      $data_akun[0]['jrdt_value']     = -$total;
+                      $data_akun[0]['jrdt_statusdk'] = 'K';
+                      $data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
 
-	                }else{
-	                    $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
-	                    $data_akun[0]['jrdt_detailid']  = 1;
-	                    $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
-	                    $data_akun[0]['jrdt_value']     = -$bkk[$i]->bkk_total;
-	                    $data_akun[0]['jrdt_statusdk'] = 'D';
-              	  		$data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
+                  }else{
+                      $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
+                      $data_akun[0]['jrdt_detailid']  = 1;
+                      $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
+                      $data_akun[0]['jrdt_value']     = -$total;
+                      $data_akun[0]['jrdt_statusdk'] = 'D';
+                      $data_akun[0]['jrdt_detail']    = $cari_coa->nama_akun . ' ' . strtoupper($bkk[$i]->bkk_keterangan);
 
-	                }
+                  }
+                  $jurnal_dt = d_jurnal_dt::insert($data_akun);
+                  $lihat_jurnal = DB::table('d_jurnal_dt')
+                                  ->where('jrdt_jurnal',$id_jurnal)
+                                  ->get();
+                 }catch(Exception $er){
+                  dd($bkk[$i]);
+                 }
 	                
-	                $jurnal_dt = d_jurnal_dt::insert($data_akun);
+	                
 
-	                $lihat_jurnal = DB::table('d_jurnal_dt')
-	                                ->where('jrdt_jurnal',$id_jurnal)
-	                                ->get();
+	                
 	               	for ($a=0; $a < count($comp); $a++) { 
 	                    if ($bkk[$i]->bkk_nota == $comp[$a]->bkk_nota) {
 	                        $filter_comp[$bkk[$i]->bkk_nota][$a] = $comp[$a]->bkkd_akun;
