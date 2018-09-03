@@ -123,7 +123,7 @@ class selaras_jurnal  extends Controller
                   dd($bpk[$i]->bpk_nota .' '. $bpk[$i]->bpk_kode_akun .' '. $bpk[$i]->bpk_comp);
                 }
 
-                if ($cari_coa->akun_dka == 'D') {
+                if ($cari_coa->akun_dka == '`') {
                     $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
                     $data_akun[0]['jrdt_detailid']  = 1;
                     $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
