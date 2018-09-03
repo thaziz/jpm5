@@ -163,18 +163,19 @@ class KasController extends Controller
 		                               </a>';
                                 }
                             }else{
-                              if ($data->bpk_status == 'Released') {
-                                if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
+                              	if ($data->bpk_status == 'Released') {
+	                                if(cek_periode(carbon::parse($data->bpk_tanggal)->format('m'),carbon::parse($data->bpk_tanggal)->format('Y') ) != 0){
 
-                                  $c = '<a title="Hapus" class="btn btn-xs btn-danger"  onclick="hapus(\''.$data->bpk_id.'\')">
-		                               <i class="fa fa-trash" aria-hidden="true"></i>
-		                               </a>';
-                                }
+	                                  $c = '<a title="Hapus" class="btn btn-xs btn-danger"  onclick="hapus(\''.$data->bpk_id.'\')">
+			                               <i class="fa fa-trash" aria-hidden="true"></i>
+			                               </a>';
+	                                }
+                            	}
                             }
 
                             $d = '<a class="btn btn-xs btn-success" onclick="lihat_jurnal(\''.$data->bpk_id.'\')" title="lihat jurnal"><i class="fa fa-eye"></i></a>';
+
                             return '<div class="btn-group">'.$a . $c  .$d.'</div>';
-                                   
                         })
                     
                         ->addColumn('cabang', function ($data) {
