@@ -365,7 +365,7 @@
                     <tr class="data-supplier">
                       @foreach($data['spptb'] as $index=>$spptb)
                       <td class="supid supplier{{$index}}" data-id="{{$index}}" data-supplier="{{$spptb->spptb_supplier}}"> 
-                            <select class="input-sm form-control supplier{{$index}} sup" name="supplier3[]" disabled="" data-supplier="{{$spptb->spptb_supplier}}" data-id="{{$index}}" style="color:#000">
+                            <select class="input-sm form-control chosen-select supplier{{$index}} sup" name="supplier3[]" disabled="" data-supplier="{{$spptb->spptb_supplier}}" data-id="{{$index}}" style="color:#000">
                              @foreach($data['supplier'] as $sup)
                               <option value="{{$sup->idsup}},{{$sup->syarat_kredit}}" @if($spptb->spptb_supplier == $sup->idsup) selected="" @endif>  {{$sup->nama_supplier}} 
                              @endforeach
@@ -475,6 +475,30 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+   clearInterval(reset);
+    var reset =setInterval(function(){
+     $(document).ready(function(){
+      var config = {
+                '.chosen-select'           : {},
+                '.chosen-select-deselect'  : {allow_single_deselect:true},
+                '.chosen-select-no-single' : {disable_search_threshold:10},
+                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+                '.chosen-select-width'     : {width:"95%"}
+                }
+
+             for (var selector in config) {
+               $(selector).chosen(config[selector]);
+             }
+
+
+      $(".acc_hutangdagang").chosen(config);
+      $(".acc_csf").chosen(config);
+      //$('.cabang').chosen(config);
+      $('.kota').chosen(config);
+    })
+     },2000);
+  
   $('.kettolak').attr('readonly' , true);
      $('#statuskeuangan').hide();
   prosespembelian = $('.prosespembelian').val();
