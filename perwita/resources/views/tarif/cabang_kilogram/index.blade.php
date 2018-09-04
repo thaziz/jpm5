@@ -134,7 +134,7 @@
                             <td align="center">Jenis</td>
                             <td align="center" 
                              @if (Auth::user()->punyaAkses('Tarif Cabang Kilogram','cabang') == false)
-                             colspan="2" 
+                             colspan="3" 
                              @endif
                              >
                               <select onchange="panggil_table()" class="form-control jenis_bayar chosen-select-width">

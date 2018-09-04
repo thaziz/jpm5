@@ -61,10 +61,10 @@ class cabang_kilogram_Controller extends Controller
         $sql = "SELECT asal.nama as asal, tujuan.nama as tujuan, cabang.nama as cabang, provinsi.nama as provinsi,
                 tarif_cabang_kilogram.*
                 FROM tarif_cabang_kilogram 
-                join kota as asal on asal.kode = id_kota_asal
-                join kota as tujuan on tujuan.kode = id_kota_tujuan
+                join kota as asal on asal.id = id_kota_asal
+                join kota as tujuan on tujuan.id = id_kota_tujuan
                 join cabang as cabang on cabang.kode = kode_cabang
-                join provinsi as provinsi on provinsi.kode = id_provinsi_cabkilogram
+                join provinsi as provinsi on provinsi.id = id_provinsi_cabkilogram
                 where tarif_cabang_kilogram.id_kota_asal != '0' and kode_cabang = '$cabang' $asal $tujuan $jenis";
 
         $sql = DB::select($sql);
