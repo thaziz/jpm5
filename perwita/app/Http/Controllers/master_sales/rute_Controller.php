@@ -132,7 +132,7 @@ class rute_Controller extends Controller
     
     public function form($kode=null){
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
-        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY kode ASC ");
         if ($kode != null) {
             $data = DB::table('rute')->where('kode', $kode)->first();
             $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM rute_d WHERE kode_rute='$kode' "))->first();
