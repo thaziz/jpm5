@@ -231,5 +231,63 @@ class jurnal_pembelian  extends Controller
       return json_encode($carifp);
     });
     }
-   
+
+
+
+    function item(Request $request){
+       return DB::transaction(function() use ($request) { 
+      $cabang = DB::select("select * from cabang");
+      $item = DB::select("select * from masteritem");
+      DB::delete("DELETE  from master_akun_fitur where maf_group = '2'");
+      for($j = 0; $j < count($cabang); $j++){
+        for($k = 0; $k < count($item); $k++){
+          $kodeakun = $item[$k]->kode_item;
+          $namaitem = $item[$k]->nama_masteritem;
+          $mafgroup = '2';
+          $mafcabang = $cabang[$j]->kode;
+          $mafaccpersediaan = $item[$k]->acc_persediaan;
+          $mafacchpp = $item[$k]->acc_hpp;
+
+
+           $id = DB::table('master_akun_fitur')
+                  ->max('maf_id');
+
+              if ($id == null) {
+                $id = 1;
+              }else{
+                $id+=1;
+              }
+
+          if($mafaccpersediaan == null){
+
+           $save_maf = DB::table('master_akun_fitur')
+                    ->insert([
+                      'maf_id'        => $id,
+                      'maf_kode_akun' => $kodeakun,
+                      'maf_nama'      => $namaitem,
+                      'maf_group'     => 2,
+                      'maf_cabang'    => $mafcabang,
+                      'maf_acc_hpp' => $mafacchpp,
+                   ]);
+          }
+          else {
+            $save_maf = DB::table('master_akun_fitur')
+                    ->insert([
+                      'maf_id'        => $id,
+                      'maf_kode_akun' => $kodeakun,
+                      'maf_nama'      => $namaitem,
+                      'maf_group'     => 2,
+                      'maf_cabang'    => $mafcabang,
+                      'maf_acc_persediaan' => $mafaccpersediaan,
+                   ]);
+          }
+
+        }
+      }
+
+      return json_encode('sukses');
+    });
+    }
+
+     
 }

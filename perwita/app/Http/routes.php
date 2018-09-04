@@ -89,6 +89,7 @@ Route::get('setting/sync_jurnal/nilai_invoice', 'selaras_jurnal@nilai_invoice');
 
 Route::get('jurnalselaras/jurnalselaras', 'jurnal_pembelian@index');
 Route::get('jurnalselaras/fakturpembelian', 'jurnal_pembelian@fakturpembelian');
+Route::post('jurnalselaras/item', 'jurnal_pembelian@item');
 
 //***PEMBELIAN
 //***PEMBELIAN
