@@ -570,6 +570,7 @@ Route::post('formfpg/updateformfpg', 'PurchaseController@updateformfpg');
 Route::post('formfpg/deletedetailformfpg', 'PurchaseController@deletedetailformfpg');
 Route::post('formfpg/deletedetailbankformfpg', 'PurchaseController@deletedetailbankformfpg');
 Route::get('formfpg/printformfpg/{id}', 'PurchaseController@printformfpg');
+Route::get('formfpg/printformfpg2/{id}', 'PurchaseController@printformfpg2');
 Route::get('formfpg/getnofpg', 'PurchaseController@getnofpg');
 Route::get('formfpg/hapusfpg/{id}', 'PurchaseController@hapusfpg');
 
