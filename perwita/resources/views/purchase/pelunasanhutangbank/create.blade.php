@@ -576,6 +576,24 @@
                 //year2 ="Anafaradina";
                  nofaktur = 'BK' + '-' + month + year2 + '/' + cabang + '/' +  response.data ;
                 $('.nobbk').val(nofaktur);
+              
+                kodebank = $('.kodebank').val();
+
+               if(kodebank != ''){
+                  
+                  split = nofaktur.split("-");
+                  bank = split[0];
+                  lain = split[1];
+                  if(parseInt(kodebank) < parseInt(10)){
+                      kodebank = '0' + kodebank;
+                  }
+                  
+                  str = bank.substr(0,2);
+                
+
+                  nobbk = str + kodebank + '-' + lain;
+                  $('.nobbk').val(nobbk);
+               }
               }
               else {
                 location.reload();
@@ -1040,7 +1058,7 @@
                   //year2 ="Anafaradina";
 
                 
-                   nobbk = 'BK-' + month1 + year2 + '/' + comp + '/' +  data.data;
+                   nobbk = 'BK-' + month + year2 + '/' + comp + '/' +  data.data;
                 //  console.log(nospp);
                   $('.nobbk').val(nobbk);
 
@@ -1057,7 +1075,8 @@
                           
                           str = bank.substr(0,2);
                         
-                          nobbk = str + val + '-' + lain;
+                          nobbk = str + kodebank + '-' + lain;
+
                           $('.nobbk').val(nobbk);
                        }
 

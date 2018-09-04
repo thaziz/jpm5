@@ -50,16 +50,22 @@
                 </div><!-- /.box-header -->
                  
                   <div class="box-body">
-                    <button class="btn btn-success btn-md" onclick="FP()">
+                    {{-- <button class="btn btn-success btn-md" onclick="FP()">
                       Faktur Pembelian
-                    </button>
+                    </button> --}}
                 </div>   
 
                 <div class="box-body">
                     <button class="btn btn-success btn-md" onclick="item()">
                      add item
                     </button>
-                </div>      
+                </div> 
+
+                <div class="">
+                    <button class="btn btn-success" onclick="nofpg()">
+                        Get nota fpg
+                    </button>
+                </div>     
                     
                 <div class="box-body">
              
@@ -116,6 +122,17 @@
     function item(){
          $.ajax({
         url : baseUrl + '/jurnalselaras/item',
+        type : "post",
+        dataType : "json",
+        success : function(response){
+
+        }
+      })
+    }
+
+    function nofpg(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/notafpg',
         type : "post",
         dataType : "json",
         success : function(response){
