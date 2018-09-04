@@ -302,5 +302,13 @@ class jurnal_pembelian  extends Controller
     });
     }
 
+    function nofpg(){
+        $tgl = '01-08-2018';
+        $date = Carbon::parse($tgl)->format('m');
+
+        $data = DB::select("select * from")
+        return $date;
+    }
+
      
 }

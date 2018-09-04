@@ -576,6 +576,23 @@
                 //year2 ="Anafaradina";
                  nofaktur = 'BK' + '-' + month + year2 + '/' + cabang + '/' +  response.data ;
                 $('.nobbk').val(nofaktur);
+
+                kodebank = $('.kodebank').val();
+
+               if(kodebank != ''){
+                  
+                  split = nobbk.split("-");
+                  bank = split[0];
+                  lain = split[1];
+                  if(parseInt(kodebank) < parseInt(10)){
+                      kodebank = '0' + kodebank;
+                  }
+                  
+                  str = bank.substr(0,2);
+                
+                  nobbk = str + val + '-' + lain;
+                  $('.nobbk').val(nobbk);
+               }
               }
               else {
                 location.reload();
