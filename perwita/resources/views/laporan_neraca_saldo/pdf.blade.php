@@ -268,15 +268,9 @@
                     $sad = $ak = 0;
 
                     if($okee->akun_dka == 'D'){
-                      if(($data_detail[$okee->id_akun]['saldo_akun'] + $tot_deb) + $tot_kre < 0)
-                        $ak = ($data_detail[$okee->id_akun]['saldo_akun'] + $tot_deb) + $tot_kre;
-                      else
-                        $sad = ($data_detail[$okee->id_akun]['saldo_akun'] + $tot_deb) + $tot_kre;
+                      $sad = ($data_detail[$okee->id_akun]['saldo_akun'] + $tot_deb) + $tot_kre;
                     }
                     else{
-                      if(($data_detail[$okee->id_akun]['saldo_akun'] + $tot_deb) + $tot_kre < 0)
-                        $sad = ($data_detail[$okee->id_akun]['saldo_akun'] + $tot_kre) + $tot_deb;
-                      else
                         $ak = ($data_detail[$okee->id_akun]['saldo_akun'] + $tot_deb) + $tot_kre;
                     }
                   ?>

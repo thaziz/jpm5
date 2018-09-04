@@ -164,7 +164,7 @@ class transaksi_bank_controller extends Controller
 
        if($request->type_transaksi == "bank"){
             if($request->jenis_transaksi == 1){
-                $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TBM")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y', , strtotime($request->jr_date)))->orderBy('jr_insert', 'desc')->first();
+                $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TBM")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y', strtotime($request->jr_date)))->orderBy('jr_insert', 'desc')->first();
 
                 $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
                 $ref = "TBM-".date("my", strtotime($request->jr_date))."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
