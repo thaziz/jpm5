@@ -111,12 +111,12 @@
 						<tr>
 							<td class="s16">No. FPG</td>
 							<td class="s16">:</td>
-							<td class="s16">FPG-006/AP/0111</td>
+							<td class="s16"> {{$data['fpg'][0]->fpg_nofpg}}</td>
 						</tr>
 						<tr>
 							<td class="s16">Tanggal</td>
 							<td class="s16">:</td>
-							<td class="s16">10-01-2011</td>
+							<td class="s16">{{$data['fpg'][0]->fpg_tgl}}</td>
 						</tr>
 					</table>
 				</td>
