@@ -248,6 +248,13 @@ class jurnal_pembelian  extends Controller
           $mafaccpersediaan = $item[$k]->acc_persediaan;
           $mafacchpp = $item[$k]->acc_hpp;
 
+          $mafaccpersediaan = substr($mafaccpersediaan, 0,4);
+          $mafacchpp = substr($mafacchpp, 0,4);
+
+          $cekdiaccper = DB::select("select * from d_akun where id_akun LIKE '$mafaccpersediaan%' and kode_cabang = '$mafcabang'");
+          $cekdiacchpp = DB::select("select * from d_akun where id_akun LIKE '$mafacchpp%' and kode_cabang = '$mafcabang'");
+
+
 
            $id = DB::table('master_akun_fitur')
                   ->max('maf_id');
@@ -258,28 +265,34 @@ class jurnal_pembelian  extends Controller
                 $id+=1;
               }
 
-          if($mafaccpersediaan == null){
-
-           $save_maf = DB::table('master_akun_fitur')
+          if($mafaccpersediaan != null){
+              if(count($cekdiaccper) != 0) {
+                $accpersediaan = $cekdiaccper[0]->id_akun;
+                 $save_maf = DB::table('master_akun_fitur')
                     ->insert([
                       'maf_id'        => $id,
                       'maf_kode_akun' => $kodeakun,
                       'maf_nama'      => $namaitem,
                       'maf_group'     => 2,
                       'maf_cabang'    => $mafcabang,
-                      'maf_acc_hpp' => $mafacchpp,
+                      'maf_acc_persediaan' => $accpersediaan,
                    ]);
+              }
+          
           }
-          else {
-            $save_maf = DB::table('master_akun_fitur')
-                    ->insert([
-                      'maf_id'        => $id,
-                      'maf_kode_akun' => $kodeakun,
-                      'maf_nama'      => $namaitem,
-                      'maf_group'     => 2,
-                      'maf_cabang'    => $mafcabang,
-                      'maf_acc_persediaan' => $mafaccpersediaan,
-                   ]);
+          else if($mafacchpp != null) {
+            if(count($cekdiacchpp) != 0) {
+                $acchpp = $cekdiacchpp[0]->id_akun;
+                $save_maf = DB::table('master_akun_fitur')
+                        ->insert([
+                          'maf_id'        => $id,
+                          'maf_kode_akun' => $kodeakun,
+                          'maf_nama'      => $namaitem,
+                          'maf_group'     => 2,
+                          'maf_cabang'    => $mafcabang,
+                          'maf_acc_hpp' => $acchpp,
+                       ]);
+            }
           }
 
         }
