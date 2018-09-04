@@ -143,7 +143,7 @@
 			<legend>
 				Bayar Kepada : <br>
 				@foreach($data['fpg_bank'] as $index=>$fpgbank)
-					{{$index + 1 }} &nbsp; {{$fpgbank->fpgb_banktujuan}} , {{$fpgbank->fpgb_nmbanktujuan}} , {{$fpgbank->fpgb_nmrekeningtujuan}}
+					{{$index + 1 }} -> &nbsp;  {{$fpgbank->fpgb_nmbanktujuan}} 
 				@endforeach
 			</legend>
 		</fieldset>
