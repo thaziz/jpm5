@@ -90,10 +90,10 @@
                             <td> 
                               Cabang
                             </td>
-                            <td>
+                            <td class="disabled">
                               <select class="chosen-select-width form-control cabang" name="cabang">
                                   @foreach($data['cabang'] as $cabang)
-                                  <option value="{{$cabang->kode}}" @if($data['bbk'][0]->bbk_cabang == $cabang->kode) selected @endif disabled="">
+                                  <option value="{{$cabang->kode}}" @if($data['bbk'][0]->bbk_cabang == $cabang->kode) selected @endif>
                                     {{$cabang->nama}}
                                   </option>
                                   @endforeach
@@ -128,7 +128,7 @@
                           <tr>
                             <td> Tanggal </td>
                             <td>  <div class="input-group date" >
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="tglbbk" value="{{$data['bbk'][0]->bbk_tgl}}">
+                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tglbbk" name="tglbbk" value="{{$data['bbk'][0]->bbk_tgl}}">
                               </div> </td>
                             </td>
                           </tr>
@@ -223,7 +223,7 @@
                           <div class="row">
                               <div class="col-lg-12">
                                   <div class="tabs-container">
-                                      <ul class="nav nav-tabs">
+                                      <ul class="nav nav-tabs" id="tabmenu">
                                           <li class="active" id="tabcekbg"><a data-toggle="tab" href="#tab-1"> Detail Cek / BG </a></li>
                                            <li class="" id="tabcekbgakun" data-val="AKUNBG"><a data-toggle="tab" href="#tab-3"> Cek / BG & Akun </a></li>
                                           <li class="" id="tabbiaya"><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
@@ -315,7 +315,8 @@
                                           </div>
                                            <div id="tab-3" class="tab-pane">
                                               <div class="panel-body">
-                                                 
+                                                  <button class='btn btn-sm btn-info tambahdatabgakun' data-toggle="modal" data-target="#myModalBGAkun" type="button">  <i class="fa fa-plus"> </i> Tambah Data Akun </button>
+
                                                    <div class="col-sm-12">
                                                     <div class="table-responsive">
                                                     <table class='table table-stripped table-bordered' id="tbl-biayaakun">
@@ -335,21 +336,21 @@
 
                                                        @if($data['bbk'][0]->bbk_flag == 'BGAKUN')
                                                         @foreach($data['bbkd'] as $index=>$bbkd)
-                                                        <tr id="hslbiaya" class="databiaya transaksi{{$index + 1}}" data-biaya="{{$bbkd->bbkab_akun}}">
+                                                        <tr id="hslbiaya" class="databiaya  dataakunbg transaksi{{$index + 1}}" data-biaya="{{$bbkd->bbkab_akun}}">
                                                           <td> {{$index + 1}} </td>
-                                                          <td> <input type="text" class="form-control input-sm" value="{{$bbkd->bbk_nota}}" readonly="" style="min-width:150px"> </td>
+                                                          <td> <input type="text" class="form-control input-sm nobbkdetailbg" value="{{$bbkd->bbk_nota}}" readonly="" style="min-width:150px" name=""> </td>
 
-                                                          <td> <input type="text" class="form-control input-sm" value="{{$bbkd->bbkab_akun}} - {{$bbkd->nama_akun}}" readonly="" style="min-width:150px"> </td>
+                                                          <td> <input type="text" class="form-control input-sm akundakundetailbg" value="{{$bbkd->bbkab_akun}} - {{$bbkd->nama_akun}}" readonly="" style="min-width:150px" name="accbiayaakun[]"> </td>
 
                                                           
                                                           <td> <input type="text" class="form-control input-sm" value="{{$bbkd->bbkab_dk}}" name="dk[]" readonly="" style="min-width:90px"> </td>
 
-                                                          <td style='text-align: right'> <input type="text" class="form-control input-sm nominalbiaya" value="{{ number_format($bbkd->bbkab_nominal, 2) }}" name="jumlah[]" style="text-align: right" style="min-width:150px" readonly=""> </td>
+                                                          <td style='text-align: right'> <input type="text" class="form-control input-sm nominalbiaya jumlahakunbiayadetailbg" value="{{ number_format($bbkd->bbkab_nominal, 2) }}" name="nominalakun[]" style="text-align: right" style="min-width:150px" readonly=""> </td>
 
-                                                          <td> <input type="text" class="form-control" value="{{$bbkd->bbkab_keterangan}}" name="keterangan[]" style="min-width:150px" readonly=""> </td>
+                                                          <td> <input type="text" class="form-control keteranganakunbgdetail" value="{{$bbkd->bbkab_keterangan}}" name="keteranganakunbg[]" style="min-width:150px" readonly=""> </td>
 
 
-                                                           <td> <input type="text" class="form-control" value="{{$bbkd->bbkab_nofpg}}" name="nofpg[]" style="min-width:150px" readonly=""> </td>
+                                                           <td> <input type="text" class="form-control nofpgdetailbg" value="{{$bbkd->bbkab_nofpg}}" name="nofpg[]" style="min-width:150px" readonly=""> </td>
 
                                                            <td> <input type="text" class="form-control" value="{{$bbkd->bbkab_nocheck}}" name="nocheck[]" style="min-width:150px" readonly=""> </td>
 
@@ -359,7 +360,7 @@
 
                                                            <td> <input type="text" class="form-control" value="{{$bbkd->bbkab_keteranganfpg}}" name="keteranganfpg[]" style="min-width:150px" readonly=""> </td>
 
-                                                          <td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="{{$index + 1}}" data-cek='"{{$bbkd->bbkab_akun}}"' data-nominal="{{ number_format($bbkd->bbkab_nominal, 2) }}"><i class='fa fa-trash'></i></button> </td>
+                                                          <td> <button class='btn btn-danger btn-sm hapusakunbg' type='button' data-id="{{$index + 1}}" data-cek='"{{$bbkd->bbkab_akun}}"' data-nominal="{{ number_format($bbkd->bbkab_nominal, 2) }}"><i class='fa fa-trash'></i></button> </td>
                                                         </tr>
                                                         @endforeach
                                                       @endif
@@ -603,7 +604,88 @@
                     </div>
                
                     <!-- End -->
+                          <!-- Modal BGAkun -->
+                             <div class="modal inmodal fade" id="myModalBGAkun" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                       <div class="modal-header">
+                                           <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
+                                        <h4 class="modal-title">Tambah Data BG Akun </h4>     
+                                       </div>
 
+                                      <div class="modal-body">
+                                      <div class="row">
+                                                  <div class="col-sm-6">
+                                                    <table class="table">
+                                                      <tr>
+                                                        <th> Acc Biaya </th>
+                                                        <td>
+                                                            <div class="col-sm-12">
+                                                            <select class="chosen-select-width form-control akun biayabg accbiayaakun">
+                                                               <option value="">
+                                                                Pilih Akun 
+                                                              </option>
+
+                                                              @foreach($data['akun'] as $akun)
+                                                              <option value="{{$akun->id_akun}},{{$akun->akun_dka}}">
+                                                               {{$akun->id_akun}} - {{$akun->nama_akun}}
+                                                              </option>
+                                                              @endforeach
+                                                             </select>
+                                                             </div>
+                                                        </td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <th> D / K </th>
+                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk dkbiayabg biayabg" readonly=""> </div> <input type='hidden' class='nomorbgakun'> <input type='hidden' class='idfpgbakunbg'> </td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <th> Jumlah </th>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount biayabg jumlahakunbg" style="text-align:right'" readonly=""> </div> </td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <th> Keterangan </th>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  keteranganakunbg biayabg" readonly=""> </div> </td>
+                                                      </tr>
+                                                    </table>
+                                                  </div>
+                                                  
+                                                  <div class="col-sm-6">
+                                                    <table class="table">
+                                                      <tr>
+                                                          <th> No Check / BG </th>
+                                                              <td> <input type="text" class="input-sm form-control nocheck biayabg checkakunbg" type="button" data-toggle="modal" data-target="#myModal2" readonly="">  </td>
+                                                          </tr>
+
+                                                          <tr>
+                                                              <th> No FPG </th>
+                                                              <td> <input type='text' class='input-sm form-control jatuhtempo biayabg nofpgakunbgbiaya' readonly=""> <input type='hidden' class='input-sm form-control jatuhtempo biayabg idfpgakunbgbiaya' readonly="" > </td>
+                                                          </tr>
+
+                                                          <tr>
+                                                            <th> Nominal </th>
+                                                            <td> <input type='text' class='input-sm form-control nominalakunbiaya biayabg'  readonly="" style='text-align:right'> </td>
+                                                          </tr>
+
+                                                          <tr>
+                                                            <th> Keterangan </th>
+                                                            <td> <input type='text' class='input-sm form-control keteranganakunbiayafpg biayabg'  readonly=""> </td>
+                                                          </tr>
+                                                    </table>
+                                                  </div>
+                                                  </div>            
+                                      </div>      
+                                         
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary" id="tmbhdatabgakun">Save changes</button>
+                          </div>
+                      </div>
+                     </div>
+                    </div>
 
                           <!-- MODAL -->
                             <div class="modal fade" id="myModal2" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -679,10 +761,11 @@
       $('.tmbhdatacek').hide();
       $('.simpansukses').hide();
       $('.tambahdatabiaya').hide();
+      $('.tambahdatabgakun').hide();
 
       $('.flag').val();
          flag = $('.flag').val();
-     
+        alert(flag);
       if(flag == 'CEKBG') {
            $('#tab-1').addClass("active");
            $('#tab-2').removeClass("active");
@@ -699,13 +782,222 @@
            $('#tabcekbg').addClass("disabled");
            $('#tabcekbgakun').addClass("disabled");
       }
-      else {
+      else if(flag == 'AKUNBG'){
+
           $('#tab-3').addClass("active");
            $('#tab-1').removeClass("active");
            $('#tab-2').removeClass("active");
+
            $('#tabcekbg').addClass("disabled");
            $('#tabbiaya').addClass("disabled");
       }
+
+    
+    $('#tmbhdatabgakun').click(function(){
+        $('#myModalBGAkun').modal('toggle');
+      kodecabang = $('.kodebank').val();
+      $('.valkodebank').val(kodecabang);
+      $('.disabledbank').addClass('disabled');
+
+      nobbk = $('.nobbk').val();
+      nofpg = $('.nofpgakunbgbiaya').val();
+      idfpg = $('.idfpgakunbgbiaya').val();
+      nominal = $('.nominalakunbiaya').val();
+      keteranganbiaya = $('.keteranganakunbiayafpg').val();
+      nocheckakunbg = $('.checkakunbg').val();
+      accbiayaakun = $('.accbiayaakun').val();    
+      dk = $('.dkbiayabg').val();
+      jumlahakunbiaya = $('.jumlahakunbg').val();
+      keteranganakunbg = $('.keteranganakunbg').val();
+      idfpgb = $('.idfpgbakunbg').val();
+
+      if(nofpg == ''){
+        toastr.info("Mohon lengkapi isi data :)");
+        return false;
+      }
+
+      if(nominal == ''){
+        toastr.info("Mohon lengkapi isi data :)");
+        return false;
+      }
+
+      $('.flag').val('BGAKUN');
+
+      $('.cekbg').val(addCommas(nominal));
+
+       
+      $('#tabcekbg').addClass('disabled');
+      $('#tabbiaya').addClass('disabled');
+
+      splitakun = accbiayaakun.split(",");
+      akundakun = splitakun[0];
+      
+       arridbank = [];
+      
+     
+      $nomor = $('.dataakunbg').length;
+      if($nomor == 0){
+        $nomor = 1;
+      }
+      else {
+        $nomor = $nomor +1;
+      }
+      index = arridbank.indexOf(akundakun);
+  
+      if(index == -1) {  
+      row = "<tr class='transaksi dataakunbg dataakunbg"+akundakun+"' data-nomor="+akundakun+"> <td>"+$nomor+"</td>" +
+                  "<td> <input type='text' class='form-control input-sm nobbkdetailbg' value="+nobbk+" style='min-width:200px' readonly>  </td>" + //nobbk
+                  "<td> <input type='text' class='form-control input-sm akundakundetailbg' value="+akundakun+" name='accbiayaakun[]' style='min-width:200px' readonly> </td>"+
+                  "<td> <input type='text' class='form-control input-sm dkakundetailbg' value="+dk+" name='dk[]' style='min-width:90px' readonly> </td>" +
+                  "<td> <input type='text' class='form-control input-sm jumlahakunbiayadetailbg' value="+jumlahakunbiaya+" style='min-width:200px; text-align:right' name='nominalakun[]' style='min-width:100px' readonly> </td>" +
+                  "<td> <input type='text' class='form-control input-sm keteranganakunbgdetail' value='"+keteranganakunbg+"' name='keteranganakunbg[]' style='min-width:200px' readonly> </td>" +
+                  "<td> <input type='text' class='form-control input-sm nofpgdetailbg' value="+nofpg+" name='nofpg[]' readonly style='min-width:200px'> <input type='hidden' class='idfpgakunbgdetail' value="+idfpg+" name='idfpg[]'> </td>" +
+                  "<td> <input type='text' class='form-control input-sm accbiayaakundetailbg' value='"+nocheckakunbg+"' name='nocheck[]' readonly style='min-width:200px'> </td>" +
+                  "<td> <input type='text' class='form-control input-sm nominalfpgdetailbg' value="+nominal+" name='nominalfpg[]' readonly style='min-width:200px;text-align:right'> </td>" +
+                  "<td> <input type='text' class='form-control input-sm keteranganbiayadetailbg' value='"+keteranganbiaya+"' name='keteranganfpg[]' readonly style='min-width:200px'> <input type='hidden' value='"+idfpgb+"' name='idfpgb[]'> </td>" +
+                  "</td>" +
+                  "<td> <button class='btn btn-xs btn-danger ' type='button' onclick='hapus(this)'> <i class='fa fa-trash'> </i> </button></td>" +
+                  "</tr>";
+        $('#tbl-biayaakun').append(row);
+        $nomor++;
+        jumlahnominal = 0;
+        $('.jumlahakunbiayadetailbg').each(function(){
+          nominal = $(this).val();
+          nominal2 =  nominal.replace(/,/g, '');
+          jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+          $('.total').val(addCommas(jumlahnominal));
+          $('.cekbg').val(addCommas(jumlahnominal));
+        })
+
+         $('.totalbiayabg').val(''); 
+      }
+      else {
+
+      nobbk = $('.nobbk').val();
+      nofpg = $('.nofpgakunbgbiaya').val();
+      idfpg = $('.idfpgakunbgbiaya').val();
+      nominal = $('.nominalakunbiaya').val();
+      keteranganbiaya = $('.keteranganakunbiayafpg').val();
+      nocheckakunbg = $('.checkakunbg').val();
+      accbiayaakun = $('.accbiayaakun').val();    
+      dk = $('.dkbiayabg').val();
+      jumlahakunbiaya = $('.jumlahakunbg').val();
+      keteranganakunbg = $('.keteranganakunbg').val();
+
+      splitakun = accbiayaakun.split(",");
+      akundakun = splitakun[0];
+      valid2 = akundakun.toString();
+
+      var a = $('.dataakunbg' + valid2);
+      var par = a.parents('tr');
+      nobbk = par.find('.nobbkdetailbg').val(nobbk);
+      accakun = par.find('.akundakundetailbg').val(accbiayaakun);
+      dk = par.find('.dkakundetailbg').val(dk);
+      nominalakun = par.find('.jumlahakunbiayadetailbg').val(jumlahakunbiaya);
+      keteranganakun = par.find('.keteranganakunbgdetail').val(keteranganakunbg);
+      nofpg = par.find('.nofpgdetailbg').val(nofpg);
+      idfpg = par.find('.idfpgakunbgdetail').val(idfpg);
+      nocheck = par.find('.accbiayaakundetailbg').val(nocheckakunbg);
+      nominalfpg = par.find('.nominalfpgdetailbg').val(nominal);
+      keteranganfpg = par.find('.keteranganbiayadetailbg').val(keteranganakunbg);
+      
+        jumlahnominal = 0;
+        $('.jumlahakunbiayadetailbg').each(function(){
+          nominal = $(this).val();
+          nominal2 =  nominal.replace(/,/g, '');
+          jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+          $('.total').val(addCommas(jumlahnominal));
+          $('.cekbg').val(addCommas(jumlahnominal));
+        })
+
+      }
+    })
+
+    function hapus(a){
+       var par = $(a).parents('tr');
+       nominal = par.find('.nominalfpgdetailbg').val();
+
+       replacenominal = nominal.replace(/,/g , '');
+       cekbg = $('.cekbg').val();
+       total = $('.total').val();
+       replacecekbg = cekbg.replace(/,/g, '');
+       replacetotal = total.replace(/,/g, '');
+
+       totalcekbg = parseFloat(parseFloat(replacecekbg) - parseFloat(replacenominal)).toFixed(2);
+       total = parseFloat(parseFloat(replacetotal) - parseFloat(replacenominal)).toFixed(2);
+       $('.cekbg').val(addCommas(totalcekbg));
+       $('.total').val(addCommas(total))
+       par.remove();
+    }
+     $('.date').change(function(){    
+      var comp = $('.cabang').val();
+      var tgl = $('.tglbbk').val();
+        $.ajax({    
+            type :"get",
+            data : {comp,tgl},
+            url : baseUrl + '/pelunasanhutangbank/getnota',
+            dataType:'json',
+            success : function(data){
+               
+                 if(data.status = 'sukses'){
+               
+                  var d = new Date(tgl);
+                  
+                  //tahun
+                  var year = d.getFullYear();
+                  //bulan
+                  var month = d.getMonth();
+                  var month1 = parseInt(month + 1)
+                  console.log(d);
+                  console.log();
+                  console.log(year);
+
+                  if(month < 10) {
+                    month = '0' + month1;
+                  }
+
+                  console.log(d);
+
+                  tahun = String(year);
+  //                console.log('year' + year);
+                  year2 = tahun.substring(2);
+                  //year2 ="Anafaradina";
+
+                
+                   nobbk = 'BK-' + month + year2 + '/' + comp + '/' +  data.data;
+                //  console.log(nospp);
+                  $('.nobbk').val(nobbk);
+
+                       kodebank = $('.kodebank').val();
+
+                       if(kodebank != ''){
+                          
+                          split = nobbk.split("-");
+                          bank = split[0];
+                          lain = split[1];
+                          if(parseInt(kodebank) < parseInt(10)){
+                              kodebank = '0' + kodebank;
+                          }
+                          
+                          str = bank.substr(0,2);
+                        
+                          nobbk = str + kodebank + '-' + lain;
+                          $('.nobbk').val(nobbk);
+                       }
+
+
+
+                 }
+                 else {
+                  location.reload();
+                 }
+            },
+            error : function(){
+              location.reload();
+            }
+        })
+
+    })
 
      $('#formbbk').submit(function(){
         if(!this.checkValidity() ) 
@@ -783,13 +1075,12 @@
     $('.date').datepicker({
         autoclose: true,
         format: 'dd-MM-yyyy',
-        endDate: 'today'
-
-    }).datepicker("setDate", "0");;
+      
+    })
     arrtransaksi = [];
     $('.nocheck').click(function(){
         kodebank = $('.kodebank').val();
-         
+        cabang = $('.cabang').val();
         $('.transaksi').each(function(){
           transaksi = $(this).data('transaksi');
         //  alert(transaksi);
@@ -800,7 +1091,7 @@
 
         $.ajax({
           type : "get",
-          data : {kodebank,arrtransaksi},
+          data : {kodebank,arrtransaksi,cabang},
           url : baseUrl + '/pelunasanhutangbank/nocheck',
           dataType : "json",
           success : function(response){
@@ -816,8 +1107,19 @@
               var tablecek = $('#tbl-cheuque').DataTable();
               tablecek.clear().draw();
 
-                  for(i = 0; i < databank.length; i++){
-                    row = "<tr class='datacek"+databank[i].fpgb_nocheckbg+"' id='transaksi"+databank[i].fpgb_nocheckbg+"'> <td>"+$no+"</td> <td>"+databank[i].fpgb_nocheckbg+"</td> <td>"+databank[i].fpg_nofpg+"</td> <td>"+databank[i].fpgb_jenisbayarbank+"</td> <td style='text-align:right'>"+addCommas(databank[i].fpgb_nominal)+"</td> <td>  <input type='checkbox' id="+databank[i].fpgb_id+","+databank[i].fpgb_idfpg+" class='checkcek' value='option1' aria-label='Single checkbox One'> <label></label>  </td> </tr> ";
+
+                   for(i = 0; i < databank.length; i++){
+                    row = "<tr class='datacek"+databank[i].fpgb_nocheckbg+"' id='transaksi"+databank[i].fpgb_nocheckbg+"'> <td>"+$no+"</td> <td>";
+                      if(databank[i].fpgb_jenisbayarbank == 'INTERNET BANKING'){
+                        row += "-";
+                      }
+                      else {
+                        row += databank[i].fpgb_nocheckbg
+ 
+                      }
+
+
+                      row += "</td> <td>"+databank[i].fpg_nofpg+"</td> <td>"+databank[i].fpgb_jenisbayarbank+"</td> <td style='text-align:right'>"+addCommas(databank[i].fpgb_nominal)+"</td> <td>  <input type='checkbox' id="+databank[i].fpgb_id+","+databank[i].fpgb_idfpg+" class='checkcek' value='option1' aria-label='Single checkbox One'> <label></label>  </td> </tr> ";
                      $no++;
                      tablecek.rows.add($(row)).draw(); 
                 
@@ -835,14 +1137,15 @@
 
      $('.cabang').change(function(){    
       var comp = $(this).val();
+      tgl = $('.tglbbk').val();
         $.ajax({    
             type :"post",
-            data : {comp},
+            data : {comp,tgl},
             url : baseUrl + '/pelunasanhutangbank/getnota',
             dataType:'json',
             success : function(data){
                console.log(data);
-                var d = new Date();
+                var d = new Date(tgl);
                 
                 //tahun
                 var year = d.getFullYear();
@@ -998,14 +1301,21 @@
           return this.id;
         }).toArray();
 
+
+
+
+        $('.loadingcek').css('display' , 'block');
          data = checked;
          idfpgb = [];
          idfpg = [];
+
         for(z=0;z<data.length;z++){
           string = data[z].split(",");
           idfpgb.push(string[0]);    
           idfpg.push(string[1]);
         }
+
+       
 
         $.ajax({
             url : baseUrl + '/pelunasanhutangbank/getcek',
@@ -1013,9 +1323,24 @@
             type : "post",
             dataType : "json",
             success : function (response){
+               $('.loadingcek').css('display' , 'none');
                 $('#myModal2').modal('hide');
-                  $('.nofpg').val(response.fpg[0].fpg_nofpg);
+                var a = $('ul#tabmenu').find('li.active').data('val');
+                if(a == 'AKUNBG'){
+                    $('.nofpgakunbgbiaya').val(response.fpg[0].fpg_nofpg);
+                    $('.idfpgakunbgbiaya').val(response.fpg[0].idfpg);
+                    $('.nominalakunbiaya').val(addCommas(response.fpg[0].fpgb_nominal));
+                    $('.keteranganakunbiayafpg').val(response.fpg[0].fpg_keterangan);
+                    $('.checkakunbg').val(response.fpg[0].fpgb_nocheckbg);
+                    $('.idfpgbakunbg').val(response.fpg[0].fpgb_id);
+                    $('.jumlahakunbg').val(addCommas(response.fpg[0].fpgb_nominal));
+                    $('.keteranganakunbg').val(response.fpg[0].fpg_keterangan);
+                  //  alert(response.fpg[0].fpgb_nocheckbg);
+                }
+                else {
+               
                   $('.idfpg').val(response.fpg[0].idfpg);
+                  $('.nofpg').val(response.fpg[0].fpg_nofpg);
                   $('.nocheck').val(response.fpg[0].fpgb_nocheckbg);
                     $('.jatuhtempo').val(response.fpg[0].fpgb_jatuhtempo);
                     $('.nominal').val(addCommas(response.fpg[0].fpgb_nominal));
@@ -1024,7 +1349,11 @@
                     $('.namabank').val(response.fpg[0].mb_nama)
                     $('.tgl').val(response.fpg[0].fpg_tgl );
                     $('.idbank').val(response.fpg[0].mb_id);
-                    $('.akunhutang').val(response.fpg[0].fpg_acchutang);
+                    $('.akunkodebank').val(response.fpg[0].fpg_kodebank);
+                    $('.hutangdagang').val(response.fpg[0].fpg_acchutang);
+                    $('.akunuangmuka').val(response.fpg[0].fpg_accum);
+                    $('.jenisbayarfpg').val(response.fpg[0].fpg_jenisbayar);
+                    $('.idfpgb').val(response.fpg[0].fpgb_id);
 
                 if(response.fpg[0].fpg_jenisbayar == '2' || response.fpg[0].fpg_jenisbayar == '3' ) {                  
                     $('.kodesup').val(response.fpg[0].no_supplier);
@@ -1043,11 +1372,6 @@
                       $('.namasupplier').val(response.fpg[0].nama);
                       $('.jenissup').val('agen');                    
                     }
-                     else if($jenissup == 'subcon'){                    
-                      $('.kodesup').val(response.fpg[0].kode);
-                      $('.namasupplier').val(response.fpg[0].nama);
-                      $('.jenissup').val('subcon');                    
-                    }
 
                 }
                 else if(response.fpg[0].fpg_jenisbayar == '9'){
@@ -1064,6 +1388,7 @@
                    $('.kodesup').val(response.fpg[0].kode);
                    $('.namasupplier').val(response.fpg[0].nama); 
                 }
+              }
             }
         })
 
@@ -1208,7 +1533,7 @@
         $('.tmbhdatacek').show();
         $('.simpansukses').show();
         $('.tambahdatabiaya').show();
-      
+        $('.tambahdatabgakun').show();     
       })
 
 

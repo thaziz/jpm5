@@ -7305,9 +7305,17 @@ public function kekata($x) {
 	}
 
 	public function detailpelunasanbank($id) {
+		$cabang = session::get('cabang');
+
 		$data['bank'] = DB::select("select * from masterbank");
 		$data['cabang'] = DB::select("select * from cabang");
-			$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' or id_akun LIKE '7%' or id_akun LIKE '8%'");
+			if($cabang == 000){
+				$data['akun'] = DB::select("select * from d_akun");
+
+			}
+			else {
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%'");
+			}
 			$data['bbk'] = DB::select("select * from bukti_bank_keluar, cabang, masterbank where bbk_cabang = cabang.kode and bbk_kodebank = mb_id and bbk_id = '$id'" );
 			$flag = $data['bbk'][0]->bbk_flag;
 
@@ -7767,8 +7775,8 @@ public function kekata($x) {
 								$date = date('Y-m-d');
 								$jurnal = new d_jurnal();
 								$jurnal->jr_id = $idjurnald;
-						        $jurnal->jr_year = date('Y');
-						        $jurnal->jr_date = date('Y-m-d');
+						        $jurnal->jr_year = Carbon::parse($request->tglbbk)->format('Y');
+						        $jurnal->jr_date = $request->tglbbk;
 						        $jurnal->jr_detail = 'BUKTI BANK MASUK';
 						        $jurnal->jr_ref = $notabm;
 						        $jurnal->jr_note = $request->keteranganheader;
@@ -7989,8 +7997,8 @@ public function kekata($x) {
 
 			$jr_no = get_id_jurnal('BK' , $cabang);
 
-			$year = date('Y');	
-			$date = date('Y-m-d');
+			$year =  Carbon::parse($request->tglbbk)->format('Y');	
+			$date = $request->$tglbbk;
 			$jurnal = new d_jurnal();
 			$jurnal->jr_id = $idjurnal;
 	        $jurnal->jr_year = date('Y');
@@ -8081,6 +8089,7 @@ public function kekata($x) {
 	public function updatebbk(Request $request){
 		return DB::transaction(function() use ($request) { 
 		$idbbk = $request->bbkid;
+		dd($request);
 	/*	$this->hapusbbk($idbbk);
 		$this->simpanbbk($request);
 		return json_encode('sukses');	
@@ -8210,6 +8219,64 @@ public function kekata($x) {
 					$datajurnal[$i]['dk'] = 'D';
 				}
 		} // END IF FLAG CEK BG
+		else if($request->flag == 'AKUNBG'){
+			DB::delete("DELETE from bukti_bank_keluar_akunbg where bbkab_idbbk = '$idbbk'");
+			for($j=0;$j<count($request->accbiayaakun);$j++){
+				$bbkb = new bukti_bank_keluar_bgakun();
+
+				$lastidbbkab =  bukti_bank_keluar_bgakun::max('bbkab_id');
+				if(isset($lastidbbkb)) {
+						$idbbkab = 1;
+				}
+				else {
+						$idbbkab = $lastidbbkab;
+						$idbbkab = (int)$idbbkab + 1;
+				} 
+
+				$jumlah = str_replace(',', '', $request->nominalakun[$j]);
+				$jumlahfpg = str_replace(',', '', $request->nominalfpg[$j]);
+
+				$bbkb->bbkab_id = $idbbkab;
+				$bbkb->bbkab_idbbk = $idbbk;
+				$bbkb->bbkab_akun = $request->accbiayaakun[$j];
+				$bbkb->bbkab_dk = $request->dk[$j];
+				$bbkb->bbkab_nominal = $jumlah;
+				$bbkb->bbkab_keterangan = $request->keteranganakunbg[$j];
+				$bbkb->bbkab_nocheck = $request->nocheck[$j];
+				$bbkb->bbkab_nofpg = $request->nofpg[$j];
+				$bbkb->bbkab_idfpg = $request->idfpg[$j];
+				$bbkb->bbkab_nominalfpg = $jumlahfpg;
+				$bbkb->bbkab_keteranganfpg = $request->keteranganfpg[$j];
+				$bbkb->save();
+
+
+				$akunbiaya = $request->accbiayaakun[$j];
+				$datajurnal2 = DB::select("select * from d_akun where id_akun = '$akunbiaya'");
+				$akundka2 = $datajurnal2[0]->akun_dka;
+
+				$idfpg = $request->idfpg[$j];
+				$data['idfpg'] = DB::table('fpg_cekbank')
+					->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $request->nocheck[$j]]])
+					->update([
+						'fpgb_posting' => 'DONE',
+					]);
+
+				if($akundka2 == 'K'){
+					$datajurnal[$j]['id_akun'] = $request->accbiayaakun[$j];
+					$datajurnal[$j]['subtotal'] = '-' . $jumlah;
+					$datajurnal[$j]['dk'] = 'D';
+					$datajurnal[$j]['detail'] = $request->keteranganakunbg[$j];
+
+				}
+				else {
+					$datajurnal[$j]['id_akun'] = $request->accbiayaakun[$j];
+					$datajurnal[$j]['subtotal'] =  $jumlah;
+					$datajurnal[$j]['dk'] = 'D';	
+					$datajurnal[$j]['detail'] = $request->keteranganakunbg[$j];
+
+				}
+			}
+		}
 		else { // DO SAVE BIAYA
 			DB::delete("DELETE from  bukti_bank_keluar_biaya where bbkb_idbbk = '$idbbk'");	
 			for($i = 0; $i < count($request->akun); $i++){		
@@ -8267,9 +8334,9 @@ public function kekata($x) {
 			$date = date('Y-m-d');
 			$jurnal = new d_jurnal();
 			$jurnal->jr_id = $idjurnal;
-	        $jurnal->jr_year = date('Y');
-	        $jurnal->jr_date = date('Y-m-d');
-	        $jurnal->jr_detail = 'POSTING BANK';
+	        $jurnal->jr_year = Carbon::parse($request->tgl)->format('m');
+	        $jurnal->jr_date = $request->tglbbk;
+	        $jurnal->jr_detail = 'BUKTI BANK KELUAR';
 	        $jurnal->jr_ref = $refjurnal;
 	        $jurnal->jr_note = $request->keteranganheader;
 	        $jurnal->save();
