@@ -96,7 +96,56 @@
                         </div>
                         </div>
                     </form>
-                <div class="box-body">
+                <div class="box-body append_table">
+                    <div class="col-sm-12">
+                      <table cellpadding="3" cellspacing="0" border="0" class="table filter table-bordered">
+                        <tr>
+                            <td align="center">Asal</td>
+                            <td align="center">
+                              <input type="text" class="asal form-control " name="asal">
+                            </td>
+                            <td align="center">Tujuan</td>
+                            <td align="center">
+                              <input type="text" class="tujuan form-control " name="tujuan">
+                            </td>
+                        </tr>
+                        <tr id="filter_col1" data-column="0">
+                          @if (Auth::user()->punyaAkses('Biaya Penerus Kas','cabang')) 
+                            <td align="center">Cabang</td>
+                            <td >
+                              <select class="form-control cabang chosen-select-width" onchange="filtering()" name="cabang">
+                                <option value="0">Pilih - Cabang </option>
+                                @foreach ($cabang as $a)
+                                  <option value="{{$a->kode}}">{{$a->kode}} - {{$a->nama}}</option>
+                                @endforeach
+                              </select>
+                            </td>
+                          @endif
+                            <td align="center">Jenis</td>
+                            <td align="center">
+                              <select onchange="filtering()" class="form-control jenis_bayar chosen-select-width">
+                                <option value="0">Pilih - Jenis </option>
+                                <option value="PAKET">PAKET</option>
+                                <option value="KORAN">KORAN</option>
+                                <option value="KARGO">KARGO</option>
+                              </select>
+                            </td>
+                        </tr>
+                        <tr>
+                          <td colspan="2" align="right">
+                            Cari Berdasarkan Nota / Nomor Seri Pajak
+                          </td>
+                          <td>
+                            <input type="text" class="nota form-control" name="nota">
+                          </td>
+                          <td align="center">
+                            <button class="search btn btn-success" type="button" onclick="filtering_nota()"><i class="fa fa-search"> Cari Berdasarkan Nota/Pajak</i></button>
+                            <button class="search btn btn-danger" type="button" onclick="filtering()"><i class="fa fa-search"> Cari</i></button>
+                            <button class=" btn btn-warning jurnal_all" type="button" ><i class="fa fa-eye"></i></button>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
                     <table id="table_data" class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -357,7 +406,25 @@
     })
     $('#cb_provinsi_tujuan').change(function(){
         $('#hilang2').hide();
-    })
+    }
+
+    function panggil_table() {
+      $.ajax(
+        {
+            url : baseUrl + "/sales/tarif_cabang_kilogram/panggil_nota",
+            type: "GET",
+            data : value,
+            dataType:'json',
+            success: function(data, textStatus, jqXHR)
+            {
+
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+                swal("Error!", textStatus, "error");
+            }
+        });
+    }
     $(document).ready( function () {
         $('#table_data').DataTable({
             "paging": true,

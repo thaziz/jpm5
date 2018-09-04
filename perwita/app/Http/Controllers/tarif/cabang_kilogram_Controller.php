@@ -9,12 +9,13 @@ use Auth;
 use carbon\carbon;
 use Yajra\Datatables\Datatables;
 use Exception;
+set_time_limit(600);
+ini_set('memory_limit', '1000M');
 class cabang_kilogram_Controller extends Controller
 {
     public function table_data () {
-        set_time_limit(600);
-        ini_set('memory_limit', '1000M');
-        $cabang = Auth::user()->kode_cabang;
+        
+      $cabang = Auth::user()->kode_cabang;
       if (Auth::user()->punyaAkses('Tarif Cabang Kilogram','all')) {
           $sql = DB::table('tarif_cabang_kilogram')
                  ->get();
