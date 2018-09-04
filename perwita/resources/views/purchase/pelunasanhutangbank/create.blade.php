@@ -589,7 +589,7 @@
         })
     })
 
-      $nomor = 1;
+      
     $('#tmbhdatabgakun').click(function(){
 
       kodecabang = $('.kodebank').val();
@@ -620,7 +620,6 @@
 
       $('.flag').val('BGAKUN');
 
-      $('.cekbg').val(addCommas(nominal));
 
        
       $('#tabcekbg').addClass('disabled');
@@ -636,7 +635,15 @@
          arridbank.push(valid2);
        // alert(arrnofaktur + 'arrnofaktur');
       });
-     
+
+      $nomor = $('tr.dataakunbg').length;
+      if($nomor == 0){
+        $nomor = 1;
+      }
+      else {
+        $nomor++;
+      }
+
       index = arridbank.indexOf(akundakun);
   
       if(index == -1) {  
@@ -647,7 +654,7 @@
                   "<td> <input type='text' class='form-control input-sm jumlahakunbiayadetailbg' value="+jumlahakunbiaya+" style='min-width:200px; text-align:right' name='nominalakun[]' style='min-width:100px' readonly> </td>" +
                   "<td> <input type='text' class='form-control input-sm keteranganakunbgdetail' value='"+keteranganakunbg+"' name='keteranganakunbg[]' style='min-width:200px' readonly> </td>" +
                   "<td> <input type='text' class='form-control input-sm nofpgdetailbg' value="+nofpg+" name='nofpg[]' readonly style='min-width:200px'> <input type='hidden' class='idfpgakunbgdetail' value="+idfpg+" name='idfpg[]'> </td>" +
-                  "<td> <input type='text' class='form-control input-sm accbiayaakundetailbg' value="+nocheckakunbg+" name='nocheck[]' readonly style='min-width:200px'> </td>" +
+                  "<td> <input type='text' class='form-control input-sm accbiayaakundetailbg' value='"+nocheckakunbg+"' name='nocheck[]' readonly style='min-width:200px'> </td>" +
                   "<td> <input type='text' class='form-control input-sm nominalfpgdetailbg' value="+nominal+" name='nominalfpg[]' readonly style='min-width:200px;text-align:right'> </td>" +
                   "<td> <input type='text' class='form-control input-sm keteranganbiayadetailbg' value='"+keteranganbiaya+"' name='keteranganfpg[]' readonly style='min-width:200px'> <input type='hidden' value='"+idfpgb+"' name='idfpgb[]'> </td>" +
                   "</td>" +
@@ -661,6 +668,7 @@
           nominal2 =  nominal.replace(/,/g, '');
           jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
           $('.total').val(addCommas(jumlahnominal));
+          $('.cekbg').val(addCommas(jumlahnominal));
         })
          $('.biayabg').val(''); 
       }
@@ -700,6 +708,7 @@
           nominal2 =  nominal.replace(/,/g, '');
           jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
           $('.total').val(addCommas(jumlahnominal));
+          $('.cekbg').val(addCommas(jumlahnominal));
         })
 
       }
@@ -734,6 +743,18 @@
 
     function hapus(a){
        var par = $(a).parents('tr');
+       nominal = par.find('.nominalfpgdetailbg').val();
+
+       replacenominal = nominal.replace(/,/g , '');
+       cekbg = $('.cekbg').val();
+       total = $('.total').val();
+       replacecekbg = cekbg.replace(/,/g, '');
+       replacetotal = total.replace(/,/g, '');
+
+       totalcekbg = parseFloat(parseFloat(replacecekbg) - parseFloat(replacenominal)).toFixed(2);
+       total = parseFloat(parseFloat(replacetotal) - parseFloat(replacenominal)).toFixed(2);
+       $('.cekbg').val(addCommas(totalcekbg));
+       $('.total').val(addCommas(total))
        par.remove();
     }
 
