@@ -196,8 +196,9 @@ class PurchaseController extends Controller
 
 	public function getnospp(Request $request){	
 		$cabang = $request->comp;
-		$bulan = Carbon::now()->format('m');
-        $tahun = Carbon::now()->format('y');
+		$tgl = $request->tgl;
+		$bulan = Carbon::parse($tgl)->format('m');
+        $tahun = Carbon::now($tgl)->format('y');
 
       
 		//return $mon;

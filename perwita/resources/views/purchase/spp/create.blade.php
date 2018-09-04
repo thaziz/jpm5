@@ -77,7 +77,14 @@
                                           </tr>
                                             <tr>
                                               <td> Tgl Input </td>
-                                              <td> <input type='text' class='form-control' value="{{ Carbon\Carbon::now()->format('d-M-Y ') }}" disabled=""></td>
+                                              <td> {{-- <input type='text' class='form-control' value="{{ Carbon\Carbon::now()->format('d-M-Y ') }}" disabled=""> --}}
+                                                <div class="input-group date" required="">
+                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tglinput"  required="">
+
+                                                       
+                                                  </div>
+
+                                              </td>
                                             </tr>
                                          
 
@@ -278,9 +285,64 @@
 
      $('.date').datepicker({
         autoclose: true,
-        format: 'dd-MM-yyyy',
-      
+        format: 'dd-MM-yyyy',      
     });
+
+   // today = new Date();
+    $('.tglinput').val('09/03/2018');
+
+     $('.tglinput').change(function(){
+       var comp = $('.cabang').val();
+        var tglinput = $('.tglinput').val();
+        $('.valcabang').val(comp);
+          $.ajax({    
+              type :"get",
+              data : {comp,tglinput},
+              url : baseUrl + '/suratpermintaanpembelian/getnospp',
+              dataType:'json',
+              success : function(data){
+               if(data.status == 'sukses'){
+                        var d = new Date(tglinput);               
+                        //tahun
+                        var year = d.getFullYear();
+                        //bulan
+                        var month = d.getMonth();
+                        var month1 = parseInt(month + 1)
+                        console.log(d);
+                        console.log();
+                        console.log(year);
+
+                        if(month < 10) {
+                          month = '0' + month1;
+                        }
+                        console.log(d);
+
+                        tahun = String(year);
+        //                console.log('year' + year);
+                        year2 = tahun.substring(2);
+                        //year2 ="Anafaradina";
+
+                      
+                         nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
+                        console.log(nospp);
+                        $('.nospp').val(nospp);
+                         nospp = $('.nospp').val();
+                  }
+                  else {
+                      location.reload();
+                  }
+                
+                  if(nospp === ''){
+                      location.reload();
+                  }
+
+                 
+              },
+              error : function(){
+                 location.reload();
+              }
+          })
+     })
 
 
     cabang = $('.cabang').val();
@@ -357,16 +419,16 @@
     }
 
 
-    comp = $('.cabang').val();
-
+       comp = $('.cabang').val();
+       tglinput = $('.tglinput').val();
         $.ajax({    
             type :"get",
-            data : {comp},
+            data : {comp,tglinput},
             url : baseUrl + '/suratpermintaanpembelian/getnospp',
             dataType:'json',
             success : function(data){
                 if(data.status == 'sukses'){
-                      var d = new Date();               
+                      var d = new Date(tglinput);               
                       //tahun
                       var year = d.getFullYear();
                       //bulan
@@ -412,15 +474,16 @@
 
     $('.cabang').change(function(){    
       var comp = $(this).val();
+      var tglinput = $('.tglinput').val();
       $('.valcabang').val(comp);
         $.ajax({    
             type :"get",
-            data : {comp},
+            data : {comp,tglinput},
             url : baseUrl + '/suratpermintaanpembelian/getnospp',
             dataType:'json',
             success : function(data){
              if(data.status == 'sukses'){
-                      var d = new Date();               
+                      var d = new Date(tglinput);               
                       //tahun
                       var year = d.getFullYear();
                       //bulan
