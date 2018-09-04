@@ -53,7 +53,13 @@
                     <button class="btn btn-success btn-md" onclick="FP()">
                       Faktur Pembelian
                     </button>
-                </div>        
+                </div>   
+
+                <div class="box-body">
+                    <button class="btn btn-success btn-md" onclick="item()">
+                     add item
+                    </button>
+                </div>      
                     
                 <div class="box-body">
              
@@ -101,7 +107,23 @@
         }
       })
     }
-    
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+    });
+     
+    function item(){
+         $.ajax({
+        url : baseUrl + '/jurnalselaras/item',
+        type : "post",
+        dataType : "json",
+        success : function(response){
 
+        }
+      })
+    }
+    
+   
 </script>
 @endsection
