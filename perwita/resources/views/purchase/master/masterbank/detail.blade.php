@@ -625,7 +625,7 @@
 
     if($('#sericek').prop('checked') == true && $('#sericekbg').prop('checked') == true ) { // CEK DOUBLE
      // alert('double');
-        var inputseri = '<input type="text" name="input" value="centangdua">';
+        var inputseri = '<input type="hidden" name="input" value="centangdua">';
         $('.inputseri').html(inputseri);
 
         //cek
@@ -757,7 +757,7 @@
         
           var n = 1;
         
-          for(var i = urutcek; i < hasilurutcek; i++){ //ADD TABLE
+          for(var i = urutcek; i <= hasilurutcek; i++){ //ADD TABLE
             var html2 = "<tr class='databaru' >" + 
                         "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                         "<label></label>" +
@@ -781,7 +781,7 @@
             }
 
 
-            for(var j = urutbg; j < hasilurutbg; j++){ //LOOPING BG
+            for(var j = urutbg; j <= hasilurutbg; j++){ //LOOPING BG
               var html3 = "<tr class='databaru'>" + 
                         "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                         "<label></label>" +
@@ -878,7 +878,7 @@
                 
                   var n = 1;
                 
-                  for(var i = urutcek; i < hasilurutcek; i++){ //ADD TABLE
+                  for(var i = urutcek; i <= hasilurutcek; i++){ //ADD TABLE
                    // alert(urutcek);
                     var html2 = "<tr class='databaru'>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
@@ -978,7 +978,7 @@
                   var n = 1;
                  // alert(urutbg);
                  // alert(hasilurutbg);
-                  for(var i = urutbg; i < hasilurutbg; i++){ //ADD TABLE
+                  for(var i = urutbg; i <= hasilurutbg; i++){ //ADD TABLE
                     var html2 = "<tr class='databaru'>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                                 "<label></label>" +
