@@ -495,7 +495,7 @@
            $(this).val(test);
            toastr.info("Mohon maaf nama tidak boleh ada comma :)");
         }
-      }
+      })
    
 
     $('.simpandata').click(function(){
