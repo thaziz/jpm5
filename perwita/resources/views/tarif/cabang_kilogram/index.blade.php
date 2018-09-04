@@ -125,9 +125,8 @@
                             <td align="center">
                               <select onchange="filtering()" class="form-control jenis_bayar chosen-select-width">
                                 <option value="0">Pilih - Jenis </option>
-                                <option value="PAKET">PAKET</option>
-                                <option value="KORAN">KORAN</option>
-                                <option value="KARGO">KARGO</option>
+                                <option value="REGULER">REGULER</option>
+                                <option value="EXPRESS">EXPRESS</option>
                               </select>
                             </td>
                         </tr>
