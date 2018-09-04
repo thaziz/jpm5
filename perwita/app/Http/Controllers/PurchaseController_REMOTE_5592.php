@@ -6957,27 +6957,36 @@ public function purchase_order() {
 	}
 
 	public function getnofpg (Request $request){
-		$cabang = $request->cabang;
-		
 
-		$fpg = DB::select("select * from fpg where fpg_cabang = '$cabang' order by idfpg desc limit 1");
-		//return $fpg;
-		
-		if(count($fpg) > 0) {
-	//		return $fpg[0]->fpg_nofpg;
-			$explode = explode("/", $fpg[0]->fpg_nofpg);
-			$idfpg3 = $explode[2];
-		
+		$comp = $request->cabang;
 
-			$idfpg4 = (int)$idfpg3 + 1;
-			$data['idfpg'] = str_pad($idfpg4, 4, '0', STR_PAD_LEFT);
-			
-		}
-
-		else {
+		$tgl = $request->tgl;
+		//return $comp;
+		/*$idbbk = DB::select("select * from bukti_bank_keluar where bbk_cabang = '$comp'");*/
 	
-			$data['idfpg'] = '0001';
+		$bulan = Carbon::parse($tgl)->format('m');
+        $tahun = Carbon::parse($tgl)->format('y');
+
+
+
+		//return $mon;
+		$idbbk = DB::select("select * from fpg where fpg_cabang = '$comp'  and to_char(fpg_tgl, 'MM') = '$bulan' and to_char(fpg_tgl, 'YY') = '$tahun' order by idfpg desc limit 1");
+
+		//return $idbbk;
+		if(count($idbbk) > 0) {		
+			$explode = explode("/", $idbbk[0]->bbk_nota);
+			$idbbk = $explode[2];
+			$string = (int)$idbbk + 1;
+			$idbbk = str_pad($string, 4, '0', STR_PAD_LEFT);
 		}
+		else {
+			$idbbk = '0001';
+		}
+
+		$datainfo =['status' => 'sukses' , 'data' => $idbbk];
+
+		$data['idfpg'] = $idbbk;
+	
 
 		return json_encode($data);
 	
