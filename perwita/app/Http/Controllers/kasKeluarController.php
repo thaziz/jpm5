@@ -3938,4 +3938,89 @@ class kasKeluarController extends Controller
 
 		}
 	}
+
+	public function jurnal_all(request $req)
+	{
+		if (Auth::user()->punyaAkses('Bukti Kas Keluar','cabang')) {
+			// $bkk = DB::table('biaya_penerus_kas')	
+			// 		 ->where('bpk_id',$req->id)
+			// 		 ->first();
+			// $data= DB::table('d_jurnal')
+			// 		 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
+			// 		 ->join('d_akun','jrdt_acc','=','id_akun')
+			// 		 ->where('jr_ref',$bkk->bpk_nota)
+			// 		 ->get();
+
+			$nama_cabang = DB::table("cabang")
+							 ->where('kode',$req->cabang)
+							 ->first();
+
+
+			$data= DB::table('d_jurnal')
+				 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
+				 ->join('d_akun','jrdt_acc','=','id_akun')
+				 ->where('jr_ref','like','BKK%')
+				 ->get();
+			
+
+			$head= DB::table('d_jurnal')
+					 ->where('jr_ref','like','BKK%')
+					 ->get();
+
+			$d = [];
+			$k = [];
+			for ($i=0; $i < count($data); $i++) { 
+				if ($data[$i]->jrdt_value < 0) {
+					$data[$i]->jrdt_value *= -1;
+				}
+			}
+
+			for ($i=0; $i < count($data); $i++) { 
+				if ($data[$i]->jrdt_statusdk == 'D') {
+					$d[$i] = $data[$i]->jrdt_value;
+				}elseif ($data[$i]->jrdt_statusdk == 'K') {
+					$k[$i] = $data[$i]->jrdt_value;
+				}
+			}
+			// $bpk = [];
+			// for ($i=0; $i < count($head); $i++) { 
+			// 	$bpk[$i] = $data = DB::table('d_jurnal')
+			// 						 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
+			// 						 ->join('d_akun','jrdt_acc','=','id_akun')
+			// 						 ->where('jr_ref',$head[$i]->jr_ref)
+			// 						 ->get();
+			// }
+
+			// $tidak_sama = [];
+			// for ($i=0; $i < count($bpk); $i++) { 
+			// 	$d = 0;
+			// 	$k = 0;
+			// 	for ($a=0; $a < count($bpk[$i]); $a++) { 
+			// 		if ($bpk[$i][$a]->jrdt_statusdk == 'D') {
+			// 			$d += $bpk[$i][$a]->jrdt_value;
+			// 		}else{
+			// 			$k += $bpk[$i][$a]->jrdt_value;
+			// 		}
+			// 	}
+			// 	if ($k < 0) {
+			// 		$k*=-1;
+			// 	}
+			// 	if ($d != $k) {
+			// 		array_push($tidak_sama, $bpk[$i][0]->jr_ref);
+			// 	}
+			// }
+			// $tidak_sama = array_unique($tidak_sama);
+			// $tidak_sama = array_values($tidak_sama);
+			// dd($tidak_sama);
+
+			$d = array_values($d);
+			$k = array_values($k);
+
+			$d = array_sum($d);
+			$k = array_sum($k);
+			// $d = round($d);
+			// $k = round($k);
+			return view('purchase.buktikaskeluar.jurnal',compact('data','d','k'));
+		}
+	}
 }

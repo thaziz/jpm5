@@ -111,11 +111,12 @@
                           <td align="center">
                             <button class="search btn btn-success" type="button" onclick="filtering_nota()"><i class="fa fa-search"> Cari Berdasarkan Nota</i></button>
                             <button class="search btn btn-danger" type="button" onclick="filtering()"><i class="fa fa-search"> Cari</i></button>
+                            <button class=" btn btn-warning jurnal_all" type="button" ><i class="fa fa-eye"></i></button>
                           </td>
                         </tr>
                     </table>
                   </div>
-                  <div class="col-sm-12 append_table">
+                  <div class="col-sm-12 append_table table-responsive" style="overflow-y: scroll;">
                     
                   </div>
                 </div><!-- /.box-body -->
@@ -145,7 +146,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
         </div>
-        <div class="modal-body tabel_jurnal">
+        <div class="modal-body tabel_jurnal table-responsive" >
           
         </div>
         <div class="modal-footer">
@@ -342,5 +343,23 @@ $('.jurnal').click(function(){
       }
   }); 
 })
+
+$('.jurnal_all').click(function(){
+  var cabang = $('.cabang').val();
+  $.ajax({
+      url:baseUrl + '/buktikaskeluar/jurnal_all',
+      type:'get',
+      data:{cabang},
+      success:function(data){
+         $('.tabel_jurnal').html(data);
+         $('.modal_jurnal').modal('show');
+      },
+      error:function(data){
+          // location.reload();
+      }
+  }); 
+})
+
+
 </script>
 @endsection
