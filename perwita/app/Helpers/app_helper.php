@@ -200,25 +200,29 @@
 
 		for ($i=0; $i < count($data); $i++) { 
 			$temp = 0;
-			if ($data[$i]->jrdt_status_dka == 'D') {
+			if ($data[$i]->jrdt_statusdk == 'D') {
 				if ($data[$i]->jrdt_value < 0) {
 					$temp = $data[$i]->jrdt_value * -1;
+				}else{
+					$temp = $data[$i]->jrdt_value;
 				}
 
 				$d+=$temp;
 			}else{
 				if ($data[$i]->jrdt_value < 0) {
 					$temp = $data[$i]->jrdt_value * -1;
+				}else{
+					$temp = $data[$i]->jrdt_value;
 				}
 
 				$k+=$temp;
 			}
 		}
 
-		if ($d != $k) {
-			return 0;
-		}else{
+		if ($d == $k) {
 			return 1;
+		}else{
+			return 0;
 		}
 	}
 
