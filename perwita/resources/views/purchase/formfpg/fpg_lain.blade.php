@@ -138,7 +138,7 @@
 				<h1> Pindah Buku </h1>
 			@endif
 		</fieldset>
-
+		@if($data['fpg'][0]->fpg_jenisbayar == '12')
 		<fieldset>
 			<legend>
 				Bayar Kepada : <br>
@@ -147,6 +147,7 @@
 				@endforeach
 			</legend>
 		</fieldset>
+		@endif
 		<br>
 		<table width="100%" cellspacing="0" class="tabel" border="1px" cellpadding="10px">
 			<tr class="text-center">
