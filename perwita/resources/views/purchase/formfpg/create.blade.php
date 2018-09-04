@@ -132,7 +132,7 @@
                                 <th> Tanggal </th>
                                 <td>  
                                       <div class="input-group date">
-                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl" name="tglfpg" required="">
+                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl tglfpg" name="tglfpg" required="">
                                       </div>
                                </td>
                               </tr>
@@ -833,14 +833,15 @@
         $('.valjenisbayarbank').val(valjenisbayar);
 
       $('.cabang2').val(cabang);
+      tgl = $('.tglfpg').val();
        $.ajax({
           type : "get",
-          data : {cabang},
+          data : {cabang,tgl},
           url : baseUrl + '/formfpg/getnofpg',
           dataType : 'json',
           success : function (response){     
                 cabang = $('.cabang').val();
-               var d = new Date();
+               var d = new Date(tgl);
                 
                 //tahun
                 var year = d.getFullYear();
@@ -876,25 +877,23 @@
         })
 
        $('.cabang').change(function(){
+          tgl = $('.tglfpg').val();
          $.ajax({
           type : "get",
-          data : {cabang},
+          data : {cabang,tgl},
           url : baseUrl + '/formfpg/getnofpg',
           dataType : 'json',
           success : function (response){     
                cabang = $('.cabang').val();
                $('.cabangfaktur').val(cabang);
-               var d = new Date();
+               var d = new Date(tgl);
                 
                 //tahun
                 var year = d.getFullYear();
                 //bulan
                 var month = d.getMonth();
                 var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
-
+               
                 if(month < 10) {
                   month = '0' + month1;
                 }
@@ -1442,6 +1441,48 @@
 
     })
 
+    $('.date').change(function(){
+       tgl = $('.tglfpg').val();
+         $.ajax({
+          type : "get",
+          data : {cabang,tgl},
+          url : baseUrl + '/formfpg/getnofpg',
+          dataType : 'json',
+          success : function (response){     
+               cabang = $('.cabang').val();
+               $('.cabangfaktur').val(cabang);
+               var d = new Date(tgl);
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+               
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+                 nofpg = 'FPG' + month + year2 + '/' + cabang + '/'  + response.idfpg ;
+               
+                $('.nofpg').val(nofpg);
+
+                nofpg = $('.nofpg').val();
+                if(nofpg == ''){
+                    location.reload();
+                }
+          },
+          error : function(){
+            location.reload();
+          }
+        })
+    })
 
 
      $('.date').datepicker({

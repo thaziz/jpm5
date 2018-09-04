@@ -765,7 +765,7 @@
 
       $('.flag').val();
          flag = $('.flag').val();
-        alert(flag);
+       // alert(flag);
       if(flag == 'CEKBG') {
            $('#tab-1').addClass("active");
            $('#tab-2').removeClass("active");

@@ -6957,27 +6957,36 @@ public function purchase_order() {
 	}
 
 	public function getnofpg (Request $request){
-		$cabang = $request->cabang;
-		
 
-		$fpg = DB::select("select * from fpg where fpg_cabang = '$cabang' order by idfpg desc limit 1");
-		//return $fpg;
-		
-		if(count($fpg) > 0) {
-	//		return $fpg[0]->fpg_nofpg;
-			$explode = explode("/", $fpg[0]->fpg_nofpg);
-			$idfpg3 = $explode[2];
-		
+		$comp = $request->cabang;
 
-			$idfpg4 = (int)$idfpg3 + 1;
-			$data['idfpg'] = str_pad($idfpg4, 4, '0', STR_PAD_LEFT);
-			
-		}
-
-		else {
+		$tgl = $request->tgl;
+		//return $comp;
+		/*$idbbk = DB::select("select * from bukti_bank_keluar where bbk_cabang = '$comp'");*/
 	
-			$data['idfpg'] = '0001';
+		$bulan = Carbon::parse($tgl)->format('m');
+        $tahun = Carbon::parse($tgl)->format('y');
+
+
+
+		//return $mon;
+		$idbbk = DB::select("select * from fpg where fpg_cabang = '$comp'  and to_char(fpg_tgl, 'MM') = '$bulan' and to_char(fpg_tgl, 'YY') = '$tahun' order by idfpg desc limit 1");
+
+		//return $idbbk;
+		if(count($idbbk) > 0) {		
+			$explode = explode("/", $idbbk[0]->fpg_nofpg);
+			$idbbk = $explode[2];
+			$string = (int)$idbbk + 1;
+			$idbbk = str_pad($string, 4, '0', STR_PAD_LEFT);
 		}
+		else {
+			$idbbk = '0001';
+		}
+
+		$datainfo =['status' => 'sukses' , 'data' => $idbbk];
+
+		$data['idfpg'] = $idbbk;
+	
 
 		return json_encode($data);
 	
@@ -8740,8 +8749,21 @@ public function kekata($x) {
 			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
 		}
 		
-		
+		/*dd($data);*/
 		return view('purchase/formfpg/fpg', compact('data'));
+	}
+
+
+	public function printformfpg2 ($id){
+		$fpg = DB::select("select * from fpg, fpg_dt where idfpg ='$id'");
+
+		$jenisbayar = $fpg[0]->fpg_jenisbayar;
+		$data['fpg'] = DB::select("select *, cabang.nama as namacabang, cabang.alamat as alamatsupplier, cabang.telpon as telpsupplier from fpg, cabang where fpg_cabang = cabang.kode and idfpg ='$id'");
+			$data['fpg_dt'] = DB::select("select * from fpg_dt, fpg, faktur_pembelian where fpgdt_idfpg = idfpg and fpgdt_idfpg = '$id'");
+			$data['fpg_bank'] = DB::select("select * from fpg_cekbank,fpg, masterbank where fpgb_idfpg = idfpg and fpgb_idfpg = '$id' and fpgb_kodebank = mb_id");
+			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
+	
+		return view('purchase/formfpg/fpg_lain', compact('data'));
 	}
 
 	public function changesupplier(Request $request){
