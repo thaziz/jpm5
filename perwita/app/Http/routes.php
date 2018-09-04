@@ -1847,6 +1847,7 @@ Route::get('sales/hapus_um_kwitansi', 'sales\penerimaan_penjualan_Controller@hap
 Route::get('sales/kwitansi/jurnal', 'sales\penerimaan_penjualan_Controller@jurnal');
 Route::get('sales/kwitansi/simpan_um_sementara', 'sales\penerimaan_penjualan_Controller@simpan_um_sementara');
 Route::get('sales/kwitansi/simpan_um', 'sales\penerimaan_penjualan_Controller@simpan_um');
+Route::post('sales/kwitansi/simpan_um', 'sales\penerimaan_penjualan_Controller@simpan_um');
 Route::get('sales/kwitansi/datatable_kwitansi', 'sales\penerimaan_penjualan_Controller@datatable_kwitansi');
 
 
@@ -2962,6 +2963,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
   Route::get('sales/tarif_cabang_kilogram/update_data', 'tarif\cabang_kilogram_Controller@update_data');
   Route::get('sales/tarif_cabang_kilogram/hapus_data', 'tarif\cabang_kilogram_Controller@hapus_data');
   Route::get('sales/tarif_cabang_kilogram/hapus_data_perkota', 'tarif\cabang_kilogram_Controller@hapus_data_perkota');
+  Route::get('sales/tarif_cabang_kilogram/panggil_nota', 'tarif\cabang_kilogram_Controller@panggil_nota');
   // end tarif cabang kilogram
 
   // tarif cabang koli

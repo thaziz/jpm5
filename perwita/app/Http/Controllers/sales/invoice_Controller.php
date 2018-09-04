@@ -1374,7 +1374,7 @@ public function simpan_invoice(request $request)
 
           if ($check == 0) {
             DB::rollBack();
-            return response()->json(['status' => 'gagal','info'=>'Jurnal Tidak Balance']);
+            return response()->json(['status' => 'gagal','info'=>'Jurnal Tidak Balance Gagal Simpan']);
           }
           DB::commit();
           return response()->json(['status' => 1]);
@@ -1801,7 +1801,7 @@ public function simpan_invoice(request $request)
 
       if ($check == 0) {
         DB::rollBack();
-        return response()->json(['status' => 'gagal','info'=>'Jurnal Tidak Balance']);
+        return response()->json(['status' => 'gagal','info'=>'Jurnal Tidak Balance Gagal Simpan']);
       }
       // dd($lihat);
       DB::commit();
