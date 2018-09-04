@@ -456,7 +456,7 @@ class BonSementaraController extends Controller
 				$updatepb->status_pusat = 'DISETUJUI MENKEU';
 			}
 			$updatepb->bp_pelunasan = $nominal;
-
+		
 			$updatepb->time_setujukeu = $date;
 			$updatepb->save();
 

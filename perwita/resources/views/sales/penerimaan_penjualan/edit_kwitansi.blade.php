@@ -2152,13 +2152,13 @@ $('#btnsimpan').click(function(){
 
             $.ajax({
                 url:baseUrl + '/sales/kwitansi/simpan_um',
-                type:'get',
+                type:'post',
                 dataType:'json',
                 data:{invoice_um,array_index,array_invoice,array_uang_muka,cb_jenis_pembayaran,nota_kwitansi},
                 success:function(response){
                       $.ajax({
                       url:baseUrl + '/sales/update_kwitansi',
-                      type:'get',
+                      type:'post',
                       dataType:'json',
                       data:$('.tabel_header :input').serialize()
                            +'&'+table_data.$('input').serialize()
@@ -2167,6 +2167,10 @@ $('#btnsimpan').click(function(){
                            +'&'+$('.table_rincian :input').serialize()
                            +'&customer='+customer,
                       success:function(response){
+                        if (response.status =='gagal') {
+                            toastr.warning(response.info)
+                            return false;    
+                        }
                         if (response.status == 1) {
                             swal({
                                 title: "Berhasil!",
@@ -2181,9 +2185,8 @@ $('#btnsimpan').click(function(){
                                     $('.flag_nota').val('success');
                             });
                         }else{
-                            $('#nota_kwitansi').val(response.nota);
-                            toastr.info('Nomor Kwitansi Telah Dirubah Menjadi '+response.nota);
-                            $('#btnsimpan').click();
+                            toastr.warning(response.pesan)
+                            return false;   
                         }
                       },
                       error:function(data){

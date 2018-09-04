@@ -8749,8 +8749,21 @@ public function kekata($x) {
 			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
 		}
 		
-		
+		/*dd($data);*/
 		return view('purchase/formfpg/fpg', compact('data'));
+	}
+
+
+	public function printformfpg2 ($id){
+		$fpg = DB::select("select * from fpg, fpg_dt where idfpg ='$id'");
+
+		$jenisbayar = $fpg[0]->fpg_jenisbayar;
+		$data['fpg'] = DB::select("select *, cabang.nama as namacabang, cabang.alamat as alamatsupplier, cabang.telpon as telpsupplier from fpg, cabang where fpg_cabang = cabang.kode and idfpg ='$id'");
+			$data['fpg_dt'] = DB::select("select * from fpg_dt, fpg, faktur_pembelian where fpgdt_idfpg = idfpg and fpgdt_idfpg = '$id'");
+			$data['fpg_bank'] = DB::select("select * from fpg_cekbank,fpg, masterbank where fpgb_idfpg = idfpg and fpgb_idfpg = '$id' and fpgb_kodebank = mb_id");
+			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
+		
+		return view('purchase/formfpg/fpg_lain', compact('data'));
 	}
 
 	public function changesupplier(Request $request){

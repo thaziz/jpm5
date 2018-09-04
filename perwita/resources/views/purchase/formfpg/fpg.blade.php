@@ -238,7 +238,7 @@
  <div class="wrapper">
   <div class="position-fixed">
    <table class="inlineTable">
-      <td> <img src="{{ asset('perwita/storage/app/upload/images.jpg') }}"  width="200" height="100"></td>
+      <td> <img src="{{asset('perwita/storage/app/upload/images.jpg') }}"  width="200" height="100"></td>
    </table>
    <table class="inlineTable size" style="font-size:12px;margin-bottom: 21px;">
     <tr>

@@ -84,13 +84,18 @@
                         <td> {{number_format($fpg->fpg_cekbg , 2)}} </td>
                         
                         <td>
-                                @if(Auth::user()->punyaAkses('Form Permintaan Giro','ubah'))
+                        @if(Auth::user()->punyaAkses('Form Permintaan Giro','ubah'))
                         <a class="btn btn-sm btn-success" href={{url('formfpg/detailformfpg/'.$fpg->idfpg.'')}}> <i class="fa fa-arrow-right" aria-hidden="true"></i> </a>
                               @endif
 
-                                  @if(Auth::user()->punyaAkses('Form Permintaan Giro','print'))
-                        <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg/'.$fpg->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a>
-                              @endif
+                        @if(Auth::user()->punyaAkses('Form Permintaan Giro','print'))
+
+                          @if($fpg->fpg_jenisbayar == '5' || $fpg->fpg_jenisbayar == '12')
+                            <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg2/'.$fpg->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a>
+                          @else
+                              <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg/'.$fpg->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a>
+                          @endif
+                        @endif
 
                              @if(Auth::user()->punyaAkses('Form Permintaan Giro','hapus'))
                         <a class="btn btn-sm btn-danger" onclick="hapusdata({{$fpg->idfpg}})"> <i class="fa fa-trash" aria-hidden="true"></i> </a>  </td>
