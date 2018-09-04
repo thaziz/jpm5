@@ -124,14 +124,31 @@
 			</tr>
 			<tr>
 				<td colspan="3" class="text-center bold underline">
-					<h2>FORM PERMINTAAN GIRO</h2>
+					
+						<h2>FORM PERMINTAAN GIRO</h2>
+					
 				</td>
 			</tr>
 		</table>
+		
 		<fieldset style="margin-bottom: 5px;text-align: center;">
-			<h1>Transfer Kas/Bank</h1>
+			@if($data['fpg'][0]->fpg_jenisbayar == '5')
+				<h1>Transfer Kas/Bank</h1>
+			@else
+				<h1> Pindah Buku </h1>
+			@endif
 		</fieldset>
-		<table width="100%" cellspacing="0" class="tabel" border="1px">
+
+		<fieldset>
+			<legend>
+				Bayar Kepada : <br>
+				@foreach($data['fpg_bank'] as $index=>$fpgbank)
+					{{$index + 1 }} &nbsp; {{$fpgb->fpgb_banktujuan}} , {{$fpgb->fpgb_nmbanktujuan}} , {{$fpgb->fpgb_nmrekeningtujuan}}
+				@endforeach
+			</legend>
+		</fieldset>
+		<br>
+		<table width="100%" cellspacing="0" class="tabel" border="1px" cellpadding="10px">
 			<tr class="text-center">
 				<td>No</td>
 				<td>Keterangan</td>
