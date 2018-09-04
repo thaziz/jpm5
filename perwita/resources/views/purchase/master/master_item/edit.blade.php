@@ -57,7 +57,7 @@
                               <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
                               <tr>        
                                 <td style="width:200px"> Cabang </td>
-                                <td> <input type="text" class="form-control "  value="{{$item->nama}}"> <input type="hidden" class="cabang" name="cabang" value="{{$item->kode}}"> </td>
+                                <td> <input type="text" class="form-control "  value="{{$item->nama}}" disabled=""> <input type="hidden" class="cabang" name="cabang" value="{{$item->kode}}"> </td>
                               </tr>
 
                               <tr>        

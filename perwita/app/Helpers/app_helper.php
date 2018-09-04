@@ -197,9 +197,9 @@
 
 		$d = 0;
 		$k = 0;
-
+		
 		for ($i=0; $i < count($data); $i++) { 
-			if ($data[$i]->jrdt_status_dka == 'D') {
+			if ($data[$i]->jrdt_statusdk == 'D') {
 				if ($data[$i]->jrdt_value < 0) {
 					$temp = $data[$i]->jrdt_value * -1;
 				}

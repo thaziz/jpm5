@@ -7570,7 +7570,7 @@ public function kekata($x) {
 				$idfpg = $request->idfpg[$i];
 				$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
 				$jenisbayar = $datafpg[0]->fpg_jenisbayar;
-				if($jenisbayar == 'INTERNET BANKING'){
+				if($jenisbayar != 'INTERNET BANKING'){
 						$data['idfpg'] = DB::table('fpg_cekbank')
 						->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $request->notransaksi[$i]]])
 						->update([
@@ -7963,11 +7963,56 @@ public function kekata($x) {
 				$akundka2 = $datajurnal2[0]->akun_dka;
 
 				$idfpg = $request->idfpg[$j];
-				$data['idfpg'] = DB::table('fpg_cekbank')
-					->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $request->nocheck[$j]]])
-					->update([
-						'fpgb_posting' => 'DONE',
-					]);
+				$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
+				$jenisbayar = $datafpg[0]->fpg_jenisbayar;
+				if($jenisbayar != 'INTERNET BANKING'){
+						$data['idfpg'] = DB::table('fpg_cekbank')
+						->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $request->notransaksi[$j]]])
+						->update([
+							'fpgb_posting' => 'DONE',
+						]);
+
+
+					$dataallfpg = DB::select("select * from fpg, fpg_cekbank where idfpg = '$idfpg' and fpgb_idfpg = idfpg");
+					for($x = 0; $x < count($dataallfpg); $x++){
+						$done = $dataallfpg[$x]->fpgb_posting;
+						if($done == 'DONE'){
+							$tempdone = $tempdone + 1;
+						}
+					} 
+
+					if($tempdone == count($dataallfpg)){
+						$data['idfpg'] = DB::table('fpg')
+						->where('idfpg' , $idfpg)
+						->update([
+							'fpg_posting' => 'DONE',
+						]);
+					}
+				}
+				else{
+					$data['idfpg'] = DB::table('fpg_cekbank')
+						->where('fpgb_idfpg', '=', $idfpg)
+						->update([
+							'fpgb_posting' => 'DONE',
+						]);
+
+
+					$dataallfpg = DB::select("select * from fpg, fpg_cekbank where idfpg = '$idfpg' and fpgb_idfpg = idfpg");
+					for($x = 0; $x < count($dataallfpg); $x++){
+						$done = $dataallfpg[$x]->fpgb_posting;
+						if($done == 'DONE'){
+							$tempdone = $tempdone + 1;
+						}
+					} 
+
+					if($tempdone == count($dataallfpg)){
+						$data['idfpg'] = DB::table('fpg')
+						->where('idfpg' , $idfpg)
+						->update([
+							'fpg_posting' => 'DONE',
+						]);
+					}
+				}
 
 				if($akundka2 == 'K'){
 					$datajurnal[$j]['id_akun'] = $request->accbiayaakun[$j];
@@ -7995,14 +8040,15 @@ public function kekata($x) {
 				$idjurnal = 1;
 			}
 
-			$jr_no = get_id_jurnal('BK' , $cabang);
+			$tglbbk = $request->tglbbk;
+			$jr_no = get_id_jurnal('BK' , $cabang, $tglbbk);
 
-			$year =  Carbon::parse($request->tglbbk)->format('Y');	
+			$year =  Carbon::parse($tglbbk)->format('Y');	
 			$date = $request->$tglbbk;
 			$jurnal = new d_jurnal();
 			$jurnal->jr_id = $idjurnal;
-	        $jurnal->jr_year = date('Y');
-	        $jurnal->jr_date = date('Y-m-d');
+	        $jurnal->jr_year = Carbon::parse($date)->format('Y');
+	        $jurnal->jr_date = $tglbbk;
 	        $jurnal->jr_detail = 'BUKTI BANK KELUAR';
 	        $jurnal->jr_ref = $request->nobbk;
 	        $jurnal->jr_note = $request->keteranganheader;
@@ -8089,7 +8135,7 @@ public function kekata($x) {
 	public function updatebbk(Request $request){
 		return DB::transaction(function() use ($request) { 
 		$idbbk = $request->bbkid;
-		dd($request);
+	//	dd($request);
 	/*	$this->hapusbbk($idbbk);
 		$this->simpanbbk($request);
 		return json_encode('sukses');	
@@ -8114,7 +8160,7 @@ public function kekata($x) {
 							'update_by' => $request->username
 						]);
 		$data['bbk'] = DB::select("select * from bukti_bank_keluar where bbk_id = '$idbbk'");
-		
+		$cabang = $data['bbk'][0]->bbk_cabang;
 		$datajurnal = [];
 		$totalhutang = 0;
 
@@ -8219,8 +8265,9 @@ public function kekata($x) {
 					$datajurnal[$i]['dk'] = 'D';
 				}
 		} // END IF FLAG CEK BG
-		else if($request->flag == 'AKUNBG'){
+		else if($request->flag == 'BGAKUN'){
 			DB::delete("DELETE from bukti_bank_keluar_akunbg where bbkab_idbbk = '$idbbk'");
+
 			for($j=0;$j<count($request->accbiayaakun);$j++){
 				$bbkb = new bukti_bank_keluar_bgakun();
 
@@ -8232,13 +8279,15 @@ public function kekata($x) {
 						$idbbkab = $lastidbbkab;
 						$idbbkab = (int)$idbbkab + 1;
 				} 
+				$dataaccbiayaakun = explode("-", $request->accbiayaakun[$j]);
+				$accbiayaakun = $dataaccbiayaakun[0];
 
 				$jumlah = str_replace(',', '', $request->nominalakun[$j]);
 				$jumlahfpg = str_replace(',', '', $request->nominalfpg[$j]);
 
 				$bbkb->bbkab_id = $idbbkab;
 				$bbkb->bbkab_idbbk = $idbbk;
-				$bbkb->bbkab_akun = $request->accbiayaakun[$j];
+				$bbkb->bbkab_akun = $accbiayaakun;
 				$bbkb->bbkab_dk = $request->dk[$j];
 				$bbkb->bbkab_nominal = $jumlah;
 				$bbkb->bbkab_keterangan = $request->keteranganakunbg[$j];
@@ -8251,7 +8300,8 @@ public function kekata($x) {
 
 
 				$akunbiaya = $request->accbiayaakun[$j];
-				$datajurnal2 = DB::select("select * from d_akun where id_akun = '$akunbiaya'");
+				$datajurnal2 = DB::select("select * from d_akun where id_akun = '$accbiayaakun'");
+				//dd($datajurnal2);
 				$akundka2 = $datajurnal2[0]->akun_dka;
 
 				$idfpg = $request->idfpg[$j];
@@ -8262,14 +8312,14 @@ public function kekata($x) {
 					]);
 
 				if($akundka2 == 'K'){
-					$datajurnal[$j]['id_akun'] = $request->accbiayaakun[$j];
+					$datajurnal[$j]['id_akun'] = $accbiayaakun;
 					$datajurnal[$j]['subtotal'] = '-' . $jumlah;
-					$datajurnal[$j]['dk'] = 'D';
+					$datajurnal[$j]['dk'] = 'K';
 					$datajurnal[$j]['detail'] = $request->keteranganakunbg[$j];
 
 				}
 				else {
-					$datajurnal[$j]['id_akun'] = $request->accbiayaakun[$j];
+					$datajurnal[$j]['id_akun'] = $accbiayaakun;
 					$datajurnal[$j]['subtotal'] =  $jumlah;
 					$datajurnal[$j]['dk'] = 'D';	
 					$datajurnal[$j]['detail'] = $request->keteranganakunbg[$j];
@@ -8319,7 +8369,8 @@ public function kekata($x) {
 
 
 		//save jurnal
-			DB::delete("DELETE from  d_jurnal where jr_ref = '$refjurnal' and jr_detail = 'POSTING BANK'");
+			DB::delete("DELETE from  d_jurnal where jr_ref = '$refjurnal' and jr_detail = 'BUKTI BANK KELUAR'");
+				$jr_no = get_id_jurnal('BK' , $cabang, $request->tglbbk);
 
 		 	$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
 			if(isset($lastidjurnal)) {
@@ -8339,6 +8390,7 @@ public function kekata($x) {
 	        $jurnal->jr_detail = 'BUKTI BANK KELUAR';
 	        $jurnal->jr_ref = $refjurnal;
 	        $jurnal->jr_note = $request->keteranganheader;
+	        $jurnal->jr_no = $jr_no;
 	        $jurnal->save();
        	
 	        
@@ -8371,6 +8423,19 @@ public function kekata($x) {
     			$jurnaldt->save();
     			$key++;
     		}  
+
+
+    		/*$cekjurnal = check_jurnal($refjurnal);
+    		if($cekjurnal == 0){
+    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
+				DB::rollback();
+									        
+    		}
+    		else {
+    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+					        
+    		}*/
+
     		return json_encode('sukses');
 		});
 		

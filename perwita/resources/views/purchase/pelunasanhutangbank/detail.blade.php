@@ -338,9 +338,9 @@
                                                         @foreach($data['bbkd'] as $index=>$bbkd)
                                                         <tr id="hslbiaya" class="databiaya  dataakunbg transaksi{{$index + 1}}" data-biaya="{{$bbkd->bbkab_akun}}">
                                                           <td> {{$index + 1}} </td>
-                                                          <td> <input type="text" class="form-control input-sm nobbkdetailbg" value="{{$bbkd->bbk_nota}}" readonly="" style="min-width:150px" name=""> </td>
+                                                          <td> <input type="text" class="form-control input-sm nobbkdetailbg" value="{{$bbkd->bbk_nota}}" readonly="" style="min-width:150px"> </td>
 
-                                                          <td> <input type="text" class="form-control input-sm akundakundetailbg" value="{{$bbkd->bbkab_akun}} - {{$bbkd->nama_akun}}" readonly="" style="min-width:150px" name="accbiayaakun[]"> </td>
+                                                          <td> <input type="text" class="form-control input-sm akundakundetailbg" value="{{$bbkd->bbkab_akun}}-{{$bbkd->nama_akun}}" readonly="" style="min-width:150px" name="accbiayaakun[]"> </td>
 
                                                           
                                                           <td> <input type="text" class="form-control input-sm" value="{{$bbkd->bbkab_dk}}" name="dk[]" readonly="" style="min-width:90px"> </td>
@@ -350,7 +350,7 @@
                                                           <td> <input type="text" class="form-control keteranganakunbgdetail" value="{{$bbkd->bbkab_keterangan}}" name="keteranganakunbg[]" style="min-width:150px" readonly=""> </td>
 
 
-                                                           <td> <input type="text" class="form-control nofpgdetailbg" value="{{$bbkd->bbkab_nofpg}}" name="nofpg[]" style="min-width:150px" readonly=""> </td>
+                                                           <td> <input type="text" class="form-control nofpgdetailbg" value="{{$bbkd->bbkab_nofpg}}" name="nofpg[]" style="min-width:150px" readonly=""> <input type="hidden" class="form-control nofpgdetailbg" value="{{$bbkd->bbkab_idfpg}}" name="idfpg[]" style="min-width:150px" readonly=""> </td>
 
                                                            <td> <input type="text" class="form-control" value="{{$bbkd->bbkab_nocheck}}" name="nocheck[]" style="min-width:150px" readonly=""> </td>
 
@@ -627,7 +627,7 @@
                                                               </option>
 
                                                               @foreach($data['akun'] as $akun)
-                                                              <option value="{{$akun->id_akun}},{{$akun->akun_dka}}">
+                                                              <option value="{{$akun->id_akun}},{{$akun->akun_dka}},{{$akun->nama_akun}}">
                                                                {{$akun->id_akun}} - {{$akun->nama_akun}}
                                                               </option>
                                                               @endforeach
@@ -794,7 +794,7 @@
 
     
     $('#tmbhdatabgakun').click(function(){
-        $('#myModalBGAkun').modal('toggle');
+       
       kodecabang = $('.kodebank').val();
       $('.valkodebank').val(kodecabang);
       $('.disabledbank').addClass('disabled');
@@ -831,9 +831,17 @@
 
       splitakun = accbiayaakun.split(",");
       akundakun = splitakun[0];
-      
+      namaakun = splitakun[1];
        arridbank = [];
-      
+      if(accbiayaakun == ''){
+        toastr.info("Harap pilih kode akun terlebih dahulu :) ");
+        return false;
+      } 
+      else {
+
+       $('#myModalBGAkun').modal('toggle');
+
+      }
      
       $nomor = $('.dataakunbg').length;
       if($nomor == 0){
@@ -847,7 +855,7 @@
       if(index == -1) {  
       row = "<tr class='transaksi dataakunbg dataakunbg"+akundakun+"' data-nomor="+akundakun+"> <td>"+$nomor+"</td>" +
                   "<td> <input type='text' class='form-control input-sm nobbkdetailbg' value="+nobbk+" style='min-width:200px' readonly>  </td>" + //nobbk
-                  "<td> <input type='text' class='form-control input-sm akundakundetailbg' value="+akundakun+" name='accbiayaakun[]' style='min-width:200px' readonly> </td>"+
+                  "<td> <input type='text' class='form-control input-sm akundakundetailbg' value="+akundakun+"-"+namaakun+" name='accbiayaakun[]' style='min-width:200px' readonly> </td>"+
                   "<td> <input type='text' class='form-control input-sm dkakundetailbg' value="+dk+" name='dk[]' style='min-width:90px' readonly> </td>" +
                   "<td> <input type='text' class='form-control input-sm jumlahakunbiayadetailbg' value="+jumlahakunbiaya+" style='min-width:200px; text-align:right' name='nominalakun[]' style='min-width:100px' readonly> </td>" +
                   "<td> <input type='text' class='form-control input-sm keteranganakunbgdetail' value='"+keteranganakunbg+"' name='keteranganakunbg[]' style='min-width:200px' readonly> </td>" +
@@ -1037,6 +1045,7 @@
           url : post_url2,
           dataType : 'json',
           success : function (response){
+          
                 swal({
                   title: "Berhasil!",
                           type: 'success',
