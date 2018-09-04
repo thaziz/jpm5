@@ -190,7 +190,7 @@ class laporan_neraca extends Controller
           $no++;
       }
 
-      // return json_encode($data_neraca);
+      return json_encode($data_neraca);
 
       return view("laporan_neraca.print_pdf.pdf_single")
              ->withThrottle($throttle)
