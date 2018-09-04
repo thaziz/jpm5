@@ -145,7 +145,7 @@
 				<td class="text-center"> {{$index + 1}} </td>
 				<td> {{$data['fpg'][0]->fpg_keterangan}} </td>
 				<td>@if($fpgbank->fpgb_jenisbayarbank == 'INTERNET BANKING')
-						-
+						{{$fpgbank->fpgb_jenisbayarbank}}
 					@else
 						{{$fpgbank->fpgb_nocheckbg}}
 					@endif
