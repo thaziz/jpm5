@@ -495,7 +495,7 @@
            $(this).val(test);
            toastr.info("Mohon maaf nama tidak boleh ada comma :)");
         }
-
+      }
    
 
     $('.simpandata').click(function(){
@@ -781,38 +781,6 @@ $('.cabang').change(function(){
      })
 
 
-    /* cabang = $('.cabang').val();
-     $.ajax({
-      data :  {cabang},
-      url : baseUrl + '/mastersupplier/getacchutang',
-      dataType : 'json',
-      success : function(response){
-
-     
-
-        $('.acc_hutangdagang').empty();
-          $('.acc_hutangdagang').append(" <option value=''>  -- Pilih id akun -- </option> ");
-            $.each(response, function(i , obj) {
-      //        console.log(obj.is_kodeitem);
-              $('.acc_hutangdagang').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
-            })
-              $('.acc_hutangdagang').trigger("chosen:updated");
-          $('.acc_hutangdagang').trigger("liszt:updated");
-
-
-           $('.acc_csf').empty();
-          $('.acc_csf').append(" <option value=''>  -- Pilih id akun -- </option> ");
-            $.each(response, function(i , obj) {
-      //        console.log(obj.is_kodeitem);
-              $('.acc_csf').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
-            })
-              $('.acc_csf').trigger("chosen:updated");
-          $('.acc_csf').trigger("liszt:updated");
-
-        
-
-         }
-     })*/
 
 
 
