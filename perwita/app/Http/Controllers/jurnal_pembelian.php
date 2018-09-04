@@ -248,11 +248,6 @@ class jurnal_pembelian  extends Controller
           $mafaccpersediaan = $item[$k]->acc_persediaan;
           $mafacchpp = $item[$k]->acc_hpp;
 
-          
-          
-          $cekdiakunper = DB::select("select * from d_akun where id_akun = '$mafaccpersediaan' and kode_cabang = '$mafcabang'");
-          $cekdiakunhpp = DB::select("select * from d_akun where id_akun = '$mafacchpp' and kode_cabang = '$mafcabang'");
-
 
            $id = DB::table('master_akun_fitur')
                   ->max('maf_id');
@@ -262,11 +257,10 @@ class jurnal_pembelian  extends Controller
               }else{
                 $id+=1;
               }
-          
 
           if($mafaccpersediaan == null){
-            if(count($cekdiakunhpp) != 0) {
-            $save_maf = DB::table('master_akun_fitur')
+
+           $save_maf = DB::table('master_akun_fitur')
                     ->insert([
                       'maf_id'        => $id,
                       'maf_kode_akun' => $kodeakun,
@@ -275,11 +269,9 @@ class jurnal_pembelian  extends Controller
                       'maf_cabang'    => $mafcabang,
                       'maf_acc_hpp' => $mafacchpp,
                    ]);
-            }
           }
           else {
-            if(count($cekdiakunper) != 0){
-              $save_maf = DB::table('master_akun_fitur')
+            $save_maf = DB::table('master_akun_fitur')
                     ->insert([
                       'maf_id'        => $id,
                       'maf_kode_akun' => $kodeakun,
@@ -288,8 +280,8 @@ class jurnal_pembelian  extends Controller
                       'maf_cabang'    => $mafcabang,
                       'maf_acc_persediaan' => $mafaccpersediaan,
                    ]);
-              }
-            }
+          }
+
         }
       }
 
