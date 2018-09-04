@@ -675,10 +675,8 @@ public function pajak_lain(request $request)
 }
 public function simpan_invoice(request $request)
 {
-
-   return DB::transaction(function() use ($request) {  
-
-
+  DB::BeginTransaction();
+  try{
     $delete = DB::table('invoice')
                 ->where('i_nomor',$request->nota_invoice);
                 
@@ -755,8 +753,9 @@ public function simpan_invoice(request $request)
         $akunPPN='2398';
     }
 
-  $user = Auth::user()->m_name;
+    $user = Auth::user()->m_name;
     if (Auth::user()->m_name == null) {
+      DB::rollBack();
       return response()->json([
         'status'=>0,
         'message'=>'Nama User Anda Belum Ada, Silahkan Hubungi Pihak Terkait'
@@ -882,7 +881,7 @@ public function simpan_invoice(request $request)
                         'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
                         'jr_date'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
                         'jr_detail' => 'INVOICE ' . $request->ed_pendapatan,
-                        'jr_ref'    => $nota,
+                        'jr_ref'    => strtoupper($nota),
                         'jr_note'   => 'INVOICE '.$request->ed_keterangan,
                         'jr_insert' => carbon::now(),
                         'jr_update' => carbon::now(),
@@ -927,6 +926,8 @@ public function simpan_invoice(request $request)
                                 ->where('kode_cabang',$cabang)
                                 ->first();
                   if ($akun_diskon == null) {
+                    DB::rollBack();
+
                     return response()->json(['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_diskon->id_akun);
@@ -939,6 +940,7 @@ public function simpan_invoice(request $request)
                                 ->where('kode_cabang',$cabang)
                                 ->first();
                   if ($akun_ppn == null) {
+                    DB::rollBack();
                     return response()->json(['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_ppn->id_akun);
@@ -958,6 +960,8 @@ public function simpan_invoice(request $request)
                                   ->where('kode_cabang',$cabang)
                                   ->first();
                     if ($akun_pph == null) {
+                      DB::rollBack();
+
                       return response()->json(['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                     }
                     array_push($akun, $akun_pph->id_akun);
@@ -972,6 +976,8 @@ public function simpan_invoice(request $request)
                                 ->where('kode_cabang',$cabang)
                                 ->first();
                   if ($akun_vendor == null) {
+                    DB::rollBack();
+
                     return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Vendor Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_vendor->id_akun);
@@ -984,6 +990,8 @@ public function simpan_invoice(request $request)
                                 ->where('kode_cabang',$cabang)
                                 ->first();
                   if ($akun_own == null) {
+                    DB::rollBack();
+
                     return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_own->id_akun);
@@ -1001,6 +1009,8 @@ public function simpan_invoice(request $request)
                                 ->where('kode_cabang',$cabang)
                                 ->first();
                   if ($akun_diskon == null) {
+                    DB::rollBack();
+
                     return response()->json(['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_diskon->id_akun);
@@ -1020,6 +1030,8 @@ public function simpan_invoice(request $request)
                                   ->where('kode_cabang',$cabang)
                                   ->first();
                     if ($akun_pph == null) {
+                      DB::rollBack();
+
                       return response()->json(['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                     }
                     array_push($akun, $akun_pph->id_akun);
@@ -1034,6 +1046,8 @@ public function simpan_invoice(request $request)
                                 ->where('kode_cabang',$cabang)
                                 ->first();
                   if ($akun_vendor == null) {
+                    DB::rollBack();
+
                     return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Vendor Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_vendor->id_akun);
@@ -1046,6 +1060,8 @@ public function simpan_invoice(request $request)
                                 ->where('kode_cabang',$cabang)
                                 ->first();
                   if ($akun_own == null) {
+                    DB::rollBack();
+
                     return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_own->id_akun);
@@ -1096,6 +1112,8 @@ public function simpan_invoice(request $request)
                                 ->where('kode_cabang',$cabang)
                                 ->first();
                   if ($akun_diskon == null) {
+                    DB::rollBack();
+
                     return response()->json(['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_diskon->id_akun);
@@ -1108,6 +1126,7 @@ public function simpan_invoice(request $request)
                                 ->where('kode_cabang',$cabang)
                                 ->first();
                   if ($akun_ppn == null) {
+                    DB::rollBack();
                     return response()->json(['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_ppn->id_akun);
@@ -1127,6 +1146,8 @@ public function simpan_invoice(request $request)
                                   ->where('kode_cabang',$cabang)
                                   ->first();
                     if ($akun_pph == null) {
+                      DB::rollBack();
+
                       return response()->json(['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                     }
                     array_push($akun, $akun_pph->id_akun);
@@ -1141,6 +1162,8 @@ public function simpan_invoice(request $request)
                                 ->where('kode_cabang',$cabang)
                                 ->first();
                   if ($akun_vendor == null) {
+                    DB::rollBack();
+
                     return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Vendor Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_vendor->id_akun);
@@ -1153,6 +1176,8 @@ public function simpan_invoice(request $request)
                                 ->where('kode_cabang',$cabang)
                                 ->first();
                   if ($akun_own == null) {
+                    DB::rollBack();
+
                     return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_own->id_akun);
@@ -1169,6 +1194,8 @@ public function simpan_invoice(request $request)
                                 ->where('kode_cabang',$cabang)
                                 ->first();
                   if ($akun_diskon == null) {
+                    DB::rollBack();
+
                     return response()->json(['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_diskon->id_akun);
@@ -1188,6 +1215,8 @@ public function simpan_invoice(request $request)
                                   ->where('kode_cabang',$cabang)
                                   ->first();
                     if ($akun_pph == null) {
+                      DB::rollBack();
+
                       return response()->json(['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                     }
                     array_push($akun, $akun_pph->id_akun);
@@ -1201,6 +1230,8 @@ public function simpan_invoice(request $request)
                                 ->where('kode_cabang',$cabang)
                                 ->first();
                   if ($akun_vendor == null) {
+                    DB::rollBack();
+
                     return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Vendor Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_vendor->id_akun);
@@ -1213,6 +1244,8 @@ public function simpan_invoice(request $request)
                                 ->where('kode_cabang',$cabang)
                                 ->first();
                   if ($akun_own == null) {
+                    DB::rollBack();
+
                     return response()->json(['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
                   }
                   array_push($akun, $akun_own->id_akun);
@@ -1336,7 +1369,14 @@ public function simpan_invoice(request $request)
 
           $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
           // dd($lihat);
+          $check = check_jurnal(strtoupper($nota));
 
+
+          if ($check == 0) {
+            DB::rollBack();
+            return response()->json(['status' => 'gagal','info'=>'Jurnal Tidak Balance']);
+          }
+          DB::commit();
           return response()->json(['status' => 1]);
 
     }else if($request->ed_pendapatan == 'KORAN'){
@@ -1491,6 +1531,8 @@ public function simpan_invoice(request $request)
                           ->where('kode_cabang',$cabang)
                           ->first();
           if ($akun_piutang == null) {
+            DB::rollBack();
+
             return response()->json(['status'=>'gagal','info'=>'Akun Piutang Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
           }
           array_push($akun, $akun_piutang->id_akun);
@@ -1503,6 +1545,8 @@ public function simpan_invoice(request $request)
                           ->where('kode_cabang',$cabang)
                           ->first();
             if ($akun_diskon == null) {
+              DB::rollBack();
+
               return response()->json(['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
             }
             array_push($akun, $akun_diskon->id_akun);
@@ -1515,6 +1559,7 @@ public function simpan_invoice(request $request)
                           ->where('kode_cabang',$cabang)
                           ->first();
             if ($akun_ppn == null) {
+              DB::rollBack();
               return response()->json(['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
             }
             array_push($akun, $akun_ppn->id_akun);
@@ -1534,6 +1579,8 @@ public function simpan_invoice(request $request)
                             ->where('kode_cabang',$cabang)
                             ->first();
               if ($akun_pph == null) {
+                DB::rollBack();
+
                 return response()->json(['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
               }
               array_push($akun, $akun_pph->id_akun);
@@ -1548,6 +1595,8 @@ public function simpan_invoice(request $request)
                                   ->where('kode_cabang',$cabang)
                                   ->first();
             if ($akun_pendapatan == null) {
+              DB::rollBack();
+
               return response()->json(['status'=>'gagal','info'=>'Terdapat Akun Pendapatan Yang Tidak Tersedia Untuk Cabang Ini, Harap Hubungi Pihak Terkait']);
             }
             array_push($akun, $akun_pendapatan->id_akun);
@@ -1561,6 +1610,8 @@ public function simpan_invoice(request $request)
                           ->where('kode_cabang',$cabang)
                           ->first();
           if ($akun_piutang == null) {
+            DB::rollBack();
+
             return response()->json(['status'=>'gagal','info'=>'Akun Piutang Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
           }
           array_push($akun, $akun_piutang->id_akun);
@@ -1573,6 +1624,8 @@ public function simpan_invoice(request $request)
                           ->where('kode_cabang',$cabang)
                           ->first();
             if ($akun_diskon == null) {
+              DB::rollBack();
+
               return response()->json(['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
             }
             array_push($akun, $akun_diskon->id_akun);
@@ -1585,6 +1638,7 @@ public function simpan_invoice(request $request)
                           ->where('kode_cabang',$cabang)
                           ->first();
             if ($akun_ppn == null) {
+              DB::rollBack();
               return response()->json(['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
             }
             array_push($akun, $akun_ppn->id_akun);
@@ -1604,6 +1658,8 @@ public function simpan_invoice(request $request)
                             ->where('kode_cabang',$cabang)
                             ->first();
               if ($akun_pph == null) {
+                DB::rollBack();
+
                 return response()->json(['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Ini Tidak Tersedia, Harap Hubungi Pihak Terkait']);
               }
               array_push($akun, $akun_pph->id_akun);
@@ -1617,6 +1673,8 @@ public function simpan_invoice(request $request)
                                   ->where('kode_cabang',$cabang)
                                   ->first();
             if ($akun_pendapatan == null) {
+              DB::rollBack();
+
               return response()->json(['status'=>'gagal','info'=>'Terdapat Akun Pendapatan Yang Tidak Tersedia Untuk Cabang Ini, Harap Hubungi Pihak Terkait']);
             }
             array_push($akun, $akun_pendapatan->id_akun);
@@ -1739,12 +1797,19 @@ public function simpan_invoice(request $request)
       $jurnal_dt = d_jurnal_dt::insert($data_akun);
 
       $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
+      $check = check_jurnal($nota);
+
+      if ($check == 0) {
+        DB::rollBack();
+        return response()->json(['status' => 'gagal','info'=>'Jurnal Tidak Balance']);
+      }
       // dd($lihat);
+      DB::commit();
       return response()->json(['status' => 1]);
     }
-
-  });
-        
+  }catch(Exception $er){
+    DB::rollBack();
+  }
 }
 
 
