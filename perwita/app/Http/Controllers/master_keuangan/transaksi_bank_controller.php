@@ -186,7 +186,7 @@ class transaksi_bank_controller extends Controller
         $jurnal = new d_jurnal;
         $jurnal->jr_id = ($id+1);
         $jurnal->jr_year = $date[2];
-        $jurnal->jr_date = $request->jr_date;
+        $jurnal->jr_date = date('Y-m-d', strtotime($request->jr_date));
         $jurnal->jr_detail = $request->jr_detail;
         $jurnal->jr_ref = $ref;
         $jurnal->jr_note = $request->jr_detail;
