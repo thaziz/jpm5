@@ -1055,6 +1055,11 @@ function hitung_pajak_lain(){
                +'&ed_pendapatan='+ed_pendapatan,
           success:function(response){
             
+            if (response.status =='gagal') {
+                
+                toastr.warning(response.info)
+                return false;    
+            }
 
             if (response.status == 2) {
                 swal({

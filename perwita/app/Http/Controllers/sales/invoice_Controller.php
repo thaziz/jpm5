@@ -1341,7 +1341,7 @@ public function simpan_invoice(request $request)
                 $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                 $data_akun[$i]['jrdt_detailid'] = $i+1;
                 $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = round($akun_val[$i])+100;
+                $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
                 $data_akun[$i]['jrdt_statusdk'] = 'K';
                 $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
               }
@@ -1371,10 +1371,10 @@ public function simpan_invoice(request $request)
           // dd($lihat);
           $check = check_jurnal(strtoupper($nota));
 
-          
+
           if ($check == 0) {
             DB::rollBack();
-            return response()->json(['status' => 'gagal','pesan'=>'Jurnal Tidak Balance']);
+            return response()->json(['status' => 'gagal','info'=>'Jurnal Tidak Balance']);
           }
           DB::commit();
           return response()->json(['status' => 1]);
@@ -1801,7 +1801,7 @@ public function simpan_invoice(request $request)
 
       if ($check == 0) {
         DB::rollBack();
-        return response()->json(['status' => 'gagal','pesan'=>'Jurnal Tidak Balance']);
+        return response()->json(['status' => 'gagal','info'=>'Jurnal Tidak Balance']);
       }
       // dd($lihat);
       DB::commit();
