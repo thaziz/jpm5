@@ -1,4 +1,4 @@
-<table id="table_data" class="table table-bordered table-striped">
+<table id="tab" class="table table-bordered table-striped">
     <thead>
         <tr>
             <th style="width:70px"> Kode</th>
@@ -19,22 +19,18 @@
 
 <script type="text/javascript">
     var cabang = '{{ $cabang }}';
-    $('#table_data').DataTable({
-        "paging": true,
-        "lengthChange": true,
-        "searching": true,
-        "ordering": false,
+    var asal = '{{ $asal }}';
+    var tujuan = '{{ $tujuan }}';
+    var jenis = '{{ $jenis }}';
+    $('#tab').DataTable({
         processing: true,
+        // responsive:true,
+        searching:false,
         serverSide: true,
-        "info": false,
-        "responsive": true,
-        "autoWidth": false,
-        "pageLength": 10,
-        "retrieve" : true,
-        "ajax": {
-          "url" :  baseUrl + "/sales/tarif_cabang_kilogram/tabel",
-          data:{cabang},
-          "type": "GET"
+        ordering:false,
+        ajax: {
+            url:baseUrl + "/sales/tarif_cabang_kilogram/tabel",
+            data:{cabang,asal,tujuan,jenis}
         },
         "columns": [
         { "data": "kode" },

@@ -13,61 +13,106 @@ set_time_limit(600);
 ini_set('memory_limit', '1000M');
 class cabang_kilogram_Controller extends Controller
 {
-    public function table_data () {
-        
-      $cabang = Auth::user()->kode_cabang;
+    public function table_data (request $req) {
+      
+
+      $nama_cabang = DB::table("cabang")
+                 ->where('kode',$req->cabang)
+                 ->first();
+
+      if ($nama_cabang != null) {
+        $cabang = 'and kode_cabang = '."'$req->cabang'";
+      }else{
+        $cabang = '';
+      }
+
+
+      if ($req->asal != '') {
+        $asal = 'and id_kota_asal = '."'$req->asal'";
+      }else{
+        $asal = '';
+      }
+
+      if ($req->tujuan != '') {
+        $tujuan = 'and id_kota_tujuan = '."'$req->tujuan'";
+      }else{
+        $tujuan = '';
+      }
+
+      if ($req->jenis != '0') {
+        $jenis = 'and jenis = '."'$req->jenis'";
+      }else{
+        $jenis = '';
+      }
+
       if (Auth::user()->punyaAkses('Tarif Cabang Kilogram','all')) {
-          $sql = DB::table('tarif_cabang_kilogram')
-                 ->get();
-        }else{
-          $sql = DB::table('tarif_cabang_kilogram')
-                ->where('kode_cabang',$cabang)
-                ->get();
-        }
+        $sql = "SELECT asal.nama as asal, tujuan.nama as tujuan, cabang.nama as cabang, provinsi.nama as provinsi,
+                tarif_cabang_kilogram.*
+                FROM tarif_cabang_kilogram 
+                join kota as asal on asal.id = id_kota_asal
+                join kota as tujuan on tujuan.id = id_kota_tujuan
+                join cabang as cabang on cabang.kode = kode_cabang
+                join provinsi as provinsi on provinsi.id = id_provinsi_cabkilogram 
+                where tarif_cabang_kilogram.id_kota_asal != '0' $cabang $asal $tujuan $jenis";
 
-        $asal = DB::table('kota')
-                  ->get();
+        $sql = DB::select($sql);
+      }else{
+        $cabang = Auth::user()->kode_cabang;
+        $sql = "SELECT asal.nama as asal, tujuan.nama as tujuan, cabang.nama as cabang, provinsi.nama as provinsi,
+                tarif_cabang_kilogram.*
+                FROM tarif_cabang_kilogram 
+                join kota as asal on asal.id = id_kota_asal
+                join kota as tujuan on tujuan.id = id_kota_tujuan
+                join cabang as cabang on cabang.kode = kode_cabang
+                join provinsi as provinsi on provinsi.id = id_provinsi_cabkilogram
+                where tarif_cabang_kilogram.id_kota_asal != '0' and kode_cabang = '$cabang' $asal $tujuan $jenis";
 
-        $tujuan = DB::table('kota')
-                  ->get();
+        $sql = DB::select($sql);
+      }
 
-        $provinsi = DB::table('provinsi')
-                  ->get();
+        // $asal = DB::table('kota')
+        //           ->get();
 
-        $cabang = DB::table('cabang')
-                  ->get();
+        // $tujuan = DB::table('kota')
+        //           ->get();
 
+        // $provinsi = DB::table('provinsi')
+        //           ->get();
 
-        for ($i=0; $i < count($sql); $i++) { 
-          for ($a=0; $a < count($asal); $a++) { 
-            if ($sql[$i]->id_kota_asal == $asal[$a]->id) {
-              $sql[$i]->asal = $asal[$a]->nama;
-            }
-          }
-
-          for ($a=0; $a < count($tujuan); $a++) { 
-            if ($sql[$i]->id_kota_tujuan == $tujuan[$a]->id) {
-              $sql[$i]->tujuan = $asal[$a]->nama;
-            }
-          }
+        // $cabang = DB::table('cabang')
+        //           ->get();
 
 
-          for ($a=0; $a < count($provinsi); $a++) { 
-            if ($sql[$i]->id_provinsi_cabkilogram == $provinsi[$a]->id) {
-              $sql[$i]->provinsi = $provinsi[$a]->nama;
-            }
-          }
+        // for ($i=0; $i < count($sql); $i++) { 
+        //   for ($a=0; $a < count($asal); $a++) { 
+        //     if ($sql[$i]->id_kota_asal == $asal[$a]->id) {
+        //       $sql[$i]->asal = $asal[$a]->nama;
+        //     }
+        //   }
 
-          for ($a=0; $a < count($cabang); $a++) { 
-            if ($sql[$i]->kode_cabang == $cabang[$a]->kode) {
-              $sql[$i]->cabang = $provinsi[$a]->nama;
-            }
-          }
+        //   for ($a=0; $a < count($tujuan); $a++) { 
+        //     if ($sql[$i]->id_kota_tujuan == $tujuan[$a]->id) {
+        //       $sql[$i]->tujuan = $asal[$a]->nama;
+        //     }
+        //   }
 
-          if (!isset($sql[$i]->provinsi)) {
-            $sql[$i]->provinsi = '-';
-          }
-        }
+
+        //   for ($a=0; $a < count($provinsi); $a++) { 
+        //     if ($sql[$i]->id_provinsi_cabkilogram == $provinsi[$a]->id) {
+        //       $sql[$i]->provinsi = $provinsi[$a]->nama;
+        //     }
+        //   }
+
+        //   for ($a=0; $a < count($cabang); $a++) { 
+        //     if ($sql[$i]->kode_cabang == $cabang[$a]->kode) {
+        //       $sql[$i]->cabang = $provinsi[$a]->nama;
+        //     }
+        //   }
+
+        //   if (!isset($sql[$i]->provinsi)) {
+        //     $sql[$i]->provinsi = '-';
+        //   }
+        // }
 
 
         $data = collect($sql);
@@ -115,6 +160,15 @@ class cabang_kilogram_Controller extends Controller
                         })
                         ->addIndexColumn()
                         ->make(true);
+    }
+
+    public function panggil_nota(request $req)
+    {
+      $cabang = $req->cabang;
+      $asal = $req->asal;
+      $tujuan = $req->tujuan;
+      $jenis = $req->jenis_bayar;
+      return view('tarif.cabang_kilogram.table_tarif',compact('cabang','asal','tujuan','jenis'));
     }
 
     public function get_data (Request $request) {

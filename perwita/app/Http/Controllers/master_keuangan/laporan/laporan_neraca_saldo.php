@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\master_keuangan\laporan;
 
-ini_set('max_execution_time', 120);
+ini_set('max_execution_time', 300);
 
 use Illuminate\Http\Request;
 
