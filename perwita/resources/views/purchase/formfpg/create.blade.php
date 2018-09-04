@@ -833,7 +833,7 @@
         $('.valjenisbayarbank').val(valjenisbayar);
 
       $('.cabang2').val(cabang);
-      tgl = $('tglfpg').val();
+      tgl = $('.tglfpg').val();
        $.ajax({
           type : "get",
           data : {cabang,tgl},
@@ -1441,8 +1441,47 @@
 
     })
 
-    $('.date').change({
+    $('.date').change(function(){
+       tgl = $('.tglfpg').val();
+         $.ajax({
+          type : "get",
+          data : {cabang,tgl},
+          url : baseUrl + '/formfpg/getnofpg',
+          dataType : 'json',
+          success : function (response){     
+               cabang = $('.cabang').val();
+               $('.cabangfaktur').val(cabang);
+               var d = new Date(tgl);
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+               
+                if(month < 10) {
+                  month = '0' + month1;
+                }
 
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+                 nofpg = 'FPG' + month + year2 + '/' + cabang + '/'  + response.idfpg ;
+               
+                $('.nofpg').val(nofpg);
+
+                nofpg = $('.nofpg').val();
+                if(nofpg == ''){
+                    location.reload();
+                }
+          },
+          error : function(){
+            location.reload();
+          }
+        })
     })
 
 

@@ -6974,7 +6974,7 @@ public function purchase_order() {
 
 		//return $idbbk;
 		if(count($idbbk) > 0) {		
-			$explode = explode("/", $idbbk[0]->bbk_nota);
+			$explode = explode("/", $idbbk[0]->fpg_nofpg);
 			$idbbk = $explode[2];
 			$string = (int)$idbbk + 1;
 			$idbbk = str_pad($string, 4, '0', STR_PAD_LEFT);
