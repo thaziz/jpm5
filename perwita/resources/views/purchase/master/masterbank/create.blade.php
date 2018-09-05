@@ -818,6 +818,7 @@
                     else{
                       urutcek = urutcek;
                     }
+                    
                     var html2 = "<tr>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                                 "<label></label>" +
