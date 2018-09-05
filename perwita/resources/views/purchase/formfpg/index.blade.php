@@ -52,7 +52,7 @@
                     
                 <div class="box-body">
 
-                  <table class="table table-bordered" style="width:60%">
+                 {{--  <table class="table table-bordered" style="width:60%">
                     <tr>
                         <td style="width:40%"> No FPG </td> <td style="width:5%"> : </td> <td> </td>
                     </tr>
@@ -65,7 +65,7 @@
                     <tr>
                       <td colspan="3"> <button class="btn btn-success btn-md"> <i class="fa fa-search"> </i> Cari </button> </td>
                     </tr>
-                  </table>
+                  </table> --}}
 
 
                   <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">

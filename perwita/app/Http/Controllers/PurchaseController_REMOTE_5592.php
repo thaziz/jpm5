@@ -3583,7 +3583,7 @@ public function purchase_order() {
 						$datajurnalpbg[$i]['id_akun'] = $request->accpersediaan[$i];
 						$datajurnalpbg[$i]['subtotal'] = $totalharga;
 						$datajurnalpbg[$i]['dk'] = 'D';
-
+						$datajurnalpbg[$i]['detail'] = $datapb[0]->pb_keperluan;
 						$totalhutang = $totalhutang + $totalharga;
 					}	
 
@@ -3592,12 +3592,56 @@ public function purchase_order() {
 						'id_akun' => $request->acchutangsupplierpo,
 						'subtotal' => $totalhutang,
 						'dk' => 'K',
+						'detail' => $datapb[0]->pb_keperluan
 						);
 
-					array_push($datajurnal, $dataakun );
-
-	
+					array_push($datajurnal, $dataakun );					
 				}
+
+					$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+					if(isset($lastidjurnal)) {
+						$idjurnal = $lastidjurnal;
+						$idjurnal = (int)$idjurnal + 1;
+					}
+					else {
+						$idjurnal = 1;
+					}
+				
+					$year = date('Y');	
+					$date = date('Y-m-d');
+					$jurnal = new d_jurnal();
+					$jurnal->jr_id = $idjurnal;
+			        $jurnal->jr_year = date('Y');
+			        $jurnal->jr_date = date('Y-m-d');
+			        $jurnal->jr_detail = 'PENERIMAAN BARANG ' . $request->flag;
+			        $jurnal->jr_ref = $lpb;
+			        $jurnal->jr_note = $request->keterangan;
+			        $jurnal->save();
+		       		
+		    		$key  = 1;
+		    		for($j = 0; $j < count($datajurnal); $j++){
+		    			
+		    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+						if(isset($lastidjurnaldt)) {
+							$idjurnaldt = $lastidjurnaldt;
+							$idjurnaldt = (int)$idjurnaldt + 1;
+						}
+						else {
+							$idjurnaldt = 1;
+						}
+
+		    			$jurnaldt = new d_jurnal_dt();
+		    			$jurnaldt->jrdt_jurnal = $idjurnal;
+		    			$jurnaldt->jrdt_detailid = $key;
+		    			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
+		    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
+		    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
+		    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
+		    			$jurnaldt->save();
+		    			$key++;
+		    		}   
+
+
 			}
 
 		} // jika stock iya
@@ -8790,7 +8834,7 @@ public function kekata($x) {
 			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
 		}
 		
-		/*dd($data);*/
+		dd($data);
 		return view('purchase/formfpg/fpg', compact('data'));
 	}
 
