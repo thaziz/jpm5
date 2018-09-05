@@ -178,7 +178,7 @@
                         </td>
                         <td>
                           <div class="col-sm-2">
-                            <input type="text" class="input-sm form-control inputcek" name="sericek" style="text-transform: uppercase">
+                            <input type="text" class="input-sm form-control inputcek" name="sericek" style="text-transform:uppercase">
                           </div>
                           <div class="col-sm-1">
                             Tgl Buku 
