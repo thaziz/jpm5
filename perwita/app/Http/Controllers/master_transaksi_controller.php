@@ -64,19 +64,31 @@ class master_transaksi_controller extends Controller
     {
     	DB::BeginTransaction();
     	try{
-    		$id = DB::table('master_transaksi')->max('mt_id')+1;
-    		$save = DB::table('master_transaksi')
-    				  ->insert([
-    				  	'mt_id' 	 => $id,
-    				  	'mt_nama' 	 => strtoupper($req->nama),
-    				  	'mt_id_akun' => $req->akun,
-    				  	'created_at' => carbon::now(),
-    				  	'updated_at' => carbon::now(),
-    				  	'created_by' => Auth::user()->m_name,
-    				  	'updated_by' => Auth::user()->m_name,
-    				  ]);
-    		DB::commit();
-    		return response()->json(['status'=>1]);
+            if ($req->id == '') {
+        		$id = DB::table('master_transaksi')->max('mt_id')+1;
+        		$save = DB::table('master_transaksi')
+        				  ->insert([
+        				  	'mt_id' 	 => $id,
+        				  	'mt_nama' 	 => strtoupper($req->nama),
+        				  	'mt_id_akun' => $req->akun,
+        				  	'created_at' => carbon::now(),
+        				  	'updated_at' => carbon::now(),
+        				  	'created_by' => Auth::user()->m_name,
+        				  	'updated_by' => Auth::user()->m_name,
+        				  ]);
+        		DB::commit();
+        		return response()->json(['status'=>1]);
+            }else{
+                $save = DB::table('master_transaksi')
+                          ->where('mt_id',$req->id)
+                          ->update([
+                            'mt_id_akun' => $req->akun,
+                            'updated_at' => carbon::now(),
+                            'updated_by' => Auth::user()->m_name,
+                          ]);
+                DB::commit();
+                return response()->json(['status'=>1]);
+            }
     	}catch(Exception $er){
             dd($er);
     		DB::rollBack();

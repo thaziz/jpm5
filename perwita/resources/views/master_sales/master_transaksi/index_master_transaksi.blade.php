@@ -186,16 +186,17 @@ $(document).ready(function(){
 $('#btn_add').click(function(){
   $('.nama').val('');
   $('.id_akun').val('');
+  $('.nama').attr('readonly',false);
   $('.modal_pajak').modal('show');
 })
 
 $('.save').click(function(){
   var nama = $('.nama').val();
   var akun = $('.akun').val();
-
+  var id = $('.id_akun').val();
   $.ajax({
     url : '{{ url('master/master_transaksi/save') }}',
-    data:{nama,akun},
+    data:{id,nama,akun},
     type:'get',
     dataType:'json',
     success:function(){
@@ -216,6 +217,7 @@ function ubah(id) {
       dataType:'json',
       success:function(data){
         $('.nama').val(data.data.mt_nama);
+        $('.nama').attr('readonly',true);
         $('.akun').val(data.data.mt_id_akun).trigger('chosen:updated');
         $('.id_akun').val(data.data.mt_id);
         $('.modal_pajak').modal('show');
@@ -225,25 +227,5 @@ function ubah(id) {
     })
 }
 
-function update(a) {
-  $('.save').click(function(){
-    var akun = $('.akun').val();
-    var id = $('.id_akun').val();
-
-    $.ajax({
-      url : '{{ url('master/master_transaksi/save') }}',
-      data:{id,akun},
-      type:'get',
-      dataType:'json',
-      success:function(){
-        toastr.success('Data Berhasil Diupdate');
-        var table = $('.table_pajak').DataTable();
-        table.ajax.reload();
-      },error:function(){
-        toastr.warning('Data Gagal Diupdate');
-      }
-    })
-  })
-}
 </script>
 @endsection
