@@ -261,11 +261,19 @@ class BiayaPenerusController extends Controller
 					 					 ->where('kode',$request->nama_kontak2)
 					 					 ->first();
 					$komisi = $cari_persen->komisi_agen;
+					$master_transaksi = DB::table('master_transaksi')
+										  ->where('mt_id',4)
+										  ->first();
+					$biaya_akun = $master_transaksi->mt_id_akun;
 				}else{
 				 	$cari_persen = DB::table('vendor')
 				 					 ->where('kode',$request->nama_kontak2)
 				 					 ->first();
 					$komisi = $cari_persen->komisi_vendor;
+				 	$master_transaksi = DB::table('master_transaksi')
+										  ->where('mt_id',5)
+										  ->first();
+					$biaya_akun = $master_transaksi->mt_id_akun;
 				}
 
 				$status=[];
@@ -301,7 +309,7 @@ class BiayaPenerusController extends Controller
 
 
 					$akun_hutang = DB::table('d_akun')
-										  ->where('id_akun','like','2102' . '%')
+										  ->where('id_akun','like',substr($cari_persen->acc_hutang, 0,4))
 										  ->where('kode_cabang',$request->cabang)
 										  ->first();
 
@@ -375,10 +383,12 @@ class BiayaPenerusController extends Controller
 									 ->first();
 
 						$akun_biaya = DB::table('d_akun')
-										  ->where('id_akun','like','5315' . '%')
+										  ->where('id_akun','like',$biaya_akun . '%')
 										  ->where('kode_cabang',$cari_do->kode_cabang)
 										  ->first();
-
+						if ($akun_biaya == null) {
+							return response()->json(['status'=>0,'pesan'=>'Cabang Tidak Memiliki '.$master_transaksi->mt_nama])
+						}
 						$save_dt = DB::table('biaya_penerus_dt')
 									->insert([
 										  'bpd_id'  		=> $id_bpd,
