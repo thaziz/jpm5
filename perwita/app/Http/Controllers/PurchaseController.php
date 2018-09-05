@@ -7370,7 +7370,7 @@ public function kekata($x) {
                         FROM d_akun a join d_jurnal_dt jd
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$jurnalRef')")); 
-		
+			//dd($data['bbkd']);
 			return view('purchase/pelunasanhutangbank/detail' , compact('data', 'jurnal_dt'));
 	}
 
@@ -7865,23 +7865,23 @@ public function kekata($x) {
 						}			
 						else {
 							$datajurnal[$i]['id_akun'] = $akunhutangdagang2;
-							$datajurnal[$i]['subtotal'] = '-' . $nominal;
-							$datajurnal[$i]['dk'] = 'D';
+							$datajurnal[$i]['subtotal'] = $nominal;
+							$datajurnal[$i]['dk'] = 'K';
 							$datajurnal[$i]['detail'] = $request->keterangan[$i];
 		
 						}
 				}
 				
 				else {
-				
+			
 				$akunhutangdagang2 = $request->hutangdagang[$i];
 				$datajurnal2 = DB::select("select * from d_akun where id_akun = '$akunhutangdagang2'");
 				$akundka = $datajurnal2[0]->akun_dka;
 
 					if($akundka == 'D'){
 						$datajurnal[$i]['id_akun'] = $akunhutangdagang2;
-						$datajurnal[$i]['subtotal'] =  $nominal;
-						$datajurnal[$i]['dk'] = 'D';
+						$datajurnal[$i]['subtotal'] =  '-' . $nominal;
+						$datajurnal[$i]['dk'] = 'K';
 						$datajurnal[$i]['detail'] = $request->keterangan[$i];
 					}			
 					else {
@@ -7924,8 +7924,8 @@ public function kekata($x) {
 
 				if($akundka2 == 'K'){
 					$datajurnal[$j]['id_akun'] = $request->akun[$j];
-					$datajurnal[$j]['subtotal'] = '-' . $jumlah;
-					$datajurnal[$j]['dk'] = 'D';
+					$datajurnal[$j]['subtotal'] = $jumlah;
+					$datajurnal[$j]['dk'] = 'K';
 					$datajurnal[$j]['detail'] = $request->keterangan[$j];
 
 				}
@@ -8026,8 +8026,8 @@ public function kekata($x) {
 
 				if($akundka2 == 'K'){
 					$datajurnal[$j]['id_akun'] = $request->accbiayaakun[$j];
-					$datajurnal[$j]['subtotal'] = '-' . $jumlah;
-					$datajurnal[$j]['dk'] = 'D';
+					$datajurnal[$j]['subtotal'] = $jumlah;
+					$datajurnal[$j]['dk'] = 'K';
 					$datajurnal[$j]['detail'] = $request->keteranganakunbg[$j];
 
 				}
@@ -8079,7 +8079,7 @@ public function kekata($x) {
 	        	        else {
 	        	        	$dataakun = array (
 	        				'id_akun' => $akunhutangdagang,
-	        				'subtotal' => $total,
+	        				'subtotal' => '-' . $total,
 	        				'dk' => 'K',
 	        				'detail' => $request->keteranganheader,
 	        				);	
@@ -8135,8 +8135,20 @@ public function kekata($x) {
     			$key++;
 			}
 
+
+			$cekjurnal = check_jurnal($request->nobbk);
+    		if($cekjurnal == 0){
+    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
+				DB::rollback();
+									        
+    		}
+    		elseif($cekjurnal == 1) {
+    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+					        
+    		}
+
 			//BONSEM BANK KELUAR
-			return json_encode($idbbk);
+			return json_encode($dataInfo);
 		});		
 	}
 
@@ -8366,11 +8378,26 @@ public function kekata($x) {
 					$bbkb->bbkb_keterangan = $request->keterangan[$i];
 					$bbkb->save();
 
-					$nominal2 = str_replace('.', '' , $nominal);
-					$substrnominal = substr($nominal2, 0,-2);	
-					$datajurnal[$i]['id_akun'] = $request->akun[$i];
-					$datajurnal[$i]['subtotal'] = '-' . $nominal;
-					$datajurnal[$i]['dk'] = 'D';
+					$nominal2 = str_replace(',', '' , $jumlah);
+
+					$akun = $request->akun[$i];
+					$dataakun = DB::select("select * from d_akun where id_akun = '$akun'");
+					//dd($dataakun);
+					$dk = $dataakun[0]->akun_dka;
+					//$substrnominal = substr($nominal2, 0,-2);	
+					if($dk == 'D'){
+						$datajurnal[$i]['id_akun'] = $request->akun[$i];
+						$datajurnal[$i]['subtotal'] = $nominal2;
+						$datajurnal[$i]['dk'] = 'D';
+						$datajurnal[$i]['detail'] = $request->keterangan[$i];
+					}
+					else {
+						$datajurnal[$i]['id_akun'] = $request->akun[$i];
+						$datajurnal[$i]['subtotal'] = $nominal2;
+						$datajurnal[$i]['dk'] = 'K';
+						$datajurnal[$i]['detail'] = $request->keterangan[$i];
+	
+					}
 			}
 
 	
@@ -8395,7 +8422,7 @@ public function kekata($x) {
 			$date = date('Y-m-d');
 			$jurnal = new d_jurnal();
 			$jurnal->jr_id = $idjurnal;
-	        $jurnal->jr_year = Carbon::parse($request->tgl)->format('m');
+	        $jurnal->jr_year = Carbon::parse($request->tglbbk)->format('m');
 	        $jurnal->jr_date = $request->tglbbk;
 	        $jurnal->jr_detail = 'BUKTI BANK KELUAR';
 	        $jurnal->jr_ref = $refjurnal;
@@ -8435,18 +8462,20 @@ public function kekata($x) {
     		}  
 
 
-    		/*$cekjurnal = check_jurnal($refjurnal);
+    		$cekjurnal = check_jurnal($refjurnal);
     		if($cekjurnal == 0){
     			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
 				DB::rollback();
 									        
     		}
-    		else {
+    		elseif($cekjurnal == 1) {
     			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
 					        
-    		}*/
+    		}
 
-    		return json_encode('sukses');
+
+    	//	$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+    		return json_encode($dataInfo);
 		});
 		
 	}

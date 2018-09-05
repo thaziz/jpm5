@@ -7,6 +7,10 @@
 		.s16{
 			font-size: 16px !important;
 		}
+		.s14 {
+			font-size: 14px !important;
+
+		}
 		.div-width{
 			margin: auto;
 			width: 95vw;
@@ -91,6 +95,10 @@
 			border: 1px solid black;
 			margin:-.5px;
 		}
+
+		td{
+			font-size : 14px;
+		}
 	</style>
 </head>
 <body>
@@ -109,14 +117,19 @@
 				<td class="s16 position-top" width="30%">
 					<table class="border-none float-right">
 						<tr>
-							<td class="s16">No. FPG</td>
-							<td class="s16">:</td>
-							<td class="s16"> {{$data['fpg'][0]->fpg_nofpg}}</td>
+							<td class="s14">No. FPG</td>
+							<td class="s14">:</td>
+							<td class="s14"> {{$data['fpg'][0]->fpg_nofpg}}</td>
 						</tr>
 						<tr>
-							<td class="s16">Tanggal</td>
-							<td class="s16">:</td>
-							<td class="s16">{{$data['fpg'][0]->fpg_tgl}}</td>
+							<td class="s14">Tanggal</td>
+							<td class="s14">:</td>
+							<td class="s14">{{$data['fpg'][0]->fpg_tgl}}</td>
+						</tr>
+						<tr>
+							<td class="s14"> Cabang </td>
+							<td class="s14"> : </td>
+							<td class="s14">{{$data['fpg'][0]->fpg_cabang}} - {{$data['fpg'][0]->nama}} </td>
 						</tr>
 					</table>
 				</td>
@@ -133,9 +146,9 @@
 		
 		<fieldset style="margin-bottom: 5px;text-align: center;">
 			@if($data['fpg'][0]->fpg_jenisbayar == '5')
-				<h1>Transfer Kas/Bank</h1>
+				<h2>Transfer Kas/Bank</h2>
 			@else
-				<h1> Pindah Buku </h1>
+				<h2> Pindah Buku </h2>
 			@endif
 		</fieldset>
 		@if($data['fpg'][0]->fpg_jenisbayar == '12')
@@ -154,7 +167,7 @@
 				<td>No</td>
 				<td>Keterangan</td>
 				<td>No Cek/BG</td>
-				<td>Jth. Tempo</td>
+			
 				<td>Bank</td>
 				<td>Jumlah</td>
 			</tr>
@@ -168,7 +181,7 @@
 						{{$fpgbank->fpgb_nocheckbg}}
 					@endif
 				</td>
-				<td> - </td>
+				
 				<td> {{$fpgbank->mb_nama}}</td>
 				<td class="text-right"> {{number_format($fpgbank->fpg_totalbayar , 2)}}</td>
 			</tr>
@@ -177,6 +190,30 @@
 				<td class="text-center empty"></td>
 				<td></td>
 				<td></td>
+			
+				<td></td>
+				<td class="text-right"></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+			
+				<td></td>
+				<td class="text-right"></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				<td></td>
+				
+				<td></td>
+				<td class="text-right"></td>
+			</tr>
+			<tr class="border-none-bottom">
+				<td class="text-center empty"></td>
+				<td></td>
+				
 				<td></td>
 				<td></td>
 				<td class="text-right"></td>
@@ -185,15 +222,7 @@
 				<td class="text-center empty"></td>
 				<td></td>
 				<td></td>
-				<td></td>
-				<td></td>
-				<td class="text-right"></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
-				<td></td>
+				
 				<td></td>
 				<td class="text-right"></td>
 			</tr>
@@ -201,15 +230,7 @@
 				<td class="text-center empty"></td>
 				<td></td>
 				<td></td>
-				<td></td>
-				<td></td>
-				<td class="text-right"></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
-				<td></td>
+				
 				<td></td>
 				<td class="text-right"></td>
 			</tr>
@@ -217,15 +238,7 @@
 				<td class="text-center empty"></td>
 				<td></td>
 				<td></td>
-				<td></td>
-				<td></td>
-				<td class="text-right"></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
-				<td></td>
+			
 				<td></td>
 				<td class="text-right"></td>
 			</tr>
@@ -233,17 +246,17 @@
 				<td class="text-center empty"></td>
 				<td></td>
 				<td></td>
-				<td></td>
+				
 				<td></td>
 				<td class="text-right"></td>
 			</tr>
 			<tr>
-				<td colspan="4" class="border-none-right"></td>
+				<td colspan="3" class="border-none-right"></td>
 				<td class="text-center">Total Cek/BG</td>
 				<td class="text-right"> {{number_format($fpgbank->fpg_cekbg , 2)}}</td>
 			</tr>
 			<tr>
-				<td colspan="6">Terbilang : {{$data['katauang']}}</td>
+				<td colspan="5">Terbilang : {{$data['katauang']}}</td>
 			</tr>
 			
 		</table>
