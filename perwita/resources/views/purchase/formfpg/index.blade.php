@@ -48,10 +48,9 @@
               
               <div class="box" id="seragam_box">
                
-                  <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
+              <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                     
                 <div class="box-body">
-             
                   <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
                     <thead>
                      <tr>

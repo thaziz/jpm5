@@ -813,7 +813,7 @@
 
 
                     if($temp0 != 0){
-                      urutcek = pad(urutcek,$lengthval);
+                      urutcek = pad(urutcek,lengthval);
                     }
                     else{
                       urutcek = urutcek;

@@ -533,7 +533,7 @@ class MasterPurchaseController extends Controller
 			}
 		$data['jenisbank'] = DB::select("select * from jenisbank");
 		$data['cabang'] = DB::select("select * from cabang");
-		$data['bank'] = DB::select("select * from d_akun where  (id_akun BETWEEN '1101' and '1199') and id_akun NOT IN (select mb_kode from masterbank where mb_kode is NOT NULL) ") ;
+		$data['bank'] = DB::select("select * from d_akun where (id_akun BETWEEN '1101' and '1199') and id_akun NOT IN (select mb_kode from masterbank where mb_kode is NOT NULL) ") ;
 	//	dd($data);
 		return view('purchase/master/masterbank/create' , compact('data'));
 	}
