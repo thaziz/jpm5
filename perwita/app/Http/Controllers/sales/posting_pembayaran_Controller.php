@@ -965,9 +965,16 @@ class posting_pembayaran_Controller extends Controller
                             'k_tgl_posting'   => null,
                         ]); 
         }
+
+        $hapus = DB::table('d_jurnal')
+                   ->where('jr_ref',$request->id)
+                   ->delete();
+                   
         $hapus = DB::table('posting_pembayaran')
                    ->where('nomor',$request->id)
                    ->delete();
+
+
 
         return response()->json(['pesan'=>'Data Berhasil Dihapus']);
     }
