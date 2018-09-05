@@ -8834,7 +8834,7 @@ public function kekata($x) {
 			$data['katauang'] = $this->terbilang($data['fpg'][0]->fpg_totalbayar,$style=3);	
 		}
 		
-		dd($data);
+		//dd($data);
 		return view('purchase/formfpg/fpg', compact('data'));
 	}
 
