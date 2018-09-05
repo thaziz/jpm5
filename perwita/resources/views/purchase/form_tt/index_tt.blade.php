@@ -168,6 +168,7 @@ function hapus(id){
           data:{id},
           type:'get',
           success:function(data){
+            if (data.status == 1) {
               swal({
               title: "Berhasil!",
                       type: 'success',
@@ -178,6 +179,16 @@ function hapus(id){
                          var table = $('.table_tt').DataTable();
                          table.ajax.reload();
               });
+            }else{
+              swal({
+                title: "Terjadi Kesalahan",
+                        type: 'error',
+                        timer: 2000,
+                        text: 'DATA SUDAH TERPAKAI',
+                        showConfirmButton: false
+              });
+            }
+              
           },
           error:function(data){
 
@@ -186,7 +197,7 @@ function hapus(id){
                     type: 'error',
                     timer: 2000,
                     showConfirmButton: false
-        });
+            });
        }
       });
     });

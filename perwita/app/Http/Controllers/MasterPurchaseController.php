@@ -1154,7 +1154,7 @@ class MasterPurchaseController extends Controller
 
 		
 		$j = 0;
-		for($i=0;$i<count($request->idbarang);$i++){
+		for($i=0;$i<count($request->brg);$i++){
 			$iditemsupplier=itemsupplier::max('is_id');
 
 
@@ -1171,8 +1171,11 @@ class MasterPurchaseController extends Controller
 			$stringharga = $request->harga[$i];
 			$replacehrg = str_replace(',', '', $stringharga);
 
+			$explodeitem = explode($request->brg[$i], "+");
+			$kodeitem = $explodeitem[0];
+
 			$itemsupplier->is_id = $iditem;
-			$itemsupplier->is_kodeitem = $request->idbarang[$i];
+			$itemsupplier->is_kodeitem = $kodeitem;
 			$itemsupplier->is_supplier = $no_supplier;
 			$itemsupplier->is_harga = $replacehrg;
 			$itemsupplier->is_idsup = $mastersupplier->idsup;

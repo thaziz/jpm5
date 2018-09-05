@@ -256,7 +256,7 @@
                                                         <tr class="transaksi data-{{$i}}" id="hslbank" class="transaksi" data-transaksi="{{$data['bbkd'][$i]->bbkd_nocheck}}">
                                                          <td> {{$i + 1}} </td>
                                                          <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbk_nota}}" name="nofpg[]" readonly=""> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_idfpg}}" name="idfpg[]" readonly="">
-                                                           <input type="hidden" class="nobm" value="{{$bbkd->bbkd_notabm}}">  </td>
+                                                           <input type="hidden" class="nobm" value="{{$data['bbkd'][$i]->bbkd_notabm}}">  </td>
                                                          <td> <input type="text" class="form-control input-sm" value="{{ Carbon\Carbon::parse($data['bbkd'][$i]->bbkd_tglfpg)->format('d-M-Y ') }}" name="tgl[]" readonly="">  </td>
                                                          <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_nocheck}}" name="notransaksi[]" readonly="">  </td>
                                                          <td> <input type="text" class="form-control" name="jatuhtempo[]" readonly="" value="{{ Carbon\Carbon::parse($data['bbkd'][$i]->bbkd_jatuhtempo)->format('d-M-Y ') }}"> </td>
@@ -268,7 +268,7 @@
                                                            <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->nama}}"  readonly=""> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->kode}}" name="supplier[]" readonly="">  </td>
                                                          @endif
                                                         
-                                                         <td> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_jenissup}}" name="jenissup[]" readonly="">  <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_keterangan}}" name="keterangan[]" readonly="">  <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_akunhutang}}" name="akunhutangdagang[]" readonly=""> </td>
+                                                         <td> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_jenissup}}" name="jenissup[]" readonly="">  <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_keterangan}}" name="keterangan[]" readonly="">  <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_akunhutang}}" name="akunhutangdagang[]" readonly=""> </td>
                                                          <td> <button class="btn btn-danger btn-sm removes-btn" type="button" data-id={{$i}} data-cek="{{$data['bbkd'][$i]->bbkd_nocheck}}" data-nominal="{{ number_format($data['bbkd'][$i]->bbkd_nominal, 2) }}"><i class="fa fa-trash"></i></button>  </td>
                                                         </tr>                                                        
                                                         @endfor
@@ -527,7 +527,7 @@
 
                                                         <tr>
                                                           <th> Tanggal FPG </th>
-                                                          <td> <input type='text' class='input-sm form-control tgl bg' name="tglfpg" readonly=""> <input type="hidden" class="akunhutang">  </td>
+                                                          <td> <input type='text' class='input-sm form-control tgl bg' name="tglfpg" readonly=""> <input type="hidden" class="hutangdagang"> <input type="hidden" class="jenisbayarfpg"> </td>
                                                         </tr>
 
 
@@ -1045,8 +1045,11 @@
           url : post_url2,
           dataType : 'json',
           success : function (response){
-          
-                swal({
+            data = response.dataInfo;
+            console.log(response);
+          //  die();
+            if(response.status == 'sukses'){
+              swal({
                   title: "Berhasil!",
                           type: 'success',
                           text: "Data berhasil disimpan",
@@ -1054,6 +1057,18 @@
                          showConfirmButton: false
                        
                   });
+            }
+            else if (response.status == 'gagal'){
+                swal({
+                  title: "error!",
+                          type: 'error',
+                          text: response.info,
+                          timer: 900,
+                         showConfirmButton: false
+                       
+                  });
+            }
+                
              
           },
           error : function(){
@@ -1128,7 +1143,7 @@
                       }
 
 
-                      row += "</td> <td>"+databank[i].fpg_nofpg+"</td> <td>"+databank[i].fpgb_jenisbayarbank+"</td> <td style='text-align:right'>"+addCommas(databank[i].fpgb_nominal)+"</td> <td>  <input type='checkbox' id="+databank[i].fpgb_id+","+databank[i].fpgb_idfpg+" class='checkcek' value='option1' aria-label='Single checkbox One'> <label></label>  </td> </tr> ";
+                      row += "</td> <td>"+databank[i].fpg_nofpg+"</td> <td>"+databank[i].fpgb_jenisbayarbank+"</td> <td style='text-align:right'>"+addCommas(databank[i].fpgb_nominal)+"</td> <td>  <input type='checkbox' id="+databank[i].fpgb_id+","+databank[i].fpgb_idfpg+","+databank[i].fpg_jenisbayar+" class='checkcek' value='option1' aria-label='Single checkbox One'> <label></label>  </td> </tr> ";
                      $no++;
                      tablecek.rows.add($(row)).draw(); 
                 
@@ -1219,8 +1234,8 @@
       jatuhtempo = $('.jatuhtempo').val();
       idbank = $('.idbank').val();
       jenissup = $('.jenissup').val();
-      akunhutang = $('.akunhutang').val();
-
+      akunhutang = $('.hutangdagang').val();
+      alert(akunhutang);
       row = "<tr class='transaksi data-"+$nomr+" bayar"+$nomr+"' id='hslbank datacek"+notransaksi+" data-transaksi='"+notransaksi+"''>" +
           "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+tgl+"' name='tgl[]' readonly></td>" +
@@ -1310,21 +1325,23 @@
           return this.id;
         }).toArray();
 
-
-
-
         $('.loadingcek').css('display' , 'block');
          data = checked;
          idfpgb = [];
          idfpg = [];
-
+         jenisbayar = [];
         for(z=0;z<data.length;z++){
           string = data[z].split(",");
           idfpgb.push(string[0]);    
           idfpg.push(string[1]);
+          jenisbayar.push(string[2]);
         }
 
-       
+
+        if(jenisbayar[0] == '5'){
+          toastr.info("Mohon Maaf Transaksi TRANSFER KAS hanya bisa dilakukan di CEK / BG & Akun :)");
+          return false;
+        }
 
         $.ajax({
             url : baseUrl + '/pelunasanhutangbank/getcek',
@@ -1347,7 +1364,7 @@
                   //  alert(response.fpg[0].fpgb_nocheckbg);
                 }
                 else {
-               
+                  alert(response.fpg[0].fpg_acchutang);
                   $('.idfpg').val(response.fpg[0].idfpg);
                   $('.nofpg').val(response.fpg[0].fpg_nofpg);
                   $('.nocheck').val(response.fpg[0].fpgb_nocheckbg);
@@ -1363,6 +1380,7 @@
                     $('.akunuangmuka').val(response.fpg[0].fpg_accum);
                     $('.jenisbayarfpg').val(response.fpg[0].fpg_jenisbayar);
                     $('.idfpgb').val(response.fpg[0].fpgb_id);
+
 
                 if(response.fpg[0].fpg_jenisbayar == '2' || response.fpg[0].fpg_jenisbayar == '3' ) {                  
                     $('.kodesup').val(response.fpg[0].no_supplier);
@@ -1403,6 +1421,7 @@
 
     })
     
+    nilaitotal = 0;
     $('.nominalbiaya').change(function(){
       /*alert('jaja');*/
         val = $(this).val();

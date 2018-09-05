@@ -24,6 +24,7 @@
 
               <div class="box" id="seragam_box">
                 <div class="box-header">
+                     <a href={{ url('master_sales/rute') }} class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
                 </div><!-- /.box-header -->
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
@@ -87,7 +88,7 @@
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 @if(Auth::user()->punyaAkses('Rute','cabang'))
                                 <td>
-                                    <select class="form-control" name="cb_cabang">
+                                    <select class="form-control chosen-select-width" name="cb_cabang">
                                         @foreach ($cabang as $row)
                                         <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                         @endforeach
@@ -114,7 +115,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btnadd" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Tambah</button>
-                            <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            {{-- <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button> --}}
                         </div>
 
 

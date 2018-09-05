@@ -186,7 +186,7 @@
 
                             <tr>
                               <th> Keterangan </th>
-                              <td> <input type='text' class='form-control keterangan' name="keterangan"></td>
+                              <td> <input type='text' class='form-control keterangan' name="keterangan" required=""></td>
                             </tr>
                           </table>
 
@@ -551,12 +551,12 @@
                                             </label>
                                         </div>
 
-                                         <div class="checkbox checkbox-info checkbox-circle">
+                                        {{--  <div class="checkbox checkbox-info checkbox-circle">
                                             <input id="jenisbayarbanktf" type="checkbox" name="jenisbayarbank" value="TRANSFER PRIBADI" class="metodebayar jenisbayarbanktf" checked="">
                                             <label for="jenisbayarbanktf">
                                                 Transfer Pribadi
                                             </label>
-                                        </div>
+                                        </div> --}}
                                      
                                     </fieldset>
                                       <br>

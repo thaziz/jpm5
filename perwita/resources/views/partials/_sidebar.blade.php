@@ -286,7 +286,10 @@
                     Request::is('master-transaksi/index/*') ? 'active' : '' ||
                     /* akun */
                     Request::is('master_keuangan/akun') ? 'active' : '' || 
-                    Request::is('master_keuangan/akun/*') ? 'active' : ''
+                    Request::is('master_keuangan/akun/*') ? 'active' : '' ||
+                    /* Master Transaksi */
+                    Request::is('master/master_transaksi') ? 'active' : '' ||
+                    Request::is('master/master_transaksi/*') ? 'active' : ''
             /*================= END OF MASTER KEUANGAN ===========*/
                 }}
 
@@ -294,7 +297,6 @@
             <a href="#" class="" ><i class="fa fa-suitcase" aria-hidden="true"></i><span class="nav-label" style="font-size:100%">Master</span><span class="fa arrow"></span></a>
             <ul class="nav nav-second-level collapse">
                 <li class="sidebar
-
                 {{ 
 
                     /*================== MASTER BERSAMA ==================*/
@@ -321,7 +323,10 @@
                     Request::is('master_sales/tipe_angkutan/*') ? 'active' : '' ||
                     /* Kendaraan */
                     Request::is('master_sales/kendaraan') ? 'active' : '' || 
-                    Request::is('master_sales/kendaraan/*') ? 'active' : '' 
+                    Request::is('master_sales/kendaraan/*') ? 'active' : '' ||
+                    /* Master Transaksi */
+                    Request::is('master/master_transaksi') ? 'active' : '' ||
+                    Request::is('master/master_transaksi/*') ? 'active' : ''
                     /*================= END OF MASTER BERSAMA ==============*/
 
                 }}
@@ -406,6 +411,18 @@
 
                 " href="{{ url('master_sales/master_akun')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Master Akun Fitur</a>
                 </li>
+
+                @endif
+
+                @if(Auth::user()->PunyaAkses('Master Transaksi Akun','aktif'))
+                <li >
+                    <a class="sidebar master-perusahaan 
+                    {{Request::is('master/master_transaksi') ? 'active' : '' ||
+                     Request::is('master/master_transaksi/*') ? 'active' : ''}} 
+
+                    " href="{{ url('master/master_transaksi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Master Transaksi Akun</a>
+                </li>
+                
                 @endif
             </ul>
         </li>

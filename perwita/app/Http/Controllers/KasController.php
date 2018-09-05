@@ -873,7 +873,7 @@ class KasController extends Controller
 							 ->first();
 			$bank = 'KK'.$request->akun_bank;
 
-            $km =  get_id_jurnal($bank, $request->cb_cabang);
+            $km =  get_id_jurnal($bank, $request->cabang);
 
 			$jurnal_save = d_jurnal::create(['jr_id'		=> $id_jurnal,
 										'jr_year'   => carbon::parse(str_replace('/', '-', $request->tN))->format('Y'),
@@ -1361,7 +1361,7 @@ class KasController extends Controller
 
 
 			$bank = 'KK'.$request->akun_bank;
-            $km =  get_id_jurnal($bank, $request->cb_cabang);
+            $km =  get_id_jurnal($bank, $request->cabang);
 			$jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 										'jr_year'   => carbon::parse(str_replace('/', '-', $request->tN))->format('Y'),
 										'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),

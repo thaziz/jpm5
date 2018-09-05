@@ -86,7 +86,7 @@
                               <select class="form-control cabang chosen-select-width" onchange="filtering()" name="cabang">
                                 <option value="0">Pilih - Cabang </option>
                                 @foreach ($cabang as $a)
-                                  <option value="{{$a->kode}}">{{$a->nama}}</option>
+                                  <option value="{{$a->kode}}">{{$a->kode}} - {{$a->nama}}</option>
                                 @endforeach
                               </select>
                             </td>
