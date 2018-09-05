@@ -229,8 +229,12 @@
                 <tr>
                   <td width="40%" class="text-center">Pilih Cabang</td>
                   <td colspan="3">
-                    <select class="form-control buku_besar select_bukbes_validate" name="buku_besar_cabang" id="buku_besar_cabang" style="width: 80%;">
+                    <select class="form-control buku_besar select_bukbes_validate choosen_akun" name="buku_besar_cabang" id="buku_besar_cabang" style="width: 80%;">
                       <option value="---">-- Pilih Cabang</option>
+
+                       @if(Session::get('cabang') == '000')
+                          <option value="all">SEMUA CABANG</option>
+                        @endif
 
                       @foreach(cabang() as $cab)
                         @if($cab->kode == Session::get('cabang') || Session::get('cabang') == '000')
@@ -660,7 +664,7 @@
 
       akun = [];
 
-      $(".buku_besar.choosen_akun").chosen({ width: '80%' });
+      $(".buku_besar.choosen_akun").chosen({ width: '20em' });
 
       $('.buku_besar_tanggal.sampai').datepicker( {
           format: "yyyy-mm",
@@ -759,7 +763,7 @@
 
           $.each(akun, function(i, n){
             if(n.id_akun >= akun1.val())
-              html = html + '<option value="'+n.id_akun+'">'+n.id_akun+'</option>';
+              html = html + '<option value="'+n.id_akun+'">'+n.id_akun+' - '+n.nama_akun+'</option>';
             else
               html = html + '<option value="'+n.id_akun+'" style="background:#ff4444; color:white;" disabled>'+n.id_akun+' - '+n.nama_akun+'</option>';
           })

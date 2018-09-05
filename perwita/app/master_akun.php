@@ -15,6 +15,10 @@ class master_akun extends Model
 
       protected $fillable = ['id_akun','nama_akun', 'is_parrent', 'id_parrent', 'id_provinsi', 'id_kota', 'is_active', 'level', 'type_akun'];
 
+      public function jurnal_detail(){
+         return $this->hasMany('App\d_jurnal_dt', 'jrdt_acc', 'id_akun');
+      }
+
       public function mutasi_bank_debet(){
          return $this->hasMany('App\d_jurnal_dt', 'jrdt_acc', 'id_akun');
       }
