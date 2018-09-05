@@ -7766,7 +7766,7 @@ public function kekata($x) {
 								}
 
 
-								$jr_no = get_id_jurnal('BM' , $cabang);
+								$jr_no = get_id_jurnal('BM'  , $cabang, $request->tglbbk);
 
 								$ref = explode("-", $jr_no);
 
@@ -7781,8 +7781,8 @@ public function kekata($x) {
 								$kode = $ref[0] . $kodebankd;
 								$jr_ref = $kode . '-' . $ref[1];
 
-								$year = date('Y');	
-								$date = date('Y-m-d');
+
+								
 								$jurnal = new d_jurnal();
 								$jurnal->jr_id = $idjurnald;
 						        $jurnal->jr_year = Carbon::parse($request->tglbbk)->format('Y');
@@ -8279,12 +8279,22 @@ public function kekata($x) {
 										'fpg_posting' => 'DONE',
 									]);
 								}	
+					$akundagang = $request->akunhutangdagang[$i];
+					$dataakunhutang = DB::select("select * from d_akun where id_akun = '$akundagang'");
+					$dkahutang = $dataakunhutang[0]->akun_dka;
 
-					$nominal2 = str_replace('.', '' , $nominal);
-					$substrnominal = substr($nominal2, 0,-2);						
-					$datajurnal[$i]['id_akun'] = $request->akunhutangdagang[$i];
-					$datajurnal[$i]['subtotal'] = '-' . $nominal;
-					$datajurnal[$i]['dk'] = 'D';
+					if($dkahutang == 'D'){					
+						$datajurnal[$i]['id_akun'] = $request->akunhutangdagang[$i];
+						$datajurnal[$i]['subtotal'] = $nominal;
+						$datajurnal[$i]['dk'] = 'D';
+						$datajurnal[$i]['detail'] = $request->keterangan[$i];
+					}
+					else {
+						$datajurnal[$i]['id_akun'] = $request->akunhutangdagang[$i];
+						$datajurnal[$i]['subtotal'] = $nominal;
+						$datajurnal[$i]['dk'] = 'K';
+						$datajurnal[$i]['detail'] = $request->keterangan[$i];
+					}
 				}
 		} // END IF FLAG CEK BG
 		else if($request->flag == 'BGAKUN'){
@@ -8406,6 +8416,7 @@ public function kekata($x) {
 
 
 		//save jurnal
+
 			DB::delete("DELETE from  d_jurnal where jr_ref = '$refjurnal' and jr_detail = 'BUKTI BANK KELUAR'");
 				$jr_no = get_id_jurnal('BK' , $cabang, $request->tglbbk);
 
