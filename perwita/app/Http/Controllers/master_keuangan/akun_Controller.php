@@ -351,7 +351,10 @@ class akun_Controller extends Controller
     }
 
     public function get_akun($cabang){
-        $data = DB::table("d_akun")->where('kode_cabang', $cabang)->select("id_akun", "nama_akun")->orderBy("id_akun", "asc")->get();
+        if($cabang != 'all')
+            $data = DB::table("d_akun")->where('kode_cabang', $cabang)->select("id_akun", "nama_akun")->orderBy("id_akun", "asc")->get();
+        else
+            $data = DB::table("d_akun")->select("id_akun", "nama_akun")->orderBy("id_akun", "asc")->get();
 
         return json_encode($data);
     }
