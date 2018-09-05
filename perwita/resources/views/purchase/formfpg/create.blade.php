@@ -2106,7 +2106,7 @@
 
                 creditnota = $('.creditnota' + id).val();
                 debitnota = $('.debitnota' + id).val();
-                alert(creditnota)
+               // alert(creditnota)
                 if(creditnota == 'null'){
                   creditnota = '0.00';
                 }
