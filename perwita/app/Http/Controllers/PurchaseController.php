@@ -11034,7 +11034,7 @@ public function kekata($x) {
 			//	$idbank = $request->idbank;
 				$formfpg = new formfpg();
 
-				$explode = explode(",", $request->selectOutlet);
+				$explode = explode("+", $request->selectOutlet);
 				$idbank = $explode[0];
 				$kodebank = $explode[4];
 				//	dd($nosppid);
