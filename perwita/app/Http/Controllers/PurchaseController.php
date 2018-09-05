@@ -1679,7 +1679,7 @@ public function purchase_order() {
 		
 			//dd($request);
 		return DB::transaction(function() use ($request) {  
-					$current_time = Carbon::now()->toDateTimeString();
+			$current_time = Carbon::now()->toDateTimeString();
 			for($k = 0 ; $k < count($request->idcotbsetuju); $k++) {
 				$updateco = co_purchasetb::where('cotb_id', '=', $request->idcotbsetuju[$k]);
 				$updateco->update([
@@ -7781,8 +7781,6 @@ public function kekata($x) {
 								$kode = $ref[0] . $kodebankd;
 								$jr_ref = $kode . '-' . $ref[1];
 
-
-								
 								$jurnal = new d_jurnal();
 								$jurnal->jr_id = $idjurnald;
 						        $jurnal->jr_year = Carbon::parse($request->tglbbk)->format('Y');
@@ -7814,8 +7812,6 @@ public function kekata($x) {
 				    			$jurnaldt->save();
 				    			$key++;
 							}
-
-							
 						}
 
 					}
@@ -8285,16 +8281,17 @@ public function kekata($x) {
 
 					if($dkahutang == 'D'){					
 						$datajurnal[$i]['id_akun'] = $request->akunhutangdagang[$i];
-						$datajurnal[$i]['subtotal'] = $nominal;
-						$datajurnal[$i]['dk'] = 'D';
+						$datajurnal[$i]['subtotal'] = '-' .$nominal;
+						$datajurnal[$i]['dk'] = 'K';
 						$datajurnal[$i]['detail'] = $request->keterangan[$i];
 					}
 					else {
 						$datajurnal[$i]['id_akun'] = $request->akunhutangdagang[$i];
-						$datajurnal[$i]['subtotal'] = $nominal;
-						$datajurnal[$i]['dk'] = 'K';
+						$datajurnal[$i]['subtotal'] = '-' .$nominal;
+						$datajurnal[$i]['dk'] = 'D';
 						$datajurnal[$i]['detail'] = $request->keterangan[$i];
 					}
+
 				}
 		} // END IF FLAG CEK BG
 		else if($request->flag == 'BGAKUN'){
@@ -8446,6 +8443,7 @@ public function kekata($x) {
 				'id_akun' => $akunkodebank,
 				'subtotal' => '-' . $total,
 				'dk' => 'K',
+				'detail' => $request->keteranganheader,
 				);	
 	      
 
@@ -8462,12 +8460,14 @@ public function kekata($x) {
 					$idjurnaldt = 1;
 				}
 
+
     			$jurnaldt = new d_jurnal_dt();
     			$jurnaldt->jrdt_jurnal = $idjurnal;
     			$jurnaldt->jrdt_detailid = $key;
     			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
     			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
     			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
+    			$jurnaldt->jrdt_detail =  $datajurnal[$j]['detail'];
     			$jurnaldt->save();
     			$key++;
     		}  
@@ -8538,12 +8538,12 @@ public function kekata($x) {
 		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
 			$fpg = DB::select("select * from fpg");
 			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by idfpg desc");
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by fpg_tgl desc");
 		}
 		else {
 			$fpg = DB::select("select * from fpg where fpg_cabang = '$cabang'");
 			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' order by idfpg desc");
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' order by fpg_tgl desc");
 		}
 	
 

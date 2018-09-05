@@ -186,7 +186,7 @@
 
                             <tr>
                               <th> Keterangan </th>
-                              <td> <input type='text' class='form-control keterangan' name="keterangan"></td>
+                              <td> <input type='text' class='form-control keterangan' name="keterangan" required=""></td>
                             </tr>
                           </table>
 
