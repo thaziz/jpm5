@@ -1065,7 +1065,7 @@ class MasterPurchaseController extends Controller
 
 	public function savesupplier(Request $request) {
 		return DB::transaction(function() use ($request) { 
-			/*dd($request);*/
+		//	dd($request);
 		$mastersupplier = new masterSupplierPurchase();
 		$cabang = $request->cabang;
 	/*	dd($request);*/
@@ -1171,17 +1171,16 @@ class MasterPurchaseController extends Controller
 			$stringharga = $request->harga[$i];
 			$replacehrg = str_replace(',', '', $stringharga);
 
-			$explodeitem = explode($request->brg[$i], "+");
+			$explodeitem = explode("+", $request->brg[$i]);
 			$kodeitem = $explodeitem[0];
-
+		//	dd($kodeitem);
 			$itemsupplier->is_id = $iditem;
 			$itemsupplier->is_kodeitem = $kodeitem;
-			$itemsupplier->is_supplier = $no_supplier;
+			$itemsupplier->is_supplier = $$request->nosupplier;
 			$itemsupplier->is_harga = $replacehrg;
 			$itemsupplier->is_idsup = $mastersupplier->idsup;
 			$itemsupplier->is_updatestock = $request->updatestock[$i];
 			$itemsupplier->is_keteranganitem = $request->keteranganitem[$i];
-
 			$itemsupplier->save();
 		}
 			return redirect('mastersupplier/mastersupplier');

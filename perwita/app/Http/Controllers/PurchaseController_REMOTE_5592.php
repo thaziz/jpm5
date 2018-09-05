@@ -8958,9 +8958,9 @@ public function kekata($x) {
 					}
 				}
 				else if($idjenisbayar == '1'){ //GIRO KAS KECIL
-					$datas['fp']  = DB::select("select * from ikhtisar_kas, cabang where ik_comp = '$cabang' and ik_status = 'APPROVED'");
+					$datas['fp']  = DB::select("select * from ikhtisar_kas, cabang where ik_comp = '$cabang' and ik_status = 'APPROVED' and ik_pelunasan != 0.00 and ik_comp = kode");
 
-					$datas['fp1']  = DB::select("select * from ikhtisar_kas, cabang where ik_comp = '$cabang' and ik_status = 'APPROVED' and ik_pelunasan != 0.00");
+					$datas['fp1']  = DB::select("select * from ikhtisar_kas, cabang where ik_comp = '$cabang' and ik_status = 'APPROVED' and ik_pelunasan != 0.00 and ik_comp = kode");
 
 					if(count($request->arrnofaktur) != 0){
 						for($i = 0 ; $i < count($datas['fp']); $i++){
