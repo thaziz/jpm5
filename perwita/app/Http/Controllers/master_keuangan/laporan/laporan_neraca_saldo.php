@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\master_akun as akun;
 
 use DB;
 use Dompdf\Dompdf;
@@ -28,92 +29,62 @@ class laporan_neraca_saldo extends Controller
 
       	// return $bulan_forJurnal; 
 
-      	$data = DB::table('d_akun')
-      			->select('d_akun.*')
-      			->get();
-
-      	foreach($data as $key => $akun){
-      		$saldo_awal = DB::table('d_akun_saldo')
-      						->where('id_akun', $akun->id_akun)
-      						->where('bulan', $bulan)
-      						->where('tahun', $tahun)
-      						->select(DB::raw('coalesce(saldo_akun, 0) as saldo'))
-      						->first();
-
-      		$mutasi_bank_D = DB::table('d_jurnal_dt')
-      						->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-      						->where(DB::raw("date_part('month', jr_date)"), $bulan_forJurnal)
-      						->where(DB::raw("date_part('year', jr_date)"), $tahun)
-      						->where('jrdt_acc', $akun->id_akun)
-                                          ->where("d_jurnal_dt.jrdt_statusdk", 'D')
-      						->where(DB::raw('substring(jr_no,1,2)'), 'BM')
-      						->select(DB::raw('coalesce(sum(jrdt_value), 0) as total'))
-      						->first();
-
-                  $mutasi_bank_K = DB::table('d_jurnal_dt')
-                                          ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                                          ->where(DB::raw("date_part('month', jr_date)"), $bulan_forJurnal)
-                                          ->where(DB::raw("date_part('year', jr_date)"), $tahun)
-                                          ->where('jrdt_acc', $akun->id_akun)
-                                          ->where("d_jurnal_dt.jrdt_statusdk", 'K')
-                                          ->where(DB::raw('substring(jr_no,1,2)'), 'BK')
-                                          ->select(DB::raw('coalesce(sum(jrdt_value), 0) as total'))
-                                          ->first();
-
-      		$mutasi_kas_D = DB::table('d_jurnal_dt')
-      						->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-      						->where(DB::raw("date_part('month', jr_date)"), $bulan_forJurnal)
-      						->where(DB::raw("date_part('year', jr_date)"), $tahun)
-      						->where('jrdt_acc', $akun->id_akun)
-      						->where(DB::raw('substring(jr_no,1,1)'), 'K')
-                                          ->where("d_jurnal_dt.jrdt_statusdk", 'D')
-      						->select(DB::raw('coalesce(sum(jrdt_value), 0) as total'))
-      						->first();
-
-                  $mutasi_kas_K = DB::table('d_jurnal_dt')
-                                          ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                                          ->where(DB::raw("date_part('month', jr_date)"), $bulan_forJurnal)
-                                          ->where(DB::raw("date_part('year', jr_date)"), $tahun)
-                                          ->where('jrdt_acc', $akun->id_akun)
-                                          ->where(DB::raw('substring(jr_no,1,1)'), 'K')
-                                          ->where("d_jurnal_dt.jrdt_statusdk", 'K')
-                                          ->select(DB::raw('coalesce(sum(jrdt_value), 0) as total'))
-                                          ->first();
-
-      		$mutasi_memorial_D = DB::table('d_jurnal_dt')
-      						->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-      						->where(DB::raw("date_part('month', jr_date)"), $bulan_forJurnal)
-      						->where(DB::raw("date_part('year', jr_date)"), $tahun)
-      						->where('jrdt_acc', $akun->id_akun)
-      						->where(DB::raw('substring(jr_no,1,1)'), 'M')
-                                          ->where("d_jurnal_dt.jrdt_statusdk", 'D')
-      						->select(DB::raw('coalesce(sum(jrdt_value), 0) as total'))
-      						->first();
-
-                  $mutasi_memorial_K = DB::table('d_jurnal_dt')
-                                          ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                                          ->where(DB::raw("date_part('month', jr_date)"), $bulan_forJurnal)
-                                          ->where(DB::raw("date_part('year', jr_date)"), $tahun)
-                                          ->where('jrdt_acc', $akun->id_akun)
-                                          ->where(DB::raw('substring(jr_no,1,1)'), 'M')
-                                          ->where("d_jurnal_dt.jrdt_statusdk", 'K')
-                                          ->select(DB::raw('coalesce(sum(jrdt_value), 0) as total'))
-                                          ->first();
-
-      		// return json_encode($mutasi_bank);
-
-      		$data_detail[$akun->id_akun] = [
-      			'saldo_akun'		=> ($saldo_awal) ? $saldo_awal->saldo : 0,
-      			'mutasi_bank_D'		=> ($mutasi_bank_D) ? $mutasi_bank_D->total : 0,
-                        'mutasi_bank_K'         => ($mutasi_bank_K) ? $mutasi_bank_K->total : 0,
-      			'mutasi_kas_D'		=> ($mutasi_kas_D) ? $mutasi_kas_D->total : 0,
-                        'mutasi_kas_K'          => ($mutasi_kas_K) ? $mutasi_kas_K->total : 0,
-      			'mutasi_memorial_D'     => ($mutasi_memorial_D) ? $mutasi_memorial_D->total : 0,
-                        'mutasi_memorial_K'     => ($mutasi_memorial_K) ? $mutasi_memorial_K->total : 0,
-      		];
-
-      		// return $akun->id_akun;
-      	}
+      	$data = akun::select('id_akun', 'nama_akun')->orderBy('id_akun', 'asc')->with([
+                  'mutasi_bank_debet' => function($query) use ($bulan_forJurnal, $tahun){
+                        $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                              ->where(DB::raw("date_part('month', jr_date)"), $bulan_forJurnal)
+                              ->where(DB::raw("date_part('year', jr_date)"), $tahun)
+                              ->where("jrdt_statusdk", 'D')
+                              ->where(DB::raw('substring(jr_no,1,1)'), 'B')
+                              ->groupBy('jrdt_acc')
+                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
+                  },
+                  'mutasi_bank_kredit' => function($query) use ($bulan_forJurnal, $tahun){
+                        $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                              ->where(DB::raw("date_part('month', jr_date)"), $bulan_forJurnal)
+                              ->where(DB::raw("date_part('year', jr_date)"), $tahun)
+                              ->where("jrdt_statusdk", 'K')
+                              ->where(DB::raw('substring(jr_no,1,1)'), 'B')
+                              ->groupBy('jrdt_acc')
+                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
+                  },
+                  'mutasi_kas_debet' => function($query) use ($bulan_forJurnal, $tahun){
+                        $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                              ->where(DB::raw("date_part('month', jr_date)"), $bulan_forJurnal)
+                              ->where(DB::raw("date_part('year', jr_date)"), $tahun)
+                              ->where("jrdt_statusdk", 'D')
+                              ->where(DB::raw('substring(jr_no,1,1)'), 'K')
+                              ->groupBy('jrdt_acc')
+                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
+                  },
+                  'mutasi_kas_kredit' => function($query) use ($bulan_forJurnal, $tahun){
+                        $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                              ->where(DB::raw("date_part('month', jr_date)"), $bulan_forJurnal)
+                              ->where(DB::raw("date_part('year', jr_date)"), $tahun)
+                              ->where("jrdt_statusdk", 'K')
+                              ->where(DB::raw('substring(jr_no,1,1)'), 'K')
+                              ->groupBy('jrdt_acc')
+                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
+                  },
+                  'mutasi_memorial_debet' => function($query) use ($bulan_forJurnal, $tahun){
+                        $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                              ->where(DB::raw("date_part('month', jr_date)"), $bulan_forJurnal)
+                              ->where(DB::raw("date_part('year', jr_date)"), $tahun)
+                              ->where("jrdt_statusdk", 'D')
+                              ->where(DB::raw('substring(jr_no,1,1)'), 'M')
+                              ->groupBy('jrdt_acc')
+                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
+                  },
+                  'mutasi_memorial_kredit' => function($query) use ($bulan_forJurnal, $tahun){
+                        $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                              ->where(DB::raw("date_part('month', jr_date)"), $bulan_forJurnal)
+                              ->where(DB::raw("date_part('year', jr_date)"), $tahun)
+                              ->where("jrdt_statusdk", 'K')
+                              ->where(DB::raw('substring(jr_no,1,1)'), 'M')
+                              ->groupBy('jrdt_acc')
+                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
+                  }
+            ])->get();
 
       }else if($request->jenis == 'Tahun'){
 
@@ -124,90 +95,12 @@ class laporan_neraca_saldo extends Controller
             $data = DB::table('d_akun')
                         ->select('d_akun.*')
                         ->get();
-
-            foreach($data as $key => $akun){
-                  $saldo_awal = DB::table('d_akun_saldo')
-                                          ->where('id_akun', $akun->id_akun)
-                                          ->where('tahun', $tahun)
-                                          ->select(DB::raw('coalesce(saldo_akun, 0) as saldo'))
-                                          ->first();
-
-                  $mutasi_bank_D = DB::table('d_jurnal_dt')
-                                          ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                                          ->where(DB::raw("date_part('year', jr_date)"), $tahun)
-                                          ->where('jrdt_acc', $akun->id_akun)
-                                          ->where("d_jurnal_dt.jrdt_statusdk", 'D')
-                                          ->where(DB::raw('substring(jr_no,1,2)'), 'BM')
-                                          ->select(DB::raw('coalesce(sum(jrdt_value), 0) as total'))
-                                          ->first();
-
-                  $mutasi_bank_K = DB::table('d_jurnal_dt')
-                                          ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                                          ->where(DB::raw("date_part('year', jr_date)"), $tahun)
-                                          ->where('jrdt_acc', $akun->id_akun)
-                                          ->where("d_jurnal_dt.jrdt_statusdk", 'K')
-                                          ->where(DB::raw('substring(jr_no,1,2)'), 'BK')
-                                          ->select(DB::raw('coalesce(sum(jrdt_value), 0) as total'))
-                                          ->first();
-
-                  $mutasi_kas_D = DB::table('d_jurnal_dt')
-                                          ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                                          ->where(DB::raw("date_part('year', jr_date)"), $tahun)
-                                          ->where('jrdt_acc', $akun->id_akun)
-                                          ->where(DB::raw('substring(jr_no,1,1)'), 'K')
-                                          ->where("d_jurnal_dt.jrdt_statusdk", 'D')
-                                          ->select(DB::raw('coalesce(sum(jrdt_value), 0) as total'))
-                                          ->first();
-
-                  $mutasi_kas_K = DB::table('d_jurnal_dt')
-                                          ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                                          ->where(DB::raw("date_part('year', jr_date)"), $tahun)
-                                          ->where('jrdt_acc', $akun->id_akun)
-                                          ->where(DB::raw('substring(jr_no,1,1)'), 'K')
-                                          ->where("d_jurnal_dt.jrdt_statusdk", 'K')
-                                          ->select(DB::raw('coalesce(sum(jrdt_value), 0) as total'))
-                                          ->first();
-
-                  $mutasi_memorial_D = DB::table('d_jurnal_dt')
-                                          ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                                          ->where(DB::raw("date_part('year', jr_date)"), $tahun)
-                                          ->where('jrdt_acc', $akun->id_akun)
-                                          ->where(DB::raw('substring(jr_no,1,1)'), 'M')
-                                          ->where("d_jurnal_dt.jrdt_statusdk", 'D')
-                                          ->select(DB::raw('coalesce(sum(jrdt_value), 0) as total'))
-                                          ->first();
-
-                  $mutasi_memorial_K = DB::table('d_jurnal_dt')
-                                          ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                                          ->where(DB::raw("date_part('year', jr_date)"), $tahun)
-                                          ->where('jrdt_acc', $akun->id_akun)
-                                          ->where(DB::raw('substring(jr_no,1,1)'), 'M')
-                                          ->where("d_jurnal_dt.jrdt_statusdk", 'K')
-                                          ->select(DB::raw('coalesce(sum(jrdt_value), 0) as total'))
-                                          ->first();
-
-                  // return json_encode($mutasi_bank);
-
-                  $data_detail[$akun->id_akun] = [
-                        'saldo_akun'            => ($saldo_awal) ? $saldo_awal->saldo : 0,
-                        'mutasi_bank_D'         => ($mutasi_bank_D) ? $mutasi_bank_D->total : 0,
-                        'mutasi_bank_K'         => ($mutasi_bank_K) ? $mutasi_bank_K->total : 0,
-                        'mutasi_kas_D'          => ($mutasi_kas_D) ? $mutasi_kas_D->total : 0,
-                        'mutasi_kas_K'          => ($mutasi_kas_K) ? $mutasi_kas_K->total : 0,
-                        'mutasi_memorial_D'     => ($mutasi_memorial_D) ? $mutasi_memorial_D->total : 0,
-                        'mutasi_memorial_K'     => ($mutasi_memorial_K) ? $mutasi_memorial_K->total : 0,
-                  ];
-
-                  // return $akun->id_akun;
-            }
-
       }
 
-      // return $data_detail;
+      // return json_encode($data);
 
       return view("laporan_neraca_saldo.pdf")
               ->withRequest($request->all())
-              ->withData_detail($data_detail)
               ->withData($data);
     }
 }

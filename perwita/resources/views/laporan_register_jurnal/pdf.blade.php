@@ -181,14 +181,14 @@
 				<?php $sum_debet = $sum_kredit = 0; ?>
 				@foreach($data as $data_jr)
 					<?php $tot_debet = $tot_kredit = 0; ?>
-					@foreach($detail[$data_jr->jr_id] as $data_detail)
+					@foreach($data_jr->detail as $data_detail)
 						<tr>
 							<td style="padding-left: 3px;">{{ date('d-m-Y', strtotime($data_jr->jr_date)) }}</td>
 							<td style="padding-left: 3px;">{{ $data_jr->jr_ref }}</td>
 							<td style="padding-left: 3px;">{{ $data_detail->jrdt_acc }}</td>
 
 							@if($request->nama_perkiraan)
-								<td style="padding-left: 3px;">{{ $data_detail->nama_akun }}</td>
+								<td style="padding-left: 3px;">{{ $data_detail->akun->nama_akun }}</td>
 							@endif
 
 							<td style="padding-left: 3px;">{{ $data_jr->jr_note }}</td>
