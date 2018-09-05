@@ -186,7 +186,7 @@
 
                             <tr>
                               <th> Keterangan </th>
-                              <td> <input type='text' class='form-control keterangan' name="keterangan" required=""></td>
+                              <td> <input type='text' class='form-control keterangan' name="keterangan"></td>
                             </tr>
                           </table>
 
@@ -1333,9 +1333,7 @@
         totbar = $('.totbayar').val();
         cekbg = $('.ChequeBg').val();
 
-        console.log(totbar);
-        console.log(cekbg);
-
+       
         if(totbar != cekbg) {
           toastr.info('Mohon Maaf nominal total faktur dengan ChequeBG tidak sama :)');
           return false;
@@ -1345,6 +1343,13 @@
           return false;
         }
         else {
+
+          keterangan = $('.keterangan').val();
+          if(keterangan == ''){
+            toastr.info("Mohon maaf keterangan belum diisi :)");
+            return false;
+          }
+
           jenisbayar = $('.jenisbayar').val();
 
         event.preventDefault();
