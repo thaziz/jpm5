@@ -1344,13 +1344,25 @@
         }
         else {
 
-          keterangan = $('.keterangan').val();
-          if(keterangan == ''){
-            toastr.info("Mohon maaf keterangan belum diisi :)");
-            return false;
-          }
+
+         
 
           jenisbayar = $('.jenisbayar').val();
+
+          if(jenisbayar == '5' || jenisbayar == '12'){
+            keterangan = $('.keteranganheader').val();
+            if(keterangan == ''){
+              toastr.info("Mohon maaf keterangan harap diisi :)");
+              return false;
+            }
+          }
+          else{
+            keterangan = $('.keterangan').val();
+            if(keterangan == ''){
+               toastr.info("Mohon maaf keterangan harap diisi :)");
+                return false;
+            }
+          }
 
         event.preventDefault();
          var post_url2 = $(this).attr("action");
@@ -3084,7 +3096,7 @@
           rowTransfer =  "<table class='table table-bordered table-striped'> " +
                             "<tr>" +
                               "<th> Keterangan </th>" +
-                              "<td> <input type='text' class='form-control' name='keterangantransfer'> </td>" + 
+                              "<td> <input type='text' class='form-control keteranganheader' name='keterangantransfer'> </td>" + 
                             "</tr>" +
                           "</table>";
                        
