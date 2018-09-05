@@ -3522,6 +3522,10 @@ Route::get('master/master_perusahaan', 'MasterPerusahaanController@index');
 Route::post('master/master_perusahaan/save_data', 'MasterPerusahaanController@simpan');
 
 //END OF
+// MASTER TRANSAKSI
+Route::get('master/master_transaksi', 'master_transaksi_controller@index');
+Route::get('master/master_transaksi/save', 'master_transaksi_controller@save');
+Route::get('master/master_transaksi/datatable_transaksi','master_transaksi_controller@datatable_transaksi')->name('datatable_transaksi');
 
 
 

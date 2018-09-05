@@ -256,9 +256,17 @@ class form_tanda_terima_pembelian_controller extends Controller
 							'updated_by' 		=> Auth::user()->m_name,
 						]);
 
+			
+			$array_temp = [];
+			for ($a=0; $a < count($req->invoice); $a++) { 
+				array_push($array_temp, $req->invoice[$i])
+			}
+
 			$delete = DB::table('form_tt_d')
 						->where('ttd_id',$cari_nota->tt_idform)
-						->delete();
+						->where('ttd_faktur','!=',null)
+						->whereNotIn($array_temp)
+						->get();
 
 			for ($i=0; $i < count($req->invoice); $i++) { 
 				$save = DB::table('form_tt_d')
@@ -278,10 +286,21 @@ class form_tanda_terima_pembelian_controller extends Controller
 
     public function hapus_tt_pembelian(Request $req)
     {
+
 		$data = DB::table('form_tt')
+				  ->join('form_tt_d','ttd_id','=','tt_idform')
+    			  ->where('tt_idform',$req->id)
+    			  ->get();
+
+    	if ($data == null) {
+    		$data = DB::table('form_tt')
+				  ->join('form_tt_d','ttd_id','=','tt_idform')
     			  ->where('tt_idform',$req->id)
     			  ->delete();
-    	return Response::json(['status'=>1]);
+    		return Response::json(['status'=>1]);
+    	}
+    	
+    	return Response::json(['status'=> 0]);
     }
     public function datatable()
     {	
