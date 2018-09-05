@@ -414,7 +414,7 @@
 
                 @endif
 
-                @if(Auth::user()->PunyaAkses('Master Transaksi Akun','aktif'))
+                {{-- @if(Auth::user()->PunyaAkses('Master Transaksi Akun','aktif')) --}}
                 <li >
                     <a class="sidebar master-perusahaan 
                     {{Request::is('master/master_transaksi') ? 'active' : '' ||
@@ -423,7 +423,7 @@
                     " href="{{ url('master/master_transaksi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Master Transaksi Akun</a>
                 </li>
                 
-                @endif
+                {{-- @endif --}}
             </ul>
         </li>
                         
