@@ -583,9 +583,10 @@
                     });
             }else{
               swal({
-                title: "Data Sudah Ada",
+                title: "Terjadi Kesalahan",
                 type: 'error',
-                timer: 900,
+                text: response.pesan,
+                timer: 3000,
                 showConfirmButton: true
 
               });
