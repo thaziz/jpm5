@@ -178,7 +178,7 @@
                         </td>
                         <td>
                           <div class="col-sm-2">
-                            <input type="text" class="input-sm form-control inputcek" name="sericek" style="text-transform: uppercase">
+                            <input type="text" class="input-sm form-control inputcek" name="sericek" style="text-transform:uppercase">
                           </div>
                           <div class="col-sm-1">
                             Tgl Buku 
@@ -813,11 +813,12 @@
 
 
                     if($temp0 != 0){
-                      urutcek = pad(urutcek,$lengthval);
+                      urutcek = pad(urutcek,lengthval);
                     }
                     else{
                       urutcek = urutcek;
                     }
+                    
                     var html2 = "<tr>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                                 "<label></label>" +

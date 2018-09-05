@@ -66,7 +66,7 @@ class BonSementaraController extends Controller
 			$data['bonsem'] = DB::select("select * from bonsem_pengajuan, cabang where bp_cabang = kode order by bp_id desc");
 		}
 		else {
-			$data['bonsem'] = DB::select("select * from bonsem_pengajuan, cabang where bp_cabang = '$cabang' order by bp_id desc");
+			$data['bonsem'] = DB::select("select * from bonsem_pengajuan, cabang where bp_cabang = '$cabang' and bp_cabang = kode order by bp_id desc");
 		}
 		
 		
