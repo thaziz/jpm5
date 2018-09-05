@@ -95,11 +95,26 @@ class master_transaksi_controller extends Controller
     	}
     }
 
-    public function edit(Request $req)
+    public function edit($id)
     {
-        $akun = DB::table('master_transaksi')
-                  ->where('mt_id',$req->id)
+        $data = DB::table('master_transaksi')
+                  ->where('mt_id',$id)
                   ->first();
-        return response()->json(['data'=>$akun]);
+
+        $data_dt = DB::table('master_transaksi_detail')
+                     ->where('mtd_id',$id)
+                     ->get();
+
+        return view('master_sales.master_transaksi.index_master_transaksi',compact('data','data_dt'));
+    }
+
+    public function create()
+    {
+        $akun = DB::table('d_akun')
+                  ->select('main_id')
+                  ->groupBy('main_id')
+                  ->orderBy('main_id','ASC')
+                  ->get();
+        return view('master_sales.master_transaksi.create_master_transaksi',compact('akun'));
     }
 }

@@ -3527,7 +3527,8 @@ Route::post('master/master_perusahaan/save_data', 'MasterPerusahaanController@si
 Route::get('master/master_transaksi', 'master_transaksi_controller@index');
 Route::get('master/master_transaksi/save', 'master_transaksi_controller@save');
 Route::get('master/master_transaksi/datatable_transaksi','master_transaksi_controller@datatable_transaksi')->name('datatable_transaksi');
-Route::get('master/master_transaksi/edit', 'master_transaksi_controller@edit');
+Route::get('master/master_transaksi/edit/{id}', 'master_transaksi_controller@edit');
+Route::get('master/master_transaksi/create', 'master_transaksi_controller@create');
 
 
 
