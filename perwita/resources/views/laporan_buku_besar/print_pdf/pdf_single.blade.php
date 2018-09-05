@@ -230,9 +230,13 @@
 		              <td></td>
 		              <td></td>
 		              <td style="padding-left: 50px; font-weight: 600;">Saldo Awal</td>
-		              <td style="padding-left: 3px;" class="money"></td>
-		              <td style="padding-left: 3px;" class="money"></td>
-		              <td style="padding-right: 3px; font-weight: 600;" class="money text-right">{{ number_format($saldo, 2) }}</td>
+		              <td style="padding-left: 8px;" class="money"></td>
+		              <td style="padding-left: 8px;" class="money"></td>
+		              <td style="padding-right: 8px; font-weight: 600;" class="money text-right">
+		              	{{ 
+                    		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
+                    	}}
+		              </td>
 		            </tr>
 
 					@foreach($grap as $data_grap)
@@ -264,12 +268,16 @@
 		                  ?>
 
 		                  <tr>
-		                    <td style="padding-left: 3px;">{{ date("d-m-Y", strtotime($data_grap->jr_date)) }}</td>
-		                    <td style="padding-left: 3px;">{{ $data_grap->jr_ref }}</td>
-		                    <td style="padding-left: 3px;">{{ $data_grap->jr_note }}</td>
-		                    <td class="money text-right" style="padding-right: 3px;">{{ number_format($debet, 2) }}</td>
-		                    <td class="money text-right" style="padding-right: 3px;">{{ number_format($kredit, 2) }}</td>
-		                    <td class="money text-right" style="padding-right: 3px;">{{ number_format($saldo, 2) }}</td>
+		                    <td style="padding-left: 5px;">{{ date("d-m-Y", strtotime($data_grap->jr_date)) }}</td>
+		                    <td style="padding-left: 5px;">{{ $data_grap->jr_ref }}</td>
+		                    <td style="padding-left: 5px;">{{ $data_grap->jr_note }}</td>
+		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($debet, 2) }}</td>
+		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($kredit, 2) }}</td>
+		                    <td class="money text-right" style="padding-right: 8px;font-weight: 600;">
+		                    	{{ 
+		                    		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
+		                    	}}
+		                    </td>
 		                  </tr>
 		                @endif
 					  @endif
@@ -285,7 +293,11 @@
 				        <th width="37%"></th>
 				        <th class="typed" width="13%">{{ number_format($tot_deb, 2) }}</th>
 				        <th class="typed" width="13%">{{ number_format($tot_kred, 2) }}</th>
-				        <th class="typed" width="13%">{{ number_format($saldo, 2) }}</th>
+				        <th class="typed" width="13%">
+				        	{{ 
+				        		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
+				        	}}
+				        </th>
 					</tr>
 				</thead>
 			</table>
