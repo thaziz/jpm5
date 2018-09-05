@@ -256,7 +256,7 @@
                                                         <tr class="transaksi data-{{$i}}" id="hslbank" class="transaksi" data-transaksi="{{$data['bbkd'][$i]->bbkd_nocheck}}">
                                                          <td> {{$i + 1}} </td>
                                                          <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbk_nota}}" name="nofpg[]" readonly=""> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_idfpg}}" name="idfpg[]" readonly="">
-                                                           <input type="hidden" class="nobm" value="{{$bbkd->bbkd_notabm}}">  </td>
+                                                           <input type="hidden" class="nobm" value="{{$data['bbkd'][$i]->bbkd_notabm}}">  </td>
                                                          <td> <input type="text" class="form-control input-sm" value="{{ Carbon\Carbon::parse($data['bbkd'][$i]->bbkd_tglfpg)->format('d-M-Y ') }}" name="tgl[]" readonly="">  </td>
                                                          <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_nocheck}}" name="notransaksi[]" readonly="">  </td>
                                                          <td> <input type="text" class="form-control" name="jatuhtempo[]" readonly="" value="{{ Carbon\Carbon::parse($data['bbkd'][$i]->bbkd_jatuhtempo)->format('d-M-Y ') }}"> </td>
@@ -1045,8 +1045,11 @@
           url : post_url2,
           dataType : 'json',
           success : function (response){
-          
-                swal({
+            data = response.dataInfo;
+            console.log(response);
+          //  die();
+            if(response.status == 'sukses'){
+              swal({
                   title: "Berhasil!",
                           type: 'success',
                           text: "Data berhasil disimpan",
@@ -1054,6 +1057,18 @@
                          showConfirmButton: false
                        
                   });
+            }
+            else if (response.status == 'gagal'){
+                swal({
+                  title: "error!",
+                          type: 'error',
+                          text: response.info,
+                          timer: 900,
+                         showConfirmButton: false
+                       
+                  });
+            }
+                
              
           },
           error : function(){
@@ -1403,6 +1418,7 @@
 
     })
     
+    nilaitotal = 0;
     $('.nominalbiaya').change(function(){
       /*alert('jaja');*/
         val = $(this).val();

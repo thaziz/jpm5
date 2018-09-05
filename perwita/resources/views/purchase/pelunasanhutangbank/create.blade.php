@@ -913,18 +913,32 @@
           url : post_url2,
           dataType : 'json',
           success : function (response){
+
+            if(response.status == 'sukses'){
                 swal({
                   title: "Berhasil!",
                           type: 'success',
-                          text: "Data berhasil disimpan",
+                          text: response.info,
                           timer: 900,
                          showConfirmButton: false
                        
                   });
              
-             $('.simpansukses').attr('disabled' , true);
-             html = "<a class='btn btn-info btn-sm' href={{url('pelunasanhutangbank/cetak')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
-            $('.print').html(html);
+                 $('.simpansukses').attr('disabled' , true);
+                 html = "<a class='btn btn-info btn-sm' href={{url('pelunasanhutangbank/cetak')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
+                $('.print').html(html);
+            }
+            else if (response.status == 'gagal'){
+               swal({
+                  title: "error!",
+                          type: 'error',
+                          text: response.info,
+                          timer: 900,
+                         showConfirmButton: false
+                       
+                  });
+            }
+              
           },
           error : function(){
            swal("Error", "Server Sedang Mengalami Masalah", "error");
