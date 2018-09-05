@@ -216,8 +216,8 @@ function ubah(id) {
       dataType:'json',
       success:function(data){
         $('.nama').val(data.data.mt_nama);
-        $('.akun').val(data.data.mt_id_akun);
-        $('.id_akun').val(data.data.mt_id).trigger('chosen:updated');
+        $('.akun').val(data.data.mt_id_akun).trigger('chosen:updated');
+        $('.id_akun').val(data.data.mt_id);
         $('.modal_pajak').modal('show');
       },error:function(){
         toastr.warning('Data Gagal Diupdate');
