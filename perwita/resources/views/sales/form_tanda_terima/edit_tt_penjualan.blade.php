@@ -90,7 +90,7 @@
                         </td>
                         <td width="150">Tanggal Diterima</td>
                         <td width="300" class="">
-                          <input type="text"  class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::parse($data->ft_tanggal)->format('d/m/Y') }}">
+                          <input type="text"  class="tanggal form-control" name="tanggal" value="{{ Carbon\carbon::parse($data->ft_tanggal_terima)->format('d/m/Y') }}">
                         </td>
                       </tr>
                       <tr>
