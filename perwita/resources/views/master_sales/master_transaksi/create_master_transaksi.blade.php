@@ -60,7 +60,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
-                       <a href="{{ url('master/master_transaksi/create') }}"><button  type="button"  class="btn btn-success " id="btn_add" name="btnok"><i class="glyphicon glyphicon-plus"></i>Tambah Data</button></a>
+                          <a href="{{ url('master/master_transaksi') }}" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
                     </div>
                 </div>
             <div class="ibox-content">
@@ -69,17 +69,37 @@
 
               <div class="box" id="seragam_box">
                 <div class="box-body">   
-                  <table  class="table table_pajak table-bordered table-striped">
-                    <thead>
-                        <th>No</th>
-                        <th>Nama Akun</th>
-                        <th>Id Akun</th>
-                        <th>Aksi</th>
-                    </thead>
-                    <tbody>
-                        
-                    </tbody>
-                  </table>
+                  <div class="col-sm-6">
+                    <table class="table table-bordered">
+                      <tr>
+                        <td>Nama Transaksi</td>
+                        <td><input type="text" class="form-control nama" name="nama"></td>
+                      </tr>
+                      <tr>
+                        <td>Type Cash Flow</td>
+                        <td>
+                          <select class="form-control chosen-select-width">
+                            <option value="ICF">ICF</option>
+                            <option value="OCF">OCF</option>
+                            <option value="FCF">FCF</option>
+                          </select>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div  class="col-sm-12">
+                    <table  class="table table_pajak table-bordered table-striped">
+                      <thead>
+                          <th>No</th>
+                          <th>Nama Akun</th>
+                          <th>Id Akun</th>
+                          <th>Aksi</th>
+                      </thead>
+                      <tbody>
+                          
+                      </tbody>
+                    </table>
+                  </div>
                 </div><!-- /.box-body -->
                 <!-- modal -->
              
@@ -174,7 +194,7 @@ $(document).ready(function(){
         "columns": [
         { "data": 'DT_Row_Index'},
         { "data": "mt_nama" },
-        { "data": "mt_jenis" },
+        { "data": "mt_id_akun" },
         { "data": "aksi" },
         ]
     });
@@ -184,7 +204,10 @@ $(document).ready(function(){
 
 
 $('#btn_add').click(function(){
-   location.href = '{{ url('master/master_transaksi/create') }}';
+  $('.nama').val('');
+  $('.id_akun').val('');
+  $('.nama').attr('readonly',false);
+  $('.modal_pajak').modal('show');
 })
 
 $('.save').click(function(){
@@ -207,7 +230,21 @@ $('.save').click(function(){
 })
 
 function ubah(id) {
-   location.href = '{{ url('master/master_transaksi/edit') }}/'+id;
+    $.ajax({
+      url : '{{ url('master/master_transaksi/edit') }}',
+      data:{id},
+      type:'get',
+      dataType:'json',
+      success:function(data){
+        $('.nama').val(data.data.mt_nama);
+        $('.nama').attr('readonly',true);
+        $('.akun').val(data.data.mt_id_akun).trigger('chosen:updated');
+        $('.id_akun').val(data.data.mt_id);
+        $('.modal_pajak').modal('show');
+      },error:function(){
+        toastr.warning('Data Gagal Diupdate');
+      }
+    })
 }
 
 </script>

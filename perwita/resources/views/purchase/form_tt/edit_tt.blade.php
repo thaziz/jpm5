@@ -298,45 +298,6 @@
     var nominal       = $(par).find('.nominal').val();
     var tanggal_detil = $(par).find('.tanggal_detil').val();
 
-
-    $.ajax({
-      url:'{{ route('cek_ttd') }}',
-      data:{id},
-      type:'get',
-      success:function(data){
-        if (data.status == 1) {
-          swal({
-          title: "Berhasil!",
-                  type: 'success',
-                  text: "Data Berhasil Dihapus",
-                  timer: 2000,
-                  showConfirmButton: true
-                  },function(){
-                     var table = $('.table_tt').DataTable();
-                     table.ajax.reload();
-          });
-        }else{
-          swal({
-            title: "Terjadi Kesalahan",
-                    type: 'error',
-                    timer: 2000,
-                    text: 'DATA SUDAH TERPAKAI',
-                    showConfirmButton: false
-          });
-        }
-          
-      },
-      error:function(data){
-
-        swal({
-        title: "Terjadi Kesalahan",
-                type: 'error',
-                timer: 2000,
-                showConfirmButton: false
-        });
-      }
-    });
-
     $('#dex').val(dex);
     $('#invoice').val(invoice);
     $('#nominal').val(nominal);
@@ -437,10 +398,21 @@
   }
 
   @foreach ($detail as $i => $val)
-    var invoice       = '{{ $val->ttd_invoice }}';
-    var nominal       = '{{ $val->ttd_nominal }}';
-    var tanggal_detil = '{{ Carbon\carbon::parse($val->ttd_tanggal)->format('d/m/Y') }}';
+    var invoice          = '{{ $val->ttd_invoice }}';
+    var nominal          = '{{ $val->ttd_nominal }}';
+    var tanggal_detil    = '{{ Carbon\carbon::parse($val->ttd_tanggal)->format('d/m/Y') }}';
     var ttd_detail       = '{{ $val->ttd_detail }}';
+
+    @if ($val->ttd_faktur != null)
+      $hapus = '<div class=" btn-group">'+
+                  '<label class="label label-warning">TERPAKAI</label'+
+               '</div>';
+    @else
+      $hapus = '<div class=" btn-group">'+
+      '<a class="btn btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></a>'+
+      '<a class="btn btn-danger trash" onclick="trash(this)"><i class="fa fa-trash"></i></a>'+
+      '</div>';
+    @endif
 
     table.row.add([
       '<p class="invoice_text">'+invoice+'</p>'+
@@ -453,11 +425,9 @@
 
       '<p class="nominal_text">'+nominal+'</p>'+
       '<input type="hidden" class="nominal" name="nominal[]" value="'+nominal+'">',
+      $hapus
 
-      '<div class=" btn-group">'+
-      '<a class="btn btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></a>'+
-      '<a class="btn btn-danger trash" onclick="trash(this)"><i class="fa fa-trash"></i></a>'+
-      '</div>',
+      
     ]).draw();
     $('.right').css('text-align','right');
     $('.center').css('text-align','center');
