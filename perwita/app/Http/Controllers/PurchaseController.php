@@ -1514,7 +1514,7 @@ public function purchase_order() {
 							$data['gudang'] = DB::select("select * from mastergudang where mg_id = '$gudang'");
 			}	
 			
-			$data['codt'][] = DB::select("select * from confirm_order, masteritem,  confirm_order_dt , confirm_order_tb, spp where co_idspp = '$idspp' and codt_idco = co_id and cotb_idco = co_id and co_idspp = spp_id and codt_supplier = cotb_supplier and codt_supplier = '$nosupplier' and codt_kodeitem = kode_item and cotb_id = '$idcotb' and co_id = '$idco' ");
+			$data['codt'][] = DB::select("select * from confirm_order, masteritem,  confirm_order_dt , confirm_order_tb, spp where co_idspp = '$idspp' and codt_idco = co_id and cotb_idco = co_id and co_idspp = spp_id and codt_supplier = cotb_supplier and codt_supplier = '$nosupplier' and codt_kodeitem = kode_item and cotb_id = '$idcotb' and co_id = '$idco' and  ");
 			
 		}
 		return json_encode($data);
@@ -8958,9 +8958,9 @@ public function kekata($x) {
 					}
 				}
 				else if($idjenisbayar == '1'){ //GIRO KAS KECIL
-					$datas['fp']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$nosupplier' and ik_comp = $cabang and ik_status = 'APPROVED'");
+					$datas['fp']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = $nosupplier and ik_comp = $cabang and ik_status = 'APPROVED'");
 
-					$datas['fp1']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$nosupplier' and ik_comp = $cabang and ik_status = 'APPROVED' and ik_pelunasan != 0.00");
+					$datas['fp1']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = $nosupplier and ik_comp = $cabang and ik_status = 'APPROVED' and ik_pelunasan != 0.00");
 
 					if(count($request->arrnofaktur) != 0){
 						for($i = 0 ; $i < count($datas['fp']); $i++){
