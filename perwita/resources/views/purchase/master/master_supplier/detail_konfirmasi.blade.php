@@ -974,7 +974,7 @@ $('.cabang').change(function(){
 
       $(".acc_hutangdagang").chosen(config);
       $(".acc_csf").chosen(config);
-      $('.cabang').chosen(config);
+    
     })
      },2000);
 

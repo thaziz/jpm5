@@ -756,6 +756,29 @@
           var tableBank = $('#tbl-cek').DataTable();
         
           var n = 1;
+
+
+                  $temp0 = 0; 
+                  val = $('.urutcek').val();
+                  str = val.search('0');  
+                  if(val.indexOf(str) == 0){ // CEK jika depan nya ada 0 urutcek
+                    lengthval = urutcek.length;            
+                    for(i = 0; i < lengthval; i++){          
+                      if(val.indexOf('0' , i) == i){
+                        $temp0 = parseInt($temp0) + 1;
+                      }
+                      else {
+                       i = lengthval;
+                      }
+                    }  
+                  }
+
+                  if($temp0 != 0){
+                      urutcek = pad(urutcek,lengthval);
+                    }
+                    else{
+                      urutcek = urutcek;
+                    }
         
           for(var i = urutcek; i <= hasilurutcek; i++){ //ADD TABLE
             var html2 = "<tr class='databaru' >" + 
@@ -877,9 +900,34 @@
                   var tableBank = $('#tbl-cek').DataTable();
                 
                   var n = 1;
+                  $temp0 = 0; 
+                  val = $('.urutcek').val();
+                  str = val.search('0');  
+                  if(val.indexOf(str) == 0){ // CEK jika depan nya ada 0 urutcek
+                    lengthval = urutcek.length;            
+                    for(i = 0; i < lengthval; i++){          
+                      if(val.indexOf('0' , i) == i){
+                        $temp0 = parseInt($temp0) + 1;
+                      }
+                      else {
+                       i = lengthval;
+                      }
+                    }  
+                  }
+
+
                 
                   for(var i = urutcek; i <= hasilurutcek; i++){ //ADD TABLE
                    // alert(urutcek);
+
+                    if($temp0 != 0){
+                      urutcek = pad(urutcek,lengthval);
+                    }
+                    else{
+                      urutcek = urutcek;
+                    }
+
+
                     var html2 = "<tr class='databaru'>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                                 "<label></label>" +
@@ -976,9 +1024,29 @@
                   var tableBank = $('#tbl-cek').DataTable();
                 
                   var n = 1;
+                  $tempbg = 0;
+                  strbg = urutbg.search('0');
+                  if(urutbg.indexOf(strbg) == 0){
+                    lengthbg = urutbg.length;
+                    for(i = 0; i < lengthbg; i++){
+                      if(urutbg.indexOf('0' , i) == i){
+                        $tempbg = parseInt($tempbg) + 1;
+                      }
+                      else {
+                        i = lengthbg;
+                      }
+                    }
+                  }
                  // alert(urutbg);
                  // alert(hasilurutbg);
                   for(var i = urutbg; i <= hasilurutbg; i++){ //ADD TABLE
+
+                    if($tempbg != 0){
+                      urutbg = pad(urutbg, lengthbg);
+                    }
+                    else {
+                      urutbg = urutbg;
+                    }
                     var html2 = "<tr class='databaru'>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                                 "<label></label>" +
