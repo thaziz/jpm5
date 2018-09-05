@@ -278,10 +278,25 @@ class form_tanda_terima_pembelian_controller extends Controller
 
     public function hapus_tt_pembelian(Request $req)
     {
+
 		$data = DB::table('form_tt')
+				  ->join('form_tt_d','ttd_id','=','tt_idform')
+    			  ->where('tt_idform',$req->id)
+    			  ->get();
+
+    	if ($data == null) {
+    		$data = DB::table('form_tt')
+				  ->join('form_tt_d','ttd_id','=','tt_idform')
     			  ->where('tt_idform',$req->id)
     			  ->delete();
-    	return Response::json(['status'=>1]);
+    		return Response::json(['status'=>1]);
+    	}
+    	
+    	return Response::json(['status'=> 0]);
+    }
+    public function cek_ttd(Request $req)
+    {
+    	# code...
     }
     public function datatable()
     {	
