@@ -48,7 +48,7 @@ class master_transaksi_controller extends Controller
                             $c = '';
 
                             if(Auth::user()->punyaAkses('Master Transaksi Akun','ubah')){
-                                $c = '<button type="button" onclick="ubah(\''.$data->mt_id.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
+                                $c = '<button type="button" onclick="ubah(\''.$data->mt_id.'\')" class="btn btn-xs btn-warning btnhapus"><i class="fa fa-pencil"></i></button>';
                             }else{
                               $c = '';
                             }
@@ -67,8 +67,8 @@ class master_transaksi_controller extends Controller
     		$id = DB::table('master_transaksi')->max('mt_id')+1;
     		$save = DB::table('master_transaksi')
     				  ->insert([
-    				  	'mt_id' => $id,
-    				  	'mt_nama' => $req->nama,
+    				  	'mt_id' 	 => $id,
+    				  	'mt_nama' 	 => strtoupper($req->nama),
     				  	'mt_id_akun' => $req->akun,
     				  	'created_at' => carbon::now(),
     				  	'updated_at' => carbon::now(),
@@ -77,8 +77,17 @@ class master_transaksi_controller extends Controller
     				  ]);
     		DB::commit();
     		return response()->json(['status'=>1]);
-    	}catch{
+    	}catch(Exception $er){
+            dd($er);
     		DB::rollBack();
     	}
+    }
+
+    public function edit(Request $req)
+    {
+        $akun = DB::table('master_transaksi')
+                  ->where('mt_id',$req->id)
+                  ->first();
+        return response()->json(['data'=>$akun]);
     }
 }

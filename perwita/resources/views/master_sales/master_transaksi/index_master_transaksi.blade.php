@@ -40,27 +40,16 @@
                             <a>Home</a>
                         </li>
                         <li>
-                            <a>Master Penjualan</a>
-                        </li>
-                        <li>
-                          <a> Master DO</a>
+                            <a>Master Bersama</a>
                         </li>
                         <li class="active">
-                            <strong> Nomor Seri Pajak </strong>
+                            <strong> Master Transaksi Akun</strong>
                         </li>
 
                     </ol>
                 </div>
                 <div class="col-lg-2">
              </div>
-</div>
-<div class="wrapper wrapper-content animated fadeInRight">
-  <div class="col-md-2" style="min-height: 100px">
-    <div class="alert alert-info alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
-      <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-      <h2 style="text-align:center"> <b></b></h2> <h4 style="text-align:center">Nomor Seri Pajak Yang Aktif</h4>
-    </div>
-  </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -123,7 +112,10 @@
           <table class="table table_input">
               <tr>
                 <td>Nama Akun</td>
-                <td><input type="text" class="form-control" name="nama"></td>
+                <td>
+                  <input type="text" class="form-control nama" name="nama">
+                  <input type="hidden" class="form-control id_akun" name="id_akun">
+                </td>
               </tr>
               <tr>
                 <td>Akun</td>
@@ -182,7 +174,7 @@ $(document).ready(function(){
         "columns": [
         { "data": 'DT_Row_Index'},
         { "data": "mt_nama" },
-        { "data": "mt_akun" },
+        { "data": "mt_id_akun" },
         { "data": "aksi" },
         ]
     });
@@ -192,10 +184,15 @@ $(document).ready(function(){
 
 
 $('#btn_add').click(function(){
+  $('.nama').val('');
+  $('.id_akun').val('');
   $('.modal_pajak').modal('show');
 })
 
 $('.save').click(function(){
+  var nama = $('.nama').val();
+  var akun = $('.akun').val();
+
   $.ajax({
     url : '{{ url('master/master_transaksi/save') }}',
     data:{nama,akun},
@@ -210,5 +207,43 @@ $('.save').click(function(){
     }
   })
 })
+
+function ubah(id) {
+    $.ajax({
+      url : '{{ url('master/master_transaksi/edit') }}',
+      data:{id},
+      type:'get',
+      dataType:'json',
+      success:function(data){
+        $('.nama').val(data.data.mt_nama);
+        $('.akun').val(data.data.mt_id_akun);
+        $('.id_akun').val(data.data.mt_id).trigger('chosen:updated');
+        $('.modal_pajak').modal('show');
+      },error:function(){
+        toastr.warning('Data Gagal Diupdate');
+      }
+    })
+}
+
+function update(a) {
+  $('.save').click(function(){
+    var akun = $('.akun').val();
+    var id = $('.id_akun').val();
+
+    $.ajax({
+      url : '{{ url('master/master_transaksi/save') }}',
+      data:{id,akun},
+      type:'get',
+      dataType:'json',
+      success:function(){
+        toastr.success('Data Berhasil Diupdate');
+        var table = $('.table_pajak').DataTable();
+        table.ajax.reload();
+      },error:function(){
+        toastr.warning('Data Gagal Diupdate');
+      }
+    })
+  })
+}
 </script>
 @endsection

@@ -256,17 +256,9 @@ class form_tanda_terima_pembelian_controller extends Controller
 							'updated_by' 		=> Auth::user()->m_name,
 						]);
 
-			
-			$array_temp = [];
-			for ($a=0; $a < count($req->invoice); $a++) { 
-				array_push($array_temp, $req->invoice[$i])
-			}
-
 			$delete = DB::table('form_tt_d')
 						->where('ttd_id',$cari_nota->tt_idform)
-						->where('ttd_faktur','!=',null)
-						->whereNotIn($array_temp)
-						->get();
+						->delete();
 
 			for ($i=0; $i < count($req->invoice); $i++) { 
 				$save = DB::table('form_tt_d')
@@ -301,6 +293,10 @@ class form_tanda_terima_pembelian_controller extends Controller
     	}
     	
     	return Response::json(['status'=> 0]);
+    }
+    public function cek_ttd(Request $req)
+    {
+    	# code...
     }
     public function datatable()
     {	

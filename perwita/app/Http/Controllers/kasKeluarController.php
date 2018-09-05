@@ -3732,7 +3732,7 @@ class kasKeluarController extends Controller
 	public function printing(request $req){
 		
 
-		return$cari_bkk_id = DB::table('bukti_kas_keluar')
+		$cari_bkk_id = DB::table('bukti_kas_keluar')
 					  ->join('cabang','kode','=','bkk_comp')
 					  ->join('d_akun','id_akun','=','bkk_akun_kas')
 					  ->join('jenisbayar','idjenisbayar','=','bkk_jenisbayar')

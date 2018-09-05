@@ -450,6 +450,7 @@ Route::get('form_tanda_terima_pembelian/nota', 'form_tanda_terima_pembelian_cont
 Route::get('form_tanda_terima_pembelian/save', 'form_tanda_terima_pembelian_controller@save');
 Route::get('form_tanda_terima_pembelian/update', 'form_tanda_terima_pembelian_controller@update');
 Route::get('form_tanda_terima_pembelian/hapus', 'form_tanda_terima_pembelian_controller@hapus_tt_pembelian')->name('hapus_tt_pembelian');
+Route::get('form_tanda_terima_pembelian/cek_ttd', 'form_tanda_terima_pembelian_controller@cek_ttd')->name('cek_ttd');
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
 Route::get('ikhtisar_kas/create', 'ikhtisarController@create');
@@ -3526,6 +3527,7 @@ Route::post('master/master_perusahaan/save_data', 'MasterPerusahaanController@si
 Route::get('master/master_transaksi', 'master_transaksi_controller@index');
 Route::get('master/master_transaksi/save', 'master_transaksi_controller@save');
 Route::get('master/master_transaksi/datatable_transaksi','master_transaksi_controller@datatable_transaksi')->name('datatable_transaksi');
+Route::get('master/master_transaksi/edit', 'master_transaksi_controller@edit');
 
 
 
