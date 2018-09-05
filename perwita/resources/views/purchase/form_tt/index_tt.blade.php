@@ -140,7 +140,7 @@
             { "data": "tt_noform" },
             { "data": "tt_tgl" },
             { "data": "tt_totalterima"},
-            { "data": "tt_supplier" },
+            { "data": "pihak_ketiga" },
             { "data": "print" },
             { "data": "aksi" },
             ]
