@@ -888,12 +888,11 @@ class posting_pembayaran_Controller extends Controller
                 $akun_val = [];
                 array_push($akun, $master_bank->mb_kode);
                 array_push($akun_val, $request->ed_jumlah);
-
                 for ($i=0; $i < count($request->d_nomor_kwitansi); $i++) { 
                     array_push($akun, $request->d_kode_akun[$i]);
                     array_push($akun_val, $request->d_netto[$i]);
                 }
-
+    
                 $data_akun = [];
                 for ($i=0; $i < count($akun); $i++) { 
 
@@ -920,7 +919,6 @@ class posting_pembayaran_Controller extends Controller
                             $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
                         }
                     }else{
-
                         if ($cari_coa->akun_dka == 'D') {
                             $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                             $data_akun[$i]['jrdt_detailid'] = $i+1;
@@ -933,9 +931,9 @@ class posting_pembayaran_Controller extends Controller
                             $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                             $data_akun[$i]['jrdt_detailid'] = $i+1;
                             $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                            $data_akun[$i]['jrdt_value']    = -round($akun_val[$i]);
+                            $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
                             $data_akun[$i]['jrdt_type']     = null;
-                            $data_akun[$i]['jrdt_statusdk'] = 'D';
+                            $data_akun[$i]['jrdt_statusdk'] = 'K';
                             $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
                         }
                     }
@@ -967,9 +965,16 @@ class posting_pembayaran_Controller extends Controller
                             'k_tgl_posting'   => null,
                         ]); 
         }
+
+        $hapus = DB::table('d_jurnal')
+                   ->where('jr_ref',$request->id)
+                   ->delete();
+                   
         $hapus = DB::table('posting_pembayaran')
                    ->where('nomor',$request->id)
                    ->delete();
+
+
 
         return response()->json(['pesan'=>'Data Berhasil Dihapus']);
     }

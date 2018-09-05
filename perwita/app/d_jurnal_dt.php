@@ -17,4 +17,8 @@ class d_jurnal_dt extends Model
     	return $this->belongsTo("App\master_akun", "jrdt_acc", "id_akun");
     }
 
+    public function d_jurnal(){
+    	return $this->belongsTo('App\d_jurnal', 'jrdt_jurnal', 'jr_id');
+    }
+
 }

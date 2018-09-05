@@ -261,11 +261,13 @@ class BiayaPenerusController extends Controller
 					 					 ->where('kode',$request->nama_kontak2)
 					 					 ->first();
 					$komisi = $cari_persen->komisi_agen;
+					$biaya_paket = '5314';
 				}else{
 				 	$cari_persen = DB::table('vendor')
 				 					 ->where('kode',$request->nama_kontak2)
 				 					 ->first();
 					$komisi = $cari_persen->komisi_vendor;
+					$biaya_paket = '5315';
 				}
 
 				$status=[];
@@ -299,14 +301,14 @@ class BiayaPenerusController extends Controller
 						$id+=1;
 					}
 
-
 					$akun_hutang = DB::table('d_akun')
-										  ->where('id_akun','like','2102' . '%')
+										  ->where('id_akun','like',substr($cari_persen->acc_hutang,0,4).'%')
 										  ->where('kode_cabang',$request->cabang)
 										  ->first();
+					if ($akun_hutang == null) {
+						return response()->json(['status'=>2,'pesan'=>'Cabang Ini Tidak Memiliki Hutang Pihak Ketiga']);
+					}
 
-
-					
 
 					$total_biaya =  array_sum($request->bayar_biaya);
 					$count 		 = count($request->no_do);
@@ -375,10 +377,12 @@ class BiayaPenerusController extends Controller
 									 ->first();
 
 						$akun_biaya = DB::table('d_akun')
-										  ->where('id_akun','like','5315' . '%')
+										  ->where('id_akun','like',substr($biaya_paket,0,4).'%')
 										  ->where('kode_cabang',$cari_do->kode_cabang)
 										  ->first();
-
+						if ($akun_biaya == null) {
+							return response()->json(['status'=>2,'pesan'=>'Cabang Ini Tidak Memiliki Biaya AGEN/VENDOR']);
+						}
 						$save_dt = DB::table('biaya_penerus_dt')
 									->insert([
 										  'bpd_id'  		=> $id_bpd,
@@ -452,6 +456,9 @@ class BiayaPenerusController extends Controller
 									 ->where('idjenisbayar',6)
 									 ->first();
 					if ($pending_status == "APPROVED") {
+
+						$bank = 'MM';
+            			$km =  get_id_jurnal($bank, $request->cabang);
 						$save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
 												'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
 												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
@@ -460,6 +467,7 @@ class BiayaPenerusController extends Controller
 												'jr_note'  	=> 'BIAYA PANERUS HUTANG AGEN '. strtoupper($request->Keterangan_biaya),
 												'jr_insert' => carbon::now(),
 												'jr_update' => carbon::now(),
+												'jr_no'		=> $km,
 												]);
 					}
 					
@@ -472,7 +480,7 @@ class BiayaPenerusController extends Controller
 					for ($i=0; $i < count($jurnal); $i++) { 
 
 						$id_akun = DB::table('d_akun')
-										  ->where('id_akun','like','5315' . '%')
+										  ->where('id_akun','like',substr($biaya_paket,0,4).'%')
 										  ->where('kode_cabang',$jurnal[$i]['asal'])
 										  ->first();
 
@@ -533,9 +541,16 @@ class BiayaPenerusController extends Controller
 
 					$lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
 					// dd($lihat);
+
+					$check = check_jurnal(strtoupper($request->nofaktur));
+
+					if ($check == 0) {
+						DB::rollBack();
+						return response()->json(['status' => 'gagal','info'=>'Jurnal Tidak Balance Gagal Simpan']);
+					}
 					return response()->json(['status'=>1,'sp'=>$pending_status,'id'=>$id]);
 				}else{
-					return response()->json(['status'=>2,'alert'=>'DATA SUDAH ADA']);
+					return response()->json(['status'=>2,'pesan'=>'DATA SUDAH ADA']);
 				}
 				
 			});
@@ -977,14 +992,16 @@ class BiayaPenerusController extends Controller
 
 				if ($request->vendor == "AGEN") {
 					$cari_persen = DB::table('agen')
-				 					 ->where('kode',$request->nama_kontak2)
-				 					 ->first();
+					 					 ->where('kode',$request->nama_kontak2)
+					 					 ->first();
 					$komisi = $cari_persen->komisi_agen;
+					$biaya_paket = '5314';
 				}else{
 				 	$cari_persen = DB::table('vendor')
 				 					 ->where('kode',$request->nama_kontak2)
 				 					 ->first();
 					$komisi = $cari_persen->komisi_vendor;
+					$biaya_paket = '5315';
 				}
 
 				$status=[];
@@ -1022,9 +1039,14 @@ class BiayaPenerusController extends Controller
 					}
 
 					$akun_hutang = DB::table('d_akun')
-										  ->where('id_akun','like','2102' . '%')
+										  ->where('id_akun','like',substr($cari_persen->acc_hutang,0,4).'%')
 										  ->where('kode_cabang',$request->cabang)
 										  ->first();
+
+
+					if ($akun_hutang == null) {
+						return response()->json(['status'=>2,'pesan'=>'Cabang Ini Tidak Memiliki Hutang Pihak Ketiga']);
+					}
 
 
 					
@@ -1092,9 +1114,13 @@ class BiayaPenerusController extends Controller
 						}
 
 						$akun_biaya = DB::table('d_akun')
-										  ->where('id_akun','like','5315' . '%')
+										  ->where('id_akun','like',substr($biaya_paket,0,4).'%')
 										  ->where('kode_cabang',$cari_do->kode_cabang)
 										  ->first();
+						if ($akun_biaya == null) {
+							return response()->json(['status'=>2,'pesan'=>'Cabang Ini Tidak Memiliki Biaya AGEN/VENDOR']);
+						}
+
 						// dd($akun_biaya);
 						$save_dt = DB::table('biaya_penerus_dt')
 									 ->insert([
@@ -1183,6 +1209,9 @@ class BiayaPenerusController extends Controller
 
 
 					if ($pending_status == "APPROVED") {
+
+						$bank = 'MM';
+            			$km =  get_id_jurnal($bank, $request->cabang);
 						$save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
 												'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
 												'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
@@ -1191,6 +1220,7 @@ class BiayaPenerusController extends Controller
 												'jr_note'  	=> 'BIAYA PENERUS HUTANG ' . strtoupper($request->Keterangan_biaya),
 												'jr_insert' => carbon::now(),
 												'jr_update' => carbon::now(),
+												'jr_no'		=> $km,
 												]);
 					}
 					
@@ -1203,16 +1233,10 @@ class BiayaPenerusController extends Controller
 					for ($i=0; $i < count($jurnal); $i++) { 
 
 						$id_akun = DB::table('d_akun')
-										  ->where('id_akun','like','5315' . '%')
+										  ->where('id_akun','like',substr($biaya_paket,0,4).'%')
 										  ->where('kode_cabang',$jurnal[$i]['asal'])
 										  ->first();
 
-						if ($id_akun == null) {
-							$id_akun = DB::table('d_akun')
-										  ->where('id_akun','like','5315%')
-										  ->where('kode_cabang','000')
-										  ->first();
-						}
 						array_push($akun, $id_akun->id_akun);
 						array_push($akun_val, $jurnal[$i]['harga']);
 					}
@@ -1265,7 +1289,6 @@ class BiayaPenerusController extends Controller
 					}
 					
 					$lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
-					// dd($lihat);
 					return response()->json(['status'=>1,'sp'=>$pending_status]);
 				}else{
 					return response()->json(['status'=>2,'alert'=>'Gagal Mengedit Data']);
@@ -1896,6 +1919,7 @@ class BiayaPenerusController extends Controller
 												'jr_note'  	=> 'PEMBAYARAN OUTLET '.strtoupper($request->note),
 												'jr_insert' => carbon::now(),
 												'jr_update' => carbon::now(),
+
 												]);
 
 

@@ -95,7 +95,7 @@ class selaras_jurnal  extends Controller
                                  ->first();
 
                 $bank = 'KK';
-                $kk =  get_id_jurnal($bank, $req->cabang);
+                $kk =  get_id_jurnal($bank, $bpk[$i]->bpk_comp);
                 $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
                                             'jr_year'   => carbon::parse($bpk[$i]->bpk_tanggal)->format('Y'),
                                             'jr_date'   => carbon::parse($bpk[$i]->bpk_tanggal)->format('Y-m-d'),

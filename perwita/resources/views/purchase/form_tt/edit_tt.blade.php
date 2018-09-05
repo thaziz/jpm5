@@ -268,7 +268,8 @@
     table.row.add([
       '<p class="invoice_text">'+invoice+'</p>'+
       '<input type="hidden" class="invoice" name="invoice[]" value="'+invoice+'">'+
-      '<input type="hidden" class="dex dex_'+index+'" value="'+index+'">',
+      '<input type="hidden" class="dex dex_'+index+'" value="'+index+'">'+
+      '<input type="hidden" class="ttd_detail" value="0">',
 
       '<p class="tanggal_detil_text">'+tanggal_detil+'</p>'+
       '<input type="hidden" class="tanggal_detil" name="tanggal_detil[]" value="'+tanggal_detil+'">',
@@ -291,7 +292,6 @@
   });
 
   function edit(a) {
-    console.log('asd');
     var par           = $(a).parents('tr');
     var dex           = $(par).find('.dex').val();
     var invoice       = $(par).find('.invoice').val();
@@ -398,25 +398,36 @@
   }
 
   @foreach ($detail as $i => $val)
-    var invoice       = '{{ $val->ttd_invoice }}';
-    var nominal       = '{{ $val->ttd_nominal }}';
-    var tanggal_detil = '{{ Carbon\carbon::parse($val->ttd_tanggal)->format('d/m/Y') }}';
+    var invoice          = '{{ $val->ttd_invoice }}';
+    var nominal          = '{{ $val->ttd_nominal }}';
+    var tanggal_detil    = '{{ Carbon\carbon::parse($val->ttd_tanggal)->format('d/m/Y') }}';
+    var ttd_detail       = '{{ $val->ttd_detail }}';
+
+    @if ($val->ttd_faktur != null)
+      $hapus = '<div class=" btn-group">'+
+                  '<label class="label label-warning">TERPAKAI</label'+
+               '</div>';
+    @else
+      $hapus = '<div class=" btn-group">'+
+      '<a class="btn btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></a>'+
+      '<a class="btn btn-danger trash" onclick="trash(this)"><i class="fa fa-trash"></i></a>'+
+      '</div>';
+    @endif
 
     table.row.add([
       '<p class="invoice_text">'+invoice+'</p>'+
       '<input type="hidden" class="invoice" name="invoice[]" value="'+invoice+'">'+
-      '<input type="hidden" class="dex dex_'+index+'" value="'+index+'">',
+      '<input type="hidden" class="dex dex_'+index+'" value="'+index+'">'+
+      '<input type="hidden" class="ttd_detail" value="'+ttd_detail+'">',
 
       '<p class="tanggal_detil_text">'+tanggal_detil+'</p>'+
       '<input type="hidden" class="tanggal_detil" name="tanggal_detil[]" value="'+tanggal_detil+'">',
 
       '<p class="nominal_text">'+nominal+'</p>'+
       '<input type="hidden" class="nominal" name="nominal[]" value="'+nominal+'">',
+      $hapus
 
-      '<div class=" btn-group">'+
-      '<a class="btn btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></a>'+
-      '<a class="btn btn-danger trash" onclick="trash(this)"><i class="fa fa-trash"></i></a>'+
-      '</div>',
+      
     ]).draw();
     $('.right').css('text-align','right');
     $('.center').css('text-align','center');

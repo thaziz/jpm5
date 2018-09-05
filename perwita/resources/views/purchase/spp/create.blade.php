@@ -1444,7 +1444,8 @@
                     var nosup = counterId - 1;
                     var nourut = no -1;
                     console.log(nourut + 'nourut');
-            
+                    
+                    
                    
 
                      //$('.sup'+nourut).empty();

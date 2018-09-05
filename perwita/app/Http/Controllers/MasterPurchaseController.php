@@ -533,7 +533,7 @@ class MasterPurchaseController extends Controller
 			}
 		$data['jenisbank'] = DB::select("select * from jenisbank");
 		$data['cabang'] = DB::select("select * from cabang");
-		$data['bank'] = DB::select("select * from d_akun where  (id_akun BETWEEN '1101' and '1199') and id_akun NOT IN (select mb_kode from masterbank where mb_kode is NOT NULL) ") ;
+		$data['bank'] = DB::select("select * from d_akun where (id_akun BETWEEN '1101' and '1199') and id_akun NOT IN (select mb_kode from masterbank where mb_kode is NOT NULL) ") ;
 	//	dd($data);
 		return view('purchase/master/masterbank/create' , compact('data'));
 	}
@@ -1065,7 +1065,7 @@ class MasterPurchaseController extends Controller
 
 	public function savesupplier(Request $request) {
 		return DB::transaction(function() use ($request) { 
-			/*dd($request);*/
+		//	dd($request);
 		$mastersupplier = new masterSupplierPurchase();
 		$cabang = $request->cabang;
 	/*	dd($request);*/
@@ -1154,7 +1154,7 @@ class MasterPurchaseController extends Controller
 
 		
 		$j = 0;
-		for($i=0;$i<count($request->idbarang);$i++){
+		for($i=0;$i<count($request->brg);$i++){
 			$iditemsupplier=itemsupplier::max('is_id');
 
 
@@ -1171,14 +1171,16 @@ class MasterPurchaseController extends Controller
 			$stringharga = $request->harga[$i];
 			$replacehrg = str_replace(',', '', $stringharga);
 
+			$explodeitem = explode("+", $request->brg[$i]);
+			$kodeitem = $explodeitem[0];
+		//	dd($kodeitem);
 			$itemsupplier->is_id = $iditem;
-			$itemsupplier->is_kodeitem = $request->idbarang[$i];
-			$itemsupplier->is_supplier = $no_supplier;
+			$itemsupplier->is_kodeitem = $kodeitem;
+			$itemsupplier->is_supplier = $$request->nosupplier;
 			$itemsupplier->is_harga = $replacehrg;
 			$itemsupplier->is_idsup = $mastersupplier->idsup;
 			$itemsupplier->is_updatestock = $request->updatestock[$i];
 			$itemsupplier->is_keteranganitem = $request->keteranganitem[$i];
-
 			$itemsupplier->save();
 		}
 			return redirect('mastersupplier/mastersupplier');

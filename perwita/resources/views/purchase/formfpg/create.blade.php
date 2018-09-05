@@ -124,7 +124,7 @@
 
                               <tr>
                                 <th> No FPG </th>
-                                <td> <input type='text' class='input-sm form-control nofpg' value="" name="nofpg" readonly="">     <input type="hidden" name="_token" value="{{ csrf_token() }}"> <input type="hidden" class="valcabang" name="cabang">
+                                <td> <input type='text' class='input-sm form-control nofpg' value="" name="nofpg" readonly="">     <input type="hidden" name="_token" value="{{ csrf_token() }}"> 
                                 <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
                                 </td>
                               </tr>
@@ -523,7 +523,7 @@
                                                     <option value=""> Pilih Data Bank </option>
 
                                                     @foreach($data['bank'] as $bank)
-                                                      <option value="{{$bank->mb_id}}, {{$bank->mb_nama}} , {{$bank->mb_cabang}} ,{{$bank->mb_accno}},{{$bank->mb_kode}},{{$bank->mb_kelompok}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
+                                                      <option value="{{$bank->mb_id}}+{{$bank->mb_nama}}+{{$bank->mb_cabang}}+{{$bank->mb_accno}}+{{$bank->mb_kode}}+{{$bank->mb_kelompok}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                                     @endforeach
                                                   
                                                 </select> </td>
@@ -551,12 +551,12 @@
                                             </label>
                                         </div>
 
-                                         <div class="checkbox checkbox-info checkbox-circle">
+                                        {{--  <div class="checkbox checkbox-info checkbox-circle">
                                             <input id="jenisbayarbanktf" type="checkbox" name="jenisbayarbank" value="TRANSFER PRIBADI" class="metodebayar jenisbayarbanktf" checked="">
                                             <label for="jenisbayarbanktf">
                                                 Transfer Pribadi
                                             </label>
-                                        </div>
+                                        </div> --}}
                                      
                                     </fieldset>
                                       <br>
@@ -1039,7 +1039,7 @@
         kelompoktujuan = split[5];
        tgl = $('.tgl').val();
       
-        splitasal = asalbank.split(",");
+        splitasal = asalbank.split("+");
         kodebankasal = splitasal[4];
         idbankasal = splitasal[0];
         kelompok = splitasal[5];
@@ -1047,18 +1047,16 @@
         jenisbayar = $('.jenisbayar').val();
 
         if(jenisbayar == 12 || jenisbayar == 11){
-            if(kodebankasal.match(/1099.*/)){
-              $('.kelompokbank').val('BEDA BANK');
-            }
-            else {
+            
+        
              if(kelompok == kelompoktujuan){
                 $('.kelompokbank').val('SAMA BANK');
               }
               else {
-                toastr.info("Mohon maaf, tidak bisa beda bank :)");
-                return false;
+                $('.kelompokbank').val('SAMA BANK');
+               
               }
-            }
+            
         }
 
 
@@ -1234,7 +1232,7 @@
 
                   tgl = $('.tgl').val();
                   bank = $('.bank').val();
-                  kodebank = bank.split(",");
+                  kodebank = bank.split("+");
                   
 
                   if(kodebank == ''){
@@ -1333,9 +1331,7 @@
         totbar = $('.totbayar').val();
         cekbg = $('.ChequeBg').val();
 
-        console.log(totbar);
-        console.log(cekbg);
-
+       
         if(totbar != cekbg) {
           toastr.info('Mohon Maaf nominal total faktur dengan ChequeBG tidak sama :)');
           return false;
@@ -1345,7 +1341,26 @@
           return false;
         }
         else {
+
+
+         
+
           jenisbayar = $('.jenisbayar').val();
+
+          if(jenisbayar == '5' || jenisbayar == '12'){
+            keterangan = $('.keteranganheader').val();
+            if(keterangan == ''){
+              toastr.info("Mohon maaf keterangan harap diisi :)");
+              return false;
+            }
+          }
+          else{
+            keterangan = $('.keterangan').val();
+            if(keterangan == ''){
+               toastr.info("Mohon maaf keterangan harap diisi :)");
+                return false;
+            }
+          }
 
         event.preventDefault();
          var post_url2 = $(this).attr("action");
@@ -2089,15 +2104,15 @@
 
                 creditnota = $('.creditnota' + id).val();
                 debitnota = $('.debitnota' + id).val();
-                alert(creditnota)
-                if(creditnota == 'null'){
+              
+                if(creditnota == 'null' || creditnota == undefined){
                   creditnota = '0.00';
                 }
                 else {
                   creditnota = creditnota;
                 }
 
-                if(debitnota == 'null'){
+                if(debitnota == 'null' ||  debitnota == undefined){
                   debitnota = '0.00';
                 }
                 else {
@@ -2246,8 +2261,10 @@
                   success : function(data) {
 
                     bank = $('.bank').val();
-                    explode = bank.split(",");
+                    explode = bank.split("+");
                     kodebank = explode[4];
+                    alert(kodebank);
+                    alert(bank);
                     $('.hutangbank').val(kodebank);
 
                     $('#myModal2').modal('hide');
@@ -2448,7 +2465,7 @@
      //bank
      $('.bank').change(function(){
       val = $(this).val();
-      string = val.split(",");
+      string = val.split("+");
       namabank = string[1];
       alamat = string[2];
       account = string[3];
@@ -2526,7 +2543,7 @@
 
        $('.bank1').change(function(){
       val = $(this).val();
-      string = val.split(",");
+      string = val.split("+");
       namabank = string[1];
       alamat = string[2];
       account = string[3];
@@ -3079,7 +3096,7 @@
           rowTransfer =  "<table class='table table-bordered table-striped'> " +
                             "<tr>" +
                               "<th> Keterangan </th>" +
-                              "<td> <input type='text' class='form-control' name='keterangantransfer'> </td>" + 
+                              "<td> <input type='text' class='form-control keteranganheader' name='keterangantransfer'> </td>" + 
                             "</tr>" +
                           "</table>";
                        

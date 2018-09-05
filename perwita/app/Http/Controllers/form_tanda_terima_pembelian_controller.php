@@ -278,10 +278,25 @@ class form_tanda_terima_pembelian_controller extends Controller
 
     public function hapus_tt_pembelian(Request $req)
     {
+
 		$data = DB::table('form_tt')
+				  ->join('form_tt_d','ttd_id','=','tt_idform')
+    			  ->where('tt_idform',$req->id)
+    			  ->get();
+
+    	if ($data == null) {
+    		$data = DB::table('form_tt')
+				  ->join('form_tt_d','ttd_id','=','tt_idform')
     			  ->where('tt_idform',$req->id)
     			  ->delete();
-    	return Response::json(['status'=>1]);
+    		return Response::json(['status'=>1]);
+    	}
+    	
+    	return Response::json(['status'=> 0]);
+    }
+    public function cek_ttd(Request $req)
+    {
+    	# code...
     }
     public function datatable()
     {	
@@ -297,7 +312,8 @@ class form_tanda_terima_pembelian_controller extends Controller
 				  ->orderBy('tt_idform','ASC')
 				  ->get();
 		}
-		// dd($data);
+		
+
         $data = collect($data);
         // return $data;
         return Datatables::of($data)
@@ -330,6 +346,24 @@ class form_tanda_terima_pembelian_controller extends Controller
                             if ($data->tt_idcabang == $kota[$i]->kode) {
                                 return $kota[$i]->nama;
                             }
+                          }
+                        })
+                        ->addColumn('pihak_ketiga', function ($data) {
+
+                        $agen 	  = DB::select("SELECT kode, nama from agen order by kode");
+
+						$vendor   = DB::select("SELECT kode, nama from vendor order by kode "); 
+
+						$subcon   = DB::select("SELECT kode, nama from subcon order by kode "); 
+
+						$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier where status = 'SETUJU' and active = 'AKTIF' order by no_supplier");
+
+						$all = array_merge($agen,$vendor,$subcon,$supplier);
+						
+                          for ($i=0; $i < count($all); $i++) { 
+                          	if ($all[$i]->kode == $data->tt_supplier) {
+                          		return $all[$i]->nama;
+                          	}
                           }
                         })
                         ->addColumn('tagihan', function ($data) {

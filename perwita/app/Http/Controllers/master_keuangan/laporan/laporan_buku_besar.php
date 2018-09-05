@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\master_akun as akun;
 
 use DB;
 use Dompdf\Dompdf;
@@ -34,44 +35,37 @@ class laporan_buku_besar extends Controller
 
             $b1 = date_format(date_create($request->d1), "m-Y"); $b2 = date_format(date_create($request->d2), "m-Y");
 
-            // return $b1." / ".$b2;
-            // return $request->akun1." / ".$request->akun2;
-
-            $time = DB::table('d_jurnal')
-                    ->whereBetween(DB::raw("concat_ws('-', date_part('month', jr_date), date_part('year', jr_date))"), [$d1, $d2])
-                    ->select(DB::raw("distinct(concat_ws('-', date_part('month', jr_date), date_part('year', jr_date))) as time"))->orderBy("time", "asc")->get();
-
-            $data = DB::table("d_jurnal_dt")
-                ->join("d_jurnal", "d_jurnal.jr_id", "=", "d_jurnal_dt.jrdt_jurnal")
-                ->join("d_akun", "d_akun.id_akun", "=", "d_jurnal_dt.jrdt_acc")
-                ->where("d_akun.kode_cabang", $request->buku_besar_cabang)
-                ->whereBetween(DB::raw("concat_ws('-', date_part('month', jr_date), date_part('year', jr_date))"), [$d1, $d2])
-                ->whereBetween('d_akun.id_akun', [$request->akun1, $request->akun2])
-                ->select(DB::raw("distinct (d_akun.id_akun) as akun"), "d_akun.nama_akun as main_name")->get();
-
-            $grap = DB::table("d_jurnal_dt")
-                    ->join("d_jurnal", "d_jurnal.jr_id", "=", "d_jurnal_dt.jrdt_jurnal")
-                    ->whereBetween(DB::raw("concat_ws('-', date_part('month', jr_date), date_part('year', jr_date))"), [$d1, $d2])
-                    ->whereBetween('d_jurnal_dt.jrdt_acc', [$request->akun1, $request->akun2])
-                    ->select("d_jurnal_dt.jrdt_value", "d_jurnal_dt.jrdt_acc as acc", "d_jurnal.jr_ref", "d_jurnal.jr_note", "d_jurnal.jr_date", "d_jurnal_dt.jrdt_statusdk")->orderBy("d_jurnal.jr_date", "asc")->get();
-
-            // return json_encode($grap);
-
-            foreach($time as $key => $data_time){
-                $m = (explode("-", $data_time->time)[0] >= 10) ? explode("-", $data_time->time)[0] : "0".explode("-", $data_time->time)[0];
-                $y = explode("-", $data_time->time)[1];
-
-                foreach ($data as $key => $data_akun) {
-                    $saldo_awal[$data_time->time."/".$data_akun->akun] = DB::table("d_akun_saldo")
-                                                    ->where("d_akun_saldo.id_akun", $data_akun->akun)
-                                                    ->where("d_akun_saldo.bulan", $m)
-                                                    ->where("d_akun_saldo.tahun", $y)
-                                                    ->select(DB::raw("COALESCE(sum(d_akun_saldo.saldo_akun), 0) as saldo"))->first()->saldo;
-                }
+            if($request->buku_besar_cabang != 'all'){
+                $data = akun::where('kode_cabang', $request->buku_besar_cabang)
+                            ->with(['jurnal_detail' => function($query) use ($d1, $d2){
+                                $query->select('jrdt_acc', 'jrdt_jurnal', 'jr_date', 'jrdt_value', 'jrdt_statusdk')
+                                        ->join('d_jurnal', 'jr_id', '=', 'jrdt_jurnal')
+                                        ->with(['d_jurnal' => function($query) use ($d1, $d2){
+                                            $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref')->with('detail');
+                                        }])->whereHas('d_jurnal', function($query) use ($d1, $d2){
+                                            $query->whereBetween(DB::raw("concat_ws('-', date_part('month', jr_date), date_part('year', jr_date))"), [$d1, $d2]);
+                                        })->orderBy('jr_date');
+                            }])
+                            ->whereBetween('d_akun.id_akun', [$request->akun1, $request->akun2])
+                            ->select('id_akun', 'nama_akun')
+                            ->orderBy('id_akun', 'asc')->get();
+            }else{
+                $data = akun::with(['jurnal_detail' => function($query) use ($d1, $d2){
+                                $query->select('jrdt_acc', 'jrdt_jurnal', 'jr_date', 'jrdt_value', 'jrdt_statusdk')
+                                        ->join('d_jurnal', 'jr_id', '=', 'jrdt_jurnal')
+                                        ->with(['d_jurnal' => function($query) use ($d1, $d2){
+                                            $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref')->with('detail');
+                                        }])->whereHas('d_jurnal', function($query) use ($d1, $d2){
+                                            $query->whereBetween(DB::raw("concat_ws('-', date_part('month', jr_date), date_part('year', jr_date))"), [$d1, $d2]);
+                                        })->orderBy('jr_date');
+                            }])
+                            ->whereBetween('d_akun.id_akun', [$request->akun1, $request->akun2])
+                            ->select('id_akun', 'nama_akun')
+                            ->orderBy('id_akun', 'asc')->get();
             }
             
 
-            // return json_encode($saldo_awal);
+            // return json_encode($data);
 
         }elseif($throttle == "Tahun"){
 

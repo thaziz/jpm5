@@ -18,6 +18,8 @@
 
         <script type="text/javascript" src="{{ asset('assets/plugins/jquery-1.12.3.min.js') }}"></script>
 
+    	<link href="{{ asset('assets/css/chosen/chosen.css') }}" rel="stylesheet">
+
       <style>
 
         @page { margin: 10px; }
@@ -196,18 +198,16 @@
 
         <?php $urt = 0; ?>
 
-		@foreach($time as $data_time)
-		 @foreach($data as $data_akun)
-
-		    <?php 
-		    	$mt = ($urt == 0) ? "m-t" : "m-t-lg"; $saldo = $saldo_awal[$data_time->time."/".$data_akun->akun]; 
+		@foreach($data as $ledger)
+		 	<?php 
+		    	$mt = ($urt == 0) ? "m-t" : "m-t-lg"; $saldo = 0; 
 				$tot_deb = $tot_kred = 0;
 		    ?>
 
 		     <table width="100%" border="0" class="table-saldo" style="margin-top: 10px;">
 				<thead>
 					<tr>
-						<td style="font-weight: bold; text-align: center;border-top: 1px solid #ccc; padding-top: 10px; padding-bottom: 0px;">Nama Perkiraan : {{ $data_akun->akun }} &nbsp; {{ $data_akun->main_name }}</td>
+						<td style="font-weight: bold; text-align: center;border-top: 1px solid #ccc; padding-top: 10px; padding-bottom: 0px;">Nama Perkiraan : {{ $ledger->id_akun }} &nbsp; {{ $ledger->nama_akun }}</td>
 					</tr>
 				</thead>
 			</table>
@@ -230,49 +230,45 @@
 		              <td></td>
 		              <td></td>
 		              <td style="padding-left: 50px; font-weight: 600;">Saldo Awal</td>
-		              <td style="padding-left: 3px;" class="money"></td>
-		              <td style="padding-left: 3px;" class="money"></td>
-		              <td style="padding-right: 3px; font-weight: 600;" class="money text-right">{{ number_format($saldo, 2) }}</td>
+		              <td style="padding-left: 8px;" class="money"></td>
+		              <td style="padding-left: 8px;" class="money"></td>
+		              <td style="padding-right: 8px; font-weight: 600;" class="money text-right">
+		              	{{ 
+                    		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
+                    	}}
+		              </td>
 		            </tr>
 
-					@foreach($grap as $data_grap)
-		              @if($data_grap->acc == $data_akun->akun)
+					@foreach($ledger->jurnal_detail as $jurnal)
 
-		                <?php
-		                  if($throttle == "Bulan")
-		                    $cek = date("n-Y", strtotime($data_grap->jr_date)) == $data_time->time;
-		                  else
-		                    $cek = date("Y", strtotime($data_grap->jr_date)) == $data_time->time;
-		                ?>
-
-		                @if($data_grap->acc == $data_akun->akun && $cek)
-
-		                  <?php 
+						<?php 
 		                    $debet = $kredit = 0;
 
-		                    $saldo += $data_grap->jrdt_value;
+		                    $saldo += $jurnal->jrdt_value;
 
-		                    if($data_grap->jrdt_statusdk == "D"){
-		                      $debet = str_replace("-", "", $data_grap->jrdt_value);
+		                    if($jurnal->jrdt_statusdk == "D"){
+		                      $debet = str_replace("-", "", $jurnal->jrdt_value);
 		                      $tot_deb += $debet;
 		                    }
 		                    else{
-		                      $kredit = str_replace("-", "", $data_grap->jrdt_value);
+		                      $kredit = str_replace("-", "", $jurnal->jrdt_value);
 		                      $tot_kred += $kredit;
 		                    }
 
-		                  ?>
+		                ?>
 
-		                  <tr>
-		                    <td style="padding-left: 3px;">{{ date("d-m-Y", strtotime($data_grap->jr_date)) }}</td>
-		                    <td style="padding-left: 3px;">{{ $data_grap->jr_ref }}</td>
-		                    <td style="padding-left: 3px;">{{ $data_grap->jr_note }}</td>
-		                    <td class="money text-right" style="padding-right: 3px;">{{ number_format($debet, 2) }}</td>
-		                    <td class="money text-right" style="padding-right: 3px;">{{ number_format($kredit, 2) }}</td>
-		                    <td class="money text-right" style="padding-right: 3px;">{{ number_format($saldo, 2) }}</td>
+						<tr>
+		                    <td style="padding-left: 5px;">{{ date("d-m-Y", strtotime($jurnal->d_jurnal->jr_date)) }}</td>
+		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_ref }}</td>
+		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_note }}</td>
+		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($debet,2) }}</td>
+		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($kredit,2) }}</td>
+		                    <td class="money text-right" style="padding-right: 8px;font-weight: 600;">
+		                    	{{ 
+		                    		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
+		                    	}}
+		                    </td>
 		                  </tr>
-		                @endif
-					  @endif
 					@endforeach
 				</tbody>
 			</table>
@@ -285,7 +281,11 @@
 				        <th width="37%"></th>
 				        <th class="typed" width="13%">{{ number_format($tot_deb, 2) }}</th>
 				        <th class="typed" width="13%">{{ number_format($tot_kred, 2) }}</th>
-				        <th class="typed" width="13%">{{ number_format($saldo, 2) }}</th>
+				        <th class="typed" width="13%">
+				        	{{ 
+	                    		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
+	                    	}}
+				        </th>
 					</tr>
 				</thead>
 			</table>
@@ -294,16 +294,13 @@
 				<thead>
 					<tr>
 						@if($throttle == "Bulan")
-							<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Bulan {{ date_ind(explode('-', $data_time->time)[0]) }} {{ explode('-', $data_time->time)[1] }}</td>
+							<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Bulan {{ date_ind(explode('-', $b1)[0]).' '.explode('-', $b1)[1] }} &nbsp;s/d &nbsp;{{ date_ind(explode('-', $b2)[0]).' '.explode('-', $b2)[1] }}</td>
 						@elseif($throttle == "Tahun")
 							<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Tahun {{ $request->y }}</td>
 						@endif
 					</tr>
 				</thead>
 			</table>
-
-			<div style="page-break-before: always;"></div>
-		  @endforeach
 		@endforeach
 
         <table id="table" width="100%" border="0" style="font-size: 8pt; margin-top: 4px;">
@@ -346,8 +343,12 @@
 	                <tr>
 	                  <td width="40%" class="text-center">Pilih Cabang</td>
 	                  <td colspan="3">
-	                    <select class="form-control buku_besar select_bukbes_validate" name="buku_besar_cabang" id="buku_besar_cabang" style="width: 80%;">
-	                    		<option value="---">-- Pilih Cabang</option>
+	                    <select class="form-control buku_besar select_bukbes_validate choosen_akun" name="buku_besar_cabang" id="buku_besar_cabang" style="width: 80%;">
+                    		<option value="---">-- Pilih Cabang</option>
+                    		@if(Session::get('cabang') == '000')
+	                          <option value="all">SEMUA CABANG</option>
+	                        @endif
+
 	                    	@foreach(cabang() as $dataCabang)
 	                    		<option value="{{ $dataCabang->kode }}">{{ $dataCabang->nama }}</option>
 	                    	@endforeach
@@ -378,7 +379,7 @@
 	                <tr>
 	                  <td width="40%" class="text-center">Kode Akun</td>
 	                  <td colspan="3">
-	                    <select class="form-control buku_besar select_bukbes_validate" name="akun1" id="akun1" style="width: 35%;">
+	                    <select class="form-control buku_besar select_bukbes_validate choosen_akun" name="akun1" id="akun1" style="width: 35%;">
 
 	                    </select>
 	                    <br><small id="buku_besar_akun1_txt"> &nbsp;Pilih Cabang Dahulu</small>
@@ -388,7 +389,7 @@
 	                <tr>
 	                  <td width="40%" class="text-center">Sampai Dengan Akun</td>
 	                  <td colspan="3">
-	                    <select class="form-control buku_besar select_bukbes_validate" name="akun2" id="akun2" style="width: 35%;">
+	                    <select class="form-control buku_besar select_bukbes_validate choosen_akun" name="akun2" id="akun2" style="width: 35%;">
 	                      
 	                    </select>
 	                    <br><small id="buku_besar_akun2_txt"> &nbsp;Pilih Cabang Dahulu</small>
@@ -428,6 +429,8 @@
       <!-- Toastr -->
       <script src="{{ asset('assets/vendors/toastr/toastr.min.js') }}"></script>
 
+      <script src="{{ asset('assets/js/chosen/chosen.jquery.js') }}"></script>
+
       <script type="text/javascript">
         $(document).ready(function(){
 
@@ -436,7 +439,7 @@
           baseUrl = '{{ url('/') }}';
 
           // script for buku besar
-
+          	  $(".buku_besar.choosen_akun").chosen({ width: '20em' });
 		      akun = [];
 		      html = '<option value="---">-- Pilih Cabang</option>';
 
@@ -520,7 +523,7 @@
 		             dataType: 'json',
 		             success: function (data) {
 		                $.each(data, function(i, n){
-		                    html = html + '<option value="'+n.id_akun+'">'+n.id_akun+'</option>';
+		                    html = html + '<option value="'+n.id_akun+'">'+n.id_akun+' - '+n.nama_akun+'</option>';
 		                })
 
 		                $("#akun1").html(html);
@@ -530,6 +533,7 @@
 		                $("#buku_besar_akun2_txt").fadeOut(300);
 
 		                akun = data;
+		                $('.buku_besar.choosen_akun').trigger("chosen:updated");
 		             },
 		             error: function(request, status, err) {
 		                if (status == "timeout") {
@@ -558,12 +562,13 @@
 
 		          $.each(akun, function(i, n){
 		            if(n.id_akun >= akun1.val())
-		              html = html + '<option value="'+n.id_akun+'">'+n.id_akun+'</option>';
+		              html = html + '<option value="'+n.id_akun+'">'+n.id_akun+' - '+n.nama_akun+'</option>';
 		            else
-		              html = html + '<option value="'+n.id_akun+'" style="background:#ff4444; color:white;" disabled>'+n.id_akun+'</option>';
+		              html = html + '<option value="'+n.id_akun+'" style="background:#ff4444; color:white;" disabled>'+n.id_akun+' - '+n.nama_akun+'</option>';
 		          })
 		          
 		          $("#akun2").html(html);
+		          $('.buku_besar.choosen_akun').trigger("chosen:updated");
 		        }else{
 		          $("#buku_besar_akun1_txt").fadeOut(300);
 		          $("#buku_besar_akun2_txt").fadeOut(300);
