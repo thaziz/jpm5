@@ -1344,7 +1344,7 @@
                 else {
       
                  $('.harga' + id).val(addCommas(numhar));
-                 $('.harga' + id).attr('readonly' , true); 
+                 $('.harga' + id).attr('readonly' , false); 
                 }
              }
              else {
@@ -1354,7 +1354,7 @@
                 else {
                  // toastr.info('tidak_undefined');
                  $('.harga' + id).val(addCommas(numhar));
-                 $('.harga' + id).attr('readonly' , true); 
+                 $('.harga' + id).attr('readonly' , false); 
                 }
              }
 
@@ -1480,7 +1480,7 @@
                             else {
                          
                             $('.hargabrg' + nobarang).val(addCommas(string[5]));
-                            $('.hargabrg' + nobarang).attr('readonly' , true);
+                            $('.hargabrg' + nobarang).attr('readonly' , false);
                           }
                         }
                         else {
@@ -1729,7 +1729,7 @@
 						}
 						else {
 						 $('.harga' + id).val(addCommas(numhar));
-						 $('.harga' + id).attr('readonly' , true); 
+						 $('.harga' + id).attr('readonly' , false); 
 						}
 					 }
 					 else {
