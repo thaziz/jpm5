@@ -1340,7 +1340,7 @@
 
              if(contract == 'YA'){
                   if(harga === "undefined"){
-              }
+                 }
                 else {
       
                  $('.harga' + id).val(addCommas(numhar));
@@ -1457,8 +1457,9 @@
                         
                       $('.sup' + nobarang).trigger("chosen:updated");
                       $('.sup' + nobarang).trigger("liszt:updated");
-                      $('.statuskontraksupplier' + id).val('YA');
-                      $('.statuskontraksuppliers' + nobarang).val('YA');
+
+                      $('.statuskontraksupplier' + id).val('TIDAK');
+                      $('.statuskontraksuppliers' + nobarang).val('TIDAK');
                     
 
                         supbtn = arrSupid;
@@ -1639,7 +1640,7 @@
                             }
                             else {
                               $('.hargabrg' + idtrsup).val(addCommas(string[5]));
-                              $('.hargabrg' + idtrsup).attr('readonly' , true);
+                              $('.hargabrg' + idtrsup).attr('readonly' , false);
                               $('.statuskontraksupplier' + counterId).val('YA')
                           }
                         }
