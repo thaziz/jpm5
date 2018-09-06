@@ -2292,18 +2292,15 @@
                         if(metodebayar == 'CHECK/BG'){
                           for(var i =0 ; i < mbdt.length; i++ ){
                             
-                              if(mbdt[i][0].mb_kode.match(/1099.*/)){
-                                $('.kelompokbank').val('BEDA BANK');
-                              }
-                              else {
+                             
                                if(mbdt[i][0].mb_kelompok == kelompok){
                                  $('.kelompokbank').val('SAMA BANK');
                                 }
                                 else {
-                                  toastr.info("Mohon maaf, tidak bisa beda bank :)");
-                                  return false;
+                                   $('.kelompokbank').val('BEDA BANK');
+                                 
                                 }
-                              }
+                              
 
                             var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
                             "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> "+mbdt[i][0].mbdt_noseri+ "</a> <input type='hidden' class='noseri"+nomrbnk+"' value='"+mbdt[i][0].mbdt_noseri+"' name='noseri[]'></td>"+ // NOSERI
@@ -2319,14 +2316,15 @@
                             arrnohapus.push(nomrbnk);
                             nomrbnk++;
 
-                              if(mbdt[i][0].mb_kode.match(/1099.*/)){
-                                $('.kelompokbank').val('BEDA BANK');
-                              }
-                              else {
                                if(mbdt[i][0].mb_kelompok == kelompok){
                                  $('.kelompokbank').val('SAMA BANK');
                                 }
-                              }
+                                else {
+                                 $('.kelompokbank').val('BEDA BANK');
+
+                                }
+                              
+
                           }
                         }
                       }

@@ -104,9 +104,9 @@
                         <td>
                         @if(Auth::user()->punyaAkses('Konfirmasi Order Keu','aktif'))
                           @if($co->man_keu == 'DISETUJUI')
-                             <a class="label label-info"  href="{{url('konfirmasi_order/konfirmasi_orderdetailkeu/'. $co->co_idspp.'')}}"> {{$co->man_keu}} </a>       
+                             <a class="label label-info"  href="{{url('konfirmasi_order/konfirmasi_orderdetailkeus/'. $co->co_idspp.'')}}"> {{$co->man_keu}} </a>       
                           @else
-                             <a class="label label-warning"  href="{{url('konfirmasi_order/konfirmasi_orderdetailkeu/'. $co->co_idspp.'')}}"> <i class="fa fa-close"></i> BELUM DI PROSES </a> &nbsp; &nbsp; 
+                             <a class="label label-warning"  href="{{url('konfirmasi_order/konfirmasi_orderdetailkeus/'. $co->co_idspp.'')}}"> <i class="fa fa-close"></i> BELUM DI PROSES </a> &nbsp; &nbsp; 
                           @endif
                         @endif  
                         </td>

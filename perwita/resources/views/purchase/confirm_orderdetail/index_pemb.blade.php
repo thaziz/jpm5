@@ -914,8 +914,8 @@
                                           kontrak = $(this).data('kontrak');
                                                 $('.checkbox'+n).each(function(){
                                                   if($this.is(":checked")) {
-
-                                                      rowsupplier = "<input type='hidden' value="+idsup+" name='datasup[]'>";
+                                              
+                                                      rowsupplier = "<input type='text'  value="+idsup+" name='datasup[]'>";
                                                       $('.suppliercek'+id).html(rowsupplier);
 
                                                       $('.harga' + val).attr('disabled', false);

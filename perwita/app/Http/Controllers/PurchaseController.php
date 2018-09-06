@@ -954,8 +954,18 @@ class PurchaseController extends Controller
 		
 	$data['spp'] = DB::select("select * from confirm_order, spp, cabang,masterdepartment where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
 	/*	dd($data['spp']);*/
+	$setujumankeu = $data['spp'][0]->man_keu;
+//	dd($setujumankeu);
+	if($setujumankeu == 'DISETUJUI'){
+		$data['suppliertb'] = DB::select("select * from confirm_order_tb, confirm_order, supplier where cotb_idco = co_id and co_idspp = '$id' and cotb_supplier = idsup");
+	}
+	else if($setujumankeu == 'BELUM DI SETUJUI'){
 
+		$data['suppliertb'] = DB::select("select * from confirm_order_tb_pemb, confirm_order, supplier where cotbk_idco = co_id and co_idspp = '$id' and cotbk_supplier = idsup");			
+	}
 		
+
+
 		$lokasigudang = $data['spp'][0]->spp_lokasigudang;
 		$tipespp = $data['spp'][0]->spp_tipe;
 		if($tipespp == 'NS'){
@@ -985,6 +995,8 @@ class PurchaseController extends Controller
 		}	
 	
 		$data['spptb'] =  DB::select("select * from spp_totalbiaya,spp, supplier where spptb_idspp = '$id' and spptb_idspp = spp.spp_id and spptb_supplier = idsup");
+
+
 		
 		$data['sppd_brg'] = DB::select("select sppd_kodeitem from spp_detail where sppd_idspp='$id'");
 
@@ -995,7 +1007,7 @@ class PurchaseController extends Controller
 		$data['codt_tb'] =  DB::select("select * from confirm_order_tb, confirm_order where cotb_idco = co_id and co_idspp = '$id' ");
 		
 		
-		$data['count'] = count($data['spptb']);
+		$data['count'] = count($data['suppliertb']);
 		$data['countcodt'] = count($data['codt']);
 
 		$data['count_brg'] = count($data['sppdt_barang']);
@@ -1108,21 +1120,12 @@ class PurchaseController extends Controller
 
 
 
-		if($tipespp != 'J'){
-			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and idsup = sppd_supplier order by sppd_seq asc");	
-
-			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang'  where sppd_idspp = '$id' and kode_item = sppd_kodeitem");
-		}
-		else {
-			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail  where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and idsup = sppd_supplier order by sppd_seq asc");	
-
-			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, unitstock from  masteritem , spp_detail  where sppd_idspp = '$id' and kode_item = sppd_kodeitem");	
-		}
+		
 
 		
 		$data['spptb'] =  DB::select("select * from spp_totalbiaya,spp, supplier where spptb_idspp = '$id' and spptb_idspp = spp.spp_id and spptb_supplier = idsup");
 		
-		
+		$dataco = DB::select("select * from confirm_order where co_idspp = '$id'");
 		$pemroses = $request->pemroses;
 
 		if($pemroses == 'PEMBELIAN'){
@@ -1138,24 +1141,64 @@ class PurchaseController extends Controller
 				$data['codt'] = DB::select("select *  from confirm_order, masteritem, spp, confirm_order_dt_pemb where confirm_order_dt_pemb.codtk_idco=co_id and co_idspp = '$id' and co_idspp = spp_id and codtk_kodeitem = kode_item");
 			}
 
+
+			if($tipespp != 'J'){
+			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and idsup = sppd_supplier order by sppd_seq asc");	
+
+			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang'  where sppd_idspp = '$id' and kode_item = sppd_kodeitem");
+			}
+			else {
+				$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail  where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and idsup = sppd_supplier order by sppd_seq asc");	
+
+				$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, unitstock from  masteritem , spp_detail  where sppd_idspp = '$id' and kode_item = sppd_kodeitem");	
+			}
+
 			$data['codt_supplier'] = DB::select("select distinct codtk_supplier, nama_supplier from supplier, confirm_order_dt_pemb, spp, confirm_order where codtk_supplier = idsup and co_idspp = spp_id and spp_id = '$id' and codtk_idco = co_id");
 			$data['countcodt'] = count($data['codt']);
 		}
 		else if($pemroses == 'KEUANGAN'){
-			$data['codt_tb'] =  DB::select("select * from confirm_order_tb, confirm_order where cotb_idco = co_id and co_idspp = '$id' ");
-			$data['counthrgbrg'] = count($data['sppdt']);
+			$data['suppliertb'] = DB::select("select * from confirm_order_tb_pemb, confirm_order, supplier where cotbk_idco = co_id and co_idspp = '$id' and cotbk_supplier = idsup");
+			$mankeusetuju = $dataco[0]->man_keu;
+			//return json_encode($mankeusetuju);
+			if($mankeusetuju == 'BELUM DI SETUJUI'){
+				
+			$data['codt_tb'] =  DB::select("select * from confirm_order_tb_pemb, confirm_order where cotbk_idco = co_id and co_idspp = '$id' ");
+			//$data['counthrgbrg'] = count($data['sppdt']);
 			$data['count'] = count($data['spptb']);
 			$data['countbrg'] = count($data['sppdt_barang']);
 
 			if($tipespp != 'J'){
-				$data['codt'] = DB::select("select *  from confirm_order, masteritem, spp, confirm_order_dt LEFT OUTER JOIN stock_gudang on codt_kodeitem = sg_item and sg_gudang = '$lokasigudang' where confirm_order_dt.codt_idco=co_id and co_idspp = '$id' and co_idspp = spp_id and codt_kodeitem = kode_item");
+				$data['codt'] = DB::select("select *  from confirm_order, masteritem, spp, confirm_order_dt_pemb LEFT OUTER JOIN stock_gudang on codtk_kodeitem = sg_item and codtk_lokasigudang = '$lokasigudang' where confirm_order_dt_pemb.codtk_idco=co_id and co_idspp = '$id' and co_idspp = spp_id and codtk_kodeitem = kode_item and co_idspp = spp_id");
 			}
 			else {
-				$data['codt'] = DB::select("select *  from confirm_order, masteritem, spp, confirm_order_dt where confirm_order_dt.codt_idco=co_id and co_idspp = '$id' and co_idspp = spp_id and codt_kodeitem = kode_item");
+				$data['codt'] = DB::select("select *  from confirm_order, masteritem, spp, confirm_order_dt_pemb where confirm_order_dt_pemb.codtk_idco=co_id and co_idspp = '$id' and co_idspp = spp_id and codtk_kodeitem = kode_item");
 			}
 
-			$data['codt_supplier'] = DB::select("select distinct codt_supplier, nama_supplier from supplier, confirm_order_dt, spp, confirm_order where codt_supplier = idsup and co_idspp = spp_id and spp_id = '$id' and codt_idco = co_id");
+		
+
+			$data['codt_supplier'] = DB::select("select distinct codtk_supplier, nama_supplier from supplier, confirm_order_dt_pemb, spp, confirm_order where codtk_supplier = idsup and co_idspp = spp_id and spp_id = '$id' and codtk_idco = co_id");
 			$data['countcodt'] = count($data['codt']);
+			}
+			elseif($mankeusetuju == 'DISETUJUI'){
+			//	dd($mankeusetuju);
+				$data['suppliertb'] = DB::select("select * from confirm_order_tb, confirm_order, supplier where cotb_idco = co_id and co_idspp = '$id' and cotb_supplier = idsup");
+
+				$data['codt_tb'] =  DB::select("select * from confirm_order_tb, confirm_order where cotb_idco = co_id and co_idspp = '$id' ");
+				$data['counthrgbrg'] = count($data['sppdt']);
+				$data['count'] = count($data['spptb']);
+				$data['countbrg'] = count($data['sppdt_barang']);
+
+				if($tipespp != 'J'){
+					$data['codt'] = DB::select("select *  from confirm_order, masteritem, spp, confirm_order_dt LEFT OUTER JOIN stock_gudang on codt_kodeitem = sg_item and sg_gudang = '$lokasigudang' where confirm_order_dt.codt_idco=co_id and co_idspp = '$id' and co_idspp = spp_id and codt_kodeitem = kode_item");
+				}
+				else {
+					$data['codt'] = DB::select("select *  from confirm_order, masteritem, spp, confirm_order_dt where confirm_order_dt.codt_idco=co_id and co_idspp = '$id' and co_idspp = spp_id and codt_kodeitem = kode_item");
+				}
+
+				$data['codt_supplier'] = DB::select("select distinct codt_supplier, nama_supplier from supplier, confirm_order_dt, spp, confirm_order where codt_supplier = idsup and co_idspp = spp_id and spp_id = '$id' and codt_idco = co_id");
+				$data['countcodt'] = count($data['codt']);
+			}
+			
 		}
 		
 		
@@ -1175,7 +1218,7 @@ class PurchaseController extends Controller
 
 
 	public function saveconfirmorderdt(Request $request){
-	/*	dd($request);*/
+		
 		return DB::transaction(function() use ($request) { 
 		
 		if($request->pemroses == 'KEUANGAN'){
@@ -1209,6 +1252,9 @@ class PurchaseController extends Controller
 			$n = 1;
 			$idsup = 0;
 			for($i = 0 ; $i <$countapproval; $i++) {
+				$supplierco = explode("," , $request->supplier3[$i]);
+				$idsupco = $supplierco[0];
+
 				if($request->status[$i] == 'SETUJU'){
 					$lastid = co_purchasedtpemb::max('codtk_id'); 
 
@@ -1232,7 +1278,7 @@ class PurchaseController extends Controller
 						$explode = explode(",", $string);
 						$idsup = $explode[0];*/
 
-						$codt->codtk_supplier = $request->datasup[$i];
+						$codt->codtk_supplier = $idsupco;
 						/*if(count($request->supplier) > 1 ){
 							
 							$idsup++;
@@ -1272,6 +1318,8 @@ class PurchaseController extends Controller
 
 			$cotb = new co_purchasetbpemb();
 			for($k=0; $k < count($request->bayar); $k++){
+				$supplierco = explode(",", $request->supplier3[$k]);
+				$idsupco = $supplierco[0];
 
 				if($request->bayar[$k] == "undefined") {
 
@@ -1292,7 +1340,7 @@ class PurchaseController extends Controller
 					$cotb->cotbk_idco = $request->idco;
 
 				
-					$cotb->cotbk_supplier =$request->datasupplier[$k];
+					$cotb->cotbk_supplier = $idsupco;
 
 					$cotb->cotbk_totalbiaya = $replacehrg;
 					$cotb->cotbk_setuju = 'BELUM DI SETUJUI';
@@ -7703,6 +7751,7 @@ public function kekata($x) {
 
 					$kelompokakun = $datafpgb[0]->fpg_kelompok;
 
+//					dd($kelompokakun);
 
 					if($kelompokakun == 'SAMA BANK'){
 						$time = Carbon::now();
@@ -7879,7 +7928,6 @@ public function kekata($x) {
 						 	'bm_status' => 'DITRANSFER', 						 	
 					 	]);	
 					}
-
 				}
 				else if($jenisbayar == '13'){
 					$datafpgdt = DB::select("select * from fpg, fpg_dt where idfpg = '$idfpg' and fpgdt_idfpg = idfpg");
@@ -8183,10 +8231,10 @@ public function kekata($x) {
 									        
     		}
     		elseif($cekjurnal == 1) {
-    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idbbk];
 					        
     		}
-
+    		//		$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
 			//BONSEM BANK KELUAR
 			return json_encode($dataInfo);
 		});		
