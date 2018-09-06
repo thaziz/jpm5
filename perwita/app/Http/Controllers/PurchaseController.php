@@ -7078,7 +7078,7 @@ public function purchase_order() {
 
 		$datainfo =['status' => 'sukses' , 'data' => $index];
 
-		$data['idfpg'] = $idbbk;
+		$data['idfpg'] = $index;
 	
 
 		return json_encode($data);
