@@ -268,6 +268,7 @@ class invoice_Controller extends Controller
         if ($head->i_pendapatan == 'KARGO' or $head->i_pendapatan == 'PAKET') {
            $detail = DB::table('invoice_d')
                     ->join('delivery_order','id_nomor_do','=','nomor')
+                    ->orderBy('tanggal','ASC')
                     ->where('id_nomor_invoice',$id)
                     ->get();
         }else{
