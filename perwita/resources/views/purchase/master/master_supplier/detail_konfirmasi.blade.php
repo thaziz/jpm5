@@ -58,7 +58,7 @@
 
 
                
-                <form method="post" action="{{url('konfirmasisupplier/updatekonfirmasisupplier/'.$sup->idsup .'')}}"  enctype="multipart/form-data" class="form-horizontal">
+                <form method="post" action="{{url('konfirmasisupplier/updatekonfirmasisupplier/'.$sup->idsup .'')}}"  enctype="multipart/form-data" class="form-horizontal" id="savesupplier">
 
                   <div class="box-body">
                        <div class="row">
@@ -454,6 +454,7 @@
 
                 <div class="box-footer">
                   <div class="pull-right">
+                       
                         @if($sup->status == 'BELUM DI SETUJUI')
                           <input class="btn btn-success" name="setuju" value="SETUJU" type="submit">
 
@@ -497,6 +498,16 @@
         }
       })
    
+
+     $('#savesupplier').submit(function(){
+        $('.keteranganitem').each(function(){
+          val = $(this).val();
+          if(val == ''){
+            toastr.info('Keterangan Item Kosong, Harap diisi :) ');
+            return false;
+          }
+        })
+     })
 
     $('.simpandata').click(function(){
       
@@ -604,7 +615,7 @@ $(function(){
                   "<td> <select class='form-control brg chosen-select' name='brg[]' data-id="+$no+">  @foreach($data['item'] as $item) <option value='{{$item->kode_item}}+{{$item->harga}}+{{$item->updatestock}}'> {{$item->nama_masteritem}} </option> @endforeach </select>" +
                    "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
                    "<td> <select class='form-control updatestock"+$no+"' name='updatestock[]' readonly> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
-                   "<td> <input type='text' class='form-control' name='keteranganitem[]'> </td>" +
+                   "<td> <input type='text' class='form-control keteranganitem' name='keteranganitem[]'> </td>" +
                   "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a></td>" +
                   "</tr>";   
 

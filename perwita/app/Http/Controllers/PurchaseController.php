@@ -3738,7 +3738,18 @@ public function purchase_order() {
 			}
 
 		} // jika stock iya
-		$dataInfo=['status'=>'sukses'];        
+
+			$cekjurnal = check_jurnal($lpb);
+    		if($cekjurnal == 0){
+    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
+				DB::rollback();
+									        
+    		}
+    		elseif($cekjurnal == 1) {
+    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+					        
+    		}
+ 
         return json_encode($dataInfo);
 
 	});
@@ -6147,7 +6158,20 @@ public function purchase_order() {
 		    		}	
 
 			}
-		return json_encode($idfaktur);
+
+
+			$cekjurnal = check_jurnal($nofaktur);
+    		if($cekjurnal == 0){
+    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
+				DB::rollback();
+									        
+    		}
+    		elseif($cekjurnal == 1) {
+    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idfaktur];
+					        
+    		}
+
+		return json_encode($dataInfo);
 
 		});
 		
@@ -7021,8 +7045,18 @@ public function purchase_order() {
 			}		
 			   
 
+			$cekjurnal = check_jurnal($nofaktur);
+    		if($cekjurnal == 0){
+    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
+				DB::rollback();
+									        
+    		}
+    		elseif($cekjurnal == 1) {
+    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idfaktur];
+					        
+    		}	
 
-		return json_encode($idfaktur);
+		return json_encode($dataInfo);
 		});
 	}
 
@@ -7051,6 +7085,7 @@ public function purchase_order() {
 			/*return $nosupplier;*/
 
 			$data['counttt'] = count($data['tt']);
+
 
 			return json_encode($data);
 	}
@@ -7699,7 +7734,7 @@ public function kekata($x) {
 				}
 				
 				$nominal = str_replace(',', '', $request->nominal[$i]);
-				$explode = explode("-", $request->supplier[$i]);
+				$explode = explode(" ", $request->supplier[$i]);
 				$idsupplier = $explode[0];
 				$bbkdt->bbkd_nominal = $nominal;
 				$bbkdt->bbkd_keterangan = $request->keterangan[$i];
@@ -8277,7 +8312,7 @@ public function kekata($x) {
     			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idbbk];
 					        
     		}
-    		//		$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+    			/*	$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];*/
 			//BONSEM BANK KELUAR
 			return json_encode($dataInfo);
 		});		
