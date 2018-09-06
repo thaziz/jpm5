@@ -72,7 +72,15 @@
                     <button class="btn btn-success" onclick="tglpo()">
                         Get no po
                     </button>
+                </div>
+
+                <div class="">
+                    <button class="btn btn-success" onclick="fpgbankmasuk()">
+                        Get no po
+                    </button>
                 </div> 
+
+
 
                 <div class="box-body">
              

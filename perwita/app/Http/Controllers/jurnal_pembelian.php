@@ -353,5 +353,21 @@ class jurnal_pembelian  extends Controller
       }
       return json_encode('sukses');
     }
+
+
+    function fpgbankmasuk(){
+      $databankmasuk = DB::select("select * from bank_masuk");
+      for($key = 0; $key < count($databankmasuk); $key++){
+        $idbm = $databankmasuk[$key]->bm_id;
+        $idfpgb = $databankmasuk[$key]->bm_idfpgb;
+
+        $datafpg = DB::select("select * from fpg , fpg_cekbank where fpgb_idfpg = idfpg and fpgb_id = '$idfpgb'");
+        $notafpg = $datafpg[0]->fpg_nofpg;
+
+        DB::table('bank_masuk')
+        ->where('bm_id' , $idbm)
+        ->update([''])
+      }
+    }
      
 }
