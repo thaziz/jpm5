@@ -1670,13 +1670,13 @@ class LaporanMasterController extends Controller
 //START DELIVERY ORDER LAPORAN PAKET(DO)
 
 	public function deliveryorder(){
-
 		$data =DB::table('delivery_order as do')
 				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
 				->join('kota as ka','do.id_kota_asal','=','ka.id')
 				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
 				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
 				->where('pendapatan','=','PAKET')
+				->take(1000)
 				->get();
 
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
