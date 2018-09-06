@@ -1260,7 +1260,7 @@
 
                     "<td> <div class='satuan"+counterId+"'>  <br> <br> <div> </div> </td>"+ //satuan
 
-                    "<td> <input type='text' class='input-sm form-control hrga hargabrg"+no+" harga"+counterId+"' name='harga[]' style='text-align:right' data-id='"+counterId+"' data-no='"+no+"'/> <br> <div> </div> </td>"+ //harga
+                    "<td>"+counterId+" <input type='text' class='input-sm form-control hrga hargabrg"+no+" harga"+counterId+"' name='harga[]' style='text-align:right' data-id='"+counterId+"' data-no='"+no+"'/> <br> <div> </div> </td>"+ //harga
 
                     "<td> <select id='supselect' class='form-control chosen-select-width suipd suipl sup"+no+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' data-no='"+no+"' name='supplier[]' required=> <option value=''> -- Pilih Data Supplier -- </option> </select> <br> <div class='supduplicate supduplicate"+no+"'> </div> </td>"; //supplier
 
@@ -1548,12 +1548,14 @@
     })
 
      countersup = 0;
+
       //TAMBAHDATASUPPLIER
      $('#add-btn-supp').click(function(){
               $('.cek_tb').attr('disabled', false);
               $('.loadingjenis').css('display' , 'block');
 
               var idtrsup = no - 1;
+              counterId = counterId - 1;
               var lastarr = arrnobrg.slice(-1)[0];
               val2 = $('.brg' + lastarr).val();
               var string = val2.split(",");
@@ -1594,13 +1596,23 @@
       					var rowSup = "<tr id='supp-"+idtrsup+"' class='data-supplier supp-"+counterId+"'>";
       					rowSup += "<td></td> <td></td>  <td> </td> <td></td> <td>  </td>"+
       							"<td> <input type='text' style='text-align:right' name='harga[]' data-id='"+counterId+"' class='input-sm form-control hrga hargabrg"+idtrsup+" harga"+counterId+"' data-id="+counterId+" data-no="+removesup+" '/>  <input type='hidden' class='statuskontraksupplier"+counterId+" statuskontraksuppliers"+idtrsup+"' name='statuskontrak[]'></td>"+ //harga
-      							"<td><select id='supselect' class='form-control chosen-select select2 suipd suipl sup"+idtrsup+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' data-no='"+idtrsup+"' name='supplier[]' required> <option value=''> -- Pilih Supplier -- </option>"; //SUpplier
+      							"<td>"+counterId+"<select id='supselect' class='form-control chosen-select select2 suipd suipl sup"+idtrsup+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' data-no='"+idtrsup+"' name='supplier[]' required> <option value=''> -- Pilih Supplier -- </option>"; //SUpplier
       					
                 if(hasilsupp.length > 0){ //TERIKAT KONTRAK
                       $.each(hasilsupp, function(i , obj) {
                         rowSup +=  "<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+idtrsup+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected>"+obj.no_supplier+"-"+ obj.nama_supplier+"</option>";
                       }) 
-                      $('.hrga' + idtrsup).attr('readonly' , true);                    
+
+                      for(i = 0 ; i < hasilsupp.length; i++){
+                        kontrak = hasilsupp[i].kontrak;
+                        if(kontrak == 'YA'){
+                          $('.hrga' + idtrsup).attr('readonly' , true);    
+                        }
+                        else {
+                          $('.hrga' + idtrsup).attr('readonly' , false);    
+                        }
+                      }
+                                          
                 }
                 else {
                    $.each(hasilmaster, function(i , obj) {
