@@ -326,7 +326,6 @@ class jurnal_pembelian  extends Controller
           
 
         //  dd($carinota)
-         
             $index = (integer)$carinota[0]->id + 1;
             $index = str_pad($index, 4, '0' , STR_PAD_LEFT);
             $nota = 'FPG' .  $getmonth . $gettahun . '/' . $cabang . '/' . $index;
@@ -341,10 +340,18 @@ class jurnal_pembelian  extends Controller
 
     function tglpo(){
       $data = DB::select("select * from pembelian_order");
+    
       for($j = 0; $j < count($data); $j++){
-        $tglpo = Carbon::parse($dataspp[$j]->created_at)->format('Y-m-d');
-        return json_encode($tglpo);
+        $tglpo = Carbon::parse($data[$j]->created_at)->format('Y-m-d');
+        $idpo = $data[$j]->po_id;
+
+        DB::table('pembelian_order')
+        ->where('po_id' , $idpo)
+        ->update(['po_tglspp' => $tglpo]);
+
+        
       }
+      return json_encode('sukses');
     }
      
 }

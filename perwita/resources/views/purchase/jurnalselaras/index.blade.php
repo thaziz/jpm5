@@ -70,7 +70,7 @@
 
                 <div class="">
                     <button class="btn btn-success" onclick="tglpo()">
-                        Get nota fpg
+                        Get no po
                     </button>
                 </div> 
 

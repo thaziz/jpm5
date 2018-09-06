@@ -1867,11 +1867,18 @@ public function purchase_order() {
 
 				$po->save();
 
-				/*$idspp =$request->idspp[0];
+				$idspp =$request->idspp[0];
 				$dataspp = DB::select("select * from spp where spp_id = '$idspp'");
 				$datacomp = $dataspp[0]->spp_cabang;
-				$tglspp = $dataspp[0]->spp_tgldibutuhkan;
+				$tglspp = $dataspp[0]->spp_nospp;
 
+				$explodetglspp = explode("/", $tglspp);
+				$substrtglspp = substr($explodetglspp, 2,4);
+				$getmonth = substr($substrtglspp, 0,2);
+				$getyear = substr($substrtglspp, 2,2);
+				$tahun = '20' . $tahun;
+				$tglspp = $getyear . '-' . $getmonth . '-' . 09;  
+				dd($tglspp);
 				DB::table('pembelian_order')
 				->where('po_id' , $po_id)
 				->update(['po_tglspp' => $tglspp]);
@@ -1891,7 +1898,7 @@ public function purchase_order() {
 
 	          DB::table('pembelian_order')
 	           ->where('po_id' , $po_id)
-	          ->update(['po_no' => $nota]);*/
+	          ->update(['po_no' => $nota]);
 
 
 
