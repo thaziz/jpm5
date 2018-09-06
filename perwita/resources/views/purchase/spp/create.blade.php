@@ -1548,12 +1548,14 @@
     })
 
      countersup = 0;
+
       //TAMBAHDATASUPPLIER
      $('#add-btn-supp').click(function(){
               $('.cek_tb').attr('disabled', false);
               $('.loadingjenis').css('display' , 'block');
 
               var idtrsup = no - 1;
+              counterId = counterId - 1;
               var lastarr = arrnobrg.slice(-1)[0];
               val2 = $('.brg' + lastarr).val();
               var string = val2.split(",");
