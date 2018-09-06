@@ -366,6 +366,7 @@ class jurnal_pembelian  extends Controller
 
         DB::table('bank_masuk')
         ->where('bm_id' , $idbm)
+        ->where('bm_idfpgb' , $idfpgb)
         ->update([''])
       }
     }
