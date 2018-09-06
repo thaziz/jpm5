@@ -306,11 +306,26 @@ class kasKeluarController extends Controller
 	{
 		if (isset($req->id)) {
 			if (Auth::user()->punyaAkses('Bukti Kas Keluar','cabang')) {
-				$akun = DB::table('master_akun_fitur')
-				  ->where('maf_group','1')
-				  ->where('maf_cabang',$req->cabang)
-				  ->orWhere('maf_cabang','000')
-				  ->get();
+
+				if ($req->cabang != '000') {
+					$data1 = DB::table('master_akun_fitur')
+					  ->where('maf_group','1')
+					  ->where('maf_cabang',$req->cabang)
+					  ->get();
+
+					$data2 = DB::table('master_akun_fitur')
+					  ->where('maf_group','1')
+					  ->where('maf_cabang','000')
+					  ->get();
+
+					$akun = array_merge($data1,$data2);
+				}else{
+					$akun = DB::table('master_akun_fitur')
+							  ->where('maf_group','1')
+							  ->where('maf_cabang',$req->cabang)
+							  ->get();
+				}
+				
 			}else{
 				$akun = DB::table('master_akun_fitur')
 				  ->where('maf_group','1')
@@ -1642,13 +1657,23 @@ class kasKeluarController extends Controller
 					$sisa_um = 0;
 				}
 
+				if ($req->jenis_bayar == 4) {
+					$akun_hutang = DB::table('d_uangmuka')
+									 ->where('um_nomorbukti',$req->fp_faktur[$i])
+									 ->first()->um_akunhutang;
+				}else{
+					$akun_hutang = DB::table('faktur_pembelian')
+								 ->where('fp_nofaktur',$req->fp_faktur[$i])
+								 ->first()->fp_acchutang;
+				}
+				
 				$detail = DB::table('bukti_kas_keluar_detail')
 				  ->insert([
 				  	'bkkd_id'  			=> $id_dt,
 					'bkkd_bkk_id'  		=> $id,
 					'bkkd_bkk_dt'  		=> $i+1,
 					'bkkd_keterangan' 	=> strtoupper($req->fp_keterangan[$i]),
-					'bkkd_akun'  		=> $req->hutang,
+					'bkkd_akun'  		=> $akun_hutang,
 					'bkkd_total' 		=> filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT),
 					'bkkd_debit' 		=> 'DEBET',
 					'updated_at'		=> carbon::now(),
@@ -3415,21 +3440,34 @@ class kasKeluarController extends Controller
 					$sisa_um = 0;
 				}
 
+				if ($req->jenis_bayar == 4) {
+					$akun_hutang = DB::table('d_uangmuka')
+								 ->where('um_nomorbukti',$req->fp_faktur[$i])
+								 ->first()->um_akunhutang;
+				}else{
+					$akun_hutang = DB::table('faktur_pembelian')
+								 ->where('fp_nofaktur',$req->fp_faktur[$i])
+								 ->first()->fp_acchutang;
+				}
+
 				$detail = DB::table('bukti_kas_keluar_detail')
 				  ->insert([
 				  	'bkkd_id'  			=> $id_dt,
 					'bkkd_bkk_id'  		=> $id,
 					'bkkd_bkk_dt'  		=> $i+1,
 					'bkkd_keterangan' 	=> strtoupper($req->fp_keterangan[$i]),
-					'bkkd_akun'  		=> $req->hutang,
+					'bkkd_akun'  		=> $akun_hutang,
 					'bkkd_total' 		=> filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_FLOAT),
 					'bkkd_debit' 		=> 'DEBET',
 					'updated_at'		=> carbon::now(),
-					'created_at' 		=> carbon::now(),
 					'bkkd_ref' 			=> $req->fp_faktur[$i],
 					'bkkd_sisaum'		=> $sisa_um,
 					'bkkd_supplier' 	=> $req->supplier_faktur,
 					]);
+
+
+
+	
 
 				if ($req->jenis_bayar == 2 or $req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
 					$cari_faktur = DB::table('faktur_pembelian')
