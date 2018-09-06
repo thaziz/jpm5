@@ -1337,7 +1337,7 @@
             contract = $('.statuskontraksupplier' + id).val();
             // toastr.info(val);
              numhar = Math.round(harga).toFixed(2);
-            
+
              if(contract == 'YA'){
                   if(harga === "undefined"){
                  }
@@ -1690,11 +1690,11 @@
             id = $(this).data('id');
             kontrak = $('.statuskontraksupplier' + id).val();
             //alert(kontrak);
-            if(kontrak == 'YA'){
+            
               //alert('s');
               harga = hargasupplier[5];
               $('.harga' + id).val(addCommas(harga));
-            }
+            
           })
 
 					$(function(){
