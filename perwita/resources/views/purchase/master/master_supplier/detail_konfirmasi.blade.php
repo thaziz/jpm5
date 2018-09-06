@@ -375,8 +375,10 @@
                       
 
                         <div class="col-xs-12">
+
+                            @if($sup->status == 'SETUJU')
                             <th> <button class="btn btn-sm btn-info edit" type="button"> <i class="fa fa-pencil"> </i> Edit  </button> </th>
-                        
+                            @endif
             
             
             
@@ -454,7 +456,7 @@
 
                 <div class="box-footer">
                   <div class="pull-right">
-                       
+
                         @if($sup->status == 'BELUM DI SETUJUI')
                           <input class="btn btn-success" name="setuju" value="SETUJU" type="submit">
 
