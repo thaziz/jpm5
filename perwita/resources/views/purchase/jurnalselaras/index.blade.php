@@ -76,7 +76,7 @@
 
                 <div class="">
                     <button class="btn btn-success" onclick="fpgbankmasuk()">
-                        Get no po
+                        bank masuk
                     </button>
                 </div> 
 
@@ -159,6 +159,17 @@
     function nofpg(){
         $.ajax({
         url : baseUrl + '/jurnalselaras/notafpg',
+        type : "post",
+        dataType : "json",
+        success : function(response){
+
+        }
+      })
+    }
+
+    function fpgbankmasuk(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/fpgbankmasuk',
         type : "post",
         dataType : "json",
         success : function(response){

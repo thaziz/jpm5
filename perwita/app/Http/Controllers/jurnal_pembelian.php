@@ -362,12 +362,13 @@ class jurnal_pembelian  extends Controller
         $idfpgb = $databankmasuk[$key]->bm_idfpgb;
 
         $datafpg = DB::select("select * from fpg , fpg_cekbank where fpgb_idfpg = idfpg and fpgb_id = '$idfpgb'");
+        dd($idfpgb);
         $notafpg = $datafpg[0]->fpg_nofpg;
 
         DB::table('bank_masuk')
         ->where('bm_id' , $idbm)
         ->where('bm_idfpgb' , $idfpgb)
-        ->update([''])
+        ->update(['bm_notatransaksi' => $notafpg]);
       }
     }
      

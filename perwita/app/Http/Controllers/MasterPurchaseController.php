@@ -1176,7 +1176,7 @@ class MasterPurchaseController extends Controller
 		//	dd($kodeitem);
 			$itemsupplier->is_id = $iditem;
 			$itemsupplier->is_kodeitem = $kodeitem;
-			$itemsupplier->is_supplier = $$request->nosupplier;
+			$itemsupplier->is_supplier = $request->nosupplier;
 			$itemsupplier->is_harga = $replacehrg;
 			$itemsupplier->is_idsup = $mastersupplier->idsup;
 			$itemsupplier->is_updatestock = $request->updatestock[$i];
