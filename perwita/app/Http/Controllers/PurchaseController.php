@@ -7064,21 +7064,19 @@ public function purchase_order() {
 
 
 
-		//return $mon;
-		$idbbk = DB::select("select substr(max(fpg_nofpg), 13) from fpg where fpg_cabang = '$comp' and to_char(fpg_tgl, 'MM') = '$bulan' and to_char(fpg_tgl, 'YY') = '$tahun' order by idfpg desc limit 1");
+	  $carinota = DB::select("SELECT  substring(max(fpg_nofpg),13) as id from fpg
+                                    WHERE fpg_cabang = '$cabang'
+                                    AND to_char(fpg_tgl,'MM') = '$getmonth'
+                                    AND to_char(fpg_tgl,'YY') = '$gettahun'");
+      
 
-		//return $idbbk;
-		if(count($idbbk) > 0) {		
-			$explode = explode("/", $idbbk[0]->fpg_nofpg);
-			$idbbk = $explode[2];
-			$string = (int)$idbbk + 1;
-			$idbbk = str_pad($string, 4, '0', STR_PAD_LEFT);
-		}
-		else {
-			$idbbk = '0001';
-		}
+    //  dd($carinota)
+     
+        $index = (integer)$carinota[0]->id + 1;
+        $index = str_pad($index, 4, '0' , STR_PAD_LEFT);
+     //   $nota = 'FPG' .  $getmonth . $gettahun . '/' . $cabang . '/' . $index;
 
-		$datainfo =['status' => 'sukses' , 'data' => $idbbk];
+		$datainfo =['status' => 'sukses' , 'data' => $index];
 
 		$data['idfpg'] = $idbbk;
 	
