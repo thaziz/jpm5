@@ -170,7 +170,7 @@ class do_paketController extends Controller
 
 	      $sql = " SELECT CAST(MAX(SUBSTRING (nomor FROM '....$')) AS INTEGER) + 1 nomor
 	             FROM delivery_order WHERE to_char(tanggal, 'YYMM')='$tanggal' AND kode_cabang='$kode_cabang' AND jenis='PAKET'
-	             AND nomor LIKE '%PAK" . $kode_cabang . $tanggal . "%' ";
+	             AND nomor LIKE 'PAK%" . $kode_cabang . $tanggal . "%' ";
         $list = collect(\DB::select($sql))->first();
         
         if ($list->nomor == '') {
@@ -1449,7 +1449,7 @@ class do_paketController extends Controller
     public function cari_kas_besar_deliveryorder_paket(Request $request)
     {
         $data = DB::table('d_akun')
-                  ->where('id_akun','like','%1003%')
+                  ->where('id_akun','like','1003%')
                   ->where('kode_cabang','=',$request->a)
                   ->first();
 
