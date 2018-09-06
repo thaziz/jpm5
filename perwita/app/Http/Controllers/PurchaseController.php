@@ -1760,10 +1760,10 @@ public function purchase_order() {
 
 
 			
-			$time = Carbon::now();
-	//	$newtime = date('Y-M-d H:i:s', $time);  
+				$time = Carbon::now();
+
 		
-				$year =Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
+				$year = Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
 				$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; 
 
 				if($month < 10) {

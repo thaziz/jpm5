@@ -323,6 +323,9 @@ class jurnal_pembelian  extends Controller
                                         WHERE fpg_cabang = '$cabang'
                                         AND to_char(fpg_tgl,'MM') = '$getmonth'
                                         AND to_char(fpg_tgl,'YY') = '$gettahun'");
+          
+
+        //  dd($carinota)
          
             $index = (integer)$carinota[0]->id + 1;
             $index = str_pad($index, 4, '0' , STR_PAD_LEFT);
