@@ -66,7 +66,22 @@
                         Get nota fpg
                     </button>
                 </div>     
-                    
+                
+
+                <div class="">
+                    <button class="btn btn-success" onclick="tglpo()">
+                        Get no po
+                    </button>
+                </div>
+
+                <div class="">
+                    <button class="btn btn-success" onclick="fpgbankmasuk()">
+                        Get no po
+                    </button>
+                </div> 
+
+
+
                 <div class="box-body">
              
                 </div><!-- /.box-body -->
@@ -122,6 +137,17 @@
     function item(){
          $.ajax({
         url : baseUrl + '/jurnalselaras/item',
+        type : "post",
+        dataType : "json",
+        success : function(response){
+
+        }
+      })
+    }
+
+    function tglpo(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/tglpo',
         type : "post",
         dataType : "json",
         success : function(response){

@@ -1665,7 +1665,7 @@
 
                       if(jenisbayar == '2' || jenisbayar == '6' || jenisbayar == '7' || jenisbayar == '9') {
                           $('.nofaktur').val(data.faktur[0][0].fp_nofaktur);
-                          $('.tgl').val(data.faktur[0][0].fp_tgl);
+                        /*  $('.tgl').val(data.faktur[0][0].fp_tgl);*/
                           $('.jatuhtempo').val(data.faktur[0][0].fp_jatuhtempo);
                           $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
@@ -1755,7 +1755,7 @@
 
                     else if(jenisbayar == '3'){
                          $('.nofaktur').val(data.faktur[0][0].v_nomorbukti);
-                          $('.tgl').val(data.faktur[0][0].v_tgl);
+                     /*     $('.tgl').val(data.faktur[0][0].v_tgl);*/
                           $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
                         //  $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
@@ -1825,7 +1825,7 @@
 					// UANG MUKA PEMBELIAN
 					 else if(jenisbayar == '4'){
                          $('.nofaktur').val(data.faktur[0][0].um_nomorbukti);
-                          $('.tgl').val(data.faktur[0][0].um_tgl);
+                       /*   $('.tgl').val(data.faktur[0][0].um_tgl);*/
 /*                          $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
 */                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
@@ -1891,7 +1891,7 @@
              // GIRO KAS KECIL
                else if(jenisbayar == '1'){
                          $('.nofaktur').val(data.faktur[0][0].ik_nota);
-                          $('.tgl').val(data.faktur[0][0].ik_tgl_akhir);
+                         /* $('.tgl').val(data.faktur[0][0].ik_tgl_akhir);*/
 /*                          $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
 */                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
@@ -1961,7 +1961,7 @@
                     }
                     else if(jenisbayar == '11'){
                          $('.nofaktur').val(data.faktur[0][0].bp_nota);
-                          $('.tgl').val(data.faktur[0][0].bp_tgl);
+                        /*  $('.tgl').val(data.faktur[0][0].bp_tgl);*/
 /*                          $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
 */                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
@@ -2025,7 +2025,7 @@
                     }
                     else if(jenisbayar == '13'){
                       $('.nofaktur').val(data.faktur[0][0].bp_nota);
-                          $('.tgl').val(data.faktur[0][0].bp_tgl);
+                        /*  $('.tgl').val(data.faktur[0][0].bp_tgl);*/
 /*                          $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
 */                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
@@ -2263,8 +2263,8 @@
                     bank = $('.bank').val();
                     explode = bank.split("+");
                     kodebank = explode[4];
-                    alert(kodebank);
-                    alert(bank);
+                   // alert(kodebank);
+                   // alert(bank);
                     $('.hutangbank').val(kodebank);
 
                     $('#myModal2').modal('hide');
@@ -2292,18 +2292,15 @@
                         if(metodebayar == 'CHECK/BG'){
                           for(var i =0 ; i < mbdt.length; i++ ){
                             
-                              if(mbdt[i][0].mb_kode.match(/1099.*/)){
-                                $('.kelompokbank').val('BEDA BANK');
-                              }
-                              else {
+                             
                                if(mbdt[i][0].mb_kelompok == kelompok){
                                  $('.kelompokbank').val('SAMA BANK');
                                 }
                                 else {
-                                  toastr.info("Mohon maaf, tidak bisa beda bank :)");
-                                  return false;
+                                   $('.kelompokbank').val('BEDA BANK');
+                                 
                                 }
-                              }
+                              
 
                             var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
                             "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> "+mbdt[i][0].mbdt_noseri+ "</a> <input type='hidden' class='noseri"+nomrbnk+"' value='"+mbdt[i][0].mbdt_noseri+"' name='noseri[]'></td>"+ // NOSERI
@@ -2319,14 +2316,15 @@
                             arrnohapus.push(nomrbnk);
                             nomrbnk++;
 
-                              if(mbdt[i][0].mb_kode.match(/1099.*/)){
-                                $('.kelompokbank').val('BEDA BANK');
-                              }
-                              else {
                                if(mbdt[i][0].mb_kelompok == kelompok){
                                  $('.kelompokbank').val('SAMA BANK');
                                 }
-                              }
+                                else {
+                                 $('.kelompokbank').val('BEDA BANK');
+
+                                }
+                              
+
                           }
                         }
                       }

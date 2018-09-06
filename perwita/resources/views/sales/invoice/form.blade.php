@@ -105,7 +105,8 @@
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td >
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input onchange="ganti_jt()" type="text" class="form-control tgl" name="tgl" value="{{$tgl}}">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" class="form-control tgl" name="tgl" value="{{$tgl}}" onchange="ganti_tgl()">
                                     </div>
                                 </td>
                                 <td style="padding-top: 0.4cm">Jatuh Tempo</td>
@@ -384,14 +385,18 @@
     $('.tgl').datepicker({
         format:'dd/mm/yyyy',
         endDate:'today'
+    }).on('changeDate', function (ev) {
+        ganti_tgl();
     });
+
+
     $('.ed_jatuh_tempo').datepicker({
         format:'dd/mm/yyyy',
     });
     $('.date').datepicker({
         format:'dd/mm/yyyy',
     });
-       function ganti_jt() {
+    function ganti_jt() {
         var cus = $('#customer').val();
         var tgl = $('.tgl').val();
         $.ajax({
@@ -402,20 +407,28 @@
                 $('.ed_jatuh_tempo').val(response.tgl);
             }
         });
-   }
-    //ajax cari nota
-    $(document).ready(function(){
+    }
+
+
+    function ganti_tgl() {
+        console.log('tes');
         var cabang = $('.cabang').val();
+        var tgl = $('.tgl').val();
         $.ajax({
             url:baseUrl+'/sales/nota_invoice',
-            data:{cabang},
+            data:{cabang,tgl},
             dataType : 'json',
             success:function(response){
                 $('#nota_invoice').val(response.nota);
                 $('#old_invoice').val(response.nota);
+                ganti_jt();
             }
         });
-
+    }
+    //ajax cari nota
+    $(document).ready(function(){
+        ganti_tgl();
+        var cabang = $('.cabang').val();
         $.ajax({
         url:baseUrl +'/sales/drop_cus',
         data:{cabang},
@@ -432,10 +445,11 @@
     });
     // ganti nota untuk admin
     function ganti_nota(argument) {
-      var cabang = $('.cabang').val();
+        var tgl = $('.tgl').val();
+        var cabang = $('.cabang').val();
         $.ajax({
             url:baseUrl+'/sales/nota_invoice',
-            data:{cabang},
+            data:{cabang,tgl},
             dataType : 'json',
             success:function(response){
                 if ($('#nota_invoice').val() == $('#old_invoice').val() ) {

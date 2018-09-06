@@ -1189,13 +1189,12 @@
    var nourutsup2 = 0;
    var urutsup = 1;
     $('#add-btn').click(function(){
+     counterId++;
       $('.cek_tb').attr('disabled', false);
 
       supplier = $('.suipl').val();
 
-      console.log(supplier);
-
-      console.log(valbarang);
+    
 
        $('select[name*="idbarang"] option').attr('disabled' , false);
 
@@ -1226,7 +1225,6 @@
             dataType : "json",
             success : function(response){
              
-            
               for(i = 0; i < response.countgroupitem; i++){
               //  console.log(response.groupitem[i].kode_jenisitem+','+response.groupitem[i].stock);
                  $('#selectgroup option[value="'+response.groupitem[i].kode_jenisitem+','+response.groupitem[i].stock+'"]').remove();
@@ -1342,11 +1340,11 @@
 
              if(contract == 'YA'){
                   if(harga === "undefined"){
-              }
+                 }
                 else {
       
                  $('.harga' + id).val(addCommas(numhar));
-                 $('.harga' + id).attr('readonly' , true); 
+                 $('.harga' + id).attr('readonly' , false); 
                 }
              }
              else {
@@ -1356,7 +1354,7 @@
                 else {
                  // toastr.info('tidak_undefined');
                  $('.harga' + id).val(addCommas(numhar));
-                 $('.harga' + id).attr('readonly' , true); 
+                 $('.harga' + id).attr('readonly' , false); 
                 }
              }
 
@@ -1441,7 +1439,6 @@
 
                    $('.satuan' + id).html(satuan);
 
-                    var nosup = counterId - 1;
                     var nourut = no -1;
                     console.log(nourut + 'nourut');
                     
@@ -1460,8 +1457,9 @@
                         
                       $('.sup' + nobarang).trigger("chosen:updated");
                       $('.sup' + nobarang).trigger("liszt:updated");
-                      $('.statuskontraksupplier' + id).val('YA');
-                      $('.statuskontraksuppliers' + nobarang).val('YA');
+
+                      $('.statuskontraksupplier' + id).val('TIDAK');
+                      $('.statuskontraksuppliers' + nobarang).val('TIDAK');
                     
 
                         supbtn = arrSupid;
@@ -1474,8 +1472,7 @@
 
                         console.log(string + 'string') 
 
-                        idcntr = counterId - 1;
-                
+                       
                         if(string[4] == 'YA'){
                             if(string[4] == undefined){
                              
@@ -1483,7 +1480,7 @@
                             else {
                          
                             $('.hargabrg' + nobarang).val(addCommas(string[5]));
-                            $('.hargabrg' + nobarang).attr('readonly' , true);
+                            $('.hargabrg' + nobarang).attr('readonly' , false);
                           }
                         }
                         else {
@@ -1505,8 +1502,7 @@
                        $('.sup' + nobarang).empty();
                       $.each(supplier, function(i , obj) {
                       supbtn = supplier;
-                      idcntr = counterId - 1;
-               
+                     
 
                      $('.sup'+nobarang).append("<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+nobarang+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected id='selectsup'>"+obj.no_supplier+"-"+obj.nama_supplier+"</option>");
                     
@@ -1545,15 +1541,19 @@
       idremovesup++;
       nourutbrg++;
       nourutsup2++;
+     
     })
 
      countersup = 0;
+
       //TAMBAHDATASUPPLIER
      $('#add-btn-supp').click(function(){
+     // alert(counterId);
               $('.cek_tb').attr('disabled', false);
               $('.loadingjenis').css('display' , 'block');
 
               var idtrsup = no - 1;
+
               var lastarr = arrnobrg.slice(-1)[0];
               val2 = $('.brg' + lastarr).val();
               var string = val2.split(",");
@@ -1593,14 +1593,24 @@
 
       					var rowSup = "<tr id='supp-"+idtrsup+"' class='data-supplier supp-"+counterId+"'>";
       					rowSup += "<td></td> <td></td>  <td> </td> <td></td> <td>  </td>"+
-      							"<td> <input type='text' style='text-align:right' name='harga[]' data-id='"+counterId+"' class='input-sm form-control hrga hargabrg"+idtrsup+" harga"+counterId+"' data-id="+counterId+" data-no="+removesup+" '/>  <input type='hidden' class='statuskontraksupplier"+counterId+" statuskontraksuppliers"+idtrsup+"' name='statuskontrak[]'></td>"+ //harga
+      							"<td><input type='text' style='text-align:right' name='harga[]' data-id='"+counterId+"' class='input-sm form-control hrga hargabrg"+idtrsup+" harga"+counterId+"' data-id="+counterId+" data-no="+removesup+" '/>  <input type='hidden' class='statuskontraksupplier"+counterId+" statuskontraksuppliers"+idtrsup+"' name='statuskontrak[]'></td>"+ //harga
       							"<td><select id='supselect' class='form-control chosen-select select2 suipd suipl sup"+idtrsup+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' data-no='"+idtrsup+"' name='supplier[]' required> <option value=''> -- Pilih Supplier -- </option>"; //SUpplier
       					
                 if(hasilsupp.length > 0){ //TERIKAT KONTRAK
                       $.each(hasilsupp, function(i , obj) {
                         rowSup +=  "<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+idtrsup+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected>"+obj.no_supplier+"-"+ obj.nama_supplier+"</option>";
                       }) 
-                      $('.hrga' + idtrsup).attr('readonly' , true);                    
+
+                      for(i = 0 ; i < hasilsupp.length; i++){
+                        kontrak = hasilsupp[i].kontrak;
+                        if(kontrak == 'YA'){
+                          $('.hrga' + idtrsup).attr('readonly' , true);    
+                        }
+                        else {
+                          $('.hrga' + idtrsup).attr('readonly' , false);    
+                        }
+                      }
+                                          
                 }
                 else {
                    $.each(hasilmaster, function(i , obj) {
@@ -1623,16 +1633,15 @@
 
                         var string = datasup.split(",");
                         console.log(string[4])
-                        idcntr = counterId - 1;
-             
+                       
                         if(string[4] == 'YA'){
                             if(string[4] == undefined){
                               
                             }
                             else {
                               $('.hargabrg' + idtrsup).val(addCommas(string[5]));
-                              $('.hargabrg' + idtrsup).attr('readonly' , true);
-                              $('.statuskontraksupplier' + counterId).val('YA')
+                              $('.hargabrg' + idtrsup).attr('readonly' , false);
+                              $('.statuskontraksupplier' + counterId).val('TIDAK')
                           }
                         }
                         else {
@@ -1681,11 +1690,11 @@
             id = $(this).data('id');
             kontrak = $('.statuskontraksupplier' + id).val();
             //alert(kontrak);
-            if(kontrak == 'YA'){
+            
               //alert('s');
               harga = hargasupplier[5];
               $('.harga' + id).val(addCommas(harga));
-            }
+            
           })
 
 					$(function(){
@@ -1720,7 +1729,7 @@
 						}
 						else {
 						 $('.harga' + id).val(addCommas(numhar));
-						 $('.harga' + id).attr('readonly' , true); 
+						 $('.harga' + id).attr('readonly' , false); 
 						}
 					 }
 					 else {

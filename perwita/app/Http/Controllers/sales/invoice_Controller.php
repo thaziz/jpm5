@@ -268,6 +268,7 @@ class invoice_Controller extends Controller
         if ($head->i_pendapatan == 'KARGO' or $head->i_pendapatan == 'PAKET') {
            $detail = DB::table('invoice_d')
                     ->join('delivery_order','id_nomor_do','=','nomor')
+                    ->orderBy('tanggal','ASC')
                     ->where('id_nomor_invoice',$id)
                     ->get();
         }else{
@@ -427,8 +428,8 @@ class invoice_Controller extends Controller
     
 public function nota_invoice(request $request){
     // dd($request->all());
-    $bulan = Carbon::now()->format('m');
-    $tahun = Carbon::now()->format('y');
+    $bulan = Carbon::parse(str_replace('/', '-', $request->tgl))->format('m');
+    $tahun = Carbon::parse(str_replace('/', '-', $request->tgl))->format('y');
     // $update = DB::table('invoice')
     //             ->update(['create_at'=>carbon::now()
     //           ]);
@@ -436,8 +437,8 @@ public function nota_invoice(request $request){
     $cari_nota = DB::select("SELECT  substring(max(i_nomor),11) as id from invoice
                                     WHERE i_kode_cabang = '$request->cabang'
                                     AND i_nomor like 'INV%'
-                                    AND to_char(create_at,'MM') = '$bulan'
-                                    AND to_char(create_at,'YY') = '$tahun'
+                                    AND to_char(i_tanggal,'MM') = '$bulan'
+                                    AND to_char(i_tanggal,'YY') = '$tahun'
                                     ");
     $index = (integer)$cari_nota[0]->id + 1;
     $index = str_pad($index, 5, '0', STR_PAD_LEFT);
@@ -769,13 +770,15 @@ public function simpan_invoice(request $request)
       if ($cari_nota->update_by == $user) {
         return 'Data Sudah Ada';
       }else{
-          $bulan = Carbon::now()->format('m');
-          $tahun = Carbon::now()->format('y');
+          $bulan = Carbon::parse($tgl)->format('m');
+          $tahun = Carbon::parse($tgl)->format('y');
 
           $cari_nota = DB::select("SELECT  substring(max(i_nomor),11) as id from invoice
-                                            WHERE i_kode_cabang = '$cabang'
-                                            AND to_char(create_at,'MM') = '$bulan'
-                                            AND to_char(create_at,'YY') = '$tahun'");
+                                  WHERE i_kode_cabang = '$cabang'
+                                  AND i_nomor like 'INV%'
+                                  AND to_char(i_tanggal,'MM') = '$bulan'
+                                  AND to_char(i_tanggal,'YY') = '$tahun'
+                                  ");
 
           $index = (integer)$cari_nota[0]->id + 1;
           $index = str_pad($index, 3, '0', STR_PAD_LEFT);
