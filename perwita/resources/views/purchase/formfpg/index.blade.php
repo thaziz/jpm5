@@ -178,18 +178,30 @@ function(){
      $.ajax({
       url:baseUrl + '/formfpg/hapusfpg/' + id,
       type:'get',
+      dataType : 'json',
       success:function(data){
-      
-        swal({
-        title: "Berhasil!",
-                type: 'success',
-                text: "Data Berhasil Dihapus",
-                timer: 2000,
-                showConfirmButton: true
-                },function(){
-                   location.reload();
-        });
+
+        if(data.status == "sukses") {
+          swal({
+            title: "Berhasil!",
+                    type: 'success',
+                    text: "Data Berhasil Dihapus",
+                    timer: 2000,
+                    showConfirmButton: true
+                    },function(){
+                       location.reload();
+            });
+        }
+        else if(data.status == "gagal") {
        
+          swal({
+            title: "ERROR!",
+                    type: 'error',
+                    text: data.info,
+                    timer: 2000,
+                    showConfirmButton: true
+                    })
+        }
       },
       error:function(data){
 

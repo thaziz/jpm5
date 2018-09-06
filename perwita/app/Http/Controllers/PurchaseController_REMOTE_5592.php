@@ -8740,13 +8740,14 @@ public function kekata($x) {
 
 		//dd($idfpg);
 
-		$data['nofpg'] = 'FPG' . $month . $year . '/' . 'C001' . '/' .  $idfpg;
+		
 		//dd($data);
 		return view('purchase/formfpg/create', compact('data'));
 	}
 
 
 	public function hapusfpg($id){
+		return DB::transaction(function() use ($id) { 
 
 		$data['fpg'] = DB::select("select * from fpg, fpg_dt where idfpg = fpgdt_idfpg and idfpg = '$id'");
 
@@ -8834,12 +8835,27 @@ public function kekata($x) {
 
 		}
 		
-		DB::delete("DELETE from fpg where idfpg = '$id'");
-		if($jenisbayar == '12'){
+		$fpg = DB::select("select * from fpg where idfpg = '$id'");
+		$done = $fpg[0]->fpg_posting;
+		if($done == 'DONE') {
+			 $dataInfo=['status'=>'gagal','info'=>'NOTA FPG sudah di posting'];
+			DB::rollback();
+			return json_encode($dataInfo);
+		}
+		elseif($done == 'NOT'){
+
+			DB::delete("DELETE from fpg where idfpg = '$id'");
+			if($jenisbayar == '12'){
 					$nofpg = $fpg[0]->fpg_nofpg;
 					DB::delete("DELETE from bank_masuk where bm_nota = '$nofpg'");
 			}
-		return 'ok';
+			 $dataInfo=['status'=>'sukses','info'=>'Data Berhasil di hapus'];
+
+			return json_encode($dataInfo);
+		}
+		
+		return json_encode($dataInfo);
+	});
 	}
 
 	public function printformfpg($id){
