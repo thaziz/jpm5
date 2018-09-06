@@ -419,8 +419,10 @@
             data:{cabang,tgl},
             dataType : 'json',
             success:function(response){
-                $('#nota_invoice').val(response.nota);
-                $('#old_invoice').val(response.nota);
+                if ($('#nota_invoice').val() == $('#old_invoice').val() ) {
+                    $('#nota_invoice').val(response.nota);
+                    $('#old_invoice').val(response.nota);
+                }
                 ganti_jt();
             }
         });
