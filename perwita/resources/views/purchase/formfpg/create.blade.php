@@ -2263,8 +2263,8 @@
                     bank = $('.bank').val();
                     explode = bank.split("+");
                     kodebank = explode[4];
-                    alert(kodebank);
-                    alert(bank);
+                   // alert(kodebank);
+                   // alert(bank);
                     $('.hutangbank').val(kodebank);
 
                     $('#myModal2').modal('hide');
