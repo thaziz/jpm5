@@ -333,12 +333,18 @@ class jurnal_pembelian  extends Controller
 
           DB::table('fpg')
            ->where('idfpg' , $idfpg)
-          ->update(['fpg_nofpg' => $nota]);
-         
-          
+          ->update(['fpg_nofpg' => $nota]);         
         }
         
     }
 
+
+    function tglpo(){
+      $data = DB::select("select * from pembelian_order");
+      for($j = 0; $j < count($data); $j++){
+        $tglpo = Carbon::parse($dataspp[$j]->created_at)->format('Y-m-d');
+        return json_encode($tglpo);
+      }
+    }
      
 }

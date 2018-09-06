@@ -1568,7 +1568,7 @@ public function purchase_order() {
 							$data['gudang'] = DB::select("select * from mastergudang where mg_id = '$gudang'");
 			}	
 			
-			$data['codt'][] = DB::select("select * from confirm_order, masteritem,  confirm_order_dt , confirm_order_tb, spp where co_idspp = '$idspp' and codt_idco = co_id and cotb_idco = co_id and co_idspp = spp_id and codt_supplier = cotb_supplier and codt_supplier = '$nosupplier' and codt_kodeitem = kode_item and cotb_id = '$idcotb' and co_id = '$idco' and  ");
+			$data['codt'][] = DB::select("select * from confirm_order, masteritem,  confirm_order_dt , confirm_order_tb, spp where co_idspp = '$idspp' and codt_idco = co_id and cotb_idco = co_id and co_idspp = spp_id and codt_supplier = cotb_supplier and codt_supplier = '$nosupplier' and codt_kodeitem = kode_item and cotb_id = '$idcotb' and co_id = '$idco'  ");
 			
 		}
 		return json_encode($data);
@@ -1867,31 +1867,31 @@ public function purchase_order() {
 
 				$po->save();
 
-				$idspp =$request->idspp[0];
+				/*$idspp =$request->idspp[0];
 				$dataspp = DB::select("select * from spp where spp_id = '$idspp'");
 				$datacomp = $dataspp[0]->spp_cabang;
 				$tglspp = $dataspp[0]->spp_tgldibutuhkan;
 
 				DB::table('pembelian_order')
-				->update('po_tglspp' , $tglspp)
-				->where('po_id' , $po_id);
+				->where('po_id' , $po_id)
+				->update(['po_tglspp' => $tglspp]);
 
 				$getmonth = Carbon::parse($tglspp)->format('m');
 				$getyear = Carbon::parse($tglspp)->format('y');
 
-				$carinota = DB::select("SELECT  substring(max(po_no),10) as id from fpg
+				$carinota = DB::select("SELECT  substring(max(po_no),10) as id from pembelian_order
                                         WHERE po_cabang = '$datacomp'
                                         AND to_char(po_tglspp,'MM') = '$getmonth'
-                                        AND to_char(po_tglspp,'YY') = '$gettahun'");
+                                        AND to_char(po_tglspp,'YY') = '$getyear'");
           
   
 	            $index = (integer)$carinota[0]->id + 1;
 	            $index = str_pad($index, 4, '0' , STR_PAD_LEFT);
-	            $nota = 'PO' .  $getmonth . $gettahun . '/' . $cabang . '/' . $index;
+	            $nota = 'PO' .  $getmonth . $getyear . '/' . $datacomp . '/' . $index;
 
 	          DB::table('pembelian_order')
 	           ->where('po_id' , $po_id)
-	          ->update(['po_no' => $nota]);
+	          ->update(['po_no' => $nota]);*/
 
 
 
