@@ -286,10 +286,10 @@
      $('.date').datepicker({
         autoclose: true,
         format: 'dd-MM-yyyy',      
-    });
+    }).datepicker("setDate", "0");
 
    // today = new Date();
-    $('.tglinput').val('09/03/2018');
+   // $('.tglinput').val('09/03/2018');
 
      $('.tglinput').change(function(){
        var comp = $('.cabang').val();
