@@ -1665,7 +1665,7 @@
 
                       if(jenisbayar == '2' || jenisbayar == '6' || jenisbayar == '7' || jenisbayar == '9') {
                           $('.nofaktur').val(data.faktur[0][0].fp_nofaktur);
-                          $('.tgl').val(data.faktur[0][0].fp_tgl);
+                        /*  $('.tgl').val(data.faktur[0][0].fp_tgl);*/
                           $('.jatuhtempo').val(data.faktur[0][0].fp_jatuhtempo);
                           $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
@@ -1755,7 +1755,7 @@
 
                     else if(jenisbayar == '3'){
                          $('.nofaktur').val(data.faktur[0][0].v_nomorbukti);
-                          $('.tgl').val(data.faktur[0][0].v_tgl);
+                     /*     $('.tgl').val(data.faktur[0][0].v_tgl);*/
                           $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
                         //  $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
@@ -1825,7 +1825,7 @@
 					// UANG MUKA PEMBELIAN
 					 else if(jenisbayar == '4'){
                          $('.nofaktur').val(data.faktur[0][0].um_nomorbukti);
-                          $('.tgl').val(data.faktur[0][0].um_tgl);
+                       /*   $('.tgl').val(data.faktur[0][0].um_tgl);*/
 /*                          $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
 */                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
@@ -1891,7 +1891,7 @@
              // GIRO KAS KECIL
                else if(jenisbayar == '1'){
                          $('.nofaktur').val(data.faktur[0][0].ik_nota);
-                          $('.tgl').val(data.faktur[0][0].ik_tgl_akhir);
+                         /* $('.tgl').val(data.faktur[0][0].ik_tgl_akhir);*/
 /*                          $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
 */                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
@@ -1961,7 +1961,7 @@
                     }
                     else if(jenisbayar == '11'){
                          $('.nofaktur').val(data.faktur[0][0].bp_nota);
-                          $('.tgl').val(data.faktur[0][0].bp_tgl);
+                        /*  $('.tgl').val(data.faktur[0][0].bp_tgl);*/
 /*                          $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
 */                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
@@ -2025,7 +2025,7 @@
                     }
                     else if(jenisbayar == '13'){
                       $('.nofaktur').val(data.faktur[0][0].bp_nota);
-                          $('.tgl').val(data.faktur[0][0].bp_tgl);
+                        /*  $('.tgl').val(data.faktur[0][0].bp_tgl);*/
 /*                          $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
 */                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
