@@ -8692,7 +8692,7 @@ public function kekata($x) {
 				$updatebbkab = formfpg::where('idfpg' , '=' , $idfpg);
 				$updatebbkab->update([
 					'fpg_posting' => 'NOT',
-				])
+				]);
 			}
 		}
 
