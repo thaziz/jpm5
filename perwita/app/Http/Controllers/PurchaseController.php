@@ -958,13 +958,16 @@ class PurchaseController extends Controller
 //	dd($setujumankeu);
 	if($setujumankeu == 'DISETUJUI'){
 		$data['suppliertb'] = DB::select("select * from confirm_order_tb, confirm_order, supplier where cotb_idco = co_id and co_idspp = '$id' and cotb_supplier = idsup");
+		$data['codt_tb'] =  DB::select("select * from confirm_order_tb, confirm_order where cotb_idco = co_id and co_idspp = '$id' ");
 	}
 	else if($setujumankeu == 'BELUM DI SETUJUI'){
 
-		$data['suppliertb'] = DB::select("select * from confirm_order_tb_pemb, confirm_order, supplier where cotbk_idco = co_id and co_idspp = '$id' and cotbk_supplier = idsup");			
+		$data['suppliertb'] = DB::select("select * from confirm_order_tb_pemb, confirm_order, supplier where cotbk_idco = co_id and co_idspp = '$id' and cotbk_supplier = idsup");	
+
+		$data['codt_tb'] =  DB::select("select * from confirm_order_tb_pemb, confirm_order where cotbk_idco = co_id and co_idspp = '$id' ");		
 	}
 		
-
+	/*dd($data['codt_tb']);*/
 
 		$lokasigudang = $data['spp'][0]->spp_lokasigudang;
 		$tipespp = $data['spp'][0]->spp_tipe;
@@ -1004,7 +1007,7 @@ class PurchaseController extends Controller
 
 		$data['codt_supplier'] = DB::select("select distinct codt_supplier, nama_supplier from supplier, confirm_order_dt, spp, confirm_order where codt_supplier = idsup and co_idspp = spp_id and spp_id = '$id' and codt_idco = co_id");
 
-		$data['codt_tb'] =  DB::select("select * from confirm_order_tb, confirm_order where cotb_idco = co_id and co_idspp = '$id' ");
+		
 		
 		
 		$data['count'] = count($data['suppliertb']);
@@ -1364,6 +1367,8 @@ class PurchaseController extends Controller
 		$idsup = 0;
 		for($i = 0 ; $i <$countapproval; $i++) {
 			if($request->status[$i] == 'SETUJU'){
+				$supplierco = explode("," , $request->supplier3[$i]);
+				$idsupco = $supplierco[0];
 				$lastid = co_purchasedt::max('codt_id'); 
 
 				if(isset($lastid)) {
@@ -1386,7 +1391,7 @@ class PurchaseController extends Controller
 					$explode = explode(",", $string);
 					$idsup = $explode[0];*/
 
-					$codt->codt_supplier = $request->datasup[$i];
+					$codt->codt_supplier = $idsupco;
 					/*if(count($request->supplier) > 1 ){
 						
 						$idsup++;
@@ -1426,7 +1431,8 @@ class PurchaseController extends Controller
 
 		$cotb = new co_purchasetb();
 		for($k=0; $k < count($request->bayar); $k++){
-
+				$supplierco = explode("," , $request->supplier3[$i]);
+				$idsupco = $supplierco[0];
 			if($request->bayar[$k] == "undefined") {
 
 			}
@@ -1446,7 +1452,7 @@ class PurchaseController extends Controller
 				$cotb->cotb_idco = $request->idco;
 
 			
-				$cotb->cotb_supplier =$request->datasupplier[$k];
+				$cotb->cotb_supplier = $idsupco;
 
 				$cotb->cotb_totalbiaya = $replacehrg;
 				$cotb->cotb_setuju = 'BELUM DI SETUJUI';

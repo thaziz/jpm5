@@ -260,6 +260,8 @@
                               </tr>
                               <tr>
                                   <th> 
+                                      <input type="text" class="form-control statusmankeuangan" value="{{$spp->man_keu}}">
+
                                       @if($spp->staff_pemb == 'DISETUJUI')
                                          <div style='text-align: center'>  <p class="label label-info" > {{$spp->staff_pemb}} </p> </div>
                                       @else
@@ -842,7 +844,7 @@
           url : url,
           dataType:'json',
           success : function(data){
-          
+
             if(data.codt.length > 0) {
 
               $('#hargatable').each(function(){
