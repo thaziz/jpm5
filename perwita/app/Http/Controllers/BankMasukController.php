@@ -70,7 +70,7 @@ class BankMasukController extends Controller
 			$data['sudahdiproses'] = DB::table("bank_masuk")->where('bm_status' , '=' , 'DITERIMA')->count();
 		}
 		else {
-			$data['bankmasuk'] = DB::select("select * from bank_masuk, masterbank where bm_cabangasal = $cabang and bm_status = 'DITRANSFER' or bm_status = 'DITERIMA' and bm_bankasal = mb_kode or bm_banktujuan = mb_kode order by bm_id desc");
+			$data['bankmasuk'] = DB::select("select * from bank_masuk, masterbank where bm_cabangasal = '$cabang' and bm_status = 'DITRANSFER' or bm_status = 'DITERIMA' and bm_bankasal = mb_kode or bm_banktujuan = mb_kode order by bm_id desc");
 			$data['belumdiproses'] = DB::table("bank_masuk")->where([['bm_status' , '=' , 'DITRANSFER'],['bm_cabangasal' , '=' , '$cabang']])->count();
 			$data['sudahdiproses'] = DB::table("bank_masuk")->where([['bm_status' , '=' , 'DITERIMA'],['bm_cabangasal' , '=' , '$cabang']])->count();
 		}
