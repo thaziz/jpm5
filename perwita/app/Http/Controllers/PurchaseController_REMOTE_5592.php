@@ -958,13 +958,16 @@ class PurchaseController extends Controller
 //	dd($setujumankeu);
 	if($setujumankeu == 'DISETUJUI'){
 		$data['suppliertb'] = DB::select("select * from confirm_order_tb, confirm_order, supplier where cotb_idco = co_id and co_idspp = '$id' and cotb_supplier = idsup");
+		$data['codt_tb'] =  DB::select("select * from confirm_order_tb, confirm_order where cotb_idco = co_id and co_idspp = '$id' ");
 	}
 	else if($setujumankeu == 'BELUM DI SETUJUI'){
 
-		$data['suppliertb'] = DB::select("select * from confirm_order_tb_pemb, confirm_order, supplier where cotbk_idco = co_id and co_idspp = '$id' and cotbk_supplier = idsup");			
+		$data['suppliertb'] = DB::select("select * from confirm_order_tb_pemb, confirm_order, supplier where cotbk_idco = co_id and co_idspp = '$id' and cotbk_supplier = idsup");	
+
+		$data['codt_tb'] =  DB::select("select * from confirm_order_tb_pemb, confirm_order where cotbk_idco = co_id and co_idspp = '$id' ");		
 	}
 		
-
+	/*dd($data['codt_tb']);*/
 
 		$lokasigudang = $data['spp'][0]->spp_lokasigudang;
 		$tipespp = $data['spp'][0]->spp_tipe;
@@ -1004,7 +1007,7 @@ class PurchaseController extends Controller
 
 		$data['codt_supplier'] = DB::select("select distinct codt_supplier, nama_supplier from supplier, confirm_order_dt, spp, confirm_order where codt_supplier = idsup and co_idspp = spp_id and spp_id = '$id' and codt_idco = co_id");
 
-		$data['codt_tb'] =  DB::select("select * from confirm_order_tb, confirm_order where cotb_idco = co_id and co_idspp = '$id' ");
+		
 		
 		
 		$data['count'] = count($data['suppliertb']);
@@ -1222,7 +1225,7 @@ class PurchaseController extends Controller
 	public function saveconfirmorderdt(Request $request){
 		
 		return DB::transaction(function() use ($request) { 
-		
+		//dd($request);
 		if($request->pemroses == 'KEUANGAN'){
 			$updatespp = spp_purchase::where('spp_id', '=', $request->idspp);
 			$updatespp->update([
@@ -1253,7 +1256,7 @@ class PurchaseController extends Controller
 
 			$n = 1;
 			$idsup = 0;
-			for($i = 0 ; $i <$countapproval; $i++) {
+			for($i = 0 ; $i < $countapproval; $i++) {
 				$supplierco = explode("," , $request->supplier3[$i]);
 				$idsupco = $supplierco[0];
 
@@ -1280,7 +1283,7 @@ class PurchaseController extends Controller
 						$explode = explode(",", $string);
 						$idsup = $explode[0];*/
 
-						$codt->codtk_supplier = $idsupco;
+						$codt->codtk_supplier = $request->datasup[$i];
 						/*if(count($request->supplier) > 1 ){
 							
 							$idsup++;
@@ -1320,8 +1323,7 @@ class PurchaseController extends Controller
 
 			$cotb = new co_purchasetbpemb();
 			for($k=0; $k < count($request->bayar); $k++){
-				$supplierco = explode(",", $request->supplier3[$k]);
-				$idsupco = $supplierco[0];
+				
 
 				if($request->bayar[$k] == "undefined") {
 
@@ -1342,7 +1344,7 @@ class PurchaseController extends Controller
 					$cotb->cotbk_idco = $request->idco;
 
 				
-					$cotb->cotbk_supplier = $idsupco;
+					$cotb->cotbk_supplier = $request->datasup[$k];
 
 					$cotb->cotbk_totalbiaya = $replacehrg;
 					$cotb->cotbk_setuju = 'BELUM DI SETUJUI';
@@ -1364,6 +1366,8 @@ class PurchaseController extends Controller
 		$idsup = 0;
 		for($i = 0 ; $i <$countapproval; $i++) {
 			if($request->status[$i] == 'SETUJU'){
+				$supplierco = explode("," , $request->supplier3[$i]);
+				$idsupco = $supplierco[0];
 				$lastid = co_purchasedt::max('codt_id'); 
 
 				if(isset($lastid)) {
@@ -1426,7 +1430,7 @@ class PurchaseController extends Controller
 
 		$cotb = new co_purchasetb();
 		for($k=0; $k < count($request->bayar); $k++){
-
+				
 			if($request->bayar[$k] == "undefined") {
 
 			}
@@ -1446,7 +1450,7 @@ class PurchaseController extends Controller
 				$cotb->cotb_idco = $request->idco;
 
 			
-				$cotb->cotb_supplier =$request->datasupplier[$k];
+				$cotb->cotb_supplier = $request->datasup[$k];
 
 				$cotb->cotb_totalbiaya = $replacehrg;
 				$cotb->cotb_setuju = 'BELUM DI SETUJUI';
@@ -1739,6 +1743,10 @@ public function purchase_order() {
 			 	]);	
 			}
 
+			
+
+
+
 			$lastid = purchase_orderr::max('po_id'); 
 
 			if(isset($lastid)) {
@@ -1754,15 +1762,17 @@ public function purchase_order() {
 
 
 			
-			$time = Carbon::now();
-	//	$newtime = date('Y-M-d H:i:s', $time);  
+				$time = Carbon::now();
+
 		
-				$year =Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
+				$year = Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
 				$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; 
 
 				if($month < 10) {
 					$month = '0' . $month;
 				}
+
+
 
 				$year = substr($year, 2);
 
@@ -1856,6 +1866,33 @@ public function purchase_order() {
 				$po->po_acchutangdagang = $acchutang;
 
 				$po->save();
+
+				$idspp =$request->idspp[0];
+				$dataspp = DB::select("select * from spp where spp_id = '$idspp'");
+				$datacomp = $dataspp[0]->spp_cabang;
+				$tglspp = $dataspp[0]->spp_tgldibutuhkan;
+
+				DB::table('pembelian_order')
+				->update('po_tglspp' , $tglspp)
+				->where('po_id' , $po_id);
+
+				$getmonth = Carbon::parse($tglspp)->format('m');
+				$getyear = Carbon::parse($tglspp)->format('y');
+
+				$carinota = DB::select("SELECT  substring(max(po_no),10) as id from fpg
+                                        WHERE po_cabang = '$datacomp'
+                                        AND to_char(po_tglspp,'MM') = '$getmonth'
+                                        AND to_char(po_tglspp,'YY') = '$gettahun'");
+          
+  
+	            $index = (integer)$carinota[0]->id + 1;
+	            $index = str_pad($index, 4, '0' , STR_PAD_LEFT);
+	            $nota = 'PO' .  $getmonth . $gettahun . '/' . $cabang . '/' . $index;
+
+	          DB::table('pembelian_order')
+	           ->where('po_id' , $po_id)
+	          ->update(['po_no' => $nota]);
+
 
 
 			for($n = 0; $n < count($request->kodeitem); $n++) {
