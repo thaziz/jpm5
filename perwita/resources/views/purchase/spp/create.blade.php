@@ -1337,7 +1337,7 @@
             contract = $('.statuskontraksupplier' + id).val();
             // toastr.info(val);
              numhar = Math.round(harga).toFixed(2);
-
+             alert(contract);
              if(contract == 'YA'){
                   if(harga === "undefined"){
                  }
