@@ -857,16 +857,15 @@
             } 
             var nourut = 1;         
             if(data.codt.length == 0) { 
-
               $('#hargatable').each(function(){
              
                       for(var n=0;n<data.sppdt_barang.length;n++){
-                       
+                   
                        var kodebrg =  $('.brg'+ n).data("kodeitem");
                           for(var i = 0 ; i <data.codt.length;i++){
-                            if(kodebrg == data.codt[i].codt_kodeitem) {
+                            if(kodebrg == data.codt[i].codt_kodeitem) {                        
                                for(var j =0; j < data.suppliertb.length; j++){
-                               
+                              
                                 if(data.codt[i].codt_supplier == data.suppliertb[j].cotbk_supplier) {
                                         var row = $('td[data-supplier="'+ data.codt[i].codt_supplier + '"]').index() + 6; 
                                       
