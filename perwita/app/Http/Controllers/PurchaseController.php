@@ -7063,7 +7063,7 @@ public function purchase_order() {
 
 
 		//return $mon;
-		$idbbk = DB::select("select * from fpg where fpg_cabang = '$comp'  and to_char(fpg_tgl, 'MM') = '$bulan' and to_char(fpg_tgl, 'YY') = '$tahun' order by idfpg desc limit 1");
+		$idbbk = DB::select("select substr(max(fpg_nofpg), 11) from fpg where fpg_cabang = '$comp' and to_char(fpg_tgl, 'MM') = '$bulan' and to_char(fpg_tgl, 'YY') = '$tahun' order by idfpg desc limit 1");
 
 		//return $idbbk;
 		if(count($idbbk) > 0) {		
