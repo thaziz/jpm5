@@ -7065,9 +7065,9 @@ public function purchase_order() {
 
 
 	  $carinota = DB::select("SELECT  substring(max(fpg_nofpg),13) as id from fpg
-                                    WHERE fpg_cabang = '$cabang'
-                                    AND to_char(fpg_tgl,'MM') = '$getmonth'
-                                    AND to_char(fpg_tgl,'YY') = '$gettahun'");
+                                    WHERE fpg_cabang = '$comp'
+                                    AND to_char(fpg_tgl,'MM') = '$bulan'
+                                    AND to_char(fpg_tgl,'YY') = '$tahun'");
       
 
     //  dd($carinota)
