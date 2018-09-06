@@ -143,10 +143,10 @@
             { "data": "ft_nota" },
             { "data": "cabang" },
             { "data": "tanggal_buat"},
-            { "data": "ft_tanggal"},
+            { "data": "ft_tanggal_terima"},
             { "data": "ft_jatuh_tempo"},
             { "data": "ft_total",render: $.fn.dataTable.render.number( '.', '.', 0, '' )},
-            { "data": "ft_customer" },
+            { "data": "nama" },
             { "data": "print" },
             { "data": "aksi" },
             ]

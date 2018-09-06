@@ -242,6 +242,7 @@
                               </tr>
                               <tr>
                                   <th> 
+                                      <input type="hidden" class="statusmankeu" value="{{$spp->man_keu}}">
                                       @if($spp->staff_pemb == 'DISETUJUI')
                                          <div style='text-align: center'>  <p class="label label-info" > DISETUJUI </p> </div>
                                       @else
@@ -326,6 +327,7 @@
                       @endforeach
                        <tr class="totalbiaya"> <td colspan="6" style="text-align: center"> <b> Total Biaya </b> </td> 
                         @foreach($data['codt_tb'] as $cotb)
+
                           <td data-suppliertotal="{{$cotb->cotb_supplier}}"> <div class='form-group'> <label class='col-sm-2 col-sm-2 control-label'> Rp </label> <div class='col-sm-8'> <input type='text' class='input-sm form-control totalbiaya'  value="{{number_format($cotb->cotb_totalbiaya, 2)}}" readonly="" > </div>  </div></td>
                           @endforeach
                         </tr>
@@ -367,17 +369,17 @@
 
                    <!--  supplier -->
                     <tr class="data-supplier">
-                      @foreach($data['spptb'] as $index=>$spptb)
-                      <td class="supid supplier{{$index}}" data-id="{{$index}}" data-supplier="{{$spptb->spptb_supplier}}"> 
-                            <select class="input-sm form-control chosen-select supplier{{$index}} sup" name="supplier3[]" disabled="" data-supplier="{{$spptb->spptb_supplier}}" data-id="{{$index}}" style="color:#000">
+                      @foreach($data['suppliertb'] as $index=>$spptb)
+                      <td class="supid supplier{{$index}}" data-id="{{$index}}" data-supplier="{{$spptb->cotbk_supplier}}"> 
+                            <select class="input-sm form-control chosen-select supplier{{$index}} sup" name="supplier3[]" disabled="" data-supplier="{{$spptb->cotbk_supplier}}" data-id="{{$index}}" style="color:#000">
                              @foreach($data['supplier'] as $sup)
-                              <option value="{{$sup->idsup}},{{$sup->syarat_kredit}}" @if($spptb->spptb_supplier == $sup->idsup) selected="" @endif>  {{$sup->nama_supplier}} 
+                              <option value="{{$sup->idsup}},{{$sup->syarat_kredit}}" @if($spptb->cotbk_supplier == $sup->idsup) selected="" @endif>  {{$sup->nama_supplier}} 
                              @endforeach
                             </select>
                           </div>
                    
                         </div>
-                          <input type="hidden" value="{{$spptb->spptb_bayar}}" name="spptb_bayar[]" class="bayar{{$index}}">
+                          <input type="hidden" value="{{$spptb->cotbk_bayar}}" name="spptb_bayar[]" class="bayar{{$index}}">
                       </td> 
                       @endforeach
                     </tr>
@@ -418,8 +420,8 @@
                         <td> <input type="text" class="input-sm form-control satuan" value="{{$sppd->unitstock}} " disabled=""></td>
                         <!-- hargasupplier-->
                    
-                            @foreach($data['spptb'] as $index=>$spptb)
-                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @foreach($data['suppliertb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->cotbk_supplier}}"> </td>
                             @endforeach
                         <td>  <div class="checkbox">
                                 <input id="tolak tolak{{$idbarang}}" type="checkbox" data-id="{{$idbarang}}" class="tolak tolak{{$idbarang}}" data-barang="{{$sppd->sppd_kodeitem}}">
@@ -434,8 +436,8 @@
 
 
                         <tr class="totalbiaya"> <td colspan="6" style="text-align: center"> <b> Total Biaya </b> </td> 
-                        @foreach($data['spptb'] as $spptb)
-                          <td data-suppliertotal="{{$spptb->spptb_supplier}}"> <div class='form-group'> <label class='col-sm-2 col-sm-2 control-label'> Rp </label> <div class='col-sm-8'> <input type='text' class='input-sm form-control totalbiaya'  value="{{number_format($spptb->spptb_totalbiaya, 2)}}" readonly="" > </div>  </div></td>
+                        @foreach($data['codt_tb'] as $spptb)
+                          <td data-suppliertotal="{{$spptb->cotbk_supplier}}"> <div class='form-group'> <label class='col-sm-2 col-sm-2 control-label'> Rp </label> <div class='col-sm-8'> <input type='text' class='input-sm form-control totalbiaya'  value="{{number_format($spptb->cotbk_totalbiaya, 2)}}" readonly="" > </div>  </div></td>
                           @endforeach
                         </tr>
 <!-- 
@@ -562,7 +564,7 @@
         $(this).change(function(){
           id = $(this).data('id');
           val = $(this).val();
-          alert(val);
+         // alert(val);
           string = val.split(",");
           syaratkredit = string[1];
           $('.bayar' + id).val(syaratkredit);
@@ -724,31 +726,6 @@
                   res[value.idsupplier].totalharga += value.totalharga
                   return res;
               },{});
-
-          
-
-               /*//beda in supplier
-                 for(var x=0;x<data.spptb.length;x++){  //2itusupplier               
-                        var supDisabled = $('.supplier'+x).is(':disabled');;                
-                        if(supDisabled){
-                           var supplier1 = $('.supplier' + x).index() + 1;
-                           biaya2 = 0;
-                            $('tr.totalbiaya').find("td").eq(supplier1).html(addCommas(biaya2));
-                         
-                        }                 
-                  }*/
-
-               /* for(var h=0;h<result.length;h++){
-                          var supplier2 = $('td[data-supplier="'+ result[h].id + '"]').index() + 1;
-                          var biaya = Math.round(result[h].totalharga).toFixed(2);
-                          var tb = '<div class="form-group"> <label class="col-sm-2 col-sm-2 control-label"> Rp </label> <div class="col-sm-8"> <input type="text" class="form-control totalbiaya" name="bayar[]" value="'+addCommas(biaya)+'" readonly="" > <input type="hidden" name="tb[]" value="'+result[h].id+ "," + result[h].totalharga +'"> </div>  </div>';
-
-                          $('tr.totalbiaya').find("td").eq(supplier2).html(tb);
-                  }*/
-
-
-                
-                 
                  
             //CEK SEMUA DATA SUPPLIER
                 var lengthsup = $('.supid').length;
@@ -851,8 +828,9 @@
           url : url,
           dataType:'json',
           success : function(data){
-       
-            if(data.codt.length > 0) {
+            statusmankeu = $('.statusmankeu').val();
+           // alert(statusmankeu);
+            if(statusmankeu == 'DISETUJUI') {
               $('#hargatable').each(function(){
                 for(var n=0; n < data.sppdt_barang.length; n++){
                   var kodebrg = $('.brg' + n).data("kodeitem");
@@ -881,27 +859,30 @@
               })
             } 
             var nourut = 1;         
-            if(data.codt.length == 0) { 
+            if(statusmankeu == 'BELUM DI SETUJUI') { 
+             // alert('ah');
               $('#hargatable').each(function(){
-              console.log(data.sppdt_barang.length);
+             
                       for(var n=0;n<data.sppdt_barang.length;n++){
+                   
                        var kodebrg =  $('.brg'+ n).data("kodeitem");
-                          for(var i = 0 ; i <data.sppdt.length;i++){
-                            if(kodebrg == data.sppdt[i].sppd_kodeitem) {
-                               for(var j =0; j < data.spptb.length; j++){
-                                if(data.sppdt[i].sppd_supplier == data.spptb[j].spptb_supplier) {
-                                        var row = $('td[data-supplier="'+ data.sppdt[i].sppd_supplier + '"]').index() + 6; 
-                                        console.log(row);
+                          for(var i = 0 ; i <data.codt.length;i++){
+                            if(kodebrg == data.codt[i].codtk_kodeitem) {                        
+                               for(var j =0; j < data.suppliertb.length; j++){
+                              
+                                if(data.codt[i].codtk_supplier == data.suppliertb[j].cotbk_supplier) {
+                                        var row = $('td[data-supplier="'+ data.codt[i].codtk_supplier + '"]').index() + 6; 
+                                      
                                         var column = $('td', this).eq(row);
                                         var tampilharga = '<div class="form-group">' +
                                                           '<label class="col-sm-1 control-label"> @ </label>' +
                                                            '<label class="col-sm-1 control-label"> Rp </label>' + 
                                                             '<div class="col-xs-6">';
                                         
-                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+' hrga'+n+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.sppdt[i].sppd_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.sppdt[i].sppd_supplier+'" data-kontrak="'+data.sppdt[i].sppd_kontrak+'"> <input type="hidden" value="'+addCommas(data.sppdt[i].sppd_harga)+'" class="hargahid hargahid'+i+'" data-brg="'+n+'" data-id="'+i+'"">  </div> <div class="datasup'+ i +'">  </div> ';
+                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+' hrga'+n+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.codt[i].codtk_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.codt[i].codtk_supplier+'" data-kontrak="TIDAK"> <input type="hidden" value="'+addCommas(data.codt[i].codtk_harga)+'" class="hargahid hargahid'+i+'" data-brg="'+n+'" data-id="'+i+'"">  </div> <div class="datasup'+ i +'">  </div> ';
 
                                         tampilharga += '<div class="col-sm-2"> <div class="checkbox checkbox-primary ">' +
-                                            '<input id="cek" type="checkbox" value='+data.sppdt[i].sppd_supplier+' class="checkboxhrg checkbox'+n+'" data-val='+i+' data-id='+nourut+' required data-supplier='+data.sppdt[i].sppd_supplier+' data-harga='+data.sppdt[i].sppd_harga+' data-totalhrg='+data.spptb[j].spptb_totalbiaya+' data-n='+n+' data-kontrak="'+data.sppdt[i].sppd_kontrak+'">' +
+                                            '<input id="cek" type="checkbox" value='+data.codt[i].codtk_supplier+' class="checkboxhrg checkbox'+n+'" data-val='+i+' data-id='+nourut+' required data-supplier='+data.codt[i].codtk_supplier+' data-harga='+data.codt[i].codtk_harga+' data-totalhrg='+data.suppliertb[j].cotbk_totalbiaya+' data-n='+n+' data-kontrak="TIDAK">' +
                                             '<label for="checkbox'+nourut+'">' +  
                                             '<div class="suppliercek'+nourut+'">  </div> '                                           
                                             '</label>' +
@@ -1149,7 +1130,7 @@
                 var id = $(this).data('id');
                 harga = $(this).val();
                 numhar = Math.round(harga).toFixed(2);
-                alert('test');
+              //  alert('test');
                 $('.harga' + id).val(addCommas(numhar));
             
               $('.simpan').prop("disabled" , true);

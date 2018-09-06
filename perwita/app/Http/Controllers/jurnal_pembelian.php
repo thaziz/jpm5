@@ -8,6 +8,7 @@ use App\Http\Requests;
 use carbon\carbon;
 use Auth;
 use App\d_jurnal;
+use App\formfpg;
 use App\d_jurnal_dt;
 use Exception;
     set_time_limit(60000);
@@ -306,8 +307,34 @@ class jurnal_pembelian  extends Controller
         $tgl = '01-08-2018';
         $date = Carbon::parse($tgl)->format('m');
 
-        $data = DB::select("select * from")
-        return $date;
+        $data = DB::select("select * from fpg order by fpg_tgl asc");
+        DB::table('fpg')
+        ->update(['fpg_nofpg' => null]);
+
+        for($j = 0; $j < count($data); $j++){ 
+          $idfpg = $data[$j]->idfpg;         
+          $tgl = $data[$j]->fpg_tgl;
+          $getmonth = Carbon::parse($tgl)->format('m');
+          $gettahun = Carbon::parse($tgl)->format('y');
+          $cabang = $data[$j]->fpg_cabang;
+
+
+          $carinota = DB::select("SELECT  substring(max(fpg_nofpg),13) as id from fpg
+                                        WHERE fpg_cabang = '$cabang'
+                                        AND to_char(fpg_tgl,'MM') = '$getmonth'
+                                        AND to_char(fpg_tgl,'YY') = '$gettahun'");
+         
+            $index = (integer)$carinota[0]->id + 1;
+            $index = str_pad($index, 4, '0' , STR_PAD_LEFT);
+            $nota = 'FPG' .  $getmonth . $gettahun . '/' . $cabang . '/' . $index;
+
+          DB::table('fpg')
+           ->where('idfpg' , $idfpg)
+          ->update(['fpg_nofpg' => $nota]);
+         
+          
+        }
+        
     }
 
      

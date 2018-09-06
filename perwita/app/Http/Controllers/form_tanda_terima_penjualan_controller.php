@@ -197,7 +197,6 @@ class form_tanda_terima_penjualan_controller extends Controller
     {
     	return DB::transaction(function() use ($req) {  
 
-    		// dd($req->all());
 			$cari_nota = DB::table('form_tt_penjualan')
 						   ->where('ft_nota',$req->nomor)
 						   ->first();
@@ -220,6 +219,8 @@ class form_tanda_terima_penjualan_controller extends Controller
 							'created_by' 		=> Auth::user()->m_name,
 							'updated_by' 		=> Auth::user()->m_name,
 						]);
+
+
 
 			$delete = DB::table('form_tt_penjualan_d')
 						->where('ftd_id',$cari_nota->ft_id)
@@ -380,11 +381,13 @@ class form_tanda_terima_penjualan_controller extends Controller
     {
     	if (Auth::user()->punyaAkses('Form Tanda Terima Penjualan','all')) {
 			$data = DB::table('form_tt_penjualan')
+				  ->join('customer','kode','=','ft_customer')
 				  ->orderBy('ft_id','ASC')
 				  ->get();
 		}else{
 			$cabang = Auth::user()->kode_cabang;
 			$data = DB::table('form_tt_penjualan')
+				  ->join('customer','kode','=','ft_customer')
 				  ->where('ft_kode_cabang',$cabang)
 				  ->orderBy('ft_id','ASC')
 				  ->get();
