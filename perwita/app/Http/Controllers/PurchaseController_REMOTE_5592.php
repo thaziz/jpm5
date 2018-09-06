@@ -3738,7 +3738,18 @@ public function purchase_order() {
 			}
 
 		} // jika stock iya
-		$dataInfo=['status'=>'sukses'];        
+
+			$cekjurnal = check_jurnal($lpb);
+    		if($cekjurnal == 0){
+    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
+				DB::rollback();
+									        
+    		}
+    		elseif($cekjurnal == 1) {
+    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+					        
+    		}
+ 
         return json_encode($dataInfo);
 
 	});
@@ -6147,7 +6158,20 @@ public function purchase_order() {
 		    		}	
 
 			}
-		return json_encode($idfaktur);
+
+
+			$cekjurnal = check_jurnal($nofaktur);
+    		if($cekjurnal == 0){
+    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
+				DB::rollback();
+									        
+    		}
+    		elseif($cekjurnal == 1) {
+    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idfaktur];
+					        
+    		}
+
+		return json_encode($dataInfo);
 
 		});
 		
@@ -7021,8 +7045,18 @@ public function purchase_order() {
 			}		
 			   
 
+			$cekjurnal = check_jurnal($nofaktur);
+    		if($cekjurnal == 0){
+    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
+				DB::rollback();
+									        
+    		}
+    		elseif($cekjurnal == 1) {
+    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idfaktur];
+					        
+    		}	
 
-		return json_encode($idfaktur);
+		return json_encode($dataInfo);
 		});
 	}
 
@@ -7051,6 +7085,7 @@ public function purchase_order() {
 			/*return $nosupplier;*/
 
 			$data['counttt'] = count($data['tt']);
+
 
 			return json_encode($data);
 	}
@@ -7699,7 +7734,7 @@ public function kekata($x) {
 				}
 				
 				$nominal = str_replace(',', '', $request->nominal[$i]);
-				$explode = explode("-", $request->supplier[$i]);
+				$explode = explode(" ", $request->supplier[$i]);
 				$idsupplier = $explode[0];
 				$bbkdt->bbkd_nominal = $nominal;
 				$bbkdt->bbkd_keterangan = $request->keterangan[$i];
@@ -8277,7 +8312,7 @@ public function kekata($x) {
     			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idbbk];
 					        
     		}
-    		//		$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+    			/*	$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];*/
 			//BONSEM BANK KELUAR
 			return json_encode($dataInfo);
 		});		
@@ -8633,7 +8668,7 @@ public function kekata($x) {
 		$nobbk = $databbk[0]->bbk_nota;
 		if($flag == 'BIAYA'){
 
-		}else {
+		}elseif($flag == 'CEKBG'){
 			$databbkd = DB::select("select * from bukti_bank_keluar_detail where bbkd_idbbk = '$id'");
 			for($i = 0; $i < count($databbkd); $i++){
 				$idfpg = $databbkd[$i]->bbkd_idfpg;
@@ -8647,6 +8682,17 @@ public function kekata($x) {
 					$updatebbk->update([
 					 	'fpg_posting' => 'NOT', 	
 				 	]);
+			}
+		}
+		else if($flag == 'BGAKUN'){
+			$databbkab = DB::select("select * from bukti_bank_keluar_bgakun where bbkab_idbbk = '$id'");
+			for($j = 0; $j < count($databbkab); $j++){
+				$idfpg = $databbkab[$i]->bbkab;
+
+				$updatebbkab = formfpg::where('idfpg' , '=' , $idfpg);
+				$updatebbkab->update([
+					'fpg_posting' => 'NOT',
+				])
 			}
 		}
 
@@ -8822,6 +8868,7 @@ public function kekata($x) {
 		for($i = 0; $i < count($data['fpgbank']);$i++){
 			$idbank = $data['fpgbank'][$i]->fpg_idbank;
 			$noseri = $data['fpgbank'][$i]->fpgb_nocheckbg;
+			$idfpgb = $data['fpgbank'][$i]->fpgb_id;
 			$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$noseri]]);
 
 			$updatebank->update([
@@ -8832,8 +8879,12 @@ public function kekata($x) {
 			 	'mbdt_tglstatus' => null,
 		 	]);	
 
-
+			$bankmasuk = DB::select("select * bank_masuk where bm_idfpgb = '$idbank'");
+			$idbm = $bankmasul[0]->bm_id;
+			DB::delete("DELETE from bank_masuk where bm_id = '$idbm'");
 		}
+		//cekbankmasuk
+		
 		
 		$fpg = DB::select("select * from fpg where idfpg = '$id'");
 		$done = $fpg[0]->fpg_posting;
