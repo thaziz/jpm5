@@ -1257,9 +1257,7 @@ class PurchaseController extends Controller
 			$n = 1;
 			$idsup = 0;
 			for($i = 0 ; $i < $countapproval; $i++) {
-				$supplierco = explode("," , $request->supplier3[$i]);
-				$idsupco = $supplierco[0];
-
+				
 				if($request->status[$i] == 'SETUJU'){
 					$lastid = co_purchasedtpemb::max('codtk_id'); 
 
@@ -1366,8 +1364,7 @@ class PurchaseController extends Controller
 		$idsup = 0;
 		for($i = 0 ; $i <$countapproval; $i++) {
 			if($request->status[$i] == 'SETUJU'){
-				$supplierco = explode("," , $request->supplier3[$i]);
-				$idsupco = $supplierco[0];
+			
 				$lastid = co_purchasedt::max('codt_id'); 
 
 				if(isset($lastid)) {
@@ -1885,7 +1882,7 @@ public function purchase_order() {
 
 				$getmonth = Carbon::parse($tglspp)->format('m');
 				$getyear = Carbon::parse($tglspp)->format('y');
-				
+
 				$carinota = DB::select("SELECT  substring(max(po_no),10) as id from pembelian_order
                                         WHERE po_cabang = '$datacomp'
                                         AND to_char(po_tglspp,'MM') = '$getmonth'
