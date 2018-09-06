@@ -1594,7 +1594,7 @@
       					var rowSup = "<tr id='supp-"+idtrsup+"' class='data-supplier supp-"+counterId+"'>";
       					rowSup += "<td></td> <td></td>  <td> </td> <td></td> <td>  </td>"+
       							"<td><input type='text' style='text-align:right' name='harga[]' data-id='"+counterId+"' class='input-sm form-control hrga hargabrg"+idtrsup+" harga"+counterId+"' data-id="+counterId+" data-no="+removesup+" '/>  <input type='hidden' class='statuskontraksupplier"+counterId+" statuskontraksuppliers"+idtrsup+"' name='statuskontrak[]'></td>"+ //harga
-      							"<td>"+counterId+"<select id='supselect' class='form-control chosen-select select2 suipd suipl sup"+idtrsup+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' data-no='"+idtrsup+"' name='supplier[]' required> <option value=''> -- Pilih Supplier -- </option>"; //SUpplier
+      							"<td><select id='supselect' class='form-control chosen-select select2 suipd suipl sup"+idtrsup+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' data-no='"+idtrsup+"' name='supplier[]' required> <option value=''> -- Pilih Supplier -- </option>"; //SUpplier
       					
                 if(hasilsupp.length > 0){ //TERIKAT KONTRAK
                       $.each(hasilsupp, function(i , obj) {
@@ -1641,7 +1641,7 @@
                             else {
                               $('.hargabrg' + idtrsup).val(addCommas(string[5]));
                               $('.hargabrg' + idtrsup).attr('readonly' , false);
-                              $('.statuskontraksupplier' + counterId).val('YA')
+                              $('.statuskontraksupplier' + counterId).val('TIDAK')
                           }
                         }
                         else {
