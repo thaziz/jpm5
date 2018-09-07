@@ -101,7 +101,7 @@ class selaras_jurnal  extends Controller
                                             'jr_date'   => carbon::parse($bpk[$i]->bpk_tanggal)->format('Y-m-d'),
                                             'jr_detail' => $jenis_bayar->jenisbayar,
                                             'jr_ref'    => $bpk[$i]->bpk_nota,
-                                            'jr_note'   => 'BIAYA PENERUS KAS',
+                                            'jr_note'   => 'BIAYA PENERUS KAS ' . ' ' . strtoupper($bpk[$i]->bpk_keterangan) ,
                                             'jr_insert' => carbon::now(),
                                             'jr_update' => carbon::now(),
                                             'jr_no' => $kk,
@@ -123,7 +123,7 @@ class selaras_jurnal  extends Controller
                   dd($bpk[$i]->bpk_nota .' '. $bpk[$i]->bpk_kode_akun .' '. $bpk[$i]->bpk_comp);
                 }
 
-                if ($cari_coa->akun_dka == '`') {
+                if ($cari_coa->akun_dka == 'D') {
                     $data_akun[0]['jrdt_jurnal']    = $id_jurnal;
                     $data_akun[0]['jrdt_detailid']  = 1;
                     $data_akun[0]['jrdt_acc']       = $cari_coa->id_akun;
@@ -530,7 +530,7 @@ class selaras_jurnal  extends Controller
 	                                 ->where('idjenisbayar',6)
 	                                 ->first();
                   $bank = 'KK';
-                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp,$bpk[$i]->bkk_tgl);
+                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp,$bkk[$i]->bkk_tgl);
 	                $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 	                                            'jr_year'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y'),
 	                                            'jr_date'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y-m-d'),
@@ -893,7 +893,7 @@ class selaras_jurnal  extends Controller
 	                                 ->where('idjenisbayar',8)
 	                                 ->first();
                   $bank = 'KK';
-                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp,$bpk[$i]->bkk_tgl);
+                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp,$bkk[$i]->bkk_tgl);
 	                $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 	                                            'jr_year'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y'),
 	                                            'jr_date'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y-m-d'),
