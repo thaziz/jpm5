@@ -203,9 +203,21 @@ class penerimaan_penjualan_Controller extends Controller
         $akun_bank = DB::table('masterbank')
                   ->get();
 
+        if (Auth::user()->punyaAkses('Kwitansi','cabang')) {
+          $akun_kas = DB::table('d_akun')
+                      ->where('id_akun','like','1001%')
+                      ->get();
+        }else{
+          $akun_kas = DB::table('d_akun')
+                      ->where('kode_cabang',Auth::user()->kode_cabang)
+                      ->where('id_akun','like','1001%')
+                      ->get();
+        }
+
+
         $tgl  = Carbon::now()->format('d/m/Y');
        
-        return view('sales.penerimaan_penjualan.form',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','kas_bank','akun','tgl','akun_biaya','akun_bank','akun_biaya_all'));
+        return view('sales.penerimaan_penjualan.form',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','kas_bank','akun','tgl','akun_biaya','akun_bank','akun_biaya_all','akun_kas'));
     }
 
 
@@ -565,7 +577,12 @@ class penerimaan_penjualan_Controller extends Controller
         $akun_bank = DB::table("masterbank")
                      ->where('mb_id',$request->cb_akun_h)
                      ->first();
-          
+        
+        if ($request->cb_jenis_pembayaran == 'T') {
+          $k_kode_akun = $req->akun_kas;
+        }else{
+          $k_kode_akun = $akun_bank->mb_kode;
+        }
         $save_kwitansi = DB::table('kwitansi')
                            ->insert([
                             'k_id' => $k_id,
@@ -585,13 +602,14 @@ class penerimaan_penjualan_Controller extends Controller
                             'k_debet' => $request->ed_debet,
                             'k_nota_bank' => $request->nota_bank,
                             'k_netto' => $request->ed_netto,
-                            'k_kode_akun'=> $akun_bank->mb_kode,
+                            'k_kode_akun'=> $k_kode_akun,
                             'k_id_bank'=> $request->cb_akun_h
                            ]);
 
         $del = DB::table('kwitansi_uang_muka')
                 ->where('ku_keterangan','OLD')
                 ->delete();
+
         $memorial_array = [];
         for ($i=0; $i < count($request->i_nomor); $i++) { 
             // dd($request->all());
@@ -700,6 +718,7 @@ class penerimaan_penjualan_Controller extends Controller
             $akun_temp[$i]  = $cari_uang_muka[$i]->ku_kode_akun_acc;
             $akun_value[$i] = $cari_uang_muka[$i]->ku_jumlah;
           } 
+
           $akun_temp_fix = array_unique($akun_temp);
           $akun_temp_total = [];
           for ($i=0; $i < count($akun_temp_fix); $i++) { 
@@ -757,6 +776,7 @@ class penerimaan_penjualan_Controller extends Controller
             $akun_temp_penanda[$i] = '0';
           }
         } 
+
         if (isset($akun_temp_biaya)) {
           $akun_temp_fix_penanda = array_unique($akun_temp_penanda);
           $akun_temp_fix_penanda = array_values($akun_temp_fix_penanda);
@@ -815,10 +835,9 @@ class penerimaan_penjualan_Controller extends Controller
             array_push($akun_val, $akun_temp_um_total[$i]);
             array_push($akun_penanda,'none');
           }
-
         }else{
       
-          array_push($akun, $akun_bank->mb_kode);
+          array_push($akun, $k_kode_akun);
           array_push($akun_val, (float)$request->ed_netto);
           array_push($akun_penanda,'none');
         }
@@ -1315,7 +1334,12 @@ class penerimaan_penjualan_Controller extends Controller
           $akun_bank = DB::table("masterbank")
                        ->where('mb_id',$request->cb_akun_h)
                        ->first();
-        // dd($request->all());
+          if ($request->cb_jenis_pembayaran == 'T') {
+            $k_kode_akun = $req->akun_kas;
+          }else{
+            $k_kode_akun = $akun_bank->mb_kode;
+          }
+
           $save_kwitansi = DB::table('kwitansi')
                              ->where('k_nomor',$nota)
                              ->update([
@@ -1335,7 +1359,7 @@ class penerimaan_penjualan_Controller extends Controller
                               'k_debet' => $request->ed_debet,
                               'k_nota_bank' => $request->nota_bank,
                               'k_netto' => $request->ed_netto,
-                              'k_kode_akun'=> $akun_bank->mb_kode,
+                              'k_kode_akun'=> $k_kode_akun,
                               'k_id_bank'=> $request->cb_akun_h
                              ]);
 
@@ -1615,7 +1639,7 @@ class penerimaan_penjualan_Controller extends Controller
 
           }else{
         
-            array_push($akun, $akun_bank->mb_kode);
+            array_push($akun, $k_kode_akun);
             array_push($akun_val, (float)$request->ed_netto);
             array_push($akun_penanda,'none');
           }
