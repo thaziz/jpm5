@@ -7820,6 +7820,13 @@ public function kekata($x) {
 
 					$datafpgb = DB::select("select * from fpg, fpg_cekbank where idfpg = fpgb_idfpg and fpgb_idfpg = '$idfpg' and fpgb_id = '$idfpgb'");
 					$akunbanktujuan = $datafpgb[0]->fpgb_kodebanktujuan;
+					
+					$datacabangtujuan = DB::select("select * from masterbank where mb_kode = '$akunbanktujuan'");
+					//dd($cabangtujuanbm);
+					$cabangtujuanbm = $datacabangtujuan[0]->mb_cabangbank;
+					//dd($cabangtujuanbm);
+					$kodebanktujuan = $datacabangtujuan[0]->mb_id;
+
 					$akunbankasal = $datafpgb[0]->fpg_kodebank;
 					$akundkagb = DB::select("select * from d_akun where id_akun = '$akunbanktujuan'");
 					$akundkagb = $akundkagb[0]->akun_dka;
@@ -7841,18 +7848,18 @@ public function kekata($x) {
 						
 
 
-						$notabm = getnotabm($cabang);
+						$notabm = getnotabm($cabangtujuanbm , $request->tglbbk);
 						$refbm = explode("-", $notabm);
 
-						$kodebankd = $datafpgb[0]->fpgb_kodebank;
-						if($kodebankd < 10){
-							$kodebankd = '0' . $kodebankd;
+						
+						if($kodebanktujuan < 10){
+							$kodebanktujuan = '0' . $kodebanktujuan;
 						}	
 						else {
-							$kodebankd = $kodebankd;
+							$kodebanktujuan = $kodebanktujuan;
 						}
 
-						$kode = $refbm[0] . $kodebankd;
+						$kode = $refbm[0] . $kodebanktujuan;
 						$notabm = $kode . '-' . $refbm[1];
 
 						
@@ -7937,20 +7944,20 @@ public function kekata($x) {
 								}
 
 
-								$jr_no = get_id_jurnal('BM'  , $cabang, $request->tglbbk);
+								$jr_no = get_id_jurnal('BM'  , $cabangtujuanbm, $request->tglbbk);
 
 								$ref = explode("-", $jr_no);
 
-								$kodebankd = $datafpgb[0]->fpgb_kodebank;
-								if($kodebankd < 10){
-									$kodebankd = '0' . $kodebankd;
+								
+								if($kodebanktujuan < 10){
+									$kodebanktujuan = '0' . $kodebanktujuan;
 								}	
 								else {
-									$kodebankd = $kodebankd;
+									$kodebanktujuan = $kodebanktujuan;
 								}
 
-								$kode = $ref[0] . $kodebankd;
-								$jr_ref = $kode . '-' . $ref[1];
+								$kode = $ref[0] . $kodebanktujuan;
+								$jr_no = $kode . '-' . $ref[1];
 
 								$jurnal = new d_jurnal();
 								$jurnal->jr_id = $idjurnald;
@@ -7983,6 +7990,19 @@ public function kekata($x) {
 				    			$jurnaldt->save();
 				    			$key++;
 							}
+
+							//cekjurnal
+
+							$cekjurnal = check_jurnal($notabm);
+				    		if($cekjurnal == 0){
+				    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
+								DB::rollback();
+													        
+				    		}
+				    		elseif($cekjurnal == 1) {
+				    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+									        
+				    		}
 						}
 
 					}
@@ -8038,8 +8058,7 @@ public function kekata($x) {
 						}
 				}
 				
-				else {
-			
+				else {			
 				$akunhutangdagang2 = $request->hutangdagang[$i];
 				$datajurnal2 = DB::select("select * from d_akun where id_akun = '$akunhutangdagang2'");
 				$akundka = $datajurnal2[0]->akun_dka;
@@ -8672,6 +8691,21 @@ public function kekata($x) {
 			$databbkd = DB::select("select * from bukti_bank_keluar_detail where bbkd_idbbk = '$id'");
 			for($i = 0; $i < count($databbkd); $i++){
 				$idfpg = $databbkd[$i]->bbkd_idfpg;
+				$datafpg = DB::select("select * from fpg, fpg_cekbank  where idfpg = '$idfpg' and fpgb_idfpg = idfpg");
+				$notafpg = $datafpg[0]->fpg_nofpg;
+				$notabbkd = $databbkd[$i]->bbkd_notabm;
+				$idfpgb = $datafpg[0]->fpgb_id;
+				if($notabbkd != '') {
+				DB::delete("DELETE from  d_jurnal where jr_ref = '$notabbkd' and jr_detail = 'BUKTI BANK MASUK'");
+					if($notabbkd != ''){
+						$updatebankmasuk = bank_masuk::where([['bm_notatransaksi' , '=' , $notafpg],['bm_idfpgb' , '=', $idfpgb]]);
+						$updatebankmasuk->update([
+							'bm_status' => 'DIKIRIM',
+							'bm_tglterima' => null,
+							'bm_nota' => null
+						]);
+					} 
+				}
 
 				$updatebbkbank = formfpg_bank::where('fpgb_idfpg', '=', $idfpg);
 					$updatebbkbank->update([
@@ -8735,7 +8769,7 @@ public function kekata($x) {
 	public function createformfpg() {
 
 		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
-		$data['jenisbayar'] = DB::select("select * from jenisbayar where idjenisbayar != '8'  and idjenisbayar != 10");
+		$data['jenisbayar'] = DB::select("select * from jenisbayar where idjenisbayar != '8'  and idjenisbayar != 10 and idjenisbayar != 12");
 
 		$cabang = session::get('cabang');
 
@@ -11451,7 +11485,8 @@ public function kekata($x) {
 											$bankasal = DB::select("select * from masterbank where mb_kode = '$kodebank'");
 											$cabangasal = $bankasal[0]->mb_cabangbank;
 											$namaasal = $bankasal[0]->mb_nama;
-
+											dd($bankasal);
+											dd($cabangasal);
 											$kodetujuan = $request->kodebanktujuan[$j];
 											$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
 											$cabangtujuan = $banktujuan[0]->mb_cabangbank;
@@ -11599,7 +11634,9 @@ public function kekata($x) {
 										}
 
 										$bankasal = DB::select("select * from masterbank where mb_kode = '$kodebank'");
+										dd($bankasal);
 										$cabangasal = $bankasal[0]->mb_cabangbank;
+
 										$kodetujuan = $request->kodebanktujuan[$j];
 										$namaasal = $bankasal[0]->mb_nama;
 										$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");

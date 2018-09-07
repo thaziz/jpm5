@@ -93,6 +93,7 @@ Route::post('jurnalselaras/item', 'jurnal_pembelian@item');
 Route::post('jurnalselaras/notafpg', 'jurnal_pembelian@nofpg');
 Route::post('jurnalselaras/tglpo', 'jurnal_pembelian@tglpo');
 Route::post('jurnalselaras/fpgbankmasuk', 'jurnal_pembelian@fpgbankmasuk');
+Route::get('jurnalselaras/duplicatebank', 'jurnal_pembelian@duplicatebank');
 
 //***PEMBELIAN
 //***PEMBELIAN
@@ -609,6 +610,7 @@ Route::post('masterbank/getkodeakunbank', 'MasterPurchaseController@getkodeakunb
 Route::get('masterbank/detailbank/{id}', 'MasterPurchaseController@detailbank');
 Route::delete('masterbank/deletebank/{id}', 'MasterPurchaseController@deletebank');
 Route::post('masterbank/updatemasterbank', 'MasterPurchaseController@updatemasterbank');
+Route::post('masterbank/lihatdatabank', 'MasterPurchaseController@lihatdatabank');
 
 
 

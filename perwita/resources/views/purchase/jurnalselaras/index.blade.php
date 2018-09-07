@@ -80,6 +80,12 @@
                     </button>
                 </div> 
 
+                 <div class="">
+                    <button class="btn btn-success" onclick="duplicatebank()">
+                        duplicate bank masuk
+                    </button>
+                </div> 
+
 
 
                 <div class="box-body">
@@ -117,7 +123,18 @@
             "language": dataTableLanguage,
     });
 
-  
+    
+     function duplicatebank(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/duplicatebank',
+        type : "get",
+        dataType : "json",
+        success : function(response){
+            
+        }
+      })
+     }
+
     function FP(){
       $.ajax({
         url : baseUrl + '/jurnalselaras/fakturpembelian',

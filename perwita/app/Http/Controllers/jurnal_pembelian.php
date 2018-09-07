@@ -371,5 +371,31 @@ class jurnal_pembelian  extends Controller
         ->update(['bm_notatransaksi' => $notafpg]);
       }
     }
-     
+    
+
+    function duplicatebank(){
+      $dataduplicate = DB::select("SELECT mbdt_noseri AS N, count(mbdt_noseri)  FROM masterbank_dt GROUP BY mbdt_noseri HAVING  count(mbdt_noseri) > 1
+      ");
+
+        for ($i = 0; $i < count($dataduplicate); $i++){
+          $noseri = $dataduplicate[$i]->n;
+          $countnoseri = $dataduplicate[$i]->count;
+         $carinoseri = DB::select("select mbdt_noseri, mbdt_id,mbdt_nofpg from masterbank_dt where mbdt_noseri = '$noseri'");
+
+         $countnoseri2 = (int)count($carinoseri) - 1;
+
+
+          //dd($countseri);
+          for($j = 0; $j < $countnoseri2; $j++){
+           
+            $idmbdt = $carinoseri[$j]->mbdt_id;
+            $mbdt_nofpg = $carinoseri[$j]->mbdt_nofpg;
+            if($mbdt_nofpg == null){
+                DB::DELETE("DELETE from masterbank_dt where  mbdt_id = '$idmbdt'");
+            }               
+          }
+
+        }
+      
+    }
 }
