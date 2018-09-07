@@ -77,7 +77,13 @@ div.bottom
 			
 			<td class="top" width="240px">No SPP : {{$data['spp'][0]->spp_nospp}} <br>Tanggal Input : {{ Carbon\Carbon::parse($data['spp'][0]->tglinput)->format('d-M-Y ') }}
 
-			<br> No PO : <br> @foreach($data['po'] as $po) &nbsp; -  {{$po->po_no}} <br> @endforeach
+			<br> No PO : <br>
+					@if($data['spp'][0]->spp_status == 'TERBIT PO')
+						@foreach($data['po'] as $po) &nbsp; -  {{$po->po_no}}
+
+					
+			<br>		 @endforeach
+					@endif
 			</td>
 
 

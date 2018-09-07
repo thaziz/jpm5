@@ -66,7 +66,28 @@
                         Get nota fpg
                     </button>
                 </div>     
-                    
+                
+
+                <div class="">
+                    <button class="btn btn-success" onclick="tglpo()">
+                        Get no po
+                    </button>
+                </div>
+
+                <div class="">
+                    <button class="btn btn-success" onclick="fpgbankmasuk()">
+                        bank masuk
+                    </button>
+                </div> 
+
+                 <div class="">
+                    <button class="btn btn-success" onclick="duplicatebank()">
+                        duplicate bank masuk
+                    </button>
+                </div> 
+
+
+
                 <div class="box-body">
              
                 </div><!-- /.box-body -->
@@ -102,7 +123,18 @@
             "language": dataTableLanguage,
     });
 
-  
+    
+     function duplicatebank(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/duplicatebank',
+        type : "get",
+        dataType : "json",
+        success : function(response){
+            
+        }
+      })
+     }
+
     function FP(){
       $.ajax({
         url : baseUrl + '/jurnalselaras/fakturpembelian',
@@ -130,9 +162,31 @@
       })
     }
 
+    function tglpo(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/tglpo',
+        type : "post",
+        dataType : "json",
+        success : function(response){
+
+        }
+      })
+    }
+
     function nofpg(){
         $.ajax({
         url : baseUrl + '/jurnalselaras/notafpg',
+        type : "post",
+        dataType : "json",
+        success : function(response){
+
+        }
+      })
+    }
+
+    function fpgbankmasuk(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/fpgbankmasuk',
         type : "post",
         dataType : "json",
         success : function(response){

@@ -242,6 +242,7 @@
                               </tr>
                               <tr>
                                   <th> 
+                                      <input type="hidden" class="statusmankeu" value="{{$spp->man_keu}}">
                                       @if($spp->staff_pemb == 'DISETUJUI')
                                          <div style='text-align: center'>  <p class="label label-info" > DISETUJUI </p> </div>
                                       @else
@@ -326,6 +327,7 @@
                       @endforeach
                        <tr class="totalbiaya"> <td colspan="6" style="text-align: center"> <b> Total Biaya </b> </td> 
                         @foreach($data['codt_tb'] as $cotb)
+
                           <td data-suppliertotal="{{$cotb->cotb_supplier}}"> <div class='form-group'> <label class='col-sm-2 col-sm-2 control-label'> Rp </label> <div class='col-sm-8'> <input type='text' class='input-sm form-control totalbiaya'  value="{{number_format($cotb->cotb_totalbiaya, 2)}}" readonly="" > </div>  </div></td>
                           @endforeach
                         </tr>
@@ -434,8 +436,8 @@
 
 
                         <tr class="totalbiaya"> <td colspan="6" style="text-align: center"> <b> Total Biaya </b> </td> 
-                        @foreach($data['spptb'] as $spptb)
-                          <td data-suppliertotal="{{$spptb->spptb_supplier}}"> <div class='form-group'> <label class='col-sm-2 col-sm-2 control-label'> Rp </label> <div class='col-sm-8'> <input type='text' class='input-sm form-control totalbiaya'  value="{{number_format($spptb->spptb_totalbiaya, 2)}}" readonly="" > </div>  </div></td>
+                        @foreach($data['codt_tb'] as $spptb)
+                          <td data-suppliertotal="{{$spptb->cotbk_supplier}}"> <div class='form-group'> <label class='col-sm-2 col-sm-2 control-label'> Rp </label> <div class='col-sm-8'> <input type='text' class='input-sm form-control totalbiaya'  value="{{number_format($spptb->cotbk_totalbiaya, 2)}}" readonly="" > </div>  </div></td>
                           @endforeach
                         </tr>
 <!-- 
@@ -562,10 +564,11 @@
         $(this).change(function(){
           id = $(this).data('id');
           val = $(this).val();
-          alert(val);
+         // alert(val);
           string = val.split(",");
           syaratkredit = string[1];
           $('.bayar' + id).val(syaratkredit);
+          $('.supplierco' + id).val(string[0]);
       })
     })
 
@@ -826,8 +829,9 @@
           url : url,
           dataType:'json',
           success : function(data){
-       
-            if(data.codt.length > 0) {
+            statusmankeu = $('.statusmankeu').val();
+           // alert(statusmankeu);
+            if(statusmankeu == 'DISETUJUI') {
               $('#hargatable').each(function(){
                 for(var n=0; n < data.sppdt_barang.length; n++){
                   var kodebrg = $('.brg' + n).data("kodeitem");
@@ -856,19 +860,19 @@
               })
             } 
             var nourut = 1;         
-            if(data.codt.length == 0) { 
-
+            if(statusmankeu == 'BELUM DI SETUJUI') { 
+             // alert('ah');
               $('#hargatable').each(function(){
              
                       for(var n=0;n<data.sppdt_barang.length;n++){
-                       
+                   
                        var kodebrg =  $('.brg'+ n).data("kodeitem");
                           for(var i = 0 ; i <data.codt.length;i++){
-                            if(kodebrg == data.codt[i].codt_kodeitem) {
+                            if(kodebrg == data.codt[i].codtk_kodeitem) {                        
                                for(var j =0; j < data.suppliertb.length; j++){
-                               
-                                if(data.codt[i].codt_supplier == data.suppliertb[j].cotbk_supplier) {
-                                        var row = $('td[data-supplier="'+ data.codt[i].codt_supplier + '"]').index() + 6; 
+                              
+                                if(data.codt[i].codtk_supplier == data.suppliertb[j].cotbk_supplier) {
+                                        var row = $('td[data-supplier="'+ data.codt[i].codtk_supplier + '"]').index() + 6; 
                                       
                                         var column = $('td', this).eq(row);
                                         var tampilharga = '<div class="form-group">' +
@@ -897,7 +901,7 @@
                                             kontrak = $(this).data('kontrak');
                                                 $('.checkbox'+n).each(function(){
                                                   if ($this.is(":checked")) {
-                                                      rowsupplier = "<input type='hidden' value="+idsup+" name='datasup[]'>";
+                                                      rowsupplier = "<input type='hidden' value="+idsup+" name='datasup[]' class='supplierco"+n+"'>";
                                                       $('.suppliercek'+id).html(rowsupplier);
 
                                                       $('.harga' + val).attr('disabled', false);
@@ -1127,7 +1131,7 @@
                 var id = $(this).data('id');
                 harga = $(this).val();
                 numhar = Math.round(harga).toFixed(2);
-                alert('test');
+              //  alert('test');
                 $('.harga' + id).val(addCommas(numhar));
             
               $('.simpan').prop("disabled" , true);
