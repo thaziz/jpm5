@@ -49,7 +49,7 @@
                         <td align="right"><input type="hidden" value="{{ $e->i_diskon2 }}" class="total_diskoninv" name="">{{ number_format($e->i_diskon2,0,',','.') }}</td>
                         <td align="right"><input type="hidden" value="{{ $e->i_ppnrp }}" class="total_ppn" name="">{{ number_format($e->i_ppnrp,0,',','.') }}</td>
                         <td align="right"><input type="hidden" value="{{ $e->i_pajak_lain }}" class="total_pajak_lain" name="">{{ number_format($e->i_pajak_lain,0,',','.') }}</td>
-                        <td align="right"><input type="hidden" value="{{ $e->i_netto }}" class="total_netto" name="">{{ number_format($e->i_netto,0,',','.') }}</td>
+                        <td align="right"><input type="hidden" value="{{ $e->i_netto+$e->i_ppnrp+$e->i_pajak_lain }}" class="total_netto" name="">{{ number_format($e->i_netto,0,',','.') }}</td>
                         <td align="right"><input type="hidden" value="{{ $e->i_netto_detail }}" class="total_netto_detil" name="">{{ number_format($e->i_netto_detail,0,',','.') }}</td>
                         <td align="right"><input type="hidden" value="{{ $e->i_total_tagihan }}" class="total_net" name=""> {{ number_format($e->i_total_tagihan,0,',','.') }}</td>
                         @endif
