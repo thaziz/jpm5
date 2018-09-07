@@ -1390,11 +1390,20 @@
                          showConfirmButton: false
                        
                   });
-                
-                var idfpg = response.isfpg[0].idfpg;
-                $('.simpansukses').attr('disabled', true);
-                html = "<a class='btn btn-success btn-sm' href={{url('formfpg/printformfpg')}}"+'/'+idfpg+"><i class='fa fa-print'></i>  Cetak </a>";
-                $('.print').html(html);
+                jenisbayar = $('.jenisbayar').val();
+                if(jenisbayar  == '5' || jenisbayar == '12') {
+                  var idfpg = response.isfpg[0].idfpg;
+                  $('.simpansukses').attr('disabled', true);
+                  html = "<a class='btn btn-success btn-sm' href={{url('formfpg/printformfpg2')}}"+'/'+idfpg+"><i class='fa fa-print'></i>  Cetak </a>";
+                  $('.print').html(html);
+                }
+                else{
+                   var idfpg = response.isfpg[0].idfpg;
+                  $('.simpansukses').attr('disabled', true);
+                  html = "<a class='btn btn-success btn-sm' href={{url('formfpg/printformfpg')}}"+'/'+idfpg+"><i class='fa fa-print'></i>  Cetak </a>";
+                  $('.print').html(html);
+                }
+
           },
           error : function(){
            swal("Error", "Server Sedang Mengalami Masalah", "error");
