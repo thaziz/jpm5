@@ -2194,15 +2194,15 @@
     })
 
      
-
+    
   //MENDAPATKAN NO FAKTUR
       cabang = $('.cabang').val();
       var a = $('ul#tabmenu').find('li.active').data('val');
-   
+      tgl = $('.tgl').val();
       $('.cabang2').val(cabang);
        $.ajax({
           type : "get",
-          data : {cabang},
+          data : {cabang,tgl,a},
           url : baseUrl + '/fakturpembelian/getbiayalain',
           dataType : 'json',
           success : function (response){     
@@ -2618,11 +2618,11 @@
       $('.cabang').change(function(){
       cabang = $(this).val();
       var a = $('ul#tabmenu').find('li.active').data('val');
-      
+      tgl = $('.tgl').val();
       $('.cabang2').val(cabang);
        $.ajax({
           type : "get",
-          data : {cabang,a},
+          data : {cabang,a,tgl},
           url : baseUrl + '/fakturpembelian/getbiayalain',
           dataType : 'json',
           success : function (response){     
@@ -7176,9 +7176,10 @@ $(document).ready(function(){
 $('#tmbhdataitem').click(function(){
        cabang = $('.cabang').val();
        a = 'I';
+       tgl = $('.tgl').val();
        $.ajax({
           type : "get",
-          data : {cabang,a},
+          data : {cabang,a,tgl},
           url : baseUrl + '/fakturpembelian/getbiayalain',
           dataType : 'json',
           success : function (response){     
@@ -7222,9 +7223,10 @@ $('#tmbhdataitem').click(function(){
     $('#tmbhdatapo').click(function(){
      cabang = $('.cabang').val();
      a = 'PO';
+     tgl = $('.tgl').val();
        $.ajax({
           type : "get",
-          data : {cabang,a},
+          data : {cabang,a,tgl},
           url : baseUrl + '/fakturpembelian/getbiayalain',
           dataType : 'json',
           success : function (response){     
