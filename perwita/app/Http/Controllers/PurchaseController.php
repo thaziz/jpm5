@@ -8939,8 +8939,10 @@ public function kekata($x) {
 		 	]);	
 
 			$bankmasuk = DB::select("select * bank_masuk where bm_idfpgb = '$idbank'");
-			$idbm = $bankmasul[0]->bm_id;
-			DB::delete("DELETE from bank_masuk where bm_id = '$idbm'");
+			if(count($bankmasuk) > 0) {
+				$idbm = $bankmasul[0]->bm_id;
+				DB::delete("DELETE from bank_masuk where bm_id = '$idbm'");
+			}
 		}
 		//cekbankmasuk
 		

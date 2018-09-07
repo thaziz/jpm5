@@ -8257,7 +8257,9 @@ public function kekata($x) {
 			}
 
 			$tglbbk = $request->tglbbk;
-			$jr_no = get_id_jurnal('BK' , $cabang, $tglbbk);
+			$jr_no = get_id_jurnal('BK-' . $request->kodebank , $cabang, $tglbbk);
+
+
 
 			$year =  Carbon::parse($tglbbk)->format('Y');	
 			$date = $request->$tglbbk;
@@ -8389,6 +8391,8 @@ public function kekata($x) {
 						]);
 		$data['bbk'] = DB::select("select * from bukti_bank_keluar where bbk_id = '$idbbk'");
 		$cabang = $data['bbk'][0]->bbk_cabang;
+		$kodebank = $data['bbk'][0]->bbk_kodebank;
+
 		$datajurnal = [];
 		$totalhutang = 0;
 
@@ -8625,7 +8629,7 @@ public function kekata($x) {
 		//save jurnal
 
 			DB::delete("DELETE from  d_jurnal where jr_ref = '$refjurnal' and jr_detail = 'BUKTI BANK KELUAR'");
-				$jr_no = get_id_jurnal('BK' , $cabang, $request->tglbbk);
+				$jr_no = get_id_jurnal('BK-' . $kodebank , $cabang, $request->tglbbk);
 
 		 	$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
 			if(isset($lastidjurnal)) {
@@ -8935,8 +8939,10 @@ public function kekata($x) {
 		 	]);	
 
 			$bankmasuk = DB::select("select * bank_masuk where bm_idfpgb = '$idbank'");
-			$idbm = $bankmasul[0]->bm_id;
-			DB::delete("DELETE from bank_masuk where bm_id = '$idbm'");
+			if(count($bankmasuk) > 0) {
+				$idbm = $bankmasul[0]->bm_id;
+				DB::delete("DELETE from bank_masuk where bm_id = '$idbm'");
+			}
 		}
 		//cekbankmasuk
 		
