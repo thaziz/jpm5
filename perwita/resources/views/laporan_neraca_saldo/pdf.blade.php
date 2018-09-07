@@ -154,7 +154,7 @@
             <tr>
               <td style="text-align: left; padding-top: 5px;">
 
-                Transaksi : 
+                Per - 
                   
                 @if($request['jenis'] == 'Bulan')
                   Bulan {{ date_ind(explode('-', $request['d1'])[1]) }} {{ explode('-', $request['d1'])[0] }}
@@ -171,7 +171,7 @@
         <table id="table-data" width="100%" border="0">
           <thead>
            <tr>
-              {{-- <th rowspan="2" width="6%">Kode</th> --}}
+              <th rowspan="2" width="6%">Kode Akun</th>
               <th rowspan="2" width="12%">Nama Akun</th>
               <th colspan="2" width="10%">Saldo Awal</th>
               <th colspan="2" width="10%">Mutasi Bank</th>
@@ -208,7 +208,7 @@
             <?php $tot_saldo_d = $tot_saldo_k = $tot_mb_d = $tot_mb_k = $tot_mk_d = $tot_mk_k = $tot_mm_d = $tot_mm_k = $tot_mutasi_d = $tot_mutasi_k = $tot_saldo_akhir_debet = $tot_saldo_akhir_kredit = 0 ?>
             @foreach($data as $key => $okee)
                 <tr>
-                  {{-- <td style="padding: 5px; vertical-align: top;">{{ $okee->id_akun }}</td> --}}
+                  <td style="padding: 5px; vertical-align: top;">{{ $okee->id_akun }}</td>
                   <td style="padding: 5px;font-weight: normal;">{{ $okee->nama_akun }}</td>
 
                   <?php 

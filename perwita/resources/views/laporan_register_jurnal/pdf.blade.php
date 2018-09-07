@@ -184,7 +184,7 @@
 					@foreach($detail[$data_jr->jr_id] as $data_detail)
 						<tr>
 							<td style="padding-left: 3px;">{{ date('d-m-Y', strtotime($data_jr->jr_date)) }}</td>
-							<td style="padding-left: 3px;">{{ $data_jr->jr_ref }}</td>
+							<td style="padding-left: 3px;">{{ $data_jr->jr_no }}</td>
 							<td style="padding-left: 3px;">{{ $data_detail->jrdt_acc }}</td>
 
 							@if($request->nama_perkiraan)

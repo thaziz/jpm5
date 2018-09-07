@@ -91,10 +91,16 @@
                       <tr>
                         <td> {{$index + 1}} </td>
                         <td>  {{$fpg->fpg_nofpg}} </td>
-                        <td>  {{$fpg->fpg_tgl}} </td>
+                        <td>  {{ Carbon\Carbon::parse($fpg->fpg_tgl)->format('d-M-Y') }} </td>
                         <td> {{$fpg->jenisbayar}} </td>
                        
-                        <td> {{$fpg->fpg_keterangan}} </td>
+                        <td> {{$fpg->fpg_keterangan}}
+                        
+                           {{--  @if($fpg->fpg_posting == 'DONE')
+                              <span class="label label-success"> Sudah Terposting </span> &nbsp;
+                            @else
+                               <span class="label label-warning">  Belum di Posting </span> &nbsp;
+                            @endif  --}} </td>
                         <td> {{number_format($fpg->fpg_totalbayar, 2)}} </td>
                         <td> - </td>
                         <td> {{number_format($fpg->fpg_cekbg , 2)}} </td>

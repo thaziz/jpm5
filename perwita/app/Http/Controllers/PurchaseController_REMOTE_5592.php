@@ -7114,9 +7114,10 @@ public function purchase_order() {
 	public function getbiayalain (Request $request){
 		$cabang = $request->cabang;
 		$flag = $request->a;
+		$tgl = $request->tgl;
 
-		$bulan = Carbon::now()->format('m');
-        $tahun = Carbon::now()->format('y');
+		$bulan = Carbon::parse($tgl)->format('m');
+        $tahun = Carbon::parse($tgl)->format('y');
         
     /*  return $bulan . $tahun;*/
 		if($flag == ''){
@@ -7769,11 +7770,11 @@ public function kekata($x) {
 
 
 				$idfpg = $request->idfpg[$i];
-				$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
-				$jenisbayar = $datafpg[0]->fpg_jenisbayar;
+				$datafpg = DB::select("select * from fpg,fpg_cekbank where idfpg = '$idfpg' and fpgb_idfpg = idfpg");
+				$jenisbayar = $datafpg[0]->fpgb_jenisbayarbank;
 				if($jenisbayar != 'INTERNET BANKING'){
 						$data['idfpg'] = DB::table('fpg_cekbank')
-						->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $request->notransaksi[$i]]])
+						->where([['fpgb_idfpg', '=', $idfpg],['fpgb_nocheckbg' , '=' , $request->notransaksi[$i]]])
 						->update([
 							'fpgb_posting' => 'DONE',
 						]);
@@ -11512,8 +11513,7 @@ public function kekata($x) {
 											$bankasal = DB::select("select * from masterbank where mb_kode = '$kodebank'");
 											$cabangasal = $bankasal[0]->mb_cabangbank;
 											$namaasal = $bankasal[0]->mb_nama;
-											dd($bankasal);
-											dd($cabangasal);
+											
 											$kodetujuan = $request->kodebanktujuan[$j];
 											$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
 											$cabangtujuan = $banktujuan[0]->mb_cabangbank;
@@ -11661,7 +11661,7 @@ public function kekata($x) {
 										}
 
 										$bankasal = DB::select("select * from masterbank where mb_kode = '$kodebank'");
-										dd($bankasal);
+										
 										$cabangasal = $bankasal[0]->mb_cabangbank;
 
 										$kodetujuan = $request->kodebanktujuan[$j];

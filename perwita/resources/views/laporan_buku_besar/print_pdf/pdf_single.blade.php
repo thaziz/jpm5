@@ -189,7 +189,11 @@
           <thead>
             <tr>
               <td style="text-align: left; padding-top: 5px;">
-                Transaksi : Bulan {{ date_ind(explode('-', $b1)[0]).' '.explode('-', $b1)[1] }} &nbsp;s/d &nbsp;{{ date_ind(explode('-', $b2)[0]).' '.explode('-', $b2)[1] }}
+              	@if($throttle == 'bulan')
+                	Transaksi : Bulan {{ date_ind(explode('-', $b1)[0]).' '.explode('-', $b1)[1] }} &nbsp;s/d &nbsp;{{ date_ind(explode('-', $b2)[0]).' '.explode('-', $b2)[1] }}
+                @else
+                	Transaksi : Tahun {{ $request->y1 }} &nbsp;s/d &nbsp;{{ $request->y2 }}
+                @endif
               </td>
               
             </tr>
@@ -259,7 +263,7 @@
 
 						<tr>
 		                    <td style="padding-left: 5px;">{{ date("d-m-Y", strtotime($jurnal->d_jurnal->jr_date)) }}</td>
-		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_ref }}</td>
+		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_no }}</td>
 		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_note }}</td>
 		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($debet,2) }}</td>
 		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($kredit,2) }}</td>
@@ -296,7 +300,7 @@
 						@if($throttle == "Bulan")
 							<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Bulan {{ date_ind(explode('-', $b1)[0]).' '.explode('-', $b1)[1] }} &nbsp;s/d &nbsp;{{ date_ind(explode('-', $b2)[0]).' '.explode('-', $b2)[1] }}</td>
 						@elseif($throttle == "Tahun")
-							<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Tahun {{ $request->y }}</td>
+							<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Tahun {{ $request->y1 }} &nbsp;s/d &nbsp;{{ $request->y2 }}</td>
 						@endif
 					</tr>
 				</thead>
