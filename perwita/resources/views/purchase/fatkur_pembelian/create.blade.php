@@ -1653,6 +1653,8 @@
 
         }
     })
+    
+
 
     function fungsippn(){
         jenisppn = $('.jenisppn').val();
@@ -2193,8 +2195,58 @@
 
     })
 
+
+    $('.tgl').change(function(){
+       cabang = $('.cabang').val();
+      var a = $('ul#tabmenu').find('li.active').data('val');
+      tgl = $('.tgl').val();
+      $('.cabang2').val(cabang);
+       $.ajax({
+          type : "get",
+          data : {cabang,tgl,a},
+          url : baseUrl + '/fakturpembelian/getbiayalain',
+          dataType : 'json',
+          success : function (response){     
+              
+              if(response.status == 'sukses'){
+                  var d = new Date(tgl);
+                
+                  //tahun
+                  var year = d.getFullYear();
+                  //bulan
+                  var month = d.getMonth();
+                  var month1 = parseInt(month + 1)
+                  console.log(d);
+                  console.log();
+                  console.log(year);
+
+                  if(month < 10) {
+                    month = '0' + month1;
+                  }
+
+                  console.log(d);
+
+                  tahun = String(year);
+  //                console.log('year' + year);
+                  year2 = tahun.substring(2);
+                  //year2 ="Anafaradina";
+                   nofaktur = 'FB' + month + year2 + '/' + cabang + '/' + a + '-' + response.data ;
+                  $('.aslinofaktur').val(nofaktur);
+                  $('.nofaktur').val(nofaktur);
+                  $('.no_faktur').val(nofaktur);
+              }
+              else {
+                  location.reload();
+              }
+               
+          },
+          error : function(){
+            location.reload();
+          }
+        })
+    })
      
-    
+
   //MENDAPATKAN NO FAKTUR
       cabang = $('.cabang').val();
       var a = $('ul#tabmenu').find('li.active').data('val');
@@ -2208,7 +2260,7 @@
           success : function (response){     
               
               if(response.status == 'sukses'){
-                  var d = new Date();
+                  var d = new Date(tgl);
                 
                   //tahun
                   var year = d.getFullYear();
@@ -2628,7 +2680,7 @@
           success : function (response){     
             
               if(response.status == 'sukses'){
-                  var d = new Date();
+                  var d = new Date(tgl);
                 
                   //tahun
                   var year = d.getFullYear();
@@ -7185,7 +7237,7 @@ $('#tmbhdataitem').click(function(){
           success : function (response){     
             
               if(response.status == 'sukses'){
-                  var d = new Date();
+                  var d = new Date(tgl);
                 
                   //tahun
                   var year = d.getFullYear();
@@ -7232,7 +7284,7 @@ $('#tmbhdataitem').click(function(){
           success : function (response){     
              
               if(response.status == 'sukses'){
-                  var d = new Date();
+                  var d = new Date(tgl);
                 
                   //tahun
                   var year = d.getFullYear();
