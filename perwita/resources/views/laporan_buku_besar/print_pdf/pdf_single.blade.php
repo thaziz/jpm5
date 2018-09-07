@@ -263,7 +263,7 @@
 
 						<tr>
 		                    <td style="padding-left: 5px;">{{ date("d-m-Y", strtotime($jurnal->d_jurnal->jr_date)) }}</td>
-		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_ref }}</td>
+		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_no }}</td>
 		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_note }}</td>
 		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($debet,2) }}</td>
 		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($kredit,2) }}</td>
