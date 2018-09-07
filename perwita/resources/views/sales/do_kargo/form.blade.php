@@ -77,7 +77,7 @@
                                         <td>
 
                                             @if(Auth::user()->punyaAkses('Delivery Order','cabang'))
-                                                <select onchange="ganti_nota()" class="form-control cabang_select">
+                                                <select onchange="ganti_nota()" class="form-control chosen-select-width cabang_select">
                                                 @foreach($cabang as $val)
                                                     @if(Auth()->user()->kode_cabang == $val->kode)
                                                     <option  selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
@@ -87,7 +87,7 @@
                                                 @endforeach
                                                 </select>
                                             @else
-                                                <select disabled="" class="form-control cabang_select">
+                                                <select disabled="" class="form-control chosen-select-width cabang_select">
                                                 @foreach($cabang as $val)
                                                 @if(Auth::user()->kode_cabang == $val->kode)
                                                     <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
@@ -852,6 +852,7 @@ function pilih_kontrak(a) {
             console.log($('.tipe_angkutan').val());
             $('.asal_do').val(response.data.kcd_kota_asal).trigger('chosen:updated');
             $('.tujuan_do').val(response.data.kcd_kota_tujuan).trigger('chosen:updated');
+            $('.jenis_tarif_do ').val(response.data.kcd_jenis_tarif).trigger('chosen:updated');
             $('.jumlah').val(1);
             var tujuan =  $('.tujuan_do option:selected').text();
    

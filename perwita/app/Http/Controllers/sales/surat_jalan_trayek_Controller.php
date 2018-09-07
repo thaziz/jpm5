@@ -10,6 +10,7 @@ use carbon\carbon;
 use Auth;
 use Exception;
 use Session;
+use PDF;
 class surat_jalan_trayek_Controller extends Controller
 {
     public function table_data_detail (Request $request) {
@@ -274,7 +275,7 @@ class surat_jalan_trayek_Controller extends Controller
         echo json_encode($data);
     }
 
-    public function cetak_nota($nomor=null) {
+    public function cetak_nota($nomor) {
         $head =collect(\DB::select("    SELECT c.nama nama_cabang,sj.nomor,sj.tanggal,sj.kode_rute FROM surat_jalan_trayek sj
                                         LEFT JOIN cabang c ON c.kode=sj.kode_cabang  WHERE sj.nomor='$nomor' "))->first();
         $detail =DB::select("   SELECT * FROM surat_jalan_trayek_d d, delivery_order o
@@ -286,8 +287,42 @@ class surat_jalan_trayek_Controller extends Controller
         for ($i=0; $i < count($rute); $i++) { 
             $last = $rute[$i]->kota;
         }
+
+       
+
+
         return view('sales.surat_jalan_trayek.print',compact('head','detail','rute','last'));
     }
+
+    public function nota_all($tanggal)
+    {
+        $head = DB::table('surat_jalan_trayek')
+                  ->where('tanggal',$tanggal)
+                  ->get();
+
+        $last = [];
+        $detail = [];
+        $rute = [];
+        for ($i=0; $i < count($head); $i++) { 
+            $detail[$i] = DB::table('surat_jalan_trayek_d')
+                            ->join('delivery_order','nomor','=','nomor_do')
+                            ->where('nomor_surat_jalan_trayek',$head[$i]->nomor)
+                            ->get();
+            $rute[$i] = DB::table('rute')
+                          ->join('rute_d','kode','=','kode_rute')
+                          ->where('kode',$head[$i]->kode_rute)
+                          ->get();
+            for ($a=0; $a < count($rute[$i]); $a++) { 
+                $last[$i] = $rute[$i][$a]->kota;
+            }
+        }
+        // $pdf = PDF::loadView('sales.surat_jalan_trayek.print_all',compact('head','detail','rute','last'))
+        //             ->setPaper('a4','potrait');
+        // return $pdf->stream('all_trayek_'.$tanggal.'.pdf');
+        return view('sales.surat_jalan_trayek.print_all',compact('head','detail','rute','last'));
+    }
+
+
 
     public function hapus_data(Request $req)
     {
