@@ -95,7 +95,7 @@ class selaras_jurnal  extends Controller
                                  ->first();
 
                 $bank = 'KK';
-                $kk =  get_id_jurnal($bank, $bpk[$i]->bpk_comp);
+                $kk =  get_id_jurnal($bank, $bpk[$i]->bpk_comp,$bpk[$i]->bpk_tanggal);
                 $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
                                             'jr_year'   => carbon::parse($bpk[$i]->bpk_tanggal)->format('Y'),
                                             'jr_date'   => carbon::parse($bpk[$i]->bpk_tanggal)->format('Y-m-d'),
@@ -325,7 +325,7 @@ class selaras_jurnal  extends Controller
 	                                 ->where('idjenisbayar',2)
 	                                 ->first();
                   $bank = 'KK';
-                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp);
+                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp,$bpk[$i]->bkk_tgl);
 	                $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 	                                            'jr_year'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y'),
 	                                            'jr_date'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y-m-d'),
@@ -530,7 +530,7 @@ class selaras_jurnal  extends Controller
 	                                 ->where('idjenisbayar',6)
 	                                 ->first();
                   $bank = 'KK';
-                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp);
+                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp,$bpk[$i]->bkk_tgl);
 	                $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 	                                            'jr_year'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y'),
 	                                            'jr_date'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y-m-d'),
@@ -706,7 +706,7 @@ class selaras_jurnal  extends Controller
 	                                 ->where('idjenisbayar',7)
 	                                 ->first();
                   $bank = 'KK';
-                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp);
+                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp,$bpk[$i]->bkk_tgl);
 	                $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 	                                            'jr_year'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y'),
 	                                            'jr_date'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y-m-d'),
@@ -893,7 +893,7 @@ class selaras_jurnal  extends Controller
 	                                 ->where('idjenisbayar',8)
 	                                 ->first();
                   $bank = 'KK';
-                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp);
+                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp,$bpk[$i]->bkk_tgl);
 	                $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 	                                            'jr_year'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y'),
 	                                            'jr_date'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y-m-d'),
@@ -1090,7 +1090,7 @@ class selaras_jurnal  extends Controller
 	                                 ->where('idjenisbayar',9)
 	                                 ->first();
                   $bank = 'KK';
-                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp);
+                  $kk =  get_id_jurnal($bank, $bkk[$i]->bkk_comp,$bpk[$i]->bkk_tgl);
 	                $jurnal_save = d_jurnal::create(['jr_id'=> $id_jurnal,
 	                                            'jr_year'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y'),
 	                                            'jr_date'   => carbon::parse($bkk[$i]->bkk_tgl)->format('Y-m-d'),
