@@ -8938,7 +8938,7 @@ public function kekata($x) {
 			 	'mbdt_tglstatus' => null,
 		 	]);	
 
-			$bankmasuk = DB::select("select * bank_masuk where bm_idfpgb = '$idbank'");
+			$bankmasuk = DB::select("select * from bank_masuk where bm_idfpgb = '$idbank'");
 			if(count($bankmasuk) > 0) {
 				$idbm = $bankmasul[0]->bm_id;
 				DB::delete("DELETE from bank_masuk where bm_id = '$idbm'");
