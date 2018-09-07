@@ -92,9 +92,56 @@ class laporan_neraca_saldo extends Controller
 
             // return $bulan_forJurnal; 
 
-            $data = DB::table('d_akun')
-                        ->select('d_akun.*')
-                        ->get();
+            $data = akun::select('id_akun', 'nama_akun')->orderBy('id_akun', 'asc')->with([
+                  'mutasi_bank_debet' => function($query) use ($tahun){
+                        $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                              ->where(DB::raw("date_part('year', jr_date)"), $tahun)
+                              ->where("jrdt_statusdk", 'D')
+                              ->where(DB::raw('substring(jr_no,1,1)'), 'B')
+                              ->groupBy('jrdt_acc')
+                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
+                  },
+                  'mutasi_bank_kredit' => function($query) use ($tahun){
+                        $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                              ->where(DB::raw("date_part('year', jr_date)"), $tahun)
+                              ->where("jrdt_statusdk", 'K')
+                              ->where(DB::raw('substring(jr_no,1,1)'), 'B')
+                              ->groupBy('jrdt_acc')
+                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
+                  },
+                  'mutasi_kas_debet' => function($query) use ($tahun){
+                        $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                              ->where(DB::raw("date_part('year', jr_date)"), $tahun)
+                              ->where("jrdt_statusdk", 'D')
+                              ->where(DB::raw('substring(jr_no,1,1)'), 'K')
+                              ->groupBy('jrdt_acc')
+                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
+                  },
+                  'mutasi_kas_kredit' => function($query) use ($tahun){
+                        $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                              ->where(DB::raw("date_part('year', jr_date)"), $tahun)
+                              ->where("jrdt_statusdk", 'K')
+                              ->where(DB::raw('substring(jr_no,1,1)'), 'K')
+                              ->groupBy('jrdt_acc')
+                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
+                  },
+                  'mutasi_memorial_debet' => function($query) use ($tahun){
+                        $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                              ->where(DB::raw("date_part('year', jr_date)"), $tahun)
+                              ->where("jrdt_statusdk", 'D')
+                              ->where(DB::raw('substring(jr_no,1,1)'), 'M')
+                              ->groupBy('jrdt_acc')
+                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
+                  },
+                  'mutasi_memorial_kredit' => function($query) use ($tahun){
+                        $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                              ->where(DB::raw("date_part('year', jr_date)"), $tahun)
+                              ->where("jrdt_statusdk", 'K')
+                              ->where(DB::raw('substring(jr_no,1,1)'), 'M')
+                              ->groupBy('jrdt_acc')
+                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
+                  }
+            ])->get();
       }
 
       // return json_encode($data);

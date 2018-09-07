@@ -504,6 +504,11 @@
   arrnourut2bg = [];
   $('#buatseri').click(function(){
     //alert(hel);
+
+    
+      nosericek = $('.inputcek').val().toUpperCase();
+      noseribg = $('.inputbg').val().toUpperCase();
+
     if($('#sericek').prop('checked') == true && $('#sericekbg').prop('checked') == true ) { // CEK DOUBLE
 
         var inputseri = '<input type="hidden" name="input" value="centangdua">';

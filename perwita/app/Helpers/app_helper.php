@@ -19,13 +19,15 @@
 
 	function get_id_jurnal($state, $cab, $date = null){
 
+		$digit = substr($state, 0, 2);
+
 		if(is_null($date)){
-			$jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_no, 1, 2)"), $state)->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
+			$jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_no, 1, 2)"), $digit)->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
 
 			$jr_no = ($jr) ? (substr($jr->jr_no, 12) + 1) : 1;
 	        $jr_no = $state."-".date("my")."/".$cab."/".str_pad($jr_no, 4, '0', STR_PAD_LEFT);
 		}else{
-			$jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_no, 1, 2)"), $state)->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y', strtotime($date)))->orderBy('jr_insert', 'desc')->first();
+			$jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_no, 1, 2)"), $digit)->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y', strtotime($date)))->orderBy('jr_insert', 'desc')->first();
 
 			$jr_no = ($jr) ? (substr($jr->jr_no, 12) + 1) : 1;
 	        $jr_no = $state."-".date("my", strtotime($date))."/".$cab."/".str_pad($jr_no, 4, '0', STR_PAD_LEFT);
@@ -165,11 +167,12 @@
 
 	
 
-	function getnotabm($cabang){
-		$buland = date('m');
-        $tahund = date('y');
+	function getnotabm($cabang , $tgl){
 
-       $idbm = DB::select("select * from bank_masuk where bm_cabangasal = '$cabang'  and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_nota IS NOT NULL order by bm_id desc limit 1");
+		$buland = Carbon::parse($tgl)->format('m');
+        $tahund = Carbon::parse($tgl)->format('y');
+
+       $idbm = DB::select("select * from bank_masuk where bm_cabangtujuan = '$cabang'  and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_nota IS NOT NULL order by bm_id desc limit 1");
 
 	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
 		if(count($idbm) != 0) {		

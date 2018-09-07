@@ -75,7 +75,7 @@
                         </tr>
                         <tr>
                           <td style='width:100px'> Kode Bank </td>
-                          <td> {{$banks->mb_id}} </td>
+                          <td> {{$banks->mb_id}} <input type="text" class="form-control mbid" value="{{$banks->mb_id}}"> </td>
                         </tr>
                         <tr>
                           <td> Akun Bank </td> 
@@ -304,7 +304,7 @@
                         <tr>
                           <th> Rusak </th>
                           <th> Kode Bank </th>
-                          <th> No Seri </th>
+                          <th class="noseridatabase"> No Seri </th>
                           <th> Tgl Buku </th> 
                           <th> No FPG </th>
                           <th> No BBK </th>
@@ -317,7 +317,7 @@
                           <tr class="datadatabase"> 
                             <td> <div class="checkbox"> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'> <label></label></div></td>
                             <td> {{$dt->mb_kode}} </td>
-                            <td> {{$dt->mbdt_noseri}}</td> <input type='hidden' class='noseridatabase' value='{{$dt->mbdt_noseri}}' name='noseridatabase[]'>
+                            <td class='noseridatabase'> {{$dt->mbdt_noseri}}</td> <input type='hidden' class='noseridatabase' value='{{$dt->mbdt_noseri}}' name='noseridatabase[]'>
                             <td> {{$dt->mbdt_tglstatus}}</td>
                             <td > {{$dt->mbdt_nofpg}} <input type='hidden' class="databasefpg" value=" {{$dt->mbdt_nofpg}}" name="databasefpg[]"></td>
                             <td> {{$dt->mbdt_nobbk}}</td>
@@ -576,7 +576,7 @@
  arrnourut2cek = [];
  arrnourut2bg = [];
   $('#buatseri').click(function(){
-    //alert(hel);
+      
       nosericek = $('.inputcek').val().toUpperCase();
       noseribg = $('.inputbg').val().toUpperCase();
       tempseri = 0;
@@ -589,36 +589,64 @@
       urutbg = $('.urutbg').val();           
       hasilurutbg = $('.hasilurutbg').val();
 
-    $('.noseridatabase').each(function(){
-      $thisval = $(this).val();
-     
-      if(nosericek != " "){
-        for($h = urutcek; $h < hasilurutcek; $h++ ){
-        //   alert(nosericek+$h);
-          if(nosericek+$h == $thisval){
-          //  alert(nosericek+$h);
-           // alert($thisval);
+      columns = $('#tbl-cek thead th.noseridatabase')
+      tblcek = $('#tbl-cek').DataTable();
+
+      var data = tblcek
+          .columns(2)
+          .data()
+          .draw();
+       
+
+        var rowdata = tblcek
+          .rows()
+          .data()
+         
+
+      $tempseri = 0;
+      datatemp = [];
+      for($i = 0; $i < rowdata.length; $i++){
+
+        $thisval = data[0][$i];
+        for($h = urutcek; $h < hasilurutcek; $h++ ){ 
+        if(nosericek+$h == $thisval){       
             tempseri = tempseri + 1;
-           
+            datatemp.push($thisval);
+          }
+        }
+      }
+
+
+     /* $('#tbl-cek tbody tr').each(function(){
+        val = $(this).find('td.noseridatabase').html();
+        alert(val);
+      })*/
+
+   /* $('.noseridatabase').each(function(){
+      $thisval = $(this).val();
+      alert($thisval);
+      if(nosericek != " "){
+        for($h = urutcek; $h < hasilurutcek; $h++ ){     
+          if(nosericek+$h == $thisval){
+            tempseri = tempseri + 1;
           }
         }
       }
       else if(noseribg != " "){
-    
          for($h = urutbg; $h < hasilurutbg; $h++ ){
-          if(nosericek+$h == $thisval){
+          if(noseribg+$h == $thisval){
             tempseri = tempseri + 1;
            
           }
         }
       }
 
-    })
+    })*/
 
 
    // alert(tempseri + 'tempseri');
     if(tempseri > 0){
-      toastr.info('DATA SERI sudah digunakan, silahkan input data yang lain :)');
+      toastr.info('DATA SERI '+ datatemp +' sudah digunakan, silahkan input data yang lain :)');
       return false;
     }
 
@@ -826,11 +854,11 @@
             urutbg++;
             }
           }    //END ELSE   jika double 
-		}		  
+    }     
     }
     else {
       if($("#sericek").prop('checked') == true ){ //SERI CEK
-	//	alert('sericek');
+  //  alert('sericek');
 
         var inputseri = '<input type="text" name="input" value="CEK">';
         $('.inputseri').html(inputseri);
@@ -955,7 +983,7 @@
           }
 
       if($('#sericekbg').prop('checked') == true){ ////SERI BG
-//	alert('true');
+//  alert('true');
            var inputseri = '<input type="text" name="input" value="BG">';
         $('.inputseri').html(inputseri);
 
@@ -1085,8 +1113,9 @@
               }          
           }
      } 
-    }    
-  })
+    }  
+       
+  }) // endbuatseri
 
 
  function pad (str, max) {

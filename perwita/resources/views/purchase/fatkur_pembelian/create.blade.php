@@ -4077,7 +4077,7 @@
              
 
 
-                  html = "<a class='btn btn-success btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
+                  html = "<a class='btn btn-success btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+response.message+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
                   $('.print').html(html);
                 }
            
@@ -4165,7 +4165,7 @@
                 $('#tmbhdataoutlet').addClass('disabled');
                 $('#tmbhdatasubcon').addClass('disabled');
 
-                html = "<a class='btn btn-info btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
+                html = "<a class='btn btn-info btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+response.message+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
                 $('.printpo').html(html);              
                 }
             },

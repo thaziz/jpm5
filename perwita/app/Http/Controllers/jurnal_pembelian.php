@@ -326,19 +326,76 @@ class jurnal_pembelian  extends Controller
           
 
         //  dd($carinota)
-         
             $index = (integer)$carinota[0]->id + 1;
             $index = str_pad($index, 4, '0' , STR_PAD_LEFT);
             $nota = 'FPG' .  $getmonth . $gettahun . '/' . $cabang . '/' . $index;
 
           DB::table('fpg')
            ->where('idfpg' , $idfpg)
-          ->update(['fpg_nofpg' => $nota]);
-         
-          
+          ->update(['fpg_nofpg' => $nota]);         
         }
         
     }
 
-     
+
+    function tglpo(){
+      $data = DB::select("select * from pembelian_order");
+    
+      for($j = 0; $j < count($data); $j++){
+        $tglpo = Carbon::parse($data[$j]->created_at)->format('Y-m-d');
+        $idpo = $data[$j]->po_id;
+
+        DB::table('pembelian_order')
+        ->where('po_id' , $idpo)
+        ->update(['po_tglspp' => $tglpo]);
+
+        
+      }
+      return json_encode('sukses');
+    }
+
+
+    function fpgbankmasuk(){
+      $databankmasuk = DB::select("select * from bank_masuk");
+      for($key = 0; $key < count($databankmasuk); $key++){
+        $idbm = $databankmasuk[$key]->bm_id;
+        $idfpgb = $databankmasuk[$key]->bm_idfpgb;
+
+        $datafpg = DB::select("select * from fpg , fpg_cekbank where fpgb_idfpg = idfpg and fpgb_id = '$idfpgb'");
+      
+        $notafpg = $datafpg[0]->fpg_nofpg;
+
+        DB::table('bank_masuk')
+        ->where('bm_id' , $idbm)
+        ->where('bm_idfpgb' , $idfpgb)
+        ->update(['bm_notatransaksi' => $notafpg]);
+      }
+    }
+    
+
+    function duplicatebank(){
+      $dataduplicate = DB::select("SELECT mbdt_noseri AS N, count(mbdt_noseri)  FROM masterbank_dt GROUP BY mbdt_noseri HAVING  count(mbdt_noseri) > 1
+      ");
+
+        for ($i = 0; $i < count($dataduplicate); $i++){
+          $noseri = $dataduplicate[$i]->n;
+          $countnoseri = $dataduplicate[$i]->count;
+         $carinoseri = DB::select("select mbdt_noseri, mbdt_id,mbdt_nofpg from masterbank_dt where mbdt_noseri = '$noseri'");
+
+         $countnoseri2 = (int)count($carinoseri) - 1;
+
+
+          //dd($countseri);
+          for($j = 0; $j < $countnoseri2; $j++){
+           
+            $idmbdt = $carinoseri[$j]->mbdt_id;
+            $mbdt_nofpg = $carinoseri[$j]->mbdt_nofpg;
+            if($mbdt_nofpg == null){
+                DB::DELETE("DELETE from masterbank_dt where  mbdt_id = '$idmbdt'");
+            }               
+          }
+
+        }
+      
+    }
 }

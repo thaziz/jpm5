@@ -30,20 +30,23 @@ class laporan_buku_besar extends Controller
         if($throttle == "Bulan"){
 
 
-            $d1 = date_format(date_create($request->d1), "n-Y");
-            $d2 = date_format(date_create($request->d2), "n-Y");
+            $d1 = date_format(date_create($request->d1), "n"); $y1 = date_format(date_create($request->d1), "Y");
+            $d2 = date_format(date_create($request->d2), "n"); $y2 = date_format(date_create($request->d2), "Y");
+
+            // return json_encode($d1.$y1.' / '.$d2.$y2);
 
             $b1 = date_format(date_create($request->d1), "m-Y"); $b2 = date_format(date_create($request->d2), "m-Y");
 
             if($request->buku_besar_cabang != 'all'){
                 $data = akun::where('kode_cabang', $request->buku_besar_cabang)
-                            ->with(['jurnal_detail' => function($query) use ($d1, $d2){
+                            ->with(['jurnal_detail' => function($query) use ($d1, $d2, $y1, $y2){
                                 $query->select('jrdt_acc', 'jrdt_jurnal', 'jr_date', 'jrdt_value', 'jrdt_statusdk')
                                         ->join('d_jurnal', 'jr_id', '=', 'jrdt_jurnal')
-                                        ->with(['d_jurnal' => function($query) use ($d1, $d2){
+                                        ->with(['d_jurnal' => function($query) use ($d1, $d2, $y1, $y2){
                                             $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref')->with('detail');
-                                        }])->whereHas('d_jurnal', function($query) use ($d1, $d2){
-                                            $query->whereBetween(DB::raw("concat_ws('-', date_part('month', jr_date), date_part('year', jr_date))"), [$d1, $d2]);
+                                        }])->whereHas('d_jurnal', function($query) use ($d1, $d2, $y1, $y2){
+                                            $query->whereBetween(DB::raw("date_part('month', jr_date)"), [$d1, $d2])
+                                                    ->whereBetween(DB::raw("date_part('year', jr_date)"), [$y1, $y2]);
                                         })->orderBy('jr_date');
                             }])
                             ->whereBetween('d_akun.id_akun', [$request->akun1, $request->akun2])

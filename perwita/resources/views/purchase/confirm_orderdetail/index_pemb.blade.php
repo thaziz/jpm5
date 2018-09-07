@@ -260,7 +260,7 @@
                               </tr>
                               <tr>
                                   <th> 
-                                      <input type="text" class="form-control statusmankeuangan" value="{{$spp->man_keu}}">
+                                      <input type="hidden" class="form-control statusmankeuangan" value="{{$spp->man_keu}}">
 
                                       @if($spp->staff_pemb == 'DISETUJUI')
                                          <div style='text-align: center'>  <p class="label label-info" > {{$spp->staff_pemb}} </p> </div>
@@ -580,6 +580,8 @@
           string = val.split(",");
           syaratkredit = string[1];
           $('.bayar' + id).val(syaratkredit);
+          $('.supplierco' + id).val(string[0]);
+          //alert(id);
       })
     })
 
@@ -893,7 +895,7 @@
                                                            '<label class="col-sm-1 control-label"> Rp </label>' + 
                                                             '<div class="col-xs-6">';
                                         
-                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+' hrga'+n+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.sppdt[i].sppd_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.sppdt[i].sppd_supplier+'" data-kontrak="'+data.sppdt[i].sppd_kontrak+'" data-hargaasli="'+data.sppdt[i].sppd_harga+'"> <input type="hidden" value="'+addCommas(data.sppdt[i].sppd_harga)+'" class="hargahid hargahid'+i+'" data-brg="'+n+'" data-id="'+i+'""> <input type="hidden" class="statuskontrak'+i+'" data-brg="'+n+'" data-id="'+i+'" value="'+data.sppdt[i].sppd_kontrak+'">  </div> <div class="datasup'+ i +'">  </div> ';
+                                        tampilharga += '<input type="text" class="input-sm form-control hrg harga'+i+' hrga'+n+'"  disabled="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.sppdt[i].sppd_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.sppdt[i].sppd_supplier+'" data-kontrak="'+data.sppdt[i].sppd_kontrak+'" data-hargaasli="'+data.sppdt[i].sppd_harga+'"> <input type="hidden" value="'+addCommas(data.sppdt[i].sppd_harga)+'" class="hargahid hargahid'+i+'" data-brg="'+n+'" data-id="'+i+'""> <input type="hidden" class="statuskontrak'+i+'" data-brg="'+n+'" data-id="'+i+'" value="'+data.sppdt[i].sppd_kontrak+'">  </div> <div class="datasup datasup'+ i+'" data-supplier="'+j+'">  </div> ';
 
                                         tampilharga += '<div class="col-sm-2"> <div class="checkbox checkbox-primary ">' +
                                             '<input id="cek" type="checkbox" value='+data.sppdt[i].sppd_supplier+' class="checkboxhrg checkbox'+n+'" data-val='+i+' data-id='+nourut+' required data-supplier='+data.sppdt[i].sppd_supplier+' data-harga='+data.sppdt[i].sppd_harga+' data-totalhrg='+data.spptb[j].spptb_totalbiaya+' data-n='+n+' data-kontrak='+data.sppdt[i].sppd_kontrak+'>' +
@@ -917,7 +919,7 @@
                                                 $('.checkbox'+n).each(function(){
                                                   if($this.is(":checked")) {
                                               
-                                                      rowsupplier = "<input type='text'  value="+idsup+" name='datasup[]'>";
+                                                      rowsupplier = "<input type='hidden' class='supplierco"+n+"'  value="+idsup+" name='datasup[]'>"+n+"";
                                                       $('.suppliercek'+id).html(rowsupplier);
 
                                                       $('.harga' + val).attr('disabled', false);

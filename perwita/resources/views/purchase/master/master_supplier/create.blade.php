@@ -57,9 +57,8 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
-                  <form method="post" action="{{url('mastersupplier/savesupplier')}}"  enctype="multipart/form-data" class="form-horizontal">
+                  <form method="post" action="{{url('mastersupplier/savesupplier')}}"  enctype="multipart/form-data" class="form-horizontal" id="savesupplier">
 
-                  
                   <div class="box-body">
                        <div class="row">
                           <div class="col-xs-6">
@@ -319,7 +318,6 @@
                     <a class="btn btn-warning" href={{url('mastersupplier/mastersupplier')}}> Kembali </a>
                    <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-success">
          
-                    
                     </form>
                     </div>
                   </div><!-- /.box-footer -->
@@ -354,6 +352,20 @@
             }
             return x1 + x2;
     }
+
+    $('#savesupplier').submit(function(){
+        data2 = $(this).serialize();
+        baseurl = baseUrl + '/mastersupplier/savesupplier';
+      $.ajax({
+        data : {data2},
+        url : baseurl,
+        type : "POST",
+        success : function(response){
+
+        }
+      })
+    })
+
       $('.nmsupplier').change(function(){
         val = $(this).val();
         

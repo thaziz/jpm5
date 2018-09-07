@@ -286,10 +286,10 @@
      $('.date').datepicker({
         autoclose: true,
         format: 'dd-MM-yyyy',      
-    });
+    }).datepicker("setDate", "0");
 
    // today = new Date();
-    $('.tglinput').val('09/03/2018');
+   // $('.tglinput').val('09/03/2018');
 
      $('.tglinput').change(function(){
        var comp = $('.cabang').val();
@@ -1337,7 +1337,7 @@
             contract = $('.statuskontraksupplier' + id).val();
             // toastr.info(val);
              numhar = Math.round(harga).toFixed(2);
-             alert(contract);
+
              if(contract == 'YA'){
                   if(harga === "undefined"){
                  }
@@ -1690,11 +1690,11 @@
             id = $(this).data('id');
             kontrak = $('.statuskontraksupplier' + id).val();
             //alert(kontrak);
-            if(kontrak == 'YA'){
+            
               //alert('s');
               harga = hargasupplier[5];
               $('.harga' + id).val(addCommas(harga));
-            }
+            
           })
 
 					$(function(){

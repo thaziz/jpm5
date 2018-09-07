@@ -568,6 +568,7 @@
           string = val.split(",");
           syaratkredit = string[1];
           $('.bayar' + id).val(syaratkredit);
+          $('.supplierco' + id).val(string[0]);
       })
     })
 
@@ -900,7 +901,7 @@
                                             kontrak = $(this).data('kontrak');
                                                 $('.checkbox'+n).each(function(){
                                                   if ($this.is(":checked")) {
-                                                      rowsupplier = "<input type='hidden' value="+idsup+" name='datasup[]'>";
+                                                      rowsupplier = "<input type='hidden' value="+idsup+" name='datasup[]' class='supplierco"+n+"'>";
                                                       $('.suppliercek'+id).html(rowsupplier);
 
                                                       $('.harga' + val).attr('disabled', false);
