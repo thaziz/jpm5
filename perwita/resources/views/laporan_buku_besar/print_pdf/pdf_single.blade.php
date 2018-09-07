@@ -300,12 +300,12 @@
 		                  	@foreach($jurnal->d_jurnal->detail as $key => $data_detail)
 		                  		@if($data_detail->jrdt_acc != $jurnal->jrdt_acc)
 			                  		<tr>
-					                    <td style="padding-left: 5px;" class="text-center">&nbsp;</td>
+					                    <td style="padding-left: 5px;" class="text-center">{{ $key }}</td>
 					                    <td style="padding-left: 5px;" class="text-center">&nbsp;</td>
 					                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_note }}</td>
 
 					                    @if($request->akun_lawan == 'true')
-						                    <td style="padding-left: 5px;" class="text-center">{{ str_pad($key, 3, "0",STR_PAD_LEFT) }}</td>
+						                    <td style="padding-left: 5px;" class="text-center">{{ str_pad(($key + 1), 3, "0",STR_PAD_LEFT) }}</td>
 					                    	<td style="padding-left: 5px;" class="text-center">{{ $data_detail->jrdt_statusdk }}</td>
 					                    	<td style="padding-left: 5px;" class="text-center">{{ $data_detail->jrdt_acc }}</td>
 					                    @endif
