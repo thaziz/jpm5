@@ -165,11 +165,12 @@
 
 	
 
-	function getnotabm($cabang){
-		$buland = date('m');
-        $tahund = date('y');
+	function getnotabm($cabang , $tgl){
 
-       $idbm = DB::select("select * from bank_masuk where bm_cabangasal = '$cabang'  and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_nota IS NOT NULL order by bm_id desc limit 1");
+		$buland = Carbon::parse($tgl)->format('m');
+        $tahund = Carbon::parse($tgl)->format('y');
+
+       $idbm = DB::select("select * from bank_masuk where bm_cabangtujuan = '$cabang'  and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_nota IS NOT NULL order by bm_id desc limit 1");
 
 	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
 		if(count($idbm) != 0) {		

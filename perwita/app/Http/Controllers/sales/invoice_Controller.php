@@ -880,6 +880,7 @@ public function simpan_invoice(request $request)
           $id_jurnal=d_jurnal::max('jr_id')+1;
           // dd($id_jurnal);
           $delete = d_jurnal::where('jr_ref',$nota)->delete();
+          $mm =  get_id_jurnal('MM', $request->cb_cabang);
           $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
                         'jr_year'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y'),
                         'jr_date'   => carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d'),
@@ -888,6 +889,7 @@ public function simpan_invoice(request $request)
                         'jr_note'   => 'INVOICE '.$request->ed_keterangan,
                         'jr_insert' => carbon::now(),
                         'jr_update' => carbon::now(),
+                        'jr_no'     => $mm,
                         ]);
 
           if ($request->ed_pendapatan == 'PAKET') {
