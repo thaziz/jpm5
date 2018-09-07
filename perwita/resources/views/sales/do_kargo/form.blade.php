@@ -852,7 +852,7 @@ function pilih_kontrak(a) {
             console.log($('.tipe_angkutan').val());
             $('.asal_do').val(response.data.kcd_kota_asal).trigger('chosen:updated');
             $('.tujuan_do').val(response.data.kcd_kota_tujuan).trigger('chosen:updated');
-            $('.jenis_tarif_do ').val(response.data.kcd_kota_tujuan).trigger('chosen:updated');
+            $('.jenis_tarif_do ').val(response.data.kcd_jenis_tarif).trigger('chosen:updated');
             $('.jumlah').val(1);
             var tujuan =  $('.tujuan_do option:selected').text();
    
