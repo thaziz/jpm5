@@ -101,7 +101,7 @@ class selaras_jurnal  extends Controller
                                             'jr_date'   => carbon::parse($bpk[$i]->bpk_tanggal)->format('Y-m-d'),
                                             'jr_detail' => $jenis_bayar->jenisbayar,
                                             'jr_ref'    => $bpk[$i]->bpk_nota,
-                                            'jr_note'   => 'BIAYA PENERUS KAS',
+                                            'jr_note'   => 'BIAYA PENERUS KAS ' . ' ' . strtoupper($bpk[$i]->bpk_keterangan) ,
                                             'jr_insert' => carbon::now(),
                                             'jr_update' => carbon::now(),
                                             'jr_no' => $kk,
