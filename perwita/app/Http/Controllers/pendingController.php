@@ -227,10 +227,17 @@ class pendingController extends Controller
 				array_push($akun, $faktur->fp_acchutang);
 				array_push($akun_val, (float)$faktur->fp_netto);
 				// dd($akun_val);
+
+
 				for ($i=0; $i < count($jurnal); $i++) { 
+					if ($faktur->bp_status == 'AGEN') {
+						$akun_status = '5314';
+					}else{
+						$akun_status = '5315';
+					}
 
 					$id_akun = DB::table('d_akun')
-									  ->where('id_akun','like','5315' . '%')
+									  ->where('id_akun','like',$akun_status. '%')
 									  ->where('kode_cabang',$jurnal[$i]['asal'])
 									  ->first();
 
@@ -420,14 +427,19 @@ class pendingController extends Controller
 				array_push($akun, $faktur->fp_acchutang);
 				array_push($akun_val, (float)$faktur->fp_netto);
 				for ($i=0; $i < count($jurnal); $i++) { 
+					if ($faktur->bp_status == 'AGEN') {
+						$akun_status = '5314';
+					}else{
+						$akun_status = '5315';
+					}
 
 					$id_akun = DB::table('d_akun')
-									  ->where('id_akun','like','5315' . '%')
+									  ->where('id_akun','like',$akun_status. '%')
 									  ->where('kode_cabang',$jurnal[$i]['asal'])
 									  ->first();
 
 					if ($id_akun == null) {
-						return response()->json(['status'=>0,'pesan'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia'])
+						return response()->json(['status'=>0,'pesan'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia']);
 					}
 					array_push($akun, $id_akun->id_akun);
 					array_push($akun_val, $jurnal[$i]['harga']);
@@ -721,7 +733,7 @@ class pendingController extends Controller
 									  ->first();
 
 					if ($id_akun == null) {
-						return response()->json(['status'=>0,'pesan'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia'])
+						return response()->json(['status'=>0,'pesan'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia']);
 					}
 					array_push($akun, $id_akun->id_akun);
 					array_push($akun_val, $jurnal[$i]['harga']);
@@ -919,7 +931,7 @@ class pendingController extends Controller
 									  ->first();
 
 					if ($id_akun == null) {
-						return response()->json(['status'=>0,'pesan'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia'])
+						return response()->json(['status'=>0,'pesan'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia']);
 					}
 					array_push($akun, $id_akun->id_akun);
 					array_push($akun_val, $jurnal[$i]['harga']);
