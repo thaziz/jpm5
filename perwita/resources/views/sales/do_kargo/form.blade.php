@@ -876,6 +876,7 @@ function pilih_kontrak(a) {
 $('.save').click(function(){
    var cabang = $('.cabang_select').val();
    var customer = $('.customer').val();
+  
    swal({
     title: "Apakah anda yakin?",
     text: "Simpan Delivery Order!",
