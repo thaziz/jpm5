@@ -364,7 +364,7 @@ class jurnal_pembelian  extends Controller
         $datafpg = DB::select("select * from fpg , fpg_cekbank where fpgb_idfpg = idfpg and fpgb_id = '$idfpgb'");
       
         $notafpg = $datafpg[0]->fpg_nofpg;
-
+        $keteranganfpg = $datafpg[0]->fpg
         DB::table('bank_masuk')
         ->where('bm_id' , $idbm)
         ->where('bm_idfpgb' , $idfpgb)
