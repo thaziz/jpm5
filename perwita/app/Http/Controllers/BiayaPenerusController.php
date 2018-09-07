@@ -171,7 +171,7 @@ class BiayaPenerusController extends Controller
 	        	if ($persen == null) {
 
 	        		$persen = DB::table('master_persentase')
-	        			->where('kode_akun',5319)
+	        			->where('kode_akun',5314)
 	        			->where('cabang','GLOBAL')
 	        			->get();
 	        	}

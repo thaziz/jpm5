@@ -1663,7 +1663,7 @@ class KasController extends Controller
 
 		$pdf = PDF::loadView('purchase/kas/detailkas',compact('cari','cari_dt','harga_array','total_harga','terbilang','tgl','tujuan'))
 					->setPaper('a4','potrait');
-			return $pdf->stream('detail-biaya-penerus-'.$cari[0]->bpk_nota.'.pdf');
+		return $pdf->stream('detail-biaya-penerus-'.$cari[0]->bpk_nota.'.pdf');
 
 	}
 

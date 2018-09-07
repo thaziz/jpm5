@@ -114,17 +114,19 @@ class mutasi_piutang_Controller extends Controller
     }else{
       $array = array_values($result_customer); 
     }
-
     for ($i=0; $i <count($array) ; $i++) { 
-        $dtt = $array[$i]['customer'];
+        $dtt = $array[$i];
         $customer[$i] = DB::table('customer')->select('kode','nama')->where('kode','=',$dtt)->get();
     }
     // return $customer;
 
     $dtt = [];
     for ($i=0; $i <count($customer) ; $i++) { 
-      
-      $dtt[$i] = $customer[$i][0]->kode;
+      if (isset($customer[$i]->kode)) {
+        $dtt[$i] = $customer[$i]->kode;
+      }else{
+        $dtt[$i] = 0;
+      }
       
       $saldoawal[$i] = DB::select("SELECT sum(i_total_tagihan) as saldo,i_kode_customer as customer from invoice 
                       where i_tanggal >= '$awal' 

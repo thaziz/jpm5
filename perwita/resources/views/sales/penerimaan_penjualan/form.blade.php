@@ -115,7 +115,7 @@
                                         <option value="T"> TUNAI/CASH </option>
                                         <option value="C"> TRANSFER </option>
                                         <option value="U"> UANG MUKA </option>
-                                        <option value="B"> NOTA/BIAYA LAIN </option>
+                                        {{-- <option value="B"> NOTA/BIAYA LAIN </option> --}}
                                         <option value="F"> CHEQUE/BG </option>
                                     </select>
                                 </td>
@@ -180,13 +180,25 @@
                                 </td>
                                 
                             </tr>
-                            <tr>
+                            <tr class="akun_bank_td" hidden="">
                                 <td style="padding-top: 0.4cm">Akun</td>
-                                <td colspan="3" class="akun_bank_td">
+                                <td colspan="3" class="">
                                     <select class="form-control chosen-select-width cb_akun_h" id="cb_akun_h" name="cb_akun_h" >
                                         <option value="0">Pilih - Akun Bank</option>
                                         @foreach($akun_bank as $val)
                                         <option value="{{$val->mb_id}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+
+                            <tr class="akun_kas_td" hidden="">
+                                <td style="padding-top: 0.4cm">Akun</td>
+                                <td colspan="3" class="">
+                                    <select class="form-control chosen-select-width cb_akun_h" id="cb_akun_h" name="akun_kas" >
+                                        <option value="0">Pilih - Akun Kas</option>
+                                        @foreach($akun_kas as $val)
+                                        <option value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -896,6 +908,16 @@ function nota_kwitansi() {
 
 }
 
+
+$('.cb_jenis_pembayaran').change(function(){
+    if ($(this).val() == 'T') {
+        $('.akun_bank_td').prop('hidden',true);
+        $('.akun_kas_td').prop('hidden',false);
+    }else{
+        $('.akun_bank_td').prop('hidden',false);
+        $('.akun_kas_td').prop('hidden',true);
+    }
+})
 
 $('.cb_cabang').change(function(){
     nota_kwitansi();

@@ -184,7 +184,7 @@
 					@foreach($detail[$data_jr->jr_id] as $data_detail)
 						<tr>
 							<td style="padding-left: 3px;">{{ date('d-m-Y', strtotime($data_jr->jr_date)) }}</td>
-							<td style="padding-left: 3px;">{{ $data_jr->jr_ref }}</td>
+							<td style="padding-left: 3px;">{{ $data_jr->jr_no }}</td>
 							<td style="padding-left: 3px;">{{ $data_detail->jrdt_acc }}</td>
 
 							@if($request->nama_perkiraan)
@@ -212,12 +212,12 @@
 					@endforeach
 
 					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
+						<td style="background: #f1f1f1;">&nbsp;</td>
+						<td style="background: #f1f1f1;">&nbsp;</td>
+						<td style="background: #f1f1f1;">&nbsp;</td>
 
 						@if($request->nama_perkiraan)
-							<td>&nbsp;</td>
+							<td style="background: #f1f1f1;">&nbsp;</td>
 						@endif
 
 						<?php
@@ -227,7 +227,7 @@
 								$not = "not-same"
 						?>
 
-						<td>&nbsp;</td>
+						<td style="background: #f1f1f1;">&nbsp;</td>
 						<td class="currency total {{$not}}">{{ number_format($tot_debet, 2) }}</td>
 						<td class="currency total no-border {{$not}}">{{ number_format($tot_kredit, 2) }}</td>
 					</tr>

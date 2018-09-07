@@ -44,6 +44,7 @@
 		    #table-data td{
 		    	border-right: 1px solid #555;
 		    	padding: 5px;
+		    	vertical-align: top;
 		    }
 
 		    #table-data td.currency{
@@ -189,7 +190,7 @@
           <thead>
             <tr>
               <td style="text-align: left; padding-top: 5px;">
-              	@if($throttle == 'bulan')
+              	@if($throttle == 'Bulan')
                 	Transaksi : Bulan {{ date_ind(explode('-', $b1)[0]).' '.explode('-', $b1)[1] }} &nbsp;s/d &nbsp;{{ date_ind(explode('-', $b2)[0]).' '.explode('-', $b2)[1] }}
                 @else
                 	Transaksi : Tahun {{ $request->y1 }} &nbsp;s/d &nbsp;{{ $request->y2 }}
@@ -219,12 +220,19 @@
 			<table id="table-data" class="table_neraca tree" border="0" width="100%">
 				<thead>
 					<tr>
-						<th width="10%">Tanggal</th>
-				        <th width="14%">No.Bukti</th>
-				        <th width="37%">Keterangan</th>
-				        <th width="13%">Debet</th>
-				        <th width="13%">Kredit</th>
-				        <th width="13%">Saldo</th>
+						<th width="8%">Tanggal</th>
+				        <th width="8%">No.Bukti</th>
+				        <th width="25%">Keterangan</th>
+
+				        @if($request->akun_lawan == 'true')
+					        <th width="5%">Seq</th>
+					        <th width="5%">D/K</th>
+					        <th width="6%">Acc.Lawan</th>
+					    @endif
+
+				        <th width="10%">Debet</th>
+				        <th width="10%">Kredit</th>
+				        <th width="10%">Saldo</th>
 					</tr>
 				</thead>
 
@@ -234,6 +242,13 @@
 		              <td></td>
 		              <td></td>
 		              <td style="padding-left: 50px; font-weight: 600;">Saldo Awal</td>
+
+		              @if($request->akun_lawan == 'true')
+			              <td></td>
+			              <td></td>
+			              <td></td>
+			          @endif
+
 		              <td style="padding-left: 8px;" class="money"></td>
 		              <td style="padding-left: 8px;" class="money"></td>
 		              <td style="padding-right: 8px; font-weight: 600;" class="money text-right">
@@ -263,8 +278,15 @@
 
 						<tr>
 		                    <td style="padding-left: 5px;">{{ date("d-m-Y", strtotime($jurnal->d_jurnal->jr_date)) }}</td>
-		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_ref }}</td>
+		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_no }}</td>
 		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_note }}</td>
+
+		                    @if($request->akun_lawan == 'true')
+			                    <td style="padding-left: 5px;" class="text-center">001</td>
+			                    <td style="padding-left: 5px;" class="text-center">{{ $jurnal->jrdt_statusdk }}</td>
+			                    <td style="padding-left: 5px;" class="text-center">{{ $jurnal->jrdt_acc }}</td>
+			                @endif
+
 		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($debet,2) }}</td>
 		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($kredit,2) }}</td>
 		                    <td class="money text-right" style="padding-right: 8px;font-weight: 600;">
@@ -272,7 +294,49 @@
 		                    		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
 		                    	}}
 		                    </td>
-		                  </tr>
+		                </tr>
+
+		                @if($request->akun_lawan == 'true')
+		                  	@foreach($jurnal->d_jurnal->detail as $key => $data_detail)
+		                  		@if($data_detail->jrdt_acc != $jurnal->jrdt_acc)
+			                  		<tr>
+					                    <td style="padding-left: 5px;" class="text-center">&nbsp;</td>
+					                    <td style="padding-left: 5px;" class="text-center">&nbsp;</td>
+					                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_note }}</td>
+
+					                    @if($request->akun_lawan == 'true')
+						                    <td style="padding-left: 5px;" class="text-center">{{ str_pad(($key + 1), 3, "0",STR_PAD_LEFT) }}</td>
+					                    	<td style="padding-left: 5px;" class="text-center">{{ $data_detail->jrdt_statusdk }}</td>
+					                    	<td style="padding-left: 5px;" class="text-center">{{ $data_detail->jrdt_acc }}</td>
+					                    @endif
+
+					                    <td class="money text-right" style="padding-right: 8px;">{{ number_format(0,2) }}</td>
+					                    <td class="money text-right" style="padding-right: 8px;">{{ number_format(0,2) }}</td>
+					                    <td class="money text-right" style="padding-right: 8px;font-weight: 600;">
+					                    	{{ 
+					                    		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
+					                    	}}
+					                    </td>
+					                </tr>
+					            @endif
+		                  	@endforeach
+		                @endif
+
+	                  	@if($request->akun_lawan == 'true')
+		                  	<tr style="background: #f1f1f1;">
+			                    <td style="padding-left: 5px;">&nbsp;</td>
+			                    <td style="padding-left: 5px;">&nbsp;</td>
+			                    <td style="padding-left: 5px;">&nbsp;</td>
+			                    <td style="padding-left: 5px;"></td>
+			                    <td style="padding-left: 5px;"></td>
+			                    <td style="padding-left: 5px;"></td>
+			                    <td class="money text-right" style="padding-right: 8px;">&nbsp;</td>
+			                    <td class="money text-right" style="padding-right: 8px;">&nbsp;</td>
+			                    <td class="money text-right" style="padding-right: 8px;font-weight: 600;">
+			                    	&nbsp;
+			                    </td>
+			                </tr>
+			            @endif
 					@endforeach
 				</tbody>
 			</table>
@@ -280,12 +344,19 @@
 			<table class="table_total tree" border="0" width="100%">
 				<thead>
 					<tr>
-						<th width="10%"></th>
-				        <th width="14%"></th>
-				        <th width="37%"></th>
-				        <th class="typed" width="13%">{{ number_format($tot_deb, 2) }}</th>
-				        <th class="typed" width="13%">{{ number_format($tot_kred, 2) }}</th>
-				        <th class="typed" width="13%">
+						<th width="8%"></th>
+				        <th width="8%"></th>
+				        <th width="25%"></th>
+
+				        @if($request->akun_lawan == 'true')
+					        <th width="5%"></th>
+					        <th width="5%"></th>
+					        <th width="6%"></th>
+					    @endif
+
+				        <th width="10%" class="typed" style="padding-right: 8px;">{{ number_format($tot_deb, 2) }}</th>
+				        <th width="10%" class="typed" style="padding-right: 8px;">{{ number_format($tot_kred, 2) }}</th>
+				        <th width="10%" class="typed" style="padding-right: 8px;">
 				        	{{ 
 	                    		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
 	                    	}}
