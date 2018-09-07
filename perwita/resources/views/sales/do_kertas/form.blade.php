@@ -942,12 +942,12 @@ function pilih_kontrak(a) {
 // SIMPAN DATA
     function simpan(){
 
-        
+
        if ($('.ed_nomor').val() == '') {
         return toastr.warning('Nomor Do Harus Diisi');
        }
        
-        var check = $('.status_kontrak').is(':checked');
+      var check = $('.status_kontrak').is(':checked');
       swal({
         title: "Apakah anda yakin?",
         text: "Simpan Data DO!",
