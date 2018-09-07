@@ -189,7 +189,11 @@
           <thead>
             <tr>
               <td style="text-align: left; padding-top: 5px;">
-                Transaksi : Bulan {{ date_ind(explode('-', $b1)[0]).' '.explode('-', $b1)[1] }} &nbsp;s/d &nbsp;{{ date_ind(explode('-', $b2)[0]).' '.explode('-', $b2)[1] }}
+              	@if($throttle == 'bulan')
+                	Transaksi : Bulan {{ date_ind(explode('-', $b1)[0]).' '.explode('-', $b1)[1] }} &nbsp;s/d &nbsp;{{ date_ind(explode('-', $b2)[0]).' '.explode('-', $b2)[1] }}
+                @else
+                	Transaksi : Tahun {{ $request->y1 }} &nbsp;s/d &nbsp;{{ $request->y2 }}
+                @endif
               </td>
               
             </tr>
@@ -296,7 +300,7 @@
 						@if($throttle == "Bulan")
 							<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Bulan {{ date_ind(explode('-', $b1)[0]).' '.explode('-', $b1)[1] }} &nbsp;s/d &nbsp;{{ date_ind(explode('-', $b2)[0]).' '.explode('-', $b2)[1] }}</td>
 						@elseif($throttle == "Tahun")
-							<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Tahun {{ $request->y }}</td>
+							<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Tahun {{ $request->y1 }} &nbsp;s/d &nbsp;{{ $request->y2 }}</td>
 						@endif
 					</tr>
 				</thead>

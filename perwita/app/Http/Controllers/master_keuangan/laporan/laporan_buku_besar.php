@@ -53,13 +53,14 @@ class laporan_buku_besar extends Controller
                             ->select('id_akun', 'nama_akun')
                             ->orderBy('id_akun', 'asc')->get();
             }else{
-                $data = akun::with(['jurnal_detail' => function($query) use ($d1, $d2){
+                $data = akun::with(['jurnal_detail' => function($query) use ($d1, $d2, $y1, $y2){
                                 $query->select('jrdt_acc', 'jrdt_jurnal', 'jr_date', 'jrdt_value', 'jrdt_statusdk')
                                         ->join('d_jurnal', 'jr_id', '=', 'jrdt_jurnal')
-                                        ->with(['d_jurnal' => function($query) use ($d1, $d2){
+                                        ->with(['d_jurnal' => function($query) use ($d1, $d2, $y1, $y2){
                                             $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref')->with('detail');
-                                        }])->whereHas('d_jurnal', function($query) use ($d1, $d2){
-                                            $query->whereBetween(DB::raw("concat_ws('-', date_part('month', jr_date), date_part('year', jr_date))"), [$d1, $d2]);
+                                        }])->whereHas('d_jurnal', function($query) use ($d1, $d2, $y1, $y2){
+                                            $query->whereBetween(DB::raw("date_part('month', jr_date)"), [$d1, $d2])
+                                                    ->whereBetween(DB::raw("date_part('year', jr_date)"), [$y1, $y2]);
                                         })->orderBy('jr_date');
                             }])
                             ->whereBetween('d_akun.id_akun', [$request->akun1, $request->akun2])
@@ -77,35 +78,38 @@ class laporan_buku_besar extends Controller
 
             $b1 = $d1; $b2 = $d2;
 
-            $time = DB::table('d_jurnal')
-                    ->whereBetween(DB::raw("date_part('year', jr_date)"), [$d1, $d2])
-                    ->select(DB::raw("distinct(date_part('year', jr_date)) as time"))->orderBy("time", "asc")->get();
-
-            $data = DB::table("d_jurnal_dt")
-                ->join("d_jurnal", "d_jurnal.jr_id", "=", "d_jurnal_dt.jrdt_jurnal")
-                ->join("d_akun", "d_akun.id_akun", "=", "d_jurnal_dt.jrdt_acc")
-                ->where("d_akun.kode_cabang", $request->buku_besar_cabang)
-                ->whereBetween(DB::raw("date_part('year', jr_date)"), [$d1, $d2])
-                ->whereBetween('d_akun.id_akun', [$request->akun1, $request->akun2])
-                ->select(DB::raw("distinct (d_akun.id_akun) as akun"), "d_akun.nama_akun as main_name")->get();
-
-            $grap = DB::table("d_jurnal_dt")
-                    ->join("d_jurnal", "d_jurnal.jr_id", "=", "d_jurnal_dt.jrdt_jurnal")
-                    ->whereBetween(DB::raw("date_part('year', jr_date)"), ['2017', '2018'])
-                    ->whereBetween('d_jurnal_dt.jrdt_acc', [$request->akun1, $request->akun2])
-                    ->select("d_jurnal_dt.jrdt_value", "d_jurnal_dt.jrdt_acc as acc", "d_jurnal.jr_ref", "d_jurnal.jr_note", "d_jurnal.jr_date", "d_jurnal_dt.jrdt_statusdk")->orderBy("d_jurnal_dt.jrdt_statusdk", "asc")->get();
-
-            foreach($time as $key => $data_time){
-                foreach ($data as $key => $data_akun) {
-                    $saldo_awal[$data_time->time."/".$data_akun->akun] = DB::table("d_akun_saldo")
-                                                    ->where("d_akun_saldo.id_akun", $data_akun->akun)
-                                                    ->where("d_akun_saldo.tahun", $data_time->time)
-                                                    ->select(DB::raw("COALESCE(sum(d_akun_saldo.saldo_akun), 0) as saldo"))->first()->saldo;
-                }
+            if($request->buku_besar_cabang != 'all'){
+                $data = akun::where('kode_cabang', $request->buku_besar_cabang)
+                            ->with(['jurnal_detail' => function($query) use ($d1, $d2){
+                                $query->select('jrdt_acc', 'jrdt_jurnal', 'jr_date', 'jrdt_value', 'jrdt_statusdk')
+                                        ->join('d_jurnal', 'jr_id', '=', 'jrdt_jurnal')
+                                        ->with(['d_jurnal' => function($query) use ($d1, $d2){
+                                            $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref')->with('detail');
+                                        }])->whereHas('d_jurnal', function($query) use ($d1, $d2){
+                                                    $query->whereBetween(DB::raw("date_part('year', jr_date)"), [$d1, $d2]);
+                                        })->orderBy('jr_date');
+                            }])
+                            ->whereBetween('d_akun.id_akun', [$request->akun1, $request->akun2])
+                            ->select('id_akun', 'nama_akun')
+                            ->orderBy('id_akun', 'asc')->get();
+            }else{
+                $data = akun::with(['jurnal_detail' => function($query) use ($d1, $d2){
+                                $query->select('jrdt_acc', 'jrdt_jurnal', 'jr_date', 'jrdt_value', 'jrdt_statusdk')
+                                        ->join('d_jurnal', 'jr_id', '=', 'jrdt_jurnal')
+                                        ->with(['d_jurnal' => function($query) use ($d1, $d2){
+                                            $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref')->with('detail');
+                                        }])->whereHas('d_jurnal', function($query) use ($d1, $d2){
+                                                    $query->whereBetween(DB::raw("date_part('year', jr_date)"), [$d1, $d2]);
+                                        })->orderBy('jr_date');
+                            }])
+                            ->whereBetween('d_akun.id_akun', [$request->akun1, $request->akun2])
+                            ->select('id_akun', 'nama_akun')
+                            ->orderBy('id_akun', 'asc')->get();
             }
+            
         }
 
-        // return json_encode($grap);
+        // return json_encode($data);
         return view('laporan_buku_besar.print_pdf.pdf_single', compact('request', 'throttle', 'saldo_awal', 'data', 'grap', 'time', 'b1', 'b2'));
 
     	// $pdf = PDF::loadView('laporan_buku_besar.print_pdf.pdf_single', compact('request', 'throttle', 'saldo_awal', 'data', 'grap', 'time'))
