@@ -364,7 +364,7 @@
 
               <tr>
                 
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-center">Grand Total</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-center" colspan="2">Grand Total</td>
                 <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">0</td>
                 <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">0</td>
                 <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">

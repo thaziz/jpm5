@@ -220,8 +220,13 @@
 				<thead>
 					<tr>
 						<th width="10%">Tanggal</th>
-				        <th width="14%">No.Bukti</th>
+				        <th width="10%">No.Bukti</th>
 				        <th width="37%">Keterangan</th>
+
+				        <th width="5%">Seq</th>
+				        <th width="5%">D/K</th>
+				        <th width="10%">Acc.Lawan</th>
+
 				        <th width="13%">Debet</th>
 				        <th width="13%">Kredit</th>
 				        <th width="13%">Saldo</th>
@@ -234,6 +239,11 @@
 		              <td></td>
 		              <td></td>
 		              <td style="padding-left: 50px; font-weight: 600;">Saldo Awal</td>
+
+		              <td></td>
+		              <td></td>
+		              <td></td>
+
 		              <td style="padding-left: 8px;" class="money"></td>
 		              <td style="padding-left: 8px;" class="money"></td>
 		              <td style="padding-right: 8px; font-weight: 600;" class="money text-right">
@@ -265,6 +275,9 @@
 		                    <td style="padding-left: 5px;">{{ date("d-m-Y", strtotime($jurnal->d_jurnal->jr_date)) }}</td>
 		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_no }}</td>
 		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_note }}</td>
+		                    <td style="padding-left: 5px;"></td>
+		                    <td style="padding-left: 5px;"></td>
+		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jrdt_jurnal }}</td>
 		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($debet,2) }}</td>
 		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($kredit,2) }}</td>
 		                    <td class="money text-right" style="padding-right: 8px;font-weight: 600;">
@@ -272,7 +285,39 @@
 		                    		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
 		                    	}}
 		                    </td>
-		                  </tr>
+		                </tr>
+
+	                  	@foreach($jurnal->d_jurnal->detail as $data_detail)
+	                  		<tr>
+			                    <td style="padding-left: 5px;">&nbsp;</td>
+			                    <td style="padding-left: 5px;">&nbsp;</td>
+			                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_note }}</td>
+			                    <td style="padding-left: 5px;"></td>
+		                    	<td style="padding-left: 5px;"></td>
+		                    	<td style="padding-left: 5px;"></td>
+			                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($debet,2) }}</td>
+			                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($kredit,2) }}</td>
+			                    <td class="money text-right" style="padding-right: 8px;font-weight: 600;">
+			                    	{{ 
+			                    		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
+			                    	}}
+			                    </td>
+			                </tr>
+	                  	@endforeach
+
+	                  	<tr>
+		                    <td style="padding-left: 5px;">&nbsp;</td>
+		                    <td style="padding-left: 5px;">&nbsp;</td>
+		                    <td style="padding-left: 5px;">&nbsp;</td>
+		                    <td style="padding-left: 5px;"></td>
+		                    <td style="padding-left: 5px;"></td>
+		                    <td style="padding-left: 5px;"></td>
+		                    <td class="money text-right" style="padding-right: 8px;">&nbsp;</td>
+		                    <td class="money text-right" style="padding-right: 8px;">&nbsp;</td>
+		                    <td class="money text-right" style="padding-right: 8px;font-weight: 600;">
+		                    	&nbsp;
+		                    </td>
+		                </tr>
 					@endforeach
 				</tbody>
 			</table>

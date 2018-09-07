@@ -43,7 +43,7 @@ class laporan_buku_besar extends Controller
                                 $query->select('jrdt_acc', 'jrdt_jurnal', 'jr_date', 'jrdt_value', 'jrdt_statusdk')
                                         ->join('d_jurnal', 'jr_id', '=', 'jrdt_jurnal')
                                         ->with(['d_jurnal' => function($query) use ($d1, $d2, $y1, $y2){
-                                            $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref')->with('detail');
+                                            $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref', 'jr_no')->with('detail');
                                         }])->whereHas('d_jurnal', function($query) use ($d1, $d2, $y1, $y2){
                                             $query->whereBetween(DB::raw("date_part('month', jr_date)"), [$d1, $d2])
                                                     ->whereBetween(DB::raw("date_part('year', jr_date)"), [$y1, $y2]);
@@ -57,7 +57,7 @@ class laporan_buku_besar extends Controller
                                 $query->select('jrdt_acc', 'jrdt_jurnal', 'jr_date', 'jrdt_value', 'jrdt_statusdk')
                                         ->join('d_jurnal', 'jr_id', '=', 'jrdt_jurnal')
                                         ->with(['d_jurnal' => function($query) use ($d1, $d2, $y1, $y2){
-                                            $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref')->with('detail');
+                                            $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref', 'jr_no')->with('detail');
                                         }])->whereHas('d_jurnal', function($query) use ($d1, $d2, $y1, $y2){
                                             $query->whereBetween(DB::raw("date_part('month', jr_date)"), [$d1, $d2])
                                                     ->whereBetween(DB::raw("date_part('year', jr_date)"), [$y1, $y2]);
@@ -84,7 +84,7 @@ class laporan_buku_besar extends Controller
                                 $query->select('jrdt_acc', 'jrdt_jurnal', 'jr_date', 'jrdt_value', 'jrdt_statusdk')
                                         ->join('d_jurnal', 'jr_id', '=', 'jrdt_jurnal')
                                         ->with(['d_jurnal' => function($query) use ($d1, $d2){
-                                            $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref')->with('detail');
+                                            $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref', 'jr_no')->with('detail');
                                         }])->whereHas('d_jurnal', function($query) use ($d1, $d2){
                                                     $query->whereBetween(DB::raw("date_part('year', jr_date)"), [$d1, $d2]);
                                         })->orderBy('jr_date');
@@ -97,7 +97,7 @@ class laporan_buku_besar extends Controller
                                 $query->select('jrdt_acc', 'jrdt_jurnal', 'jr_date', 'jrdt_value', 'jrdt_statusdk')
                                         ->join('d_jurnal', 'jr_id', '=', 'jrdt_jurnal')
                                         ->with(['d_jurnal' => function($query) use ($d1, $d2){
-                                            $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref')->with('detail');
+                                            $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref', 'jr_no')->with('detail');
                                         }])->whereHas('d_jurnal', function($query) use ($d1, $d2){
                                                     $query->whereBetween(DB::raw("date_part('year', jr_date)"), [$d1, $d2]);
                                         })->orderBy('jr_date');
