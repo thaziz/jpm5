@@ -7769,11 +7769,11 @@ public function kekata($x) {
 
 
 				$idfpg = $request->idfpg[$i];
-				$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
-				$jenisbayar = $datafpg[0]->fpg_jenisbayar;
+				$datafpg = DB::select("select * from fpg,fpg_cekbank where idfpg = '$idfpg' and fpgb_idfpg = idfpg");
+				$jenisbayar = $datafpg[0]->fpgb_jenisbayarbank;
 				if($jenisbayar != 'INTERNET BANKING'){
 						$data['idfpg'] = DB::table('fpg_cekbank')
-						->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $request->notransaksi[$i]]])
+						->where([['fpgb_idfpg', '=', $idfpg],['fpgb_nocheckbg' , '=' , $request->notransaksi[$i]]])
 						->update([
 							'fpgb_posting' => 'DONE',
 						]);
