@@ -94,6 +94,7 @@ Route::post('jurnalselaras/notafpg', 'jurnal_pembelian@nofpg');
 Route::post('jurnalselaras/tglpo', 'jurnal_pembelian@tglpo');
 Route::post('jurnalselaras/fpgbankmasuk', 'jurnal_pembelian@fpgbankmasuk');
 Route::get('jurnalselaras/duplicatebank', 'jurnal_pembelian@duplicatebank');
+Route::get('jurnalselaras/fpgpostingbank', 'jurnal_pembelian@getupdatefpgbbk');
 
 //***PEMBELIAN
 //***PEMBELIAN

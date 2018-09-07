@@ -84,7 +84,13 @@
                     <button class="btn btn-success" onclick="duplicatebank()">
                         duplicate bank masuk
                     </button>
-                </div> 
+                </div>
+
+                <div class="">
+                    <button class="btn btn-success" onclick="postingdonefpg()">
+                        POSTING DONE FPG
+                    </button>
+                </div>
 
 
 
@@ -123,7 +129,18 @@
             "language": dataTableLanguage,
     });
 
-    
+    function postingdonefpg(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/fpgpostingbank',
+        type : "get",
+        dataType : "json",
+        success : function(response){
+            
+        }
+      }) 
+    }
+
+        
      function duplicatebank(){
         $.ajax({
         url : baseUrl + '/jurnalselaras/duplicatebank',
@@ -134,6 +151,7 @@
         }
       })
      }
+
 
     function FP(){
       $.ajax({

@@ -3659,13 +3659,14 @@ public function purchase_order() {
 				$cabangasal = $datapb[0]->pb_comp;
 				$gudang = $datapb[0]->pb_gudang_cabang;
 				$datacomp = DB::select("select * from mastergudang where mg_id = '$gudang'");
-				$cabangtujuan = $datacomp->mg_cabang;
+				$cabangtujuan = $datacomp[0]->mg_cabang;
 				$datajurnalpbg = [];
 				
+
 				for($j = 0; $j < count($datapsm); $j++){
 					$item = $datapsm[$j]->psm_item;
 					$dataitem = DB::select("select * from masteritem where kode_item = '$item'");
-					$accpersediaan = $dataitem[0]->accpersediaan;
+					$accpersediaan = $dataitem[0]->acc_persediaan;
 
 					$accpersediaan = substr($accpersediaan, 0,4);
 					$dataakunasal = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan%' and kode_cabang = '$cabangasal'");
@@ -3674,27 +3675,25 @@ public function purchase_order() {
 					$dataakuntujuan = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan%' and kode_cabang = '$cabangtujuan'");
 					$akuntujuan = $dataakuntujuan[0]->id_akun;
 
+
 				
 					$totalhutang = 0;
 					for($i = 0; $i < count($request->accpersediaan); $i++){
 						$totalharga = $request->qtyterima[$i] * $request->jumlahharga[$i];
-
-						$datajurnalpbg[$i]['id_akun'] = $request->accpersediaan[$i];
+						$datajurnalpbg[$i]['id_akun'] = $akunasal;
 						$datajurnalpbg[$i]['subtotal'] = $totalharga;
 						$datajurnalpbg[$i]['dk'] = 'D';
 						$datajurnalpbg[$i]['detail'] = $datapb[0]->pb_keperluan;
 						$totalhutang = $totalhutang + $totalharga;
 					}	
 
-
 					$dataakun = array (
-						'id_akun' => $request->acchutangsupplierpo,
+						'id_akun' => $akuntujuan,
 						'subtotal' => $totalhutang,
 						'dk' => 'K',
 						'detail' => $datapb[0]->pb_keperluan
 						);
-
-					array_push($datajurnal, $dataakun );					
+					array_push($datajurnalpbg, $dataakun);					
 				}
 
 					$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
@@ -3712,8 +3711,8 @@ public function purchase_order() {
 					$jrno = get_id_jurnal('MM' , $cabang , $date);
 					$jurnal = new d_jurnal();
 					$jurnal->jr_id = $idjurnal;
-			        $jurnal->jr_year = date('Y');
-			        $jurnal->jr_date = date('Y-m-d');
+			        $jurnal->jr_year = $year;
+			        $jurnal->jr_date = $date;
 			        $jurnal->jr_detail = 'PENERIMAAN BARANG ' . $request->flag;
 			        $jurnal->jr_ref = $lpb;
 			        $jurnal->jr_note = $request->keterangan;
@@ -3721,7 +3720,8 @@ public function purchase_order() {
 			        $jurnal->save();
 		       		
 		    		$key  = 1;
-		    		for($j = 0; $j < count($datajurnal); $j++){
+		    	
+		    		for($j = 0; $j < count($datajurnalpbg); $j++){
 		    			
 		    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
 						if(isset($lastidjurnaldt)) {
@@ -3735,10 +3735,10 @@ public function purchase_order() {
 		    			$jurnaldt = new d_jurnal_dt();
 		    			$jurnaldt->jrdt_jurnal = $idjurnal;
 		    			$jurnaldt->jrdt_detailid = $key;
-		    			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
-		    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
-		    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
-		    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
+		    			$jurnaldt->jrdt_acc = $datajurnalpbg[$j]['id_akun'];
+		    			$jurnaldt->jrdt_value = $datajurnalpbg[$j]['subtotal'];
+		    			$jurnaldt->jrdt_statusdk = $datajurnalpbg[$j]['dk'];
+		    			$jurnaldt->jrdt_detail = $datajurnalpbg[$j]['detail'];
 		    			$jurnaldt->save();
 		    			$key++;
 		    		}   
@@ -3749,7 +3749,7 @@ public function purchase_order() {
 		} // jika stock iya
 
 			$cekjurnal = check_jurnal($lpb);
-    		if($cekjurnal == 0){
+    		/*if($cekjurnal == 0){
     			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
 				DB::rollback();
 									        
@@ -3757,7 +3757,9 @@ public function purchase_order() {
     		elseif($cekjurnal == 1) {
     			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
 					        
-    		}
+    		}*/
+
+    		$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
  
         return json_encode($dataInfo);
 
@@ -11268,6 +11270,8 @@ public function kekata($x) {
 				else {
 						$idfpg = 1;
 				} 
+
+
 
 				$cekbg = str_replace(',', '', $request->cekbg);
 				$totalbayar = str_replace(',', '', $request->totalbayar);

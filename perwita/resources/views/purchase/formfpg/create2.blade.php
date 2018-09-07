@@ -515,7 +515,7 @@
                                           <th colspan="4" style="color:#009aa9" class="transferbank"> <h3> Asal Bank : </h3> </th>
                                         </tr>
                                         <tr>
-                                          <th> Kode Bank </th> <th> Nama Bank </th> <th> Cabang / Alamat </th> <th> No Account </th>
+                                          <th> Kode Bank </th> <th> No Check / BG </th> <th> Nama Bank </th> <th> Cabang / Alamat </th> <th> No Account </th>
                                         </tr>
                                         <tr>
                                           <td> <select class="form-control selectOutlet chosen-select-width1 bank bankasal" >
@@ -527,16 +527,20 @@
                                                     @endforeach
                                                   
                                                 </select> </td>
+ 
+                                          
+                                            <td> <input type="text" class="input-sm form-control nocheck" type="button" data-toggle="modal" data-target="#myModal2" id="getbank" readonly="">
+                                            <input type="hidden" class="valjenisbayarbank" name="jenisbayarbank">
+                                           </td>
+                                            
                                           <td> <input type="text" class="form-control nmbank" readonly=""> </td> <td> <input type="text" class="form-control cbgbank" readonly=""> </td> <td> <input type="text" class="form-control account" readonly=""> <input type="hidden" class="valbank" readonly="" name="selectOutlet"></td>
                                           
                                         </tr>
                                      </table>
                                    </div>
-
+                                    <div class="row">
                                     <div class="col-md-3">
                                     <fieldset>
-
-
                                         <div class="checkbox checkbox-info checkbox-circle">
                                             <input id="jenisbayaribaking" type="checkbox" name="jenisbayarbank" value="INTERNET BANKING" class="metodebayar jenisbayarbankibaking">
                                             <label for="jenisbayaribaking">
@@ -551,47 +555,28 @@
                                             </label>
                                         </div>
 
-                                        {{--  <div class="checkbox checkbox-info checkbox-circle">
-                                            <input id="jenisbayarbanktf" type="checkbox" name="jenisbayarbank" value="TRANSFER PRIBADI" class="metodebayar jenisbayarbanktf" checked="">
+                                         <div class="checkbox checkbox-info checkbox-circle">
+                                            <input id="jenisbayarbanktf" type="checkbox" name="jenisbayarbank" value="TRANSFER PRIBADI" class="metodebayar jenisbayarbanktf">
                                             <label for="jenisbayarbanktf">
                                                 Transfer Pribadi
                                             </label>
-                                        </div> --}}
+                                        </div>
                                      
                                     </fieldset>
                                       <br>
-                                      <br>
-                                <!--       <div class="pull-left"> <button class="btn btn-info"> <i class="fa fa-plus" aria-hidden="true"></i> Tambah Data Bank </button> </div> -->
+                                      <br>                                      
                                 </div>
+                                  <div class="col-md-8">
+                                    <div class="pull-right"> <button class="btn btn-success btn-sm"> <i class="fa fa-plus" aria-hidden="true"></i> Tambah Data  </button> </div>
+                                  </div>
+
+                                </div>
+                                
 
                                 <div class="col-md-6 checkbgtf">
                                     <table class="table">
                                     <tr>
                                       <th colspan="4" style="color:#009aa9"  class="transferbank"> <h3> </h3> </th>
-                                    </tr>
-
-                                    <tr>
-                                      <th> <h4> No Cheque / BG </h4> </th>
-                                      <td> <input type="text" class="input-sm form-control nocheck" type="button" data-toggle="modal" data-target="#myModal2" id="getbank" readonly="">
-                                      <input type="hidden" class="valjenisbayarbank" name="jenisbayarbank">
-                                     </td>
-                                      
-                                      <th> Nominal </th>
-                                      <td> <input type="text" class="input-sm form-control nominal" style="text-align: right"> <input type="hidden" class="idbank"> </td>
-
-                                      <td> <div class="checkbox  checkbox-circle">
-                                                <input id="checkbox7" type="checkbox" name="setuju" required="" checked="">
-                                                <label for="checkbox7">
-                                                   Setuju
-                                                </label>
-                                            </div> </td>
-                                    </tr>
-
-                                    <tr>
-                                      <th>Jatuh Tempo </th>
-                                      <td> <input type="text" class="input-sm form-control jthtmpo_bank"></td>
-
-                                  
                                     </tr>
                                     </table>
                                 </div>
@@ -656,12 +641,6 @@
                                       <th colspan="4" style="color:#009aa9"> <h3 class="transferbank"> Tujuan Bank : </h3> </th>
                                     </tr>
 
-                                    <tr>
-                                      <th> <h4> No Referensi  </h4> </th>
-                                      <td> <input type="text" class="input-sm form-control nocheck" type="button" data-toggle="modal" data-target="#myModal2" id="getbank2">
-                                     </td>
-                                    
-                                   </tr>
                                     <tr>
                                       <th> Bank Tujuan </th>
                                       <td> <select class="form-control selectOutlet chosen-select-width1 bank1 banktujuan" name="tujuanbank">

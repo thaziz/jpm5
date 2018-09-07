@@ -362,9 +362,6 @@ class jurnal_pembelian  extends Controller
         $idfpgb = $databankmasuk[$key]->bm_idfpgb;
 
         $datafpg = DB::select("select * from fpg , fpg_cekbank where fpgb_idfpg = idfpg and fpgb_id = '$idfpgb'");
-
-       
-
         
         if(count($datafpg) > 0){
                 $notafpg = $datafpg[0]->fpg_nofpg;
@@ -407,6 +404,45 @@ class jurnal_pembelian  extends Controller
           }
 
         }
+    }
+
+    function getupdatefpgbbk(){
+      $databbkd = DB::select("select * from bukti_bank_keluar_detail");
+      $databbkab = DB::select("select * from bukti_bank_keluar_akunbg");
+      $data2 = [];
+
+      for($i = 0; $i < count($databbkd); $i++){
+        $idfpg = $databbkd[$i]->bbkd_idfpg;
+        $datafpg = DB::select("select idfpg from fpg where idfpg = '$idfpg' order by idfpg asc");
+
+        
+
+        if(count($datafpg) == 0){
+          return $idfpg;
+        }
+        else {
+          DB::table('fpg')
+           ->update(['fpg_posting' => "DONE"]);
+        }
+      }
+
       
+      $arrfpg = [];
+      for($j = 0; $j < count($databbkab); $j++){
+         $idfpg = $databbkab[$j]->bbkab_idfpg;
+          $datafpg = DB::select("select idfpg from fpg where idfpg = '$idfpg' order by idfpg asc");
+
+          array_push($data2 , $datafpg);
+
+          if(count($datafpg) == 0){
+            array_push($arrfpg , $idfpg);
+          }
+          else {
+            DB::table('fpg')
+             ->update(['fpg_posting' => "DONE"]);
+          }
+      }
+
+      return $arrfpg;
     }
 }
