@@ -91,7 +91,7 @@
                       <tr>
                         <td> {{$index + 1}} </td>
                         <td>  {{$fpg->fpg_nofpg}} </td>
-                        <td>  {{$fpg->fpg_tgl}} </td>
+                        <td>  {{ Carbon\Carbon::parse($fpg->fpg_tgl)->format('d-M-Y') }} </td>
                         <td> {{$fpg->jenisbayar}} </td>
                        
                         <td> {{$fpg->fpg_keterangan}}

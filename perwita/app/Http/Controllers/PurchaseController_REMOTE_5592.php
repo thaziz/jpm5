@@ -7114,9 +7114,10 @@ public function purchase_order() {
 	public function getbiayalain (Request $request){
 		$cabang = $request->cabang;
 		$flag = $request->a;
+		$tgl = $request->tgl;
 
-		$bulan = Carbon::now()->format('m');
-        $tahun = Carbon::now()->format('y');
+		$bulan = Carbon::parse($tgl)->format('m');
+        $tahun = Carbon::parse($tgl)->format('y');
         
     /*  return $bulan . $tahun;*/
 		if($flag == ''){
@@ -11512,8 +11513,7 @@ public function kekata($x) {
 											$bankasal = DB::select("select * from masterbank where mb_kode = '$kodebank'");
 											$cabangasal = $bankasal[0]->mb_cabangbank;
 											$namaasal = $bankasal[0]->mb_nama;
-											dd($bankasal);
-											dd($cabangasal);
+											
 											$kodetujuan = $request->kodebanktujuan[$j];
 											$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
 											$cabangtujuan = $banktujuan[0]->mb_cabangbank;
@@ -11661,7 +11661,7 @@ public function kekata($x) {
 										}
 
 										$bankasal = DB::select("select * from masterbank where mb_kode = '$kodebank'");
-										dd($bankasal);
+										
 										$cabangasal = $bankasal[0]->mb_cabangbank;
 
 										$kodetujuan = $request->kodebanktujuan[$j];

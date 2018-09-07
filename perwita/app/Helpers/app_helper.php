@@ -169,8 +169,8 @@
 
 	function getnotabm($cabang , $tgl){
 
-		$buland = Carbon::parse($tgl)->format('m');
-        $tahund = Carbon::parse($tgl)->format('y');
+		$buland = date("m" , strtotime($tgl));
+        $tahund = date("y" , strtotime($tgl));
 
        $idbm = DB::select("select * from bank_masuk where bm_cabangtujuan = '$cabang'  and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_nota IS NOT NULL order by bm_id desc limit 1");
 
