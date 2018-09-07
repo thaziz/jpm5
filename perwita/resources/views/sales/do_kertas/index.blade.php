@@ -1,6 +1,4 @@
-
-DO KERTAS SEDANG MAINTENANCE MOHON MAAF ATAS GANGGUANNYA
-{{-- @extends('main')
+@extends('main')
 
 @section('title', 'dashboard')
 
@@ -56,8 +54,8 @@ DO KERTAS SEDANG MAINTENANCE MOHON MAAF ATAS GANGGUANNYA
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 <div class="box-body">
-
-                    <table id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
+                  DO KERTAS SEDANG MAINTENANCE MOHON MAAF ATAS GANGGUANNYA
+                  {{--   <table id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
                         <thead>
                             <tr>
                                 <th>Nomor</th>
@@ -72,7 +70,7 @@ DO KERTAS SEDANG MAINTENANCE MOHON MAAF ATAS GANGGUANNYA
                         <tbody>
                         </tbody>
 
-                    </table>
+                    </table> --}}
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
@@ -202,4 +200,3 @@ function edit(ted) {
 }
 </script>
 @endsection
- --}}
