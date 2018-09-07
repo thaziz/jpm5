@@ -604,14 +604,14 @@
          
 
       $tempseri = 0;
-     
+      datatemp = [];
       for($i = 0; $i < rowdata.length; $i++){
 
         $thisval = data[0][$i];
         for($h = urutcek; $h < hasilurutcek; $h++ ){ 
-        if(nosericek+$h == $thisval){
-          alert($thisval);
+        if(nosericek+$h == $thisval){       
             tempseri = tempseri + 1;
+            datatemp.push($thisval);
           }
         }
       }
@@ -646,7 +646,7 @@
 
    // alert(tempseri + 'tempseri');
     if(tempseri > 0){
-      toastr.info('DATA SERI sudah digunakan, silahkan input data yang lain :)');
+      toastr.info('DATA SERI '+ datatemp +' sudah digunakan, silahkan input data yang lain :)');
       return false;
     }
 
