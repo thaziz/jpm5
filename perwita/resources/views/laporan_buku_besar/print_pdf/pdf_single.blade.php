@@ -300,7 +300,7 @@
 		                  	@foreach($jurnal->d_jurnal->detail as $key => $data_detail)
 		                  		@if($data_detail->jrdt_acc != $jurnal->jrdt_acc)
 			                  		<tr>
-					                    <td style="padding-left: 5px;" class="text-center">{{ $key }}</td>
+					                    <td style="padding-left: 5px;" class="text-center">&nbsp;</td>
 					                    <td style="padding-left: 5px;" class="text-center">&nbsp;</td>
 					                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_note }}</td>
 
