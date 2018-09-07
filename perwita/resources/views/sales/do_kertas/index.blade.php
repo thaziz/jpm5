@@ -1,4 +1,6 @@
-@extends('main')
+
+DO KERTAS SEDANG MAINTENANCE MOHON MAAF ATAS GANGGUANNYA
+{{-- @extends('main')
 
 @section('title', 'dashboard')
 
@@ -80,7 +82,7 @@
 
 
                     </div>
-                  </div><!-- /.box-footer -->
+                  </div>/.box-footer
               </div><!-- /.box -->
             </div><!-- /.col -->
           </div><!-- /.row -->
@@ -200,3 +202,4 @@ function edit(ted) {
 }
 </script>
 @endsection
+ --}}
