@@ -1652,6 +1652,7 @@ Route::post('sales/surat_jalan_trayek/save_data_detail', 'sales\surat_jalan_tray
 Route::get('sales/surat_jalan_trayek/hapus_data', 'sales\surat_jalan_trayek_Controller@hapus_data');
 Route::get('sales/surat_jalan_trayek/hapus_data_detail', 'sales\surat_jalan_trayek_Controller@hapus_data_detail');
 Route::get('sales/surat_jalan_trayek_form/nota/{nomor}', 'sales\surat_jalan_trayek_Controller@cetak_nota');
+Route::get('sales/surat_jalan_trayek_form/nota_all/{nomor}', 'sales\surat_jalan_trayek_Controller@nota_all');
 
 Route::get('sales/surat_jalan_trayek_form/datatable_sjt', 'sales\surat_jalan_trayek_Controller@datatable_sjt')->name('datatable_sjt');
 
