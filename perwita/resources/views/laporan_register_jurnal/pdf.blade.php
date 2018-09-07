@@ -212,12 +212,12 @@
 					@endforeach
 
 					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
+						<td style="background: #f1f1f1;">&nbsp;</td>
+						<td style="background: #f1f1f1;">&nbsp;</td>
+						<td style="background: #f1f1f1;">&nbsp;</td>
 
 						@if($request->nama_perkiraan)
-							<td>&nbsp;</td>
+							<td style="background: #f1f1f1;">&nbsp;</td>
 						@endif
 
 						<?php
@@ -227,7 +227,7 @@
 								$not = "not-same"
 						?>
 
-						<td>&nbsp;</td>
+						<td style="background: #f1f1f1;">&nbsp;</td>
 						<td class="currency total {{$not}}">{{ number_format($tot_debet, 2) }}</td>
 						<td class="currency total no-border {{$not}}">{{ number_format($tot_kredit, 2) }}</td>
 					</tr>
