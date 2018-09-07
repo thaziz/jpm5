@@ -168,7 +168,7 @@ class transaksi_bank_controller extends Controller
 
                 $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
                 $ref = "TBM-".date("my", strtotime($request->jr_date))."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
-                $jr_no = get_id_jurnal('BM', $request->cabang);
+                $jr_no = get_id_jurnal('BM', $request->cabang, $request->jr_date);
 
                 // return json_encode($jr_no." __ ".$ref);
             }
@@ -177,7 +177,7 @@ class transaksi_bank_controller extends Controller
 
                 $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
                 $ref = "TBM-".date("my", strtotime($request->jr_date))."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
-                $jr_no = get_id_jurnal('BM', $request->cabang);
+                $jr_no = get_id_jurnal('BM', $request->cabang, $request->jr_date);
 
                 // return json_encode($jr_no." __ ".$ref);
             }
