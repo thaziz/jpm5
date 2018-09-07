@@ -3538,16 +3538,18 @@ public function purchase_order() {
 					else {
 						$idjurnal = 1;
 					}
-				
-					$year = date('Y');	
-					$date = date('Y-m-d');
+					
+					$year = Carbon::parse($mytime)->format('Y');	
+					$date = Carbon::parse($mytime)->format('Y-m-d');
+					$jrno = get_id_jurnal('MM' , $cabang , $date);
 					$jurnal = new d_jurnal();
 					$jurnal->jr_id = $idjurnal;
-			        $jurnal->jr_year = date('Y');
-			        $jurnal->jr_date = date('Y-m-d');
+			        $jurnal->jr_year = $year;
+			        $jurnal->jr_date = $date;
 			        $jurnal->jr_detail = 'PENERIMAAN BARANG ' . $request->flag;
 			        $jurnal->jr_ref = $lpb;
 			        $jurnal->jr_note = $request->keterangan;
+			        $jurnal->jr_no = $jrno;
 			        $jurnal->save();
 		       		
 			      
@@ -3593,16 +3595,20 @@ public function purchase_order() {
 					else {
 						$idjurnal = 1;
 					}
-				
-					$year = date('Y');	
-					$date = date('Y-m-d');
+					
+
+					$year = Carbon::parse($mytime)->format('Y');
+					$date = Carbon::parse($mytime)->format('Y-m-d');
+
+					$jrno = get_id_jurnal('MM' , $cabang , $date);
 					$jurnal = new d_jurnal();
 					$jurnal->jr_id = $idjurnal;
-			        $jurnal->jr_year = date('Y');
-			        $jurnal->jr_date = date('Y-m-d');
+			        $jurnal->jr_year = $year;
+			        $jurnal->jr_date = $date;
 			        $jurnal->jr_detail = 'PENERIMAAN BARANG ' . $request->flag;
 			        $jurnal->jr_ref = $lpb;
 			        $jurnal->jr_note = $request->keterangan;
+			        $jurnal->jr_no = $jrno;
 			        $jurnal->save();
 		       		
 			        if($flag == 'PO'){
@@ -3700,8 +3706,10 @@ public function purchase_order() {
 						$idjurnal = 1;
 					}
 				
-					$year = date('Y');	
-					$date = date('Y-m-d');
+					$year = Carbon::parse($mytime)->format('Y');
+					$date = Carbon::parse($mytime)->format('Y-m-d');
+
+					$jrno = get_id_jurnal('MM' , $cabang , $date);
 					$jurnal = new d_jurnal();
 					$jurnal->jr_id = $idjurnal;
 			        $jurnal->jr_year = date('Y');
@@ -3709,6 +3717,7 @@ public function purchase_order() {
 			        $jurnal->jr_detail = 'PENERIMAAN BARANG ' . $request->flag;
 			        $jurnal->jr_ref = $lpb;
 			        $jurnal->jr_note = $request->keterangan;
+			        $jurnal->jr_no = $jrno;
 			        $jurnal->save();
 		       		
 		    		$key  = 1;
@@ -3871,12 +3880,13 @@ public function purchase_order() {
 					$idjurnal = 1;
 				}
 			
-				$year = date('Y');	
-				$date = date('Y-m-d');
+				$year = Carbon::parse($mytime)->format('Y');
+				$date = Carbon::parse($mytime)->format('Y-m-d');
+				$jrno = get_id_jurnal('MM' , $cabang , $date);
 				$jurnal = new d_jurnal();
 				$jurnal->jr_id = $idjurnal;
-		        $jurnal->jr_year = date('Y');
-		        $jurnal->jr_date = date('Y-m-d');
+		        $jurnal->jr_year = $year;
+		        $jurnal->jr_date = $date;
 		        $jurnal->jr_detail = 'PENERIMAAN BARANG';
 		        $jurnal->jr_ref = $idpb;
 		        $jurnal->jr_note = $flag;
@@ -5749,16 +5759,21 @@ public function purchase_order() {
 				else {
 					$idjurnal = 1;
 				}
-			
+				
+				$year = Carbon::parse($request->tgl_po)->format('Y');
+
+				$jr_no = get_id_jurnal('MM' , $cabang, $request->tgl_po);
+
 				$year = date('Y');	
 				$date = date('Y-m-d');
 				$jurnal = new d_jurnal();
 				$jurnal->jr_id = $idjurnal;
-		        $jurnal->jr_year = date('Y');
-		        $jurnal->jr_date = date('Y-m-d');
+		        $jurnal->jr_year = $year;
+		        $jurnal->jr_date = $request->tgl_po;
 		        $jurnal->jr_detail = 'UANG MUKA PEMBELIAN FP';
 		        $jurnal->jr_ref = $nofaktur;
 		        $jurnal->jr_note = $request->keteranganumheader;
+		        $jurnal->jr_no = $jr_no;
 		        $jurnal->save();
 	       		
 	       		$acchutangdagang = $request->acchutangdagang;
@@ -5971,7 +5986,6 @@ public function purchase_order() {
 							'detail' => $request->keterangan_po,
 						);
 					}
-
 					array_push($datajurnalpo, $dataakun );
 				}
 
@@ -5988,8 +6002,9 @@ public function purchase_order() {
 						$idjurnal = 1;
 					}
 				
-					$year = date('Y');	
-					$date = date('Y-m-d');
+					$year = Carbon::parse($tgl_po)->format('Y');	
+					$jr_no = get_id_jurnal('MM' , $cabang, $request->tgl_po);
+
 					$jurnal = new d_jurnal();
 					$jurnal->jr_id = $idjurnal;
 			        $jurnal->jr_year = date('Y');
@@ -5997,6 +6012,7 @@ public function purchase_order() {
 			        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
 			        $jurnal->jr_ref = $nofaktur;
 			        $jurnal->jr_note = $request->keterangan_po;
+			        $jurnal->jr_no = $jr_no;
 			        $jurnal->save();
 		       		
 			        
@@ -6113,16 +6129,19 @@ public function purchase_order() {
 					else {
 						$idjurnal = 1;
 					}
-				
-					$year = date('Y');	
+					
+					$jr_no = get_id_jurnal('MM' , $cabang , $request->tgl_po);
+
+					$year = Carbon::parse($request->tgl_po)->format('Y');	
 					$date = date('Y-m-d');
 					$jurnal = new d_jurnal();
 					$jurnal->jr_id = $idjurnal;
-			        $jurnal->jr_year = date('Y');
-			        $jurnal->jr_date = date('Y-m-d');
+			        $jurnal->jr_year = $year;
+			        $jurnal->jr_date = $request->tgl_po;
 			        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
 			        $jurnal->jr_ref = $nofaktur;
 			        $jurnal->jr_note = $request->keterangan_po;
+			        $jurnal->jr_no = $jr_no;
 			        $jurnal->save();
 		       		
 			        
@@ -6778,8 +6797,6 @@ public function purchase_order() {
                 }
 
 
-               /* $updateum DB::table('formfpg')
-                ->where('')*/
 
                 $akunhutangum = $request->akunhutangum[$i];
                	$caridka = DB::select("select * from d_akun where id_akun = '$akunhutangum'");
@@ -6820,16 +6837,18 @@ public function purchase_order() {
 				else {
 					$idjurnal = 1;
 				}
-			
-				$year = date('Y');	
-				$date = date('Y-m-d');
+				
+				$jr_no = get_id_jurnal('MM' , $cabang , $request->tglitem);
+				$year = Carbon::parse($request->tglitem)->format('Y');	
+				$date = $request->tglitem;
 				$jurnal = new d_jurnal();
 				$jurnal->jr_id = $idjurnal;
-		        $jurnal->jr_year = date('Y');
-		        $jurnal->jr_date = date('Y-m-d');
+		        $jurnal->jr_year = $year;
+		        $jurnal->jr_date = $date;
 		        $jurnal->jr_detail = 'UANG MUKA PEMBELIAN FP';
 		        $jurnal->jr_ref = $nofaktur;
 		        $jurnal->jr_note = $request->keteranganumheader;
+		        $jurnal->jr_no = $jr_no;
 		        $jurnal->save();
 	       		
 	       		$acchutangdagang = $request->acchutangdagang;
@@ -7000,15 +7019,17 @@ public function purchase_order() {
 					$idjurnal = 1;
 				}
 			
-				$year = date('Y');	
-				$date = date('Y-m-d');
+				$year = Carbon::parse($request->tglitem)->format('m');	
+				$date = $request->tglitem;
+				$jr_no = get_id_jurnal('MM', $cabang, $request->tglitem);
 				$jurnal = new d_jurnal();
 				$jurnal->jr_id = $idjurnal;
-		        $jurnal->jr_year = date('Y');
-		        $jurnal->jr_date = date('Y-m-d');
+		        $jurnal->jr_year = $year;
+		        $jurnal->jr_date = $date;
 		        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
 		        $jurnal->jr_ref = $nofaktur;
 		        $jurnal->jr_note = $request->keteranganheader;
+		        $jurnal->jr_no = $jr_no;
 		        $jurnal->save();
 	       		
 		        
@@ -8753,12 +8774,12 @@ public function kekata($x) {
 		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
 			$fpg = DB::select("select * from fpg");
 			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by fpg_tgl desc");
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by fpg_tgl asc");
 		}
 		else {
 			$fpg = DB::select("select * from fpg where fpg_cabang = '$cabang'");
 			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_tgl desc");
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_tgl asc");
 		}
 	
 
