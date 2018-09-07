@@ -44,6 +44,7 @@
       </div>
     </div>
 @endif
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
@@ -64,7 +65,14 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 <div class="box-body">
-
+                    <div class="col-sm-12" style="padding-left: 0px !important">
+                        <div class="col-sm-4"  style="padding-left: 0px !important">
+                            <input type="text" class="form-control date" value="{{ carbon\carbon::now()->format('Y-m-d') }}">
+                        </div>
+                        <div class="col-sm-8">
+                            <button class="btn btn-success print_all"><i class="fa fa-print"></i> PRINT HARI INI</button>
+                        </div>
+                    </div>
                     <table id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
                         <thead>
                             <tr>
@@ -149,6 +157,10 @@
         if(!confirm("Hapus Data ?")) return false;
     });
 
+    $('.print_all').click(function(){
+        var tanggal = $('.date').val();
+        window.open('{{ url('sales/surat_jalan_trayek_form/nota_all') }}/'+tanggal);
+    })
 
 </script>
 @endsection

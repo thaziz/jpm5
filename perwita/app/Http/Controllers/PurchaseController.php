@@ -7769,11 +7769,11 @@ public function kekata($x) {
 
 
 				$idfpg = $request->idfpg[$i];
-				$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
-				$jenisbayar = $datafpg[0]->fpg_jenisbayar;
+				$datafpg = DB::select("select * from fpg,fpg_cekbank where idfpg = '$idfpg' and fpgb_idfpg = idfpg");
+				$jenisbayar = $datafpg[0]->fpgb_jenisbayarbank;
 				if($jenisbayar != 'INTERNET BANKING'){
 						$data['idfpg'] = DB::table('fpg_cekbank')
-						->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $request->notransaksi[$i]]])
+						->where([['fpgb_idfpg', '=', $idfpg],['fpgb_nocheckbg' , '=' , $request->notransaksi[$i]]])
 						->update([
 							'fpgb_posting' => 'DONE',
 						]);
@@ -8257,7 +8257,9 @@ public function kekata($x) {
 			}
 
 			$tglbbk = $request->tglbbk;
-			$jr_no = get_id_jurnal('BK' , $cabang, $tglbbk);
+			$jr_no = get_id_jurnal('BK-' . $request->kodebank , $cabang, $tglbbk);
+
+
 
 			$year =  Carbon::parse($tglbbk)->format('Y');	
 			$date = $request->$tglbbk;
@@ -8389,6 +8391,8 @@ public function kekata($x) {
 						]);
 		$data['bbk'] = DB::select("select * from bukti_bank_keluar where bbk_id = '$idbbk'");
 		$cabang = $data['bbk'][0]->bbk_cabang;
+		$kodebank = $data['bbk'][0]->bbk_kodebank;
+
 		$datajurnal = [];
 		$totalhutang = 0;
 
@@ -8625,7 +8629,7 @@ public function kekata($x) {
 		//save jurnal
 
 			DB::delete("DELETE from  d_jurnal where jr_ref = '$refjurnal' and jr_detail = 'BUKTI BANK KELUAR'");
-				$jr_no = get_id_jurnal('BK' , $cabang, $request->tglbbk);
+				$jr_no = get_id_jurnal('BK-' . $kodebank , $cabang, $request->tglbbk);
 
 		 	$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
 			if(isset($lastidjurnal)) {
@@ -8790,7 +8794,7 @@ public function kekata($x) {
 	public function createformfpg() {
 
 		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
-		$data['jenisbayar'] = DB::select("select * from jenisbayar where idjenisbayar != '8'  and idjenisbayar != 10 and idjenisbayar != 12");
+		$data['jenisbayar'] = DB::select("select * from jenisbayar where idjenisbayar != '8'  and idjenisbayar != 10");
 
 		$cabang = session::get('cabang');
 
@@ -8934,9 +8938,11 @@ public function kekata($x) {
 			 	'mbdt_tglstatus' => null,
 		 	]);	
 
-			$bankmasuk = DB::select("select * bank_masuk where bm_idfpgb = '$idbank'");
-			$idbm = $bankmasul[0]->bm_id;
-			DB::delete("DELETE from bank_masuk where bm_id = '$idbm'");
+			$bankmasuk = DB::select("select * from bank_masuk where bm_idfpgb = '$idbank'");
+			if(count($bankmasuk) > 0) {
+				$idbm = $bankmasul[0]->bm_id;
+				DB::delete("DELETE from bank_masuk where bm_id = '$idbm'");
+			}
 		}
 		//cekbankmasuk
 		
