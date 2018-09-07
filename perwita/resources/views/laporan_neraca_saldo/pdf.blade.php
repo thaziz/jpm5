@@ -309,13 +309,13 @@
 
 
                   {{-- Total Mutasi --}}
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">
+                  <td class="text-right" style="padding: 5px;font-weight: 600; background: #f1f1f1;">
                     {{ 
                       number_format($tot_deb, 2)
                     }}
                   </td>
 
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">
+                  <td class="text-right" style="padding: 5px;font-weight: 600; background: #f1f1f1;">
                     {{ 
                        number_format($tot_kred, 2)
                     }}
@@ -385,10 +385,10 @@
                 <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">
                   {{ number_format(str_replace('-', '', $tot_mm_k), 2) }}
                 </td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold; background: #f1f1f1;" class="text-right">
                   {{ number_format(str_replace('-', '', $tot_mutasi_d), 2) }}
                 </td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold; background: #f1f1f1;" class="text-right">
                   {{ number_format(str_replace('-', '', $tot_mutasi_k), 2) }}
                 </td>
                 <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">

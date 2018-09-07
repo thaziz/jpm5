@@ -323,7 +323,7 @@
 		                @endif
 
 	                  	@if($request->akun_lawan == 'true')
-		                  	<tr>
+		                  	<tr style="background: #f1f1f1;">
 			                    <td style="padding-left: 5px;">&nbsp;</td>
 			                    <td style="padding-left: 5px;">&nbsp;</td>
 			                    <td style="padding-left: 5px;">&nbsp;</td>
