@@ -92,6 +92,11 @@
                     </button>
                 </div>
 
+                <div class="">
+                    <button class="btn btn-success" onclick="notafpgbbkab()">
+                        NOTA FPG di BBKAB
+                    </button>
+                </div>
 
 
                 <div class="box-body">
@@ -128,6 +133,17 @@
             "pageLength": 10,
             "language": dataTableLanguage,
     });
+
+    function notafpgbbkab(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/notafpgbbkab',
+        type : "get",
+        dataType : "json",
+        success : function(response){
+            
+        }
+      }) 
+    }
 
     function postingdonefpg(){
         $.ajax({

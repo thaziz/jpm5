@@ -381,6 +381,7 @@ class jurnal_pembelian  extends Controller
     }
     
 
+
     function duplicatebank(){
       $dataduplicate = DB::select("SELECT mbdt_noseri AS N, count(mbdt_noseri)  FROM masterbank_dt GROUP BY mbdt_noseri HAVING  count(mbdt_noseri) > 1
       ");
@@ -444,5 +445,27 @@ class jurnal_pembelian  extends Controller
       }
 
       return $arrfpg;
+    }
+
+    function nofpgbbkab(){
+      $dataid = [];
+      $databbkb = [];
+      $databbkab = DB::select("select * from bukti_bank_keluar_akunbg");
+      for($j = 0; $j < count($databbkab); $j++){
+        $idfpg = $databbkab[$j]->bbkab_idfpg;
+        $datafpg = DB::select("select idfpg, fpg_nofpg from fpg where idfpg = '$idfpg'");
+        if(count($datafpg) > 0){
+                $nofpg = $datafpg[0]->fpg_nofpg;       
+                DB::table('bukti_bank_keluar_akunbg')
+                ->where('bbkab_idfpg' , $idfpg)
+                ->update(['bbkab_nofpg' => $nofpg]);
+              //array_push($databbkb , $datafpg);
+        }
+        else {
+            array_push($dataid , $idfpg);
+        }
+      }
+
+      return $databbkb;
     }
 }
