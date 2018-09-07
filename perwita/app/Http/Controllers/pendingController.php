@@ -427,7 +427,7 @@ class pendingController extends Controller
 									  ->first();
 
 					if ($id_akun == null) {
-						return response()->json(['status'=>0,'pesan'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia'])
+						return response()->json(['status'=>0,'pesan'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia']);
 					}
 					array_push($akun, $id_akun->id_akun);
 					array_push($akun_val, $jurnal[$i]['harga']);
