@@ -670,8 +670,8 @@ function hitung_all() {
    $('.ed_total_h').val(accounting.formatMoney(temp1,"",2,'.',','));
 }
 function cari_item() {
-    var item = $('.item').val();
-     $.ajax({
+ var item = $('.item').val();
+    $.ajax({
         url:baseUrl + '/sales/cari_item',
         data:{item},
         dataType:'json',
@@ -684,16 +684,19 @@ function cari_item() {
                 $('.ed_total').val(0);
                 $('.ed_total_text').val(0);
             }
+            
+
+            if ($('.old_id').val() == '') {
+                $('.ed_jumlah').val(1);
+                $('.ed_harga').val(data.harga);
+            }
+
             $('.ed_satuan').val(data.kode_satuan);
-            $('.ed_harga').val(data.harga);
             $('.acc_penjualan').val(data.acc_penjualan);
             $('.csf_penjualan').val(data.csf_penjualan);
 
             $('.acc_piutang').val(data.acc_piutang);
             $('.csf_piutang').val(data.csf_piutang);
-
-            $('.ed_jumlah').val(1);
-            
             hitung();
 
         },
@@ -953,6 +956,7 @@ function edit_detail(p) {
   
     $('.ed_jumlah').val(d_jumlah);
     $('.ed_diskon').val(d_diskon);
+    $('.ed_harga').val(d_harga);
     $('.ed_diskon_modal').val(accounting.formatMoney(d_diskon,"",0,'.',','));
     $('.ed_keterangan').val(d_keterangan);
     $('.acc_penjualan').val(d_acc_penjualan);
