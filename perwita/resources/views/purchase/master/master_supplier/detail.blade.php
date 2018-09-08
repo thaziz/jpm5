@@ -406,7 +406,14 @@
                               </td>
                               <td> <input type="text" class="form-control tablebarang hrg harga{{$index}} tablebarang" value=" {{number_format($item->is_harga, 2)}}"  name="harga[]"> </td>
 
-                              <td> <select class="form-control updatestock updatestock{{$index}} tablebarang" name="updatestock[]" readonly=""> <option value="Y"> Ya </option> <option value="T"> Tidak </option> </select> </td>                            
+                              <td> <select class="form-control updatestock updatestock{{$index}} tablebarang" name="updatestock[]" readonly=""> 
+                                  @if($item->is_updatestock == 'Y')
+                                <option value="Y"> Ya </option> 
+                                  @else
+                                  <option value="T"> Tidak </option> 
+                                  @endif
+                                  </select>
+                              </td>                            
                               <td> <input type='text' class='form-control' name="keteranganitem[]" value="{{$item->is_keteranganitem}}"> </td>
                               <td> <a class="btn btn-danger removes-btn" data-id="{{$index}}"> <i class="fa fa-trash"> </i> </a> </td>
                             </tr>
