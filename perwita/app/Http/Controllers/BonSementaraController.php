@@ -84,8 +84,9 @@ class BonSementaraController extends Controller
 
 	public function getnota(Request $request){
 		$cabang = $request->comp;
-		$bulan = Carbon::now()->format('m');
-        $tahun = Carbon::now()->format('y');
+		$tgl = $request->tgl;
+		$bulan = Carbon::parse($tgl)->format('m');
+        $tahun = Carbon::parse($tgl)->format('y');
 
       
 		//return $mon;
@@ -96,7 +97,7 @@ class BonSementaraController extends Controller
 		
 			$explode = explode("/", $idbp[0]->bp_nota);
 			$idspp = $explode[2];
-
+			
 			$string = (int)$idspp + 1;
 			$data['idspp'] = str_pad($string, 4, '0', STR_PAD_LEFT);
 		}
@@ -192,10 +193,10 @@ class BonSementaraController extends Controller
 			$updatepb->status_pusat = 'UANG DI TERIMA';
 			$updatepb->save();
 
-			$nominalkeu =  str_replace(',', '', $request->nominalkeu);
+			
 
 			
-			
+			$nominalkeu = str_replace(",", "", $request->nominalkeu);
 			$datapb = DB::select("select * from bonsem_pengajuan where bp_id = '$idbonsem'");
 
 			$datajurnal = [];
@@ -319,49 +320,6 @@ class BonSementaraController extends Controller
 			$data['kaskecil'] = DB::select("select * from d_akun_saldo where id_akun = '$idakun' and bulan = '$month'");
 
 
-			$now = Date("Y-m-d");
-			if(floatval($nominalkeu) < 10000000.00){
-
-				$tiga = 3;
-				$temp = 1;
-				for($i = 0;$i < $tiga; $i++){
-					$tigahari = date('Y-m-d', strtotime($now . " +  {$temp} days"));
-					
-					$day = date('D' , strtotime($tigahari));
-					
-					if($day != 'Sun'){
-						
-					}
-					else {
-						$tiga = $tiga + 1;
-					}
-
-					$temp++;
-				}
-			}
-			else if(floatval($nominalkeu) > 10000000.00){
-				$tiga = 7;
-				$temp = 1;
-				for($i = 0;$i < $tiga; $i++){
-					$tigahari = date('Y-m-d', strtotime($now . " +  {$temp} days"));
-					
-					$day = date('D' , strtotime($tigahari));
-					
-					if($day != 'Sun'){
-						
-					}
-					else {
-						$tiga = $tiga + 1;
-					}
-
-					$temp++;
-				}
-
-			}
-
-			$updatepb = bonsempengajuan::find($idpb);
-			$updatepb->bp_jatuhtempo = $tigahari;
-			$updatepb->save();
 			return json_encode($data);
 		});
 	}
@@ -456,10 +414,55 @@ class BonSementaraController extends Controller
 				$updatepb->status_pusat = 'DISETUJUI MENKEU';
 			}
 			$updatepb->bp_pelunasan = $nominal;
-		
+			$updatepb->bp_sisapemakaian = $nominal;
 			$updatepb->time_setujukeu = $date;
 			$updatepb->save();
 
+
+			$nominalkeu =  str_replace(',', '', $request->nominalkeu);
+			$now = Date("Y-m-d");
+			if(floatval($nominalkeu) < 10000000.00){
+
+				$tiga = 3;
+				$temp = 1;
+				for($i = 0;$i < $tiga; $i++){
+					$tigahari = date('Y-m-d', strtotime($now . " +  {$temp} days"));
+					
+					$day = date('D' , strtotime($tigahari));
+					
+					if($day != 'Sun'){
+						
+					}
+					else {
+						$tiga = $tiga + 1;
+					}
+
+					$temp++;
+				}
+			}
+			else if(floatval($nominalkeu) > 10000000.00){
+				$tiga = 7;
+				$temp = 1;
+				for($i = 0;$i < $tiga; $i++){
+					$tigahari = date('Y-m-d', strtotime($now . " +  {$temp} days"));
+					
+					$day = date('D' , strtotime($tigahari));
+					
+					if($day != 'Sun'){
+						
+					}
+					else {
+						$tiga = $tiga + 1;
+					}
+
+					$temp++;
+				}
+
+			}
+
+			$updatepb = bonsempengajuan::find($id);
+			$updatepb->bp_jatuhtempo = $tigahari;
+			$updatepb->save();
 			return json_encode('sukses');
 		});
 	}

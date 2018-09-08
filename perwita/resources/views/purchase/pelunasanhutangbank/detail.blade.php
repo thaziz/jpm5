@@ -64,11 +64,16 @@
                              &nbsp;  Jurnal Bank Keluar  
                            </a> 
                            &nbsp;
-                           @if($data['bbk'][0]->bbk_flag == 'CECKBG')
+                           @if($data['bbk'][0]->bbk_flag == 'CEKBG')
                            @foreach($data['bbkd'] as $bbkd)
                             @if($bbkd->bbkd_notabm != '')
                            <a onclick="lihatjurnal('BM')" class="btn-xs btn-primary" aria-hidden="true"><i class="fa  fa-eye"> </i>
-                             &nbsp;  Jurnal Bank Masuk  
+                              @if($bbkd->bbkd_jenisbayarfpg == '1')
+                                    Jurnal Kas Masuk
+                              @else
+                                &nbsp;  Jurnal Bank Masuk  
+                              @endif
+                             
                            </a> 
                            @endif
 

@@ -878,6 +878,7 @@
 
        $('.cabang').change(function(){
           tgl = $('.tglfpg').val();
+          cabang = $(this).val();
          $.ajax({
           type : "get",
           data : {cabang,tgl},
@@ -1326,12 +1327,22 @@
           }
         })
 
+        metodebayar = $('.metodebayar:checked').val();
+      //  alert(metodebayar);
+        if(metodebayar == undefined){
+          toastr.info("Mohon Ulangi input data anda, karena tdk ada metode bayar yang dipilih :)");
+          return false;
+        }
 
         nofgp = $('.nofpg').val();
         totbar = $('.totbayar').val();
         cekbg = $('.ChequeBg').val();
 
-       
+        if(totbar == ''){
+          toastr.info("Nominal belum diisi :)");
+          return false;
+        }
+
         if(totbar != cekbg) {
           toastr.info('Mohon Maaf nominal total faktur dengan ChequeBG tidak sama :)');
           return false;
