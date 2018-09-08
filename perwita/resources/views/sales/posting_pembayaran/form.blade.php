@@ -53,14 +53,15 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor Posting</td>
                                 <td>
-                                    <input type="text" readonly="" class="form-control input-sm nomor_posting" name="nomor_posting">
+                                    <input type="text" class="form-control input-sm nomor_posting" name="nomor_posting">
+                                    <input type="hidden" readonly="" class="form-control input-sm nomor_posting_old" name="nomor_posting_old">
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td class="tanggal_td">
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control ed_tanggal" name="ed_tanggal" value="{{ $data->tanggal or  date('Y-m-d') }}">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control ed_tanggal" name="ed_tanggal" value="{{ $data->tanggal or  date('Y-m-d') }}" onchange="ganti_nota()">
                                     </div>
                                 </td>
                             </tr>
@@ -318,13 +319,15 @@ function ganti_akun() {
 
 $(document).ready(function(){
 var cabang = $('.cabang').val();
+var tanggal = $('.ed_tanggal').val();
   $.ajax({
     url  :baseUrl+'/sales/posting_pembayaran_form/nomor_posting',
-    data : {cabang},
+    data : {cabang,tanggal},
     success:function(data){
-      $('.nomor_posting').val(data.nota);
+       $('.nomor_posting').val(data.nota);
+       $('.nomor_posting_old').val(data.nota);
     }
-  })
+})
 
 
 
@@ -337,11 +340,15 @@ ganti_akun();
 
 function ganti_nota() {
     var cabang = $('.cabang').val();
+    var tanggal = $('.ed_tanggal').val();
       $.ajax({
         url  :baseUrl+'/sales/posting_pembayaran_form/nomor_posting',
-        data : {cabang},
+        data : {cabang,tanggal},
         success:function(data){
-          $('.nomor_posting').val(data.nota);
+            if ($('.nomor_posting').val() == $('.nomor_posting_old').val()) {
+              $('.nomor_posting').val(data.nota);
+              $('.nomor_posting_old').val(data.nota);
+            }
         }
       })
     ganti_akun()
