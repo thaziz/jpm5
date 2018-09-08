@@ -185,7 +185,7 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Acc Penjualan</td>
                                     <td>
-                                       <select class="form-control chosen-select-width"  name="ed_acc_penjualan" style="width:100%">
+                                       <select class="form-control chosen-select-width ed_acc_penjualan"  name="ed_acc_penjualan" style="width:100%">
                                         @foreach ($akun as $akun)
                                             <option value="{{ $akun->id_akun }}">{{ $akun->id_akun }} - {{ $akun->nama_akun }} </option>
                                         @endforeach
@@ -195,7 +195,7 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Csf Penjualan</td>
                                     <td>
-                                       <select class="form-control chosen-select-width"  name="ed_csf_penjualan" style="width:100%">
+                                       <select class="form-control chosen-select-width ed_csf_penjualan"  name="ed_csf_penjualan" style="width:100%">
                                         @foreach ($akun1 as $a)
                                             <option value="{{ $a->id_akun }}">{{ $a->id_akun }} - {{ $a->nama_akun }} </option>
                                         @endforeach
@@ -325,12 +325,12 @@
                 $("input[name='ed_nama']").val(data.nama);
                 $("input[name='ed_keterangan']").val(data.keterangan);
                 $("input[name='ed_harga']").val(data.harga);
-                $("input[name='ed_acc_penjualan']").val(data.acc_penjualan);
-                $("input[name='ed_csf_penjualan']").val(data.csf_penjualan);
+                $(".ed_acc_penjualan").val(data.acc_penjualan).trigger('chosen:updated');
+                $(".ed_csf_penjualan").val(data.csf_penjualan).trigger('chosen:updated');
                 $("input[name='ed_harga']").val(data.harga);
                 $("input[name='ck_pakai_angkutan']").attr('checked', data.pakai_angkutan);
                 $("select[name='cb_satuan']").val(data.kode_satuan);
-                $("select[name='cb_grup_item']").val(data.kode_grup_item);
+                $("select[name='cb_grup_item']").val(data.kode_grup_item).trigger('chosen:updated');
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();
             },
