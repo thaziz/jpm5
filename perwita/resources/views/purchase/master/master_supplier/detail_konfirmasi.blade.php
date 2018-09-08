@@ -422,7 +422,7 @@
 
                               </td>
                               <td> <input type="text" class="form-control  hrg harga{{$index}} tablebarang" value="{{number_format($item->is_harga, 2)}}"  name="harga[]"> </td>
-
+                                {{$item->is_updatestock}}
                               <td> <select class="form-control tablebarang updatestock{{$index}}" name="updatestock[]" readonly=""> 
                                 @if($item->is_updatestock == 'Y')
                                    <option value="Y"> Ya </option> 
@@ -509,7 +509,7 @@
       })
    
 
-     $('#savesupplier').submit(function(){
+     $('.simpandata').click(function(){
         $('.keteranganitem').each(function(){
           val = $(this).val();
           if(val == ''){
