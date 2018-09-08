@@ -19,12 +19,14 @@ class do_kertas_Controller extends Controller
             $data = DB::table('delivery_order')
                       ->join('customer','kode','=','kode_customer')
                       ->where('jenis','KORAN')
+                      ->orderBy('tanggal','DESC')
                       ->get();
         }else{
             $data = DB::table('delivery_order')
                       ->join('customer','kode','=','kode_customer')
                       ->where('jenis','KORAN')
                       ->where('kode_cabang',$cabang)
+                      ->orderBy('tanggal','DESC')
                       ->get();
         }
         $cabang = DB::table('cabang')

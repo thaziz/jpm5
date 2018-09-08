@@ -105,6 +105,7 @@
          $('#tabel_data').DataTable({
             processing: true,
             // responsive:true,
+            sorting:false,
             serverSide: true,
             ajax: {
                 url:'{{ route("datatable_do_kertas") }}',
