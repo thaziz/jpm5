@@ -196,13 +196,13 @@ class PurchaseController extends Controller
 
 	public function getnospp(Request $request){	
 		$cabang = $request->comp;
-		$tgl = $request->tgl;
+		$tgl = $request->tglinput;
 		$bulan = Carbon::parse($tgl)->format('m');
-        $tahun = Carbon::now($tgl)->format('y');
+        $tahun = Carbon::parse($tgl)->format('y');
 
-      
+      	
 		//return $mon;
-		$idspp = DB::select("select * from spp where spp_cabang = '$cabang'  and to_char(spp_tgldibutuhkan, 'MM') = '$bulan' and to_char(spp_tgldibutuhkan, 'YY') = '$tahun' order by spp_id desc limit 1");
+		$idspp = DB::select("select * from spp where spp_cabang = '$cabang'  and to_char(spp_tgldibutuhkan, 'MM') = '$bulan' and to_char(spp_tgldibutuhkan, 'YY') = '$tahun' order by spp_id desc");
 
 	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
 		if(count($idspp) != 0) {		
