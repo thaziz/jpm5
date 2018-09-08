@@ -1336,7 +1336,7 @@ class MasterPurchaseController extends Controller
 
 	public function updatekonfirmasisupplier($id, Request $request){
 		return DB::transaction(function() use ($request) { 
-			dd($request);
+		
 		$replaceplafon = str_replace(',', '', $request->plafon_kredit);
 
 			$id = $request->idsupplier;
