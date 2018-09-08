@@ -706,7 +706,7 @@ var kode = '{{$val->kode}}';
 @endif
 
 var kode_akun = '{{$val->kode_acc}}';
-var nama_akun = '{{$val->nama_akun}}';
+var nama_akun = '0';
 var jumlah = '{{$val->jumlah}}';
 var ket   = '{{$val->keterangan}}';
 
@@ -718,7 +718,7 @@ if ('{{ $data->jenis_pembayaran  == 'F' }}') {
     var cek = '<input readonly type="text" value="" class="form-control d_cek" name="d_cek[]">';
 }
 table_data.row.add([
-    kode_akun+' - '+nama_akun+'<input type="hidden" value="'+nomor_kwi+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
+    nomor_kwi+'<input type="hidden" value="'+nomor_kwi+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
 
     nama+'<input type="hidden" value="'+kode+'" class="form-control d_customer" name="d_customer[]">'+
     '<input type="hidden" value="'+kode_akun+'" class="form-control d_kode_akun" name="d_kode_akun[]">',

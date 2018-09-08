@@ -104,7 +104,7 @@ class posting_pembayaran_Controller extends Controller
 
     public function hapus_data($nomor_posting_pembayaran=null){
         DB::beginTransaction();
-		$list = DB::table('posting_pembayaran_d')->get();
+		    $list = DB::table('posting_pembayaran_d')->get();
         foreach ($list as $row) {
         	DB::select(" UPDATE penerimaan_penjualan SET posting=FALSE WHERE nomor='$row->nomor_penerimaan_penjualan' ");
         }
@@ -112,52 +112,6 @@ class posting_pembayaran_Controller extends Controller
         DB::table('posting_pembayaran')->where('nomor' ,'=', $nomor_posting_pembayaran)->delete();
         DB::commit();
         return redirect('sales/posting_pembayaran');
-    }
-
-    public function save_data_detail (Request $request) {
-        $simpan='';
-        $nomor = strtoupper($request->nomor);
-        $hitung = count($request->nomor_penerimaan_penjualan);
-        try {
-            DB::beginTransaction();
-            
-            for ($i=0; $i < $hitung; $i++) {
-                $nomor_penerimaan_penjualan = strtoupper($request->nomor_penerimaan_penjualan[$i]);
-                $jumlah = filter_var($request->jumlah[$i], FILTER_SANITIZE_NUMBER_INT);
-                if ($jumlah != 0 || $jumlah == '') {
-                    $data = array(
-                        'nomor_posting_pembayaran' => $nomor,
-                        'nomor_penerimaan_penjualan' => $nomor_penerimaan_penjualan,
-                        'jumlah' => $jumlah,
-                    );
-                    DB::table('posting_pembayaran_d')->insert($data);
-                    DB::select(" UPDATE penerimaan_penjualan SET posting=TRUE WHERE nomor='$nomor_penerimaan_penjualan' ");
-                }
-                
-            } 
-            $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah,COALESCE(SUM(jumlah),0) ttl_jumlah FROM posting_pembayaran_d 
-                                                WHERE nomor_posting_pembayaran='$nomor' "))->first();
-            $data_h = array(
-                        'jumlah' => $jml_detail->ttl_jumlah,
-            );
-        
-            $simpan = DB::table('posting_pembayaran')->where('nomor', $nomor)->update($data_h);
-            $success = true;
-        } catch (\Exception $e) {
-            $result['error']='gagal';
-            $result['result']=2;
-            $success = false;
-            DB::rollback();
-        }
-    
-        if ($success) {
-            DB::commit();
-            $result['error']='';
-            $result['result']=1;
-            $result['jml_detail']=$jml_detail->jumlah;
-            $result['jumlah']=number_format($jml_detail->ttl_jumlah, 0, ",", ".");    
-        }
-        echo json_encode($result);
     }
 
     public function hapus_data_detail (Request $request) {
@@ -425,7 +379,7 @@ class posting_pembayaran_Controller extends Controller
     {
         return DB::transaction(function() use ($request) {  
 
-
+            // dd($request->all());
             $akun        = DB::table('masterbank')
                              ->where('mb_id',$request->akun_bank)
                              ->first();
@@ -994,20 +948,11 @@ class posting_pembayaran_Controller extends Controller
                       ->where('nomor',$id)
                       ->first();
 
-            $data_dt = DB::table('posting_pembayaran_d')
+            return$data_dt = DB::table('posting_pembayaran_d')
                          ->leftjoin('customer','kode','=','kode_customer')
                          ->where('nomor_posting_pembayaran',$id)
                          ->get();
-            $d_akun = DB::table('d_akun')
-                        ->get();
-
-            for ($i=0; $i < count($data_dt); $i++) { 
-              for ($a=0; $a < count($d_akun); $a++) { 
-                if ($data_dt[$i]->kode_acc == $d_akun[$a]->id_akun) {
-                  $data_dt[$i]->nama_akun = $d_akun[$a]->nama_akun;
-                }
-              }
-            }
+  
             return view('sales.posting_pembayaran.edit_posting',compact('id','data','data_dt','cabang','kota','rute','kendaraan','akun','customer'));
         }else{
             return redirect()->back();
