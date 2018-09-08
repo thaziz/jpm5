@@ -292,12 +292,12 @@
    // $('.tglinput').val('09/03/2018');
 
      $('.tglinput').change(function(){
-       var cabang = $('.cabang').val();
+       var comp = $('.cabang').val();
         var tglinput = $('.tglinput').val();
         $('.valcabang').val(comp);
           $.ajax({    
               type :"get",
-              data : {cabang,tglinput},
+              data : {comp,tglinput},
               url : baseUrl + '/suratpermintaanpembelian/getnospp',
               dataType:'json',
               success : function(data){

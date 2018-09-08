@@ -98,6 +98,11 @@
                     </button>
                 </div>
 
+                <div class="box-body">
+                    <button class="btn btn-success btn-md" onclick="spp()">
+                     NOSPP 
+                    </button>
+                </div>
 
                 <div class="box-body">
              
@@ -143,6 +148,17 @@
             
         }
       }) 
+    }
+
+    function spp(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/notaspp',
+        type : "get",
+        dataType : "json",
+        success : function(response){
+            
+        }
+      })
     }
 
     function postingdonefpg(){
