@@ -54,8 +54,7 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 <div class="box-body">
-                  DO KERTAS SEDANG MAINTENANCE MOHON MAAF ATAS GANGGUANNYA
-                  {{--   <table id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
+                    <table id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
                         <thead>
                             <tr>
                                 <th>Nomor</th>
@@ -70,7 +69,7 @@
                         <tbody>
                         </tbody>
 
-                    </table> --}}
+                    </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
