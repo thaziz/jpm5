@@ -1478,6 +1478,7 @@
 
     $('.date').change(function(){
        tgl = $('.tglfpg').val();
+       cabang = $('.cabang').val();
          $.ajax({
           type : "get",
           data : {cabang,tgl},
