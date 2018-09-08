@@ -335,6 +335,48 @@ class jurnal_pembelian  extends Controller
         }
     }
 
+
+    function gantispp(){
+      
+        
+        $data = DB::select("select * from spp order by created_at asc");
+        DB::table('spp')
+        ->update(['spp_nospp' => null]);
+
+        for($j = 0; $j < count($data); $j++){ 
+          $idspp = $data[$j]->spp_id;         
+          $tgl = $data[$j]->spp_tgldibutuhkan;
+
+          $getmonth = Carbon::parse($tgl)->format('m');
+          $gettahun = Carbon::parse($tgl)->format('y');
+          $cabang = $data[$j]->spp_cabang;
+
+
+          $carinota = DB::select("SELECT  substring(max(spp_nospp),13) as id from spp
+                                        WHERE spp_cabang = '$cabang'
+                                        AND to_char(spp_tgldibutuhkan,'MM') = '$getmonth'
+                                        AND to_char(spp_tgldibutuhkan,'YY') = '$gettahun'");
+          
+
+        //  dd($carinota)
+            $index = (integer)$carinota[0]->id + 1;
+            $index = str_pad($index, 4, '0' , STR_PAD_LEFT);
+            $nota = 'SPP' .  $getmonth . $gettahun . '/' . $cabang . '/' . $index;
+
+          DB::table('spp')
+           ->where('spp_id' , $idspp)
+          ->update(['spp_nospp' => $nota]);  
+
+          if($getmonth == '8'){
+             DB::table('spp')
+           ->where('spp_id' , $idspp)
+          ->update(['spp_tglinput' => $tgl]); 
+          }       
+        }
+    
+    }
+
+
     function nospp(){
       $date = Carbon::parse($tgl)->format('m');
 
