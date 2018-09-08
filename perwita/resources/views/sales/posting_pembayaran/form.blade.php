@@ -69,7 +69,7 @@
                                 <td>
                                     <select class="form-control cb_jenis_pembayaran" name="cb_jenis_pembayaran" >
                                         <option value="C"> TRANSFER </option>
-                                        <option value="T"> TRANSFER KAS </option>
+                                        <option value="T"> TUNAI </option>
                                         <option value="L"> LAIN-LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
                                         <option value="B"> NOTA/BIAYA LAIN </option>
@@ -437,7 +437,7 @@ if (cb_jenis_pembayaran == 'C'|| cb_jenis_pembayaran == 'F' || cb_jenis_pembayar
                     table_data.row.add([
                         data.data[i].k_nomor+'<input type="hidden" value="'+data.data[i].k_nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
 
-                        data.data[i].nama+'<input type="hidden" value="'+data.data[i].kode+'" class="form-control d_customer" name="d_customer[]">'+
+                        data.data[i].nama+'<input type="hidden" value="'+data.data[i].k_kode_customer+'" class="form-control d_customer" name="d_customer[]">'+
                         '<input type="hidden" value="'+data.data[i].k_kode_akun+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
 
                         accounting.formatMoney(data.data[i].k_netto,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].k_netto+'" class="form-control d_netto" name="d_netto[]">',
@@ -531,6 +531,7 @@ if (cb_jenis_pembayaran == 'C'|| cb_jenis_pembayaran == 'F' || cb_jenis_pembayar
             $('.cb_jenis_pembayaran').addClass('disabled');
             $('.cabang_td').addClass('disabled');
 }
+$('#modal').modal('hide');
 })
 function m_kode_akun(argument) {
    var jenis =  $('.m_akun_kas').find(':selected').data('kode_acc');

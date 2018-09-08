@@ -351,13 +351,13 @@ class posting_pembayaran_Controller extends Controller
 
             $kw = DB::table('kwitansi')
                       ->join('customer','kode','=','k_kode_customer')
-                      ->select('k_nomor','k_tanggal','k_netto','nama')
+                      ->select('k_nomor','k_tanggal','k_netto','nama','k_kode_customer')
                       ->whereIn('k_nomor',$request->nomor)
                       ->get();
 
             $do = DB::table('delivery_order')
                       ->join('customer','kode','=','kode_customer')
-                      ->select('nomor as k_nomor','tanggal as k_tanggal','total_net as k_netto','nama')
+                      ->select('nomor as k_nomor','tanggal as k_tanggal','total_net as k_netto','nama','kode_customer as k_kode_customer')
                       ->whereIn('nomor',$request->nomor)
                       ->get();
 
@@ -379,7 +379,6 @@ class posting_pembayaran_Controller extends Controller
     {
         return DB::transaction(function() use ($request) {  
 
-            // dd($request->all());
             $akun        = DB::table('masterbank')
                              ->where('mb_id',$request->akun_bank)
                              ->first();
@@ -948,7 +947,7 @@ class posting_pembayaran_Controller extends Controller
                       ->where('nomor',$id)
                       ->first();
 
-            return$data_dt = DB::table('posting_pembayaran_d')
+            $data_dt = DB::table('posting_pembayaran_d')
                          ->leftjoin('customer','kode','=','kode_customer')
                          ->where('nomor_posting_pembayaran',$id)
                          ->get();
