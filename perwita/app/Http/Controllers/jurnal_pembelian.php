@@ -429,27 +429,33 @@ class jurnal_pembelian  extends Controller
 
     function fpgbankmasuk(){
       $databankmasuk = DB::select("select * from bank_masuk order by bm_idfpgb desc");
-     /* for($key = 0; $key < count($databankmasuk); $key++){
+      $datafpgs = [];
+      for($key = 0; $key < count($databankmasuk); $key++){
         $idbm = $databankmasuk[$key]->bm_id;
         $idfpgb = $databankmasuk[$key]->bm_idfpgb;
 
         $datafpg = DB::select("select * from fpg , fpg_cekbank where fpgb_idfpg = idfpg and fpgb_id = '$idfpgb'");
        
         if(count($datafpg) > 0){
-                $notafpg = $datafpg[0]->fpg_nofpg;
+               /* $notafpg = $datafpg[0]->fpg_nofpg;
                 $keteranganfpg = $datafpg[0]->fpg_keterangan;
                 DB::table('bank_masuk')
                 ->where('bm_id' , $idbm)
                 ->where('bm_idfpgb' , $idfpgb)
                 ->where('bm_keterangan' , $keteranganfpg)
-                ->update(['bm_notatransaksi' => $notafpg]);
+                ->update(['bm_notatransaksi' => $notafpg]);*/
         }
         else {
-           $databm = DB::select("select * from bank_masuk where bm_idfpgb = '$idfpgb'");
+           /*$databm = DB::select("select * from bank_masuk where bm_idfpgb = '$idfpgb'");
            $idbm = $databm[0]->bm_id;
-           DB::DELETE("DELETE FROM bank_masuk where bm_id = '$idbm'");
+           DB::DELETE("DELETE FROM bank_masuk where bm_id = '$idbm'");*/
+           array_push($datafpgs , $idfpgb);
         }
-      }*/
+
+        return count($databankmasuk);
+      }
+
+
     }
     
 

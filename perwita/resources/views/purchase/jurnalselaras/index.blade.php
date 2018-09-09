@@ -96,12 +96,12 @@
                     </button>
                 </div> --}}
 
-{{-- 
+
                  <div class="">
                     <button class="btn btn-success" onclick="fpgbankmasuk()">
                         bank masuk
                     </button>
-                </div>  --}}
+                </div> 
 
                 <div class="">
                     <button class="btn btn-success" onclick="postingdonefpg()">
