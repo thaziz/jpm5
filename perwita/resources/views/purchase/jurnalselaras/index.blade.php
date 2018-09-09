@@ -97,7 +97,7 @@
                 </div> --}}
 
 
-                 <div class="">
+               {{--   <div class="">
                     <button class="btn btn-success" onclick="fpgbankmasuk()">
                         bank masuk
                     </button>
@@ -106,6 +106,12 @@
                 <div class="">
                     <button class="btn btn-success" onclick="postingdonefpg()">
                         POSTING DONE FPG
+                    </button>
+                </div> --}}
+
+                <div class="">
+                    <button class="btn btn-success" onclick="bankmasuk()">
+                        created ulang bank masuk
                     </button>
                 </div>
 
@@ -158,6 +164,16 @@
     function spp(){
         $.ajax({
         url : baseUrl + '/jurnalselaras/notaspp',
+        type : "get",
+        dataType : "json",
+        success : function(response){
+            
+        }
+      })
+    }
+    function bankmasuk(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/bankmasuk',
         type : "get",
         dataType : "json",
         success : function(response){
