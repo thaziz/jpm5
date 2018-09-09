@@ -187,7 +187,8 @@
                         <tr>
                             <th> Bank Tujuan </th>
                             <td> <div class="row"> <div class="col-md-4"><input type="text" class="form-control input-sm banktujuan" name="banktujuan" readonly=""> </div>
-                            <div class="col-md-6">  <input type="text" class="form-control namabanktujuan" readonly=""></div> <input type="hidden" class="form-control input-sm cabangasal" name="cabangasal" readonly=""> </td>
+                            <div class="col-md-6">  <input type="text" class="form-control namabanktujuan" readonly=""></div> <input type="hidden" class="form-control input-sm cabangasal" name="cabangasal" readonly="">
+                            <input type="hidden" class="form-control input-sm cabangtujuan" name="cabangtujuan" readonly=""> </td>
                         </tr>
                         <tr>
                             <th> Nominal </th>
@@ -278,6 +279,7 @@
           $('.nominal').val(addCommas(response.bank[0].bm_nominal));
           $('.bmid').val(response.bank[0].bm_id);
           $('.cabangasal').val(addCommas(response.bank[0].bm_cabangasal));
+          $('.cabangtujuan').val(addCommas(response.bank[0].bm_cabangtujuan));
           $('.namabanktujuan').val(addCommas(response.bank[0].bm_namabanktujuan));
           $('.namabankasal').val(addCommas(response.bank[0].bm_namabankasal));
         }
@@ -309,7 +311,7 @@
           dataType : "json",
           success : function(response){
                 console.log(response);
-               $('.notabm').val(response.jurnal[0].jr_ref);
+               $('.notabm').text(response.jurnalref);
                 /*$('#data-jurnal').html(response);*/
                 $('#jurnal').modal('show');
                

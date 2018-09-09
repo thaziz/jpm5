@@ -718,7 +718,6 @@ class jurnal_pembelian  extends Controller
                       $jurnalpbkeluar[1]['detail'] = $bm_keterangan;
                     }
 
-
                     //return $jurnalpbkeluar;
                     if(count($jurnalpbkeluar) != 0){
 

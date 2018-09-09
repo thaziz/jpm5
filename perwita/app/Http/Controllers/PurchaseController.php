@@ -4698,6 +4698,7 @@ public function purchase_order() {
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$lpb')")); 
 		$data['countjurnal'] = count($data['jurnal']);
+		$data['jurnalref'] = $lpb;
  		return json_encode($data);
 	}
 
