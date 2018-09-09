@@ -221,8 +221,8 @@ class posting_pembayaran_Controller extends Controller
 
     public function nomor_posting(request $request)
     {
-        $bulan = Carbon::now()->format('m');
-        $tahun = Carbon::now()->format('y');
+        $bulan = Carbon::parse(str_replace('/', '-', $request->tanggal))->format('m');
+        $tahun = Carbon::parse(str_replace('/', '-', $request->tanggal))->format('y');
 
         $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from posting_pembayaran
                                         WHERE kode_cabang = '$request->cabang'
@@ -378,7 +378,6 @@ class posting_pembayaran_Controller extends Controller
     public function simpan_posting(request $request)
     {
         return DB::transaction(function() use ($request) {  
-
             $akun        = DB::table('masterbank')
                              ->where('mb_id',$request->akun_bank)
                              ->first();
@@ -394,7 +393,6 @@ class posting_pembayaran_Controller extends Controller
             $cari_nota = DB::table('posting_pembayaran')
                               ->where('nomor',$request->nomor_posting)
                               ->first();
-
             if ($cari_nota != null) {
                 if ($cari_nota->nomor == $user) {
                   return 'Data Sudah Ada';
@@ -409,7 +407,7 @@ class posting_pembayaran_Controller extends Controller
                                                     AND to_char(create_at,'YY') = '$tahun'");
                     $index = (integer)$cari_nota[0]->id + 1;
                     $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-                    $nota = 'BM' . $request->cabang . $bulan . $tahun . $index;
+                    $nota = 'BM' . $request->cb_cabang . $bulan . $tahun . $index;
 
                 }
             }elseif ($cari_nota == null) {
@@ -431,7 +429,8 @@ class posting_pembayaran_Controller extends Controller
                                   'create_at' => Carbon::now(),
                                   'update_at' => Carbon::now(),
                                   'jenis_pembayaran' => $request->cb_jenis_pembayaran,
-                                  'kode_cabang' => $request->cb_cabang
+                                  'kode_cabang' => $request->cb_cabang,
+                                  'id_bank' => $request->akun_bank
                               ]);
 
 

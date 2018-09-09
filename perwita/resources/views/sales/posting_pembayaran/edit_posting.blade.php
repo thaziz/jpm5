@@ -160,7 +160,9 @@
                                 <td>
                                     <select class="form-control akun_bank" name="akun_bank" >
                                         @foreach ($akun as $val)
-                                            <option value="{{$val->mb_id}}">{{$val->mb_id}} - {{$val->mb_nama}}</option>
+                                            <option @if ($data->id_bank == $val->mb_id)
+                                                selected="" 
+                                            @endif value="{{$val->mb_id}}">{{$val->mb_id}} - {{$val->mb_nama}}</option>
                                         @endforeach
                                     </select>
                                 </td>
