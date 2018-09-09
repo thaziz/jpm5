@@ -1054,7 +1054,7 @@
                 $('.kelompokbank').val('SAMA BANK');
               }
               else {
-                $('.kelompokbank').val('SAMA BANK');
+                $('.kelompokbank').val('BEDA BANK');
                
               }
             
@@ -1074,14 +1074,14 @@
               
             $('#tbl-tfbank').append(row);
          
-                if(kodebankasal.match(/1099.*/)){
-                  $('.kelompokbank').val('BEDA BANK');
-                }
-                else {
+               
                  if(kelompok == kelompoktujuan){
                     $('.kelompokbank').val('SAMA BANK');
                   }
-                }
+                  else {
+                    $('.kelompokbank').val('BEDA BANK');
+                  }
+                
 
                  $('.nominaltbltfbank').change(function(){
                     val = $(this).val();

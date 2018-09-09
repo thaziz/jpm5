@@ -428,13 +428,13 @@ class jurnal_pembelian  extends Controller
 
 
     function fpgbankmasuk(){
-      $databankmasuk = DB::select("select * from bank_masuk");
-      for($key = 0; $key < count($databankmasuk); $key++){
+      $databankmasuk = DB::select("select * from bank_masuk order by bm_idfpgb desc");
+     /* for($key = 0; $key < count($databankmasuk); $key++){
         $idbm = $databankmasuk[$key]->bm_id;
         $idfpgb = $databankmasuk[$key]->bm_idfpgb;
 
         $datafpg = DB::select("select * from fpg , fpg_cekbank where fpgb_idfpg = idfpg and fpgb_id = '$idfpgb'");
-        
+       
         if(count($datafpg) > 0){
                 $notafpg = $datafpg[0]->fpg_nofpg;
                 $keteranganfpg = $datafpg[0]->fpg_keterangan;
@@ -449,7 +449,7 @@ class jurnal_pembelian  extends Controller
            $idbm = $databm[0]->bm_id;
            DB::DELETE("DELETE FROM bank_masuk where bm_id = '$idbm'");
         }
-      }
+      }*/
     }
     
 
@@ -483,24 +483,35 @@ class jurnal_pembelian  extends Controller
       $databbkd = DB::select("select * from bukti_bank_keluar_detail");
       $databbkab = DB::select("select * from bukti_bank_keluar_akunbg");
       $data2 = [];
+      
 
       for($i = 0; $i < count($databbkd); $i++){
-        $idfpg = $databbkd[$i]->bbkd_idfpg;
-        $datafpg = DB::select("select idfpg from fpg where idfpg = '$idfpg' order by idfpg asc");
+        $idfpg2 = $databbkd[$i]->bbkd_idfpg;
+        $datafpg = DB::select("select idfpg from fpg where idfpg = '$idfpg2' order by idfpg asc");
 
         
 
         if(count($datafpg) == 0){
-          return $idfpg;
+          array_push($data2, $idfpg2);
         }
         else {
           DB::table('fpg')
+            ->where('idfpg' , $idfpg2)
            ->update(['fpg_posting' => "DONE"]);
-        }
+        }        
       }
 
-      
-      $arrfpg = [];
+
+       $datanotbbkbg = DB::select("select idfpg from fpg where idfpg NOT IN(select bbkab_idfpg from bukti_bank_keluar_akunbg where bbkab_idfpg is not null) and idfpg not in(select bbkd_idfpg from bukti_bank_keluar_detail where bbkd_idfpg is not null)");
+        for($j = 0 ; $j < count($datanotbbkbg); $j++){
+          $idfpgbbkbg = $datanotbbkbg[$j]->idfpg;
+           DB::table('fpg')
+            ->where('idfpg' , $idfpgbbkbg)
+           ->update(['fpg_posting' => "NOT"]);
+        }
+
+
+         $arrfpg = [];
       for($j = 0; $j < count($databbkab); $j++){
          $idfpg = $databbkab[$j]->bbkab_idfpg;
           $datafpg = DB::select("select idfpg from fpg where idfpg = '$idfpg' order by idfpg asc");
@@ -512,11 +523,11 @@ class jurnal_pembelian  extends Controller
           }
           else {
             DB::table('fpg')
+              ->where('idfpg' ,$idfpg)
              ->update(['fpg_posting' => "DONE"]);
           }
       }
-
-      return $arrfpg;
+      return $data2;
     }
 
     function nofpgbbkab(){

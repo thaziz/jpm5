@@ -55,7 +55,7 @@
                     </button> --}}
                 </div>   
 
-                <div class="box-body">
+                {{-- <div class="box-body">
                     <button class="btn btn-success btn-md" onclick="item()">
                      add item
                     </button>
@@ -74,11 +74,7 @@
                     </button>
                 </div>
 
-                <div class="">
-                    <button class="btn btn-success" onclick="fpgbankmasuk()">
-                        bank masuk
-                    </button>
-                </div> 
+               
 
                  <div class="">
                     <button class="btn btn-success" onclick="duplicatebank()">
@@ -86,11 +82,7 @@
                     </button>
                 </div>
 
-                <div class="">
-                    <button class="btn btn-success" onclick="postingdonefpg()">
-                        POSTING DONE FPG
-                    </button>
-                </div>
+                
 
                 <div class="">
                     <button class="btn btn-success" onclick="notafpgbbkab()">
@@ -101,6 +93,19 @@
                 <div class="box-body">
                     <button class="btn btn-success btn-md" onclick="spp()">
                      NOSPP 
+                    </button>
+                </div> --}}
+
+{{-- 
+                 <div class="">
+                    <button class="btn btn-success" onclick="fpgbankmasuk()">
+                        bank masuk
+                    </button>
+                </div>  --}}
+
+                <div class="">
+                    <button class="btn btn-success" onclick="postingdonefpg()">
+                        POSTING DONE FPG
                     </button>
                 </div>
 

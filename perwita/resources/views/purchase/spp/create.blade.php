@@ -79,7 +79,7 @@
                                               <td> Tgl Input </td>
                                               <td> {{-- <input type='text' class='form-control' value="{{ Carbon\Carbon::now()->format('d-M-Y ') }}" disabled=""> --}}
                                                 <div class="input-group date" required="">
-                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tglinput"  required="">
+                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tglinput"  required="" name="tglinput">
 
                                                        
                                                   </div>

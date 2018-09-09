@@ -365,6 +365,7 @@ class PurchaseController extends Controller
 			$spp->create_by = $request->username;
 			$spp->update_by = $request->username;
 			$spp->spp_statuskabag = 'BELUM MENGETAHUI';
+			$spp->spp_tglinput = $request->tglinput;
 
 			$jenisitem = explode(",", $request->jenisitem);
 			$idjenisitem = $jenisitem[0];
@@ -9210,7 +9211,7 @@ public function kekata($x) {
 					'bp_pelunasan' => $hasilpengurangan,					
 				]);
 			}
-			
+
 		}
 
 
@@ -9220,6 +9221,7 @@ public function kekata($x) {
 			$idbank = $data['fpgbank'][$i]->fpg_idbank;
 			$noseri = $data['fpgbank'][$i]->fpgb_nocheckbg;
 			$idfpgb = $data['fpgbank'][$i]->fpgb_id;
+			$notafpg = $data['fpgbank'][$i]->fpg_nofpg;
 			$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$noseri]]);
 
 			$updatebank->update([
@@ -9230,9 +9232,9 @@ public function kekata($x) {
 			 	'mbdt_tglstatus' => null,
 		 	]);	
 
-			$bankmasuk = DB::select("select * from bank_masuk where bm_idfpgb = '$idbank'");
+			$bankmasuk = DB::select("select * from bank_masuk where bm_idfpgb = '$idfpgb' and bm_notatransaksi = '$notafpg'");
 			if(count($bankmasuk) > 0) {
-				$idbm = $bankmasul[0]->bm_id;
+				$idbm = $bankmasuk[0]->bm_id;
 				DB::delete("DELETE from bank_masuk where bm_id = '$idbm'");
 			}
 		}
