@@ -877,7 +877,7 @@
     });
     if ($('.jenis_bayar').val() == 11) {
       var sisa = $('.sisa_bonsem_master').val();
-      sisa     = sisa.replace(/[^0-9\-]+/g,"")/100;
+      sisa     = sisa.replace(/[^0-9\-]+/g,"");
 
       var total_bon = sisa - total;
       if (total_bon < 0) {

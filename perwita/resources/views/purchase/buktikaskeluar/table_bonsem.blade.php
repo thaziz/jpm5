@@ -19,7 +19,7 @@
         <td>{{ number_format($val->bp_nominalkeu, 0, ",", ".")}}</td>
         <td>
           {{ number_format($val->bp_sisapemakaian, 0, ",", ".")}}
-          <input type="hidden" value="{{ $val->bp_sisapemakaian }}" class="bp_sisa">
+          <input type="hidden" value="{{ round($val->bp_sisapemakaian) }}" class="bp_sisa">
         </td>
       </tr>
     @endforeach

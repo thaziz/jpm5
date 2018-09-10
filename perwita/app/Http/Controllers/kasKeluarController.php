@@ -304,11 +304,25 @@ class kasKeluarController extends Controller
 
 	public function table_bonsem(Request $req)
 	{
+		if (isset($req->nota)) {
+			$bkk = DB::table('bukti_kas_keluar')
+					  ->where('bkk_nota',$req->nota)
+					  ->first();
+			$nota = $bkk->bkk_nota_bonsem;
+		}else{
+			$nota = 0;
+		}
 		$bonsem = DB::table('bonsem_pengajuan')
 					->where('bp_terima','DONE')
 					->where('bp_cabang',$req->cabang)
+					->where('bp_sisapemakaian','!=',0)
+					->orWhere('bp_nota',$nota)
 					->get();
-
+		for ($i=0; $i < count($bonsem); $i++) { 
+			if ($bonsem[$i]->bp_nota == $nota) {
+				$bonsem[$i]->bp_sisapemakaian += $bkk->bkk_nominal_bonsem;
+			}
+		}
 		return view('purchase.buktikaskeluar.table_bonsem',compact('bonsem'));
 
 	}
@@ -770,6 +784,7 @@ class kasKeluarController extends Controller
 						'bkk_akun_kas' 			=> $req->kas,
 						'bkk_supplier' 			=> $req->supplier_patty,
 						'bkk_nominal_bonsem' 	=> $total_bonsem,
+						'bkk_nota_bonsem'	 	=> $req->nota_bonsem,
 						'bkk_akun_hutang' 		=> $req->hutang,
 						'bkk_status' 			=> 'RELEASED',
 						'updated_by' 			=> Auth::user()->m_name,
@@ -1024,104 +1039,58 @@ class kasKeluarController extends Controller
 	{
 		return DB::transaction(function() use ($req) {  
 
-			$cari_nota = DB::table('bukti_kas_keluar')
-						   ->where('bkk_nota',$req->nota)
-						   ->first();
+			if ($req->jenis_bayar == 8) {
+			
+				$cari_nota = DB::table('bukti_kas_keluar')
+							   ->where('bkk_nota',$req->nota)
+							   ->first();
 
 
-			if ($cari_nota == null) {
-				return response()->json(['status'=>3]);
-			}
-
-			$nota = $req->nota;
-			$id = $cari_nota->bkk_id;
-
-			$header = DB::table('bukti_kas_keluar')
-				  ->where('bkk_nota',$nota)
-				  ->update([
-					'bkk_nota' 			=> $nota,
-					'bkk_tgl' 			=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
-					'bkk_jenisbayar' 	=> $req->jenis_bayar,
-					'bkk_keterangan' 	=> strtoupper($req->keterangan_head),
-					'bkk_comp' 			=> $req->cabang,
-					'bkk_total' 		=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
-					'created_at' 		=> carbon::now(),
-					'updated_at' 		=> carbon::now(),
-					'bkk_akun_kas' 		=> $req->kas,
-					'bkk_supplier' 		=> $req->supplier_patty,
-					'bkk_akun_hutang' 	=> $req->hutang,
-					'bkk_status' 		=> 'RELEASED',
-					'updated_by' 		=> Auth::user()->m_name,
-	  				'created_by' 		=> Auth::user()->m_name,
-			  	]);
-
-			$delete = DB::table('bukti_kas_keluar_detail')
-						->where('bkkd_bkk_id',$cari_nota->bkk_id)
-						->delete();
-
-			$delete = DB::table('patty_cash')
-						->where('pc_no_trans',$nota)
-						->delete();
-
-			$id_pt = DB::table('patty_cash')
-					   ->max('pc_id')+1;	
-
-			$patty_cash = DB::table('patty_cash')
-						->insert([
-							'pc_id'			=> $id_pt,
-							'pc_ref'  		=> $req->jenis_bayar,
-							'pc_akun'  		=> $req->kas,
-							'pc_keterangan' => strtoupper($req->keterangan_head),
-							'pc_debet' 		=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
-							'pc_kredit' 	=> 0,
-							'updated_at' 	=> carbon::now(),
-							'created_at' 	=> carbon::now(),
-							'pc_akun_kas' 	=> $req->kas,
-							'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
-							'pc_user'  		=> Auth::user()->m_name,
-							'pc_comp' 		=> $req->cabang,
-							'pc_asal_comp'	=> $req->cabang,
-							'pc_no_trans' 	=> $nota,
-							'pc_edit'  		=> 'UNALLOWED',
-							'pc_reim'  		=> 'UNRELEASED',
-						]);	
-			for ($i=0; $i < count($req->pt_seq); $i++) {
-
-				$id_dt = DB::table('bukti_kas_keluar_detail')
-						   ->max('bkkd_id');
-				if ($id_dt == null) {
-					$id_dt = 1;
-				}else{
-					$id_dt += 1;
+				if ($cari_nota == null) {
+					return response()->json(['status'=>3]);
 				}
 
-				$detail = DB::table('bukti_kas_keluar_detail')
-				  ->insert([
-				  	'bkkd_id'  			=> $id_dt,
-					'bkkd_bkk_id'  		=> $id,
-					'bkkd_bkk_dt'  		=> $i+1,
-					'bkkd_keterangan' 	=> strtoupper($req->pt_keterangan[$i]),
-					'bkkd_akun'  		=> $req->pt_akun_biaya[$i],
-					'bkkd_total' 		=> $req->pt_nominal[$i],
-					'bkkd_debit' 		=> $req->pt_debet[$i],
-					'updated_at'		=> carbon::now(),
-					'created_at' 		=> carbon::now(),
-					'bkkd_ref' 			=> 'NONE',
-					'bkkd_supplier' 	=> 'NONE',
-					]);
+				$nota = $req->nota;
+				$id = $cari_nota->bkk_id;
 
+				$header = DB::table('bukti_kas_keluar')
+					  ->where('bkk_nota',$nota)
+					  ->update([
+						'bkk_nota' 			=> $nota,
+						'bkk_tgl' 			=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+						'bkk_jenisbayar' 	=> $req->jenis_bayar,
+						'bkk_keterangan' 	=> strtoupper($req->keterangan_head),
+						'bkk_comp' 			=> $req->cabang,
+						'bkk_total' 		=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
+						'created_at' 		=> carbon::now(),
+						'updated_at' 		=> carbon::now(),
+						'bkk_akun_kas' 		=> $req->kas,
+						'bkk_supplier' 		=> $req->supplier_patty,
+						'bkk_akun_hutang' 	=> $req->hutang,
+						'bkk_status' 		=> 'RELEASED',
+						'updated_by' 		=> Auth::user()->m_name,
+		  				'created_by' 		=> Auth::user()->m_name,
+				  	]);
+
+				$delete = DB::table('bukti_kas_keluar_detail')
+							->where('bkkd_bkk_id',$cari_nota->bkk_id)
+							->delete();
+
+				$delete = DB::table('patty_cash')
+							->where('pc_no_trans',$nota)
+							->delete();
 
 				$id_pt = DB::table('patty_cash')
-						   ->max('pc_id')+1;
-						   
+						   ->max('pc_id')+1;	
+
 				$patty_cash = DB::table('patty_cash')
 							->insert([
 								'pc_id'			=> $id_pt,
 								'pc_ref'  		=> $req->jenis_bayar,
-								'pc_akun'  		=> $req->pt_akun_biaya[$i],
-								'pc_keterangan' => strtoupper($req->pt_keterangan[$i]),
-								'pc_debet' 		=> 0,
-								'pc_kredit' 	=> $req->pt_nominal[$i],
+								'pc_akun'  		=> $req->kas,
+								'pc_keterangan' => strtoupper($req->keterangan_head),
+								'pc_debet' 		=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
+								'pc_kredit' 	=> 0,
 								'updated_at' 	=> carbon::now(),
 								'created_at' 	=> carbon::now(),
 								'pc_akun_kas' 	=> $req->kas,
@@ -1133,117 +1102,439 @@ class kasKeluarController extends Controller
 								'pc_edit'  		=> 'UNALLOWED',
 								'pc_reim'  		=> 'UNRELEASED',
 							]);	
-				
-			}
+				for ($i=0; $i < count($req->pt_seq); $i++) {
 
-			
-			// //JURNAL
-			$delete_jurnal = DB::table('d_jurnal')
-							   ->where('jr_ref',$nota)
-							   ->delete();
+					$id_dt = DB::table('bukti_kas_keluar_detail')
+							   ->max('bkkd_id');
+					if ($id_dt == null) {
+						$id_dt = 1;
+					}else{
+						$id_dt += 1;
+					}
 
-			$id_jurnal=d_jurnal::max('jr_id')+1;
-			// dd($id_jurnal);
-			$jenis_bayar = DB::table('jenisbayar')
-							 ->where('idjenisbayar',$req->jenis_bayar)
-							 ->first();
-			$bank = 'KK';
-            $km =  get_id_jurnal($bank, $req->cabang);
-			$jurnal = d_jurnal::create(['jr_id'		=> $id_jurnal,
-										'jr_year'   => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y'),
-										'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
-										'jr_detail' => $jenis_bayar->jenisbayar,
-										'jr_ref'  	=> $nota,
-										'jr_note'  	=> 'BUKTI KAS KELUAR '.strtoupper($req->keterangan_head),
-										'jr_insert' => carbon::now(),
-										'jr_update' => carbon::now(),
-										'jr_no'		=> $km,
-										]);
+					$detail = DB::table('bukti_kas_keluar_detail')
+					  ->insert([
+					  	'bkkd_id'  			=> $id_dt,
+						'bkkd_bkk_id'  		=> $id,
+						'bkkd_bkk_dt'  		=> $i+1,
+						'bkkd_keterangan' 	=> strtoupper($req->pt_keterangan[$i]),
+						'bkkd_akun'  		=> $req->pt_akun_biaya[$i],
+						'bkkd_total' 		=> $req->pt_nominal[$i],
+						'bkkd_debit' 		=> $req->pt_debet[$i],
+						'updated_at'		=> carbon::now(),
+						'created_at' 		=> carbon::now(),
+						'bkkd_ref' 			=> 'NONE',
+						'bkkd_supplier' 	=> 'NONE',
+						]);
 
 
-			$akun 	  = [];
-			$akun_val = [];
-			$penanda  = [];
-			array_push($akun, $req->kas);
-			array_push($akun_val, filter_var($req->total,FILTER_SANITIZE_NUMBER_INT)/100);
-			array_push($penanda,'K');
-
-			for ($i=0; $i < count($req->pt_akun_biaya); $i++) { 
-
-				array_push($akun, $req->pt_akun_biaya[$i]);
-				array_push($akun_val, $req->pt_nominal[$i]);
-				if ($req->pt_debet[$i] == 'DEBET') {
-					array_push($penanda, "D");
-				}else{
-					array_push($penanda, "K");
+					$id_pt = DB::table('patty_cash')
+							   ->max('pc_id')+1;
+							   
+					$patty_cash = DB::table('patty_cash')
+								->insert([
+									'pc_id'			=> $id_pt,
+									'pc_ref'  		=> $req->jenis_bayar,
+									'pc_akun'  		=> $req->pt_akun_biaya[$i],
+									'pc_keterangan' => strtoupper($req->pt_keterangan[$i]),
+									'pc_debet' 		=> 0,
+									'pc_kredit' 	=> $req->pt_nominal[$i],
+									'updated_at' 	=> carbon::now(),
+									'created_at' 	=> carbon::now(),
+									'pc_akun_kas' 	=> $req->kas,
+									'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+									'pc_user'  		=> Auth::user()->m_name,
+									'pc_comp' 		=> $req->cabang,
+									'pc_asal_comp'	=> $req->cabang,
+									'pc_no_trans' 	=> $nota,
+									'pc_edit'  		=> 'UNALLOWED',
+									'pc_reim'  		=> 'UNRELEASED',
+								]);	
+					
 				}
-			}
-			$data_akun = [];
-			for ($i=0; $i < count($akun); $i++) { 
 
-				$cari_coa = DB::table('d_akun')
-								  ->where('id_akun',$akun[$i])
+				
+				// //JURNAL
+				$delete_jurnal = DB::table('d_jurnal')
+								   ->where('jr_ref',$nota)
+								   ->delete();
+
+				$id_jurnal=d_jurnal::max('jr_id')+1;
+				// dd($id_jurnal);
+				$jenis_bayar = DB::table('jenisbayar')
+								 ->where('idjenisbayar',$req->jenis_bayar)
+								 ->first();
+				$bank = 'KK';
+	            $km =  get_id_jurnal($bank, $req->cabang);
+				$jurnal = d_jurnal::create(['jr_id'		=> $id_jurnal,
+											'jr_year'   => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y'),
+											'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+											'jr_detail' => $jenis_bayar->jenisbayar,
+											'jr_ref'  	=> $nota,
+											'jr_note'  	=> 'BUKTI KAS KELUAR '.strtoupper($req->keterangan_head),
+											'jr_insert' => carbon::now(),
+											'jr_update' => carbon::now(),
+											'jr_no'		=> $km,
+											]);
+
+
+				$akun 	  = [];
+				$akun_val = [];
+				$penanda  = [];
+				array_push($akun, $req->kas);
+				array_push($akun_val, filter_var($req->total,FILTER_SANITIZE_NUMBER_INT)/100);
+				array_push($penanda,'K');
+
+				for ($i=0; $i < count($req->pt_akun_biaya); $i++) { 
+
+					array_push($akun, $req->pt_akun_biaya[$i]);
+					array_push($akun_val, $req->pt_nominal[$i]);
+					if ($req->pt_debet[$i] == 'DEBET') {
+						array_push($penanda, "D");
+					}else{
+						array_push($penanda, "K");
+					}
+				}
+				$data_akun = [];
+				for ($i=0; $i < count($akun); $i++) { 
+
+					$cari_coa = DB::table('d_akun')
+									  ->where('id_akun',$akun[$i])
+									  ->first();
+
+					if (substr($akun[$i],0, 4)==1001) {
+						
+						if ($penanda[$i] == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+						}
+					}if (substr($akun[$i],0, 4)>=1002) {
+						if ($penanda[$i] == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->pt_keterangan[$i-1]);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->pt_keterangan[$i-1]);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+						}
+					}else if (substr($akun[$i],0, 1)>1) {
+
+						if ($penanda[$i] == 'D') {
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->pt_keterangan[$i-1]);
+							$data_akun[$i]['jrdt_statusdk'] = 'D';
+						}else{
+							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+							$data_akun[$i]['jrdt_detailid']	= $i+1;
+							$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+	                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->pt_keterangan[$i-1]);
+							$data_akun[$i]['jrdt_statusdk'] = 'K';
+						}
+					}
+				}
+				// dd($data_akun);
+				$jurnal_dt = d_jurnal_dt::insert($data_akun);
+				$lihat = d_jurnal_dt::where('jrdt_jurnal',$id_jurnal)->get();
+				// dd($lihat);
+
+				return response()->json(['status'=>1]);
+			}else{
+				$cari_nota = DB::table('bukti_kas_keluar')
+							   ->where('bkk_nota',$req->nota)
+							   ->first();
+
+				if ($cari_nota == null) {
+					return response()->json(['status'=>3]);
+				}
+
+
+				// PENGEMBALIAN BONSEM
+				$cari_bonsem = DB::table('bonsem_pengajuan')
+								 ->where('bp_nota',$req->nota_bonsem)
+								 ->first();
+				$pengembalian_bonsem = DB::table('bonsem_pengajuan')
+								    ->where('bp_nota',$cari_nota->bkk_nota_bonsem)
+									->update([
+										'bp_sisapemakaian'=>$cari_bonsem->bp_sisapemakaian+$cari_nota->bkk_nominal_bonsem
+									]);
+
+				$nota = $req->nota;
+				$id = $cari_nota->bkk_id;
+
+
+				$cari_bonsem = DB::table('bonsem_pengajuan')
+								 ->where('bp_nota',$req->nota_bonsem)
+								 ->first();
+
+				$total_bonsem = $cari_bonsem->bp_sisapemakaian - filter_var($req->sisa_bonsem, FILTER_SANITIZE_NUMBER_INT)/100;
+						
+				
+
+				$cari_bonsem = DB::table('bonsem_pengajuan')
+								 ->where('bp_nota',$req->nota_bonsem)
+								 ->first();
+
+				$header = DB::table('bukti_kas_keluar')
+					  ->where('bkk_nota',$nota)
+					  ->update([
+						'bkk_nota' 				=> $nota,
+						'bkk_jenisbayar' 		=> $req->jenis_bayar,
+						'bkk_keterangan' 		=> strtoupper($req->keterangan_head),
+						'bkk_comp' 				=> $req->cabang,
+						'bkk_total' 			=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
+						'updated_at' 			=> carbon::now(),
+						'bkk_akun_kas' 			=> $req->kas,
+						'bkk_nominal_bonsem' 	=> $total_bonsem,
+						'bkk_nota_bonsem'	 	=> $req->nota_bonsem,
+						'bkk_supplier' 			=> $req->supplier_patty,
+						'bkk_akun_hutang' 		=> $req->hutang,
+						'bkk_status' 			=> 'RELEASED',
+						'updated_by' 			=> Auth::user()->m_name,
+				  	]);
+
+				$update_bonsem = DB::table('bonsem_pengajuan')
+								    ->where('bp_nota',$req->nota_bonsem)
+									->update([
+										'bp_sisapemakaian'=>$cari_bonsem->bp_sisapemakaian-$total_bonsem
+									]);
+
+				$delete = DB::table('bukti_kas_keluar_detail')
+							->where('bkkd_bkk_id',$cari_nota->bkk_id)
+							->delete();
+
+				$delete = DB::table('patty_cash')
+							->where('pc_no_trans',$nota)
+							->delete();
+
+				$id_pt = DB::table('patty_cash')
+						   ->max('pc_id')+1;	
+
+				$patty_cash = DB::table('patty_cash')
+							->insert([
+								'pc_id'			=> $id_pt,
+								'pc_ref'  		=> $req->jenis_bayar,
+								'pc_akun'  		=> $req->kas,
+								'pc_keterangan' => strtoupper($req->keterangan_head),
+								'pc_debet' 		=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
+								'pc_kredit' 	=> 0,
+								'updated_at' 	=> carbon::now(),
+								'created_at' 	=> carbon::now(),
+								'pc_akun_kas' 	=> $req->kas,
+								'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+								'pc_user'  		=> Auth::user()->m_name,
+								'pc_comp' 		=> $req->cabang,
+								'pc_asal_comp'	=> $req->cabang,
+								'pc_no_trans' 	=> $nota,
+								'pc_edit'  		=> 'UNALLOWED',
+								'pc_reim'  		=> 'UNRELEASED',
+							]);	
+				for ($i=0; $i < count($req->pt_seq); $i++) {
+
+					$id_dt = DB::table('bukti_kas_keluar_detail')
+							   ->max('bkkd_id');
+					if ($id_dt == null) {
+						$id_dt = 1;
+					}else{
+						$id_dt += 1;
+					}
+
+					$detail = DB::table('bukti_kas_keluar_detail')
+					  ->insert([
+					  	'bkkd_id'  			=> $id_dt,
+						'bkkd_bkk_id'  		=> $id,
+						'bkkd_bkk_dt'  		=> $i+1,
+						'bkkd_keterangan' 	=> strtoupper($req->pt_keterangan[$i]),
+						'bkkd_akun'  		=> $req->pt_akun_biaya[$i],
+						'bkkd_total' 		=> $req->pt_nominal[$i],
+						'bkkd_debit' 		=> $req->pt_debet[$i],
+						'updated_at'		=> carbon::now(),
+						'created_at' 		=> carbon::now(),
+						'bkkd_ref' 			=> 'NONE',
+						'bkkd_supplier' 	=> 'NONE',
+						]);
+
+
+					$id_pt = DB::table('patty_cash')
+							   ->max('pc_id')+1;
+							   
+					$patty_cash = DB::table('patty_cash')
+								->insert([
+									'pc_id'			=> $id_pt,
+									'pc_ref'  		=> $req->jenis_bayar,
+									'pc_akun'  		=> $req->pt_akun_biaya[$i],
+									'pc_keterangan' => strtoupper($req->pt_keterangan[$i]),
+									'pc_debet' 		=> 0,
+									'pc_kredit' 	=> $req->pt_nominal[$i],
+									'updated_at' 	=> carbon::now(),
+									'created_at' 	=> carbon::now(),
+									'pc_akun_kas' 	=> $req->kas,
+									'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+									'pc_user'  		=> Auth::user()->m_name,
+									'pc_comp' 		=> $req->cabang,
+									'pc_asal_comp'	=> $req->cabang,
+									'pc_no_trans' 	=> $nota,
+									'pc_edit'  		=> 'UNALLOWED',
+									'pc_reim'  		=> 'UNRELEASED',
+								]);	
+					
+				}
+
+				
+				// //JURNAL
+				$delete_jurnal = DB::table('d_jurnal')
+								   ->where('jr_ref',$nota)
+								   ->delete();
+
+				$id_jurnal=d_jurnal::max('jr_id')+1;
+				// dd($id_jurnal);
+				$jenis_bayar = DB::table('jenisbayar')
+								 ->where('idjenisbayar',$req->jenis_bayar)
+								 ->first();
+				$bank = 'KK';
+	            $km =  get_id_jurnal($bank, $req->cabang);
+				$jurnal = d_jurnal::create(['jr_id'		=> $id_jurnal,
+											'jr_year'   => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y'),
+											'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+											'jr_detail' => $jenis_bayar->jenisbayar.' '.strtoupper($req->keterangan_head),
+											'jr_ref'  	=> $nota,
+											'jr_note'  	=> 'BUKTI KAS KELUAR '.strtoupper($req->keterangan_head),
+											'jr_insert' => carbon::now(),
+											'jr_update' => carbon::now(),
+											'jr_no'		=> $km,
+											]);
+
+
+				$akun 	  = [];
+				$akun_val = [];
+				$penanda  = [];
+
+				array_push($akun, $req->kas);
+				array_push($akun_val, filter_var($req->total,FILTER_SANITIZE_NUMBER_INT)/100);
+				array_push($penanda,'K');
+				$akun_bonsem = DB::table('d_akun')
+								  ->where('id_akun','like','1002%')
+								  ->where('kode_cabang',$req->cabang)
 								  ->first();
 
-				if (substr($akun[$i],0, 4)==1001) {
-					
-					if ($penanda[$i] == 'D') {
-						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-						$data_akun[$i]['jrdt_detailid']	= $i+1;
-						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
-					}else{
-						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-						$data_akun[$i]['jrdt_detailid']	= $i+1;
-						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
-					}
-				}if (substr($akun[$i],0, 4)>=1002) {
-					if ($penanda[$i] == 'D') {
-						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-						$data_akun[$i]['jrdt_detailid']	= $i+1;
-						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->pt_keterangan[$i-1]);
-						$data_akun[$i]['jrdt_statusdk'] = 'D';
-					}else{
-						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-						$data_akun[$i]['jrdt_detailid']	= $i+1;
-						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->pt_keterangan[$i-1]);
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
-					}
-				}else if (substr($akun[$i],0, 1)>1) {
 
-					if ($penanda[$i] == 'D') {
-						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-						$data_akun[$i]['jrdt_detailid']	= $i+1;
-						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->pt_keterangan[$i-1]);
-						$data_akun[$i]['jrdt_statusdk'] = 'D';
+				array_push($akun, $akun_bonsem->id_akun);
+				array_push($akun_val, $total_bonsem);
+				array_push($penanda,'K');
+
+				for ($i=0; $i < count($req->pt_akun_biaya); $i++) { 
+					array_push($akun, $req->pt_akun_biaya[$i]);
+					array_push($akun_val, $req->pt_nominal[$i]);
+					if ($req->pt_debet[$i] == 'DEBET') {
+						array_push($penanda, "D");
 					}else{
-						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-						$data_akun[$i]['jrdt_detailid']	= $i+1;
-						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->pt_keterangan[$i-1]);
-						$data_akun[$i]['jrdt_statusdk'] = 'K';
+						array_push($penanda, "K");
 					}
 				}
+
+				$data_akun = [];
+				for ($i=0; $i < count($akun); $i++) { 
+
+					$cari_coa = DB::table('d_akun')
+									  ->where('id_akun',$akun[$i])
+									  ->first();
+
+					if (substr($akun[$i],0, 4)==1001) {
+						if ($cari_coa->akun_dka == 'D') {
+							if ($penanda[$i] == 'D') {
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+								$data_akun[$i]['jrdt_statusdk'] = 'D';
+							}else{
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+								$data_akun[$i]['jrdt_statusdk'] = 'K';
+							}
+						}else{
+							if ($penanda[$i] == 'D') {
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+								$data_akun[$i]['jrdt_statusdk'] = 'D';
+							}else{
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+								$data_akun[$i]['jrdt_statusdk'] = 'K';
+							}
+						}
+					}if (substr($akun[$i],0, 4)>=1002) {
+						
+						if ($cari_coa->akun_dka == 'D') {
+							if ($penanda[$i] == 'D') {
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+								$data_akun[$i]['jrdt_statusdk'] = 'D';
+							}else{
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+								$data_akun[$i]['jrdt_statusdk'] = 'K';
+							}
+						}else{
+							if ($penanda[$i] == 'D') {
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+								$data_akun[$i]['jrdt_statusdk'] = 'D';
+							}else{
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
+								$data_akun[$i]['jrdt_statusdk'] = 'K';
+							}
+						}
+					}
+				}
+				$jurnal_dt = d_jurnal_dt::insert($data_akun);
+				$lihat = d_jurnal_dt::where('jrdt_jurnal',$id_jurnal)->get()->toArray();
+				return response()->json(['status'=>1]);
 			}
-			// dd($data_akun);
-			$jurnal_dt = d_jurnal_dt::insert($data_akun);
-			$lihat = d_jurnal_dt::where('jrdt_jurnal',$id_jurnal)->get();
-			// dd($lihat);
-
-			return response()->json(['status'=>1]);
-
 		});
 	}
 
@@ -2293,9 +2584,12 @@ class kasKeluarController extends Controller
 					 ->get();
 		}
 		
+		$bonsem = DB::table('bonsem_pengajuan')
+						->where('bp_nota',$data->bkk_nota_bonsem)
+						->first();
 
 		if (Auth::user()->punyaAkses('Bukti Kas Keluar','ubah')) {
-			return view('purchase.buktikaskeluar.EditKasKeluar',compact('cabang','jenis_bayar','now','id','data','data_dt','akun'));
+			return view('purchase.buktikaskeluar.EditKasKeluar',compact('cabang','jenis_bayar','now','id','data','data_dt','akun','bonsem'));
 		}else{
 			return Redirect()->back();
 		}
