@@ -64,7 +64,7 @@
 <script>
   $(document).ready(function(){
 
-    var state = null; list_akun = [];
+    var state = true; list_akun = [];
 
     $(".chosen-select").chosen();
     $('[data-toggle="tooltip"]').tooltip();
@@ -172,14 +172,16 @@
         $('#type_ctn').css('display', 'none');
       else
         $('#type_ctn').css('display', '');
+
+      state = true;
     })
 
     $("#tambah_akun").click(function(evt){
-      evt.preventDefault(); var name = $('#jenis');
-      $('#overlay').fadeIn(80);
+      evt.preventDefault();
+      $('#overlay').fadeIn(80); var name = $('#jenis');
       $('#cab_list_name').text(name.children('option:selected').text());
 
-      if(state != name.val()){
+      if(state == true){
         $("#overlay .modal-body").html('<center class="text-muted">Sedang Memuat ...</center>');
         list_akun = [];
       }else{
@@ -191,7 +193,7 @@
          dataType: "html",
          success: function (data) {
              $("#overlay .modal-body").html(data);
-             state = name.val();
+             state = false;
          },
          error: function(request, status, err) {
             if (status == "timeout") {
@@ -259,6 +261,9 @@
       $("#jenis").val(1);
       $("#type").val("A");
       $('#type_ctn').css('display', '');
+      $('#akun_counter').text('0')
+      list_akun = [];
+      state = true;
 
       // $(".select_validate").each(function(){
       //     $(this).val(1);

@@ -203,7 +203,7 @@
 
         <?php $urt = 0; ?>
 
-		@foreach($data as $ledger)
+		@foreach($data as $key => $ledger)
 		 	<?php 
 		    	$mt = ($urt == 0) ? "m-t" : "m-t-lg"; $saldo = 0; 
 				$tot_deb = $tot_kred = 0;
@@ -220,8 +220,8 @@
 			<table id="table-data" class="table_neraca tree" border="0" width="100%">
 				<thead>
 					<tr>
-						<th width="8%">Tanggal</th>
-				        <th width="8%">No.Bukti</th>
+						<th width="7%">Tanggal</th>
+				        <th width="10%">No.Bukti</th>
 				        <th width="25%">Keterangan</th>
 
 				        @if($request->akun_lawan == 'true')
@@ -241,13 +241,38 @@
 					<tr>
 		              <td></td>
 		              <td></td>
-		              <td style="padding-left: 50px; font-weight: 600;">Saldo Awal</td>
+		              <td style="padding-left: 50px; font-weight: 600;">
+
+		              	@if($throttle == 'Bulan')
+		                	Saldo Awal {{ date_ind(explode('-', $b1)[0]).' '.explode('-', $b1)[1] }}
+		                @else
+		                	Saldo Awal {{ $request->y1 }}
+		                @endif
+
+		          	  </td>
 
 		              @if($request->akun_lawan == 'true')
 			              <td></td>
 			              <td></td>
 			              <td></td>
 			          @endif
+
+			          <?php
+
+			          	$deb = (count($data_saldo[$key]->mutasi_bank_debet) > 0) ? $data_saldo[$key]->mutasi_bank_debet->first()->total : 0;
+                        $kredit = (count($data_saldo[$key]->mutasi_bank_kredit) > 0) ? $data_saldo[$key]->mutasi_bank_kredit->first()->total : 0;
+
+                        $saldo = $data_saldo[$key]->coalesce + ($deb + $kredit);
+
+                        //$totdeb = $totkred = 0;
+
+                        if($throttle == 'Tahun' && date('Y', strtotime($data_saldo[$key]->opening_date)) == $request->y1){
+                        	$saldo = $data_saldo[$key]->coalesce;
+                        }else if(strtotime($data_date) < strtotime($data_saldo[$key]->opening_date)){
+                          $saldo = 0;
+                        }
+
+			          ?>
 
 		              <td style="padding-left: 8px;" class="money"></td>
 		              <td style="padding-left: 8px;" class="money"></td>

@@ -177,9 +177,13 @@
                                           else
                                             $totdeb = str_replace('-', '', $total);
 
+                                        if(strtotime($_GET['year'].'-'.$_GET['date'].'-01') < strtotime($dataAkun->opening_date)){
+                                          $totkred = 0; $totdeb = 0;
+                                        }
+
                                       ?>
 
-                                    	<td class="text-right">{{ number_format($totdeb,2) }}</td>
+                                    	<td class="text-right">{{  number_format($totdeb,2) }}</td>
                                     	<td class="text-right">{{ number_format($totkred,2) }}</td>
                                       <td class="text-center">
                                         <span data-toggle="tooltip" data-placement="top" title="Sesuaikan Saldo {{ $dataAkun->nama_akun }}">
