@@ -321,12 +321,16 @@ class invoice_Controller extends Controller
                          ->where('mb_id',4)
                          ->first();
 
+        $kepala_cabang = DB::table('d_mem')
+                         ->where('m_level','KEPALA CABANG')
+                         ->where('kode_cabang',Auth::user()->kode_cabang)
+                         ->first();
         // return $push;
         $terbilang = $this->penyebut($head->i_total_tagihan);
         if ($head->i_pendapatan == 'PAKET' or $head->i_pendapatan == 'KARGO') {
-          return view('sales.invoice.print',compact('head','detail','terbilang','push','master_bank'));
+          return view('sales.invoice.print',compact('head','detail','terbilang','push','master_bank','kepala_cabang'));
         }else{
-          return view('sales.invoice.print_1',compact('head','detail','terbilang','push','master_bank'));
+          return view('sales.invoice.print_1',compact('head','detail','terbilang','push','master_bank','kepala_cabang'));
         }
     }
 

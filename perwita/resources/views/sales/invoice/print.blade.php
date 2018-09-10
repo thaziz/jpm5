@@ -413,14 +413,14 @@
 		<table width="100%" class="border size hiddenbordertop table-responsive">
 			<tr>
 				<td class="borderrighttabel textleft" width="26%">Pendaftaran ditransfer ke :</td>
-				<td class="textleft borderrighttabel" width="26%">&nbsp;</td>
+				<td class="textleft " width="26%">&nbsp;</td>
 				<td class="textright borderrighttabel" width="26.4%">&nbsp;</td>
 				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">Discount</td>
 				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_diskon2, 2, ",", ".") }}</td>
 			</tr>
 			<tr>
 				<td class="borderrighttabel textleft" width="26%">{{ $master_bank->mb_namarekening }}</td>
-				<td class="textleft borderrighttabel" width="26%">&nbsp;</td>
+				<td class="textleft" width="26%">&nbsp;</td>
 				<td class="textright borderrighttabel" width="26.2%">&nbsp;</td>
 				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">Netto</td>
 				@if($head->i_ppntpe == 'npkp')
@@ -431,7 +431,7 @@
 			</tr>
 			<tr>
 				<td class="borderrighttabel textleft" width="26%">BCA KCP Bhayangkara Surabaya</td>
-				<td class="textleft borderrighttabel" width="26%">&nbsp;</td>
+				<td class="textleft " width="26%">&nbsp;</td>
 				<td class="textright borderrighttabel" width="26.2%">&nbsp;</td>
 				@if($head->i_ppntpe == 'npkp')
 				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">PPN (IN)</td>
@@ -443,15 +443,13 @@
 			</tr>
 			<tr>
 				<td class="borderrighttabel akirkanan textleft" width="26%">Jl.A. Yani Surabaya</td>
-				<td class="borderrighttabel underline textcenter" width="26%">OKKIE NESTIE</td>
-				<td class="borderrighttabel underline textcenter" width="26.2%">EKO YULI S.</td>
+				<td class="borderrighttabel underline textcenter" width="26%" colspan="2">{{ $kepala_cabang->m_name or null}}</td>
 				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">PPh</td>
 				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_pajak_lain, 2, ",", ".") }}</td>
 			</tr>
 			<tr>
 				<td class="borderrighttabel akirkanan textleft" width="26%">A/C : {{ $master_bank->mb_accno }}</td>
-				<td class="borderrighttabel textcenter" width="26%">(Finance Manager)</td>
-				<td class="borderrighttabel textcenter" width="26.2%" style="margin-bottom: 10px;">(Account Dept)</td>
+				<td class="borderrighttabel textcenter" width="26%" colspan="2">KEPALA CABANG</td>
 				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">Jumlah</td>
 				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_total_tagihan, 2, ",", ".") }}</td>
 			</tr>
