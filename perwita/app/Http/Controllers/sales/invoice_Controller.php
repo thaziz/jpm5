@@ -1851,7 +1851,7 @@ public function edit_invoice($id)
                   ->get();
 
       $gp     = DB::table('grup_item')
-                      ->get();
+                  ->get();
 
 
 

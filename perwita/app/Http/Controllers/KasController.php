@@ -268,7 +268,7 @@ class KasController extends Controller
 					->get();
 		$angkutan = DB::table('tipe_angkutan')
 					->get();
-		$akun_persen     = DB::table('master_persentase')
+		$akun_persen  = DB::table('master_persentase')
 					  ->where('cabang','GLOBAL')
 					  ->get();
 
