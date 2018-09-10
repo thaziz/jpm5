@@ -151,35 +151,43 @@
                                 @foreach($data as $dataAkun)
                                 	<?php $debet = 0; $kredit = 0; ?>
                                   
-                                  @if($dataAkun->is_active == 1)
+                                  {{-- @if($dataAkun->is_active == 1) --}}
                                     <tr>
                                     	<td>{{ $dataAkun->id_akun }}</td>
                                     	<td>{{ $dataAkun->nama_akun }}</td>
-
-                                    	@if($dataAkun->akun_dka == "D")
-                                    		@if($dataAkun->saldo_akun < 0)
-                                    			<?php $tipe = "K"; $kredit = ($dataAkun->saldo_akun * -1); ?>
-                                    		@else
-                                    			<?php $tipe = "D"; $debet = $dataAkun->saldo_akun; ?>
-                                    		@endif
-                                    	@else
-                                    		@if($dataAkun->saldo_akun < 0)
-                                    			<?php $tipe = "D"; $debet = ($dataAkun->saldo_akun * -1);?>
-                                    		@else
-                                    			<?php $tipe = "K"; $kredit = $dataAkun->saldo_akun;?>
-                                    		@endif
-                                    	@endif
-
                                     	<td class="text-center">{{ $dataAkun->akun_dka }}</td>
-                                    	<td class="text-right">{{ number_format($debet,2) }}</td>
-                                    	<td class="text-right">{{ number_format($kredit,2) }}</td>
+
+                                      <?php
+
+                                        $deb = (count($dataAkun->mutasi_bank_debet) > 0) ? $dataAkun->mutasi_bank_debet->first()->total : 0;
+                                        $kredit = (count($dataAkun->mutasi_bank_kredit) > 0) ? $dataAkun->mutasi_bank_kredit->first()->total : 0;
+
+                                        $total = $dataAkun->coalesce + ($deb + $kredit);
+
+                                        $totdeb = $totkred = 0;
+
+                                        if($dataAkun->akun_dka == 'D')
+                                          if($total > 0 )
+                                            $totdeb = str_replace('-', '', $total);
+                                          else
+                                            $totkred = str_replace('-', '', $total);
+                                        else
+                                          if($total > 0 )
+                                            $totkred = str_replace('-', '', $total);
+                                          else
+                                            $totdeb = str_replace('-', '', $total);
+
+                                      ?>
+
+                                    	<td class="text-right">{{ number_format($totdeb,2) }}</td>
+                                    	<td class="text-right">{{ number_format($totkred,2) }}</td>
                                       <td class="text-center">
                                         <span data-toggle="tooltip" data-placement="top" title="Sesuaikan Saldo {{ $dataAkun->nama_akun }}">
                                             <button class="btn btn-xs btn-info editAkun" data-id="{{ $dataAkun->id_akun }}"><i class="fa fa-pencil fa-fw"></i></button>
                                         </span>
                                       </td>
                                     </tr>
-                                  @endif
+                                  {{-- @endif --}}
                                   
                                 @endforeach
                                 
