@@ -207,12 +207,15 @@
                 <tr>
                   <td >No. PO</td>
                   <td>:</td>
-                  <td>{{$e}}</td>
+                  <td>&nbsp; {{$e}}</td>
                 </tr>
                 <tr>
                   <td >No. SPP</td>
                   <td>:</td>
-                  <td>{{$f}}</td>
+                  <td>@foreach($data2['spp'] as $spp)
+                        &nbsp; - {{$spp->spp_nospp}} <br>
+                      @endforeach
+                  </td>
                 </tr>
        </thead>
     </table>
