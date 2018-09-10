@@ -1439,6 +1439,7 @@
        var idsup = string[0];
        console.log(idsup);
 
+       cabang = $('.cabang').val();
 
        
       
@@ -1450,7 +1451,7 @@
            $('.penerimaan').val(stock);
            $.ajax({    
             type :"post",
-            data : {idsup, groupitem,updatestock},
+            data : {idsup, groupitem,updatestock, cabang},
             url : baseUrl + '/fakturpembelian/updatestockbrgfp',
             dataType:'json',
             success : function(data){
