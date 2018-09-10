@@ -1533,7 +1533,7 @@ class do_paketController extends Controller
     }
     
     if ($request->nomor != '' || $request->nomor != null) {
-      $nomor = "d.nomor = '".$request->nomor."' ";
+      $nomor = "d.nomor like '%".$request->nomor."%' ";
       if ($request->min != '' || $request->min != null) {
       $min = "AND d.tanggal >= '".$request->min."' ";
       }else{
@@ -1551,21 +1551,23 @@ class do_paketController extends Controller
     // dd($request->all());
     if ($nomor == '') {
       // return 'a';
-        $data  = DB::select("SELECT d.kode_customer,d.pendapatan,d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total 
+        $data  = DB::select("SELECT i.id_nomor_invoice as invoice,d.kode_customer,d.pendapatan,d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total 
         FROM delivery_order as d 
         LEFT JOIN kota k ON k.id=d.id_kota_asal
               LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
               join customer c on d.kode_customer = c.kode 
               join cabang cc on d.kode_cabang = cc.kode 
+              left join invoice_d i on i.id_nomor_do = d.nomor 
 
         WHERE ".$nomor." ".$min." ".$max." ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." ");
     }else{
-        $data  = DB::select("SELECT d.kode_customer,d.pendapatan,d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total 
+        $data  = DB::select("SELECT i.id_nomor_invoice as invoice,d.kode_customer,d.pendapatan,d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total 
         FROM delivery_order as d 
         LEFT JOIN kota k ON k.id=d.id_kota_asal
               LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
               join customer c on d.kode_customer = c.kode 
               join cabang cc on d.kode_cabang = cc.kode 
+              left join invoice_d i on i.id_nomor_do = d.nomor 
 
         WHERE ".$nomor." ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." ");
     }
@@ -1580,6 +1582,12 @@ class do_paketController extends Controller
                             '<a href="deliveryorderform/'.$data->nomor.'/nota" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>'.
                             '<a href="deliveryorder_paket/'.$data->nomor.'/hapus_deliveryorder_paket" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>'.
                           '</div>';
+                })->addColumn('invoice', function ($data) {
+                  if ($data->invoice != null) {
+                    return '<label class="label label-primary">'.$data->invoice.'</label>';
+                  }else{
+                    return '<label class="label label-danger">BELUM TERINVOICE</label>';
+                  }
                 })
               ->make(true);
     }
