@@ -225,7 +225,7 @@
           <tr>
                 <th class="textcenter jarak" width="5%">No.</th>
                 <th class="textcenter" width="30%">Nama dan Spesifikasi Barang/Jasa</th>
-                <th class="textcenter" width="15%">Lokasi Gudang</th>
+              
                 <th class="textcenter" width="10%">Jumlah</th>
                 <th class="textcenter" width="10%">Satuan</th>
                 <th class="textcenter" width="15%">Harga Satuan</th>
@@ -237,7 +237,7 @@
         <tr>
                 <td class="textcenter">{{$index+1}}</td>
                 <td class="textleft">{{$podt->nama_masteritem}}</td>
-                <td class="textleft">{{$podt->mg_namagudang}}</td>
+               
                 <td class="textcenter">{{$podt->podt_qtykirim}}</td>
                 <td class="textleft">{{$podt->unitstock}}</td>
                 <td class="textright">{{number_format($podt->podt_jumlahharga, 2,",",".")}}</td>
@@ -251,7 +251,7 @@
                 <td class="textleft"></td>
                 <td class="textleft"></td>
                 <td class="textright"></td>
-                <td class="textright"></td>
+               
         </tr>
          <tr>
                 <td class="textcenter">&nbsp;</td>
@@ -260,7 +260,7 @@
                 <td class="textleft"></td>
                 <td class="textleft"></td>
                 <td class="textright"></td>
-                <td class="textright"></td>
+               
         </tr>
          <tr>
                 <td class="textcenter">&nbsp;</td>
@@ -269,7 +269,7 @@
                 <td class="textleft"></td>
                 <td class="textleft"></td>
                 <td class="textright"></td>
-                <td class="textright"></td>
+               
         </tr>
          <tr>
                 <td class="textcenter">&nbsp;</td>
@@ -278,7 +278,7 @@
                 <td class="textleft"></td>
                 <td class="textleft"></td>
                 <td class="textright"></td>
-                <td class="textright"></td>
+                
         </tr>
          <tr>
                 <td class="textcenter">&nbsp;</td>
@@ -287,7 +287,7 @@
                 <td class="textleft"></td>
                 <td class="textleft"></td>
                 <td class="textright"></td>
-                <td class="textright"></td>
+               
         </tr>
          <tr>
                 <td class="textcenter">&nbsp;</td>
@@ -296,13 +296,13 @@
                 <td class="textleft"></td>
                 <td class="textleft"></td>
                 <td class="textright"></td>
-                <td class="textright"></td>
+               
         </tr>
         <tr>
           <td class="hiddenborderright hiddenbordertop hiddenborderbottom hiddenborderleft fixed" width="8%">
             <table>
               <tr class="textleft">
-                <td align="left" class="paddingbottom" rowspan="4">Catatan :</td>
+                <td align="left" class="paddingbottom" rowspan="3">Catatan :</td>
               </tr>
               <tr>
                 <td>&nbsp;</td>
@@ -315,7 +315,7 @@
               </tr>
             </table>
           </td>
-          <td  colspan="4" class="hiddenborderleft hiddenborderright">
+          <td  colspan="3" class="hiddenborderleft hiddenborderright">
             <table style="margin-left: 10px;">
               <tr> 
                 <th align="left" class="paddingbottom catatanpadding" rowspan="4"></th>
@@ -370,7 +370,7 @@
       <tr>
         <td style="width: 200px;">&nbsp;</td>
       </tr>
-
+        @if($data2['po'][0]->po_tipe != 'J')
         <td style="width: 200px;">Lokasi Gudang </td>
         <td>:</td>
         <td> @foreach($data2['gudang'] as $gudang)
@@ -379,6 +379,7 @@
               <td> &nbsp; </td> <td>  </td> <td> &nbsp; {{$gudang->mg_alamat}}</td>
             </tr>
             @endforeach
+            @endif
         </td>
       </tr>
       <tr>

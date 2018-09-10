@@ -88,23 +88,29 @@ class PurchaseController extends Controller
 
        	$sup = $data2['po'][0]->po_supplier;
 		$data2['supplier'] = DB::select("select * from supplier where active='AKTIF' and idsup = $sup ");
-
-		$data2['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang, mastergudang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode and podt_lokasigudang = mg_id");
-
+		if($data2['po'][0]->po_tipe != 'J'){
+					$data2['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang, mastergudang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode and podt_lokasigudang = mg_id");
+		
+					for($ds = 0; $ds < count($data2['podt']); $ds++){
+							$namagudang = $data2['podt'][$ds]->podt_lokasigudang;
+							array_push($lokasigudang , $namagudang);		
+						}
+						
+						
+						$idgudang = array_unique($lokasigudang);
+						
+						for($i = 0 ; $i < count($idgudang); $i++){
+							$idgudang2 = $idgudang[$i];
+							$data2['gudang'] = DB::select("select * from mastergudang where mg_id = '$idgudang2'");
+						}
+				}
+		else{
+					$data2['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode");
+				}
+		
 		$data2['spp'] = DB::select("select distinct spp_nospp , spp_keperluan, nama_department , nama , spp_tgldibutuhkan from  pembelian_order , spp, pembelian_orderdt, cabang, masterdepartment where po_id = '$id' and podt_idpo = po_id  and podt_idspp = spp_id and spp_cabang = kode and spp_bagian = kode_department ");
 	
-		for($ds = 0; $ds < count($data2['podt']); $ds++){
-			$namagudang = $data2['podt'][$ds]->podt_lokasigudang;
-			array_push($lokasigudang , $namagudang);		
-		}
 		
-		
-		$idgudang = array_unique($lokasigudang);
-		
-		for($i = 0 ; $i < count($idgudang); $i++){
-			$idgudang2 = $idgudang[$i];
-			$data2['gudang'] = DB::select("select * from mastergudang where mg_id = '$idgudang2'");
-		}
 
 		foreach ($data2['po'] as $key => $value) {
 			$a = $value->nama_supplier;
@@ -151,7 +157,7 @@ class PurchaseController extends Controller
 		}
 
 		/*dd($data2);*/
-      return view('purchase.purchase.print',compact('data','request','data2','a','b','c','d','e','f','g','h','i','j','k','L','m','n', 'data'));
+      return view('purchase.purchase.print',compact('data','request','data2','a','b','c','d','e','f','g','h','i','j','k','L','m','n', 'data2'));
     } 
 	public function spp_index () {
 		$cabang = session::get('cabang');
