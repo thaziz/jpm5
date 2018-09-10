@@ -186,46 +186,7 @@
 				<td class="text-right"> {{number_format($fpgbank->fpg_totalbayar , 2)}}</td>
 			</tr>
 			@endforeach
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
 			
-				<td></td>
-				<td class="text-right"></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
-			
-				<td></td>
-				<td class="text-right"></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
-				
-				<td></td>
-				<td class="text-right"></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				
-				<td></td>
-				<td></td>
-				<td class="text-right"></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
-				
-				<td></td>
-				<td class="text-right"></td>
-			</tr>
 			<tr class="border-none-bottom">
 				<td class="text-center empty"></td>
 				<td></td>

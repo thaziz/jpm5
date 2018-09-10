@@ -1035,7 +1035,7 @@ class PurchaseController extends Controller
 
 		$data['countbrg'] = array_count_values($barang);
 		
-	//	dd($data);
+	/*	dd($data);*/
 		
 
 		return view('purchase.confirm_orderdetail.index4', compact('data' , 'tipespp' , 'namatipe'));
