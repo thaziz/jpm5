@@ -11000,12 +11000,13 @@ public function kekata($x) {
 		$updatestock = $request->updatestock;
 		$groupitem = $request->groupitem;
 		$grup = DB::select("select * from jenis_item where kode_jenisitem ='$groupitem'");
+		$cabang = $request->cabang;
 		//return $grup;
 		$stock = $grup[0]->stock;
 		$data['stock'] = $stock;
 
 
-		$barang= DB::select("select * from master_akunfitur, itemsupplier, masteritem where is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem' and maf_kode_akun = kode_item and maf_cabang = '$cabang'");
+		$barang= DB::select("select * from master_akun_fitur, itemsupplier, masteritem where is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem' and maf_kode_akun = kode_item and maf_cabang = '$cabang'");
 		//return json_encode($barang);
 
 
