@@ -92,7 +92,7 @@
                       <tr>  
                       <th> Tanggal </th>
                       <td> <div class="input-group date">
-                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl" name="tgl" required="">
+                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl tglbonsem" name="tgl" required="">
                                       </div>
                             </td>
                       </tr>
@@ -145,15 +145,60 @@
         endDate : 'today',
     }).datepicker("setDate", "0");
 
-  $('.cabang').change(function(){
-    comp = $('.cabang').val();
+
+
+  $('.tglbonsem').change(function(){
+     comp = $('.cabang').val();
+    tgl = $('.tglbonsem').val();
   $.ajax({
     url : baseUrl + '/bonsementaracabang/getnota',
-    data : {comp},
+    data : {comp,tgl},
     type : "get",
     dataType : 'json',
     success : function(response){
-      var d = new Date();               
+      var d = new Date(tgl);               
+                      //tahun
+                      var year = d.getFullYear();
+                      //bulan
+                      var month = d.getMonth();
+                      var month1 = parseInt(month + 1)
+                      console.log(d);
+                      console.log();
+                      console.log(year);
+
+                      if(month < 10) {
+                        month = '0' + month1;
+                      }
+                      console.log(d);
+
+                      tahun = String(year);
+      //                console.log('year' + year);
+                      year2 = tahun.substring(2);
+                      //year2 ="Anafaradina";
+
+                    
+                       nospp = 'BS' + month + year2 + '/' + comp + '/' +  response.idspp;
+                      console.log(nospp);
+                      $('.nonota').val(nospp);
+                       nospp = $('.nonota').val();
+                      $('.namacabang').text(response.namacabang);
+              },
+              error : function(){
+                location.reload();
+              }
+            })
+            })
+
+  $('.cabang').change(function(){
+    comp = $('.cabang').val();
+    tgl = $('.tglbonsem').val();
+  $.ajax({
+    url : baseUrl + '/bonsementaracabang/getnota',
+    data : {comp,tgl},
+    type : "get",
+    dataType : 'json',
+    success : function(response){
+      var d = new Date(tgl);               
                       //tahun
                       var year = d.getFullYear();
                       //bulan
@@ -189,13 +234,14 @@
 
 
   comp = $('.cabang').val();
+  tgl = $('.tglbonsem').val();
   $.ajax({
     url : baseUrl + '/bonsementaracabang/getnota',
-    data : {comp},
+    data : {comp,tgl},
     type : "get",
     dataType : 'json',
     success : function(response){
-      var d = new Date();               
+      var d = new Date(tgl);               
                       //tahun
                       var year = d.getFullYear();
                       //bulan

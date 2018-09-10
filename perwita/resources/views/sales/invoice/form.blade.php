@@ -797,6 +797,8 @@ function hitung_total_tagihan(){
                     
                     $('.cus_disabled').attr('disabled',true).trigger("chosen:updated");
                     $('#cb_pendapatan').attr('disabled',true);
+                    $('#cb_pendapatan').attr('disabled',true);
+                    $('.grup_item_tr').addClass('disabled');
                     ///////////////////////////////////////////
                 }else if (response.jenis == 'PAKET' ) {
                     for(var i = 0 ; i < response.data.length;i++){
@@ -871,7 +873,6 @@ function hitung_total_tagihan(){
                     /////////////////////////////////////
                 }
 
-                $('#modal_do').modal('hide');                   
             },
             error:function(){
                 $('#modal_do').modal('hide');                   
@@ -879,6 +880,7 @@ function hitung_total_tagihan(){
 
         })
         toastr.info('Tekan simpan untuk menyimpan semua data');
+        $('#modal_do').modal('hide');                   
    });
    // hapus detail
    function hapus_detail(o) {

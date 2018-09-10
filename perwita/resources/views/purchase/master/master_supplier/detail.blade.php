@@ -406,7 +406,14 @@
                               </td>
                               <td> <input type="text" class="form-control tablebarang hrg harga{{$index}} tablebarang" value=" {{number_format($item->is_harga, 2)}}"  name="harga[]"> </td>
 
-                              <td> <select class="form-control updatestock updatestock{{$index}} tablebarang" name="updatestock[]" readonly=""> <option value="Y"> Ya </option> <option value="T"> Tidak </option> </select> </td>                            
+                              <td> <select class="form-control updatestock updatestock{{$index}} tablebarang" name="updatestock[]" readonly=""> 
+                                  @if($item->is_updatestock == 'Y')
+                                <option value="Y"> Ya </option> 
+                                  @else
+                                  <option value="T"> Tidak </option> 
+                                  @endif
+                                  </select>
+                              </td>                            
                               <td> <input type='text' class='form-control' name="keteranganitem[]" value="{{$item->is_keteranganitem}}"> </td>
                               <td> <a class="btn btn-danger removes-btn" data-id="{{$index}}"> <i class="fa fa-trash"> </i> </a> </td>
                             </tr>
@@ -598,7 +605,7 @@ $(function(){
 
     var rowBrg = "<tr id='dataitem item-"+$no+"' class='dataitem item-"+$no+"'>" +
                   "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
-                  "<td> <select class='form-control brg' name='brg[]' data-id="+$no+" >  @foreach($data['item'] as $item) <option value='{{$item->kode_item}}+{{$item->harga}}+{{$item->updatestock}}'> {{$item->nama_masteritem}} </option> @endforeach </select>" +
+                  "<td> <select class='form-control chosen-select brg' name='brg[]' data-id="+$no+" >  @foreach($data['item'] as $item) <option value='{{$item->kode_item}}+{{$item->harga}}+{{$item->updatestock}}'> {{$item->nama_masteritem}} </option> @endforeach </select>" +
                    "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
                    "<td> <select class='form-control updatestock"+$no+"' name='updatestock[]' readonly> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
                    "<td> <input type='text' class='form-control' name='keteranganitem[]'> </td>" +

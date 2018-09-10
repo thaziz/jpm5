@@ -55,7 +55,7 @@
                     </button> --}}
                 </div>   
 
-                <div class="box-body">
+                {{-- <div class="box-body">
                     <button class="btn btn-success btn-md" onclick="item()">
                      add item
                     </button>
@@ -74,19 +74,46 @@
                     </button>
                 </div>
 
-                <div class="">
-                    <button class="btn btn-success" onclick="fpgbankmasuk()">
-                        bank masuk
-                    </button>
-                </div> 
+               
 
                  <div class="">
                     <button class="btn btn-success" onclick="duplicatebank()">
                         duplicate bank masuk
                     </button>
+                </div>
+
+                
+
+                <div class="">
+                    <button class="btn btn-success" onclick="notafpgbbkab()">
+                        NOTA FPG di BBKAB
+                    </button>
+                </div>
+
+                <div class="box-body">
+                    <button class="btn btn-success btn-md" onclick="spp()">
+                     NOSPP 
+                    </button>
+                </div> --}}
+
+
+               {{--   <div class="">
+                    <button class="btn btn-success" onclick="fpgbankmasuk()">
+                        bank masuk
+                    </button>
                 </div> 
 
+                <div class="">
+                    <button class="btn btn-success" onclick="postingdonefpg()">
+                        POSTING DONE FPG
+                    </button>
+                </div> --}}
 
+                <div class="">
+                    <button class="btn btn-success" onclick="bankmasuk()">
+                        created ulang bank masuk
+                    </button>
+                </div>
 
                 <div class="box-body">
              
@@ -123,7 +150,50 @@
             "language": dataTableLanguage,
     });
 
-    
+    function notafpgbbkab(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/notafpgbbkab',
+        type : "get",
+        dataType : "json",
+        success : function(response){
+            
+        }
+      }) 
+    }
+
+    function spp(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/notaspp',
+        type : "get",
+        dataType : "json",
+        success : function(response){
+            
+        }
+      })
+    }
+    function bankmasuk(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/bankmasuk',
+        type : "get",
+        dataType : "json",
+        success : function(response){
+            
+        }
+      })
+    }
+
+    function postingdonefpg(){
+        $.ajax({
+        url : baseUrl + '/jurnalselaras/fpgpostingbank',
+        type : "get",
+        dataType : "json",
+        success : function(response){
+            
+        }
+      }) 
+    }
+
+        
      function duplicatebank(){
         $.ajax({
         url : baseUrl + '/jurnalselaras/duplicatebank',
@@ -134,6 +204,7 @@
         }
       })
      }
+
 
     function FP(){
       $.ajax({

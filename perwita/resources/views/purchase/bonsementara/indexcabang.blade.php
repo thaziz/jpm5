@@ -56,7 +56,7 @@
                           <th>Nomor</th>
                           <th>Tanggal</th>
                           <th> Nominal Cabang </th>
-                          <th> Nominal KACAB </th>
+                          <th> Nominal Pusat </th>
                           <th>Keperluan</th>
                           <th> Status </th>
                           <th> Proses </th>
@@ -76,7 +76,7 @@
                             <td> @if($bonsem->bp_nominalkacab == null)
                                     <span class="label label-info"> BELUM DI PROSES </span>
                                  @else
-                                  {{ number_format($bonsem->bp_nominalkacab ,2)}} 
+                                  {{ number_format($bonsem->bp_nominalkeu ,2)}} 
                                  @endif</td>
                             <td> {{$bonsem->bp_keperluan}} </td>
                             <td style="text-align:center"> <span class="label label-success">  {{$bonsem->status_pusat}} </span></td>
@@ -151,17 +151,7 @@
                                         <td> Apakah Cabang sudah menerima uang ? </td>
                                         <td> &nbsp; </td>
                                     </tr>
-                                    <tr>
-                                        <td> <b> Bank Cabang </b></td>
-                                        <td> &nbsp; </td>
-                                        <td> <select class="form-control bankcabang" name="bankcabang">
-                                              @foreach($data['bank'] as $bank)
-                                              <option value="{{$bank->mb_kode}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}}</option>
-                                              @endforeach
-                                            </select>
-                                        </td>
-                                      
-                                    </tr>
+                                   
                                     <tr>
                                           <td> <button class="btn btn-sm btn-success" type="button" id="terima"> Terima </button>  &nbsp; 
                                             <button class="btn btn-sm btn-danger" type="button" id="batalterima"> Batal </button>

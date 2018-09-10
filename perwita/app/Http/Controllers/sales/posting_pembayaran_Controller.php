@@ -104,7 +104,7 @@ class posting_pembayaran_Controller extends Controller
 
     public function hapus_data($nomor_posting_pembayaran=null){
         DB::beginTransaction();
-		$list = DB::table('posting_pembayaran_d')->get();
+		    $list = DB::table('posting_pembayaran_d')->get();
         foreach ($list as $row) {
         	DB::select(" UPDATE penerimaan_penjualan SET posting=FALSE WHERE nomor='$row->nomor_penerimaan_penjualan' ");
         }
@@ -112,52 +112,6 @@ class posting_pembayaran_Controller extends Controller
         DB::table('posting_pembayaran')->where('nomor' ,'=', $nomor_posting_pembayaran)->delete();
         DB::commit();
         return redirect('sales/posting_pembayaran');
-    }
-
-    public function save_data_detail (Request $request) {
-        $simpan='';
-        $nomor = strtoupper($request->nomor);
-        $hitung = count($request->nomor_penerimaan_penjualan);
-        try {
-            DB::beginTransaction();
-            
-            for ($i=0; $i < $hitung; $i++) {
-                $nomor_penerimaan_penjualan = strtoupper($request->nomor_penerimaan_penjualan[$i]);
-                $jumlah = filter_var($request->jumlah[$i], FILTER_SANITIZE_NUMBER_INT);
-                if ($jumlah != 0 || $jumlah == '') {
-                    $data = array(
-                        'nomor_posting_pembayaran' => $nomor,
-                        'nomor_penerimaan_penjualan' => $nomor_penerimaan_penjualan,
-                        'jumlah' => $jumlah,
-                    );
-                    DB::table('posting_pembayaran_d')->insert($data);
-                    DB::select(" UPDATE penerimaan_penjualan SET posting=TRUE WHERE nomor='$nomor_penerimaan_penjualan' ");
-                }
-                
-            } 
-            $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah,COALESCE(SUM(jumlah),0) ttl_jumlah FROM posting_pembayaran_d 
-                                                WHERE nomor_posting_pembayaran='$nomor' "))->first();
-            $data_h = array(
-                        'jumlah' => $jml_detail->ttl_jumlah,
-            );
-        
-            $simpan = DB::table('posting_pembayaran')->where('nomor', $nomor)->update($data_h);
-            $success = true;
-        } catch (\Exception $e) {
-            $result['error']='gagal';
-            $result['result']=2;
-            $success = false;
-            DB::rollback();
-        }
-    
-        if ($success) {
-            DB::commit();
-            $result['error']='';
-            $result['result']=1;
-            $result['jml_detail']=$jml_detail->jumlah;
-            $result['jumlah']=number_format($jml_detail->ttl_jumlah, 0, ",", ".");    
-        }
-        echo json_encode($result);
     }
 
     public function hapus_data_detail (Request $request) {
@@ -267,8 +221,8 @@ class posting_pembayaran_Controller extends Controller
 
     public function nomor_posting(request $request)
     {
-        $bulan = Carbon::now()->format('m');
-        $tahun = Carbon::now()->format('y');
+        $bulan = Carbon::parse(str_replace('/', '-', $request->tanggal))->format('m');
+        $tahun = Carbon::parse(str_replace('/', '-', $request->tanggal))->format('y');
 
         $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from posting_pembayaran
                                         WHERE kode_cabang = '$request->cabang'
@@ -397,13 +351,13 @@ class posting_pembayaran_Controller extends Controller
 
             $kw = DB::table('kwitansi')
                       ->join('customer','kode','=','k_kode_customer')
-                      ->select('k_nomor','k_tanggal','k_netto','nama')
+                      ->select('k_nomor','k_tanggal','k_netto','nama','k_kode_customer')
                       ->whereIn('k_nomor',$request->nomor)
                       ->get();
 
             $do = DB::table('delivery_order')
                       ->join('customer','kode','=','kode_customer')
-                      ->select('nomor as k_nomor','tanggal as k_tanggal','total_net as k_netto','nama')
+                      ->select('nomor as k_nomor','tanggal as k_tanggal','total_net as k_netto','nama','kode_customer as k_kode_customer')
                       ->whereIn('nomor',$request->nomor)
                       ->get();
 
@@ -424,8 +378,6 @@ class posting_pembayaran_Controller extends Controller
     public function simpan_posting(request $request)
     {
         return DB::transaction(function() use ($request) {  
-
-
             $akun        = DB::table('masterbank')
                              ->where('mb_id',$request->akun_bank)
                              ->first();
@@ -441,7 +393,6 @@ class posting_pembayaran_Controller extends Controller
             $cari_nota = DB::table('posting_pembayaran')
                               ->where('nomor',$request->nomor_posting)
                               ->first();
-
             if ($cari_nota != null) {
                 if ($cari_nota->nomor == $user) {
                   return 'Data Sudah Ada';
@@ -456,7 +407,7 @@ class posting_pembayaran_Controller extends Controller
                                                     AND to_char(create_at,'YY') = '$tahun'");
                     $index = (integer)$cari_nota[0]->id + 1;
                     $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-                    $nota = 'BM' . $request->cabang . $bulan . $tahun . $index;
+                    $nota = 'BM' . $request->cb_cabang . $bulan . $tahun . $index;
 
                 }
             }elseif ($cari_nota == null) {
@@ -478,7 +429,8 @@ class posting_pembayaran_Controller extends Controller
                                   'create_at' => Carbon::now(),
                                   'update_at' => Carbon::now(),
                                   'jenis_pembayaran' => $request->cb_jenis_pembayaran,
-                                  'kode_cabang' => $request->cb_cabang
+                                  'kode_cabang' => $request->cb_cabang,
+                                  'id_bank' => $request->akun_bank
                               ]);
 
 
@@ -998,16 +950,7 @@ class posting_pembayaran_Controller extends Controller
                          ->leftjoin('customer','kode','=','kode_customer')
                          ->where('nomor_posting_pembayaran',$id)
                          ->get();
-            $d_akun = DB::table('d_akun')
-                        ->get();
-
-            for ($i=0; $i < count($data_dt); $i++) { 
-              for ($a=0; $a < count($d_akun); $a++) { 
-                if ($data_dt[$i]->kode_acc == $d_akun[$a]->id_akun) {
-                  $data_dt[$i]->nama_akun = $d_akun[$a]->nama_akun;
-                }
-              }
-            }
+  
             return view('sales.posting_pembayaran.edit_posting',compact('id','data','data_dt','cabang','kota','rute','kendaraan','akun','customer'));
         }else{
             return redirect()->back();

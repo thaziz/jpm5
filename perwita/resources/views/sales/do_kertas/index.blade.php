@@ -43,9 +43,9 @@
                           <!-- {{Session::get('comp_year')}} -->
                     </h5>
 
-              {{--       <div class="text-right" style="">
+                    <div class="text-right" style="">
                        <button  type="button" style="margin-right :12px; width:110px" class="btn btn-success " id="btn_add_order" name="btnok"></i>Tambah Data</button>
-                    </div> --}}
+                    </div>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -54,8 +54,7 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 <div class="box-body">
-                  DO KERTAS SEDANG MAINTENANCE MOHON MAAF ATAS GANGGUANNYA
-                  {{--   <table id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
+                    <table id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
                         <thead>
                             <tr>
                                 <th>Nomor</th>
@@ -70,7 +69,7 @@
                         <tbody>
                         </tbody>
 
-                    </table> --}}
+                    </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
@@ -106,6 +105,7 @@
          $('#tabel_data').DataTable({
             processing: true,
             // responsive:true,
+            sorting:false,
             serverSide: true,
             ajax: {
                 url:'{{ route("datatable_do_kertas") }}',

@@ -100,7 +100,7 @@
                               <span class="label label-success"> Sudah Terposting </span> &nbsp;
                             @else
                                <span class="label label-warning">  Belum di Posting </span> &nbsp;
-                            @endif  --}} </td>
+                            @endif --}}  </td>
                         <td> {{number_format($fpg->fpg_totalbayar, 2)}} </td>
                         <td> - </td>
                         <td> {{number_format($fpg->fpg_cekbg , 2)}} </td>
@@ -119,8 +119,14 @@
                           @endif
                         @endif
 
-                             @if(Auth::user()->punyaAkses('Form Permintaan Giro','hapus'))
-                        <a class="btn btn-sm btn-danger" onclick="hapusdata({{$fpg->idfpg}})"> <i class="fa fa-trash" aria-hidden="true"></i> </a>  </td>
+                            @if(Auth::user()->punyaAkses('Form Permintaan Giro','hapus'))
+                            
+                            @if($fpg->fpg_posting == 'DONE')
+
+                            @else
+                              <a class="btn btn-sm btn-danger" onclick="hapusdata({{$fpg->idfpg}})"> <i class="fa fa-trash" aria-hidden="true"></i> </a>
+                            @endif
+                          </td>
                                 @endif
                       </tr>
                     @endforeach

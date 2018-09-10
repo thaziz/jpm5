@@ -1197,7 +1197,7 @@
                   "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_fp+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_fp+"> <i class='fa fa-trash'> </i>  Hapus </a>  </td> <td> <a class='btn btn-xs btn-primary jurnal' onclick='lihatjurnal(\""+response.judul[j].pb_lpb+","+response.judul[j].pb_keterangan+"\")'> Lihat Jurnal </a> </td> </tr>" +
                   "<tr> <td> <div class='row'> <div class='col-sm-5'> <button class='btn btn-xs btn-default editdata' type='button' data-id="+$notable+" data-ajax="+$noajax+" style='color:red'> <i class='fa fa-pencil'> </i> Edit Data</button> </div> &nbsp; <div class='col-sm-5'> <div class='simpan2"+$notable+"'> </div> </div> </div> </td> </tr>" +
 									"</table>";
-						rowtampil += "<table class='table table-striped table-bordered' style='width:75%'> <tr> <th> No </th> <th> Nama Barang </th> <th> Satuan </th> <th> Harga Satuan </th> <th> Jumlah Harga </th> <th> Jumlah Dikirim </th> <th> Jumlah yang diterima </th> <th> No FB </th> </tr>"; // judul
+						rowtampil += "<table class='table table-striped table-bordered' style='width:75%'> <tr> <th> No </th> <th> Nama Barang </th> <th> Satuan </th> <th> Harga Satuan </th> <th> Jumlah Harga </th> <th> Jumlah Dikirim </th> <th> Jumlah yang diterima </th> <th> No Transaksi </th> </tr>"; // judul
 
 						 for(var x =0; x < response.barang[j].length; x++) {
 						//  console.log(x);
@@ -1407,11 +1407,9 @@
                               qty = qty + response.pbdt[i].pbdt_qty
                             }
 
-                            console.log(qtyterima + 'qtyterima');
 
                             hasilqty = parseInt((parseInt(val) + parseInt(qty)) - parseInt(qtyterima));
-                            console.log('hasilqty');
-                            console.log(hasilqty + 'hasilqty');
+                          
                             
                             if(hasilqty > qtykirim) {
                               toastr.info('tidak bisa mengisi angka di bawah jumlah angka yang diterima dari yang dikirim :) ');
@@ -1482,17 +1480,17 @@
                   "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_pbd+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_pbd+"> <i class='fa fa-trash'> </i>  Hapus </a>  </td> </tr>" +
                   "<tr> <td> <div class='row'> <div class='col-sm-5'> <button class='btn btn-xs btn-default editdata' type='button' data-id="+$notable+" data-ajax="+$noajax+" style='color:red'> <i class='fa fa-pencil'> </i> Edit Data</button> </div> &nbsp; <div class='col-sm-5'> <div class='simpan2"+$notable+"'> </div> </div> </div> </td> </tr>" +
                   "</table>";
-            rowtampil += "<table class='table table-striped table-bordered' style='width:75%'> <tr> <th> No </th> <th> Nama Barang </th> <th> Satuan </th> <th> Harga Satuan </th> <th> Jumlah Harga </th> <th> Jumlah Dikirim </th> <th> Jumlah yang diterima </th> <th> No FB </th> </tr>"; // judul
-
+            rowtampil += "<table class='table table-striped table-bordered' style='width:75%'> <tr> <th> No </th> <th> Nama Barang </th> <th> Satuan </th> <th> Harga Satuan </th> <th> Jumlah Harga </th> <th> Jumlah Dikirim </th> <th> Jumlah yang diterima </th> <th> No Transaksi </th> </tr>"; // judul
+ rowtampil += "<a class='btn btn-xs btn-primary' onclick='lihatjurnal(\""+response.judul[j].pb_lpb+","+response.judul[j].pb_keterangan+"\")'> <i class='fa fa-book'> </i> Lihat Jurnal </a>";
              for(var x =0; x < response.barang[j].length; x++) {
             //  console.log(x);
                 rowtampil += "<tr> <td style='width:20px'>"+ $no +"</td>" + 
                     "<td> "+ response.barang[j][x].nama_masteritem +"</td>" +// no
                     "<td>" + response.barang[j][x].unitstock + "</td>" +
-                    "<td style='text-right'>" + addCommas(response.barang[j][x].fpdt_harga)  + "</td> <input type='hidden' class='harga"+$noajax+"' value='"+response.barang[j][x].fpdt_harga+"'>";    
+                    "<td style='text-right'>" + addCommas(response.barang[j][x].pbdt_hpp)  + "</td> <input type='hidden' class='harga"+$noajax+"' value='"+response.barang[j][x].fpdt_harga+"'>";    
                      rowtampil +=    "<td style='text-right'> <input type='text' class='input-sm form-control biaya2"+$notable+" biaya"+$noajax+"' value='"+addCommas(response.barang[j][x].pbdt_totalharga)+"' readonly></td>" +                    
                     "<td>"+ response.barang[j][x].pbd_disetujui +"</td>" +
-                    "<td> <input type='number' class='input-sm form-control qtyreceive2  qtyreceive3"+$notable+" qtyterima2"+$noajax+"' name='qtyterima[]' id=qtyterima2"+$noajax+" data-kodeitem="+response.barang[j][x].kode_item+" data-id="+$noajax+" data-idpbdt="+response.barang[j][x].pbdt_id+" value="+response.barang[j][x].pbdt_qty+" disabled></td>" +
+                    "<td> <input type='number' class='input-sm form-control qtyreceive2  qtyreceive3"+$notable+" qtyterima2"+$noajax+"' name='qtyterima[]' id=qtyterima2"+$noajax+" data-kodeitem="+response.barang[j][x].kode_item+" data-id="+$noajax+" data-idpbdt="+response.barang[j][x].pbdt_id+" value="+response.barang[j][x].pbdt_qty+" readonly></td>" +
                     "<input type='hidden' class='status2"+$notable+" status4"+$noajax+"' value='"+response.barang[j][x].pbdt_status+"'> " +
                     "<input type='hidden' value='"+response.barang[j][x].pbd_disetujui+"' class='qtykirim2"+$noajax+"' data-id="+$noajax+" name='qtydikirim2[]'>" +
                     "<input type='hidden' value='"+response.barang[j][x].pbdt_qty+"' class='qtyterima3"+$noajax+"' data-id="+$noajax+"> "+
@@ -1544,7 +1542,7 @@
                                           timer: 2000,
                                           showConfirmButton: true
                                           },function(){
-                                            // location.reload();
+                                            location.reload();
                                   });
                                 }else{
                                  swal({
@@ -1572,7 +1570,7 @@
               $('.editdata').click(function(){
                 id = $(this).data('id');
                 noajax = $(this).data('ajax');
-                $('.qtyreceive3' + id).attr('disabled' , false);
+               
                 $('.suratjalan' + id).attr('readonly' , false);
                 simpan4 = "<button class='btn btn-xs btn-success simpan4' data-id='"+id+"' type='button'> <i class='fa fa-check'> </i> Simpan </button>";
                 $('.simpan2' + id).html(simpan4);
@@ -1688,11 +1686,10 @@
                               qty = qty + response.pbdt[i].pbdt_qty
                             }
 
-                            console.log(qtyterima + 'qtyterima');
+                          
 
                             hasilqty = parseInt((parseInt(val) + parseInt(qty)) - parseInt(qtyterima));
-                            console.log('hasilqty');
-                            console.log(hasilqty + 'hasilqty');
+                          
                             
                             if(hasilqty > qtykirim) {
                               toastr.info('tidak bisa mengisi angka di bawah jumlah angka yang diterima dari yang dikirim :) ');
@@ -1790,6 +1787,12 @@
           if(val != qtykirim) {
             toastr.info("Data Qty di terima Harus Lengkap");
             $(this).val('');
+          }
+        }
+        else if(flag == 'FP'){
+          if(val != qtykirim){
+            toastr.info("Data Qty di terima Harus Lengkap");
+            $(this).val(''); 
           }
         }
 

@@ -1038,11 +1038,11 @@
 
 
      $('.cabang').change(function(){    
-      var comp = $(this).val();
+      var cabang = $(this).val();
       var tgl = $('.tglbbk').val();
         $.ajax({    
             type :"get",
-            data : {comp,tgl},
+            data : {cabang,tgl},
             url : baseUrl + '/pelunasanhutangbank/getnota',
             dataType:'json',
             success : function(data){
@@ -1072,7 +1072,7 @@
                   //year2 ="Anafaradina";
 
                 
-                   nobbk = 'BK-' + month + year2 + '/' + comp + '/' +  data.data;
+                   nobbk = 'BK-' + month + year2 + '/' + cabang + '/' +  data.data;
                 //  console.log(nospp);
                   $('.nobbk').val(nobbk);
 

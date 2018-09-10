@@ -19,12 +19,14 @@ class do_kertas_Controller extends Controller
             $data = DB::table('delivery_order')
                       ->join('customer','kode','=','kode_customer')
                       ->where('jenis','KORAN')
+                      ->orderBy('tanggal','DESC')
                       ->get();
         }else{
             $data = DB::table('delivery_order')
                       ->join('customer','kode','=','kode_customer')
                       ->where('jenis','KORAN')
                       ->where('kode_cabang',$cabang)
+                      ->orderBy('tanggal','DESC')
                       ->get();
         }
         $cabang = DB::table('cabang')
@@ -460,11 +462,10 @@ class do_kertas_Controller extends Controller
             }
             
         }else{
-            $data_dt = DB::table('delivery_order')
-                  ->join('delivery_orderd','dd_nomor','=','nomor')
-                  ->leftjoin('item','dd_kode_item','=','item.kode')
-                  ->where('nomor',$id)
-                  ->get();
+            $data_dt = DB::table('delivery_orderd')
+                              ->join('item','dd_kode_item','=','item.kode')
+                              ->where('dd_nomor',$id)
+                              ->get();
         }
         
 
@@ -474,7 +475,7 @@ class do_kertas_Controller extends Controller
     {
 
         return DB::transaction(function() use ($request) { 
-
+            // dd($request->all());
             $cari_do = DB::table('delivery_order')
                       ->where('nomor',$request->ed_nomor)
                       ->first();
@@ -502,6 +503,11 @@ class do_kertas_Controller extends Controller
                             'updated_at'        =>  Carbon::now(),
                             
                            ]);
+
+
+            $delete = DB::table('delivery_orderd')
+                      ->where('dd_nomor',$request->ed_nomor)
+                      ->delete();
 
             for ($i=0; $i < count($request->d_kode_item); $i++) { 
 
@@ -532,8 +538,7 @@ class do_kertas_Controller extends Controller
                 }
                 if ($request->d_id[$i] != '' ) {
                     $save_detail = DB::table('delivery_orderd')
-                                ->where('dd_id',$request->d_id[$i])
-                                ->update([
+                                ->insert([
                                     'dd_id' => $request->d_id[$i],
                                     'dd_nomor' => $request->ed_nomor,
                                     'dd_kode_item' => strtoupper($request->d_kode_item[$i]),

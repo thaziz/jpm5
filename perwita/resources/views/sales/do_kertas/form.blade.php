@@ -579,8 +579,8 @@ function hitung_all() {
    $('.ed_total_h').val(accounting.formatMoney(temp1,"",2,'.',','));
 }
 function cari_item() {
-    var item = $('.item').val();
-     $.ajax({
+ var item = $('.item').val();
+    $.ajax({
         url:baseUrl + '/sales/cari_item',
         data:{item},
         dataType:'json',
@@ -593,16 +593,19 @@ function cari_item() {
                 $('.ed_total').val(0);
                 $('.ed_total_text').val(0);
             }
+            
+
+            if ($('.old_id').val() == '') {
+                $('.ed_jumlah').val(1);
+                $('.ed_harga').val(data.harga);
+            }
+
             $('.ed_satuan').val(data.kode_satuan);
-            $('.ed_harga').val(data.harga);
             $('.acc_penjualan').val(data.acc_penjualan);
             $('.csf_penjualan').val(data.csf_penjualan);
 
             $('.acc_piutang').val(data.acc_piutang);
             $('.csf_piutang').val(data.csf_piutang);
-
-            $('.ed_jumlah').val(1);
-            
             hitung();
 
         },
@@ -853,6 +856,7 @@ function edit_detail(p) {
     $('.ed_id').val(id);
     $('.old_id').val(id);
     $('.kcd_dt').val(kcd_dt);
+    $('.ed_harga').val(d_harga);
     $('.item').val(d_kode_item).trigger('chosen:updated');
     $('.cb_kota_asal').val(d_asal).trigger('chosen:updated');
     $('.cb_kota_tujuan').val(d_tujuan).trigger('chosen:updated');
@@ -942,12 +946,12 @@ function pilih_kontrak(a) {
 // SIMPAN DATA
     function simpan(){
 
-        
+
        if ($('.ed_nomor').val() == '') {
         return toastr.warning('Nomor Do Harus Diisi');
        }
        
-        var check = $('.status_kontrak').is(':checked');
+      var check = $('.status_kontrak').is(':checked');
       swal({
         title: "Apakah anda yakin?",
         text: "Simpan Data DO!",

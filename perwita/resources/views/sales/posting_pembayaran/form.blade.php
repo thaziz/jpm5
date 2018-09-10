@@ -53,14 +53,15 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor Posting</td>
                                 <td>
-                                    <input type="text" readonly="" class="form-control input-sm nomor_posting" name="nomor_posting">
+                                    <input type="text" class="form-control input-sm nomor_posting" name="nomor_posting">
+                                    <input type="hidden" readonly="" class="form-control input-sm nomor_posting_old" name="nomor_posting_old">
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td class="tanggal_td">
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control ed_tanggal" name="ed_tanggal" value="{{ $data->tanggal or  date('Y-m-d') }}">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control ed_tanggal" name="ed_tanggal" value="{{ $data->tanggal or  date('Y-m-d') }}" onchange="ganti_nota()">
                                     </div>
                                 </td>
                             </tr>
@@ -69,7 +70,7 @@
                                 <td>
                                     <select class="form-control cb_jenis_pembayaran" name="cb_jenis_pembayaran" >
                                         <option value="C"> TRANSFER </option>
-                                        <option value="T"> TRANSFER KAS </option>
+                                        <option value="T"> TUNAI </option>
                                         <option value="L"> LAIN-LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
                                         <option value="B"> NOTA/BIAYA LAIN </option>
@@ -318,13 +319,15 @@ function ganti_akun() {
 
 $(document).ready(function(){
 var cabang = $('.cabang').val();
+var tanggal = $('.ed_tanggal').val();
   $.ajax({
     url  :baseUrl+'/sales/posting_pembayaran_form/nomor_posting',
-    data : {cabang},
+    data : {cabang,tanggal},
     success:function(data){
-      $('.nomor_posting').val(data.nota);
+       $('.nomor_posting').val(data.nota);
+       $('.nomor_posting_old').val(data.nota);
     }
-  })
+})
 
 
 
@@ -337,11 +340,15 @@ ganti_akun();
 
 function ganti_nota() {
     var cabang = $('.cabang').val();
+    var tanggal = $('.ed_tanggal').val();
       $.ajax({
         url  :baseUrl+'/sales/posting_pembayaran_form/nomor_posting',
-        data : {cabang},
+        data : {cabang,tanggal},
         success:function(data){
-          $('.nomor_posting').val(data.nota);
+            if ($('.nomor_posting').val() == $('.nomor_posting_old').val()) {
+              $('.nomor_posting').val(data.nota);
+              $('.nomor_posting_old').val(data.nota);
+            }
         }
       })
     ganti_akun()
@@ -437,7 +444,7 @@ if (cb_jenis_pembayaran == 'C'|| cb_jenis_pembayaran == 'F' || cb_jenis_pembayar
                     table_data.row.add([
                         data.data[i].k_nomor+'<input type="hidden" value="'+data.data[i].k_nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
 
-                        data.data[i].nama+'<input type="hidden" value="'+data.data[i].kode+'" class="form-control d_customer" name="d_customer[]">'+
+                        data.data[i].nama+'<input type="hidden" value="'+data.data[i].k_kode_customer+'" class="form-control d_customer" name="d_customer[]">'+
                         '<input type="hidden" value="'+data.data[i].k_kode_akun+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
 
                         accounting.formatMoney(data.data[i].k_netto,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].k_netto+'" class="form-control d_netto" name="d_netto[]">',
@@ -531,6 +538,7 @@ if (cb_jenis_pembayaran == 'C'|| cb_jenis_pembayaran == 'F' || cb_jenis_pembayar
             $('.cb_jenis_pembayaran').addClass('disabled');
             $('.cabang_td').addClass('disabled');
 }
+$('#modal').modal('hide');
 })
 function m_kode_akun(argument) {
    var jenis =  $('.m_akun_kas').find(':selected').data('kode_acc');

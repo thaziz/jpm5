@@ -82,7 +82,19 @@
                                <input type="text" class="form-control" readonly="" value="{{$spp->spp_nospp}}" name="nospp">
                             </td>
                           </tr>
-
+                           <tr>
+                              <td> 
+                               <b> Tgl Input  </b>
+                              </td>
+                              <td> 
+                                @if($spp->spp_tglinput == '')
+                                   <input type='text' class='form-control' value="{{ Carbon\Carbon::parse($spp->tglinput)->format('d-M-Y ')}}" readonly=""> 
+                                @else
+                                   <input type='text' class='form-control' value="{{ Carbon\Carbon::parse($spp->spp_tglinput)->format('d-M-Y ')}}" readonly=""> 
+                                @endif
+                              </td>
+                           </tr>
+                                   
 
                           <tr>
                             <td> <b> Tanggal di Butuhkan</b> </td>
@@ -102,15 +114,7 @@
                             </td>
                           </tr>
 
-                           <tr>
-                              <td> 
-                               <b> Tgl Input  </b>
-                              </td>
-                              <td> 
-                                <input type='text' class='form-control' value="{{ Carbon\Carbon::parse($spp->tglinput)->format('d-M-Y ')}}" readonly=""> 
-                              </td>
-                           </tr>
-                                        
+                               
                         
 
                           <tr>
