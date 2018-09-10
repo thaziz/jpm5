@@ -696,40 +696,6 @@ class kasKeluarController extends Controller
 								$data_akun[$i]['jrdt_statusdk'] = 'K';
 							}
 						}
-					}else if (substr($akun[$i],0, 1)>1002) {
-						if ($cari_coa->akun_dka == 'D') {
-							if ($penanda[$i] == 'D') {
-								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-								$data_akun[$i]['jrdt_detailid']	= $i+1;
-								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-								$data_akun[$i]['jrdt_statusdk'] = 'D';
-							}else{
-								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-								$data_akun[$i]['jrdt_detailid']	= $i+1;
-								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-								$data_akun[$i]['jrdt_statusdk'] = 'K';
-							}
-						}else{
-							if ($penanda[$i] == 'D') {
-								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-								$data_akun[$i]['jrdt_detailid']	= $i+1;
-								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-								$data_akun[$i]['jrdt_statusdk'] = 'D';
-							}else{
-								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-								$data_akun[$i]['jrdt_detailid']	= $i+1;
-								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-								$data_akun[$i]['jrdt_statusdk'] = 'K';
-							}
-						}
 					}
 				}
 				// dd($data_akun);
@@ -786,9 +752,9 @@ class kasKeluarController extends Controller
 				}
 
 				$cari_bonsem = DB::table('bonsem_pengajuan')
-								 ->where('bpk_nota',$req->nota_bonsem)
-								 ->first()
-				$total_bonsem = $cari_bonsem->bp_pelunasan - filter_var($req->sisa_bonsem, FILTER_SANITIZE_NUMBER_INT)/100;
+								 ->where('bp_nota',$req->nota_bonsem)
+								 ->first();
+				$total_bonsem = $cari_bonsem->bp_sisapemakaian - filter_var($req->sisa_bonsem, FILTER_SANITIZE_NUMBER_INT)/100;
 
 				$header = DB::table('bukti_kas_keluar')
 					  ->insert([
@@ -811,10 +777,14 @@ class kasKeluarController extends Controller
 				  	]);
 
 				$update_bonsem = DB::table('bonsem_pengajuan')
-								    ->where('bpk_nota',$req->nota_bonsem)
+								    ->where('bp_nota',$req->nota_bonsem)
 									->update([
-										'bp_sisa'=>$cari_bonsem->bp_pelunasan-$total_bonsem
+										'bp_sisapemakaian'=>$cari_bonsem->bp_sisapemakaian-$total_bonsem
 									]);
+
+				$cari_bonsem = DB::table('bonsem_pengajuan')
+								 ->where('bp_nota',$req->nota_bonsem)
+								 ->first();
 
 				$id_pt = DB::table('patty_cash')
 						   ->max('pc_id')+1;	
@@ -949,7 +919,7 @@ class kasKeluarController extends Controller
 								  ->first();
 
 
-				array_push($akun, $kun_bonsem->id_akun);
+				array_push($akun, $akun_bonsem->id_akun);
 				array_push($akun_val, $total_bonsem);
 				array_push($penanda,'K');
 
@@ -1005,42 +975,8 @@ class kasKeluarController extends Controller
 								$data_akun[$i]['jrdt_statusdk'] = 'K';
 							}
 						}
-					}if (substr($akun[$i],0, 4)>1002) {
+					}if (substr($akun[$i],0, 4)>=1002) {
 						
-						if ($cari_coa->akun_dka == 'D') {
-							if ($penanda[$i] == 'D') {
-								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-								$data_akun[$i]['jrdt_detailid']	= $i+1;
-								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-								$data_akun[$i]['jrdt_statusdk'] = 'D';
-							}else{
-								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-								$data_akun[$i]['jrdt_detailid']	= $i+1;
-								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-								$data_akun[$i]['jrdt_statusdk'] = 'K';
-							}
-						}else{
-							if ($penanda[$i] == 'D') {
-								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-								$data_akun[$i]['jrdt_detailid']	= $i+1;
-								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-								$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-								$data_akun[$i]['jrdt_statusdk'] = 'D';
-							}else{
-								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-								$data_akun[$i]['jrdt_detailid']	= $i+1;
-								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
-								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-		                		$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan_head);
-								$data_akun[$i]['jrdt_statusdk'] = 'K';
-							}
-						}
-					}else if (substr($akun[$i],0, 1)>1002) {
 						if ($cari_coa->akun_dka == 'D') {
 							if ($penanda[$i] == 'D') {
 								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
