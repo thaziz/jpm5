@@ -5912,7 +5912,6 @@ public function purchase_order() {
 						'dk' => 'D',
 						'detail' => $request->keterangan_po
 					);
-
 					}
 					array_push($datajurnalpo, $dataakun);
 				}
@@ -5995,7 +5994,7 @@ public function purchase_order() {
 						$dataakun = array (
 							'id_akun' => $akunpph,
 							'subtotal' => '-' . $hasilpph,
-							'dk' => 'K',
+							'dk' => 'D',
 							'detail' => $request->keterangan_po,
 						);
 					}
@@ -7009,7 +7008,7 @@ public function purchase_order() {
 							$dataakun = array (
 							'id_akun' => $akunpph,
 							'subtotal' => '-' . $hasilpph,
-							'dk' => 'K',
+							'dk' => 'D',
 							'detail' => $request->keteranganheader,
 							);
 						}
@@ -7017,7 +7016,7 @@ public function purchase_order() {
 							$dataakun = array (
 							'id_akun' => $akunpph,
 							'subtotal' => $hasilpph,
-							'dk' => 'D',
+							'dk' => 'K',
 							'detail' => $request->keteranganheader,
 							);
 						}
@@ -7096,7 +7095,9 @@ public function purchase_order() {
     		elseif($cekjurnal == 1) {
     			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idfaktur];
 					        
-    		}	
+    		}
+
+    		
 
 		return json_encode($dataInfo);
 		});

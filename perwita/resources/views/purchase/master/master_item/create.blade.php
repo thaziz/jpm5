@@ -88,7 +88,7 @@
 
                       <tr>                      
                         <td> Nama Item </td>
-                        <td> <input type="text" class="form-control nama_item a" name="nama_item" required=""> <input type="hidden" class="form-control" name="cabang" value="{{ Auth::user()->kode_cabang}}"> </td>
+                        <td> <input type="text" class="form-control nama_item a" name="nama_item" required="">  </td>
                       </tr>
 
                       <tr>
