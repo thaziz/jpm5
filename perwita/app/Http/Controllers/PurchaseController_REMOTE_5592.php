@@ -5912,7 +5912,6 @@ public function purchase_order() {
 						'dk' => 'D',
 						'detail' => $request->keterangan_po
 					);
-
 					}
 					array_push($datajurnalpo, $dataakun);
 				}
@@ -5995,7 +5994,7 @@ public function purchase_order() {
 						$dataakun = array (
 							'id_akun' => $akunpph,
 							'subtotal' => '-' . $hasilpph,
-							'dk' => 'K',
+							'dk' => 'D',
 							'detail' => $request->keterangan_po,
 						);
 					}
@@ -7087,7 +7086,7 @@ public function purchase_order() {
 			}		
 			   
 
-			/*$cekjurnal = check_jurnal($nofaktur);
+			$cekjurnal = check_jurnal($nofaktur);
     		if($cekjurnal == 0){
     			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
 				DB::rollback();
@@ -7096,44 +7095,9 @@ public function purchase_order() {
     		elseif($cekjurnal == 1) {
     			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idfaktur];
 					        
-    		}*/
+    		}
 
-    		$data = DB::table('d_jurnal')
-				 ->join('d_jurnal_dt','jr_id','=','jrdt_jurnal')
-				 ->where('jr_ref',$nofaktur)
-				 ->get();
-
-			$d = 0;
-			$k = 0;
-			
-			for ($i=0; $i < count($data); $i++) { 
-				if ($data[$i]->jrdt_statusdk == 'D') {
-					if ($data[$i]->jrdt_value < 0) {
-						$temp = $data[$i]->jrdt_value * -1;
-					}else{
-						$temp = $data[$i]->jrdt_value;
-					}
-
-					$d+=$temp;
-				}else{
-					if ($data[$i]->jrdt_value < 0) {
-						$temp = $data[$i]->jrdt_value * -1;
-					}else{
-						$temp = $data[$i]->jrdt_value;
-					}
-
-					$k+=$temp;
-				}
-			}
-
-			//dd($d);
-		//	dd($k);
-
-			if ($d == $k) {
-				return 1;
-			}else{
-				return 0;
-			}
+    		
 
 		return json_encode($dataInfo);
 		});
