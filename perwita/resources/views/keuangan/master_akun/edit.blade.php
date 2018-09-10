@@ -95,9 +95,9 @@
           </select>
         </td>
 
-        <td width="15%" class="text-center hide_me">Tanggal Saldo</td>
+        <td width="15%" class="text-center hide_me">Bulan Saldo</td>
         <td colspan="2" class="hide_me">
-          <input type="text" name="opening_date" class="form-control only_date" readonly value="{{ $data->opening_date }}" placeholder="Pilih Tanggal Saldo">
+          <input type="text" name="opening_date" class="form-control only_date" readonly value="{{ $data->opening_date }}" placeholder="Pilih Bulan Saldo">
         </td>
       </tr>
 
@@ -153,7 +153,9 @@
     // console.log(cabang);
 
     $('.only_date').datepicker({
-      format: 'yyyy-mm-dd'
+      format: "mm-yyyy",
+      viewMode: "months", 
+      minViewMode: "months"
     });
 
     $("#type_akun").val('{{ $data->type_akun }}');

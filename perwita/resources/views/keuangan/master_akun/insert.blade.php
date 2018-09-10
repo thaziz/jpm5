@@ -92,9 +92,9 @@
           </select>
         </td>
 
-        <td width="15%" class="text-center hide_me">Tanggal Saldo</td>
+        <td width="15%" class="text-center hide_me">Bulan Saldo</td>
         <td colspan="2" class="hide_me">
-          <input type="text" name="opening_date" class="form-control only_date" readonly placeholder="Pilih Tanggal Saldo">
+          <input type="text" name="opening_date" class="form-control only_date" readonly placeholder="Pilih Bulan Saldo" style="cursor: pointer;">
         </td>
       </tr>
 
@@ -191,7 +191,11 @@
 
     var cabang = {!! $cabangjson !!};
 
-    $('.only_date').datepicker();
+    $('.only_date').datepicker({
+      format: "mm-yyyy",
+      viewMode: "months", 
+      minViewMode: "months"
+    });
 
     // console.log(cabang);
 
