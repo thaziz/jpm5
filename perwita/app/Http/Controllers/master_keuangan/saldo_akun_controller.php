@@ -42,7 +42,7 @@ class saldo_akun_controller extends Controller
 
         $date = $_GET['year'].'-'.$_GET['date'].'-01';
 
-        $data = akun::select('id_akun', 'nama_akun', 'akun_dka', DB::raw('coalesce(opening_balance, 0)'))
+        $data = akun::select('id_akun', 'nama_akun', 'akun_dka', DB::raw('coalesce(opening_balance, 0)'), 'opening_date')
                 ->where('kode_cabang', $_GET['cab'])
                 ->orderBy('id_akun', 'asc')->with([
                   'mutasi_bank_debet' => function($query) use ($date, $tahun){

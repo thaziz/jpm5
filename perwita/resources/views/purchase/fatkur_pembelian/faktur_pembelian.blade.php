@@ -402,8 +402,8 @@
 						<tr>
 							<td> <b> ID AKUN </b> </td>
 							<td> <b> NAMA AKUN </b> </td>
-							<td> <b> K  </b> </td>
-							<td> <b> D </b> </td>
+							<td> <b> D  </b> </td>
+							<td> <b> K </b> </td>
 						</tr>
 						<tr>
 							<?php $totalDebit=0;

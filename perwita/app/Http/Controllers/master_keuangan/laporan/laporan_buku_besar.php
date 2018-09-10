@@ -33,11 +33,39 @@ class laporan_buku_besar extends Controller
             $d1 = date_format(date_create($request->d1), "n"); $y1 = date_format(date_create($request->d1), "Y");
             $d2 = date_format(date_create($request->d2), "n"); $y2 = date_format(date_create($request->d2), "Y");
 
-            // return json_encode($d1.$y1.' / '.$d2.$y2);
+            $data_date = date_format(date_create($request->d1), "Y-m").'-01';
+
+            // return json_encode($date.'-01');
 
             $b1 = date_format(date_create($request->d1), "m-Y"); $b2 = date_format(date_create($request->d2), "m-Y");
 
             if($request->buku_besar_cabang != 'all'){
+
+                $data_saldo = akun::select('id_akun', 'nama_akun', 'akun_dka', DB::raw('coalesce(opening_balance, 0)'), 'opening_date')
+                                ->where('kode_cabang', $request->buku_besar_cabang)
+                                ->orderBy('id_akun', 'asc')->with([
+                                      'mutasi_bank_debet' => function($query) use ($data_date){
+                                            $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                                                  ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
+                                                  ->where('jr_date', '<', $data_date)
+                                                  ->where('jr_date', '>', DB::raw("opening_date"))
+                                                  ->where("jrdt_statusdk", 'D')
+                                                  ->groupBy('jrdt_acc', 'opening_date')
+                                                  ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'), 'opening_date');
+                                      },
+                                      'mutasi_bank_kredit' => function($query) use ($data_date){
+                                            $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                                                  ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
+                                                  ->where('jr_date', '<', $data_date)
+                                                  ->where('jr_date', '>', DB::raw("opening_date"))
+                                                  ->where("jrdt_statusdk", 'K')
+                                                  ->groupBy('jrdt_acc', 'opening_date')
+                                                  ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'), 'opening_date');
+                                      },
+                                ])
+                                ->whereBetween('d_akun.id_akun', [$request->akun1, $request->akun2])
+                                ->orderBy('id_akun', 'asc')->get();
+
                 $data = akun::where('kode_cabang', $request->buku_besar_cabang)
                             ->with(['jurnal_detail' => function($query) use ($d1, $d2, $y1, $y2){
                                 $query->select('jrdt_acc', 'jrdt_jurnal', 'jr_date', 'jrdt_value', 'jrdt_statusdk')
@@ -53,6 +81,31 @@ class laporan_buku_besar extends Controller
                             ->select('id_akun', 'nama_akun')
                             ->orderBy('id_akun', 'asc')->get();
             }else{
+                
+                $data_saldo = akun::select('id_akun', 'nama_akun', 'akun_dka', DB::raw('coalesce(opening_balance, 0)'), 'opening_date')
+                                ->orderBy('id_akun', 'asc')->with([
+                                      'mutasi_bank_debet' => function($query) use ($data_date){
+                                            $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                                                  ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
+                                                  ->where('jr_date', '<', $data_date)
+                                                  ->where('jr_date', '>', DB::raw("opening_date"))
+                                                  ->where("jrdt_statusdk", 'D')
+                                                  ->groupBy('jrdt_acc', 'opening_date')
+                                                  ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'), 'opening_date');
+                                      },
+                                      'mutasi_bank_kredit' => function($query) use ($data_date){
+                                            $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                                                  ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
+                                                  ->where('jr_date', '<', $data_date)
+                                                  ->where('jr_date', '>', DB::raw("opening_date"))
+                                                  ->where("jrdt_statusdk", 'K')
+                                                  ->groupBy('jrdt_acc', 'opening_date')
+                                                  ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'), 'opening_date');
+                                      },
+                                ])
+                                ->whereBetween('d_akun.id_akun', [$request->akun1, $request->akun2])
+                                ->orderBy('id_akun', 'asc')->get();
+
                 $data = akun::with(['jurnal_detail' => function($query) use ($d1, $d2, $y1, $y2){
                                 $query->select('jrdt_acc', 'jrdt_jurnal', 'jr_date', 'jrdt_value', 'jrdt_statusdk')
                                         ->join('d_jurnal', 'jr_id', '=', 'jrdt_jurnal')
@@ -69,7 +122,7 @@ class laporan_buku_besar extends Controller
             }
             
 
-            // return json_encode($data);
+            // return json_encode($data_saldo);
 
         }elseif($throttle == "Tahun"){
 
@@ -78,7 +131,37 @@ class laporan_buku_besar extends Controller
 
             $b1 = $d1; $b2 = $d2;
 
+            $data_date = $d1.'-01-01';
+
+            // return json_encode($data_date;
+
             if($request->buku_besar_cabang != 'all'){
+
+                $data_saldo = akun::select('id_akun', 'nama_akun', 'akun_dka', DB::raw('coalesce(opening_balance, 0)'), 'opening_date')
+                                ->where('kode_cabang', $request->buku_besar_cabang)
+                                ->orderBy('id_akun', 'asc')->with([
+                                      'mutasi_bank_debet' => function($query) use ($data_date){
+                                            $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                                                  ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
+                                                  ->where('jr_date', '<', $data_date)
+                                                  ->where('jr_date', '>', DB::raw("opening_date"))
+                                                  ->where("jrdt_statusdk", 'D')
+                                                  ->groupBy('jrdt_acc', 'opening_date')
+                                                  ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'), 'opening_date');
+                                      },
+                                      'mutasi_bank_kredit' => function($query) use ($data_date){
+                                            $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                                                  ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
+                                                  ->where('jr_date', '<', $data_date)
+                                                  ->where('jr_date', '>', DB::raw("opening_date"))
+                                                  ->where("jrdt_statusdk", 'K')
+                                                  ->groupBy('jrdt_acc', 'opening_date')
+                                                  ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'), 'opening_date');
+                                      },
+                                ])
+                                ->whereBetween('d_akun.id_akun', [$request->akun1, $request->akun2])
+                                ->orderBy('id_akun', 'asc')->get();
+
                 $data = akun::where('kode_cabang', $request->buku_besar_cabang)
                             ->with(['jurnal_detail' => function($query) use ($d1, $d2){
                                 $query->select('jrdt_acc', 'jrdt_jurnal', 'jr_date', 'jrdt_value', 'jrdt_statusdk')
@@ -109,8 +192,8 @@ class laporan_buku_besar extends Controller
             
         }
 
-        // return json_encode($data);
-        return view('laporan_buku_besar.print_pdf.pdf_single', compact('request', 'throttle', 'saldo_awal', 'data', 'grap', 'time', 'b1', 'b2'));
+        // return json_encode($saldo);
+        return view('laporan_buku_besar.print_pdf.pdf_single', compact('request', 'throttle', 'saldo_awal', 'data', 'grap', 'time', 'b1', 'b2', 'data_saldo', 'data_date'));
 
     	// $pdf = PDF::loadView('laporan_buku_besar.print_pdf.pdf_single', compact('request', 'throttle', 'saldo_awal', 'data', 'grap', 'time'))
                   // ->setPaper('folio','landscape');

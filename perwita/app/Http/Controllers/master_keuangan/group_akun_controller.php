@@ -35,6 +35,8 @@ class group_akun_controller extends Controller
             "content" => "null"
         ];
 
+        // return json_encode($response);
+
         $initial = '';
 
     	$id = (DB::table('d_group_akun')->max('id')) ? (explode('-', DB::table('d_group_akun')->orderBy('tanggal_buat', 'desc')->first()->id)[1] + 1) : 1;

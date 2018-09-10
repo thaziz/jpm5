@@ -94,6 +94,13 @@ class akun_Controller extends Controller
         // return json_encode($request->all());
         // return json_encode(explode(",", str_replace(".", "", substr($request->saldo_awal, 3)))[0]);
 
+        $bulan = ($request->opening_date != '') ? explode('-', $request->opening_date)[0] : '';
+        $tahun = ($request->opening_date != '') ? explode('-', $request->opening_date)[1] : '';
+
+        $date = $tahun.'-'.$bulan.'-01';
+
+        // return json_encode($date);
+
         $response = [
             "status" => "sukses",
             "content" => "null"
@@ -131,7 +138,7 @@ class akun_Controller extends Controller
                     $akun->group_laba_rugi = $request->group_laba_rugi;
                     $akun->shareable = "1";
                     $akun->opening_balance = 0;
-                    $akun->opening_date = '1945-01-01';
+                    $akun->opening_date = null;
 
                     $akun->save();
 
@@ -185,7 +192,7 @@ class akun_Controller extends Controller
             $akun->group_laba_rugi = $request->group_laba_rugi;
             $akun->shareable = "1";
             $akun->opening_balance = str_replace(".", "", explode(",", $request->opening_balance)[0]);
-            $akun->opening_date = ($request->opening_date == '') ? '1945-01-01' : $request->opening_date;
+            $akun->opening_date = ($request->opening_date == '') ? null : $date;
 
             $akun->save();
 
@@ -252,6 +259,11 @@ class akun_Controller extends Controller
             'content'   => $request->all()
         ];
 
+        $bulan = ($request->opening_date != '') ? explode('-', $request->opening_date)[0] : '';
+        $tahun = ($request->opening_date != '') ? explode('-', $request->opening_date)[1] : '';
+
+        $date = $tahun.'-'.$bulan.'-01';
+
         $akun = master_akun::find($request->kode_akun);
         $akun->nama_akun = $request->nama_akun;
         $akun->akun_dka = $request->posisi_dk;
@@ -259,7 +271,7 @@ class akun_Controller extends Controller
         $akun->group_neraca = $request->group_neraca;
         $akun->group_laba_rugi = $request->group_laba_rugi;
         $akun->opening_balance = str_replace(".", "", explode(",", $request->opening_balance)[0]);
-        $akun->opening_date = ($request->opening_date == '') ? '1945-01-01' : $request->opening_date;
+        $akun->opening_date = ($request->opening_date == '') ? null : $date;
 
         if($akun->save()){
             return json_encode($response);
