@@ -1035,7 +1035,7 @@ class PurchaseController extends Controller
 
 		$data['countbrg'] = array_count_values($barang);
 		
-	//	dd($data);
+	/*	dd($data);*/
 		
 
 		return view('purchase.confirm_orderdetail.index4', compact('data' , 'tipespp' , 'namatipe'));
@@ -1642,7 +1642,13 @@ public function purchase_order() {
 
 		$data['supplier'] = DB::select("select * from supplier where active='AKTIF'");
 
-		$data['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang, mastergudang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode and podt_lokasigudang = mg_id");
+		if($data['po'][0]->po_tipe == 'J') {
+			$data['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang, mastergudang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode and podt_lokasigudang = mg_id");
+		}
+		else {
+			$data['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode");	
+		}
+
 
 		$data['spp'] = DB::select("select distinct spp_id , spp_nospp , spp_keperluan, nama_department , nama , spp_tgldibutuhkan from  pembelian_order , spp, pembelian_orderdt, cabang, masterdepartment where po_id = '$id' and podt_idpo = po_id  and podt_idspp = spp_id and spp_cabang = kode and spp_bagian = kode_department ");
 		
@@ -1660,7 +1666,12 @@ public function purchase_order() {
 		/*dd($data['idspp']);*/
 
 		for($j=0; $j < count($idspp); $j++){
-			$data['podtbarang'][] = DB::select("select * from  pembelian_orderdt, masteritem, mastergudang where podt_idspp = ". $data['idspp'][$j] ." and podt_kodeitem = kode_item and podt_lokasigudang = mg_id and podt_idpo='$id'");
+			if($data['po'][0]->po_tipe != 'J') {
+				$data['podtbarang'][] = DB::select("select * from  pembelian_orderdt, masteritem, mastergudang where podt_idspp = ". $data['idspp'][$j] ." and podt_kodeitem = kode_item and podt_lokasigudang = mg_id and podt_idpo='$id'");
+			}
+			else {
+				$data['podtbarang'][] = DB::select("select * from  pembelian_orderdt, masteritem where podt_idspp = ". $data['idspp'][$j] ." and podt_kodeitem = kode_item and podt_idpo='$id'");
+			}
 		}
 
 		$data['countbrg'] = count($idspp);
@@ -6998,7 +7009,7 @@ public function purchase_order() {
 							$dataakun = array (
 							'id_akun' => $akunpph,
 							'subtotal' => '-' . $hasilpph,
-							'dk' => 'K',
+							'dk' => 'D',
 							'detail' => $request->keteranganheader,
 							);
 						}
@@ -7006,7 +7017,7 @@ public function purchase_order() {
 							$dataakun = array (
 							'id_akun' => $akunpph,
 							'subtotal' => $hasilpph,
-							'dk' => 'D',
+							'dk' => 'K',
 							'detail' => $request->keteranganheader,
 							);
 						}
@@ -7076,7 +7087,7 @@ public function purchase_order() {
 			}		
 			   
 
-			$cekjurnal = check_jurnal($nofaktur);
+			/*$cekjurnal = check_jurnal($nofaktur);
     		if($cekjurnal == 0){
     			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
 				DB::rollback();
@@ -7085,7 +7096,44 @@ public function purchase_order() {
     		elseif($cekjurnal == 1) {
     			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idfaktur];
 					        
-    		}	
+    		}*/
+
+    		$data = DB::table('d_jurnal')
+				 ->join('d_jurnal_dt','jr_id','=','jrdt_jurnal')
+				 ->where('jr_ref',$nofaktur)
+				 ->get();
+
+			$d = 0;
+			$k = 0;
+			
+			for ($i=0; $i < count($data); $i++) { 
+				if ($data[$i]->jrdt_statusdk == 'D') {
+					if ($data[$i]->jrdt_value < 0) {
+						$temp = $data[$i]->jrdt_value * -1;
+					}else{
+						$temp = $data[$i]->jrdt_value;
+					}
+
+					$d+=$temp;
+				}else{
+					if ($data[$i]->jrdt_value < 0) {
+						$temp = $data[$i]->jrdt_value * -1;
+					}else{
+						$temp = $data[$i]->jrdt_value;
+					}
+
+					$k+=$temp;
+				}
+			}
+
+			//dd($d);
+		//	dd($k);
+
+			if ($d == $k) {
+				return 1;
+			}else{
+				return 0;
+			}
 
 		return json_encode($dataInfo);
 		});
