@@ -74,6 +74,11 @@
                         '<td>'+d.cab+'</td>'+
                     '</tr>'+
                     '<tr>'+
+                        '<td>status invoice</td>'+
+                        '<td>:</td>'+
+                        '<td>'+d.invoice+'</td>'+
+                    '</tr>'+
+                    '<tr>'+
                         '<td>Aksi</td>'+
                         '<td>:</td>'+
                         '<td>'+d.button+'</td>'+
