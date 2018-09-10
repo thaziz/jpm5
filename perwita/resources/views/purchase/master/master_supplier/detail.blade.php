@@ -3,6 +3,17 @@
 @section('title', 'dashboard')
 
 @section('content')
+<style type="text/css">
+.disabled {
+    pointer-events: none;
+    opacity: 1;
+}
+.chosen-container .chosen-results {
+    max-height: 120px !important;
+}
+</style>
+
+
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Master Supplier </h2>
@@ -406,7 +417,7 @@
                               </td>
                               <td> <input type="text" class="form-control tablebarang hrg harga{{$index}} tablebarang" value=" {{number_format($item->is_harga, 2)}}"  name="harga[]"> </td>
 
-                              <td> <select class="form-control updatestock updatestock{{$index}} tablebarang" name="updatestock[]" readonly=""> 
+                              <td class="disabled"> <select class="form-control updatestock updatestock{{$index}} tablebarang" name="updatestock[]" readonly=""> 
                                   @if($item->is_updatestock == 'Y')
                                 <option value="Y"> Ya </option> 
                                   @else

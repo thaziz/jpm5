@@ -282,6 +282,11 @@
                     '<td>'+d.total_net+'</td>'+
                 '</tr>'+
                 '<tr>'+
+                    '<td>status invoice</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.invoice+'</td>'+
+                '</tr>'+
+                '<tr>'+
                     '<td>button</td>'+
                     '<td>:</td>'+
                     '<td>'+d.button+'</td>'+

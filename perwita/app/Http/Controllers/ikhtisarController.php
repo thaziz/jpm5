@@ -708,7 +708,7 @@ class ikhtisarController extends Controller
 					}
 				}
 				
-			$detail = $det_bkk;
+				$detail = $det_bkk;
 				$akun = DB::table('d_akun')
 						  ->get();
 			}else{
@@ -762,9 +762,12 @@ class ikhtisarController extends Controller
 							  ->get();
 						for ($a=0; $a < count($bkkd); $a++) { 
 							$det_bkk[$i][$a] = $bkkd[$a]->bkkd_akun;
+							array_push($det_bkk[$i], $bkkd[$a]->bkkd_akun);
 						}
+
 						$det_bkk[$i] = array_unique($det_bkk[$i]);
 						$det_bkk[$i] = array_values($det_bkk[$i]);
+
 					}else{
 						$cari_bpk = DB::table('biaya_penerus_kas')
 								  ->where('bpk_nota',$cari[$i]->nota)
@@ -781,14 +784,20 @@ class ikhtisarController extends Controller
 								return Response()->json(['status' => 3, 'message' => 'Biaya '.substr($cari_bpk->bpk_acc_biaya,0,4).' Tidak Tersedia Untuk Cabang '.$bpkd[$a]->bpkd_kode_cabang_awal]);
 							}
 							$det_bpk[$i][$a] = $temp->id_akun;
+
 						}
 
 						$det_bpk[$i] = array_unique($det_bpk[$i]);
 						$det_bpk[$i] = array_values($det_bpk[$i]);
+						
 					}
 					
+
+					
 				}
-				$detail = array_merge($det_bkk,$det_bpk);
+				$detail = $det_bkk +$det_bpk;
+
+
 				$akun = DB::table('d_akun')
 							  ->get();
 

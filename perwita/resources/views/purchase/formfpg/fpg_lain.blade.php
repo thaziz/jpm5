@@ -12,8 +12,7 @@
 
 		}
 		.div-width{
-			margin: auto;
-			width: 95vw;
+			width: 900px;
 		}
 		.underline{
 			text-decoration: underline;
@@ -87,9 +86,16 @@
 		}
 		@page {
 			size: portrait;
+			margin:0;
 		}
 		@media print {
-			margin:0;
+			.div-width{
+				margin: auto;
+				width: 95vw;
+			}
+			.btn-print{
+				display: none;
+			}
 		}
 		fieldset{
 			border: 1px solid black;
@@ -102,6 +108,9 @@
 	</style>
 </head>
 <body>
+	<div class="btn-print" align="right">
+		<button onclick="javascript:window.print();">Print</button>
+	</div>
 	<div class="div-width">
 		<table class="border-none" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
@@ -155,10 +164,10 @@
 		<fieldset>
 			<legend>
 				Bayar Kepada : <br>
+			</legend>
 				@foreach($data['fpg_bank'] as $index=>$fpgbank)
 					{{$index + 1 }}.  {{$fpgbank->fpgb_nmbanktujuan}} 
 				@endforeach
-			</legend>
 		</fieldset>
 		@endif
 		<br>
@@ -186,46 +195,7 @@
 				<td class="text-right"> {{number_format($fpgbank->fpg_totalbayar , 2)}}</td>
 			</tr>
 			@endforeach
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
 			
-				<td></td>
-				<td class="text-right"></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
-			
-				<td></td>
-				<td class="text-right"></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
-				
-				<td></td>
-				<td class="text-right"></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				
-				<td></td>
-				<td></td>
-				<td class="text-right"></td>
-			</tr>
-			<tr class="border-none-bottom">
-				<td class="text-center empty"></td>
-				<td></td>
-				<td></td>
-				
-				<td></td>
-				<td class="text-right"></td>
-			</tr>
 			<tr class="border-none-bottom">
 				<td class="text-center empty"></td>
 				<td></td>

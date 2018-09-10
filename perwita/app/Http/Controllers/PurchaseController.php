@@ -88,23 +88,29 @@ class PurchaseController extends Controller
 
        	$sup = $data2['po'][0]->po_supplier;
 		$data2['supplier'] = DB::select("select * from supplier where active='AKTIF' and idsup = $sup ");
-
-		$data2['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang, mastergudang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode and podt_lokasigudang = mg_id");
-
+		if($data2['po'][0]->po_tipe != 'J'){
+					$data2['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang, mastergudang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode and podt_lokasigudang = mg_id");
+		
+					for($ds = 0; $ds < count($data2['podt']); $ds++){
+							$namagudang = $data2['podt'][$ds]->podt_lokasigudang;
+							array_push($lokasigudang , $namagudang);		
+						}
+						
+						
+						$idgudang = array_unique($lokasigudang);
+						
+						for($i = 0 ; $i < count($idgudang); $i++){
+							$idgudang2 = $idgudang[$i];
+							$data2['gudang'] = DB::select("select * from mastergudang where mg_id = '$idgudang2'");
+						}
+				}
+		else{
+					$data2['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode");
+				}
+		
 		$data2['spp'] = DB::select("select distinct spp_nospp , spp_keperluan, nama_department , nama , spp_tgldibutuhkan from  pembelian_order , spp, pembelian_orderdt, cabang, masterdepartment where po_id = '$id' and podt_idpo = po_id  and podt_idspp = spp_id and spp_cabang = kode and spp_bagian = kode_department ");
 	
-		for($ds = 0; $ds < count($data2['podt']); $ds++){
-			$namagudang = $data2['podt'][$ds]->podt_lokasigudang;
-			array_push($lokasigudang , $namagudang);		
-		}
 		
-		
-		$idgudang = array_unique($lokasigudang);
-		
-		for($i = 0 ; $i < count($idgudang); $i++){
-			$idgudang2 = $idgudang[$i];
-			$data2['gudang'] = DB::select("select * from mastergudang where mg_id = '$idgudang2'");
-		}
 
 		foreach ($data2['po'] as $key => $value) {
 			$a = $value->nama_supplier;
@@ -151,7 +157,7 @@ class PurchaseController extends Controller
 		}
 
 		/*dd($data2);*/
-      return view('purchase.purchase.print',compact('data','request','data2','a','b','c','d','e','f','g','h','i','j','k','L','m','n', 'data'));
+      return view('purchase.purchase.print',compact('data','request','data2','a','b','c','d','e','f','g','h','i','j','k','L','m','n', 'data2'));
     } 
 	public function spp_index () {
 		$cabang = session::get('cabang');
@@ -1029,7 +1035,7 @@ class PurchaseController extends Controller
 
 		$data['countbrg'] = array_count_values($barang);
 		
-	//	dd($data);
+	/*	dd($data);*/
 		
 
 		return view('purchase.confirm_orderdetail.index4', compact('data' , 'tipespp' , 'namatipe'));
@@ -1636,7 +1642,13 @@ public function purchase_order() {
 
 		$data['supplier'] = DB::select("select * from supplier where active='AKTIF'");
 
-		$data['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang, mastergudang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode and podt_lokasigudang = mg_id");
+		if($data['po'][0]->po_tipe == 'J') {
+			$data['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang, mastergudang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode and podt_lokasigudang = mg_id");
+		}
+		else {
+			$data['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode");	
+		}
+
 
 		$data['spp'] = DB::select("select distinct spp_id , spp_nospp , spp_keperluan, nama_department , nama , spp_tgldibutuhkan from  pembelian_order , spp, pembelian_orderdt, cabang, masterdepartment where po_id = '$id' and podt_idpo = po_id  and podt_idspp = spp_id and spp_cabang = kode and spp_bagian = kode_department ");
 		
@@ -1654,7 +1666,12 @@ public function purchase_order() {
 		/*dd($data['idspp']);*/
 
 		for($j=0; $j < count($idspp); $j++){
-			$data['podtbarang'][] = DB::select("select * from  pembelian_orderdt, masteritem, mastergudang where podt_idspp = ". $data['idspp'][$j] ." and podt_kodeitem = kode_item and podt_lokasigudang = mg_id and podt_idpo='$id'");
+			if($data['po'][0]->po_tipe != 'J') {
+				$data['podtbarang'][] = DB::select("select * from  pembelian_orderdt, masteritem, mastergudang where podt_idspp = ". $data['idspp'][$j] ." and podt_kodeitem = kode_item and podt_lokasigudang = mg_id and podt_idpo='$id'");
+			}
+			else {
+				$data['podtbarang'][] = DB::select("select * from  pembelian_orderdt, masteritem where podt_idspp = ". $data['idspp'][$j] ." and podt_kodeitem = kode_item and podt_idpo='$id'");
+			}
 		}
 
 		$data['countbrg'] = count($idspp);
@@ -5895,7 +5912,6 @@ public function purchase_order() {
 						'dk' => 'D',
 						'detail' => $request->keterangan_po
 					);
-
 					}
 					array_push($datajurnalpo, $dataakun);
 				}
@@ -5978,7 +5994,7 @@ public function purchase_order() {
 						$dataakun = array (
 							'id_akun' => $akunpph,
 							'subtotal' => '-' . $hasilpph,
-							'dk' => 'K',
+							'dk' => 'D',
 							'detail' => $request->keterangan_po,
 						);
 					}
@@ -6992,7 +7008,7 @@ public function purchase_order() {
 							$dataakun = array (
 							'id_akun' => $akunpph,
 							'subtotal' => '-' . $hasilpph,
-							'dk' => 'K',
+							'dk' => 'D',
 							'detail' => $request->keteranganheader,
 							);
 						}
@@ -7000,7 +7016,7 @@ public function purchase_order() {
 							$dataakun = array (
 							'id_akun' => $akunpph,
 							'subtotal' => $hasilpph,
-							'dk' => 'D',
+							'dk' => 'K',
 							'detail' => $request->keteranganheader,
 							);
 						}
@@ -7079,7 +7095,9 @@ public function purchase_order() {
     		elseif($cekjurnal == 1) {
     			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idfaktur];
 					        
-    		}	
+    		}
+
+    		
 
 		return json_encode($dataInfo);
 		});
@@ -9141,7 +9159,7 @@ public function kekata($x) {
 
 		
 		//dd($data);
-		return view('purchase/formfpg/create', compact('data'));
+		return view('purchase/formfpg/create2', compact('data'));
 	}
 
 
