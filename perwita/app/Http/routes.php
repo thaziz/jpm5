@@ -413,9 +413,7 @@ Route::get('biaya_penerus_loading/cariresiedit', 'loadingController@cariresiedit
 Route::get('biaya_penerus_loading/save_loading', 'loadingController@save_loading');
 Route::get('biaya_penerus_loading/update_loading', 'loadingController@update_loading');
 
-Route::get('buktikaskeluar/patty_cash', 'kasKeluarController@patty_cash');
-Route::get('buktikaskeluar/cari_patty', 'kasKeluarController@cari_patty');
-Route::get('buktikaskeluar/print', 'kasKeluarController@print');
+
 //BUKTI KAS KELUAR
 Route::get('buktikaskeluar/index', 'kasKeluarController@index');
 Route::get('buktikaskeluar/create', 'kasKeluarController@create');
@@ -446,6 +444,12 @@ Route::post('buktikaskeluar/update_patty', 'kasKeluarController@update_patty');
 Route::get('buktikaskeluar/jurnal', 'kasKeluarController@jurnal');
 Route::get('buktikaskeluar/datatable_bkk', 'kasKeluarController@datatable_bkk')->name('datatable_bkk');
 Route::get('buktikaskeluar/append_table', 'kasKeluarController@append_table');
+Route::get('buktikaskeluar/patty_cash', 'kasKeluarController@patty_cash');
+Route::get('buktikaskeluar/cari_patty', 'kasKeluarController@cari_patty');
+Route::get('buktikaskeluar/print', 'kasKeluarController@print');
+Route::get('buktikaskeluar/table_bonsem', 'kasKeluarController@table_bonsem');
+
+
 // FORM TANDA TERIMA
 Route::get('form_tanda_terima_pembelian', 'form_tanda_terima_pembelian_controller@index');
 Route::get('form_tanda_terima_pembelian/create', 'form_tanda_terima_pembelian_controller@create');

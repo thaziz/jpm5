@@ -16,7 +16,7 @@ class akun_Controller extends Controller
 {
 
     public function index(){
-        //return "aa";
+        // return "aa";
         // if(cek_periode() == 0)
         //     return view("keuangan.err.err_periode");
 
@@ -36,7 +36,7 @@ class akun_Controller extends Controller
                 ->select("d_akun.*", "cabang.nama as nama_cabang")
                 ->orderBy("id_akun", "asc")->get();
 
-        //return json_encode($data);
+        // return json_encode($data);
         return view("keuangan.master_akun.index")->withData($data)->withCabang($cabang)->withCabangs($cabangs);
     }
 

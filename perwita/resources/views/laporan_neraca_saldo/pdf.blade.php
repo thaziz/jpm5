@@ -213,33 +213,40 @@
 
                   <?php 
                     $deb = $kre = $tot_deb = $tot_kred = $saldo_akhir_debet = $saldo_akhir_kredit = 0;
-                    //if($okee->akun_dka == "D") {
-                      //if($data_detail[$okee->id_akun] < 0)
-                        //$kre = number_format($data_detail[$okee->id_akun]['saldo_akun'], 2);
-                      //else
-                        //$deb = number_format($data_detail[$okee->id_akun]['saldo_akun'], 2);
-                    //}else{
-                      //if($data_detail[$okee->id_akun] < 0)
-                        //$deb = number_format($data_detail[$okee->id_akun]['saldo_akun'], 2);
-                      //else
-                        //$kre = number_format($data_detail[$okee->id_akun]['saldo_akun'], 2);
-                    //}
 
-                    if($okee->akun_dka == "D")
-                      $deb = 0;//number_format($data_detail[$okee->id_akun]['saldo_akun'], 2);
+                    $debet = (count($data_saldo[$key]->mutasi_bank_debet) > 0) ? $data_saldo[$key]->mutasi_bank_debet->first()->total : 0;
+                    $kredit = (count($data_saldo[$key]->mutasi_bank_kredit) > 0) ? $data_saldo[$key]->mutasi_bank_kredit->first()->total : 0;
+
+                    $total = $data_saldo[$key]->coalesce + ($debet + $kredit);
+
+                    if($data_saldo[$key]->akun_dka == 'D')
+                      if($total > 0 )
+                        $deb = str_replace('-', '', $total);
+                      else
+                        $kre = str_replace('-', '', $total);
                     else
-                      $kre = 0;//number_format($data_detail[$okee->id_akun]['saldo_akun'], 2);
+                      if($total > 0 )
+                        $kre = str_replace('-', '', $total);
+                      else
+                        $deb = str_replace('-', '', $total);
+
+                    if(strtotime($data_date) < strtotime($data_saldo[$key]->opening_date)){
+                      $kre = 0; $deb = 0;
+                    }
                   ?>
 
 
                   {{-- saldo awal --}}
 
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ $deb }}</td>
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ $kre }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ number_format($deb,2) }}</td>
+                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ number_format($kre,2) }}</td>
 
                   <?php 
                     $saldo_akhir_debet += str_replace('-', '', $deb);
                     $saldo_akhir_kredit += str_replace('-', '', $kre);
+
+                    $tot_saldo_d += $deb;
+                    $tot_saldo_k += $kre;
                   ?>
 
                   {{-- Mutasi bank --}}
@@ -365,8 +372,8 @@
               <tr>
                 
                 <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-center" colspan="2">Grand Total</td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">0</td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">0</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format(str_replace('-', '', $tot_saldo_d), 2) }}</td>
+                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format(str_replace('-', '', $tot_saldo_k), 2) }}</td>
                 <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">
                   {{ number_format(str_replace('-', '', $tot_mb_d), 2) }}
                 </td>

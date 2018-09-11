@@ -47,17 +47,21 @@ class saldo_akun_controller extends Controller
                 ->orderBy('id_akun', 'asc')->with([
                   'mutasi_bank_debet' => function($query) use ($date, $tahun){
                         $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
-                              ->where('jr_date', '<', $date)
-                              ->where("jrdt_statusdk", 'D')
-                              ->groupBy('jrdt_acc')
-                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
+                                                  ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
+                                                  ->where('jr_date', '<', $date)
+                                                  ->where('jr_date', '>', DB::raw("opening_date"))
+                                                  ->where("jrdt_statusdk", 'D')
+                                                  ->groupBy('jrdt_acc', 'opening_date')
+                                                  ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'), 'opening_date');
                   },
                   'mutasi_bank_kredit' => function($query) use ($date, $tahun){
                         $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
-                              ->where('jr_date', '<', $date)
-                              ->where("jrdt_statusdk", 'K')
-                              ->groupBy('jrdt_acc')
-                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
+                                                  ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
+                                                  ->where('jr_date', '<', $date)
+                                                  ->where('jr_date', '>', DB::raw("opening_date"))
+                                                  ->where("jrdt_statusdk", 'K')
+                                                  ->groupBy('jrdt_acc', 'opening_date')
+                                                  ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'), 'opening_date');
                   },
             ])->get();
 

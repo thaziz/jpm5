@@ -27,7 +27,30 @@ class laporan_neraca_saldo extends Controller
       	$bulan = explode('-', $request->d1)[1]; $tahun = explode('-', $request->d1)[0];
       	$bulan_forJurnal = ($bulan < 10) ? str_replace('0', '', $bulan) : $bulan;
 
-      	// return $bulan_forJurnal; 
+      	$data_date = $tahun.'-'.$bulan.'-01'; 
+
+            $data_saldo = akun::select('id_akun', 'nama_akun', 'akun_dka', DB::raw('coalesce(opening_balance, 0)'), 'opening_date')
+                                ->orderBy('id_akun', 'asc')->with([
+                                      'mutasi_bank_debet' => function($query) use ($data_date){
+                                            $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                                                  ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
+                                                  ->where('jr_date', '<', $data_date)
+                                                  ->where('jr_date', '>', DB::raw("opening_date"))
+                                                  ->where("jrdt_statusdk", 'D')
+                                                  ->groupBy('jrdt_acc', 'opening_date')
+                                                  ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'), 'opening_date');
+                                      },
+                                      'mutasi_bank_kredit' => function($query) use ($data_date){
+                                            $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                                                  ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
+                                                  ->where('jr_date', '<', $data_date)
+                                                  ->where('jr_date', '>', DB::raw("opening_date"))
+                                                  ->where("jrdt_statusdk", 'K')
+                                                  ->groupBy('jrdt_acc', 'opening_date')
+                                                  ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'), 'opening_date');
+                                      },
+                                ])
+                                ->orderBy('id_akun', 'asc')->get();
 
       	$data = akun::select('id_akun', 'nama_akun')->orderBy('id_akun', 'asc')->with([
                   'mutasi_bank_debet' => function($query) use ($bulan_forJurnal, $tahun){
@@ -85,6 +108,8 @@ class laporan_neraca_saldo extends Controller
                               ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
                   }
             ])->get();
+
+            // return json_encode($data_saldo);
 
       }else if($request->jenis == 'Tahun'){
 
@@ -148,6 +173,8 @@ class laporan_neraca_saldo extends Controller
 
       return view("laporan_neraca_saldo.pdf")
               ->withRequest($request->all())
+              ->withData_saldo($data_saldo)
+              ->withData_date($data_date)
               ->withData($data);
     }
 }
