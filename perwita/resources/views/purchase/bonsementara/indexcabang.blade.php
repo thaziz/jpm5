@@ -188,7 +188,7 @@
                               <div class="modal-body">
                                 <form id="statuskacab">
                                 <p> Status Kepala Cabang : <span class="label label-info statuskacab"> </span> </p>
-                                <h3> <p > Data Kas Cabang <b class="namacabang">  </b> saat ini Rp <b class="kascabang">500,000.00</b> </p> </h3>
+                               {{--  <h3> <p > Data Kas Cabang <b class="namacabang">  </b> saat ini Rp <b class="kascabang">500,000.00</b> </p> </h3> --}}
 
                                   <table class="table" style="width:80%">
                                   <tr>

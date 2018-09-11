@@ -1371,7 +1371,7 @@ class PurchaseController extends Controller
 
 		$n = 1;
 		$idsup = 0;
-		for($i = 0 ; $i <$countapproval; $i++) {
+		for($i = 0 ; $i < $countapproval; $i++) {
 			if($request->status[$i] == 'SETUJU'){
 			
 				$lastid = co_purchasedt::max('codt_id'); 
@@ -9098,7 +9098,7 @@ public function kekata($x) {
 		else {
 			$fpg = DB::select("select * from fpg where fpg_cabang = '$cabang'");
 			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_tgl asc");
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_tgl asc");
 		}
 	
 
@@ -9113,13 +9113,20 @@ public function kekata($x) {
 
 		$cabang = session::get('cabang');
 
-		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
+		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
 			$data['bank'] = DB::select("select * from masterbank");
 		}
 		else {
 			$data['bank'] = DB::select("select * from masterbank where mb_cabangbank = '$cabang'");
 		}
 		
+		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
+			$data['tujuanbank'] = DB::select("select * from masterbank");
+		}
+		else {
+			$data['tujuanbank'] = DB::select("select * from masterbank wher mb_cabangbank = '$cabang'");
+
+		}
 		
 		$data['agen'] = DB::select("select * from agen where kategori = 'AGEN'");
 		$data['cabang'] = DB::select("select * from cabang");
