@@ -98,14 +98,14 @@
                           <tr>
                             <td class='disabledbank'> Kode Bank </td>
                             <td>
-                              <select class="form-control kodebank chosen-select">
+                              <select class="form-control kodebank chosen-select" name="kodebank">
                                <option value=""> Pilih Data Bank</option>
 
                                 @foreach($data['bank'] as $bank)
                                   <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                 @endforeach
                               </select>
-                              <input type="hidden" class="valkodebank" name="kodebank">
+                              
                              </td>
                           </tr>
 
@@ -313,7 +313,7 @@
 
                                                       <tr>
                                                         <th> D / K </th>
-                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk biaya" readonly=""> </div> </td>
+                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk biaya"> </div> </td>
                                                       </tr>
 
                                                       <tr>

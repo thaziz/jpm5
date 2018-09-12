@@ -586,6 +586,7 @@ Route::get('formfpg/printformfpg/{id}', 'PurchaseController@printformfpg');
 Route::get('formfpg/printformfpg2/{id}', 'PurchaseController@printformfpg2');
 Route::get('formfpg/getnofpg', 'PurchaseController@getnofpg');
 Route::get('formfpg/hapusfpg/{id}', 'PurchaseController@hapusfpg');
+Route::get('formfpg/caritransaksi', 'PurchaseController@caritransaksi');
 
 
 Route::get('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan', 'PurchaseController@pelaporanfakturpajakmasukan');
