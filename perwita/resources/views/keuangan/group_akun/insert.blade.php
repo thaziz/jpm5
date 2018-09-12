@@ -107,13 +107,17 @@
       evt.stopImmediatePropagation();
       evt.preventDefault();
 
+      if($('#nama_group').val() == ''){
+         toastr.warning('Nama Group Tidak Boleh Kosong');
+         return false;
+      }
+
       btn = $(this);
       btn.attr("disabled", "disabled");
       btn.text("Menyimpan...");
 
       // console.log($("#data_form").serialize());
 
-      if(validate_form()){
         data = {
           _token        : '{{ csrf_token() }}',
           nama          : $("#nama_group").val(),
@@ -154,10 +158,6 @@
               btn.removeAttr("disabled");
           }
         })
-      }else{
-        btn.removeAttr("disabled");
-        btn.text("Simpan");
-      }
 
       return false;
     })
@@ -220,38 +220,15 @@
         oncleared: function () { self.Value(''); }
     });
 
-    function validate_form(){
-      a = true;
-      $("#data_form .form_validate").each(function(i, e){
-        if($(this).val() == ""){
-          a = false;
-          $(this).focus();
-          toastr.warning('Harap Lengkapi Data Diatas');
-          return false;
-        }
-      })
+    // function validate_form(){
+      
 
-      $("#data_form .select_validate").each(function(i, e){
-        if($(this).val() == "---"){
-          a = false;
-          $(this).focus();
-          toastr.warning('Harap Lengkapi Data Diatas');
-          return false;
-        }
-      })
+    //   // if($("#saldo").is(":checked")){
+    //   //   alert($("#DEBET").val());
+    //   // }
 
-      if($("#saldo").is(":checked") && $("#DEBET").val() == '0,00' && $("#KREDIT").val() == '0,00'){
-        a = false;
-        $("#saldo_debet").focus()
-        toastr.warning('Jika Akun Ini Memiliki Saldo Maka Saldo Tidak Boleh 0.');
-      }
-
-      // if($("#saldo").is(":checked")){
-      //   alert($("#DEBET").val());
-      // }
-
-      return a;
-    }
+    //   return a;
+    // }
 
     function form_reset(){
       $(".form_validate").each(function(){
@@ -259,8 +236,8 @@
       })
 
       $("#jenis").val(1);
-      $("#type").val("A");
       $('#type_ctn').css('display', '');
+      $("#type").val("A");
       $('#akun_counter').text('0')
       list_akun = [];
       state = true;

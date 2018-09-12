@@ -426,7 +426,7 @@
 
 	      <div class="modal-body" style="padding: 10px;">
 	        <div class="row">
-	          <form role="form" class="form-inline" id="form-buku-besar" method="POST" action="{{ route("buku_besar.index_single") }}" target="_self">
+	          <form role="form" class="form-inline" id="form-buku-besar" method="GET" action="{{ route("buku_besar.index_single") }}" target="_self">
 	              <input type="hidden" value="{{ csrf_token() }}" name="_token" readonly>
 	              <table border="0" id="form-table" class="col-md-12">
 

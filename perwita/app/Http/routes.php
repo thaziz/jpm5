@@ -586,6 +586,7 @@ Route::get('formfpg/printformfpg/{id}', 'PurchaseController@printformfpg');
 Route::get('formfpg/printformfpg2/{id}', 'PurchaseController@printformfpg2');
 Route::get('formfpg/getnofpg', 'PurchaseController@getnofpg');
 Route::get('formfpg/hapusfpg/{id}', 'PurchaseController@hapusfpg');
+Route::get('formfpg/caritransaksi', 'PurchaseController@caritransaksi');
 
 
 Route::get('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan', 'PurchaseController@pelaporanfakturpajakmasukan');
@@ -2071,7 +2072,7 @@ Route::get('master_keuangan/err_cek', function(){
 
 
 // neraca saldo
-Route::post('master_keuangan/neraca-saldo/single', [
+Route::get('master_keuangan/neraca-saldo/single', [
   'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
   'as'   => 'neraca_saldo.index'
 ]);
@@ -2155,7 +2156,7 @@ Route::get('master_keuangan/laba_rugi/pdf/single/{throtle}', [
 
 // buku besar
 
-Route::post('master_keuangan/buku_besar/single', [
+Route::get('master_keuangan/buku_besar/single', [
   'uses' => 'master_keuangan\laporan\laporan_buku_besar@index_buku_besar_single',
   'as'   => 'buku_besar.index_single'
 ]);
@@ -2190,7 +2191,7 @@ Route::get('master_keuangan/buku_besar/pdf/single/{throtle}', [
 
 // register jurnal
   
-  Route::post('master_keuangan/register_jurnal/single', [
+  Route::get('master_keuangan/register_jurnal/single', [
     'uses' => 'master_keuangan\laporan\laporan_register_jurnal@print_pdf_register_single',
     'as'   => 'register_jurnal.index_single'
   ]);
@@ -2271,10 +2272,10 @@ Route::post('master_keuangan/saldo_akun/update', [
 
 //saldo piutang
 
-Route::get('master_keuangan/saldo_piutang/cek', [
-  'uses' => 'master_keuangan\saldo_piutang_controller@cek',
-  'as'   => 'saldo_piutang.cek'
-]);
+// Route::get('master_keuangan/saldo_piutang/cek', [
+//   'uses' => 'master_keuangan\saldo_piutang_controller@cek',
+//   'as'   => 'saldo_piutang.cek'
+// ]);
 
 Route::get('master_keuangan/saldo_piutang/{cabang}', [
   'uses' => 'master_keuangan\saldo_piutang_controller@index',
@@ -2289,6 +2290,11 @@ Route::get('master_keuangan/saldo_piutang/add/{parrent}', [
 Route::post('master_keuangan/saldo_piutang/save', [
   'uses' => 'master_keuangan\saldo_piutang_controller@save',
   'as'   => 'saldo_piutang.save'
+]);
+
+Route::post('master_keuangan/saldo_piutang/get_invoice', [
+  'uses' => 'master_keuangan\saldo_piutang_controller@invoice',
+  'as'   => 'saldo_piutang.invoice'
 ]);
 
 //end saldo piutang

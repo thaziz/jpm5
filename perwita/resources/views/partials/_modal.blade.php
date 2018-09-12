@@ -148,7 +148,7 @@
 
       <div class="modal-body" style="padding: 10px;">
         <div class="row">
-          <form role="form" class="form-inline" id="form-register-jurnal" method="POST" action="{{ route("register_jurnal.index_single") }}" target="_blank">
+          <form role="form" class="form-inline" id="form-register-jurnal" method="GET" action="{{ route("register_jurnal.index_single") }}" target="_blank">
             <input type="hidden" value="{{ csrf_token() }}" name="_token" readonly>
               <table border="0" id="form-table" class="col-md-12">
 
@@ -212,7 +212,7 @@
 
       <div class="modal-body" style="padding: 10px;">
         <div class="row">
-          <form role="form" class="form-inline" id="form-buku-besar" method="POST" action="{{ route("buku_besar.index_single") }}" target="_blank">
+          <form role="form" class="form-inline" id="form-buku-besar" method="GET" action="{{ route("buku_besar.index_single") }}" target="_blank">
               <input type="hidden" value="{{ csrf_token() }}" name="_token" readonly>
               <table border="0" id="form-table" class="col-md-12">
 
@@ -320,7 +320,7 @@
 
       <div class="modal-body" style="padding: 10px;">
         <div class="row">
-          <form role="form" class="form-inline" id="form-neraca-saldo" method="POST" action="{{ route("neraca_saldo.index") }}" target="_blank">
+          <form role="form" class="form-inline" id="form-neraca-saldo" method="GET" action="{{ route("neraca_saldo.index") }}" target="_blank">
               <input type="hidden" value="{{ csrf_token() }}" name="_token" readonly>
               <table border="0" id="form-table" class="col-md-12">
 

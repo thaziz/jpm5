@@ -54,7 +54,7 @@
                   <table class="table" style="width:400px">
                     <tr>
                       <th> Gudang : </th>
-                      <td style="width:200px">  <select class="form-control idgudang"> @foreach($data['gudang'] as $gdg) <option value="{{$gdg->mg_id}}"> {{$gdg->mg_namagudang}} </option> @endforeach </select> </td>
+                      <td style="width:200px">  <select class="form-control chosen-select idgudang"> @foreach($data['gudang'] as $gdg) <option value="{{$gdg->mg_id}}"> {{$gdg->mg_namagudang}} </option> @endforeach </select> </td>
                     
                     </tr>
                   </table>

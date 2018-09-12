@@ -285,7 +285,7 @@
                            @endif
 
                            @if($data['faktur'][0]->fp_edit != 'UNALLOWED')
-                         {{--   <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a> --}}
+                           <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a>
                            @endif
                          
 
@@ -300,7 +300,7 @@
                      @if($data['faktur'][0]->fp_tipe != 'PO')
 
                     <button class="btn btn-sm btn-success tmbh-brg" type="button" id="createmodal_brg" data-toggle="modal" data-target="#myModalBrg" ><i class="fa fa-book">&nbsp; Tambah Data Barang </i></button>
-                    <div style="overflow-x:auto;">
+                    <div style="overflow-x:auto;" class="table-responsive">
                       <table class="table  table-border tbl-penerimabarang" id="tablefp" width="100%">
                       <tr >
                         <thead>
@@ -326,35 +326,35 @@
 
                          <tr class="fpitem" id="data-item{{$index + 1}}"> <td>{{$index + 1}}</td>
 
-                        <td> <select class="form-control barangitem brg{{$index + 1}} edit"  name="item[]" data-id="{{$index + 1}}" disabled="">
+                        <td> <select class="form-control barangitem brg{{$index + 1}} edit"  name="item[]" data-id="{{$index + 1}}" disabled="" style="min-width: 200px">
                          @foreach($data['barang'] as $brg) 
                          <option value="{{$brg->kode_item}}" @if($fakturdt->fpdt_kodeitem == $brg->kode_item) selected @endif> {{$brg->kode_item}} - {{$brg->nama_masteritem}} </option>
                           @endforeach </select>   </td>  <!-- nama barang -->
 
-                        <td> <input type="text" class="form-control qtyitem qtyitem{{$index + 1}} edit" value="{{$fakturdt->fpdt_qty}}" name="qty[]" data-id="{{$index +1}}" readonly=""> 
+                        <td> <input type="text" class="form-control qtyitem qtyitem{{$index + 1}} edit" value="{{$fakturdt->fpdt_qty}}" name="qty[]" data-id="{{$index +1}}" readonly="" style="min-width: 90px"> 
 
                         <!-- qty -->
                         
-                        <td> <select class="form-control gudangheader edit gudangitem gudangitem{{$index + 1}}" name="gudang[]" disabled=""> @foreach($data['gudang'] as $gudang)  <option value="{{$gudang->mg_id}}" @if($fakturdt->fpdt_gudang == $gudang->mg_id) selected @endif> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td> <!-- gudang -->
+                        <td> <select class="form-control gudangheader edit gudangitem gudangitem{{$index + 1}}" name="gudang[]" disabled="" style="min-width: 200px"> @foreach($data['gudang'] as $gudang)  <option value="{{$gudang->mg_id}}" @if($fakturdt->fpdt_gudang == $gudang->mg_id) selected @endif> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td> <!-- gudang -->
 
-                        <td> <input type='text' class='form-control hargaitem hargaitem{{$index + 1}} edit' value="{{ number_format($fakturdt->fpdt_harga, 2)}}" name="harga[]" data-id="{{$index + 1}}" readonly="" style="text-align:right"></td><!-- "+ //harga -->
+                        <td> <input type='text' class='form-control hargaitem hargaitem{{$index + 1}} edit' value="{{ number_format($fakturdt->fpdt_harga, 2)}}" name="harga[]" data-id="{{$index + 1}}" readonly="" style="text-align:right;min-width:200px"></td><!-- "+ //harga -->
 
-                        <td> <input type="text" class="form-control totalbiayaitem totalbiayaitem{{$index + 1}}" value="{{number_format($fakturdt->fpdt_totalharga, 2) }}" name="totalharga[]" readonly=""> </td> <!-- //total harga -->
+                        <td> <input type="text" class="form-control totalbiayaitem totalbiayaitem{{$index + 1}}" value="{{number_format($fakturdt->fpdt_totalharga, 2) }}" name="totalharga[]" readonly="" style="min-width: 200px"> </td> <!-- //total harga -->
 
                
 
-                        <td> <input type="text" class="form-control updatestockitem updatestockitem{{$index + 1}}" value="{{$fakturdt->fpdt_updatedstock}}"  name='updatestock[]' readonly=""> </td><!-- "+ // updatestock -->
+                        <td> <input type="text" class="form-control updatestockitem updatestockitem{{$index + 1}}" value="{{$fakturdt->fpdt_updatedstock}}"  name='updatestock[]' readonly="" style="min-width: 90px"> </td><!-- "+ // updatestock -->
     
 
-                      <td>  <input type='text' class="form-control biayaitem biayaitem{{$index + 1}} edit" value="{{ number_format($fakturdt->fpdt_biaya, 2)}}"  name='biaya[]' readonly="" data-id="{{$index + 1}}">  </td> <!-- "+ //biaya -->
+                      <td>  <input type='text' class="form-control biayaitem biayaitem{{$index + 1}} edit" value="{{ number_format($fakturdt->fpdt_biaya, 2)}}"  name='biaya[]' readonly="" data-id="{{$index + 1}}" style="min-width: 200px">  </td> <!-- "+ //biaya -->
 
-                      <td>  <input type='text' class="form-control nettoitem nettoitem{{$index + 1}}" value="{{ number_format($fakturdt->fpdt_netto, 2)}}"  name='nettoitem[]' readonly=""> </td> <!-- "+ //biaya -->
+                      <td>  <input type='text' class="form-control nettoitem nettoitem{{$index + 1}}" value="{{ number_format($fakturdt->fpdt_netto, 2)}}"  name='nettoitem[]' readonly="" style="min-width: 200px"> </td> <!-- "+ //biaya -->
 
-                      <td> <input type="text" class="form-control acc_biayaitem acc_biayaitem{{$index + 1}}" value="{{$fakturdt->fpdt_accbiaya}}" name='acc_biaya[]' readonly=""> </td> <!-- "+ //acc_biaya -->
+                      <td> <input type="text" class="form-control acc_biayaitem acc_biayaitem{{$index + 1}}" value="{{$fakturdt->fpdt_accbiaya}}" name='acc_biaya[]' readonly="" style="min-width: 200px"> </td> <!-- "+ //acc_biaya -->
 
-                      <td> <input type="text" class="form-control acc_persediaanitem acc_persediaanitem{{$index + 1}} " value='{{$fakturdt->fpdt_accpersediaan}}' name='acc_persediaan[]' readonly=""> </td> <!-- "+ //acc_persediaan -->
+                      <td> <input type="text" class="form-control acc_persediaanitem acc_persediaanitem{{$index + 1}} " value='{{$fakturdt->fpdt_accpersediaan}}' name='acc_persediaan[]' readonly="" style="min-width: 200px"> </td> <!-- "+ //acc_persediaan -->
 
-                      <td> <input type='text' class="form-control keteranganitem keteranganitem{{$index + 1}} edit" value="{{$fakturdt->fpdt_keterangan}}"  name='keteranganitem[]' readonly="">  <input type='hidden' name='penerimaan[]' class='penerimaan' value=""> <input type="hidden" value="{{$fakturdt->fpdt_groupitem}}" class="grupitem" name="grupitem[]">   <input type="hidden" value="{{$fakturdt->fpdt_updatedstock}}" class="updatedstock"> </td>
+                      <td> <input type='text' class="form-control keteranganitem keteranganitem{{$index + 1}} edit" value="{{$fakturdt->fpdt_keterangan}}"  name='keteranganitem[]' readonly="" style="min-width: 200px">  <input type='hidden' name='penerimaan[]' class='penerimaan' value=""> <input type="hidden" value="{{$fakturdt->fpdt_groupitem}}" class="grupitem" name="grupitem[]">   <input type="hidden" value="{{$fakturdt->fpdt_updatedstock}}" class="updatedstock"> </td>
                           
                       <td class='edit{{$index + 1}}'> <button class='btn btn-sm btn-danger removes-itm' data-id='{{$index + 1}}' type='button'> <i class='fa fa-trash'></i> </button></td> 
 
@@ -1625,14 +1625,24 @@
           dataType : 'json',
           success : function (response){
             console.log(response);
-             if(response == 'sukses') {
+             if(response.status == 'sukses') {
                 alertSuccess(); 
              // window.location.href = baseUrl + "/fakturpembelian/fakturpembelian";
              $('.simpanupdate').attr('disabled' , true);
              idfaktur = $('.idfaktur').val();
                 html = "<a class='btn btn-info btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+idfaktur+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
               $('.printpo').html(html);
-             }
+              }
+              else if (response.status == 'gagal'){
+               swal({
+                  title: "error!",
+                          type: 'error',
+                          text: response.info,
+                          timer: 900,
+                         showConfirmButton: false
+                       
+                  });
+            }
           },
           error : function(){
            swal("Error", "Server Sedang Mengalami Masalah", "error");
@@ -5649,6 +5659,7 @@
 	});
 });
 
+   $('.tmbh-brg').hide();
 $('.tampilpo').change(function(){
   $(this).val('update');
 })
