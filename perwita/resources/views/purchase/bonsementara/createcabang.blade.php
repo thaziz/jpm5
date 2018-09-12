@@ -47,7 +47,7 @@
                 <div class="ibox-title" style="background: white">
                     <div  style="background: white" >
                       <h5> Bon Sementara </h5>
-                      <a href="{{ url('bonsementaracabang/bonsementaracabang') }}" class="pull-right" style="color: white"><i class="fa fa-arrow-left"> Kembali</i></a>
+                      <a href="{{ url('bonsementaracabang/bonsementaracabang') }}" class="pull-right" style="color: black"><i class="fa fa-arrow-left"> Kembali</i></a>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -87,7 +87,7 @@
 
                         <th> No Nota </th>
                                             <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
-                        <td> <input type="text" class="form-control input-sm nonota" name="nonota" required="">  </td>
+                        <td> <input type="text" class="form-control input-sm nonota" name="nonota" required="" readonly="">  </td>
                       </tr>
                       <tr>  
                       <th> Tanggal </th>

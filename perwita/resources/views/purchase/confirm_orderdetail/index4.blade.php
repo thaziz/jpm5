@@ -370,16 +370,16 @@
                    <!--  supplier -->
                     <tr class="data-supplier">
                       @foreach($data['suppliertb'] as $index=>$spptb)
-                      <td class="supid supplier{{$index}}" data-id="{{$index}}" data-supplier="{{$spptb->cotb_supplier}}"> 
-                            <select class="input-sm form-control chosen-select supplier{{$index}} sup" name="supplier3[]" disabled="" data-supplier="{{$spptb->cotb_supplier}}" data-id="{{$index}}" style="color:#000">
+                      <td class="supid supplier{{$index}}" data-id="{{$index}}" data-supplier="{{$spptb->cotbk_supplier}}"> 
+                            <select class="input-sm form-control chosen-select supplier{{$index}} sup" name="supplier3[]" disabled="" data-supplier="{{$spptb->cotbk_supplier}}" data-id="{{$index}}" style="color:#000">
                              @foreach($data['supplier'] as $sup)
-                              <option value="{{$sup->idsup}},{{$sup->syarat_kredit}}" @if($spptb->cotb_supplier == $sup->idsup) selected="" @endif>  {{$sup->nama_supplier}} 
+                              <option value="{{$sup->idsup}},{{$sup->syarat_kredit}}" @if($spptb->cotbk_supplier == $sup->idsup) selected="" @endif>  {{$sup->nama_supplier}} 
                              @endforeach
                             </select>
                           </div>
                    
                         </div>
-                          <input type="hidden" value="{{$spptb->cotb_bayar}}" name="spptb_bayar[]" class="bayar{{$index}}">
+                          <input type="hidden" value="{{$spptb->cotbk_bayar}}" name="spptb_bayar[]" class="bayar{{$index}}">
                       </td> 
                       @endforeach
                     </tr>
@@ -437,7 +437,7 @@
 
                         <tr class="totalbiaya"> <td colspan="6" style="text-align: center"> <b> Total Biaya </b> </td> 
                         @foreach($data['codt_tb'] as $spptb)
-                          <td data-suppliertotal="{{$spptb->cotb_supplier}}"> <div class='form-group'> <label class='col-sm-2 col-sm-2 control-label'> Rp </label> <div class='col-sm-8'> <input type='text' class='input-sm form-control totalbiaya'  value="{{number_format($spptb->cotb_totalbiaya, 2)}}" readonly="" > </div>  </div></td>
+                          <td data-suppliertotal="{{$spptb->cotbk_supplier}}"> <div class='form-group'> <label class='col-sm-2 col-sm-2 control-label'> Rp </label> <div class='col-sm-8'> <input type='text' class='input-sm form-control totalbiaya'  value="{{number_format($spptb->cotbk_totalbiaya, 2)}}" readonly="" > </div>  </div></td>
                           @endforeach
                         </tr>
 <!-- 

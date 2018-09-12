@@ -382,7 +382,7 @@ class BonSementaraController extends Controller
 			$updatepb->bp_nominaladmin = $nominal;
 			$updatepb->bp_setujuadmin = $request->statuskacab;
 			$updatepb->time_setujukacab = $date;
-			if($request->bp_setujuadmin == 'TIDAK SETUJU') {
+			if($request->statuskacab == 'TIDAK SETUJU') {
 				$updatepb->status_pusat = "TIDAK DISETUJUI PUSAT"; 
 			}
 			else {
@@ -407,7 +407,7 @@ class BonSementaraController extends Controller
 			$updatepb->bp_setujukeu = $request->statuskacab;
 			//$updatepb->status_pusat = 'DISETUJUI MENKEU';
 			
-			if($request->bp_setujukeu == 'TIDAK SETUJU') {
+			if($request->statuskacab == 'TIDAK SETUJU') {
 				$updatepb->status_pusat = "TIDAK DISETUJUI MENKEU"; 
 			}
 			else {
