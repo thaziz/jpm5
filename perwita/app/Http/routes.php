@@ -2271,10 +2271,10 @@ Route::post('master_keuangan/saldo_akun/update', [
 
 //saldo piutang
 
-Route::get('master_keuangan/saldo_piutang/cek', [
-  'uses' => 'master_keuangan\saldo_piutang_controller@cek',
-  'as'   => 'saldo_piutang.cek'
-]);
+// Route::get('master_keuangan/saldo_piutang/cek', [
+//   'uses' => 'master_keuangan\saldo_piutang_controller@cek',
+//   'as'   => 'saldo_piutang.cek'
+// ]);
 
 Route::get('master_keuangan/saldo_piutang/{cabang}', [
   'uses' => 'master_keuangan\saldo_piutang_controller@index',
@@ -2289,6 +2289,11 @@ Route::get('master_keuangan/saldo_piutang/add/{parrent}', [
 Route::post('master_keuangan/saldo_piutang/save', [
   'uses' => 'master_keuangan\saldo_piutang_controller@save',
   'as'   => 'saldo_piutang.save'
+]);
+
+Route::post('master_keuangan/saldo_piutang/get_invoice', [
+  'uses' => 'master_keuangan\saldo_piutang_controller@invoice',
+  'as'   => 'saldo_piutang.invoice'
 ]);
 
 //end saldo piutang

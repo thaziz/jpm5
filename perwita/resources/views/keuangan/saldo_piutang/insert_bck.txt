@@ -61,7 +61,7 @@
       <form id="customer_form">
         <table width="100%" border="0" class="table-form" style="margin-top: 10px;">
           <tr>
-            <th>Pilih Cabang</th>
+            <th width="30%">Pilih Cabang</th>
             <td>
               <select name="customer" class="chosen-select" id="cabang" name="cabang" style="background: red;">
                 <option value="---">- Pilih Cabang</option>
@@ -78,14 +78,14 @@
               <select name="customer" class="chosen-select" id="customer" name="customer" style="background: red;">
                 <option value="---">- Pilih Customer</option>
                 @foreach ($cust as $customer)
-                  <option value="{{ $customer->kode }}" data-nama="{{ $customer->nama }}" data-alamat="{{ $customer->alamat }}">{{ $customer->kode }}</option>
+                  <option value="{{ $customer->kode }}" data-nama="{{ $customer->nama }}" data-alamat="{{ $customer->alamat }}">{{ $customer->kode }} - {{ $customer->nama }}</option>
                 @endforeach
               </select>
             </td>
           </tr>
 
           <tr>
-            <th>Nama</th>
+            <th>Nama Customer</th>
             <td>
               <input type="text" class="form-control" id="nama_cust" placeholder="" style="height: 30px;" disabled>
             </td>
@@ -108,7 +108,7 @@
           <tr>
             <th>Saldo Awal</th>
             <td>
-              <input type="text" class="form-control currency" id="saldo_awal" placeholder="0" style="height: 30px; text-align: right;" readonly>
+              <input type="text" class="form-control currency" name="saldo_awal" id="saldo_awal" placeholder="0" style="height: 30px; text-align: right;">
             </td>
           </tr>
 
@@ -124,35 +124,35 @@
         <tr>
           <th>Nomor Faktur</th>
           <td>
-            <input type="text" class="form-control" placeholder="Masukkan Nomor Faktur" style="height: 30px;" id="nomor_faktur">
+            <input type="text" class="form-control" placeholder="Masukkan Nomor Faktur" style="height: 30px;" id="nomor_faktur" disabled>
           </td>
         </tr>
 
         <tr>
           <th>Tanggal Faktur</th>
           <td>
-            <input type="text" class="form-control tgl_faktur" placeholder="Tanggal/Bulan/Tahun" style="height: 30px; cursor: pointer;background: white;" readonly id="tanggal_faktur">
+            <input type="text" class="form-control tgl_faktur" placeholder="Tanggal/Bulan/Tahun" style="height: 30px; cursor: not-allowed;background: white;" id="tanggal_faktur" disabled>
           </td>
         </tr>
 
         <tr>
           <th>Jatuh Tempo</th>
           <td>
-            <input type="text" class="form-control jatuh_tempo" placeholder="Tanggal/Bulan/Tahun" style="height: 30px;cursor: pointer;background: white;" readonly id="jatuh_tempo">
+            <input type="text" class="form-control jatuh_tempo" placeholder="Tanggal/Bulan/Tahun" style="height: 30px;cursor: not-allowed;background: white;" id="jatuh_tempo" disabled>
           </td>
         </tr>
 
         <tr>
           <th>Keterangan</th>
           <td>
-            <input type="text" class="form-control" placeholder="" style="height: 30px;" id="keterangan">
+            <input type="text" class="form-control" placeholder="" style="height: 30px;" id="keterangan" disabled>
           </td>
         </tr>
 
         <tr>
           <th>Jumlah</th>
           <td>
-            <input type="text" class="form-control currency" placeholder="0" style="height: 30px; text-align: right;" id="jumlah">
+            <input type="text" class="form-control currency" placeholder="0" style="height: 30px; text-align: right;" id="jumlah" disabled>
           </td>
         </tr>
 
@@ -366,6 +366,7 @@
       $customer = $("#customer").val();
       $periode = $("#periode").val();
       $cabang = $("#cabang").val();
+      $saldo = $("#saldo_awal").val();
 
       // alert($customer);
 
@@ -379,14 +380,17 @@
       $.ajax(baseUrl+"/master_keuangan/saldo_piutang/save",{
         type: "post",
         dataType: "json",
-        data: { cust: { customer: $customer, periode: $periode, cabang : $cabang }, detail: $data_detail, _token: "{{ csrf_token() }}" },
+        data: { cust: { saldo: $saldo, customer: $customer, periode: $periode, cabang : $cabang }, detail: $data_detail, _token: "{{ csrf_token() }}" },
         success: function(response){
 
           console.log(response);
+          reset_all();
 
           if(response.status == "sukses"){
             alert("Desain Berhasil Ditambahkan");
             reset_all();
+          }else if(response.status == "exist"){
+            alert("Customer Ini Sudah Diinputkan");
           }
         }
       })
@@ -434,13 +438,13 @@
     function reset_all(){
       detail_reset();
 
-      $("#cabang").val("---");
+      // $("#cabang").val("---");
       $("#customer").val("---");
-      $("#periode").val("");
+      $("#periode").val("{{ date("m/Y") }}");
       $("#nama_cust").val("");
       $("#alamat_cust").val("");
 
-      $('#cabang').trigger("chosen:updated");
+      // $('#cabang').trigger("chosen:updated");
       $('#customer').trigger("chosen:updated");
 
       $data_detail = [];

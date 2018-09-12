@@ -1018,6 +1018,7 @@ class KasController extends Controller
 					  ->get();
 
 		$akun_paket  = DB::table('master_persentase')
+					  ->where('cabang','GLOBAL')
 					  ->where('jenis_biaya',1)
 					  ->get();
 
