@@ -544,7 +544,7 @@
                                    </div>
                                
                                     <div class="col-md-3">
-                                      <table class="table" border="0">
+                                      <table class="table" border="0" id="tbltujuanpb">
                                       <tr>
                                         <th>
                                       Tujuan Pindah Buku :</th>
@@ -574,13 +574,7 @@
                                             </label>
                                         </div>
 
-                                         <div class="checkbox checkbox-info checkbox-circle">
-                                            <input id="jenisbayarbanktf" type="checkbox" name="jenisbayarbank" value="TRANSFER PRIBADI" class="metodebayar jenisbayarbanktf">
-                                            <label for="jenisbayarbanktf">
-                                                Transfer Pribadi
-                                            </label>
-                                        </div>
-                                     
+                                        
                                     </fieldset>
                                       <br>
                                       <br>                                      
@@ -622,6 +616,7 @@
                                 </div>
 
                                  <div class="col-xs-8 tujuanbankacc"> <!-- TRANSFERBANK TUJUAN ACCOUNT -->
+                                    <div class="col-xs-6">
                                     <table class="table">
                                       <tr>
                                       <th colspan="4" style="color:#009aa9"> <h3> Tujuan Bank : </h3> </th>
@@ -651,15 +646,13 @@
                                                   
                                                 </select>
                                       </td>
-                                     
-                                     <th> Nama Rekening Tujuan </th>
-                                      <td> <input type="text" class="input-sm form-control nmbank1" name="nama" readonly=""></td> 
+                                    
 
                                     </tr>
 
                                     <tr>
-                                      <th> Nominal </th>                                      
-                                      <td> <input type="text" class="input-sm form-control nominal nominaltujuanbank" style="text-align: right"> <input type="hidden" class="idbank"> </td>
+                                   {{--    <th> Nominal </th>                                      
+                                      <td> <input type="text" class="input-sm form-control nominal nominaltujuanbank" style="text-align: right"> <input type="hidden" class="idbank"> </td> --}}
 
                                       <td>
                                             <button class="btn btn-success btn-xs" type="button" id="tbmhdatainet">
@@ -672,8 +665,11 @@
                                       </td>
                                     </tr>
                                     </table>
+                                  </div>
+                                  <div class="col-xs-6">
 
 
+                                  </div>
                                 </div>
 
 
@@ -791,6 +787,8 @@
       $('.ibanking').hide();
       $('.kastujuan').hide();
       $('.tujuanbankpb').hide();
+        $('#tbltujuanpb').hide();
+
 
       $('.keterangan').change(function(){
         keterangan = $(this).val();
@@ -873,7 +871,7 @@
                             "<td>"+kodebank+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]' readonly> </td>" + //BANK TUJUAN
                             "<td> <input type='text' class='form-control norekening' value='"+norekening+"' readonly> </td>" + //NO REKENING TUJUAN
                             "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='hidden' class='kelompokbank' name='kelompokbank'> </td>" + //NAMA BANK TUJUAN
-                            "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> <input type='text' name='jenispindahbuku' value="+tujuanpindahbuku+"> </td>" + //NOMINAL
+                            "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"'  name='nominalbank[]' style='text-align:right' required> <input type='text' name='jenispindahbuku[]' value="+tujuanpindahbuku+"> </td>" + //NOMINAL
                             "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbid+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
                             $('#tbl-tfbank').append(row);
@@ -2772,6 +2770,7 @@
       metodebayar = $('.metodebayar:checked').val();
      /* alert(idjenis);*/
       if(idjenis == 12 ||idjenis == 11){
+        $('#tbltujuanpb').show();
         if(metodebayar == 'TRANSFER PRIBADI'){
             $('.transferbank').hide();
             $('.tujuanbankacc').hide();
