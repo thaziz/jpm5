@@ -446,7 +446,6 @@ Route::get('buktikaskeluar/datatable_bkk', 'kasKeluarController@datatable_bkk')-
 Route::get('buktikaskeluar/append_table', 'kasKeluarController@append_table');
 Route::get('buktikaskeluar/patty_cash', 'kasKeluarController@patty_cash');
 Route::get('buktikaskeluar/cari_patty', 'kasKeluarController@cari_patty');
-Route::get('buktikaskeluar/print', 'kasKeluarController@print');
 Route::get('buktikaskeluar/table_bonsem', 'kasKeluarController@table_bonsem');
 
 

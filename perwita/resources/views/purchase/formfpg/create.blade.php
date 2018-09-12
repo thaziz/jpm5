@@ -1050,13 +1050,33 @@
         if(jenisbayar == 12 || jenisbayar == 11){
             
         
-             if(kelompok == kelompoktujuan){
-                $('.kelompokbank').val('SAMA BANK');
+            kelompokbank1 = $('.kelompokbank').val();
+           if(kelompokbank1 != ''){
+              if(kelompokbank1 == 'SAMA BANK') {
+                 if(mbdt[i][0].mb_kelompok == kelompok){
+                   $('.kelompokbank').val('SAMA BANK');
+                  }
+                 else {
+                 $('.kelompokbank').val('BEDA BANK');
+                }
               }
-              else {
-                $('.kelompokbank').val('BEDA BANK');
-               
+              else if(kelompokbank1 == 'BEDA BANK') {
+                 if(mbdt[i][0].mb_kelompok == kelompok){
+                   $('.kelompokbank').val('BEDA BANK');
+                  }
+                 else {
+                 $('.kelompokbank').val('BEDA BANK');
+                }
+              }                              
+           }
+           else{
+             if(mbdt[i][0].mb_kelompok == kelompok){
+                   $('.kelompokbank').val('SAMA BANK');
+                  }
+                 else {
+                 $('.kelompokbank').val('BEDA BANK');
               }
+           }
             
         }
 
@@ -1075,12 +1095,33 @@
             $('#tbl-tfbank').append(row);
          
                
-                 if(kelompok == kelompoktujuan){
-                    $('.kelompokbank').val('SAMA BANK');
-                  }
-                  else {
-                    $('.kelompokbank').val('BEDA BANK');
-                  }
+                 kelompokbank1 = $('.kelompokbank').val();
+                 if(kelompokbank1 != ''){
+                    if(kelompokbank1 == 'SAMA BANK') {
+                       if(mbdt[i][0].mb_kelompok == kelompok){
+                         $('.kelompokbank').val('SAMA BANK');
+                        }
+                       else {
+                       $('.kelompokbank').val('BEDA BANK');
+                      }
+                    }
+                    else if(kelompokbank1 == 'BEDA BANK') {
+                       if(mbdt[i][0].mb_kelompok == kelompok){
+                         $('.kelompokbank').val('BEDA BANK');
+                        }
+                       else {
+                       $('.kelompokbank').val('BEDA BANK');
+                      }
+                    }                              
+                 }
+                 else{
+                   if(mbdt[i][0].mb_kelompok == kelompok){
+                         $('.kelompokbank').val('SAMA BANK');
+                        }
+                       else {
+                       $('.kelompokbank').val('BEDA BANK');
+                    }
+                 }
                 
 
                  $('.nominaltbltfbank').change(function(){
@@ -2313,14 +2354,33 @@
                         if(metodebayar == 'CHECK/BG'){
                           for(var i =0 ; i < mbdt.length; i++ ){
                             
-                             
-                               if(mbdt[i][0].mb_kelompok == kelompok){
-                                 $('.kelompokbank').val('SAMA BANK');
-                                }
-                                else {
-                                   $('.kelompokbank').val('BEDA BANK');
-                                 
-                                }
+                               kelompokbank1 = $('.kelompokbank').val();
+                               if(kelompokbank1 != ''){
+                                  if(kelompokbank1 == 'SAMA BANK') {
+                                     if(mbdt[i][0].mb_kelompok == kelompok){
+                                       $('.kelompokbank').val('SAMA BANK');
+                                      }
+                                     else {
+                                     $('.kelompokbank').val('BEDA BANK');
+                                    }
+                                  }
+                                  else if(kelompokbank1 == 'BEDA BANK') {
+                                     if(mbdt[i][0].mb_kelompok == kelompok){
+                                       $('.kelompokbank').val('BEDA BANK');
+                                      }
+                                     else {
+                                     $('.kelompokbank').val('BEDA BANK');
+                                    }
+                                  }                              
+                               }
+                               else{
+                                 if(mbdt[i][0].mb_kelompok == kelompok){
+                                       $('.kelompokbank').val('SAMA BANK');
+                                      }
+                                     else {
+                                     $('.kelompokbank').val('BEDA BANK');
+                                  }
+                               } 
                               
 
                             var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
@@ -2337,15 +2397,33 @@
                             arrnohapus.push(nomrbnk);
                             nomrbnk++;
 
-                               if(mbdt[i][0].mb_kelompok == kelompok){
-                                 $('.kelompokbank').val('SAMA BANK');
-                                }
-                                else {
-                                 $('.kelompokbank').val('BEDA BANK');
-
-                                }
-                              
-
+                               kelompokbank1 = $('.kelompokbank').val();
+                               if(kelompokbank1 != ''){
+                                  if(kelompokbank1 == 'SAMA BANK') {
+                                     if(mbdt[i][0].mb_kelompok == kelompok){
+                                       $('.kelompokbank').val('SAMA BANK');
+                                      }
+                                     else {
+                                     $('.kelompokbank').val('BEDA BANK');
+                                    }
+                                  }
+                                  else if(kelompokbank1 == 'BEDA BANK') {
+                                     if(mbdt[i][0].mb_kelompok == kelompok){
+                                       $('.kelompokbank').val('BEDA BANK');
+                                      }
+                                     else {
+                                     $('.kelompokbank').val('BEDA BANK');
+                                    }
+                                  }                              
+                               }
+                               else{
+                                 if(mbdt[i][0].mb_kelompok == kelompok){
+                                       $('.kelompokbank').val('SAMA BANK');
+                                      }
+                                     else {
+                                     $('.kelompokbank').val('BEDA BANK');
+                                  }
+                               }
                           }
                         }
                       }

@@ -170,6 +170,7 @@
                               <td width="120">SISA BONSEM</td>
                               <td>
                                 <input type="text" style="text-align: right" value="0" class="form-control sisa_bonsem" readonly=""  name="sisa_bonsem">
+                                <input type="hidden" style="text-align: right" value="0" class="form-control sisa_bonsem_master" readonly=""  name="sisa_bonsem_master">
                               </td>
                             </tr>
                           </table>
@@ -875,8 +876,8 @@
       }
     });
     if ($('.jenis_bayar').val() == 11) {
-      var sisa = $('.sisa_bonsem').val();
-      sisa     = sisa.replace(/[^0-9\-]+/g,"")/100;
+      var sisa = $('.sisa_bonsem_master').val();
+      sisa     = sisa.replace(/[^0-9\-]+/g,"");
 
       var total_bon = sisa - total;
       if (total_bon < 0) {
@@ -884,6 +885,7 @@
         $('.sisa_bonsem').val(accounting.formatMoney(0,"", 2, ".",','));
       }else{
         $('.sisa_bonsem').val(accounting.formatMoney(total_bon,"", 2, ".",','));
+        $('.total').val(accounting.formatMoney(0,"", 2, ".",','));
       }
     }else{
       $('.total').val(accounting.formatMoney(total,"", 2, ".",','));
@@ -2154,6 +2156,7 @@
   //     }); 
   //   }
   // }
+
   $('.nota_bonsem').click(function(){
     var cabang = $('.cabang').val();
     $.ajax({
@@ -2175,6 +2178,7 @@
 
     $('.nota_bonsem').val(bp_nota);
     $('.sisa_bonsem').val(accounting.formatMoney(bp_sisa,"", 2, ".",','));
+    $('.sisa_bonsem_master').val(bp_sisa);
     $('.modal_bonsem').modal('hide');
 
   }
@@ -2195,7 +2199,7 @@
   function printing() {
     var id = $('.id_header').val();
     $.ajax({
-        url:baseUrl + '/buktikaskeluar/print',
+        url:baseUrl + '/buktikaskeluar/printing',
         type:'get',
         data:{id},
         success:function(data){

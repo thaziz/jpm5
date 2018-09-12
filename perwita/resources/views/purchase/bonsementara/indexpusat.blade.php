@@ -153,8 +153,8 @@
                                       <div class="modal-body">
                                         <form id="statusadmin">
                                         <p> Status Admin Keuangan : <span class="label label-info statuskacab"> </span> </p>
-                                        <h3> <p > Data Kas Cabang <b class="namacabang">  </b> saat ini Rp <b class="kascabang">500,000.00</b> </p> </h3>
-
+                                        {{-- <h3> <p > Data Kas Cabang <b class="namacabang">  </b> saat ini Rp <b class="kascabang">500,000.00</b> </p> </h3>
+ --}}
                                           <table class="table" style="width:80%">
                                           <tr>
                                             <th> Cabang </th>
@@ -189,7 +189,7 @@
                                           </tr>
 
                                           <tr>
-                                            <th> Status Kepala Cabang </th>
+                                            <th> Status Admin Pusat </th>
                                             <td> <select class="form-control edit setujukacab" name="statuskacab" readonly> <option value="SETUJU"> Setuju </option> <option value="TIDAK SETUJU"> Tidak Setuju </select></td>
                                           </tr>
 
@@ -225,8 +225,8 @@
                                       <div class="modal-body">
                                         <form id="statuskeu">
                                         <p> Status Manager Keuangan : <span class="label label-info statuskacab"> </span> </p>
-                                        <h3> <p > Data Kas Cabang <b class="namacabang">  </b> saat ini Rp <b class="kascabang">500,000.00</b> </p> </h3>
-
+                                       {{--  <h3> <p > Data Kas Cabang <b class="namacabang">  </b> saat ini Rp <b class="kascabang">500,000.00</b> </p> </h3>
+ --}}
                                           <table class="table" style="width:80%">
                                           <tr>
                                             <th> Cabang </th>
@@ -261,8 +261,8 @@
                                           </tr>
 
                                           <tr>
-                                            <th> Status Kepala Cabang </th>
-                                            <td> <select class="form-control edit setujukacab" name="statuskacab" readonly> <option value="SETUJU"> Setuju </option> <option value="TIDAK SETUJU"> Tidak Setuju </select></td>
+                                            <th> Status Manajer Keuangan </th>
+                                            <td> <select class="form-control edit setujukacab" name="statuskacab"> <option value="SETUJU"> Setuju </option> <option value="TIDAK SETUJU"> Tidak Setuju </select></td>
                                           </tr>
 
                                           <tr>
