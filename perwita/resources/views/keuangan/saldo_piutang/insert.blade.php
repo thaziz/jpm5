@@ -63,7 +63,7 @@
           <tr>
             <th width="30%">Pilih Cabang</th>
             <td>
-              <select name="customer" class="chosen-select" id="cabang" name="cabang" style="background: red;">
+              <select name="customer" class="chosen-select" id="cabang_piutang" name="cabang" style="background: red;">
                 <option value="---">- Pilih Cabang</option>
                 @foreach ($cab as $cabang)
                   <option value="{{ $cabang->kode }}">{{ $cabang->nama }}</option>
@@ -78,7 +78,7 @@
               <select name="customer" class="chosen-select" id="customer" name="customer" style="background: red;">
                 <option value="---">- Pilih Customer</option>
                 @foreach ($cust as $customer)
-                  <option value="{{ $customer->kode }}" data-nama="{{ $customer->nama }}" data-alamat="{{ $customer->alamat }}">{{ $customer->kode }}</option>
+                  <option value="{{ $customer->kode }}" data-nama="{{ $customer->nama }}" data-alamat="{{ $customer->alamat }}">{{ $customer->kode }} - {{ $customer->nama }}</option>
                 @endforeach
               </select>
             </td>
@@ -108,7 +108,7 @@
           <tr>
             <th>Saldo Awal</th>
             <td>
-              <input type="text" class="form-control currency" name="saldo_awal" id="saldo_awal" placeholder="0" style="height: 30px; text-align: right;" readonly>
+              <input type="text" class="form-control currency" name="saldo_awal" id="saldo_awal" placeholder="0" style="height: 30px; text-align: right;">
             </td>
           </tr>
 
@@ -124,35 +124,35 @@
         <tr>
           <th>Nomor Faktur</th>
           <td>
-            <input type="text" class="form-control" placeholder="Masukkan Nomor Faktur" style="height: 30px;" id="nomor_faktur">
+            <input type="text" class="form-control" placeholder="Masukkan Nomor Faktur" style="height: 30px;" id="nomor_faktur" disabled>
           </td>
         </tr>
 
         <tr>
           <th>Tanggal Faktur</th>
           <td>
-            <input type="text" class="form-control tgl_faktur" placeholder="Tanggal/Bulan/Tahun" style="height: 30px; cursor: pointer;background: white;" readonly id="tanggal_faktur">
+            <input type="text" class="form-control tgl_faktur" placeholder="Tanggal/Bulan/Tahun" style="height: 30px; cursor: not-allowed;background: white;" id="tanggal_faktur" disabled>
           </td>
         </tr>
 
         <tr>
           <th>Jatuh Tempo</th>
           <td>
-            <input type="text" class="form-control jatuh_tempo" placeholder="Tanggal/Bulan/Tahun" style="height: 30px;cursor: pointer;background: white;" readonly id="jatuh_tempo">
+            <input type="text" class="form-control jatuh_tempo" placeholder="Tanggal/Bulan/Tahun" style="height: 30px;cursor: not-allowed;background: white;" id="jatuh_tempo" disabled>
           </td>
         </tr>
 
         <tr>
           <th>Keterangan</th>
           <td>
-            <input type="text" class="form-control" placeholder="" style="height: 30px;" id="keterangan">
+            <input type="text" class="form-control" placeholder="" style="height: 30px;" id="keterangan" disabled>
           </td>
         </tr>
 
         <tr>
           <th>Jumlah</th>
           <td>
-            <input type="text" class="form-control currency" placeholder="0" style="height: 30px; text-align: right;" id="jumlah">
+            <input type="text" class="form-control currency" placeholder="0" style="height: 30px; text-align: right;" id="jumlah" disabled>
           </td>
         </tr>
 
@@ -161,9 +161,7 @@
 
     <div class="col-md-12 m-t text-right" style="border-top: 1px solid #ddd; padding: 15px 10px 0px 10px">
       <i class="fa fa-times" style="color: red; cursor: pointer; display: none;" data-toggle="tooltip" data-placement="right" title="Bersihkan Form Detail Saldo Piutang" id="cancel"></i> &nbsp; &nbsp; 
-      <button class="btn btn-default btn-sm" id="tambah"><i class="fa fa-plus-square-o"></i>&nbsp;Tambahkan</button>
-      <button class="btn btn-primary btn-sm" disabled id="edit"><i class="fa fa-edit"></i>&nbsp;Edit</button>
-      <button class="btn btn-danger btn-sm" disabled id="hapus"><i class="fa fa-times"></i>&nbsp;Hapus</button>
+      <button class="btn btn-primary btn-sm" id="search"><i class="fa fa-search"></i>&nbsp;Pencarian Faktur</button>
       <button class="btn btn-success btn-sm" id="simpan"><i class="fa fa-check"></i>&nbsp;Simpan</button>
     </div>
 
@@ -184,7 +182,7 @@
 
         <tbody id="body_detail">
           
-
+            <td colspan="5" class="text-center text-muted">Lengkapi Data Form Master. Lalu Klik Pencarian Faktur Untuk Menampilkan Data Faktur Customer Terkait.</td>
 
         </tbody>
       </table>
@@ -213,9 +211,7 @@
 
     $data_detail = [];
 
-    fill_detail();
-
-    $(".chosen-select").chosen({width: '100%'});
+    $(".chosen-select").chosen({width: '20em'});
 
     $('.bulan').datepicker({
         format: "mm/yyyy",
@@ -252,33 +248,51 @@
         oncleared: function () { self.Value(''); }
     });
 
-    $("#tambah").click(function(evt){
+    $("#search").click(function(evt){
       evt.stopImmediatePropagation();
-      
-      nomor_faktur = $("#nomor_faktur").val().toUpperCase();
-      tanggal_faktur = $("#tanggal_faktur").val();
-      jatuh_tempo = $("#jatuh_tempo").val();
-      keterangan = $("#keterangan").val().toUpperCase();
-      jumlah = $("#jumlah").val().split(',')[0].replace(/\./g, '');
 
-      // alert(jumlah);
+      $customer = $("#customer").val();
+      $periode = $("#periode").val();
+      $cabang = $("#cabang_piutang").val();
 
-      if(nomor_faktur == "" || tanggal_faktur == "" || jatuh_tempo == "" || keterangan == "" || jumlah == ""){
-        $("#detail_saldo_piutang").tooltip("show")
-        $("#detail_saldo_piutang" ).effect( "shake" );
+      // alert($("#cabang_piutang").val());
+
+      if($customer == "---" || $periode == "" || $cabang == "---"){
+        $("#master_saldo_piutang").tooltip("show");
+        $( "#master_saldo_piutang" ).effect("shake");
+
         return false;
       }
 
-      $data_detail[$data_detail.length] = {
-          nomor_faktur    : nomor_faktur,
-          tanggal_faktur  : tanggal_faktur,
-          jatuh_tempo     : jatuh_tempo,
-          keterangan      : keterangan,
-          jumlah          : jumlah
-      }
+      let html = '<td colspan="5" class="text-center text-muted">'+
+                    '<i class="fa fa-spinner fa-pulse fa-fw"></i> &nbsp; Sedang Mencari Faktur. Harap Tunggu..'+
+                    '<span class="sr-only">Loading...</span>'+
+                  '</td>';
+      
+      $('#body_detail').html(html);
 
-      fill_detail();
-      detail_reset();
+      $.ajax(baseUrl+"/master_keuangan/saldo_piutang/get_invoice",{
+        type: "post",
+        dataType: "json",
+        data: { customer: $customer, periode: $periode, cabang : $cabang, _token: "{{ csrf_token() }}" },
+        success: function(response){
+          console.log(response);
+          if(response.status == "sukses"){
+            alert("Desain Berhasil Ditambahkan");
+            reset_all();
+          }else if(response.status == "exist"){
+            alert("Customer Ini Sudah Diinputkan");
+          }
+        },error: function(err){
+          let html = '<td colspan="5" class="text-center text-muted">'+
+                        '<i class="fa fa-frown-o fa-fw"></i> &nbsp; Ups . Mohon Maaf. Terjadi Masalah, Coba Lagi Nanti..'+
+                        '<span class="sr-only">Loading...</span>'+
+                      '</td>';
+
+          $('#body_detail').html(html);
+        }
+      })
+
     });
 
     $("#body_detail").on("click", ".row-detail", function(evt){
@@ -365,7 +379,7 @@
 
       $customer = $("#customer").val();
       $periode = $("#periode").val();
-      $cabang = $("#cabang").val();
+      $cabang = $("#cabang_piutang").val();
       $saldo = $("#saldo_awal").val();
 
       // alert($customer);
@@ -438,13 +452,13 @@
     function reset_all(){
       detail_reset();
 
-      // $("#cabang").val("---");
+      // $("#cabang_piutang").val("---");
       $("#customer").val("---");
       $("#periode").val("{{ date("m/Y") }}");
       $("#nama_cust").val("");
       $("#alamat_cust").val("");
 
-      // $('#cabang').trigger("chosen:updated");
+      // $('#cabang_piutang').trigger("chosen:updated");
       $('#customer').trigger("chosen:updated");
 
       $data_detail = [];
