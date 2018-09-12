@@ -276,14 +276,24 @@
         dataType: "json",
         data: { customer: $customer, periode: $periode, cabang : $cabang, _token: "{{ csrf_token() }}" },
         success: function(response){
-          console.log(response);
-          if(response.status == "sukses"){
-            alert("Desain Berhasil Ditambahkan");
-            reset_all();
-          }else if(response.status == "exist"){
-            alert("Customer Ini Sudah Diinputkan");
-          }
+          // console.log(response);
+          let html = ''; $data_detail = [];
+          detail_reset();
+
+          $.each(response, function(i, n){
+              $data_detail[$data_detail.length] = {
+                  nomor_faktur    : n.i_nomor,
+                  tanggal_faktur  : n.i_tanggal,
+                  jatuh_tempo     : n.i_jatuh_tempo,
+                  keterangan      : n.i_keterangan,
+                  jumlah          : n.i_total_tagihan
+              }
+          })
+
+          fill_detail();
+
         },error: function(err){
+          detail_reset();
           let html = '<td colspan="5" class="text-center text-muted">'+
                         '<i class="fa fa-frown-o fa-fw"></i> &nbsp; Ups . Mohon Maaf. Terjadi Masalah, Coba Lagi Nanti..'+
                         '<span class="sr-only">Loading...</span>'+
@@ -420,8 +430,8 @@
       $.each($data_detail, function(i, n){
         $html = $html + '<tr class="row-detail" data-nf = "'+n.nomor_faktur+'">'+
                   '<td>'+n.nomor_faktur+'</td>'+
-                  '<td>'+n.tanggal_faktur+'</td>'+
-                  '<td>'+n.jatuh_tempo+'</td>'+
+                  '<td class="text-center">'+n.tanggal_faktur+'</td>'+
+                  '<td class="text-center">'+n.jatuh_tempo+'</td>'+
                   '<td>'+n.keterangan+'</td>'+
                   '<td class="text-right">'+addCommas(n.jumlah)+',00</td>'+
                 '</tr>';

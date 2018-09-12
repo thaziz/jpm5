@@ -431,6 +431,7 @@ class saldo_piutang_controller extends Controller
                     ->where('i_kode_customer', $request->customer)
                     ->where('i_kode_cabang', $request->cabang)
                     ->where('i_tanggal', '<', $date)
+                    ->orderBy('i_tanggal')
                     ->get();
 
       return json_encode($data);
