@@ -85,9 +85,9 @@
                            <tr>
                               <td> 
                                <b> Tgl Input  </b>
-                              </td>
+                              </td> {{$spp->spp_tglinput}}
                               <td> 
-                                @if($spp->spp_tglinput == '')
+                                @if($spp->spp_tglinput == null)
                                    <input type='text' class='form-control' value="{{ Carbon\Carbon::parse($spp->tglinput)->format('d-M-Y ')}}" readonly=""> 
                                 @else
                                    <input type='text' class='form-control' value="{{ Carbon\Carbon::parse($spp->spp_tglinput)->format('d-M-Y ')}}" readonly=""> 
