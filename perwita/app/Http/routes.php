@@ -2072,7 +2072,7 @@ Route::get('master_keuangan/err_cek', function(){
 
 
 // neraca saldo
-Route::post('master_keuangan/neraca-saldo/single', [
+Route::get('master_keuangan/neraca-saldo/single', [
   'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
   'as'   => 'neraca_saldo.index'
 ]);
@@ -2156,7 +2156,7 @@ Route::get('master_keuangan/laba_rugi/pdf/single/{throtle}', [
 
 // buku besar
 
-Route::post('master_keuangan/buku_besar/single', [
+Route::get('master_keuangan/buku_besar/single', [
   'uses' => 'master_keuangan\laporan\laporan_buku_besar@index_buku_besar_single',
   'as'   => 'buku_besar.index_single'
 ]);
@@ -2191,7 +2191,7 @@ Route::get('master_keuangan/buku_besar/pdf/single/{throtle}', [
 
 // register jurnal
   
-  Route::post('master_keuangan/register_jurnal/single', [
+  Route::get('master_keuangan/register_jurnal/single', [
     'uses' => 'master_keuangan\laporan\laporan_register_jurnal@print_pdf_register_single',
     'as'   => 'register_jurnal.index_single'
   ]);
