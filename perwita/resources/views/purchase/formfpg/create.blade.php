@@ -675,8 +675,7 @@
                                                 </select>
                                       </td>
                                      
-                                     <th> Nama Rekening Tujuan </th>
-                                      <td> <input type="text" class="input-sm form-control nmbank1" name="nama" readonly=""></td> 
+                                   
 
                                     </tr>
 
