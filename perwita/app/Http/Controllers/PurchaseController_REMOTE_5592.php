@@ -4974,12 +4974,13 @@ public function purchase_order() {
 	public function stockgudang() {
 		$cabang = session::get('cabang');
 		$data['cabang'] = master_cabang::all();
-		if($cabang == 000){
+		$data['gudang'] = DB::select("select * from mastergudang");
+		/*if($cabang == 000){
 			$data['gudang'] = DB::select("select * from mastergudang");
 		}
 		else {
 			$data['gudang'] = DB::select("select * from mastergudang where mg_cabang = '$cabang'");
-		}
+		}*/
 
 
 		if($cabang == 000){
@@ -5038,7 +5039,7 @@ public function purchase_order() {
 		$cabang = $request->cabang;
 
 	//	return $groupitem;
-		$barang= DB::select("select * from master_akun_fitur, itemsupplier, masteritem where maf_kode_akun = kode_item and is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem' and maf_cabang = '$cabang'");
+		$barang= DB::select("select * from itemsupplier, masteritem where is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem'");
 		//return json_encode($barang);
 
 		if(count($barang) > 0) {
@@ -5048,11 +5049,11 @@ public function purchase_order() {
 		}
 		else {
 			if($stock == 'Y'){
-				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where updatestock = '$updatestock' and jenisitem = '$groupitem' and maf_kode_akun = kode_item and maf_cabang = '$cabang'");
+				$data['barang']= DB::select("select * from masteritem where updatestock = '$updatestock' and jenisitem = '$groupitem'");
 				$data['status'] = 'Tidak Terikat Kontrak';
 			}
 			else {
-				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where jenisitem = '$groupitem' and maf_kode_akun = kode_item and maf_cabang = '$cabang'");
+				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where jenisitem = '$groupitem'");
 				$data['status'] = 'Tidak Terikat Kontrak';	
 			}
 
@@ -8272,8 +8273,8 @@ public function kekata($x) {
 
 				if($akundka2 == 'K'){
 					$datajurnal[$j]['id_akun'] = $request->akun[$j];
-					$datajurnal[$j]['subtotal'] = $jumlah;
-					$datajurnal[$j]['dk'] = 'K';
+					$datajurnal[$j]['subtotal'] = '-' . $jumlah;
+					$datajurnal[$j]['dk'] = 'D';
 					$datajurnal[$j]['detail'] = $request->keterangan[$j];
 
 				}
@@ -9169,6 +9170,8 @@ public function kekata($x) {
 		return view('purchase/formfpg/index' , compact('data'));
 	}
 
+
+
 	public function createformfpg() {
 
 		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
@@ -9449,6 +9452,21 @@ public function kekata($x) {
 		return view('purchase/formfpg/fpg', compact('data'));
 	}
 
+	public function caritransaksi(Request $request){
+		$cabang = $request->cabang;
+		$jenisbayar = $request->jenisbayar;
+
+		if($jenisbayar == '12'){
+
+			$data['transaksi'] = DB::select("select * from ikhtisar_kas where ik_comp = '$cabang' and ik_status = 'APPROVED' and ik_pelunasan != 0.00 ");
+		}
+		else if($jenisbayar == '11') {
+			$data['transaksi'] = DB::select("select * from bonsem_pengajuan where bp_cabang = '$cabang' and bp_setujukeu = 'SETUJU' and bp_pelunasan != 0.00 ");
+		}
+
+		return json_encode($data);
+
+	}
 
 	public function printformfpg2 ($id){
 		$fpg = DB::select("select * from fpg, fpg_dt where idfpg ='$id'");
@@ -9634,6 +9652,8 @@ public function kekata($x) {
 
 				}
 				else if($idjenisbayar == '11') { // BON SEMENTARA
+
+
 					$datas['fp']  = DB::select("select * from bonsem_pengajuan, cabang where  bp_cabang = '$nosupplier' and bp_cabang = kode and bp_setujukeu = 'SETUJU' and bp_pelunasan != 0.00");
 
 					$datas['fp1']  = DB::select("select * from bonsem_pengajuan, cabang where  bp_cabang = '$nosupplier' and bp_cabang = kode and bp_setujukeu = 'SETUJU' and bp_pelunasan != 0.00");
@@ -11117,7 +11137,7 @@ public function kekata($x) {
 		$data['stock'] = $stock;
 
 
-		$barang= DB::select("select * from master_akun_fitur, itemsupplier, masteritem where is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem' and maf_kode_akun = kode_item and maf_cabang = '$cabang'");
+		$barang= DB::select("select * from itemsupplier, masteritem where is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem'");
 		//return json_encode($barang);
 
 
@@ -11128,11 +11148,11 @@ public function kekata($x) {
 		}
 		else {
 			if($stock == 'Y'){
-				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where updatestock = '$updatestock' and jenisitem = '$groupitem' and maf_kode_akun = kode_item and maf_cabang = '$cabang'");
+				$data['barang']= DB::select("select * from masteritem, where updatestock = '$updatestock' and jenisitem = '$groupitem'");
 				$data['status'] = 'Tidak Terikat Kontrak';
 			}
 			else {
-				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where jenisitem = '$groupitem' and maf_kode_akun = kode_item and maf_cabang = '$cabang'");
+				$data['barang']= DB::select("select * from masteritem, where jenisitem = '$groupitem'");
 				$data['status'] = 'Tidak Terikat Kontrak';	
 			}
 

@@ -4974,12 +4974,13 @@ public function purchase_order() {
 	public function stockgudang() {
 		$cabang = session::get('cabang');
 		$data['cabang'] = master_cabang::all();
-		if($cabang == 000){
+		$data['gudang'] = DB::select("select * from mastergudang");
+		/*if($cabang == 000){
 			$data['gudang'] = DB::select("select * from mastergudang");
 		}
 		else {
 			$data['gudang'] = DB::select("select * from mastergudang where mg_cabang = '$cabang'");
-		}
+		}*/
 
 
 		if($cabang == 000){
@@ -9451,14 +9452,16 @@ public function kekata($x) {
 		return view('purchase/formfpg/fpg', compact('data'));
 	}
 
-	public function caritransaksi(){
+	public function caritransaksi(Request $request){
 		$cabang = $request->cabang;
 		$jenisbayar = $request->jenisbayar;
+
 		if($jenisbayar == '12'){
-			$data['transaksi'] = DB::select("select * from ikhtisar_kas where ik_comp = '$cabang' and ik_status = 'APPROVED");
+
+			$data['transaksi'] = DB::select("select * from ikhtisar_kas where ik_comp = '$cabang' and ik_status = 'APPROVED' and ik_pelunasan != 0.00 ");
 		}
 		else if($jenisbayar == '11') {
-			$data['transaksi'] = DB::select("select * from bonsem_pengajuan where bp_cabang = '$cabang' and bp_setujukeu = 'SETUJU'");
+			$data['transaksi'] = DB::select("select * from bonsem_pengajuan where bp_cabang = '$cabang' and bp_setujukeu = 'SETUJU' and bp_pelunasan != 0.00 ");
 		}
 
 		return json_encode($data);

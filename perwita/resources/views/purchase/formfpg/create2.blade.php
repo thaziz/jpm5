@@ -514,7 +514,7 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <button style="min-height:0;" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
-                    <h4 class="modal-title" style="text-align: center;"> Data Data </h4>     
+                    <h4 class="modal-title" style="text-align: center;"> Data Transaksi </h4>     
                   </div>
                                 
                   <div class="modal-body"> 
@@ -522,7 +522,7 @@
                       <thead>
 
                         <tr> 
-                          <th>No</th> <th> Cabang </th> <th> No Transaksi </th> <th> Nominal </th> <th> </th>
+                          <th>No</th> <th> Nota Transaksi </th> <th> Cabang </th> <th> Nominal </th> <th> </th>
                         </tr>
                       </thead>
                     <tbody>
@@ -847,31 +847,62 @@
       $('#getNotaTransaksi').click(function(){
         jenisbayar = $('.jenisbayar').val();
         cabang = $('.cabang').val();
+        datacabang = ['017', '008' , '001'];
+       
+        temp = 0;
+        for(i = 0; i < datacabang.length; i++){
+          if(cabang == datacabang[i]){
+            temp = 1;
+          }
+        }
+
+        if(temp == 0){
+            toastr.info("Kode Cabang memiliki Bank Cabang :) tidak bisa menggunakan fitur ini");
+          return false;
+        }
+
           $.ajax({
             type : "get",
             url : baseUrl + "/formfpg/caritransaksi",
             data : {jenisbayar,cabang},
             dataType : "json",
             success : function(response){
-              if(jenisbayar == 11){
+              
+              alert(jenisbayar);
+              if(jenisbayar == 12){
                   datatransaksi = response.transaksi;
                   var tabletransaksi = $('#tbl-transaksi').DataTable();
                   tabletransaksi.clear().draw();
                     var nmrbnk = 1;
+                    alert(datatransaksi.length);
                     for(var i = 0; i < datatransaksi.length; i++){                                   
-                        var html2 = "<tr class='bank"+nmrbnk+"' id='datatransaksi"+nmrbnk+"'>"+
-                                      "<td>"+nmrbnk+"</td>" +
-                                      "<td>"+datatransaksi[i].ik_nota+"</td>"+
-                                      "<td>"+datatransaksi[i].ik_cabang+"</td>"+
-                                      "<td>"++"</td>"+
-
-                                    "<tr>"+
-                         tablecek.rows.add($(html2)).draw(); 
+                       var  html2 = "<tr>" +
+                                    "<td>"+ nmrbnk +"</td>" +
+                                    "<td>"+ datatransaksi[i].ik_nota +"</td>" +
+                                    "<td>"+ datatransaksi[i].ik_comp +"</td>" +
+                                    "<td style='text-align:right'>"+ addCommas(datatransaksi[i].ik_total) +"</td>" + 
+                                    "<td> <div class='checkbox'> <input type='checkbox' id="+datatransaksi[i].ik_id+","+nmrbnk+","+datatransaksi[i].ik_nota+" class='checkcek' value='option1' aria-label='Single checkbox One'> <label> </label> </div></td>" +
+                                    "</tr>";
+                         tabletransaksi.rows.add($(html2)).draw(); 
                         nmrbnk++; 
                  }
               }
-              else if(jenisbayar == 12){
-
+              else if(jenisbayar == 11){
+                  datatransaksi = response.transaksi;
+                  var tabletransaksi = $('#tbl-transaksi').DataTable();
+                  tabletransaksi.clear().draw();
+                    var nmrbnk = 1;
+                    /*for(var i = 0; i < datatransaksi.length; i++){                                   
+                        var html2 = "<tr class='bank"+nmrbnk+"' id='caritransaksi"+nmrbnk+"'>"+
+                                      "<td>"+nmrbnk+"</td>" +
+                                      "<td>"+datatransaksi[i].bp_nota+"</td>"+
+                                      "<td>"+datatransaksi[i].bp_cabang+"</td>"+
+                                      "<td>"+datatransaksi[i].bp_nominalkeu+"</td>"+
+                                       html2 += "<td><div class='checkbox'> <input type='checkbox' id="+datatransaksi[i].bp_id+","+nmrbnk+","+datatransaksi[i].bp_nota+" class='checkcek' value='option1' aria-label='Single checkbox One'>";
+                                    "<tr>";
+                         tablecek.rows.add($(html2)).draw(); 
+                        nmrbnk++; 
+                 }*/
               }
            }
           })
