@@ -9169,6 +9169,8 @@ public function kekata($x) {
 		return view('purchase/formfpg/index' , compact('data'));
 	}
 
+
+
 	public function createformfpg() {
 
 		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
@@ -9449,6 +9451,19 @@ public function kekata($x) {
 		return view('purchase/formfpg/fpg', compact('data'));
 	}
 
+	public function caritransaksi(){
+		$cabang = $request->cabang;
+		$jenisbayar = $request->jenisbayar;
+		if($jenisbayar == '12'){
+			$data['transaksi'] = DB::select("select * from ikhtisar_kas where ik_comp = '$cabang' and ik_status = 'APPROVED");
+		}
+		else if($jenisbayar == '11') {
+			$data['transaksi'] = DB::select("select * from bonsem_pengajuan where bp_cabang = '$cabang' and bp_setujukeu = 'SETUJU'");
+		}
+
+		return json_encode($data);
+
+	}
 
 	public function printformfpg2 ($id){
 		$fpg = DB::select("select * from fpg, fpg_dt where idfpg ='$id'");
@@ -9634,6 +9649,8 @@ public function kekata($x) {
 
 				}
 				else if($idjenisbayar == '11') { // BON SEMENTARA
+
+
 					$datas['fp']  = DB::select("select * from bonsem_pengajuan, cabang where  bp_cabang = '$nosupplier' and bp_cabang = kode and bp_setujukeu = 'SETUJU' and bp_pelunasan != 0.00");
 
 					$datas['fp1']  = DB::select("select * from bonsem_pengajuan, cabang where  bp_cabang = '$nosupplier' and bp_cabang = kode and bp_setujukeu = 'SETUJU' and bp_pelunasan != 0.00");

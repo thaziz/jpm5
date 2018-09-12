@@ -506,7 +506,44 @@
                 </div>
               </div>
            </div> <!-- END MODAL -->   <!-- MODAL NO FAKTUR -->
-        
+          
+           <!-- Modal cari Nota Transaksi -->
+                          <!-- MODAL NO FAKTUR -->
+              <div class="modal fade" id="myModalTransaksi" tabindex="-1" role="dialog"  aria-hidden="true">
+              <div class="modal-dialog" style="min-width: 1200px !important; min-height: 800px">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button style="min-height:0;" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
+                    <h4 class="modal-title" style="text-align: center;"> Data Data </h4>     
+                  </div>
+                                
+                  <div class="modal-body"> 
+                    <table class="table table-bordered tbl-transaksi" id="tbl-transaksi">
+                      <thead>
+
+                        <tr> 
+                          <th>No</th> <th> Cabang </th> <th> No Transaksi </th> <th> Nominal </th> <th> </th>
+                        </tr>
+                      </thead>
+                    <tbody>
+
+                    </tbody>
+                    </table>
+                  </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-primary" id="buttongetid">Simpan</button>
+                       
+                    </div>
+                </div>
+              </div>
+           </div> <!-- END MODAL Cari Nota Transaksi -->
+
+         
+
+
+
                             <div id="tab-2" class="tab-pane">
                                 <div class="panel-body">
                                    <div class="row">
@@ -608,11 +645,6 @@
 
                                     </tr>
                                     </table>
-
-
-                                    <div class="pull-right">
-                                        <button class="btn btn-sm btn-info" id="tmbhtujuan" type="button"> Tambah Rekening </button>
-                                    </div>
                                 </div>
 
                                  <div class="col-xs-8 tujuanbankacc"> <!-- TRANSFERBANK TUJUAN ACCOUNT -->
@@ -667,9 +699,27 @@
                                     </table>
                                   </div>
                                   <div class="col-xs-6">
+                                       <table class="table">
+                                      <tr>
+                                      <th colspan="4" style="color:#009aa9"> <h3> Tujuan Transaksi : </h3> </th>
+                                    </tr>
+
+                                    <tr>
+                                      <th> <i class="fa fa-search"> </i> Cari Nota </th>
+                                      <td> 
+                                        <input type="text" class="form-control carinotatransaksi input-sm" data-toggle="modal" data-target="#myModalTransaksi" id="getNotaTransaksi">
+                                      </td>
+                                      
+
+                                      <td>
+                                       
+                                      </td>
+                                    </tr>
+                                    </table>
 
 
                                   </div>
+
                                 </div>
 
 
@@ -714,7 +764,6 @@
                                       <th> Tanggal </th>
                                       <th> Asal Kode Bank </th>
                                       <th> Tujuan Kode Bank </th>
-                                      <th> No Rekening Tujuan </th>
                                       <th> Nama Rekening </th>
                                       <th> Nominal </th>
                                       <th> Aksi </th>
@@ -793,7 +842,41 @@
       $('.keterangan').change(function(){
         keterangan = $(this).val();
         $('.keterangandetail').val(keterangan);
+      });
+
+      $('#getNotaTransaksi').click(function(){
+        jenisbayar = $('.jenisbayar').val();
+        cabang = $('.cabang').val();
+          $.ajax({
+            type : "get",
+            url : baseUrl + "/formfpg/caritransaksi",
+            data : {jenisbayar,cabang},
+            dataType : "json",
+            success : function(response){
+              if(jenisbayar == 11){
+                  datatransaksi = response.transaksi;
+                  var tabletransaksi = $('#tbl-transaksi').DataTable();
+                  tabletransaksi.clear().draw();
+                    var nmrbnk = 1;
+                    for(var i = 0; i < datatransaksi.length; i++){                                   
+                        var html2 = "<tr class='bank"+nmrbnk+"' id='datatransaksi"+nmrbnk+"'>"+
+                                      "<td>"+nmrbnk+"</td>" +
+                                      "<td>"+datatransaksi[i].ik_nota+"</td>"+
+                                      "<td>"+datatransaksi[i].ik_cabang+"</td>"+
+                                      "<td>"++"</td>"+
+
+                                    "<tr>"+
+                         tablecek.rows.add($(html2)).draw(); 
+                        nmrbnk++; 
+                 }
+              }
+              else if(jenisbayar == 12){
+
+              }
+           }
+          })
       })
+
 
       //tambah data
       $('#tmbhdatajenisbayar').click(function(){
@@ -914,7 +997,7 @@
 
                           "<td>"+tgl+"</td>"+ // TGL
                           "<td>"+kodebank+"</td> <td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"'> </td>" + //JATUH TEMPO
-                          "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
+                          "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
                           "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbid+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
                           $('#tbl-bank').append(row);
@@ -2784,7 +2867,8 @@
         }
       }
       else {
-        metodebayar = $('.metodebayar').val();
+       metodebayar = $('.metodebayar:checked').val();
+         $('#tbltujuanpb').hide();
         if(metodebayar == 'INTERNET BANKING'){
                 $('.jenisbayarbankbg').prop({ checked: false });           
                   $('.tujuanbank').hide();
