@@ -109,12 +109,18 @@
                     </button>
                 </div> --}}
 
-                <div class="">
+                {{-- <div class="">
                     <button class="btn btn-success" onclick="bankmasuk()">
                         created ulang bank masuk
                     </button>
-                </div>
+                </div> --}}
 
+                 <div class="">
+                    <button class="btn btn-success" onclick="duplicatebank()">
+                        duplicate bank masuk
+                    </button>
+                </div>
+                
                 <div class="box-body">
              
                 </div><!-- /.box-body -->
