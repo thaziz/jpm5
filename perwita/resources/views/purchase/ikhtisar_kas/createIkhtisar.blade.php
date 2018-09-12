@@ -127,11 +127,11 @@
                 </td>
                 @endif
             </tr>
-            <tr>
+            <tr class="disabled">
               <td>Jenis Ikhtisar Kas</td>
               <td>
                   <select class="jenis_ik form-control" name="jenis_ik ">
-                    <option value="REGULER">REGULER</option>
+                    <option selected="" value="REGULER">REGULER</option>
                     <option value="BONSEM">PENGEMBALIAN BONSEM</option>
                   </select>                        
               </td>
