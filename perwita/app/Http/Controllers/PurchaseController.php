@@ -3767,7 +3767,7 @@ public function purchase_order() {
 		} // jika stock iya
 
 			$cekjurnal = check_jurnal($lpb);
-    		/*if($cekjurnal == 0){
+    		if($cekjurnal == 0){
     			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
 				DB::rollback();
 									        
@@ -3775,9 +3775,9 @@ public function purchase_order() {
     		elseif($cekjurnal == 1) {
     			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
 					        
-    		}*/
+    		}
 
-    		$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+    	//	$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
  
         return json_encode($dataInfo);
 
@@ -5038,7 +5038,7 @@ public function purchase_order() {
 		$cabang = $request->cabang;
 
 	//	return $groupitem;
-		$barang= DB::select("select * from master_akun_fitur, itemsupplier, masteritem where maf_kode_akun = kode_item and is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem' and maf_cabang = '$cabang'");
+		$barang= DB::select("select * from itemsupplier, masteritem where is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem'");
 		//return json_encode($barang);
 
 		if(count($barang) > 0) {
@@ -5048,11 +5048,11 @@ public function purchase_order() {
 		}
 		else {
 			if($stock == 'Y'){
-				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where updatestock = '$updatestock' and jenisitem = '$groupitem' and maf_kode_akun = kode_item and maf_cabang = '$cabang'");
+				$data['barang']= DB::select("select * from masteritem where updatestock = '$updatestock' and jenisitem = '$groupitem'");
 				$data['status'] = 'Tidak Terikat Kontrak';
 			}
 			else {
-				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where jenisitem = '$groupitem' and maf_kode_akun = kode_item and maf_cabang = '$cabang'");
+				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where jenisitem = '$groupitem'");
 				$data['status'] = 'Tidak Terikat Kontrak';	
 			}
 
@@ -8272,8 +8272,8 @@ public function kekata($x) {
 
 				if($akundka2 == 'K'){
 					$datajurnal[$j]['id_akun'] = $request->akun[$j];
-					$datajurnal[$j]['subtotal'] = $jumlah;
-					$datajurnal[$j]['dk'] = 'K';
+					$datajurnal[$j]['subtotal'] = '-' . $jumlah;
+					$datajurnal[$j]['dk'] = 'D';
 					$datajurnal[$j]['detail'] = $request->keterangan[$j];
 
 				}
@@ -9682,7 +9682,7 @@ public function kekata($x) {
 
 	public function updatefaktur(Request $request){
 		return DB::transaction(function() use ($request) { 
-		
+		$tgl = $request->tgl;
 		$countidpo = count($request->po_id);
 	//	return $countidpo;
 		$idpo = [];
@@ -10136,8 +10136,8 @@ public function kekata($x) {
 									$date = date('Y-m-d');
 									$jurnal = new d_jurnal();
 									$jurnal->jr_id = $idjurnal;
-							        $jurnal->jr_year = date('Y');
-							        $jurnal->jr_date = date('Y-m-d');
+							        $jurnal->jr_year =Carbon::parse($request->tgl)->format('Y');
+							        $jurnal->jr_date = $request->tgl;
 							        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
 							        $jurnal->jr_ref = $nofaktur;
 							        $jurnal->jr_note = $request->keterangan;
@@ -10164,6 +10164,18 @@ public function kekata($x) {
 						    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
 						    			$jurnaldt->save();
 						    			$key++;
+						    		}
+
+
+						    		$cekjurnal = check_jurnal($nofaktur);
+						    		if($cekjurnal == 0){
+						    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal KM Tidak Balance :('];
+										DB::rollback();
+															        
+						    		}
+						    		elseif($cekjurnal == 1) {
+						    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+											        
 						    		}
 								}
 								else { // jurnal FP PO
@@ -10222,8 +10234,8 @@ public function kekata($x) {
 										$date = date('Y-m-d');
 										$jurnal = new d_jurnal();
 										$jurnal->jr_id = $idjurnal;
-								        $jurnal->jr_year = date('Y');
-								        $jurnal->jr_date = date('Y-m-d');
+								        $jurnal->jr_year = Carbon::parse($request->tgl)->format('Y');
+								        $jurnal->jr_date = $request->tgl;
 								        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
 								        $jurnal->jr_ref = $nofaktur;
 								        $jurnal->jr_note = $request->keterangan;
@@ -10323,8 +10335,8 @@ public function kekata($x) {
 										$date = date('Y-m-d');
 										$jurnal = new d_jurnal();
 										$jurnal->jr_id = $idjurnal;
-								        $jurnal->jr_year = date('Y');
-								        $jurnal->jr_date = date('Y-m-d');
+								        $jurnal->jr_year = Carbon::parse($request->tgl)->format('Y');
+								        $jurnal->jr_date = $request->tgl;
 								        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
 								        $jurnal->jr_ref = $nofaktur;
 								        $jurnal->jr_note = $request->keterangan;
@@ -10456,8 +10468,8 @@ public function kekata($x) {
 										$date = date('Y-m-d');
 										$jurnal = new d_jurnal();
 										$jurnal->jr_id = $idjurnal;
-								        $jurnal->jr_year = date('Y');
-								        $jurnal->jr_date = date('Y-m-d');
+								        $jurnal->jr_year = Carbon::parse($request->tgl)->format('Y');
+								        $jurnal->jr_date = $request->tgl;
 								        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
 								        $jurnal->jr_ref = $nofaktur;
 								        $jurnal->jr_note = $request->keterangan;
@@ -10495,7 +10507,18 @@ public function kekata($x) {
 							    			$key++;
 							    		}	
 
-								}
+							    		$cekjurnal = check_jurnal($nofaktur);
+							    		if($cekjurnal == 0){
+							    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
+											DB::rollback();
+																        
+							    		}
+							    		elseif($cekjurnal == 1) {
+							    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idfaktur];
+												        
+							    		}
+
+									}
 								}
 								
 								//UPDATE UM
@@ -10747,13 +10770,14 @@ public function kekata($x) {
 										else {
 											$idjurnal = 1;
 										}
-									
+										
+
 										$year = date('Y');	
 										$date = date('Y-m-d');
 										$jurnal = new d_jurnal();
 										$jurnal->jr_id = $idjurnal;
-								        $jurnal->jr_year = date('Y');
-								        $jurnal->jr_date = date('Y-m-d');
+								        $jurnal->jr_year = Carbon::parse($request->tglbbk)->format('Y');
+								        $jurnal->jr_date = $request->tgl;
 								        $jurnal->jr_detail = 'UANG MUKA PEMBELIAN FP';
 								        $jurnal->jr_ref = $nofaktur;
 								        $jurnal->jr_note = $request->keteranganumheader;
@@ -10805,9 +10829,20 @@ public function kekata($x) {
 							    			$key++;
 
 										}
+
+										$cekjurnal = check_jurnal($nofaktur);
+										if($cekjurnal == 0){
+								    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
+												DB::rollback();
+																	        
+								    		}
+								    		elseif($cekjurnal == 1) {
+								    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idfaktur];
+													        
+								    		}
 					    		}
 					    		
-
+					    		return json_encode($dataInfo);
 								  	
 /*
 					                $notransaksi = $request->nokas[$i];
@@ -10844,7 +10879,7 @@ public function kekata($x) {
 					                }*/
 
 
-		return json_encode('sukses');
+		
 	});
 	}
 
@@ -11082,7 +11117,7 @@ public function kekata($x) {
 		$data['stock'] = $stock;
 
 
-		$barang= DB::select("select * from master_akun_fitur, itemsupplier, masteritem where is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem' and maf_kode_akun = kode_item and maf_cabang = '$cabang'");
+		$barang= DB::select("select * from itemsupplier, masteritem where is_idsup = '$idsup' and is_updatestock = '$updatestock' and is_kodeitem = kode_item and is_jenisitem = '$groupitem'");
 		//return json_encode($barang);
 
 
@@ -11093,11 +11128,11 @@ public function kekata($x) {
 		}
 		else {
 			if($stock == 'Y'){
-				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where updatestock = '$updatestock' and jenisitem = '$groupitem' and maf_kode_akun = kode_item and maf_cabang = '$cabang'");
+				$data['barang']= DB::select("select * from masteritem, where updatestock = '$updatestock' and jenisitem = '$groupitem'");
 				$data['status'] = 'Tidak Terikat Kontrak';
 			}
 			else {
-				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where jenisitem = '$groupitem' and maf_kode_akun = kode_item and maf_cabang = '$cabang'");
+				$data['barang']= DB::select("select * from masteritem, where jenisitem = '$groupitem'");
 				$data['status'] = 'Tidak Terikat Kontrak';	
 			}
 
