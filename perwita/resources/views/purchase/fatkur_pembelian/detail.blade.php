@@ -285,7 +285,7 @@
                            @endif
 
                            @if($data['faktur'][0]->fp_edit != 'UNALLOWED')
-                           <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a>
+                         {{--   <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a> --}}
                            @endif
                          
 
