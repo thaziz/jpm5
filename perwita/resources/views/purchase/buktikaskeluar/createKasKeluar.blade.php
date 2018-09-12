@@ -1002,7 +1002,7 @@
     if (temp == 0) {
       $('#save_patty').addClass('disabled');
     }
-
+    
     hitung_pt();
   }
 

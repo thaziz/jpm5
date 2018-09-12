@@ -436,7 +436,6 @@ $(document).ready(function(){
   });
 //////////////////////////////////////////////////////
  function jenis_kendaraan(){
-
   var id = $('.jenis_kendaraan').val();
   var jenis = $('.jenis_kendaraan').val();
   var nama_kas = $('.nama_kas').val();
