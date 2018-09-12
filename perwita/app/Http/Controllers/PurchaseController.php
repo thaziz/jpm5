@@ -5033,6 +5033,9 @@ public function purchase_order() {
 
 	public function updatestockbarang(Request $request){
 		$idsup = $request->idsup;
+		$datasup = explode("+" , $idsup);
+		$idsup = $datasup[0];
+
 		$updatestock = $request->updatestock;
 		$groupitem = $request->groupitem;
 		$stock = $request->stock;
