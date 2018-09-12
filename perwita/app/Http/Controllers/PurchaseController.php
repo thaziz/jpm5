@@ -5053,7 +5053,7 @@ public function purchase_order() {
 				$data['status'] = 'Tidak Terikat Kontrak';
 			}
 			else {
-				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where jenisitem = '$groupitem'");
+				$data['barang']= DB::select("select * from masteritem where jenisitem = '$groupitem'");
 				$data['status'] = 'Tidak Terikat Kontrak';	
 			}
 
@@ -11148,11 +11148,11 @@ public function kekata($x) {
 		}
 		else {
 			if($stock == 'Y'){
-				$data['barang']= DB::select("select * from masteritem, where updatestock = '$updatestock' and jenisitem = '$groupitem'");
+				$data['barang']= DB::select("select * from masteritem where updatestock = '$updatestock' and jenisitem = '$groupitem'");
 				$data['status'] = 'Tidak Terikat Kontrak';
 			}
 			else {
-				$data['barang']= DB::select("select * from masteritem, where jenisitem = '$groupitem'");
+				$data['barang']= DB::select("select * from masteritem where jenisitem = '$groupitem'");
 				$data['status'] = 'Tidak Terikat Kontrak';	
 			}
 

@@ -5053,7 +5053,7 @@ public function purchase_order() {
 				$data['status'] = 'Tidak Terikat Kontrak';
 			}
 			else {
-				$data['barang']= DB::select("select * from masteritem, master_akun_fitur where jenisitem = '$groupitem'");
+				$data['barang']= DB::select("select * from masteritem where jenisitem = '$groupitem'");
 				$data['status'] = 'Tidak Terikat Kontrak';	
 			}
 
@@ -9194,7 +9194,7 @@ public function kekata($x) {
 		}
 
 		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
-			$data['tujuanbankkas'] = DB::select("select * from d_akun where id_akun = '100111008' or id_akun = '100111001' or id_akun = '1100114017'");
+			$data['tujuanbankkas'] = DB::select("select * from d_akun where id_akun = '100111008' or id_akun = '100111001' or id_akun = '100114017'");
 		}
 		else {
 			//$data['tujuanbank'] = DB::select("select * from masterbank wher mb_cabangbank = '$cabang'");
@@ -11148,11 +11148,11 @@ public function kekata($x) {
 		}
 		else {
 			if($stock == 'Y'){
-				$data['barang']= DB::select("select * from masteritem, where updatestock = '$updatestock' and jenisitem = '$groupitem'");
+				$data['barang']= DB::select("select * from masteritem where updatestock = '$updatestock' and jenisitem = '$groupitem'");
 				$data['status'] = 'Tidak Terikat Kontrak';
 			}
 			else {
-				$data['barang']= DB::select("select * from masteritem, where jenisitem = '$groupitem'");
+				$data['barang']= DB::select("select * from masteritem where jenisitem = '$groupitem'");
 				$data['status'] = 'Tidak Terikat Kontrak';	
 			}
 
