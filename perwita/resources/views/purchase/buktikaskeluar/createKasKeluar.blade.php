@@ -2199,7 +2199,7 @@
   function printing() {
     var id = $('.id_header').val();
     $.ajax({
-        url:baseUrl + '/buktikaskeluar/print',
+        url:baseUrl + '/buktikaskeluar/printing',
         type:'get',
         data:{id},
         success:function(data){
