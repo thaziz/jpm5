@@ -79,6 +79,14 @@
         <h5>Laporan Patty Cash</h5>
         <a href="../ikhtisar_kas/index" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
       </div>
+      <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="col-md-4" style="min-height: 100px">
+          <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <h2 style="text-align:left"> <b>Notice</b></h2> <h4 style="text-align:left">Ikhtisar Bonsem Masih Dalam Perbaikan Terima Kasih.</h4>
+          </div>
+        </div>
+      </div>
       <div class="ibox-content col-sm-12">
         <div class="col-sm-6">
           <table class="table table_header ">
@@ -127,11 +135,11 @@
                 </td>
                 @endif
             </tr>
-            <tr>
+            <tr class="disabled">
               <td>Jenis Ikhtisar Kas</td>
               <td>
                   <select class="jenis_ik form-control" name="jenis_ik ">
-                    <option value="REGULER">REGULER</option>
+                    <option selected="" value="REGULER">REGULER</option>
                     <option value="BONSEM">PENGEMBALIAN BONSEM</option>
                   </select>                        
               </td>

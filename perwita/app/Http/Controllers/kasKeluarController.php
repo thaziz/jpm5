@@ -1293,8 +1293,10 @@ class kasKeluarController extends Controller
 				
 
 				$cari_bonsem = DB::table('bonsem_pengajuan')
-								 ->where('bp_nota',$req->nota_bonsem)
+								 ->where('bpk_nota',$req->nota_bonsem)
 								 ->first();
+				$total_bonsem = $cari_bonsem->bp_pelunasan - filter_var($req->sisa_bonsem, FILTER_SANITIZE_NUMBER_INT)/100;
+
 
 				$header = DB::table('bukti_kas_keluar')
 					  ->where('bkk_nota',$nota)
