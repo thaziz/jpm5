@@ -773,6 +773,24 @@
                                   </div>
                                 </div>
 
+
+                                <div class="col-md-12 dataalltransaksi">
+                                    <br>
+                                    <br>
+                                    <hr>
+                                    <div class="table-responsive">
+                                      <h3> Data Transaksi </h3>
+                                      <table class="table table-bordered" id="tbl-dataalltransaksi" style="background-color: grey;color:white">
+                                        <tr>
+                                            <th> Nomor </th>
+                                            <th> Nota Transaksi </th>
+                                            <th> Cabang Transaksi </th>
+                                            <th> Nominal </th>
+                                        </tr>
+                                      </table>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
@@ -836,8 +854,8 @@
       $('.ibanking').hide();
       $('.kastujuan').hide();
       $('.tujuanbankpb').hide();
-        $('#tbltujuanpb').hide();
-
+      $('#tbltujuanpb').hide();
+      $('.datatransaksi').hide();
 
       $('.keterangan').change(function(){
         keterangan = $(this).val();
@@ -2885,6 +2903,7 @@
      /* alert(idjenis);*/
       if(idjenis == 12 ||idjenis == 11){
         $('#tbltujuanpb').show();
+        $('.datatransaksi').show();
         if(metodebayar == 'TRANSFER PRIBADI'){
             $('.transferbank').hide();
             $('.tujuanbankacc').hide();
@@ -2900,6 +2919,7 @@
       else {
        metodebayar = $('.metodebayar:checked').val();
          $('#tbltujuanpb').hide();
+         $('.datatransaksi').hide();
         if(metodebayar == 'INTERNET BANKING'){
                 $('.jenisbayarbankbg').prop({ checked: false });           
                   $('.tujuanbank').hide();
