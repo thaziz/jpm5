@@ -12,7 +12,21 @@ class analisa_piutang_Controller extends Controller
     public function index(){
         $customer = DB::select(" SELECT kode,nama FROM customer ORDER BY nama ASC ");
         $cabang   = DB::select(" SELECT kode,nama FROM cabang ORDER BY kode ASC ");
-
+        if (Auth::user()->punyaAkses('Laporan Penjualan','cabang')) {
+            $piutang  = DB::table('d_akun')
+                      ->select('id_akun','nama_akun')
+                      ->where('id_akun','like','13%')
+                      ->orderBy('id_akun','ASC')
+                      ->get();
+        }else{
+            $piutang  = DB::table('d_akun')
+                      ->select('id_akun','nama_akun')
+                      ->where('id_akun','like','13%')
+                      ->where('kode_cabang',Auth::user()->kode_cabang)
+                      ->orderBy('id_akun','ASC')
+                      ->get();
+        }
+        
         return view('purchase/master/master_penjualan/laporan/lap_analisa_piutang/lap_analisapiutang',compact('customer','piutang','cabang'));
     }
 
