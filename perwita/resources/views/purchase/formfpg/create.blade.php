@@ -1024,9 +1024,11 @@
 
            }
 
-      noinet = 1;     
+    //  noinet = 1;     
       $('#tbmhdatainet').click(function(){
+        noinet = parseInt($('.tbltfbank').length) + 1;
 
+      
         banktujuan =$('.banktujuan').val();
         asalbank = $('.bankasal').val();
 
@@ -1053,11 +1055,14 @@
 
         if(jenisbayar == 12 || jenisbayar == 11){
             
-        
+          if(noinet > 1){
+            toastr.info("Tidak bisa mengisi lebih dari 1 transaksi :)");
+            return false;
+          }
             kelompokbank1 = $('.kelompokbank').val();
            if(kelompokbank1 != ''){
               if(kelompokbank1 == 'SAMA BANK') {
-                 if(mbdt[i][0].mb_kelompok == kelompok){
+                 if(kelompok == kelompoktujuan){
                    $('.kelompokbank').val('SAMA BANK');
                   }
                  else {
@@ -1065,7 +1070,7 @@
                 }
               }
               else if(kelompokbank1 == 'BEDA BANK') {
-                 if(mbdt[i][0].mb_kelompok == kelompok){
+                 if(kelompok == kelompoktujuan){
                    $('.kelompokbank').val('BEDA BANK');
                   }
                  else {
@@ -1074,7 +1079,7 @@
               }                              
            }
            else{
-             if(mbdt[i][0].mb_kelompok == kelompok){
+             if(kelompok == kelompoktujuan){
                    $('.kelompokbank').val('SAMA BANK');
                   }
                  else {
@@ -1102,7 +1107,7 @@
                  kelompokbank1 = $('.kelompokbank').val();
                  if(kelompokbank1 != ''){
                     if(kelompokbank1 == 'SAMA BANK') {
-                       if(mbdt[i][0].mb_kelompok == kelompok){
+                       if(kelompok == kelompoktujuan){
                          $('.kelompokbank').val('SAMA BANK');
                         }
                        else {
@@ -1110,7 +1115,7 @@
                       }
                     }
                     else if(kelompokbank1 == 'BEDA BANK') {
-                       if(mbdt[i][0].mb_kelompok == kelompok){
+                       if(kelompok == kelompoktujuan){
                          $('.kelompokbank').val('BEDA BANK');
                         }
                        else {
@@ -1119,7 +1124,7 @@
                     }                              
                  }
                  else{
-                   if(mbdt[i][0].mb_kelompok == kelompok){
+                   if(kelompok == kelompoktujuan){
                          $('.kelompokbank').val('SAMA BANK');
                         }
                        else {
@@ -2272,6 +2277,8 @@
     $('#buttongetcek').click(function(){
 
         lengthbank = $('.tblbank').length;
+
+        nomrbnk = parseInt(nomrbnk) + 1;
         databank = $('.bank').val();
         $('.valbank').val(databank);
      
@@ -2287,6 +2294,10 @@
 
         jenisbayar = $('.jenisbayar').val();
         if(jenisbayar == 12 || jenisbayar == 11){
+         if(nomrbnk > 1){
+            toastr.info("Mohon maaf untuk saat ini, data transaksi tidak bs lebih dari 1 cek bg :) ")
+          }
+
           banktujuan = $('.banktujuan').val();
           if(banktujuan == ''){
             toastr.info("Mohon maaf bank tujuan belum dipilih :)");

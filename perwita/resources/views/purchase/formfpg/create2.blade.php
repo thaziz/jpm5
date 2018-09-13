@@ -881,7 +881,7 @@
         cabang = [];
         total =[];
         nota = [];
-        nmr = 1;
+        nmr = parseInt($('.datatransaksipb').length) + 1;
         for(z=0;z<variabel.length;z++){
           string = variabel[z].split(",");
           cabang.push(string[3]);
@@ -891,7 +891,7 @@
 
 
        for($i = 0; $i < variabel.length; $i++){
-          var row = "<tr class='data"+nmr+"'><td>"+nota[0]+"</td><td>"+cabang[0]+"</td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[0])+"</p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+"><i class='fa fa-trash'> </i> </button></td> </tr>";
+          var row = "<tr class='datatransaksipb data"+nmr+"'><td>"+nota[$i]+"</td><td>"+cabang[$i]+"</td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[$i])+"</p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+"><i class='fa fa-trash'> </i> </button></td> </tr>";
             $('#tbl-dataalltransaksi').append(row);
             nmr++;
        }
@@ -908,6 +908,7 @@
 
           $('.removes-transaksi').click(function(){
               id = $(this).data('id');
+              alert(id);
               $('.data' + id).remove();
               harga = $('.totaltransaksi').val();
               totalbayar = $('.totbayar').val();
@@ -992,6 +993,11 @@
          kelompok_mb = $('kelompokbank_mb').val();
         if(metodebayar == 'CHECK/BG'){
           noseri = $('.nocheck').val();
+          if(noseri == ''){
+            toastr.info("Data No seri cek kosong, mohon diisi :)");
+            return false;
+          }
+
           mbid = $('.mb_id').val();
            bank = $('.bank').val();
            kelompokbank = $('.kelompokbank_mb').val();
@@ -1059,7 +1065,7 @@
                             "<td>"+tgl+"</td>"+ // TGL
                             "<td>"+kodebank+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]' readonly> </td>" + //BANK TUJUAN
                             "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='hidden' class='kelompokbank' name='kelompokbank'> </td>" + //NAMA BANK TUJUAN
-                            "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"'  name='nominalbank[]' style='text-align:right' required> <input type='text' name='jenispindahbuku[]' value="+tujuanpindahbuku+"> </td>" + //NOMINAL
+                            "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"'  name='nominalbank[]' style='text-align:right' required> <input type='hidden' name='jenispindahbuku[]' value="+tujuanpindahbuku+"> </td>" + //NOMINAL
                             "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbid+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
                             $('#tbl-tfbank').append(row);
@@ -1079,17 +1085,18 @@
                                 $('.kelompokbank').val('KAS');
                               }
                             
-
+                              totalgiro = 0;
                               $('.nominaltblbank').change(function(){
                                 val = $(this).val();
                                 val = accounting.formatMoney(val, "", 2, ",",'.');
                                 $(this).val(val);
-                                       totalgiro = 0;
+                                       
 
                                       $('.nominaltblbank').each(function(){
                                          hargaasli = $(this).val();
                                          aslinominal = hargaasli.replace(/,/g, '');
-                                          totalgiro = (parseFloat(totalgiro) + parseFloat(totalgiro)).toFixed(2);
+
+                                          totalgiro = (parseFloat(totalgiro) + parseFloat(aslinominal)).toFixed(2);
                                       })
                                       $('.ChequeBg').val(addCommas(totalgiro));
 
