@@ -881,17 +881,19 @@
         cabang = [];
         total =[];
         nota = [];
+        id = [];
         nmr = parseInt($('.datatransaksipb').length) + 1;
         for(z=0;z<variabel.length;z++){
           string = variabel[z].split(",");
           cabang.push(string[3]);
           total.push(string[4]);
           nota.push(string[2]);
+          id.push(string[0]);
         }
 
 
        for($i = 0; $i < variabel.length; $i++){
-          var row = "<tr class='datatransaksipb data"+nmr+"'><td>"+nota[$i]+"</td><td>"+cabang[$i]+"</td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[$i])+"</p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+"><i class='fa fa-trash'> </i> </button></td> </tr>";
+          var row = "<tr class='datatransaksipb data"+nmr+"'><td>"+nota[$i]+" <input type='hidden' value='"+id[$i]+"' name='idfaktur[]'> </td><td>"+cabang[$i]+" <input type='hidden' value='"+nota[$i]+"' name='nofaktur[]'> </td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[$i])+"</p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+"><i class='fa fa-trash'> </i> </button></td> </tr>";
             $('#tbl-dataalltransaksi').append(row);
             nmr++;
        }
@@ -1814,9 +1816,23 @@
         })
 
         metodebayar = $('.metodebayar:checked').val();
+        jenisbayar = $('.jenisbayar').val();
         if(metodebayar == 'CHECK/BG'){
           nominalbankasal = $('.nominalbankasal').val();
-          
+          totalnominal = 0;
+          $('.nominalcekbg').each(function(){
+            nominal = $(this).val();
+            nominal = nominal.replace(/,/g, '');
+            totalnominal = parseFloat(totalnominal) + parseFloat(nominal);
+          })
+
+          totalnominal = addCommas(totalnominal).toFixed(2);
+          alert(nominalbankasal);
+          alert(totalnominal);
+          if(nominalbankasal != totalnominal){
+            toastr.info("Mohon maaf, nominal seluruhnya tidak sama dengan nominal cek bg asal :)");
+            return false;
+          }
         }
 
         $('.pelunasanitem').each(function(){

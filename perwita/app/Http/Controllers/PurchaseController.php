@@ -9182,12 +9182,12 @@ public function kekata($x) {
 		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
 			$fpg = DB::select("select * from fpg");
 			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by fpg_tgl asc");
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by fpg_nofpg desc");
 		}
 		else {
 			$fpg = DB::select("select * from fpg where fpg_cabang = '$cabang'");
 			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_tgl asc");
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_nofpg asc");
 		}
 	
 
