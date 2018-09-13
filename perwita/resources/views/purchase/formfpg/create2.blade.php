@@ -1043,7 +1043,6 @@
                         idakun = split[0];
                       }
                         if(metodebayar == 'CHECK/BG'){
-         
                             
                               if(tujuanpindahbuku == 'BANK'){
                                  if(kelompok_mb == kelompok){
@@ -1065,7 +1064,7 @@
                             "<td>"+tgl+"</td>"+ // TGL
                             "<td>"+kodebank+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]' readonly> </td>" + //BANK TUJUAN
                             "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='hidden' class='kelompokbank' name='kelompokbank'> </td>" + //NAMA BANK TUJUAN
-                            "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"'  name='nominalbank[]' style='text-align:right' required> <input type='hidden' name='jenispindahbuku[]' value="+tujuanpindahbuku+"> </td>" + //NOMINAL
+                            "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominalcekbg nominaltblbank nominalbank"+nomrbnk+"'  name='nominalbank[]' style='text-align:right' required> <input type='hidden' name='jenispindahbuku[]' value="+tujuanpindahbuku+"> </td>" + //NOMINAL
                             "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbid+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
                             $('#tbl-tfbank').append(row);
@@ -1121,7 +1120,7 @@
 
                           "<td>"+tgl+"</td>"+ // TGL
                           "<td>"+kodebank+"</td> <td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"'> </td>" + //JATUH TEMPO
-                          "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
+                          "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalcekbg nominalbank"+nomrbnk+"' name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
                           "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbid+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
                           $('#tbl-bank').append(row);
@@ -1813,6 +1812,12 @@
             temp = temp + 1;
           }
         })
+
+        metodebayar = $('.metodebayar:checked').val();
+        if(metodebayar == 'CHECK/BG'){
+          nominalbankasal = $('.nominalbankasal').val();
+          
+        }
 
         $('.pelunasanitem').each(function(){
           valpelunasan = $(this).val();
