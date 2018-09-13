@@ -7590,7 +7590,7 @@ public function kekata($x) {
                         FROM d_akun a join d_jurnal_dt jd
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$jurnalRef')")); 
-		//	dd($data['bbkd']);
+			dd($data['bbkd']);
 			return view('purchase/pelunasanhutangbank/detail' , compact('data', 'jurnal_dt'));
 	}
 
@@ -7598,8 +7598,10 @@ public function kekata($x) {
 		$idbank = $request->kodebank;
 		$cabang = $request->cabang;
 
+	
+			$datas['fpgbank'] = DB::select("select * from fpg_cekbank,fpg where fpgb_kodebank = '$idbank' and fpgb_idfpg = idfpg and fpgb_posting is null and fpg_cabang = '$cabang' order by idfpg ASC");
+		
 
-		$datas['fpgbank'] = DB::select("select * from fpg_cekbank,fpg where fpgb_kodebank = '$idbank' and fpgb_idfpg = idfpg and fpgb_posting is null and fpg_cabang = '$cabang' order by idfpg ASC");
 
 
 
@@ -7766,7 +7768,6 @@ public function kekata($x) {
 		$bbk->bbk_akunbank = $akunhutangdagang;
 		$bbk->create_by = $request->username;
 		$bbk->update_by = $request->username;
-
 		$bbk->save();
 
 
@@ -8128,35 +8129,55 @@ public function kekata($x) {
 				}				
 				else if($jenisbayarfpg == '1') {
 				//jurnal GIRO KAS KECIL
+					$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
+					$notafpg = $datafpg[0]->fpg_nofpg;
+					$cabangtransaksi = $datafpg[0]->fpg_agen;
+					$now = Carbon::now();
+					$updatekm =
+					
+					DB::table('kas_masuk')
+					->where('km_idtransaksi' , $idfpg)
+					->update([
+						'km_tgl' => $request->tglbbk,
+						'created_at' => $now,
+						'updated_at' => $now
+					]);
+
 					$bulan = Carbon::parse($request->tglbbk)->format('m');
 					$year = Carbon::parse($request->tglbbk)->format('y');
-					$datanotakm = DB::select("select max(bbkd_notabm) as id from bukti_bank_keluar,bukti_bank_keluar_detail where bbkd_jenisbayarfpg = '1' and to_char(bbk_tgl, 'MM') = '$bulan' and to_char(bbk_tgl, 'YY') = '$year' and bbkd_idbbk = bbk_id and bbk_cabang = '$cabang'");
 
-						if($datanotakm[0]->id == null) {
-							$id = 0;
-							$string = (int)$id + 1;
-							$data['idkm'] = str_pad($string, 4, '0', STR_PAD_LEFT);
+					$datanotakm = DB::select("select max(km_nota) as id from kas_masuk where  to_char(km_tgl, 'MM') = '$bulan' and to_char(km_tgl, 'YY') = '$year' and km_cabangterima = '$cabangtransaksi'");
 
-						}
-						else {
-							$string = (int)$datanotakm[0]->id + 1;
-							$data['idkm'] = str_pad($string, 4, '0', STR_PAD_LEFT);
-						}
+							if($datanotakm[0]->id == null) {
+								$id = 0;
+								$string = (int)$id + 1;
+								$data['idkm'] = str_pad($string, 4, '0', STR_PAD_LEFT);
+
+							}
+							else {
+								$string = (int)$datanotakm[0]->id + 1;
+								$data['idkm'] = str_pad($string, 4, '0', STR_PAD_LEFT);
+							}
+
+							$notakm = 'KM/' . $bulan . $year . '/' . $cabang . '/' . $data['idkm'];
+
+					$updatekm = 
+					DB::table('kas_masuk')
+					->where('km_idtransaksi' , $idfpg)
+					->update([
+						'km_nota' => $notakm,
+						'km_status' => 'DITRANSFER',
+					]);
 					
-
-					
-
-
-					$notakm = 'KM/' . $bulan . $year . '/' . $cabang . '/' . $data['idkm'];
-				
 					$updatebbkd = bukti_bank_keluar_dt::where([['bbkd_id' ,'=' , $idbbkd ],['bbkd_idbbk' , '=' , $idbbk]]);
 						$updatebbkd->update([
 							'bbkd_notabm' => $notakm,
 						]);
 
+
 					$nominal = str_replace(',', '', $request->nominal[$i]);
 
-					
+						
 
 					$akunbank = $request->akunkodebank;
 					$dataakunkodebank = DB::select("select * from d_akun where id_akun = '$akunbank'");
@@ -9178,7 +9199,7 @@ public function kekata($x) {
 	public function createformfpg() {
 
 		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
-		$data['jenisbayar'] = DB::select("select * from jenisbayar where idjenisbayar != '8'  and idjenisbayar != 10");
+		$data['jenisbayar'] = DB::select("select * from jenisbayar where idjenisbayar != '8'  and idjenisbayar != 10 and idjenisbayar != 1 ");
 
 		$cabang = session::get('cabang');
 
@@ -9456,8 +9477,12 @@ public function kekata($x) {
 	}
 
 	public function caritransaksi(Request $request){
-		$cabang = $request->cabang;
+		
 		$jenisbayar = $request->jenisbayar;
+		$kas = explode("+" , $request->kas);
+
+		$datakas = DB::select("select * from d_akun where id_akun = '$kas[0]'");
+		$cabang = $datakas[0]->kode_cabang;
 
 		if($jenisbayar == '12'){
 
@@ -11842,6 +11867,7 @@ public function kekata($x) {
 						$updatikhtisar->update([
 						 	'ik_pelunasan' => $sisafaktur,	 	
 					 	]);	
+
 					}
 					else if($request->jenisbayar == 4){	
 						$nofaktur = $request->nofaktur[$i];
@@ -12023,8 +12049,7 @@ public function kekata($x) {
 									}
 									
 								
-						}	
-
+						}
 					}
 					else {
 						$formfpg_bank = new formfpg_bank();
@@ -12203,7 +12228,30 @@ public function kekata($x) {
 				}
 
 
-				
+				if($request->jenisbayar == '1'){
+
+						$lastidkm =  DB::table('kas_masuk')->max('km_id');;
+						if(isset($lastidkm)) {
+								$idkm = $lastidkm;
+								$idkm = (int)$idkm + 1;
+						}
+						else {
+								$idkm = 1;
+						} 
+
+					 $datakm = array(
+	                    'km_id' => strtoupper($idkm),
+	                    'km_cabangterima' => $cabang,
+	                    'km_idtransaksi' => $idfpg,
+	                    'km_notatransaksi' => $request->nofpg,
+	                    'created_by' => $request->username,
+	                    'updated_by' => $request->username,
+	                    'km_nominal' => $totalbayar,
+	                    'km_keterangan'=> strtoupper($request->keterangan),
+	                    'km_status' => 'DIKIRIM',
+               			 );
+	                $simpan = DB::table('kas_masuk')->insert($datakm);
+				}
 
 				$nofpg = $request->nofpg;
 				

@@ -796,4 +796,10 @@ class jurnal_pembelian  extends Controller
       return 'ok';
     });
     }
+
+
+    function kasmasuk(){
+      $datafpg = DB::select("select * from fpg where fpg_jenisbayar = '1'");
+      
+    }
 }

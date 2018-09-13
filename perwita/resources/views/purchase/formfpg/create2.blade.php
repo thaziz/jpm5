@@ -533,7 +533,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-                        <button type="button" class="btn btn-primary" id="buttongetid">Simpan</button>
+                        <button type="button" class="btn btn-primary" id="buttongettransaksi">Simpan</button>
                        
                     </div>
                 </div>
@@ -579,7 +579,10 @@
                                         </tr>
                                      </table>
                                    </div>
-                               
+                                  
+
+                                    <div class="col-sm-12">
+                                      <div class="row">
                                     <div class="col-md-3">
                                       <table class="table" border="0" id="tbltujuanpb">
                                       <tr>
@@ -647,7 +650,7 @@
                                     </table>
                                 </div>
 
-                                 <div class="col-xs-8 tujuanbankacc"> <!-- TRANSFERBANK TUJUAN ACCOUNT -->
+                                 <div class="col-sm-8 tujuanbankacc"> <!-- TRANSFERBANK TUJUAN ACCOUNT -->
                                     <div class="col-xs-6">
                                     <table class="table">
                                       <tr>
@@ -721,7 +724,8 @@
                                   </div>
 
                                 </div>
-
+                              </div>
+                            </div>
 
                                 <div class="col-md-12 ibanking" style="padding-top: 20px">
                                   <table class="table table-bordered" id="tbl-ibank">
@@ -780,13 +784,17 @@
                                     <hr>
                                     <div class="table-responsive">
                                       <h3> Data Transaksi </h3>
-                                      <table class="table table-bordered" id="tbl-dataalltransaksi" style="background-color: grey;color:white">
+                                      <table class="table table-bordered" id="tbl-dataalltransaksi">
+                                        <thead style="background-color: grey;color:white">
                                         <tr>
-                                            <th> Nomor </th>
                                             <th> Nota Transaksi </th>
                                             <th> Cabang Transaksi </th>
                                             <th> Nominal </th>
+                                            <th> Hapus </th>
                                         </tr>
+                                      </thead>
+                                      <tbody>
+                                      </tbody>
                                       </table>
                                     </div>
                                 </div>
@@ -862,27 +870,74 @@
         $('.keterangandetail').val(keterangan);
       });
 
+       nmr = 1;
+      $('#buttongettransaksi').click(function(){
+         var checked = $(".checkcek:checked").map(function(){
+          return this.id;
+        }).toArray();
+
+        variabel = [];
+        variabel = checked;
+        cabang = [];
+        total =[];
+        nota = [];
+        nmr = 1;
+        for(z=0;z<variabel.length;z++){
+          string = variabel[z].split(",");
+          cabang.push(string[3]);
+          total.push(string[4]);
+          nota.push(string[2]);
+        }
+
+
+       
+        var row = "<tr class='data"+nmr+"'><td>"+nota[0]+"</td><td>"+cabang[0]+"</td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[0])+"</p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+"><i class='fa fa-trash'> </i> </button></td> </tr>";
+        $('#tbl-dataalltransaksi').append(row);
+          totaltransaksi = 0;
+          $('.totaltransaksi').each(function(){
+            val = $(this).text();
+            aslinominal = val.replace(/,/g, '');
+            totaltransaksi = (parseFloat(totaltransaksi) + parseFloat(aslinominal)).toFixed(2);
+          })
+
+          $('.totbayar').val(addCommas(totaltransaksi));
+          nmr++;
+
+
+          $('.removes-transaksi').click(function(){
+              id = $(this).data('id');
+              $('.data' + id).remove();
+              harga = $('.totaltransaksi').val();
+              totalbayar = $('.totbayar').val();
+              asliharga = harga.replace(/,/g,'');
+              aslitotbayar = totalbayar.replace(/,/g,'');
+
+              hargafinal = (parseFloat(aslitotbayar) - parseFloat(asliharga)).toFixed(2);
+              $('.totbayar').val(addCommas(hargafinal));
+          })
+      });
+
+
       $('#getNotaTransaksi').click(function(){
         jenisbayar = $('.jenisbayar').val();
         cabang = $('.cabang').val();
-        datacabang = ['017', '008' , '001'];
-       
-        temp = 0;
-        for(i = 0; i < datacabang.length; i++){
-          if(cabang == datacabang[i]){
-            temp = 1;
-          }
-        }
-
-        if(temp == 0){
-            toastr.info("Kode Cabang memiliki Bank Cabang :) tidak bisa menggunakan fitur ini");
+          
+        jenispindahbuku = $('.tujuanbankpb').val();   
+        if(jenispindahbuku == 'BANK'){
+          toastr.info("Mohon maaf, fitur ini hanya untuk jenis kas :)");
           return false;
         }
+
+          kas = $('.kastujuan').val();
+          if(kas == ''){
+              toastr.info("tidak ada pilihan kas yang dipilih :)");
+              return false;
+          }
 
           $.ajax({
             type : "get",
             url : baseUrl + "/formfpg/caritransaksi",
-            data : {jenisbayar,cabang},
+            data : {jenisbayar,kas},
             dataType : "json",
             success : function(response){
               
@@ -899,7 +954,7 @@
                                     "<td>"+ datatransaksi[i].ik_nota +"</td>" +
                                     "<td>"+ datatransaksi[i].ik_comp +"</td>" +
                                     "<td style='text-align:right'>"+ addCommas(datatransaksi[i].ik_total) +"</td>" + 
-                                    "<td> <div class='checkbox'> <input type='checkbox' id="+datatransaksi[i].ik_id+","+nmrbnk+","+datatransaksi[i].ik_nota+" class='checkcek' value='option1' aria-label='Single checkbox One'> <label> </label> </div></td>" +
+                                    "<td> <div class='checkbox'> <input type='checkbox' id="+datatransaksi[i].ik_id+","+nmrbnk+","+datatransaksi[i].ik_nota+","+datatransaksi[i].ik_comp+","+datatransaksi[i].ik_total+" class='checkcek' value='option1' aria-label='Single checkbox One'> <label> </label> </div></td>" +
                                     "</tr>";
                          tabletransaksi.rows.add($(html2)).draw(); 
                         nmrbnk++; 
@@ -1001,7 +1056,6 @@
 
                             "<td>"+tgl+"</td>"+ // TGL
                             "<td>"+kodebank+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]' readonly> </td>" + //BANK TUJUAN
-                            "<td> <input type='text' class='form-control norekening' value='"+norekening+"' readonly> </td>" + //NO REKENING TUJUAN
                             "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='hidden' class='kelompokbank' name='kelompokbank'> </td>" + //NAMA BANK TUJUAN
                             "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"'  name='nominalbank[]' style='text-align:right' required> <input type='text' name='jenispindahbuku[]' value="+tujuanpindahbuku+"> </td>" + //NOMINAL
                             "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbid+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
@@ -1056,8 +1110,7 @@
                        
                       }
                     
-                    // IF CHECKBG
-                  
+                    // IF CHECKBG                  
                     if(jenisbayar == '12' == jenisbayar == '11'){
                       $('.nominalbank1').val(nominaltujuan);
                       $('.ChequeBg').val(nominaltujuan);  
@@ -1066,6 +1119,23 @@
                       $('.nominalbank1').val(nominalbank);
                       $('.ChequeBg').val(nominalbank);
                     }
+                    $('.nominaltblbank').change(function(){
+                      val = $(this).val();
+                      val = accounting.formatMoney(val, "", 2, ",",'.');
+                      $(this).val(val);
+                             totalgiro = 0;
+
+                            $('.nominaltblbank').each(function(){
+                               hargaasli = $(this).val();
+                               aslinominal = hargaasli.replace(/,/g, '');
+                                totalgiro = (parseFloat(totalgiro) + parseFloat(totalgiro)).toFixed(2);
+                            })
+                            $('.ChequeBg').val(addCommas(totalgiro));
+
+                    })
+
+
+
 
                     $('.bank').prop('disabled' , true).trigger("liszt:updated");
                      $('.bank').prop('disabled', true).trigger("chosen:updated");
@@ -1872,7 +1942,7 @@
                    '.chosen-select-deselect'  : {allow_single_deselect:true},
                    '.chosen-select-no-single' : {disable_search_threshold:10},
                    '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                   '.chosen-select-width1'     : {width:"100%"}
+                   '.chosen-select-width1'     : {width:"90%"}
                  }
                  for (var selector in config2) {
                    $(selector).chosen(config2[selector]);
