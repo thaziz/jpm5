@@ -796,4 +796,39 @@ class jurnal_pembelian  extends Controller
       return 'ok';
     });
     }
+
+
+    function kasmasuk(){
+      $datafpg = DB::select("select * from fpg where fpg_jenisbayar = '1'");
+
+      for($i = 0; $i < count($datafpg); $i++){
+        $idfpg = $datafpg[$i]->idfpg;
+        $nofpg = $datafpg[$i]->fpg_nofpg;
+        $cabang = $datafpg[$i]->fpg_cabang;
+        $username = $datafpg[$i]->create_by;
+        $totalbayar = $datafpg[$i]->fpg_totalbayar;
+        $keterangan = $datafpg[$i]->fpg_keterangan;
+        $lastidkm =  DB::table('kas_masuk')->max('km_id');;
+            if(isset($lastidkm)) {
+                $idkm = $lastidkm;
+                $idkm = (int)$idkm + 1;
+            }
+            else {
+                $idkm = 1;
+            } 
+
+           $datakm = array(
+                      'km_id' => strtoupper($idkm),
+                      'km_cabangterima' => $cabang,
+                      'km_idtransaksi' => $idfpg,
+                      'km_notatransaksi' => $nofpg,
+                      'created_by' => $username,
+                      'updated_by' => $username,
+                      'km_nominal' => $totalbayar,
+                      'km_keterangan'=> $keterangan,
+                      'km_status' => 'DIKIRIM',
+                     );
+                  $simpan = DB::table('kas_masuk')->insert($datakm);
+      }
+    }
 }

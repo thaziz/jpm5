@@ -1362,7 +1362,7 @@
           akun = $('.akun').val();
           string = akun.split(",");
           idakun = string[0];
-          dk = string[1];
+          dk = $('.dk').val();
           jumlah = $('.jumlahaccount').val();
           keterangan = $('.keteranganbiaya').val();
           nobbk = $('.nobbk').val();

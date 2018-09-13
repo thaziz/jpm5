@@ -226,7 +226,7 @@
 				<td class="text-right"> {{number_format($fpgbank->fpg_cekbg , 2)}}</td>
 			</tr>
 			<tr>
-				<td colspan="5">Terbilang : {{$data['katauang']}}</td>
+				<td colspan="5">Terbilang : {{$data['katauang']}} Rupiah </td>
 			</tr>
 			
 		</table>
