@@ -392,8 +392,8 @@
 				<td class="textright">{{ number_format($head->k_netto, 2, ",", ".") }}</td>
 			</tr>
 		</table>
-		<div>
-			<input class="border tandatangan hiddenbordertop hiddenborderright hiddenborderleft" type="" name="">
+		<div style="position: absolute;top:520px;left: 300px">
+			<input readonly="" class="border tandatangan hiddenbordertop hiddenborderright hiddenborderleft" type="" name="">
 		</div>
 	</div>
 </body>

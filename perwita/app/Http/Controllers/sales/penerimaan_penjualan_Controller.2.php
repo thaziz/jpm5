@@ -31,8 +31,8 @@ class penerimaan_penjualan_Controller extends Controller
                      ->where('k_nomor',$nomor)
                     ->get();
         $counting = count($detail );
-        if ($counting < 30) {
-          $hitung =30 - $counting;
+        if ($counting < 12) {
+          $hitung = 12 - $counting;
           for ($i=0; $i < $hitung; $i++) { 
             $push[$i]=' ';
           }
