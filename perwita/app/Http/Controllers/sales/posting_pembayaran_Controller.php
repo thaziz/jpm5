@@ -504,7 +504,6 @@ class posting_pembayaran_Controller extends Controller
 
 
 
-
                 $id_jurnal=d_jurnal::max('jr_id')+1;
                 $delete = d_jurnal::where('jr_ref',$nota)->delete();
                 $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
@@ -593,18 +592,40 @@ class posting_pembayaran_Controller extends Controller
                     }
                   }
                 }
-
                 $master_bank        = DB::table('masterbank')
                                          ->where('mb_id',$request->akun_bank)
                                          ->first();
-
                 $akun = [];
                 $akun_val = [];
+                $statusdk = [];
+                $total_bank = $request->ed_jumlah;
+                for ($i=0; $i < count($akun_temp_fix_biaya); $i++) { 
+                  $cari_akun1 = DB::table('akun_biaya')
+                                 ->where('kode',$akun_temp_fix_penanda[$i])
+                                 ->first();
 
-                
+                  $cari_akun2 = DB::table('d_akun')
+                               ->where('id_akun','LIKE', $akun_temp_fix_biaya[$i].'%')
+                               ->where('kode_cabang',$request->cb_cabang)
+                               ->first();
+                  if ($cari_akun2->akun_dka == 'D') {
+                    if ($cari_akun1->jenis == 'D') {
+                      $total_bank -= $akun_temp_total_biaya[$i];
+                    }else{
+                      $total_bank += $akun_temp_total_biaya[$i];
+                    }
+                  }else{
+                    if ($cari_akun1->jenis == 'K') {
+                      $total_bank += $akun_temp_total_biaya[$i];
+                    }else{
+                      $total_bank -= $akun_temp_total_biaya[$i];
+                    }
+                  }
+                }
                 // if ($request->cb_jenis_pembayaran == 'F') {
                 array_push($akun, $master_bank->mb_kode);
-                array_push($akun_val, $request->ed_jumlah);
+                array_push($akun_val, $total_bank);
+                array_push($statusdk, 'D');
                 // }else{
                 //   $cari_akun = DB::table('d_akun')
                 //                ->where('id_akun','LIKE','2498%')
@@ -619,6 +640,7 @@ class posting_pembayaran_Controller extends Controller
                 for ($i=0; $i < count($fix_akun_piutang); $i++) { 
                     array_push($akun, $fix_akun_piutang[$i]);
                     array_push($akun_val, $fix_nominal_akun[$i]);
+                    array_push($statusdk, 'K');
                 }
 
                 for ($i=0; $i < count($akun_temp_fix_biaya); $i++) { 
@@ -627,13 +649,17 @@ class posting_pembayaran_Controller extends Controller
                                ->where('id_akun','LIKE', $akun_temp_fix_biaya[$i].'%')
                                ->where('kode_cabang',$request->cb_cabang)
                                ->first();
+                    $akun_biaya = DB::table('akun_biaya')
+                                 ->where('kode',$akun_temp_fix_penanda[$i])
+                                 ->first();
                     array_push($akun, $cari_akun->id_akun);
                     array_push($akun_val, $akun_temp_total_biaya[$i]);
+                    array_push($statusdk, $akun_biaya->jenis);
                   }
                 }
+
                 $data_akun = [];
                 for ($i=0; $i < count($akun); $i++) { 
-
                     $cari_coa = DB::table('d_akun')
                             ->where('id_akun',$akun[$i])
                             ->first();
@@ -693,6 +719,44 @@ class posting_pembayaran_Controller extends Controller
                             $data_akun[$i]['jrdt_type']     = null;
                             $data_akun[$i]['jrdt_statusdk'] = 'D';
                             $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                        }
+                    }else if (substr($akun[$i],0, 1) >=5) {
+                        if ($cari_coa->akun_dka == 'D') {
+                            if ($statusdk[$i] == 'D') {
+                              $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                              $data_akun[$i]['jrdt_detailid'] = $i+1;
+                              $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                              $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
+                              $data_akun[$i]['jrdt_type']     = null;
+                              $data_akun[$i]['jrdt_statusdk'] = 'D';
+                              $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                            }else{
+                              $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                              $data_akun[$i]['jrdt_detailid'] = $i+1;
+                              $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                              $data_akun[$i]['jrdt_value']    = -round($akun_val[$i]);
+                              $data_akun[$i]['jrdt_type']     = null;
+                              $data_akun[$i]['jrdt_statusdk'] = 'K';
+                              $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                            }
+                        }else{
+                            if ($statusdk[$i] == 'D') {
+                              $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                              $data_akun[$i]['jrdt_detailid'] = $i+1;
+                              $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                              $data_akun[$i]['jrdt_value']    = -round($akun_val[$i]);
+                              $data_akun[$i]['jrdt_type']     = null;
+                              $data_akun[$i]['jrdt_statusdk'] = 'D';
+                              $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                            }else{
+                              $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                              $data_akun[$i]['jrdt_detailid'] = $i+1;
+                              $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                              $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
+                              $data_akun[$i]['jrdt_type']     = null;
+                              $data_akun[$i]['jrdt_statusdk'] = 'K';
+                              $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                            }
                         }
                     }
                 }
@@ -895,6 +959,7 @@ class posting_pembayaran_Controller extends Controller
             if ($request->cb_jenis_pembayaran == 'F' or $request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'L') {
                 $jurnal_dt = d_jurnal_dt::insert($data_akun);
                 $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
+                // dd($lihat);
             }
             return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
 
