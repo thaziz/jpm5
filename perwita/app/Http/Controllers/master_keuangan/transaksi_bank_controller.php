@@ -191,17 +191,20 @@ class transaksi_bank_controller extends Controller
 
                 $ref =  ($jr) ? (explode('/', $jr->jr_ref)[2] + 1) : 1;
                 $ref = "TBM-".date("my", strtotime($request->jr_date))."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
+
                 $jr_no = get_id_jurnal('BM'.$kode_akun, $request->cabang, $request->jr_date);
 
                 // return json_encode(explode('/', $jr->jr_ref)[2] + 1);
                 // return json_encode($jr_no." __ ".$ref);
             }
             else{
-               $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TBM")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
+               $kode_akun = DB::table('masterbank')->where('mb_kode', $request->akun[0])->first()->mb_id;
+                $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TBK")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y', strtotime($request->jr_date)))->orderBy('jr_insert', 'desc')->first();
 
-                $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
-                $ref = "TBM-".date("my", strtotime($request->jr_date))."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
-                $jr_no = get_id_jurnal('BM', $request->cabang, $request->jr_date);
+                $ref =  ($jr) ? (explode('/', $jr->jr_ref)[2] + 1) : 1;
+                $ref = "TBK-".date("my", strtotime($request->jr_date))."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
+
+                $jr_no = get_id_jurnal('BK'.$kode_akun, $request->cabang, $request->jr_date);
 
                 // return json_encode($jr_no." __ ".$ref);
             }
