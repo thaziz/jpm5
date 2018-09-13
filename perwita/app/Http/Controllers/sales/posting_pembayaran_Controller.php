@@ -227,7 +227,8 @@ class posting_pembayaran_Controller extends Controller
         $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from posting_pembayaran
                                         WHERE kode_cabang = '$request->cabang'
                                         AND to_char(tanggal,'MM') = '$bulan'
-                                        AND to_char(tanggal,'YY') = '$tahun'");
+                                        AND to_char(tanggal,'YY') = '$tahun'
+                                        ");
         $index = (integer)$cari_nota[0]->id + 1;
         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
         $nota = 'BM' . $request->cabang . $bulan . $tahun . $index;

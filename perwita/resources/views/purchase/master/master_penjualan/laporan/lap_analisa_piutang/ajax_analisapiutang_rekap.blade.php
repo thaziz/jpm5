@@ -1,5 +1,5 @@
-<table id="addColumn" class="table table-bordered table-striped tbl-item">
-  <thead>
+<table id="addColumn" class="table table-bordered table-striped tbl-item ">
+  <thead class="head_awal">
      <tr>
         <th align="center"> Invoice</th>
         <th align="center"> Customer</th>
@@ -14,9 +14,7 @@
         <th align="center"> Umur 31 s/d 60 </th>
         <th align="center"> Umur 61 s/d 90 </th>
         <th align="center"> Umur 91 s/d 120 </th>
-        <th align="center"> Umur 121 s/d 180 </th>
-        <th align="center"> Umur 181 s/d 360 </th>
-        <th align="center"> Lebih dari 360 </th>
+        <th align="center"> Lebih dari 120 </th>
     </tr> 
          
   </thead>        
@@ -40,9 +38,7 @@
         <td>{{ number_format($invoice_31_60[$i],2,",",".") }}</td>
         <td>{{ number_format($invoice_61_90[$i],2,",",".") }}</td>
         <td>{{ number_format($invoice_91_120[$i],2,",",".") }}</td>
-        <td>{{ number_format($invoice_121_180[$i],2,",",".") }}</td>
-        <td>{{ number_format($invoice_181_360[$i],2,",",".") }}</td>
-        <td>{{ number_format($invoice_360[$i],2,",",".") }}</td>
+        <td>{{ number_format($invoice_120[$i],2,",",".") }}</td>
       </tr>
     @endforeach
   </tbody>  
@@ -58,9 +54,7 @@
         <td><b>{{ number_format($total_invoice_31_60,2,",",".") }}</b></td>
         <td><b>{{ number_format($total_invoice_61_90,2,",",".") }}</b></td>
         <td><b>{{ number_format($total_invoice_91_120,2,",",".") }}</b></td>
-        <td><b>{{ number_format($total_invoice_121_180,2,",",".") }}</b></td>
-        <td><b>{{ number_format($total_invoice_181_360,2,",",".") }}</b></td>
-        <td><b>{{ number_format($total_invoice_360,2,",",".") }}</b></td>
+        <td><b>{{ number_format($total_invoice_120,2,",",".") }}</b></td>
       </tr>
   </tfoot>
 </table>
