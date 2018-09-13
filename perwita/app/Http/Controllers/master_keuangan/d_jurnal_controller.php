@@ -168,7 +168,7 @@ class d_jurnal_controller extends Controller
             if($request->jenis_transaksi == 1){
                 $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKM")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y', strtotime($request->jr_date)))->orderBy('jr_insert', 'desc')->first();
 
-                $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
+                $ref =  ($jr) ? (explode('/', $jr->jr_ref)[2] + 1) : 1;
                 $ref = "TKM-".date("my", strtotime($request->jr_date))."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
                 $jr_no = get_id_jurnal('KM', $request->cabang, $request->jr_date);
 
@@ -178,7 +178,7 @@ class d_jurnal_controller extends Controller
             else{
                $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 3)"), "TKK")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
 
-                $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
+                $ref =  ($jr) ? (explode('/', $jr->jr_ref)[2] + 1) : 1;
                 $ref = "TKK-".date("my", strtotime($request->jr_date))."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
                 $jr_no = get_id_jurnal('KK', $request->cabang, $request->jr_date);
 

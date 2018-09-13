@@ -19,18 +19,38 @@
 
 	function get_id_jurnal($state, $cab, $date = null){
 
-		$digit = substr($state, 0, 2);
+		// $digit = substr($state, 0, 2);
 
-		if(is_null($date)){
-			$jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_no, 1, 2)"), $digit)->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
+		if(substr($state, 0, 1) == 'B'){
+			
+			$digit = strlen(explode('-', $state)[0]);
 
-			$jr_no = ($jr) ? (substr($jr->jr_no, 12) + 1) : 1;
-	        $jr_no = $state."-".date("my")."/".$cab."/".str_pad($jr_no, 4, '0', STR_PAD_LEFT);
+			if(is_null($date)){
+				$jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_no, 1, ".$digit.")"), $state)->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
+
+				$jr_no = ($jr) ? (explode('/', $jr->jr_no)[2] + 1) : 1;
+		        $jr_no = $state."-".date("my")."/".$cab."/".str_pad($jr_no, 4, '0', STR_PAD_LEFT);
+			}else{
+				$jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_no, 1, ".$digit.")"), $state)->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y', strtotime($date)))->orderBy('jr_insert', 'desc')->first();
+
+				$jr_no = ($jr) ? (explode('/', $jr->jr_no)[2] + 1) : 1;
+		        $jr_no = $state."-".date("my", strtotime($date))."/".$cab."/".str_pad($jr_no, 4, '0', STR_PAD_LEFT);
+			}
 		}else{
-			$jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_no, 1, 2)"), $digit)->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y', strtotime($date)))->orderBy('jr_insert', 'desc')->first();
 
-			$jr_no = ($jr) ? (substr($jr->jr_no, 12) + 1) : 1;
-	        $jr_no = $state."-".date("my", strtotime($date))."/".$cab."/".str_pad($jr_no, 4, '0', STR_PAD_LEFT);
+			$digit = substr($state, 0, 2);
+
+			if(is_null($date)){
+				$jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_no, 1, 2)"), $digit)->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y'))->orderBy('jr_insert', 'desc')->first();
+
+				$jr_no = ($jr) ? (explode('/', $jr->jr_no)[2] + 1) : 1;
+		        $jr_no = $state."-".date("my")."/".$cab."/".str_pad($jr_no, 4, '0', STR_PAD_LEFT);
+			}else{
+				$jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_no, 1, 2)"), $digit)->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y', strtotime($date)))->orderBy('jr_insert', 'desc')->first();
+
+				$jr_no = ($jr) ? (explode('/', $jr->jr_no)[2] + 1) : 1;
+		        $jr_no = $state."-".date("my", strtotime($date))."/".$cab."/".str_pad($jr_no, 4, '0', STR_PAD_LEFT);
+			}
 		}
 
 
