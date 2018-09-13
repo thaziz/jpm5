@@ -878,9 +878,11 @@
           }
         })
 
+
        $('.cabang').change(function(){
           tgl = $('.tglfpg').val();
           cabang = $(this).val();
+         
          $.ajax({
           type : "get",
           data : {cabang,tgl},
@@ -908,7 +910,7 @@
                 year2 = tahun.substring(2);
                 //year2 ="Anafaradina";
                  nofpg = 'FPG' + month + year2 + '/' + cabang + '/'  + response.idfpg ;
-               
+                //  return response.idfpg;
                 $('.nofpg').val(nofpg);
 
                 nofpg = $('.nofpg').val();

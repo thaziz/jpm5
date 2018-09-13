@@ -7182,14 +7182,12 @@ public function purchase_order() {
 	public function getnofpg (Request $request){
 
 		$comp = $request->cabang;
-
 		$tgl = $request->tgl;
 		//return $comp;
 		/*$idbbk = DB::select("select * from bukti_bank_keluar where bbk_cabang = '$comp'");*/
 	
 		$bulan = Carbon::parse($tgl)->format('m');
         $tahun = Carbon::parse($tgl)->format('y');
-
 
 
 	  $carinota = DB::select("SELECT  substring(max(fpg_nofpg),13) as id from fpg
@@ -7590,7 +7588,7 @@ public function kekata($x) {
                         FROM d_akun a join d_jurnal_dt jd
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$jurnalRef')")); 
-			dd($data['bbkd']);
+		/*	dd($data['bbkd']);*/
 			return view('purchase/pelunasanhutangbank/detail' , compact('data', 'jurnal_dt'));
 	}
 
@@ -8146,7 +8144,10 @@ public function kekata($x) {
 					$bulan = Carbon::parse($request->tglbbk)->format('m');
 					$year = Carbon::parse($request->tglbbk)->format('y');
 
-					$datanotakm = DB::select("select max(km_nota) as id from kas_masuk where  to_char(km_tgl, 'MM') = '$bulan' and to_char(km_tgl, 'YY') = '$year' and km_cabangterima = '$cabangtransaksi'");
+					$datanotakm = DB::select("SELECT  substring(max(km_nota),13) as id from kas_masuk
+                                    WHERE km_cabangterima = '$cabangtransaksi'
+                                    AND to_char(km_tgl,'MM') = '$bulan'
+                                    AND to_char(km_tgl,'YY') = '$year'");
 
 							if($datanotakm[0]->id == null) {
 								$id = 0;
@@ -9199,7 +9200,7 @@ public function kekata($x) {
 	public function createformfpg() {
 
 		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
-		$data['jenisbayar'] = DB::select("select * from jenisbayar where idjenisbayar != '8'  and idjenisbayar != 10 and idjenisbayar != 1 ");
+		$data['jenisbayar'] = DB::select("select * from jenisbayar where idjenisbayar != '8'  and idjenisbayar != 10 ");
 
 		$cabang = session::get('cabang');
 
@@ -12318,14 +12319,15 @@ public function kekata($x) {
 				
 
 				$deletefpgdt = DB::table('fpg_dt')->where('fpgdt_id' , '=' , $idfpgdt)->delete();
-				$datafaktur = DB::select("select * from d_uangmuka where um_id = '$idfp'");
-				$fp_pelunasan = $datafaktur[0]->fp_sisapelunasan;
+				$datafaktur = DB::select("select * from ikhtisar_kas where ik_id = '$idfp'");
+				$fp_pelunasan = $datafaktur[0]->ik_pelunasan;
 
 				$penjumlahan = (float)$fp_pelunasan + (float)$pelunasan2;
-				$updatefaktur = fakturpembelian::where('fp_idfaktur', '=' , $idfp);
-						$updatefaktur->update([
-							'ik_pelunasan' => $penjumlahan,
-						]);
+				$updatefaktur = DB::table('ikhtisar_kas')
+				->where('ik_id' , $idfp)
+				->update([
+					'ik_pelunasan' => $penjumlahan
+				]);
 			}
 			else if($jenisbayar == '4'){
 				$pelunasan = $request->pelunasan[$j];
