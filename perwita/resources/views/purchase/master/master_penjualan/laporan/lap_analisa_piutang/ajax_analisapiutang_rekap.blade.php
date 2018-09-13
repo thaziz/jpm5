@@ -1,5 +1,5 @@
 @if ($laporan == 'invoice')
-  <table id="addColumn" class="table table-bordered table-striped tbl-item ">
+  <table id="addColumn" class="table table-bordered table-striped tbl-item" >
     <thead class="head_awal">
        <tr>
           <th align="center"> Invoice</th>
