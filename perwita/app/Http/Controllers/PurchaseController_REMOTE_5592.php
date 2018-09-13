@@ -9148,9 +9148,9 @@ public function kekata($x) {
 			}
 		}
 		else if($flag == 'BGAKUN'){
-			$databbkab = DB::select("select * from bukti_bank_keluar_bgakun where bbkab_idbbk = '$id'");
+			$databbkab = DB::select("select * from bukti_bank_keluar_akunbg where bbkab_idbbk = '$id'");
 			for($j = 0; $j < count($databbkab); $j++){
-				$idfpg = $databbkab[$i]->bbkab;
+				$idfpg = $databbkab[$j]->bbkab_idfpg;
 
 				$updatebbkab = formfpg::where('idfpg' , '=' , $idfpg);
 				$updatebbkab->update([
