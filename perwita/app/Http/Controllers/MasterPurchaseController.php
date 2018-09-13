@@ -1323,7 +1323,7 @@ class MasterPurchaseController extends Controller
 		$data['tidakdisetujui'] = DB::table("supplier")->where('status' , '=' , 'TIDAK SETUJU')->count();
 		}
 		else {
-			$data['supp'] = DB::select("select * from supplier, cabang, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and idcabang = '$cabang'");
+			$data['supp'] = DB::select("select * from supplier, cabang, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and idcabang = '$cabang' and idcabang = cabang.kode");
 
 			$data['disetujui'] = DB::table("supplier")->where([['status' , '=' , 'SETUJU'], ['idcabang' , '=' , '$cabang']])->count();
 			$data['belumdisetujui'] = DB::table("supplier")->where([['status' , '=' , 'BELUM DI SETUJUI'],['idcabang' , '=' , '$cabang']])->count();

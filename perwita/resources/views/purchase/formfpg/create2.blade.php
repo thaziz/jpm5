@@ -784,7 +784,7 @@
                                     <hr>
                                     <div class="table-responsive">
                                       <h3> Data Transaksi </h3>
-                                      <table class="table table-bordered" id="tbl-dataalltransaksi">
+                                      <table class="table table-bordered" id="tbl-dataalltransaksi" style="width:50%">
                                         <thead style="background-color: grey;color:white">
                                         <tr>
                                             <th> Nota Transaksi </th>
@@ -890,9 +890,11 @@
         }
 
 
-       
-        var row = "<tr class='data"+nmr+"'><td>"+nota[0]+"</td><td>"+cabang[0]+"</td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[0])+"</p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+"><i class='fa fa-trash'> </i> </button></td> </tr>";
-        $('#tbl-dataalltransaksi').append(row);
+       for($i = 0; $i < variabel.length; $i++){
+          var row = "<tr class='data"+nmr+"'><td>"+nota[0]+"</td><td>"+cabang[0]+"</td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[0])+"</p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+"><i class='fa fa-trash'> </i> </button></td> </tr>";
+            $('#tbl-dataalltransaksi').append(row);
+            nmr++;
+       }
           totaltransaksi = 0;
           $('.totaltransaksi').each(function(){
             val = $(this).text();
@@ -1076,14 +1078,26 @@
                               else {
                                 $('.kelompokbank').val('KAS');
                               }
-                              
+                            
 
-                          
+                              $('.nominaltblbank').change(function(){
+                                val = $(this).val();
+                                val = accounting.formatMoney(val, "", 2, ",",'.');
+                                $(this).val(val);
+                                       totalgiro = 0;
+
+                                      $('.nominaltblbank').each(function(){
+                                         hargaasli = $(this).val();
+                                         aslinominal = hargaasli.replace(/,/g, '');
+                                          totalgiro = (parseFloat(totalgiro) + parseFloat(totalgiro)).toFixed(2);
+                                      })
+                                      $('.ChequeBg').val(addCommas(totalgiro));
+
+                              })
                         }
-                      }
+                      } // end jenisbayar 12 or 11
                       else {
                     
-                        
                         jenisbayar = $('.jenisbayar').val();
                         if(jenisbayar == 5){
                           $('.jthtmpo_bank').attr('disabled' , true);
@@ -1119,22 +1133,7 @@
                       $('.nominalbank1').val(nominalbank);
                       $('.ChequeBg').val(nominalbank);
                     }
-                    $('.nominaltblbank').change(function(){
-                      val = $(this).val();
-                      val = accounting.formatMoney(val, "", 2, ",",'.');
-                      $(this).val(val);
-                             totalgiro = 0;
-
-                            $('.nominaltblbank').each(function(){
-                               hargaasli = $(this).val();
-                               aslinominal = hargaasli.replace(/,/g, '');
-                                totalgiro = (parseFloat(totalgiro) + parseFloat(totalgiro)).toFixed(2);
-                            })
-                            $('.ChequeBg').val(addCommas(totalgiro));
-
-                    })
-
-
+                  
 
 
                     $('.bank').prop('disabled' , true).trigger("liszt:updated");

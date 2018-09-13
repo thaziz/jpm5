@@ -9266,7 +9266,7 @@ public function kekata($x) {
 
 		
 		//dd($data);
-		return view('purchase/formfpg/create', compact('data'));
+		return view('purchase/formfpg/create2', compact('data'));
 	}
 
 
