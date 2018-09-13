@@ -8314,7 +8314,7 @@ public function kekata($x) {
 		}
 		else if($request->flag == 'BGAKUN'){
 			for($j=0;$j<count($request->accbiayaakun);$j++){
-				$idfpg = $request->idfpg[$i];
+				$idfpg = $request->idfpg[$j];
 				$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
 				$jenisbayarfpg = $datafpg[0]->fpg_jenisbayar;
 

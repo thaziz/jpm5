@@ -8314,7 +8314,7 @@ public function kekata($x) {
 		}
 		else if($request->flag == 'BGAKUN'){
 			for($j=0;$j<count($request->accbiayaakun);$j++){
-				$idfpg = $request->idfpg[$i];
+				$idfpg = $request->idfpg[$j];
 				$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
 				$jenisbayarfpg = $datafpg[0]->fpg_jenisbayar;
 
@@ -9182,12 +9182,12 @@ public function kekata($x) {
 		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
 			$fpg = DB::select("select * from fpg");
 			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by created_at desc");
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by fpg_nofpg desc");
 		}
 		else {
 			$fpg = DB::select("select * from fpg where fpg_cabang = '$cabang'");
 			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by created_at desc");
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_nofpg asc");
 		}
 	
 

@@ -1808,32 +1808,8 @@
 
     $('#formfpg').submit(function(event){
         var temp = 0;
-        $('.nominaltblbank').each(function(){
-          valbank = $(this).val();
-          if(valbank == ''){
-            temp = temp + 1;
-          }
-        })
 
-        metodebayar = $('.metodebayar:checked').val();
-        jenisbayar = $('.jenisbayar').val();
-        if(metodebayar == 'CHECK/BG'){
-          nominalbankasal = $('.nominalbankasal').val();
-          totalnominal = 0;
-          $('.nominalcekbg').each(function(){
-            nominal = $(this).val();
-            nominal = nominal.replace(/,/g, '');
-            totalnominal = parseFloat(totalnominal) + parseFloat(nominal);
-          })
-
-          totalnominal = addCommas(totalnominal).toFixed(2);
-          alert(nominalbankasal);
-          alert(totalnominal);
-          if(nominalbankasal != totalnominal){
-            toastr.info("Mohon maaf, nominal seluruhnya tidak sama dengan nominal cek bg asal :)");
-            return false;
-          }
-        }
+      
 
         $('.pelunasanitem').each(function(){
           valpelunasan = $(this).val();
@@ -1877,6 +1853,26 @@
                 return false;
             }
           }
+
+
+            metodebayar = $('.metodebayar:checked').val();
+        jenisbayar = $('.jenisbayar').val();
+        if(metodebayar == 'CHECK/BG'){
+          nominalbankasal = $('.nominalbankasal').val();
+          totalnominal = 0;
+          $('.nominalcekbg').each(function(){
+            nominal = $(this).val();
+            nominal = nominal.replace(/,/g, '');
+            totalnominal = parseFloat(totalnominal) + parseFloat(nominal);
+          })
+
+          totalnominal = addCommas(totalnominal).toFixed(2);
+        
+          if(nominalbankasal != totalnominal){
+            toastr.info("Mohon maaf, nominal seluruhnya tidak sama dengan nominal cek bg asal :)");
+            return false;
+          }
+        }
 
         event.preventDefault();
          var post_url2 = $(this).attr("action");
