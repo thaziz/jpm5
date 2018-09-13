@@ -9148,9 +9148,9 @@ public function kekata($x) {
 			}
 		}
 		else if($flag == 'BGAKUN'){
-			$databbkab = DB::select("select * from bukti_bank_keluar_bgakun where bbkab_idbbk = '$id'");
+			$databbkab = DB::select("select * from bukti_bank_keluar_akunbg where bbkab_idbbk = '$id'");
 			for($j = 0; $j < count($databbkab); $j++){
-				$idfpg = $databbkab[$i]->bbkab;
+				$idfpg = $databbkab[$j]->bbkab_idfpg;
 
 				$updatebbkab = formfpg::where('idfpg' , '=' , $idfpg);
 				$updatebbkab->update([
@@ -11969,7 +11969,7 @@ public function kekata($x) {
 
 							
 								//	return 'yesy';
-										if($request->kelompokbank == 'SAMA BANK'){
+										if($request->kelompokbank[$j] == 'SAMA BANK'){
 											$bankmasuk = new bank_masuk();
 	
 											$lastid_bm = bank_masuk::max('bm_id');
@@ -12006,10 +12006,11 @@ public function kekata($x) {
 											$bankmasuk->bm_keterangan = $request->keterangantransfer;
 											$bankmasuk->bm_namabankasal = $namaasal;
 											$bankmasuk->bm_namabanktujuan = $namatujuan;
+											$bankmasuk->bm_bankasaljurnal = '109911000';
 
 											$bankmasuk->save();
 										}
-										else {
+										else if($request->kelompokbank[$j] == 'BEDA BANK'){
 										$bankmasuk = new bank_masuk();
 	
 										$lastid_bm = bank_masuk::max('bm_id');
@@ -12031,7 +12032,7 @@ public function kekata($x) {
 										$namatujuan = $banktujuan[0]->mb_nama;
 
 										$bankmasuk->bm_id = $idbm;
-										$bankmasuk->bm_bankasal = $akunkasbank;
+										$bankmasuk->bm_bankasal = $kodebank;
 										$bankmasuk->bm_cabangasal = $cabangasal;
 										$bankmasuk->bm_cabangtujuan = $cabangtujuan;
 										$bankmasuk->bm_banktujuan = $kodetujuan;
@@ -12046,10 +12047,32 @@ public function kekata($x) {
 										$bankmasuk->bm_keterangan = $request->keterangantransfer;
 										$bankmasuk->bm_namabankasal = $namaasal;
 										$bankmasuk->bm_namabanktujuan = $namatujuan;
+										$bankmasuk->bm_bankasaljurnal = $akunkasbank;
 										$bankmasuk->save();
 									}
-									
-								
+									else if($request->kelompokbank[$j] == 'KAS'){
+										$lastidkm =  DB::table('kas_masuk')->max('km_id');
+										if(isset($lastidkm)) {
+												$idkm = $lastidkm;
+												$idkm = (int)$idkm + 1;
+										}
+										else {
+												$idkm = 1;
+										} 
+
+									 $datakm = array(
+					                    'km_id' => strtoupper($idkm),
+					                    'km_cabangterima' => $cabang,
+					                    'km_idtransaksi' => $idfpg,
+					                    'km_notatransaksi' => $request->nofpg,
+					                    'created_by' => $request->username,
+					                    'updated_by' => $request->username,
+					                    'km_nominal' => $totalbayar,
+					                    'km_keterangan'=> strtoupper($request->keterangan),
+					                    'km_status' => 'DIKIRIM',
+				               			 );
+					                $simpan = DB::table('kas_masuk')->insert($datakm);
+								}		
 						}
 					}
 					else {
@@ -12231,7 +12254,7 @@ public function kekata($x) {
 
 				if($request->jenisbayar == '1'){
 
-						$lastidkm =  DB::table('kas_masuk')->max('km_id');;
+						$lastidkm =  DB::table('kas_masuk')->max('km_id');
 						if(isset($lastidkm)) {
 								$idkm = $lastidkm;
 								$idkm = (int)$idkm + 1;

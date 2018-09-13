@@ -872,7 +872,7 @@
 
        nmr = 1;
       $('#buttongettransaksi').click(function(){
-         var checked = $(".checkcek:checked").map(function(){
+         var checked = $(".checktransaksi:checked").map(function(){
           return this.id;
         }).toArray();
 
@@ -893,7 +893,7 @@
 
 
        for($i = 0; $i < variabel.length; $i++){
-          var row = "<tr class='datatransaksipb data"+nmr+"'><td>"+nota[$i]+" <input type='hidden' value='"+id[$i]+"' name='idfaktur[]'> </td><td>"+cabang[$i]+" <input type='hidden' value='"+nota[$i]+"' name='nofaktur[]'> </td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[$i])+"</p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+"><i class='fa fa-trash'> </i> </button></td> </tr>";
+          var row = "<tr class='datatransaksipb data"+nmr+"'><td>"+nota[$i]+" <input type='hidden' value='"+id[$i]+"' name='idfaktur[]'> </td><td>"+cabang[$i]+" <input type='hidden' value='"+nota[$i]+"' name='notafaktur[]'> </td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[$i])+"</p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+"><i class='fa fa-trash'> </i> </button></td> </tr>";
             $('#tbl-dataalltransaksi').append(row);
             nmr++;
        }
@@ -959,7 +959,7 @@
                                     "<td>"+ datatransaksi[i].ik_nota +"</td>" +
                                     "<td>"+ datatransaksi[i].ik_comp +"</td>" +
                                     "<td style='text-align:right'>"+ addCommas(datatransaksi[i].ik_total) +"</td>" + 
-                                    "<td> <div class='checkbox'> <input type='checkbox' id="+datatransaksi[i].ik_id+","+nmrbnk+","+datatransaksi[i].ik_nota+","+datatransaksi[i].ik_comp+","+datatransaksi[i].ik_total+" class='checkcek' value='option1' aria-label='Single checkbox One'> <label> </label> </div></td>" +
+                                    "<td> <div class='checkbox'> <input type='checkbox' id="+datatransaksi[i].ik_id+","+nmrbnk+","+datatransaksi[i].ik_nota+","+datatransaksi[i].ik_comp+","+datatransaksi[i].ik_total+" class='checktransaksi' value='option1' aria-label='Single checkbox One'> <label> </label> </div></td>" +
                                     "</tr>";
                          tabletransaksi.rows.add($(html2)).draw(); 
                         nmrbnk++; 
@@ -1000,9 +1000,9 @@
             return false;
           }
 
-          mbid = $('.mb_id').val();
+           mbid = $('.mb_id').val();
            bank = $('.bank').val();
-           kelompokbank = $('.kelompokbank_mb').val();
+       
                     explode = bank.split("+");
                     kodebank = explode[4];
                    // alert(kodebank);
@@ -1025,16 +1025,14 @@
                     jenisbayar = $('.jenisbayar').val();
                       if(jenisbayar == '12' || jenisbayar == '11') {
                         if(tujuanpindahbuku == 'BANK'){
-
-
-                        banktujuan = $('.banktujuan').val();
-                        split = banktujuan.split("+");
-                        kodebanktujuan = split[4];
-                        norekening = split[3];
-                        namabank = split[1];
-                        idbank = split[0];
-                        kelompok = split[5];
-                      }
+                          banktujuan = $('.banktujuan').val();
+                          split = banktujuan.split("+");
+                          kodebanktujuan = split[4];
+                          norekening = split[3];
+                          namabank = split[1];
+                          idbank = split[0];
+                          kelompok = split[5];
+                       }
                       else if(tujuanpindahbuku == 'KAS'){
                         kastujuan = $('.kastujuan').val();
                         split = kastujuan.split("+");
@@ -1045,54 +1043,37 @@
                         idakun = split[0];
                       }
                         if(metodebayar == 'CHECK/BG'){
-                            
-                              if(tujuanpindahbuku == 'BANK'){
-                                 if(kelompok_mb == kelompok){
-                                   $('.kelompokbank').val('SAMA BANK');
-                                  }
-                                  else {
-                                     $('.kelompokbank').val('BEDA BANK');
-                                   
-                                  }
+                            if(tujuanpindahbuku == 'BANK'){
+                              if(kelompok_mb == kelompok){
+                                kelompokbank = 'SAMA BANK';
                               }
-                              else if(tujuanpindahbuku == 'KAS'){
-                                     $('.kelompokbank').val('KAS');
+                              else if(kelompok_mb != kelompok) {
+                                kelompokbank = 'BEDA BANK';
                               }
-                              
+                            }
+                            else if(tujuanpindahbuku == 'KAS') {
+                              kelompokbank = 'KAS';
+                            }
 
                             var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
                             "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> "+noseri+ "</a> <input type='hidden' class='noseri"+nomrbnk+"' value='"+noseri+"' name='noseri[]'></td>"+ // NOSERI
 
                             "<td>"+tgl+"</td>"+ // TGL
                             "<td>"+kodebank+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]' readonly> </td>" + //BANK TUJUAN
-                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='hidden' class='kelompokbank' name='kelompokbank'> </td>" + //NAMA BANK TUJUAN
-                            "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominalcekbg nominaltblbank nominalbank"+nomrbnk+"'  name='nominalbank[]' style='text-align:right' required> <input type='hidden' name='jenispindahbuku[]' value="+tujuanpindahbuku+"> </td>" + //NOMINAL
+                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='hidden' class='kelompokbank' name='kelompokbank[]' value='"+kelompokbank+"'> </td>" + //NAMA BANK TUJUAN
+                            "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominalcekbg nominaltblbank nominalbank"+nomrbnk+"'  name='nominalbank[]' style='text-align:right' required> <input type='hidden' class='jenispindahbuku' name='jenispindahbuku[]' value="+tujuanpindahbuku+"> </td>" + //NOMINAL
                             "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbid+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 
                             $('#tbl-tfbank').append(row);
                             arrnohapus.push(nomrbnk);
                             nomrbnk++;
 
-                              if(tujuanpindahbuku == 'BANK'){ 
-                               if(kelompok_mb == kelompok){
-                                 $('.kelompokbank').val('SAMA BANK');
-                                }
-                                else {
-                                 $('.kelompokbank').val('BEDA BANK');
-
-                                }
-                              }
-                              else {
-                                $('.kelompokbank').val('KAS');
-                              }
-                            
-                              totalgiro = 0;
                               $('.nominaltblbank').change(function(){
                                 val = $(this).val();
                                 val = accounting.formatMoney(val, "", 2, ",",'.');
                                 $(this).val(val);
                                        
-
+                                      totalgiro = 0;
                                       $('.nominaltblbank').each(function(){
                                          hargaasli = $(this).val();
                                          aslinominal = hargaasli.replace(/,/g, '');
@@ -1553,7 +1534,35 @@
               
             $('#tbl-tfbank').append(row);
          
-               
+                 kelompokbank1 = $('.kelompokbank').val();
+
+                 if(kelompokbank1 != ''){
+                    if(kelompokbank1 == 'SAMA BANK') {
+                       if(kelompok == kelompoktujuan){
+                         $('.kelompokbank').val('SAMA BANK');
+                        }
+                       else {
+                       $('.kelompokbank').val('BEDA BANK');
+                      }
+                    }
+                    else if(kelompokbank1 == 'BEDA BANK') {
+                       if(kelompok == kelompoktujuan){
+                         $('.kelompokbank').val('BEDA BANK');
+                        }
+                       else {
+                       $('.kelompokbank').val('BEDA BANK');
+                      }
+                    }                             
+                 }
+                 else{
+                   if(kelompok == kelompoktujuan){
+                         $('.kelompokbank').val('SAMA BANK');
+                        }
+                       else {
+                       $('.kelompokbank').val('BEDA BANK');
+                    }
+                 }
+
 
                  $('.nominaltbltfbank').change(function(){
                     val = $(this).val();
@@ -1795,7 +1804,31 @@
         if(!this.checkValidity() ) 
           return false;
         return true;
+
+
     })
+
+     $('#submit').click(function(){
+          metodebayar = $('.metodebayar:checked').val();
+          alert(metodebayar);
+          jenisbayar = $('.jenisbayar').val();
+          if(metodebayar == 'CHECK/BG'){
+            nominalbankasal = $('.nominalbankasal').val();
+            totalnominal = 0;
+            $('.nominalcekbg').each(function(){
+              nominal = $(this).val();
+              nominal = nominal.replace(/,/g, '');
+              totalnominal = parseFloat(totalnominal) + parseFloat(nominal);
+            })
+
+            totalnominal = parseFloat(totalnominal).toFixed(2);
+
+            if(nominalbankasal != addCommas(totalnominal)){
+              toastr.info("Mohon maaf, nominal seluruhnya tidak sama dengan nominal cek bg asal :)");
+              return false;
+            }
+          }
+     })
 
 
 //     $('.cabang').attr('disabled' , true);
@@ -1833,10 +1866,7 @@
           return false;
         }
         else {
-
-
-         
-
+          
           jenisbayar = $('.jenisbayar').val();
 
           if(jenisbayar == '5' || jenisbayar == '12'){
@@ -1854,25 +1884,6 @@
             }
           }
 
-
-            metodebayar = $('.metodebayar:checked').val();
-        jenisbayar = $('.jenisbayar').val();
-        if(metodebayar == 'CHECK/BG'){
-          nominalbankasal = $('.nominalbankasal').val();
-          totalnominal = 0;
-          $('.nominalcekbg').each(function(){
-            nominal = $(this).val();
-            nominal = nominal.replace(/,/g, '');
-            totalnominal = parseFloat(totalnominal) + parseFloat(nominal);
-          })
-
-          totalnominal = addCommas(totalnominal).toFixed(2);
-        
-          if(nominalbankasal != totalnominal){
-            toastr.info("Mohon maaf, nominal seluruhnya tidak sama dengan nominal cek bg asal :)");
-            return false;
-          }
-        }
 
         event.preventDefault();
          var post_url2 = $(this).attr("action");
