@@ -126,6 +126,29 @@
     display: none;
   }
 
+  .loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    margin:auto;
+    margin-top:200px;
+    margin-bottom:200px;
+  }
+  .auto{
+    margin:auto;
+    margin-top:200px;
+    margin-bottom:200px;
+    width: 100%;
+    height: 120px;
+  }
+
+  @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+  }
 
   @media print
   {    
@@ -134,7 +157,9 @@
           display: none !important;
       }
   }
-
+  tr{
+    cursor: pointer;
+  }
 </style>
 <link href="{{ asset('assets/vendors/bootstrap-4/css/bootstrap.min.css') }}" rel="stylesheet">
 <link href="{{ asset('assets/css/chosen/chosen.css') }}" rel="stylesheet">
@@ -143,9 +168,9 @@
   <header id="navigation" style="padding: 0px 0px;height: 60px;vertical-align: middle;background: rgba(0, 0, 0, 0.4); box-shadow: 0px 2px 5px #444;position: fixed; z-index:2;width: 100%">
     <div class="container" >
       <div class="row">
-        <div class="col-sm-6 nopadding-left" style="padding-top: 20px">
-          <label style="color: white">PT JAWA PRATAMA MANDIRI</label>
-        </div>
+        <a href="{{ url('/') }}" class="col-sm-6 nopadding-left" style="padding-top: 20px">
+          <label style="color: white;cursor: pointer;">PT JAWA PRATAMA MANDIRI</label>
+        </a>
         <div class=" col-sm-6 nopadding-left" style="padding-top: 20px;" >
           <div class="col-sm-6" align="right">
             <button class="btn btn-info filter" type="button">
@@ -187,36 +212,36 @@
       </div>
     </div>
   </header>
-  <div class="body" id="printArea">
-    <div class="container">
-      <div class="row" style="margin-top: 80px">
+  <div class="" id="printArea" style="padding-top: 60px">
+    {{-- <div class="container"> --}}
+      {{-- <div class="row" style="margin-top: 80px"> --}}
         <div class="col-sm-12 height mt-2" >
           <div class="col-sm-12" style="margin-top: 20px" >
             <h2 class="black"><b>ANALISA PIUTANG</b></h2>
             <p class="black">PT JAWA PRATAMA MANDIRI</p>
-            <p class="black" style="text-transform: uppercase;">REKAP {{ $jenis }}</p>
+            <p class="black rekap" style="text-transform: uppercase;">REKAP {{ $jenis }}</p>
             <hr class="black" style="border-bottom: 2px solid black">
           </div>
           <div class="col-sm-12">
             <div class="col-sm-6 nopadding-left">
-              <label>Tanggal : {{ carbon\carbon::parse($minr)->format('d-m-Y') }} s/d {{ carbon\carbon::parse($maxr)->format('d-m-Y') }}</label>
+              <label class="tanggal_append">Tanggal : {{ carbon\carbon::parse($minr)->format('d-m-Y') }} s/d {{ carbon\carbon::parse($maxr)->format('d-m-Y') }}</label>
             </div>
             <div class="col-sm-6 nopadding-left">
-              <label>Customer : {{ $customerr->nama or $customerr}}</label>
+              <label class="customer_append">Customer : {{ $customerr->nama or $customerr}}</label>
             </div>
             <div class="col-sm-6 nopadding-left">
-              <label>Akun Piutang : {{ $akunr->nama_akun or $akunr}}</label>
+              <label class="akun_append">Akun Piutang : {{ $akunr->nama_akun or $akunr}}</label>
             </div>
             <div class="col-sm-6 nopadding-left">
-              <label>Cabang : {{ $cabangr->nama or $cabangr}}</label>
+              <label class="cabang_append">Cabang : {{ $cabangr->nama or $cabangr}}</label>
             </div>
           </div>
           <div class="drop col-sm-12">
               
           </div><!-- /.box-body -->
         </div>
-      </div>
-    </div>
+      {{-- </div> --}}
+    {{-- </div> --}}
   </div>
 
   <div class="modal" tabindex="-1" role="dialog">
@@ -242,7 +267,7 @@
               <td>Customer</td>
               <td>
                 <select class="chosen-select-width form-control" name="customer" id="customer">
-                  <option value="all">- Semua Customer -</option>
+                  <option value="all">Semua Customer</option>
                   @foreach ($customer as $e)
                     <option value="{{ $e->kode }}">{{ $e->kode }} - {{ $e->nama }}</option>
                   @endforeach
@@ -253,7 +278,7 @@
               <td>Acc Piutang</td>
               <td>
                 <select class="chosen-select-width form-control" name="akun" id="akun">
-                  <option value="all">- Semua Piutang -</option>
+                  <option value="all">Semua Piutang</option>
                   @foreach ($piutang as $piu)
                     <option value="{{ $piu->id_akun }}">{{ $piu->id_akun }} - {{ $piu->nama_akun }}</option>
                   @endforeach
@@ -265,18 +290,20 @@
               @if (Auth::user()->punyaAkses('Laporan Penjualan','cabang'))
                <td>
                 <select class="chosen-select-width form-control" name="cabang" id="cabang">
-                  <option value="all">- Semua Cabang -</option>
+                  <option value="all">Semua Cabang</option>
                   @foreach ($cabang as $cab)
-                    <option value="{{ $cab->kode }}">{{ $cab->kode }} - {{ $cab->nama }}</option>
+                    <option value="{{ $cab->kode }}">{{ $cab->nama }}</option>
                   @endforeach
                 </select>
                </td>
                @else
                <td class="disabled">
                   <select class="chosen-select-width form-control" name="cabang" id="cabang">
-                    <option value="all">- Semua Cabang -</option>
+                    <option value="all">Semua Cabang</option>
                     @foreach ($cabang as $cab)
-                      <option value="{{ $cab->kode }}">{{ $cab->kode }} - {{ $cab->nama }}</option>
+                      <option @if (Auth::user()->kode_cabang == $cab->kode)
+                        selected="" 
+                      @endif value="{{ $cab->kode }}">{{ $cab->nama }}</option>
                     @endforeach
                   </select>
                 </td>
@@ -289,12 +316,6 @@
                   <option @if ($jenis == 'hirarki')
                     selected="" 
                   @endif value="hirarki">- Hirarki -</option>
-                  <option @if ($jenis == 'customer')
-                    selected="" 
-                  @endif value="customer">- customer -</option>
-                  <option @if ($jenis == 'akun')
-                    selected="" 
-                  @endif value="akun">- akun -</option>
                   <option @if ($jenis == 'invoice')
                     selected="" 
                   @endif value="invoice">- invoice -</option>
@@ -332,9 +353,52 @@ var config1 = {
 for (var selector in config1) {
  $(selector).chosen(config1[selector]);
 }  
+
+
 $(document).ready(function(){
   cari();
-  console.log('tes');
+})
+
+
+function hilang_cabang(par) {
+ var triger = $(par).find('.value_cabang').val();
+
+ var cabang = $('.cabang_'+triger);
+
+ if (cabang.hasClass('hide')) {
+  cabang.removeClass('hide');
+ }else{
+  cabang.addClass('hide');
+ }
+}
+
+function hilang_akun(par) {
+ var triger = $(par).find('.value_akun').val();
+
+ var cabang = $('.akun_'+triger);
+
+ if (cabang.hasClass('hide')) {
+  cabang.removeClass('hide');
+ }else{
+  cabang.addClass('hide');
+ }
+}
+
+function hilang_customer(par) {
+ var triger = $(par).find('.value_customer').val();
+
+ var cabang = $('.customer_'+triger);
+
+ if (cabang.hasClass('hide')) {
+  cabang.removeClass('hide');
+ }else{
+  cabang.addClass('hide');
+ }
+}
+$(document).ready(function(){
+  $('.cabang').addClass('hide');
+  $('.customer').addClass('hide');
+  $('.akun').addClass('hide');
 })
 
 $('.date').datepicker({
@@ -363,24 +427,117 @@ function cari(){
   var cabang = $('#cabang').val();
   var max = $('.max').val();
   var customer = $('#customer').val();
+  var customer_t = $('#customer option:selected').text();
+  var customer = $('#customer ').val();
   var akun = $('#akun').val();
+  var akun_t = $('#akun option:selected').text();
+  var cabang_t = $('#cabang option:selected').text();
   var laporan = $('#laporan').val();
 
 
+    $('.drop').html('<div class="loader"></div>');
+    $('.modal').modal('hide');
     $.ajax({
       data:{min,max,customer,akun,laporan,cabang},
       type:'get',
       url: '{{ url('/laporan_sales/analisa_piutang/ajax_lap_analisa_piutang') }}',
       success : function(data){
         $('.drop').html(data);
-        // $('#container').hide();
+        $('.cabang').addClass('hide');
+        $('.customer').addClass('hide');
+        $('.akun').addClass('hide');
+
+        $('.tanggal_append').html('Tanggal : '+min+' s/d '+max);
+        $('.cabang_append').html('Cabang : '+cabang_t);
+        $('.akun_append').html('Akun Piutang : '+akun_t);
+        $('.customer_append').html('Customer : '+customer_t);
+        $('.rekap').html('REKAP '+laporan);
+      },error:function(){
+        $('.drop').html('<div class="auto"><h1 align="center">Oops, Terlalu Banyak Data. Coba Gunakan Fitur Filter<h1></div>');
       }
     })
-  
+
 }
 
 $('.filter').click(function(){
   $('.modal').modal('show');
 })
+
+
+  function collapse_all() {
+    collapse_akun();
+    collapse_customer();
+    collapse_cabang();
+  }
+
+  function collapse_akun(argument) {
+    
+    $('.akun').addClass('hide');
+  }
+
+  function collapse_customer(argument) {
+    $('.customer').addClass('hide');
+  }
+
+  function collapse_cabang(argument) {
+    $('.cabang').addClass('hide');
+  }
+
+  function append_all() {
+    append_akun();
+    append_customer();
+    append_cabang();
+  }
+
+  function append_akun(argument) {
+    $('.cabang').removeClass('hide');
+    $('.akun').removeClass('hide');
+  }
+
+  function append_customer(argument) {
+    $('.customer').removeClass('hide');
+    $('.cabang').removeClass('hide');
+    $('.akun').removeClass('hide');
+  }
+
+  function append_cabang(argument) {
+    $('.cabang').removeClass('hide');
+  }
+
+  function hilang_cabang(par) {
+   var triger = $(par).find('.value_cabang').val();
+
+   var cabang = $('.cabang_'+triger);
+
+   if (cabang.hasClass('hide')) {
+    cabang.removeClass('hide');
+   }else{
+    cabang.addClass('hide');
+   }
+  }
+
+  function hilang_akun(par) {
+   var triger = $(par).find('.value_akun').val();
+
+   var cabang = $('.akun_'+triger);
+
+   if (cabang.hasClass('hide')) {
+    cabang.removeClass('hide');
+   }else{
+    cabang.addClass('hide');
+   }
+  }
+
+  function hilang_customer(par) {
+   var triger = $(par).find('.value_customer').val();
+
+   var cabang = $('.customer_'+triger);
+
+   if (cabang.hasClass('hide')) {
+    cabang.removeClass('hide');
+   }else{
+    cabang.addClass('hide');
+   }
+  }
 </script>
 </html>

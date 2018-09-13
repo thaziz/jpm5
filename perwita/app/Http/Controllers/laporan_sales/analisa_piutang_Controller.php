@@ -78,7 +78,14 @@ class analisa_piutang_Controller extends Controller
         $total_invoice_61_90   = [];
         $total_invoice_91_120  = [];
         $total_invoice_120     = [];
-
+        $laporan               = $req->laporan;
+        $cab                   = [];
+        $cab_nama              = [];
+        $akun                  = [];
+        $akun_nama             = [];
+        $customer              = [];
+        $customer_nama         = [];
+        $invoice               = [];
         if ($req->customer != 'all') {
             $customer1 = 'and i_kode_customer = '."'$req->customer'";
         }else{
@@ -128,10 +135,14 @@ class analisa_piutang_Controller extends Controller
         $cab = [];
         for ($i=0; $i < count($cabang2); $i++) { 
             $cab[$i] = $cabang2[$i]->kode;
+            $cab_nama[$i] = $cabang2[$i]->nama;
         }
 
         $cab = array_unique($cab);
         $cab = array_values($cab);
+
+        $cab_nama = array_unique($cab_nama);
+        $cab_nama = array_values($cab_nama);
 
         for ($i=0; $i < count($cab); $i++) { 
             // AKUN
@@ -189,308 +200,328 @@ class analisa_piutang_Controller extends Controller
 
             for ($a=0; $a < count($akun2[$i]); $a++) { 
                 $akun[$i][$a] = $akun2[$i][$a]->i_acc_piutang;
+                $akun_nama[$i][$a] = $akun2[$i][$a]->nama_akun;
             }
-
-            $akun[$i] = array_unique($akun[$i]);
-            $akun[$i] = array_values($akun[$i]);
+            
             // CUSTOMER
-            for ($a=0; $a < count($akun[$i]); $a++) { 
+            if (isset($akun[$i])) {
+                $akun[$i] = array_unique($akun[$i]);
+                $akun[$i] = array_values($akun[$i]);
 
-                if(!isset($invoice_0[$i][$a])){
-                    $invoice_0[$i][$a]             = array();
-                    $invoice_0_30[$i][$a]          = array();
-                    $invoice_31_60[$i][$a]         = array();
-                    $invoice_61_90[$i][$a]         = array();
-                    $invoice_91_120[$i][$a]        = array();
-                    $invoice_121_180[$i][$a]       = array();
-                    $invoice_181_360[$i][$a]       = array();
-                    $invoice_120[$i][$a]           = array();
-                    $umur[$i][$a]                  = array();
-                    $total_invoice[$i][$a]         = array();
-                    $total_terbayar[$i][$a]        = array();
-                    $total_sisa_saldo[$i][$a]      = array();
-                    $total_umur[$i][$a]            = array();
-                    $total_invoice_0[$i][$a]       = array();
-                    $total_invoice_0_30[$i][$a]    = array();
-                    $total_invoice_31_60[$i][$a]   = array();
-                    $total_invoice_61_90[$i][$a]   = array();
-                    $total_invoice_91_120[$i][$a]  = array();
-                    $total_invoice_120[$i][$a]     = array();
-                }
+                $akun_nama[$i] = array_unique($akun_nama[$i]);
+                $akun_nama[$i] = array_values($akun_nama[$i]);
 
-                $akuns = $akun[$i][$a];
-                $customer2[$i][$a] = DB::table('invoice')
-                                    ->join('d_akun','id_akun','=','i_acc_piutang')
-                                    ->whereRaw("i_nomor != '0' and i_kode_cabang = '$cabangs' and i_acc_piutang = '$akuns' $customer1")
-                                    ->get();
+                for ($a=0; $a < count($akun[$i]); $a++) { 
 
-                $customer_temp = $customer2[$i][$a];
-
-                for ($c=0; $c < count($customer_temp); $c++) { 
-                    if ($customer_temp[$c]->i_tanggal_tanda_terima != null) {
-                        if (strtotime($req->min)/86400 < strtotime($customer_temp[$c]->i_tanggal_tanda_terima)/86400) {
-                            if (strtotime($customer_temp[$c]->i_tanggal_tanda_terima)/86400 > strtotime($req->max)/86400) {
-                                unset($customer2[$i][$a][$c]);
-                            }
-                        }else{
-                            unset($customer2[$i][$a][$c]);
-                        }
-                    }elseif ($customer_temp[$c]->i_tanggal_tanda_terima == null){
-                        if (strtotime($req->min)/86400 <  strtotime($customer_temp[$c]->i_tanggal)/86400) {
-                            if (strtotime($customer_temp[$c]->i_tanggal)/86400 > strtotime($req->max)/86400) 
-                            {
-                                unset($customer2[$i][$a][$c]);
-                            }
-                        }else{
-                            unset($customer2[$i][$a][$c]);
-                        }
+                    if(!isset($invoice_0[$i][$a])){
+                        $invoice_0[$i][$a]             = array();
+                        $invoice_0_30[$i][$a]          = array();
+                        $invoice_31_60[$i][$a]         = array();
+                        $invoice_61_90[$i][$a]         = array();
+                        $invoice_91_120[$i][$a]        = array();
+                        $invoice_121_180[$i][$a]       = array();
+                        $invoice_181_360[$i][$a]       = array();
+                        $invoice_120[$i][$a]           = array();
+                        $umur[$i][$a]                  = array();
+                        $total_invoice[$i][$a]         = array();
+                        $total_terbayar[$i][$a]        = array();
+                        $total_sisa_saldo[$i][$a]      = array();
+                        $total_umur[$i][$a]            = array();
+                        $total_invoice_0[$i][$a]       = array();
+                        $total_invoice_0_30[$i][$a]    = array();
+                        $total_invoice_31_60[$i][$a]   = array();
+                        $total_invoice_61_90[$i][$a]   = array();
+                        $total_invoice_91_120[$i][$a]  = array();
+                        $total_invoice_120[$i][$a]     = array();
                     }
-                }
 
-                $customer2[$i][$a] = array_values($customer2[$i][$a]);
+                    $akuns = $akun[$i][$a];
+                    $customer2[$i][$a] = DB::table('invoice')
+                                        ->join('customer','kode','=','i_kode_customer')
+                                        ->whereRaw("i_nomor != '0' and i_kode_cabang = '$cabangs' and i_acc_piutang = '$akuns' $customer1")
+                                        ->get();
 
-                for ($c=0; $c < count($customer2[$i][$a]); $c++) { 
-                    $customer[$i][$a][$c] = $customer2[$i][$a][$c]->i_kode_customer;
-                }
+                    $customer_temp = $customer2[$i][$a];
 
-                $customer[$i][$a] = array_unique($customer[$i][$a]);
-                $customer[$i][$a] = array_values($customer[$i][$a]);
-
-
-                // INVOICE
-                for ($e=0; $e < count($customer[$i][$a]); $e++) { 
-
-                    if(!isset($invoice_0[$i][$a][$e])){
-                        $invoice_0[$i][$a][$e]             = array();
-                        $invoice_0_30[$i][$a][$e]          = array();
-                        $invoice_31_60[$i][$a][$e]         = array();
-                        $invoice_61_90[$i][$a][$e]         = array();
-                        $invoice_91_120[$i][$a][$e]        = array();
-                        $invoice_121_180[$i][$a][$e]       = array();
-                        $invoice_181_360[$i][$a][$e]       = array();
-                        $invoice_120[$i][$a][$e]           = array();
-                        $umur[$i][$a][$e]                  = array();
-                        $total_invoice[$i][$a][$e]         = 0;
-                        $total_terbayar[$i][$a][$e]        = 0;
-                        $total_sisa_saldo[$i][$a][$e]      = 0;
-                        $total_umur[$i][$a][$e]            = 0;
-                        $total_invoice_0[$i][$a][$e]       = 0;
-                        $total_invoice_0_30[$i][$a][$e]    = 0;
-                        $total_invoice_31_60[$i][$a][$e]   = 0;
-                        $total_invoice_61_90[$i][$a][$e]   = 0;
-                        $total_invoice_91_120[$i][$a][$e]  = 0;
-                        $total_invoice_120[$i][$a][$e]     = 0;
-                    }
-                    $customers = $customer[$i][$a][$e];
-                    $invoice2[$i][$a][$e] = DB::table('invoice')
-                                                ->whereRaw("i_nomor != '0' and i_kode_cabang = '$cabangs' and i_acc_piutang = '$akuns'  and i_kode_customer = '$customers'")
-                                                ->get();
-                    $invoice_temp = $invoice2[$i][$a][$e];
-
-                    for ($c=0; $c < count($invoice_temp); $c++) { 
-                        if ($invoice_temp[$c]->i_tanggal_tanda_terima != null) {
-                            if (strtotime($req->min)/86400 < strtotime($invoice_temp[$c]->i_tanggal_tanda_terima)/86400) {
-                                if (strtotime($invoice_temp[$c]->i_tanggal_tanda_terima)/86400 > strtotime($req->max)/86400) {
-                                    unset($invoice2[$i][$a][$e][$c]);
+                    for ($c=0; $c < count($customer_temp); $c++) { 
+                        if ($customer_temp[$c]->i_tanggal_tanda_terima != null) {
+                            if (strtotime($req->min)/86400 < strtotime($customer_temp[$c]->i_tanggal_tanda_terima)/86400) {
+                                if (strtotime($customer_temp[$c]->i_tanggal_tanda_terima)/86400 > strtotime($req->max)/86400) {
+                                    unset($customer2[$i][$a][$c]);
                                 }
                             }else{
-                                unset($invoice2[$i][$a][$e][$c]);
+                                unset($customer2[$i][$a][$c]);
                             }
-                        }elseif ($invoice_temp[$c]->i_tanggal_tanda_terima == null){
-                            if (strtotime($req->min)/86400 <  strtotime($invoice_temp[$c]->i_tanggal)/86400) {
-                                if (strtotime($invoice_temp[$c]->i_tanggal)/86400 > strtotime($req->max)/86400) 
+                        }elseif ($customer_temp[$c]->i_tanggal_tanda_terima == null){
+                            if (strtotime($req->min)/86400 <  strtotime($customer_temp[$c]->i_tanggal)/86400) {
+                                if (strtotime($customer_temp[$c]->i_tanggal)/86400 > strtotime($req->max)/86400) 
                                 {
-                                    unset($invoice2[$i][$a][$e][$c]);
+                                    unset($customer2[$i][$a][$c]);
                                 }
                             }else{
-                                unset($invoice2[$i][$a][$e][$c]);
+                                unset($customer2[$i][$a][$c]);
                             }
                         }
                     }
 
-                    $invoice[$i][$a][$e] = array_values($invoice2[$i][$a][$e]);
+                    $customer2[$i][$a] = array_values($customer2[$i][$a]);
 
-                    for ($f=0; $f < count($invoice[$i][$a][$e]); $f++) { 
-
-                        if(!isset($invoice_0[$i][$a][$e][$f])){
-                            $invoice_0[$i][$a][$e][$f]             = array();
-                            $invoice_0_30[$i][$a][$e][$f]          = array();
-                            $invoice_31_60[$i][$a][$e][$f]         = array();
-                            $invoice_61_90[$i][$a][$e][$f]         = array();
-                            $invoice_91_120[$i][$a][$e][$f]        = array();
-                            $invoice_121_180[$i][$a][$e][$f]       = array();
-                            $invoice_181_360[$i][$a][$e][$f]       = array();
-                            $invoice_120[$i][$a][$e][$f]           = array();
-                            $umur[$i][$a][$e][$f]                  = array();
-                        }
-                        $i_nomor = $invoice[$i][$a][$e][$f]->i_nomor;
-                        $kwitansi = DB::table('kwitansi_d')
-                                      ->select('kd_total_bayar as total','k_tanggal as tanggal')
-                                      ->join('kwitansi','kd_id','=','k_id')
-                                      ->where('kd_nomor_invoice',$i_nomor)
-                                      ->where('k_jenis_pembayaran','!=','F')
-                                      ->where('k_jenis_pembayaran','!=','C')
-                                      ->get();
-
-                        for ($c=0; $c < count($kwitansi); $c++) { 
-                            if (strtotime($req->min) <  strtotime($kwitansi[$c]->tanggal)) {
-                                if (strtotime($kwitansi[$a]->tanggal) > strtotime($req->max)) {
-                                    $invoice[$i][$a][$e][$f]->i_sisa_akhir += $kwitansi[$c]->total;
-                                }
-                            }else{
-                                $invoice[$i][$a][$e][$f]->i_sisa_akhir += $kwitansi[$c]->total;
-                            }
-                        }
-
-                        $posting = DB::table('kwitansi_d')
-                                      ->select('kd_total_bayar as total','k_tgl_posting as tanggal')
-                                      ->join('kwitansi','kd_id','=','k_id')
-                                      ->whereRaw("k_jenis_pembayaran = 'F' and kd_nomor_invoice = '$i_nomor'
-                                        or k_jenis_pembayaran = 'C' and kd_nomor_invoice = '$i_nomor'")
-                                      ->get();
-                        for ($c=0; $c < count($posting); $c++) { 
-                            if (strtotime($req->min) <  strtotime($posting[$c]->tanggal)) {
-                                if (strtotime($posting[$c]->tanggal) > strtotime($req->max)) {
-
-                                    $invoice[$i][$a][$e][$f]->i_sisa_akhir += $posting[$c]->total;
-                                }
-                            }else{
-                                $invoice[$i][$a][$e][$f]->i_sisa_akhir += $posting[$c]->total;
-                            }
-                        }
-
-
-                        if ($invoice[$i][$a][$e][$f]->i_jatuh_tempo_tt != null) {
-                            $tanggal_jatuh_tempo = strtotime($req->max) - strtotime($invoice[$i][$a][$e][$f]->i_jatuh_tempo_tt);
-                            $tanggal_jatuh_tempo = $tanggal_jatuh_tempo/86400;
-                            array_push($umur[$i][$a][$e][$f],$tanggal_jatuh_tempo);
-                            if ($tanggal_jatuh_tempo < 0) {
-                                array_push($invoice_0[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
-                                array_push($invoice_0_30[$i][$a][$e][$f],0);
-                                array_push($invoice_31_60[$i][$a][$e][$f],0);
-                                array_push($invoice_61_90[$i][$a][$e][$f],0);
-                                array_push($invoice_91_120[$i][$a][$e][$f],0);
-                                array_push($invoice_120[$i][$a][$e][$f],0);
-                                
-                            }elseif ($tanggal_jatuh_tempo >= 0 and $tanggal_jatuh_tempo <= 30){
-                                array_push($invoice_0[$i][$a][$e][$f],0);
-                                array_push($invoice_0_30[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
-                                array_push($invoice_31_60[$i][$a][$e][$f],0);
-                                array_push($invoice_61_90[$i][$a][$e][$f],0);
-                                array_push($invoice_91_120[$i][$a][$e][$f],0);
-                                array_push($invoice_120[$i][$a][$e][$f],0);
-                                
-                            }elseif ($tanggal_jatuh_tempo >= 31 and $tanggal_jatuh_tempo <= 60){
-                                array_push($invoice_0[$i][$a][$e][$f],0);
-                                array_push($invoice_0_30[$i][$a][$e][$f],0);
-                                array_push($invoice_31_60[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
-                                array_push($invoice_61_90[$i][$a][$e][$f],0);
-                                array_push($invoice_91_120[$i][$a][$e][$f],0);
-                                array_push($invoice_120[$i][$a][$e][$f],0);
-                                
-                            }elseif ($tanggal_jatuh_tempo >= 61 and $tanggal_jatuh_tempo <= 90){
-                                array_push($invoice_0[$i][$a][$e][$f],0);
-                                array_push($invoice_0_30[$i][$a][$e][$f],0);
-                                array_push($invoice_31_60[$i][$a][$e][$f],0);
-                                array_push($invoice_61_90[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
-                                array_push($invoice_91_120[$i][$a][$e][$f],0);
-                                array_push($invoice_120[$i][$a][$e][$f],0);
-                                
-                            }elseif ($tanggal_jatuh_tempo >= 91 and $tanggal_jatuh_tempo <= 120){
-                                array_push($invoice_0[$i][$a][$e][$f],0);
-                                array_push($invoice_0_30[$i][$a][$e][$f],0);
-                                array_push($invoice_31_60[$i][$a][$e][$f],0);
-                                array_push($invoice_61_90[$i][$a][$e][$f],0);
-                                array_push($invoice_91_120[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
-                                array_push($invoice_120[$i][$a][$e][$f],0);
-                                
-                            }elseif ($tanggal_jatuh_tempo >= 121){
-                                array_push($invoice_0[$i][$a][$e][$f],0);
-                                array_push($invoice_0_30[$i][$a][$e][$f],0);
-                                array_push($invoice_31_60[$i][$a][$e][$f],0);
-                                array_push($invoice_61_90[$i][$a][$e][$f],0);
-                                array_push($invoice_91_120[$i][$a][$e][$f],0);
-                                array_push($invoice_120[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
-                            }else{
-                                dd($tanggal_jatuh_tempo);
-                            }
-                        }elseif ($invoice[$i][$a][$e][$f]->i_jatuh_tempo_tt == null){
-                            $tanggal_jatuh_tempo = strtotime($req->max) - strtotime($invoice[$i][$a][$e][$f]->i_jatuh_tempo);
-                            $tanggal_jatuh_tempo = $tanggal_jatuh_tempo/86400;
-                            array_push($umur[$i][$a][$e][$f],(string)$tanggal_jatuh_tempo);
-                            if ($tanggal_jatuh_tempo < 0) {
-                                array_push($invoice_0[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
-                                array_push($invoice_0_30[$i][$a][$e][$f],0);
-                                array_push($invoice_31_60[$i][$a][$e][$f],0);
-                                array_push($invoice_61_90[$i][$a][$e][$f],0);
-                                array_push($invoice_91_120[$i][$a][$e][$f],0);
-                                array_push($invoice_120[$i][$a][$e][$f],0);
-                                
-                            }elseif ($tanggal_jatuh_tempo >= 0 and $tanggal_jatuh_tempo <= 30){
-                                array_push($invoice_0[$i][$a][$e][$f],0);
-                                array_push($invoice_0_30[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
-                                array_push($invoice_31_60[$i][$a][$e][$f],0);
-                                array_push($invoice_61_90[$i][$a][$e][$f],0);
-                                array_push($invoice_91_120[$i][$a][$e][$f],0);
-                                array_push($invoice_120[$i][$a][$e][$f],0);
-                                
-                            }elseif ($tanggal_jatuh_tempo >= 31 and $tanggal_jatuh_tempo <= 60){
-                                array_push($invoice_0[$i][$a][$e][$f],0);
-                                array_push($invoice_0_30[$i][$a][$e][$f],0);
-                                array_push($invoice_31_60[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
-                                array_push($invoice_61_90[$i][$a][$e][$f],0);
-                                array_push($invoice_91_120[$i][$a][$e][$f],0);
-                                array_push($invoice_120[$i][$a][$e][$f],0);
-                                
-                            }elseif ($tanggal_jatuh_tempo >= 61 and $tanggal_jatuh_tempo <= 90){
-                                array_push($invoice_0[$i][$a][$e][$f],0);
-                                array_push($invoice_0_30[$i][$a][$e][$f],0);
-                                array_push($invoice_31_60[$i][$a][$e][$f],0);
-                                array_push($invoice_61_90[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
-                                array_push($invoice_91_120[$i][$a][$e][$f],0);
-                                array_push($invoice_120[$i][$a][$e][$f],0);
-                                
-                            }elseif ($tanggal_jatuh_tempo >= 91 and $tanggal_jatuh_tempo <= 120){
-                                array_push($invoice_0[$i][$a][$e][$f],0);
-                                array_push($invoice_0_30[$i][$a][$e][$f],0);
-                                array_push($invoice_31_60[$i][$a][$e][$f],0);
-                                array_push($invoice_61_90[$i][$a][$e][$f],0);
-                                array_push($invoice_91_120[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
-                                array_push($invoice_120[$i][$a][$e][$f],0);
-                            }elseif ($tanggal_jatuh_tempo >= 121){
-                                array_push($invoice_0[$i][$a][$e][$f],0);
-                                array_push($invoice_0_30[$i][$a][$e][$f],0);
-                                array_push($invoice_31_60[$i][$a][$e][$f],0);
-                                array_push($invoice_61_90[$i][$a][$e][$f],0);
-                                array_push($invoice_91_120[$i][$a][$e][$f],0);
-                                array_push($invoice_120[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
-                            }else{
-                                dd($tanggal_jatuh_tempo);
-                            }
-                        }else{
-                            dd($invoice[$i][$a][$e][$f]);
-                        }
+                    for ($c=0; $c < count($customer2[$i][$a]); $c++) { 
+                        $customer[$i][$a][$c] = $customer2[$i][$a][$c]->i_kode_customer;
+                        $customer_nama[$i][$a][$c] = $customer2[$i][$a][$c]->nama;
                     }
 
-                    for ($f=0; $f < count($invoice[$i][$a][$e]); $f++) { 
-                        $total_invoice[$i][$a][$e] += $invoice[$i][$a][$e][$f]->i_total_tagihan;
-                        $temp = $invoice[$i][$a][$e][$f]->i_total_tagihan + $invoice[$i][$a][$e][$f]->i_debet - $invoice[$i][$a][$e][$f]->i_kredit - $invoice[$i][$a][$e][$f]->i_sisa_akhir;
-                        $total_terbayar[$i][$a][$e] += $temp;
-                        $total_sisa_saldo[$i][$a][$e] += $invoice[$i][$a][$e][$f]->i_sisa_akhir;
-                        $total_umur[$i][$a][$e] = $umur[$i][$a][$e][$f][0];
-                        $total_invoice_0[$i][$a][$e] += $invoice_0[$i][$a][$e][$f][0];
-                        $total_invoice_0_30[$i][$a][$e] += $invoice_0_30[$i][$a][$e][$f][0];
-                        $total_invoice_31_60[$i][$a][$e] += $invoice_31_60[$i][$a][$e][$f][0];
-                        $total_invoice_61_90[$i][$a][$e] += $invoice_61_90[$i][$a][$e][$f][0];
-                        $total_invoice_91_120[$i][$a][$e] += $invoice_91_120[$i][$a][$e][$f][0];
-                        $total_invoice_120[$i][$a][$e] += $invoice_120[$i][$a][$e][$f][0];
+                    if (isset($customer[$i][$a])) {
+                        $customer[$i][$a] = array_unique($customer[$i][$a]);
+                        $customer[$i][$a] = array_values($customer[$i][$a]);
+
+                        $customer_nama[$i][$a] = array_unique($customer_nama[$i][$a]);
+                        $customer_nama[$i][$a] = array_values($customer_nama[$i][$a]);
+
+                        // INVOICE
+                        for ($e=0; $e < count($customer[$i][$a]); $e++) { 
+
+                            if(!isset($invoice_0[$i][$a][$e])){
+                                $invoice_0[$i][$a][$e]             = array();
+                                $invoice_0_30[$i][$a][$e]          = array();
+                                $invoice_31_60[$i][$a][$e]         = array();
+                                $invoice_61_90[$i][$a][$e]         = array();
+                                $invoice_91_120[$i][$a][$e]        = array();
+                                $invoice_121_180[$i][$a][$e]       = array();
+                                $invoice_181_360[$i][$a][$e]       = array();
+                                $invoice_120[$i][$a][$e]           = array();
+                                $umur[$i][$a][$e]                  = array();
+                                $total_invoice[$i][$a][$e]         = 0;
+                                $total_terbayar[$i][$a][$e]        = 0;
+                                $total_sisa_saldo[$i][$a][$e]      = 0;
+                                $total_umur[$i][$a][$e]            = 0;
+                                $total_invoice_0[$i][$a][$e]       = 0;
+                                $total_invoice_0_30[$i][$a][$e]    = 0;
+                                $total_invoice_31_60[$i][$a][$e]   = 0;
+                                $total_invoice_61_90[$i][$a][$e]   = 0;
+                                $total_invoice_91_120[$i][$a][$e]  = 0;
+                                $total_invoice_120[$i][$a][$e]     = 0;
+                            }
+                            $customers = $customer[$i][$a][$e];
+                            $invoice2[$i][$a][$e] = DB::table('invoice')
+                                                        ->whereRaw("i_nomor != '0' and i_kode_cabang = '$cabangs' and i_acc_piutang = '$akuns'  and i_kode_customer = '$customers'")
+                                                        ->get();
+                            $invoice_temp = $invoice2[$i][$a][$e];
+
+                            for ($c=0; $c < count($invoice_temp); $c++) { 
+                                if ($invoice_temp[$c]->i_tanggal_tanda_terima != null) {
+                                    if (strtotime($req->min)/86400 < strtotime($invoice_temp[$c]->i_tanggal_tanda_terima)/86400) {
+                                        if (strtotime($invoice_temp[$c]->i_tanggal_tanda_terima)/86400 > strtotime($req->max)/86400) {
+                                            unset($invoice2[$i][$a][$e][$c]);
+                                        }
+                                    }else{
+                                        unset($invoice2[$i][$a][$e][$c]);
+                                    }
+                                }elseif ($invoice_temp[$c]->i_tanggal_tanda_terima == null){
+                                    if (strtotime($req->min)/86400 <  strtotime($invoice_temp[$c]->i_tanggal)/86400) {
+                                        if (strtotime($invoice_temp[$c]->i_tanggal)/86400 > strtotime($req->max)/86400) 
+                                        {
+                                            unset($invoice2[$i][$a][$e][$c]);
+                                        }
+                                    }else{
+                                        unset($invoice2[$i][$a][$e][$c]);
+                                    }
+                                }
+                            }
+
+                            $invoice[$i][$a][$e] = array_values($invoice2[$i][$a][$e]);
+
+                            for ($f=0; $f < count($invoice[$i][$a][$e]); $f++) { 
+
+                                if(!isset($invoice_0[$i][$a][$e][$f])){
+                                    $invoice_0[$i][$a][$e][$f]             = array();
+                                    $invoice_0_30[$i][$a][$e][$f]          = array();
+                                    $invoice_31_60[$i][$a][$e][$f]         = array();
+                                    $invoice_61_90[$i][$a][$e][$f]         = array();
+                                    $invoice_91_120[$i][$a][$e][$f]        = array();
+                                    $invoice_121_180[$i][$a][$e][$f]       = array();
+                                    $invoice_181_360[$i][$a][$e][$f]       = array();
+                                    $invoice_120[$i][$a][$e][$f]           = array();
+                                    $umur[$i][$a][$e][$f]                  = array();
+                                }
+                                $i_nomor = $invoice[$i][$a][$e][$f]->i_nomor;
+                                $kwitansi = DB::table('kwitansi_d')
+                                              ->select('kd_total_bayar as total','k_tanggal as tanggal')
+                                              ->join('kwitansi','kd_id','=','k_id')
+                                              ->where('kd_nomor_invoice',$i_nomor)
+                                              ->where('k_jenis_pembayaran','!=','F')
+                                              ->where('k_jenis_pembayaran','!=','C')
+                                              ->get();
+                        
+                                for ($c=0; $c < count($kwitansi); $c++) { 
+                                    if (strtotime($req->min) <  strtotime($kwitansi[$c]->tanggal)) {
+                                        if (strtotime($kwitansi[$c]->tanggal) > strtotime($req->max)) {
+                                            $invoice[$i][$a][$e][$f]->i_sisa_akhir += $kwitansi[$c]->total;
+                                        }
+                                    }else{
+                                        $invoice[$i][$a][$e][$f]->i_sisa_akhir += $kwitansi[$c]->total;
+                                    }
+                                }
+
+                                $posting = DB::table('kwitansi_d')
+                                              ->select('kd_total_bayar as total','k_tgl_posting as tanggal')
+                                              ->join('kwitansi','kd_id','=','k_id')
+                                              ->whereRaw("k_jenis_pembayaran = 'F' and kd_nomor_invoice = '$i_nomor'
+                                                or k_jenis_pembayaran = 'C' and kd_nomor_invoice = '$i_nomor'")
+                                              ->get();
+                                for ($c=0; $c < count($posting); $c++) { 
+                                    if (strtotime($req->min) <  strtotime($posting[$c]->tanggal)) {
+                                        if (strtotime($posting[$c]->tanggal) > strtotime($req->max)) {
+
+                                            $invoice[$i][$a][$e][$f]->i_sisa_akhir += $posting[$c]->total;
+                                        }
+                                    }else{
+                                        $invoice[$i][$a][$e][$f]->i_sisa_akhir += $posting[$c]->total;
+                                    }
+                                }
+
+
+                                if ($invoice[$i][$a][$e][$f]->i_jatuh_tempo_tt != null) {
+                                    $tanggal_jatuh_tempo = strtotime($req->max) - strtotime($invoice[$i][$a][$e][$f]->i_jatuh_tempo_tt);
+                                    $tanggal_jatuh_tempo = $tanggal_jatuh_tempo/86400;
+                                    array_push($umur[$i][$a][$e][$f],$tanggal_jatuh_tempo);
+                                    if ($tanggal_jatuh_tempo < 0) {
+                                        array_push($invoice_0[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
+                                        array_push($invoice_0_30[$i][$a][$e][$f],0);
+                                        array_push($invoice_31_60[$i][$a][$e][$f],0);
+                                        array_push($invoice_61_90[$i][$a][$e][$f],0);
+                                        array_push($invoice_91_120[$i][$a][$e][$f],0);
+                                        array_push($invoice_120[$i][$a][$e][$f],0);
+                                        
+                                    }elseif ($tanggal_jatuh_tempo >= 0 and $tanggal_jatuh_tempo <= 30){
+                                        array_push($invoice_0[$i][$a][$e][$f],0);
+                                        array_push($invoice_0_30[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
+                                        array_push($invoice_31_60[$i][$a][$e][$f],0);
+                                        array_push($invoice_61_90[$i][$a][$e][$f],0);
+                                        array_push($invoice_91_120[$i][$a][$e][$f],0);
+                                        array_push($invoice_120[$i][$a][$e][$f],0);
+                                        
+                                    }elseif ($tanggal_jatuh_tempo >= 31 and $tanggal_jatuh_tempo <= 60){
+                                        array_push($invoice_0[$i][$a][$e][$f],0);
+                                        array_push($invoice_0_30[$i][$a][$e][$f],0);
+                                        array_push($invoice_31_60[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
+                                        array_push($invoice_61_90[$i][$a][$e][$f],0);
+                                        array_push($invoice_91_120[$i][$a][$e][$f],0);
+                                        array_push($invoice_120[$i][$a][$e][$f],0);
+                                        
+                                    }elseif ($tanggal_jatuh_tempo >= 61 and $tanggal_jatuh_tempo <= 90){
+                                        array_push($invoice_0[$i][$a][$e][$f],0);
+                                        array_push($invoice_0_30[$i][$a][$e][$f],0);
+                                        array_push($invoice_31_60[$i][$a][$e][$f],0);
+                                        array_push($invoice_61_90[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
+                                        array_push($invoice_91_120[$i][$a][$e][$f],0);
+                                        array_push($invoice_120[$i][$a][$e][$f],0);
+                                        
+                                    }elseif ($tanggal_jatuh_tempo >= 91 and $tanggal_jatuh_tempo <= 120){
+                                        array_push($invoice_0[$i][$a][$e][$f],0);
+                                        array_push($invoice_0_30[$i][$a][$e][$f],0);
+                                        array_push($invoice_31_60[$i][$a][$e][$f],0);
+                                        array_push($invoice_61_90[$i][$a][$e][$f],0);
+                                        array_push($invoice_91_120[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
+                                        array_push($invoice_120[$i][$a][$e][$f],0);
+                                        
+                                    }elseif ($tanggal_jatuh_tempo >= 121){
+                                        array_push($invoice_0[$i][$a][$e][$f],0);
+                                        array_push($invoice_0_30[$i][$a][$e][$f],0);
+                                        array_push($invoice_31_60[$i][$a][$e][$f],0);
+                                        array_push($invoice_61_90[$i][$a][$e][$f],0);
+                                        array_push($invoice_91_120[$i][$a][$e][$f],0);
+                                        array_push($invoice_120[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
+                                    }else{
+                                        dd($tanggal_jatuh_tempo);
+                                    }
+                                }elseif ($invoice[$i][$a][$e][$f]->i_jatuh_tempo_tt == null){
+                                    $tanggal_jatuh_tempo = strtotime($req->max) - strtotime($invoice[$i][$a][$e][$f]->i_jatuh_tempo);
+                                    $tanggal_jatuh_tempo = $tanggal_jatuh_tempo/86400;
+                                    array_push($umur[$i][$a][$e][$f],(string)$tanggal_jatuh_tempo);
+                                    if ($tanggal_jatuh_tempo < 0) {
+                                        array_push($invoice_0[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
+                                        array_push($invoice_0_30[$i][$a][$e][$f],0);
+                                        array_push($invoice_31_60[$i][$a][$e][$f],0);
+                                        array_push($invoice_61_90[$i][$a][$e][$f],0);
+                                        array_push($invoice_91_120[$i][$a][$e][$f],0);
+                                        array_push($invoice_120[$i][$a][$e][$f],0);
+                                        
+                                    }elseif ($tanggal_jatuh_tempo >= 0 and $tanggal_jatuh_tempo <= 30){
+                                        array_push($invoice_0[$i][$a][$e][$f],0);
+                                        array_push($invoice_0_30[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
+                                        array_push($invoice_31_60[$i][$a][$e][$f],0);
+                                        array_push($invoice_61_90[$i][$a][$e][$f],0);
+                                        array_push($invoice_91_120[$i][$a][$e][$f],0);
+                                        array_push($invoice_120[$i][$a][$e][$f],0);
+                                        
+                                    }elseif ($tanggal_jatuh_tempo >= 31 and $tanggal_jatuh_tempo <= 60){
+                                        array_push($invoice_0[$i][$a][$e][$f],0);
+                                        array_push($invoice_0_30[$i][$a][$e][$f],0);
+                                        array_push($invoice_31_60[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
+                                        array_push($invoice_61_90[$i][$a][$e][$f],0);
+                                        array_push($invoice_91_120[$i][$a][$e][$f],0);
+                                        array_push($invoice_120[$i][$a][$e][$f],0);
+                                        
+                                    }elseif ($tanggal_jatuh_tempo >= 61 and $tanggal_jatuh_tempo <= 90){
+                                        array_push($invoice_0[$i][$a][$e][$f],0);
+                                        array_push($invoice_0_30[$i][$a][$e][$f],0);
+                                        array_push($invoice_31_60[$i][$a][$e][$f],0);
+                                        array_push($invoice_61_90[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
+                                        array_push($invoice_91_120[$i][$a][$e][$f],0);
+                                        array_push($invoice_120[$i][$a][$e][$f],0);
+                                        
+                                    }elseif ($tanggal_jatuh_tempo >= 91 and $tanggal_jatuh_tempo <= 120){
+                                        array_push($invoice_0[$i][$a][$e][$f],0);
+                                        array_push($invoice_0_30[$i][$a][$e][$f],0);
+                                        array_push($invoice_31_60[$i][$a][$e][$f],0);
+                                        array_push($invoice_61_90[$i][$a][$e][$f],0);
+                                        array_push($invoice_91_120[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
+                                        array_push($invoice_120[$i][$a][$e][$f],0);
+                                    }elseif ($tanggal_jatuh_tempo >= 121){
+                                        array_push($invoice_0[$i][$a][$e][$f],0);
+                                        array_push($invoice_0_30[$i][$a][$e][$f],0);
+                                        array_push($invoice_31_60[$i][$a][$e][$f],0);
+                                        array_push($invoice_61_90[$i][$a][$e][$f],0);
+                                        array_push($invoice_91_120[$i][$a][$e][$f],0);
+                                        array_push($invoice_120[$i][$a][$e][$f],$invoice[$i][$a][$e][$f]->i_sisa_akhir);
+                                    }else{
+                                        dd($tanggal_jatuh_tempo);
+                                    }
+                                }else{
+                                    dd($invoice[$i][$a][$e][$f]);
+                                }
+                            }
+
+                            for ($f=0; $f < count($invoice[$i][$a][$e]); $f++) { 
+                                $total_invoice[$i][$a][$e] += $invoice[$i][$a][$e][$f]->i_total_tagihan;
+                                $temp = $invoice[$i][$a][$e][$f]->i_total_tagihan + $invoice[$i][$a][$e][$f]->i_debet - $invoice[$i][$a][$e][$f]->i_kredit - $invoice[$i][$a][$e][$f]->i_sisa_akhir;
+                                $total_terbayar[$i][$a][$e] += $temp;
+                                $total_sisa_saldo[$i][$a][$e] += $invoice[$i][$a][$e][$f]->i_sisa_akhir;
+                                $total_umur[$i][$a][$e] += $umur[$i][$a][$e][$f][0];
+                                $total_invoice_0[$i][$a][$e] += $invoice_0[$i][$a][$e][$f][0];
+                                $total_invoice_0_30[$i][$a][$e] += $invoice_0_30[$i][$a][$e][$f][0];
+                                $total_invoice_31_60[$i][$a][$e] += $invoice_31_60[$i][$a][$e][$f][0];
+                                $total_invoice_61_90[$i][$a][$e] += $invoice_61_90[$i][$a][$e][$f][0];
+                                $total_invoice_91_120[$i][$a][$e] += $invoice_91_120[$i][$a][$e][$f][0];
+                                $total_invoice_120[$i][$a][$e] += $invoice_120[$i][$a][$e][$f][0];
+                            }
+                        }
                     }
                 }
             }
         }
-        
         return view('purchase.master.master_penjualan.laporan.lap_analisa_piutang.ajax_analisapiutang_rekap',
-                         compact('invoice',
+                         compact(
+                                 'laporan',
+                                 'cab',
+                                 'cab_nama',
+                                 'customer',
+                                 'customer_nama',
+                                 'akun',
+                                 'akun2',
+                                 'akun_nama',
+                                 'invoice',
                                  'invoice_0',
                                  'invoice_0_30',
                                  'invoice_31_60',
@@ -532,8 +563,9 @@ class analisa_piutang_Controller extends Controller
         $total_invoice_61_90   = 0;
         $total_invoice_91_120  = 0;
         $total_invoice_120     = 0;
+        $laporan               = $req->laporan;
 
-        if ($req->customer != null) {
+        if ($req->customer != 'all') {
             $customer = 'and i_kode_customer = '."'$req->customer'";
         }else{
             $customer = '';
@@ -555,7 +587,6 @@ class analisa_piutang_Controller extends Controller
                      ->whereRaw("i_nomor != '0' $akun $customer $cabang")
                      ->orderBy('i_nomor','ASC')
                      ->get();
-
         $invoice_temp = $invoice;
         for ($i=0; $i < count($invoice_temp); $i++) { 
             if ($invoice_temp[$i]->i_tanggal_tanda_terima != null) {
@@ -765,6 +796,7 @@ class analisa_piutang_Controller extends Controller
                                  'total_invoice_31_60',
                                  'total_invoice_61_90',
                                  'total_invoice_91_120',
+                                 'laporan',
                                  'total_invoice_120'
                                 ));
     }
