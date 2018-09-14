@@ -165,7 +165,7 @@ class transaksi_memorial extends Controller
        if($request->type_transaksi == "memorial"){
             $jr = DB::table('d_jurnal')->where(DB::raw("substring(jr_ref, 1, 2)"), "TM")->where(DB::raw("concat(date_part('month', jr_date), '-', date_part('year', jr_date))"), date('n-Y', strtotime($request->jr_date)))->orderBy('jr_insert', 'desc')->first();
 
-            $ref =  ($jr) ? (substr($jr->jr_ref, 13) + 1) : 1;
+            $ref =  ($jr) ? (explode('/', $jr->jr_ref)[2] + 1) : 1;
             $ref = "TM-".date("my", strtotime($request->jr_date))."/".$request->cabang."/".str_pad($ref, 4, '0', STR_PAD_LEFT);
             $jr_no = get_id_jurnal('MM', $request->cabang);
 
