@@ -211,7 +211,7 @@
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" id="append">Append</button>
+                                <button type="submit" class="btn btn-primary append" id="append">Append</button>
                             </div>
                         </div>
                     </div>
