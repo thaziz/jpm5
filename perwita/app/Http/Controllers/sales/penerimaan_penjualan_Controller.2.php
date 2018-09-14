@@ -573,13 +573,13 @@ class penerimaan_penjualan_Controller extends Controller
         }elseif ($cari_nota == null) {
           $nota = $request->nota;
         }
-
+        
         $akun_bank = DB::table("masterbank")
                      ->where('mb_id',$request->cb_akun_h)
                      ->first();
         
         if ($request->cb_jenis_pembayaran == 'T') {
-          $k_kode_akun = $req->akun_kas;
+          $k_kode_akun = $request->akun_kas;
         }else{
           $k_kode_akun = $akun_bank->mb_kode;
         }
@@ -1016,6 +1016,7 @@ class penerimaan_penjualan_Controller extends Controller
         return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
       }catch(Exception $er){
         DB::rollBack();
+        dd($er);
       }
       
 
@@ -1816,11 +1817,11 @@ class penerimaan_penjualan_Controller extends Controller
             return response()->json(['status' => 'gagal','info'=>'Jurnal Tidak Balance Gagal Simpan']);
           }
 
-          // dd($lihat);
           DB::commit();
           return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
       }catch(Exception $er){
         DB::rollBack();
+          dd($er);
       }
       
     }
