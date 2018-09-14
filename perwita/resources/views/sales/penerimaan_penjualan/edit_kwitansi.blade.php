@@ -1042,9 +1042,11 @@ $('.tambah_invoice').click(function(){
         toastr.warning('Customer Harus Dipilih')
         return 1
     }
-    if ($('#cb_akun_h').val() == '0') {
-        toastr.warning('Akun Harus Dipilih')
-        return 1
+    if ($('.cb_jenis_pembayaran').val() == 'C' || $('.cb_jenis_pembayaran').val() == 'F') {
+        if ($('#cb_akun_h').val() == '0') {
+            toastr.warning('Akun Harus Dipilih')
+            return 1
+        }
     }
     
     var cb_cabang = $('.cb_cabang').val();
