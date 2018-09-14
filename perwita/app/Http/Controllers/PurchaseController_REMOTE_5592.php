@@ -9410,11 +9410,15 @@ public function kekata($x) {
 			$fpg = DB::select("select * from fpg");
 			$arrfpg = [];
 			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by fpg_nofpg desc");
+			$data['belumdiproses'] = DB::table("fpg")->where('fpg_posting' , '=' , 'NOT')->count();
+			$data['sudahdiproses'] = DB::table("fpg")->where('fpg_posting' , '=' , 'DONE')->count();
 		}
 		else {
 			$fpg = DB::select("select * from fpg where fpg_cabang = '$cabang'");
 			$arrfpg = [];
 			$data['fpg'] = DB::select("select * from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_nofpg asc");
+			$data['belumdiproses'] = DB::table("fpg")->where('fpg_posting' , '=' , 'NOT')->where('fpg_cabang' ,'=' , $cabang)->count();
+			$data['sudahdiproses'] = DB::table("fpg")->where('fpg_posting' , '=' , 'DONE')->where('fpg_cabang' ,'=' , $cabang)->count();
 		}
 	
 
@@ -12103,7 +12107,7 @@ public function kekata($x) {
 						$updatikhtisar = ikhtisar_kas::where('ik_nota' , '=' , $request->nofaktur[$i]);
 						$updatikhtisar->update([
 						 	'ik_pelunasan' => $sisafaktur,	 
-						 	'ik_status' => 'CAIR',	
+						 	'ik_status' => 'DONE',	
 					 	]);	
 
 					}
@@ -12551,13 +12555,22 @@ public function kekata($x) {
 
 
 				for($key = 0; $key < count($request->notafaktur); $key++){
-					if($request->jenisbayar == '12'){
+					$nominalfaktur = str_replace("," , "" , $request->nominalfaktur[$key]);
+					if($request->jenistransaksi == '12'){
 
 						$updatikhtisar = ikhtisar_kas::where('ik_nota' , '=' , $request->notafaktur[$key]);
 						$updatikhtisar->update([
 						 	'ik_pelunasan' => 0.00,
-						 	'ik_status' => 'CAIR',	 	
+						 	'ik_status' => 'DONE',	 	
 					 	]);	
+					 }
+					 else if($request->jenistransaksi == '11'){					 	
+					 	$updatikhtisar = bonsempengajuan::where('bp_nota' , '=' , $request->notafaktur[$key]);
+						$updatikhtisar->update([
+						 	'bp_pelunasan' => 0.00,
+						 	'bp_pencairan' => $nominalfaktur,	 	
+					 	]);
+					 }
 
 						$lastidfpg =  formfpg_dt::max('fpgdt_id');;
 						if(isset($lastidfpg)) {
@@ -12581,7 +12594,7 @@ public function kekata($x) {
 						$formfpg_dt->fpgdt_keterangan = $request->keterangantransfer;
 						$formfpg_dt->fpgdt_nofaktur = $request->notafaktur[$key];
 						$formfpg_dt->save();
-					}
+					
 				}
 
 				$data['isfpg'] = DB::select("select * from fpg where idfpg = '$idfpg'");
