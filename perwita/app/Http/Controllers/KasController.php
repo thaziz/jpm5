@@ -1648,7 +1648,7 @@ class KasController extends Controller
 				 $harga_array[$i] = round($harga_array[$i]);
 			}
 			// return $harga_array;
-			$total_harga=array_sum($harga_array);
+			$total_harga=array_sum(round($harga_array));
 			// return $total_harga;
 			$terbilang = $this->terbilang($total_harga,$style=3);
 
