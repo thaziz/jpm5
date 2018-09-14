@@ -580,14 +580,11 @@
                                      </table>
                                    </div>
                                   
-
-                                    <div class="col-sm-12">
-                                      <div class="row">
-                                    <div class="col-md-3">
-                                      <table class="table" border="0" id="tbltujuanpb">
+                                   <div class="col-md-8">
+                                   <table class="table" border="0" id="tbltujuanpb">
                                       <tr>
                                         <th>
-                                      Tujuan Pindah Buku :</th>
+                                      Tujuan Pindah Buku </th>
                                       <td> <select class="form-control input-sm tujuanbankpb">
                                                       <option value="BANK">
                                                           BANK
@@ -597,8 +594,28 @@
                                                       </option>
                                                     </select>
                                         </td>
+                                      
+                                        <th> Data Transaksi </th>
+                                        <td> <select class="form-control input-sm jenistransaksi" name="jenistransaksi">
+                                              <option value="">
+                                            Jenis Transaksi
+                                              </option>
+                                              <option value="11">
+                                                BON SEMENTARA
+                                              </option>
+                                              <option value="12">
+                                                GIRO KAS KECIL
+                                              </option>
+                                            </select>
+                                        </td>
                                       </tr>
                                     </table>
+                              </div>
+
+                                    <div class="col-sm-12">
+                                      <div class="row">
+                                    <div class="col-md-3">
+                                   
                                     <fieldset>
                                         <div class="checkbox checkbox-info checkbox-circle">
                                             <input id="jenisbayaribaking" type="checkbox" name="jenisbayarbank" value="INTERNET BANKING" class="metodebayar jenisbayarbankibaking">
@@ -778,6 +795,7 @@
                                 </div>
 
 
+
                                 <div class="col-md-12 dataalltransaksi">
                                     <br>
                                     <br>
@@ -891,7 +909,7 @@
           nota.push(string[2]);
           id.push(string[0]);
         }
-
+        alert(variabel);
 
        for($i = 0; $i < variabel.length; $i++){
           var row = "<tr class='datatransaksipb data"+nmr+"'><td>"+nota[$i]+" <input type='hidden' value='"+id[$i]+"' name='idfaktur[]'> </td><td>"+cabang[$i]+" <input type='hidden' value='"+nota[$i]+"' name='notafaktur[]'> </td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[$i])+" <input type='hidden' class='form-control' name='nominalfaktur[]' value="+addCommas(total[$i])+"> </p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+"><i class='fa fa-trash'> </i> </button></td> </tr>";
@@ -925,7 +943,7 @@
 
 
       $('#getNotaTransaksi').click(function(){
-        jenisbayar = $('.jenisbayar').val();
+        jenisbayar = $('.jenistransaksi').val();
         cabang = $('.cabang').val();
           
         jenispindahbuku = $('.tujuanbankpb').val();   
@@ -971,17 +989,17 @@
                   var tabletransaksi = $('#tbl-transaksi').DataTable();
                   tabletransaksi.clear().draw();
                     var nmrbnk = 1;
-                    /*for(var i = 0; i < datatransaksi.length; i++){                                   
-                        var html2 = "<tr class='bank"+nmrbnk+"' id='caritransaksi"+nmrbnk+"'>"+
+                    for(var i = 0; i < datatransaksi.length; i++){                                   
+                        var html2 = "<tr>" +
                                       "<td>"+nmrbnk+"</td>" +
                                       "<td>"+datatransaksi[i].bp_nota+"</td>"+
                                       "<td>"+datatransaksi[i].bp_cabang+"</td>"+
-                                      "<td>"+datatransaksi[i].bp_nominalkeu+"</td>"+
-                                       html2 += "<td><div class='checkbox'> <input type='checkbox' id="+datatransaksi[i].bp_id+","+nmrbnk+","+datatransaksi[i].bp_nota+" class='checkcek' value='option1' aria-label='Single checkbox One'>";
+                                      "<td style='text-align:right'>"+addCommas(datatransaksi[i].bp_nominalkeu)+"</td>"+
+                                       "<td><div class='checkbox'> <input type='checkbox' id="+datatransaksi[i].bp_id+","+nmrbnk+","+datatransaksi[i].bp_nota+","+datatransaksi[i].bp_cabang+","+datatransaksi[i].bp_nominalkeu+" class='checktransaksi' value='option1' aria-label='Single checkbox One'>  <label> </label> </div> </td>";
                                     "<tr>";
-                         tablecek.rows.add($(html2)).draw(); 
+                         tabletransaksi.rows.add($(html2)).draw(); 
                         nmrbnk++; 
-                 }*/
+                 }
               }
            }
           })

@@ -619,8 +619,25 @@
                                        </div>
 
                                       <div class="modal-body">
+                                        <div class="col-sm-8">
+                                            <table class="table">
+                                              <thead>
+                                              <tr>
+                                                <th> No Check / BG </th> <th> No FPG  </th> <th> Nominal </th> <th> Keterangan </th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                  <td> <input type="text" class="input-sm form-control nocheck biayabg checkakunbg" type="button" data-toggle="modal" data-target="#myModal2" readonly="">  </td>
+                                                  <td> <input type='text' class='input-sm form-control jatuhtempo biayabg nofpgakunbgbiaya' readonly=""> <input type='hidden' class='input-sm form-control jatuhtempo biayabg idfpgakunbgbiaya' readonly="" > </td>
+                                                  <td> <input type='text' class='input-sm form-control nominalakunbiaya biayabg'  readonly="" style='text-align:right'> </td>
+                                                  <td> <input type='text' class='input-sm form-control keteranganakunbiayafpg biayabg'  readonly=""> </td>
+                                                </tr>
+                                            </tbody>
+                                            </table>
+                                        </div>
                                       <div class="row">
-                                                  <div class="col-sm-6">
+                                                  <div class="col-sm-8">
                                                     <table class="table">
                                                       <tr>
                                                         <th> Acc Biaya </th>
@@ -658,29 +675,7 @@
                                                     </table>
                                                   </div>
                                                   
-                                                  <div class="col-sm-6">
-                                                    <table class="table">
-                                                      <tr>
-                                                          <th> No Check / BG </th>
-                                                              <td> <input type="text" class="input-sm form-control nocheck biayabg checkakunbg" type="button" data-toggle="modal" data-target="#myModal2" readonly="">  </td>
-                                                          </tr>
-
-                                                          <tr>
-                                                              <th> No FPG </th>
-                                                              <td> <input type='text' class='input-sm form-control jatuhtempo biayabg nofpgakunbgbiaya' readonly=""> <input type='hidden' class='input-sm form-control jatuhtempo biayabg idfpgakunbgbiaya' readonly="" > </td>
-                                                          </tr>
-
-                                                          <tr>
-                                                            <th> Nominal </th>
-                                                            <td> <input type='text' class='input-sm form-control nominalakunbiaya biayabg'  readonly="" style='text-align:right'> </td>
-                                                          </tr>
-
-                                                          <tr>
-                                                            <th> Keterangan </th>
-                                                            <td> <input type='text' class='input-sm form-control keteranganakunbiayafpg biayabg'  readonly=""> </td>
-                                                          </tr>
-                                                    </table>
-                                                  </div>
+                                                 
                                                   </div>            
                                       </div>      
                                          
@@ -1343,7 +1338,7 @@
         }
 
 
-        if(jenisbayar[0] == '5'){
+        if(jenisbayar[0] != '5'){
           toastr.info("Mohon Maaf Transaksi TRANSFER KAS hanya bisa dilakukan di CEK / BG & Akun :)");
           return false;
         }
