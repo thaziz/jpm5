@@ -67,14 +67,14 @@
                            @if($data['bbk'][0]->bbk_flag == 'CEKBG')
                            @foreach($data['bbkd'] as $bbkd)
                             @if($bbkd->bbkd_notabm != '')
-                           <a onclick="lihatjurnal('BM')" class="btn-xs btn-primary" aria-hidden="true"><i class="fa  fa-eye"> </i>
-                              @if($bbkd->bbkd_jenisbayarfpg == '1')
-                                    Jurnal Kas Masuk
-                              @else
-                                &nbsp;  Jurnal Bank Masuk  
-                              @endif
-                             
-                           </a> 
+                             <a onclick="lihatjurnalBM('{{$bbkd->bbkd_notabm}}')" class="btn-xs btn-primary" aria-hidden="true"><i class="fa  fa-eye"> </i>
+                                @if($bbkd->bbkd_jenisbayarfpg == '1')
+                                      Jurnal Kas Masuk
+                                @else
+                                  &nbsp;  Jurnal Bank Masuk  
+                                @endif
+                               
+                             </a> 
                            @endif
 
                            @endforeach
@@ -397,7 +397,7 @@
                               <input type="hidden" class="refbank">
 
                               <h4 class="modal-title bk"> No BK:  <u> {{$data['bbk'][0]->bbk_nota or null }} </u> </h4>
-                              <h4 class="modal-title bm"> No BM:  <u> {{$data['bbkd'][0]->bbkd_notabm or null }} </u> </h4>
+                              <h4 class="modal-title bm"> No BM:  <u class="nobm">  </u> </h4>
                               
                             </div>
                             <div class="modal-body" style="padding: 15px 20px 15px 20px">                            
@@ -1571,12 +1571,79 @@
 
 
 
+  function lihatjurnalBM(ref){
+    $('.loading').css('display', 'block');
+          bm = ref;
+          data = 'BM';
+
+          $.ajax({
+          type : "post",
+          url : baseUrl + '/pelunasanhutangbank/lihatjurnal',
+          data : {data,bm},
+          dataType : "json",
+          success : function(response){
+                temp = 'BM';
+                $('.refbank').val(temp);
+                /*$('#data-jurnal').html(response);*/
+                $('#jurnal').modal('show');
+                if(temp == 'BK'){
+                  $('.bm').hide();
+                  $('.bk').show();
+                }
+                else if(temp == 'BM'){
+                  $('.bm').show();
+                  $('.nobm').text(ref)
+                  $('.bk').hide();
+                }
+                $('#jurnal').modal('show'); 
+             $('.loading').css('display', 'none');
+                $('.listjurnal').empty();
+                $totalDebit=0;
+                $totalKredit=0;
+                        console.log(response);
+                      
+                        for(key = 0; key < response.countjurnal; key++) {
+                           
+                          var rowtampil2 = "<tr class='listjurnal'> <td>"+response.jurnal[key].id_akun+" </td> <td> "+response.jurnal[key].nama_akun+"</td>";
+
+                          if(response.jurnal[key].dk == 'D'){
+                            $totalDebit = parseFloat($totalDebit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                            rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td> <td>"+response.jurnal[key].jrdt_detail+"</td>";
+                          }
+                          else {
+                            $totalKredit = parseFloat($totalKredit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                            rowtampil2 += "<td> </td><td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td>"+response.jurnal[key].jrdt_detail+"</td>";
+                          }
+
+                            rowtampil2 += +
+                            $('#table_jurnal').append(rowtampil2);
+                        }
+                     var rowtampil1 = "</tbody>" +
+                      "<tfoot>" +
+                          "<tr class='listjurnal'> " +
+                                  "<th colspan='2'>Total</th>" +                        
+                                  "<th>"+accounting.formatMoney($totalDebit, "", 2, ",",'.')+"</th>" +
+                                  "<th>"+accounting.formatMoney($totalKredit,"",2,',','.')+"</th>"
+                          "<tr>" +
+                      "</tfoot>";
+                                     
+                   
+                      $('#table_jurnal').append(rowtampil1);
+              }
+  })
+}
+
+
   function lihatjurnal(ref){
 
           $('.loading').css('display', 'block');
           id = $('.nobbk').val();
           data = ref;
-          bm = $('.nobm').val();
+          bm = [];
+          $('.nobm').each(function(){
+            val = $(this).val();
+            bm.push(val);
+          });
           $.ajax({
           type : "post",
           url : baseUrl + '/pelunasanhutangbank/lihatjurnal',

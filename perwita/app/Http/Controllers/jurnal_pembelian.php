@@ -713,7 +713,7 @@ class jurnal_pembelian  extends Controller
                     }
                     else {
                       $jurnalpbkeluar[1]['id_akun'] = $akunkasbank;
-                      $jurnalpbkeluar[1]['subtotal'] = $bm_nominal;
+                      $jurnalpbkeluar[1]['subtotal'] = '-' .$bm_nominal;
                       $jurnalpbkeluar[1]['dk'] = 'K';
                       $jurnalpbkeluar[1]['detail'] = $bm_keterangan;
                     }
@@ -830,5 +830,41 @@ class jurnal_pembelian  extends Controller
                      );
                   $simpan = DB::table('kas_masuk')->insert($datakm);
       }
+    }
+
+    function fpg_checkbank(){
+      return DB::transaction(function() { 
+      $dataallfpgb = DB::select("select * from fpg_cekbank");
+      for($j = 0; $j < count($dataallfpgb); $j++){
+        $kodebanktujuan = $dataallfpgb[$j]->fpgb_kodebanktujuan;
+        if($kodebanktujuan != ''){
+          $idfpgb = $dataallfpgb[$j]->fpgb_id;
+          $kodebank = $dataallfpgb[$j]->fpgb_kodebank;
+          $kodebanktujuan = $dataallfpgb[$j]->fpgb_kodebanktujuan;
+
+          $datakelompokasal = DB::select("select * from masterbank where mb_id = '$kodebank'");
+          $kelompokasal = $datakelompokasal[0]->mb_kelompok;
+          
+          $datakelompoktujuan = DB::select("select * from masterbank where mb_kode = '$kodebanktujuan'");
+          $kelompoktujuan = $datakelompoktujuan[0]->mb_kelompok;
+
+          if($kelompokasal == $kelompoktujuan){
+            DB::table('fpg_cekbank')
+            ->where('fpgb_id' , $idfpgb)
+            ->update([
+              'fpgb_jeniskelompok' => 'SAMA BANK'
+            ]);
+          }
+          else if($kelompokasal != $kelompoktujuan){
+            DB::table('fpg_cekbank')
+            ->where('fpgb_id' , $idfpgb)
+            ->update([
+              'fpgb_jeniskelompok' => 'BEDA BANK'
+            ]);
+          }
+        }
+      }
+      return 'yesy';
+    });
     }
 }
