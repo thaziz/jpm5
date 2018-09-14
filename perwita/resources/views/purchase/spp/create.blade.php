@@ -1344,8 +1344,9 @@
                 
              }
             
-
            $('.bayar' + id).val(bayar);
+           $('.cek_tb').attr('disabled', false);
+
 
           })
 
@@ -1688,7 +1689,7 @@
 
               //alert('s');
               
-            
+              $('.cek_tb').attr('disabled', false);
           })
 
 					$(function(){
