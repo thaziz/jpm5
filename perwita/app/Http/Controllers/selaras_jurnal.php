@@ -10,7 +10,7 @@ use Auth;
 use App\d_jurnal;
 use App\d_jurnal_dt;
 use Exception;
-    set_time_limit(60000);
+set_time_limit(60000);
 class selaras_jurnal  extends Controller
 {
     public function sync_jurnal()
