@@ -536,7 +536,7 @@
                                                     <tr>
                                                         <td>Keterangan</td>
                                                         <td>
-                                                            <input type="text"  class="form-control ed_keterangan"  style="text-align:right;text-transform: uppercase;">
+                                                            <input type="text"  class="form-control ed_keterangan keterangan_modal"  style="text-align:right;text-transform: uppercase;">
                                                         </td>
                                                     </tr>
                                                 </tbody>

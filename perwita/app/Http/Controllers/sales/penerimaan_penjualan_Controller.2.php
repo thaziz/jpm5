@@ -136,13 +136,24 @@ class penerimaan_penjualan_Controller extends Controller
                           }
                         })
                         ->addColumn('bank', function ($data) {
-                          $mb = DB::table('masterbank')
-                                    ->get();
+                          if ($data->k_jenis_pembayaran == 'C' or $data->k_jenis_pembayaran == 'F') {
+                            $mb = DB::table('masterbank')
+                                      ->get();
 
-                          for ($i=0; $i < count($mb); $i++) { 
-                            if ($data->k_id_bank == $mb[$i]->mb_id) {
-                                return $mb[$i]->mb_nama;
+                            for ($i=0; $i < count($mb); $i++) { 
+                              if ($data->k_id_bank == $mb[$i]->mb_id) {
+                                  return $mb[$i]->mb_nama;
+                              }
                             }
+                          }else{
+                            $mb = DB::table('d_akun')
+                                      ->join('kwitansi','k_kode_akun','=','id_akun')
+                                      ->where('k_nomor',$data->k_nomor)
+                                      ->first();
+
+                            return $mb->nama_akun;
+
+                          
                           }
                         })->addColumn('posting', function ($data) {
                           if ($data->k_nomor_posting == null) {
