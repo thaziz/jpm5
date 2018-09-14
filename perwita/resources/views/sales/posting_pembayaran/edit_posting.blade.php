@@ -25,7 +25,7 @@
                     <h5> POSTING PEMBAYARAN DETAIL
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../posting_pembayaran" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="{{ url('sales/posting_pembayaran') }}" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
                     <a class="pull-right jurnal" onclick="lihat_jurnal()" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal</i></a>
 
                 </div>
