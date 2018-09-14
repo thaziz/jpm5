@@ -205,12 +205,12 @@ class penerimaan_penjualan_Controller extends Controller
 
         if (Auth::user()->punyaAkses('Kwitansi','cabang')) {
           $akun_kas = DB::table('d_akun')
-                      ->where('id_akun','like','1001%')
+                      ->where('id_akun','like','1003%')
                       ->get();
         }else{
           $akun_kas = DB::table('d_akun')
                       ->where('kode_cabang',Auth::user()->kode_cabang)
-                      ->where('id_akun','like','1001%')
+                      ->where('id_akun','like','1003%')
                       ->get();
         }
 
