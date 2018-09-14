@@ -1521,6 +1521,14 @@
                     kelompokbank = 'KAS';
                   }
         }
+        else {
+          if(kelompok == kelompoktujuan){
+              kelompokbank = 'SAMA BANK';
+            }
+            else if(kelompok != kelompoktujuan) {
+              kelompokbank = 'BEDA BANK';
+            }
+        }
 
 
            var row =  "<tr class='tbltfbank tbltfbank"+noinet+"'> <td>"+noinet+"</td>" +
@@ -1529,7 +1537,7 @@
                       "<td>"+tgl+"</td>"+ 
                       "<td>"+kodebankasal+"</td>" + // BANK ASAL
                       "<td><input type='text' class='form-control kodebankbg' value="+kodebanktujuan+" name='kodebanktujuan[]' readonly></td>"+ // KODEBANK
-                      "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbanktujuan+"' name='idbanktujuan[]' readonly> <input type='hidden' class='kelompokbank' name='kelompokbank[]' value="+kelompokbank+">  </td>" + //NAMA BANK TUJUAN
+                      "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbanktujuan+"' name='idbanktujuan[]' readonly> <input type='hidden' class='kelompokbank' name='kelompokbank[]' value='"+kelompokbank+"'>  </td>" + //NAMA BANK TUJUAN
                       "<td> <input type='text' data-id='"+noinet+"' class='input-sm form-control nominaltbltfbank nominaltbltfbank"+noinet+"'  name='nominalbank[]' style='text-align:right'> </td>" + //NOMINAL
                       "<td> <button class='btn btn-danger remove-tfbtn' data-id='"+noinet+"'  data-idbankdt="+idbankasal+" type='button'><i class='fa fa-trash'></i></button></td></tr>"; //NOMINAL
               
@@ -2758,7 +2766,7 @@
      nomrbnk = 1;
      arrnohapus = [];
     $('#buttongetcek').click(function(){
-      alert('tes');
+     /* alert('tes');*/
 
         lengthbank = $('.tblbank').length;
         databank = $('.bank').val();

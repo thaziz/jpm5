@@ -263,6 +263,7 @@ class PurchaseController extends Controller
 		
 
 		$data['supplier'] = DB::select("select * from masteritem, itemsupplier, supplier  where is_supplier = no_supplier and kode_item = '$id' and kode_item = is_kodeitem and status = 'SETUJU' and active = 'AKTIF'");
+
 		if($request->penerimaan != 'T'){
 			$data['stock'] = DB::select("select * from  masteritem LEFT OUTER JOIN stock_gudang on kode_item = sg_item and  sg_gudang = '$gudang' where kode_item = '$id' ");
 		}
@@ -3910,6 +3911,7 @@ public function purchase_order() {
 		        $jurnal->jr_detail = 'PENERIMAAN BARANG';
 		        $jurnal->jr_ref = $idpb;
 		        $jurnal->jr_note = $flag;
+		        $jurnal->jr_no = $jrno;
 		        $jurnal->save();
 	       		
 
@@ -9568,6 +9570,17 @@ public function kekata($x) {
 					'bp_pelunasan' => $hasilpengurangan,					
 				]);
 			}
+			else if($jenisbayar == '13'){
+				$data['bonsem'] =  DB::select("select * from bonsem_pengajuan where bp_id = '$idfp'");
+				$fppelunasan = $data['bonsem'][0]->bp_pelunasan;
+				$hasilpengurangan = (float)$fppelunasan - (float)$pelunasan;
+
+
+				$updatebonsem = bonsempengajuan::where('bp_id' , '=' , $idfp);
+				$updatebonsem->update([
+					'bp_pencairan' => $hasilpengurangan,					
+				]);
+			}
 
 		}
 
@@ -10420,7 +10433,9 @@ public function kekata($x) {
 									else {
 										$idjurnal = 1;
 									}
-								
+									
+									$jr_no = get_id_jurnal('MM' , $datacomp2 , $request->tgl);
+
 									$year = date('Y');	
 									$date = date('Y-m-d');
 									$jurnal = new d_jurnal();
@@ -10430,6 +10445,7 @@ public function kekata($x) {
 							        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
 							        $jurnal->jr_ref = $nofaktur;
 							        $jurnal->jr_note = $request->keterangan;
+							        $jurnal->jr_no = $jr_no;
 							        $jurnal->save();
 						       		
 						    		$key  = 1;
@@ -10518,7 +10534,7 @@ public function kekata($x) {
 										else {
 											$idjurnal = 1;
 										}
-									
+										$jr_no = get_id_jurnal('MM' , $datacomp2 , $request->tgl);
 										$year = date('Y');	
 										$date = date('Y-m-d');
 										$jurnal = new d_jurnal();
@@ -10528,6 +10544,7 @@ public function kekata($x) {
 								        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
 								        $jurnal->jr_ref = $nofaktur;
 								        $jurnal->jr_note = $request->keterangan;
+								        $jurnal->jr_no = $jr_no;
 								        $jurnal->save();
 							       		
 								        
@@ -10619,7 +10636,7 @@ public function kekata($x) {
 										else {
 											$idjurnal = 1;
 										}
-									
+										$jr_no = get_id_jurnal('MM' , $datacomp2 , $request->tgl);
 										$year = date('Y');	
 										$date = date('Y-m-d');
 										$jurnal = new d_jurnal();
@@ -10629,6 +10646,7 @@ public function kekata($x) {
 								        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
 								        $jurnal->jr_ref = $nofaktur;
 								        $jurnal->jr_note = $request->keterangan;
+								        $jurnal->jr_no = $jr_no;
 								        $jurnal->save();
 							       		
 								        
@@ -10755,6 +10773,7 @@ public function kekata($x) {
 									
 										$year = date('Y');	
 										$date = date('Y-m-d');
+										$jr_no = get_id_jurnal('MM' , $datacomp2 , $request->tgl);
 										$jurnal = new d_jurnal();
 										$jurnal->jr_id = $idjurnal;
 								        $jurnal->jr_year = Carbon::parse($request->tgl)->format('Y');
@@ -10762,6 +10781,7 @@ public function kekata($x) {
 								        $jurnal->jr_detail = 'FAKTUR PEMBELIAN';
 								        $jurnal->jr_ref = $nofaktur;
 								        $jurnal->jr_note = $request->keterangan;
+								        $jurnal->jr_no = $jr_no;
 								        $jurnal->save();
 							       		
 								        
@@ -11063,13 +11083,15 @@ public function kekata($x) {
 
 										$year = date('Y');	
 										$date = date('Y-m-d');
+										$jr_no = get_id_jurnal('MM' , $datacomp2 , $request->tgl);
 										$jurnal = new d_jurnal();
 										$jurnal->jr_id = $idjurnal;
-								        $jurnal->jr_year = Carbon::parse($request->tglbbk)->format('Y');
+								        $jurnal->jr_year = Carbon::parse($request->tgl)->format('Y');
 								        $jurnal->jr_date = $request->tgl;
 								        $jurnal->jr_detail = 'UANG MUKA PEMBELIAN FP';
 								        $jurnal->jr_ref = $nofaktur;
 								        $jurnal->jr_note = $request->keteranganumheader;
+								        $jurnal->jr_no = $jr_no;
 								        $jurnal->save();
 							       		
 							       		$acchutangdagang = $request->acchutang;
@@ -12322,7 +12344,7 @@ public function kekata($x) {
 						} // end for
 					} // $jenisbayar
 					else {
-						dd($jenisbayar);
+					
 						$formfpg_bank = new formfpg_bank();
 						$lastidfpg_bank =  formfpg_bank::max('fpgb_id');;
 						if(isset($lastidfpg_bank)) {
