@@ -480,18 +480,6 @@ function hitung() {
     $('.ed_jumlah').val(temp);
 }
 
-function valid() {
-    var valid = 0;
-    table_data.$('.d_nomor_kwitansi').each(function(){
-        valid+=1;
-    })
-
-    if (valid == 0) {
-        $('.bank_tr').addClass('disabled');
-    }else{
-        $('.bank_tr').removeClass('disabled');
-    }
-}
 
 $('.append').click(function(){
 
@@ -547,6 +535,7 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'F' || cb_jenis_pembaya
                 $('.cabang_td').addClass('disabled');
                 $('.tanggal_td').addClass('disabled');
                 $('.ed_tanggal').prop('readonly',true);
+                $('.bank_tr').addClass('disabled');
             }else if(data.status == '0'){
                 return toastr.warning('Tanggal Kwitansi Tidak Boleh Melebihi Tanggal Posting');
                 $('#modal').modal('hide');
@@ -594,6 +583,8 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'F' || cb_jenis_pembaya
             hitung();
             $('.cb_jenis_pembayaran').addClass('disabled');
             $('.cabang_td').addClass('disabled');
+            $('.bank_tr').addClass('disabled');
+            $('.tanggal_td').addClass('disabled');
         }
     })
 }else{
@@ -623,8 +614,9 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'F' || cb_jenis_pembaya
             hitung();
             $('.cb_jenis_pembayaran').addClass('disabled');
             $('.cabang_td').addClass('disabled');
-}
-    valid();
+            $('.bank_tr').addClass('disabled');
+            $('.tanggal_td').addClass('disabled');
+}    
 $('#modal').modal('hide');
 })
 function m_kode_akun(argument) {
@@ -636,21 +628,19 @@ function hapus_detail(o) {
     var arr = $(par).find('.d_nomor_kwitansi').val();
     var index = array_simpan.indexOf(arr);
     array_simpan.splice(index,1);
-
-    var temp = 0;
-
     table_data.row(par).remove().draw(false);
+    var temp = 0;
 
     table_data.$('.d_nomor_kwitansi').each(function(){
         temp+=1;
     });
+
     if (temp == 0) {
         $('.cb_jenis_pembayaran').removeClass('disabled');
         $('.cabang_td').removeClass('disabled');
         $('.bank_tr').removeClass('disabled');
     }
     hitung();
-    valid();
 }
 
 $('#btnsimpan').click(function(){
