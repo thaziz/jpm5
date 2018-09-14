@@ -827,6 +827,7 @@ class jurnal_pembelian  extends Controller
                       'km_nominal' => $totalbayar,
                       'km_keterangan'=> $keterangan,
                       'km_status' => 'DIKIRIM',
+                      'km_idfpgb' => ''
                      );
                   $simpan = DB::table('kas_masuk')->insert($datakm);
       }

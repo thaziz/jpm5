@@ -9587,11 +9587,13 @@ public function kekata($x) {
 
 		$data['fpgbank'] = DB::select("select * from fpg, fpg_cekbank where fpgb_idfpg = idfpg and idfpg = '$id'");
 
-		for($i = 1; $i < count($data['fpgbank']);$i++){
+
+		for($i = 0; $i < count($data['fpgbank']);$i++){
 			$idbank = $data['fpgbank'][$i]->fpg_idbank;
 			$noseri = $data['fpgbank'][$i]->fpgb_nocheckbg;
 			$idfpgb = $data['fpgbank'][$i]->fpgb_id;
 			$notafpg = $data['fpgbank'][$i]->fpg_nofpg;
+		
 			$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$noseri]]);
 
 			$updatebank->update([
