@@ -98,14 +98,14 @@
                           <tr>
                             <td class='disabledbank'> Kode Bank </td>
                             <td>
-                              <select class="form-control kodebank chosen-select">
+                              <select class="form-control kodebank chosen-select" name="kodebank">
                                <option value=""> Pilih Data Bank</option>
 
                                 @foreach($data['bank'] as $bank)
                                   <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                 @endforeach
                               </select>
-                              <input type="hidden" class="valkodebank" name="kodebank">
+                              
                              </td>
                           </tr>
 
@@ -313,7 +313,7 @@
 
                                                       <tr>
                                                         <th> D / K </th>
-                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk biaya" readonly=""> </div> </td>
+                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk biaya"> </div> </td>
                                                       </tr>
 
                                                       <tr>
@@ -358,6 +358,20 @@
                                           <div id="tab-3" class="tab-pane">
                                               <div class="panel-body">
                                                   <div class="row">
+                                                    <div class="col-sm-8">
+                                                      <table class="table table-bordered">
+                                                        <thead>
+                                                        <tr> 
+                                                          <th> No Check / BG </th> <th> NO FPG </th> <th> Nominal </th>
+                                                          <th> Keterangan </th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        <tr> <td> <input type="text" class="input-sm form-control nocheck  checkakunbg" type="button" data-toggle="modal" data-target="#myModal2" readonly="">  </td> <td> <input type='text' class='input-sm form-control jatuhtempo  nofpgakunbgbiaya' readonly=""> <input type='hidden' class='input-sm form-control jatuhtempo idfpgakunbgbiaya' readonly="" > </td> <td> <input type='text' class='input-sm form-control nominalakunbiaya'  readonly="" style='text-align:right'> </td> <td> <input type='text' class='input-sm form-control keteranganakunbiayafpg'  readonly=""> </td> </tr>
+                                                      </tbody>
+                                                      </table>
+                                                    </div>
+
                                                   <div class="col-sm-6">
                                                     <table class="table">
                                                       <tr>
@@ -386,21 +400,28 @@
 
                                                       <tr>
                                                         <th> Jumlah </th>
-                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount biayabg jumlahakunbg" style="text-align:right'" readonly=""> </div> </td>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount  jumlahakunbg" style="text-align:right'" readonly=""> </div> </td>
                                                       </tr>
 
                                                       <tr>
                                                         <th> Keterangan </th>
-                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  keteranganakunbg biayabg" readonly=""> </div> </td>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  keteranganakunbg " readonly=""> </div> </td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td>
+                                                          <div class="text-left">
+                                                            <a class='btn btn-sm btn-info' id="tmbhdatabgakun"> <i class="fa fa-plus"> </i> Tambah Data </a>
+                                                         </div>
+                                                        </td>
                                                       </tr>
                                                     </table>
                                                   </div>
                                                   
-                                                  <div class="col-sm-6">
+                                                  {{-- <div class="col-sm-6">
                                                     <table class="table">
                                                       <tr>
                                                           <th> No Check / BG </th>
-                                                              <td> <input type="text" class="input-sm form-control nocheck biayabg checkakunbg" type="button" data-toggle="modal" data-target="#myModal2" readonly="">  </td>
+                                                              
                                                           </tr>
 
                                                           <tr>
@@ -419,12 +440,10 @@
                                                           </tr>
                                                     </table>
                                                   </div>
-                                                  </div>
+                                                  </div> --}}
                                                 
 
-                                                   <div class="text-left">
-                                                      <a class='btn btn-sm btn-info' id="tmbhdatabgakun"> <i class="fa fa-plus"> </i> Tambah Data </a>
-                                                   </div>
+                                                   
 
                                                    <br>
                                                    <br>
@@ -620,7 +639,15 @@
       nominal = $('.nominalakunbiaya').val();
       keteranganbiaya = $('.keteranganakunbiayafpg').val();
       nocheckakunbg = $('.checkakunbg').val();
-      accbiayaakun = $('.accbiayaakun').val();    
+      accbiayaakun = $('.accbiayaakun').val();  
+
+      alert(nocheckakunbg);
+
+      if(accbiayaakun == ''){
+        toastr.info("Mohon pilih data akun biaya :)");
+        return false;
+      }  
+
       dk = $('.dkbiayabg').val();
       jumlahakunbiaya = $('.jumlahakunbg').val();
       keteranganakunbg = $('.keteranganakunbg').val();
@@ -1362,7 +1389,7 @@
           akun = $('.akun').val();
           string = akun.split(",");
           idakun = string[0];
-          dk = string[1];
+          dk = $('.dk').val();
           jumlah = $('.jumlahaccount').val();
           keterangan = $('.keteranganbiaya').val();
           nobbk = $('.nobbk').val();

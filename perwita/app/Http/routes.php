@@ -98,6 +98,8 @@ Route::get('jurnalselaras/fpgpostingbank', 'jurnal_pembelian@getupdatefpgbbk');
 Route::get('jurnalselaras/notafpgbbkab', 'jurnal_pembelian@nofpgbbkab');
 Route::get('jurnalselaras/notaspp', 'jurnal_pembelian@gantispp');
 Route::get('jurnalselaras/bankmasuk', 'jurnal_pembelian@bankmasuk');
+Route::get('jurnalselaras/kasmasuk', 'jurnal_pembelian@kasmasuk');
+Route::get('jurnalselaras/fpg_checkbank', 'jurnal_pembelian@fpg_checkbank');
 
 //***PEMBELIAN
 //***PEMBELIAN
@@ -586,6 +588,7 @@ Route::get('formfpg/printformfpg/{id}', 'PurchaseController@printformfpg');
 Route::get('formfpg/printformfpg2/{id}', 'PurchaseController@printformfpg2');
 Route::get('formfpg/getnofpg', 'PurchaseController@getnofpg');
 Route::get('formfpg/hapusfpg/{id}', 'PurchaseController@hapusfpg');
+Route::get('formfpg/caritransaksi', 'PurchaseController@caritransaksi');
 
 
 Route::get('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan', 'PurchaseController@pelaporanfakturpajakmasukan');
@@ -2071,7 +2074,7 @@ Route::get('master_keuangan/err_cek', function(){
 
 
 // neraca saldo
-Route::post('master_keuangan/neraca-saldo/single', [
+Route::get('master_keuangan/neraca-saldo/single', [
   'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
   'as'   => 'neraca_saldo.index'
 ]);
@@ -2155,7 +2158,7 @@ Route::get('master_keuangan/laba_rugi/pdf/single/{throtle}', [
 
 // buku besar
 
-Route::post('master_keuangan/buku_besar/single', [
+Route::get('master_keuangan/buku_besar/single', [
   'uses' => 'master_keuangan\laporan\laporan_buku_besar@index_buku_besar_single',
   'as'   => 'buku_besar.index_single'
 ]);
@@ -2190,7 +2193,7 @@ Route::get('master_keuangan/buku_besar/pdf/single/{throtle}', [
 
 // register jurnal
   
-  Route::post('master_keuangan/register_jurnal/single', [
+  Route::get('master_keuangan/register_jurnal/single', [
     'uses' => 'master_keuangan\laporan\laporan_register_jurnal@print_pdf_register_single',
     'as'   => 'register_jurnal.index_single'
   ]);

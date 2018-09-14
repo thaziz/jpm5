@@ -430,7 +430,7 @@
 
           <div class="modal-body" style="padding: 10px;">
             <div class="row">
-              <form role="form" class="form-inline" id="form-neraca-saldo" method="POST" action="{{ route("neraca_saldo.index") }}" target="_self">
+              <form role="form" class="form-inline" id="form-neraca-saldo" method="GET" action="{{ route("neraca_saldo.index") }}" target="_self">
                   <input type="hidden" value="{{ csrf_token() }}" name="_token" readonly>
                   <table border="0" id="form-table" class="col-md-12">
 

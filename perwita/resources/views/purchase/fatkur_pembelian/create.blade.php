@@ -3932,8 +3932,9 @@
       val = $(this).val();
       qty = $('.qty').val();
 
-      numeric = parseFloat(val).toFixed(2);
-      $(this).val(addCommas(numeric));
+      val = accounting.formatMoney(val, "", 2, ",",'.');
+      $(this).val(val);
+
 
       if(qty != '') {
         amount = parseInt(qty) * parseInt(val);

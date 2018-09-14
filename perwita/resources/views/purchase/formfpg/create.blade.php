@@ -751,6 +751,8 @@
                                   </div>
                                 </div>
 
+
+
                             </div>
                         </div>
 
@@ -876,9 +878,11 @@
           }
         })
 
+
        $('.cabang').change(function(){
           tgl = $('.tglfpg').val();
           cabang = $(this).val();
+         
          $.ajax({
           type : "get",
           data : {cabang,tgl},
@@ -906,7 +910,7 @@
                 year2 = tahun.substring(2);
                 //year2 ="Anafaradina";
                  nofpg = 'FPG' + month + year2 + '/' + cabang + '/'  + response.idfpg ;
-               
+                //  return response.idfpg;
                 $('.nofpg').val(nofpg);
 
                 nofpg = $('.nofpg').val();
@@ -1020,9 +1024,11 @@
 
            }
 
-      noinet = 1;     
+    //  noinet = 1;     
       $('#tbmhdatainet').click(function(){
+        noinet = parseInt($('.tbltfbank').length) + 1;
 
+      
         banktujuan =$('.banktujuan').val();
         asalbank = $('.bankasal').val();
 
@@ -1049,11 +1055,14 @@
 
         if(jenisbayar == 12 || jenisbayar == 11){
             
-        
+          if(noinet > 1){
+            toastr.info("Tidak bisa mengisi lebih dari 1 transaksi :)");
+            return false;
+          }
             kelompokbank1 = $('.kelompokbank').val();
            if(kelompokbank1 != ''){
               if(kelompokbank1 == 'SAMA BANK') {
-                 if(mbdt[i][0].mb_kelompok == kelompok){
+                 if(kelompok == kelompoktujuan){
                    $('.kelompokbank').val('SAMA BANK');
                   }
                  else {
@@ -1061,7 +1070,7 @@
                 }
               }
               else if(kelompokbank1 == 'BEDA BANK') {
-                 if(mbdt[i][0].mb_kelompok == kelompok){
+                 if(kelompok == kelompoktujuan){
                    $('.kelompokbank').val('BEDA BANK');
                   }
                  else {
@@ -1070,7 +1079,7 @@
               }                              
            }
            else{
-             if(mbdt[i][0].mb_kelompok == kelompok){
+             if(kelompok == kelompoktujuan){
                    $('.kelompokbank').val('SAMA BANK');
                   }
                  else {
@@ -1088,7 +1097,7 @@
                       "<td>"+kodebankasal+"</td>" + // BANK ASAL
                       "<td><input type='text' class='form-control kodebankbg' value="+kodebanktujuan+" name='kodebanktujuan[]' readonly></td>"+ // KODEBANK
                        "<td> <input type='text' class='form-control norekening' value='"+norekening+"' readonly> </td>" + //NO REKENING TUJUAN
-                      "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbanktujuan+"' name='idbanktujuan[]' readonly> <input type='hidden' class='kelompokbank' name='kelompokbank'>  </td>" + //NAMA BANK TUJUAN
+                      "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbanktujuan+"' name='idbanktujuan[]' readonly> <input type='text' class='kelompokbank' name='kelompokbank'>  </td>" + //NAMA BANK TUJUAN
                       "<td> <input type='text' data-id='"+noinet+"' class='input-sm form-control nominaltbltfbank nominaltbltfbank"+noinet+"'  name='nominalbank[]' style='text-align:right'> </td>" + //NOMINAL
                       "<td> <button class='btn btn-danger remove-tfbtn' data-id='"+noinet+"'  data-idbankdt="+idbankasal+" type='button'><i class='fa fa-trash'></i></button></td></tr>"; //NOMINAL
               
@@ -1098,7 +1107,7 @@
                  kelompokbank1 = $('.kelompokbank').val();
                  if(kelompokbank1 != ''){
                     if(kelompokbank1 == 'SAMA BANK') {
-                       if(mbdt[i][0].mb_kelompok == kelompok){
+                       if(kelompok == kelompoktujuan){
                          $('.kelompokbank').val('SAMA BANK');
                         }
                        else {
@@ -1106,7 +1115,7 @@
                       }
                     }
                     else if(kelompokbank1 == 'BEDA BANK') {
-                       if(mbdt[i][0].mb_kelompok == kelompok){
+                       if(kelompok == kelompoktujuan){
                          $('.kelompokbank').val('BEDA BANK');
                         }
                        else {
@@ -1115,7 +1124,7 @@
                     }                              
                  }
                  else{
-                   if(mbdt[i][0].mb_kelompok == kelompok){
+                   if(kelompok == kelompoktujuan){
                          $('.kelompokbank').val('SAMA BANK');
                         }
                        else {
@@ -2268,6 +2277,8 @@
     $('#buttongetcek').click(function(){
 
         lengthbank = $('.tblbank').length;
+
+        nomrbnk = parseInt(nomrbnk) + 1;
         databank = $('.bank').val();
         $('.valbank').val(databank);
      
@@ -2283,6 +2294,10 @@
 
         jenisbayar = $('.jenisbayar').val();
         if(jenisbayar == 12 || jenisbayar == 11){
+         if(nomrbnk > 1){
+            toastr.info("Mohon maaf untuk saat ini, data transaksi tidak bs lebih dari 1 cek bg :) ")
+          }
+
           banktujuan = $('.banktujuan').val();
           if(banktujuan == ''){
             toastr.info("Mohon maaf bank tujuan belum dipilih :)");
@@ -2389,7 +2404,7 @@
                             "<td>"+tgl+"</td>"+ // TGL
                             "<td>"+mbdt[i][0].mb_kode+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]' readonly> </td>" + //BANK TUJUAN
                             "<td> <input type='text' class='form-control norekening' value='"+norekening+"' readonly> </td>" + //NO REKENING TUJUAN
-                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='hidden' class='kelompokbank' name='kelompokbank'> </td>" + //NAMA BANK TUJUAN
+                            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbank+"' name='idbanktujuan[]'> <input type='text' class='kelompokbank' name='kelompokbank'> </td>" + //NAMA BANK TUJUAN
                             "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required> </td>" + //NOMINAL
                             "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbdt[i][0].mbdt_id+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
 

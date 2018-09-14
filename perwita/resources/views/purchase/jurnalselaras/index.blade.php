@@ -114,13 +114,19 @@
                         created ulang bank masuk
                     </button>
                 </div> --}}
-
+{{-- 
                  <div class="">
                     <button class="btn btn-success" onclick="duplicatebank()">
                         duplicate bank masuk
                     </button>
+                </div> --}}
+                    
+                <div class="">
+                    <button class="btn btn-success" onclick="kasmasuk()">
+                        kas masuk
+                    </button>
                 </div>
-                
+
                 <div class="box-body">
              
                 </div><!-- /.box-body -->
@@ -237,6 +243,17 @@
 
         }
       })
+    }
+
+    function kasmasuk(){
+        $.ajax({
+            url : baseUrl + '/jurnalselaras/kasmasuk',
+            type : "get",
+            dataType : "json",
+            success : function(response){
+                
+            }
+        })
     }
 
     function tglpo(){
