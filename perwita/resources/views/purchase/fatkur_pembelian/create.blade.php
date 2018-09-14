@@ -2176,9 +2176,10 @@
 
     $('.cabang').change(function(){
        cabang = $('.cabang').val();
-        $.ajax({
+       alert(cabang);
+         $.ajax({
           url : baseUrl + '/penerimaanbarang/valgudang',
-          data :{cabang},
+          data :{cabang,tgl},
           type : "GET",
           dataType : 'json',
           success : function(response){
@@ -2669,6 +2670,7 @@
 
       $('.cabang').change(function(){
       cabang = $(this).val();
+      alert(cabang);
       var a = $('ul#tabmenu').find('li.active').data('val');
       tgl = $('.tgl').val();
       $('.cabang2').val(cabang);
