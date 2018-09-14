@@ -1000,6 +1000,7 @@ class posting_pembayaran_Controller extends Controller
     public function edit(Request $req)
     {
         if (Auth::user()->punyaAkses('Posting Pembayaran','ubah')) {
+            $id =$req->id;
             $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
             $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
             $rute = DB::select(" SELECT kode,nama FROM rute ORDER BY nama ASC ");
