@@ -52,7 +52,7 @@
 		@if($harga_array[$index] == ' ')
 		<td align="right" style="border: none;" width="222">&nbsp;</td>
 		@else
-		<td align="right" style="border: none;" width="222">{{"Rp " . number_format($harga_array[$index],2,",",".")}}&nbsp;&nbsp;&nbsp;</td>
+		<td align="right" style="border: none;" width="222">{{"Rp " . number_format($harga_array[$index],0,",",".")}}&nbsp;&nbsp;&nbsp;</td>
 		@endif
 
 		</tr>
@@ -61,7 +61,7 @@
 </table>
 <table border="1" style="border-collapse: collapse; border-top: none;border-bottom: none;">
 	<td width="900">
-		<div style="float: right; margin-right: 10px;">Total : {{"Rp " . number_format($total_harga,2,",",".")}}</div>
+		<div style="float: right; margin-right: 10px;">Total : {{"Rp " . number_format($total_harga,0,",",".")}}</div>
 	</td>
 </table>
 <table border="1" style="border-collapse: collapse;">

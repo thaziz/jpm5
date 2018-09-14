@@ -51,11 +51,6 @@
                     <h5> Pembayaran Kas
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                      @if (Auth::user()->punyaAkses('Pengembalian Bonsem','tambah')) 
-                      <div class="text-right">
-                        <a class="btn btn-success" aria-hidden="true" href="{{ url('buktikaskeluar/create')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
-                      </div>
-                      @endif
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -81,7 +76,7 @@
                         </tr>
                         <tr id="filter_col1" data-column="0">
                           @if (Auth::user()->punyaAkses('Pengembalian Bonsem','cabang')) 
-                            <td align="center">Cabang</td>
+                            <td align="right" colspan="2">Cabang</td>
                             <td align="center" >
                               <select class="form-control cabang chosen-select-width" onchange="filtering()" name="cabang">
                                 <option value="0">Pilih - Cabang </option>
@@ -90,10 +85,10 @@
                                 @endforeach
                               </select>
                             </td>
+                          @else
+                          <td colspan="3"></td>
                           @endif
                           <td align="center"></td>
-                            <td align="center" >
-                            </td>
                         </tr>
                         <tr>
                           <td colspan="2" align="right">
@@ -118,10 +113,8 @@
                           <th> No. BKK </th>
                           <th> Tanggal </th>
                           <th> Nama Cabang </th>
-                          <th> Jenis Bayar</th>
-                          <th> Keterangan </th> 
+                          <th> Keperluan </th> 
                           <th> Total </th>   
-                          <th> Print </th>   
                           <th> Status </th>
                           <th> Aksi </th>
                       </tr>
@@ -168,7 +161,80 @@
   </div>
 </div>
 
-
+<div class="modal pengembalian_modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="width: 500px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Pengembalian</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body " >
+          <table class="table pengembalian_modal_table">
+            <tr>
+              <td>Akun Tujuan</td>
+              <td>
+                <select class="form-control akun_bank chosen-select-width" name="akun_bank" >
+                    @foreach ($akun as $val)
+                        <option value="{{$val->mb_id}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
+                    @endforeach
+                </select>
+              </td>
+            </tr>
+            @if(Auth::user()->punyaAkses('Pengembalian Bonsem','cabang'))
+            <tr class="">
+                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                <td class="cabang_td">
+                    <select  class="form-control bp_cabang chosen-select-width" name="bp_cabang" >
+                    @foreach ($cabang as $row)
+                        @if(Auth::user()->kode_cabang == $row->kode)
+                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                        @else
+                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                        @endif
+                    @endforeach
+                    </select>
+                </td>
+            </tr>
+            @else
+            <tr class="">
+                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                <td class="cabang_td disabled">
+                    <select  class="form-control bp_cabang chosen-select-width" name="bp_cabang" >
+                    @foreach ($cabang as $row)
+                        @if(Auth::user()->kode_cabang == $row->kode)
+                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                        @else
+                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                        @endif
+                    @endforeach
+                    </select>
+                </td>
+            </tr>
+            @endif
+            <tr>
+              <td>Keterangan</td>
+              <td>
+                <input type="text" class="form-control keterangan" name="keterangan">
+                <input type="hidden" class="form-control bp_nota" name="bp_id">
+              </td>
+            </tr>
+            <tr>
+              <td>Tanggal</td>
+              <td>
+                <input type="text" class="date form-control tanggal" name="tanggal" value="{{ carbon\carbon::now()->format('Y-m-d') }}">
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success save" data-dismiss="modal" onclick="save()">Lakukan Pengembalian</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="row" style="padding-bottom: 50px;"></div>
 
 
@@ -192,19 +258,22 @@ $(document).ready(function(){
                      tanggal_akhir: function() { return $('.tanggal_akhir').val()}, 
                      cabang: function() { return $('.cabang').val()}, 
                      flag: function() { return $('.flag').val()}, 
-                     nota: function() { return $('.nota').val()}}
+                     nota: function() { return $('.nota').val()}},
+              error:function(){
+                location.reload();
+              }
           },
           columnDefs: [
             {
-               targets: 5,
+               targets: 3,
                className:'right'
             },
             {
-               targets: 6,
+               targets: 4,
                className:'center'
             },
             {
-               targets:7,
+               targets:5,
                className:'center'
             },
           ],
@@ -212,10 +281,8 @@ $(document).ready(function(){
           { "data": "bp_nota" },
           { "data": "bp_tgl" },
           { "data": "cabang" },
-          { "data": "jenisbayar"},
-          { "data": "bkk_keterangan" },
+          { "data": "bp_keperluan" },
           { "data": "tagihan" },
-          { "data": "print"},
           { "data": "status"},
           { "data": "aksi" },
           ]
@@ -312,11 +379,11 @@ function printing(id) {
     });
   }
 
-function lihat_jurnal(id){
+function lihat_jurnal(id,id2){
     $.ajax({
-      url:baseUrl + '/buktikaskeluar/jurnal',
+      url:baseUrl + '/pengembalian_bonsem/jurnal',
       type:'get',
-      data:{id},
+      data:{id,id2},
       success:function(data){
          $('.tabel_jurnal').html(data);
          $('.modal_jurnal').modal('show');
@@ -357,6 +424,70 @@ $('.jurnal_all').click(function(){
   }); 
 })
 
+
+function pengembalian(id) {
+  $('.bp_nota').val(id);
+  $('.keterangan').val('');
+  $('.pengembalian_modal').modal('show');
+}
+
+function save() {
+  swal({
+    title: "Apakah anda yakin?",
+    text: "Approve Data!",
+    type: "warning",
+    showCancelButton: true,
+    showLoaderOnConfirm: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Ya, Approve!",
+    cancelButtonText: "Batal",
+    closeOnConfirm: false
+  },
+
+function(){
+
+     $.ajax({
+      url:baseUrl + '/pengembalian_bonsem/edit',
+      data:$('.pengembalian_modal_table :input').serialize(),
+      type:'get',
+      success:function(data){
+        if (data.status == '2') {
+          swal({
+          title: "Error!",
+                  type: 'warning',
+                  text: data.pesan,
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                    var tableDetail = $('.tbl-penerimabarang').DataTable();
+                    tableDetail.ajax.reload();
+                    return false;
+          });
+        }else if (data.status == '1'){
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil DiApprove",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                     var tableDetail = $('.tbl-penerimabarang').DataTable();
+                    tableDetail.ajax.reload();
+          });
+        }
+      },
+      error:function(data){
+
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+  });
+}
 
 </script>
 @endsection

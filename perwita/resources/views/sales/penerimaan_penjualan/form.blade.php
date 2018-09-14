@@ -943,7 +943,7 @@ $(document).ready(function(){
     });
 
 
-    $('.cb_jenis_pembayaran').change();
+        $('.cb_jenis_pembayaran').change();
     
     $('.angka').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
     $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
