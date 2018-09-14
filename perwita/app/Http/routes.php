@@ -403,6 +403,8 @@ Route::get('biaya_penerus/jurnal', 'KasController@jurnal');
 Route::get('biaya_penerus/append_table', 'KasController@append_table');
 Route::get('buktikaskeluar/datatable_bk', 'KasController@datatable_bk')->name('datatable_bk');
 Route::get('biaya_penerus/jurnal_all', 'KasController@jurnal_all');
+Route::get('pengembalian_bonsem/index', 'pengembalian_bonsem_controller@index');
+Route::get('pengembalian_bonsem/datatable_pengembalian', 'pengembalian_bonsem_controller@datatable_pengembalian')->name('datatable_pengembalian');
 
 // BIAYA PENERUS LOADING/UNLOADING
 Route::get('biaya_penerus_loading/index', 'loadingController@index');

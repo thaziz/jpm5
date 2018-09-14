@@ -26,8 +26,7 @@
     var jenis_biaya   = '{{ $jenis_biaya }}';
     var nota          = '{{ $nota }}';
     tableDetail = $('.tbl-penerimabarang').DataTable({
-         processing: true,
-          // responsive:true,
+          processing: true,
           serverSide: true,
           "order": [[ 1, "desc" ],[ 0, "desc" ]],
           ajax: {

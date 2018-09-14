@@ -318,11 +318,14 @@ class kasKeluarController extends Controller
 					->where('bp_sisapemakaian','!=',0)
 					->orWhere('bp_nota',$nota)
 					->get();
-		for ($i=0; $i < count($bonsem); $i++) { 
-			if ($bonsem[$i]->bp_nota == $nota) {
-				$bonsem[$i]->bp_sisapemakaian += $bkk->bkk_nominal_bonsem;
+		if (isset($req->nota)) {
+			for ($i=0; $i < count($bonsem); $i++) { 
+				if ($bonsem[$i]->bp_nota == $nota) {
+					$bonsem[$i]->bp_sisapemakaian += $bkk->bkk_nominal_bonsem;
+				}
 			}
 		}
+		
 		return view('purchase.buktikaskeluar.table_bonsem',compact('bonsem'));
 
 	}

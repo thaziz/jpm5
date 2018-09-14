@@ -579,7 +579,7 @@ class penerimaan_penjualan_Controller extends Controller
                      ->first();
         
         if ($request->cb_jenis_pembayaran == 'T') {
-          $k_kode_akun = $req->akun_kas;
+          $k_kode_akun = $request->akun_kas;
         }else{
           $k_kode_akun = $akun_bank->mb_kode;
         }
@@ -1016,6 +1016,7 @@ class penerimaan_penjualan_Controller extends Controller
         return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
       }catch(Exception $er){
         DB::rollBack();
+        dd($er);
       }
       
 

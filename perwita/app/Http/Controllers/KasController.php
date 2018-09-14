@@ -871,7 +871,7 @@ class KasController extends Controller
 			$jenis_bayar = DB::table('jenisbayar')
 							 ->where('idjenisbayar',10)
 							 ->first();
-			$bank = 'KK';
+			$bank = 'KK'.$request->akun_bank;
 
             $km =  get_id_jurnal($bank, $request->cabang);
 
