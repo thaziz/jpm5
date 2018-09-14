@@ -407,6 +407,20 @@ function hitung() {
     $('.ed_jumlah').val(temp);
 }
 
+
+function valid() {
+    var valid = 0;
+    table_data.$('.d_nomor_kwitansi').each(function(){
+        valid+=1;
+    })
+
+    if (valid == 0) {
+        $('.bank_tr').addClass('disabled');
+    }else{
+        $('.bank_tr').removeClass('disabled');
+    }
+}
+
 $('.append').click(function(){
 
     var cabang = $('.cabang').val();
@@ -538,6 +552,7 @@ if (cb_jenis_pembayaran == 'C'|| cb_jenis_pembayaran == 'F' || cb_jenis_pembayar
             $('.cb_jenis_pembayaran').addClass('disabled');
             $('.cabang_td').addClass('disabled');
 }
+    valid();
 $('#modal').modal('hide');
 })
 function m_kode_akun(argument) {
@@ -564,6 +579,7 @@ function hapus_detail(o) {
         $('.ed_tanggal').prop('readonly',false);
     }
     hitung();
+    valid();
 }
 
 $('#btnsimpan').click(function(){

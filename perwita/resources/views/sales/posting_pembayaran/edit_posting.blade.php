@@ -74,21 +74,21 @@
                                             <option value="K"> TRANSFER KAS</option>
                                             <option value="L"> LAIN-LAIN </option>
                                             <option value="F"> CHEQUE/BG </option>
-                                            <option value="B"> NOTA/BIAYA LAIN</option>
+                                            {{-- <option value="B"> NOTA/BIAYA LAIN</option> --}}
                                             <option value="U"> UANG MUKA/DP </option>
                                         @elseif($data->jenis_pembayaran == 'L')
                                             <option value="C"> TRANSFER </option>
                                             <option value="K"> TRANSFER KAS</option>
                                             <option selected="" value="L"> LAIN-LAIN </option>
                                             <option value="F"> CHEQUE/BG </option>
-                                            <option value="B"> NOTA/BIAYA LAIN</option>
+                                            {{-- <option value="B"> NOTA/BIAYA LAIN</option> --}}
                                             <option value="U"> UANG MUKA/DP </option>
                                         @elseif($data->jenis_pembayaran == 'F')
                                             <option value="C"> TRANSFER </option>
                                             <option value="K"> TRANSFER KAS</option>
                                             <option value="L"> LAIN-LAIN </option>
                                             <option selected="" value="F"> CHEQUE/BG </option>
-                                            <option value="B"> NOTA/BIAYA LAIN</option>
+                                            {{-- <option value="B"> NOTA/BIAYA LAIN</option> --}}
                                             <option value="U"> UANG MUKA/DP </option>
                                         @elseif($data->jenis_pembayaran == 'B')
                                             <option value="C"> TRANSFER </option>
@@ -102,14 +102,14 @@
                                             <option value="K"> TRANSFER KAS</option>
                                             <option value="L"> LAIN-LAIN </option>
                                             <option value="F"> CHEQUE/BG </option>
-                                            <option value="B"> NOTA/BIAYA LAIN</option>
+                                            {{-- <option value="B"> NOTA/BIAYA LAIN</option> --}}
                                             <option selected="" value="U"> UANG MUKA/DP </option>
                                         @elseif($data->jenis_pembayaran == 'T')
                                             <option value="C"> TRANSFER </option>
                                             <option selected="" value="T"> TUNAI/KWITANSI</option>
                                             <option value="L"> LAIN-LAIN </option>
                                             <option value="F"> CHEQUE/BG </option>
-                                            <option value="B"> NOTA/BIAYA LAIN</option>
+                                            {{-- <option value="B"> NOTA/BIAYA LAIN</option> --}}
                                             <option value="U"> UANG MUKA/DP </option>
                                         @endif
                                     </select>
@@ -480,6 +480,19 @@ function hitung() {
     $('.ed_jumlah').val(temp);
 }
 
+function valid() {
+    var valid = 0;
+    table_data.$('.d_nomor_kwitansi').each(function(){
+        valid+=1;
+    })
+
+    if (valid == 0) {
+        $('.bank_tr').addClass('disabled');
+    }else{
+        $('.bank_tr').removeClass('disabled');
+    }
+}
+
 $('.append').click(function(){
 
     var cabang = $('.cabang').val();
@@ -487,7 +500,7 @@ $('.append').click(function(){
     var nomor = [];
     var tanggal = [];
     var ed_tanggal = $('.ed_tanggal').val();
-if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B') {
+if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B' || cb_jenis_pembayaran == 'T') {
     $('.tanda').each(function(){
         var check = $(this).is(':checked');
         if (check == true) {
@@ -611,6 +624,8 @@ if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'F' || cb_jenis_pembaya
             $('.cb_jenis_pembayaran').addClass('disabled');
             $('.cabang_td').addClass('disabled');
 }
+    valid();
+$('#modal').modal('hide');
 })
 function m_kode_akun(argument) {
    var jenis =  $('.m_akun_as').find(':selected').data('kode_acc');
@@ -635,7 +650,7 @@ function hapus_detail(o) {
         $('.bank_tr').removeClass('disabled');
     }
     hitung();
-    
+    valid();
 }
 
 $('#btnsimpan').click(function(){
