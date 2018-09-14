@@ -573,7 +573,7 @@ class penerimaan_penjualan_Controller extends Controller
         }elseif ($cari_nota == null) {
           $nota = $request->nota;
         }
-
+        
         $akun_bank = DB::table("masterbank")
                      ->where('mb_id',$request->cb_akun_h)
                      ->first();
