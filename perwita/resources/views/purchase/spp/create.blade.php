@@ -1336,27 +1336,14 @@
            // console.log(harga);
             contract = $('.statuskontraksupplier' + id).val();
             // toastr.info(val);
-             numhar = Math.round(harga).toFixed(2);
+             
 
-             if(contract == 'YA'){
-                  if(harga === "undefined"){
-                 }
-                else {
-      
-                 $('.harga' + id).val(addCommas(numhar));
-                 $('.harga' + id).attr('readonly' , false); 
-                }
+             itemsupp = string[7];
+             if(itemsupp == 'IYA'){
+                $('.harga' + id).val(addCommas(harga));
+                
              }
-             else {
-                  if(harga === "undefined"){
-                 // toastr.info("undefined");
-                }
-                else {
-                 // toastr.info('tidak_undefined');
-                 $('.harga' + id).val(addCommas(numhar));
-                 $('.harga' + id).attr('readonly' , false); 
-                }
-             }
+            
 
            $('.bayar' + id).val(bayar);
 
@@ -1449,10 +1436,11 @@
 
                     if(arrSupid.length > 0) { // terikat kontrak
                    // alert('test');
+                      itemsupp = 'IYA';
                       $('.sup' + nobarang).empty();
                       $.each(arrSupid, function(i , obj) {
                       
-                        $('.sup'+nobarang).append("<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+nobarang+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected id='selectsup'>"+obj.no_supplier+"-"+obj.nama_supplier+"</option>");
+                        $('.sup'+nobarang).append("<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+nobarang+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+","+itemsupp+"' selected id='selectsup'>"+obj.no_supplier+"-"+obj.nama_supplier+"</option>");
                       });
                         
                       $('.sup' + nobarang).trigger("chosen:updated");
@@ -1502,9 +1490,9 @@
                        $('.sup' + nobarang).empty();
                       $.each(supplier, function(i , obj) {
                       supbtn = supplier;
-                     
+                      itemsupp = 'TIDAK';
 
-                     $('.sup'+nobarang).append("<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+nobarang+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected id='selectsup'>"+obj.no_supplier+"-"+obj.nama_supplier+"</option>");
+                     $('.sup'+nobarang).append("<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+nobarang+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+","+itemsupp+"' selected id='selectsup'>"+obj.no_supplier+"-"+obj.nama_supplier+"</option>");
                     
                         var datasup = $('.sup'+nobarang).find('option:selected').val();
                   
@@ -1597,8 +1585,9 @@
       							"<td><select id='supselect' class='form-control chosen-select select2 suipd suipl sup"+idtrsup+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' data-no='"+idtrsup+"' name='supplier[]' required> <option value=''> -- Pilih Supplier -- </option>"; //SUpplier
       					
                 if(hasilsupp.length > 0){ //TERIKAT KONTRAK
+                      itemsupp = 'IYA';
                       $.each(hasilsupp, function(i , obj) {
-                        rowSup +=  "<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+idtrsup+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected>"+obj.no_supplier+"-"+ obj.nama_supplier+"</option>";
+                        rowSup +=  "<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+idtrsup+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+","+itemsupp+"' selected>"+obj.no_supplier+"-"+ obj.nama_supplier+"</option>";
                       }) 
 
                       for(i = 0 ; i < hasilsupp.length; i++){
@@ -1613,8 +1602,9 @@
                                           
                 }
                 else {
+                    itemsupp = 'TIDAK';
                    $.each(hasilmaster, function(i , obj) {
-                        rowSup +=  "<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+idtrsup+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected>"+obj.no_supplier+"-"+ obj.nama_supplier+"</option>";
+                        rowSup +=  "<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+idtrsup+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+","+itemsupp+"' selected>"+obj.no_supplier+"-"+ obj.nama_supplier+"</option>";
                       }) 
                    
                 }
@@ -1689,11 +1679,15 @@
  //           kontrak = hargasupplier[4];
             id = $(this).data('id');
             kontrak = $('.statuskontraksupplier' + id).val();
-            //alert(kontrak);
-            
+        
+              if(itemsupp == 'IYA'){
+                harga = hargasupplier[5];
+                $('.harga' + id).val(addCommas(harga));  
+              }
+             /* }*/
+
               //alert('s');
-              harga = hargasupplier[5];
-              $('.harga' + id).val(addCommas(harga));
+              
             
           })
 

@@ -6,7 +6,7 @@
 
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> Master Jenis Item </h2>
+                    <h2> Master Group Item </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a >Home</a>
@@ -18,7 +18,7 @@
                           <a> Master Purchase</a>
                         </li>
                         <li class="active">
-                            <strong> Create Master Jenis Item </strong>
+                            <strong> Create Master Group Item </strong>
                         </li>
 
                     </ol>
@@ -33,7 +33,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                  <h5>  Tambah Data Jenis Item </h5>
+                  <h5>  Tambah Data Group Item </h5>
                     <div class="text-right">
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                               <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
 
                           <tr>
-                            <td width="200px"> Kode Jenis Item </td>
+                            <td width="200px"> Kode Group Item </td>
                             <td> <input type="text"   class="form-control kode" name="kodejenisitem" > </td>
                           </tr>
 
