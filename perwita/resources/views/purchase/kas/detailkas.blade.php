@@ -85,7 +85,7 @@
 			<tr>
 			<td align="right" colspan="7">Total :</td>
 			<td align="right" style="font-size: 10px;">{{"Rp " . number_format(round($cari[0]->bpk_total_tarif),2,",",".")}}</td>
-			<td style="font-size: 12px;" align="right">{{"Rp " . number_format(round($total_harga),2,",",".")}}</td>
+			<td style="font-size: 12px;" align="right">{{"Rp " . number_format(round($total_harga,0),2,",",".")}}</td>
 			</tr>
 			<tr>
 				<td align="center" colspan="5">Driver :</td>
