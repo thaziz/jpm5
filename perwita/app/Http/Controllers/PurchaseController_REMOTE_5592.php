@@ -7154,10 +7154,11 @@ public function purchase_order() {
 				$faktur = DB::select("select substr(MAX(fp_nofaktur), 14) as nota from faktur_pembelian where  to_char(fp_tgl, 'MM') = '$bulan' and to_char(fp_tgl, 'YY') = '$tahun' and fp_comp = '$cabang' and fp_nofaktur LIKE '%/I-%'");
 
 		}
-		else {
-
+		else if($flag == 'I') {
 		$faktur = DB::select("select substr(MAX(fp_nofaktur), 14) as nota from faktur_pembelian where  to_char(fp_tgl, 'MM') = '$bulan' and to_char(fp_tgl, 'YY') = '$tahun' and fp_comp = '$cabang' and fp_nofaktur LIKE '%/$flag-%'");
-
+		}
+		else if($flag == 'PO'){
+		$faktur = DB::select("select substr(MAX(fp_nofaktur), 15) as nota from faktur_pembelian where  to_char(fp_tgl, 'MM') = '$bulan' and to_char(fp_tgl, 'YY') = '$tahun' and fp_comp = '$cabang' and fp_nofaktur LIKE '%/$flag-%'");	
 		}
 
 		//return $faktur;
