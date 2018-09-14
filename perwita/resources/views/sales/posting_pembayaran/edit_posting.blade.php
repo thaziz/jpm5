@@ -289,6 +289,69 @@
   </div>
 </div>
 
+<!-- modal -->
+<div id="modal" class="modal" >
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Pilih Nomor Penerimaan</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal  kirim">
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary append" id="append">Append</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal kas-->
+<div id="modal_kas" class="modal" >
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Detail Lain Lain</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal ">
+                    <table class="table ">
+                       <tr>
+                           <td>Kas</td>
+                           <td class="akun_dropdown">
+                               <select onchange="m_kode_akun()" class="form-control m_akun_kas chosen-select-width">
+                                        <option value="0">Pilih - Akun</option>
+                                    @foreach ($d_akun as $val)
+                                        <option value="{{$val->id_akun}}">{{$val->id_akun}}-{{$val->nama_akun}}</option>
+                                    @endforeach
+                               </select>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td>Jumlah</td>
+                           <td>
+                               <input type="text" class="form-control m_jumlah_kas" value="0">
+                           </td>
+                       </tr>
+                       <tr>
+                           <td>Keterangan</td>
+                           <td>
+                               <input type="text" class=" form-control m_keterangan_kas">
+                           </td>
+                       </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary append" id="append">Append</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row" style="padding-bottom: 50px;"></div>
 
 
