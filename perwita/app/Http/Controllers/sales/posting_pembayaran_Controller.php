@@ -1013,12 +1013,22 @@ class posting_pembayaran_Controller extends Controller
                       ->where('nomor',$req->id)
                       ->first();
 
+            if (Auth::user()->punyaAkses('Posting Pembayaran','cabang')) {
+              $d_akun =DB::table('d_akun')
+                         ->get();
+            }else{
+              $d_akun =DB::table('d_akun')
+                         ->where('kode_cabang',Auth::user()->kode_cabang)
+                         ->get();
+            }
+            
+
             $data_dt = DB::table('posting_pembayaran_d')
                          ->leftjoin('customer','kode','=','kode_customer')
                          ->where('nomor_posting_pembayaran',$req->id)
                          ->get();
   
-            return view('sales.posting_pembayaran.edit_posting',compact('id','data','data_dt','cabang','kota','rute','kendaraan','akun','customer'));
+            return view('sales.posting_pembayaran.edit_posting',compact('id','data','data_dt','cabang','kota','rute','kendaraan','akun','customer','d_akun'));
         }else{
             return redirect()->back();
         }
