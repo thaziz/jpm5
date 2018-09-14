@@ -997,7 +997,7 @@ class posting_pembayaran_Controller extends Controller
         return response()->json(['pesan'=>'Data Berhasil Dihapus']);
     }
 
-    public function edit($id)
+    public function edit(Request $req)
     {
         if (Auth::user()->punyaAkses('Posting Pembayaran','ubah')) {
             $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
@@ -1009,12 +1009,12 @@ class posting_pembayaran_Controller extends Controller
                           ->get();
 
             $data = DB::table('posting_pembayaran')
-                      ->where('nomor',$id)
+                      ->where('nomor',$req->id)
                       ->first();
 
             $data_dt = DB::table('posting_pembayaran_d')
                          ->leftjoin('customer','kode','=','kode_customer')
-                         ->where('nomor_posting_pembayaran',$id)
+                         ->where('nomor_posting_pembayaran',$req->id)
                          ->get();
   
             return view('sales.posting_pembayaran.edit_posting',compact('id','data','data_dt','cabang','kota','rute','kendaraan','akun','customer'));
