@@ -12336,7 +12336,7 @@ public function kekata($x) {
 					                    'created_by' => $request->username,
 					                    'updated_by' => $request->username,
 					                    'km_nominal' => $nominalbank,
-					                    'km_keterangan'=> strtoupper($request->keterangan),
+					                    'km_keterangan'=> strtoupper($request->keterangantransfer),
 					                    'km_status' => 'DIKIRIM',
 					                    'km_idfpgb' => $idfpg_bank,
 
@@ -12518,7 +12518,7 @@ public function kekata($x) {
 						                    'created_by' => $request->username,
 						                    'updated_by' => $request->username,
 						                    'km_nominal' => $nominalbank,
-						                    'km_keterangan'=> strtoupper($request->keterangan),
+						                    'km_keterangan'=> strtoupper($request->keterangantransfer),
 						                    'km_status' => 'DIKIRIM',
 						                    'km_idfpgb' => $idfpg_bank,
 				               			 );
