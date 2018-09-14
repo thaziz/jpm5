@@ -1260,6 +1260,17 @@ class penerimaan_penjualan_Controller extends Controller
         $akun_bank = DB::table('masterbank')
                   ->get();
 
+        if (Auth::user()->punyaAkses('Kwitansi','cabang')) {
+          $akun_kas = DB::table('d_akun')
+                      ->where('id_akun','like','1003%')
+                      ->get();
+        }else{
+          $akun_kas = DB::table('d_akun')
+                      ->where('kode_cabang',Auth::user()->kode_cabang)
+                      ->where('id_akun','like','1003%')
+                      ->get();
+        }
+
         $data = DB::table('kwitansi')
                   ->where('k_nomor',$id)
                   ->first();
@@ -1276,7 +1287,7 @@ class penerimaan_penjualan_Controller extends Controller
         $uang_muka = DB::table("kwitansi_uang_muka")
                        ->where('ku_nomor',$id)
                        ->get();
-        return view('sales.penerimaan_penjualan.edit_kwitansi',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','akun_bank','akun','tgl','id','data_dt','akun_biaya','data_um','uang_muka'));
+        return view('sales.penerimaan_penjualan.edit_kwitansi',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','akun_bank','akun','tgl','id','data_dt','akun_biaya','data_um','uang_muka','akun_kas'));
     }
     public function detail_kwitansi($id)
     {
@@ -1336,7 +1347,7 @@ class penerimaan_penjualan_Controller extends Controller
                        ->where('mb_id',$request->cb_akun_h)
                        ->first();
           if ($request->cb_jenis_pembayaran == 'T') {
-            $k_kode_akun = $req->akun_kas;
+            $k_kode_akun = $request->akun_kas;
           }else{
             $k_kode_akun = $akun_bank->mb_kode;
           }

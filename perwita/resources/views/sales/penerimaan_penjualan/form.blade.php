@@ -940,10 +940,10 @@ $(document).ready(function(){
             location.reload();
         }
 
-
     });
 
 
+    $('.cb_jenis_pembayaran').change();
     
     $('.angka').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
     $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
@@ -2581,12 +2581,16 @@ $('#save_um').click(function(){
 
 $('#btnsimpan').click(function(){
 
+    var valid = 0;
     table_data.$('.i_bayar').each(function(i){
         if ($(this).val() == 0 || $(this).val() == '') {
-            toastr.warning('Ada Data Yang Belum Diinput Nilainya');
-            return false;
+           valid += 1;
         }
     })
+
+    if (valid != 0) {
+        return toastr.warning('Ada Data Yang Belum Diinput Nilainya');
+    }
     var customer = $('.customer').val();
     swal({
         title: "Apakah anda yakin?",

@@ -203,7 +203,10 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="akun_bank_td" @if ($data->k_jenis_pembayaran == 'C' or $data->k_jenis_pembayaran == 'F')
+                            @else
+                                hidden="" 
+                            @endif>
                                 <td style="padding-top: 0.4cm">Akun</td>
                                 <td colspan="3">
                                     <select class="form-control chosen-select-width cb_akun_h" id="cb_akun_h" name="cb_akun_h" >
@@ -218,7 +221,22 @@
                                     </select>
                                 </td>
                             </tr>
-                            
+                            <tr class="akun_kas_td" @if ($data->k_jenis_pembayaran == 'T' or $data->k_jenis_pembayaran == 'U' or $data->k_jenis_pembayaran == 'B')
+                            @else
+                                hidden="" 
+                            @endif>
+                                <td style="padding-top: 0.4cm">Akun</td>
+                                <td colspan="3" class="">
+                                    <select class="form-control chosen-select-width cb_akun_h" id="cb_akun_h" name="akun_kas" >
+                                        <option value="0">Pilih - Akun Kas</option>
+                                        @foreach($akun_kas as $val)
+                                        <option @if ($data->k_kode_akun == $val->id_akun)
+                                            selected="" 
+                                        @endif value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </tr>
                             
                             <tr>    
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
@@ -936,6 +954,15 @@ function nota_kwitansi() {
 
 }
 
+$('.cb_jenis_pembayaran').change(function(){
+    if ($(this).val() == 'T') {
+        $('.akun_bank_td').prop('hidden',true);
+        $('.akun_kas_td').prop('hidden',false);
+    }else{
+        $('.akun_bank_td').prop('hidden',false);
+        $('.akun_kas_td').prop('hidden',true);
+    }
+})
 //NOTA kwitansi
 $(document).ready(function(){
     
@@ -944,8 +971,8 @@ $(document).ready(function(){
     $('.jumlah_biaya_admin_um').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
     $('.m_jumlah').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
     $('.me_jumlah').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+    $('.cb_jenis_pembayaran').change();
     um_sementara();
-    console.log(array_uang_muka);
 });
 
 // ganti nota untuk admin
@@ -2117,13 +2144,16 @@ $('#save_um').click(function(){
 
 
 $('#btnsimpan').click(function(){
-
+    var valid = 0;
     table_data.$('.i_bayar').each(function(i){
         if ($(this).val() == 0 || $(this).val() == '') {
-            toastr.warning('Ada Data Yang Belum Diinput Nilainya');
-            return false;
+           valid += 1;
         }
     })
+
+    if (valid != 0) {
+        return toastr.warning('Ada Data Yang Belum Diinput Nilainya');
+    }
     var customer = $('.customer').val();
     swal({
         title: "Apakah anda yakin?",
