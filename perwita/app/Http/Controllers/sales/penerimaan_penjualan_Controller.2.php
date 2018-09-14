@@ -1817,11 +1817,11 @@ class penerimaan_penjualan_Controller extends Controller
             return response()->json(['status' => 'gagal','info'=>'Jurnal Tidak Balance Gagal Simpan']);
           }
 
-          // dd($lihat);
           DB::commit();
           return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
       }catch(Exception $er){
         DB::rollBack();
+          dd($er);
       }
       
     }
