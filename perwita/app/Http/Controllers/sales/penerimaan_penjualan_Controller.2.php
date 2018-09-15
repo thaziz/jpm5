@@ -1255,6 +1255,7 @@ class penerimaan_penjualan_Controller extends Controller
 
     public function edit_kwitansi(Request $req)
     {
+        $id = $req->id;
         $comp = Auth::user()->kode_cabang;
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
