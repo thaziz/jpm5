@@ -258,11 +258,19 @@ class akun_Controller extends Controller
             'status'    => 'sukses',
             'content'   => $request->all()
         ];
-
+        
+        $cek = explode('-', $request->opening_date);
+        
         $bulan = ($request->opening_date != '') ? explode('-', $request->opening_date)[0] : '';
         $tahun = ($request->opening_date != '') ? explode('-', $request->opening_date)[1] : '';
-
+        
+        if(count($cek) == 3){
+            $bulan = ($request->opening_date != '') ? explode('-', $request->opening_date)[1] : '';
+            $tahun = ($request->opening_date != '') ? explode('-', $request->opening_date)[0] : '';
+        }
+        
         $date = $tahun.'-'.$bulan.'-01';
+        return json_encode($date);
 
         $akun = master_akun::find($request->kode_akun);
         $akun->nama_akun = $request->nama_akun;

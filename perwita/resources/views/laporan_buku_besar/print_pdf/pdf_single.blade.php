@@ -302,7 +302,7 @@
 		                ?>
 
 						<tr>
-		                    <td style="padding-left: 5px;">{{ date("d-m-Y", strtotime($jurnal->d_jurnal->jr_date)) }}</td>
+		                    <td style="padding-left: 5px;">{{ $jurnal->jrdt_value }}</td>
 		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_no }}</td>
 		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_note }}</td>
 

@@ -25,7 +25,7 @@ class laporan_buku_besar extends Controller
 
         $throttle = $request->jenis;
 
-    	$data = []; $saldo_awal = [];
+    	  $data = []; $saldo_awal = [];
 
         if($throttle == "Bulan"){
 
