@@ -132,6 +132,7 @@ class do_paketController extends Controller
         if ($customer == null) {
             $cus = DB::table('customer as c')
                              ->select('c.kode','c.nama','c.alamat','c.telpon')
+                             ->where('pic_status','=','AKTIF')
                              ->get();
         }else{
             $temp= [];
