@@ -46,57 +46,7 @@
     .chosen-drop {
       color : black;
     }
-   /* #table_form td,
-    #table_form th{
-      padding:10px 0px;
-    }
-
-    #tree th{
-      padding:5px;
-      border: 1px solid #ccc;
-      font-weight: 600;
-    }
-
-    #tree td.secondTree{
-      padding-left: 40px;
-    }
-
-    #tree td{
-      border: 0px;
-      padding: 5px;
-    }
-
-    #tree td.{
-      color:blue;
-    }
-
-    #tree td.highlight{
-      border-top:2px solid #aaa;
-      border-bottom: 2px solid #aaa;
-      color:#222;
-    }
-
-    #tree td.break{
-      padding: 10px 0px;
-      background: #eee;
-    }
-
-    #bingkai td.header{
-      font-weight: bold;
-    }
-
-    #bingkai td.child{
-      padding-left: 20px;
-    }
-
-    #bingkai td.total{
-      /*border-top: 2px solid #999;*/
-    /*  font-weight: 600;
-    }
-
-    #bingkai td.no-border{
-      border: 0px;
-    }*/
+  
 
   </style>
 
@@ -474,48 +424,58 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+    clearInterval(reset);
+  var reset =setInterval(function(){
      $(document).ready(function(){
       var config = {
                 '.chosen-select'           : {},
                 '.chosen-select-deselect'  : {allow_single_deselect:true},
                 '.chosen-select-no-single' : {disable_search_threshold:10},
                 '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                '.chosen-select-width'     : {width:"95%"}
+                '.chosen-select-width'     : {width:"75%"}
                 }
 
              for (var selector in config) {
                $(selector).chosen(config[selector]);
              }
     })
+   }, 2000)
   
   function ceksupplier(ref){
     $('.kodeitemsupplier').val(ref);
     kodeitem = ref;
     idspp = $('.idspp').val();
-    $.ajax({
-      url : baseUrl + 'konfirmasi_order/ceksupplier',
+     $.ajax({
+      url : baseUrl + '/konfirmasi_order/ceksupplier',
       type : 'get',
       data : {kodeitem, idspp},
       dataType : 'json',
       success : function(response){
         $('.kodeitemsupplier').val(response.kodeitem);
-
+         $('#table-supplier tr.trceksupplier').remove();
         $key = 1;
-        for($i = 0; $i < count(response.sppd); $i++){
-            html = "<tr>" +
-                    "<td>"+ $key +"</td>" +
-                    "<td>"+  response.sppd[$i].sppd_harga  + "</td>" +
-                    "<td> <select class='form-control chosen-select'>" +
-                          $.each(response.supplier, function(i, obj){
-                              "<option value='"+obj.+"'> </option>"
+        alert(response.itemsupplier.length);
+        for($i = 0; $i < response.sppd.length; $i++){
+           var  html = "<tr class='trceksupplier'>" +
+                    "<td>"+$key+"</td>" +
+                    "<td>"+ addCommas(response.sppd[$i].sppd_harga) +"</td>" +
+                    "<td> <select class='form-control chosen-select suppliercek"+$i+"'>";
+                      if(response.itemsupplier.length == 0){
+                        for($j = 0 ; $j < response.supplier.length; $j++){
+                          html += "<option value='"+response.supplier[$j].idsup+"'>"+response.supplier[$j].no_supplier + "-" + response.supplier[$j].nama_supplier+"</option>";
 
-                          })
-
-                    +"</select></td>" +
+                        }    
+                      }
+                    html += "</select></td>";          
+            $('#table-supplier').append(html);
+            $('.suppliercek' + $i).trigger("chosen:updated");
+            $('.suppliercek' + $i).trigger("liszt:updated");
+           $key++; 
+          }
         } 
-      }
-    })
-  }
+      })
+    }
+  
 
 
   $('.kettolak').attr('readonly' , true);
