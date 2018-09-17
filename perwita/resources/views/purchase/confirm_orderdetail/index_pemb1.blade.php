@@ -310,7 +310,7 @@
                 <table class="table table-striped">
                   <thead>
                   <tr>
-                      <th> No </th>
+                      
                       <th> Barang </th>
                       <th> Qty </th>
                       <th> Satuan </th>
@@ -319,29 +319,38 @@
                   </tr>
                 </thead>
                 <tbody>
+                    @foreach($data['sppdt_barang'] as $index=>$sppdtbarang)
                     <tr>
-                      <td rowspan="3"> 1 </td>
-                      <td rowspan="3"> Barang A </td>
-                      <td rowspan="3"> 2 </td>
-                      <td rowspan="3"> PCS </td>
-                      <td> 9.000,00 </td>
-                      <td> Supplier A </td>
+                      <td rowspan="3"> {{$sppdtbarang->sppd_kodeitem}} </td>
+                      <td rowspan="3"> {{$sppdtbarang->sppd_qtyrequest}} </td>
+                      <td rowspan="3"> </td>                     
+                      <td class='harga0 hargacek{{$index}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">
+                        
+                        <input type='text' class="form-control hargacek{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0'>
+
+                      </td>
+
+                      <td class='supplier0 supplier{{$sppdtbarang->sppd_kodeitem}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">  </td>
+                      
                       <tr>
-                        <td> 8.900,00 </td>
-                        <td>  Supplier B </td>
+                        <td class='harga1 hargacek{{$index}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}"> <input type='text' class="form-control hargacek{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1'> </td>
+                      
+                        <td class='supplier1 supplier{{$sppdtbarang->sppd_kodeitem}}'>  Supplier B </td>
 
                       </tr>
                       <tr>
-                        <td> 7.000,00 </td>
-                        <td> Supplier C </td>
+                        <td class='harga2 hargacek{{$index}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">                         <input type='text' class="form-control hargacek{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2'> </td>
+                        
+                        <td class='supplier1 supplier{{$sppdtbarang->sppd_kodeitem}}'> Supplier C </td>
                       </tr>
+                    @endforeach
                 </tbody>
                 </table>
 
-                <table class="table table-bordered">
+                {{-- <table class="table table-bordered">
                   <thead>
                   <tr>
-                      <th> No </th>
+                    
                       <th> Barang </th>
                       <th> Qty </th>
                       <th> Satuan </th>
@@ -350,10 +359,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach($data['sppdt_barang'] as $index=>$sppdt)
+                  @foreach($data['sppdt'] as $index=>$sppdt)
                     <tr>
-                      <td> {{$index + 1}} </td>
-                      <td> {{$sppdt->sppd_kodeitem}}</td>
+                      <td>  {{$sppdt->sppd_kodeitem}} </td>
                       <td> {{$sppdt->sppd_qtyrequest}}</td>
                       <td> </td>
                       <td colspan="2" style="text-align: center"> <a class="btn btn-xs btn-info" type="button" onclick="ceksupplier('{{$sppdt->sppd_kodeitem}}')" data-toggle="modal" data-target="#modalsupplier"> <i class="fa fa-info"> </i> Lihat Data </a> </td>
@@ -361,12 +369,8 @@
                     </tr>
                   @endforeach
                 </tbody>
-              </table>
+              </table> --}}
                  
-                    
-                  
-                 
-                    
                 </div><!-- /.box-body -->
                 @endif
                 <div class="box-footer">
@@ -395,10 +399,14 @@
                   </div>
                                 
                   <div class="modal-body"> 
-                   <h4> Data Kode Item : <p class="kodeitemsupplier"> </p> </h4>
-                   <hr>
-
-                    <table class="table table-bordered" id="table-supplier">
+                    <table border="0">
+                      <tr>
+                          <th> <h3> Data Kode Item : </h3> </th> <th> <h3 class="kodeitemsupplier" style="color:grey"> </h3>
+                         </th>
+                      </tr>
+                    </table>
+                   
+                    <table class="table table-bordered" id="table-supplier" width="100%">
                       <thead>
                         <tr>
                           <th> No </th> <th> Nama Supplier </th> <th> Harga </th>
@@ -432,7 +440,7 @@
                 '.chosen-select-deselect'  : {allow_single_deselect:true},
                 '.chosen-select-no-single' : {disable_search_threshold:10},
                 '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                '.chosen-select-width'     : {width:"75%"}
+                '.chosen-select-width'     : {width:"80%"}
                 }
 
              for (var selector in config) {
@@ -441,6 +449,32 @@
     })
    }, 2000)
   
+  idspp = $('.idspp').val();
+  $.ajax({
+    url : baseUrl + '/konfirmasi_order/ceksupplier',
+    type : 'get',
+    data : {idspp},
+    datatype : 'json',
+    success : function(response){
+      console.log(response.sppd.length);
+
+      for($i = 0; $i < response.sppdt.length; $i++) {
+        for($j = 0; $j < response.sppd.length; $j++){
+          kodeitem = $('.hargacek' + $i).data('kodeitem');
+          alert(kodeitem);
+          if(response.sppd[$j].sppd_kodeitem == kodeitem){
+              alert(kodeitem);
+              $('.hargacek' + $i + '[data-kodeitem = '+kodeitem+']').val(response.sppd[$j].sppd_harga);      
+          }
+        }
+      }
+    },
+    error : function(){
+      location.reload();
+    }
+  })
+
+
   function ceksupplier(ref){
     $('.kodeitemsupplier').val(ref);
     kodeitem = ref;
@@ -451,27 +485,44 @@
       data : {kodeitem, idspp},
       dataType : 'json',
       success : function(response){
-        $('.kodeitemsupplier').val(response.kodeitem);
+        $('.kodeitemsupplier').text(response.kodeitem);
+
          $('#table-supplier tr.trceksupplier').remove();
         $key = 1;
-        alert(response.itemsupplier.length);
+    
         for($i = 0; $i < response.sppd.length; $i++){
            var  html = "<tr class='trceksupplier'>" +
                     "<td>"+$key+"</td>" +
-                    "<td>"+ addCommas(response.sppd[$i].sppd_harga) +"</td>" +
-                    "<td> <select class='form-control chosen-select suppliercek"+$i+"'>";
+                    "<td> <select class='form-control chosen-select-width suppliercek suppliercek"+$i+"' style='min-width:100px' data-id="+$i+">";
                       if(response.itemsupplier.length == 0){
                         for($j = 0 ; $j < response.supplier.length; $j++){
-                          html += "<option value='"+response.supplier[$j].idsup+"'>"+response.supplier[$j].no_supplier + "-" + response.supplier[$j].nama_supplier+"</option>";
-
+                          html += "<option value='"+response.supplier[$j].idsup+"'>"+response.supplier[$j].no_supplier + " - " + response.supplier[$j].nama_supplier+"</option>";
                         }    
+
+                        html += "</select> <input type='hidden' class='tipesupplier"+$i+"' value='TIDAK'>";
                       }
-                    html += "</select></td>";          
+                      else {
+                         for($j = 0 ; $j < response.supplier.length; $j++){
+                          html += "<option value='"+response.supplier[$j].is_idsup+"'>"+response.supplier[$j].no_supplier + " - " + response.supplier[$j].nama_supplier+"</option>";
+                          }
+
+                          htm += "</select> <input type='hidden' class='tipesupplier' value='IYA'>";  
+                      }
+                    html += "</td> <td> <input type='text' class='form-control' value="+ addCommas(response.sppd[$i].sppd_harga) +" name='hargasupplier[]' data-id="+$i+">   </td>";          
             $('#table-supplier').append(html);
+          
+            $('.suppliercek' + $i).val(response.sppd[$i].sppd_supplier);
+          
             $('.suppliercek' + $i).trigger("chosen:updated");
             $('.suppliercek' + $i).trigger("liszt:updated");
            $key++; 
           }
+
+          $('.suppliercek').change(function(){
+            id = $(this).data('id');
+            tipesupplier = $('.tipesupplier' + id).val();
+          });
+
         } 
       })
     }

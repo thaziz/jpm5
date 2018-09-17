@@ -1047,20 +1047,23 @@ class PurchaseController extends Controller
 		$kodeitem = $request->kodeitem;
 		$idspp = $request->idspp;
 
-		$datakodeitem = DB::select("select * from masteritem where kode_item = '$kodeitem'");
+/*		$datakodeitem = DB::select("select * from masteritem where kode_item = '$kodeitem'");
 		$data['kodeitem'] = $datakodeitem[0]->nama_masteritem;
+		$data['hargaitem'] = $datakodeitem[0]->harga;*/
 
-		$data['sppd'] = DB::select("select * from spp_detail, supplier where sppd_idspp = '$idspp' and sppd_kodeitem = '$kodeitem' and sppd_supplier = idsup");
+		$data['sppd'] = DB::select("select * from spp_detail, supplier where sppd_idspp = '$idspp' and sppd_supplier = idsup");
 
+		$data['sppdt'] =  DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest,unitstock from  masteritem, spp_detail where sppd_idspp = '$idspp' and kode_item = sppd_kodeitem ");
+		
 
-		$data['itemsupplier'] = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
+		/*$data['itemsupplier'] = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
 
 		if(count($data['itemsupplier']) > 0){
 			$data['supplier'] = $data['itemsupplier'];
 		}
 		else {
 			$data['supplier'] = DB::select("select * from supplier");
-		}
+		}*/
 
 		return json_encode($data);
 	}
@@ -1089,7 +1092,7 @@ class PurchaseController extends Controller
 		if($tipespp != 'J'){
 			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and  sppd_supplier = idsup order by sppd_seq asc");
 
-			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sppd_harga, sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem ");
+			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem ");
 
 			$data['codt'] = DB::select("select *  from confirm_order, masteritem, spp, confirm_order_dt_pemb LEFT OUTER JOIN stock_gudang on codtk_kodeitem = sg_item and sg_gudang = '$lokasigudang' where confirm_order_dt_pemb.codtk_idco=co_id and co_idspp = '$id' and co_idspp = spp_id and codtk_kodeitem = kode_item");
 		}
@@ -1130,10 +1133,7 @@ class PurchaseController extends Controller
 		
 		//data data setelah revisi
 
-
-
-		
-
+	
 		return view('purchase.confirm_orderdetail.index_pemb', compact('data' , 'tipespp' , 'namatipe'));
 	}	
 
@@ -1833,9 +1833,6 @@ public function purchase_order() {
 					$idpo = '0001';
 				}
 
-
-				
-
 			$temptdklengkap = 0;
 			$lengkap = 0;
 
@@ -2102,7 +2099,7 @@ public function purchase_order() {
 
 	public function deletepurchase($id){
 		/*DB::delete("DELETE from  pembelian_order where po_id = '$id'");*/
-
+		return DB::transaction(function() use ($id) {
 		$data2 = purchase_orderr::find($id); 
 		
 		$data['spptb'] = DB::select("select * from spp_totalbiaya where spptb_poid = '$id'");
@@ -2121,7 +2118,6 @@ public function purchase_order() {
 								'cotb_timesetuju' => null,
 		
 							]); 
-
 			//return json_encode($idco . $idspp);			
 		}
 		//
@@ -2130,8 +2126,26 @@ public function purchase_order() {
 		$updatespptb->update([
 		 	'spptb_poid' => null
 	 		]);
+
+		$barangterima = DB::select("select * from barang_terima where bt_idtransaksi = '$id' and bt_flag = 'PO' and bt_statuspenerimaan != 'BELUM DI TERIMA'");
+		if(count($barangterima) > 0){
+			DB::rollback();
+			$datainfo = [
+				'datainfo' => 'gagal',
+				'message' => 'Data sudah masuk gudang',
+			];
+		}
+		else {
+			DB::delete("DELETE FROM barang_terima where bt_idtransaksi = '$id' and bt_flag = 'PO'");
+			$datainfo = [
+				'datainfo' => 'sukses',
+				'message' => 'Data sudah masuk gudang',
+			];
+		}
+
        	Session::flash('sukses', 'data item berhasil dihapus');
-        return json_encode('sukses');
+        return json_encode($datainfo);
+    });
 	}
 
 	public function purchasedetail($id) {
