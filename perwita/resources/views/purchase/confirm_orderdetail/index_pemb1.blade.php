@@ -326,20 +326,20 @@
                       <td rowspan="3"> </td>                     
                       <td class='harga0 hargacek{{$index}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">
                         
-                        <input type='text' class="form-control hargacek{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0'>
+                        <input type='text' class="form-control hargacek0 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0'> 0 {{$sppdtbarang->sppd_kodeitem}}
 
                       </td>
 
                       <td class='supplier0 supplier{{$sppdtbarang->sppd_kodeitem}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">  </td>
                       
                       <tr>
-                        <td class='harga1 hargacek{{$index}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}"> <input type='text' class="form-control hargacek{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1'> </td>
+                        <td class='harga1 hargacek{{$index}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}"> <input type='text' class="form-control hargacek1 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1'> 1  {{$sppdtbarang->sppd_kodeitem}} {{$index}}</td>
                       
                         <td class='supplier1 supplier{{$sppdtbarang->sppd_kodeitem}}'>  Supplier B </td>
 
                       </tr>
                       <tr>
-                        <td class='harga2 hargacek{{$index}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">                         <input type='text' class="form-control hargacek{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2'> </td>
+                        <td class='harga2 hargacek{{$index}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">                         <input type='text' class="form-control hargacek2 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2'> 2  {{$sppdtbarang->sppd_kodeitem}} </td>
                         
                         <td class='supplier1 supplier{{$sppdtbarang->sppd_kodeitem}}'> Supplier C </td>
                       </tr>
@@ -454,19 +454,27 @@
     url : baseUrl + '/konfirmasi_order/ceksupplier',
     type : 'get',
     data : {idspp},
-    datatype : 'json',
+    dataType : 'json',
     success : function(response){
-      console.log(response.sppd.length);
+//      console.log(response.sppd.length);
 
       for($i = 0; $i < response.sppdt.length; $i++) {
+        $key = 0;
+        $temp = 0;
         for($j = 0; $j < response.sppd.length; $j++){
-          kodeitem = $('.hargacek' + $i).data('kodeitem');
-          alert(kodeitem);
+          kodeitem = $('.hargacekbarang' + $i).data('kodeitem');
           if(response.sppd[$j].sppd_kodeitem == kodeitem){
-              alert(kodeitem);
-              $('.hargacek' + $i + '[data-kodeitem = '+kodeitem+']').val(response.sppd[$j].sppd_harga);      
+             if($temp == 1){
+                $key = 0;
+             }
+              $('.hargacek' + $key + '[data-kodeitem = '+kodeitem+']').val(response.sppd[$j].sppd_harga);      
+              $temp = 0;
           }
-        }
+          else {
+             $temp = 1;
+          }
+          $key++;
+        }        
       }
     },
     error : function(){
