@@ -357,7 +357,7 @@
 
    
    function hapusData(id){
-    alert(id);
+  
     swal({
     title: "Apakah anda yakin?",
     text: "Hapus Data!",
@@ -377,7 +377,7 @@ function(){
       dataType : 'json',
       success:function(data){
 
-        if(data == "sukses"){
+        if(data.datainfo == "sukses"){
           swal({
           title: "Berhasil!",
                   type: 'success',
@@ -387,24 +387,17 @@ function(){
                   },function(){
                      location.reload();
           });
-        }else{
-         swal({
-        title: "Data Tidak Bisa Dihapus",
-                type: 'error',
-                timer: 1000,
-                showConfirmButton: false
-    });
         }
-      },
-      error:function(data){
-
-        swal({
-        title: "Terjadi Kesalahan",
-                type: 'error',
-                timer: 2000,
-                showConfirmButton: false
-    });
-   }
+         else if (data.datainfo == "gagal"){
+               swal({
+                  title: "error!",
+                          type: 'error',
+                          text: data.message,
+                          timer: 900,
+                         showConfirmButton: false                      
+                  });
+            }
+      }
   });
   });
 }

@@ -1833,9 +1833,6 @@ public function purchase_order() {
 					$idpo = '0001';
 				}
 
-
-				
-
 			$temptdklengkap = 0;
 			$lengkap = 0;
 
@@ -2130,9 +2127,24 @@ public function purchase_order() {
 		 	'spptb_poid' => null
 	 		]);
 
-		DB::delete("DELETE FROM barang_terima where bt_idtransaksi = '$id' and bt_flag = 'PO'");
+		$barangterima = DB::select("select * from barang_terima where bt_idtransaksi = '$id' and bt_flag = 'PO' and bt_statuspenerimaan != 'BELUM DI TERIMA'");
+		if(count($barangterima) > 0){
+			DB::rollback();
+			$datainfo = [
+				'datainfo' => 'gagal',
+				'message' => 'Data sudah masuk gudang',
+			];
+		}
+		else {
+			DB::delete("DELETE FROM barang_terima where bt_idtransaksi = '$id' and bt_flag = 'PO'");
+			$datainfo = [
+				'datainfo' => 'sukses',
+				'message' => 'Data sudah masuk gudang',
+			];
+		}
+
        	Session::flash('sukses', 'data item berhasil dihapus');
-        return json_encode('sukses');
+        return json_encode($datainfo);
     });
 	}
 
