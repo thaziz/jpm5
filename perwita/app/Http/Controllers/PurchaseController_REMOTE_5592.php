@@ -1134,7 +1134,7 @@ class PurchaseController extends Controller
 		//data data setelah revisi
 
 	
-		return view('purchase.confirm_orderdetail.index_pemb1', compact('data' , 'tipespp' , 'namatipe'));
+		return view('purchase.confirm_orderdetail.index_pemb', compact('data' , 'tipespp' , 'namatipe'));
 	}	
 
 
