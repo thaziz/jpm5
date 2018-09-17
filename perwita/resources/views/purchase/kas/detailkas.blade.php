@@ -78,14 +78,14 @@
 			<td>{{$val->bpkd_pengirim}}</td>
 			<td>{{$tujuan[$i]->nama}}</td>
 			<td>{{$val->bpkd_penerima}}</td>
-			<td align="right" style="min-width: 100px;"> {{"Rp " . number_format($val->bpkd_tarif,2,",",".")}}</td>
-			<td align="right" style="min-width: 40px;">{{"" . number_format($val->bpkd_tarif_penerus,2,",",".")}}</td>
+			<td align="right" style="min-width: 100px;"> {{"Rp " . number_format(round($val->bpkd_tarif),2,",",".")}}</td>
+			<td align="right" style="min-width: 40px;">{{"" . number_format(round($val->bpkd_tarif_penerus),2,",",".")}}</td>
 			</tr>
 			@endforeach
 			<tr>
 			<td align="right" colspan="7">Total :</td>
-			<td align="right" style="font-size: 12px;">{{"Rp " . number_format($cari[0]->bpk_total_tarif,2,",",".")}}</td>
-			<td style="font-size: 12px;" align="right">{{"Rp " . number_format($total_harga,2,",",".")}}</td>
+			<td align="right" style="font-size: 10px;">{{"Rp " . number_format(round($cari[0]->bpk_total_tarif),2,",",".")}}</td>
+			<td style="font-size: 12px;" align="right">{{"Rp " . number_format(round($total_harga),2,",",".")}}</td>
 			</tr>
 			<tr>
 				<td align="center" colspan="5">Driver :</td>

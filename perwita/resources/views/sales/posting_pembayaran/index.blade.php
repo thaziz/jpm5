@@ -142,7 +142,7 @@
 
 
     function edit(id){
-        window.location.href = baseUrl + '/sales/posting_pembayaran_edit/'+id;
+        window.location.href = baseUrl + '/sales/posting_pembayaran_edit?id='+id;
 
     }
 

@@ -404,8 +404,13 @@ Route::get('biaya_penerus/jurnal', 'KasController@jurnal');
 Route::get('biaya_penerus/append_table', 'KasController@append_table');
 Route::get('buktikaskeluar/datatable_bk', 'KasController@datatable_bk')->name('datatable_bk');
 Route::get('biaya_penerus/jurnal_all', 'KasController@jurnal_all');
+// PENGEMBALIAN
 Route::get('pengembalian_bonsem/index', 'pengembalian_bonsem_controller@index');
+Route::get('pengembalian_bonsem/create', 'pengembalian_bonsem_controller@create');
+Route::get('pengembalian_bonsem/edit', 'pengembalian_bonsem_controller@edit');
 Route::get('pengembalian_bonsem/datatable_pengembalian', 'pengembalian_bonsem_controller@datatable_pengembalian')->name('datatable_pengembalian');
+Route::get('pengembalian_bonsem/index', 'pengembalian_bonsem_controller@index');
+Route::get('pengembalian_bonsem/jurnal', 'pengembalian_bonsem_controller@jurnal');
 
 // BIAYA PENERUS LOADING/UNLOADING
 Route::get('biaya_penerus_loading/index', 'loadingController@index');
@@ -1859,8 +1864,8 @@ Route::post('sales/update_kwitansi', 'sales\penerimaan_penjualan_Controller@upda
 Route::get('sales/kwitansi/cetak_nota/{id}', 'sales\penerimaan_penjualan_Controller@cetak_nota');
 Route::get('sales/hapus_kwitansi', 'sales\penerimaan_penjualan_Controller@hapus_kwitansi');
 
-Route::get('sales/edit_kwitansi/{id}', 'sales\penerimaan_penjualan_Controller@edit_kwitansi');
-Route::get('sales/detail_kwitansi/{id}', 'sales\penerimaan_penjualan_Controller@detail_kwitansi');
+Route::get('sales/edit_kwitansi', 'sales\penerimaan_penjualan_Controller@edit_kwitansi');
+Route::get('sales/detail_kwitansi', 'sales\penerimaan_penjualan_Controller@detail_kwitansi');
 
 Route::post('sales/save_um_kwitansi', 'sales\penerimaan_penjualan_Controller@save_um_kwitansi');
 Route::get('sales/kwitansi_cari_um', 'sales\penerimaan_penjualan_Controller@kwitansi_cari_um');
@@ -1890,7 +1895,7 @@ Route::get('sales/posting_pembayaran_form/append', 'sales\posting_pembayaran_Con
 Route::post('sales/posting_pembayaran_form/simpan_posting', 'sales\posting_pembayaran_Controller@simpan_posting');
 Route::get('sales/posting_pembayaran_form/simpan_posting', 'sales\posting_pembayaran_Controller@simpan_posting');
 Route::post('sales/posting_pembayaran_form/update_posting', 'sales\posting_pembayaran_Controller@update_posting');
-Route::get('sales/posting_pembayaran_edit/{id}', 'sales\posting_pembayaran_Controller@edit');
+Route::get('sales/posting_pembayaran_edit', 'sales\posting_pembayaran_Controller@edit');
 Route::get('sales/posting_pembayaran_hapus', 'sales\posting_pembayaran_Controller@posting_pembayaran_hapus');
 Route::get('sales/posting_pembayaran_print/{id}', 'sales\posting_pembayaran_Controller@posting_pembayaran_print');
 Route::get('sales/datatable_posting', 'sales\posting_pembayaran_Controller@datatable_posting')->name('datatable_posting');

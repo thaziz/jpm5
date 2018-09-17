@@ -53,8 +53,8 @@
 
 
     var table_invoice = $('#table_data_invoice').DataTable({
-        processing: true,
-        serverSide: true,
+        // processing: true,
+        // serverSide: true,
         ajax: {
             url:'{{ route('datatable_detail_invoice') }}',
             data:{cabang,customer,array_simpan,array_edit,array_harga,id,jenis_tarif,nota_kwitansi}
