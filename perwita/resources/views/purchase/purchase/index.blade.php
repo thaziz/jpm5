@@ -374,9 +374,10 @@ function(){
      $.ajax({
       url:baseUrl + '/purchaseorder/deletepurchase/'+id,
       type:'get',
+      dataType : 'json',
       success:function(data){
 
-        if(data == "'sukses'"){
+        if(data == "sukses"){
           swal({
           title: "Berhasil!",
                   type: 'success',
