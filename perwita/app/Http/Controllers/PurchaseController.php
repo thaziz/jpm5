@@ -1935,8 +1935,7 @@ public function purchase_order() {
 	            $index = str_pad($index, 4, '0' , STR_PAD_LEFT);
 	            $nota = 'PO' .  $getmonth . $getyear . '/' . $datacomp . '/' . $index;
 
-	            dd($nota);
-
+	          
 	          DB::table('pembelian_order')
 	           ->where('po_id' , $po_id)
 	          ->update(['po_no' => $nota]);
