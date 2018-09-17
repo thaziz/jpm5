@@ -1786,9 +1786,6 @@ public function purchase_order() {
 			 	]);	
 			}
 
-			
-
-
 
 			$lastid = purchase_orderr::max('po_id'); 
 
@@ -1836,8 +1833,7 @@ public function purchase_order() {
 				}
 
 
-				$comp = $request->cabang;
-				$nopo = 'PO' . $month . $year . '/' . $comp . '/' .  $idpo;
+				
 
 			$temptdklengkap = 0;
 			$lengkap = 0;
@@ -1864,7 +1860,6 @@ public function purchase_order() {
 
 				$po = new purchase_orderr();
 				$po->po_id = $po_id;
-				$po->po_no = $nopo;
 				$po->po_catatan = strtoupper($request->catatan);
 				$po->po_bayar = strtoupper($request->bayar);
 
@@ -1913,14 +1908,14 @@ public function purchase_order() {
 				$idspp =$request->idspp[0];
 				$dataspp = DB::select("select * from spp where spp_id = '$idspp'");
 				$datacomp = $dataspp[0]->spp_cabang;
-				$tglspp = $dataspp[0]->spp_nospp;
+				$tglspp = $dataspp[0]->spp_tglinput;
 
-				$explodetglspp = explode("/", $tglspp);
+				/*$explodetglspp = explode("/", $tglspp);
 				$substrtglspp = substr($explodetglspp[0], 3,7);
 				$getmonth = substr($substrtglspp, 0,2);
 				$getyear = substr($substrtglspp, 2,2);
 				$tahun = '20' . $getyear;
-				$tglspp = $tahun . '-' . $getmonth . '-' . '09';  
+				$tglspp = $tahun . '-' . $getmonth . '-' . '09'; */ 
 			
 				DB::table('pembelian_order')
 				->where('po_id' , $po_id)
@@ -1929,7 +1924,7 @@ public function purchase_order() {
 				$getmonth = Carbon::parse($tglspp)->format('m');
 				$getyear = Carbon::parse($tglspp)->format('y');
 
-				$carinota = DB::select("SELECT  substring(max(po_no),10) as id from pembelian_order
+				$carinota = DB::select("SELECT  substring(max(po_no),12) as id from pembelian_order
                                         WHERE po_cabang = '$datacomp'
                                         AND to_char(po_tglspp,'MM') = '$getmonth'
                                         AND to_char(po_tglspp,'YY') = '$getyear'");
@@ -2011,7 +2006,7 @@ public function purchase_order() {
 					 	'spptb_poid' => $po_id
 				 		]);	
 /*
-					$updatespp = spp_purchase::where('spp_id' , '=' , $request->idspp[$n]);
+					$updatespp = spp_purchasse::where('spp_id' , '=' , $request->idspp[$n]);
 					$updatespp->update([
 							'spp_status' => 'DISETUJUI',
 					]);*/

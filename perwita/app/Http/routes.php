@@ -100,6 +100,7 @@ Route::get('jurnalselaras/notaspp', 'jurnal_pembelian@gantispp');
 Route::get('jurnalselaras/bankmasuk', 'jurnal_pembelian@bankmasuk');
 Route::get('jurnalselaras/kasmasuk', 'jurnal_pembelian@kasmasuk');
 Route::get('jurnalselaras/fpg_checkbank', 'jurnal_pembelian@fpg_checkbank');
+Route::get('jurnalselaras/get_no_po', 'jurnal_pembelian@get_no_po');
 
 //***PEMBELIAN
 //***PEMBELIAN

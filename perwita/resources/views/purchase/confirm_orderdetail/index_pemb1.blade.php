@@ -507,7 +507,7 @@
                     "<td>"+  response.sppd[$i].sppd_harga  + "</td>" +
                     "<td> <select class='form-control chosen-select'>" +
                           $.each(response.supplier, function(i, obj){
-                              "<option value=''> </option>"
+                              "<option value='"+obj.+"'> </option>"
 
                           })
 
