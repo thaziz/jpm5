@@ -269,8 +269,8 @@ table, td, th {
 			@foreach($data['detail'] as $detail)
 		<tr>
 		
-			<td > {{ Carbon\Carbon::parse($data['bbk'][0]->bbk_tgl)->format('d-M-Y ') }} </td>
-			<td> {{$detail->bbkab_nocheck}} </td>
+			<td > {{$detail->bbkab_nocheck}} </td>
+			<td> {{ Carbon\Carbon::parse($data['bbk'][0]->bbk_tgl)->format('d-M-Y ') }} </td>
 			<td> {{$detail->mb_nama}} </td>
 			<td>{{ number_format($detail->bbkab_nominal, 2) }} </td>
 			<td> {{$detail->mb_kode}} </td>
@@ -285,11 +285,11 @@ table, td, th {
 			<td></td>
 			<td></td>
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<td> {{$data['bbk'][0]->bbk_akunbank}} </td>
+			<td> {{$data['bbk'][0]->bbk_akunbank}} </td>
+			<td> {{$data['bbk'][0]->bbk_keterangan}}  </td>
+			<td>  K </td>
+			<td> {{number_format($data['bbk'][0]->bbk_total, 2)}} </td>
 		</tr>
 		<tr>
 			<td class="blank"></td>

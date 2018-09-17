@@ -871,7 +871,7 @@ class KasController extends Controller
 			$jenis_bayar = DB::table('jenisbayar')
 							 ->where('idjenisbayar',10)
 							 ->first();
-			$bank = 'KK';
+			$bank = 'KK'.$request->akun_bank;
 
             $km =  get_id_jurnal($bank, $request->cabang);
 
@@ -1648,9 +1648,9 @@ class KasController extends Controller
 				 $harga_array[$i] = round($harga_array[$i]);
 			}
 			// return $harga_array;
-			$total_harga=array_sum($harga_array);
+			$total_harga=round($cari_id[0]->bpk_tarif_penerus);
 			// return $total_harga;
-			$terbilang = $this->terbilang($total_harga,$style=3);
+			$terbilang = $this->terbilang(round($total_harga),$style=3);
 
 			if(count($harga_array)<10){
 				$td = 10-count($harga_array);

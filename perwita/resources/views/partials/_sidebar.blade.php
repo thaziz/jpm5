@@ -1678,16 +1678,6 @@
                             " href="{{ url('updatestatus')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Update Status Paket</a>
                             </li>
                             @endif
-                            @if(Auth::user()->PunyaAkses('Update Status Paket','aktif'))
-                            <li >
-                            <a class="sidebar master-perusahaan 
-
-                            {{Request::is('updatestatus') ? 'active' : '' || 
-                            Request::is('updatestatus/*') ? 'active' : ''}} 
-
-                            " href="{{ url('updatestatus')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Update Status Paket</a>
-                            </li>
-                            @endif
                             @if(Auth::user()->PunyaAkses('update Status Kargo','aktif'))
                               <li >
                             <a class="sidebar master-perusahaan 
@@ -2165,6 +2155,10 @@
                                         /* BKK */
                                         Request::is('buktikaskeluar/index') ? 'active' : '' || 
                                         Request::is('buktikaskeluar/index/*') ? 'active' : ''||
+
+                                        /* PENGEMBALIAN BONSEM */
+                                        Request::is('pengembalian_bonsem/index') ? 'active' : '' || 
+                                        Request::is('pengembalian_bonsem/*') ? 'active' : ''||
                                         /* Iktisar kas */
                                         Request::is('ikhtisar_kas/index') ? 'active' : '' || 
                                         Request::is('ikhtisar_kas/index/*') ? 'active' : ''
@@ -2205,12 +2199,14 @@
                                         Request::is('ikhtisar_kas/index/*') ? 'active' : ''}}" href="{{ url('ikhtisar_kas/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Ikhtisar Kas</a>
                                         </li>                     
                                         @endif
+                                        @if(Auth::user()->PunyaAkses('Pengembalian Bonsem','aktif'))
+                                        <li >
+                                        <a class="sidebar master-perusahaan {{Request::is('pengembalian_bonsem/index') ? 'active' : '' || 
+                                        Request::is('pengembalian_bonsem/*') ? 'active' : ''}}" href="{{ url('pengembalian_bonsem/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Pengemballian Bonsem</a>
+                                        </li>                     
+                                        @endif
                                     </ul>
                                 </li>
-                                
-
-
-                                                            
                             </ul>
                         </li>
                         <!-- end operasional pembelian -->

@@ -174,7 +174,7 @@
 <script type="text/javascript">
 
       $(document).ready(function(){
-
+        cari();
       })
 
       $('.date').datepicker({

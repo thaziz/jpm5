@@ -29,6 +29,22 @@
             </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
+     <div class="col-md-2" style="min-height: 100px">
+      <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <h2 style='text-align:center'> <b> {{$data['belumdiproses']}} Data </b></h2> <h4 style='text-align:center'> Belum di Posting Bank Keluar </h4>
+      </div>
+    </div>
+
+     <div class="col-md-2" style="min-height: 100px">
+      <div class="alert alert-success alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <h2 style='text-align:center'> <b> {{$data['sudahdiproses']}} Data  </b></h2> <h4 style='text-align:center'> Sudah di Posting Bank Keluar </h4>
+      </div>
+    </div>
+
+
+
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
@@ -96,11 +112,11 @@
                        
                         <td> {{$fpg->fpg_keterangan}}
                         
-                           {{--  @if($fpg->fpg_posting == 'DONE')
+                            @if($fpg->fpg_posting == 'DONE')
                               <span class="label label-success"> Sudah Terposting </span> &nbsp;
                             @else
                                <span class="label label-warning">  Belum di Posting </span> &nbsp;
-                            @endif --}}  </td>
+                            @endif  </td>
                         <td> {{number_format($fpg->fpg_totalbayar, 2)}} </td>
                         <td> - </td>
                         <td> {{number_format($fpg->fpg_cekbg , 2)}} </td>

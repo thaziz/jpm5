@@ -12,7 +12,8 @@ use App\formfpg;
 use App\d_jurnal_dt;
 use App\bank_masuk;
 use Exception;
-    set_time_limit(60000);
+use App\purchase_orderr;
+set_time_limit(60000);
 
 class jurnal_pembelian  extends Controller
 {
@@ -427,6 +428,50 @@ class jurnal_pembelian  extends Controller
       return json_encode('sukses');
     }
 
+    function get_no_po(){
+      return DB::transaction(function()  { 
+      $datapo = DB::select("select * from pembelian_order order by po_tglspp asc");
+      $updatepo = DB::table('pembelian_order')
+                  ->update([
+                    'po_no' => null
+                ]);
+
+      for($i = 0; $i < count($datapo); $i++){
+        $cabangtransaksi = $datapo[$i]->po_cabangtransaksi;
+        $tglspp = $datapo[$i]->po_tglspp;
+        $idpo = $datapo[$i]->po_id;
+
+        $bulan = Carbon::parse($tglspp)->format('m');
+        $tahun = Carbon::parse($tglspp)->format('y');
+
+        $data_po = DB::select("SELECT  substring(max(po_no),12) as id from pembelian_order
+                            WHERE po_cabangtransaksi = '$cabangtransaksi'
+                            AND to_char(po_tglspp, 'MM') = '$bulan'
+                            AND to_char(po_tglspp, 'YY') = '$tahun'");
+
+        $index = (integer)$data_po[0]->id + 1;
+        $index = str_pad($index, 4, '0' , STR_PAD_LEFT);
+
+        $nopo = 'PO' . $bulan . $tahun . '/' . $cabangtransaksi . '/' .  $index;
+
+        DB::table('pembelian_order')
+        ->where('po_id' , $idpo)
+        ->update(['po_no' => $nopo]);
+
+        DB::table('barang_terima')
+        ->where('bt_idtransaksi' , $idpo)
+        ->where('bt_flag' , 'PO')
+        ->update([
+          'bt_notransaksi' => $nopo
+        ]);
+      }
+
+      return json_encode('sukses');
+
+    });
+
+
+    }
 
     function fpgbankmasuk(){
       $databankmasuk = DB::select("select * from bank_masuk order by bm_idfpgb desc");
@@ -713,7 +758,7 @@ class jurnal_pembelian  extends Controller
                     }
                     else {
                       $jurnalpbkeluar[1]['id_akun'] = $akunkasbank;
-                      $jurnalpbkeluar[1]['subtotal'] = $bm_nominal;
+                      $jurnalpbkeluar[1]['subtotal'] = '-' .$bm_nominal;
                       $jurnalpbkeluar[1]['dk'] = 'K';
                       $jurnalpbkeluar[1]['detail'] = $bm_keterangan;
                     }
@@ -827,8 +872,45 @@ class jurnal_pembelian  extends Controller
                       'km_nominal' => $totalbayar,
                       'km_keterangan'=> $keterangan,
                       'km_status' => 'DIKIRIM',
+                      'km_idfpgb' => ''
                      );
                   $simpan = DB::table('kas_masuk')->insert($datakm);
       }
+    }
+
+    function fpg_checkbank(){
+      return DB::transaction(function() { 
+      $dataallfpgb = DB::select("select * from fpg_cekbank");
+      for($j = 0; $j < count($dataallfpgb); $j++){
+        $kodebanktujuan = $dataallfpgb[$j]->fpgb_kodebanktujuan;
+        if($kodebanktujuan != ''){
+          $idfpgb = $dataallfpgb[$j]->fpgb_id;
+          $kodebank = $dataallfpgb[$j]->fpgb_kodebank;
+          $kodebanktujuan = $dataallfpgb[$j]->fpgb_kodebanktujuan;
+
+          $datakelompokasal = DB::select("select * from masterbank where mb_id = '$kodebank'");
+          $kelompokasal = $datakelompokasal[0]->mb_kelompok;
+          
+          $datakelompoktujuan = DB::select("select * from masterbank where mb_kode = '$kodebanktujuan'");
+          $kelompoktujuan = $datakelompoktujuan[0]->mb_kelompok;
+
+          if($kelompokasal == $kelompoktujuan){
+            DB::table('fpg_cekbank')
+            ->where('fpgb_id' , $idfpgb)
+            ->update([
+              'fpgb_jeniskelompok' => 'SAMA BANK'
+            ]);
+          }
+          else if($kelompokasal != $kelompoktujuan){
+            DB::table('fpg_cekbank')
+            ->where('fpgb_id' , $idfpgb)
+            ->update([
+              'fpgb_jeniskelompok' => 'BEDA BANK'
+            ]);
+          }
+        }
+      }
+      return 'yesy';
+    });
     }
 }

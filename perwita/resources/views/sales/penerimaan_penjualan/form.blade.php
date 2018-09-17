@@ -87,8 +87,8 @@
                             <tr>
                                 <td style="width:px; padding-top: 0.4cm">Nomor Kwitansi</td>
                                 <td colspan="20">
-                                    <input type="text" name="nota" id="nota_kwitansi" class="form-control" readonly="readonly" style="text-transform: uppercase" value="" >
-                                    <input type="hidden" name="flag_nota" id="flag_nota" class="form-control flag_nota"  readonly="readonly" style="text-transform: uppercase" value="0" >
+                                    <input type="text" name="nota" id="nota_kwitansi" class="form-control" style="text-transform: uppercase" value="" >
+                                    <input type="hidden" name="nota_kwitansi_old" id="nota_kwitansi_old" class="form-control nota_kwitansi_old"  readonly="readonly" style="text-transform: uppercase" >
                                     <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                 </td>
                             </tr>
@@ -887,7 +887,6 @@ var table_data_biaya = $('#table_data_biaya').DataTable({
                          className: 'left'
                       }
                     ],
-                    
                 })
 
 //mengganti nota kwitansi
@@ -900,12 +899,13 @@ function nota_kwitansi() {
         data:{cabang,tanggal},
         dataType:'json',
         success:function(response){
-            $('#nota_kwitansi').val(response.nota);
+            if ($('#nota_kwitansi_old').val() == $('#nota_kwitansi').val()) {
+                $('#nota_kwitansi_old').val(response.nota);
+                $('#nota_kwitansi').val(response.nota);
+            }
             um_sementara();
         }
     })
-
-
 }
 
 
@@ -931,16 +931,19 @@ $(document).ready(function(){
         data:{cabang,tanggal},
         dataType : 'json',
         success:function(response){
-            $('#nota_kwitansi').val(response.nota);
+            if ($('#nota_kwitansi_old').val() == $('#nota_kwitansi').val()) {
+                $('#nota_kwitansi_old').val(response.nota);
+                $('#nota_kwitansi').val(response.nota);
+            }
         },
         error:function(){
             location.reload();
         }
 
-
     });
 
 
+        $('.cb_jenis_pembayaran').change();
     
     $('.angka').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
     $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
@@ -1044,10 +1047,13 @@ $('.tambah_invoice').click(function(){
         toastr.warning('Customer Harus Dipilih')
         return 1
     }
-    if ($('#cb_akun_h').val() == '0') {
-        toastr.warning('Akun Harus Dipilih')
-        return 1
+    if ($('.cb_jenis_pembayaran').val() == 'C' || $('.cb_jenis_pembayaran').val() == 'F') {
+        if ($('#cb_akun_h').val() == '0') {
+            toastr.warning('Akun Harus Dipilih')
+            return 1
+        }
     }
+    
     
     var cb_cabang = $('.cb_cabang').val();
     var cb_customer = $('.customer').val();
@@ -2575,12 +2581,16 @@ $('#save_um').click(function(){
 
 $('#btnsimpan').click(function(){
 
+    var valid = 0;
     table_data.$('.i_bayar').each(function(i){
         if ($(this).val() == 0 || $(this).val() == '') {
-            toastr.warning('Ada Data Yang Belum Diinput Nilainya');
-            return false;
+           valid += 1;
         }
     })
+
+    if (valid != 0) {
+        return toastr.warning('Ada Data Yang Belum Diinput Nilainya');
+    }
     var customer = $('.customer').val();
     swal({
         title: "Apakah anda yakin?",

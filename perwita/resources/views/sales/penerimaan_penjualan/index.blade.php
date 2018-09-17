@@ -165,7 +165,7 @@ $(document).ready(function() {
     }
 
     function edit(id){
-        window.location.href = baseUrl +'/sales/edit_kwitansi/'+id
+        window.location.href = baseUrl +'/sales/edit_kwitansi?id='+id
     }
 
     function hapus(id) {

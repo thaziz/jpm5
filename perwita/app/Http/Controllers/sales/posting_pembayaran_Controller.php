@@ -227,7 +227,8 @@ class posting_pembayaran_Controller extends Controller
         $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from posting_pembayaran
                                         WHERE kode_cabang = '$request->cabang'
                                         AND to_char(tanggal,'MM') = '$bulan'
-                                        AND to_char(tanggal,'YY') = '$tahun'");
+                                        AND to_char(tanggal,'YY') = '$tahun'
+                                        ");
         $index = (integer)$cari_nota[0]->id + 1;
         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
         $nota = 'BM' . $request->cabang . $bulan . $tahun . $index;
@@ -996,9 +997,10 @@ class posting_pembayaran_Controller extends Controller
         return response()->json(['pesan'=>'Data Berhasil Dihapus']);
     }
 
-    public function edit($id)
+    public function edit(Request $req)
     {
         if (Auth::user()->punyaAkses('Posting Pembayaran','ubah')) {
+            $id =$req->id;
             $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
             $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
             $rute = DB::select(" SELECT kode,nama FROM rute ORDER BY nama ASC ");
@@ -1008,15 +1010,25 @@ class posting_pembayaran_Controller extends Controller
                           ->get();
 
             $data = DB::table('posting_pembayaran')
-                      ->where('nomor',$id)
+                      ->where('nomor',$req->id)
                       ->first();
+
+            if (Auth::user()->punyaAkses('Posting Pembayaran','cabang')) {
+              $d_akun =DB::table('d_akun')
+                         ->get();
+            }else{
+              $d_akun =DB::table('d_akun')
+                         ->where('kode_cabang',Auth::user()->kode_cabang)
+                         ->get();
+            }
+            
 
             $data_dt = DB::table('posting_pembayaran_d')
                          ->leftjoin('customer','kode','=','kode_customer')
-                         ->where('nomor_posting_pembayaran',$id)
+                         ->where('nomor_posting_pembayaran',$req->id)
                          ->get();
   
-            return view('sales.posting_pembayaran.edit_posting',compact('id','data','data_dt','cabang','kota','rute','kendaraan','akun','customer'));
+            return view('sales.posting_pembayaran.edit_posting',compact('id','data','data_dt','cabang','kota','rute','kendaraan','akun','customer','d_akun'));
         }else{
             return redirect()->back();
         }

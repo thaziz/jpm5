@@ -53,7 +53,6 @@
 			}
 		}
 
-
         return $jr_no;
 	}
 
@@ -187,27 +186,62 @@
 
 	
 
-	function getnotabm($cabang , $tgl){
+	function getnotabm($cabang , $tgl , $kodeterima){
+
+
 		$buland = date("m" , strtotime($tgl));
         $tahund = date("y" , strtotime($tgl));
+       // dd($kodeterima);
+        $kode = DB::select("select * from masterbank where mb_id = '$kodeterima'");
+  //      dd($kode);
+        $akunbank = $kode[0]->mb_kode;
 
-       $idbm = DB::select("select * from bank_masuk where bm_cabangtujuan = '$cabang'  and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_nota IS NOT NULL order by bm_id desc limit 1");
 
+       $idbm = DB::select("select substr(MAX(bm_nota) , 15) as bm_nota from bank_masuk where bm_cabangtujuan = '$cabang'  and to_char(bm_tglterima, 'MM') = '08' and to_char(bm_tglterima, 'YY') = '18' and bm_banktujuan = '$akunbank' and bm_nota IS NOT NULL");
+     //  dd($idbm);
 	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
-		if(count($idbm) != 0) {		
-			$explode = explode("/", $idbm[0]->bm_nota);
-			$idbm = $explode[2];
+		$index = (integer)$idbm[0]->bm_nota + 1;
+     //	dd($kode);
+     	if($kode[0]->mb_id < 10){
+     		$kodebank = '0'.(integer)$kode[0]->mb_id;
+     	}
+     	else {
+     		$kodebank = $kode[0]->mb_id;
+     	}
 
-			$string = (int)$idbm + 1;
-			$idbm = str_pad($string, 4, '0', STR_PAD_LEFT);
-		}
-		else {		
-			$idbm = '0001';
-		}
-     
-        $notabm = 'BM' . '-' . $buland . $tahund . '/' . $cabang . '/' . $idbm;
+     	$index = str_pad($index, 4, '0', STR_PAD_LEFT);
+
+        $notabm = 'BM' . $kodebank . '-' . $buland . $tahund . '/' . $cabang . '/' . $index;
 
         return $notabm;
+	}
+
+
+	function getnotakm($cabang, $tgl){
+		$bulan = date("m" , strtotime($tgl));
+        $year = date("y" , strtotime($tgl));
+
+		$datanotakm = DB::select("SELECT  substring(max(km_nota),13) as id from kas_masuk
+                                    WHERE km_cabangterima = '$cabang'
+                                    AND to_char(km_tgl,'MM') = '$bulan'
+                                    AND to_char(km_tgl,'YY') = '$year'");
+
+		
+
+		if($datanotakm[0]->id == null) {
+			$id = 0;
+			$string = (int)$id + 1;
+			$data['idkm'] = str_pad($string, 4, '0', STR_PAD_LEFT);
+
+		}
+		else {
+			$string = (int)$datanotakm[0]->id + 1;
+			$data['idkm'] = str_pad($string, 4, '0', STR_PAD_LEFT);
+		}
+
+		$notakm = 'KM/' . $bulan . $year . '/' . $cabang . '/' . $data['idkm'];
+
+		return $notakm;
 	}
 
 	function check_jurnal($nota)
