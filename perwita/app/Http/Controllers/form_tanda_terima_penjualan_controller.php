@@ -378,6 +378,8 @@ class form_tanda_terima_penjualan_controller extends Controller
     			  ->join('form_tt_penjualan_d','ft_id','=','ftd_id')
     			  ->where('ft_id',$id)
     			  ->get();
+
+    			  
     	return view('sales.form_tanda_terima.print_tt');
     }
 

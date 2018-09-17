@@ -410,6 +410,7 @@ Route::get('pengembalian_bonsem/index', 'pengembalian_bonsem_controller@index');
 Route::get('pengembalian_bonsem/create', 'pengembalian_bonsem_controller@create');
 Route::get('pengembalian_bonsem/edit', 'pengembalian_bonsem_controller@edit');
 Route::get('pengembalian_bonsem/datatable_pengembalian', 'pengembalian_bonsem_controller@datatable_pengembalian')->name('datatable_pengembalian');
+Route::get('pengembalian_bonsem/datatable_pengembalian_history', 'pengembalian_bonsem_controller@datatable_pengembalian_history')->name('datatable_pengembalian_history');
 Route::get('pengembalian_bonsem/index', 'pengembalian_bonsem_controller@index');
 Route::get('pengembalian_bonsem/jurnal', 'pengembalian_bonsem_controller@jurnal');
 
