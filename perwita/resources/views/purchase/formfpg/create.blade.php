@@ -1255,6 +1255,7 @@
       $('#tbmhdatainet').hide();
 
       $('.jenisbayarbankibaking').change(function(){
+         
           $this = $(this);
           jenisbayar = $('.jenisbayar').val();
            if ($this.is(":checked")) {
@@ -1284,7 +1285,7 @@
                   tgl = $('.tgl').val();
                   bank = $('.bank').val();
                   kodebank = bank.split("+");
-                  
+                
 
                   if(kodebank == ''){
                     toastr.info("Mohon pilih data bank terlebih dahulu :)");

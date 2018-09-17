@@ -1253,8 +1253,9 @@ class penerimaan_penjualan_Controller extends Controller
     }
 
 
-    public function edit_kwitansi($id)
+    public function edit_kwitansi(Request $req)
     {
+        $id = $req->id;
         $comp = Auth::user()->kode_cabang;
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
@@ -1283,20 +1284,20 @@ class penerimaan_penjualan_Controller extends Controller
         }
 
         $data = DB::table('kwitansi')
-                  ->where('k_nomor',$id)
+                  ->where('k_nomor',$req->id)
                   ->first();
 
         $data_dt = DB::table('kwitansi')
                      ->join('kwitansi_d','kd_id','=','k_id')
                      ->join('invoice','i_nomor','=','kd_nomor_invoice')
-                     ->where('k_nomor',$id)
+                     ->where('k_nomor',$req->id)
                      ->get();
         
         $akun_bank = DB::table('masterbank')
                   ->get();  
 
         $uang_muka = DB::table("kwitansi_uang_muka")
-                       ->where('ku_nomor',$id)
+                       ->where('ku_nomor',$req->id)
                        ->get();
         return view('sales.penerimaan_penjualan.edit_kwitansi',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','akun_bank','akun','tgl','id','data_dt','akun_biaya','data_um','uang_muka','akun_kas'));
     }

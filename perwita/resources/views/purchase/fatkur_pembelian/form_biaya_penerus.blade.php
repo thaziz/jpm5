@@ -8,7 +8,7 @@
  	<td style="width: 100px">Tanggal</td>
  	<td width="10">:</td>
  	<td width="200">
- 		<input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="{{$date}}" readonly="" style="">
+ 		<input type="text" name="tgl_biaya_head" class="form-control tgl-biaya tgl_biaya_head" value="{{$date}}" readonly="" style="">
  		<input type="hidden" class="form-control tgl_resi"  readonly="" style="">
  		<input type="hidden" name="master_persen" class="form-control master_persen"  readonly="" style="">
  	</td>
@@ -261,7 +261,7 @@
 				autoclose: true
 				});
 
-  var jt = $('.tgl_tt').datepicker({
+  var jt = $('.tgl_biaya_head').datepicker({
         format:'dd/mm/yyyy',
         autoclose: true
         });

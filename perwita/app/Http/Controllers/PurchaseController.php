@@ -1042,6 +1042,28 @@ class PurchaseController extends Controller
 		return view('purchase.confirm_orderdetail.index4', compact('data' , 'tipespp' , 'namatipe'));
 	}	
 
+
+	public function ceksupplier(Request $request){
+		$kodeitem = $request->kodeitem;
+		$idspp = $request->idspp;
+
+		$datakodeitem = DB::select("select * from masteritem where kode_item = '$kodeitem'");
+		$data['kodeitem'] = $datakodeitem[0]->nama_masteritem;
+
+		$data['sppd'] = DB::select("select * from spp_detail, supplier where sppd_idspp = '$idspp' and sppd_kodeitem = '$kodeitem and sppd_supplier = idsup'");
+		$itemsupplier = DB::select("select * from itemsupplier where is_kodeitem = '$kodeitem'");
+
+		if(count($itemsupplier) > 0){
+			$data['supplier'] = $itemsupplier;
+		}
+		else {
+			$data['supplier'] = DB::select("select * from supplier");
+		}
+
+		return json_encode($data);
+
+	}
+
 	public function confirm_order_dtpemb ($id) {
 		
 	$data['spp'] = DB::select("select * from confirm_order, spp, cabang,masterdepartment where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
@@ -1066,7 +1088,7 @@ class PurchaseController extends Controller
 		if($tipespp != 'J'){
 			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and  sppd_supplier = idsup order by sppd_seq asc");
 
-			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem ");
+			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sppd_harga, sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem ");
 
 			$data['codt'] = DB::select("select *  from confirm_order, masteritem, spp, confirm_order_dt_pemb LEFT OUTER JOIN stock_gudang on codtk_kodeitem = sg_item and sg_gudang = '$lokasigudang' where confirm_order_dt_pemb.codtk_idco=co_id and co_idspp = '$id' and co_idspp = spp_id and codtk_kodeitem = kode_item");
 		}
@@ -1105,7 +1127,10 @@ class PurchaseController extends Controller
 
 		$data['countbrg'] = array_count_values($barang);
 		
-	/*	dd($data);*/
+		//data data setelah revisi
+
+
+
 		
 
 		return view('purchase.confirm_orderdetail.index_pemb', compact('data' , 'tipespp' , 'namatipe'));
@@ -1761,9 +1786,6 @@ public function purchase_order() {
 			 	]);	
 			}
 
-			
-
-
 
 			$lastid = purchase_orderr::max('po_id'); 
 
@@ -1811,8 +1833,7 @@ public function purchase_order() {
 				}
 
 
-				$comp = $request->cabang;
-				$nopo = 'PO' . $month . $year . '/' . $comp . '/' .  $idpo;
+				
 
 			$temptdklengkap = 0;
 			$lengkap = 0;
@@ -1839,7 +1860,6 @@ public function purchase_order() {
 
 				$po = new purchase_orderr();
 				$po->po_id = $po_id;
-				$po->po_no = $nopo;
 				$po->po_catatan = strtoupper($request->catatan);
 				$po->po_bayar = strtoupper($request->bayar);
 
@@ -1888,14 +1908,14 @@ public function purchase_order() {
 				$idspp =$request->idspp[0];
 				$dataspp = DB::select("select * from spp where spp_id = '$idspp'");
 				$datacomp = $dataspp[0]->spp_cabang;
-				$tglspp = $dataspp[0]->spp_nospp;
+				$tglspp = $dataspp[0]->spp_tglinput;
 
-				$explodetglspp = explode("/", $tglspp);
+				/*$explodetglspp = explode("/", $tglspp);
 				$substrtglspp = substr($explodetglspp[0], 3,7);
 				$getmonth = substr($substrtglspp, 0,2);
 				$getyear = substr($substrtglspp, 2,2);
 				$tahun = '20' . $getyear;
-				$tglspp = $tahun . '-' . $getmonth . '-' . '09';  
+				$tglspp = $tahun . '-' . $getmonth . '-' . '09'; */ 
 			
 				DB::table('pembelian_order')
 				->where('po_id' , $po_id)
@@ -1904,7 +1924,7 @@ public function purchase_order() {
 				$getmonth = Carbon::parse($tglspp)->format('m');
 				$getyear = Carbon::parse($tglspp)->format('y');
 
-				$carinota = DB::select("SELECT  substring(max(po_no),10) as id from pembelian_order
+				$carinota = DB::select("SELECT  substring(max(po_no),12) as id from pembelian_order
                                         WHERE po_cabang = '$datacomp'
                                         AND to_char(po_tglspp,'MM') = '$getmonth'
                                         AND to_char(po_tglspp,'YY') = '$getyear'");
@@ -1986,7 +2006,7 @@ public function purchase_order() {
 					 	'spptb_poid' => $po_id
 				 		]);	
 /*
-					$updatespp = spp_purchase::where('spp_id' , '=' , $request->idspp[$n]);
+					$updatespp = spp_purchasse::where('spp_id' , '=' , $request->idspp[$n]);
 					$updatespp->update([
 							'spp_status' => 'DISETUJUI',
 					]);*/
@@ -11974,7 +11994,7 @@ public function kekata($x) {
 			$data['supplier'] = DB::select("select * from supplier");
 		}
 		
-	/*	dd($data);*/
+	//	dd($data);
 		return view('purchase/formfpg/detail', compact('data'));
 	}
 
@@ -12347,27 +12367,28 @@ public function kekata($x) {
 						} // end for
 					} // $jenisbayar
 					else {
-					
-						$formfpg_bank = new formfpg_bank();
-						$lastidfpg_bank =  formfpg_bank::max('fpgb_id');;
-						if(isset($lastidfpg_bank)) {
-								$idfpg_bank = $lastidfpg_bank;
-								$idfpg_bank = (int)$idfpg_bank + 1;
-						}
-						else {
-								$idfpg_bank = 1;
-						} 
+						
+							$formfpg_bank = new formfpg_bank();
+							$lastidfpg_bank =  formfpg_bank::max('fpgb_id');;
+							if(isset($lastidfpg_bank)) {
+									$idfpg_bank = $lastidfpg_bank;
+									$idfpg_bank = (int)$idfpg_bank + 1;
+							}
+							else {
+									$idfpg_bank = 1;
+							} 
 
-						$nominalbank =  str_replace(',', '', $request->nominalbank[$j]);
+							$nominalbank =  str_replace(',', '', $request->nominalbank);
 
-						$formfpg_bank->fpgb_idfpg = $idfpg;
-						$formfpg_bank->fpgb_id = $idfpg_bank;
-						$formfpg_bank->fpgb_kodebank = $idbank;
-						$formfpg_bank->fpgb_jenisbayarbank = $request->jenisbayarbank;
-						$formfpg_bank->fpgb_nominal = $nominalbank;
-						$formfpg_bank->fpgb_cair = 'IYA';
-						$formfpg_bank->fpgb_setuju = 'SETUJU';
-						$formfpg_bank->save();
+							$formfpg_bank->fpgb_idfpg = $idfpg;
+							$formfpg_bank->fpgb_id = $idfpg_bank;
+							$formfpg_bank->fpgb_kodebank = $idbank;
+							$formfpg_bank->fpgb_jenisbayarbank = $request->jenisbayarbank;
+							$formfpg_bank->fpgb_nominal = $nominalbank;
+							$formfpg_bank->fpgb_cair = 'IYA';
+							$formfpg_bank->fpgb_setuju = 'SETUJU';
+							$formfpg_bank->save();
+						
 					}
 
 				}

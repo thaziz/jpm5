@@ -100,6 +100,7 @@ Route::get('jurnalselaras/notaspp', 'jurnal_pembelian@gantispp');
 Route::get('jurnalselaras/bankmasuk', 'jurnal_pembelian@bankmasuk');
 Route::get('jurnalselaras/kasmasuk', 'jurnal_pembelian@kasmasuk');
 Route::get('jurnalselaras/fpg_checkbank', 'jurnal_pembelian@fpg_checkbank');
+Route::get('jurnalselaras/get_no_po', 'jurnal_pembelian@get_no_po');
 
 //***PEMBELIAN
 //***PEMBELIAN
@@ -144,6 +145,7 @@ Route::get('konfirmasi_order/ajax_confirmorderdt' , 'PurchaseController@ajax_con
 Route::post('konfirmasi_order/gettotalbiaya' , 'PurchaseController@get_tb');
 Route::post('konfirmasi_order/savekonfirmasiorderdetail' , 'PurchaseController@saveconfirmorderdt');
 Route::get('konfirmasi_order/cetakkonfirmasi/{id}' , 'PurchaseController@cetakkonfirmasi');
+Route::get('konfirmasi_order/ceksupplier' , 'PurchaseController@ceksupplier');
 
 
 Route::get('purchaseorder/ajax', 'PurchaseController@createAjax');
@@ -1863,8 +1865,8 @@ Route::post('sales/update_kwitansi', 'sales\penerimaan_penjualan_Controller@upda
 Route::get('sales/kwitansi/cetak_nota/{id}', 'sales\penerimaan_penjualan_Controller@cetak_nota');
 Route::get('sales/hapus_kwitansi', 'sales\penerimaan_penjualan_Controller@hapus_kwitansi');
 
-Route::get('sales/edit_kwitansi/{id}', 'sales\penerimaan_penjualan_Controller@edit_kwitansi');
-Route::get('sales/detail_kwitansi/{id}', 'sales\penerimaan_penjualan_Controller@detail_kwitansi');
+Route::get('sales/edit_kwitansi', 'sales\penerimaan_penjualan_Controller@edit_kwitansi');
+Route::get('sales/detail_kwitansi', 'sales\penerimaan_penjualan_Controller@detail_kwitansi');
 
 Route::post('sales/save_um_kwitansi', 'sales\penerimaan_penjualan_Controller@save_um_kwitansi');
 Route::get('sales/kwitansi_cari_um', 'sales\penerimaan_penjualan_Controller@kwitansi_cari_um');
