@@ -1050,18 +1050,19 @@ class PurchaseController extends Controller
 		$datakodeitem = DB::select("select * from masteritem where kode_item = '$kodeitem'");
 		$data['kodeitem'] = $datakodeitem[0]->nama_masteritem;
 
-		$data['sppd'] = DB::select("select * from spp_detail, supplier where sppd_idspp = '$idspp' and sppd_kodeitem = '$kodeitem and sppd_supplier = idsup'");
-		$itemsupplier = DB::select("select * from itemsupplier where is_kodeitem = '$kodeitem'");
+		$data['sppd'] = DB::select("select * from spp_detail, supplier where sppd_idspp = '$idspp' and sppd_kodeitem = '$kodeitem' and sppd_supplier = idsup");
 
-		if(count($itemsupplier) > 0){
-			$data['supplier'] = $itemsupplier;
+
+		$data['itemsupplier'] = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
+
+		if(count($data['itemsupplier']) > 0){
+			$data['supplier'] = $data['itemsupplier'];
 		}
 		else {
 			$data['supplier'] = DB::select("select * from supplier");
 		}
 
 		return json_encode($data);
-
 	}
 
 	public function confirm_order_dtpemb ($id) {
@@ -1925,7 +1926,7 @@ public function purchase_order() {
 				$getyear = Carbon::parse($tglspp)->format('y');
 
 				$carinota = DB::select("SELECT  substring(max(po_no),12) as id from pembelian_order
-                                        WHERE po_cabang = '$datacomp'
+                                        WHERE po_cabangtransaksi = '$datacomp'
                                         AND to_char(po_tglspp,'MM') = '$getmonth'
                                         AND to_char(po_tglspp,'YY') = '$getyear'");
           
@@ -1934,6 +1935,7 @@ public function purchase_order() {
 	            $index = str_pad($index, 4, '0' , STR_PAD_LEFT);
 	            $nota = 'PO' .  $getmonth . $getyear . '/' . $datacomp . '/' . $index;
 
+	          
 	          DB::table('pembelian_order')
 	           ->where('po_id' , $po_id)
 	          ->update(['po_no' => $nota]);
