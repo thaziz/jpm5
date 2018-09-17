@@ -1725,6 +1725,19 @@
                     $('.nocheck').attr('readonly' , true);
                     $('.nominaltujuanbank').attr('readonly' , true);
 
+                   if(jenisbayarpindahbuku == 'BANK'){
+                      bank = $('.bank').val();
+                      kodebanks = bank.split("+");
+                      kodebank = kodebanks[4];
+                   if(kodebank == ''){
+                    toastr.info("Mohon pilih data bank terlebih dahulu :)");
+                    return false;
+                   }
+                  }
+                  else {
+                    kastujuan = $('.kastujuan').val();
+                    kodebank = kastujuan.split[0];
+                  }
                 }
                 else {
                   $('.jenisbayarbankbg').prop({ checked: false });
@@ -1738,19 +1751,11 @@
                   $('#tbl-ibank').show();
 
                   tgl = $('.tgl').val();
-                  
-                  if(jenisbayarpindahbuku == 'BANK'){
-                      bank = $('.bank').val();
-                      kodebanks = bank.split("+");
-                      kodebank = kodebanks[4];
-                   if(kodebank == ''){
-                    toastr.info("Mohon pilih data bank terlebih dahulu :)");
-                    return false;
-                   }
-                  }else {
-                    kastujuan = $('.kastujuan').val();
-                    kodebank = kastujuan.split[0];
-                  }
+                    bank = $('.bank').val();
+                    kodebanks = bank.split("+");
+                    kodebank = kodebanks[4];
+
+                 
                   
 
                   jatuhtempo = $('.jatuhtempo').val();
@@ -2838,11 +2843,10 @@
 
     })
 
-      
-  
-     //bank
-     $('.bank').change(function(){
-      val = $(this).val();
+    
+    //getcheck
+    $('.nocheck').click(function(){
+       val = $('.bank').val();
       string = val.split("+");
       namabank = string[1];
       alamat = string[2];
@@ -2854,7 +2858,9 @@
       $('.cbgbank').val(alamat);
       //$('.account').val(account);
       $('.kodebankbg').val(string[4]);
-      $.ajax({
+
+
+       $.ajax({
           type : "post",
           data : {id},
           url : baseUrl+'/formfpg/getkodeakun',
@@ -2916,6 +2922,24 @@
           }
 
      })
+    })
+
+  
+     //bank
+     $('.bank').change(function(){
+      val = $(this).val();
+      string = val.split("+");
+      namabank = string[1];
+      alamat = string[2];
+      account = string[3];
+      id = string[0];
+
+      $('.valbank').val(val);
+      $('.nmbank').val(namabank);
+      $('.cbgbank').val(alamat);
+      //$('.account').val(account);
+      $('.kodebankbg').val(string[4]);
+     
 
     })
 

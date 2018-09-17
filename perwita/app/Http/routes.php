@@ -144,6 +144,7 @@ Route::get('konfirmasi_order/ajax_confirmorderdt' , 'PurchaseController@ajax_con
 Route::post('konfirmasi_order/gettotalbiaya' , 'PurchaseController@get_tb');
 Route::post('konfirmasi_order/savekonfirmasiorderdetail' , 'PurchaseController@saveconfirmorderdt');
 Route::get('konfirmasi_order/cetakkonfirmasi/{id}' , 'PurchaseController@cetakkonfirmasi');
+Route::get('konfirmasi_order/ceksupplier' , 'PurchaseController@ceksupplier')
 
 
 Route::get('purchaseorder/ajax', 'PurchaseController@createAjax');
