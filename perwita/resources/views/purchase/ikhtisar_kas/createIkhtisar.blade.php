@@ -140,7 +140,7 @@
               <td>
                   <select class="jenis_ik form-control" name="jenis_ik ">
                     <option selected="" value="REGULER">REGULER</option>
-                    <option value="BONSEM">PENGEMBALIAN BONSEM</option>
+                    <option value="BONSEM">PEMAKAIAN BONSEM</option>
                   </select>                        
               </td>
             </tr>

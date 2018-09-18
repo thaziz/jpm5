@@ -60,7 +60,7 @@
                 <div class="box-header">
                 <div class="box-body">
 
-                    <table id="tabel_data" class="table table-bordered table-striped tabel_data" cellspacing="10">
+                    <table id="tabel_data" class="table table-bordered table-striped tabel_data" cellspacing="10" style="width: 100%">
                         <thead>
                             <tr>
                                 <th>Nomor</th>
@@ -161,7 +161,7 @@ $(document).ready(function() {
     });
 
     function ngeprint(id){
-        window.open(baseUrl+'/sales/kwitansi/cetak_nota/'+id);
+        window.open(baseUrl+'/sales/kwitansi/cetak_nota?id='+id);
     }
 
     function edit(id){
