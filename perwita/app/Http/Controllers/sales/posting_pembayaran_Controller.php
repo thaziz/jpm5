@@ -557,7 +557,7 @@ class posting_pembayaran_Controller extends Controller
                     
                 }
                 $fix_akun_piutang = array_unique($temp_akun_piutang);
-                  $fix_akun_piutang = array_values($fix_akun_piutang);
+                $fix_akun_piutang = array_values($fix_akun_piutang);
                 $fix_nominal_akun = [];
                 for ($i=0; $i < count($fix_akun_piutang); $i++) { 
                     for ($a=0; $a < count($temp_akun_piutang); $a++) { 
@@ -824,6 +824,7 @@ class posting_pembayaran_Controller extends Controller
                     
                 }
                 $fix_akun_piutang = array_unique($temp_akun_piutang);
+                $fix_akun_piutang = array_values($fix_akun_piutang);
                 $fix_nominal_akun = [];
                 for ($i=0; $i < count($fix_akun_piutang); $i++) { 
                     for ($a=0; $a < count($temp_akun_piutang); $a++) { 
