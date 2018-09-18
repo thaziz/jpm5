@@ -37,24 +37,6 @@
             </tr>
             @endforeach
           </tbody>  
-          <tbody>
-            @foreach($cari as $val)
-            <tr >
-              <td align="center"  onclick="ck(this)">
-                <input type="checkbox" name="checker[]" class="ck" onchange="ceek(this)">
-                <input type="hidden" name="id[]" class="id_table" value="{{$val->nota}}">
-              </td>
-              <td><?php echo date('d/m/Y',strtotime($val->tanggal));?></td>
-              <td>{{$val->nota}}</td>
-              <td>{{$val->akun_kas}}</td>
-              <td align="right">{{'' . number_format(round($val->nominal),2,',','.')}}
-                <input type="hidden" name="nominal[]" class="nominal" value="{{round($val->nominal)}}">
-              </td>
-              <td>{{$val->keterangan}}</td>
-              <td>{{$val->user}}</td>
-            </tr>
-            @endforeach
-          </tbody>
     </table>
   @else
     <table class="table table-bordered table-hover tabel_patty_cash">

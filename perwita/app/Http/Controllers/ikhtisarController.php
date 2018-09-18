@@ -314,7 +314,7 @@ class ikhtisarController extends Controller
 							  ->get();
 
 			}
-
+			// return $cari;
 			return view('purchase.ikhtisar_kas.table_ikhtisar',compact('cari','akun','detail','jenis','bkkd'));
 
 		}else{
