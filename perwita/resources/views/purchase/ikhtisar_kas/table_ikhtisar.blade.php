@@ -69,10 +69,9 @@
               </ul>
             </td>
             <td align="right">{{'' . number_format(round($val->bkk_nominal_bonsem),2,',','.')}}
-              <input type="hidden" name="nominal[]" class="nominal" value="{{round($val->bkk_nominal_bonsem)}}">
             </td>
             <td align="right">{{'' . number_format(round($val->bkk_total),2,',','.')}}
-
+              <input type="hidden" name="nominal[]" class="nominal" value="{{round($val->bkk_total)}}">
             </td>
             <td>{{$val->bkk_keterangan}}</td>
             <td>{{$val->created_by}}</td>

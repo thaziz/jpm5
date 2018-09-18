@@ -135,7 +135,7 @@
                 </td>
                 @endif
             </tr>
-            <tr class="disabled">
+            <tr class="">
               <td>Jenis Ikhtisar Kas</td>
               <td>
                   <select class="jenis_ik form-control" name="jenis_ik ">
