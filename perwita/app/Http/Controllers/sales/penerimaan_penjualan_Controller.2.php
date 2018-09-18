@@ -340,18 +340,18 @@ class penerimaan_penjualan_Controller extends Controller
         // return $request->customer;
 
       // dd($request->all());
-      if (Auth::user()->punyaAkses('Kwitansi','cabang')) {
-        $temp_1  = DB::table('invoice')
-                  ->where('i_kode_customer',$request->customer)
-                  ->where('i_statusprint','Printed')
-                  ->where('i_sisa_akhir','!=',0)
-                  ->select('invoice.*')
-                  // ->where('i_kode_cabang',$request->cabang)
-                  // ->where('i_pendapatan',$request->jenis_tarif)
-                  // ->orWhere('kd_nomor_invoice',$request->id)
-                  ->get();
-        // $temp_1 = array_map("unserialize",array_unique($temp_1),"serialize");
-      }else{
+      // if (Auth::user()->punyaAkses('Kwitansi','cabang')) {
+      //   $temp_1  = DB::table('invoice')
+      //             ->where('i_kode_customer',$request->customer)
+      //             ->where('i_statusprint','Printed')
+      //             ->where('i_sisa_akhir','!=',0)
+      //             ->select('invoice.*')
+      //             // ->where('i_kode_cabang',$request->cabang)
+      //             // ->where('i_pendapatan',$request->jenis_tarif)
+      //             // ->orWhere('kd_nomor_invoice',$request->id)
+      //             ->get();
+      //   // $temp_1 = array_map("unserialize",array_unique($temp_1),"serialize");
+      // }else{
         $temp_1  = DB::table('invoice')
                   // ->leftjoin('kwitansi_d','kd_nomor_invoice','=','i_nomor')
                   ->where('i_kode_customer',$request->customer)
@@ -362,7 +362,7 @@ class penerimaan_penjualan_Controller extends Controller
                   ->select('invoice.*')
                   // ->orWhere('kd_nomor_invoice',$request->id)
                   ->get();
-      }
+      // }
        
 
         if (isset($request->array_edit)) {
