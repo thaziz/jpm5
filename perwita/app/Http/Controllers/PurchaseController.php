@@ -2360,15 +2360,11 @@ public function purchase_order() {
 		/*$year =Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
 		$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; */
 
-		$year = Carbon::parse($request->tgl_dibutuhkan)->format('m');
-		$month = Carbon::parse($request->tgl_dibutuhkan)->format('y');
+		$month = Carbon::parse($request->tgl_dibutuhkan)->format('m');
+		$year = Carbon::parse($request->tgl_dibutuhkan)->format('y');
 
-		if($month < 10) {
-			$month = '0' . $month;
-		}
-
-		$year = substr($year, 2);
-
+		
+	
 	
 		$idpb2 = DB::select("select substr(MAX(pb_lpb), 16) as nota from penerimaan_barang where  to_char(pb_date, 'MM') = '$month' and to_char(pb_date, 'YY') = '$year' and pb_comp = '$cabang'");	
 		
@@ -2396,6 +2392,7 @@ public function purchase_order() {
 		}
 		//case Penerimaan Barang
 
+		
 		//idpb
 			$lastidpb =   penerimaan_barang::max('pb_id');
 			if(isset($lastidpb)) {
@@ -2411,7 +2408,8 @@ public function purchase_order() {
 			//save penerimaan_barang
 			$idpo = $request->po_id;
 			//$query = DB::select("select * from penerimaan_barang where pb_po ='$idpo'"); 	
-				
+			
+
 			$penerimaanbarang = new penerimaan_barang();
 			$penerimaanbarang->pb_id = $idpb;
 			$penerimaanbarang->pb_comp =  $cabang;
@@ -2721,11 +2719,11 @@ public function purchase_order() {
 		/*dd($request);*/
 			$mytime = Carbon::now(); 		
 			//MEMBUAT NOFORMTT	
-				$time = Carbon::now();
+			$time = Carbon::now();
 		//	$newtime = date('Y-M-d H:i:s', $time);  
 			
-			$year = Carbon::parse($request->tgl_dibutuhkan)->format('m');
-			$month = Carbon::parse($request->tgl_dibutuhkan)->format('y');
+			$month = Carbon::parse($request->tgl_dibutuhkan)->format('m');
+			$year = Carbon::parse($request->tgl_dibutuhkan)->format('y');
 
 			$idpb2 = DB::select("select substr(MAX(pb_lpb), 16) as nota from penerimaan_barang where  to_char(pb_date, 'MM') = '$month' and to_char(pb_date, 'YY') = '$year' and pb_comp = '$cabang'");	
 		
@@ -2753,12 +2751,6 @@ public function purchase_order() {
 			}
 
 
-			if($request->updatestock == 'IYA') {
-				$lpb = 'LPB' . $month . $year . '/' .  $cabang . '/S-' .  $idpb;
-			}
-			else {
-				$lpb = 'LPB' . $month . $year . '/' .  $cabang  . '/NS-' .  $idpb;	
-			}
 
 			//case Penerimaan Barang
 
@@ -3099,9 +3091,8 @@ public function purchase_order() {
 			$time = Carbon::now();
 		//	$newtime = date('Y-M-d H:i:s', $time);  
 			
-
-			$year = Carbon::parse($request->tgl_dibutuhkan)->format('m');
-			$month = Carbon::parse($request->tgl_dibutuhkan)->format('y');
+		$month = Carbon::parse($request->tgl_dibutuhkan)->format('m');
+		$year = Carbon::parse($request->tgl_dibutuhkan)->format('y');
 
 			$idpb2 = DB::select("select substr(MAX(pb_lpb), 16) as nota from penerimaan_barang where  to_char(pb_date, 'MM') = '$month' and to_char(pb_date, 'YY') = '$year' and pb_comp = '$cabang'");	
 		
@@ -3129,12 +3120,7 @@ public function purchase_order() {
 			}
 
 
-			if($request->updatestock == 'IYA') {
-				$lpb = 'LPB' . $month . $year . '/' .  $cabang . '/S-' .  $idpb;
-			}
-			else {
-				$lpb = 'LPB' . $month . $year . '/' .  $cabang  . '/NS-' .  $idpb;	
-			}
+			
 
 			//case Penerimaan Barang
 
@@ -4567,6 +4553,26 @@ public function purchase_order() {
 			$hitungpo = count($statusheaderpo);
 			$hitungpb = count($statusheaderpb);
 			
+
+			//datapembelian_orderdt
+			for($k = 0; $k < count($statusheaderpb); $k++){
+				$kodeitempb = $statusheaderpb[$k]->pbdt_item;
+				$qty = $statusheaderpb[$k]->pbdt_qty;
+				$idpo = $statusheaderpb[$k]->pbdt_po;
+
+				$datapo = DB::select("select * from pembelian_orderdt where podt_idpo = '$idpo' and podt_kodeitem = '$kodeitempb'");
+				$sisa = $datapo[0]->podt_sisaterima;
+
+				$hasilpo = (integer)$sisa + (integer)$qty; 
+
+				DB::table('pembelian_orderdt')
+				->where('podt_idpo' , $idpo)
+				->where('podt_kodeitem' , $kodeitempb)
+				->update([
+					'podt_sisaterima' => $hasilpo,
+				]);
+			}
+
 			//ambil status di detail
 			$statusbrg = array();
 			for($indx = 0 ; $indx < $hitungpb; $indx++){
@@ -4628,6 +4634,8 @@ public function purchase_order() {
 			}
 
 			DB::delete("DELETE from  stock_mutation where sm_po = '$id' and sm_flag = 'PO' and sm_mutcat = '1'");
+
+
 		
 		} // end flag PO
 		else if($flag == 'FP'){
