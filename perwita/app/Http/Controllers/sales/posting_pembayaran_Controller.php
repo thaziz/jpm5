@@ -265,7 +265,7 @@ class posting_pembayaran_Controller extends Controller
           $kwitansi_edit = DB::table('kwitansi')
                             ->whereIn('k_nomor',$request->nomor)
                             ->get();
-                            
+
           $temp = array_merge($temp,$kwitansi_edit);
           $temp1 = array_merge($temp1,$kwitansi_edit);
           $temp = array_values($temp);
@@ -290,12 +290,21 @@ class posting_pembayaran_Controller extends Controller
           }
 
         }else{
-          $kwitansi = DB::table('kwitansi')
-                    ->select('k_nomor','k_tanggal','k_netto')
-                    ->where('k_kode_cabang',$request->cabang)
-                    ->where('k_nomor_posting','=',null)
-                    ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
-                    ->get();
+          if (Auth::user()->punyaAkses('Posting Pembayaran','cabang')) {
+            $kwitansi = DB::table('kwitansi')
+                      ->select('k_nomor','k_tanggal','k_netto')
+                      ->where('k_nomor_posting','=',null)
+                      ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
+                      ->get();
+          }else{
+            $kwitansi = DB::table('kwitansi')
+                      ->select('k_nomor','k_tanggal','k_netto')
+                      ->where('k_kode_cabang',$request->cabang)
+                      ->where('k_nomor_posting','=',null)
+                      ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
+                      ->get();
+          }
+            
 
           $do = DB::table('delivery_order')
                     ->select('nomor as k_nomor','tanggal as k_tanggal','total_net as k_netto')

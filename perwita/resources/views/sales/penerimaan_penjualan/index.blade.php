@@ -60,7 +60,7 @@
                 <div class="box-header">
                 <div class="box-body">
 
-                    <table id="tabel_data" class="table table-bordered table-striped tabel_data" cellspacing="10">
+                    <table id="tabel_data" class="table table-bordered table-striped tabel_data" cellspacing="10" style="width: 100%">
                         <thead>
                             <tr>
                                 <th>Nomor</th>
