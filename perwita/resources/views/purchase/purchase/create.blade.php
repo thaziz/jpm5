@@ -601,7 +601,7 @@
                       for(var k = 0; k < response.gudang.length; k++){
                           if(response.gudang[k].mg_cabang == response.spp[0][0].spp_lokasigudang){
                               $('.gudang').val(response.gudang[k].mg_id );
-                              console.log('gudang');                        
+                                              
                           }
                       }
                     }

@@ -415,7 +415,7 @@
                               </select>
 
                               </td>
-                              <td> <input type="text" class="form-control tablebarang hrg harga{{$index}} tablebarang" value=" {{number_format($item->is_harga, 2)}}"  name="harga[]"> </td>
+                              <td> <input type="text" class="form-control tablebarang hrg harga{{$index}} tablebarang" value="{{$item->is_harga}}"  name="harga[]"> </td>
 
                               <td class="disabled"> <select class="form-control updatestock updatestock{{$index}} tablebarang" name="updatestock[]" readonly=""> 
                                   @if($item->is_updatestock == 'Y')

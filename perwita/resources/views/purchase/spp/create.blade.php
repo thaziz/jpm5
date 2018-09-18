@@ -689,6 +689,9 @@
                     $('.gudang').trigger("chosen:updated");
                      $('.gudang').trigger("liszt:updated");
                   })
+          },
+          error : function(){
+            location.reload();
           }
         })
 
@@ -1042,7 +1045,7 @@
                             "<td> <input type='hidden' class='form-control' readonly value='"+hasilrow+"' name='row'> </td>  </tr>";
              $('#tbl_total_sup').append(rowhslSupp);
           }
-            $('.cek_tb').attr('disabled' , true);
+            //$('.cek_tb').attr('disabled' , true);
            $('.simpan').attr('disabled', false);
          }
          
@@ -1774,6 +1777,7 @@
         var index = arrnobrg.indexOf(id);
         arrnobrg.splice(index, 1);
        parent2.remove();
+       //$('.cek_tb').attr('disabled' , true);
     })
 
    var $sup = 0;
@@ -1789,6 +1793,7 @@
         index = valsup.indexOf(idsup);
         valsup.splice(index, 1);*/
         parent.remove();
+        $('.cek_tb').attr('disabled' , false);
   })
   
 

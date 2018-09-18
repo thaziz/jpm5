@@ -316,60 +316,47 @@
                       <th> Satuan </th>
                       <th> Harga </th>
                       <th> Supplier </th>
+                      <th> Aksi </th>
                   </tr>
                 </thead>
                 <tbody>
                     @foreach($data['sppdt_barang'] as $index=>$sppdtbarang)
                     <tr>
                       <td rowspan="3"> {{$sppdtbarang->sppd_kodeitem}} </td>
-                      <td rowspan="3"> {{$sppdtbarang->sppd_qtyrequest}} </td>
+                      <td rowspan="3"> {{$sppdtbarang->sppd_qtyrequest}} <input type="hidden" class="qtyreq qtyreq{{$index}}" value="{{$sppdtbarang->sppd_qtyrequest}}" data-id="{{$index}}"> </td>
                       <td rowspan="3"> </td>                     
-                      <td class='harga0 hargacek{{$index}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">
-                        
+                      <td>                       
                         <input type='text' class="form-control hargacek0 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0'> 0 {{$sppdtbarang->sppd_kodeitem}}
+                      </td> <!-- Kodeitem -->
 
-                      </td>
+                      <td>
+                        <select class="chosen-select-width form-control suppliercek0 suppliercek suppliercekbarang{{$index}}" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0'>  <option value="" > </option>  </select>  </td> <!-- Harga -->
+                      
 
-                      <td class='supplier0 supplier{{$sppdtbarang->sppd_kodeitem}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">  </td>
-                      
-                      <tr>
-                        <td class='harga1 hargacek{{$index}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}"> <input type='text' class="form-control hargacek1 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1'> 1  {{$sppdtbarang->sppd_kodeitem}} {{$index}}</td>
-                      
-                        <td class='supplier1 supplier{{$sppdtbarang->sppd_kodeitem}}'>  Supplier B </td>
+                      <tr class="datacek1 datacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">
+                        <td>
+                          <!--Kodeitem  -->
+                          <input type='text' class="form-control hargacek1 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1'> </td>
+                        <!-- Supplier -->
+                        <td class='supplier1'> <select class="chosen-select-width form-control suppliercek1 suppliercekbarang{{$index}} suppliercek" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1'> <option value=""> </option> </select> 1 {{$sppdtbarang->sppd_kodeitem}}  </td>
+
+                        <td> <button class="btn btn-md btn-danger removecek removecek1 removecekbarang{{$index}}" type="button" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id="{{1}}"> <i class="fa fa-trash"> </i> </button> </td>
 
                       </tr>
-                      <tr>
-                        <td class='harga2 hargacek{{$index}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">                         <input type='text' class="form-control hargacek2 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2'> 2  {{$sppdtbarang->sppd_kodeitem}} </td>
-                        
-                        <td class='supplier1 supplier{{$sppdtbarang->sppd_kodeitem}}'> Supplier C </td>
+                      <tr class="datacek2 datacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">
+                        <td>
+                          <!-- Kodeitem -->
+                          <input type='text' class="form-control hargacek2 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2'>  </td>
+                        <!-- Harga -->
+                        <td class='supplier1'> <select class="chosen-select-width form-control suppliercek suppliercek2 suppliercekbarang{{$index}}" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2'> <option value="">  </option> </select> 2 {{$sppdtbarang->sppd_kodeitem}} </td>
+
+                        <td> <button class="btn btn-md btn-danger removecek removecek2 removecekbarang{{$index}}" type="button" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id="2"> <i class="fa fa-trash"> </i> </button> </td>
                       </tr>
                     @endforeach
                 </tbody>
                 </table>
 
-                {{-- <table class="table table-bordered">
-                  <thead>
-                  <tr>
-                    
-                      <th> Barang </th>
-                      <th> Qty </th>
-                      <th> Satuan </th>
-                      <th> Harga </th>
-                      <th> Supplier </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach($data['sppdt'] as $index=>$sppdt)
-                    <tr>
-                      <td>  {{$sppdt->sppd_kodeitem}} </td>
-                      <td> {{$sppdt->sppd_qtyrequest}}</td>
-                      <td> </td>
-                      <td colspan="2" style="text-align: center"> <a class="btn btn-xs btn-info" type="button" onclick="ceksupplier('{{$sppdt->sppd_kodeitem}}')" data-toggle="modal" data-target="#modalsupplier"> <i class="fa fa-info"> </i> Lihat Data </a> </td>
-                     
-                    </tr>
-                  @endforeach
-                </tbody>
-              </table> --}}
+                <button class="btn btn-md" type="button" id="cektb"> Cek Total Biaya </button>
                  
                 </div><!-- /.box-body -->
                 @endif
@@ -432,7 +419,7 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-    clearInterval(reset);
+  clearInterval(reset);
   var reset =setInterval(function(){
      $(document).ready(function(){
       var config = {
@@ -448,7 +435,73 @@
              }
     })
    }, 2000)
-  
+    
+
+  $('.removecek').click(function(){
+    id = $(this).data('id');
+    kodeitem = $(this).data('kodeitem');
+    $('tr.datacek' + id + '[data-kodeitem = '+kodeitem+']').remove();
+  })
+
+   function removeDuplicates(inputArray) {
+            var i;
+            var len = inputArray.length;
+            var outputArray = [];
+            var temp = {};
+
+            for (i = 0; i < len; i++) {
+                temp[inputArray[i]] = 0;
+            }
+            for (i in temp) {
+                outputArray.push(i);
+            }
+            return outputArray;
+     }
+
+  $('#cektb').click(function(){
+
+      arrjumlahtotal = [];
+
+      $('.qtyreq').each(function(){
+        qty = $(this).val();
+        idqty = $(this).data('id');
+        $('.hargacekbarang' + idqty).each(function(){
+          harga2 = $(this).val();
+          idharga = $(this).data('id');
+          supplier = $('.suppliercek' + idharga).val();
+          if(harga2 == ''){
+            toastr.info("Harga ada yang kosong mohon dilengkapi :)");
+            return false
+          }
+          else {            
+            harga = harga2.replace(/,/g, '');
+            totalharga = (parseFloat(qty) * parseFloat(harga)).toFixed(2);          
+            arrjumlahtotal.push({
+              totalharga : totalharga,
+              supplier :supplier
+            });
+          }
+        })
+      })
+
+      arrsupplier = [];
+      $('.suppliercek').each(function(){
+        val = $(this).val();
+        if(val == ''){
+          toastr.info("Data Supplier ada yang kosong, mohon diisi :)");
+          return false;
+        }
+        arrsupplier.push(val);
+      })
+
+
+      hslsupplier = removeDuplicates(arrsupplier);
+   
+      arrhsljumlah = [];
+     
+
+  });
+
   idspp = $('.idspp').val();
   $.ajax({
     url : baseUrl + '/konfirmasi_order/ceksupplier',
@@ -463,19 +516,76 @@
         $temp = 0;
         for($j = 0; $j < response.sppd.length; $j++){
           kodeitem = $('.hargacekbarang' + $i).data('kodeitem');
+    
+
           if(response.sppd[$j].sppd_kodeitem == kodeitem){
              if($temp == 1){
                 $key = 0;
-             }
-              $('.hargacek' + $key + '[data-kodeitem = '+kodeitem+']').val(response.sppd[$j].sppd_harga);      
+             }              
+
+                    
+              $('.hargacek' + $key + '[data-kodeitem = '+kodeitem+']').val(response.sppd[$j].sppd_harga);
+               if(response.temp[$i] == '0'){
+                  for($z = 0; $z < response.itemsupplier2.length; $z++){
+                    $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').append("<option value="+response.itemsupplier2[$z].is_idsup+">" + response.itemsupplier2[$z].no_supplier+" - "+response.itemsupplier2[$z].nama_supplier+"</option>");
+                  
+                  }
+               }
+
+               else if(response.temp[$i] == '1'){
+                 
+                  for($z = 0; $z < response.supplier.length; $z++){
+                    $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').append("<option value="+response.supplier[$z].idsup+">" +response.supplier[$z].no_supplier+" - "+response.supplier[$z].nama_supplier+"</option>");
+                    
+                  }
+               }  
+                
+                console.log(response.sppd[$j].sppd_supplier);
+                 $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').val(response.sppd[$j].sppd_supplier);
+                $('.suppliercek' + $key).trigger("chosen:updated");
+                $('.suppliercek' + $key).trigger("liszt:updated");
+
+             
               $temp = 0;
           }
           else {
+              
+
              $temp = 1;
           }
           $key++;
         }        
       }
+
+      for($k = 0; $k < response.temp.length; $k++){
+          kodeitem = $('.hargacekbarang' + $k).data('kodeitem');
+        $('.suppliercekbarang' + $k).each(function(){
+          val = $(this).val();
+          if(val == ''){
+            
+             if(response.temp[$k] == '0'){                
+                  for($z = 0; $z < response.itemsupplier2.length; $z++){
+                    $(this).append("<option value="+response.itemsupplier2[$z].is_idsup+">" +response.itemsupplier2[$z].no_supplier+" - "+response.itemsupplier2[$z].nama_supplier+"</option>");
+                  
+                  }
+                $(this).trigger("chosen:updated");
+                $(this).trigger("liszt:updated");
+               }
+               else if(response.temp[$k] == '1'){
+             
+                  for($z = 0; $z < response.supplier.length; $z++){                 
+                    $(this).append("<option value="+response.supplier[$z].idsup+">" +response.supplier[$z].no_supplier+" - "+response.supplier[$z].nama_supplier+"</option>");
+                  }
+
+                 $(this).trigger("chosen:updated");
+                $(this).trigger("liszt:updated");
+               }
+              
+          }
+        })
+      }
+
+
     },
     error : function(){
       location.reload();
@@ -483,58 +593,21 @@
   })
 
 
-  function ceksupplier(ref){
-    $('.kodeitemsupplier').val(ref);
-    kodeitem = ref;
-    idspp = $('.idspp').val();
-     $.ajax({
-      url : baseUrl + '/konfirmasi_order/ceksupplier',
-      type : 'get',
-      data : {kodeitem, idspp},
+  $('.suppliercek').change(function(){
+    id = $(this).data('id');
+    kodeitem = $(this).data('kodeitem');
+    supplier = $(this).val();
+    $.ajax({
+      url : baseUrl + '/konfirmasi_order/cekharga',
+      type : "get",
       dataType : 'json',
+      data : {kodeitem,supplier},
       success : function(response){
-        $('.kodeitemsupplier').text(response.kodeitem);
+          $('.hargacek' + id + '[data-kodeitem = '+kodeitem+']').val(response.harga);
+      }
+    })
 
-         $('#table-supplier tr.trceksupplier').remove();
-        $key = 1;
-    
-        for($i = 0; $i < response.sppd.length; $i++){
-           var  html = "<tr class='trceksupplier'>" +
-                    "<td>"+$key+"</td>" +
-                    "<td> <select class='form-control chosen-select-width suppliercek suppliercek"+$i+"' style='min-width:100px' data-id="+$i+">";
-                      if(response.itemsupplier.length == 0){
-                        for($j = 0 ; $j < response.supplier.length; $j++){
-                          html += "<option value='"+response.supplier[$j].idsup+"'>"+response.supplier[$j].no_supplier + " - " + response.supplier[$j].nama_supplier+"</option>";
-                        }    
-
-                        html += "</select> <input type='hidden' class='tipesupplier"+$i+"' value='TIDAK'>";
-                      }
-                      else {
-                         for($j = 0 ; $j < response.supplier.length; $j++){
-                          html += "<option value='"+response.supplier[$j].is_idsup+"'>"+response.supplier[$j].no_supplier + " - " + response.supplier[$j].nama_supplier+"</option>";
-                          }
-
-                          htm += "</select> <input type='hidden' class='tipesupplier' value='IYA'>";  
-                      }
-                    html += "</td> <td> <input type='text' class='form-control' value="+ addCommas(response.sppd[$i].sppd_harga) +" name='hargasupplier[]' data-id="+$i+">   </td>";          
-            $('#table-supplier').append(html);
-          
-            $('.suppliercek' + $i).val(response.sppd[$i].sppd_supplier);
-          
-            $('.suppliercek' + $i).trigger("chosen:updated");
-            $('.suppliercek' + $i).trigger("liszt:updated");
-           $key++; 
-          }
-
-          $('.suppliercek').change(function(){
-            id = $(this).data('id');
-            tipesupplier = $('.tipesupplier' + id).val();
-          });
-
-        } 
-      })
-    }
-  
+  })
 
 
   $('.kettolak').attr('readonly' , true);
@@ -633,222 +706,6 @@
         }
     })
 
-      function cek_tb(index){ 
-
-        var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';
-        var idspp = $('.idspp').val();
-        var pemroses = $('.pemroses').val();
-
-        $temp = 0;
-            $('.checkboxhrg').each(function(){
-              if ($(this).is(":checked")) {
-                $temp = $temp + 1;
-              }
-            })
-        
-
-       if($temp == 0){
-        if($('input.tolak'+id).is(':checked')){
-         // alert('test');
-        }
-        else {
-          toastr.info("Harap centang supplier yang dipilih");
-          return false;
-        }
-       }
-
-        $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-    
-      
-         
-        $.ajax({    
-          type :"GET",
-          data : {idspp,pemroses},
-          url : url,
-          dataType:'json',
-          success : function(data){
-
-          $('.simpan').attr('disabled', false);
-          var harga = [];
-          var arrtotal = [];
-          var nmsupplier = [];
-          var newArray = [];
-
-
-          for(var i = 0; i < data.sppdt.length; i++){   
-              testharga = $('#hrga' + i).val();
-              if(testharga == undefined){
-
-              } 
-              else {
-              var isDisabled = $('#hrga' + i).prop('disabled');
-
-                if(isDisabled) {
-                  
-                  var harga = $('#hrga' + i).val();
-                  var idbrg = $('#hrga' + i).data('brg');              
-                }
-                else {
-
-                  var harga = $('#hrga'+i).val();
-
-                  var idbarang = $('#hrga'+i).data('brg');
-
-                  var idsupplier = $('#hrga'+i).data('hrgsupplier');
-
-                  var qty = $('.qtyapproval'+idbarang).val();
-
-                  var qty2 = $('.qtyapproval'+idbarang).index();
-                 
-                  harga2 = harga.replace(/,/g,'');
-                  totalharga = parseFloat(harga2 * qty);
-                  
-                  console.log('qty' + qty);
-                  console.log(harga + 'harga');
-
-                  arrtotal.push("totalharga :" +  totalharga + "," +  "idsupplier :" + idsupplier);
-
-                   newArray.push({
-                    totalharga : totalharga ,
-                    idsupplier :  idsupplier});
-                }
-              }
-            }
-      
-            console.log(arrtotal);
-            console.log(newArray + 'newArray');
-
-
-
-            var hrgtotal = [];
-            for (var j=0;j<arrtotal.length;j++){
-                 var pecahstring  = arrtotal[j].split(",");
-                 var supplier = pecahstring[1];
-                 var harga = pecahstring[0];
-                 nmsupplier.push(supplier);
-                 hrgtotal.push(harga);
-              }
-
-              var datasupplier = [];
-              for(var k=0; k < 2; k++){
-                var data_supplier= $('.supplier' + k).data('supplier');
-                  datasupplier.push(data_supplier);
-                  console.log(data_supplier);
-              }
-
-
-              var harga = 0;
-              var g = 0;
-              var h = 1;
-              var totalharga = [];
-              var tothar = [];
-
-            
-
-              var result = [];
-              newArray.reduce(function (res, value) {
-                  if (!res[value.idsupplier]) {
-                      res[value.idsupplier] = {
-                          totalharga: 0,
-                          id: value.idsupplier
-                      };
-                      result.push(res[value.idsupplier])
-                  }
-                  res[value.idsupplier].totalharga += value.totalharga
-                  return res;
-              },{});
-
-    
-                 
-            //CEK SEMUA DATA SUPPLIER
-                var lengthsup = $('.supid').length;
-              
-                var arrkosong = [];
-                     //PERULANGAN RESULT
-                 var lengthsup = $('.supid').length;
-                 for(var p = 0; p < result.length; p++){
-                console.log('hmm');
-                console.log('hmm');
-                 for(var z =0; z < lengthsup; z++){
-                   var datasup = $('.supplier' + z).data('supplier');
-                   console.log('yek');
-                   console.log(datasup + 'datasup');
-                   console.log(result[p].id + 'result');
-                    if(result[p].id != datasup ){
-                      
-                       var supplier1 = $('td[data-supplier="'+ datasup + '"]').index() + 1;
-                       biaya2 = 0;
-                       $('tr.totalbiaya').find("td").eq(supplier1).html(addCommas(biaya2))
-                    }
-                  }
-                }
-
-
-
-                for(var j = 0; j < result.length; j++){
-
-                 //PERULANGAN RESULT
-               /*  for(var z =0; z < lengthsup; z++){
-                   var datasup = $('.supplier' + z).data('supplier');
-                    if(result[j].id != datasup ){
-                      console.log('yesy');
-                       var supplier1 = $('td[data-supplier="'+ datasup + '"]').index() + 1;
-                       biaya2 = 0;
-                       $('tr.totalbiaya').find("td").eq(supplier1).html(addCommas(biaya2))
-                    }
-                  }*/
-
-                  for(var k = 0; k < lengthsup; k++){
-                      var datasup = $('.supplier' + k).data('supplier');
-                                      
-                      if(result[j].id == datasup) {
-                        var supplier3 = $('td[data-supplier="'+ datasup + '"]').index() + 1;
-                          var biaya = Math.round(result[j].totalharga).toFixed(2);
-                          var tb = '<div class="form-group"> <label class="col-sm-2 col-sm-2 control-label"> Rp </label> <div class="col-sm-8"> <input type="text" class="input-sm form-control totalbiaya" name="bayar[]" value="'+addCommas(biaya)+'" readonly="" > <input type="hidden" name="tb[]" value="'+result[j].id+ "," + result[j].totalharga +'">  <input type="hidden" name="datasupplier[]" value="'+datasup+'"> </div>  </div>';
-                      
-                          $('tr.totalbiaya').find("td").eq(supplier3).html(tb);
-                      }
-                  } 
-
-
-                }
-            
-
-                      var counthrg = $('.hrg').length;
-                      var countqty = $('.qty').length;
-                       //supplier
-                      var countsup = $('.sup').length;
-                   //     console.log(countsup);
-
-                   for(var k=0; k <  countqty; k++) {
-                     $('.qtyapproval' + k).change(function(){
-                          
-
-
-                          $('.simpan').prop("disabled" , true);
-                        })
-                  }
-                      for(var n=0; n <  counthrg; n++) {
-                         $('.harga' + n).change(function(){
-                               
-                              $('.simpan').prop("disabled" , true);
-                            })
-                      }
-
-                },
-                error : function(){
-                  location.reload();
-                }
-
-
-
-        })
-     }
 
     $(function(){
       var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';

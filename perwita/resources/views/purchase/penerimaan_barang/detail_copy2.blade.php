@@ -337,7 +337,7 @@
       this.setCustomValidity("");
     })
 
-
+    
      function addCommas(nStr) {
             nStr += '';
             x = nStr.split('.');
