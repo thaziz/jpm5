@@ -1863,7 +1863,7 @@ Route::get('sales/update_kwitansi', 'sales\penerimaan_penjualan_Controller@updat
 Route::post('sales/simpan_kwitansi', 'sales\penerimaan_penjualan_Controller@simpan_kwitansi');
 Route::post('sales/update_kwitansi', 'sales\penerimaan_penjualan_Controller@update_kwitansi');
 
-Route::get('sales/kwitansi/cetak_nota/{id}', 'sales\penerimaan_penjualan_Controller@cetak_nota');
+Route::get('sales/kwitansi/cetak_nota', 'sales\penerimaan_penjualan_Controller@cetak_nota');
 Route::get('sales/hapus_kwitansi', 'sales\penerimaan_penjualan_Controller@hapus_kwitansi');
 
 Route::get('sales/edit_kwitansi', 'sales\penerimaan_penjualan_Controller@edit_kwitansi');

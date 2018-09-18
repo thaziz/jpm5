@@ -19,16 +19,16 @@ class penerimaan_penjualan_Controller extends Controller
 
 
 
-    public function cetak_nota($nomor) {
+    public function cetak_nota(request $req) {
         $head = DB::table('kwitansi')
                   ->join('customer','kode','=','k_kode_customer')
-                  ->where('k_nomor',$nomor)
+                  ->where('k_nomor',$req->id)
                   ->first();
 
         $detail = DB::table('kwitansi')
                     ->join('kwitansi_d','kd_id','=','k_id')
                     ->join('invoice','kd_nomor_invoice','=','i_nomor')
-                     ->where('k_nomor',$nomor)
+                     ->where('k_nomor',$req->id)
                     ->get();
         $counting = count($detail );
         if ($counting < 12) {

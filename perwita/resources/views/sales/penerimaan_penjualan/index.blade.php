@@ -161,7 +161,7 @@ $(document).ready(function() {
     });
 
     function ngeprint(id){
-        window.open(baseUrl+'/sales/kwitansi/cetak_nota/'+id);
+        window.open(baseUrl+'/sales/kwitansi/cetak_nota?id='+id);
     }
 
     function edit(id){
