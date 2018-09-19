@@ -3940,6 +3940,7 @@
     
 
       if(qty != '') {
+        val = val.replace(/,/g, '');
         amount = parseInt(qty) * parseInt(val);
         num_amount = parseFloat(amount).toFixed(2);
       

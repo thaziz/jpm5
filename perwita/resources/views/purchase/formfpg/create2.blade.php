@@ -1148,7 +1148,14 @@
 
                                           totalgiro = (parseFloat(totalgiro) + parseFloat(aslinominal)).toFixed(2);
                                       })
-                                      $('.ChequeBg').val(addCommas(totalgiro));
+
+                                      if(jenisbayar == '5'){
+                                        $('.ChequeBg').val(addCommas(totalgiro));
+                                        $('.totbayar').val(addCommas(totalgiro));
+                                      }
+                                      else {
+                                         $('.ChequeBg').val(addCommas(totalgiro));
+                                      }
                                      
                               })
                        

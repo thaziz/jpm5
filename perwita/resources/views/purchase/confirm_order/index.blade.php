@@ -96,7 +96,7 @@
                           @if($co->staff_pemb == 'DISETUJUI')
                                  <a class="label label-info" href="{{url('konfirmasi_order/konfirmasi_orderdetailpemb/'. $co->co_idspp.'')}}"> {{$co->staff_pemb}} </a>   
                           @else
-                               <a class="label label-warning" href="{{url('konfirmasi_order/konfirmasi_orderdetailpemb/'. $co->co_idspp.'')}}"> <i class="fa fa-close"> </i> BELUM DI PROSES </a> &nbsp; &nbsp;
+                               <a class="label label-warning" href="{{url('konfirmasi_order/konfirmasi_orderdetailpemb/'. $co->co_idspp.'')}}"> <i class="fa fa-close"> </i> {{$co->staff_pemb}} </a> &nbsp; &nbsp;
                           @endif
                         @endif  
                         </td>
@@ -106,7 +106,7 @@
                           @if($co->man_keu == 'DISETUJUI')
                              <a class="label label-info"  href="{{url('konfirmasi_order/konfirmasi_orderdetailkeu/'. $co->co_idspp.'')}}"> {{$co->man_keu}} </a>       
                           @else
-                             <a class="label label-warning"  href="{{url('konfirmasi_order/konfirmasi_orderdetailkeu/'. $co->co_idspp.'')}}"> <i class="fa fa-close"></i> BELUM DI PROSES </a> &nbsp; &nbsp; 
+                             <a class="label label-warning"  href="{{url('konfirmasi_order/konfirmasi_orderdetailkeu/'. $co->co_idspp.'')}}"> <i class="fa fa-close"></i> {{$co->man_keu}} </a> &nbsp; &nbsp; 
                           @endif
                         @endif  
                         </td>

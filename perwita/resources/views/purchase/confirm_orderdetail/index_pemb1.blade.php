@@ -46,7 +46,16 @@
     .chosen-drop {
       color : black;
     }
-  
+      .disabled {
+      pointer-events: none;
+      opacity: 1;
+    }
+
+    .colorblack{
+      background-color: grey;
+    }
+
+
 
   </style>
 
@@ -93,7 +102,7 @@
                     
                     </div>
                 </div>
-                  <form method="post" action="{{url('konfirmasi_order/savekonfirmasiorderdetail')}}"  enctype="multipart/form-data" class="form-horizontal">
+                  <form method="post" action="{{url('konfirmasi_order/savekonfirmasiorderdetail')}}"  enctype="multipart/form-data" class="form-horizontal" id="formsave">
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
@@ -172,25 +181,6 @@
                                       </option>
                                    </select>
 
-                            {{--  @if(Auth::user()->punyaAkses('Konfirmasi Order Keu','aktif'))
-                                   <select class="form-control pemroses" name="pemroses">
-                                      <option value="KEUANGAN" selected="">
-                                          PIHAK KEUANGAN
-                                      </option>
-                                      <option value="PEMBELIAN">
-                                         PIHAK PEMBELIAN
-                                      </option>
-                                   </select>
-                                  @elseif(Auth::user()->punyaAkses('Konfirmasi Order','aktif'))
-                                     <select class="form-control pemroses" name="pemroses">
-                                          <option value="KEUANGAN">
-                                              PIHAK KEUANGAN
-                                          </option>
-                                          <option value="PEMBELIAN" selected="">
-                                              PIHAK PEMBELIAN
-                                          </option>
-                                       </select>
-                                  @endif --}}
                             </td>
                           </tr>
 
@@ -215,19 +205,35 @@
                                       @if($spp->staff_pemb == 'DISETUJUI')
                                          <div style='text-align: center'>  <p class="label label-info" > {{$spp->staff_pemb}} </p> </div>
                                       @else
-                                        <div style='text-align: center'>  <p class="label label-danger" > BELUM DI PROSES </p> </div>
+                                        <div style='text-align: center'>  <p class="label label-danger" > {{$spp->staff_pemb}} </p> </div>
                                       @endif
                                   </th>
                                   <th>
                                     @if($spp->man_keu == 'DISETUJUI')
                                        <div style='text-align: center'>  <p class="label label-info" > {{$spp->man_keu}} </p> </div>
                                     @else
-                                      <div style='text-align: center'> <p class="label label-danger" style='text-align: center'> BELUM DI PROSES </p> </div>
+                                      <div style='text-align: center'> <p class="label label-danger" style='text-align: center'>{{$spp->man_keu}} </p> </div>
                                     @endif
                                   </th>
                               </tr>
                             </table>
+
+                             @if($data['countcodt'] == 0 && $data['spp'][0]->staff_pemb == 'DITOLAK')
+                            <h3> PEMBAYARAN </h3>
+                            
+                            <table class="table" id="tbl-pembayaran">
+                              <thead>
+                              <tr>
+                                  <th style='text-align: center'> Nama Supplier </th> <th style="text-align: center"> Total Biaya </th> <th style="text-align: center"> Syarat Kredit </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                            </table>
+                              @endif
                          </div>
+
+
                          </div>
                     @endforeach
                     </div>
@@ -268,7 +274,7 @@
                       </tr>
 
 
-                      @foreach($data['codt'] as $idbarang=>$codt)
+                      @foreach($data['codt_barang'] as $idbarang=>$codt)
                       <tr class="brg{{$idbarang}}" data-id="{{$idbarang}}" id="brg" data-kodeitem="{{$codt->codtk_kodeitem}}" >
                         <td> {{$idbarang + 1}} </td>
                         <td> {{$codt->nama_masteritem}} </td>
@@ -303,62 +309,127 @@
                      
 
                      </table>
-                  @else 
-
+                @else 
+                @if($data['spp'][0]->staff_pemb != 'DITOLAK')
                 <div class="box-body">
-                
+                <div class="table-responsive">
                 <table class="table table-striped">
                   <thead>
                   <tr>
                       
                       <th> Barang </th>
-                      <th> Qty </th>
+                      <th> Qty Request </th>
+                      <th> Qty Approval </th>
                       <th> Satuan </th>
-                      <th> Harga </th>
+                      <th> Ditolak </th>
+                      <th> Keterangan Tolak </th>
+                      <th style='min-width: 10px'> Harga </th>
                       <th> Supplier </th>
                       <th> Aksi </th>
+                      
                   </tr>
                 </thead>
                 <tbody>
                     @foreach($data['sppdt_barang'] as $index=>$sppdtbarang)
-                    <tr>
-                      <td rowspan="3"> {{$sppdtbarang->sppd_kodeitem}} </td>
-                      <td rowspan="3"> {{$sppdtbarang->sppd_qtyrequest}} <input type="hidden" class="qtyreq qtyreq{{$index}}" value="{{$sppdtbarang->sppd_qtyrequest}}" data-id="{{$index}}"> </td>
-                      <td rowspan="3"> </td>                     
+                    <tr class="databarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">
+                      <td rowspan="3"> {{$sppdtbarang->nama_masteritem}} </td>
+                      <td rowspan="3"> {{$sppdtbarang->sppd_qtyrequest}}  </td>
+                      <td rowspan="3">  <input type="text" class="form-control input-sm qtyreq qtyreq{{$index}}" value="{{$sppdtbarang->sppd_qtyrequest}}" data-id="{{$index}}" style="width: 90px" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}"> </td>
+                      
+
+                      <td rowspan="3"> {{$sppdtbarang->unitstock}} </td>
+                       <td rowspan="3"> <div class="checkbox">
+                                          <input type="checkbox"  class="checktolak" value="option1" aria-label="Single checkbox One" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id="{{$index}}">
+                                          <label></label>
+                                        </td>
+                      <td rowspan="3"> <input type="text" class="form-control keterangantolak keterangantolak{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id="{{$index}}" readonly=""> </td>
+
+
                       <td>                       
-                        <input type='text' class="form-control hargacek0 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0'> 0 {{$sppdtbarang->sppd_kodeitem}}
+                        <input type='text' class="form-control hargacek0 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0' style="min-width:30px" name="hargacek[]"> 
+
+                        <input type='hidden' class="form-control hargamanual0 hargacekmanual{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0'>
+                        
+                        <input type='hidden' class="barang{{$index}}" name="barang[]" value="{{$sppdtbarang->sppd_kodeitem}}">
+
+                        <input type="hidden" class="form-control status{{$index}}" value="SETUJU" name="status[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id="{{$index}}">
+
+                        <input type="hidden" class="form-control keterangancektolak{{$index}}" name="keterangantolak[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id="{{$index}}" readonly="">
+                                  
                       </td> <!-- Kodeitem -->
 
                       <td>
-                        <select class="chosen-select-width form-control suppliercek0 suppliercek suppliercekbarang{{$index}}" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0'>  <option value="" > </option>  </select>  </td> <!-- Harga -->
+                        <select class="chosen-select-width form-control suppliercek0 suppliercek suppliercekbarang{{$index}}" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0'>  <option value="" > </option>  </select>
+
+                          <input type='hidden' class="form-control suppliermanual0 suppliercekmanual{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0'>
+
+                          <input type="hidden" value="{{$sppdtbarang->sppd_qtyrequest}}" name="qtyrequest[]">
+
+                          <input type='hidden' class='qtybarang{{$index}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" name='qtyapproval[]' value="{{$sppdtbarang->sppd_qtyrequest}}">
+                      </td> <!-- Harga -->
                       
 
                       <tr class="datacek1 datacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">
                         <td>
                           <!--Kodeitem  -->
-                          <input type='text' class="form-control hargacek1 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1'> </td>
-                        <!-- Supplier -->
-                        <td class='supplier1'> <select class="chosen-select-width form-control suppliercek1 suppliercekbarang{{$index}} suppliercek" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1'> <option value=""> </option> </select> 1 {{$sppdtbarang->sppd_kodeitem}}  </td>
+                          <input type='text' class="form-control hargacek1 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1' style="min-width:30px" name="hargacek[]">
 
-                        <td> <button class="btn btn-md btn-danger removecek removecek1 removecekbarang{{$index}}" type="button" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id="{{1}}"> <i class="fa fa-trash"> </i> </button> </td>
+                          <input type='hidden' class="form-control hargamanual1 hargacekmanual{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1'>
+
+                        <input type='hidden' class="barang{{$index}}" name="barang[]" value="{{$sppdtbarang->sppd_kodeitem}}">
+                        <input type="hidden" value="{{$sppdtbarang->sppd_qtyrequest}}" name="qtyrequest[]">
+                        <input type='hidden' class='qtybarang{{$index}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" name='qtyapproval[]' value="{{$sppdtbarang->sppd_qtyrequest}}">
+
+                          <input type="hidden" class="form-control keterangancektolak{{$index}}" name="keterangantolak[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id="{{$index}}" readonly="">
+
+                        <input type="hidden" class="form-control status{{$index}}" value="SETUJU" name="status[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id="{{$index}}">
+                        </td>
+                        <!-- Supplier -->
+                        <td>
+                          <select class="chosen-select-width form-control suppliercek1 suppliercekbarang{{$index}} suppliercek" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1'> <option value=""> </option> </select>
+
+                          <input type='hidden' class="form-control suppliermanual1 suppliercekmanual{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1'>
+
+                        </td>
+
+                        <td> <button class="btn btn-md btn-danger removecek removecek1 removecekbarang{{$index}}" type="button" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id="1"> <i class="fa fa-trash"> </i> </button> </td>
 
                       </tr>
                       <tr class="datacek2 datacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">
                         <td>
                           <!-- Kodeitem -->
-                          <input type='text' class="form-control hargacek2 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2'>  </td>
+                          <input type='text' class="form-control hargacek2 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2' style="min-width:30px" name="hargacek[]">
+
+                          <input type='hidden' class="form-control hargamanual2 hargacekmanual{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2'>
+                           <input type='hidden' class="barang{{$index}}" name="barang[]" value="{{$sppdtbarang->sppd_kodeitem}}">
+                           <input type="hidden" value="{{$sppdtbarang->sppd_qtyrequest}}" name="qtyrequest[]">
+                           <input type="hidden" class="form-control status{{$index}}" value="SETUJU" name="status[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id="{{$index}}">
+
+                           <input type='hidden' class='qtybarang{{$index}}' data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" name='qtyapproval[]' value="{{$sppdtbarang->sppd_qtyrequest}}">
+
+                          <input type="hidden" class="form-control keterangancektolak{{$index}}" name="keterangantolak[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id="{{$index}}" readonly="">
+                        </td>
                         <!-- Harga -->
-                        <td class='supplier1'> <select class="chosen-select-width form-control suppliercek suppliercek2 suppliercekbarang{{$index}}" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2'> <option value="">  </option> </select> 2 {{$sppdtbarang->sppd_kodeitem}} </td>
+                        <td class='supplier1'>
+                          <select class="chosen-select-width form-control suppliercek suppliercek2 suppliercekbarang{{$index}}" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2'> <option value="">  </option> </select>
+
+                          <input type='hidden' class="form-control suppliermanual2 suppliercekmanual{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2'>
+
+
+                        </td>
 
                         <td> <button class="btn btn-md btn-danger removecek removecek2 removecekbarang{{$index}}" type="button" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id="2"> <i class="fa fa-trash"> </i> </button> </td>
                       </tr>
+
                     @endforeach
                 </tbody>
                 </table>
-
+              </div>
                 <button class="btn btn-md" type="button" id="cektb"> Cek Total Biaya </button>
+                <button class="btn btn-md simpantb" type="simpan"> Simpan</button>
                  
                 </div><!-- /.box-body -->
+                @endif
                 @endif
                 <div class="box-footer">
                   <div class="pull-right">
@@ -435,12 +506,123 @@
              }
     })
    }, 2000)
-    
+  
+
+  //qty request
+  $('.qtyreq').change(function(){
+    id = $(this).data('id');
+    val = $(this).val();
+    kodeitem = $(this).data('kodeitem');
+
+    $('.qtybarang' + id + '[data-kodeitem = '+kodeitem+']').val(val);
+  })
+
+  $('.keterangantolak').change(function(){
+     id = $(this).data('id');
+    val = $(this).val();
+    kodeitem = $(this).data('kodeitem');
+
+    $('.keterangancektolak' + id + '[data-kodeitem = '+kodeitem+']').val(val);
+  })
+
+  $('#formsave').submit(function(event){
+        event.preventDefault();
+          var post_url2 = $(this).attr("action");
+          var form_data2 = $(this).serialize();
+            swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data Penerimaan Barang!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: true
+          },
+          function(){
+        $.ajax({
+          type : "post",
+          data : form_data2,
+          url : post_url2,
+          dataType : 'json',
+          success : function (response){
+             alertSuccess(); 
+             $('.simpantb').attr('disabled' , true);
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
+          }
+        })
+      });
+      })
+
 
   $('.removecek').click(function(){
     id = $(this).data('id');
     kodeitem = $(this).data('kodeitem');
-    $('tr.datacek' + id + '[data-kodeitem = '+kodeitem+']').remove();
+    $('tr.datacek' + id + '[data-kodeitem = '+kodeitem+']').addClass('disabled');
+    $('.hargacek' + id + '[data-kodeitem = '+kodeitem+']').addClass('colorblack');
+    $('.suppliercek' + id + '[data-kodeitem = '+kodeitem+']').addClass('disabled');
+    $('.hargacek' + id + '[data-kodeitem = '+kodeitem+']').attr('readonly' , true);
+    $('.suppliercek' + id + '[data-kodeitem = '+kodeitem+']').val('');
+    $('.hargacek' + id + '[data-kodeitem = '+kodeitem+']').val('');
+
+    $('.suppliercek' + id + '[data-kodeitem = '+kodeitem+']').trigger("chosen:updated");
+     $('.suppliercek' + id + '[data-kodeitem = '+kodeitem+']').trigger("liszt:updated");
+  })
+
+  $('.checktolak').change(function(){
+    if($(this).is(':checked')){       
+      id = $(this).data('id');
+      kodeitem = $(this).data('kodeitem');
+    
+
+
+      $('.hargacekbarang' + id + '[data-kodeitem = '+kodeitem+']').addClass('colorblack');
+    
+      $('.hargacekbarang' + id + '[data-kodeitem = '+kodeitem+']').attr('readonly' , true);
+      $('.suppliercekbarang' + id + '[data-kodeitem = '+kodeitem+']').val('');
+      $('.hargacekbarang' + id + '[data-kodeitem = '+kodeitem+']').val('');
+
+      $('.suppliercekbarang' + id + '[data-kodeitem = '+kodeitem+']').trigger("chosen:updated");
+      $('.suppliercekbarang' + id + '[data-kodeitem = '+kodeitem+']').trigger("liszt:updated");
+
+      $('.status' + id + '[data-kodeitem = '+kodeitem+']').val('TIDAK SETUJU');
+      $('.keterangancektolak' + id + '[data-kodeitem = '+kodeitem+']').attr('readonly' , false);
+      $('.keterangantolak' + id + '[data-kodeitem = '+kodeitem+']').attr('readonly' , false);
+    }
+    else {
+      id = $(this).data('id');
+      kodeitem = $(this).data('kodeitem');
+      harga  =      $('.hargacekmanual' + id + '[data-kodeitem = '+kodeitem+']').val();
+      supplier =   $('.suppliercekmanual' + id + '[data-kodeitem = '+kodeitem+']').val();
+      
+      $('.hargacekmanual' + id +  '[data-kodeitem = '+kodeitem+']').each(function(){
+        id2 = $(this).data('id');
+        val = $(this).val();
+        $('.hargacek' + id2 + '[data-kodeitem= '+kodeitem+']').val(val);
+      });
+
+       $('.suppliercekmanual' + id +  '[data-kodeitem = '+kodeitem+']').each(function(){
+        id2 = $(this).data('id');
+        val = $(this).val();
+        $('.suppliercek' + id2 + '[data-kodeitem= '+kodeitem+']').val(val);
+      });
+
+
+      $('.hargacekbarang' + id + '[data-kodeitem = '+kodeitem+']').removeClass('colorblack');
+      $('.suppliercekbarang' + id + '[data-kodeitem = '+kodeitem+']').removeClass('disabled');
+      $('.hargacekbarang' + id + '[data-kodeitem = '+kodeitem+']').attr('disabled' , false);
+
+      $('.suppliercekbarang' + id + '[data-kodeitem = '+kodeitem+']').trigger("chosen:updated");
+      $('.suppliercekbarang' + id + '[data-kodeitem = '+kodeitem+']').trigger("liszt:updated");
+
+        $('.status' + id + '[data-kodeitem = '+kodeitem+']').val('SETUJU');
+        $('.keterangantolak' + id + '[data-kodeitem = '+kodeitem+']').attr('readonly' , true);
+        $('.keterangancektolak' + id + '[data-kodeitem = '+kodeitem+']').attr('readonly' , true);
+        
+    }
+
   })
 
    function removeDuplicates(inputArray) {
@@ -458,6 +640,26 @@
             return outputArray;
      }
 
+    function find_duplicate_in_array(arra1) {
+        var object = {};
+        var result = [];
+
+        arra1.forEach(function (item) {
+          if(!object[item])
+              object[item] = 0;
+            object[item] += 1;
+        })
+
+        for (var prop in object) {
+           if(object[prop] >= 2) {
+               result.push(prop);
+           }
+        }
+
+        return result;
+
+    }
+
   $('#cektb').click(function(){
 
       arrjumlahtotal = [];
@@ -465,20 +667,25 @@
       $('.qtyreq').each(function(){
         qty = $(this).val();
         idqty = $(this).data('id');
+     
+     
         $('.hargacekbarang' + idqty).each(function(){
           harga2 = $(this).val();
           idharga = $(this).data('id');
-          supplier = $('.suppliercek' + idharga).val();
-          if(harga2 == ''){
-            toastr.info("Harga ada yang kosong mohon dilengkapi :)");
-            return false
+          kodeitem = $(this).data('kodeitem');
+          supplier = $('.suppliercek' + idharga + '[data-kodeitem = '+kodeitem+']').val();
+          
+          if(harga2 == '' && supplier == ''){
+           /* toastr.info("Harga ada yang kosong mohon dilengkapi :)");
+            return false*/
           }
           else {            
             harga = harga2.replace(/,/g, '');
             totalharga = (parseFloat(qty) * parseFloat(harga)).toFixed(2);          
             arrjumlahtotal.push({
               totalharga : totalharga,
-              supplier :supplier
+              supplier :supplier,
+             
             });
           }
         })
@@ -488,18 +695,92 @@
       $('.suppliercek').each(function(){
         val = $(this).val();
         if(val == ''){
-          toastr.info("Data Supplier ada yang kosong, mohon diisi :)");
-          return false;
+        /*  toastr.info("Data Supplier ada yang kosong, mohon diisi :)");
+          return false;*/
         }
-        arrsupplier.push(val);
+        else{ 
+                arrsupplier.push(val);
+              }
       })
 
 
       hslsupplier = removeDuplicates(arrsupplier);
-   
-      arrhsljumlah = [];
-     
+      console.log(hslsupplier);
+      console.log(arrjumlahtotal);
+      console.log(arrsupplier);
+      if(hslsupplier.length > 3){
+        toastr.info("Terdapat lebih dari 3 supplier yang berbeda, tidak bisa di proses kembali :)");
+        return false;
+      }
 
+      hargasupplier = [];
+   
+     hargasupplier2 = [];
+
+      $duplicatesupplier = find_duplicate_in_array(arrsupplier);
+      for($i = 0; $i < $duplicatesupplier.length; $i++){
+        jumlahtotal = 0;
+        supplierduplicate = $duplicatesupplier[$i];
+        for($j = 0; $j < arrjumlahtotal.length; $j++){
+          if(supplierduplicate == arrjumlahtotal[$j]['supplier']){
+            jumlahtotal = parseFloat(jumlahtotal) + parseFloat(arrjumlahtotal[$j]['totalharga']);   
+          }
+        }
+
+          index = arrjumlahtotal.indexOf(supplierduplicate);
+         hargasupplier2.push({
+          supplier : supplierduplicate,
+          jumlahtotal : jumlahtotal,
+          index : index,
+         });
+      }
+
+      for($i = 0; $i < hslsupplier.length; $i++){
+          jumlahtotal = 0;
+          for($k = 0; $k < arrjumlahtotal.length; $k++){
+            supplier1 = hslsupplier[$i];
+            supplier2 = arrjumlahtotal[$k]['supplier'];
+            if(supplier1 == supplier2){
+              jumlahtotal = parseFloat(parseFloat(jumlahtotal) + parseFloat(arrjumlahtotal[$k]['totalharga'])).toFixed(2);
+            }
+            else {
+              //jumlahtotal = parseFloat(jumlahtotal) + parseFloat(arrjumlahtotal[$k]['totalharga']);
+            }
+          }
+          hargasupplier.push(jumlahtotal);
+      } 
+/*
+      console.log($duplicatesupplier);*/
+      
+       
+
+      hslsupplier = hslsupplier; 
+      idspp = $('.idspp').val();
+      $.ajax({
+        url : baseUrl + '/konfirmasi_order/cekhargatotal',
+        data : {hslsupplier, idspp},
+        type : "get",      
+        dataType : 'json',
+        success : function(response){
+            $('tr.totalcekpembayaran').remove();
+            for($j = 0; $j < response.datasupplier.length; $j++){
+              html ="<tr class='totalcekpembayaran'> <td>"+response.datasupplier[$j][0].nama_supplier+" <input type='hidden' name='suppliercekbayar[]' value="+response.datasupplier[$j][0].idsup+"></td>"+
+                    "<td>"+addCommas(hargasupplier[$j])+" <input type='hidden' name='totalbayarpembayaran[]' value="+hargasupplier[$j]+"></td>";
+                    if(response.temp[$j] == 0){
+                    html += "<td>"+response.datasupplier[$j][0].syarat_kredit+" Hari <input type='hidden' name='syaratkredit[]' value="+response.datasupplier[$j][0].syarat_kredit+"></td>";
+                    }
+                    else {
+                    html +=  "<td>"+response.datasupplier[$j][0].spptb_bayar+" Hari <input type='hidden' name='syaratkredit[]' value="+response.datasupplier[$j][0].spptb_bayar+"> </td>";
+                    }
+              html += "</tr>"
+            
+              $('#tbl-pembayaran').append(html);
+            }
+        }
+      })      
+
+
+     
   });
 
   idspp = $('.idspp').val();
@@ -524,16 +805,15 @@
              }              
 
                     
-              $('.hargacek' + $key + '[data-kodeitem = '+kodeitem+']').val(response.sppd[$j].sppd_harga);
+              $('.hargacek' + $key + '[data-kodeitem = '+kodeitem+']').val(addCommas(response.sppd[$j].sppd_harga));
+              $('.hargamanual' + $key + '[data-kodeitem = '+kodeitem+']').val(addCommas(response.sppd[$j].sppd_harga));
+
                if(response.temp[$i] == '0'){
                   for($z = 0; $z < response.itemsupplier2.length; $z++){
                     $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').append("<option value="+response.itemsupplier2[$z].is_idsup+">" + response.itemsupplier2[$z].no_supplier+" - "+response.itemsupplier2[$z].nama_supplier+"</option>");
-                  
                   }
                }
-
                else if(response.temp[$i] == '1'){
-                 
                   for($z = 0; $z < response.supplier.length; $z++){
                     $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').append("<option value="+response.supplier[$z].idsup+">" +response.supplier[$z].no_supplier+" - "+response.supplier[$z].nama_supplier+"</option>");
                     
@@ -541,7 +821,8 @@
                }  
                 
                 console.log(response.sppd[$j].sppd_supplier);
-                 $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').val(response.sppd[$j].sppd_supplier);
+                $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').val(response.sppd[$j].sppd_supplier);
+                $('.suppliermanual' + $key + '[data-kodeitem = '+kodeitem+']').val(response.sppd[$j].sppd_supplier);
                 $('.suppliercek' + $key).trigger("chosen:updated");
                 $('.suppliercek' + $key).trigger("liszt:updated");
 
@@ -550,7 +831,6 @@
           }
           else {
               
-
              $temp = 1;
           }
           $key++;
@@ -603,7 +883,20 @@
       dataType : 'json',
       data : {kodeitem,supplier},
       success : function(response){
-          $('.hargacek' + id + '[data-kodeitem = '+kodeitem+']').val(response.harga);
+          status = $('.status' + id + '[data-kodeitem = '+kodeitem+']').val();
+          if(status == 'TIDAK SETUJU'){
+          
+            $('.hargacek' + id + '[data-kodeitem = '+kodeitem+']').val('');
+            $('.suppliercek' + id + '[data-kodeitem = '+kodeitem+']').val('');           
+            $('.suppliercek' + id + '[data-kodeitem = '+kodeitem+']').trigger("chosen:updated");
+            $('.suppliercek' + id + '[data-kodeitem = '+kodeitem+']').trigger("liszt:updated");
+            toastr.info("Data Barang ditolak, tidak bisa memilih supplier ini :)");
+            return false;
+
+          }
+          else if(status == 'SETUJU'){
+            $('.hargacek' + id + '[data-kodeitem = '+kodeitem+']').val(addCommas(response.harga));
+          }
       }
     })
 

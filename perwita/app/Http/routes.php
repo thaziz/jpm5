@@ -147,6 +147,7 @@ Route::post('konfirmasi_order/savekonfirmasiorderdetail' , 'PurchaseController@s
 Route::get('konfirmasi_order/cetakkonfirmasi/{id}' , 'PurchaseController@cetakkonfirmasi');
 Route::get('konfirmasi_order/ceksupplier' , 'PurchaseController@ceksupplier');
 Route::get('konfirmasi_order/cekharga' , 'PurchaseController@cekharga');
+Route::get('konfirmasi_order/cekhargatotal' , 'PurchaseController@cekhargatotal');
 
 
 Route::get('purchaseorder/ajax', 'PurchaseController@createAjax');
