@@ -346,7 +346,7 @@
 
 
                       <td>                       
-                        <input type='text' class="form-control hargacek0 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0' style="min-width:30px" name="hargacek[]"> 
+                        <input type='text' class="form-control hargacek hargacek0 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0' style="min-width:30px" name="hargacek[]"> 
 
                         <input type='hidden' class="form-control hargamanual0 hargacekmanual{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0'>
                         
@@ -372,7 +372,7 @@
                       <tr class="datacek1 datacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">
                         <td>
                           <!--Kodeitem  -->
-                          <input type='text' class="form-control hargacek1 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1' style="min-width:30px" name="hargacek[]">
+                          <input type='text' class="form-control hargacek hargacek1 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1' style="min-width:30px" name="hargacek[]">
 
                           <input type='hidden' class="form-control hargamanual1 hargacekmanual{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1'>
 
@@ -398,7 +398,7 @@
                       <tr class="datacek2 datacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}">
                         <td>
                           <!-- Kodeitem -->
-                          <input type='text' class="form-control hargacek2 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2' style="min-width:30px" name="hargacek[]">
+                          <input type='text' class="form-control hargacek hargacek2 hargacekbarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2' style="min-width:30px" name="hargacek[]">
 
                           <input type='hidden' class="form-control hargamanual2 hargacekmanual{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2'>
                            <input type='hidden' class="barang{{$index}}" name="barang[]" value="{{$sppdtbarang->sppd_kodeitem}}">
@@ -523,6 +523,12 @@
     kodeitem = $(this).data('kodeitem');
 
     $('.keterangancektolak' + id + '[data-kodeitem = '+kodeitem+']').val(val);
+  })
+
+  $('.hargacek').change(function(){
+    val = $(this).val();
+       val = accounting.formatMoney(val, "", 2, ",",'.');
+      $(this).val(val);
   })
 
   $('#formsave').submit(function(event){

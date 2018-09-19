@@ -95,8 +95,10 @@
                         @if(Auth::user()->punyaAkses('Konfirmasi Order','aktif'))
                           @if($co->staff_pemb == 'DISETUJUI')
                                  <a class="label label-info" href="{{url('konfirmasi_order/konfirmasi_orderdetailpemb/'. $co->co_idspp.'')}}"> {{$co->staff_pemb}} </a>   
+                          @elseif($co->staff_pemb == '')
+                               <a class="label label-warning" href="{{url('konfirmasi_order/konfirmasi_orderdetailpemb/'. $co->co_idspp.'')}}"> <i class="fa fa-close"> </i> BELUM DI PROSES </a> &nbsp; &nbsp;
                           @else
-                               <a class="label label-warning" href="{{url('konfirmasi_order/konfirmasi_orderdetailpemb/'. $co->co_idspp.'')}}"> <i class="fa fa-close"> </i> {{$co->staff_pemb}} </a> &nbsp; &nbsp;
+                            <a class="label label-info" href="{{url('konfirmasi_order/konfirmasi_orderdetailpemb/'. $co->co_idspp.'')}}"> {{$co->staff_pemb}} </a>
                           @endif
                         @endif  
                         </td>
@@ -105,8 +107,11 @@
                         @if(Auth::user()->punyaAkses('Konfirmasi Order Keu','aktif'))
                           @if($co->man_keu == 'DISETUJUI')
                              <a class="label label-info"  href="{{url('konfirmasi_order/konfirmasi_orderdetailkeu/'. $co->co_idspp.'')}}"> {{$co->man_keu}} </a>       
+                          @elseif($co->man_keu == '')
+                              <a class="label label-info" href="{{url('konfirmasi_order/konfirmasi_orderdetailpemb/'. $co->co_idspp.'')}}"> BELUM DI PROSES </a>
                           @else
-                             <a class="label label-warning"  href="{{url('konfirmasi_order/konfirmasi_orderdetailkeu/'. $co->co_idspp.'')}}"> <i class="fa fa-close"></i> {{$co->man_keu}} </a> &nbsp; &nbsp; 
+                           <a class="label label-info" href="{{url('konfirmasi_order/konfirmasi_orderdetailpemb/'. $co->co_idspp.'')}}"> {{$co->staff_pemb}} </a>
+
                           @endif
                         @endif  
                         </td>
