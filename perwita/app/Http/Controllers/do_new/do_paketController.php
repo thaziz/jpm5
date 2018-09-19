@@ -367,9 +367,7 @@ class do_paketController extends Controller
                     'acc_penjualan' => $data[0]->acc_penjualan,
                     'jumlah_data' => $result['jumlah_data'],
                 ]);
-            }
-            
-            else{
+            }else{
                 return response()->json([
                     'status' => 'kosong'
                 ]);
@@ -953,7 +951,7 @@ class do_paketController extends Controller
       // DB::beginTransaction();
       // try {
 
-          $cek_data_do = DB::table('delivery_order')->where('nomor','=',$request->do_nomor)->get();
+          $cek_data_do = DB::table('delivery_order')->where('nomor','=',$request->do_nomor)->first();
           if ($cek_data_do != null  ) {
               return response()->json(['status'=>1]);
           }

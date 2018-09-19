@@ -239,42 +239,54 @@
      
    </div>
    <table class="size"  width="100%">
-     <tr>
-       <th class="textcenter bot right top" width="3%">No</th>
-       <th class="textcenter bot right top" width="8%">Tanggal</th>
-       <th class="textcenter bot right top" width="13%">No.Reff</th>
-       <th class="textcenter bot right top" width="10%">Kode Acc</th>
-       <th class="textcenter bot right top" width="40%">Keterangan</th>
-       <th class="textcenter bot top">Credit</th>
-     </tr>
-      @foreach ($nomor as $i=>$val1)
-          @php
-            $temp = 0;
-          @endphp
-          @foreach($data_dt[$i] as $a=> $val)
-            <tr>
-               @if ($temp == 0)
-                <td class="textleft bot right">{{$i+1}}</td>
-                @php
-                  $temp += 1;
-                @endphp
-               @else
-                <td class="textleft bot right"></td>
-               @endif
-               <td class="textleft bot right">{{$data_dt[$i][$a]->tanggal}}</td>
-               <td class="textleft bot right">{{$data_dt[$i][$a]->nota}}</td>
-               <td class="textleft bot right">{{$data_dt[$i][$a]->akun}}</td>
-               <td class="textleft bot right">{{$data_dt[$i][$a]->keterangan}}</td>
-               <td class="textright bot">{{'Rp. ' . number_format($data_dt[$i][$a]->total,2,',','.')}}</td>
-             </tr>
-          @endforeach
-      @endforeach
-       
-     <tr>
-       <td colspan="5" class="right textleft"><strong>Terbilang: {{$terbilang}} Rupiah</strong><strong style="float:right;">Total :</strong></td>
-       <td class="textright ">{{'Rp. ' . number_format(round($data->ik_total),2,',','.')}}</td>
-     </tr>
-   </table>
+       <tr>
+         <th class="textcenter bot right top" width="3%">No</th>
+         <th class="textcenter bot right top" width="8%">Tanggal</th>
+         <th class="textcenter bot right top" width="13%">No.Reff</th>
+         <th class="textcenter bot right top" width="10%">Kode Acc</th>
+         <th class="textcenter bot right top" width="40%">Keterangan</th>
+         <th class="textcenter bot top">Credit</th>
+       </tr>
+        @foreach ($nomor as $i=>$val1)
+            @php
+              $temp = 0;
+            @endphp
+            @foreach($data_dt[$i] as $a=> $val)
+              <tr>
+                 @if ($temp == 0)
+                  <td class="textleft bot right">{{$i+1}}</td>
+                  @php
+                    $temp += 1;
+                  @endphp
+                 @else
+                  <td class="textleft bot right"></td>
+                 @endif
+                 <td class="textleft bot right">{{$data_dt[$i][$a]->tanggal}}</td>
+                 <td class="textleft bot right">{{$data_dt[$i][$a]->nota}}</td>
+                 <td class="textleft bot right">{{$data_dt[$i][$a]->akun}}</td>
+                 <td class="textleft bot right">{{$data_dt[$i][$a]->keterangan}}</td>
+                 <td class="textright bot">{{'Rp. ' . number_format($data_dt[$i][$a]->total,2,',','.')}}</td>
+               </tr>
+            @endforeach
+        @endforeach
+         
+       <tr>
+        @if ($data->ik_jenis == 'BONSEM')
+          <td colspan="5" class="right bot textleft"><strong>Terbilang: {{$terbilang1}} Rupiah</strong><strong style="float:right;">Total Bonsem:</strong></td>
+          <td class="textright  bot">{{'Rp. ' . number_format(round($total_bonsem-$data->ik_total),2,',','.')}}</td>
+        @else
+          <td colspan="5" class="right  textleft"><strong>Terbilang: {{$terbilang}} Rupiah</strong><strong style="float:right;">Total :</strong></td>
+         <td class="textright ">{{'Rp. ' . number_format(round($data->ik_total),2,',','.')}}</td>
+        @endif
+       </tr>
+        @if ($data->ik_jenis == 'BONSEM')
+        <tr>
+          <td colspan="5" class="right  textleft"><strong>Terbilang: {{$terbilang}} Rupiah</strong><strong style="float:right;">Total Pengeluaran Kas:</strong></td>
+         <td class="textright  ">{{'Rp. ' . number_format(round($data->ik_total),2,',','.')}}</td>
+       </tr>
+        @endif
+     </table>
+     
  </div>
  <div class="wrapper">
       <table width="100%" class="size">

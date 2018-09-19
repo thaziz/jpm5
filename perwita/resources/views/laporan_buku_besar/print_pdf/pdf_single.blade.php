@@ -228,6 +228,7 @@
 					        <th width="5%">Seq</th>
 					        <th width="5%">D/K</th>
 					        <th width="6%">Acc.Lawan</th>
+					        <th width="10%">Jumlah</th>
 					    @endif
 
 				        <th width="10%">Debet</th>
@@ -252,6 +253,7 @@
 		          	  </td>
 
 		              @if($request->akun_lawan == 'true')
+			              <td></td>
 			              <td></td>
 			              <td></td>
 			              <td></td>
@@ -298,18 +300,18 @@
 		                      $kredit = str_replace("-", "", $jurnal->jrdt_value);
 		                      $tot_kred += $kredit;
 		                    }
-
 		                ?>
 
 						<tr>
-		                    <td style="padding-left: 5px;">{{ $jurnal->jrdt_value }}</td>
-		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_no }}</td>
+		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_date }}</td>
+		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_ref }}</td>
 		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_note }}</td>
 
 		                    @if($request->akun_lawan == 'true')
 			                    <td style="padding-left: 5px;" class="text-center">001</td>
 			                    <td style="padding-left: 5px;" class="text-center">{{ $jurnal->jrdt_statusdk }}</td>
 			                    <td style="padding-left: 5px;" class="text-center">{{ $jurnal->jrdt_acc }}</td>
+			                    <td style="padding-right: 8px;" class="text-right">{{ (str_replace('-', '', number_format($jurnal->jrdt_value))) }}</td>
 			                @endif
 
 		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($debet,2) }}</td>
@@ -333,6 +335,7 @@
 						                    <td style="padding-left: 5px;" class="text-center">{{ str_pad(($key + 1), 3, "0",STR_PAD_LEFT) }}</td>
 					                    	<td style="padding-left: 5px;" class="text-center">{{ $data_detail->jrdt_statusdk }}</td>
 					                    	<td style="padding-left: 5px;" class="text-center">{{ $data_detail->jrdt_acc }}</td>
+					                    	<td style="padding-right: 8px;" class="text-right">{{ (str_replace('-', '', number_format($data_detail->jrdt_value))) }}</td>
 					                    @endif
 
 					                    <td class="money text-right" style="padding-right: 8px;">{{ number_format(0,2) }}</td>
@@ -352,6 +355,7 @@
 			                    <td style="padding-left: 5px;">&nbsp;</td>
 			                    <td style="padding-left: 5px;">&nbsp;</td>
 			                    <td style="padding-left: 5px;">&nbsp;</td>
+			                    <td style="padding-left: 5px;"></td>
 			                    <td style="padding-left: 5px;"></td>
 			                    <td style="padding-left: 5px;"></td>
 			                    <td style="padding-left: 5px;"></td>
@@ -376,6 +380,8 @@
 				        @if($request->akun_lawan == 'true')
 					        <th width="5%"></th>
 					        <th width="5%"></th>
+					        <th width="6%"></th>
+					        <th width="6%"></th>
 					        <th width="6%"></th>
 					    @endif
 
