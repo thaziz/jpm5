@@ -298,12 +298,11 @@
 		                      $kredit = str_replace("-", "", $jurnal->jrdt_value);
 		                      $tot_kred += $kredit;
 		                    }
-
 		                ?>
 
 						<tr>
-		                    <td style="padding-left: 5px;">{{ $jurnal->jrdt_value }}</td>
-		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_no }}</td>
+		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_date }}</td>
+		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_ref }}</td>
 		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_note }}</td>
 
 		                    @if($request->akun_lawan == 'true')
