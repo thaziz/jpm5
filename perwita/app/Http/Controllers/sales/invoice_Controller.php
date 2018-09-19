@@ -56,11 +56,11 @@ class invoice_Controller extends Controller
         if ($req->nota != '0') {
           if (Auth::user()->punyaAkses('Invoice','all')) {
             $data = DB::table('invoice')
-                  ->where('i_nomor','=',$req->nota)
+                  ->where('i_nomor','like','%'.$req->nota.'%')
                   ->get();
             if ($data == null) {
               $data = DB::table('invoice')
-                  ->where('i_faktur_pajak','=',$req->nota)
+                  ->where('i_faktur_pajak','like','%'.$req->nota.'%')
                   ->get();
             }
           }else{

@@ -208,7 +208,7 @@ class PurchaseController extends Controller
 
       	
 		//return $mon;
-		$idspp = DB::select("select * from spp where spp_cabang = '$cabang'  and to_char(spp_tgldibutuhkan, 'MM') = '$bulan' and to_char(spp_tgldibutuhkan, 'YY') = '$tahun' order by spp_id desc");
+		$idspp = DB::select("select * from spp where spp_cabang = '$cabang'  and to_char(spp_tgldibutuhkan, 'MM') = '$bulan' and to_char(spp_tgldibutuhkan, 'YY') = '$tahun' order by spp_id desc limit 1");
 
 	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
 		if(count($idspp) != 0) {		
@@ -1042,28 +1042,50 @@ class PurchaseController extends Controller
 		return view('purchase.confirm_orderdetail.index4', compact('data' , 'tipespp' , 'namatipe'));
 	}	
 
+	public function cekharga(Request $request){
+		$kodeitem = $request->kodeitem;
+		$supplier = $request->supplier;
+		$data['masteritem'] = DB::select("select * from masteritem where kode_item = '$kodeitem'");
+
+		$data['itemsupplier'] = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup and is_idsup = '$supplier'");
+
+		if(count($data['itemsupplier']) > 0){
+			$data['harga'] = $data['itemsupplier'][0]->is_harga;
+		}
+		else {
+			$data['harga'] = $data['masteritem'][0]->harga;
+			
+		}
+
+		return json_encode($data);
+	}
 
 	public function ceksupplier(Request $request){
-		$kodeitem = $request->kodeitem;
+		
 		$idspp = $request->idspp;
 
 /*		$datakodeitem = DB::select("select * from masteritem where kode_item = '$kodeitem'");
 		$data['kodeitem'] = $datakodeitem[0]->nama_masteritem;
 		$data['hargaitem'] = $datakodeitem[0]->harga;*/
 
-		$data['sppd'] = DB::select("select * from spp_detail, supplier where sppd_idspp = '$idspp' and sppd_supplier = idsup");
+		$data['sppd'] = DB::select("select * from spp_detail, supplier where sppd_idspp = '$idspp' and sppd_supplier = idsup order by sppd_kodeitem asc");
 
-		$data['sppdt'] =  DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest,unitstock from  masteritem, spp_detail where sppd_idspp = '$idspp' and kode_item = sppd_kodeitem ");
-		
+		$data['sppdt'] =  DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest,unitstock from  masteritem, spp_detail where sppd_idspp = '$idspp' and kode_item = sppd_kodeitem order by sppd_kodeitem asc ");
+		$data['temp'] = [];
+		for($i = 0; $i < count($data['sppdt']); $i++){
+			$kodeitem = $data['sppdt'][$i]->sppd_kodeitem;
+			$data['itemsupplier'] = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
 
-		/*$data['itemsupplier'] = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
-
-		if(count($data['itemsupplier']) > 0){
-			$data['supplier'] = $data['itemsupplier'];
+				if(count($data['itemsupplier']) > 0){
+					$data['itemsupplier2'] = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
+					array_push($data['temp'] , '0');
+				}
+				else {
+					array_push($data['temp'] , '1');
+					$data['supplier'] = DB::select("select * from supplier");
+				}
 		}
-		else {
-			$data['supplier'] = DB::select("select * from supplier");
-		}*/
+
 
 		return json_encode($data);
 	}
@@ -1092,14 +1114,14 @@ class PurchaseController extends Controller
 		if($tipespp != 'J'){
 			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and  sppd_supplier = idsup order by sppd_seq asc");
 
-			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem ");
+			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem order by sppd_kodeitem asc");
 
 			$data['codt'] = DB::select("select *  from confirm_order, masteritem, spp, confirm_order_dt_pemb LEFT OUTER JOIN stock_gudang on codtk_kodeitem = sg_item and sg_gudang = '$lokasigudang' where confirm_order_dt_pemb.codtk_idco=co_id and co_idspp = '$id' and co_idspp = spp_id and codtk_kodeitem = kode_item");
 		}
 		else {
 			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and  sppd_supplier = idsup order by sppd_seq asc");
 
-			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, unitstock from  masteritem , spp_detail  where sppd_idspp = '$id' and kode_item = sppd_kodeitem ");
+			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, unitstock from  masteritem , spp_detail  where sppd_idspp = '$id' and kode_item = sppd_kodeitem order by sppd_kodeitem asc ");
 			
 			$data['codt'] = DB::select("select *  from confirm_order, masteritem, confirm_order_dt_pemb where confirm_order_dt_pemb.codtk_idco=co_id and co_idspp = '$id' and  codtk_kodeitem = kode_item");
 		}	
@@ -2335,30 +2357,32 @@ public function purchase_order() {
 		$time = Carbon::now();
 	//	$newtime = date('Y-M-d H:i:s', $time);  
 		
-		$year =Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
-		$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; 
+		/*$year =Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
+		$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; */
 
-		if($month < 10) {
-			$month = '0' . $month;
-		}
+		$month = Carbon::parse($request->tgl_dibutuhkan)->format('m');
+		$year = Carbon::parse($request->tgl_dibutuhkan)->format('y');
 
-		$year = substr($year, 2);
-
-		$idpb =   penerimaan_barang::where('pb_comp' , $cabang)->max('pb_lpb');
 		
-		if(isset($idpb)) {
-			$explode = explode("/", $idpb);
-			$idpb = $explode[2];
+	
+	
+		$idpb2 = DB::select("select substr(MAX(pb_lpb), 16) as nota from penerimaan_barang where  to_char(pb_date, 'MM') = '$month' and to_char(pb_date, 'YY') = '$year' and pb_comp = '$cabang'");	
+		
 
-			$string = explode("-", $idpb);
-			$idpb = $string[1];
-			$string = (int)$idpb + 1;
-			$idpb = str_pad($string, 4, '0', STR_PAD_LEFT);
+		//return $faktur;
+		if(count($idpb2) > 0) {	
+			$idpb = (int)$idpb2[0]->nota + 1;
+			$idpb = str_pad($idpb, 4, '0', STR_PAD_LEFT);
+			
+			//return $data['idfaktur'];
 		}
 
 		else {
+	
 			$idpb = '0001';
 		}
+
+
 
 		if($request->updatestock == 'IYA') {
 			$lpb = 'LPB' . $month . $year . '/' . $cabang . '/S-' .  $idpb;
@@ -2368,6 +2392,7 @@ public function purchase_order() {
 		}
 		//case Penerimaan Barang
 
+		
 		//idpb
 			$lastidpb =   penerimaan_barang::max('pb_id');
 			if(isset($lastidpb)) {
@@ -2383,7 +2408,8 @@ public function purchase_order() {
 			//save penerimaan_barang
 			$idpo = $request->po_id;
 			//$query = DB::select("select * from penerimaan_barang where pb_po ='$idpo'"); 	
-				
+			
+
 			$penerimaanbarang = new penerimaan_barang();
 			$penerimaanbarang->pb_id = $idpb;
 			$penerimaanbarang->pb_comp =  $cabang;
@@ -2693,40 +2719,38 @@ public function purchase_order() {
 		/*dd($request);*/
 			$mytime = Carbon::now(); 		
 			//MEMBUAT NOFORMTT	
-				$time = Carbon::now();
+			$time = Carbon::now();
 		//	$newtime = date('Y-M-d H:i:s', $time);  
 			
-			$year =Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
-			$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; 
+			$month = Carbon::parse($request->tgl_dibutuhkan)->format('m');
+			$year = Carbon::parse($request->tgl_dibutuhkan)->format('y');
 
-			if($month < 10) {
-				$month = '0' . $month;
-			}
+			$idpb2 = DB::select("select substr(MAX(pb_lpb), 16) as nota from penerimaan_barang where  to_char(pb_date, 'MM') = '$month' and to_char(pb_date, 'YY') = '$year' and pb_comp = '$cabang'");	
+		
 
-			$year = substr($year, 2);
-
-			$idpb =   penerimaan_barang::where('pb_comp' ,  $cabang)->max('pb_lpb');
-			
-			if(isset($idpb)) {
-				$explode = explode("/", $idpb);
-				$idpb = $explode[2];
-				$string = explode("-", $idpb);
-				$idpb = $string[1];
-				$string = (int)$idpb + 1;
-				$idpb = str_pad($string, 4, '0', STR_PAD_LEFT);
+			//return $faktur;
+			if(count($idpb2) > 0) {	
+				$idpb = (int)$idpb2[0]->nota + 1;
+				$idpb = str_pad($idpb, 4, '0', STR_PAD_LEFT);
+				
+				//return $data['idfaktur'];
 			}
 
 			else {
+		
 				$idpb = '0001';
 			}
 
 
+
 			if($request->updatestock == 'IYA') {
-				$lpb = 'LPB' . $month . $year . '/' .  $cabang . '/S-' .  $idpb;
+				$lpb = 'LPB' . $month . $year . '/' . $cabang . '/S-' .  $idpb;
 			}
 			else {
-				$lpb = 'LPB' . $month . $year . '/' .  $cabang  . '/NS-' .  $idpb;	
+				$lpb = 'LPB' . $month . $year . '/' . $cabang . '/NS-' .  $idpb;	
 			}
+
+
 
 			//case Penerimaan Barang
 
@@ -3067,37 +3091,36 @@ public function purchase_order() {
 			$time = Carbon::now();
 		//	$newtime = date('Y-M-d H:i:s', $time);  
 			
-			$year =Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
-			$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; 
+		$month = Carbon::parse($request->tgl_dibutuhkan)->format('m');
+		$year = Carbon::parse($request->tgl_dibutuhkan)->format('y');
 
-			if($month < 10) {
-				$month = '0' . $month;
-			}
+			$idpb2 = DB::select("select substr(MAX(pb_lpb), 16) as nota from penerimaan_barang where  to_char(pb_date, 'MM') = '$month' and to_char(pb_date, 'YY') = '$year' and pb_comp = '$cabang'");	
+		
 
-			$year = substr($year, 2);
-
-			$idpb =   penerimaan_barang::where('pb_comp' ,  $cabang)->max('pb_lpb');
-			
-			if(isset($idpb)) {
-				$explode = explode("/", $idpb);
-				$idpb = $explode[2];
-				$string = explode("-", $idpb);
-				$idpb = $string[1];
-				$string = (int)$idpb + 1;
-				$idpb = str_pad($string, 4, '0', STR_PAD_LEFT);
+			//return $faktur;
+			if(count($idpb2) > 0) {	
+				$idpb = (int)$idpb2[0]->nota + 1;
+				$idpb = str_pad($idpb, 4, '0', STR_PAD_LEFT);
+				
+				//return $data['idfaktur'];
 			}
 
 			else {
+		
 				$idpb = '0001';
 			}
 
 
+
 			if($request->updatestock == 'IYA') {
-				$lpb = 'LPB' . $month . $year . '/' .  $cabang . '/S-' .  $idpb;
+				$lpb = 'LPB' . $month . $year . '/' . $cabang . '/S-' .  $idpb;
 			}
 			else {
-				$lpb = 'LPB' . $month . $year . '/' .  $cabang  . '/NS-' .  $idpb;	
+				$lpb = 'LPB' . $month . $year . '/' . $cabang . '/NS-' .  $idpb;	
 			}
+
+
+			
 
 			//case Penerimaan Barang
 
@@ -3594,8 +3617,8 @@ public function purchase_order() {
 						$idjurnal = 1;
 					}
 					
-					$year = Carbon::parse($mytime)->format('Y');	
-					$date = Carbon::parse($mytime)->format('Y-m-d');
+					$year = Carbon::parse($request->tgl_dibutuhkan)->format('Y');	
+					$date = Carbon::parse($request->tgl_dibutuhkan)->format('Y-m-d');
 					$jrno = get_id_jurnal('MM' , $cabang , $date);
 					$jurnal = new d_jurnal();
 					$jurnal->jr_id = $idjurnal;
@@ -3652,8 +3675,8 @@ public function purchase_order() {
 					}
 					
 
-					$year = Carbon::parse($mytime)->format('Y');
-					$date = Carbon::parse($mytime)->format('Y-m-d');
+					$year = Carbon::parse($request->tgl_dibutuhkan)->format('Y');
+					$date = Carbon::parse($request->tgl_dibutuhkan)->format('Y-m-d');
 
 					$jrno = get_id_jurnal('MM' , $cabang , $date);
 					$jurnal = new d_jurnal();
@@ -3760,8 +3783,8 @@ public function purchase_order() {
 						$idjurnal = 1;
 					}
 				
-					$year = Carbon::parse($mytime)->format('Y');
-					$date = Carbon::parse($mytime)->format('Y-m-d');
+					$year = Carbon::parse($request->tgl_dibutuhkan)->format('Y');
+					$date = Carbon::parse($request->tgl_dibutuhkan)->format('Y-m-d');
 
 					$jrno = get_id_jurnal('MM' , $cabang , $date);
 					$jurnal = new d_jurnal();
@@ -4530,6 +4553,26 @@ public function purchase_order() {
 			$hitungpo = count($statusheaderpo);
 			$hitungpb = count($statusheaderpb);
 			
+
+			//datapembelian_orderdt
+			for($k = 0; $k < count($statusheaderpb); $k++){
+				$kodeitempb = $statusheaderpb[$k]->pbdt_item;
+				$qty = $statusheaderpb[$k]->pbdt_qty;
+				$idpo = $statusheaderpb[$k]->pbdt_po;
+
+				$datapo = DB::select("select * from pembelian_orderdt where podt_idpo = '$idpo' and podt_kodeitem = '$kodeitempb'");
+				$sisa = $datapo[0]->podt_sisaterima;
+
+				$hasilpo = (integer)$sisa + (integer)$qty; 
+
+				DB::table('pembelian_orderdt')
+				->where('podt_idpo' , $idpo)
+				->where('podt_kodeitem' , $kodeitempb)
+				->update([
+					'podt_sisaterima' => $hasilpo,
+				]);
+			}
+
 			//ambil status di detail
 			$statusbrg = array();
 			for($indx = 0 ; $indx < $hitungpb; $indx++){
@@ -4591,6 +4634,8 @@ public function purchase_order() {
 			}
 
 			DB::delete("DELETE from  stock_mutation where sm_po = '$id' and sm_flag = 'PO' and sm_mutcat = '1'");
+
+
 		
 		} // end flag PO
 		else if($flag == 'FP'){

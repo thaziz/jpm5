@@ -295,7 +295,7 @@ class pengembalian_bonsem_controller extends Controller
                     ->update([
                       'bp_status_pengembalian' => 'Process',
                       'bp_keterangan_pengembalian'=> strtoupper($req->keterangan),
-                      'bp_keterangan_pengembalian'=> strtoupper($req->keterangan),
+                      'bp_akun_tujuan_pengembalian'=> $req->akun_bank,
                       'bp_tanggal_pengembalian'=> $req->tanggal,
                       'bp_sisapemakaian'=> 0
                     ]);
@@ -335,7 +335,6 @@ class pengembalian_bonsem_controller extends Controller
 
           array_push($akun, $cari->bp_akunhutang);
           array_push($akun_val, $cari->bp_sisapemakaian);
-          
           $data_akun = [];
           for ($i=0; $i < count($akun); $i++) { 
 
@@ -348,7 +347,7 @@ class pengembalian_bonsem_controller extends Controller
                   $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                   $data_akun[$i]['jrdt_detailid'] = $i+1;
                   $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                  $data_akun[$i]['jrdt_value']    = -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+                  $data_akun[$i]['jrdt_value']    = -round($akun_val[$i]);
                           $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan);
                   $data_akun[$i]['jrdt_statusdk'] = 'K';
               }else{
@@ -356,7 +355,7 @@ class pengembalian_bonsem_controller extends Controller
                   $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                   $data_akun[$i]['jrdt_detailid'] = $i+1;
                   $data_akun[$i]['jrdt_acc']    = $akun[$i];
-                  $data_akun[$i]['jrdt_value']  = -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+                  $data_akun[$i]['jrdt_value']  = -round($akun_val[$i]);
                           $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan);
                   $data_akun[$i]['jrdt_statusdk'] = 'D';
               }
@@ -366,7 +365,7 @@ class pengembalian_bonsem_controller extends Controller
                   $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                   $data_akun[$i]['jrdt_detailid'] = $i+1;
                   $data_akun[$i]['jrdt_acc']    = $akun[$i];
-                  $data_akun[$i]['jrdt_value']  = filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+                  $data_akun[$i]['jrdt_value']  = round($akun_val[$i]);
                           $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan);
                   $data_akun[$i]['jrdt_statusdk'] = 'D';
              
@@ -374,7 +373,7 @@ class pengembalian_bonsem_controller extends Controller
                   $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
                   $data_akun[$i]['jrdt_detailid'] = $i+1;
                   $data_akun[$i]['jrdt_acc']    = $akun[$i];
-                  $data_akun[$i]['jrdt_value']  = filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+                  $data_akun[$i]['jrdt_value']  = round($akun_val[$i]);
                           $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan);
                   $data_akun[$i]['jrdt_statusdk'] = 'K';
               }
@@ -383,9 +382,10 @@ class pengembalian_bonsem_controller extends Controller
           $jurnal_dt = d_jurnal_dt::insert($data_akun);
           $lihat = d_jurnal_dt::where('jrdt_jurnal',$id_jurnal)->get()->toArray();
 
-          DB::commit();
-          return Response()->json(['status'=>1]);
+          
         }
+        DB::commit();
+        return Response()->json(['status'=>1]);
       }catch(Exception $error){
         DB::rollBack();
         dd($error);

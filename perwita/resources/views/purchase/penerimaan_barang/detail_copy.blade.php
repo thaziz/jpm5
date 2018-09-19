@@ -743,7 +743,14 @@
                 });
              }
              else  if(response.status == 'gagal') {
-                //alert(response.info);
+                swal({
+                title: "errpr!",
+                        type: 'error',
+                        text: response.info,
+                        timer: 900,
+                       showConfirmButton: false
+                        
+                });
              }
           },
           error : function(){

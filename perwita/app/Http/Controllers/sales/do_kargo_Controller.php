@@ -125,6 +125,7 @@ class do_kargo_Controller extends Controller
                               ->join('kontrak_customer','kc_kode_customer','=','kode')
                               ->join('kontrak_customer_d','kcd_id','=','kc_id')
                               ->where('kcd_jenis','KARGO')
+                              ->where('kcd_active',true)
                               ->select('kode')
                               ->groupBy('kode')
                               ->orderBy('kode','ASC')
@@ -387,6 +388,7 @@ class do_kargo_Controller extends Controller
                       // ->where('kcd_kota_tujuan',$request->tujuan)
                       ->where('kc_kode_cabang',$request->cabang_select)
                       ->where('kcd_jenis','KARGO')
+                      ->where('kcd_active',true)
                       ->orderBy('kcd_id','ASC')
                       ->get();
 

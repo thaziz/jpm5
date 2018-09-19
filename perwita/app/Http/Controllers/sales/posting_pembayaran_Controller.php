@@ -244,19 +244,28 @@ class posting_pembayaran_Controller extends Controller
           $akun_bank = DB::table("masterbank")
                        ->where('mb_id',$request->akun_bank)
                        ->first();
-
-          $temp = DB::table('kwitansi')
-                    ->where('k_kode_cabang',$request->cabang)
-                    ->where('k_nomor_posting','=',null)
-                    ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
-                    ->where('k_id_bank',$request->akun_bank)
-                    ->get();
+          if (Auth::user()->punyaAkses('Posting Pembayaran','cabang')) {
+            $temp = DB::table('kwitansi')
+                      ->where('k_nomor_posting','=',null)
+                      ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
+                      ->where('k_id_bank',$request->akun_bank)
+                      ->get();
+          }else{
+            $temp = DB::table('kwitansi')
+                      ->where('k_kode_cabang',$request->cabang)
+                      ->where('k_nomor_posting','=',null)
+                      ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
+                      ->where('k_id_bank',$request->akun_bank)
+                      ->get();
+          }
+            
 
           $temp1 = $temp;
 
           $kwitansi_edit = DB::table('kwitansi')
                             ->whereIn('k_nomor',$request->nomor)
                             ->get();
+
           $temp = array_merge($temp,$kwitansi_edit);
           $temp1 = array_merge($temp1,$kwitansi_edit);
           $temp = array_values($temp);
@@ -281,12 +290,21 @@ class posting_pembayaran_Controller extends Controller
           }
 
         }else{
-          $kwitansi = DB::table('kwitansi')
-                    ->select('k_nomor','k_tanggal','k_netto')
-                    ->where('k_kode_cabang',$request->cabang)
-                    ->where('k_nomor_posting','=',null)
-                    ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
-                    ->get();
+          if (Auth::user()->punyaAkses('Posting Pembayaran','cabang')) {
+            $kwitansi = DB::table('kwitansi')
+                      ->select('k_nomor','k_tanggal','k_netto')
+                      ->where('k_nomor_posting','=',null)
+                      ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
+                      ->get();
+          }else{
+            $kwitansi = DB::table('kwitansi')
+                      ->select('k_nomor','k_tanggal','k_netto')
+                      ->where('k_kode_cabang',$request->cabang)
+                      ->where('k_nomor_posting','=',null)
+                      ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
+                      ->get();
+          }
+            
 
           $do = DB::table('delivery_order')
                     ->select('nomor as k_nomor','tanggal as k_tanggal','total_net as k_netto')
@@ -539,7 +557,7 @@ class posting_pembayaran_Controller extends Controller
                     
                 }
                 $fix_akun_piutang = array_unique($temp_akun_piutang);
-            
+                $fix_akun_piutang = array_values($fix_akun_piutang);
                 $fix_nominal_akun = [];
                 for ($i=0; $i < count($fix_akun_piutang); $i++) { 
                     for ($a=0; $a < count($temp_akun_piutang); $a++) { 
@@ -658,7 +676,6 @@ class posting_pembayaran_Controller extends Controller
                     array_push($statusdk, $akun_biaya->jenis);
                   }
                 }
-
                 $data_akun = [];
                 for ($i=0; $i < count($akun); $i++) { 
                     $cari_coa = DB::table('d_akun')
@@ -807,6 +824,7 @@ class posting_pembayaran_Controller extends Controller
                     
                 }
                 $fix_akun_piutang = array_unique($temp_akun_piutang);
+                $fix_akun_piutang = array_values($fix_akun_piutang);
                 $fix_nominal_akun = [];
                 for ($i=0; $i < count($fix_akun_piutang); $i++) { 
                     for ($a=0; $a < count($temp_akun_piutang); $a++) { 

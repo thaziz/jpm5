@@ -3937,31 +3937,19 @@
       val = accounting.formatMoney(val, "", 2, ",",'.');
       $(this).val(val);
 
+    
 
       if(qty != '') {
         amount = parseInt(qty) * parseInt(val);
         num_amount = parseFloat(amount).toFixed(2);
-        numeric = parseFloat(val).toFixed(2);
-        harga = addCommas(numeric);
-        $(this).val(harga);
+      
+//        $(this).val(harga);
         $('.amount').val(addCommas(num_amount));
 
         biaya = $('.biaya').val();
         hasilnetto = parseFloat(parseFloat(biaya) + parseFloat(num_amount)).toFixed(2);
         $('.nettoitem').val(addCommas(hasilnetto));
       }
-
-     /* diskon = $('.diskon').val();
-      total = parseFloat((diskon / 100) * num_amount);*/
-        
-      /*  hasiltotal = total.toFixed(2);
-        $('.hasildiskonitem').val(addCommas(hasiltotal));
-
-        hasil = parseFloat(num_amount) - parseFloat(total);
-        numeric = parseFloat(hasil).toFixed(2);
-
-        $('.biaya').val(addCommas(numeric));*/
-
 
 
     })

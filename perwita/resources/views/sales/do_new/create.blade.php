@@ -836,7 +836,8 @@ $('.radio-inline').click(function() {
                     
                  }
                 $('#do_kecamatan_tujuan').trigger('chosen:updated');
-                             
+                var kec_replace = $('#do_kecamatan_tujuan').find(':selected').data('nama');
+                $("input[name='do_kecamatan']").val(kec_replace);      
             }
         })
 
