@@ -293,7 +293,7 @@ class PurchaseController extends Controller
 
 	public function savespp(Request $request) {
 		return DB::transaction(function() use ($request) {  
-		
+			/*dd($request);*/
 			$nospp = $request->nospp;
 			$cabang = $request->comp;
 			$dataspp = DB::select("select * from spp where spp_nospp = '$nospp' and spp_cabang = '$cabang'");
@@ -1042,6 +1042,33 @@ class PurchaseController extends Controller
 		return view('purchase.confirm_orderdetail.index4', compact('data' , 'tipespp' , 'namatipe'));
 	}	
 
+	public function cekhargatotal(Request $request){
+		$data['datasupplier'] = [];
+		$data['temp'] = [];
+		$idspp = $request->idspp;
+		for($i = 0; $i < count($request->hslsupplier); $i++){
+			$idsup = $request->hslsupplier[$i];
+
+			
+			$dataspptb = DB::table('spp_totalbiaya')
+						->where('spptb_idspp' , '=' , $idspp)
+						->where('spptb_supplier' , '=' , $idsup)
+						->get();
+
+			if(count($dataspptb) == 0){
+				$temp = 0;
+				$supplier = DB::select("select * from supplier where idsup = '$idsup'");
+			}
+			else {
+				$temp = 1;
+				$supplier = DB::select("select * from spp_totalbiaya, supplier where spptb_idspp = '$idspp' and spptb_supplier = '$idsup' and spptb_supplier = idsup");
+			}
+			array_push($data['temp'] , $temp);
+			array_push($data['datasupplier'] , $supplier);
+		}
+		return json_encode($data);
+	}
+
 	public function cekharga(Request $request){
 		$kodeitem = $request->kodeitem;
 		$supplier = $request->supplier;
@@ -1116,10 +1143,14 @@ class PurchaseController extends Controller
 
 			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem order by sppd_kodeitem asc");
 
+			$data['codt_barang'] = DB::select("select distinct codtk_kodeitem, nama_masteritem, codtk_qtyrequest, codtk_qtyapproved, sg_qty, unitstock from confirm_order, masteritem , confirm_order_dt_pemb LEFT OUTER JOIN stock_gudang on codtk_kodeitem = sg_item and sg_gudang = '$lokasigudang' where co_idspp = '$id' and kode_item = codtk_kodeitem and codtk_idco = co_id order by codtk_kodeitem asc");			
+
 			$data['codt'] = DB::select("select *  from confirm_order, masteritem, spp, confirm_order_dt_pemb LEFT OUTER JOIN stock_gudang on codtk_kodeitem = sg_item and sg_gudang = '$lokasigudang' where confirm_order_dt_pemb.codtk_idco=co_id and co_idspp = '$id' and co_idspp = spp_id and codtk_kodeitem = kode_item");
 		}
 		else {
 			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and  sppd_supplier = idsup order by sppd_seq asc");
+
+			$data['codt_barang'] = DB::select("select distinct codtk_kodeitem, codtk_qtyapproved, nama_masteritem, codtk_qtyrequest,  unitstock from confirm_order, masteritem , confirm_order_dt_pemb where co_idspp = '$id' and kode_item = codtk_kodeitem and codtk_idco = co_id order by codtk_kodeitem asc");		
 
 			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, unitstock from  masteritem , spp_detail  where sppd_idspp = '$id' and kode_item = sppd_kodeitem order by sppd_kodeitem asc ");
 			
@@ -1155,7 +1186,7 @@ class PurchaseController extends Controller
 		
 		//data data setelah revisi
 
-	
+		
 		return view('purchase.confirm_orderdetail.index_pemb1', compact('data' , 'tipespp' , 'namatipe'));
 	}	
 
@@ -1283,7 +1314,7 @@ class PurchaseController extends Controller
 	public function saveconfirmorderdt(Request $request){
 		
 		return DB::transaction(function() use ($request) { 
-		//dd($request);
+
 		if($request->pemroses == 'KEUANGAN'){
 			$updatespp = spp_purchase::where('spp_id', '=', $request->idspp);
 			$updatespp->update([
@@ -1310,13 +1341,13 @@ class PurchaseController extends Controller
 			$co->time_staffpemb = $mytime;
 			$co->save();
 
-			$countapproval = count($request->qtyapproval);
+			$countapproval = count($request->barang);
 
 			$n = 1;
 			$idsup = 0;
 			for($i = 0 ; $i < $countapproval; $i++) {
-				
 				if($request->status[$i] == 'SETUJU'){
+						if($request->suppliercek[$i] != '' && $request->hargacek[$i] != ''){
 					$lastid = co_purchasedtpemb::max('codtk_id'); 
 
 					if(isset($lastid)) {
@@ -1331,57 +1362,50 @@ class PurchaseController extends Controller
 						$codt->codtk_id = $idco;
 						$codt->codtk_idco = $request->idco;
 						$codt->codtk_seq = $n;
-						$codt->codtk_kodeitem = $request->item[$i];
+						$codt->codtk_kodeitem = $request->barang[$i];
 						$codt->codtk_qtyrequest = $request->qtyrequest[$i];
 						$codt->codtk_qtyapproved = $request->qtyapproval[$i];
 
-						/*$string = $request->supplier3[$i];
-						$explode = explode(",", $string);
-						$idsup = $explode[0];*/
+					
 
-						$codt->codtk_supplier = $request->datasup[$i];
-						/*if(count($request->supplier) > 1 ){
-							
-							$idsup++;
-						}
-						else {
-							$codt->codt_supplier = $request->supplier[$idsup];	
-						}*/
+						$codt->codtk_supplier = $request->suppliercek[$i];
 						
-						$replacehrg = str_replace(',', '', $request->harga[$i]);
+						
+						$replacehrg = str_replace(',', '', $request->hargacek[$i]);
 						$codt->codtk_harga = $replacehrg;
 						$codt->codtk_tolak = $request->keterangantolak[$i];
 						$codt->codtk_lokasigudang = $lokasigudang;
 
 						$codt->save();
 
-						$kodeitem = $request->item[$i];
+						$kodeitem = $request->barang[$i];
 
 						$updatespp = sppdt_purchase::where([['sppd_idspp' , '=' , $request->idspp],['sppd_kodeitem' , '=' , $kodeitem]]);
 						$updatespp->update([
 							'sppd_status' => $request->status[$i],	
 						]);	
 
-						$n++;	
+						$n++;
+						}	
 				}
-				else {
-					$kodeitem = $request->item[$i];
-
+				else if($request->status[$i] == 'TIDAK SETUJU') {
+					$kodeitem = $request->barang[$i];
+					
 					$updatespp = sppdt_purchase::where([['sppd_idspp' , '=' , $request->idspp],['sppd_kodeitem' , '=' , $kodeitem]]);
 					$updatespp->update([
-						'sppd_status' => $request->status[$i],
+						'sppd_status' => 'TOLAK',
 						'sppd_kettolak' => $request->keterangantolak[$i],	
 					]);	
-
-				}		
+				}
+						
 			}	
 
 
 			$cotb = new co_purchasetbpemb();
-			for($k=0; $k < count($request->bayar); $k++){
+			for($k=0; $k < count($request->suppliercekbayar); $k++){
 				
 
-				if($request->bayar[$k] == "undefined") {
+				if($request->suppliercekbayar[$k] == "undefined") {
 
 				}
 				else{
@@ -1393,22 +1417,59 @@ class PurchaseController extends Controller
 					else {
 						$idcotb = 1;
 					}
-					$stringharga = $request->bayar[$k];
+					$stringharga = $request->totalbayarpembayaran[$k];
 					$replacehrg = str_replace(',', '', $stringharga);
 
 					$cotb->cotbk_id = $idcotb;
 					$cotb->cotbk_idco = $request->idco;
 
 				
-					$cotb->cotbk_supplier = $request->datasup[$k];
+					$cotb->cotbk_supplier = $request->suppliercekbayar[$k];
 
 					$cotb->cotbk_totalbiaya = $replacehrg;
 					$cotb->cotbk_setuju = 'BELUM DI SETUJUI';
-					$cotb->cotbk_bayar = $request->spptb_bayar[$k];
+					$cotb->cotbk_bayar = $request->syaratkredit[$k];
 					$cotb->save();
 				}
 			}
 
+			$tempstatus = 0;
+
+			for($p = 0; $p < count($request->status); $p++){
+				if($request->status[$p] != 'SETUJU'){
+					$tempstatus = (int)$tempstatus + 1;
+				}
+			
+			}
+
+
+			if($tempstatus == 0){
+				$updatespp = spp_purchase::where('spp_id', '=', $request->idspp);
+				$updatespp->update([
+					'spp_status' => 'DISETUJUI',
+				]);	
+				$co = co_purchase::find($idsppcodt);
+				$co->staff_pemb = 'DISETUJU';
+				$co->save();
+			}
+			else if($tempstatus == count($request->status)){
+				$updatespp = spp_purchase::where('spp_id', '=', $request->idspp);
+				$updatespp->update([
+					'spp_status' => 'DITOLAK',
+				]);	
+				$co = co_purchase::find($idsppcodt);
+				$co->staff_pemb = 'DITOLAK';
+				$co->save();
+			}
+			else if((int)$tempstatus < count($request->status) && (int)$tempstatus > 0){
+				$updatespp = spp_purchase::where('spp_id', '=', $request->idspp);
+				$updatespp->update([
+					'spp_status' => 'DITOLAK SEBAGIAN',
+				]);	
+				$co = co_purchase::find($idsppcodt);
+				$co->staff_pemb = 'DITOLAK SEBAGIAN';
+				$co->save();
+			}
 		}
 
 		if($request->pemroses == 'KEUANGAN') {
@@ -1517,17 +1578,13 @@ class PurchaseController extends Controller
 		}
 		}
 
-		
-		
-		
-
 
 		$data['co'] = DB::select("select * from confirm_order where co_idspp = '$idsppcodt'");
 		$data['spp'] = DB::select("select * from spp, masterdepartment, cabang where spp_bagian = kode_department and spp_id = '$idsppcodt' and spp_cabang =  kode ");
 	//	dd($data['spp']);
 		
 
-		return redirect('konfirmasi_order/konfirmasi_order');
+		return json_encode('sukses');
 
 		});
 		
@@ -9449,7 +9506,7 @@ public function kekata($x) {
 				$updatebbkbank = formfpg_bank::where('fpgb_idfpg', '=', $idfpg);
 					$updatebbkbank->update([
 					 	'fpgb_posting' => null, 	
-				 	]);
+				 	]);	
 
 				 $updatebbk = formfpg::where('idfpg', '=', $idfpg);
 					$updatebbk->update([
@@ -9466,6 +9523,11 @@ public function kekata($x) {
 				$updatebbkab->update([
 					'fpg_posting' => 'NOT',
 				]);
+
+				$updatebbkbank = formfpg_bank::where('fpgb_idfpg', '=', $idfpg);
+					$updatebbkbank->update([
+					 	'fpgb_posting' => null, 	
+				 	]);
 			}
 		}
 
