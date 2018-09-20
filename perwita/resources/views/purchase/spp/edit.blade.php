@@ -207,46 +207,10 @@
                                       <th style="width:10px" class="kolompembayaran"> Supplier </th>
                                   <!--     <th class="kolompembayaran" style="width:10px" id="pembayaran"> Pembayaran </th> -->
                                       <th style="width:5px"> Aksi </th>
-                                      <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    
                                   </tr>
 
-                                  <tr>
-                                    <td> </td>
-                                    <td>  <b id="add-btn" class="btn btn-info btn-flat">Tambah Data Barang</b> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td>  </td>
-                                    <td class="kolomtghpembayaran">  <b id="add-btn-supp" class="btn btn-info btn-flat">Tambah Data Supplier </b> </td>
-                                   <!--  <td >  </td> -->
-                                    <td> </td>
-                                  </tr>
-
-                                  @foreach($data['sppdt_barang'] as $index=>$sppdbrg)
-                                  <tr>
-                                      <td>
-                                        {{$index +1}}
-                                      </td>
-                                      <td> 
-                                        {{$sppdbrg->nama_masteritem}}
-                                      </td>
-
-                                      <td>
-                                         {{$sppdbrg->sppd_qtyrequest}}
-                                      </td>
-                                      <td> {{$sppdbrg->sg_qty}} </td>
-                                      <td>
-                                        {{$sppdbrg->unitstock}}
-                                      </td>
-
-                                      <td colspan="2">
-                                        <button class="btn btn-sm btn-info" type="button"> Data Supplier </button>
-                                      </td>
-                                      
-                                      <td>
-                                      </td>
-                                  </tr>
-                                  @endforeach
+                                  
                                  
                                
 

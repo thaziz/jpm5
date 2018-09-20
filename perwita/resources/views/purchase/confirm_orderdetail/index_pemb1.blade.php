@@ -218,7 +218,6 @@
                               </tr>
                             </table>
 
-                             @if($data['countcodt'] == 0 && $data['spp'][0]->staff_pemb == 'DITOLAK')
                             <h3> PEMBAYARAN </h3>
                             
                             <table class="table" id="tbl-pembayaran">
@@ -230,7 +229,7 @@
                             <tbody>
                             </tbody>
                             </table>
-                              @endif
+                           
                          </div>
 
 
@@ -425,8 +424,8 @@
                 </tbody>
                 </table>
               </div>
-                <button class="btn btn-md" type="button" id="cektb"> Cek Total Biaya </button>
-                <button class="btn btn-md simpantb" type="simpan"> Simpan</button>
+                <button class="btn btn-md btn-danger" type="button" id="cektb"> Cek Total Biaya </button>
+                <button class="btn btn-md btn-success simpantb" type="simpan"> Simpan</button>
                  
                 </div><!-- /.box-body -->
                 @endif
@@ -508,6 +507,8 @@
    }, 2000)
   
 
+  $('.simpantb').attr('disabled' , true);
+
   //qty request
   $('.qtyreq').change(function(){
     id = $(this).data('id');
@@ -515,6 +516,7 @@
     kodeitem = $(this).data('kodeitem');
 
     $('.qtybarang' + id + '[data-kodeitem = '+kodeitem+']').val(val);
+    $('.simpantb').attr('disabled' , true);
   })
 
   $('.keterangantolak').change(function(){
@@ -523,12 +525,14 @@
     kodeitem = $(this).data('kodeitem');
 
     $('.keterangancektolak' + id + '[data-kodeitem = '+kodeitem+']').val(val);
+    $('.simpantb').attr('disabled' , true);
   })
 
   $('.hargacek').change(function(){
     val = $(this).val();
        val = accounting.formatMoney(val, "", 2, ",",'.');
       $(this).val(val);
+    $('.simpantb').attr('disabled' , true);
   })
 
   $('#formsave').submit(function(event){
@@ -575,6 +579,7 @@
 
     $('.suppliercek' + id + '[data-kodeitem = '+kodeitem+']').trigger("chosen:updated");
      $('.suppliercek' + id + '[data-kodeitem = '+kodeitem+']').trigger("liszt:updated");
+     $('.simpantb').attr('disabled' , true);
   })
 
   $('.checktolak').change(function(){
@@ -596,6 +601,7 @@
       $('.status' + id + '[data-kodeitem = '+kodeitem+']').val('TIDAK SETUJU');
       $('.keterangancektolak' + id + '[data-kodeitem = '+kodeitem+']').attr('readonly' , false);
       $('.keterangantolak' + id + '[data-kodeitem = '+kodeitem+']').attr('readonly' , false);
+      $('.simpantb').attr('disabled' , true);
     }
     else {
       id = $(this).data('id');
@@ -627,6 +633,7 @@
         $('.keterangantolak' + id + '[data-kodeitem = '+kodeitem+']').attr('readonly' , true);
         $('.keterangancektolak' + id + '[data-kodeitem = '+kodeitem+']').attr('readonly' , true);
         
+         $('.simpantb').attr('disabled' , true);
     }
 
   })
@@ -667,7 +674,7 @@
     }
 
   $('#cektb').click(function(){
-
+      $('.simpantb').attr('disabled' , false);
       arrjumlahtotal = [];
 
       $('.qtyreq').each(function(){
@@ -905,7 +912,7 @@
           }
       }
     })
-
+    $('.simpantb').attr('disabled' , true);
   })
 
 

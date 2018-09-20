@@ -105,7 +105,7 @@
                         <th> Keperluan </th>
                         <th> Bagian </th>
                         <th> Status </th>
-                        <th> Detail </th>
+                        <th style="width:90px"> Detail </th>
                         <th> Status Kabag </th>
                     </tr>
                  
@@ -133,7 +133,6 @@
                       @endif
                           </td>
 
-                      <!-- <td> <a class="btn btn-success" href="{{url('suratpermintaanpembelian/detailspp/'. $spp->spp_id .'')}}"><i class="fa fa-arrow-right" aria-hidden="true"> </i> </a> -->
                       <td> <div class="row">
                       <div class="col-md-3">
 
@@ -144,15 +143,20 @@
                                 {{ Form::open(['url'=>'suratpermintaanpembelian/deletespp/'. $spp->spp_id, 'method' => 'delete', 'id' => $spp->spp_id ]) }}
                                 {{ Form::close() }} </div>
                                 &nbsp;
+                         @endif
+
+                         @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian' , 'ubah'))
+                           &nbsp; <a class="btn btn-sm btn-warning" href="{{url('suratpermintaanpembelian/editspps/'.$spp->spp_id.'')}}"> <i class="fa fa-pencil" aria-hidden="true"></i>  </a>
                         @endif
-                         <!--  <a class="btn btn-sm btn-warning" href="{{url('suratpermintaanpembelian/editspp/'.$spp->spp_id.'')}}"> <i class="fa fa-pencil" aria-hidden="true"></i>  </a>  -->
-                          &nbsp;
 
                       @endif
+
                         @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','print'))
         
                           <a class="btn btn-sm btn-success" href="{{url('suratpermintaanpembelian/cetakspp/'.$spp->spp_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i>  </a>  </div> 
                           @endif
+
+                       
                       </td>
                       
 

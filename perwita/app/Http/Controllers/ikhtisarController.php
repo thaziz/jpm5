@@ -763,6 +763,7 @@ class ikhtisarController extends Controller
 			$jenis = $data->ik_jenis;
 			$akun = DB::table('d_akun')
 				   		->get();
+				   		
 			return view('purchase.ikhtisar_kas.edit_ikhtisar',compact('akun','data','start','end','id','detail','cari','jenis','bkkd'));
 			
 		}
