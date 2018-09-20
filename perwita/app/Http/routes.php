@@ -136,6 +136,7 @@ Route::post('suratpermintaanpembelian/setujukabag', 'PurchaseController@sppsetuj
 
 
 
+
 Route::get('testing/analisa', 'PurchaseController@queryanalisa');
 
 Route::get('konfirmasi_order/konfirmasi_order' , 'PurchaseController@confirm_order');
