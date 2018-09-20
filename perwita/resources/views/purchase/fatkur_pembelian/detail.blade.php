@@ -189,7 +189,7 @@
                         <div class="row">
                           <div class="col-md-5">
 
-                            <select class="form-control jenisppn_po">
+                            <select class="form-control jenisppn_po" name="jenisppn_po">
                               <option value="T" @if($faktur->fp_jenisppn == 'T') selected="" @endif>
                                 TANPA
                               </option>

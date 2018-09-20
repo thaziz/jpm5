@@ -395,12 +395,12 @@
 
                                                       <tr>
                                                         <th> D / K </th>
-                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk dkbiayabg biayabg" readonly=""> </div> <input type='hidden' class='nomorbgakun'> <input type='hidden' class='idfpgbakunbg'> </td>
+                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk dkbiayabg biayabg" > </div> <input type='hidden' class='nomorbgakun'> <input type='hidden' class='idfpgbakunbg'> </td>
                                                       </tr>
 
                                                       <tr>
                                                         <th> Jumlah </th>
-                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount  jumlahakunbg" style="text-align:right'" readonly=""> </div> </td>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount  jumlahakunbg" style="text-align:right'" > </div> </td>
                                                       </tr>
 
                                                       <tr>
@@ -915,6 +915,25 @@
           return false;
         }
 
+        nominalfpg2 = $('.nominalfpgdetailbg').val();
+        totalakun = 0;
+        $('.jumlahakunbiayadetailbg').each(function(){
+            val = $(this).val();
+            val = val.replace(/,/g, '');
+            if(val == ''){
+              toastr.info("nominal akun bg ada yang blm di isi :)");
+              return false;
+            }
+            else {
+              totalakun = parseFloat(parseFloat(totalakun) + parseFloat(val)).toFixed(2);
+            }  
+        })
+        
+        totalakun = addCommas(totalakun);
+        if(nominalfpg2 != totalakun){
+          toastr.info("Mohon maaf nominal FPG tidak sama dengan akun :)");
+          return false;
+        }
       }
 
 
