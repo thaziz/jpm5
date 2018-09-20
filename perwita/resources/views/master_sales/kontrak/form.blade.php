@@ -390,33 +390,33 @@
                       url:'{{ route('datatable_kontrak') }}',
                       data:{nota: function() { return $('#ed_nomor').val() }}
                   },
-                //   columnDefs: [
-                //   {
-                //      targets: 7 ,
-                //      className: 'center'
-                //   },
-                //   {
-                //      targets: 0 ,
-                //      className: 'center kcd_dt'
-                //   },
-                //   {
-                //      targets: 6 ,
-                //      className: 'center'
-                //   },
-                //   {
-                //      targets: 8 ,
-                //      className: 'center'
-                //   },
-                //   {
-                //      targets: 1 ,
-                //      className: 'lebar'
-                //   },
-                //   {
-                //      targets: 2 ,
-                //      className: 'lebar'
-                //   },
+                  columnDefs: [
+                  {
+                     targets: 7 ,
+                     className: 'center'
+                  },
+                  {
+                     targets: 0 ,
+                     className: 'center kcd_dt'
+                  },
+                  {
+                     targets: 6 ,
+                     className: 'center'
+                  },
+                  {
+                     targets: 8 ,
+                     className: 'center'
+                  },
+                  {
+                     targets: 1 ,
+                     className: 'lebar'
+                  },
+                  {
+                     targets: 2 ,
+                     className: 'lebar'
+                  },
                
-                // ],
+                ],
                 columns: [
                     {data: 'kcd_dt', name: 'kcd_dt'},
                     {data: 'asal', name: 'asal'},
