@@ -603,6 +603,7 @@ class ikhtisarController extends Controller
 			// 		   ->join('patty_cash','ikd_pc_id','=','pc_id')
 			// 		   ->where('ikd_ik_id',$id)
 			// 		   ->get();
+			dd($data);
 			if ($data->ik_jenis == 'BONSEM') {
 				$bkk = DB::table('ikhtisar_kas_detail')
 					->join('bukti_kas_keluar','ikd_ref','=','bkk_nota')
