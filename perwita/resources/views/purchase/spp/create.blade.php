@@ -332,7 +332,7 @@
                       location.reload();
                   }
                 
-                  if(nospp === ''){
+                  if(month == 'NANN'){
                       location.reload();
                   }
 

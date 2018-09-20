@@ -850,9 +850,7 @@
                 //bulan
                 var month = d.getMonth();
                 var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
+            
 
                 if(month < 10) {
                   month = '0' + month1;

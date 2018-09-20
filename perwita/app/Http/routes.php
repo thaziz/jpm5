@@ -133,6 +133,7 @@ Route::get('suratpermintaanpembelian/editspp/{id}', 'PurchaseController@editspp'
 Route::get('suratpermintaanpembelian/valgudang', 'PurchaseController@valgudang');
 Route::get('suratpermintaanpembelian/kettolak', 'PurchaseController@kettolakspp');
 Route::post('suratpermintaanpembelian/setujukabag', 'PurchaseController@sppsetujukabag');
+Route::get('suratpermintaanpembelian/tmbhdatabarang', 'PurchaseController@tmbhdatabarang');
 
 
 
