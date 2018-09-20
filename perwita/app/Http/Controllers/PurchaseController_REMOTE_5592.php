@@ -8657,9 +8657,10 @@ public function kekata($x) {
 				$idfpg = $request->idfpg[$j];
 				$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
 				$jenisbayar = $datafpg[0]->fpg_jenisbayar;
+				
 				if($jenisbayar != 'INTERNET BANKING'){
 						$data['idfpg'] = DB::table('fpg_cekbank')
-						->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $request->notransaksi[$j]]])
+						->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $request->nocheck[$j]]])
 						->update([
 							'fpgb_posting' => 'DONE',
 						]);
@@ -10457,6 +10458,7 @@ public function kekata($x) {
 
 								$tipefp = $datafp[0]->fp_tipe;
 								$datacomp2 = $request->cabang;
+
 								if($tipefp == 'NS' || $tipefp == 'J'){
 									$nofaktur = $request->nofaktur;
 									DB::delete("DELETE from  d_jurnal where jr_ref = '$nofaktur' and jr_detail = 'FAKTUR PEMBELIAN'");
@@ -10473,6 +10475,8 @@ public function kekata($x) {
 										$datajurnal[$ja]['subtotal'] = $totalharga;
 										$datajurnal[$ja]['dk'] = 'D';
 										$datajurnal[$ja]['detail'] = $request->keterangan;
+
+										$totalhutang = floatval($totalhutang) + floatval($totalharga);
 									}	
 									
 									if($request->hasilppn_po != ''){
@@ -10493,7 +10497,7 @@ public function kekata($x) {
 												$dataakun = array (
 												'id_akun' => $akunppn,
 												'subtotal' => '-' . $hasilppn,
-												'dk' => 'D',
+												'dk' => 'K',
 												'detail' => $request->keterangan,
 												);
 											}
@@ -10508,6 +10512,7 @@ public function kekata($x) {
 											array_push($datajurnal,$dataakun);
 											}
 											
+											$totalhutang = floatval($totalhutang) + floatval($hasilppn);
 										}
 										
 										
@@ -10544,7 +10549,7 @@ public function kekata($x) {
 													$dataakun = array (
 													'id_akun' => $akunpph,
 													'subtotal' => '-' . $hasilpph,
-													'dk' => 'K',
+													'dk' => 'D',
 													'detail' => $request->keterangan,
 													);
 												}
@@ -10558,11 +10563,13 @@ public function kekata($x) {
 												}
 												array_push($datajurnal, $dataakun );
 											}
+
+											$totalhutang = floatval($totalhutang) - floatval($hasilpph);
 									}
 
 									$dataakun = array (
 										'id_akun' => $request->acchutang,
-										'subtotal' => $netto,
+										'subtotal' => $totalhutang,
 										'dk' => 'K',
 										'detail' => $request->keterangan,
 										);
@@ -10616,18 +10623,19 @@ public function kekata($x) {
 						    			$jurnaldt->save();
 						    			$key++;
 						    		}
-
-
+						    		
 						    		$cekjurnal = check_jurnal($nofaktur);
-						    		if($cekjurnal == 0){
-						    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal KM Tidak Balance :('];
-										DB::rollback();
-															        
-						    		}
-						    		elseif($cekjurnal == 1) {
-						    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+							    		if($cekjurnal == 0){
+							    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
+											DB::rollback();
+																        
+							    		}
+							    		elseif($cekjurnal == 1) {
+							    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idfaktur];
+												        
+							    		}
+
 											        
-						    		}
 								}
 								else { // jurnal FP PO
 								$datajurnalpo = [];

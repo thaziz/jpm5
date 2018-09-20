@@ -493,7 +493,9 @@
                         </tr>
                       </thead>
                     <tbody>
-
+                       <div class="loading text-center" style="display: none;">
+                         <img src="{{ asset('assets/image/loading1.gif') }}" width="100px">
+                      </div>
                     </tbody>
                     </table>
                   </div>
@@ -1107,6 +1109,7 @@
                                           totalgiro = (parseFloat(totalgiro) + parseFloat(aslinominal)).toFixed(2);
                                       })
                                       $('.ChequeBg').val(addCommas(totalgiro));
+                                      $('.nominalbankasal').val(addCommas(totalgiro));
                                       $('.totbayar').val(addCommas(totalgiro));
                               })
                         }
@@ -1152,9 +1155,11 @@
                                       if(jenisbayar == '5'){
                                         $('.ChequeBg').val(addCommas(totalgiro));
                                         $('.totbayar').val(addCommas(totalgiro));
+                                        $('.nominalbankasal').val(addCommas(totalgiro))
                                       }
                                       else {
                                          $('.ChequeBg').val(addCommas(totalgiro));
+                                         $('.nominalbankasal').val(addCommas(totalgiro));
                                       }
                                      
                               })
@@ -2865,7 +2870,7 @@
       $('.cbgbank').val(alamat);
       //$('.account').val(account);
       $('.kodebankbg').val(string[4]);
-
+      $('.loading').css('display', 'block');
 
        $.ajax({
           type : "post",
@@ -2873,6 +2878,7 @@
           url : baseUrl+'/formfpg/getkodeakun',
           dataType : 'json',
           success : function (response){
+            $('.loading').css('display', 'none');
             table = response.table;
              $('.hutangbank').val(string[4]);
           var tablecek = $('#tbl-cheuque').DataTable();
