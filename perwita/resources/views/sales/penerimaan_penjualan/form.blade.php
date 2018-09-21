@@ -237,7 +237,7 @@
                             <tr>
                                  <td style="width:120px; padding-top: 0.4cm">Total Kredit (-)</td>
                                 <td colspan="3">
-                                    <input type="text"  class="form-control ed_kredit_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
+                                    <input type="text"  class="form-control nominal_cek" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
                                     <input type="hidden" name="ed_kredit"  class="form-control ed_kredit" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
                                 </td>
                             </tr>
@@ -251,33 +251,29 @@
                         </table>
                         <table class="table table-striped table-bordered table-hover table_rincian">
                             <tr>
-                                <td style="width:120px; padding-top: 0.4cm">Total Bayar</td>
+                                <td style="width:120px; padding-top: 0.4cm">No Cheque / BG</td>
                                 <td colspan="3">
-                                    <input type="text"  class="form-control total_jumlah_bayar_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
+                                    <input type="text"  class="form-control nomor_cek" name="nomor_cek" style="text-transform: uppercase " tabindex="-1" value="">
 
-                                    <input type="hidden" name="jumlah_bayar" class="form-control total_jumlah_bayar" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
                                 </td>
                               
                             </tr>
                             <tr>
-                                  <td style="width:120px; padding-top: 0.4cm">Total Debet (+)</td>
+                                <td style="width:120px; padding-top: 0.4cm">Jatuh Tempo</td>
                                 <td colspan="3">
-                                    <input type="text"  class="form-control ed_debet_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0" >
-                                    <input type="hidden" name="ed_debet" class="form-control ed_debet" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
+                                    <input type="text" name="jatuh_tempo" class="form-control date jatuh_tempo" style="text-transform: uppercase ; text-align: right"  tabindex="-1">
                                 </td>
                             </tr>
                             <tr>
-                                 <td style="width:120px; padding-top: 0.4cm">Total Kredit (-)</td>
+                                <td style="width:120px; padding-top: 0.4cm">Nominal</td>
                                 <td colspan="3">
-                                    <input type="text"  class="form-control ed_kredit_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
-                                    <input type="hidden" name="ed_kredit"  class="form-control ed_kredit" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
+                                    <input type="text"  class="form-control nominal_cek" style="text-transform: uppercase ; text-align: right"  value="0" name="nominal_cek">
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:120px; padding-top: 0.4cm">Netto</td>
+                                <td style="width:120px; padding-top: 0.4cm">Bank</td>
                                 <td colspan="3">
-                                    <input type="text"  class="form-control ed_netto_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
-                                    <input type="hidden" name="ed_netto" class="form-control ed_netto" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
+                                    <input type="text"  class="form-control nama_bank" style="text-transform: uppercase ;"  tabindex="-1" value="nama_bank">
                                 </td>
                             </tr>
                         </table>

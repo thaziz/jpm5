@@ -133,6 +133,8 @@ Route::get('suratpermintaanpembelian/editspp/{id}', 'PurchaseController@editspp'
 Route::get('suratpermintaanpembelian/valgudang', 'PurchaseController@valgudang');
 Route::get('suratpermintaanpembelian/kettolak', 'PurchaseController@kettolakspp');
 Route::post('suratpermintaanpembelian/setujukabag', 'PurchaseController@sppsetujukabag');
+Route::get('suratpermintaanpembelian/tmbhdatabarang', 'PurchaseController@tmbhdatabarang');
+
 
 
 
@@ -147,6 +149,7 @@ Route::post('konfirmasi_order/savekonfirmasiorderdetail' , 'PurchaseController@s
 Route::get('konfirmasi_order/cetakkonfirmasi/{id}' , 'PurchaseController@cetakkonfirmasi');
 Route::get('konfirmasi_order/ceksupplier' , 'PurchaseController@ceksupplier');
 Route::get('konfirmasi_order/cekharga' , 'PurchaseController@cekharga');
+Route::get('konfirmasi_order/cekhargatotal' , 'PurchaseController@cekhargatotal');
 
 
 Route::get('purchaseorder/ajax', 'PurchaseController@createAjax');

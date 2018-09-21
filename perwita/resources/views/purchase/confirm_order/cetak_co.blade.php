@@ -122,7 +122,13 @@ table, td, th {
 				<br>
 				<br>
 				<div class="float-left">
-					Tanggal :
+					Tanggal Persetujuan Purchase :
+				</div>
+				<div class="float-left border-bottom">
+					&nbsp; {{ Carbon\Carbon::parse($data['co'][0]->time_staffpemb)->format('d-M-Y') }}
+				</div>
+				<div class="float-left">
+					Tanggal Persetujuan Keuangan :
 				</div>
 				<div class="float-left border-bottom">
 					&nbsp; {{ Carbon\Carbon::parse($data['co'][0]->time_mankeu)->format('d-M-Y') }}

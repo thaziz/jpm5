@@ -332,7 +332,7 @@
                       location.reload();
                   }
                 
-                  if(nospp === ''){
+                  if(month == 'NANN'){
                       location.reload();
                   }
 
@@ -729,7 +729,7 @@
       var harga = [];
       $('.cek_tb').click(function(){
         
-
+          $(this).attr('disabled' , true);
           $('.brgduplicate').empty();
           $('.supduplicate').empty();
           //pengecekan barang double
@@ -997,10 +997,9 @@
             jumlahtotal = 0;
             for(var j = 0; j < hasilrow; j++){
               if(arrIdSup[j] == idsupp[i]) {
-                jumlahtotal = parseInt(jumlahtotal + arrtotal[j]);
+                jumlahtotal = parseFloat(jumlahtotal) + parseFloat(arrtotal[j]);
                 console.log(jumlahtotal);
               //  indexhslsup1 = arrIdSup.indexOf(idsupp[i]);
-               
                
              }
 

@@ -126,6 +126,8 @@
                             <th>Keterangan</th>
                             @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
                             <th>Active</th>
+                            @else
+                            <th>Active</th>
                             @endif
                             <th style="text-align: center;">Aksi</th>
                         </tr>
