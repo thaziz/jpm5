@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\master_keuangan\laporan;
 
+ini_set('max_execution_time', 300);
+
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -81,7 +83,7 @@ class laporan_buku_besar extends Controller
                             ->select('id_akun', 'nama_akun')
                             ->orderBy('id_akun', 'asc')->get();
             }else{
-                
+
                 $data_saldo = akun::select('id_akun', 'nama_akun', 'akun_dka', DB::raw('coalesce(opening_balance, 0)'), 'opening_date')
                                 ->orderBy('id_akun', 'asc')->with([
                                       'mutasi_bank_debet' => function($query) use ($data_date){
@@ -106,23 +108,18 @@ class laporan_buku_besar extends Controller
                                 ->whereBetween('d_akun.id_akun', [$request->akun1, $request->akun2])
                                 ->orderBy('id_akun', 'asc')->get();
 
-                $data = akun::with(['jurnal_detail' => function($query) use ($d1, $d2, $y1, $y2){
-                                $query->select('jrdt_acc', 'jrdt_jurnal', 'jr_date', 'jrdt_value', 'jrdt_statusdk')
-                                        ->join('d_jurnal', 'jr_id', '=', 'jrdt_jurnal')
-                                        ->with(['d_jurnal' => function($query) use ($d1, $d2, $y1, $y2){
-                                            $query->select('jr_id', 'jr_note', 'jr_date', 'jr_ref', 'jr_no')->with('detail');
-                                        }])->whereHas('d_jurnal', function($query) use ($d1, $d2, $y1, $y2){
-                                            $query->whereBetween(DB::raw("date_part('month', jr_date)"), [$d1, $d2])
-                                                    ->whereBetween(DB::raw("date_part('year', jr_date)"), [$y1, $y2]);
-                                        })->orderBy('jr_date');
-                            }])
-                            ->whereBetween('d_akun.id_akun', [$request->akun1, $request->akun2])
-                            ->select('id_akun', 'nama_akun')
-                            ->orderBy('id_akun', 'asc')->get();
-            }
-            
+                $data = DB::select(DB::raw("select id_akun, nama_akun, d_jurnal.jr_id, d_jurnal.jr_ref, d_jurnal.jr_date, d_jurnal.jr_note, d_jurnal_dt.jrdt_value, d_jurnal_dt.jrdt_statusdk from d_akun
+                  join d_jurnal_dt on d_jurnal_dt.jrdt_acc = d_akun.id_akun
+                  join d_jurnal on d_jurnal.jr_id = d_jurnal_dt.jrdt_jurnal
+                  order by id_akun asc, jr_date asc"));
 
-            // return json_encode($data_saldo);
+                $subledger = DB::select(DB::raw("select * from d_jurnal_dt where jrdt_jurnal in (select d_jurnal.jr_id from d_akun
+                  join d_jurnal_dt on d_jurnal_dt.jrdt_acc = d_akun.id_akun
+                  join d_jurnal on d_jurnal.jr_id = d_jurnal_dt.jrdt_jurnal
+                  order by id_akun asc, jr_date asc)"));
+                  
+                  // return json_encode($subledger);
+            }
 
         }elseif($throttle == "Tahun"){
 
@@ -193,7 +190,7 @@ class laporan_buku_besar extends Controller
         }
 
         // return json_encode($saldo);
-        return view('laporan_buku_besar.print_pdf.pdf_single', compact('request', 'throttle', 'saldo_awal', 'data', 'grap', 'time', 'b1', 'b2', 'data_saldo', 'data_date'));
+        return view('laporan_buku_besar.print_pdf.pdf_single', compact('request', 'throttle', 'saldo_awal', 'data', 'grap', 'time', 'b1', 'b2', 'data_saldo', 'data_date', 'subledger'));
 
     	// $pdf = PDF::loadView('laporan_buku_besar.print_pdf.pdf_single', compact('request', 'throttle', 'saldo_awal', 'data', 'grap', 'time'))
                   // ->setPaper('folio','landscape');

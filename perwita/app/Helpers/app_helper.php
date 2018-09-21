@@ -17,6 +17,10 @@
 		return "okee";
 	}
 
+	function get_jurnal($id_jurnal){
+         return DB::select(DB::raw("select * from d_jurnal_dt where jrdt_jurnal = '".$id_jurnal."'"));
+      }
+
 	function get_id_jurnal($state, $cab, $date = null){
 
 		// $digit = substr($state, 0, 2);

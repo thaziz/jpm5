@@ -44,6 +44,7 @@
 		    #table-data td{
 		    	border-right: 1px solid #555;
 		    	padding: 5px;
+		    	vertical-align: top;
 		    }
 
 		    #table-data td.currency{
@@ -189,7 +190,11 @@
           <thead>
             <tr>
               <td style="text-align: left; padding-top: 5px;">
-                Transaksi : Bulan {{ date_ind(explode('-', $b1)[0]).' '.explode('-', $b1)[1] }} &nbsp;s/d &nbsp;{{ date_ind(explode('-', $b2)[0]).' '.explode('-', $b2)[1] }}
+              	@if($throttle == 'Bulan')
+                	Transaksi : Bulan {{ date_ind(explode('-', $b1)[0]).' '.explode('-', $b1)[1] }} &nbsp;s/d &nbsp;{{ date_ind(explode('-', $b2)[0]).' '.explode('-', $b2)[1] }}
+                @else
+                	Transaksi : Tahun {{ $request->y1 }} &nbsp;s/d &nbsp;{{ $request->y2 }}
+                @endif
               </td>
               
             </tr>
@@ -198,18 +203,16 @@
 
         <?php $urt = 0; ?>
 
-		@foreach($time as $data_time)
-		 @foreach($data as $data_akun)
-
-		    <?php 
-		    	$mt = ($urt == 0) ? "m-t" : "m-t-lg"; $saldo = $saldo_awal[$data_time->time."/".$data_akun->akun]; 
+		@foreach($data as $key => $ledger)
+		 	<?php 
+		    	$mt = ($urt == 0) ? "m-t" : "m-t-lg"; $saldo = 0; 
 				$tot_deb = $tot_kred = 0;
 		    ?>
 
 		     <table width="100%" border="0" class="table-saldo" style="margin-top: 10px;">
 				<thead>
 					<tr>
-						<td style="font-weight: bold; text-align: center;border-top: 1px solid #ccc; padding-top: 10px; padding-bottom: 0px;">Nama Perkiraan : {{ $data_akun->akun }} &nbsp; {{ $data_akun->main_name }}</td>
+						<td style="font-weight: bold; text-align: center;border-top: 1px solid #ccc; padding-top: 10px; padding-bottom: 0px;">Nama Perkiraan : {{ $ledger->id_akun }} &nbsp; {{ $ledger->nama_akun }}</td>
 					</tr>
 				</thead>
 			</table>
@@ -217,12 +220,20 @@
 			<table id="table-data" class="table_neraca tree" border="0" width="100%">
 				<thead>
 					<tr>
-						<th width="10%">Tanggal</th>
-				        <th width="14%">No.Bukti</th>
-				        <th width="37%">Keterangan</th>
-				        <th width="13%">Debet</th>
-				        <th width="13%">Kredit</th>
-				        <th width="13%">Saldo</th>
+						<th width="7%">Tanggal</th>
+				        <th width="10%">No.Bukti</th>
+				        <th width="25%">Keterangan</th>
+
+				        @if($request->akun_lawan == 'true')
+					        <th width="5%">Seq</th>
+					        <th width="5%">D/K</th>
+					        <th width="6%">Acc.Lawan</th>
+					        <th width="10%">Jumlah</th>
+					    @endif
+
+				        <th width="10%">Debet</th>
+				        <th width="10%">Kredit</th>
+				        <th width="10%">Saldo</th>
 					</tr>
 				</thead>
 
@@ -231,7 +242,40 @@
 					<tr>
 		              <td></td>
 		              <td></td>
-		              <td style="padding-left: 50px; font-weight: 600;">Saldo Awal</td>
+		              <td style="padding-left: 50px; font-weight: 600;">
+
+		              	@if($throttle == 'Bulan')
+		                	Saldo Awal {{ date_ind(explode('-', $b1)[0]).' '.explode('-', $b1)[1] }}
+		                @else
+		                	Saldo Awal {{ $request->y1 }}
+		                @endif
+
+		          	  </td>
+
+		              @if($request->akun_lawan == 'true')
+			              <td></td>
+			              <td></td>
+			              <td></td>
+			              <td></td>
+			          @endif
+
+			          <?php
+
+			          	$deb = (count($data_saldo[$key]->mutasi_bank_debet) > 0) ? $data_saldo[$key]->mutasi_bank_debet->first()->total : 0;
+                        $kredit = (count($data_saldo[$key]->mutasi_bank_kredit) > 0) ? $data_saldo[$key]->mutasi_bank_kredit->first()->total : 0;
+
+                        $saldo = $data_saldo[$key]->coalesce + ($deb + $kredit);
+
+                        //$totdeb = $totkred = 0;
+
+                        if($throttle == 'Tahun' && date('Y', strtotime($data_saldo[$key]->opening_date)) == $request->y1){
+                        	$saldo = $data_saldo[$key]->coalesce;
+                        }else if(strtotime($data_date) < strtotime($data_saldo[$key]->opening_date)){
+                          $saldo = 0;
+                        }
+
+			          ?>
+
 		              <td style="padding-left: 8px;" class="money"></td>
 		              <td style="padding-left: 8px;" class="money"></td>
 		              <td style="padding-right: 8px; font-weight: 600;" class="money text-right">
@@ -241,48 +285,87 @@
 		              </td>
 		            </tr>
 
-					@foreach($grap as $data_grap)
-		              @if($data_grap->acc == $data_akun->akun)
+					@foreach($ledger->jurnal_detail as $jurnal)
 
-		                <?php
-		                  if($throttle == "Bulan")
-		                    $cek = date("n-Y", strtotime($data_grap->jr_date)) == $data_time->time;
-		                  else
-		                    $cek = date("Y", strtotime($data_grap->jr_date)) == $data_time->time;
-		                ?>
-
-		                @if($data_grap->acc == $data_akun->akun && $cek)
-
-		                  <?php 
+						<?php 
 		                    $debet = $kredit = 0;
 
-		                    $saldo += $data_grap->jrdt_value;
+		                    $saldo += $jurnal->jrdt_value;
 
-		                    if($data_grap->jrdt_statusdk == "D"){
-		                      $debet = str_replace("-", "", $data_grap->jrdt_value);
+		                    if($jurnal->jrdt_statusdk == "D"){
+		                      $debet = str_replace("-", "", $jurnal->jrdt_value);
 		                      $tot_deb += $debet;
 		                    }
 		                    else{
-		                      $kredit = str_replace("-", "", $data_grap->jrdt_value);
+		                      $kredit = str_replace("-", "", $jurnal->jrdt_value);
 		                      $tot_kred += $kredit;
 		                    }
+		                ?>
 
-		                  ?>
+						<tr>
+		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_date }}</td>
+		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_ref }}</td>
+		                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_note }}</td>
 
-		                  <tr>
-		                    <td style="padding-left: 5px;">{{ date("d-m-Y", strtotime($data_grap->jr_date)) }}</td>
-		                    <td style="padding-left: 5px;">{{ $data_grap->jr_ref }}</td>
-		                    <td style="padding-left: 5px;">{{ $data_grap->jr_note }}</td>
-		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($debet, 2) }}</td>
-		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($kredit, 2) }}</td>
+		                    @if($request->akun_lawan == 'true')
+			                    <td style="padding-left: 5px;" class="text-center">001</td>
+			                    <td style="padding-left: 5px;" class="text-center">{{ $jurnal->jrdt_statusdk }}</td>
+			                    <td style="padding-left: 5px;" class="text-center">{{ $jurnal->jrdt_acc }}</td>
+			                    <td style="padding-right: 8px;" class="text-right">{{ (str_replace('-', '', number_format($jurnal->jrdt_value))) }}</td>
+			                @endif
+
+		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($debet,2) }}</td>
+		                    <td class="money text-right" style="padding-right: 8px;">{{ number_format($kredit,2) }}</td>
 		                    <td class="money text-right" style="padding-right: 8px;font-weight: 600;">
 		                    	{{ 
 		                    		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
 		                    	}}
 		                    </td>
-		                  </tr>
+		                </tr>
+
+		                @if($request->akun_lawan == 'true')
+		                  	@foreach($jurnal->d_jurnal->detail as $key => $data_detail)
+		                  		@if($data_detail->jrdt_acc != $jurnal->jrdt_acc)
+			                  		<tr>
+					                    <td style="padding-left: 5px;" class="text-center">&nbsp;</td>
+					                    <td style="padding-left: 5px;" class="text-center">&nbsp;</td>
+					                    <td style="padding-left: 5px;">{{ $jurnal->d_jurnal->jr_note }}</td>
+
+					                    @if($request->akun_lawan == 'true')
+						                    <td style="padding-left: 5px;" class="text-center">{{ str_pad(($key + 1), 3, "0",STR_PAD_LEFT) }}</td>
+					                    	<td style="padding-left: 5px;" class="text-center">{{ $data_detail->jrdt_statusdk }}</td>
+					                    	<td style="padding-left: 5px;" class="text-center">{{ $data_detail->jrdt_acc }}</td>
+					                    	<td style="padding-right: 8px;" class="text-right">{{ (str_replace('-', '', number_format($data_detail->jrdt_value))) }}</td>
+					                    @endif
+
+					                    <td class="money text-right" style="padding-right: 8px;">{{ number_format(0,2) }}</td>
+					                    <td class="money text-right" style="padding-right: 8px;">{{ number_format(0,2) }}</td>
+					                    <td class="money text-right" style="padding-right: 8px;font-weight: 600;">
+					                    	{{ 
+					                    		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
+					                    	}}
+					                    </td>
+					                </tr>
+					            @endif
+		                  	@endforeach
 		                @endif
-					  @endif
+
+	                  	@if($request->akun_lawan == 'true')
+		                  	<tr style="background: #f1f1f1;">
+			                    <td style="padding-left: 5px;">&nbsp;</td>
+			                    <td style="padding-left: 5px;">&nbsp;</td>
+			                    <td style="padding-left: 5px;">&nbsp;</td>
+			                    <td style="padding-left: 5px;"></td>
+			                    <td style="padding-left: 5px;"></td>
+			                    <td style="padding-left: 5px;"></td>
+			                    <td style="padding-left: 5px;"></td>
+			                    <td class="money text-right" style="padding-right: 8px;">&nbsp;</td>
+			                    <td class="money text-right" style="padding-right: 8px;">&nbsp;</td>
+			                    <td class="money text-right" style="padding-right: 8px;font-weight: 600;">
+			                    	&nbsp;
+			                    </td>
+			                </tr>
+			            @endif
 					@endforeach
 				</tbody>
 			</table>
@@ -290,15 +373,24 @@
 			<table class="table_total tree" border="0" width="100%">
 				<thead>
 					<tr>
-						<th width="10%"></th>
-				        <th width="14%"></th>
-				        <th width="37%"></th>
-				        <th class="typed" width="13%">{{ number_format($tot_deb, 2) }}</th>
-				        <th class="typed" width="13%">{{ number_format($tot_kred, 2) }}</th>
-				        <th class="typed" width="13%">
+						<th width="8%"></th>
+				        <th width="8%"></th>
+				        <th width="25%"></th>
+
+				        @if($request->akun_lawan == 'true')
+					        <th width="5%"></th>
+					        <th width="5%"></th>
+					        <th width="6%"></th>
+					        <th width="6%"></th>
+					        <th width="6%"></th>
+					    @endif
+
+				        <th width="10%" class="typed" style="padding-right: 8px;">{{ number_format($tot_deb, 2) }}</th>
+				        <th width="10%" class="typed" style="padding-right: 8px;">{{ number_format($tot_kred, 2) }}</th>
+				        <th width="10%" class="typed" style="padding-right: 8px;">
 				        	{{ 
-				        		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
-				        	}}
+	                    		($saldo < 0) ? '('.number_format(str_replace('-', '', $saldo), 2).')' : number_format($saldo,2) 
+	                    	}}
 				        </th>
 					</tr>
 				</thead>
@@ -308,16 +400,13 @@
 				<thead>
 					<tr>
 						@if($throttle == "Bulan")
-							<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Bulan {{ date_ind(explode('-', $data_time->time)[0]) }} {{ explode('-', $data_time->time)[1] }}</td>
+							<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Bulan {{ date_ind(explode('-', $b1)[0]).' '.explode('-', $b1)[1] }} &nbsp;s/d &nbsp;{{ date_ind(explode('-', $b2)[0]).' '.explode('-', $b2)[1] }}</td>
 						@elseif($throttle == "Tahun")
-							<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Tahun {{ $request->y }}</td>
+							<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Buku Besar Tahun {{ $request->y1 }} &nbsp;s/d &nbsp;{{ $request->y2 }}</td>
 						@endif
 					</tr>
 				</thead>
 			</table>
-
-			<div style="page-break-before: always;"></div>
-		  @endforeach
 		@endforeach
 
         <table id="table" width="100%" border="0" style="font-size: 8pt; margin-top: 4px;">
@@ -343,7 +432,7 @@
 
 	      <div class="modal-body" style="padding: 10px;">
 	        <div class="row">
-	          <form role="form" class="form-inline" id="form-buku-besar" method="POST" action="{{ route("buku_besar.index_single") }}" target="_self">
+	          <form role="form" class="form-inline" id="form-buku-besar" method="GET" action="{{ route("buku_besar.index_single") }}" target="_self">
 	              <input type="hidden" value="{{ csrf_token() }}" name="_token" readonly>
 	              <table border="0" id="form-table" class="col-md-12">
 
@@ -365,7 +454,7 @@
                     		@if(Session::get('cabang') == '000')
 	                          <option value="all">SEMUA CABANG</option>
 	                        @endif
-	                        
+
 	                    	@foreach(cabang() as $dataCabang)
 	                    		<option value="{{ $dataCabang->kode }}">{{ $dataCabang->nama }}</option>
 	                    	@endforeach
