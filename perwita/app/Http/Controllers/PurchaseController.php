@@ -7840,6 +7840,10 @@ public function kekata($x) {
 			$idbbk = '0001';
 		}
 
+
+
+		
+
 		$datainfo =['status' => 'sukses' , 'data' => $idbbk];
 
 		return json_encode($datainfo) ;
