@@ -82,6 +82,8 @@ class laporan_buku_besar extends Controller
                             ->whereBetween('d_akun.id_akun', [$request->akun1, $request->akun2])
                             ->select('id_akun', 'nama_akun')
                             ->orderBy('id_akun', 'asc')->get();
+
+                // dd($data);
             }else{
 
                 $data_saldo = akun::select('id_akun', 'nama_akun', 'akun_dka', DB::raw('coalesce(opening_balance, 0)'), 'opening_date')
