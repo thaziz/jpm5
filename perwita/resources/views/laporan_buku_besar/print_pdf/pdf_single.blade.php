@@ -220,7 +220,7 @@
 			<table id="table-data" class="table_neraca tree" border="0" width="100%">
 				<thead>
 					<tr>
-						<th width="7%">Tanggal</th>
+						<th width="8%">Tanggal</th>
 				        <th width="10%">No.Bukti</th>
 				        <th width="25%">Keterangan</th>
 
@@ -419,111 +419,115 @@
 
       </div>
 
-      <!-- modal -->
-	<div id="modal_buku_besar" class="modal">
-	  <div class="modal-dialog" style="width: 40%;">
-	    <div class="modal-content">
+       <!-- modal -->
+<div id="modal_buku_besar" class="modal">
+  <div class="modal-dialog" style="width: 40%;">
+    <div class="modal-content">
 
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title">Form Buku Besar</h4>
-	        <input type="hidden" class="parrent"/>
-	      </div>
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Form Buku Besar</h4>
+        <input type="hidden" class="parrent"/>
+      </div>
 
-	      <div class="modal-body" style="padding: 10px;">
-	        <div class="row">
-	          <form role="form" class="form-inline" id="form-buku-besar" method="GET" action="{{ route("buku_besar.index_single") }}" target="_self">
-	              <input type="hidden" value="{{ csrf_token() }}" name="_token" readonly>
-	              <table border="0" id="form-table" class="col-md-12">
+      <div class="modal-body" style="padding: 10px;">
+        <div class="row">
+          <form role="form" class="form-inline" id="form-buku-besar" method="GET" action="{{ route("buku_besar.index_single") }}" target="_blank">
+              <input type="hidden" value="{{ csrf_token() }}" name="_token" readonly>
+              <table border="0" id="form-table" class="col-md-12">
 
-	                <tr>
-	                  <td width="40%" class="text-center">Periode Buku Besar</td>
-	                  <td colspan="3">
-	                    <select class="form-control buku_besar select_validate" name="jenis" id="periode_buku_besar" style="width: 80%;">
-	                      <option value="Bulan">Bulanan</option>
-	                      <option value="Tahun">Tahunan</option>
-	                    </select>
-	                  </td>
-	                </tr>
+                <input type="hidden" readonly name="jenis" value="Bulan">
 
-	                <tr>
-	                  <td width="40%" class="text-center">Pilih Cabang</td>
-	                  <td colspan="3">
-	                    <select class="form-control buku_besar select_bukbes_validate choosen_akun" name="buku_besar_cabang" id="buku_besar_cabang" style="width: 80%;">
-                    		<option value="---">-- Pilih Cabang</option>
-                    		@if(Session::get('cabang') == '000')
-	                          <option value="all">SEMUA CABANG</option>
-	                        @endif
+                {{-- <tr>
+                  <td width="40%" class="text-center">Periode Buku Besar</td>
+                  <td colspan="3">
+                    <select class="form-control buku_besar select_validate" name="jenis" id="periode_buku_besar" style="width: 80%;">
+                      <option value="Bulan">Bulanan</option>
+                      <option value="Tahun">Tahunan</option>
+                    </select>
+                  </td>
+                </tr> --}}
 
-	                    	@foreach(cabang() as $dataCabang)
-	                    		<option value="{{ $dataCabang->kode }}">{{ $dataCabang->nama }}</option>
-	                    	@endforeach
+                <tr>
+                  <td width="40%" class="text-center">Pilih Cabang</td>
+                  <td colspan="3">
+                    <select class="form-control buku_besar select_bukbes_validate choosen_akun" name="buku_besar_cabang" id="buku_besar_cabang" style="width: 80%;">
+                      <option value="---">-- Pilih Cabang</option>
 
-	                    </select>
-	                    &nbsp;&nbsp; <small id="buku_besar_cabang_txt" style="display: none;"><i class="fa fa-hourglass-half"></i></small>
-	                  </td>
-	                </tr>
+                       {{-- @if(Session::get('cabang') == '000')
+                          <option value="all">SEMUA CABANG</option>
+                        @endif --}}
 
-	                <tr>
-	                  <td width="20%" class="text-center">Masukkan <span id="state-masuk">Bulan</span></td>
-	                  <td width="25%">
-	                    <input type="text" class="form-control buku_besar form_bukbes_validate buku_besar_tanggal first" name="d1" placeholder="MM/YYYY" style="width: 100%; cursor: pointer; background: white;" readonly>
+                      @foreach(cabang() as $cab)
+                        @if($cab->kode == Session::get('cabang') || Session::get('cabang') == '000')
+                          <option value="{{ $cab->kode }}">{{ $cab->nama }}</option>
+                        @endif
+                      @endforeach
+                    </select>
+                    &nbsp;&nbsp; <small id="buku_besar_cabang_txt" style="display: none;"><i class="fa fa-hourglass-half"></i></small>
+                  </td>
+                </tr>
 
-	                    <input type="text" class="form-control buku_besar form_bukbes_validate buku_besar_tahun first" name="y1" placeholder="YYYY" style="width: 90%; cursor: pointer; background: white; display: none;" readonly>
+                <tr>
+                  <td width="20%" class="text-center">Masukkan <span id="state-masuk">Bulan</span></td>
+                  <td width="25%">
+                    <input type="text" class="form-control buku_besar form_bukbes_validate buku_besar_tanggal first" name="d1" placeholder="MM/YYYY" style="width: 100%; cursor: pointer; background: white;" readonly>
 
-	                  <td class="text-center" style="font-size: 8pt;">
-	                    s/d
-	                  </td>
-	                  <td width="25%">
-	                    <input type="text" class="form-control buku_besar form_bukbes_validate buku_besar_tanggal sampai" name="d2" placeholder="MM/YYYY" style="cursor: pointer; background: white;" readonly>
+                    <input type="text" class="form-control buku_besar form_bukbes_validate buku_besar_tahun first" name="y1" placeholder="YYYY" style="width: 90%; cursor: pointer; background: white; display: none;" readonly>
 
-	                    <input type="text" class="form-control buku_besar form_bukbes_validate buku_besar_tahun sampai" name="y2" placeholder="YYYY" style="width: 90%; cursor: pointer; background: white; display: none;" readonly>
-	                  </td>
-	                  </td>
-	                </tr>
+                  <td class="text-center" style="font-size: 8pt;">
+                    s/d
+                  </td>
+                  <td width="25%">
+                    <input type="text" class="form-control buku_besar form_bukbes_validate buku_besar_tanggal sampai" name="d2" placeholder="MM/YYYY" style="cursor: pointer; background: white;" readonly>
 
-	                <tr>
-	                  <td width="40%" class="text-center">Kode Akun</td>
-	                  <td colspan="3">
-	                    <select class="form-control buku_besar select_bukbes_validate choosen_akun" name="akun1" id="akun1" style="width: 35%;">
+                    <input type="text" class="form-control buku_besar form_bukbes_validate buku_besar_tahun sampai" name="y2" placeholder="YYYY" style="width: 90%; cursor: pointer; background: white; display: none;" readonly>
+                  </td>
+                  </td>
+                </tr>
 
-	                    </select>
-	                    <br><small id="buku_besar_akun1_txt"> &nbsp;Pilih Cabang Dahulu</small>
-	                  </td>
-	                </tr>
+                <tr>
+                  <td width="40%" class="text-center">Kode Akun</td>
+                  <td colspan="3">
+                    <select class="form-control buku_besar select_bukbes_validate choosen_akun" name="akun1" id="akun1" style="width: 35%;">
 
-	                <tr>
-	                  <td width="40%" class="text-center">Sampai Dengan Akun</td>
-	                  <td colspan="3">
-	                    <select class="form-control buku_besar select_bukbes_validate choosen_akun" name="akun2" id="akun2" style="width: 35%;">
-	                      
-	                    </select>
-	                    <br><small id="buku_besar_akun2_txt"> &nbsp;Pilih Cabang Dahulu</small>
-	                  </td>
-	                </tr>
+                    </select>
+                    <br><small id="buku_besar_akun1_txt"> &nbsp;Pilih Cabang Dahulu</small>
+                  </td>
+                </tr>
 
-	                <tr>
-	                  <td width="40%" class="text-center">Dengan Akun Lawan</td>
-	                  <td colspan="3">
-	                    <select class="form-control buku_besar select_validate" name="akun_lawan" id="akun_lawan" style="width: 30%;">
-	                      <option value="false">Tidak</option>
-	                      <option value="true">Ya</option>
-	                    </select>
-	                  </td>
-	                </tr>
+                <tr>
+                  <td width="40%" class="text-center">Sampai Dengan Akun</td>
+                  <td colspan="3">
+                    <select class="form-control buku_besar select_bukbes_validate choosen_akun" name="akun2" id="akun2" style="width: 35%;">
+                      
+                    </select>
+                    <br><small id="buku_besar_akun2_txt"> &nbsp;Pilih Cabang Dahulu</small>
+                  </td>
+                </tr>
 
-	              </table>
-	          </form>
-	        </div>
-	      </div>
+                <tr>
+                  <td width="40%" class="text-center">Dengan Akun Lawan</td>
+                  <td colspan="3">
+                    <select class="form-control buku_besar select_validate" name="akun_lawan" id="akun_lawan" style="width: 30%;">
+                      <option value="false">Tidak</option>
+                      <option value="true">Ya</option>
+                    </select>
+                  </td>
+                </tr>
 
-	      <div class="modal-footer">
-	          <button class="btn btn-primary btn-sm" id="proses_buku_besar" >Proses</button>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-	  <!-- modal -->
+              </table>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+          <button class="btn btn-primary btn-sm" id="proses_buku_besar" >Proses</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- modal -->
 
       <script type="text/javascript" src="{{ asset('assets/vendors/bootstrap/js/bootstrap.min.js') }}"></script>
 
