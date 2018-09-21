@@ -2176,7 +2176,7 @@
 
     $('.cabang').change(function(){
        cabang = $('.cabang').val();
-       alert(cabang);
+      // alert(cabang);
          $.ajax({
           url : baseUrl + '/penerimaanbarang/valgudang',
           data :{cabang,tgl},
@@ -2249,54 +2249,7 @@
      
 
   //MENDAPATKAN NO FAKTUR
-      cabang = $('.cabang').val();
-      var a = $('ul#tabmenu').find('li.active').data('val');
-      tgl = $('.tgl').val();
-      $('.cabang2').val(cabang);
-       $.ajax({
-          type : "get",
-          data : {cabang,tgl,a},
-          url : baseUrl + '/fakturpembelian/getbiayalain',
-          dataType : 'json',
-          success : function (response){     
-              
-              if(response.status == 'sukses'){
-                  var d = new Date(tgl);
-                
-                  //tahun
-                  var year = d.getFullYear();
-                  //bulan
-                  var month = d.getMonth();
-                  var month1 = parseInt(month + 1)
-                  console.log(d);
-                  console.log();
-                  console.log(year);
-
-                  if(month < 10) {
-                    month = '0' + month1;
-                  }
-
-                  console.log(d);
-
-                  tahun = String(year);
-  //                console.log('year' + year);
-                  year2 = tahun.substring(2);
-                  //year2 ="Anafaradina";
-                   nofaktur = 'FB' + month + year2 + '/' + cabang + '/' + a + '-' + response.data ;
-                  $('.aslinofaktur').val(nofaktur);
-                  $('.nofaktur').val(nofaktur);
-                  $('.no_faktur').val(nofaktur);
-              }
-              else {
-                  location.reload();
-              }
-               
-          },
-          error : function(){
-            location.reload();
-          }
-        })
-
+     
 
   $('#formPajak').click(function(){
     
@@ -2670,7 +2623,7 @@
 
       $('.cabang').change(function(){
       cabang = $(this).val();
-      alert(cabang);
+     // alert(cabang);
       var a = $('ul#tabmenu').find('li.active').data('val');
       tgl = $('.tgl').val();
       $('.cabang2').val(cabang);
@@ -5941,7 +5894,7 @@
 
 
 //                $('<th class="gudang_po"> Gudang </th>').insertAfter($('.hr'gpo'));
-
+                alert(jenis[0]);
                 if(jenis[0] != 'J') { // CEK PO BUKAN JENIS JASA
                     var jumlahtotalharga = 0;
                       for(var k = 0 ; k < response.po_barang.length; k++){
@@ -5952,12 +5905,11 @@
 
                               $('#input_data').append(rowinput);
                                 jumlahtotalharga = jumlahtotalharga + parseInt(response.po_barang[k][z].sumharga);
-                                console.log('test');
+                                alert(jumlahtotalharga);
                         }
                          console.log('test2' + z);
                       }
                 } //end jenis JASA
-
                 else { // PO JASA
                     var jumlahtotalharga = 0;
                   $('th.qty_po').remove();
@@ -5965,17 +5917,20 @@
                   $('th.hrgpo').remove();
                   $('th.updatestockpo').remove();
                       for(var k = 0 ; k < response.po_barang.length; k++){
+                        alert(response.po_barang[k].length);
                         for(var z = 0; z < response.po_barang[k].length; z++){
                              var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].podt_kodeitem+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].podt_qtykirim+"> </th>  <th> <input type='hidden'  value="+response.po_barang[k][z].podt_totalharga+" name='totalharga[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pbdt_updatestock+" name='updatestock[]'> </th>   <th> <input type='hidden' value="+response.po_barang[k][z].po_id+" name='idpo[]'>    <th> <input type='hidden' value="+flag[0]+" name='flag'>  <input type='hidden' value="+response.po_barang[k][z].podt_jumlahharga+" name='hpp[]'>  <input type='text' value="+jenis[0]+" name='jenis'>  <input type='hidden' value="+response.po_barang[k][z].podt_akunitem+" name='akunitem[]'><input type='hidden' value="+response.po_barang[k][z].podt_keterangan+" name='keteranganitem[]'>  </th> </tr> ";
 
                               $('#input_data').append(rowinput);
-                         
+                                alert(response.po_barang[k][z].podt_totalharga);
                                 jumlahtotalharga = jumlahtotalharga + parseInt(response.po_barang[k][z].podt_totalharga);
-                                console.log('test');
+                                alert('jumlahtotalharga');
+                                alert(jumlahtotalharga);
                         }
-                         console.log('test2' + z);
+                         alert(jumlahtotalharga);
                       }
 
+                    alert(response.po_barang.length);
                  }           
               }
               else if(flag[0] == 'FP'){
@@ -6933,9 +6888,9 @@
    $(".tmbhdatapo").on('click',function(e){
 
     e.preventDefault();
-var old_nota =$('.nofaktur1').val();
+    var old_nota =$('.nofaktur1').val();
     $('.nofaktur').val(old_nota);
-
+    alert(old_nota);
     $(".tmbhdatapenerus").removeClass('disabled');
     $(".save_bp_um").prop('hidden',true);
     $(".bp_tambah_um").prop('hidden',true);

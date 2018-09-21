@@ -674,7 +674,7 @@
     }
 
   $('#cektb').click(function(){
-      $('.simpantb').attr('disabled' , false);
+     
       arrjumlahtotal = [];
 
       $('.qtyreq').each(function(){
@@ -775,6 +775,7 @@
         type : "get",      
         dataType : 'json',
         success : function(response){
+           $('.simpantb').attr('disabled' , false);
             $('tr.totalcekpembayaran').remove();
             for($j = 0; $j < response.datasupplier.length; $j++){
               html ="<tr class='totalcekpembayaran'> <td>"+response.datasupplier[$j][0].nama_supplier+" <input type='hidden' name='suppliercekbayar[]' value="+response.datasupplier[$j][0].idsup+"></td>"+

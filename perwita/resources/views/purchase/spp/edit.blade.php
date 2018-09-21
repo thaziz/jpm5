@@ -251,7 +251,7 @@
                               </td> <!-- Kodeitem -->
 
                               <td>
-                                <select class="chosen-select-width form-control suppliercek0 suppliercek suppliercekbarang{{$index}}" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0'>  <option value="" > </option>  </select>
+                                <select class="chosen-select-width form-control suppliercek0 suppliercek suppliercekbarang{{$index}}" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0' data-index="{{$index}}">  <option value="" > </option>  </select>
 
                                   <input type='hidden' class="form-control suppliermanual0 suppliercekmanual{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='0'>
 
@@ -280,7 +280,7 @@
                                 </td>
                                 <!-- Supplier -->
                                 <td>
-                                  <select class="chosen-select-width form-control suppliercek1 suppliercekbarang{{$index}} suppliercek" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1'> <option value=""> </option> </select>
+                                  <select class="chosen-select-width form-control suppliercek1 suppliercekbarang{{$index}} suppliercek" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1' data-index="{{$index}}"> <option value=""> </option> </select>
 
                                   <input type='hidden' class="form-control suppliermanual1 suppliercekmanual{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='1'>
 
@@ -305,7 +305,7 @@
                                 </td>
                                 <!-- Harga -->
                                 <td class='supplier1'>
-                                  <select class="chosen-select-width form-control suppliercek suppliercek2 suppliercekbarang{{$index}}" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2'> <option value="">  </option> </select>
+                                  <select class="chosen-select-width form-control suppliercek suppliercek2 suppliercekbarang{{$index}}" name="suppliercek[]" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2' data-index="{{$index}}"> <option value="">  </option> </select>
 
                                   <input type='hidden' class="form-control suppliermanual2 suppliercekmanual{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id='2'>
 
@@ -589,6 +589,7 @@
           success : function(response){
             length = $('.databarang').length;
             index = length + 1;
+            alert(length);
             html = "<tr class='databarang databarang"+index+"'>" +
                     "<td rowspan='3'>";
                    
@@ -600,10 +601,10 @@
                                 }
                         html += "</select>" +
                     "</td>" + // barang 
-                    "<td rowspan='3'> <input type='text' class='form-control input-sm qtyreq qtyreq"+index+" data-id="+index+"'> </td>" + //qty
+                    "<td rowspan='3'>"+index+"<input type='text' class='form-control input-sm qtyreq qtyreq"+index+"' data-id='"+index+"'> </td>" + //qty
                     "<td rowspan='3'> Satuan </td>" +
-                    "<td> <input type='text' class='form-control hargacek hargacek0 hargacekbarang"+index+"' data-id='0' name='hargacek[]' data-index="+index+"> </td>"+ //harga
-                    "<td> <select class='form-control chosen-select suppliercek0 suppliercekbarang"+index+" suppliercek' name='suppliercek[]' data-id='0' data-index="+index+">";
+                    "<td>"+index+" <input type='text' class='form-control hargacek hargacek0 hargacekbarang"+index+"' data-id='0' name='hargacek[]' data-index="+index+"> </td>"+ //harga
+                    "<td>"+index+" <select class='form-control chosen-select suppliercek0 suppliercekbarang"+index+" suppliercek' name='suppliercek[]' data-id='0' data-index="+index+">";
                       for(j = 0; j < response.supplier.length; j++){
                           html += "<option value='"+response.supplier[j].idsup+"'>" +
                                    response.supplier[j].no_supplier + " - " + response.supplier[j].nama_supplier +
@@ -612,7 +613,7 @@
              html+= "</td>" + //supplier
                     "</tr>" +
                     "<tr class='databarang"+index+" datacek1 datacekbarang"+index+"' data-index="+index+">" +
-                    "<td> <input type='text' class='form-control hargacek hargacek1 hargacekbarang"+index+"' data-id='1' name='hargacek[]' data-index="+index+"> </td>"+ //harga
+                    "<td> "+index+"<input type='text' class='form-control hargacek hargacek1 hargacekbarang"+index+"' data-id='1' name='hargacek[]' data-index="+index+"> </td>"+ //harga
                     "<td>" +
                     "<select class='form-control chosen-select suppliercek1 suppliercekbarang"+index+" suppliercek' name='suppliercek[]' data-id='1' data-index="+index+">";
                       for(j = 0; j < response.supplier.length; j++){
@@ -739,15 +740,16 @@
           toastr.info("Mohon maaf data qty kosong :)");
           return false;
         }
-        
-        alert(qty);
-
-        $('.hargacekbarang' + idqty).each(function(){
+        alert(idqty);
+        alert($('.hargacekbarang' + idqty).length);
+        $('.hargacekbarang'+ idqty).each(function(){
           harga2 = $(this).val();
           idharga = $(this).data('id');
           kodeitem = $(this).data('kodeitem');
-          supplier = $('.suppliercek' + idharga + '[data-kodeitem = '+kodeitem+']').val();
-          alert(harga2);
+          alert(idharga);
+          alert(index);
+          supplier = $('.suppliercek' + idharga + '[data-index= '+index+']').val();
+         
           if(harga2 == '' && supplier == ''){
            /* toastr.info("Harga ada yang kosong mohon dilengkapi :)");
             return false*/
@@ -765,6 +767,7 @@
       })
 
       console.log(arrjumlahtotal);
+
       arrsupplier = [];
       $('.suppliercek').each(function(){
         val = $(this).val();
@@ -775,7 +778,7 @@
         else{ 
                 arrsupplier.push(val);
               }
-      })
+       })
 
 
       hslsupplier = removeDuplicates(arrsupplier);
