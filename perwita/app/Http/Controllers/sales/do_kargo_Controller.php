@@ -101,13 +101,14 @@ class do_kargo_Controller extends Controller
 
       if ($req->do_nomor != '') {
         if (Auth::user()->punyaAkses('Delivery Order','all')) {
-           return $data = DB::table('delivery_order')
+            $data = DB::table('delivery_order')
                       ->join('cabang','kode','=','kode_cabang')
                       ->where('jenis','KARGO')
                       ->where('nomor','like','%'.$req->do_nomor.'%')
                       ->orderBy('tanggal','DESC')
                       ->get();
         }else{
+            $cabang = Auth::user()->kode_cabang;
             $data = DB::table('delivery_order')
                       ->join('cabang','kode','=','kode_cabang')
                       ->where('jenis','KARGO')
