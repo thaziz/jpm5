@@ -5490,13 +5490,14 @@ public function purchase_order() {
 
 				$datafp = DB::select("select * from faktur_pembelian where fp_nofaktur = '$nofaktur'");
 				if(count($datafp) != 0){
-						$explode = explode("/", $datafp[0]->fp_nofaktur);
+/*						$explode = explode("/", $datafp[0]->fp_nofaktur);
 						$idfaktur3 = $explode[2];
 						$string = explode("-", $idfaktur3);
 						$idfaktur2 = $string[1];
 						$idfakturss = (int)$idfaktur2 + 1;
 						$akhirfaktur = str_pad($idfakturss, 4, '0', STR_PAD_LEFT);
 						$nofaktur = $explode[0] .'/' . $explode[1] . '/'  . $string[0] . '-' . $akhirfaktur;
+*/						
 				}
 				else {
 					$nofaktur = $nofaktur;
