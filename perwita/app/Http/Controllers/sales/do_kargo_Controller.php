@@ -117,6 +117,7 @@ class do_kargo_Controller extends Controller
                       ->orderBy('tanggal','DESC')
                       ->get();
         }
+        
       }else{
         if (Auth::user()->punyaAkses('Delivery Order','all')) {
           $data = DB::table('delivery_order')
