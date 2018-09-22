@@ -160,6 +160,19 @@
 
                          </div>
 
+                        <div class="col-sm-6">
+                          <table class="table">
+                            <tr>
+                              <th> Nama Supplier </th> <th> Syarat Kredit </th>
+                            </tr>
+                            @foreach($data['spptb'] as $spptb)
+                            <tr>
+                              <td> {{$spptb->nama_supplier}} </td> <td> {{$spptb->spptb_bayar}} Hari </td>
+                            </tr>
+                            @endforeach
+                          </table>
+                        </div>
+
                          <div class="col-sm-6">
                           <div class="tampilbayar"> </div>
                            <h4> <a href="{{url('suratpermintaanpembelian/cetakspp/'.$spp->spp_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </h4>
@@ -549,11 +562,8 @@ $('#formsetujukabag').submit(function(){
 
      
     //pembayaran
-    $(function(){
+  /*  $(function(){
       var arrValSup = [];
-
- 
-  
 
       for(var j =0 ; j < countsup;j++){
        var value =  $('.sp'+j).val();
@@ -609,11 +619,7 @@ $('#formsetujukabag').submit(function(){
         })
 
       }
-       
-
-
-
-    })
+    })*/
 
     $(function(){
       var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';

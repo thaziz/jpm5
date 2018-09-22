@@ -1313,7 +1313,7 @@
                 //year2 ="Anafaradina";
                  nofpg = 'FPG' + month + year2 + '/' + cabang + '/'  + response.idfpg ;
                
-                $('.nofpg').val(nofpg);
+                $('.nofpg').val(response.nofpg);
 
                 nofpg = $('.nofpg').val();
                 if(nofpg == ''){
@@ -1348,7 +1348,6 @@
                   month = '0' + month1;
                 }
 
-                console.log(d);
 
                 tahun = String(year);
 //                console.log('year' + year);
@@ -1356,7 +1355,7 @@
                 //year2 ="Anafaradina";
                  nofpg = 'FPG' + month + year2 + '/' + cabang + '/'  + response.idfpg ;
                
-                $('.nofpg').val(nofpg);
+                $('.nofpg').val(response.nofpg);
 
                 nofpg = $('.nofpg').val();
                 if(nofpg == ''){
@@ -2065,7 +2064,7 @@
                 //year2 ="Anafaradina";
                  nofpg = 'FPG' + month + year2 + '/' + cabang + '/'  + response.idfpg ;
                
-                $('.nofpg').val(nofpg);
+                $('.nofpg').val(response.nofpg);
 
                 nofpg = $('.nofpg').val();
                 if(nofpg == ''){

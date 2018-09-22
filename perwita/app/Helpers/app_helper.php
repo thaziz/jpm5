@@ -17,6 +17,10 @@
 		return "okee";
 	}
 
+	function get_jurnal($id_jurnal){
+         return DB::select(DB::raw("select * from d_jurnal_dt where jrdt_jurnal = '".$id_jurnal."'"));
+      }
+
 	function get_id_jurnal($state, $cab, $date = null){
 
 		// $digit = substr($state, 0, 2);
@@ -197,7 +201,7 @@
         $akunbank = $kode[0]->mb_kode;
 
 
-       $idbm = DB::select("select substr(MAX(bm_nota) , 15) as bm_nota from bank_masuk where bm_cabangtujuan = '$cabang'  and to_char(bm_tglterima, 'MM') = '08' and to_char(bm_tglterima, 'YY') = '18' and bm_banktujuan = '$akunbank' and bm_nota IS NOT NULL");
+       $idbm = DB::select("select substr(MAX(bm_nota) , 15) as bm_nota from bank_masuk where bm_cabangtujuan = '$cabang'  and to_char(bm_tglterima, 'MM') = '08' and to_char(bm_tglterima, 'YY') = '18' and bm_banktujuan = '$akunbank'");
      //  dd($idbm);
 	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
 		$index = (integer)$idbm[0]->bm_nota + 1;

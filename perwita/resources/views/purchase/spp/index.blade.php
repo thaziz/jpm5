@@ -146,7 +146,7 @@
                          @endif
 
                          @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian' , 'ubah'))
-                           &nbsp; <a class="btn btn-sm btn-warning" href="{{url('suratpermintaanpembelian/editspps/'.$spp->spp_id.'')}}"> <i class="fa fa-pencil" aria-hidden="true"></i>  </a>
+                           &nbsp; <a class="btn btn-sm btn-warning" href="{{url('suratpermintaanpembelian/editsppss/'.$spp->spp_id.'')}}"> <i class="fa fa-pencil" aria-hidden="true"></i>  </a>
                         @endif
 
                       @endif

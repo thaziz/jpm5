@@ -143,7 +143,7 @@
                     
                     </div>
                 </div>
-                  <form method="post" action="{{url('konfirmasi_order/savekonfirmasiorderdetail')}}"  enctype="multipart/form-data" class="form-horizontal">
+                  <form method="post" action="{{url('konfirmasi_order/savekonfirmasiorderdetail')}}"  enctype="multipart/form-data" class="form-horizontal" id="formsave">
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
@@ -240,7 +240,7 @@
                                   <th style="text-align:center"> Staff Pembelian </th>
                                   <th style="text-align:center"> Manager Keuangan </th>
                               </tr>
-                              <tr>
+                              <tr>  
                                   <th> 
                                       <input type="hidden" class="statusmankeu" value="{{$spp->man_keu}}">
                                       @if($spp->staff_pemb == 'DISETUJUI')
@@ -511,7 +511,7 @@
   pemroses = $('.pemroses').val();
   if(pemroses == 'KEUANGAN'){
       if(prosespembelian !== "DISETUJUI"){
-          $('.cektotal').attr('disabled' , true);
+          $('.cektotal').hide();
           $('#statuskeuangan').show();
       }
       else {
@@ -541,6 +541,38 @@
     }
    
   })
+
+  $('#formsave').submit(function(event){
+        event.preventDefault();
+          var post_url2 = $(this).attr("action");
+          var form_data2 = $(this).serialize();
+            swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data Penerimaan Barang!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: true
+          },
+          function(){
+        $.ajax({
+          type : "post",
+          data : form_data2,
+          url : post_url2,
+          dataType : 'json',
+          success : function (response){
+             alertSuccess(); 
+             $('.simpantb').attr('disabled' , true);
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
+          }
+        })
+      });
+      })
+
 
    $('body').removeClass('fixed-sidebar');
             $("body").toggleClass("mini-navbar");
