@@ -231,7 +231,7 @@
                             <tr class=" databarang databarang{{$index}}" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-index="{{$index}}">
                               <td rowspan="3"> {{$sppdtbarang->nama_masteritem}} </td>
                          
-                              <td rowspan="3">  <input type="text" class="form-control input-sm qtyreq qtyreq{{$index}}" value="{{$sppdtbarang->sppd_qtyrequest}}" data-id="{{$index}}" style="width: 90px" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}"> </td>
+                              <td rowspan="3">  <input type="text" class="form-control input-sm qtyreq qtyreq{{$index}}" value="{{$sppdtbarang->sppd_qtyrequest}}" data-id="{{$index}}" style="width: 90px" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-index="{{$index}}"> </td>
                               
 
                               <td rowspan="3"> {{$sppdtbarang->unitstock}} </td>
@@ -601,7 +601,7 @@
                                 }
                         html += "</select>" +
                     "</td>" + // barang 
-                    "<td rowspan='3'>"+index+"<input type='text' class='form-control input-sm qtyreq qtyreq"+index+"' data-id='"+index+"'> </td>" + //qty
+                    "<td rowspan='3'>"+index+"<input type='text' class='form-control input-sm qtyreq qtyreq"+index+"' data-id='"+index+"' data-index='"+index+"'> </td>" + //qty
                     "<td rowspan='3'> Satuan </td>" +
                     "<td>"+index+" <input type='text' class='form-control hargacek hargacek0 hargacekbarang"+index+"' data-id='0' name='hargacek[]' data-index="+index+"> </td>"+ //harga
                     "<td>"+index+" <select class='form-control chosen-select suppliercek0 suppliercekbarang"+index+" suppliercek' name='suppliercek[]' data-id='0' data-index="+index+">";
@@ -736,12 +736,12 @@
       $('.qtyreq').each(function(){
         qty = $(this).val();
         idqty = $(this).data('id');
+        index = $(this).data('index');
         if(qty == ''){
           toastr.info("Mohon maaf data qty kosong :)");
           return false;
         }
-        alert(idqty);
-        alert($('.hargacekbarang' + idqty).length);
+   
         $('.hargacekbarang'+ idqty).each(function(){
           harga2 = $(this).val();
           idharga = $(this).data('id');
