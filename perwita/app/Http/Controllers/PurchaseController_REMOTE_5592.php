@@ -1451,7 +1451,7 @@ class PurchaseController extends Controller
 					'spp_status' => 'DISETUJUI',
 				]);	
 				$co = co_purchase::find($idsppcodt);
-				$co->staff_pemb = 'DISETUJU';
+				$co->staff_pemb = 'DISETUJUI';
 				$co->save();
 			}
 			else if($tempstatus == count($request->status)){
@@ -5490,13 +5490,14 @@ public function purchase_order() {
 
 				$datafp = DB::select("select * from faktur_pembelian where fp_nofaktur = '$nofaktur'");
 				if(count($datafp) != 0){
-						$explode = explode("/", $datafp[0]->fp_nofaktur);
+/*						$explode = explode("/", $datafp[0]->fp_nofaktur);
 						$idfaktur3 = $explode[2];
 						$string = explode("-", $idfaktur3);
 						$idfaktur2 = $string[1];
 						$idfakturss = (int)$idfaktur2 + 1;
 						$akhirfaktur = str_pad($idfakturss, 4, '0', STR_PAD_LEFT);
 						$nofaktur = $explode[0] .'/' . $explode[1] . '/'  . $string[0] . '-' . $akhirfaktur;
+*/						
 				}
 				else {
 					$nofaktur = $nofaktur;
@@ -7458,7 +7459,7 @@ public function kekata($x) {
 		$cabang = $request->cabang;
 
 			if($cabang == '000'){
-				$data['po'] = DB::select("select  LEFT(po_no,2) as flag , po_cabangtransaksi as cabang, po_id as id , po_no as nobukti, pb_po, po_tipe as penerimaan, po_totalharga as totalharga , po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J'  and pb_terfaktur IS null and po_statusreturn = 'AKTIF' union select  LEFT(po_no,2) as flag , po_cabangtransaksi as cabang, po_id as id , po_no as nobukti, po_id, po_tipe as penerimaan, po_totalharga as totalharga, po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id and po_supplier = '$idsup' where po_tipe = 'J'  and po_idfaktur IS null and po_statusreturn = 'AKTIF' and po_setujufinance = 'DISETUJUI' order  by id desc");
+				$data['po'] = DB::select("select  LEFT(po_no,2) as flag , po_cabangtransaksi as cabang, po_id as id , po_no as nobukti, pb_po, po_tipe as penerimaan, po_totalharga as totalharga , po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J'  and pb_terfaktur IS null and po_statusreturn = 'AKTIF' union select  LEFT(po_no,2) as flag , po_cabangtransaksi as cabang, po_id as id , po_no as nobukti, po_id, po_tipe as penerimaan, po_totalharga as totalharga, po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id and po_supplier = '$idsup' where po_tipe = 'J'  and po_idfaktur IS null and po_statusreturn = 'AKTIF' and po_setujufinance = 'SETUJU' order  by id desc");
 	
 			}		
 			else {
@@ -7839,6 +7840,10 @@ public function kekata($x) {
 		else {
 			$idbbk = '0001';
 		}
+
+
+
+		
 
 		$datainfo =['status' => 'sukses' , 'data' => $idbbk];
 
