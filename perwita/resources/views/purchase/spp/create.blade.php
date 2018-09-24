@@ -249,7 +249,7 @@
              <!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
-                       <input type="submit"  class="btn btn-success btn-flat simpan" disabled="" value="Simpan Data Rencana Penjualan" >     
+                       <input type="submit"  class="btn btn-success btn-flat simpan" disabled="" value="Simpan Data Rencana Pembelian" >     
                       </form>
                         <a class="btn btn-primary cek_tb"> Cek Total Biaya </a>
                     </div>

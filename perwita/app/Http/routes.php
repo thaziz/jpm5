@@ -118,7 +118,6 @@ Route::get('detailanalisahutang' , 'Queryanalisa@detailanalisahutang');
 
 Route::get('suratpermintaanpembelian' , 'PurchaseController@spp_index');
 Route::post('suratpermintaanpembelian/savesupplier' , 'PurchaseController@savespp');
-Route::post('suratpermintaanpembelian/updatesupplier/{id}' , 'PurchaseController@updatespp');
 Route::get('suratpermintaanpembelian/createspp' , 'PurchaseController@createspp');
 Route::get('suratpermintaanpembelian/detailspp/{id}' , 'PurchaseController@detailspp');
 Route::delete('suratpermintaanpembelian/deletespp/{id}' , 'PurchaseController@deletespp');
@@ -134,6 +133,7 @@ Route::get('suratpermintaanpembelian/valgudang', 'PurchaseController@valgudang')
 Route::get('suratpermintaanpembelian/kettolak', 'PurchaseController@kettolakspp');
 Route::post('suratpermintaanpembelian/setujukabag', 'PurchaseController@sppsetujukabag');
 Route::get('suratpermintaanpembelian/tmbhdatabarang', 'PurchaseController@tmbhdatabarang');
+Route::post('suratpermintaanpembelian/updatespp', 'PurchaseController@updatespp');
 
 
 

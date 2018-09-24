@@ -593,68 +593,74 @@ class PurchaseController extends Controller
 	}
 
 
-	public function updatespp($id, Request $request){
-	/*	dd($request);*/
-
-		$updatespp = spp_purchase::find($id);
-	
-
-		$updatespp->spp_nospp = $request->nospp;
-		$updatespp->spp_id = $request->idspp;
-		$updatespp->spp_tgldibutuhkan = $request->tgl_dibutuhkan;
-		$updatespp->spp_cabang = strtoupper($request->cabang);
-		$updatespp->spp_bagian = strtoupper($request->bagian);
-		$updatespp->spp_keperluan = strtoupper($request->keperluan);
-		$updatespp->save();
+	public function updatespp(Request $request){
+		return DB::transaction(function() use ($request) {  
+			/*dd($request);*/
+			$id = $request->idspp;
+		DB::table('spp')
+		->where('spp_id' , $id)
+		->update([
+			'spp_nospp' => $request->nospp,
+			'spp_tgldibutuhkan' => $request->tgl_dibutuhkan,
+			'spp_cabang' => $request->cabang,
+			'spp_keperluan' => $request->keperluan,
+			'spp_keterangan' => $request->keterangan,
+			'spp_bagian' => $request->bagian,
+		]);
 
 		
-		$n = 0; //index untuk array barang
-		for($i=0; $i<count($request->itembarang); $i++) {
-			$updatesppdt = sppdt_purchase::where([['sppd_idspp', '=', $id], ['spp_detail.sppd_idsppdetail' , '=' , $request->idsppd[$i]]]  );
+		DB::DELETE("DELETE FROM spp_detail where sppd_idspp = '$id'");
+		$n = 1; //index untuk array barang
+		for($i=0; $i<count($request->barang); $i++) {	
+			if($request->hargacek[$i] != ''){
+				$lastidsppdt = sppdt_purchase::max('sppd_idsppdetail'); 
+				if(isset($lastidsppdt)) {
+					$idsppdt = (int)$lastidsppdt + 1;
+				}
+				else {
+					$idsppdt = 1;
+				}
 
-			$explode = explode(",", $request->itembarang[$i]);
-			$idbrg = $explode[1];
-
-
-			$replacehrg = str_replace(',', '', $request->harga[$i]);
-
-			
-			  if($idbrg == $n) {
-				$updatesppdt->update([
-				 	'sppd_kodeitem' => $request->item[$n],
-				 	'sppd_qtyrequest' => $request->qtyrequest[$n],
-				 	
-			 	]);			 	
-			 }
-			 else {
-			 	$n = (int)$n + 1;
-			 	$updatesppdt->update([
-				 	'sppd_kodeitem' => $request->item[$n],
-				 	'sppd_qtyrequest' => $request->qtyrequest[$n]
-			 	]);	
-			 }
-			// dd( $request->idsuplier[$i]);
-			 $updatesppdt->update([
-			 	'sppd_supplier' => $request->idsuplier[$i],
-		 		'sppd_bayar' => $request->syaratkredit[$i],
-		 		'sppd_harga' =>$replacehrg
-			 ]);
+				$harga = str_replace("," , "" , $request->hargacek[$i]);
+				$sppdt = new sppdt_purchase();
+				$sppdt->sppd_seq = $n;
+				$sppdt->sppd_kodeitem = $request->barang[$i];
+				$sppdt->sppd_qtyrequest = $request->qtyrequest[$i];
+				$sppdt->sppd_harga = $harga;
+				$sppdt->sppd_idspp = $id;
+				$sppdt->sppd_idsppdetail = $idsppdt;
+				if($request->jenisitem == 'S' && $request->updatestock == 'T'){
+					$sppdt->sppd_kendaraan = $request->kendaraan[$i];
+				}
+				$sppdt->sppd_supplier = $request->suppliercek[$i];
+				$sppdt->sppd_kontrak = 'TIDAK';
+				$sppdt->save();
+				$n++;
+			}		
 		}
 		
-		for($k=0; $k<count($request->idsup); $k++){
-			$updatespptb = spptb_purchase::where([['spptb_idspp', '=', $id] , ['spp_totalbiaya.spptb_id' , '=' , $request->idspptb[$k]]]);
-			$replacetotal = str_replace(',', '', $request->bayar[$k]);
-			$explode1 = explode(",", $request->idsup[$k]);
-			$idsupp = $explode1[0];
+		DB::DELETE("DELETE FROM spp_totalbiaya where spptb_idspp = '$id'");
+		for($k=0; $k<count($request->suppliercekbayar); $k++){	
+			$spptb = new spptb_purchase();
+			$lastidspptb = spptb_purchase::max('spptb_id'); 
+				if(isset($lastidspptb)) {
+					$idspptb = (int)$lastidspptb + 1;
+				}
+				else {
+					$idspptb = 1;
+				}
 
-			$updatespptb->update([
-				'spptb_supplier' => $idsupp,
-				'spptb_totalbiaya' => $replacetotal
-				]);
-
+			$totalbiaya = str_replace("," , "" , $request->totalbayarpembayaran[$k]);
+			$spptb->spptb_totalbiaya = $totalbiaya;
+			$spptb->spptb_id = $idspptb;
+			$spptb->spptb_idspp = $id;
+			$spptb->spptb_bayar = $request->syaratkredit[$k];
+			$spptb->spptb_supplier = $request->suppliercekbayar[$k];
+			$spptb->save();
 		}
 
-		return redirect('suratpermintaanpembelian');	
+			return json_encode('sukses');	
+		});
 	}
 
 	public function detailspp ($id) {
@@ -767,10 +773,12 @@ class PurchaseController extends Controller
 
 		if($tipespp != 'J'){
 			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and  sppd_supplier = idsup order by sppd_seq asc");
-
-			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem order by sppd_kodeitem asc");
-
-			
+		if($tipespp == 'NS' && $data['jenisitem'] == 'S'){
+			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sg_qty, unitstock, sppd_kendaraan from kendaraan, masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem  and sppd_kendaraan = kendaraan.id order by sppd_kodeitem asc");
+		}
+		else {
+			$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem order by sppd_kodeitem asc");	
+		}	
 		}
 		else {
 			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and  sppd_supplier = idsup order by sppd_seq asc");
@@ -921,8 +929,10 @@ class PurchaseController extends Controller
 
 		$data['kodeitem'] = DB::select("select * from masteritem where jenisitem = '$jenisitem'");
 		$data['supplier'] = DB::select("select * from supplier");
-		return json_encode($data);
+		$data['kendaraan'] = DB::select("select * from kendaraan");
+ 		return json_encode($data);
 	}
+
 
 	
 	public function deletesup($id){
