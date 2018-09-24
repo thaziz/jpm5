@@ -165,7 +165,7 @@
 			<legend>
 				Bayar Kepada : <br>
 			</legend>
-				 {{count($fpgbank->fpgb_nmbanktujuan)}}
+				 {{count($data['fpg_bank'])}}  Cabang
 		</fieldset>
 		@endif
 		<br>
