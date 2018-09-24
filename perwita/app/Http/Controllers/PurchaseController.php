@@ -1103,9 +1103,6 @@ class PurchaseController extends Controller
 		
 		$idspp = $request->idspp;
 
-/*		$datakodeitem = DB::select("select * from masteritem where kode_item = '$kodeitem'");
-		$data['kodeitem'] = $datakodeitem[0]->nama_masteritem;
-		$data['hargaitem'] = $datakodeitem[0]->harga;*/
 
 		$data['spp'] = DB::select("select * from confirm_order, spp, masterdepartment, cabang where co_idspp = '$idspp' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
 
