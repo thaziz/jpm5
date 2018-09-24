@@ -192,7 +192,7 @@
 				</td>
 				
 				<td> {{$fpgbank->mb_nama}}</td>
-				<td class="text-right"> {{number_format($fpgbank->fpg_totalbayar , 2)}}</td>
+				<td class="text-right"> {{number_format($fpgbank->fpgb_nominal , 2)}}</td>
 			</tr>
 			@endforeach
 			

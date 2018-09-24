@@ -8652,14 +8652,28 @@ public function kekata($x) {
 				$datajurnal2 = DB::select("select * from d_akun where id_akun = '$akunbiaya'");
 				$akundka2 = $datajurnal2[0]->akun_dka;
 
-				if($akundka2 == 'K'){
-					$datajurnal[$j]['id_akun'] = $request->akun[$j];
-					$datajurnal[$j]['subtotal'] = '-' . $jumlah;
-					$datajurnal[$j]['dk'] = 'D';
-					$datajurnal[$j]['detail'] = $request->keterangan[$j];
+				if($request->dk[$j] == 'K'){
+					if($akundka2 == 'D'){
+						$datajurnal[$j]['id_akun'] = $request->akun[$j];
+						$datajurnal[$j]['subtotal'] = '-' . $jumlah;
+						$datajurnal[$j]['dk'] = 'K';
+						$datajurnal[$j]['detail'] = $request->keterangan[$j];
+					}
+					else {
+						$datajurnal[$j]['id_akun'] = $request->akun[$j];
+						$datajurnal[$j]['subtotal'] = $jumlah;
+						$datajurnal[$j]['dk'] = 'K';
+						$datajurnal[$j]['detail'] = $request->keterangan[$j];	
+					}
 
 				}
 				else {
+					if(){
+
+					}
+					else {
+						
+					}
 					$datajurnal[$j]['id_akun'] = $request->akun[$j];
 					$datajurnal[$j]['subtotal'] =  $jumlah;
 					$datajurnal[$j]['dk'] = 'D';	
