@@ -1107,9 +1107,26 @@ class PurchaseController extends Controller
 		$data['kodeitem'] = $datakodeitem[0]->nama_masteritem;
 		$data['hargaitem'] = $datakodeitem[0]->harga;*/
 
-		$data['sppd'] = DB::select("select * from spp_detail, supplier where sppd_idspp = '$idspp' and sppd_supplier = idsup order by sppd_kodeitem asc");
+		$data['spp'] = DB::select("select * from confirm_order, spp, masterdepartment, cabang where co_idspp = '$idspp' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
 
-		$data['sppdt'] =  DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest,unitstock from  masteritem, spp_detail where sppd_idspp = '$idspp' and kode_item = sppd_kodeitem order by sppd_kodeitem asc ");
+		$data['sppd'] = DB::select("select * from spp_detail, supplier where sppd_idspp = '$idspp' and sppd_supplier = idsup order by sppd_kodeitem asc");
+		
+		$grupitem = substr($data['sppd'][0]->sppd_kodeitem, 0,1);
+		
+		$jenisitem = DB::select("select * from jenis_item where kode_jenisitem = '$grupitem'");
+		$data['jenisitem'] = $jenisitem[0]->keterangan_jenisitem;
+		$data['stockjenisitem'] = $jenisitem[0]->stock;
+		$data['kodejenisitem'] = $jenisitem[0]->kode_jenisitem;
+		$tipespp = $data['spp'][0]->spp_tipe;
+
+
+		if($tipespp == 'NS' && $data['jenisitem'] == 'S'){
+			$data['sppdt'] =  DB::select("select distinct sppd_kendaraan, sppd_kodeitem, nama_masteritem, sppd_qtyrequest,unitstock from  kendaraan, masteritem, spp_detail where sppd_idspp = '$idspp' and kode_item = sppd_kodeitem and sppd_kendaraan = kendaraan.id order by sppd_kodeitem asc ");
+		}
+		else {
+			$data['sppdt'] =  DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest,unitstock from  masteritem, spp_detail where sppd_idspp = '$idspp' and kode_item = sppd_kodeitem order by sppd_kodeitem asc ");
+		}
+
 		$data['temp'] = [];
 		for($i = 0; $i < count($data['sppdt']); $i++){
 			$kodeitem = $data['sppdt'][$i]->sppd_kodeitem;
