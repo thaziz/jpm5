@@ -143,6 +143,13 @@ class ikhtisarController extends Controller
 	                    }
                 	}
                     
+                }else{
+                	if ($data->ik_status == 'RELEASED') {
+                		if(cek_periode(carbon::parse($data->created_at)->format('m'),carbon::parse($data->created_at)->format('Y') ) != 0){
+	                      $c = '<a title="Hapus" class="btn btn-danger" onclick="hapus(\''.$data->ik_id.'\')">
+	                              <i class="fa fa-trash" aria-hidden="true"></i></a>';
+	                    }
+                	}
                 }
                 return '<div class="btn-group">'. $a.$c .'</div>' ;
                        
