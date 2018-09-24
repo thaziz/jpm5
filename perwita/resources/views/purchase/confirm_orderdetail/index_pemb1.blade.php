@@ -166,7 +166,7 @@
                             <b> Tipe </b>
                             </td>
                             <td>
-                              <input type="text" class="form-control" readonly="" value="{{$namatipe}}">
+                              <input type="text" class="form-control tipespp" readonly="" value="{{$namatipe}}">
                               <input type="hidden" class="prosespembelian" readonly="" value="{{$spp->staff_pemb}}">
                             </td>
                           </tr>
@@ -320,7 +320,7 @@
                       <th> Qty Request </th>
                       <th> Qty Approval </th>
                       <th> Satuan </th>
-                    
+                      <th class='kendaraan'> Kendaraan </th>
                       <th> Ditolak </th>
                       <th> Keterangan Tolak </th>
                       <th style='min-width: 10px'> Harga </th>
@@ -338,6 +338,9 @@
                       
 
                       <td rowspan="3"> {{$sppdtbarang->unitstock}} </td>
+                      <td rowspan="3">  
+
+                      </td>
                        <td rowspan="3"> <div class="checkbox">
                                           <input type="checkbox"  class="checktolak" value="option1" aria-label="Single checkbox One" data-kodeitem="{{$sppdtbarang->sppd_kodeitem}}" data-id="{{$index}}">
                                           <label></label>

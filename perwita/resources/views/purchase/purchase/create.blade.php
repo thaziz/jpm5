@@ -581,7 +581,7 @@
                             }
                          
 
-                        rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required>  </td>' +
+                        rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required value="'+response.codt[i][j].is_keteranganitem+'">  </td>' +
                         '<tr>';
 
                         }
