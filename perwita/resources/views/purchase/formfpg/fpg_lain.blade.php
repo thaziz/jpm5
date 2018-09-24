@@ -165,9 +165,7 @@
 			<legend>
 				Bayar Kepada : <br>
 			</legend>
-				@foreach($data['fpg_bank'] as $index=>$fpgbank)
-					{{$index + 1 }}.  {{$fpgbank->fpgb_nmbanktujuan}} 
-				@endforeach
+				 {{count($fpgbank->fpgb_nmbanktujuan)}}
 		</fieldset>
 		@endif
 		<br>

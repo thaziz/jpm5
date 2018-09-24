@@ -8668,17 +8668,19 @@ public function kekata($x) {
 
 				}
 				else {
-					if(){
-
+					if($akundka2 == 'K'){
+						$datajurnal[$j]['id_akun'] = $request->akun[$j];
+						$datajurnal[$j]['subtotal'] = '-' . $jumlah;
+						$datajurnal[$j]['dk'] = 'D';
+						$datajurnal[$j]['detail'] = $request->keterangan[$j];	
 					}
 					else {
-						
+						$datajurnal[$j]['id_akun'] = $request->akun[$j];
+						$datajurnal[$j]['subtotal'] = $jumlah;
+						$datajurnal[$j]['dk'] = 'D';
+						$datajurnal[$j]['detail'] = $request->keterangan[$j];
 					}
-					$datajurnal[$j]['id_akun'] = $request->akun[$j];
-					$datajurnal[$j]['subtotal'] =  $jumlah;
-					$datajurnal[$j]['dk'] = 'D';	
-					$datajurnal[$j]['detail'] = $request->keterangan[$j];
-
+				
 				}
 			}
 		}
