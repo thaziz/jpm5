@@ -320,6 +320,7 @@
                       <th> Qty Request </th>
                       <th> Qty Approval </th>
                       <th> Satuan </th>
+                    
                       <th> Ditolak </th>
                       <th> Keterangan Tolak </th>
                       <th style='min-width: 10px'> Harga </th>
