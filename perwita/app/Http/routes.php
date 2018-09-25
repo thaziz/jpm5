@@ -248,6 +248,7 @@ Route::get('master-keuangan/laporan-laba-rugi',  'laba_rugiController@index');
 
 /* end warehouse */
 Route::get('fakturpembelian/fakturpembelian', 'PurchaseController@fatkurpembelian');
+Route::get('fakturpembelian/datatable_faktur_pembelian', 'PurchaseController@datatable_faktur_pembelian')->name('datatable_faktur_pembelian');
 Route::get('fakturpembelian/createfatkurpembelian', 'PurchaseController@createfatkurpembelian');
 Route::get('fakturpembelian/detailfatkurpembelian/{id}', 'PurchaseController@detailfatkurpembelian');
 Route::get('fakturpembelian/getchangefaktur', 'PurchaseController@supplierfaktur');

@@ -68,10 +68,24 @@
   </td>
  </tr>	
  <tr>
+    <td style="width: 100px">Total</td>
+    <td width="10">:</td>
+    <td width="200" colspan="3">
+      <input value="0" type="text" name="total_kotor_penerus" class="form-control total_kotor_penerus" style="" readonly="">
+    </td>
+  </tr>
+ <tr>
+    <td style="width: 100px">Diskon</td>
+    <td width="10">:</td>
+    <td width="200" colspan="3">
+      <input value="" type="text" name="diskon_penerus" class="form-control diskon_penerus hanya_angka">
+    </td>
+  </tr>
+ <tr>
     <td style="width: 100px">DPP</td>
     <td width="10">:</td>
     <td width="200" colspan="3">
-      <input value="Rp. 0,00" type="text" name="total_jml" class="form-control total_jml" style="" readonly="">
+      <input value="Rp. 0,00" type="text" name="total_dpp_penerus" class="form-control total_dpp_penerus" style="" readonly="">
     </td>
   </tr>
  </tr>
@@ -81,9 +95,13 @@
   <td width="200" >
     <select class="form-control jenis_ppn_penerus chosen-select-width1" name="jenis_ppn_penerus">
       <option>Pilih - PPN</option>
+      <option class="include">INCLUDE</option>
+      <option class="exclude">EXCLUDE</option>
     </select>
   </td>
-  <td style="width: 100px">PPN</td>
+  <td style="width: 100px">
+    <input type="text" name="persen_ppn_penerus" value="10" style="text-transform: uppercase;" class="form-control persen_ppn_penerus hanya_angka center">
+  </td>
   <td width="200" >
     <input type="text" name="ppn_penerus" style="text-transform: uppercase;" class="form-control ppn_penerus" style="">
   </td>
@@ -94,9 +112,14 @@
   <td width="200" >
     <select class="form-control jenis_pph_penerus chosen-select-width1" name="jenis_pph_penerus">
       <option>Pilih - PPH</option>
+      @foreach ($pajak as $val)
+        <option class="{{ $val->kode }}" data-val="{{ $val->nilai }}">{{ $val->nama }}</option>
+      @endforeach
     </select>
   </td>
-  <td style="width: 100px">PPH</td>
+  <td style="width: 100px">
+    <input type="text" readonly="" name="persen_pph_penerus" value="0" style="text-transform: uppercase;" class="form-control persen_pph_penerus hanya_angka center">
+  </td>
   <td width="200" >
     <input type="text" name="pph_penerus" style="text-transform: uppercase;" class="form-control pph_penerus" style="">
   </td>
@@ -390,13 +413,50 @@
   })
 
 
+  $('.jenis_pph_penerus').change(function(){
+    var jumlah = $('.jenis_pph_penerus option:selected').data('val');
+    $('.persen_pph_penerus ').val(jumlah);
+  })
+
+  function hitung_ppn_penerus() {
+    var jenis_ppn_penerus  = $('.jenis_ppn_penerus ').val();
+    if (jenis_ppn_penerus == 'exclude') {
+
+    }
+  }
+
+  function hitung_pph_penerus() {
+    // body...
+  }
+
+  $('.diskon_penerus').keyup(function(){
+    hitung();
+  })
 
   function hitung() {
     var temp = 0;
+    var diskon_penerus =  $('.diskon_penerus').val();
+    if (diskon_penerus == '') {
+      diskon_penerus = 0;
+    }
+
     datatable1.$('.bayar_biaya').each(function(){
       temp+=parseInt($(this).val());
     })
-    $('.total_jml').val(accounting.formatMoney(temp, "", 2, ".",','));
+
+    var hasil = temp - diskon_penerus;
+    if (hasil < 0) {
+      toastr.warning('PERHATIAN! DPP tidak boleh minus');
+
+      datatable1.$('.bayar_biaya').each(function(){
+        temp+=parseInt($(this).val());
+      })
+      $('.diskon_penerus').val('0');
+      hitung();
+      return false;
+    }
+    $('.total_kotor_penerus').val(accounting.formatMoney(temp, "", 2, ".",','));
+    $('.total_dpp_penerus').val(accounting.formatMoney(hasil, "", 2, ".",','));
   }
 
 
