@@ -171,7 +171,7 @@
           <div class="modal-body">
             <div class="row">
               <div class="col-sm-8">
-                <table class="table">
+                <table class="table table_pajak_penerus">
                   <tr>
                     <td>No Faktur Pajak</td>
                     <td><input type="text" class="form-control faktur_pajak_penerus" name="faktur_pajak_penerus"></td>
@@ -210,10 +210,10 @@
                 <table class="table">
                   <caption class="center"><h4>FAKTUR PAJAK</h4></caption>
                   <tr>
-                    <td><input type="text" class="form-control dpp_faktur_pajak_penerus1" name="dpp_faktur_pajak_penerus1"></td>
+                    <td><input type="text" readonly="" class="form-control dpp_faktur_pajak_penerus1" name="dpp_faktur_pajak_penerus1"></td>
                   </tr>
                   <tr>
-                    <td><input type="text" class="form-control  ppn_pajak_penerus1" name="ppn_pajak_penerus1"></td>
+                    <td><input type="text" readonly="" class="form-control  ppn_pajak_penerus1" name="ppn_pajak_penerus1"></td>
                   </tr>
                 </table>
               </div>
@@ -228,7 +228,7 @@
           </div><!-- /.modal-content -->
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="hidden" class="btn btn-primary append_vendor" >Save changes</button>
+            <button type="hidden" class="btn btn-primary" data-dismiss="modal">Save changes</button>
           </div>
       </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->

@@ -2198,7 +2198,7 @@
 
 
     $('.tgl').change(function(){
-       cabang = $('.cabang').val();
+      cabang = $('.cabang').val();
       var a = $('ul#tabmenu').find('li.active').data('val');
       tgl = $('.tgl').val();
       $('.cabang2').val(cabang);
