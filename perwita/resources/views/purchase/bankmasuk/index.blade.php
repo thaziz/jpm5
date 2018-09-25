@@ -53,8 +53,8 @@
                     <h5> Daftar Bank Masuk
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                    <div class="ibox-tools">
-                        
+                    <div class="text-right">
+                        <a type="button" class='btn btn-sm btn-success' id="tmbhdatabm" href="{{url('bankmasuk/createbankmasuk')}}"> <i class="fa fa-plus"> </i> Tambah Data </a>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -76,8 +76,7 @@
                         <th> Nominal </th>
                         <th> Jenis Bayar </th>                   
                         <th> Status </th>
-                        <th> Aksi </th>
-                    
+                        <th> Aksi </th>                    
                        
                     </tr>
                     </thead>
@@ -205,6 +204,7 @@
                 </div>
               </div>
            </div>
+
 
 @endsection
 
