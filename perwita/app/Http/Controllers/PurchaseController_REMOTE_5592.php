@@ -1847,7 +1847,7 @@ public function purchase_order() {
 			$datacodt = DB::select("select * from confirm_order_dt where codt_idco = '$idspp'");
 			$dataspp = DB::select("select * from spp where spp_id = '$idspp'");
 
-			$grupitem = substr($datacodt[0][0]->codt_kodeitem, 0,1);
+			$grupitem = substr($datacodt[0]->codt_kodeitem, 0,1);
 		
 			$jenisitem = DB::select("select * from jenis_item where kode_jenisitem = '$grupitem'");
 
@@ -1869,8 +1869,6 @@ public function purchase_order() {
 			$supplier = $data['codt'][0][0]->codt_supplier;
 
 			$data['itemsupplier'][] = DB::select("select * from itemsupplier where is_kodeitem = '$kodeitem' and is_idsup = '$supplier'");
-
-			
 
 		}
 		return json_encode($data);
