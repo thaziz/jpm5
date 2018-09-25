@@ -850,6 +850,7 @@
 
                                 
                                 <div class="col-md-12" style="padding-top: 20px">
+                                  
                                   <table class="table table-bordered" id="tbl-bank">
                                     @if($data['fpg'][0]->fpg_jenisbayar != '11' && $data['fpg'][0]->fpg_jenisbayar != '12')
                                       
@@ -1015,7 +1016,13 @@
                   
                     <a class="btn btn-warning" href={{url('formfpg/formfpg')}} id="kembali"> Kembali </a>
                     
-                    <a class="btn btn-info" href="{{url('formfpg/printformfpg/'.$data['fpg'][0]->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a>
+
+                          @if($data['fpg'][0]->fpg_jenisbayar == '5' || $data['fpg'][0]->fpg_jenisbayar == '12')
+                            <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg2/'.$data['fpg'][0]->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a>
+                          @else
+                              <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg/'.$data['fpg'][0]->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a>
+                          @endif
+
                    <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-success">
                 </form>
                     

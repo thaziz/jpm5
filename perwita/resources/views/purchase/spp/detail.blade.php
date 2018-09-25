@@ -160,6 +160,19 @@
 
                          </div>
 
+                        <div class="col-sm-6">
+                          <table class="table">
+                            <tr>
+                              <th> Nama Supplier </th> <th> Syarat Kredit </th>
+                            </tr>
+                            @foreach($data['spptb'] as $spptb)
+                            <tr>
+                              <td> {{$spptb->nama_supplier}} </td> <td> {{$spptb->spptb_bayar}} Hari </td>
+                            </tr>
+                            @endforeach
+                          </table>
+                        </div>
+
                          <div class="col-sm-6">
                           <div class="tampilbayar"> </div>
                            <h4> <a href="{{url('suratpermintaanpembelian/cetakspp/'.$spp->spp_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </h4>
@@ -259,9 +272,9 @@
                         <td>  <input type="text" class="form-control qty qtyreq{{$idbarang}}" value="{{$sppd->sppd_qtyrequest}}" readonly="" name="qtyrequest[]">  </td>
                     
                          @if($data['countkendaraan'] > 0) 
-                          @foreach($data['kendaraan'] as $kndaraan)
-                            <td> <select class="form-control kendaraan" disabled=""> @foreach($data['masterkendaraan'] as $msterkendaraan) <option value="{{$msterkendaraan->id}}" @if($kndaraan->sppd_kendaraan == $msterkendaraan->id) selected="" @endif  > {{$msterkendaraan->nopol}} - {{$msterkendaraan->merk}}  </option> @endforeach </select> </td>
-                          @endforeach
+                         
+                            <td> <select class="form-control kendaraan" disabled=""> @foreach($data['masterkendaraan'] as $msterkendaraan) <option value="{{$msterkendaraan->id}}" @if($sppd->sppd_kendaraan == $msterkendaraan->id) selected="" @endif  > {{$msterkendaraan->nopol}} - {{$msterkendaraan->merk}}  </option> @endforeach </select> </td>
+                          
                          @endif
 
 
@@ -549,11 +562,8 @@ $('#formsetujukabag').submit(function(){
 
      
     //pembayaran
-    $(function(){
+  /*  $(function(){
       var arrValSup = [];
-
- 
-  
 
       for(var j =0 ; j < countsup;j++){
        var value =  $('.sp'+j).val();
@@ -609,11 +619,7 @@ $('#formsetujukabag').submit(function(){
         })
 
       }
-       
-
-
-
-    })
+    })*/
 
     $(function(){
       var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';

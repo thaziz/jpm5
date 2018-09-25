@@ -157,16 +157,13 @@ class BankMasukController extends Controller
 
 
 		$cabang = $request->cabangtujuan;
-
+		$databank = DB::select("select * from masterbank where mb_kode = '$banktujuan'");
+		$kodebankd = $databank[0]->mb_id;
 		//JREF
-		$jr_no = get_id_jurnal('BM' , $cabang , $tgl);
+		$jr_no = get_id_jurnal('BM' , $kodebankd, $cabang , $tgl);
 
 		$ref = explode("-", $jr_no);
 
-		$databank = DB::select("select * from masterbank where mb_kode = '$banktujuan'");
-		$kodebankd = $databank[0]->mb_id;
-
-	
 
 		if($kodebankd < 10){
 			$kodebankd = '0' . $kodebankd;
@@ -180,7 +177,7 @@ class BankMasukController extends Controller
 		//ENDHRREF
 
 		$cabang = $request->cabangtujuan;
-		$notabm = getnotabm($cabang , $tgl);
+		$notabm = getnotabm($cabang , $tgl , $kodebankd);
 		$refbm = explode("-", $notabm);
 
 		$kodebankd = $databank[0]->mb_id;

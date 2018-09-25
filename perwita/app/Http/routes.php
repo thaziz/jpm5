@@ -101,6 +101,7 @@ Route::get('jurnalselaras/bankmasuk', 'jurnal_pembelian@bankmasuk');
 Route::get('jurnalselaras/kasmasuk', 'jurnal_pembelian@kasmasuk');
 Route::get('jurnalselaras/fpg_checkbank', 'jurnal_pembelian@fpg_checkbank');
 Route::get('jurnalselaras/get_no_po', 'jurnal_pembelian@get_no_po');
+Route::get('jurnalselaras/kendaraansppd', 'jurnal_pembelian@kendaraansppd');
 
 //***PEMBELIAN
 //***PEMBELIAN
@@ -118,7 +119,6 @@ Route::get('detailanalisahutang' , 'Queryanalisa@detailanalisahutang');
 
 Route::get('suratpermintaanpembelian' , 'PurchaseController@spp_index');
 Route::post('suratpermintaanpembelian/savesupplier' , 'PurchaseController@savespp');
-Route::post('suratpermintaanpembelian/updatesupplier/{id}' , 'PurchaseController@updatespp');
 Route::get('suratpermintaanpembelian/createspp' , 'PurchaseController@createspp');
 Route::get('suratpermintaanpembelian/detailspp/{id}' , 'PurchaseController@detailspp');
 Route::delete('suratpermintaanpembelian/deletespp/{id}' , 'PurchaseController@deletespp');
@@ -134,6 +134,7 @@ Route::get('suratpermintaanpembelian/valgudang', 'PurchaseController@valgudang')
 Route::get('suratpermintaanpembelian/kettolak', 'PurchaseController@kettolakspp');
 Route::post('suratpermintaanpembelian/setujukabag', 'PurchaseController@sppsetujukabag');
 Route::get('suratpermintaanpembelian/tmbhdatabarang', 'PurchaseController@tmbhdatabarang');
+Route::post('suratpermintaanpembelian/updatespp', 'PurchaseController@updatespp');
 
 
 
@@ -248,6 +249,7 @@ Route::get('master-keuangan/laporan-laba-rugi',  'laba_rugiController@index');
 
 /* end warehouse */
 Route::get('fakturpembelian/fakturpembelian', 'PurchaseController@fatkurpembelian');
+Route::get('fakturpembelian/datatable_faktur_pembelian', 'PurchaseController@datatable_faktur_pembelian')->name('datatable_faktur_pembelian');
 Route::get('fakturpembelian/createfatkurpembelian', 'PurchaseController@createfatkurpembelian');
 Route::get('fakturpembelian/detailfatkurpembelian/{id}', 'PurchaseController@detailfatkurpembelian');
 Route::get('fakturpembelian/getchangefaktur', 'PurchaseController@supplierfaktur');
@@ -1841,47 +1843,47 @@ Route::get('sales/fakturpajakform', function(){
 });
 
 //kwitansi
-Route::get('sales/penerimaan_penjualan', 'sales\penerimaan_penjualan_Controller@index');
-Route::get('sales/penerimaan_penjualan_form', 'sales\penerimaan_penjualan_Controller@form');
-Route::get('sales/nota_kwitansi', 'sales\penerimaan_penjualan_Controller@nota_kwitansi');
-Route::get('sales/nota_bank', 'sales\penerimaan_penjualan_Controller@nota_bank');
-Route::get('sales/cari_invoice', 'sales\penerimaan_penjualan_Controller@cari_invoice');
-Route::get('sales/akun_biaya', 'sales\penerimaan_penjualan_Controller@akun_biaya');
-Route::get('sales/akun_bank', 'sales\penerimaan_penjualan_Controller@akun_bank');
-Route::get('sales/akun_all', 'sales\penerimaan_penjualan_Controller@akun_all');
-Route::get('sales/append_invoice', 'sales\penerimaan_penjualan_Controller@append_invoice');
-Route::post('sales/append_invoice', 'sales\penerimaan_penjualan_Controller@append_invoice');
+Route::get('sales/penerimaan_penjualan', 'sales\penerimaan_penjualan_controller@index');
+Route::get('sales/penerimaan_penjualan_form', 'sales\penerimaan_penjualan_controller@form');
+Route::get('sales/nota_kwitansi', 'sales\penerimaan_penjualan_controller@nota_kwitansi');
+Route::get('sales/nota_bank', 'sales\penerimaan_penjualan_controller@nota_bank');
+Route::get('sales/cari_invoice', 'sales\penerimaan_penjualan_controller@cari_invoice');
+Route::get('sales/akun_biaya', 'sales\penerimaan_penjualan_controller@akun_biaya');
+Route::get('sales/akun_bank', 'sales\penerimaan_penjualan_controller@akun_bank');
+Route::get('sales/akun_all', 'sales\penerimaan_penjualan_controller@akun_all');
+Route::get('sales/append_invoice', 'sales\penerimaan_penjualan_controller@append_invoice');
+Route::post('sales/append_invoice', 'sales\penerimaan_penjualan_controller@append_invoice');
 
-Route::get('sales/datatable_kwitansi', 'sales\penerimaan_penjualan_Controller@datatable_kwitansi')->name('datatable_kwitansi');
-Route::get('sales/datatable_detail_invoice', 'sales\penerimaan_penjualan_Controller@datatable_detail_invoice')->name('datatable_detail_invoice');
-Route::get('sales/datatable_invoice', 'sales\penerimaan_penjualan_Controller@datatable_invoice')->name('datatable_invoice');
+Route::get('sales/datatable_kwitansi', 'sales\penerimaan_penjualan_controller@datatable_kwitansi')->name('datatable_kwitansi');
+Route::get('sales/datatable_detail_invoice', 'sales\penerimaan_penjualan_controller@datatable_detail_invoice')->name('datatable_detail_invoice');
+Route::get('sales/datatable_invoice', 'sales\penerimaan_penjualan_controller@datatable_invoice')->name('datatable_invoice');
 
-Route::get('sales/riwayat_invoice', 'sales\penerimaan_penjualan_Controller@riwayat_invoice');
-Route::get('sales/cari_um', 'sales\penerimaan_penjualan_Controller@cari_um');
-Route::get('sales/pilih_um', 'sales\penerimaan_penjualan_Controller@pilih_um');
-Route::get('sales/riwayat_cn_dn', 'sales\penerimaan_penjualan_Controller@riwayat_cn_dn');
-Route::get('sales/auto_biaya', 'sales\penerimaan_penjualan_Controller@auto_biaya');
-Route::get('sales/simpan_kwitansi', 'sales\penerimaan_penjualan_Controller@simpan_kwitansi');
-Route::get('sales/update_kwitansi', 'sales\penerimaan_penjualan_Controller@update_kwitansi');
+Route::get('sales/riwayat_invoice', 'sales\penerimaan_penjualan_controller@riwayat_invoice');
+Route::get('sales/cari_um', 'sales\penerimaan_penjualan_controller@cari_um');
+Route::get('sales/pilih_um', 'sales\penerimaan_penjualan_controller@pilih_um');
+Route::get('sales/riwayat_cn_dn', 'sales\penerimaan_penjualan_controller@riwayat_cn_dn');
+Route::get('sales/auto_biaya', 'sales\penerimaan_penjualan_controller@auto_biaya');
+Route::get('sales/simpan_kwitansi', 'sales\penerimaan_penjualan_controller@simpan_kwitansi');
+Route::get('sales/update_kwitansi', 'sales\penerimaan_penjualan_controller@update_kwitansi');
 
-Route::post('sales/simpan_kwitansi', 'sales\penerimaan_penjualan_Controller@simpan_kwitansi');
-Route::post('sales/update_kwitansi', 'sales\penerimaan_penjualan_Controller@update_kwitansi');
+Route::post('sales/simpan_kwitansi', 'sales\penerimaan_penjualan_controller@simpan_kwitansi');
+Route::post('sales/update_kwitansi', 'sales\penerimaan_penjualan_controller@update_kwitansi');
 
-Route::get('sales/kwitansi/cetak_nota', 'sales\penerimaan_penjualan_Controller@cetak_nota');
-Route::get('sales/hapus_kwitansi', 'sales\penerimaan_penjualan_Controller@hapus_kwitansi');
+Route::get('sales/kwitansi/cetak_nota', 'sales\penerimaan_penjualan_controller@cetak_nota');
+Route::get('sales/hapus_kwitansi', 'sales\penerimaan_penjualan_controller@hapus_kwitansi');
 
-Route::get('sales/edit_kwitansi', 'sales\penerimaan_penjualan_Controller@edit_kwitansi');
-Route::get('sales/detail_kwitansi', 'sales\penerimaan_penjualan_Controller@detail_kwitansi');
+Route::get('sales/edit_kwitansi', 'sales\penerimaan_penjualan_controller@edit_kwitansi');
+Route::get('sales/detail_kwitansi', 'sales\penerimaan_penjualan_controller@detail_kwitansi');
 
-Route::post('sales/save_um_kwitansi', 'sales\penerimaan_penjualan_Controller@save_um_kwitansi');
-Route::get('sales/kwitansi_cari_um', 'sales\penerimaan_penjualan_Controller@kwitansi_cari_um');
+Route::post('sales/save_um_kwitansi', 'sales\penerimaan_penjualan_controller@save_um_kwitansi');
+Route::get('sales/kwitansi_cari_um', 'sales\penerimaan_penjualan_controller@kwitansi_cari_um');
 
-Route::get('sales/hapus_um_kwitansi', 'sales\penerimaan_penjualan_Controller@hapus_um_kwitansi');
-Route::get('sales/kwitansi/jurnal', 'sales\penerimaan_penjualan_Controller@jurnal');
-Route::get('sales/kwitansi/simpan_um_sementara', 'sales\penerimaan_penjualan_Controller@simpan_um_sementara');
-Route::get('sales/kwitansi/simpan_um', 'sales\penerimaan_penjualan_Controller@simpan_um');
-Route::post('sales/kwitansi/simpan_um', 'sales\penerimaan_penjualan_Controller@simpan_um');
-Route::get('sales/kwitansi/datatable_kwitansi', 'sales\penerimaan_penjualan_Controller@datatable_kwitansi');
+Route::get('sales/hapus_um_kwitansi', 'sales\penerimaan_penjualan_controller@hapus_um_kwitansi');
+Route::get('sales/kwitansi/jurnal', 'sales\penerimaan_penjualan_controller@jurnal');
+Route::get('sales/kwitansi/simpan_um_sementara', 'sales\penerimaan_penjualan_controller@simpan_um_sementara');
+Route::get('sales/kwitansi/simpan_um', 'sales\penerimaan_penjualan_controller@simpan_um');
+Route::post('sales/kwitansi/simpan_um', 'sales\penerimaan_penjualan_controller@simpan_um');
+Route::get('sales/kwitansi/datatable_kwitansi', 'sales\penerimaan_penjualan_controller@datatable_kwitansi');
 
 
 

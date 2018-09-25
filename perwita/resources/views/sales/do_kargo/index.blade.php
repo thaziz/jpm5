@@ -71,9 +71,8 @@
                       </tr>
                     
                       <tr>
-
-                        
-                           <th style="width: 100px; padding-top: 16px">Cabang</th>
+                          @if(Auth::user()->punyaAkses('Delivery Order','cabang'))
+                          <th style="width: 100px; padding-top: 16px">Cabang</th>
                           <td colspan="1">
                             <select class="cari_semua chosen-select-width" id="cabang"  name="cabang">
                               <option></option>
@@ -82,6 +81,19 @@
                               @endforeach
                             </select>
                           </td>
+                          @else
+                          <th style="width: 100px; padding-top: 16px">Cabang</th>
+                          <td colspan="1" class="disabled">
+                            <select class="cari_semua chosen-select-width" id="cabang"  name="cabang">
+                              <option></option>
+                              @foreach ($cabang as $element)
+                                <option @if (Auth::user()->kode_cabang == $element->kode)
+                                  selected="" 
+                                @endif value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
+                              @endforeach
+                            </select>
+                          </td>
+                          @endif
 
                           <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
                           <td >

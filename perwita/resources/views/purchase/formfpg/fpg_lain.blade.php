@@ -165,9 +165,7 @@
 			<legend>
 				Bayar Kepada : <br>
 			</legend>
-				@foreach($data['fpg_bank'] as $index=>$fpgbank)
-					{{$index + 1 }}.  {{$fpgbank->fpgb_nmbanktujuan}} 
-				@endforeach
+				 {{count($data['fpg_bank'])}}  Cabang
 		</fieldset>
 		@endif
 		<br>
@@ -183,7 +181,7 @@
 			@foreach($data['fpg_bank'] as $index=>$fpgbank)
 			<tr class="border-none-bottom">
 				<td class="text-center"> {{$index + 1}} </td>
-				<td> {{$data['fpg'][0]->fpg_keterangan}} </td>
+				<td> {{$fpgbank->fpgb_nmbanktujuan}} </td>
 				<td>@if($fpgbank->fpgb_jenisbayarbank == 'INTERNET BANKING')
 						{{$fpgbank->fpgb_jenisbayarbank}}
 					@else
@@ -192,7 +190,7 @@
 				</td>
 				
 				<td> {{$fpgbank->mb_nama}}</td>
-				<td class="text-right"> {{number_format($fpgbank->fpg_totalbayar , 2)}}</td>
+				<td class="text-right"> {{number_format($fpgbank->fpgb_nominal , 2)}}</td>
 			</tr>
 			@endforeach
 			

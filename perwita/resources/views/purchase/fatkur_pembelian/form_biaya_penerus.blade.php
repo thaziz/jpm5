@@ -7,7 +7,7 @@
  <tr>
  	<td style="width: 100px">Tanggal</td>
  	<td width="10">:</td>
- 	<td width="200">
+ 	<td width="200" colspan="3">
  		<input type="text" name="tgl_biaya_head" class="form-control tgl-biaya tgl_biaya_head" value="{{$date}}" readonly="" style="">
  		<input type="hidden" class="form-control tgl_resi"  readonly="" style="">
  		<input type="hidden" name="master_persen" class="form-control master_persen"  readonly="" style="">
@@ -16,19 +16,19 @@
  <tr>
  	<td style="width: 100px">Jatuh Tempo</td>
  	<td width="10">:</td>
- 	<td width="200">
+ 	<td width="200" colspan="3">
  		<input type="text" name="jatuh_tempo" class="form-control jatuh_tempo" value="{{$jt}}" placeholder="Jatuh tempo" style="">
  	</td>
  </tr>
 <tr>
  	<td style="width: 100px">Status </td>
  	<td width="10">:</td>
-	<td width="200"><input type="text" name="status" class="form-control" value="Released" readonly="" style=""></td>
+	<td width="200" colspan="3"><input type="text" name="status" class="form-control" value="Released" readonly="" style=""></td>
  </tr>
   <tr class="">
  	<td style="width: 100px">Tipe Vendor </td>
  	<td width="10">:</td>
- 	<td width="200" class="vendor_td">
+ 	<td width="200" colspan="3" class="vendor_td">
  		<select onchange="ganti_agen(this.value)" name="vendor" class="form-control vendor1 "  style="text-align: center; " >
  			<option  selected="" value="kosong">-PILIH TIPE VENDOR-</option>
  			<option value="AGEN">Agen Penerus </option>
@@ -39,7 +39,7 @@
  <tr class="nama-kontak-kosong">
  	<td style="width: 100px">Nama Agen/Vendor </td>
  	<td width="10">:</td>
- 	<td width="200" class="nama_kontak_td">
+ 	<td width="200" colspan="3" class="nama_kontak_td">
  		<select name="" class="form-control agen_vendor" style="text-align: center; ">
  			<option value="0" selected="">-PILIH NAMA AGEN/VENDOR-</option>
  		</select>
@@ -48,12 +48,12 @@
  <tr>
  	<td style="width: 100px">No Invoice</td>
  	<td width="10">:</td>
- 	<td width="200"><input type="text" name="Invoice_biaya" readonly="" class="form-control invoice_tt" style="" placeholder="No Invoice"></td>
+ 	<td width="200" colspan="3"><input type="text" name="Invoice_biaya" readonly="" class="form-control invoice_tt" style="" placeholder="No Invoice"></td>
  </tr>
  <tr>
   <td style="width: 100px">Tanda terima</td>
   <td width="10">:</td>
-  <td width="200">
+  <td width="200" colspan="3">
     <input type="text" readonly="" name="tanda_terima" class="form-control tanda_terima" value="" >
     <input type="hidden" readonly="" name="invoice_tt" class="form-control invoice_tt" value="" >
     <input type="hidden" readonly="" name="id_tt" class="form-control id_tt" value="" >
@@ -63,10 +63,76 @@
   <tr>
  	<td style="width: 100px">Keterangan</td>
  	<td width="10">:</td>
- 	<td width="200"><input type="text" name="Keterangan_biaya" style="text-transform: uppercase;" class="form-control" style=""></td>
+ 	<td width="200" colspan="3">
+    <input type="text" name="Keterangan_biaya" style="text-transform: uppercase;" class="form-control" style="">
+  </td>
  </tr>	
+ <tr>
+    <td style="width: 100px">Total</td>
+    <td width="10">:</td>
+    <td width="200" colspan="3">
+      <input value="0" type="text" name="total_kotor_penerus" class="form-control total_kotor_penerus" style="" readonly="">
+    </td>
+  </tr>
+ <tr>
+    <td style="width: 100px">Diskon</td>
+    <td width="10">:</td>
+    <td width="200" colspan="3">
+      <input value="" type="text" name="diskon_penerus" class="form-control diskon_penerus hanya_angka">
+    </td>
+  </tr>
+ <tr>
+    <td style="width: 100px">DPP</td>
+    <td width="10">:</td>
+    <td width="200" colspan="3">
+      <input value="Rp. 0,00" type="text" name="total_dpp_penerus" class="form-control total_dpp_penerus" style="" readonly="">
+    </td>
+  </tr>
+ </tr>
+  <tr>
+  <td style="width: 100px" >Jenis PPN</td>
+  <td width="10">:</td>
+  <td width="200" >
+    <select class="form-control jenis_ppn_penerus chosen-select-width1" name="jenis_ppn_penerus">
+      <option>Pilih - PPN</option>
+      <option class="include">INCLUDE</option>
+      <option class="exclude">EXCLUDE</option>
+    </select>
+  </td>
+  <td style="width: 100px">
+    <input type="text" name="persen_ppn_penerus" value="10" style="text-transform: uppercase;" class="form-control persen_ppn_penerus hanya_angka center">
+  </td>
+  <td width="200" >
+    <input type="text" name="ppn_penerus" style="text-transform: uppercase;" class="form-control ppn_penerus" style="">
+  </td>
+ </tr>  
+ <tr>
+  <td style="width: 100px" >Jenis PPH</td>
+  <td width="10">:</td>
+  <td width="200" >
+    <select class="form-control jenis_pph_penerus chosen-select-width1" name="jenis_pph_penerus">
+      <option>Pilih - PPH</option>
+      @foreach ($pajak as $val)
+        <option class="{{ $val->kode }}" data-val="{{ $val->nilai }}">{{ $val->nama }}</option>
+      @endforeach
+    </select>
+  </td>
+  <td style="width: 100px">
+    <input type="text" readonly="" name="persen_pph_penerus" value="0" style="text-transform: uppercase;" class="form-control persen_pph_penerus hanya_angka center">
+  </td>
+  <td width="200" >
+    <input type="text" name="pph_penerus" style="text-transform: uppercase;" class="form-control pph_penerus" style="">
+  </td>
+ </tr> 
+ <tr>
+    <td style="width: 100px">Total Netto</td>
+    <td width="10">:</td>
+    <td width="200" colspan="3">
+      <input value="Rp. 0,00" type="text" name="total_jml" class="form-control total_jml" style="" readonly="">
+    </td>
+  </tr>
 <tr>
-  <td colspan="3">
+  <td colspan="5">
      <button onclick="tt_penerus()" class="btn btn-info modal_penerus_tt disabled" style="margin-right: 20px;" type="button" data-toggle="modal" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
      <button type="button" style="margin-right: 20px;" class="btn btn-warning pull-left disabled" id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
   </td>
@@ -124,11 +190,7 @@
 	 	<td width="10">:</td>
 		<td width="200"><input type="text" class="form-control keterangan_biaya" style="text-transform: uppercase;" style=""></td>
 	 </tr>
-	  <tr>
-		<td style="width: 100px">Total</td>
-		<td width="10">:</td>
-		<td width="200"><input value="Rp. 0,00" type="text" name="total_jml" class="form-control total_jml" style="" readonly=""></td>
-	  </tr>
+	  
 	  <tr>
 		<td style="width: 100px">Nominal</td>
 		<td width="10">:</td>
@@ -351,13 +413,50 @@
   })
 
 
+  $('.jenis_pph_penerus').change(function(){
+    var jumlah = $('.jenis_pph_penerus option:selected').data('val');
+    $('.persen_pph_penerus ').val(jumlah);
+  })
+
+  function hitung_ppn_penerus() {
+    var jenis_ppn_penerus  = $('.jenis_ppn_penerus ').val();
+    if (jenis_ppn_penerus == 'exclude') {
+
+    }
+  }
+
+  function hitung_pph_penerus() {
+    // body...
+  }
+
+  $('.diskon_penerus').keyup(function(){
+    hitung();
+  })
 
   function hitung() {
     var temp = 0;
+    var diskon_penerus =  $('.diskon_penerus').val();
+    if (diskon_penerus == '') {
+      diskon_penerus = 0;
+    }
+
     datatable1.$('.bayar_biaya').each(function(){
       temp+=parseInt($(this).val());
     })
-    $('.total_jml').val(accounting.formatMoney(temp, "", 2, ".",','));
+
+    var hasil = temp - diskon_penerus;
+    if (hasil < 0) {
+      toastr.warning('PERHATIAN! DPP tidak boleh minus');
+
+      datatable1.$('.bayar_biaya').each(function(){
+        temp+=parseInt($(this).val());
+      })
+      $('.diskon_penerus').val('0');
+      hitung();
+      return false;
+    }
+    $('.total_kotor_penerus').val(accounting.formatMoney(temp, "", 2, ".",','));
+    $('.total_dpp_penerus').val(accounting.formatMoney(hasil, "", 2, ".",','));
   }
 
 
