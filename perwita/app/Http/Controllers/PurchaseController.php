@@ -1185,9 +1185,9 @@ class PurchaseController extends Controller
 			$data['itemsupplier'] = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
 
 				if(count($data['itemsupplier']) > 0){
-					$data['itemsupplier2'] = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
+					$itemsupplier2 = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
 					array_push($data['temp'] , '0');
-					array_push($data['supplier'] , $data['itemsupplier2']);
+					array_push($data['supplier'] , $itemsupplier2);
 				}
 				else {
 					array_push($data['temp'] , '1');
@@ -1419,7 +1419,26 @@ class PurchaseController extends Controller
 	}
 
 	public function cetakkonfirmasi($id){
-		$data['co'] = DB::select("select * from confirm_order, spp, confirm_order_dt, masteritem, supplier where co_id = codt_idco and codt_kodeitem = kode_item and codt_supplier = idsup and codt_idco = '$id' and co_idspp = spp_id");
+		$spp = DB::select("select * from confirm_order_dt where codt_idco = '$id'");
+
+		$grupitem = substr($spp[0]->codt_kodeitem, 0,1);
+				
+		$jenisitem = DB::select("select * from jenis_item where kode_jenisitem = '$grupitem'");
+
+		$data['jenisitem'] = $jenisitem[0]->keterangan_jenisitem;
+		$data['stockjenisitem'] = $jenisitem[0]->stock;
+		$data['kodejenisitem'] = $jenisitem[0]->kode_jenisitem;
+		$dataspp = DB::select("select * from spp where spp_id = '$id'");
+		$data['tipespp'] = $dataspp[0]->spp_tipe;
+		if($data['kodejenisitem'] == 'S' && $data['tipespp'] == 'NS') {
+			$data['co'] = DB::select("select * from confirm_order, spp, confirm_order_dt, masteritem, supplier, kendaraan where co_id = codt_idco and codt_kodeitem = kode_item and codt_supplier = idsup and codt_idco = '$id' and co_idspp = spp_id and codt_kendaraan = kendaraan.id");
+
+		}
+		else{
+			$data['co'] = DB::select("select * from confirm_order, spp, confirm_order_dt, masteritem, supplier where co_id = codt_idco and codt_kodeitem = kode_item and codt_supplier = idsup and codt_idco = '$id' and co_idspp = spp_id");
+
+		}
+
 		//dd($data);
 		return view('purchase.confirm_order.cetak_co', compact('data'));
 	}
@@ -1823,8 +1842,22 @@ public function purchase_order() {
 							$data['gudang'] = DB::select("select * from mastergudang where mg_id = '$gudang'");
 			}	
 			
-			$data['codt'][] = DB::select("select * from confirm_order, confirm_order_dt , confirm_order_tb, spp, masteritem where co_idspp = '$idspp' and codt_idco = co_id and cotb_idco = co_id and co_idspp = spp_id and codt_supplier = cotb_supplier and codt_supplier = '$nosupplier' and codt_kodeitem = kode_item and cotb_id = '$idcotb' and co_id = '$idco' ");
-			
+
+			$data['codt'][] = DB::select("select * from confirm_order, confirm_order_dt , confirm_order_tb, spp, masteritem, kendaraan where co_idspp = '$idspp' and codt_idco = co_id and cotb_idco = co_id and co_idspp = spp_id and codt_supplier = cotb_supplier and codt_supplier = '$nosupplier' and codt_kodeitem = kode_item and cotb_id = '$idcotb' and co_id = '$idco' and codt_kendaraan = kendaraan.id ");
+
+			$kodeitem = $data['codt'][0][0]->codt_kodeitem;
+			$supplier = $data['codt'][0][0]->codt_supplier;
+
+			$data['itemsupplier'][] = DB::select("select * from itemsupplier where is_kodeitem = '$kodeitem' and is_idsup = '$supplier'");
+
+			$grupitem = substr($data['codt'][0][0]->codt_kodeitem, 0,1);
+		
+			$jenisitem = DB::select("select * from jenis_item where kode_jenisitem = '$grupitem'");
+
+			$data['jenisitem'] = $jenisitem[0]->keterangan_jenisitem;
+			$data['stockjenisitem'] = $jenisitem[0]->stock;
+			$data['kodejenisitem'] = $jenisitem[0]->kode_jenisitem;
+
 		}
 		return json_encode($data);
 	}
@@ -1895,7 +1928,7 @@ public function purchase_order() {
 			$data['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang, mastergudang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode and podt_lokasigudang = mg_id");
 		}
 		else {
-			$data['podt'] = DB::select("select * from pembelian_orderdt, spp, masteritem, cabang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = kode");	
+			$data['podt'] = DB::select("select * from pembelian_orderdt, spp, kendaraan, masteritem, cabang where podt_idpo = '$id' and podt_idspp = spp_id and podt_kodeitem = kode_item and spp_cabang = cabang.kode and podt_kendaraan = kendaraan.id");	
 		}
 
 
@@ -1916,7 +1949,7 @@ public function purchase_order() {
 
 		for($j=0; $j < count($idspp); $j++){
 			if($data['po'][0]->po_tipe != 'J') {
-				$data['podtbarang'][] = DB::select("select * from  pembelian_orderdt, masteritem, mastergudang where podt_idspp = ". $data['idspp'][$j] ." and podt_kodeitem = kode_item and podt_lokasigudang = mg_id and podt_idpo='$id'");
+				$data['podtbarang'][] = DB::select("select * from kendaraan, pembelian_orderdt, masteritem, mastergudang where podt_idspp = ". $data['idspp'][$j] ." and podt_kodeitem = kode_item and podt_lokasigudang = mg_id and podt_idpo='$id' and podt_kendaraan = kendaraan.id");
 			}
 			else {
 				$data['podtbarang'][] = DB::select("select * from  pembelian_orderdt, masteritem where podt_idspp = ". $data['idspp'][$j] ." and podt_kodeitem = kode_item and podt_idpo='$id'");
@@ -2217,6 +2250,10 @@ public function purchase_order() {
 				
 				$podt->podt_akunitem = $dataakunitem;
 				$podt->podt_sisaterima = $request->qtykirim[$n];
+				if($dataspp[0]->spp_tipe == 'NS' && $request->jenisitem == 'SPARE PART KENDARAAN'){
+					$podt->podt_kendaraan = $request->kendaraan[$n];
+				}
+
 				$podt->save();
 
 					/*	$updatesppdt = sppdt_purchase::where([['sppd_idspp', '=', $id], ['spp_detail.sppd_idsppdetail' , '=' , $request->idsppd[$i]]]);*/

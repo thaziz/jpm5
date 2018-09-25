@@ -569,7 +569,9 @@
 
                if(response.temp[$i] == '0'){
                   for($z = 0; $z < response.supplier.length; $z++){
-                    $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').append("<option value="+response.supplier[$z][0].is_idsup+">" + response.supplier[$z][0].no_supplier+" - "+response.supplier[$z][0].nama_supplier+"</option>");
+                    for($j = 0; $j < response.supplier[$z].length; $j++){
+                      $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').append("<option value="+response.supplier[$z][$j].is_idsup+">" + response.supplier[$z][$j].no_supplier+" - "+response.supplier[$z][$j].nama_supplier+"</option>");
+                    }
                   }
                }
                else if(response.temp[$i] == '1'){
