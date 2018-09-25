@@ -5297,6 +5297,159 @@ public function purchase_order() {
 		return view('purchase/fatkur_pembelian/index', compact('data'));
 	}
 
+	public function datatable_faktur_pembelian(Request $req)
+	{
+		$cabang = DB::table('cabang')
+                  ->where('kode',$req->cabang)
+                  ->first();
+
+	    if ($cabang == null) {
+	      $cabang == '';
+	    }else{
+	      $cabang = 'and kode_cabang ='."'$cabang->kode'";
+	    }
+
+	    if ($req->min == '') {
+	      $min = '';
+	    }else{
+	      $min = 'and tanggal >='."'$req->min'";
+	    }
+
+	    if ($req->max == '') {
+	      $max = '';
+	    }else{
+	      $max = 'and tanggal <='."'$req->max'";
+	    }
+
+	    if ($req->jenis == '') {
+	      $jenis = '';
+	    }else{
+	      $jenis = 'and jenis_pengiriman ='."'$req->jenis'";
+	    }
+
+	    if ($req->customer == '') {
+	      $customer = '';
+	    }else{
+	      $customer = 'and kode_customer ='."'$req->customer'";
+	    }
+
+	    if ($req->kota_asal == '') {
+	      $kota_asal = '';
+	    }else{
+	      $kota_asal = 'and id_kota_asal ='."'$req->kota_asal'";
+	    }
+
+	    if ($req->kota_tujuan == '') {
+	      $kota_tujuan = '';
+	    }else{
+	      $kota_tujuan = 'and id_kota_tujuan ='."'$req->kota_tujuan'";
+	    }
+
+	    if ($req->status == '') {
+	      $status = '';
+	    }else{
+	      $status = 'and status ='."'$req->status'";
+	    }
+
+	    if ($req->do_nomor != '') {
+	      if (Auth::user()->punyaAkses('Delivery Order','all')) {
+	          $data = DB::table('delivery_order')
+	                    ->join('cabang','kode','=','kode_cabang')
+	                    ->where('jenis','KARGO')
+	                    ->where('nomor','like','%'.$req->do_nomor.'%')
+	                    ->orderBy('tanggal','DESC')
+	                    ->get();
+	      }else{
+	          $cabang = Auth::user()->kode_cabang;
+	          $data = DB::table('delivery_order')
+	                    ->join('cabang','kode','=','kode_cabang')
+	                    ->where('jenis','KARGO')
+	                    ->where('kode_cabang',$cabang)
+	                    ->where('nomor','like','%'.$req->do_nomor.'%')
+	                    ->orderBy('tanggal','DESC')
+	                    ->get();
+	      }
+	      
+	    }else{
+	      if (Auth::user()->punyaAkses('Delivery Order','all')) {
+	        $data = DB::table('delivery_order')
+	                  ->join('cabang','kode','=','kode_cabang')
+	                  ->whereRaw("jenis = 'KARGO' $min $max $customer $jenis $cabang $kota_asal $kota_tujuan $status")
+	                  ->orderBy('tanggal','DESC')
+	                  ->get();
+	      }else{
+	        $cabang = Auth::user()->kode_cabang;
+	        $data = DB::table('delivery_order')
+	                  ->join('cabang','kode','=','kode_cabang')
+	                  ->where('jenis','KARGO')
+	                  ->where('kode_cabang',$cabang)
+	                  ->whereRaw("jenis = 'KARGO' and kode_cabang='$cabang' $min $max $customer $jenis $kota_asal $kota_tujuan $status")
+	                  ->orderBy('tanggal','DESC')
+	                  ->get();
+	      }
+	    }
+
+	    $data = collect($data);
+	    // return $data;
+
+	    return Datatables::of($data)
+	                      ->addColumn('aksi', function ($data) {
+
+	                          if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah')){
+	                              if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
+	                                $a = '<button type="button" onclick="edit(\''.$data->nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
+	                              }else{
+	                                $a = '';
+	                              }
+	                          }else{
+	                            $a = '';
+	                          }
+
+	                          if(Auth::user()->punyaAkses('Delivery Order','print')){
+	                              $b = '<button type="button" onclick="print(\''.$data->nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
+	                          }else{
+	                            $b = '';
+	                          }
+
+
+	                          if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','hapus')){
+	                              if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
+	                                $c = '<button type="button" onclick="hapus(\''.$data->nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
+	                              }else{
+	                                $c = '';
+	                              }
+	                          }else{
+	                            $c = '';
+	                          }
+	                          return $a . $b .$c  ;
+	                          
+
+	                                 
+	                      })
+	                      ->addColumn('asal', function ($data) {
+	                        $kota = DB::table('kota')
+	                                  ->get();
+
+	                        for ($i=0; $i < count($kota); $i++) { 
+	                          if ($data->id_kota_asal == $kota[$i]->id) {
+	                              return $kota[$i]->nama;
+	                          }
+	                        }
+	                      })
+	                      ->addColumn('tujuan', function ($data) {
+	                        $kota = DB::table('kota')
+	                                  ->get();
+
+	                        for ($i=0; $i < count($kota); $i++) { 
+	                          if ($data->id_kota_tujuan == $kota[$i]->id) {
+	                              return $kota[$i]->nama;
+	                          }
+	                        }
+	                      })
+	                      ->addIndexColumn()
+	                      ->make(true);
+	}
+
 
 	public function cetakfaktur ($id){
 		//return $id;
