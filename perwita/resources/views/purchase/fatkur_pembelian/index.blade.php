@@ -6,8 +6,12 @@
 
 
 <style type="text/css">
-  #addColumn thead tr th{
+  .center{
     text-align: center;
+  }
+
+  .right{
+    text-align: right;
   }
 </style>
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -62,36 +66,50 @@
                         <tr>
                             <td align="center">Tanggal Awal</td>
                             <td align="center">
-                              <input type="text" class="tanggal_awal form-control date" name="tanggal_awal">
+                              <input type="text" class="min form-control date" name="min">
                             </td>
                             <td align="center">Tanggal Akhir</td>
                             <td align="center">
-                              <input type="text" class="tanggal_akhir form-control date" name="tanggal_akhir">
+                              <input type="text" class="max form-control date" name="max">
                             </td>
                         </tr>
                         <tr>
                             <td align="center">Jenis Faktur</td>
-                            <td align="center">
-                              <input type="text" class="tanggal_awal form-control date" name="tanggal_awal">
+                            <td align="left">
+                              <select class="jenis_faktur form-control chosen-select-width" >
+                                <option value="">Pilih - Jenis</option>
+                                @foreach ($jenis as $val)
+                                  <option value="{{ $val->idjenisbayar }}">{{ $val->jenisbayar }}</option>
+                                @endforeach
+                              </select>
                             </td>
                             <td align="center">Pihak Ketiga</td>
-                            <td align="center">
-                              <input type="text" class="tanggal_akhir form-control date" name="tanggal_akhir">
+                            <td align="left">
+                              <select class="pihak_ketiga form-control chosen-select-width" >
+                                <option value="">Pilih - Pihak</option>
+                                @foreach ($all as $val)
+                                  <option value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                                @endforeach
+                              </select>
                             </td>
                         </tr>
                         <tr>
                             <td align="center">Cabang</td>
-                            <td align="center">
-                              <input type="text" class="tanggal_awal form-control date" name="tanggal_awal">
+                            <td align="left">
+                              <select class="cabang form-control chosen-select-width" >
+                                <option value="">Pilih - Cabang</option>
+                                @foreach ($cabang as $val)
+                                  <option value="{{ $val->kode }}">{{ $val->nama }}</option>
+                                @endforeach
+                              </select>
                             </td>
                             <td align="center">Cari Berdasarkan Nota</td>
                             <td align="center">
-                              <input type="text" class="tanggal_akhir form-control date" name="tanggal_akhir">
+                              <input type="text" class="nota form-control" name="nota">
                             </td>
                         </tr>
                         <tr>
                           <td align="right" colspan="4">
-                            <button class="search btn btn-success" type="button" onclick="filtering_nota()"><i class="fa fa-search"> Cari Berdasarkan Nota</i></button>
                             <button class="search btn btn-danger" type="button" onclick="filtering()"><i class="fa fa-search"> Cari</i></button>
                             <button class=" btn btn-warning jurnal_all" type="button" ><i class="fa fa-eye"></i></button>
                           </td>
@@ -104,6 +122,7 @@
                         <th> No Faktur </th>
                         <th> Tanggal </th>
                         <th> Jenis Faktur </th>
+                        <th> Pihak Ketiga </th>
                         <th> No Invoice </th>
                         <th> Total </th>
                         <th> Status </th>
@@ -151,27 +170,36 @@
 
      $(document).ready( function () {
 
-         $('#tabel_data').DataTable({
+         $('.tbl-penerimabarang').DataTable({
           searching:false,
             processing: true,
             // responsive:true,
             serverSide: true,
             ajax: {
-                url:'{{ route("datatable_do_kargo") }}',
-                data:{min: function() { return $('#min').val()},
-                      max: function() { return $('#max').val()},
-                      cabang: function() { return $('#cabang').val()},
-                      jenis: function() { return $('#jenis').val()},
-                      customer: function() { return $('#customer').val() },
-                      kota_asal: function() { return $('#kota_asal').val() },
-                      kota_tujuan: function() { return $('#kota_tujuan').val() },
-                      status : function() { return $('#status ').val() },
-                      do_nomor : function() { return $('#do_nomor ').val() }}
+                url:'{{ route("datatable_faktur_pembelian") }}',
+                data:{min: function() { return $('.min').val()},
+                      max: function() { return $('.max').val()},
+                      cabang: function() { return $('.cabang').val()},
+                      jenis: function() { return $('.jenis_faktur').val()},
+                      customer: function() { return $('.pihak_ketiga').val() },
+                      nomor : function() { return $('.nota ').val() }}
             },
             columnDefs: [
               {
-                 targets: 8,
+                 targets: 0,
+                 className: 'center'
+              },
+              {
+                 targets:6,
                  className: 'right'
+              },
+              {
+                 targets:7,
+                 className: 'center'
+              },
+              {
+                 targets:8,
+                 className: 'center'
               },
               {
                  targets:9,
@@ -179,15 +207,15 @@
               },
             ],
             "columns": [
-            { "data": "nomor" },
-            { "data": "tanggal" },
-            { "data": "nama"},
-            { "data": "nama_pengirim" },
-            { "data": "nama_penerima" },
-            { "data": "asal"},
-            { "data": "tujuan" },
+            {data: 'DT_Row_Index', name: 'DT_Row_Index'},
+            { "data": "fp_nofaktur" },
+            { "data": "fp_tgl" },
+            { "data": "jenis_faktur"},
+            { "data": "pihak_ketiga"},
+            { "data": "fp_noinvoice" },
+            { "data": "fp_netto", render: $.fn.dataTable.render.number( '.', ',', 2, '' ) },
             { "data": "status" },
-            { "data": "total_net" },
+            { "data": "detail" },
             { "data": "aksi" },
             
             ]
@@ -199,7 +227,10 @@
         autoclose: true,
         format: 'yyyy-mm-dd'
     });
-    
+  function filtering() {
+    table = $('.tbl-penerimabarang').DataTable();
+    table.ajax.reload();
+  }
     
 
    function hapus(id){
