@@ -598,7 +598,7 @@
           dataType : 'json',
           success : function (response){
              alertSuccess(); 
-             $('.simpantb').hide();
+             $('.simpan').hide();
           },
           error : function(){
            swal("Error", "Server Sedang Mengalami Masalah", "error");
