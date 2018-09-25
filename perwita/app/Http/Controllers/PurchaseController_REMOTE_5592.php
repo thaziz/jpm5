@@ -1042,7 +1042,7 @@ class PurchaseController extends Controller
 
 			}
 
-
+			
 			$grupitem = substr($data['sppdt_barang'][0]->codtk_kodeitem, 0,1);
 		
 			$jenisitem = DB::select("select * from jenis_item where kode_jenisitem = '$grupitem'");
@@ -8012,7 +8012,7 @@ public function kekata($x) {
 		
 		$jurnalkas = [];
 		$totalhutang = 0;
-
+		$totalbiaya = 0;
 		$kodebanks = $request->kodebank;
 		$databank = DB::select("select * from masterbank where mb_id = '$kodebanks'");
 		$akunhutangdagang = $databank[0]->mb_kode;
@@ -8750,33 +8750,34 @@ public function kekata($x) {
 
 				if($request->dk[$j] == 'K'){
 					if($akundka2 == 'D'){
-						$datajurnal[$j]['id_akun'] = $request->akun[$j];
-						$datajurnal[$j]['subtotal'] = '-' . $jumlah;
-						$datajurnal[$j]['dk'] = 'K';
-						$datajurnal[$j]['detail'] = $request->keterangan[$j];
+						$datajurnalbg[$j]['id_akun'] = $request->akun[$j];
+						$datajurnalbg[$j]['subtotal'] = '-' . $jumlah;
+						$datajurnalbg[$j]['dk'] = 'K';
+						$datajurnalbg[$j]['detail'] = $request->keterangan[$j];
 					}
 					else {
-						$datajurnal[$j]['id_akun'] = $request->akun[$j];
-						$datajurnal[$j]['subtotal'] = $jumlah;
-						$datajurnal[$j]['dk'] = 'K';
-						$datajurnal[$j]['detail'] = $request->keterangan[$j];	
+						$datajurnalbg[$j]['id_akun'] = $request->akun[$j];
+						$datajurnalbg[$j]['subtotal'] = $jumlah;
+						$datajurnalbg[$j]['dk'] = 'K';
+						$datajurnalbg[$j]['detail'] = $request->keterangan[$j];	
 					}
-
+					$totalbiaya = float($totalbiaya) - float($jumlah);
 				}
 				else {
 					if($akundka2 == 'K'){
-						$datajurnal[$j]['id_akun'] = $request->akun[$j];
-						$datajurnal[$j]['subtotal'] = '-' . $jumlah;
-						$datajurnal[$j]['dk'] = 'D';
-						$datajurnal[$j]['detail'] = $request->keterangan[$j];	
+						$datajurnalbg[$j]['id_akun'] = $request->akun[$j];
+						$datajurnalbg[$j]['subtotal'] = '-' . $jumlah;
+						$datajurnalbg[$j]['dk'] = 'D';
+						$datajurnalbg[$j]['detail'] = $request->keterangan[$j];	
 					}
 					else {
-						$datajurnal[$j]['id_akun'] = $request->akun[$j];
-						$datajurnal[$j]['subtotal'] = $jumlah;
-						$datajurnal[$j]['dk'] = 'D';
-						$datajurnal[$j]['detail'] = $request->keterangan[$j];
+						$datajurnalbg[$j]['id_akun'] = $request->akun[$j];
+						$datajurnalbg[$j]['subtotal'] = $jumlah;
+						$datajurnalbg[$j]['dk'] = 'D';
+						$datajurnalbg[$j]['detail'] = $request->keterangan[$j];
 					}
-				
+					
+					$totalbiaya = float($totalbiaya) + float($jumlah);
 				}
 			}
 		}
