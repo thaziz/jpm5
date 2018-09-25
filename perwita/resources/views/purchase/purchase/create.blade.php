@@ -592,13 +592,26 @@
                               rowTable += '<option value='+response.gudang[key].mg_id+'>'+response.gudang[key].mg_namagudang+'</option></select></td>'
                             }
                          
-
-                        rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+response.itemsupplier[i][j].is_keteranganitem+'">  </td>' +
-                        '<tr>';
+                       if(response.itemsupplier[i][j].length  != 0 ){
+                          rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+response.itemsupplier[i][j].is_keteranganitem+'">  </td> </tr>' +
+                       
+                       }   
+                       else {
+                        rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="-">  </td> </tr>' +
+                       }  
+                       
 
                         }
                         else {
-                            rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required>  </td>' +
+
+                       if(response.itemsupplier[i][j].length  != 0 ){
+                          rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+response.itemsupplier[i][j].is_keteranganitem+'">  </td> </tr>' +
+                       
+                       }   
+                       else {
+                        rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="-">  </td> </tr>' +
+                       } 
+                           
                         '<tr>';
                         }
 

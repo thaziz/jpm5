@@ -1870,8 +1870,6 @@ public function purchase_order() {
 
 			$data['itemsupplier'][] = DB::select("select * from itemsupplier where is_kodeitem = '$kodeitem' and is_idsup = '$supplier'");
 
-			
-
 		}
 		return json_encode($data);
 	}
