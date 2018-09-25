@@ -8228,10 +8228,14 @@ public function kekata($x) {
 		$datajurnalbk = [];
 		$datajurnalkm = [];
 		$datajurnalbm = [];
+
+		$datajurnalbiaya = [];
+		$datajurnalbg = [];
 		
 		$jurnalkas = [];
 		$totalhutang = 0;
-		$totalbiaya = 0;
+		$totaltabbiaya = 0;
+		$totalbgakun = 0;
 		$kodebanks = $request->kodebank;
 		$databank = DB::select("select * from masterbank where mb_id = '$kodebanks'");
 		$akunhutangdagang = $databank[0]->mb_kode;
@@ -8969,34 +8973,34 @@ public function kekata($x) {
 
 				if($request->dk[$j] == 'K'){
 					if($akundka2 == 'D'){
-						$datajurnalbg[$j]['id_akun'] = $request->akun[$j];
-						$datajurnalbg[$j]['subtotal'] = '-' . $jumlah;
-						$datajurnalbg[$j]['dk'] = 'K';
-						$datajurnalbg[$j]['detail'] = $request->keterangan[$j];
+						$datajurnalbiaya[$j]['id_akun'] = $request->akun[$j];
+						$datajurnalbiaya[$j]['subtotal'] = '-' . $jumlah;
+						$datajurnalbiaya[$j]['dk'] = 'K';
+						$datajurnalbiaya[$j]['detail'] = $request->keterangan[$j];
 					}
 					else {
-						$datajurnalbg[$j]['id_akun'] = $request->akun[$j];
-						$datajurnalbg[$j]['subtotal'] = $jumlah;
-						$datajurnalbg[$j]['dk'] = 'K';
-						$datajurnalbg[$j]['detail'] = $request->keterangan[$j];	
+						$datajurnalbiaya[$j]['id_akun'] = $request->akun[$j];
+						$datajurnalbiaya[$j]['subtotal'] = $jumlah;
+						$datajurnalbiaya[$j]['dk'] = 'K';
+						$datajurnalbiaya[$j]['detail'] = $request->keterangan[$j];	
 					}
-					$totalbiaya = float($totalbiaya) - float($jumlah);
+					$totaltabbiaya = (float)$totaltabbiaya - (float)$jumlah;
 				}
 				else {
 					if($akundka2 == 'K'){
-						$datajurnalbg[$j]['id_akun'] = $request->akun[$j];
-						$datajurnalbg[$j]['subtotal'] = '-' . $jumlah;
-						$datajurnalbg[$j]['dk'] = 'D';
-						$datajurnalbg[$j]['detail'] = $request->keterangan[$j];	
+						$datajurnalbiaya[$j]['id_akun'] = $request->akun[$j];
+						$datajurnalbiaya[$j]['subtotal'] = '-' . $jumlah;
+						$datajurnalbiaya[$j]['dk'] = 'D';
+						$datajurnalbiaya[$j]['detail'] = $request->keterangan[$j];	
 					}
 					else {
-						$datajurnalbg[$j]['id_akun'] = $request->akun[$j];
-						$datajurnalbg[$j]['subtotal'] = $jumlah;
-						$datajurnalbg[$j]['dk'] = 'D';
-						$datajurnalbg[$j]['detail'] = $request->keterangan[$j];
+						$datajurnalbiaya[$j]['id_akun'] = $request->akun[$j];
+						$datajurnalbiaya[$j]['subtotal'] = $jumlah;
+						$datajurnalbiaya[$j]['dk'] = 'D';
+						$datajurnalbiaya[$j]['detail'] = $request->keterangan[$j];
 					}
 					
-					$totalbiaya = float($totalbiaya) + float($jumlah);
+					$totaltabbiaya = (float)$totaltabbiaya + (float)$jumlah;
 				}
 			}
 		}
@@ -9004,7 +9008,9 @@ public function kekata($x) {
 			for($j=0;$j<count($request->accbiayaakun);$j++){
 				$idfpg = $request->idfpg[$j];
 				$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
-				$jenisbayarfpg = $datafpg[0]->fpg_jenisbayar;
+				$jenisbayarfpg2 = $datafpg[0]->fpg_jenisbayar;
+				$jenisbayarfpg = 'BGAKUN';
+
 
 					$bbkb = new bukti_bank_keluar_bgakun();
 
@@ -9031,7 +9037,7 @@ public function kekata($x) {
 				$bbkb->bbkab_idfpg = $request->idfpg[$j];
 				$bbkb->bbkab_nominalfpg = $jumlahfpg;
 				$bbkb->bbkab_keteranganfpg = $request->keteranganfpg[$j];
-				$bbkb->bbkab_jenisbayarfpg = $jenisbayarfpg;
+				$bbkb->bbkab_jenisbayarfpg = $jenisbayarfpg2;
 				$bbkb->save();
 
 
@@ -9040,9 +9046,10 @@ public function kekata($x) {
 				$akundka2 = $datajurnal2[0]->akun_dka;
 
 				$idfpg = $request->idfpg[$j];
-				$datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
-				$jenisbayar = $datafpg[0]->fpg_jenisbayar;
-				
+				$datafpg = DB::select("select * from fpg_cekbank where fpgb_idfpg = '$idfpg'");
+				$jenisbayar = $datafpg[0]->fpgb_jenisbayarbank;
+
+
 				if($jenisbayar != 'INTERNET BANKING'){
 						$data['idfpg'] = DB::table('fpg_cekbank')
 						->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $request->nocheck[$j]]])
@@ -9092,20 +9099,44 @@ public function kekata($x) {
 					}
 				}
 
-				if($akundka2 == 'K'){
-					$datajurnal[$j]['id_akun'] = $request->accbiayaakun[$j];
-					$datajurnal[$j]['subtotal'] = $jumlah;
-					$datajurnal[$j]['dk'] = 'K';
-					$datajurnal[$j]['detail'] = $request->keteranganakunbg[$j];
 
+				if($request->dk[$j] == 'K'){
+					if($akundka2 == 'K'){
+						$datajurnalbg[$j]['id_akun'] = $request->accbiayaakun[$j];
+						$datajurnalbg[$j]['subtotal'] = $jumlah;
+						$datajurnalbg[$j]['dk'] = 'K';
+						$datajurnalbg[$j]['detail'] = $request->keteranganakunbg[$j];
+
+					}
+					else {
+						$datajurnalbg[$j]['id_akun'] = $request->accbiayaakun[$j];
+						$datajurnalbg[$j]['subtotal'] = '-' . $jumlah;
+						$datajurnalbg[$j]['dk'] = 'K';	
+						$datajurnalbg[$j]['detail'] = $request->keteranganakunbg[$j];
+
+					}
+
+					$totalbgakun = (float)$totalbgakun - (float)$jumlah; 
 				}
 				else {
-					$datajurnal[$j]['id_akun'] = $request->accbiayaakun[$j];
-					$datajurnal[$j]['subtotal'] =  $jumlah;
-					$datajurnal[$j]['dk'] = 'D';	
-					$datajurnal[$j]['detail'] = $request->keteranganakunbg[$j];
+					if($akundka2 == 'K'){
+						$datajurnalbg[$j]['id_akun'] = $request->accbiayaakun[$j];
+						$datajurnalbg[$j]['subtotal'] = '-' . $jumlah;
+						$datajurnalbg[$j]['dk'] = 'D';
+						$datajurnalbg[$j]['detail'] = $request->keteranganakunbg[$j];
 
+					}
+					else {
+						$datajurnalbg[$j]['id_akun'] = $request->accbiayaakun[$j];
+						$datajurnalbg[$j]['subtotal'] = $jumlah;
+						$datajurnalbg[$j]['dk'] = 'D';	
+						$datajurnalbg[$j]['detail'] = $request->keteranganakunbg[$j];
+
+					}
+
+					$totalbgakun = (float)$totalbgakun + (float)$jumlah;
 				}
+
 			}
 		}
 
@@ -9401,7 +9432,7 @@ public function kekata($x) {
 		        	        if($akundkahutang == 'D'){
 		        	           	$dataakun = array (
 		        				'id_akun' => $akunhutangdagang,
-		        				'subtotal' => '-' . $totalbiaya,
+		        				'subtotal' => '-' . $totaltabbiaya,
 		        				'dk' => 'K',
 		        				'detail' => $request->keteranganheader,
 		        				);	
@@ -9409,7 +9440,84 @@ public function kekata($x) {
 		        	        else {
 		        	        	$dataakun = array (
 		        				'id_akun' => $akunhutangdagang,
-		        				'subtotal' => '-' . $totalbiaya,
+		        				'subtotal' => '-' . $totaltabbiaya,
+		        				'dk' => 'K',
+		        				'detail' => $request->keteranganheader,
+		        				);	
+		        	        }
+		        	        array_push($datajurnalbiaya, $dataakun );
+		        	  
+		     
+	    		$key  = 1;
+	    		for($j = 0; $j < count($datajurnalbiaya); $j++){
+	    			
+	    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+					if(isset($lastidjurnaldt)) {
+						$idjurnaldt = $lastidjurnaldt;
+						$idjurnaldt = (int)$idjurnaldt + 1;
+					}
+					else {
+						$idjurnaldt = 1;
+					}
+
+	    			$jurnaldt = new d_jurnal_dt();
+	    			$jurnaldt->jrdt_jurnal = $idjurnal;
+	    			$jurnaldt->jrdt_detailid = $key;
+	    			$jurnaldt->jrdt_acc = $datajurnalbiaya[$j]['id_akun'];
+	    			$jurnaldt->jrdt_value = $datajurnalbiaya[$j]['subtotal'];
+	    			$jurnaldt->jrdt_statusdk = $datajurnalbiaya[$j]['dk'];
+	    			$jurnaldt->jrdt_detail = $datajurnalbiaya[$j]['detail'];
+	    			$jurnaldt->save();
+	    			$key++;
+
+				}	
+			}
+			else if($jenisbayarfpg == 'BGAKUN'){
+				$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+				if(isset($lastidjurnal)) {
+					$idjurnal = $lastidjurnal;
+					$idjurnal = (int)$idjurnal + 1;
+				}
+				else {
+					$idjurnal = 1;
+				}
+
+				$tglbbk = $request->tglbbk;
+				$jr_no = get_id_jurnal('BK' , $cabang, $tglbbk);
+				$ref = explode("-", $jr_no);
+
+				$kode = $ref[0] . $kodebank;
+				$jr_no = $kode . '-' . $ref[1];
+
+
+
+				$year =  Carbon::parse($tglbbk)->format('Y');	
+				$date = $request->$tglbbk;
+				$jurnal = new d_jurnal();
+				$jurnal->jr_id = $idjurnal;
+		        $jurnal->jr_year = Carbon::parse($date)->format('Y');
+		        $jurnal->jr_date = $tglbbk;
+		        $jurnal->jr_detail = 'BUKTI BANK KELUAR';
+		        $jurnal->jr_ref = $request->nobbk;
+		        $jurnal->jr_note = $request->keteranganheader;
+		        $jurnal->jr_no = $jr_no;
+		        $jurnal->save();
+	       	
+		        $akundkahutang2 = DB::select("select * from d_akun where id_akun = '$akunhutangdagang'");
+		        $akundkahutang = $akundkahutang2[0]->akun_dka; 
+		       
+		        	        if($akundkahutang == 'D'){
+		        	           	$dataakun = array (
+		        				'id_akun' => $akunhutangdagang,
+		        				'subtotal' => '-' . $totalbgakun,
+		        				'dk' => 'K',
+		        				'detail' => $request->keteranganheader,
+		        				);	
+		        	        }
+		        	        else {
+		        	        	$dataakun = array (
+		        				'id_akun' => $akunhutangdagang,
+		        				'subtotal' => '-' . $totalbgakun,
 		        				'dk' => 'K',
 		        				'detail' => $request->keteranganheader,
 		        				);	
@@ -9432,14 +9540,14 @@ public function kekata($x) {
 	    			$jurnaldt = new d_jurnal_dt();
 	    			$jurnaldt->jrdt_jurnal = $idjurnal;
 	    			$jurnaldt->jrdt_detailid = $key;
-	    			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
-	    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
-	    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
-	    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
+	    			$jurnaldt->jrdt_acc = $datajurnalbg[$j]['id_akun'];
+	    			$jurnaldt->jrdt_value = $datajurnalbg[$j]['subtotal'];
+	    			$jurnaldt->jrdt_statusdk = $datajurnalbg[$j]['dk'];
+	    			$jurnaldt->jrdt_detail = $datajurnalbg[$j]['detail'];
 	    			$jurnaldt->save();
 	    			$key++;
 
-				}	
+				}
 			}
 			else{
 				//save jurnal
@@ -9521,7 +9629,7 @@ public function kekata($x) {
 			}
 
 			
-			/*$cekjurnal = check_jurnal($request->nobbk);
+			$cekjurnal = check_jurnal($request->nobbk);
     		if($cekjurnal == 0){
     			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal BK Tidak Balance :('];
 				DB::rollback();
@@ -9530,9 +9638,9 @@ public function kekata($x) {
     		elseif($cekjurnal == 1) {
     			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idbbk];
 					        
-    		}*/
+    		}
 
-    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idbbk];
+    		//	$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idbbk];
    			
 			return json_encode($dataInfo);
 		});		
@@ -9739,20 +9847,27 @@ public function kekata($x) {
 						'fpgb_posting' => 'DONE',
 					]);
 
-				if($akundka2 == 'K'){
-					$datajurnal[$j]['id_akun'] = $accbiayaakun;
-					$datajurnal[$j]['subtotal'] = '-' . $jumlah;
-					$datajurnal[$j]['dk'] = 'K';
-					$datajurnal[$j]['detail'] = $request->keteranganakunbg[$j];
 
+				if($request->dk[$j] == 'K'){
+					if($akundka2 == 'K'){
+						$datajurnal[$j]['id_akun'] = $accbiayaakun;
+						$datajurnal[$j]['subtotal'] = '-' . $jumlah;
+						$datajurnal[$j]['dk'] = 'K';
+						$datajurnal[$j]['detail'] = $request->keteranganakunbg[$j];
+
+					}
+					else {
+						$datajurnal[$j]['id_akun'] = $accbiayaakun;
+						$datajurnal[$j]['subtotal'] =  $jumlah;
+						$datajurnal[$j]['dk'] = 'D';	
+						$datajurnal[$j]['detail'] = $request->keteranganakunbg[$j];
+
+					}
 				}
 				else {
-					$datajurnal[$j]['id_akun'] = $accbiayaakun;
-					$datajurnal[$j]['subtotal'] =  $jumlah;
-					$datajurnal[$j]['dk'] = 'D';	
-					$datajurnal[$j]['detail'] = $request->keteranganakunbg[$j];
 
 				}
+				
 			}
 		}
 		else { // DO SAVE BIAYA

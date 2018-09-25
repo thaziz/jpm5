@@ -245,7 +245,7 @@
                
                 <td class="textcenter">{{$podt->podt_qtykirim}}</td>
                 <td class="textleft">{{$podt->unitstock}}</td>
-                 <td>{{$podt->podt_keterangan}} </td>
+                <td class="textcenter">{{$podt->podt_keterangan}} </td>
                 <td class="textright">{{number_format($podt->podt_jumlahharga, 2,",",".")}}</td>
                 <td class="textright">{{number_format($podt->podt_totalharga,2,",",".")}}</td>
                
