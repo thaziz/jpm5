@@ -1042,7 +1042,7 @@ class PurchaseController extends Controller
 
 			}
 
-
+			
 			$grupitem = substr($data['sppdt_barang'][0]->codtk_kodeitem, 0,1);
 		
 			$jenisitem = DB::select("select * from jenis_item where kode_jenisitem = '$grupitem'");

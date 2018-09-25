@@ -164,8 +164,6 @@ class BankMasukController extends Controller
 
 		$ref = explode("-", $jr_no);
 
-		
-	
 
 		if($kodebankd < 10){
 			$kodebankd = '0' . $kodebankd;
