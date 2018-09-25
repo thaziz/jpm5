@@ -1827,7 +1827,7 @@ public function purchase_order() {
 		//	return $idsupplier ;
 			$data['supplier'] = DB::select("select * from supplier where idsup ='$idsupplier' and active = 'AKTIF' ");
 
-			
+			$data['itemsupplier'] = [];
 		for($j=0; $j < count($array); $j++){
 				$explode = explode("," , $array[$j]);
 				$idspp = $explode[0]; 
@@ -1868,7 +1868,14 @@ public function purchase_order() {
 			$kodeitem = $data['codt'][0][0]->codt_kodeitem;
 			$supplier = $data['codt'][0][0]->codt_supplier;
 
-			$data['itemsupplier'][] = DB::select("select * from itemsupplier where is_kodeitem = '$kodeitem' and is_idsup = '$supplier'");
+			$itemsupplier = DB::select("select * from itemsupplier where is_kodeitem = '$kodeitem' and is_idsup = '$supplier'");
+			$itemsupplier2 = '';
+			if(count($itemsupplier) != 0){
+				array_push($data['itemsupplier'] , $itemsupplier);
+			}
+			else {
+				array_push($data['itemsupplier'] , $itemsupplier2);
+			}
 
 		}
 		return json_encode($data);
