@@ -424,7 +424,7 @@
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                  location.href = '../pending/index'
+                  location.href = '../pending_subcon/index'
                 });
       },
       error:function(data){
