@@ -62,27 +62,42 @@
                         <tr>
                             <td align="center">Tanggal Awal</td>
                             <td align="center">
-                              <input type="text" class="tanggal_awal form-control date" name="tanggal_awal">
+                              <input type="text" class="min form-control date" name="min">
                             </td>
                             <td align="center">Tanggal Akhir</td>
                             <td align="center">
-                              <input type="text" class="tanggal_akhir form-control date" name="tanggal_akhir">
+                              <input type="text" class="max form-control date" name="max">
                             </td>
                         </tr>
                         <tr>
                             <td align="center">Jenis Faktur</td>
                             <td align="center">
-                              <input type="text" class="tanggal_awal form-control date" name="tanggal_awal">
+                              <select class="jenis_faktur form-control chosen-select-width" >
+                                <option value="">Pilih - Jenis</option>
+                                @foreach ($jenis as $val)
+                                  <option value="{{ $val->idjenisbayar }}">{{ $val->jenisbayar }}</option>
+                                @endforeach
+                              </select>
                             </td>
                             <td align="center">Pihak Ketiga</td>
-                            <td align="center">
-                              <input type="text" class="tanggal_akhir form-control date" name="tanggal_akhir">
+                            <td align="left">
+                              <select class="pihak_ketiga form-control chosen-select-width" >
+                                <option value="">Pilih - Pihak</option>
+                                @foreach ($all as $val)
+                                  <option value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                                @endforeach
+                              </select>
                             </td>
                         </tr>
                         <tr>
                             <td align="center">Cabang</td>
                             <td align="center">
-                              <input type="text" class="tanggal_awal form-control date" name="tanggal_awal">
+                              <select class="cabang form-control chosen-select-width" >
+                                <option value="">Pilih - Cabang</option>
+                                @foreach ($cabang as $val)
+                                  <option value="{{ $val->kode }}">{{ $val->nama }}</option>
+                                @endforeach
+                              </select>
                             </td>
                             <td align="center">Cari Berdasarkan Nota</td>
                             <td align="center">

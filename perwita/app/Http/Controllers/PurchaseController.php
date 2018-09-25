@@ -5292,9 +5292,29 @@ public function purchase_order() {
 		// return 'asd';
 		$data['faktur'] = DB::select("SELECT * from faktur_pembelian 
 									  inner join jenisbayar on idjenisbayar= fp_jenisbayar order by fp_tgl desc");
-						
+
+		$jenis = DB::table('jenisbayar')
+				   ->where('idjenisbayar',2)
+				   ->orWhere('idjenisbayar',6)
+				   ->orWhere('idjenisbayar',7)
+				   ->orWhere('idjenisbayar',9)
+				   ->get();
+
+		$cabang = DB::table('cabang')
+                  ->get();
+		
+
+		$agen 	  = DB::select("SELECT kode, nama from agen order by kode");
+
+		$vendor   = DB::select("SELECT kode, nama from vendor order by kode "); 
+
+		$subcon   = DB::select("SELECT kode, nama from subcon order by kode "); 
+
+		$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier where status = 'SETUJU' and active = 'AKTIF' order by no_supplier");
+
+		$all = array_merge($agen,$vendor,$subcon,$supplier);
 		// return 'asd';
-		return view('purchase/fatkur_pembelian/index', compact('data'));
+		return view('purchase/fatkur_pembelian/index', compact('data','jenis','all','cabang'));
 	}
 
 	public function datatable_faktur_pembelian(Request $req)
