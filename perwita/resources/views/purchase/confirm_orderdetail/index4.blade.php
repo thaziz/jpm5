@@ -177,6 +177,12 @@
                              <input type="text" class="form-control" readonly="" value="{{$spp->spp_tgldibutuhkan}}">
                             </td>
                           </tr>
+
+                          <tr>
+                            <td> <b> Jenis item </b> </td>
+                            <td> {{$data['jenisitem']}} <input type='hidden' class='form-control jenisitem' value="{{$data['kodejenisitem']}}" name='jenisitem'> </td>
+                          </tr>
+
                           <tr>
                             <td>
                              <b> Keperluan </b>
@@ -200,7 +206,7 @@
                             <b> Tipe </b>
                             </td>
                             <td>
-                              <input type="text" class="form-control" readonly="" value="{{$namatipe}}">
+                              <input type="text" class="form-control tipespp" readonly="" value="{{$namatipe}}" name='namatipe'>
                               <input type="hidden" class="prosespembelian" readonly="" value="{{$spp->staff_pemb}}">
                             </td>
                           </tr>
@@ -274,6 +280,9 @@
                       <tr>
                         <td rowspan="2"  style="width:20px"> No </td>
                         <td rowspan="2"  style="width:200px"> Nama Barang </td>
+                        @if($namatipe == 'NON STOCK' && $data['kodejenisitem'] == 'S')
+                        <td rowspan="2"> Kendaraan </td>
+                        @endif
                         <td rowspan="2"  style="width:50px"> Jumlah Permintaan </td>
                         <td rowspan="2"  style="width:50px"> Jumlah Disetujui </td>
                         <td rowspan="2"  style="width:50px"> Satuan </td>
@@ -303,6 +312,9 @@
                       <tr class="brg{{$idbarang}}" data-id="{{$idbarang}}" id="brg" data-kodeitem="{{$codt->codt_kodeitem}}" >
                         <td> {{$idbarang + 1}} </td>
                         <td> {{$codt->nama_masteritem}} </td>
+                        @if($namatipe == 'NON STOCK' && $data['kodejenisitem'] == 'S')
+                        <td> {{$codt->nopol}} </td>
+                        @endif
                         <td> {{$codt->codt_qtyrequest}} </td>
                         <td> {{$codt->codt_qtyapproved}} </td>
                         <td> {{$codt->unitstock}}</td>
@@ -325,7 +337,15 @@
                       </tr>
 
                       @endforeach
-                       <tr class="totalbiaya"> <td colspan="6" style="text-align: center"> <b> Total Biaya </b> </td> 
+                       <tr class="totalbiaya">
+                         @if($namatipe == 'NON STOCK' && $data['kodejenisitem'] == 'S')
+                        <td colspan="7" style="text-align: center"> <b> Total Biaya </b> </td> 
+                        
+                        @else
+                          <td colspan="6" style="text-align: center"> <b> Total Biaya </b> </td> 
+                        
+                        @endif
+
                         @foreach($data['codt_tb'] as $cotb)
 
                           <td data-suppliertotal="{{$cotb->cotb_supplier}}"> <div class='form-group'> <label class='col-sm-2 col-sm-2 control-label'> Rp </label> <div class='col-sm-8'> <input type='text' class='input-sm form-control totalbiaya'  value="{{number_format($cotb->cotb_totalbiaya, 2)}}" readonly="" > </div>  </div></td>
@@ -357,6 +377,9 @@
                      <tr>
                         <td style="width:20px" rowspan="2"> No  </td>
                         <td style="width:150px; text-align: center" rowspan="2"> Nama Barang</td>
+                        @if($namatipe == 'NON STOCK' && $data['kodejenisitem'] == 'S')
+                        <td rowspan="2"> Kendaraan </td>
+                        @endif
                         <td style="width:50px" rowspan="2"> Jumlah Permintaan </td>
                         <td style="width:50px" rowspan="2"> Jumlah Disetujui </td>
                         <td style="width:50px" rowspan="2"> Stock Gudang </td>
@@ -389,19 +412,24 @@
                     <tbody>
                         @foreach($data['sppdt_barang'] as $idbarang=>$sppd)
                  
-                      <tr class="brg{{$idbarang}}" data-id="{{$idbarang}}" id="brg" data-kodeitem="{{$sppd->sppd_kodeitem}}" >
+                      <tr class="brg{{$idbarang}}" data-id="{{$idbarang}}" id="brg" data-kodeitem="{{$sppd->codtk_kodeitem}}" >
                         <td>  {{$idbarang + 1}} </td>
                         <td> 
                             <select class="input-sm form-control item" readonly="" name="item[]">
                               @foreach($data['item'] as $item)
-                                <option value="{{$sppd->sppd_kodeitem}}" @if($sppd->sppd_kodeitem == $item->kode_item) selected="" @endif> {{$item->nama_masteritem}} </option>
+                                <option value="{{$item->kode_item}}" @if($sppd->codtk_kodeitem == $item->kode_item) selected="" @endif> {{$item->nama_masteritem}} </option>
                               @endforeach
                             </select>
 <!-- 
                                <input type="text" class="form-control" value=" {{$sppd->nama_masteritem}} " readonly="">  </td> -->
                              
                         </td>
-                        <td>  <input type="text" class="input-sm form-control qtyrequest qtyrequest{{$idbarang}}" value="{{$sppd->sppd_qtyrequest}}" readonly="" name="qtyrequest[]" data-id="{{$idbarang}}">  </td>
+
+                        @if($namatipe == 'NON STOCK' && $data['kodejenisitem'] == 'S')
+                        <td> {{$sppd->codtk_kendaraan}} <input type="hidden" class="form-control" value="{{$sppd->codtk_kendaraan}}" name="nopol[]"> </td>
+                        @endif
+
+                        <td>  <input type="text" class="input-sm form-control qtyrequest qtyrequest{{$idbarang}}" value="{{$sppd->codtk_qtyrequest}}" readonly="" name="qtyrequest[]" data-id="{{$idbarang}}">  </td>
                         <td>  <input type="text" class="input-sm form-control qty qtyapproval{{$idbarang}}"  name="qtyapproval[]" data-id="{{$idbarang}}" required="">  </td>
                        
                         <td> 
@@ -424,7 +452,7 @@
                                 <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->cotbk_supplier}}"> </td>
                             @endforeach
                         <td>  <div class="checkbox">
-                                <input id="tolak tolak{{$idbarang}}" type="checkbox" data-id="{{$idbarang}}" class="tolak tolak{{$idbarang}}" data-barang="{{$sppd->sppd_kodeitem}}">
+                                <input id="tolak tolak{{$idbarang}}" type="checkbox" data-id="{{$idbarang}}" class="tolak tolak{{$idbarang}}" data-barang="{{$sppd->codtk_kodeitem}}">
                                   <label for="tolak{{$idbarang}}">   
                                   </label>
                               </div>
@@ -435,7 +463,13 @@
                       @endforeach
 
 
-                        <tr class="totalbiaya"> <td colspan="6" style="text-align: center"> <b> Total Biaya </b> </td> 
+                        <tr class="totalbiaya">
+                        @if($namatipe == 'NON STOCK' && $data['kodejenisitem'] == 'S')
+                            <td colspan="7" style="text-align: center"> <b> Total Biaya </b> </td> 
+                        @else
+                            <td colspan="6" style="text-align: center"> <b> Total Biaya </b> </td> 
+
+                        @endif
                         @foreach($data['codt_tb'] as $spptb)
                           <td data-suppliertotal="{{$spptb->cotbk_supplier}}"> <div class='form-group'> <label class='col-sm-2 col-sm-2 control-label'> Rp </label> <div class='col-sm-8'> <input type='text' class='input-sm form-control totalbiaya'  value="{{number_format($spptb->cotbk_totalbiaya, 2)}}" readonly="" > </div>  </div></td>
                           @endforeach
@@ -564,7 +598,7 @@
           dataType : 'json',
           success : function (response){
              alertSuccess(); 
-             $('.simpantb').attr('disabled' , true);
+             $('.simpantb').hide();
           },
           error : function(){
            swal("Error", "Server Sedang Mengalami Masalah", "error");
@@ -670,7 +704,7 @@
           dataType:'json',
           success : function(data){
 
-          $('.simpan').attr('disabled', false);
+        
           var harga = [];
           var arrtotal = [];
           var nmsupplier = [];
@@ -807,6 +841,7 @@
                           var tb = '<div class="form-group"> <label class="col-sm-2 col-sm-2 control-label"> Rp </label> <div class="col-sm-8"> <input type="text" class="input-sm form-control totalbiaya" name="bayar[]" value="'+addCommas(biaya)+'" readonly="" > <input type="hidden" name="tb[]" value="'+result[j].id+ "," + result[j].totalharga +'">  <input type="hidden" name="datasupplier[]" value="'+datasup+'"> </div>  </div>';
                       
                           $('tr.totalbiaya').find("td").eq(supplier3).html(tb);
+                            $('.simpan').attr('disabled', false);
                       }
                   } 
 
@@ -862,6 +897,9 @@
           dataType:'json',
           success : function(data){
             statusmankeu = $('.statusmankeu').val();
+            tipespp = $('.tipespp').val();
+            jenisitem = $('.jenisitem').val();
+        
            // alert(statusmankeu);
             if(statusmankeu == 'DISETUJUI') {
               $('#hargatable').each(function(){
@@ -873,8 +911,14 @@
 
                           for (var j = 0; j < data.codt_tb.length; j++) {
                             if(data.codt[i].codt_supplier == data.codt_tb[j].cotb_supplier){
-                              var row = $('td[data-supplier="'+ data.codt[i].codt_supplier + '"]').index() + 6; 
-                              console.log('row' + row);
+                          
+                              if(tipespp == 'NON STOCK' && jenisitem == 'S'){
+                                var row = $('td[data-supplier="'+ data.codt[i].codt_supplier + '"]').index() + 7;                               
+                              }
+                              else {
+                                var row = $('td[data-supplier="'+ data.codt[i].codt_supplier + '"]').index() + 6; 
+                               
+                              }
                                         var column = $('td', this).eq(row);
                                         var tampilharga = '<div class="form-group">' +
                                                           '<label class="col-sm-1 control-label"> @ </label>' +
@@ -904,8 +948,16 @@
                                for(var j =0; j < data.suppliertb.length; j++){
                               
                                 if(data.codt[i].codtk_supplier == data.suppliertb[j].cotbk_supplier) {
-                                        var row = $('td[data-supplier="'+ data.codt[i].codtk_supplier + '"]').index() + 6; 
+                                      if(tipespp == 'NON STOCK' && jenisitem == 'S'){
+                                        var row = $('td[data-supplier="'+ data.codt[i].codtk_supplier + '"]').index() + 7; 
                                       
+                                      }
+                                      else {
+                                        var row = $('td[data-supplier="'+ data.codt[i].codtk_supplier + '"]').index() + 6; 
+                                        
+                                      }
+
+                                        
                                         var column = $('td', this).eq(row);
                                         var tampilharga = '<div class="form-group">' +
                                                           '<label class="col-sm-1 control-label"> @ </label>' +
