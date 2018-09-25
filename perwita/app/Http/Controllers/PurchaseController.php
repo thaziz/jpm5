@@ -1876,7 +1876,7 @@ public function purchase_order() {
 			else {
 				array_push($data['itemsupplier'] , $itemsupplier2);
 			}
-
+			///testtt
 		}
 		return json_encode($data);
 	}
