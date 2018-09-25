@@ -12,4 +12,8 @@ class desain_neraca extends Model
     CONST UPDATED_AT = "tanggal_update";
 
     public $fillable = ["id_desain", "tanggal_buat", "tanggal_update", "is_active"];
+
+    public function detail(){
+    	return $this->hasMany('App\desain_neraca_detail', 'id_desain', 'id_desain');
+    }
 }
