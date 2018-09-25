@@ -12,7 +12,7 @@ use App\d_jurnal;
 use App\d_jurnal_dt;
 use Response;
 use Exception;
-class penerimaan_penjualan_Controller extends Controller
+class penerimaan_penjualan_controller extends Controller
 {
     
     
