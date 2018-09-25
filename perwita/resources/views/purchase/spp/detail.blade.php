@@ -272,9 +272,9 @@
                         <td>  <input type="text" class="form-control qty qtyreq{{$idbarang}}" value="{{$sppd->sppd_qtyrequest}}" readonly="" name="qtyrequest[]">  </td>
                     
                          @if($data['countkendaraan'] > 0) 
-                          @foreach($data['kendaraan'] as $kndaraan)
-                            <td> <select class="form-control kendaraan" disabled=""> @foreach($data['masterkendaraan'] as $msterkendaraan) <option value="{{$msterkendaraan->id}}" @if($kndaraan->sppd_kendaraan == $msterkendaraan->id) selected="" @endif  > {{$msterkendaraan->nopol}} - {{$msterkendaraan->merk}}  </option> @endforeach </select> </td>
-                          @endforeach
+                         
+                            <td> <select class="form-control kendaraan" disabled=""> @foreach($data['masterkendaraan'] as $msterkendaraan) <option value="{{$msterkendaraan->id}}" @if($sppd->sppd_kendaraan == $msterkendaraan->id) selected="" @endif  > {{$msterkendaraan->nopol}} - {{$msterkendaraan->merk}}  </option> @endforeach </select> </td>
+                          
                          @endif
 
 
