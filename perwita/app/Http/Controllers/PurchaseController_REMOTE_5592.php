@@ -9364,6 +9364,83 @@ public function kekata($x) {
 				}
 
 			}
+			else if($jenisbayarfpg == 'BIAYA'){
+				$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+				if(isset($lastidjurnal)) {
+					$idjurnal = $lastidjurnal;
+					$idjurnal = (int)$idjurnal + 1;
+				}
+				else {
+					$idjurnal = 1;
+				}
+
+				$tglbbk = $request->tglbbk;
+				$jr_no = get_id_jurnal('BK' , $cabang, $tglbbk);
+				$ref = explode("-", $jr_no);
+
+				$kode = $ref[0] . $kodebank;
+				$jr_no = $kode . '-' . $ref[1];
+
+
+
+				$year =  Carbon::parse($tglbbk)->format('Y');	
+				$date = $request->$tglbbk;
+				$jurnal = new d_jurnal();
+				$jurnal->jr_id = $idjurnal;
+		        $jurnal->jr_year = Carbon::parse($date)->format('Y');
+		        $jurnal->jr_date = $tglbbk;
+		        $jurnal->jr_detail = 'BUKTI BANK KELUAR';
+		        $jurnal->jr_ref = $request->nobbk;
+		        $jurnal->jr_note = $request->keteranganheader;
+		        $jurnal->jr_no = $jr_no;
+		        $jurnal->save();
+	       	
+		        $akundkahutang2 = DB::select("select * from d_akun where id_akun = '$akunhutangdagang'");
+		        $akundkahutang = $akundkahutang2[0]->akun_dka; 
+		       
+		        	        if($akundkahutang == 'D'){
+		        	           	$dataakun = array (
+		        				'id_akun' => $akunhutangdagang,
+		        				'subtotal' => '-' . $totalbiaya,
+		        				'dk' => 'K',
+		        				'detail' => $request->keteranganheader,
+		        				);	
+		        	        }
+		        	        else {
+		        	        	$dataakun = array (
+		        				'id_akun' => $akunhutangdagang,
+		        				'subtotal' => '-' . $totalbiaya,
+		        				'dk' => 'K',
+		        				'detail' => $request->keteranganheader,
+		        				);	
+		        	        }
+		        	        array_push($datajurnalbg, $dataakun );
+		        	  
+		     
+	    		$key  = 1;
+	    		for($j = 0; $j < count($datajurnalbg); $j++){
+	    			
+	    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+					if(isset($lastidjurnaldt)) {
+						$idjurnaldt = $lastidjurnaldt;
+						$idjurnaldt = (int)$idjurnaldt + 1;
+					}
+					else {
+						$idjurnaldt = 1;
+					}
+
+	    			$jurnaldt = new d_jurnal_dt();
+	    			$jurnaldt->jrdt_jurnal = $idjurnal;
+	    			$jurnaldt->jrdt_detailid = $key;
+	    			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
+	    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
+	    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
+	    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
+	    			$jurnaldt->save();
+	    			$key++;
+
+				}	
+			}
 			else{
 				//save jurnal
 				$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
