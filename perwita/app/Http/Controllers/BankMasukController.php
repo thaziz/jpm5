@@ -179,7 +179,7 @@ class BankMasukController extends Controller
 		//ENDHRREF
 
 		$cabang = $request->cabangtujuan;
-		$notabm = getnotabm($cabang , $tgl);
+		$notabm = getnotabm($cabang , $tgl , $kodebankd);
 		$refbm = explode("-", $notabm);
 
 		$kodebankd = $databank[0]->mb_id;
