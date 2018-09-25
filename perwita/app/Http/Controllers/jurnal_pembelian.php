@@ -235,7 +235,23 @@ class jurnal_pembelian  extends Controller
     });
     }
 
-
+    function kendaraanpo(){
+      $datasppd = DB::select("select * from spp_detail order by sppd_idspp asc");
+      for($i = 0; $i < count($datasppd); $i++){
+        $kendaraan = $datasppd[$i]->sppd_kendaraan;
+        if($kendaraan != null){
+          $idspp = $datasppd[$i]->sppd_idspp;
+          $kodeitem = $datasppd[$i]->sppd_kodeitem;
+          $kendaraan = $datasppd[$i]->sppd_kendaraan;
+          DB::table('pembelian_orderdt')
+          ->where('podt_idspp' , $idspp)
+          ->where('podt_kodeitem' , $kodeitem)
+          ->update([
+            'podt_kendaraan' => $kendaraan
+          ]);
+        }
+      }
+    }
 
     function item(Request $request){
        return DB::transaction(function() use ($request) { 
