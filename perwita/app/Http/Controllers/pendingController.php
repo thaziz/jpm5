@@ -827,7 +827,7 @@ class pendingController extends Controller
 							]);
 				//UPDATE BP
 			    $cari_bpd = DB::table('pembayaran_subcon_dt')
-			   				 ->where('pbd_pb_id',$request->id_bpd_modal[0])
+			   				 ->where('pbd_pb_id',$request->id_bpd_modal)
 			   				 ->get();
 
 			   	
