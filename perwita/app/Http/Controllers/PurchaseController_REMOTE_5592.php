@@ -61,6 +61,7 @@ use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 use Auth;
 use App\bonsempengajuan;
+use Yajra\Datatables\Datatables;
 
 class PurchaseController extends Controller
 {
@@ -109,7 +110,8 @@ class PurchaseController extends Controller
 				}
 		
 		$data2['spp'] = DB::select("select distinct spp_nospp , spp_keperluan, nama_department , nama , spp_tgldibutuhkan from  pembelian_order , spp, pembelian_orderdt, cabang, masterdepartment where po_id = '$id' and podt_idpo = po_id  and podt_idspp = spp_id and spp_cabang = kode and spp_bagian = kode_department ");
-	
+		
+		$data['kendaraan'] = DB::select("select distinct podt_kendaraan, nopol from pembelian_orderdt, kendaraan where podt_kendaraan = kendaraan.id and podt_idpo = '$id'");
 		
 
 		foreach ($data2['po'] as $key => $value) {
@@ -5329,9 +5331,29 @@ public function purchase_order() {
 		// return 'asd';
 		$data['faktur'] = DB::select("SELECT * from faktur_pembelian 
 									  inner join jenisbayar on idjenisbayar= fp_jenisbayar order by fp_tgl desc");
-						
+
+		$jenis = DB::table('jenisbayar')
+				   ->where('idjenisbayar',2)
+				   ->orWhere('idjenisbayar',6)
+				   ->orWhere('idjenisbayar',7)
+				   ->orWhere('idjenisbayar',9)
+				   ->get();
+
+		$cabang = DB::table('cabang')
+                  ->get();
+		
+
+		$agen 	  = DB::select("SELECT kode, nama from agen order by kode");
+
+		$vendor   = DB::select("SELECT kode, nama from vendor order by kode "); 
+
+		$subcon   = DB::select("SELECT kode, nama from subcon order by kode "); 
+
+		$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier where status = 'SETUJU' and active = 'AKTIF' order by no_supplier");
+
+		$all = array_merge($agen,$vendor,$subcon,$supplier);
 		// return 'asd';
-		return view('purchase/fatkur_pembelian/index', compact('data'));
+		return view('purchase/fatkur_pembelian/index', compact('data','jenis','all','cabang'));
 	}
 
 	public function datatable_faktur_pembelian(Request $req)
@@ -5339,149 +5361,156 @@ public function purchase_order() {
 		$cabang = DB::table('cabang')
                   ->where('kode',$req->cabang)
                   ->first();
-
+        // dd($req->all());
 	    if ($cabang == null) {
 	      $cabang == '';
 	    }else{
-	      $cabang = 'and kode_cabang ='."'$cabang->kode'";
+	      $cabang = 'and fp_comp ='."'$cabang->kode'";
 	    }
 
 	    if ($req->min == '') {
 	      $min = '';
 	    }else{
-	      $min = 'and tanggal >='."'$req->min'";
+	      $min = 'and fp_tgl >='."'$req->min'";
 	    }
 
 	    if ($req->max == '') {
 	      $max = '';
 	    }else{
-	      $max = 'and tanggal <='."'$req->max'";
+	      $max = 'and fp_tgl <='."'$req->max'";
 	    }
 
 	    if ($req->jenis == '') {
 	      $jenis = '';
 	    }else{
-	      $jenis = 'and jenis_pengiriman ='."'$req->jenis'";
+	      $jenis = 'and fp_jenisbayar ='."'$req->jenis'";
 	    }
 
 	    if ($req->customer == '') {
 	      $customer = '';
 	    }else{
-	      $customer = 'and kode_customer ='."'$req->customer'";
+	      $customer = 'and fp_supplier ='."'$req->customer'";
 	    }
 
-	    if ($req->kota_asal == '') {
-	      $kota_asal = '';
-	    }else{
-	      $kota_asal = 'and id_kota_asal ='."'$req->kota_asal'";
-	    }
 
-	    if ($req->kota_tujuan == '') {
-	      $kota_tujuan = '';
-	    }else{
-	      $kota_tujuan = 'and id_kota_tujuan ='."'$req->kota_tujuan'";
-	    }
-
-	    if ($req->status == '') {
-	      $status = '';
-	    }else{
-	      $status = 'and status ='."'$req->status'";
-	    }
-
-	    if ($req->do_nomor != '') {
-	      if (Auth::user()->punyaAkses('Delivery Order','all')) {
-	          $data = DB::table('delivery_order')
-	                    ->join('cabang','kode','=','kode_cabang')
-	                    ->where('jenis','KARGO')
-	                    ->where('nomor','like','%'.$req->do_nomor.'%')
-	                    ->orderBy('tanggal','DESC')
+	    if ($req->nomor != '') {
+	      if (Auth::user()->punyaAkses('Faktur Pembelian','all')) {
+	          	$data = DB::table('faktur_pembelian')
+	                    ->join('cabang','kode','=','fp_comp')
+	                    ->where('fp_nofaktur','like','%'.$req->nomor.'%')
 	                    ->get();
 	      }else{
-	          $cabang = Auth::user()->kode_cabang;
-	          $data = DB::table('delivery_order')
-	                    ->join('cabang','kode','=','kode_cabang')
-	                    ->where('jenis','KARGO')
-	                    ->where('kode_cabang',$cabang)
-	                    ->where('nomor','like','%'.$req->do_nomor.'%')
-	                    ->orderBy('tanggal','DESC')
+	          	$cabang = Auth::user()->kode_cabang;
+
+	            $data = DB::table('faktur_pembelian')
+	                    ->join('cabang','kode','=','fp_comp')
+	                    ->where('fp_comp',$cabang)
+	                    ->where('fp_nofaktur','like','%'.$req->nomor.'%')
 	                    ->get();
 	      }
 	      
 	    }else{
-	      if (Auth::user()->punyaAkses('Delivery Order','all')) {
-	        $data = DB::table('delivery_order')
-	                  ->join('cabang','kode','=','kode_cabang')
-	                  ->whereRaw("jenis = 'KARGO' $min $max $customer $jenis $cabang $kota_asal $kota_tujuan $status")
-	                  ->orderBy('tanggal','DESC')
+	      if (Auth::user()->punyaAkses('Faktur Pembelian','all')) {
+	        $data = DB::table('faktur_pembelian')
+	                    ->join('cabang','kode','=','fp_comp')
+	                  ->whereRaw("fp_nofaktur != '0' $min $max $customer $jenis $cabang")
+	                  ->orderBy('fp_tgl','DESC')
 	                  ->get();
 	      }else{
 	        $cabang = Auth::user()->kode_cabang;
-	        $data = DB::table('delivery_order')
-	                  ->join('cabang','kode','=','kode_cabang')
-	                  ->where('jenis','KARGO')
-	                  ->where('kode_cabang',$cabang)
-	                  ->whereRaw("jenis = 'KARGO' and kode_cabang='$cabang' $min $max $customer $jenis $kota_asal $kota_tujuan $status")
-	                  ->orderBy('tanggal','DESC')
+	        $data = DB::table('faktur_pembelian')
+	                  ->join('cabang','kode','=','fp_comp')
+	                  ->whereRaw("fp_comp ='$cabang' $min $max $customer $jenis")
+	                  ->orderBy('fp_tgl','DESC')
 	                  ->get();
 	      }
 	    }
 
 	    $data = collect($data);
-	    // return $data;
 
 	    return Datatables::of($data)
 	                      ->addColumn('aksi', function ($data) {
-
-	                          if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah')){
-	                              if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
-	                                $a = '<button type="button" onclick="edit(\''.$data->nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
-	                              }else{
-	                                $a = '';
-	                              }
-	                          }else{
-	                            $a = '';
+	                      	$a = '';
+	                      	$b = '';
+	                      	$c = '';
+	                          if( Auth::user()->punyaAkses('Faktur Pembelian','ubah')){
+	                          	if ( $data->fp_status == 'Released') {
+	                          		if(cek_periode(carbon::parse($data->fp_tgl)->format('m'),carbon::parse($data->fp_tgl)->format('Y') ) != 0){
+	                          			if ($data->fp_jenisbayar == 6 || $data->fp_jenisbayar == 7 || $data->fp_jenisbayar == 9) {
+	                          				$a =  '<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/edit_penerus/'.$data->fp_idfaktur.'').'>
+				                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+				                                </a>';
+	                          			}else{
+	                          				$a = '<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/detailfatkurpembelian/'.$data->fp_idfaktur.'').'><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> ';
+	                          			}
+	                              	}
+	                          	}
 	                          }
 
-	                          if(Auth::user()->punyaAkses('Delivery Order','print')){
-	                              $b = '<button type="button" onclick="print(\''.$data->nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
-	                          }else{
-	                            $b = '';
-	                          }
-
-
-	                          if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','hapus')){
-	                              if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
-	                                $c = '<button type="button" onclick="hapus(\''.$data->nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
-	                              }else{
-	                                $c = '';
-	                              }
-	                          }else{
-	                            $c = '';
+	                          if( Auth::user()->punyaAkses('Faktur Pembelian','hapus')){
+	                          	if ( $data->fp_status == 'Released') {
+	                          		if(cek_periode(carbon::parse($data->fp_tgl)->format('m'),carbon::parse($data->fp_tgl)->format('Y') ) != 0){
+	                          			if ($data->fp_jenisbayar == 6 || $data->fp_jenisbayar == 7 || $data->fp_jenisbayar == 9) {
+	                          				$c =  '<a title="Hapus" class="btn btn-sm btn-danger" onclick="hapus(\''.$data->fp_idfaktur.'\')">
+				                                <i class="fa fa-trash" aria-hidden="true"></i>
+				                                </a> ';
+	                          			}else{
+	                          				$c = '<a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData(\''.$data->fp_idfaktur.'\')">
+				                                  <i class="fa fa-trash" aria-hidden="true"></i>
+				                                </a>';
+	                          			}	
+	                              	}
+	                          	}
 	                          }
 	                          return $a . $b .$c  ;
 	                          
 
 	                                 
-	                      })
-	                      ->addColumn('asal', function ($data) {
-	                        $kota = DB::table('kota')
-	                                  ->get();
+	                      })->addColumn('pihak_ketiga', function ($data) {
+	                        $agen 	  = DB::select("SELECT kode, nama from agen order by kode");
 
-	                        for ($i=0; $i < count($kota); $i++) { 
-	                          if ($data->id_kota_asal == $kota[$i]->id) {
-	                              return $kota[$i]->nama;
+							$vendor   = DB::select("SELECT kode, nama from vendor order by kode "); 
+
+							$subcon   = DB::select("SELECT kode, nama from subcon order by kode "); 
+
+							$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier where status = 'SETUJU' and active = 'AKTIF' order by no_supplier");
+
+							$all = array_merge($agen,$vendor,$subcon,$supplier);
+
+	                        for ($i=0; $i < count($all); $i++) { 
+	                          if ($data->fp_supplier == $all[$i]->kode) {
+	                              return $all[$i]->nama;
 	                          }
 	                        }
-	                      })
-	                      ->addColumn('tujuan', function ($data) {
-	                        $kota = DB::table('kota')
-	                                  ->get();
+	                      })->addColumn('status', function ($data) {
+	                        if($data->fp_pending_status == 'APPROVED')
+                            	return'<label class="label label-success">APPROVED</label>';
+                         	elseif($data->fp_pending_status == 'PENDING')
+                            	return'<label class="label label-danger">PENDING</label>';
+                          
+                          	
+	                      })->addColumn('jenis_faktur', function ($data) {
+	                        $jenis = DB::table('jenisbayar')
+									   ->where('idjenisbayar',2)
+									   ->orWhere('idjenisbayar',6)
+									   ->orWhere('idjenisbayar',7)
+									   ->orWhere('idjenisbayar',9)
+									   ->get();
 
-	                        for ($i=0; $i < count($kota); $i++) { 
-	                          if ($data->id_kota_tujuan == $kota[$i]->id) {
-	                              return $kota[$i]->nama;
-	                          }
-	                        }
+							for ($i=0; $i < count($jenis); $i++) { 
+								if ($data->fp_jenisbayar == $jenis[$i]->idjenisbayar) {
+									return $jenis[$i]->jenisbayar;
+								}
+							}
+                          
+                          	
+	                      })->addColumn('detail', function ($data) {
+							if($data->fp_jenisbayar == 6 || $data->fp_jenisbayar == 7 || $data->fp_jenisbayar == 9)
+	                            return'<a class="fa asw fa-print" align="center"  title="edit" href="'.url('fakturpembelian/detailbiayapenerus').'/'.$data->fp_idfaktur.'"> Print Detail</a>';
+							else
+	                            return'<a class="fa asw fa-print" align="center"  title="edit" href='.url('fakturpembelian/cetakfaktur/'.$data->fp_idfaktur.'').'> Print Detail</a>';
+                          
+                          	
 	                      })
 	                      ->addIndexColumn()
 	                      ->make(true);

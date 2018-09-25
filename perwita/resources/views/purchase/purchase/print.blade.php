@@ -231,8 +231,10 @@
               
                 <th class="textcenter" width="10%">Jumlah</th>
                 <th class="textcenter" width="10%">Satuan</th>
+                <th class="textcenter" width='15%'> Keterangan </th>
                 <th class="textcenter" width="15%">Harga Satuan</th>
                 <th class="textcenter" width="15%">Jumlah Harga</th>
+                
           </tr>
        </thead>
        <tbody>
@@ -243,8 +245,10 @@
                
                 <td class="textcenter">{{$podt->podt_qtykirim}}</td>
                 <td class="textleft">{{$podt->unitstock}}</td>
+                 <td>{{$podt->podt_keterangan}} </td>
                 <td class="textright">{{number_format($podt->podt_jumlahharga, 2,",",".")}}</td>
                 <td class="textright">{{number_format($podt->podt_totalharga,2,",",".")}}</td>
+               
         </tr>
         @endforeach
         <tr>
@@ -254,14 +258,6 @@
                 <td class="textleft"></td>
                 <td class="textleft"></td>
                 <td class="textright"></td>
-               
-        </tr>
-         <tr>
-                <td class="textcenter">&nbsp;</td>
-                <td class="textleft"></td>
-                <td class="textcenter"></td>
-                <td class="textleft"></td>
-                <td class="textleft"></td>
                 <td class="textright"></td>
                
         </tr>
@@ -272,6 +268,7 @@
                 <td class="textleft"></td>
                 <td class="textleft"></td>
                 <td class="textright"></td>
+                <td class="textright"></td>
                
         </tr>
          <tr>
@@ -280,6 +277,17 @@
                 <td class="textcenter"></td>
                 <td class="textleft"></td>
                 <td class="textleft"></td>
+                <td class="textright"></td>
+                <td class="textright"></td>
+               
+        </tr>
+         <tr>
+                <td class="textcenter">&nbsp;</td>
+                <td class="textleft"></td>
+                <td class="textcenter"></td>
+                <td class="textleft"></td>
+                <td class="textleft"></td>
+                <td class="textright"></td>
                 <td class="textright"></td>
                 
         </tr>
@@ -290,6 +298,7 @@
                 <td class="textleft"></td>
                 <td class="textleft"></td>
                 <td class="textright"></td>
+                <td class="textright"></td>
                
         </tr>
          <tr>
@@ -298,6 +307,7 @@
                 <td class="textcenter"></td>
                 <td class="textleft"></td>
                 <td class="textleft"></td>
+                <td class="textright"></td>
                 <td class="textright"></td>
                
         </tr>
@@ -318,7 +328,7 @@
               </tr>
             </table>
           </td>
-          <td  colspan="3" class="hiddenborderleft hiddenborderright">
+          <td  colspan="4" class="hiddenborderleft hiddenborderright">
             <table style="margin-left: 10px;">
               <tr> 
                 <th align="left" class="paddingbottom catatanpadding" rowspan="4"></th>
@@ -395,7 +405,18 @@
         <td>:</td>
         <td>{{ \Carbon\Carbon::parse($g)->format('d F Y')}} </td>
       </tr>
-      
+      <tr>
+          <td style="width: 100px"> No Pol </td>
+          <td> : </td>
+          <td> @if(count($data['kendaraan']) > 0)
+              @foreach($data['kendaraan'] as $kendaraan)
+                {{$kendaraan->nopol}}
+              @endforeach
+              @else
+                -
+              @endif
+          </td>
+      </tr>
     </table>
     <table>
       <tr>

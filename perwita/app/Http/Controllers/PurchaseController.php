@@ -110,7 +110,8 @@ class PurchaseController extends Controller
 				}
 		
 		$data2['spp'] = DB::select("select distinct spp_nospp , spp_keperluan, nama_department , nama , spp_tgldibutuhkan from  pembelian_order , spp, pembelian_orderdt, cabang, masterdepartment where po_id = '$id' and podt_idpo = po_id  and podt_idspp = spp_id and spp_cabang = kode and spp_bagian = kode_department ");
-	
+		
+		$data['kendaraan'] = DB::select("select distinct podt_kendaraan, nopol from pembelian_orderdt, kendaraan where podt_kendaraan = kendaraan.id and podt_idpo = '$id'");
 		
 
 		foreach ($data2['po'] as $key => $value) {
