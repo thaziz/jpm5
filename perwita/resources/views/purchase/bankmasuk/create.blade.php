@@ -125,7 +125,7 @@
 
                       <tr>
                         <th> Nominal </th>
-                        <td> <input type="text" class="form-control input-sm nominal"> </td>
+                        <td> <input type="text" class="form-control input-sm nominal" style="text-align:right"> </td>
                       </tr>
 
                       <tr>
@@ -209,19 +209,31 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+   function addCommas(nStr) {
+            nStr += '';
+            x = nStr.split('.');
+            x1 = x[0];
+            x2 = x.length > 1 ? '.' + x[1] : '';
+            var rgx = /(\d+)(\d{3})/;
+            while (rgx.test(x1)) {
+                x1 = x1.replace(rgx, '$1' + ',' + '$2');
+            }
+            return x1 + x2;
+    }
+
   $('.akun').change(function(){
     val = $(this).val();
     split = val.split(",");
 
-
-    dk = split[0];
-    $('.dk').val(dk);
+    dk = split[1];
+    $('.akundka').val(dk);
   })
 
   $('.nominal').change(function(){
      val =$(this).val();
      val = accounting.formatMoney(val, "", 2, ",",'.');
      nominal = val.replace(/,/g, '');
+     $(this).val(addCommas(nominal));
   })
 
   $('.date').datepicker({
@@ -290,7 +302,7 @@
   })
 
   $('#tbmhdata').click(function(){
-
+    
   })
 
 

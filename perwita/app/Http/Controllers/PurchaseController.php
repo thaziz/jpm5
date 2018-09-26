@@ -7580,7 +7580,7 @@ public function purchase_order() {
 					$idjurnal = 1;
 				}
 			
-				$year = Carbon::parse($request->tglitem)->format('m');	
+				$year = Carbon::parse($request->tglitem)->format('Y');	
 				$date = $request->tglitem;
 				$jr_no = get_id_jurnal('MM', $cabang, $request->tglitem);
 				$jurnal = new d_jurnal();
