@@ -5543,6 +5543,13 @@ public function purchase_order() {
 	                            return'<a class="fa asw fa-print" align="center"  title="edit" href='.url('fakturpembelian/cetakfaktur/'.$data->fp_idfaktur.'').'> Print Detail</a>';
                           
                           	
+	                      })->addColumn('lunas', function ($data) {
+							if($data->fp_sisapelunasan == 0)
+                            	return'<label class="label label-info">LUNAS</label>';
+                         	else
+                            	return'<label class="label label-WARNING">BELUM</label>';
+                          
+                          	
 	                      })
 	                      ->addIndexColumn()
 	                      ->make(true);

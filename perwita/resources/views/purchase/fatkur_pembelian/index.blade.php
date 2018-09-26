@@ -127,6 +127,7 @@
                         <th> Total </th>
                         <th> Status </th>
                         <th> Detail </th>
+                        <th> Pelunasan </th>
                         <!-- <th> Allow Edit</th> -->
                         <th> Aksi </th>   
                     </tr>
@@ -205,6 +206,11 @@
                  targets:9,
                  className: 'center'
               },
+              {
+                 targets:10,
+                 className: 'center'
+              },
+            
             ],
             "columns": [
             {data: 'DT_Row_Index', name: 'DT_Row_Index'},
@@ -216,6 +222,7 @@
             { "data": "fp_netto", render: $.fn.dataTable.render.number( '.', ',', 2, '' ) },
             { "data": "status" },
             { "data": "detail" },
+            { "data": "lunas" },
             { "data": "aksi" },
             
             ]
