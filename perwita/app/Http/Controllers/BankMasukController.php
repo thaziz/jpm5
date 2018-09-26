@@ -80,6 +80,86 @@ class BankMasukController extends Controller
 		return view('purchase/bankmasuk/index', compact('data'));
 	}
 
+	public function savedata(Request $request){
+
+		$bankmasuk = new bank_masuk();
+
+		$lastidbm = DB::table('bank_masuk')->max('bm_id'); 
+		if(isset($lastidbm)) {
+			$idbm = $lastidbm;
+			$idbm = (int)$idbm + 1;
+		}
+		else {
+			$idbm = 1;
+		}
+
+		$explodebank = explode("," , $request->bank);
+		$bank = $explodebank[1];
+		$idbank = $explodebank[0];
+		$databank = DB::select("select * from masterbank where mb_id = '$idbank'");
+		$namabank = $databank[0]->mb_nama;
+
+		$bankmasuk->bm_id = $idbm;
+		$bankmasuk->bm_cabangtujuan = $request->cabang;
+		$bankmasuk->bm_banktujuan = $bank;
+		$bankmasuk->bm_tglterima = $request->tgl;
+		$bankmasuk->bm_status = 'DITERIMA';
+		$bankmasuk->bm_notatransaksi = 'TRANSAKSI BM';
+		$bankmasuk->bm_nota = $request->notabm;
+		$bankmasuk->bm_keterangan = $request->keteranganbm;
+		$bankmasuk->bm_namabanktujuan = $namabank;
+		$bankmasuk->bm_bankasaljurnal = $bank;
+
+		for($i = 0; $i < count($request->akun); $i++){
+			$nominaldt = str_replace(",", "", $request->nominal[$i]);
+
+			$lastidbmdt = DB::table('bank_masuk_dt')->max('bm_id'); 
+			if(isset($lastidbm)) {
+				$idbmdt = $lastidbmdt;
+				$idbmdt = (int)$idbmdt + 1;
+			}
+			else {
+				$idbm = 1;
+			}
+
+			DB::table('bank_masuk_dt')
+			->insert([
+				'bmdt_id' => $idbm,
+				'bmdt_iddt' => $idbmdt,
+				'bmdt_akun' => $request->akun[$i],
+				'bmdt_keterangan' => $request->keteranganakun[$i],
+				'bmdt_nominal' => $nominaldt,
+			])
+		}
+
+
+		//save jurnal
+		$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+			if(isset($lastidjurnal)) {
+				$idjurnal = $lastidjurnal;
+				$idjurnal = (int)$idjurnal + 1;
+			}
+			else {
+				$idjurnal = 1;
+			}
+			
+			$year = Carbon::parse($request->tgl)->format('Y');	
+			$date = Carbon::parse($request->tgl)->format('Y-m-d');
+			
+			$jrno = get_id_jurnal('BM0')
+
+			$jurnal = new d_jurnal();
+			$jurnal->jr_id = $idjurnal;
+	        $jurnal->jr_year = $year;
+	        $jurnal->jr_date = $date;
+	        $jurnal->jr_detail = 'BANK MASUK';
+	        $jurnal->jr_ref = $lpb;
+	        $jurnal->jr_note = $request->keterangan;
+	        $jurnal->jr_no = $jrno;
+	        $jurnal->save();
+
+		return 'ok';
+	}
 
 	public function create(){
 		$data['cabang'] = DB::select("select * from cabang");		
@@ -179,7 +259,7 @@ class BankMasukController extends Controller
 		$databank = DB::select("select * from masterbank where mb_kode = '$banktujuan'");
 		$kodebankd = $databank[0]->mb_id;
 		//JREF
-		$jr_no = get_id_jurnal('BM' , $kodebankd, $cabang , $tgl);
+		
 
 		$ref = explode("-", $jr_no);
 
@@ -191,25 +271,14 @@ class BankMasukController extends Controller
 			$kodebankd = $kodebankd;
 		}
 
-		$kode = $ref[0] . $kodebankd;
-		$jr_ref = $kode . '-' . $ref[1];
+	
 		//ENDHRREF
 
 		$cabang = $request->cabangtujuan;
 		$notabm = getnotabm($cabang , $tgl , $kodebankd);
-		$refbm = explode("-", $notabm);
+	
 
-		$kodebankd = $databank[0]->mb_id;
-		if($kodebankd < 10){
-			$kodebankd = '0' . $kodebankd;
-		}	
-		else {
-			$kodebankd = $kodebankd;
-		}
-
-		$kode = $refbm[0] . $kodebankd;
-		$notabm = $kode . '-' . $refbm[1];
-
+		$jr_no = get_id_jurnal('BM' . $kodebankd, $cabang, $tgl);
 
 		$update = DB::table('bank_masuk')
 				->where('bm_id' , $id)

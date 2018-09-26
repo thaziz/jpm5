@@ -51,17 +51,19 @@
                     </div>
                 </div>
                 <div class="ibox-content">
+                 <form method="post" action="{{url('bankmasuk/save')}}"  enctype="multipart/form-data" class="form-horizontal" id="myform">
                         <div class="row">
             <div class="col-sm-12">
               <div class="box">
                 <div class="box-body">
+                  <div class="table-responsive">
                   <div class="col-sm-12">
                     <div class="row">
                         <div class="col-sm-6">
                             <table class="table">
                                 <tr>
                                   <th> Cabang </th>
-                                  <td> <select class="form-control chosen-select cabang">
+                                  <td> <select class="form-control chosen-select cabang" name="cabang">
                                           @foreach($data['cabang'] as $cabang)
                                           <option value="{{$cabang->kode}}">
                                                 {{$cabang->nama}}
@@ -73,7 +75,7 @@
 
                                 <tr>
                                       <th> Nota </th>
-                                      <td> <input type='text' class='form-control input-sm notabm'> </td>
+                                      <td> <input type='text' class='form-control input-sm notabm'name="notabm"> </td>
                                 </tr>
                       
                             <tr>
@@ -85,9 +87,9 @@
                             </tr>
                             <tr>
                                 <th> Bank </th>
-                                <td> <select class="form-control chosen-select bank">
+                                <td> <select class="form-control chosen-select bank" name="bank">
                                         @foreach($data['bank'] as $bank)
-                                          <option value="{{$bank->mb_id}}">
+                                          <option value="{{$bank->mb_id}},{{$bank->mb_kode}}">
                                              {{$bank->mb_kode}} - {{$bank->mb_nama}}
                                           </option>
                                         </option>
@@ -97,7 +99,7 @@
                             </tr>
                             <tr>
                               <th> Keterangan BM </th>
-                              <td> <input type="text" class="form-control input-sm"> </td>
+                              <td> <input type="text" class="form-control input-sm keteranganbm" name="keteranganbm"> </td>
                             </tr>
                           </table>
                         </div>                     
@@ -111,7 +113,7 @@
                         <select class="form-control chosen-select akun">
                           @foreach($data['akun'] as $akun)
                             <option value="{{$akun->id_akun}},{{$akun->akun_dka}}">
-                              {{$akun->nama_akun}}
+                                {{$akun->id_akun}} - {{$akun->nama_akun}}
                             </option>  
                           @endforeach
                         </select>
@@ -130,14 +132,14 @@
 
                       <tr>
                         <th> Keterangan Akun </th>
-                        <td> <input type="text" class="form-control input-sm keterangan"> </td>
+                        <td> <input type="text" class="form-control input-sm keterangan keteranganakun"> </td>
                       </tr>
                     </table>
                   </div>
                   </div>
 
                         <div class="pull-right">
-                          <button class="btn btn-sm btn-info" id="tbmhdata">
+                          <button class="btn btn-sm btn-info" id="tbmhdata" type="button">
                             <i class="fa fa-plus"> Tambah Data </i>
                           </button>
                             <br>
@@ -147,7 +149,7 @@
                         </div>
 
                 </div>
-
+              </div>
                 
                   <table class="table" id="tablebank">
                     <thead>
@@ -245,7 +247,9 @@
   $('.cabang').change(function(){
     cabang = $(this).val();
     tgl = $('.tglbm').val();
-    bank = $('.bank').val();
+    databank = $('.bank').val();
+    kodebank = databank.split(",");
+    bank = kodebank[0];
     $.ajax({
       data : {cabang,tgl,bank},
       url : baseUrl + '/bankmasuk/getnota',
@@ -259,7 +263,9 @@
 
     cabang = $('.cabang').val();
     tgl = $('.tglbm').val();
-    bank = $('.bank').val();
+    databank = $('.bank').val();
+    kodebank = databank.split(",");
+    bank = kodebank[0];
     $.ajax({
       data : {cabang,tgl,bank},
       url : baseUrl + '/bankmasuk/getnota',
@@ -267,12 +273,18 @@
       dataType : "json",
       success : function(response){
         $('.notabm').val(response);
+      },
+      error : function(){
+        location.reload();
       }
+
     })
 
   $('.tglbm').change(function(){
     tgl = $('.tglbm').val();
-    bank = $('.bank').val();
+    databank = $('.bank').val();
+    kodebank = databank.split(",");
+    bank = kodebank[0];
     cabang = $('.cabang').val();
      $.ajax({
       data : {cabang,tgl,bank},
@@ -281,6 +293,9 @@
       dataType : "json",
       success : function(response){
         $('.notabm').val(response);
+      },
+       error : function(){
+        location.reload();
       }
     })
   })
@@ -288,7 +303,9 @@
 
    $('.bank').change(function(){
     tgl = $('.tglbm').val();
-    bank = $('.bank').val();
+    databank = $('.bank').val();
+    kodebank = databank.split(",");
+    bank = kodebank[0];
     cabang = $('.cabang').val();
      $.ajax({
       data : {cabang,tgl,bank},
@@ -297,14 +314,80 @@
       dataType : "json",
       success : function(response){
         $('.notabm').val(response);
+      },
+       error : function(){
+        location.reload();
       }
     })
   })
 
+   no = parseInt($('tr.bank').length) + 1 ; 
   $('#tbmhdata').click(function(){
-    
+    dataakun = $('.akun').val();
+    akun = dataakun.split(",");
+    akun = akun[0];
+    dk = $('.akundka').val();
+    nominal = $('.nominal').val();
+    keteranganakun = $('.keteranganakun').val();
+    keteranganbm = $('.keteranganbm').val();
+    tanggal = $('.tgl').val();
+    nota = $('.notabm').val();
+    bank = $('.bank').val();
+    bank = bank.split(",");
+    bank = bank[1];
+   
+
+    html = "<tr class='trbank'> <td>"+no+"</td>" +
+            "<td>"+nota+"   </td>"+
+            "<td>"+bank+"   </td>"+
+            "<td>"+tanggal+" </td>"+
+            "<td>"+akun+" <input type='hidden' name='akun[]' value='"+akun+"'> </td>" +
+            "<td>"+dk+" <input type='hidden' name='dk[]' value='"+dk+"'></td>"+
+            "<td>"+nominal+" <input type='hidden' name='nominal[]' value='"+nominal+"'></td>" +
+            "<td>"+keteranganakun+" <input type='hidden' name='keteranganakun[]' value='"+keteranganakun+"'></td>"+
+            "<td> </td>" +
+            "</tr>";
+
+    $('#tablebank').append(html);
+
+
   })
 
+
+  $('#myform').submit(function(event){      
+         
+
+        event.preventDefault();
+          var post_url2 = $(this).attr("action");
+          var form_data2 = $(this).serialize();
+        
+            swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data Bank Masuk!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: true
+          },
+          function(){
+               
+        $.ajax({
+          type : "POST",          
+          data : form_data2,
+          url : baseUrl + '/bankmasuk/save',
+          dataType : 'json',
+          success : function (response){
+             alertSuccess();
+             $('.simpandata').hide();
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
+          }
+        })
+      })
+      });
 
 </script>
 @endsection
