@@ -33,7 +33,7 @@
   {{-- Aktiva START --}}
 
   <div class="col-md-12">
-    <div class="col-md-12 text-center text-muted" style="padding: 10px; border: 1px solid #eee; box-shadow: 0px 0px 10px #eee;">Laba Rugi</div>
+    <div class="col-md-12 text-center text-muted" style="padding: 10px; border: 1px solid #eee; box-shadow: 0px 0px 10px #eee;">Laporan Arus Kas</div>
 
     <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 10px #eee; padding: 0px;">
       <table class="table_neraca" width="100%" style="font-size: 8pt;" border="0">
@@ -87,7 +87,7 @@
 
 </div>
 
-<div class="row">
+{{-- <div class="row">
   <div class="col-md-12 m-t">
     <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 10px #eee; padding: 0px;">
       <table class="table_neraca" width="100%" style="font-size: 8pt;" border="0">
@@ -100,7 +100,7 @@
       </table>
     </div>
   </div>
-</div>
+</div> --}}
 
 @if($cek->is_active == 1)
   <div class="row">

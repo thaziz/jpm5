@@ -964,29 +964,59 @@ class PurchaseController extends Controller
 
 	public function confirm_order () {
 
-		$cabang = session::get('cabang');
+		
+		/*dd($data);*/
+		return view('purchase.confirm_order.index');
+	}
+
+	function confirm_ordernotif(Request $request){
+		  $html='';		 
+          $data='';
+  		  $tgl='';  		  
+  		  $no='';
+  		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+  		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+  		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
+  		  	$tgl="and spp_tgldibutuhkan >= '$tgl1' AND spp_tgldibutuhkan <= '$tgl2'";
+  		  }  		  
+  		  if($request->nofpg!=''){
+  		  	$no="and spp_nospp='$request->nofpg'";
+  		  }
+
+
+  		  $cabang = session::get('cabang');
 
 		if(Auth::user()->punyaAkses('Konfirmasi Order','all')){
-			$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = kode order by co_id desc");
 			
-			$data['pembelian'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and staff_pemb = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU'");
+			$data['pembelian'] = DB::select("select count(*) as count from spp, confirm_order where co_idspp = spp_id and staff_pemb = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU' $tgl $no");
 
-			$data['keuangan'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and man_keu = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU'");
+			$data['keuangan'] = DB::select("select count(*) as count from spp, confirm_order where co_idspp = spp_id and man_keu = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU' $tgl $no");
 
 		}
 		else {
-			$data['co']=DB::select("select * from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang' and spp_cabang = kode order by co_id desc");	
 		
-			$data['pembelian'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and staff_pemb = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang'");
+			$data['pembelian'] = DB::select("select count(*) as count from spp, confirm_order where co_idspp = spp_id and staff_pemb = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU' $tgl $no and spp_cabang = '$cabang'");
 
-			$data['keuangan'] = DB::select("select count(*) from spp, confirm_order where co_idspp = spp_id and man_keu = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang'");
+			$data['keuangan'] = DB::select("select count(*) as count from spp, confirm_order where co_idspp = spp_id and man_keu = 'BELUM DI SETUJUI' and spp_statuskabag = 'SETUJU' $tgl $no and spp_cabang = '$cabang'");
 		}
-		$data['co'];
-		/*dd($data);*/
-		return view('purchase.confirm_order.index', compact('data'));
+		
+
+	$html.='<div class="col-md-2" style="min-height: 100px">
+      <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <h2 style="text-align:center"> <b> '.$data['pembelian'][0]->count.' SPP </b></h2> <h4 style="text-align:center"> Belum di proses Staff Pembelian </h4>
+      </div>
+    </div>
+
+     <div class="col-md-2" style="min-height: 100px">
+      <div class="alert alert-success alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <h2 style="text-align:center"> <b> '.$data['keuangan'][0]->count.' SPP  </b></h2> <h4 style="text-align:center"> Belum di proses Keuangan </h4>
+      </div>
+    </div>';
+ return $html;
+
 	}
-
-
 	public function confirm_ordertable (Request $request) {		
 		
 		  $cabang = session::get('cabang');

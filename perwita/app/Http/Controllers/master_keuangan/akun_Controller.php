@@ -270,7 +270,7 @@ class akun_Controller extends Controller
         }
         
         $date = $tahun.'-'.$bulan.'-01';
-        return json_encode($date);
+        // return json_encode($date);
 
         $akun = master_akun::find($request->kode_akun);
         $akun->nama_akun = $request->nama_akun;
