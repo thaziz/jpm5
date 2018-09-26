@@ -60,7 +60,7 @@
         return $jr_no;
 	}
 
-	function get_total_neraca_parrent($id, $deep, $initiate, $date, $array){
+	function get_total_neraca_parrent($id, $deep, $initiate, $date, $throttle, $array, $withCommas = false){
 		$tot = 0; $search = strlen($id);
 
 		if($deep == 2){
@@ -69,7 +69,11 @@
 					foreach ($value->detail as $key => $detail) {
 						foreach ($detail->akun as $key => $akun) {
 							$boundary = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
-							$coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+
+							if($throttle == 'bulan')
+                              $coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+                            else
+                              $coalesce = (date('Y', strtotime($date)) < date('Y', strtotime($akun->opening_date))) ? 0 : $akun->coalesce;
 
 							if($initiate == 'A' && $akun->akun_dka == 'K')
 								$tot -= ($coalesce + $boundary);
@@ -88,7 +92,11 @@
 					foreach ($value->detail as $key => $detail) {
 						foreach ($detail->akun as $key => $akun) {
 							$boundary = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
-							$coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+
+							if($throttle == 'bulan')
+                              $coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+                            else
+                              $coalesce = (date('Y', strtotime($date)) < date('Y', strtotime($akun->opening_date))) ? 0 : $akun->coalesce;
 
 							if($initiate == 'A' && $akun->akun_dka == 'K')
 								$tot -= ($coalesce + $boundary);
@@ -110,7 +118,11 @@
 								foreach ($data_array->detail as $key => $detail_array) {
 									foreach ($detail_array->akun as $key => $akun) {
 										$boundary = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
-										$coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+
+										if($throttle == 'bulan')
+			                              $coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+			                            else
+			                              $coalesce = (date('Y', strtotime($date)) < date('Y', strtotime($akun->opening_date))) ? 0 : $akun->coalesce;
 										
 										if($initiate == 'A' && $akun->akun_dka == 'K')
 											$tot -= ($coalesce + $boundary);
@@ -133,7 +145,11 @@
 					foreach ($value->detail as $key => $detail) {
 						foreach ($detail->akun as $key => $akun) {
 							$boundary = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
-							$coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+
+							if($throttle == 'bulan')
+                              $coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+                            else
+                              $coalesce = (date('Y', strtotime($date)) < date('Y', strtotime($akun->opening_date))) ? 0 : $akun->coalesce;
 
 							if($initiate == 'A' && $akun->akun_dka == 'K')
 								$tot -= ($coalesce + $boundary);
@@ -147,9 +163,11 @@
 			}
 		}
 
-		return number_format($tot, 2);
+		if($withCommas)
+			return ($tot >= 0) ? number_format($tot, 2) : "(".number_format(str_replace("-", "", $tot), 2).")";
+		else
+			return $tot;
 
-		// return ($tot >= 0) ? number_format($tot, 2) : "(".number_format(str_replace("-", "", $tot), 2).")";
 		// return $tot;
 	}
 
@@ -166,6 +184,9 @@
 
 							$tot += $boundary;
 
+							if($value->type == 'aktiva')
+                                $tot = $tot * -1;
+
 						}
 					}
 				}
@@ -179,6 +200,9 @@
 							$coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
 
 							$tot += $boundary;
+
+							if($value->type == 'aktiva')
+                                $tot = $tot * -1;
 						}
 					}
 				}
@@ -187,14 +211,17 @@
 			foreach ($array as $key => $value) {
 				if($value->jenis == 3 && $value->nomor_id == $id){
 					foreach ($value->detail as $key => $detail) {
-						
 						foreach ($array as $key => $data_array) {
 							if($data_array->jenis == 2 && $data_array->nomor_id == $detail->id_group){
 								foreach ($data_array->detail as $key => $detail_array) {
 									foreach ($detail_array->akun as $key => $akun) {
 										$boundary = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
 										$coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
-										
+
+										if($data_array->type == 'aktiva'){
+											$boundary = $boundary * -1;
+										}
+
 										$tot += $boundary;
 									}
 								}
@@ -214,16 +241,35 @@
 							$coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
 
 							$tot += $boundary;
+
+							if($value->type == 'aktiva')
+                                $tot = $tot * -1;
 						}
 					}
 				}
 			}
 		}
 
-		return number_format($tot, 2);
+		return ($tot < 0) ? '('.number_format(str_replace('-', '', $tot), 2).')' : number_format($tot, 2);
 
 		// return ($tot >= 0) ? number_format($tot, 2) : "(".number_format(str_replace("-", "", $tot), 2).")";
 		// return $tot;
+	}
+
+	function get_saldo_awal_arus_kas($array, $date, $throttle){
+		$tot = 0;
+		foreach ($array as $key => $data) {
+			$mutasi = (count($data->mutasi_bank_debet) > 0) ? $data->mutasi_bank_debet[0]->total : 0;
+
+			if($throttle == 'bulan')
+              $saldo = (strtotime($date) < strtotime($data->opening_date)) ? 0 : $data->saldo;
+            else
+              $saldo = (date('Y', strtotime($date)) < date('Y', strtotime($data->opening_date))) ? 0 : $data->saldo;
+
+			$tot += ($saldo + $mutasi);
+		}
+
+		return $tot;
 	}
 
 	function date_ind($date){
