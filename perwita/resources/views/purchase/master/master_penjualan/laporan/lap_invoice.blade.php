@@ -75,7 +75,7 @@
 
                     <div class="form-group col-md-4">
                       <select class="cari_semua chosen-select-width" id="cabang"  name="cabang">
-                        <option></option>
+                        <option value="">Semua Cabang</option>
                         @foreach ($cabang as $element)
                           <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
                         @endforeach

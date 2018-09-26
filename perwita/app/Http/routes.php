@@ -573,6 +573,7 @@ Route::get('bankmasuk/databank' ,'BankMasukController@getdata');
 Route::post('bankmasuk/saveterima' ,'BankMasukController@saveterima');
 Route::get('bankmasuk/createbankmasuk' ,'BankMasukController@create');
 Route::get('bankmasuk/getnota' ,'BankMasukController@getnota');
+Route::post('bankmasuk/save' ,'BankMasukController@savedata');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');
