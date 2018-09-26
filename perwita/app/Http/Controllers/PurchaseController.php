@@ -1865,19 +1865,36 @@ public function purchase_order() {
 
 			}
 
-			$kodeitem = $data['codt'][0][0]->codt_kodeitem;
-			$supplier = $data['codt'][0][0]->codt_supplier;
 
-			$itemsupplier = DB::select("select * from itemsupplier where is_kodeitem = '$kodeitem' and is_idsup = '$supplier'");
-			$itemsupplier2 = '';
-			if(count($itemsupplier) != 0){
-				array_push($data['itemsupplier'] , $itemsupplier);
-			}
-			else {
-				array_push($data['itemsupplier'] , $itemsupplier2);
-			}
+		
 			///testtt
 		}
+
+			for($i = 0; $i < count($array); $i++) {
+				for($j  = 0; $j < count($data['codt'][$i]); $j++){
+					$kodeitem = $data['codt'][$i][$j]->codt_kodeitem;
+					$supplier = $data['codt'][$i][$j]->codt_supplier;
+
+					$dataitemsupplier = DB::select("select * from itemsupplier where is_kodeitem = '$kodeitem' and is_idsup = '$supplier'");
+
+
+					$itemsupplier2 = ([
+						'is_keteranganitem' => ''
+					]);
+
+					if(count($dataitemsupplier) != 0){
+						$itemsupplier = $dataitemsupplier[0]->is_keteranganitem;
+						array_push($data['itemsupplier'] , $itemsupplier);
+					}
+					else {
+						array_push($data['itemsupplier'] , $itemsupplier2);
+					}
+
+				}
+
+			}
+
+
 		return json_encode($data);
 	}
 

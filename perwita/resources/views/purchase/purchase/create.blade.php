@@ -563,7 +563,12 @@
 
           for(var j=0; j < response.codt[i].length; j++){
                     no = 1 + j;
-              
+              if(response.itemsupplier[j] == null || response.itemsupplier[j][0] == undefined) {
+                itemsupplier = '';
+              }
+              else {
+                itemsupplier = response.itemsupplier[j][0];
+              }
                   
                rowTable += 
                         '<tr>' +
@@ -592,27 +597,12 @@
                               rowTable += '<option value='+response.gudang[key].mg_id+'>'+response.gudang[key].mg_namagudang+'</option></select></td>'
                             }
                          
-                       if(response.itemsupplier[i][j].length  != 0 ){
-                          rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+response.itemsupplier[i][j].is_keteranganitem+'">  </td> </tr>';
-                       
-                       }   
-                       else {
-                        rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="-">  </td> </tr>';
-                       }  
-                       
-
+                            
+                                rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+itemsupplier+'">  </td> </tr>';
+                            
                         }
                         else {
-
-                       if(response.itemsupplier[i][j].length  != 0 ){
-                          rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+response.itemsupplier[i][j].is_keteranganitem+'">  </td> </tr>';
-                       
-                       }   
-                       else {
-                        rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="-">  </td> </tr>';
-                       } 
-                           
-                     
+                          rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+itemsupplier+'">  </td> </tr>';
                         }
 
 
@@ -1146,7 +1136,7 @@
         toastr.info('Diharapkan Anda harus memilih supplier yang sama :) ');
        }
        else if(uniqueGudang.length > 1){
-        toastr.info('Diharapkan Anda harus memilih status update stock yang sama :)');
+        toastr.info('Diharapkan Anda harus memilih status Lokasi Gudang yang sama :)');
        }
        else if(uniqueCabang.length > 1){
         toastr.info('Diharapkan Anda harus memilih cabang pemohon yang sama :)');
