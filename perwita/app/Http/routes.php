@@ -2171,6 +2171,15 @@ Route::get('master_keuangan/laba_rugi/pdf/single/{throtle}', [
 
 //end laba rugi
 
+//arus kas
+
+Route::get('master_keuangan/arus_kas/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_arus_kas@index_arus_kas_single',
+  'as'   => 'arus_kas.index_single'
+]);
+
+//end arus kas
+
 
 // buku besar
 

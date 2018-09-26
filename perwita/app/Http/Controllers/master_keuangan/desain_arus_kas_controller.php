@@ -49,9 +49,11 @@ class desain_arus_kas_controller extends Controller
         $id = (DB::table("desain_arus_kas")->max("id_desain") == null) ? 1 : (DB::table("desain_arus_kas")->max("id_desain")+1);
         
         $data_add = [
-        	'id_desain'		=> $id,
-        	'nama_desain'	=> $request->nama_desain,
-        	'is_active'		=> 0
+        	'id_desain'		    => $id,
+        	'nama_desain'	    => $request->nama_desain,
+        	'is_active'		    => 0,
+            'tanggal_buat'      => date('Y-m-d'),
+            'tanggal_update'    => date('Y-m-d')
         ];
 
         // $desain_laba_rugi = new desain_laba_rugi;

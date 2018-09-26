@@ -158,7 +158,7 @@
         <table width="100%" border="0" style="border-bottom: 1px solid #333;">
           <thead>
             <tr>
-              <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Neraca Dalam {{ ucfirst($throttle) }} </th>
+              <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Arus Kas Dalam {{ ucfirst($throttle) }} </th>
             </tr>
 
             <tr>
@@ -186,11 +186,10 @@
           </thead>
         </table>
 
-        <table id="table-data" width="100%" border="0" style="min-height: 455px;">
+        <table id="table-data" width="80%" border="0" style="min-height: 455px; margin: 10px auto;">
           <thead>
             <tr>
               <th width="50%" class="text-left" style="border-right: 3px solid #ccc">Aktiva</th>
-              <th width="50%" class="text-right">Pasiva</th>
             </tr>
           </thead>
 
@@ -202,161 +201,71 @@
                   <tbody>
                     <?php $total_aktiva = $total_pasiva = 0; ?>
                     @foreach($detail as $data_detail)
-                      @if($data_detail->type == 'aktiva')
+                      @if($data_detail->jenis == 1)
 
-                        @if($data_detail->jenis == 1)
+                        <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }}" id="{{ $data_detail->nomor_id }}">
+                          <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: bold;">{{ $data_detail->keterangan }}</td>
+                          <td class="money" style="display: none">
+                            {{ get_total_arus_kas_parrent($data_detail->nomor_id, 2, 'A', $data_real, $detail) }}
+                          </td>
+                        </tr>
 
-                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }}" id="{{ $data_detail->nomor_id }}">
-                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: bold;">{{ $data_detail->keterangan }}</td>
-                            <td class="money" style="display: none">
-                              {{ get_total_neraca_parrent($data_detail->nomor_id, 2, 'A', $data_real, $detail) }}
-                            </td>
+                      @elseif($data_detail->jenis == 2)
+
+                        <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }} collapse" id="{{ $data_detail->nomor_id }}">
+                          <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: bold;">{{ $data_detail->keterangan }}</td>
+                          <td class="money">
+                             {{ get_total_arus_kas_parrent($data_detail->nomor_id, 3, 'A', $data_real, $detail) }}
+                          </td>
+                        </tr>
+
+                        @foreach($data_detail->detail as $detail_dt)
+                          <tr>
+                            <tr class="treegrid-{{ str_replace('.', '-', $detail_dt->id_group) }} treegrid-parent-{{ str_replace('.', '-', $detail_dt->id_parrent) }} collapse" id="{{ $detail_dt->nomor_id }}">
+                              <td style="font-weight: 500; font-style: italic;">{{ $detail_dt->nama }}</td>
+                              <td class="money">
+                                {{ get_total_arus_kas_parrent($detail_dt->id_parrent, 5, 'A', $data_real, $detail) }}
+                              </td>
+                            </tr>
                           </tr>
 
-                        @elseif($data_detail->jenis == 2)
+                          @foreach($detail_dt->akun as $akun)
+                            <?php 
+                              $mutasi = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
+                              $coalesce = (strtotime($data_real) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
 
-                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }} collapse" id="{{ $data_detail->nomor_id }}">
-                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: bold;">{{ $data_detail->keterangan }}</td>
-                            <td class="money">
-                               {{ get_total_neraca_parrent($data_detail->nomor_id, 3, 'A', $data_real, $detail) }}
-                            </td>
-                          </tr>
+                              $total = $mutasi;
 
-                          @foreach($data_detail->detail as $detail_dt)
+                              $total_aktiva += $total;
+
+                            ?>
+
                             <tr>
-                              <tr class="treegrid-{{ str_replace('.', '-', $detail_dt->id_group) }} treegrid-parent-{{ str_replace('.', '-', $detail_dt->id_parrent) }} collapse" id="{{ $detail_dt->nomor_id }}">
-                                <td style="font-weight: 500; font-style: italic;">Group {{ $detail_dt->nama }}</td>
+                              <tr class="treegrid-{{ str_replace('.', '-', $akun->id_akun) }} treegrid-parent-{{ str_replace('.', '-', $akun->main_id) }} collapse" id="{{ $akun->id_akun }}">
+                                <td style="font-weight: 500; font-style: italic;">{{ $akun->nama_akun }}</td>
                                 <td class="money">
-                                  {{ get_total_neraca_parrent($detail_dt->id_parrent, 5, 'A', $data_real, $detail) }}
+                                  {{ ($total < 0) ? '('.number_format(str_replace('-', '', $total), 2).')' : number_format(str_replace('-', '', $total), 2) }}
                                 </td>
                               </tr>
                             </tr>
-
-                            @foreach($detail_dt->akun as $akun)
-                              <?php 
-                                $mutasi = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
-                                $coalesce = (strtotime($data_real) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
-
-                                $total = ($coalesce + $mutasi);
-
-                                if($akun->akun_dka == 'K'){
-                                  $total = ($total * -1);
-                                }
-
-                                $total_aktiva += $total;
-
-                              ?>
-
-                              <tr>
-                                <tr class="treegrid-{{ str_replace('.', '-', $akun->id_akun) }} treegrid-parent-{{ str_replace('.', '-', $akun->group_neraca) }} collapse" id="{{ $akun->id_akun }}">
-                                  <td style="font-weight: 500; font-style: italic;">{{ $akun->nama_akun }}</td>
-                                  <td class="money">
-                                    {{ ($total < 0) ? '('.number_format(str_replace('-', '', $total), 2).')' : number_format(str_replace('-', '', $total), 2) }}
-                                  </td>
-                                </tr>
-                              </tr>
-                            @endforeach
-
                           @endforeach
 
-                        @elseif($data_detail->jenis == 4)
-                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }}" id="{{ $data_detail->nomor_id }}">
-                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: bold;">&nbsp;</td>
-                            <td></td>
-                          </tr>
+                        @endforeach
 
-                         @elseif($data_detail->jenis == 3)
-                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }}" id="{{ $data_detail->nomor_id }}">
-                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: 600; font-style: italic;">{{ $data_detail->keterangan }}</td>
-                            <td class="money total">
-                              {{ get_total_neraca_parrent($data_detail->nomor_id, 4, 'A', $data_real, $detail) }}
-                            </td>
-                          </tr>
+                      @elseif($data_detail->jenis == 4)
+                        <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }}" id="{{ $data_detail->nomor_id }}">
+                          <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: bold;">&nbsp;</td>
+                          <td></td>
+                        </tr>
 
-                        @endif
-                      @endif
-                    @endforeach
-                     
-                  </tbody>
-                </table>
-              </td>
+                       @elseif($data_detail->jenis == 3)
+                        <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }}" id="{{ $data_detail->nomor_id }}">
+                          <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: 600; font-style: italic;">{{ $data_detail->keterangan }}</td>
+                          <td class="money total">
+                            {{ get_total_arus_kas_parrent($data_detail->nomor_id, 4, 'A', $data_real, $detail) }}
+                          </td>
+                        </tr>
 
-              <td style="border-right: 3px solid #ccc;">
-                <table class="aktiva-tree" id="table-data-inside" border="0" width="100%">
-                  <tbody>
-
-                    @foreach($detail as $data_detail)
-                      @if($data_detail->type == 'pasiva')
-
-                        @if($data_detail->jenis == 1)
-
-                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }}" id="{{ $data_detail->nomor_id }}">
-                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: bold;">{{ $data_detail->keterangan }}</td>
-                            <td class="money" style="display: none">
-                              {{ get_total_neraca_parrent($data_detail->nomor_id, 2, 'P', $data_real, $detail) }}
-                            </td>
-                          </tr>
-
-                        @elseif($data_detail->jenis == 2)
-
-                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }} collapse" id="{{ $data_detail->nomor_id }}">
-                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: bold;">{{ $data_detail->keterangan }}</td>
-                            <td class="money">
-                               {{ get_total_neraca_parrent($data_detail->nomor_id, 3, 'P', $data_real, $detail) }}
-                            </td>
-                          </tr>
-
-                          @foreach($data_detail->detail as $detail_dt)
-                            <tr>
-                              <tr class="treegrid-{{ str_replace('.', '-', $detail_dt->id_group) }} treegrid-parent-{{ str_replace('.', '-', $detail_dt->id_parrent) }} collapse" id="{{ $detail_dt->nomor_id }}">
-                                <td style="font-weight: 500; font-style: italic;">Group {{ $detail_dt->nama }}</td>
-                                <td class="money">
-                                  {{ get_total_neraca_parrent($detail_dt->id_parrent, 5, 'P', $data_real, $detail) }}
-                                </td>
-                              </tr>
-                            </tr>
-
-                            @foreach($detail_dt->akun as $akun)
-                              <?php 
-                                $mutasi = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
-                                $coalesce = (strtotime($data_real) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
-
-                                $total = ($coalesce + $mutasi);
-
-                                if($akun->akun_dka == 'D'){
-                                  $total = ($total * -1);
-                                }
-
-                                $total_pasiva += $total;
-                              ?>
-
-                              <tr>
-                                <tr class="treegrid-{{ str_replace('.', '-', $akun->id_akun) }} treegrid-parent-{{ str_replace('.', '-', $akun->group_neraca) }} collapse" id="{{ $akun->id_akun }}">
-                                  <td style="font-weight: 500; font-style: italic;">{{ $akun->nama_akun }}</td>
-                                  <td class="money">
-                                    {{ ($total < 0) ? '('.number_format(str_replace('-', '', $total), 2).')' : number_format(str_replace('-', '', $total), 2) }}
-                                  </td>
-                                </tr>
-                              </tr>
-                            @endforeach
-
-                          @endforeach
-
-                        @elseif($data_detail->jenis == 4)
-                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }}" id="{{ $data_detail->nomor_id }}">
-                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: bold;">&nbsp;</td>
-                            <td></td>
-                          </tr>
-
-                         @elseif($data_detail->jenis == 3)
-                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }}" id="{{ $data_detail->nomor_id }}">
-                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: 600; font-style: italic;">{{ $data_detail->keterangan }}</td>
-                            <td class="money total">
-                              {{ get_total_neraca_parrent($data_detail->nomor_id, 4, 'P', $data_real, $detail) }}
-                            </td>
-                          </tr>
-
-                        @endif
                       @endif
                     @endforeach
                      
@@ -371,21 +280,40 @@
             <tr>
               <td>
                 <table width="100%" style="font-size: 9pt;">
+
                   <tr>
-                    <td style="font-weight: bold; padding: 5px 10px; font-weight: bold" width="50%">TOTAL AKTIVA</td>
+                    <td style="font-weight: bold; padding: 5px 10px; font-weight: bold" width="50%" colspan="2">
+                     &nbsp;
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="font-weight: bold; padding: 5px 10px; font-weight: bold" width="50%">
+                      Total Aktivitas Kas
+                    </td>
+
                     <td style="font-weight: 600; padding: 5px 10px;" class="text-right">
                       {{ ($total_aktiva >= 0) ? number_format($total_aktiva, 2) : "( ".number_format(str_replace("-", "", $total_aktiva), 2)." )" }}
                     </td>
                   </tr>
-                </table>
-              </td>
 
-              <td>
-                <table width="100%" style="font-size: 9pt;">
                   <tr>
-                    <td style="font-weight: bold; padding: 5px 10px; font-weight: bold" width="50%">TOTAL PASIVA</td>
+                    <td style="font-weight: bold; padding: 5px 10px; font-weight: bold" width="50%">
+                      Saldo Awal Kas dan Setara Kas (Periode {{ date_ind(($request->m-1))." ".$request->y }})
+                    </td>
+
                     <td style="font-weight: 600; padding: 5px 10px;" class="text-right">
-                      {{ ($total_pasiva >= 0) ? number_format($total_pasiva, 2) : "( ".number_format(str_replace("-", "", $total_pasiva), 2)." )" }}
+                      {{ number_format(0, 2) }}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="font-weight: bold; padding: 5px 10px; font-weight: bold" width="50%">
+                      Saldo Kas dan Setara Kas Seharusnya (Periode {{ date_ind(($request->m))." ".$request->y }})
+                    </td>
+
+                    <td style="font-weight: 600; padding: 5px 10px;" class="text-right">
+                      {{ number_format(0, 2) }}
                     </td>
                   </tr>
                 </table>
