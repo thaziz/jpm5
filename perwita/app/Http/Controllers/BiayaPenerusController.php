@@ -247,7 +247,7 @@ class BiayaPenerusController extends Controller
 		}
 
 		public function save_agen(request $request){
-			// dd($request->all());
+			dd($request->all());
    			return DB::transaction(function() use ($request) {  
 
 				$cari_fp = DB::table('faktur_pembelian')

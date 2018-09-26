@@ -94,7 +94,7 @@
   <td width="10">:</td>
   <td width="200" >
     <select onchange="hitung_ppn_penerus()" class="form-control jenis_ppn_penerus chosen-select-width1" name="jenis_ppn_penerus">
-      <option>Pilih - PPN</option>
+      <option value="">Pilih - PPN</option>
       <option class="include">INCLUDE</option>
       <option class="exclude">EXCLUDE</option>
     </select>
@@ -111,9 +111,9 @@
   <td width="10">:</td>
   <td width="200" >
     <select class="form-control jenis_pph_penerus chosen-select-width1" name="jenis_pph_penerus" onchange="hitung_pph_penerus()">
-      <option>Pilih - PPH</option>
+      <option value="">Pilih - PPH</option>
       @foreach ($pajak as $val)
-        <option class="{{ $val->kode }}" data-val="{{ $val->nilai }}">{{ $val->nama }}</option>
+        <option value="{{ $val->kode }}" data-val="{{ $val->nilai }}">{{ $val->nama }}</option>
       @endforeach
     </select>
   </td>
@@ -135,6 +135,8 @@
   <td colspan="5">
      <button onclick="tt_penerus()" class="btn btn-info modal_penerus_tt disabled" style="margin-right: 20px;" type="button" data-toggle="modal" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
      <button type="button" class="btn btn-danger" onclick="modal_pajak_penerus()">Faktur Pajak</button>
+      <button type="button" class="btn btn-primary pull-right disabled save save_biaya" style="margin-right: 20px" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan</button>
+
      <button type="button" style="margin-right: 20px;" class="btn btn-warning pull-left disabled" id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
   </td>
 </tr>
@@ -204,7 +206,6 @@
       <td colspan="3">
         <button type="button" class="btn btn-primary pull-right cari-pod" onclick="appendDO();"><i class="fa fa-search">&nbsp;Append</i></button>
 
-        <button type="button" class="btn btn-primary pull-right disabled save save_biaya" style="margin-right: 20px" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
 
         <button class="btn btn-primary btn_modal_bp disabled" type="button" > Bayar dengan Uang Muka </button>
 
@@ -595,7 +596,7 @@
 
    $(par).find('.seq').val(e_jml_data);
    $(par).find('.no_do').val(e_no_pod);
-   $(par).find('.kode_biaya').val(e_akun_biaya);
+   $(par).find('.kode_biaya').val(e_akuxzn_biaya);
    $(par).find('.bayar_biaya').val(e_nominal);
    $(par).find('.DEBET_biaya').val(e_DEBET);
    $(par).find('.ket_biaya').val(e_keterangan_biaya);
@@ -634,7 +635,31 @@
   }
 
   function modal_pajak_penerus() {
-    $('#modal_pajak').modal('show');
+    var jenis_ppn_penerus   = $('.jenis_ppn_penerus ').val();
+
+    var total_dpp_penerus   = $('.total_dpp_penerus ').val().replace(/[^0-9\-]+/g,"")/100;
+
+    var ppn_penerus         = $('.ppn_penerus ').val().replace(/[^0-9\-]+/g,"")/100;
+    var persen_ppn_penerus  = $('.persen_ppn_penerus ').val();
+
+
+    var total_netto         = $('.total_netto ').val().replace(/[^0-9\-]+/g,"")/100;
+
+    if (jenis_ppn_penerus  != '') {
+
+      $('.dpp_faktur_pajak_penerus ').val(accounting.formatMoney(total_dpp_penerus, "", 2, ".",','));
+      $('.dpp_faktur_pajak_penerus1 ').val(accounting.formatMoney(total_dpp_penerus, "", 2, ".",','));
+
+      $('.nilai_ppn_pajak_penerus ').val(persen_ppn_penerus);
+      $('.ppn_pajak_penerus ').val(accounting.formatMoney(ppn_penerus, "", 2, ".",','));
+
+      $('.ppn_pajak_penerus1 ').val(accounting.formatMoney(ppn_penerus, "", 2, ".",','));
+
+      $('.netto_pajak_penerus ').val(accounting.formatMoney(total_netto, "", 2, ".",','));
+      $('#modal_pajak').modal('show');
+    }else{
+      return toastr.warning('Harap Memilih Pajak PPn terlebih Dahulu');
+    }
   }
 
   function tt_penerus() {
@@ -702,7 +727,10 @@
           type:'post',
           data:$('.head1 :input').serialize()
               +'&'+$('.head_biaya :input').serialize()
-              +'&'+datatable1.$('input').serialize(),
+              +'&'+datatable1.$('input').serialize()
+              +'&faktur_pajak_penerus='+$('.faktur_pajak_penerus').val()
+              +'&tanggal_pajak_penerus='+$('.tanggal_pajak_penerus').val()
+              +'&masa_pajak_penerus='+$('.masa_pajak_penerus').val(),
           success:function(response){
             if (response.status == 1) {
                 swal({
@@ -957,7 +985,9 @@ $('.save_bp_um').click(function(){
         type:'post',
         data:$('.head1 :input').serialize()
               +'&'+$('.head_biaya :input').serialize()
-              +'&'+datatable2.$('input').serialize()+'&bp_total_um='+bp_total_um,
+              +'&'+datatable2.$('input').serialize()
+              +'&bp_total_um='+bp_total_um
+             ,
         success:function(response){
           if (response.status == 1) {
               swal({
