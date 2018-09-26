@@ -56,7 +56,7 @@
               <div class="box">
                 <div class="box-body">
                     <form action="post" id="savebonsem">
-                     <h3> <p > Data Kas Cabang <b class="namacabang">  </b> saat ini Rp <b class="kascabang">  500,000.00  </b> </p> </h3>
+                     
                      <br>
 
                     <table class="table">

@@ -516,6 +516,7 @@
 
           $('.tablespp').empty();
            /*'<tr> <td> &nbsp; </td> </tr> <tr> <td> <h3 style="color:red"> Data SPP </h3> </td> </tr> </table> </div>';*/
+           number = 0;
          for(var i=0 ; i< response.spp.length; i++) {
           
           var angka = 1 + i;
@@ -560,10 +561,16 @@
                     '</thead>' +
                     '<tbody>'; 
           
-
+          
           for(var j=0; j < response.codt[i].length; j++){
                     no = 1 + j;
-              
+                   // alert(number);
+              if(response.itemsupplier[number] == null || response.itemsupplier[number] == undefined) {
+                itemsupplier = '';
+              }
+              else {
+                itemsupplier = response.itemsupplier[number];
+              }
                   
                rowTable += 
                         '<tr>' +
@@ -592,19 +599,18 @@
                               rowTable += '<option value='+response.gudang[key].mg_id+'>'+response.gudang[key].mg_namagudang+'</option></select></td>'
                             }
                          
-
-                        rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+response.itemsupplier[i][j].is_keteranganitem+'">  </td>' +
-                        '<tr>';
-
+                            
+                                rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+itemsupplier+'">  </td> </tr>';
+                            
                         }
                         else {
-                            rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required>  </td>' +
-                        '<tr>';
+                          rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+itemsupplier+'">  </td> </tr>';
                         }
 
 
                        nosup++;
-                    
+
+              number++;      
            }          
               rowTable +=        '</tbody>' +
                       '</table>';
@@ -1133,7 +1139,7 @@
         toastr.info('Diharapkan Anda harus memilih supplier yang sama :) ');
        }
        else if(uniqueGudang.length > 1){
-        toastr.info('Diharapkan Anda harus memilih status update stock yang sama :)');
+        toastr.info('Diharapkan Anda harus memilih status Lokasi Gudang yang sama :)');
        }
        else if(uniqueCabang.length > 1){
         toastr.info('Diharapkan Anda harus memilih cabang pemohon yang sama :)');

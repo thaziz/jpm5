@@ -27,10 +27,10 @@
               <a>Purchase</a>
           </li>
           <li>
-            <a>Transaksi Hutang</a>
+            <a>Bank Masuk</a>
           </li>
           <li class="active">
-              <strong> Bon Sementara </strong>
+              <strong> Bank Masuk </strong>
           </li>
 
       </ol>
@@ -47,7 +47,7 @@
                 <div class="ibox-title" style="background: white">
                     <div  style="background: white" >
                       <h5> Bon Sementara </h5>
-                      <a href="{{ url('bonsementaracabang/bonsementaracabang') }}" class="pull-right" style="color: white"><i class="fa fa-arrow-left"> Kembali</i></a>
+                      <a href="{{ url('bonsementaracabang/bonsementaracabang') }}" class="pull-right" style="color: black"><i class="fa fa-arrow-left"> Kembali</i></a>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -61,9 +61,9 @@
 
                     <table class="table">
                       <tr>
-                        <th> Cabang </th>
+                        <th style="width:200px"> Cabang </th>
                         <td>
-                          @if(Auth::user()->punyaAkses('Bon Sementara Cabang','cabang'))
+                          @if(Auth::user()->punyaAkses('Bank Masuk','cabang'))
                              
                             <select class="form-control chosen-select-width cabang" name="cabang" required="">
                                 @foreach($data['cabang'] as $cabang)
@@ -87,29 +87,30 @@
 
                         <th> No Nota </th>
                                             <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
-                        <td> <input type="text" class="form-control input-sm nonota" name="nonota" required="">  </td>
+                        <td> <input type="text" class="form-control input-sm nonota" name="nonota" required="" readonly="">  </td>
                       </tr>
                       <tr>  
                       <th> Tanggal </th>
                       <td> <div class="input-group date">
-                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl" name="tgl" required="">
+                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl tglbonsem" name="tgl" required="">
                                       </div>
                             </td>
                       </tr>
                       <tr>
-                        <th> Bagian </th>
-                        <td> <input type="text" class="form-control bagian input-sm capital" name="bagian" required=""> </td>
+                        <th> Bank </th>
+                        <td> <select class="form-control chosen-select">
+                              @foreach($data['bank'] as $bank)
+                                <option value="$bank->mb_id">
+                                    {{$bank->mb_kode}} - {{$bank->mb_nama}}
+                                </option>
+                              @endforeach
+                             </select>
+                        </td>
                       </tr>
-                      <tr>
-                        <th> Nominal </th>
-                        <td> <input type="text" class="nominal form-control input-sm" name="nominal" style="text-align:right" required=""> </td>
-                      </tr>
-                      <tr> 
-                        <th> Keperluan </th>
-                        <td> <input type="text" class="form-control input-sm keperluan capital" name="keperluan" required=""></td>
-                      </tr>
+
+                      <hr>
+
                     </table>
-                  
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
@@ -145,15 +146,60 @@
         endDate : 'today',
     }).datepicker("setDate", "0");
 
-  $('.cabang').change(function(){
-    comp = $('.cabang').val();
+
+
+  $('.tglbonsem').change(function(){
+     comp = $('.cabang').val();
+    tgl = $('.tglbonsem').val();
   $.ajax({
     url : baseUrl + '/bonsementaracabang/getnota',
-    data : {comp},
+    data : {comp,tgl},
     type : "get",
     dataType : 'json',
     success : function(response){
-      var d = new Date();               
+      var d = new Date(tgl);               
+                      //tahun
+                      var year = d.getFullYear();
+                      //bulan
+                      var month = d.getMonth();
+                      var month1 = parseInt(month + 1)
+                      console.log(d);
+                      console.log();
+                      console.log(year);
+
+                      if(month < 10) {
+                        month = '0' + month1;
+                      }
+                      console.log(d);
+
+                      tahun = String(year);
+      //                console.log('year' + year);
+                      year2 = tahun.substring(2);
+                      //year2 ="Anafaradina";
+
+                    
+                       nospp = 'BS' + month + year2 + '/' + comp + '/' +  response.idspp;
+                      console.log(nospp);
+                      $('.nonota').val(nospp);
+                       nospp = $('.nonota').val();
+                      $('.namacabang').text(response.namacabang);
+              },
+              error : function(){
+                location.reload();
+              }
+            })
+            })
+
+  $('.cabang').change(function(){
+    comp = $('.cabang').val();
+    tgl = $('.tglbonsem').val();
+  $.ajax({
+    url : baseUrl + '/bonsementaracabang/getnota',
+    data : {comp,tgl},
+    type : "get",
+    dataType : 'json',
+    success : function(response){
+      var d = new Date(tgl);               
                       //tahun
                       var year = d.getFullYear();
                       //bulan
@@ -189,13 +235,14 @@
 
 
   comp = $('.cabang').val();
+  tgl = $('.tglbonsem').val();
   $.ajax({
     url : baseUrl + '/bonsementaracabang/getnota',
-    data : {comp},
+    data : {comp,tgl},
     type : "get",
     dataType : 'json',
     success : function(response){
-      var d = new Date();               
+      var d = new Date(tgl);               
                       //tahun
                       var year = d.getFullYear();
                       //bulan
@@ -244,12 +291,12 @@
           
           nominal = val.replace(/,/g, '');
          
-           if(parseFloat(kascabang) < parseFloat(nominal)){
+           /*if(parseFloat(kascabang) < parseFloat(nominal)){
             toastr.info("Mohon maaf, Kas Kecil Cabang tidak mencukupi :) ");
           
             $(this).val('');
             return false;
-           }
+           }*/
 
         event.preventDefault();
           var post_url2 = $(this).attr("action");
@@ -257,7 +304,7 @@
         
             swal({
             title: "Apakah anda yakin?",
-            text: "Simpan Data Faktur Pembelian!",
+            text: "Simpan Data BON SEMENTARA!",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -295,12 +342,12 @@
 
     nominal = val.replace(/,/g, '');
    
-     if(parseFloat(kascabang) < parseFloat(nominal)){
+     /*if(parseFloat(kascabang) < parseFloat(nominal)){
       toastr.info("Mohon maaf, Kas Kecil Cabang tidak mencukupi :) ");
       //$('.nominal').attr('readonly' , true);
       $(this).val('');
       return false;
-     }
+     }*/
 
     $(this).val(val);
   });

@@ -102,6 +102,7 @@ Route::get('jurnalselaras/kasmasuk', 'jurnal_pembelian@kasmasuk');
 Route::get('jurnalselaras/fpg_checkbank', 'jurnal_pembelian@fpg_checkbank');
 Route::get('jurnalselaras/get_no_po', 'jurnal_pembelian@get_no_po');
 Route::get('jurnalselaras/kendaraansppd', 'jurnal_pembelian@kendaraansppd');
+Route::get('jurnalselaras/kendaraanpo', 'jurnal_pembelian@kendaraanpo');
 
 //***PEMBELIAN
 //***PEMBELIAN
@@ -569,6 +570,7 @@ Route::get('queryanalisa', 'Queryanalisa@view');
 Route::get('bankmasuk/bankmasuk' ,'BankMasukController@bankmasuk');
 Route::get('bankmasuk/databank' ,'BankMasukController@getdata');
 Route::post('bankmasuk/saveterima' ,'BankMasukController@saveterima');
+Route::get('bankmasuk/createbankmasuk' ,'BankMasukController@create');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');
