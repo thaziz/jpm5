@@ -5469,11 +5469,15 @@ public function purchase_order() {
 	                          	if ( $data->fp_status == 'Released') {
 	                          		if(cek_periode(carbon::parse($data->fp_tgl)->format('m'),carbon::parse($data->fp_tgl)->format('Y') ) != 0){
 	                          			if ($data->fp_jenisbayar == 6 || $data->fp_jenisbayar == 7 || $data->fp_jenisbayar == 9) {
-	                          				$a =  '<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/edit_penerus/'.$data->fp_idfaktur.'').'>
-				                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
-				                                </a>';
+	                          				if ($data->fp_sisapelunasan == $data->fp_netto) {
+	                          					$a =  '<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/edit_penerus/'.$data->fp_idfaktur.'').'>
+					                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+					                                </a>';
+	                          				}
 	                          			}else{
-	                          				$a = '<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/detailfatkurpembelian/'.$data->fp_idfaktur.'').'><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> ';
+	                          				if ($data->fp_sisapelunasan == $data->fp_netto) {
+	                          					$a = '<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/detailfatkurpembelian/'.$data->fp_idfaktur.'').'><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> ';
+											}
 	                          			}
 	                              	}
 	                          	}
@@ -5483,13 +5487,18 @@ public function purchase_order() {
 	                          	if ( $data->fp_status == 'Released') {
 	                          		if(cek_periode(carbon::parse($data->fp_tgl)->format('m'),carbon::parse($data->fp_tgl)->format('Y') ) != 0){
 	                          			if ($data->fp_jenisbayar == 6 || $data->fp_jenisbayar == 7 || $data->fp_jenisbayar == 9) {
-	                          				$c =  '<a title="Hapus" class="btn btn-sm btn-danger" onclick="hapus(\''.$data->fp_idfaktur.'\')">
+	                          				if ($data->fp_sisapelunasan == $data->fp_netto) {
+	                          					$c =  '<a title="Hapus" class="btn btn-sm btn-danger" onclick="hapus(\''.$data->fp_idfaktur.'\')">
 				                                <i class="fa fa-trash" aria-hidden="true"></i>
 				                                </a> ';
+											}
+	                          					
 	                          			}else{
-	                          				$c = '<a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData(\''.$data->fp_idfaktur.'\')">
+	                          				if ($data->fp_sisapelunasan == $data->fp_netto) {
+	                          					$c = '<a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData(\''.$data->fp_idfaktur.'\')">
 				                                  <i class="fa fa-trash" aria-hidden="true"></i>
 				                                </a>';
+											}
 	                          			}	
 	                              	}
 	                          	}
