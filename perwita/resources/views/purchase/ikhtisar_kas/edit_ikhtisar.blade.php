@@ -129,10 +129,10 @@
             <tr>
               <td>Approved</td>
               <td align="left">
-                @if($data->ik_status == 'APPROVED')
-                  <input name="checked" class="" type="checkbox" checked="">
-                  @else
+                @if($data->ik_status != 'RELEASED')
                   <input name="checked" class="" type="checkbox">
+                  @else
+                  <input name="checked" class="" type="checkbox" checked="">
                 @endif
               </td>
             </tr>
