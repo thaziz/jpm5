@@ -1195,6 +1195,12 @@ $('.save_sc_um').click(function(){
                   },function(){
                    $('.save_sc_um').addClass('disabled');
                    $('.btn_modal_sc').addClass('disabled');
+                   $('#tmbhdataitem').addClass('disabled');
+                   $('#tmbhdatapo').addClass('disabled');
+                   $('#tmbhdatapenerus').addClass('disabled');
+                   $('#tmbhdataoutlet').addClass('disabled');
+                   $('#tmbhdataoutlet').addClass('disabled');
+                   $('#tmbhdatasubcon').addClass('disabled');
                    
                   });
           }else if(response.status == 0){

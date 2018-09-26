@@ -54,7 +54,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="text-right">
-                        <a type="button" class='btn btn-sm btn-success' id="tmbhdatabm" href="{{url('bankmasuk/createbankmasuk')}}"> <i class="fa fa-plus"> </i> Tambah Data </a>
+                        <a type="button" class='btn btn-sm btn-success' id="tmbhdatabm" href="{{url('bankmasuk/createsbankmasuk')}}"> <i class="fa fa-plus"> </i> Tambah Data </a>
                     </div>
                 </div>
                 <div class="ibox-content">

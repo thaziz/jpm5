@@ -1156,37 +1156,42 @@ class penerimaan_penjualan_controller extends Controller
                             ->where('kd_k_nomor',$request->nota)
                             ->get();
           $invoice_nomor = [];
-          for ($i=0; $i < count($cari_kwitansi_d); $i++) { 
-            $cari_invoice = DB::table('invoice')
-                              ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
-                              ->first();
-            
-            $i_sisa_pelunasan = $cari_invoice->i_sisa_pelunasan + $cari_kwitansi_d[$i]->kd_total_bayar;
-            $i_sisa_akhir = $cari_invoice->i_sisa_akhir + $cari_kwitansi_d[$i]->kd_total_bayar;
+          try {
+            for ($i=0; $i < count($cari_kwitansi_d); $i++) { 
+              $cari_invoice = DB::table('invoice')
+                                ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                                ->first();
+              
+              $i_sisa_pelunasan = $cari_invoice->i_sisa_pelunasan + $cari_kwitansi_d[$i]->kd_total_bayar;
+              $i_sisa_akhir = $cari_invoice->i_sisa_akhir + $cari_kwitansi_d[$i]->kd_total_bayar;
 
 
-            $update_invoice = DB::table('invoice')
-                                    ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
-                                    ->update([
-                                      'i_sisa_pelunasan' => $i_sisa_pelunasan,
-                                      'i_sisa_akhir' => $i_sisa_akhir,
-                                    ]);
-
-            $ckd = DB::table('kwitansi_d')
-                            ->where('kd_nomor_invoice',$cari_kwitansi_d[$i]->kd_nomor_invoice)
-                            ->get();
-            if ($ckd == null) {
               $update_invoice = DB::table('invoice')
-                                    ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
-                                    ->update([
-                                      'i_status' => 'Released',
-                                    ]);
+                                      ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                                      ->update([
+                                        'i_sisa_pelunasan' => $i_sisa_pelunasan,
+                                        'i_sisa_akhir' => $i_sisa_akhir,
+                                      ]);
+
+              $ckd = DB::table('kwitansi_d')
+                              ->where('kd_nomor_invoice',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                              ->get();
+              if ($ckd == null) {
+                $update_invoice = DB::table('invoice')
+                                      ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                                      ->update([
+                                        'i_status' => 'Released',
+                                      ]);
+              }
+              $cari_invoice = DB::table('invoice')
+                                ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                                ->first();
+              array_push($invoice_nomor, $cari_kwitansi_d[$i]->kd_nomor_invoice);
             }
-            $cari_invoice = DB::table('invoice')
-                              ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
-                              ->first();
-            array_push($invoice_nomor, $cari_kwitansi_d[$i]->kd_nomor_invoice);
+          } catch (Exception $e) {
+            
           }
+            
 
 
           if (isset($request->flag_nota)) {

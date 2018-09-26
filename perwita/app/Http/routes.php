@@ -143,6 +143,10 @@ Route::post('suratpermintaanpembelian/updatespp', 'PurchaseController@updatespp'
 Route::get('testing/analisa', 'PurchaseController@queryanalisa');
 
 Route::get('konfirmasi_order/konfirmasi_order' , 'PurchaseController@confirm_order');
+Route::get('konfirmasi_order/konfirmasi_order/table' , 'PurchaseController@confirm_ordertable');
+Route::get('konfirmasi_order/konfirmasi_order/notif' , 'PurchaseController@confirm_ordernotif');
+
+
 Route::get('konfirmasi_order/konfirmasi_orderdetailkeu/{id}' , 'PurchaseController@confirm_order_dtkeu');
 Route::get('konfirmasi_order/konfirmasi_orderdetailpemb/{id}' , 'PurchaseController@confirm_order_dtpemb');
 Route::get('konfirmasi_order/ajax_confirmorderdt' , 'PurchaseController@ajax_confirmorderdt');
@@ -571,6 +575,8 @@ Route::get('bankmasuk/bankmasuk' ,'BankMasukController@bankmasuk');
 Route::get('bankmasuk/databank' ,'BankMasukController@getdata');
 Route::post('bankmasuk/saveterima' ,'BankMasukController@saveterima');
 Route::get('bankmasuk/createbankmasuk' ,'BankMasukController@create');
+Route::get('bankmasuk/getnota' ,'BankMasukController@getnota');
+Route::post('bankmasuk/save' ,'BankMasukController@savedata');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');
@@ -591,6 +597,8 @@ Route::get('formaju/detailformaju', 'PurchaseController@detailformaju');
 
 //FPG
 Route::get('formfpg/formfpg', 'PurchaseController@formfpg');
+Route::get('formfpg/formfpg/table', 'PurchaseController@formfpgTable'); //seach taziz
+Route::get('formfpg/formfpg/notif', 'PurchaseController@formfpgNotif'); //seach taziz
 Route::get('formfpg/createformfpg', 'PurchaseController@createformfpg');
 Route::get('formfpg/detailformfpg/{id}', 'PurchaseController@detailformfpg');
 Route::get('formfpg/changesupplier', 'PurchaseController@changesupplier');
