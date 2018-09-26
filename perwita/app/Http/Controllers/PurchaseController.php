@@ -61,8 +61,7 @@ use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 use Auth;
 use App\bonsempengajuan;
-use Datatables;
-
+use Yajra\Datatables\Datatables;
 
 class PurchaseController extends Controller
 {
@@ -964,7 +963,6 @@ class PurchaseController extends Controller
 	}
 
 	public function confirm_order () {
-		$data['spp']=spp_purchase::all();
 
 		$cabang = session::get('cabang');
 
@@ -989,7 +987,85 @@ class PurchaseController extends Controller
 	}
 
 
-	
+	public function confirm_ordertable (Request $request) {		
+		
+		  $cabang = session::get('cabang');
+          $data='';
+  		  $tgl='';  		  
+  		  $no='';
+  		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+  		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+  		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
+  		  	$tgl="and spp_tgldibutuhkan >= '$tgl1' AND spp_tgldibutuhkan <= '$tgl2'";
+  		  }  		  
+  		  if($request->nofpg!=''){
+  		  	$no="and spp_nospp='$request->nofpg'";
+  		  }
+
+
+		if(Auth::user()->punyaAkses('Konfirmasi Order','all')){
+			$data=DB::select("select *, 'no' as no from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = kode $tgl $no order by co_id desc ");
+			$data=collect($data);			
+		}
+		else {
+			$data=DB::select("select *,'no' as no from confirm_order, spp, cabang where co_idspp = spp_id and spp_statuskabag = 'SETUJU' and spp_cabang = '$cabang' and spp_cabang = kode $tgl $no order by co_id desc ");	
+			$data=collect($data);			
+		}
+
+
+
+return 
+			DataTables::of($data)->
+			editColumn('spp_tgldibutuhkan', function ($data) {            
+            	return date('d-m-Y',strtotime($data->spp_tgldibutuhkan));
+            })
+            ->editColumn('staff_pemb', function ($data) { 
+
+				  if(Auth::user()->punyaAkses('Konfirmasi Order','aktif')){
+				            if($data->staff_pemb == 'DISETUJUI'){
+				                return '<a class="label label-info" href="
+				                '.url('konfirmasi_order/konfirmasi_orderdetailpemb/'.$data->co_idspp.'').'
+				                ">'.$data->staff_pemb.'</a>';                            				                
+				                          }else{
+				                return '<a class="label label-warning" href="
+								'.url('konfirmasi_order/konfirmasi_orderdetailpemb/'.$data->co_idspp.'').'
+				                ">'.$data->staff_pemb.'</a>';                            				                
+				                          }
+				       }
+
+
+            })->editColumn('spp_cabang', function ($data) { 
+            	return $data->spp_cabang.'-'.$data->nama;                                 
+            
+            })
+            ->editColumn('man_keu',function($data){
+
+            	if(Auth::user()->punyaAkses('Konfirmasi Order Keu','aktif')){
+                       if($data->man_keu == 'DISETUJUI'){
+                       return '<a class="label label-info"  href="">'.$data->man_keu.'</a>';
+                       /*{{url('konfirmasi_order/konfirmasi_orderdetailkeu/'. $data->co_idspp.'')}}*/
+                          }else{
+                	   return '<a class="label label-danger" href="">'.$data->man_keu.'</a>';
+                           /*{{url('konfirmasi_order/konfirmasi_orderdetailkeu/'. $data->co_idspp.'')}}*/
+                       }
+                          
+                }
+
+
+            })->addColumn('action', function ($data) {            	
+            	if($data->man_keu == 'DISETUJUI' && $data->staff_pemb == 'DISETUJUI' )
+            	return '<a class="btn btn-sm btn-success" > <i class="fa fa-print" aria-hidden="true"></i>  </a>';
+            //href="{{url('konfirmasi_order/cetakkonfirmasi/'.$co->co_id.'')}}"
+            })
+			->make(true);	
+
+
+
+
+		
+		/*return view('purchase.confirm_order.index', compact('data'));*/
+	}
+
 
 	public function confirm_order_dtkeu ($id) {
 		
@@ -5470,11 +5546,15 @@ public function purchase_order() {
 	                          	if ( $data->fp_status == 'Released') {
 	                          		if(cek_periode(carbon::parse($data->fp_tgl)->format('m'),carbon::parse($data->fp_tgl)->format('Y') ) != 0){
 	                          			if ($data->fp_jenisbayar == 6 || $data->fp_jenisbayar == 7 || $data->fp_jenisbayar == 9) {
-	                          				$a =  '<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/edit_penerus/'.$data->fp_idfaktur.'').'>
-				                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
-				                                </a>';
+	                          				if ($data->fp_sisapelunasan == $data->fp_netto) {
+	                          					$a =  '<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/edit_penerus/'.$data->fp_idfaktur.'').'>
+					                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+					                                </a>';
+	                          				}
 	                          			}else{
-	                          				$a = '<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/detailfatkurpembelian/'.$data->fp_idfaktur.'').'><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> ';
+	                          				if ($data->fp_sisapelunasan == $data->fp_netto) {
+	                          					$a = '<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/detailfatkurpembelian/'.$data->fp_idfaktur.'').'><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> ';
+											}
 	                          			}
 	                              	}
 	                          	}
@@ -5484,13 +5564,18 @@ public function purchase_order() {
 	                          	if ( $data->fp_status == 'Released') {
 	                          		if(cek_periode(carbon::parse($data->fp_tgl)->format('m'),carbon::parse($data->fp_tgl)->format('Y') ) != 0){
 	                          			if ($data->fp_jenisbayar == 6 || $data->fp_jenisbayar == 7 || $data->fp_jenisbayar == 9) {
-	                          				$c =  '<a title="Hapus" class="btn btn-sm btn-danger" onclick="hapus(\''.$data->fp_idfaktur.'\')">
+	                          				if ($data->fp_sisapelunasan == $data->fp_netto) {
+	                          					$c =  '<a title="Hapus" class="btn btn-sm btn-danger" onclick="hapus(\''.$data->fp_idfaktur.'\')">
 				                                <i class="fa fa-trash" aria-hidden="true"></i>
 				                                </a> ';
+											}
+	                          					
 	                          			}else{
-	                          				$c = '<a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData(\''.$data->fp_idfaktur.'\')">
+	                          				if ($data->fp_sisapelunasan == $data->fp_netto) {
+	                          					$c = '<a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData(\''.$data->fp_idfaktur.'\')">
 				                                  <i class="fa fa-trash" aria-hidden="true"></i>
 				                                </a>';
+											}
 	                          			}	
 	                              	}
 	                          	}
@@ -5542,6 +5627,13 @@ public function purchase_order() {
 	                            return'<a class="fa asw fa-print" align="center"  title="edit" href="'.url('fakturpembelian/detailbiayapenerus').'/'.$data->fp_idfaktur.'"> Print Detail</a>';
 							else
 	                            return'<a class="fa asw fa-print" align="center"  title="edit" href='.url('fakturpembelian/cetakfaktur/'.$data->fp_idfaktur.'').'> Print Detail</a>';
+                          
+                          	
+	                      })->addColumn('lunas', function ($data) {
+							if($data->fp_sisapelunasan == 0)
+                            	return'<label class="label label-info">LUNAS</label>';
+                         	else
+                            	return'<label class="label label-WARNING">BELUM</label>';
                           
                           	
 	                      })
@@ -10262,7 +10354,7 @@ $dataFpg='';
 			$dataFpg=collect($dataFpg);			
 		}
 		else {	
-			dd('d');
+			
 			$dataFpg=DB::select("select *,row_number() OVER () as no  from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_nofpg asc ");
 			$dataFpg=collect($dataFpg);
 			}
@@ -10290,16 +10382,25 @@ $dataFpg='';
             ->addColumn('action', function ($dataFpg) {            	
             	$html='';
             	   if(Auth::user()->punyaAkses('Form Permintaan Giro','ubah')){
-                  $html.="<a class='btn btn-sm btn-success' href={{url('formfpg/detailformfpg/'.$dataFpg->idfpg.'')}}> <i 			class='fa fa-arrow-right' aria-hidden='true'></i> </a>";
+/*'<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/edit_penerus/'.$data->fp_idfaktur.'').'>
+				                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+				                                </a>';*/
+
+                  $html.="<a class='btn btn-sm btn-success' 
+                  href=".url("formfpg/detailformfpg/".$dataFpg->idfpg."").">
+                  <i 			class='fa fa-arrow-right' aria-hidden='true'></i> </a>";
             	   }
 
 
              if(Auth::user()->punyaAkses('Form Permintaan Giro','print')){
                    if($dataFpg->fpg_jenisbayar == '5' || $dataFpg->fpg_jenisbayar == '12'){
-                       $html.= "<a class='btn btn-sm btn-info' href={{url('formfpg/printformfpg2/'.$dataFpg->idfpg.'')}}> 
+                       $html.= "<a class='btn btn-sm btn-info'                        
+                       href=".url("formfpg/printformfpg2/".$dataFpg->idfpg."").">
                             	<i class='fa fa-print' aria-hidden='true'></i></a>";
                    }else{
-                   	   $html.="<a class='btn btn-sm btn-info' href={{url('formfpg/printformfpg/'.$dataFpg->idfpg.'')}}> <i class='fa fa-print' aria-hidden='true'></i> </a>";
+                   	   $html.="<a class='btn btn-sm btn-info'                    	   
+                   	   href=".url("formfpg/printformfpg/".$dataFpg->idfpg."").">
+                   	    <i class='fa fa-print' aria-hidden='true'></i> </a>";
              			}                          
             }
 

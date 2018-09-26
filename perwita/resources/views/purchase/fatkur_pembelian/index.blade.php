@@ -61,8 +61,8 @@
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
                     
-                <div class="box-body">
-                  <table cellpadding="3" cellspacing="0" border="0" class="table filter table-bordered">
+                <div class="box-body table-responsive">
+                  <table cellpadding="3" cellspacing="0" border="0" class="table filter table-bordered" style="width: 100%">
                         <tr>
                             <td align="center">Tanggal Awal</td>
                             <td align="center">
@@ -93,7 +93,8 @@
                               </select>
                             </td>
                         </tr>
-                        <tr>
+                        @if (Auth::user()->PunyaAkses('Faktur Pembelian','cabang'))
+                          <tr>
                             <td align="center">Cabang</td>
                             <td align="left">
                               <select class="cabang form-control chosen-select-width" >
@@ -107,7 +108,26 @@
                             <td align="center">
                               <input type="text" class="nota form-control" name="nota">
                             </td>
+                          </tr>
+                        @else
+                        <tr>
+                            <td align="center">Cabang</td>
+                            <td align="left">
+                              <select class="cabang form-control chosen-select-width" >
+                                <option value="">Pilih - Cabang</option>
+                                @foreach ($cabang as $val)
+                                  <option @if (Auth::user()->kode_cabang == $val->kode)
+                                    selected="" 
+                                  @endif value="{{ $val->kode }}">{{ $val->nama }}</option>
+                                @endforeach
+                              </select>
+                            </td>
+                            <td align="center">Cari Berdasarkan Nota</td>
+                            <td align="center">
+                              <input type="text" class="nota form-control" name="nota">
+                            </td>
                         </tr>
+                        @endif
                         <tr>
                           <td align="right" colspan="4">
                             <button class="search btn btn-danger" type="button" onclick="filtering()"><i class="fa fa-search"> Cari</i></button>
@@ -115,7 +135,7 @@
                           </td>
                         </tr>
                     </table>
-                  <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
+                  <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang" style="width: 100%">
                     <thead align="center">
                      <tr>
                         <th style="width:10px">No</th>
@@ -127,6 +147,7 @@
                         <th> Total </th>
                         <th> Status </th>
                         <th> Detail </th>
+                        <th> Pelunasan </th>
                         <!-- <th> Allow Edit</th> -->
                         <th> Aksi </th>   
                     </tr>
@@ -205,6 +226,11 @@
                  targets:9,
                  className: 'center'
               },
+              {
+                 targets:10,
+                 className: 'center'
+              },
+            
             ],
             "columns": [
             {data: 'DT_Row_Index', name: 'DT_Row_Index'},
@@ -216,6 +242,7 @@
             { "data": "fp_netto", render: $.fn.dataTable.render.number( '.', ',', 2, '' ) },
             { "data": "status" },
             { "data": "detail" },
+            { "data": "lunas" },
             { "data": "aksi" },
             
             ]
