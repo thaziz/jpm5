@@ -966,4 +966,40 @@ class jurnal_pembelian  extends Controller
       return 'yesy';
     });
     }
+
+
+    function getjenisbayarfpg(){
+      $databbkd = DB::select("select * from bukti_bank_keluar_detail");
+      
+      for($j = 0; $j < count($databbkd); $j++){
+        $idfpg = $databbkd[$j]->bbkd_idfpg;
+        $datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
+        $jenisbayar = $datafpg[0]->fpg_jenisbayar;
+        DB::table('bukti_bank_keluar_detail')
+        ->where('bbkd_idfpg' , $idfpg)
+        ->update([
+          'bbkd_jenisbayarfpg' => $jenisbayar
+        ]);
+      }
+
+      $databbkab = DB::select("select * from bukti_bank_keluar_akunbg");
+
+      for($j = 0; $j < count($databbkab); $j++){
+        $idfpg = $databbkab[$j]->bbkab_idfpg;
+        $datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
+                $jenisbayar = $datafpg[0]->fpg_jenisbayar;
+                DB::table('bukti_bank_keluar_akunbg')
+                ->where('bbkab_idfpg' , $idfpg)
+                ->update([
+                  'bbkab_jenisbayarfpg' => $jenisbayar
+                ]);
+              }
+      return 'sukses';
+    }
+
+    function jurnalsalahkodebank(){
+      //FORM FPG
+      $datafpg = DB::select("select * from fpg");
+
+    }
 }
