@@ -61,7 +61,7 @@
                             <table class="table">
                                 <tr>
                                   <th> Cabang </th>
-                                  <td> <select class="form-control chosen-select">
+                                  <td> <select class="form-control chosen-select cabang">
                                           @foreach($data['cabang'] as $cabang)
                                           <option value="{{$cabang->kode}}">
                                                 {{$cabang->nama}}
@@ -85,10 +85,10 @@
                             </tr>
                             <tr>
                                 <th> Bank </th>
-                                <td> <select class="form-control chosen-select">
+                                <td> <select class="form-control chosen-select bank">
                                         @foreach($data['bank'] as $bank)
                                           <option value="{{$bank->mb_id}}">
-                                                {{$bank->mb_nama}}
+                                             {{$bank->mb_kode}} - {{$bank->mb_nama}}
                                           </option>
                                         </option>
                                         @endforeach
@@ -261,7 +261,23 @@
   $('.tglbm').change(function(){
     tgl = $('.tglbm').val();
     bank = $('.bank').val();
-    cabang = $(this).val();
+    cabang = $('.cabang').val();
+     $.ajax({
+      data : {cabang,tgl,bank},
+      url : baseUrl + '/bankmasuk/getnota',
+      type : "get",
+      dataType : "json",
+      success : function(response){
+        $('.notabm').val(response);
+      }
+    })
+  })
+
+
+   $('.bank').change(function(){
+    tgl = $('.tglbm').val();
+    bank = $('.bank').val();
+    cabang = $('.cabang').val();
      $.ajax({
       data : {cabang,tgl,bank},
       url : baseUrl + '/bankmasuk/getnota',
