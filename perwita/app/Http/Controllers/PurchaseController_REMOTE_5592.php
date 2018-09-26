@@ -10310,7 +10310,8 @@ public function kekata($x) {
 
 				$updateformfpg = ikhtisar_kas::where('ik_id' , '=' , $idfp);
 				$updateformfpg->update([
-					'ik_pelunasan' => $hasilpengurangan,					
+					'ik_pelunasan' => $hasilpengurangan,
+					'ik_status' => 'APPROVED',				
 				]);
 			}
 			else if($jenisbayar == '11'){
