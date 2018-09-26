@@ -61,8 +61,8 @@
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
                     
-                <div class="box-body">
-                  <table cellpadding="3" cellspacing="0" border="0" class="table filter table-bordered">
+                <div class="box-body table-responsive">
+                  <table cellpadding="3" cellspacing="0" border="0" class="table filter table-bordered" style="width: 100%">
                         <tr>
                             <td align="center">Tanggal Awal</td>
                             <td align="center">
@@ -135,7 +135,7 @@
                           </td>
                         </tr>
                     </table>
-                  <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
+                  <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang" style="width: 100%">
                     <thead align="center">
                      <tr>
                         <th style="width:10px">No</th>

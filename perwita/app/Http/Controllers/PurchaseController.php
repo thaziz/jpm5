@@ -61,8 +61,7 @@ use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 use Auth;
 use App\bonsempengajuan;
-use Datatables;
-
+use Yajra\Datatables\Datatables;
 
 class PurchaseController extends Controller
 {
