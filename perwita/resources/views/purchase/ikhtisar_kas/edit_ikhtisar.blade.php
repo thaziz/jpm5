@@ -129,7 +129,7 @@
             <tr>
               <td>Approved</td>
               <td align="left">
-                @if($data->ik_status != 'RELEASED')
+                @if($data->ik_status == 'RELEASED')
                   <input name="checked" class="" type="checkbox">
                   @else
                   <input name="checked" class="" type="checkbox" checked="">
