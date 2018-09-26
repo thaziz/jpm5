@@ -29,7 +29,8 @@
             </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
-     <div class="col-md-2" style="min-height: 100px">
+<div id="notif"></div>
+     <!-- <div class="col-md-2" style="min-height: 100px">
       <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
         <h2 style='text-align:center'> <b> {{$data['belumdiproses']}} Data </b></h2> <h4 style='text-align:center'> Belum di Posting Bank Keluar </h4>
@@ -42,7 +43,7 @@
       <h2 style='text-align:center'> <b> {{$data['sudahdiproses']}} Data  </b></h2> <h4 style='text-align:center'> Sudah di Posting Bank Keluar </h4>
       </div>
     </div>
-
+ -->
 
 
     <div class="row">
@@ -59,6 +60,112 @@
                         @endif
                 </div>
                 <div class="ibox-content">
+
+
+
+
+
+
+<div class="row" >
+   <form method="post" id="dataSeach">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+              
+               <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">No FPG</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="nofpg" id="nofpg" placeholder="No FPG">
+                </div>
+              </div>
+
+
+            
+              <div class="col-md-1 col-sm-3 col-xs-12">
+                <label class="tebal">Tanggal</label>
+              </div>
+
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                  <div class="input-daterange input-group">
+                    <input id="tanggal1" class="form-control input-sm datepicker2" name="tanggal1" type="text">
+                    <span class="input-group-addon">-</span>
+                    <input id="tanggal2" "="" class="input-sm form-control datepicker2" name="tanggal2" type="text">
+                  </div>
+                </div>
+              </div>
+            
+
+              <div class="col-md-2 col-sm-6 col-xs-12" align="center">
+                <button class="btn btn-primary btn-sm btn-flat" title="Cari rentang tanggal" type="button" onclick="cari()">
+                  <strong>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </strong>
+                </button>
+                <button class="btn btn-info btn-sm btn-flat" type="button" title="Reset" onclick="resetData()">
+                  <strong>
+                    <i class="fa fa-undo" aria-hidden="true"></i>
+                  </strong>
+                </button>                
+              </div>
+      </div>
+
+
+
+      <div class="col-md-12 col-sm-12 col-xs-12">
+             
+
+
+              <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">Jenis Bayar</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <select class="form-control chosen-select-width" name="idjenisbayar" id="idjenisbayar">
+                      <option value="">Pilih Jenis Bayar</option>
+                      @foreach($data['jenisBayar'] as $jenisByr)
+                      <option value="{{$jenisByr->idjenisbayar}}">{{$jenisByr->jenisbayar}}</option>
+                      @endForeach
+                    </select>
+                </div>
+              </div>
+
+
+
+              <div class="col-md-1 col-sm-3 col-xs-12">
+                <label class="tebal">Supplier</label>
+              </div>
+
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                     <select class="form-control chosen-select-width" name="nosupplier" id="nosupplier">
+                     <option value="">Pilih Supplier</option>
+                      @foreach($data['supplier'] as $supplier)
+                      <option value="{{$supplier->idsup}}">{{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
+                      @endForeach
+                    </select>
+                </div>
+              </div>
+
+
+    </div>
+    </form>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
                         <div class="row">
               <div class="col-xs-12">
               
@@ -84,69 +191,23 @@
                   </table> --}}
 
 
-                  <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
+                  <table style="width: 100%" id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
                     <thead>
                      <tr>
-                        <th  style="width:10px">No </th>
-                        <th > No FPG </th>
-                        <th > Tanggal </th>
-                        <th > Jenis Bayar </th>
-                        <th > Keterangan </th>
-                        <th > Total Bayar </th>
-                        <th > Uang Muka  </th>
-                        <th > Cek / BG  </th>
-                      
-                        <th > Detail </th>
-                     
+                        <th  style="width:5%">No </th>
+                        <th style="width:10%"> No FPG </th>
+                        <th style="width:10%"> Tanggal </th>
+                        <th style="width:10%"> Jenis Bayar </th>
+                        <th style="width:20%"> Keterangan </th>
+                        <th style="width:10%"> Total Bayar </th>
+                        <th style="width:10%"> Uang Muka  </th>
+                        <th style="width:10%"> Cek / BG  </th>                      
+                        <th style="width:10%"> Detail </th>                     
                     </tr>
                   
 
                     </thead>
-                    <tbody>
-                      @foreach($data['fpg'] as $index=>$fpg)
-                      <tr>
-                        <td> {{$index + 1}} </td>
-                        <td>  {{$fpg->fpg_nofpg}} </td>
-                        <td>  {{ Carbon\Carbon::parse($fpg->fpg_tgl)->format('d-M-Y') }} </td>
-                        <td> {{$fpg->jenisbayar}} </td>
-                       
-                        <td> {{$fpg->fpg_keterangan}}
-                        
-                            @if($fpg->fpg_posting == 'DONE')
-                              <span class="label label-success"> Sudah Terposting </span> &nbsp;
-                            @else
-                               <span class="label label-warning">  Belum di Posting </span> &nbsp;
-                            @endif  </td>
-                        <td> {{number_format($fpg->fpg_totalbayar, 2)}} </td>
-                        <td> - </td>
-                        <td> {{number_format($fpg->fpg_cekbg , 2)}} </td>
-                        
-                        <td>
-                        @if(Auth::user()->punyaAkses('Form Permintaan Giro','ubah'))
-                        <a class="btn btn-sm btn-success" href={{url('formfpg/detailformfpg/'.$fpg->idfpg.'')}}> <i class="fa fa-arrow-right" aria-hidden="true"></i> </a>
-                              @endif
-
-                        @if(Auth::user()->punyaAkses('Form Permintaan Giro','print'))
-
-                          @if($fpg->fpg_jenisbayar == '5' || $fpg->fpg_jenisbayar == '12')
-                            <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg2/'.$fpg->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a>
-                          @else
-                              <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg/'.$fpg->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a>
-                          @endif
-                        @endif
-
-                            @if(Auth::user()->punyaAkses('Form Permintaan Giro','hapus'))
-                            
-                            @if($fpg->fpg_posting == 'DONE')
-
-                            @else
-                              <a class="btn btn-sm btn-danger" onclick="hapusdata({{$fpg->idfpg}})"> <i class="fa fa-trash" aria-hidden="true"></i> </a>
-                            @endif
-                          </td>
-                                @endif
-                      </tr>
-                    @endforeach
-                    </tbody>
+                    
                    
                   </table>
                 </div><!-- /.box-body -->
@@ -173,14 +234,76 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-
+/*
      tableDetail = $('.tbl-penerimabarang').DataTable({
             responsive: true,
             searching: true,
             //paging: false,
             "pageLength": 10,
             "language": dataTableLanguage,
+    });*/
+dateAwal();
+var tablex;
+table();
+     function table(){
+   $('#addColumn').dataTable().fnDestroy();
+   tablex = $("#addColumn").DataTable({        
+         responsive: true,
+        "language": dataTableLanguage,
+    processing: true,
+            serverSide: true,
+            ajax: {
+              "url": "{{ url("formfpg/formfpg/table") }}",
+              "type": "get",
+              data: {
+                    "_token": "{{ csrf_token() }}",                    
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),
+                    "nosupplier" :$('#nosupplier').val(),
+                    "idjenisbayar" :$('#idjenisbayar').val(),
+                    "nofpg" :$('#nofpg').val(),
+                    },
+              },
+            columns: [
+            {data: 'no', name: 'no'},             
+            {data: 'fpg_nofpg', name: 'fpg_nofpg'},                           
+            {data: 'fpg_tgl', name: 'fpg_tgl'},            
+            {data: 'jenisbayar', name: 'jenisbayar'},
+            {data: 'fpg_keterangan', name: 'fpg_keterangan'},
+            {data: 'fpg_totalbayar', name: 'fpg_totalbayar'},            
+            {data: 'uangmuka', name: 'uangmuka'},            
+            {data: 'fpg_cekbg', name: 'fpg_cekbg'},                        
+            {data: 'action', name: 'action'},                        
+          /*  {data: 's_gross', name: 's_gross'}, 
+            {data: 's_disc_percent', name: 's_disc_percent'}, 
+            {data: 's_ongkir', name: 's_ongkir'},
+            {data: 's_net', name: 's_net'},            
+            {data: 's_status', name: 's_status'}, 
+            {data: 'action', name: 'action'},
+            */
+           
+            ],
+            "pageLength": 10,
+            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+           /*"fnCreatedRow": function (row, data, index) {
+            $('td', row).eq(0).html(index + 1);
+            }*/
+
+
+
     });
+   notif();
+}
+
+tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
+    });
+});
+
+
+
 
     $('.date').datepicker({
         autoclose: true,
@@ -244,5 +367,47 @@ function(){
   });
 }
 
+
+
+function dateAwal(){
+      var d = new Date();
+      d.setDate(d.getDate()-7);
+
+      /*d.toLocaleString();*/
+      $('#tanggal1').datepicker({
+            format:"dd-mm-yyyy",        
+            autoclose: true,
+      }).datepicker( "setDate", d);
+      $('#tanggal2').datepicker({
+            format:"dd-mm-yyyy",        
+            autoclose: true,
+      }).datepicker( "setDate", new Date());
+}
+
+ function cari(){
+  table();  
+ }
+
+ function resetData(){  
+  dateAwal();
+  table();
+}  
+function notif(){
+   $.ajax({
+      url:baseUrl + '/formfpg/formfpg/notif',
+      type:'get',   
+       data: {
+                    "_token": "{{ csrf_token() }}",                    
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),
+                    "nosupplier" :$('#nosupplier').val(),
+                    "idjenisbayar" :$('#idjenisbayar').val(),
+                    "nofpg" :$('#nofpg').val(),
+                    },   
+      success:function(data){
+        $('#notif').html(data);
+    }
+  });
+}
 </script>
 @endsection
