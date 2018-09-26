@@ -572,6 +572,7 @@ Route::get('bankmasuk/databank' ,'BankMasukController@getdata');
 Route::post('bankmasuk/saveterima' ,'BankMasukController@saveterima');
 Route::get('bankmasuk/createbankmasuk' ,'BankMasukController@create');
 Route::get('bankmasuk/getnota' ,'BankMasukController@getnota');
+Route::post('bankmasuk/save' ,'BankMasukController@savedata');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');
@@ -592,6 +593,8 @@ Route::get('formaju/detailformaju', 'PurchaseController@detailformaju');
 
 //FPG
 Route::get('formfpg/formfpg', 'PurchaseController@formfpg');
+Route::get('formfpg/formfpg/table', 'PurchaseController@formfpgTable'); //seach taziz
+Route::get('formfpg/formfpg/notif', 'PurchaseController@formfpgNotif'); //seach taziz
 Route::get('formfpg/createformfpg', 'PurchaseController@createformfpg');
 Route::get('formfpg/detailformfpg/{id}', 'PurchaseController@detailformfpg');
 Route::get('formfpg/changesupplier', 'PurchaseController@changesupplier');
