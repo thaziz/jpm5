@@ -968,6 +968,10 @@ class jurnal_pembelian  extends Controller
     }
 
 
+    function jenisbayar2fpg(){
+
+    }
+
     function getjenisbayarfpg(){
       $databbkd = DB::select("select * from bukti_bank_keluar_detail");
       
@@ -980,6 +984,8 @@ class jurnal_pembelian  extends Controller
         ->update([
           'bbkd_jenisbayarfpg' => $jenisbayar
         ]);
+
+
       }
 
       $databbkab = DB::select("select * from bukti_bank_keluar_akunbg");
@@ -994,12 +1000,66 @@ class jurnal_pembelian  extends Controller
                   'bbkab_jenisbayarfpg' => $jenisbayar
                 ]);
               }
+
+        $databbkd2 = DB::select("select * from bukti_bank_keluar_detail where bbkd_jenisbayarfpg = '2'");
+
+        for($d = 0; $d < count($databbkd2); $d++){
+          $idfpg = $databbkd2[$d]->bbkd_idfpg;
+
+          $datafpg = DB::select("select * from fpg where idfpg = '$idfpg'");
+          $supplier = $datafpg[0]->fpg_supplier;
+
+          $datasupplier = DB::select("select * from supplier where idsup = '$supplier'");
+          $nosupplier = $datasupplier[0]->no_supplier;
+
+          DB::table('bukti_bank_keluar_detail')
+          ->where('bbkd_idfpg' , $idfpg)
+          ->where('bbkd_jenisbayarfpg' , '2')
+          ->update([
+            'bbkd_supplier' => $nosupplier
+          ]);
+        }
+
       return 'sukses';
     }
 
     function jurnalsalahkodebank(){
       //FORM FPG
       $datafpg = DB::select("select * from fpg");
+
+      for($g = 0; $g < count($datafpg); $g++){
+        $kodebank = $datafpg[0]->fpg_idbank;
+        $idfpg = $datafpg[0]->idfpg;
+        if($kodebank == 5){
+          DB::table('fpg')
+          ->where('fpg_idbank' , '5')
+          ->where('idfpg' , $idfpg)
+          ->update([
+            'fpg_kodebank' => '110611000'
+          ]);
+        }
+
+        $databbkd = DB::select("select * from bukti_bank_keluar_detail where bbkd_idfpg = '$idfpg'");
+        if(count($databbkd) != 0){
+
+        }
+      }
+
+      $datafpgb = DB::select("select * from fpg_cekbank");
+      for($j = 0; $j < count($datafpgb); $j++)
+      {
+        $idfpgb = $datafpgb[$j]->fpgb_idfpg;
+        $kodebanktujuan = $datafpgb[0]->fpgb_banktujuan;
+        if($kodebanktujuan == '5'){
+          DB::table('fpg_cekbank')
+          ->where('fpgb_idfpgb' , $idfpgb)
+          ->where('fpgb_banktujuan' , '5')
+          ->update([
+            'fpgb_kodebanktujuan' => '110611000'
+          ]);
+        }
+      }
+
 
     }
 }
