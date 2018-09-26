@@ -516,6 +516,7 @@
 
           $('.tablespp').empty();
            /*'<tr> <td> &nbsp; </td> </tr> <tr> <td> <h3 style="color:red"> Data SPP </h3> </td> </tr> </table> </div>';*/
+           number = 0;
          for(var i=0 ; i< response.spp.length; i++) {
           
           var angka = 1 + i;
@@ -560,14 +561,15 @@
                     '</thead>' +
                     '<tbody>'; 
           
-
+          
           for(var j=0; j < response.codt[i].length; j++){
                     no = 1 + j;
-              if(response.itemsupplier[j] == null || response.itemsupplier[j][0] == undefined) {
+                   // alert(number);
+              if(response.itemsupplier[number] == null || response.itemsupplier[number] == undefined) {
                 itemsupplier = '';
               }
               else {
-                itemsupplier = response.itemsupplier[j][0];
+                itemsupplier = response.itemsupplier[number];
               }
                   
                rowTable += 
@@ -607,7 +609,8 @@
 
 
                        nosup++;
-                    
+
+              number++;      
            }          
               rowTable +=        '</tbody>' +
                       '</table>';

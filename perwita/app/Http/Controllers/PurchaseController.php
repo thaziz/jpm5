@@ -1864,36 +1864,34 @@ public function purchase_order() {
 				$data['codt'][] = DB::select("select * from confirm_order, confirm_order_dt , confirm_order_tb, spp, masteritem where co_idspp = '$idspp' and codt_idco = co_id and cotb_idco = co_id and co_idspp = spp_id and codt_supplier = cotb_supplier and codt_supplier = '$nosupplier' and codt_kodeitem = kode_item and cotb_id = '$idcotb' and co_id = '$idco' ");
 
 			}
-
-
 		
 			///testtt
 		}
 
-			for($i = 0; $i < count($array); $i++) {
-				for($j  = 0; $j < count($data['codt'][$i]); $j++){
-					$kodeitem = $data['codt'][$i][$j]->codt_kodeitem;
-					$supplier = $data['codt'][$i][$j]->codt_supplier;
+		for($i = 0; $i < count($array); $i++){
+			for($key = 0; $key < count($data['codt'][$i]); $key++){
 
-					$dataitemsupplier = DB::select("select * from itemsupplier where is_kodeitem = '$kodeitem' and is_idsup = '$supplier'");
+				$kodeitem = $data['codt'][$i][$key]->codt_kodeitem;
+				$supplier = $data['codt'][$i][$key]->codt_supplier;
+				$dataitemsupplier = DB::select("select * from itemsupplier where is_kodeitem = '$kodeitem' and is_idsup = '$supplier'");
 
+				$itemsupplier2 = ([
+					'is_keteranganitem' => ''
+				]);
 
-					$itemsupplier2 = ([
-						'is_keteranganitem' => ''
-					]);
-
-					if(count($dataitemsupplier) != 0){
-						$itemsupplier = $dataitemsupplier[0]->is_keteranganitem;
-						array_push($data['itemsupplier'] , $itemsupplier);
-					}
-					else {
-						array_push($data['itemsupplier'] , $itemsupplier2);
-					}
-
+				if(count($dataitemsupplier) != 0){
+					$itemsupplier = $dataitemsupplier[0]->is_keteranganitem;
+					array_push($data['itemsupplier'] , $itemsupplier);
+				}
+				else {
+					$itemsupplier = $itemsupplier2;
+					array_push($data['itemsupplier'] , $itemsupplier);
 				}
 
 			}
-
+		}
+		
+			
 
 		return json_encode($data);
 	}
