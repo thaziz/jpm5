@@ -101,6 +101,8 @@ Route::get('jurnalselaras/bankmasuk', 'jurnal_pembelian@bankmasuk');
 Route::get('jurnalselaras/kasmasuk', 'jurnal_pembelian@kasmasuk');
 Route::get('jurnalselaras/fpg_checkbank', 'jurnal_pembelian@fpg_checkbank');
 Route::get('jurnalselaras/get_no_po', 'jurnal_pembelian@get_no_po');
+Route::get('jurnalselaras/kendaraansppd', 'jurnal_pembelian@kendaraansppd');
+Route::get('jurnalselaras/kendaraanpo', 'jurnal_pembelian@kendaraanpo');
 
 //***PEMBELIAN
 //***PEMBELIAN
@@ -248,6 +250,7 @@ Route::get('master-keuangan/laporan-laba-rugi',  'laba_rugiController@index');
 
 /* end warehouse */
 Route::get('fakturpembelian/fakturpembelian', 'PurchaseController@fatkurpembelian');
+Route::get('fakturpembelian/datatable_faktur_pembelian', 'PurchaseController@datatable_faktur_pembelian')->name('datatable_faktur_pembelian');
 Route::get('fakturpembelian/createfatkurpembelian', 'PurchaseController@createfatkurpembelian');
 Route::get('fakturpembelian/detailfatkurpembelian/{id}', 'PurchaseController@detailfatkurpembelian');
 Route::get('fakturpembelian/getchangefaktur', 'PurchaseController@supplierfaktur');
@@ -567,6 +570,8 @@ Route::get('queryanalisa', 'Queryanalisa@view');
 Route::get('bankmasuk/bankmasuk' ,'BankMasukController@bankmasuk');
 Route::get('bankmasuk/databank' ,'BankMasukController@getdata');
 Route::post('bankmasuk/saveterima' ,'BankMasukController@saveterima');
+Route::get('bankmasuk/createbankmasuk' ,'BankMasukController@create');
+Route::get('bankmasuk/getnota' ,'BankMasukController@getnota');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');
@@ -2170,6 +2175,15 @@ Route::get('master_keuangan/laba_rugi/pdf/single/{throtle}', [
 ]);
 
 //end laba rugi
+
+//arus kas
+
+Route::get('master_keuangan/arus_kas/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_arus_kas@index_arus_kas_single',
+  'as'   => 'arus_kas.index_single'
+]);
+
+//end arus kas
 
 
 // buku besar

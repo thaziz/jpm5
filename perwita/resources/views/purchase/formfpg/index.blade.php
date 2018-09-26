@@ -124,7 +124,7 @@
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     <select class="form-control chosen-select-width" name="idjenisbayar" id="idjenisbayar">
-                      <option value="">Pilih Supplier</option>
+                      <option value="">Pilih Jenis Bayar</option>
                       @foreach($data['jenisBayar'] as $jenisByr)
                       <option value="{{$jenisByr->idjenisbayar}}">{{$jenisByr->jenisbayar}}</option>
                       @endForeach

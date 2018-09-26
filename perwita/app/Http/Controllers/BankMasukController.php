@@ -80,11 +80,30 @@ class BankMasukController extends Controller
 		return view('purchase/bankmasuk/index', compact('data'));
 	}
 
+
+	public function create(){
+		$data['cabang'] = DB::select("select * from cabang");		
+		$data['bank'] = DB::select("select * from masterbank");
+		$data['akun'] = DB::select("select* from d_akun");
+		return view('purchase/bankmasuk/create' , compact('data'));
+	}
+
 	public function getdata(Request $request){
 			$ref = $request->ref;
 			$data['bank'] = DB::select("select * from bank_masuk where bm_id = '$ref'");
 
 			return json_encode($data);
+	}
+
+
+	public function getnota(Request $request){
+		$tgl = $request->tgl;
+		$cabang = $request->cabang;
+		$bank = $request->bank;
+		$BM = getnotabm($cabang , $tgl , $bank);
+
+		return json_encode($BM);
+
 	}
 
 	public function saveterima(Request $request){
@@ -164,8 +183,6 @@ class BankMasukController extends Controller
 
 		$ref = explode("-", $jr_no);
 
-		
-	
 
 		if($kodebankd < 10){
 			$kodebankd = '0' . $kodebankd;

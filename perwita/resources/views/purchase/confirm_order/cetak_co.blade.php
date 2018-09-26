@@ -150,19 +150,26 @@ table, td, th {
 		</tr> -->
 		<tr>
 			<td width="40px">No</td>
-			<td width="150px">Uraian Barang</td>
+			<td width="250px">Uraian Barang</td>
+			@if($data['kodejenisitem'] == 'S' && $data['tipespp'] == 'NS')
+			<td width="200px"> Kendaraan </td>
+			@endif
 			<td width="190px">Suplier</td>
 			<td width="70px">Satuan</td>
 			<td width="100px">Quantity Request</td>
 			<td width="100px">Quantity Approved</td>
 			<td width="120px">Harga Satuan</td>
 			<td width="120px">Jumlah</td>
+
 		</tr>
 
 		@foreach($data['co'] as $index=>$co)
 		<tr>
 			<td class="blank"> {{$index + 1}} </td>
 			<td> {{$co->nama_masteritem}}</td>
+			@if($data['kodejenisitem'] == 'S' && $data['tipespp'] == 'NS')
+			<td> {{$co->nopol}} </td>
+			@endif
 			<td> {{$co->nama_supplier}}</td>
 			<td> {{$co->unitstock}}</td>
 			<td> {{$co->codt_qtyrequest}}  </td>
@@ -181,6 +188,23 @@ table, td, th {
 		<tr>
 			<td class="blank"></td>
 			<td></td>
+			@if($data['kodejenisitem'] == 'S' && $data['tipespp'] == 'NS')
+			<td>  </td>
+			@endif
+			<td></td>			
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			@if($data['kodejenisitem'] == 'S' && $data['tipespp'] == 'NS')
+			<td>  </td>
+			@endif
 			<td></td>
 			<td></td>
 			<td></td>
@@ -192,6 +216,9 @@ table, td, th {
 		<tr>
 			<td class="blank"></td>
 			<td></td>
+			@if($data['kodejenisitem'] == 'S' && $data['tipespp'] == 'NS')
+			<td>  </td>
+			@endif
 			<td></td>
 			<td></td>
 			<td></td>
@@ -203,6 +230,9 @@ table, td, th {
 		<tr>
 			<td class="blank"></td>
 			<td></td>
+			@if($data['kodejenisitem'] == 'S' && $data['tipespp'] == 'NS')
+			<td>  </td>
+			@endif
 			<td></td>
 			<td></td>
 			<td></td>
@@ -214,6 +244,9 @@ table, td, th {
 		<tr>
 			<td class="blank"></td>
 			<td></td>
+			@if($data['kodejenisitem'] == 'S' && $data['tipespp'] == 'NS')
+			<td>  </td>
+			@endif
 			<td></td>
 			<td></td>
 			<td></td>
@@ -225,6 +258,9 @@ table, td, th {
 		<tr>
 			<td class="blank"></td>
 			<td></td>
+			@if($data['kodejenisitem'] == 'S' && $data['tipespp'] == 'NS')
+			<td>  </td>
+			@endif
 			<td></td>
 			<td></td>
 			<td></td>
@@ -236,6 +272,9 @@ table, td, th {
 		<tr>
 			<td class="blank"></td>
 			<td></td>
+			@if($data['kodejenisitem'] == 'S' && $data['tipespp'] == 'NS')
+			<td>  </td>
+			@endif
 			<td></td>
 			<td></td>
 			<td></td>
@@ -247,6 +286,9 @@ table, td, th {
 		<tr>
 			<td class="blank"></td>
 			<td></td>
+			@if($data['kodejenisitem'] == 'S' && $data['tipespp'] == 'NS')
+			<td>  </td>
+			@endif
 			<td></td>
 			<td></td>
 			<td></td>
@@ -258,6 +300,9 @@ table, td, th {
 		<tr>
 			<td class="blank"></td>
 			<td></td>
+			@if($data['kodejenisitem'] == 'S' && $data['tipespp'] == 'NS')
+			<td>  </td>
+			@endif
 			<td></td>
 			<td></td>
 			<td></td>
@@ -269,6 +314,9 @@ table, td, th {
 		<tr>
 			<td class="blank"></td>
 			<td></td>
+			@if($data['kodejenisitem'] == 'S' && $data['tipespp'] == 'NS')
+			<td>  </td>
+			@endif
 			<td></td>
 			<td></td>
 			<td></td>
@@ -280,17 +328,9 @@ table, td, th {
 		<tr>
 			<td class="blank"></td>
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			
-		</tr>
-		<tr>
-			<td class="blank"></td>
-			<td></td>
+			@if($data['kodejenisitem'] == 'S' && $data['tipespp'] == 'NS')
+			<td>  </td>
+			@endif
 			<td></td>
 			<td></td>
 			<td></td>
