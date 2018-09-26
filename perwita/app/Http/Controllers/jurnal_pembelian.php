@@ -1028,8 +1028,8 @@ class jurnal_pembelian  extends Controller
       $datafpg = DB::select("select * from fpg");
 
       for($g = 0; $g < count($datafpg); $g++){
-        $kodebank = $datafpg[0]->fpg_idbank;
-        $idfpg = $datafpg[0]->idfpg;
+        $kodebank = $datafpg[$g]->fpg_idbank;
+        $idfpg = $datafpg[$g]->idfpg;
         if($kodebank == 5){
           DB::table('fpg')
           ->where('fpg_idbank' , '5')
@@ -1041,18 +1041,67 @@ class jurnal_pembelian  extends Controller
 
         $databbkd = DB::select("select * from bukti_bank_keluar_detail where bbkd_idfpg = '$idfpg'");
         if(count($databbkd) != 0){
-
+            $idbbk = $databbkd[0]->bbkd_idbbk;
+            $databbk = DB::select("select * from bukti_bank_keluar where bbk_id = '$idbbk'");
+            $notabbk = $databbk[0]->bbk_nota;
+            $datajurnal = DB::select("select * from d_jurnal where jr_ref = '$notabbk'");
+            $idjurnal = $datajurnal[0]->jr_id;
+            DB::table('d_jurnal_dt')
+            ->where('jrdt_jurnal' , $idjurnal)
+            ->where('jrdt_acc' , '110111001')
+            ->update([
+              'jrdt_acc' => '110611000'
+            ]);
         }
+
+        $databbkab = DB::select("select * from bukti_bank_keluar_akunbg where bbkab_idfpg = '$idfpg'");
+        if(count($databbkab) != 0){
+          $idbbk = $databbkab[0]->bbkab_idbbk;
+            $databbk = DB::select("select * from bukti_bank_keluar where bbk_id = '$idbbk'");
+            $notabbk = $databbk[0]->bbk_nota;
+            $datajurnal = DB::select("select * from d_jurnal where jr_ref = '$notabbk'");
+            $idjurnal = $datajurnal[0]->jr_id;
+            DB::table('d_jurnal_dt')
+            ->where('jrdt_jurnal' , $idjurnal)
+            ->where('jrdt_acc' , '110111001')
+            ->update([
+              'jrdt_acc' => '110611000'
+            ]);
+        }
+      }
+
+      $databbk = DB::select("select * from bukti_bank_keluar where bbk_kodebank = '5'");
+      for($h = 0; $h < count($databbk); $h++){
+        $idbbk = $databbk[$h]->bbk_id;
+        $kodebank = $databbk[$h]->bbk_kodebank;
+        if($kodebank == '5'){
+          DB::table('bukti_bank_keluar')
+          ->where('bbk_id' , $idbbk)
+          ->where('bbk_kodebank' , '5')
+          ->update([
+            'bbk_akunbank' => '110611000'
+          ]);
+        }
+            $notabbk = $databbk[$h]->bbk_nota;
+            $datajurnal = DB::select("select * from d_jurnal where jr_ref = '$notabbk'");
+            $idjurnal = $datajurnal[0]->jr_id;
+            DB::table('d_jurnal_dt')
+            ->where('jrdt_jurnal' , $idjurnal)
+            ->where('jrdt_acc' , '110111001')
+            ->update([
+              'jrdt_acc' => '110611000'
+            ]);
+
       }
 
       $datafpgb = DB::select("select * from fpg_cekbank");
       for($j = 0; $j < count($datafpgb); $j++)
       {
         $idfpgb = $datafpgb[$j]->fpgb_idfpg;
-        $kodebanktujuan = $datafpgb[0]->fpgb_banktujuan;
+        $kodebanktujuan = $datafpgb[$j]->fpgb_banktujuan;
         if($kodebanktujuan == '5'){
           DB::table('fpg_cekbank')
-          ->where('fpgb_idfpgb' , $idfpgb)
+          ->where('fpgb_idfpg' , $idfpgb)
           ->where('fpgb_banktujuan' , '5')
           ->update([
             'fpgb_kodebanktujuan' => '110611000'
