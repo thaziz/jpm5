@@ -55,63 +55,52 @@
             <div class="col-xs-8">
               <div class="box">
                 <div class="box-body">
-                    <form action="post" id="savebonsem">
-                    
-                     <br>
+                  <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <table class="table">
+                                <tr>
+                                  <th> Cabang </th>
+                                  <td> <select class="form-control chosen-select">
+                                          @foreach($data['cabang'] as $cabang)
+                                          <option value="{{$cabang->kode}}">
+                                                {{$cabang->nama}}
+                                          </option>
+                                          @endforeach
+                                        </select>
+                                  </td>
+                                </tr>
 
-                    <table class="table">
-                      <tr>
-                        <th style="width:200px"> Cabang </th>
-                        <td>
-                          @if(Auth::user()->punyaAkses('Bank Masuk','cabang'))
-                             
-                            <select class="form-control chosen-select-width cabang" name="cabang" required="">
-                                @foreach($data['cabang'] as $cabang)
-                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
-                              @endforeach
-                            </select>
-                          
-                            @else
-                              <td class="disabled"> 
-                              <select class="form-control chosen-select-width disabled cabang" name="cabang" required="">
-                                @foreach($data['cabang'] as $cabang)
-                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
-                                @endforeach
-                              </select> 
-                              </td>
-                            @endif
-                         </td>
-                      </tr>
-                      <tr>
+                                <tr>
+                                      <th> Nota </th>
+                                      <td> <input type='text' class='form-control input-sm'> </td>
+                                </tr>
+                            </table>
+                        </div>
                         
-
-                        <th> No Nota </th>
-                                            <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
-                        <td> <input type="text" class="form-control input-sm nonota" name="nonota" required="" readonly="">  </td>
-                      </tr>
-                      <tr>  
-                      <th> Tanggal </th>
-                      <td> <div class="input-group date">
+                        <div class="col-sm-6">
+                            <tr>
+                              <th> Tanggal </th>
+                              <td> <div class="input-group date">
                                           <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl tglbonsem" name="tgl" required="">
                                       </div>
-                            </td>
-                      </tr>
-                      <tr>
-                        <th> Bank </th>
-                        <td> <select class="form-control chosen-select">
-                              @foreach($data['bank'] as $bank)
-                                <option value="$bank->mb_id">
-                                    {{$bank->mb_kode}} - {{$bank->mb_nama}}
-                                </option>
-                              @endforeach
-                             </select>
-                        </td>
-                      </tr>
-
-                      <hr>
-                    </table>
-
-                    
+                              </td>
+                            </tr>
+                            <tr>
+                                <th> Bank </th>
+                                <td> <select class="form-control chosen-select">
+                                        @foreach($data['bank'] as $bank)
+                                          <option value="{{$bank->mb_id}}">
+                                                {{$bank->mb_nama}}
+                                          </option>
+                                        </option>
+                                        @endforeach
+                                      </select>
+                                </td>
+                            </tr>
+                        </div>
+                      </div>
+                    </div>   
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
