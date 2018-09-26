@@ -93,7 +93,8 @@
                               </select>
                             </td>
                         </tr>
-                        <tr>
+                        @if (Auth::user()->PunyaAkses('Faktur Pembelian','cabang'))
+                          <tr>
                             <td align="center">Cabang</td>
                             <td align="left">
                               <select class="cabang form-control chosen-select-width" >
@@ -107,7 +108,26 @@
                             <td align="center">
                               <input type="text" class="nota form-control" name="nota">
                             </td>
+                          </tr>
+                        @else
+                        <tr>
+                            <td align="center">Cabang</td>
+                            <td align="left">
+                              <select class="cabang form-control chosen-select-width" >
+                                <option value="">Pilih - Cabang</option>
+                                @foreach ($cabang as $val)
+                                  <option @if (Auth::user()->kode_cabang == $val->kode)
+                                    selected="" 
+                                  @endif value="{{ $val->kode }}">{{ $val->nama }}</option>
+                                @endforeach
+                              </select>
+                            </td>
+                            <td align="center">Cari Berdasarkan Nota</td>
+                            <td align="center">
+                              <input type="text" class="nota form-control" name="nota">
+                            </td>
                         </tr>
+                        @endif
                         <tr>
                           <td align="right" colspan="4">
                             <button class="search btn btn-danger" type="button" onclick="filtering()"><i class="fa fa-search"> Cari</i></button>
