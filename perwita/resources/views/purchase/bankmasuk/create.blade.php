@@ -18,7 +18,7 @@
 </style>
 <div class="row wrapper border-bottom white-bg page-heading">
   <div class="col-lg-10">
-      <h2> Bon Sementara </h2>
+      <h2> Bank Masuk </h2>
       <ol class="breadcrumb">
           <li>
               <a>Home</a>
@@ -110,7 +110,8 @@
                       <tr>
                         <th> Akun </th>
                         <td>
-                        <select class="form-control chosen-select akun">
+                        <select class="form-control chosen-select tabakun akun">
+                          <option value=""> Pilih Akun </option>
                           @foreach($data['akun'] as $akun)
                             <option value="{{$akun->id_akun}},{{$akun->akun_dka}}">
                                 {{$akun->id_akun}} - {{$akun->nama_akun}}
@@ -122,17 +123,17 @@
 
                       <tr>
                         <th> DK </th>
-                        <td> <input type="text" class="form-control input-sm akundka"> </td>
+                        <td> <input type="text" class="form-control input-sm tabakun akundka"> <input type='text' class='no'> </td>
                       </tr>
 
                       <tr>
                         <th> Nominal </th>
-                        <td> <input type="text" class="form-control input-sm nominal" style="text-align:right"> </td>
+                        <td> <input type="text" class="form-control input-sm tabakun nominal" style="text-align:right"> </td>
                       </tr>
 
                       <tr>
                         <th> Keterangan Akun </th>
-                        <td> <input type="text" class="form-control input-sm keterangan keteranganakun"> </td>
+                        <td> <input type="text" class="form-control input-sm tabakun keterangan keteranganakun"> </td>
                       </tr>
                     </table>
                   </div>
@@ -321,11 +322,23 @@
     })
   })
 
-   no = parseInt($('tr.bank').length) + 1 ; 
+
+  $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+      }); 
+  
   $('#tbmhdata').click(function(){
+
+     length = $('tr.trbank').length;
+
+     no = parseInt(length) + 1 ; 
+
+   
     dataakun = $('.akun').val();
-    akun = dataakun.split(",");
-    akun = akun[0];
+    akun2 = dataakun.split(",");
+    akun = akun2[0];
     dk = $('.akundka').val();
     nominal = $('.nominal').val();
     keteranganakun = $('.keteranganakun').val();
@@ -335,28 +348,73 @@
     bank = $('.bank').val();
     bank = bank.split(",");
     bank = bank[1];
-   
+    nodata = [];
+    
+  
 
-    html = "<tr class='trbank'> <td>"+no+"</td>" +
-            "<td>"+nota+"   </td>"+
+    $('.akundt').each(function(){
+      val = $(this).val();
+      val2 = val.split(",");
+      akund = val2[0];
+      nodata.push(akund);  
+    });
+  
+    index = nodata.indexOf(akun);
+    
+
+
+
+    if(index == -1){
+      html = "<tr class='trbank trbank"+akun+"'> <td>"+no+" <input type='text' class='nodata' value='"+no+"'></td>" +
+            "<td>"+nota+" </td>"+
             "<td>"+bank+"   </td>"+
             "<td>"+tanggal+" </td>"+
-            "<td>"+akun+" <input type='hidden' name='akun[]' value='"+akun+"'> </td>" +
-            "<td>"+dk+" <input type='hidden' name='dk[]' value='"+dk+"'></td>"+
-            "<td>"+nominal+" <input type='hidden' name='nominal[]' value='"+nominal+"'></td>" +
-            "<td>"+keteranganakun+" <input type='hidden' name='keteranganakun[]' value='"+keteranganakun+"'></td>"+
-            "<td> </td>" +
+            "<td> <input type='text' class='akundt' name='akun[]' value='"+akun+","+dk+"'> </td>" +
+            "<td><input type='text'class='dkdt' name='dk[]' value='"+dk+"'></td>"+
+            "<td><input type='text' class='nominaldt' name='nominal[]' value='"+nominal+"'></td>" +
+            "<td><input type='text' class='keterangandt' name='keteranganakun[]' value='"+keteranganakun+"'></td>"+
+            "<td> <button class='btn btn-xs btn-danger removes-btn' type='button' onclick='hapus(this)'> <i class='fa fa-trash'> </i> </button> <button class='btn btn-xs btn-warning removes-btn' type='button' onclick='edit(this)'> <i class='fa fa-pencil'> </i> </button>  </td>" +
             "</tr>";
 
-    $('#tablebank').append(html);
+      $('#tablebank').append(html);  
 
+    }
+    else {
+      alert('no');
+         var a  = $('.trbank'+akun);
+         $(a).find('.akundt').val(akun);
+         $(a).find('.dkdt').val(dk);
+         $(a).find('.nominaldt').val(nominal);
+         $(a).find('.keterangandt').val(keteranganakun);
 
+    }
+    
+
+       $('.tabakun').val('');
   })
 
+  function hapus(a){
+    var par  = $(a).parents('tr');
+    par.remove();
+  }
+
+  function edit(a){
+    var par = $(a).parents('tr');
+    akun = $(par).find('.akundt').val();
+    dk = $(par).find('.dkdt').val();
+    nominal = $(par).find('.nominaldt').val();
+    keterangan = $(par).find('.keterangandt').val();
+    nodata = $(par).find('.nodata').val();
+    alert(nodata);
+    $('.akun').val(akun);
+    $('.akundka').val(dk);
+    $('.nominal').val(nominal);
+    $('.keteranganakun').val(keterangan);
+    $('.no').val(nodata);
+  }
+  
 
   $('#myform').submit(function(event){      
-         
-
         event.preventDefault();
           var post_url2 = $(this).attr("action");
           var form_data2 = $(this).serialize();
@@ -379,8 +437,22 @@
           url : baseUrl + '/bankmasuk/save',
           dataType : 'json',
           success : function (response){
-             alertSuccess();
-             $('.simpandata').hide();
+            
+             if(response.status == 'sukses'){
+               alertSuccess();
+                $('.simpandata').hide();
+             }
+             else if(response.status == 'gagal') {
+              swal({
+                  title: "error!",
+                          type: 'error',
+                          text: response.info,
+                          timer: 900,
+                         showConfirmButton: false
+                       
+                  });
+             }
+
           },
           error : function(){
            swal("Error", "Server Sedang Mengalami Masalah", "error");

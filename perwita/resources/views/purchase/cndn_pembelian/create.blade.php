@@ -709,6 +709,7 @@
       })
 
       index = arrnofaktur.indexOf(nofaktur);
+      
       if(index == -1) {
          var row = '<tr class="datafaktur data'+noappend+'" data-nofaktur="'+nofaktur+'">' +
                     '<td style="text-align:center">'+noappend+'</td>' +
