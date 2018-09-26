@@ -84,6 +84,7 @@ class BankMasukController extends Controller
 	public function create(){
 		$data['cabang'] = DB::select("select * from cabang");		
 		$data['bank'] = DB::select("select * from masterbank");
+		$data['akun'] = DB::select("select* from d_akun");
 		return view('purchase/bankmasuk/create' , compact('data'));
 	}
 
@@ -92,6 +93,17 @@ class BankMasukController extends Controller
 			$data['bank'] = DB::select("select * from bank_masuk where bm_id = '$ref'");
 
 			return json_encode($data);
+	}
+
+
+	public function getnota(Request $request){
+		$tgl = $request->tgl;
+		$cabang = $request->cabang;
+		$bank = $request->bank;
+		$BM = getnotabm($cabang , $tgl , $bank);
+
+		return json_encode($BM);
+
 	}
 
 	public function saveterima(Request $request){

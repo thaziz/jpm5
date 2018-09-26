@@ -52,66 +52,134 @@
                 </div>
                 <div class="ibox-content">
                         <div class="row">
-            <div class="col-xs-8">
+            <div class="col-sm-12">
               <div class="box">
                 <div class="box-body">
-                    <form action="post" id="savebonsem">
-                    
-                     <br>
+                  <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <table class="table">
+                                <tr>
+                                  <th> Cabang </th>
+                                  <td> <select class="form-control chosen-select cabang">
+                                          @foreach($data['cabang'] as $cabang)
+                                          <option value="{{$cabang->kode}}">
+                                                {{$cabang->nama}}
+                                          </option>
+                                          @endforeach
+                                        </select>
+                                  </td>
+                                </tr>
 
-                    <table class="table">
-                      <tr>
-                        <th style="width:200px"> Cabang </th>
-                        <td>
-                          @if(Auth::user()->punyaAkses('Bank Masuk','cabang'))
-                             
-                            <select class="form-control chosen-select-width cabang" name="cabang" required="">
-                                @foreach($data['cabang'] as $cabang)
-                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
-                              @endforeach
-                            </select>
-                          
-                            @else
-                              <td class="disabled"> 
-                              <select class="form-control chosen-select-width disabled cabang" name="cabang" required="">
-                                @foreach($data['cabang'] as $cabang)
-                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
-                                @endforeach
-                              </select> 
+                                <tr>
+                                      <th> Nota </th>
+                                      <td> <input type='text' class='form-control input-sm notabm'> </td>
+                                </tr>
+                      
+                            <tr>
+                              <th> Tanggal </th>
+                              <td> <div class="input-group date">
+                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl tglbm" name="tgl" required="">
+                                      </div>
                               </td>
-                            @endif
-                         </td>
-                      </tr>
-                      <tr>
+                            </tr>
+                            <tr>
+                                <th> Bank </th>
+                                <td> <select class="form-control chosen-select bank">
+                                        @foreach($data['bank'] as $bank)
+                                          <option value="{{$bank->mb_id}}">
+                                             {{$bank->mb_kode}} - {{$bank->mb_nama}}
+                                          </option>
+                                        </option>
+                                        @endforeach
+                                      </select>
+                                </td>
+                            </tr>
+                            <tr>
+                              <th> Keterangan BM </th>
+                              <td> <input type="text" class="form-control input-sm"> </td>
+                            </tr>
+                          </table>
+                        </div>                     
                         
 
-                        <th> No Nota </th>
-                                            <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
-                        <td> <input type="text" class="form-control input-sm nonota" name="nonota" required="" readonly="">  </td>
-                      </tr>
-                      <tr>  
-                      <th> Tanggal </th>
-                      <td> <div class="input-group date">
-                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl tglbonsem" name="tgl" required="">
-                                      </div>
-                            </td>
-                      </tr>
+                    <div class="col-sm-6">
+                    <table class="table">
                       <tr>
-                        <th> Bank </th>
-                        <td> <select class="form-control chosen-select">
-                              @foreach($data['bank'] as $bank)
-                                <option value="$bank->mb_id">
-                                    {{$bank->mb_kode}} - {{$bank->mb_nama}}
-                                </option>
-                              @endforeach
-                             </select>
+                        <th> Akun </th>
+                        <td>
+                        <select class="form-control chosen-select akun">
+                          @foreach($data['akun'] as $akun)
+                            <option value="{{$akun->id_akun}},{{$akun->akun_dka}}">
+                              {{$akun->nama_akun}}
+                            </option>  
+                          @endforeach
+                        </select>
                         </td>
                       </tr>
 
-                      <hr>
-                    </table>
+                      <tr>
+                        <th> DK </th>
+                        <td> <input type="text" class="form-control input-sm akundka"> </td>
+                      </tr>
 
-                    
+                      <tr>
+                        <th> Nominal </th>
+                        <td> <input type="text" class="form-control input-sm nominal" style="text-align:right"> </td>
+                      </tr>
+
+                      <tr>
+                        <th> Keterangan Akun </th>
+                        <td> <input type="text" class="form-control input-sm keterangan"> </td>
+                      </tr>
+                    </table>
+                  </div>
+                  </div>
+
+                        <div class="pull-right">
+                          <button class="btn btn-sm btn-info" id="tbmhdata">
+                            <i class="fa fa-plus"> Tambah Data </i>
+                          </button>
+                            <br>
+                  <br>
+                  <br>
+                  <br>
+                        </div>
+
+                </div>
+
+                
+                  <table class="table" id="tablebank">
+                    <thead>
+                    <tr>
+                      <th>
+                        No
+                      </th>
+                      <th>
+                        Nota BM
+                      </th>
+                      <th>
+                        Bank
+                      </th>
+                      <th>
+                          Tanggal
+                      </th>
+                      <th>
+                        Akun
+                      </th>
+                      <th>
+                         Dk
+                      </th>
+                      <th>
+                        Nominal
+                      </th>
+                      <th>
+                        Keterangan
+                      </th>
+                    </tr>
+                  </thead>
+                  </table>
+
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
@@ -141,217 +209,102 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+   function addCommas(nStr) {
+            nStr += '';
+            x = nStr.split('.');
+            x1 = x[0];
+            x2 = x.length > 1 ? '.' + x[1] : '';
+            var rgx = /(\d+)(\d{3})/;
+            while (rgx.test(x1)) {
+                x1 = x1.replace(rgx, '$1' + ',' + '$2');
+            }
+            return x1 + x2;
+    }
+
+  $('.akun').change(function(){
+    val = $(this).val();
+    split = val.split(",");
+
+    dk = split[1];
+    $('.akundka').val(dk);
+  })
+
+  $('.nominal').change(function(){
+     val =$(this).val();
+     val = accounting.formatMoney(val, "", 2, ",",'.');
+     nominal = val.replace(/,/g, '');
+     $(this).val(addCommas(nominal));
+  })
+
   $('.date').datepicker({
         autoclose: true,
         format: 'dd-MM-yyyy',
         endDate : 'today',
     }).datepicker("setDate", "0");
 
-
-
-  $('.tglbonsem').change(function(){
-     comp = $('.cabang').val();
-    tgl = $('.tglbonsem').val();
-  $.ajax({
-    url : baseUrl + '/bonsementaracabang/getnota',
-    data : {comp,tgl},
-    type : "get",
-    dataType : 'json',
-    success : function(response){
-      var d = new Date(tgl);               
-                      //tahun
-                      var year = d.getFullYear();
-                      //bulan
-                      var month = d.getMonth();
-                      var month1 = parseInt(month + 1)
-                      console.log(d);
-                      console.log();
-                      console.log(year);
-
-                      if(month < 10) {
-                        month = '0' + month1;
-                      }
-                      console.log(d);
-
-                      tahun = String(year);
-      //                console.log('year' + year);
-                      year2 = tahun.substring(2);
-                      //year2 ="Anafaradina";
-
-                    
-                       nospp = 'BS' + month + year2 + '/' + comp + '/' +  response.idspp;
-                      console.log(nospp);
-                      $('.nonota').val(nospp);
-                       nospp = $('.nonota').val();
-                      $('.namacabang').text(response.namacabang);
-              },
-              error : function(){
-                location.reload();
-              }
-            })
-            })
-
   $('.cabang').change(function(){
-    comp = $('.cabang').val();
-    tgl = $('.tglbonsem').val();
-  $.ajax({
-    url : baseUrl + '/bonsementaracabang/getnota',
-    data : {comp,tgl},
-    type : "get",
-    dataType : 'json',
-    success : function(response){
-      var d = new Date(tgl);               
-                      //tahun
-                      var year = d.getFullYear();
-                      //bulan
-                      var month = d.getMonth();
-                      var month1 = parseInt(month + 1)
-                      console.log(d);
-                      console.log();
-                      console.log(year);
-
-                      if(month < 10) {
-                        month = '0' + month1;
-                      }
-                      console.log(d);
-
-                      tahun = String(year);
-      //                console.log('year' + year);
-                      year2 = tahun.substring(2);
-                      //year2 ="Anafaradina";
-
-                    
-                       nospp = 'BS' + month + year2 + '/' + comp + '/' +  response.idspp;
-                      console.log(nospp);
-                      $('.nonota').val(nospp);
-                       nospp = $('.nonota').val();
-                      $('.namacabang').text(response.namacabang);
-    },
-    error : function(){
-      location.reload();
-    }
-  })
+    cabang = $(this).val();
+    tgl = $('.tglbm').val();
+    bank = $('.bank').val();
+    $.ajax({
+      data : {cabang,tgl,bank},
+      url : baseUrl + '/bankmasuk/getnota',
+      type : "get",
+      dataType : "json",
+      success : function(response){
+        $('.notabm').val(response);
+      }
+    })
   })
 
+    cabang = $('.cabang').val();
+    tgl = $('.tglbm').val();
+    bank = $('.bank').val();
+    $.ajax({
+      data : {cabang,tgl,bank},
+      url : baseUrl + '/bankmasuk/getnota',
+      type : "get",
+      dataType : "json",
+      success : function(response){
+        $('.notabm').val(response);
+      }
+    })
 
-
-  comp = $('.cabang').val();
-  tgl = $('.tglbonsem').val();
-  $.ajax({
-    url : baseUrl + '/bonsementaracabang/getnota',
-    data : {comp,tgl},
-    type : "get",
-    dataType : 'json',
-    success : function(response){
-      var d = new Date(tgl);               
-                      //tahun
-                      var year = d.getFullYear();
-                      //bulan
-                      var month = d.getMonth();
-                      var month1 = parseInt(month + 1)
-                      console.log(d);
-                      console.log();
-                      console.log(year);
-
-                      if(month < 10) {
-                        month = '0' + month1;
-                      }
-                      console.log(d);
-
-                      tahun = String(year);
-      //                console.log('year' + year);
-                      year2 = tahun.substring(2);
-                      //year2 ="Anafaradina";
-
-                    
-                       nospp = 'BS' + month + year2 + '/' + comp + '/' +  response.idspp;
-                      console.log(nospp);
-                      $('.nonota').val(nospp);
-                       nospp = $('.nonota').val();
-
-                       $('.namacabang').text(response.namacabang);
-    },
-    error : function(){
-      location.reload();
-    }
+  $('.tglbm').change(function(){
+    tgl = $('.tglbm').val();
+    bank = $('.bank').val();
+    cabang = $('.cabang').val();
+     $.ajax({
+      data : {cabang,tgl,bank},
+      url : baseUrl + '/bankmasuk/getnota',
+      type : "get",
+      dataType : "json",
+      success : function(response){
+        $('.notabm').val(response);
+      }
+    })
   })
 
 
-   $.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-  
-     $('#savebonsem').submit(function(event){      
-          kascabang = $('.kascabang').text();
-          kascabang = kascabang.replace(/,/g, '');
-         
+   $('.bank').change(function(){
+    tgl = $('.tglbm').val();
+    bank = $('.bank').val();
+    cabang = $('.cabang').val();
+     $.ajax({
+      data : {cabang,tgl,bank},
+      url : baseUrl + '/bankmasuk/getnota',
+      type : "get",
+      dataType : "json",
+      success : function(response){
+        $('.notabm').val(response);
+      }
+    })
+  })
 
-          val =$('.nominal').val();
-          
-          nominal = val.replace(/,/g, '');
-         
-           /*if(parseFloat(kascabang) < parseFloat(nominal)){
-            toastr.info("Mohon maaf, Kas Kecil Cabang tidak mencukupi :) ");
-          
-            $(this).val('');
-            return false;
-           }*/
+  $('#tbmhdata').click(function(){
+    
+  })
 
-        event.preventDefault();
-          var post_url2 = $(this).attr("action");
-          var form_data2 = $(this).serialize();
-        
-            swal({
-            title: "Apakah anda yakin?",
-            text: "Simpan Data BON SEMENTARA!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Ya, Simpan!",
-            cancelButtonText: "Batal",
-            closeOnConfirm: true
-          },
-          function(){
-               
-        $.ajax({
-          type : "POST",          
-          data : form_data2,
-          url : baseUrl + '/bonsementaracabang/save',
-          dataType : 'json',
-          success : function (response){
-               alertSuccess();
-               $('.simpandata').attr('disabled' ,true);
-          },
-          error : function(){
-           swal("Error", "Server Sedang Mengalami Masalah", "error");
-          }
-        })
-      })
-      });
-     
-
-
-  $('.nominal').change(function(){
-    kascabang = $('.kascabang').text();
-    kascabang = kascabang.replace(/,/g, '');
-   
-
-    val =$(this).val();
-    val = accounting.formatMoney(val, "", 2, ",",'.');
-
-    nominal = val.replace(/,/g, '');
-   
-     /*if(parseFloat(kascabang) < parseFloat(nominal)){
-      toastr.info("Mohon maaf, Kas Kecil Cabang tidak mencukupi :) ");
-      //$('.nominal').attr('readonly' , true);
-      $(this).val('');
-      return false;
-     }*/
-
-    $(this).val(val);
-  });
 
 </script>
 @endsection
