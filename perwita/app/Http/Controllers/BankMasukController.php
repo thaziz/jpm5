@@ -83,7 +83,7 @@ class BankMasukController extends Controller
 	public function savedata(Request $request){
 
 		$bankmasuk = new bank_masuk();
-
+		$datajurnal = [];
 		$lastidbm = DB::table('bank_masuk')->max('bm_id'); 
 		if(isset($lastidbm)) {
 			$idbm = $lastidbm;
@@ -129,7 +129,9 @@ class BankMasukController extends Controller
 				'bmdt_akun' => $request->akun[$i],
 				'bmdt_keterangan' => $request->keteranganakun[$i],
 				'bmdt_nominal' => $nominaldt,
-			])
+			]);
+
+
 		}
 
 
@@ -146,17 +148,28 @@ class BankMasukController extends Controller
 			$year = Carbon::parse($request->tgl)->format('Y');	
 			$date = Carbon::parse($request->tgl)->format('Y-m-d');
 			
-			$jrno = get_id_jurnal('BM0')
+			$kodebank = $databank[0]->mb_id;
+			if((int)$kodebank < 10){
+				$kodebank = 0 . $kodebank 
+			}
+			else {
+				$kodebank = $kodebank;
+			}
+
+			$jr_no = get_id_jurnal('BM' . $kodebank , $request->cabang, $request->tglbbk);
 
 			$jurnal = new d_jurnal();
 			$jurnal->jr_id = $idjurnal;
 	        $jurnal->jr_year = $year;
 	        $jurnal->jr_date = $date;
 	        $jurnal->jr_detail = 'BANK MASUK';
-	        $jurnal->jr_ref = $lpb;
-	        $jurnal->jr_note = $request->keterangan;
+	        $jurnal->jr_ref = $request->notabm;
+	        $jurnal->jr_note = $request->keteranganbm;
 	        $jurnal->jr_no = $jrno;
 	        $jurnal->save();
+
+
+
 
 		return 'ok';
 	}
