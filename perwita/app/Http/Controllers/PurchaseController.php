@@ -61,6 +61,7 @@ use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 use Auth;
 use App\bonsempengajuan;
+use Datatables;
 
 class PurchaseController extends Controller
 {
@@ -9718,18 +9719,17 @@ public function kekata($x) {
 
 	public function formfpg() {
 		$cabang = session::get('cabang');
+		$data['jenisBayar'] = DB::select("select * from jenisbayar where idjenisbayar != '8'  and idjenisbayar != 10 ");
+		$data['supplier'] =  DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 
-		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
-			$fpg = DB::select("select * from fpg");
-			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by fpg_nofpg desc");
+		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){			
+			/*
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by fpg_nofpg desc limit 10");*/
 			$data['belumdiproses'] = DB::table("fpg")->where('fpg_posting' , '=' , 'NOT')->count();
 			$data['sudahdiproses'] = DB::table("fpg")->where('fpg_posting' , '=' , 'DONE')->count();
 		}
-		else {
-			$fpg = DB::select("select * from fpg where fpg_cabang = '$cabang'");
-			$arrfpg = [];
-			$data['fpg'] = DB::select("select * from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_nofpg asc");
+		else {						/*
+			$data['fpg'] = DB::select("select * from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_nofpg asc limit 10");*/
 			$data['belumdiproses'] = DB::table("fpg")->where('fpg_posting' , '=' , 'NOT')->where('fpg_cabang' ,'=' , $cabang)->count();
 			$data['sudahdiproses'] = DB::table("fpg")->where('fpg_posting' , '=' , 'DONE')->where('fpg_cabang' ,'=' , $cabang)->count();
 		}
@@ -9737,6 +9737,144 @@ public function kekata($x) {
 
 		
 		return view('purchase/formfpg/index' , compact('data'));
+	}
+
+	function formfpgNotif(Request $request){
+		$idjenisbayar='';
+  		  $tgl='';
+  		  $supplier='';
+  		  $nofpg='';
+  		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+  		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+  		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
+  		  	$tgl="and fpg_tgl >= '$tgl1' AND fpg_tgl <= '$tgl2'";
+  		  }
+  		  if($request->nosupplier!=''){
+  		  	$supplier="and fpg_supplier=$request->nosupplier";
+  		  }
+  		  if($request->idjenisbayar!=''){
+  		  	$idjenisbayar="and fpg_jenisbayar=$request->idjenisbayar";
+  		  }
+  		  if($request->nofpg!=''){
+  		  	$nofpg="and fpg_nofpg='$request->nofpg'";
+  		  }
+
+		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){					
+			$data['belumdiproses'] = DB::select("select count(*) as count from fpg where fpg_posting='NOT' $tgl $supplier $idjenisbayar $nofpg");
+			$data['sudahdiproses'] = DB::select("select count(*) as count from fpg where fpg_posting='DONE' $tgl $supplier $idjenisbayar $nofpg");
+		}
+		else {						
+
+			$data['belumdiproses'] = DB::select("select count(*) as count from fpg where fpg_posting='NOT' $tgl $supplier $idjenisbayar $nofpg and fpg_cabang=$cabang");
+			$data['sudahdiproses'] = DB::select("select count(*) as count from fpg where fpg_posting='DONE' $tgl $supplier $idjenisbayar $nofpg and fpg_cabang=$cabang ");
+		}
+
+		$html='';
+
+		$html.='<div class="col-md-2" style="min-height: 100px">
+      <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <h2 style="text-align:center"> <b> '.$data['belumdiproses'][0]->count.' Data </b></h2> <h4 style="text-align:center"> Belum di Posting Bank Keluar </h4>
+      </div>
+    </div>
+
+     <div class="col-md-2" style="min-height: 100px">
+      <div class="alert alert-success alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <h2 style="text-align:center"> <b> '.$data['sudahdiproses'][0]->count.' Data  </b></h2> <h4 style="text-align:center"> Sudah di Posting Bank Keluar </h4>
+      </div>
+    </div>';
+
+
+return $html;
+
+	}
+
+	function formfpgTable(Request $request){
+
+  		  $idjenisbayar='';
+  		  $tgl='';
+  		  $supplier='';
+  		  $nofpg='';
+  		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+  		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+  		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
+  		  	$tgl="and fpg_tgl >= '$tgl1' AND fpg_tgl <= '$tgl2'";
+  		  }
+  		  if($request->nosupplier!=''){
+  		  	$supplier="and fpg_supplier=$request->nosupplier";
+  		  }
+  		  if($request->idjenisbayar!=''){
+  		  	$idjenisbayar="and idjenisbayar=$request->idjenisbayar";
+  		  }
+  		  if($request->nofpg!=''){
+  		  	$nofpg="and fpg_nofpg='$request->nofpg'";
+  		  }
+
+$dataFpg='';
+		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){						
+
+			$dataFpg=DB::select("select *,row_number() OVER () as no from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar $tgl $supplier $idjenisbayar $nofpg  order by fpg_nofpg desc");
+
+			$dataFpg=collect($dataFpg);			
+		}
+		else {	
+			dd('d');
+			$dataFpg=DB::select("select *,row_number() OVER () as no  from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_nofpg asc ");
+			$dataFpg=collect($dataFpg);
+			}
+
+
+		return 
+			DataTables::of($dataFpg)->
+			editColumn('fpg_tgl', function ($dataFpg) {            
+            	return date('d-m-Y',strtotime($dataFpg->fpg_tgl));
+            })
+            ->editColumn('fpg_keterangan', function ($dataFpg) { 
+            	if($dataFpg->fpg_posting == 'DONE'){
+                 return $dataFpg->fpg_keterangan.'<span class="label label-success"> Sudah Terposting </span> &nbsp';
+            	}
+                else{
+                return $dataFpg->fpg_keterangan.'<span class="label label-warning">  Belum di Posting </span> &nbsp';
+                }
+            })->editColumn('fpg_totalbayar', function ($dataFpg) { 
+                return number_format($dataFpg->fpg_totalbayar, 2);                
+            })->editColumn('fpg_cekbg', function ($dataFpg) { 
+                return number_format($dataFpg->fpg_cekbg, 2);                
+            })->editColumn('uangmuka', function ($dataFpg) { 
+                return '-';
+            })                        
+            ->addColumn('action', function ($dataFpg) {            	
+            	$html='';
+            	   if(Auth::user()->punyaAkses('Form Permintaan Giro','ubah')){
+                  $html.="<a class='btn btn-sm btn-success' href={{url('formfpg/detailformfpg/'.$dataFpg->idfpg.'')}}> <i 			class='fa fa-arrow-right' aria-hidden='true'></i> </a>";
+            	   }
+
+
+             if(Auth::user()->punyaAkses('Form Permintaan Giro','print')){
+                   if($dataFpg->fpg_jenisbayar == '5' || $dataFpg->fpg_jenisbayar == '12'){
+                       $html.= "<a class='btn btn-sm btn-info' href={{url('formfpg/printformfpg2/'.$dataFpg->idfpg.'')}}> 
+                            	<i class='fa fa-print' aria-hidden='true'></i></a>";
+                   }else{
+                   	   $html.="<a class='btn btn-sm btn-info' href={{url('formfpg/printformfpg/'.$dataFpg->idfpg.'')}}> <i class='fa fa-print' aria-hidden='true'></i> </a>";
+             			}                          
+            }
+
+
+
+
+             if(Auth::user()->punyaAkses('Form Permintaan Giro','hapus')){                            
+                            if($dataFpg->fpg_posting == 'DONE'){
+
+                            }else{
+						$html.="<a class='btn btn-sm btn-danger' onclick='hapusdata($dataFpg->idfpg)'> <i class='fa fa-trash' aria-hidden='true'></i> </a>";
+                            }
+            }
+
+            return $html;           
+            })
+			->make(true);	
+
 	}
 
 
