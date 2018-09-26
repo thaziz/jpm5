@@ -143,6 +143,7 @@ Route::post('suratpermintaanpembelian/updatespp', 'PurchaseController@updatespp'
 Route::get('testing/analisa', 'PurchaseController@queryanalisa');
 
 Route::get('konfirmasi_order/konfirmasi_order' , 'PurchaseController@confirm_order');
+Route::get('konfirmasi_order/konfirmasi_order/table' , 'PurchaseController@confirm_ordertable');
 Route::get('konfirmasi_order/konfirmasi_orderdetailkeu/{id}' , 'PurchaseController@confirm_order_dtkeu');
 Route::get('konfirmasi_order/konfirmasi_orderdetailpemb/{id}' , 'PurchaseController@confirm_order_dtpemb');
 Route::get('konfirmasi_order/ajax_confirmorderdt' , 'PurchaseController@ajax_confirmorderdt');
