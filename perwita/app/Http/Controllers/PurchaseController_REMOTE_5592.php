@@ -1864,20 +1864,35 @@ public function purchase_order() {
 				$data['codt'][] = DB::select("select * from confirm_order, confirm_order_dt , confirm_order_tb, spp, masteritem where co_idspp = '$idspp' and codt_idco = co_id and cotb_idco = co_id and co_idspp = spp_id and codt_supplier = cotb_supplier and codt_supplier = '$nosupplier' and codt_kodeitem = kode_item and cotb_id = '$idcotb' and co_id = '$idco' ");
 
 			}
-
-			$kodeitem = $data['codt'][0][0]->codt_kodeitem;
-			$supplier = $data['codt'][0][0]->codt_supplier;
-
-			$itemsupplier = DB::select("select * from itemsupplier where is_kodeitem = '$kodeitem' and is_idsup = '$supplier'");
-			$itemsupplier2 = '';
-			if(count($itemsupplier) != 0){
-				array_push($data['itemsupplier'] , $itemsupplier);
-			}
-			else {
-				array_push($data['itemsupplier'] , $itemsupplier2);
-			}
-
+		
+			///testtt
 		}
+
+		for($i = 0; $i < count($array); $i++){
+			for($key = 0; $key < count($data['codt'][$i]); $key++){
+
+				$kodeitem = $data['codt'][$i][$key]->codt_kodeitem;
+				$supplier = $data['codt'][$i][$key]->codt_supplier;
+				$dataitemsupplier = DB::select("select * from itemsupplier where is_kodeitem = '$kodeitem' and is_idsup = '$supplier'");
+
+				$itemsupplier2 = ([
+					'is_keteranganitem' => ''
+				]);
+
+				if(count($dataitemsupplier) != 0){
+					$itemsupplier = $dataitemsupplier[0]->is_keteranganitem;
+					array_push($data['itemsupplier'] , $itemsupplier);
+				}
+				else {
+					$itemsupplier = $itemsupplier2;
+					array_push($data['itemsupplier'] , $itemsupplier);
+				}
+
+			}
+		}
+		
+			
+
 		return json_encode($data);
 	}
 
@@ -10295,7 +10310,8 @@ public function kekata($x) {
 
 				$updateformfpg = ikhtisar_kas::where('ik_id' , '=' , $idfp);
 				$updateformfpg->update([
-					'ik_pelunasan' => $hasilpengurangan,					
+					'ik_pelunasan' => $hasilpengurangan,
+					'ik_status' => 'APPROVED',				
 				]);
 			}
 			else if($jenisbayar == '11'){
