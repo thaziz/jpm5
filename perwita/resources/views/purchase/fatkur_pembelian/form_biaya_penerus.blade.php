@@ -999,6 +999,12 @@ $('.save_bp_um').click(function(){
                   },function(){
                    $('.save_bp_um').addClass('disabled');
                    $('.btn_modal_bp').addClass('disabled');
+                   $('#tmbhdataitem').addClass('disabled');
+                   $('#tmbhdatapo').addClass('disabled');
+                   $('#tmbhdatapenerus').addClass('disabled');
+                   $('#tmbhdataoutlet').addClass('disabled');
+                   $('#tmbhdataoutlet').addClass('disabled');
+                   $('#tmbhdatasubcon').addClass('disabled');
                    
                   });
           }else if(response.status == 0){
