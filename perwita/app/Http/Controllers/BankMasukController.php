@@ -261,14 +261,14 @@ class BankMasukController extends Controller
 				$checkjurnal = check_jurnal($request->notabm);
 				if($checkjurnal == 0){
 		    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
-//						DB::rollback();
+						DB::rollback();
 											        
 		    		}
 		    		elseif($checkjurnal == 1) {
 		    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
 							        
 		    		}
-		    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+		    		
 
 		    	return json_encode($dataInfo);
 	        });
