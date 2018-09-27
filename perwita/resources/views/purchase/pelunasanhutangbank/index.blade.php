@@ -58,6 +58,7 @@
                      <tr>
                         <th style="width:10px">  NO  </th>
                         <th>  No Bank </th>
+                        <th> Nota FPG </th>
                         <th>  Bank  </th>
                         <th> Tanggal </th>
                         <th> Keterangan </th>
@@ -73,6 +74,12 @@
                       <tr>
                         <td> {{$index + 1}} </td>
                         <td> {{$bbk->bbk_nota}} </td>
+                        <td>  @if($bbk->fpg_nofpg != '')
+                                {{$bbk->fpg_nofpg}}
+                              @else
+                                -
+                              @endif
+                        </td>
                         <td> {{$bbk->mb_nama}} </td>
                         <td> {{ Carbon\Carbon::parse($bbk->bbk_tgl)->format('d-M-Y ') }}</td>
                         <td> {{$bbk->bbk_keterangan}} </td>
