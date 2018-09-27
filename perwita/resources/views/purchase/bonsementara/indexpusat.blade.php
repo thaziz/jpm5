@@ -93,7 +93,8 @@
                           <th> Nominal Admin Pusat </th>
                           <th> Nominal Mankeu </th>
                           <th> Status </th>
-                          <th> Proses </th>                         
+                          <th> Proses </th>  
+                          <th> Print </th>                       
                         </tr>
                       </thead>
                       <tbody>
@@ -133,8 +134,13 @@
 
 
                              </td>
+                          <td>
+                            <a class="btn btn-success btn-sm" href="{{url('bonsementarapusat/printdata/'. $bonsem->bp_id .'')}}"> <i class="fa fa-print"> </i> Cetak  </a>
+                          </td>
                             </tr>
                           @endforeach
+
+
                       </tbody>
                     </table>
                     </div>
@@ -196,6 +202,11 @@
                                           <tr>
                                             <th> Keterangan Kepala Cabang </th>
                                             <td> <input type="text" class="form-control keterangankacab edit" name="keterangankacab" readonly> </td>
+                                          </tr>
+
+                                            <tr>
+                                            <th> Keterangan Admin Pusat </th>
+                                            <td> <input type="text" class="form-control keteranganadminpusat " name="keteranganadmin"> </td>
                                           </tr>
                                         </table>
 
@@ -268,6 +279,11 @@
                                           <tr>
                                             <th> Keterangan Kepala Cabang </th>
                                             <td> <input type="text" class="form-control keterangankacab edit" name="keterangankacab" readonly> </td>
+                                          </tr>
+
+                                          <tr>
+                                            <th> Keterangan Pusat </th>
+                                            <td> <input type="text" class="form-control keteranganpusat edit" name="keteranganpusat"> </td>
                                           </tr>
                                         </table>
 
