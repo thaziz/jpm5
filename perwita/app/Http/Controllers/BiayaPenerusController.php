@@ -513,7 +513,7 @@ class BiayaPenerusController extends Controller
 					$akun_val = [];
 					// HUTANG
 					array_push($akun,$akun_hutang->id_akun);
-					array_push($akun_val, $fp_jumlah);
+					array_push($akun_val, $fp_netto);
 					// BIAYA
 					for ($i=0; $i < count($jurnal); $i++) { 
 
