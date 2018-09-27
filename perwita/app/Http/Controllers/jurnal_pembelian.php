@@ -1014,8 +1014,8 @@ class jurnal_pembelian  extends Controller
         if($notatransaksi != 'TRANSAKSI BM'){
                 //ganti bm di bbkd_detail
               
-               dd($idbm . $notatransaksi);
-                $notabm = $databm[$j]->bm_nota;
+         /*      dd($idbm . $notatransaksi);
+         */       $notabm = $databm[$j]->bm_nota;
                 $datafpg = DB::select("select * from fpg where fpg_nofpg = '$notatransaksi'");
                 $idfpg = $datafpg[0]->idfpg;
         
