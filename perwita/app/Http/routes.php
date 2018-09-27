@@ -327,6 +327,7 @@ Route::get('fakturpembelian/outlet_um', 'BiayaPenerusController@outlet_um');
 Route::get('fakturpembelian/subcon_um', 'BiayaPenerusController@subcon_um');
 Route::get('fakturpembelian/biaya_penerus/jurnal', 'BiayaPenerusController@jurnal');
 Route::get('fakturpembelian/biaya_penerus/jurnal_um', 'BiayaPenerusController@jurnal_um');
+Route::get('fakturpembelian/ganti_nota', 'BiayaPenerusController@ganti_nota');
 //PEMBAYARAN OUTLET
 Route::get('fakturpembelian/getpembayaranoutlet', 'BiayaPenerusController@getpembayaranoutlet')->name('getpembayaranoutlet');
 Route::get('fakturpembelian/cari_outlet', 'BiayaPenerusController@cari_outlet');
