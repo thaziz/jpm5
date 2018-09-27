@@ -122,7 +122,7 @@
     <td style="width: 100px">Total Netto</td>
     <td width="10">:</td>
     <td width="200" colspan="3">
-      <input value="Rp. 0,00" type="text" name="total_netto" class="form-control total_netto" style="" readonly="">
+      <input value="Rp. 0,00" type="text" name="total_netto" class="form-control total_netto_penerus" style="" readonly="">
     </td>
   </tr>
 <tr>
@@ -414,13 +414,13 @@
     $('.persen_pph_penerus ').val(jumlah);
   })
 
-  function hitung_total() {
+  function hitung_total_penerus() {
     var total_dpp_penerus  = $('.total_dpp_penerus').val().replace(/[^0-9\-]+/g,"")/100;
     var ppn_penerus        = $('.ppn_penerus').val().replace(/[^0-9\-]+/g,"")/100;
     var pph_penerus        = $('.pph_penerus').val().replace(/[^0-9\-]+/g,"")/100;
 
     var hasil = total_dpp_penerus + ppn_penerus - pph_penerus;
-    $('.total_netto').val(accounting.formatMoney(hasil, "", 2, ".",','));
+    $('.total_netto_penerus').val(accounting.formatMoney(hasil, "", 2, ".",','));
   }
 
   function hitung_ppn_penerus() {
@@ -440,7 +440,7 @@
     }
 
     $('.ppn_penerus').val(accounting.formatMoney(hasil, "", 2, ".",','));
-    hitung_total();
+    hitung_total_penerus();
   }
 
   function hitung_pph_penerus() {
@@ -453,7 +453,7 @@
     var td = total_kotor_penerus - diskon_penerus;
     hasil = persen_pph_penerus/100 * td;
     $('.pph_penerus').val(accounting.formatMoney(hasil, "", 2, ".",','));
-    hitung_total();
+    hitung_total_penerus();
   }
 
   $('.diskon_penerus').keyup(function(){
@@ -487,7 +487,7 @@
 
     hitung_ppn_penerus();
     hitung_pph_penerus();
-    hitung_total();
+    hitung_total_penerus();
   }
 
 
@@ -590,7 +590,7 @@
 
    $(par).find('.seq').val(e_jml_data);
    $(par).find('.no_do').val(e_no_pod);
-   $(par).find('.kode_biaya').val(e_akuxzn_biaya);
+   $(par).find('.kode_biaya').val(e_akun_biaya);
    $(par).find('.bayar_biaya').val(e_nominal);
    $(par).find('.DEBET_biaya').val(e_DEBET);
    $(par).find('.ket_biaya').val(e_keterangan_biaya);
@@ -637,7 +637,7 @@
     var persen_ppn_penerus  = $('.persen_ppn_penerus ').val();
 
 
-    var total_netto         = $('.total_netto ').val().replace(/[^0-9\-]+/g,"")/100;
+    var total_netto         = $('.total_netto_penerus ').val().replace(/[^0-9\-]+/g,"")/100;
 
     if (jenis_ppn_penerus  != '') {
 

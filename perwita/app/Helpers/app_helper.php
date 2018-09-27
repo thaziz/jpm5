@@ -470,7 +470,6 @@
 				 ->join('d_jurnal_dt','jr_id','=','jrdt_jurnal')
 				 ->where('jr_ref',$nota)
 				 ->get();
-
 		$d = 0;
 		$k = 0;
 		
