@@ -242,7 +242,7 @@
             "pageLength": 10,
             "language": dataTableLanguage,
     });*/
-dateAwal();
+
 var tablex;
 table();
      function table(){
@@ -368,7 +368,7 @@ function(){
 }
 
 
-
+dateAwal();
 function dateAwal(){
       var d = new Date();
       d.setDate(d.getDate()-7);
@@ -391,8 +391,10 @@ function dateAwal(){
  }
 
  function resetData(){  
-  dateAwal();
+  $('#tanggal1').val('');
+  $('#tanggal2').val('');  
   table();
+  dateAwal();
 }  
 function notif(){
    $.ajax({
