@@ -170,7 +170,70 @@
                  
                     </thead>
                     
+<<<<<<< HEAD
                  
+=======
+                    <tbody>
+                    @foreach($data['spp'] as $index=>$spp)
+                    <tr>
+                      <td> {{$index + 1}}  </td>
+                      <td> <a href="{{url('suratpermintaanpembelian/detailspp/'. $spp->spp_id .'')}}"> {{$spp->spp_nospp}} </a> </td>
+                      <td> {{ Carbon\Carbon::parse($spp->spp_tgldibutuhkan)->format('d-M-Y ') }} </td>
+                      <td>{{ $spp->nama }}</td>
+                      <td>{{ $spp->spp_keperluan}} </td>
+                      <td> {{$spp->nama_department}} </td>
+                      <td>
+
+                      @if($spp->spp_status == 'DISETUJUI')
+                         <span class="label label-info"> <!-- <a href="{{url('suratpermintaanpembelian/statuspp/'.$spp->spp_id.'')}}" stye="color:black"> --> DISETUJUI </a></span>
+                      @elseif($spp->spp_status == 'DITERIMA')
+                          <span class="label label-warning"><!--  <a href="{{url('suratpermintaanpembelian/statuspp/'.$spp->spp_id.'')}}" stye="color:black"> -->  DITERIMA </span>
+                      @elseif($spp->spp_status == 'DITOLAK')
+                            <span class="label label-danger"> <!-- <a href="{{url('suratpermintaanpembelian/statuspp/'.$spp->spp_id.'')}}" stye="color:black">  -->{{$spp->spp_status}} </span>
+                      @else 
+                            <span class="label label-default"> <!-- <a href="{{url('suratpermintaanpembelian/statuspp/'.$spp->spp_id.'')}}" stye="color:black">  -->{{$spp->spp_status}} </span>
+                      @endif
+                          </td>
+
+                      <td> <div class="row">
+                      <div class="col-md-3">
+
+                   
+                      @if($spp->spp_status == 'DITERBITKAN')
+                         @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','hapus'))
+                           <a href="#" class="btn btn-sm btn-danger" onclick="hapusData('{{$spp->spp_id}}')"> <i class="fa fa-trash-o" aria-hidden="true"></i></a></li>
+                            
+                                &nbsp;
+                         @endif
+
+                         @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian' , 'ubah'))
+                           &nbsp; <a class="btn btn-sm btn-warning" href="{{url('suratpermintaanpembelian/editspp/'.$spp->spp_id.'')}}"> <i class="fa fa-pencil" aria-hidden="true"></i>  </a>
+                        @endif
+
+                      @endif
+
+                        @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','print'))
+        
+                          <a class="btn btn-sm btn-success" href="{{url('suratpermintaanpembelian/cetakspp/'.$spp->spp_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i>  </a>  </div> 
+                          @endif
+
+                       
+                      </td>
+                      
+
+                      <td>
+                        @if($spp->spp_statuskabag == 'BELUM MENGETAHUI')
+                        <span class="label label-info"> <i class="fa fa-close"> </i> {{$spp->spp_statuskabag}} </span>
+                        @elseif($spp->spp_statuskabag == 'SETUJU')
+                        <span class="label label-info"> <i class="fa fa-check"> </i> {{$spp->spp_statuskabag}}
+                        @endif
+                      </td>
+                    </tr>
+                   @endforeach
+
+
+                    </tbody>
+>>>>>>> 3ea18070a7112d9c7393c48e8e03dbc2a5ee0538
                    
                   </table>
                 </div><!-- /.box-body -->

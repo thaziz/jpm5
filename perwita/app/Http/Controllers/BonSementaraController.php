@@ -107,8 +107,12 @@ class BonSementaraController extends Controller
 			$data['idspp'] = '0001';
 		}
 
+		$data['nota'] =  'BS' . $bulan . $tahun . '/' . $cabang . '/' .  $data['idspp'];
 		$datacabang = DB::select("select * from cabang where kode = '$cabang'");
+		
 		$data['namacabang'] = $datacabang[0]->nama;
+
+
 		return json_encode($data);
 	}
 

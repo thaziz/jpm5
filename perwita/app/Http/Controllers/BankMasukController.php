@@ -254,54 +254,28 @@ class BankMasukController extends Controller
 	    			$key++;
 
 				}
-/*
+
 				$checkjurnal = check_jurnal($request->notabm);
 				if($checkjurnal == 0){
 		    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
-						DB::rollback();
+//						DB::rollback();
 											        
 		    		}
 		    		elseif($checkjurnal == 1) {
 		    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
 							        
-		    		}*/
+		    		}
+		    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
 
-
-		    		$data = DB::table('d_jurnal')
-				 ->join('d_jurnal_dt','jr_id','=','jrdt_jurnal')
-				 ->where('jr_ref',$request->notabm)
-				 ->get();
-
-					$d = 0;
-					$k = 0;
-
-		    		for ($i=0; $i < count($data); $i++) { 
-						if ($data[$i]->jrdt_statusdk == 'D') {
-							if ($data[$i]->jrdt_value < 0) {
-								$temp = $data[$i]->jrdt_value * -1;
-							}else{
-								$temp = $data[$i]->jrdt_value;
-							}
-
-							$d+=$temp;
-						}else{
-							if ($data[$i]->jrdt_value < 0) {
-								$temp = $data[$i]->jrdt_value * -1;
-							}else{
-								$temp = $data[$i]->jrdt_value;
-							}
-
-							$k+=$temp;
-						}
-					}
-
-		    	return json_encode($k);
+		    	return json_encode($dataInfo);
 	        });
 	}
 
 	public function create(){
-		$data['cabang'] = DB::select("select * from cabang");		
-		$data['bank'] = DB::select("select * from masterbank");
+		$data['cabang'] = DB::select("select * from cabang");	
+
+		$data['bank'] = DB::select("select mb_id as id, mb_kode as kode, mb_nama as nama from masterbank union select 999 as id , id_akun as kode, nama_akun as nama from d_akun where id_akun = '100211000'");
+		
 		$data['akun'] = DB::select("select* from d_akun");
 		return view('purchase/bankmasuk/create' , compact('data'));
 	}

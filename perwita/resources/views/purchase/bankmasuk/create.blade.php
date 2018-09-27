@@ -46,7 +46,7 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title" style="background: white">
                     <div  style="background: white" >
-                      <h5> Bon Sementara </h5>
+                      <h5> Bank Masuk </h5>
                       <a href="{{ url('bonsementaracabang/bonsementaracabang') }}" class="pull-right" style="color: black"><i class="fa fa-arrow-left"> Kembali</i></a>
                     </div>
                 </div>
@@ -89,13 +89,17 @@
                                 <th> Bank </th>
                                 <td> <select class="form-control chosen-select bank" name="bank">
                                         @foreach($data['bank'] as $bank)
-                                          <option value="{{$bank->mb_id}},{{$bank->mb_kode}}">
-                                             {{$bank->mb_kode}} - {{$bank->mb_nama}}
+                                          <option value="{{$bank->id}},{{$bank->kode}}">
+                                             {{$bank->kode}} - {{$bank->nama}}
                                           </option>
                                         </option>
                                         @endforeach
                                       </select>
                                 </td>
+                            </tr>
+                            <tr>
+                              <th> DK Bank </th>
+                              <td> <input type='text' class="form-control input-sm"> </td>
                             </tr>
                             <tr>
                               <th> Keterangan BM </th>
@@ -223,6 +227,12 @@
             }
             return x1 + x2;
     }
+
+
+  $('.bank').change(function(){
+    val = $(this).val();
+    
+  })
 
   $('.akun').change(function(){
     val = $(this).val();

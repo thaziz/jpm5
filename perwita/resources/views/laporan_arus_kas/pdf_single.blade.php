@@ -1,7 +1,11 @@
 <!DOCTYPE html>
   <html>
     <head>
-      <title>laporan Neraca</title>
+      @if($throttle == 'bulan')
+        <title>Arus Kas {{ date_ind($request->m)." ".$request->y }}</title>
+      @elseif($throttle == 'tahun')
+        <title>Arus Kas {{ $request->y }}</title>
+      @endif
 
 
         <link href="{{ asset('assets/vendors/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -143,9 +147,7 @@
           </div>
           <div class="col-md-5" style="background: none; padding: 10px 15px 5px 15px">
             <ul>
-              <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_setting_neraca').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Setting Neraca"></i></li>
-
-              <li><i class="fa fa-file-text" style="cursor: pointer;" onclick="window.open('{{ route("neraca_detail.index", $throttle."?m=".$request->m."&y=".$request->y."&cab=".$request->cab) }}', '_blank')" data-toggle="tooltip" data-placement="bottom" title="Buka Lampiran Neraca"></i></li>
+              <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_setting_neraca').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Setting Arus Kas"></i></li>
 
               <li><i class="fa fa-print" style="cursor: pointer;" id="print" data-toggle="tooltip" data-placement="bottom" title="Print Laporan"></i></li>
             </ul>
@@ -187,12 +189,6 @@
         </table>
 
         <table id="table-data" width="80%" border="0" style="min-height: 455px; margin: 10px auto;">
-          <thead>
-            <tr>
-              <th width="50%" class="text-left" style="border-right: 3px solid #ccc">Aktiva</th>
-            </tr>
-          </thead>
-
           <tbody>
             
             <tr>
@@ -232,11 +228,20 @@
                           @foreach($detail_dt->akun as $akun)
                             <?php 
                               $mutasi = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
-                              $coalesce = (strtotime($data_real) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+
+                              if($throttle == 'bulan')
+                                $coalesce = (strtotime($data_real) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+                              else
+                                $coalesce = (date('Y', strtotime($data_real)) < date('Y', strtotime($akun->opening_date))) ? 0 : $akun->coalesce;
 
                               $total = $mutasi;
 
+                              if($data_detail->type == 'aktiva'){
+                                $total = $total * -1;
+                              }
+
                               $total_aktiva += $total;
+
 
                             ?>
 
@@ -299,21 +304,27 @@
 
                   <tr>
                     <td style="font-weight: bold; padding: 5px 10px; font-weight: bold" width="50%">
-                      Saldo Awal Kas dan Setara Kas (Periode {{ date_ind(($request->m-1))." ".$request->y }})
+                      @if($throttle == 'bulan')
+                        Saldo Awal Kas dan Setara Kas (Periode {{ date_ind(($request->m))." ".$request->y }})
+                      @else
+                        Saldo Awal Kas dan Setara Kas (Periode {{ $request->y }})
+                      @endif
                     </td>
 
                     <td style="font-weight: 600; padding: 5px 10px;" class="text-right">
-                      {{ number_format(0, 2) }}
+                      <?php $saldo_sebelum = get_saldo_awal_arus_kas($data_saldo, $data_real, $throttle) ?>
+                      {{ number_format($saldo_sebelum, 2) }}
                     </td>
                   </tr>
 
                   <tr>
                     <td style="font-weight: bold; padding: 5px 10px; font-weight: bold" width="50%">
-                      Saldo Kas dan Setara Kas Seharusnya (Periode {{ date_ind(($request->m))." ".$request->y }})
+                      Saldo Kas dan Setara Kas Seharusnya
                     </td>
 
                     <td style="font-weight: 600; padding: 5px 10px;" class="text-right">
-                      {{ number_format(0, 2) }}
+                      <?php $ta = ($saldo_sebelum + $total_aktiva) ?>
+                      {{ number_format($ta, 2) }}
                     </td>
                   </tr>
                 </table>
@@ -339,7 +350,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Setting Tampilan Neraca</h4>
+            <h4 class="modal-title">Setting Tampilan Arus Kas</h4>
             <input type="hidden" class="parrent"/>
           </div>
           <div class="modal-body">
@@ -348,27 +359,11 @@
               <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
                 <table border="0" id="form-table" class="col-md-12">
                   <tr>
-                    <td width="30%" class="text-center">Pilih Cabang</td>
-                    <td colspan="2">
-                        <select name="cab" class="select_validate_null form-control" id="group_laba_rugi">
-                          
-                          @if(Session::get("cabang") == '000')
-                            <option value="all">SEMUA CABANG</option>
-                          @endif
-
-                          @foreach(cabang() as $cab)
-                            <option value="{{ $cab->kode }}">{{ $cab->nama }}</option>
-                          @endforeach
-                        </select>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td width="30%" class="text-center">Jenis Neraca</td>
+                    <td width="30%" class="text-center">Jenis Arus Kas</td>
                     <td colspan="2">
                         <select class="form-control" style="width:90%; height: 30px" id="tampil">
-                          <option value="bulan">Neraca Bulan</option>
-                          <option value="tahun">Neraca Tahun</option>
+                          <option value="bulan">Arus Kas Bulan</option>
+                          <option value="tahun">Arus Kas Tahun</option>
                           {{-- <option value="p_bulan">Perbandingan Bulan</option> --}}
                           {{-- <option value="p_tahun">Perbandingan Tahun</option> --}}
                         </select>
@@ -519,7 +514,7 @@
 
                $("#submit_setting_neraca").click(function(event){
                   event.preventDefault();
-                  form = $("#table_setting_form"); $(this).attr("disabled", true); $(this).text("Mengubah Tampilan Neraca ...");
+                  form = $("#table_setting_form"); $(this).attr("disabled", true); $(this).text("Mengubah Tampilan arus_kasArus Kas ...");
 
                   tampil = $("#tampil").val();
 
@@ -532,7 +527,7 @@
                       $(this).removeAttr("disabled"); $(this).text("Submit");
                       return false;
                     }else{
-                      window.location = baseUrl+"/master_keuangan/neraca/single/"+data;
+                      window.location = baseUrl+"/master_keuangan/arus_kas/single/"+data;
                     }
                   }else if(tampil == "tahun"){
 
@@ -543,7 +538,7 @@
                       $(this).removeAttr("disabled"); $(this).text("Submit");
                       return false;
                     }else{
-                      window.location = baseUrl+"/master_keuangan/neraca/single/"+data;
+                      window.location = baseUrl+"/master_keuangan/arus_kas/single/"+data;
                     }
                   }else if(tampil == "p_bulan"){
 
@@ -554,7 +549,7 @@
                       $(this).removeAttr("disabled"); $(this).text("Submit");
                       return false;
                     }else{
-                      window.location = baseUrl+"/master_keuangan/neraca/perbandingan/"+data;
+                      window.location = baseUrl+"/master_keuangan/arus_kas/perbandingan/"+data;
                     }
                   }else if(tampil == "p_tahun"){
 
@@ -565,7 +560,7 @@
                       $(this).removeAttr("disabled"); $(this).text("Submit");
                       return false;
                     }else{
-                      window.location = baseUrl+"/master_keuangan/neraca/perbandingan/"+data;
+                      window.location = baseUrl+"/master_keuangan/arus_kas/perbandingan/"+data;
                     }
                   }
 
