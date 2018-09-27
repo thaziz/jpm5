@@ -1398,9 +1398,9 @@ return
 		else {
 			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and  sppd_supplier = idsup order by sppd_seq asc");
 
-			$data['sppdt_barang'] = DB::select("select distinct codtk_kodeitem, nama_masteritem, codtk_qtyapproved, unitstock from  masteritem , spp_detail  where sppd_idspp = '$id' and kode_item = sppd_kodeitem ");
+			$data['sppdt_barang'] = DB::select("select distinct codtk_kodeitem, nama_masteritem, codtk_qtyapproved, codtk_qtyrequest, unitstock from  masteritem , confirm_order_dt_pemb, confirm_order  where co_idspp = '$id' and kode_item = codtk_kodeitem and codtk_idco = co_id ");
 			
-			$grupitem = substr($sppdt_barang[0]->codtk_kodeitem, 0,1);
+			$grupitem = substr($data['sppdt_barang'][0]->codtk_kodeitem, 0,1);
 		
 			$jenisitem = DB::select("select * from jenis_item where kode_jenisitem = '$grupitem'");
 
@@ -8371,16 +8371,22 @@ public function kekata($x) {
 				
 			}
 		}
-
-
-		
-
 		return json_encode($data);
 	}
 
 
 	public function pelunasanhutangbank() {
-		return view('purchase/pelunasanhutangbank/index');
+
+			$cabang = session::get('cabang');
+
+		if(Auth::user()->punyaAkses('Pelunasan Hutang','all')){
+			$data['bbk'] = DB::select("select * from bukti_bank_keluar, cabang, masterbank where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order by bbk_id desc" );
+
+		}
+		else {
+			$data['bbk'] = DB::select("select * from bukti_bank_keluar, cabang, masterbank where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order and bbk_cabang = '$cabang' order by bbk_id desc" );
+
+		}
 	}
 
 

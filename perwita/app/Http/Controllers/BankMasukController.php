@@ -100,6 +100,8 @@ class BankMasukController extends Controller
 		$databank = DB::select("select * from masterbank where mb_id = '$idbank'");
 		$namabank = $databank[0]->mb_nama;
 
+		$nominalbank = str_replace(",", "", $request->nominalbank);
+
 		$bankmasuk->bm_id = $idbm;
 		$bankmasuk->bm_cabangtujuan = $request->cabang;
 		$bankmasuk->bm_banktujuan = $bank;
@@ -110,7 +112,8 @@ class BankMasukController extends Controller
 		$bankmasuk->bm_keterangan = $request->keteranganbm;
 		$bankmasuk->bm_namabanktujuan = $namabank;
 		$bankmasuk->bm_bankasaljurnal = $bank;
-
+		$bankmasuk->bm_nominal = $nominalbank;
+		$bankmasuk->save();
 		for($i = 0; $i < count($request->akun); $i++){
 			$nominaldt = str_replace(",", "", $request->nominal[$i]);
 
@@ -214,7 +217,7 @@ class BankMasukController extends Controller
 	        if($dka == 'D'){
 	           	$dataakun = array (
 					'id_akun' => $bank,
-					'subtotal' => $totalbiaya,
+					'subtotal' => $nominalbank,
 					'dk' => 'D',
 					'detail' => $request->keteranganbm,
 				);	
@@ -222,7 +225,7 @@ class BankMasukController extends Controller
 	        else {
 	        	$dataakun = array (
 					'id_akun' => $bank,
-					'subtotal' => $totalbiaya,
+					'subtotal' => $nominalbank,
 					'dk' => 'D',
 					'detail' => $request->keteranganbm,
 					);	
@@ -258,14 +261,14 @@ class BankMasukController extends Controller
 				$checkjurnal = check_jurnal($request->notabm);
 				if($checkjurnal == 0){
 		    			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
-//						DB::rollback();
+						DB::rollback();
 											        
 		    		}
 		    		elseif($checkjurnal == 1) {
 		    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
 							        
 		    		}
-		    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+		    		
 
 		    	return json_encode($dataInfo);
 	        });
@@ -274,7 +277,7 @@ class BankMasukController extends Controller
 	public function create(){
 		$data['cabang'] = DB::select("select * from cabang");	
 
-		$data['bank'] = DB::select("select mb_id as id, mb_kode as kode, mb_nama as nama from masterbank union select 999 as id , id_akun as kode, nama_akun as nama from d_akun where id_akun = '100211000'");
+		$data['bank'] = DB::select("select mb_id as id, mb_kode as kode, mb_nama as nama from masterbank");
 		
 		$data['akun'] = DB::select("select* from d_akun");
 		return view('purchase/bankmasuk/create' , compact('data'));

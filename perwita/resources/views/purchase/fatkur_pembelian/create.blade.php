@@ -108,7 +108,7 @@
                             <td> Cabang </td>
                             @if(Auth::user()->punyaAkses('Faktur Pembelian','cabang'))
                             <td class="cabang_td">  
-                            <select class="form-control chosen-select-width cabang" name="cabang">
+                            <select class="form-control chosen-select-width cabang" name="cabang" onchange="ganti_nota()">
                                 @foreach($data['cabang'] as $cabang)
                               <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
                               @endforeach
@@ -7367,6 +7367,22 @@ $('.sc_dibayar_um').maskMoney({
         defaultZero: true
     });
 
-
+function ganti_nota() {
+  var flag = $('ul#tabmenu').find('li.active').data('val');
+  var cabang = $('.cabang').val();
+  if (flag == 'P' || flag == 'SC' || flag == 'O') {
+    $.ajax({
+      url:baseUrl +'/fakturpembelian/ganti_nota',
+      data: {cabang,flag},
+      dataType: 'json',
+      success:function(data){
+        $('.nofaktur').val(data.nota);
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
+  }
+    
+}
 </script>
 @endsection

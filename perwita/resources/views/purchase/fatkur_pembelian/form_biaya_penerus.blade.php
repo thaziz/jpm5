@@ -75,17 +75,11 @@
     </td>
   </tr>
  <tr>
-    <td style="width: 100px">Diskon</td>
-    <td width="10">:</td>
-    <td width="200" colspan="3">
-      <input value="" type="text" name="diskon_penerus" class="form-control diskon_penerus hanya_angka">
-    </td>
-  </tr>
- <tr>
     <td style="width: 100px">DPP</td>
     <td width="10">:</td>
     <td width="200" colspan="3">
       <input value="Rp. 0,00" type="text" name="total_dpp_penerus" class="form-control total_dpp_penerus" style="" readonly="">
+      <input value="" type="hidden" name="diskon_penerus" class="form-control diskon_penerus hanya_angka">
     </td>
   </tr>
  </tr>
@@ -113,7 +107,7 @@
     <select class="form-control jenis_pph_penerus chosen-select-width1" name="jenis_pph_penerus" onchange="hitung_pph_penerus()">
       <option value="">Pilih - PPH</option>
       @foreach ($pajak as $val)
-        <option value="{{ $val->kode }}" data-val="{{ $val->nilai }}">{{ $val->nama }}</option>
+        <option value="{{ $val->id }}" data-val="{{ $val->nilai }}">{{ $val->nama }}</option>
       @endforeach
     </select>
   </td>
