@@ -247,7 +247,7 @@ class BiayaPenerusController extends Controller
 		}
 
 		public function save_agen(request $request){
-			dd($request->all());
+			// dd($request->all());
    			return DB::transaction(function() use ($request) {  
 
 				$cari_fp = DB::table('faktur_pembelian')
@@ -257,7 +257,6 @@ class BiayaPenerusController extends Controller
 				$tgl 		 = Carbon::parse($tgl)->format('Y-m-d');
 				$jt          = str_replace('/', '-', $request->jatuh_tempo);		 
 				$jt 		 = Carbon::parse($jt)->format('Y-m-d');
-				$total_biaya = array_sum($request->bayar_biaya);
 
 				if ($request->vendor == "AGEN") {
 					$cari_persen = DB::table('agen')
@@ -315,6 +314,13 @@ class BiayaPenerusController extends Controller
 
 					$total_biaya =  array_sum($request->bayar_biaya);
 					$count 		 = count($request->no_do);
+
+					$fp_jumlah   = filter_var($request->total_kotor_penerus,FILTER_SANITIZE_NUMBER_FLOAT)/100;
+					$fp_dpp      	  = filter_var($request->total_dpp_penerus,FILTER_SANITIZE_NUMBER_FLOAT)/100;
+					$fp_ppn      	  = filter_var($request->ppn_penerus,FILTER_SANITIZE_NUMBER_FLOAT)/100;
+					$fp_pph      	  = filter_var($request->pph_penerus,FILTER_SANITIZE_NUMBER_FLOAT)/100;
+					$fp_netto 		  = filter_var($request->total_netto,FILTER_SANITIZE_NUMBER_FLOAT)/100;
+
 					$save_data = DB::table('faktur_pembelian')
 								   ->insert([
 								   	  'fp_idfaktur'   		=> $id,
@@ -325,16 +331,23 @@ class BiayaPenerusController extends Controller
 									  'fp_jatuhtempo' 		=> $jt,
 									  'created_at'    		=> carbon::now(),
 									  'updated_at'    		=> carbon::now(),
-									  'fp_jumlah'     		=> $count,
-									  'fp_netto' 	  		=> $total_biaya,
+									  'fp_jumlah'     		=> $fp_jumlah,
+									  'fp_netto' 	  		=> $fp_netto,
 									  'fp_comp'  	  		=> $request->cabang,
 									  'fp_pending_status'	=> $pending_status,
 									  'fp_status'  			=> 'Released',  
 									  'fp_jenisbayar' 		=> '6',
 									  'fp_edit'  			=> 'ALLOWED',
-									  'fp_sisapelunasan' 	=> $total_biaya,
+									  'fp_sisapelunasan' 	=> $fp_netto,
 									  'fp_supplier'  		=> $request->nama_kontak2,
 									  'fp_acchutang'  		=> $akun_hutang->id_akun,
+									  'fp_dpp'		  		=> $fp_dpp,
+									  'fp_jenisppn'  		=> $request->jenis_ppn_penerus,
+									  'fp_inputppn'  		=> $request->persen_ppn_penerus,
+									  'fp_ppn'		  		=> $fp_ppn,
+									  'fp_jenispph'	  		=> $request->jenis_pph_penerus,
+									  'fp_nilaipph'	  		=> $request->persen_pph_penerus,
+									  'fp_pph'		  		=> $fp_pph,
 									  'created_by'  		=> Auth::user()->m_name,
 									  'updated_by'  		=> Auth::user()->m_name,
 								   ]);	
@@ -478,8 +491,10 @@ class BiayaPenerusController extends Controller
 
 					$akun 	  = [];
 					$akun_val = [];
+					// HUTANG
 					array_push($akun,$akun_hutang->id_akun);
-					array_push($akun_val, $total_biaya);
+					array_push($akun_val, $fp_jumlah);
+					// BIAYA
 					for ($i=0; $i < count($jurnal); $i++) { 
 
 						$id_akun = DB::table('d_akun')
@@ -491,6 +506,16 @@ class BiayaPenerusController extends Controller
 							return response()->json(['status'=>0]);
 						}
 						array_push($akun, $id_akun->id_akun);
+						array_push($akun_val, $jurnal[$i]['harga']);
+					}
+
+					// DISKON
+					if ($fp_discount != 0) {
+
+						$akun_diskon = DB::table('d_akun')
+										 ->where('id_akun','like','%')
+
+						array_push($akun, $);
 						array_push($akun_val, $jurnal[$i]['harga']);
 					}
 
@@ -543,7 +568,7 @@ class BiayaPenerusController extends Controller
 					}
 
 					$lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
-					// dd($lihat);
+					dd($lihat);
 
 					$check = check_jurnal(strtoupper($request->nofaktur));
 

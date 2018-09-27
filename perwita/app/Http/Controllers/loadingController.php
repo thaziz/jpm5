@@ -302,37 +302,65 @@ class loadingController extends Controller
 				return response()->json(['status'=>3,'data'=>'Akun Biaya Untuk Cabang Ini Tidak Tersedia']);
 			}
 
-	        if($cari_data == null){
-				biaya_penerus_kas::create([
-				  	'bpk_id'      	  	 => $id,
-				  	'bpk_nota'  	  	 => $request->no_trans,
-				  	'bpk_jenis_biaya' 	 => $request->jenis_pembiayaan,
-				  	'bpk_pembiayaan'  	 => $request->pembiayaan,
-				  	'bpk_total_tarif' 	 => round($request->total_tarif,2),
-				  	'bpk_tanggal'     	 => Carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
-				  	'bpk_nopol'		  	 => strtoupper($request->nopol),
-				  	'bpk_status'	  	 => 'Released',
-				  	'bpk_status_pending' => 'APPROVED',	
-				  	'bpk_kode_akun'		 => $request->nama_kas,
-				  	'bpk_sopir'		 	 => strtoupper($request->nama_sopir),
-				  	'bpk_keterangan'	 => strtoupper($request->note),
-				  	'bpk_tipe_angkutan'  => $request->jenis_kendaraan,		
-				  	'created_at'		 => Carbon::now(),
-				  	'bpk_comp'	 		 => $request->cabang,
-				  	'bpk_tarif_penerus'	 => $request->total_penerus,
-				  	'bpk_edit'	 		 => 'UNALLOWED',
-				  	'bpk_biaya_lain'	 => 0,
-				  	'bpk_jarak'	 		 => 0,
-				  	'bpk_harga_bbm'	     => 0,
-					'bpk_jenis_bbm'      => 0,
-					'bpk_acc_biaya'      => $cari_akun->id_akun,
-				  	'created_by'		 => Auth::user()->m_name,
-				  	'updated_by'		 => Auth::user()->m_name,
-				]);
+			$user = Auth::user()->m_name;
 
-			}else{
-				return response()->json(['status'=>0]);
+			if (Auth::user()->m_name == null) {
+				return response()->json([
+					'status'=>1,
+					'message'=>'Nama User Anda Belum Ada, Silahkan Hubungi Pihak Terkait'
+				]);
 			}
+
+		    $cari_nota = DB::table('biaya_penerus_kas')
+						   ->where('bpk_nota',$request->no_trans)
+						   ->first();
+			if ($cari_nota != null) {
+				$bulan = Carbon::parse(str_replace('/', '-', $request->tN))->format('m');
+			    $tahun = Carbon::parse(str_replace('/', '-', $request->tN))->format('y');
+
+			    $cari_nota = DB::select("SELECT  substring(max(bpk_nota),13) as id from biaya_penerus_kas
+			                                    WHERE bpk_comp = '$request->cabang'
+			                                    AND to_char(bpk_tanggal,'MM') = '$bulan'
+			                                    AND to_char(bpk_tanggal,'YY') = '$tahun'
+			                                    ");
+			    $index = (integer)$cari_nota[0]->id + 1;
+			    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
+
+				
+
+				$nota = 'BPK' . $bulan . $tahun . '/' . $request->cabang . '/' .$index;
+			}elseif ($cari_nota == null) {
+				$nota = $request->no_trans;
+			}
+	        
+			biaya_penerus_kas::create([
+			  	'bpk_id'      	  	 => $id,
+			  	'bpk_nota'  	  	 => $nota,
+			  	'bpk_jenis_biaya' 	 => $request->jenis_pembiayaan,
+			  	'bpk_pembiayaan'  	 => $request->pembiayaan,
+			  	'bpk_total_tarif' 	 => round($request->total_tarif,2),
+			  	'bpk_tanggal'     	 => Carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
+			  	'bpk_nopol'		  	 => strtoupper($request->nopol),
+			  	'bpk_status'	  	 => 'Released',
+			  	'bpk_status_pending' => 'APPROVED',	
+			  	'bpk_kode_akun'		 => $request->nama_kas,
+			  	'bpk_sopir'		 	 => strtoupper($request->nama_sopir),
+			  	'bpk_keterangan'	 => strtoupper($request->note),
+			  	'bpk_tipe_angkutan'  => $request->jenis_kendaraan,		
+			  	'created_at'		 => Carbon::now(),
+			  	'bpk_comp'	 		 => $request->cabang,
+			  	'bpk_tarif_penerus'	 => $request->total_penerus,
+			  	'bpk_edit'	 		 => 'UNALLOWED',
+			  	'bpk_biaya_lain'	 => 0,
+			  	'bpk_jarak'	 		 => 0,
+			  	'bpk_harga_bbm'	     => 0,
+				'bpk_jenis_bbm'      => 0,
+				'bpk_acc_biaya'      => $cari_akun->id_akun,
+			  	'created_by'		 => Auth::user()->m_name,
+			  	'updated_by'		 => Auth::user()->m_name,
+			]);
+
+			
 
 
 
@@ -445,7 +473,7 @@ class loadingController extends Controller
 											'jr_year'   => carbon::parse(str_replace('/', '-', $request->tN))->format('Y'),
 											'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
 											'jr_detail' => $jenis_bayar->jenisbayar,
-											'jr_ref'  	=> $request->no_trans,
+											'jr_ref'  	=> $nota,
 											'jr_note'  	=> 'BIAYA PENERUS KAS LOADING/UNLOADING '.strtoupper($request->note),
 											'jr_insert' => carbon::now(),
 											'jr_update' => carbon::now(),
@@ -492,7 +520,7 @@ class loadingController extends Controller
 						   		'pc_edit'  	  	  => 'UNALLOWED',
 						   		'pc_reim'  	  	  => 'UNRELEASED',
 						   		'pc_debet'  	  => 0,
-						   		'pc_no_trans'  	  => $request->no_trans,
+						   		'pc_no_trans'  	  => $nota,
 						   		'pc_kredit'  	  => $jurnal[$i]['harga'],
 						   		'pc_user'    	  => Auth::user()->m_name,
 						   		'created_at'	  => Carbon::now(),

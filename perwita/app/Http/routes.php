@@ -122,6 +122,8 @@ Route::get('detailanalisahutang' , 'Queryanalisa@detailanalisahutang');
 
 
 Route::get('suratpermintaanpembelian' , 'PurchaseController@spp_index');
+Route::get('suratpermintaanpembelian/table' , 'PurchaseController@spp_indextable');//taziz
+Route::get('suratpermintaanpembelian/notif' , 'PurchaseController@spp_indexnotif');
 Route::post('suratpermintaanpembelian/savesupplier' , 'PurchaseController@savespp');
 Route::get('suratpermintaanpembelian/createspp' , 'PurchaseController@createspp');
 Route::get('suratpermintaanpembelian/detailspp/{id}' , 'PurchaseController@detailspp');
