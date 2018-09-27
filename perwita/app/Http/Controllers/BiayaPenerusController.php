@@ -320,6 +320,11 @@ class BiayaPenerusController extends Controller
 					$fp_ppn      	  = filter_var($request->ppn_penerus,FILTER_SANITIZE_NUMBER_FLOAT)/100;
 					$fp_pph      	  = filter_var($request->pph_penerus,FILTER_SANITIZE_NUMBER_FLOAT)/100;
 					$fp_netto 		  = filter_var($request->total_netto,FILTER_SANITIZE_NUMBER_FLOAT)/100;
+					if ($request->jenis_pph_penerus == '') {
+						$fp_jenispph = 0;
+					}else{
+						$fp_jenispph = $request->jenis_pph_penerus;
+					}
 
 					$save_data = DB::table('faktur_pembelian')
 								   ->insert([
@@ -345,12 +350,27 @@ class BiayaPenerusController extends Controller
 									  'fp_jenisppn'  		=> $request->jenis_ppn_penerus,
 									  'fp_inputppn'  		=> $request->persen_ppn_penerus,
 									  'fp_ppn'		  		=> $fp_ppn,
-									  'fp_jenispph'	  		=> $request->jenis_pph_penerus,
+									  'fp_jenispph'	  		=> $fp_jenispph,
 									  'fp_nilaipph'	  		=> $request->persen_pph_penerus,
 									  'fp_pph'		  		=> $fp_pph,
 									  'created_by'  		=> Auth::user()->m_name,
 									  'updated_by'  		=> Auth::user()->m_name,
 								   ]);	
+					$id_faktur_pajak = DB::table("fakturpajakmasukan")->max('fpm_id')+1;
+					$faktur_pajak = DB::table('fakturpajakmasukan')
+									  ->insert([
+									  	'fpm_id'		=> $id_faktur_pajak,
+									  	'fpm_nota'		=> $request->faktur_pajak_penerus,
+									  	'fpm_tgl'		=> carbon::parse($request->tanggal_pajak_penerus)->format('Y-m-d'),
+									  	'fpm_masapajak'	=> carbon::parse($request->tanggal_pajak_penerus)->format('Y-m-d'),
+									  	'fpm_dpp'		=> $fp_dpp,
+									  	'fpm_hasilppn'	=> $fp_ppn,
+									  	'fpm_inputppn'	=> $fp_ppn,
+									  	'fpm_netto'		=> $fp_netto+$fp_pph,
+									  	'fpm_idfaktur'	=> $id,
+									  	'created_at'    => carbon::now(),
+									  	'updated_at'    => carbon::now(),
+									  ]);
 
 					$id_bp = DB::table('biaya_penerus')
 							 ->max('bp_id');
@@ -509,16 +529,31 @@ class BiayaPenerusController extends Controller
 						array_push($akun_val, $jurnal[$i]['harga']);
 					}
 
-					// DISKON
-					if ($fp_discount != 0) {
+					// PPN
+					if ($fp_ppn != 0) {
 
-						$akun_diskon = DB::table('d_akun')
-										 ->where('id_akun','like','%')
-
-						array_push($akun, $);
-						array_push($akun_val, $jurnal[$i]['harga']);
+						$akun_ppn = DB::table('d_akun')
+										 ->where('id_akun','like','2302%')
+										 ->where('kode_cabang',$request->cabang)
+										 ->first();
+						array_push($akun, $akun_ppn->id_akun);
+						array_push($akun_val, $fp_ppn);
 					}
+					// PPH
+					if ($fp_pph != 0) {
 
+						$pajak = DB::table('pajak')
+										 ->where('id',$req->jenis_pph_penerus)
+										 ->first();
+
+						$akun_pph = DB::table('d_akun')
+										 ->where('id_akun','like','%'.substr($pajak->acc1, 0,4))
+										 ->where('kode_cabang',$request->cabang)
+										 ->first();
+
+						array_push($akun, $akun_pph->id_akun);
+						array_push($akun_val, $fp_pph);
+					}
 					$data_akun = [];
 					for ($i=0; $i < count($akun); $i++) { 
 
@@ -526,7 +561,7 @@ class BiayaPenerusController extends Controller
 										  ->where('id_akun',$akun[$i])
 										  ->first();
 
-						if (substr($akun[$i],0, 1)==2) {
+						if (substr($akun[$i],0, 4)==2102) {
 							
 							if ($cari_coa->akun_dka == 'D') {
 								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
@@ -543,8 +578,40 @@ class BiayaPenerusController extends Controller
 								$data_akun[$i]['jrdt_statusdk'] = 'K';
 								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
 							}
-						}else if (substr($akun[$i],0, 1)>2) {
+						}else if (substr($akun[$i],0, 4)==2302) {
 
+							if ($cari_coa->akun_dka == 'D') {
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_statusdk'] = 'D';
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
+							}else{
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_statusdk'] = 'K';
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
+							}
+						}else if (substr($akun[$i],0, 4)==5314) {
+							if ($cari_coa->akun_dka == 'D') {
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_statusdk'] = 'D';
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
+							}else{
+								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+								$data_akun[$i]['jrdt_detailid']	= $i+1;
+								$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+								$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+								$data_akun[$i]['jrdt_statusdk'] = 'K';
+								$data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->Keterangan_biaya);
+							}
+						}else{
 							if ($cari_coa->akun_dka == 'D') {
 								$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
 								$data_akun[$i]['jrdt_detailid']	= $i+1;
@@ -1534,6 +1601,46 @@ class BiayaPenerusController extends Controller
 
 			return response()->json(['nota' => $nota]);
 			
+		}
+
+		public function ganti_nota(request $request)
+		{
+			$year =Carbon::now()->format('y'); 
+			$month =Carbon::now()->format('m'); 
+
+			if ($request->flag == 'P') {
+				$idfaktur =   fakturpembelian::where('fp_comp' , $request->cabang)
+											->where('fp_jenisbayar','6')
+											->max('fp_nofaktur');
+			}elseif ($request->flag == 'O') {
+				$idfaktur =   fakturpembelian::where('fp_comp' , $request->cabang)
+											->where('fp_jenisbayar','7')
+											->max('fp_nofaktur');
+			}elseif ($request->flag == 'SC') {
+				$idfaktur =   fakturpembelian::where('fp_comp' , $request->cabang)
+											->where('fp_jenisbayar','9')
+											->max('fp_nofaktur');
+			}
+			
+		//	dd($nosppid);
+			// return $idfaktur;
+			if(isset($idfaktur)) {
+				$explode  = explode("/", $idfaktur);
+				$idfaktur = $explode[2];
+				$idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
+				$idfaktur = str_replace('-', '', $idfaktur) ;
+				$string = (int)$idfaktur + 1;
+				$idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
+			}
+
+			else {
+				$idfaktur = '001';
+			}
+
+			$nota = 'FB' . $month . $year . '/' . $request->cabang . '/'.$request->flag.'-' .  $idfaktur;
+			/*dd($data['nofp']);*/
+
+			return response()->json(['nota' => $nota]);
 		}
 		public function notasubcon(request $request){
 			$year =Carbon::now()->format('y'); 
