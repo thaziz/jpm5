@@ -924,7 +924,7 @@ class jurnal_pembelian  extends Controller
     });
     }
 
-    function notabankmasuk2(){
+    function notabankmasuk(){
      return DB::transaction(function() { 
      
       //delete jurnal bankmasuk
@@ -945,58 +945,51 @@ class jurnal_pembelian  extends Controller
         'bm_nota' => null
       ]);
 
-     /* DB::table('bank_masuk')
-      ->where('bm_banktujuan' , '110111001')
-      ->update([
-        'bm_banktujuan' => '110611000'
-      ]);
 
-      DB::table('bank_masuk')
-      ->where('bm_bankasal' , '110111001')
-      ->update([
-        'bm_bankasal' => '110611000'
-      ]);*/
+
 
 
       for($h = 0; $h < count($databm); $h++){
-
-            $tgl = $databm[$h]->bm_tglterima;
-            $kodeterima = $databm[$h]->bm_banktujuan;
-            $cabang = $databm[$h]->bm_cabangtujuan;
-            $idbm2 = $databm[$h]->bm_id;
-
-            $buland = date("m" , strtotime($tgl));
-            $tahund = date("y" , strtotime($tgl));
-           // dd($kodeterima);
-            $kode = DB::select("select * from masterbank where mb_kode = '$kodeterima'");
-      //      dd($kode);
-           
-
-           $idbm = DB::select("select substr(MAX(bm_nota) , 15) as bm_nota from bank_masuk where bm_cabangtujuan = '$cabang'  and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_banktujuan = '$kodeterima'");
-         //  dd($idbm);
-      //  $idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
-          $index = (integer)$idbm[0]->bm_nota + 1;
-         // dd($kode);
-          if($kode[0]->mb_id < 10){
-            $kodebank = '0'.(integer)$kode[0]->mb_id;
-          }
-          else {
-            $kodebank = $kode[0]->mb_id;
-          }
-
-          $index = str_pad($index, 4, '0', STR_PAD_LEFT);
-
-          $notabm = 'BM' . $kodebank . '-' . $buland . $tahund . '/' . $cabang . '/' . $index;
-          
-          DB::table('bank_masuk')
-          ->where('bm_id' , $idbm2)
-          ->update([
-            'bm_nota' => $notabm,
-          ]);
+            $status = $databm[$h]->bm_status;
+            if($status == 'DITERIMA'){
+                        $tgl = $databm[$h]->bm_tglterima;
+                        $kodeterima = $databm[$h]->bm_banktujuan;
+                        $cabang = $databm[$h]->bm_cabangtujuan;
+                        $idbm2 = $databm[$h]->bm_id;
+            
+                        $buland = date("m" , strtotime($tgl));
+                        $tahund = date("y" , strtotime($tgl));
+                       // dd($kodeterima);
+                        $kode = DB::select("select * from masterbank where mb_kode = '$kodeterima'");
+                  //      dd($kode);
+                       
+            
+                       $idbm = DB::select("select substr(MAX(bm_nota) , 15) as bm_nota from bank_masuk where bm_cabangtujuan = '$cabang'  and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_banktujuan = '$kodeterima'");
+                     //  dd($idbm);
+                  //  $idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
+                      $index = (integer)$idbm[0]->bm_nota + 1;
+                     // dd($kode);
+                      if($kode[0]->mb_id < 10){
+                        $kodebank = '0'.(integer)$kode[0]->mb_id;
+                      }
+                      else {
+                        $kodebank = $kode[0]->mb_id;
+                      }
+            
+                      $index = str_pad($index, 4, '0', STR_PAD_LEFT);
+            
+                      $notabm = 'BM' . $kodebank . '-' . $buland . $tahund . '/' . $cabang . '/' . $index;
+                      
+                      DB::table('bank_masuk')
+                      ->where('bm_id' , $idbm2)
+                      ->update([
+                        'bm_nota' => $notabm,
+                      ]);
+                    }
       }
 
 
-      for($j = 0; $j < count($databm); $j++){
+      for($j =0; $j < count($databm); $j++){
         $bankasal = $databm[$j]->bm_bankasal;
         $banktujuan = $databm[$j]->bm_banktujuan;
         $idbm = $databm[$j]->bm_id;
@@ -1019,6 +1012,7 @@ class jurnal_pembelian  extends Controller
 
         //ganti bm di bbkd_detail
         $notatransaksi = $databm[$j]->bm_notatransaksi;
+       /*dd($idbm . $notatransaksi);*/
         $notabm = $databm[$j]->bm_nota;
         $datafpg = DB::select("select * from fpg where fpg_nofpg = '$notatransaksi'");
         $idfpg = $datafpg[0]->idfpg;
@@ -1142,7 +1136,7 @@ class jurnal_pembelian  extends Controller
 
     }
 
-    function notabankmasuk(){
+    function notabankmasuk2(){
      return DB::transaction(function() { 
      
       //delete jurnal bankmasuk
@@ -1153,7 +1147,7 @@ class jurnal_pembelian  extends Controller
         'bm_nota' => null
       ]);
 
-       DB::DELETE("DELETE FROM d_jurnal where jr_detail = 'BUKTI BANK MASUK'");
+    /*   DB::DELETE("DELETE FROM d_jurnal where jr_detail = 'BUKTI BANK MASUK'");*/
 
      /* DB::table('bank_masuk')
       ->where('bm_banktujuan' , '110111001')
@@ -1167,8 +1161,44 @@ class jurnal_pembelian  extends Controller
         'bm_bankasal' => '110611000'
       ]);*/
 
+      $databm = DB::select("select * from bank_masuk order by bm_tglterima asc");
 
-     
+     for($h = 0; $h < count($databm); $h++){
+
+            $tgl = $databm[$h]->bm_tglterima;
+            $kodeterima = $databm[$h]->bm_banktujuan;
+            $cabang = $databm[$h]->bm_cabangtujuan;
+            $idbm2 = $databm[$h]->bm_id;
+
+            $buland = date("m" , strtotime($tgl));
+            $tahund = date("y" , strtotime($tgl));
+           // dd($kodeterima);
+            $kode = DB::select("select * from masterbank where mb_kode = '$kodeterima'");
+      //      dd($kode);
+           
+
+           $idbm = DB::select("select substr(MAX(bm_nota) , 15) as bm_nota from bank_masuk where bm_cabangtujuan = '$cabang'  and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_banktujuan = '$kodeterima'");
+         //  dd($idbm);
+      //  $idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
+          $index = (integer)$idbm[0]->bm_nota + 1;
+         // dd($kode);
+          if($kode[0]->mb_id < 10){
+            $kodebank = '0'.(integer)$kode[0]->mb_id;
+          }
+          else {
+            $kodebank = $kode[0]->mb_id;
+          }
+
+          $index = str_pad($index, 4, '0', STR_PAD_LEFT);
+
+          $notabm = 'BM' . $kodebank . '-' . $buland . $tahund . '/' . $cabang . '/' . $index;
+          
+          DB::table('bank_masuk')
+          ->where('bm_id' , $idbm2)
+          ->update([
+            'bm_nota' => $notabm,
+          ]);
+      }
       return json_encode('sukses');
     }); 
 
