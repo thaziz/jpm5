@@ -1124,7 +1124,7 @@
 
               '<input readonly value="0" type="text" class="fp_pelunasan right form-control" name="fp_pelunasan[]">',
 
-              '<input readonly  type="text" class="fp_sisa_akhir right value="'+accounting.formatMoney(data.data[i].fp_sisapelunasan,"", 0, ".",',')+'" form-control" name="fp_sisa_akhir[]">',
+              '<input readonly  type="text" class="fp_sisa_akhir form-control right" value="'+accounting.formatMoney(data.data[i].fp_sisapelunasan,"", 0, ".",',')+'" form-control" name="fp_sisa_akhir[]">',
 
               '<p class="fp_keterangan_text">'+data.data[i].fp_keterangan+'</p>'+
               '<input type="hidden" class="fp_keterangan" name="fp_keterangan[]" value="'+data.data[i].fp_keterangan+'">',
