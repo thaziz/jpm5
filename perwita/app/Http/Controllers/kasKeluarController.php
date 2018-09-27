@@ -1726,7 +1726,7 @@ class kasKeluarController extends Controller
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
 					}else{
-						return$data = DB::table('faktur_pembelian')
+						$data = DB::table('faktur_pembelian')
 							  ->where('fp_supplier',$req->supplier_faktur)
 							  ->where('fp_nofaktur',$req->faktur_nomor)
 							  ->where('fp_comp',$req->cabang)
