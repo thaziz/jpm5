@@ -8377,42 +8377,54 @@ public function kekata($x) {
 
 	public function pelunasanhutangbank() {
 
-			$cabang = session::get('cabang');
-
-		if(Auth::user()->punyaAkses('Pelunasan Hutang','all')){
-			$data['bbk'] = DB::select("select * from cabang, masterbank, bukti_bank_keluar LEFT OUTER JOIN fpg on bbk_idfpg = idfpg where bbk_cabang = cabang.kode and bbk_kodebank = mb_id  order by bbk_id desc" );
-
-		}
-		else {
-			$data['bbk'] = DB::select("select * from cabang, masterbank, bukti_bank_keluar LEFT OUTER JOIN fpg on bbk_idfpg = idfpg where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order and bbk_cabang = '$cabang' order by bbk_id desc" );
-
-		}
+		return view('purchase/pelunasanhutangbank/index');
 	}
 
 
 	public function pelunasanhutangbanktable(Request $request) {
 		  $data='';
-		  $idjenisbayar='';
+		  $bank='';
   		  $tgl='';
-  		  $supplier='';
+  		  $biaya='';
+  		  $total='';
   		  $nofpg='';
   		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
   		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
   		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
-  		  	$tgl="and fpg_tgl >= '$tgl1' AND fpg_tgl <= '$tgl2'";
+  		  	$tgl="and bbk_tgl >= '$tgl1' AND bbk_tgl <= '$tgl2'";
+  		  }  		  
+  		  if($request->bank!=''){
+  		  	$bank="and mb_nama=$request->bank";
   		  }
-  		  if($request->nosupplier!=''){
-  		  	$supplier="and fpg_supplier=$request->nosupplier";
+  		  if($request->biaya!=''){
+  		  	$biaya="and bbk_biaya=$request->biaya";
   		  }
-  		  if($request->idjenisbayar!=''){
-  		  	$idjenisbayar="and idjenisbayar=$request->idjenisbayar";
+  		  if($request->total!=''){
+  		  	$total="and bbk_total=$request->total";
   		  }
   		  if($request->nofpg!=''){
   		  	$nofpg="and bbk_nota='$request->nofpg'";
   		  }
 		 $cabang = session::get('cabang');
 		 
-		$data= DB::select("select *,'no' as no from bukti_bank_keluar, cabang, masterbank where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order by bbk_id desc" );
+	/*	$data= DB::select("select *,'no' as no from bukti_bank_keluar, cabang, masterbank where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order by bbk_id desc" );*/
+
+
+
+
+
+	   $cabang = session::get('cabang');
+		if(Auth::user()->punyaAkses('Pelunasan Hutang','all')){
+			$data= DB::select("select *,'no' as no from cabang, masterbank, bukti_bank_keluar LEFT OUTER JOIN fpg on bbk_idfpg = idfpg where bbk_cabang = cabang.kode and bbk_kodebank = mb_id $tgl $bank $biaya $total $nofpg order by bbk_id desc" );
+
+		}
+		else {
+			$data= DB::select("select *,'no' as no from cabang, masterbank, bukti_bank_keluar LEFT OUTER JOIN fpg on bbk_idfpg = idfpg where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order and bbk_cabang = '$cabang' $tgl $bank $biaya $total $nofpg order by bbk_id desc" );
+
+		}
+
+
+dd($data);
 
 		$data=collect($data);
 
@@ -8423,7 +8435,15 @@ public function kekata($x) {
             })
            ->editColumn('bbk_cekbg', function ($data) { 
                 return number_format($data->bbk_cekbg, 2);                
-            })->editColumn('bbk_biaya', function ($data) { 
+            })
+           ->editColumn('fpg_nofpg', function ($data) { 
+ 			 	if($data->fpg_nofpg != ''){
+                     return $data->fpg_nofpg;
+                }else{
+                     return '-';
+                }                               
+            })
+           ->editColumn('bbk_biaya', function ($data) { 
                 return number_format($data->bbk_biaya, 2);                
             })->editColumn('bbk_total', function ($data) { 
                 return number_format($data->bbk_total, 2);                

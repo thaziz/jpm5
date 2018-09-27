@@ -95,27 +95,36 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
             
               <div class="col-md-2 col-sm-3 col-xs-12">
-                <label class="tebal">Bayar</label>
+                <label class="tebal">Bank</label>
               </div>
 
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    <input class="form-control" type="" name="bank">
+                    <input class="form-control" type="" name="bank" id="bank">
                 </div>
               </div>
 
 
 
               <div class="col-md-1 col-sm-3 col-xs-12">
-                <label class="tebal">Nominal</label>
+                <label class="tebal">Biaya</label>
               </div>
 
-              <div class="col-md-4 col-sm-6 col-xs-12">
+              <div class="col-md-2 col-sm-6 col-xs-12">
                 <div class="form-group">
-                     <input class="form-control" type="" name="nominal">
+                     <input class="form-control" type="" name="biaya" id="biaya">
                 </div>
               </div>
 
+              <div class="col-md-1 col-sm-3 col-xs-12">
+                <label class="tebal">Total</label>
+              </div>
+
+              <div class="col-md-2 col-sm-6 col-xs-12">
+                <div class="form-group">
+                     <input class="form-control" type="" name="total" id="total">
+                </div>
+              </div>
 
     </div>
     </form>
@@ -134,7 +143,7 @@
                 </div>        
                     
                 <div class="box-body">
-                  <table id="addColumn" class="table table-bordered table-stripped tbl-penerimabarang">
+                  <table width="100%" id="addColumn" class="table table-bordered table-stripped tbl-penerimabarang">
                     <thead>
                      <tr>
                         <th style="width:10px">  NO  </th>
@@ -150,6 +159,7 @@
                     </tr> 
                     </thead>
 
+<<<<<<< HEAD
 
                     <tbody>
                     @foreach($data['bbk'] as $index=>$bbk)
@@ -186,6 +196,8 @@
                     @endforeach
                    </tbody>
 
+=======
+>>>>>>> f9d4758f5a217058f2d9eb17adcf772126c4acf6
                   </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
@@ -224,18 +236,20 @@ table();
             ajax: {
               "url": "{{ url("pelunasanhutangbank/pelunasanhutangbank/table") }}",
               "type": "get",
-              data: {
+              data: {                
                     "_token": "{{ csrf_token() }}",                    
                     "tanggal1" :$('#tanggal1').val(),
                     "tanggal2" :$('#tanggal2').val(),
-                    "nosupplier" :$('#nosupplier').val(),
-                    "idjenisbayar" :$('#idjenisbayar').val(),
+                    "biaya" :$('#biaya').val(),
+                    "total" :$('#total').val(),
+                    "bank" :$('#bank').val(),
                     "nofpg" :$('#nofpg').val(),
                     },
               },
             columns: [            
             {data: 'no', name: 'no'},             
             {data: 'bbk_nota', name: 'bbk_nota'},                           
+            {data: 'fpg_nofpg', name: 'fpg_nofpg'},     
             {data: 'mb_nama', name: 'mb_nama'},            
             {data: 'bbk_tgl', name: 'bbk_tgl'},
             {data: 'bbk_keterangan', name: 'bbk_keterangan'},
