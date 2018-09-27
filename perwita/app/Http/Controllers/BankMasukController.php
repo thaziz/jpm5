@@ -272,8 +272,10 @@ class BankMasukController extends Controller
 	}
 
 	public function create(){
-		$data['cabang'] = DB::select("select * from cabang");		
-		$data['bank'] = DB::select("select * from masterbank");
+		$data['cabang'] = DB::select("select * from cabang");	
+
+		$data['bank'] = DB::select("select mb_id as id, mb_kode as kode, mb_nama as nama from masterbank union select 999 as id , id_akun as kode, nama_akun as nama from d_akun where id_akun = '100211000'");
+		
 		$data['akun'] = DB::select("select* from d_akun");
 		return view('purchase/bankmasuk/create' , compact('data'));
 	}

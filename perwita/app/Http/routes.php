@@ -103,6 +103,7 @@ Route::get('jurnalselaras/fpg_checkbank', 'jurnal_pembelian@fpg_checkbank');
 Route::get('jurnalselaras/get_no_po', 'jurnal_pembelian@get_no_po');
 Route::get('jurnalselaras/kendaraansppd', 'jurnal_pembelian@kendaraansppd');
 Route::get('jurnalselaras/kendaraanpo', 'jurnal_pembelian@kendaraanpo');
+Route::get('jurnalselaras/notabankmasuk', 'jurnal_pembelian@notabankmasuk');
 Route::get('jurnalselaras/jenisbayarfpg', 'jurnal_pembelian@getjenisbayarfpg');
 Route::get('jurnalselaras/jurnalsalahkodebank', 'jurnal_pembelian@jurnalsalahkodebank');
 
