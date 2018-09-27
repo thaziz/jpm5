@@ -1339,7 +1339,7 @@ return
 		else {
 			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and  sppd_supplier = idsup order by sppd_seq asc");
 
-			$data['sppdt_barang'] = DB::select("select distinct codtk_kodeitem, nama_masteritem, codtk_qtyapproved, unitstock from  masteritem , confirm_order_dt_pemb, confirm_order  where co_idspp = '$id' and kode_item = codtk_kodeitem and codtk_idco = co_id ");
+			$data['sppdt_barang'] = DB::select("select distinct codtk_kodeitem, nama_masteritem, codtk_qtyapproved, codtk_qtyapproved, unitstock from  masteritem , confirm_order_dt_pemb, confirm_order  where co_idspp = '$id' and kode_item = codtk_kodeitem and codtk_idco = co_id ");
 			
 			$grupitem = substr($data['sppdt_barang'][0]->codtk_kodeitem, 0,1);
 		
