@@ -397,9 +397,18 @@
 		$buland = date("m" , strtotime($tgl));
         $tahund = date("y" , strtotime($tgl));
        // dd($kodeterima);
-        $kode = DB::select("select * from masterbank where mb_id = '$kodeterima'");
-  //      dd($kode);
-        $akunbank = $kode[0]->mb_kode;
+        if($kodeterima != '999'){
+   	        $kode = DB::select("select * from masterbank where mb_id = '$kodeterima'");
+   	          //      dd($kode);
+	        $akunbank = $kode[0]->mb_kode;
+	        $idkode = $kode[0]->mb_id;
+
+        }
+        else {
+        	$kode = '99';
+        	$akunbank = '100211000';
+        	$idkode = '99';
+        }
 
 
        $idbm = DB::select("select substr(MAX(bm_nota) , 15) as bm_nota from bank_masuk where bm_cabangtujuan = '$cabang'  and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_banktujuan = '$akunbank'");
@@ -407,11 +416,11 @@
 	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
 		$index = (integer)$idbm[0]->bm_nota + 1;
      //	dd($kode);
-     	if($kode[0]->mb_id < 10){
-     		$kodebank = '0'.(integer)$kode[0]->mb_id;
+     	if($idkode < 10){
+     		$kodebank = '0'.(integer)$idkode;
      	}
      	else {
-     		$kodebank = $kode[0]->mb_id;
+     		$kodebank = $idkode;
      	}
 
      	$index = str_pad($index, 4, '0', STR_PAD_LEFT);
@@ -421,6 +430,12 @@
         return $notabm;
 	}
 
+	function getdka($kode){
+		$data = DB::select("select * from d_akun where id_akun = '$kode'");
+		$dk = $data[0]->akun_dka;
+
+		return $dk;
+	}
 
 	function getnotakm($cabang, $tgl){
 		$bulan = date("m" , strtotime($tgl));

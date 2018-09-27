@@ -30,7 +30,7 @@
 
   <div class="wrapper wrapper-content animated fadeInRight">
    
-    <div class="col-md-2" style="min-height: 100px">
+   <!--  <div class="col-md-2" style="min-height: 100px">
       <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
         <h2 style='text-align:center'> <b> {{$data['belumdiproses']}} SPP </b></h2> <h4 style='text-align:center'> Belum di proses Staff Pembelian </h4>
@@ -62,8 +62,9 @@
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
          <h2 style='text-align:center'> <b> {{$data['selesai']}} SPP  </b></h2> <h4 style='text-align:center'> <br> SELESAI </h4>
       </div>
-    </div>
+    </div> -->
 
+<div id="notif"></div>
 
     </div>
 
@@ -88,6 +89,64 @@
                 </div>
                 <div class="ibox-content">
                         <div class="row">
+
+
+
+
+
+
+<div class="row" >
+   <form method="post" id="dataSeach">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+              
+              <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">No SPP</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <input class="form-control kosong" type="text" name="nofpg" id="nofpg" placeholder="No SPP">
+                </div>
+              </div>
+
+
+            
+              <div class="col-md-1 col-sm-3 col-xs-12">
+                <label class="tebal">Tanggal</label>
+              </div>
+
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                  <div class="input-daterange input-group">
+                    <input id="tanggal1" class="form-control input-sm datepicker2" name="tanggal1" type="text">
+                    <span class="input-group-addon">-</span>
+                    <input id="tanggal2" "="" class="input-sm form-control datepicker2" name="tanggal2" type="text">
+                  </div>
+                </div>
+              </div>
+            
+
+              <div class="col-md-2 col-sm-6 col-xs-12" align="center">
+                <button class="btn btn-primary btn-sm btn-flat" title="Cari rentang tanggal" type="button" onclick="cari()">
+                  <strong>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </strong>
+                </button>
+                <button class="btn btn-info btn-sm btn-flat" type="button" title="Reset" onclick="resetData()">
+                  <strong>
+                    <i class="fa fa-undo" aria-hidden="true"></i>
+                  </strong>
+                </button>                
+              </div>
+      </div>
+    </form>
+</div>
+
+
+
+
+
+
             <div class="col-xs-12">
               
               <div class="box" id="seragam_box">
@@ -111,6 +170,9 @@
                  
                     </thead>
                     
+<<<<<<< HEAD
+                 
+=======
                     <tbody>
                     @foreach($data['spp'] as $index=>$spp)
                     <tr>
@@ -171,6 +233,7 @@
 
 
                     </tbody>
+>>>>>>> 3ea18070a7112d9c7393c48e8e03dbc2a5ee0538
                    
                   </table>
                 </div><!-- /.box-body -->
@@ -202,13 +265,71 @@
 <script type="text/javascript">
 
 
-    tableDetail = $('.tbl-item').DataTable({
-            responsive: true,
-            searching: true,
-            //paging: false,
+
+
+dateAwal();
+var tablex;
+table();
+     function table(){
+   $('.tbl-item').dataTable().fnDestroy();
+   tablex = $(".tbl-item").DataTable({        
+         responsive: true,
+        "language": dataTableLanguage,
+    processing: true,
+            serverSide: true,
+            ajax: {
+              "url": "{{ url("suratpermintaanpembelian/table") }}",
+              "type": "get",
+              data: {
+                    "_token": "{{ csrf_token() }}",                    
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),
+                    "nosupplier" :$('#nosupplier').val(),
+                    "idjenisbayar" :$('#idjenisbayar').val(),
+                    "nofpg" :$('#nofpg').val(),
+                    },
+              },
+            columns: [
+            {data: 'no', name: 'no'},             
+            {data: 'detailspp', name: 'detailspp'},                           
+            {data: 'spp_tgldibutuhkan', name: 'spp_tgldibutuhkan'},   
+            {data: 'nama', name: 'nama'},
+            {data: 'spp_keperluan', name: 'spp_keperluan'},
+            {data: 'nama_department', name: 'nama_department'},   
+
+
+            {data: 'spp_status', name: 'spp_status'},            
+            {data: 'spp_cabang', name: 'spp_cabang'},                        
+            {data: 'action', name: 'action'},                        
+          /*  {data: 's_gross', name: 's_gross'}, 
+            {data: 's_disc_percent', name: 's_disc_percent'}, 
+            {data: 's_ongkir', name: 's_ongkir'},
+            {data: 's_net', name: 's_net'},            
+            {data: 's_status', name: 's_status'}, 
+            {data: 'action', name: 'action'},
+            */
+           
+            ],
             "pageLength": 10,
-            "language": dataTableLanguage,
+            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+           /*"fnCreatedRow": function (row, data, index) {
+            $('td', row).eq(0).html(index + 1);
+            }*/
+
+
+
     });
+   notif();
+}
+
+tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
+    });
+});
+
+
 
     $('.date').datepicker({
         autoclose: true,
@@ -238,5 +359,50 @@
                     });
             }
 
+
+
+
+function dateAwal(){
+      var d = new Date();
+      d.setDate(d.getDate()-7);
+
+      /*d.toLocaleString();*/
+      $('#tanggal1').datepicker({
+            format:"dd-mm-yyyy",        
+            autoclose: true,
+      }).datepicker( "setDate", d);
+      $('#tanggal2').datepicker({
+            format:"dd-mm-yyyy",        
+            autoclose: true,
+      }).datepicker( "setDate", new Date());
+      $('.kosong').val('');
+      $('.kosong').val('').trigger('chosen:updated');
+}
+
+ function cari(){
+  table();  
+ }
+
+ function resetData(){  
+  dateAwal();
+  table();
+}  
+function notif(){
+   $.ajax({
+      url:baseUrl + '/suratpermintaanpembelian/notif',
+      type:'get',   
+       data: {
+                    "_token": "{{ csrf_token() }}",                    
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),
+                    "nosupplier" :$('#nosupplier').val(),
+                    "idjenisbayar" :$('#idjenisbayar').val(),
+                    "nofpg" :$('#nofpg').val(),
+                    },   
+      success:function(data){
+        $('#notif').html(data);
+    }
+  });
+}
 </script>
 @endsection

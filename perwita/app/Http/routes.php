@@ -103,6 +103,7 @@ Route::get('jurnalselaras/fpg_checkbank', 'jurnal_pembelian@fpg_checkbank');
 Route::get('jurnalselaras/get_no_po', 'jurnal_pembelian@get_no_po');
 Route::get('jurnalselaras/kendaraansppd', 'jurnal_pembelian@kendaraansppd');
 Route::get('jurnalselaras/kendaraanpo', 'jurnal_pembelian@kendaraanpo');
+Route::get('jurnalselaras/notabankmasuk', 'jurnal_pembelian@notabankmasuk');
 Route::get('jurnalselaras/jenisbayarfpg', 'jurnal_pembelian@getjenisbayarfpg');
 Route::get('jurnalselaras/jurnalsalahkodebank', 'jurnal_pembelian@jurnalsalahkodebank');
 
@@ -121,6 +122,8 @@ Route::get('detailanalisahutang' , 'Queryanalisa@detailanalisahutang');
 
 
 Route::get('suratpermintaanpembelian' , 'PurchaseController@spp_index');
+Route::get('suratpermintaanpembelian/table' , 'PurchaseController@spp_indextable');//taziz
+Route::get('suratpermintaanpembelian/notif' , 'PurchaseController@spp_indexnotif');
 Route::post('suratpermintaanpembelian/savesupplier' , 'PurchaseController@savespp');
 Route::get('suratpermintaanpembelian/createspp' , 'PurchaseController@createspp');
 Route::get('suratpermintaanpembelian/detailspp/{id}' , 'PurchaseController@detailspp');

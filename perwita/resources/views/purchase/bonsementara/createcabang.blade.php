@@ -179,7 +179,7 @@
                     
                        nospp = 'BS' + month + year2 + '/' + comp + '/' +  response.idspp;
                       console.log(nospp);
-                      $('.nonota').val(nospp);
+                      $('.nonota').val(response.nota);
                        nospp = $('.nonota').val();
                       $('.namacabang').text(response.namacabang);
               },
@@ -221,7 +221,7 @@
                     
                        nospp = 'BS' + month + year2 + '/' + comp + '/' +  response.idspp;
                       console.log(nospp);
-                      $('.nonota').val(nospp);
+                      $('.nonota').val(response.nota);
                        nospp = $('.nonota').val();
                       $('.namacabang').text(response.namacabang);
     },
@@ -264,7 +264,7 @@
                     
                        nospp = 'BS' + month + year2 + '/' + comp + '/' +  response.idspp;
                       console.log(nospp);
-                      $('.nonota').val(nospp);
+                      $('.nonota').val(response.nota);
                        nospp = $('.nonota').val();
 
                        $('.namacabang').text(response.namacabang);
