@@ -163,7 +163,6 @@ class penerimaan_penjualan_controller extends Controller
                           }
                         })->addColumn('posting', function ($data) {
                           if ($data->k_nomor_posting == null) {
-                            # code...
                             return '<label class="label label-danger">BELUM</label>';
                           }else{
                             return '<label class="label label-success">SUDAH</label>';
