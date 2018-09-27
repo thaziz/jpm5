@@ -987,7 +987,7 @@ class jurnal_pembelian  extends Controller
                       ]);
                     }
       }
-
+        
 
       for($j =0; $j < count($databm); $j++){
         $bankasal = $databm[$j]->bm_bankasal;
@@ -1014,7 +1014,7 @@ class jurnal_pembelian  extends Controller
         if($notatransaksi != 'TRANSAKSI BM'){
                 //ganti bm di bbkd_detail
               
-               /*dd($idbm . $notatransaksi);*/
+               dd($idbm . $notatransaksi);
                 $notabm = $databm[$j]->bm_nota;
                 $datafpg = DB::select("select * from fpg where fpg_nofpg = '$notatransaksi'");
                 $idfpg = $datafpg[0]->idfpg;
