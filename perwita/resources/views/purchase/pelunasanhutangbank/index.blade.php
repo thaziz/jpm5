@@ -93,9 +93,7 @@
 
 
       <div class="col-md-12 col-sm-12 col-xs-12">
-             
-
-
+            
               <div class="col-md-2 col-sm-3 col-xs-12">
                 <label class="tebal">Bayar</label>
               </div>
@@ -152,7 +150,7 @@
                     </tr> 
                     </thead>
 
-<<<<<<< HEAD
+
                     <tbody>
                     @foreach($data['bbk'] as $index=>$bbk)
                       <tr>
@@ -187,9 +185,7 @@
                     </tr>
                     @endforeach
                    </tbody>
-=======
-                    
->>>>>>> 4d7f1044615464abd3346df033e734ba853455eb
+
                   </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
