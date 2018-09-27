@@ -140,8 +140,7 @@
                       @if($spp->spp_status == 'DITERBITKAN')
                          @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','hapus'))
                            <a href="#" class="btn btn-sm btn-danger" onclick="hapusData('{{$spp->spp_id}}')"> <i class="fa fa-trash-o" aria-hidden="true"></i></a></li>
-                                {{ Form::open(['url'=>'suratpermintaanpembelian/deletespp/'. $spp->spp_id, 'method' => 'delete', 'id' => $spp->spp_id ]) }}
-                                {{ Form::close() }} </div>
+                            
                                 &nbsp;
                          @endif
 

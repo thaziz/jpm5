@@ -76,7 +76,7 @@
 
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    <input class="form-control" type="text" name="nofpg" id="nofpg" placeholder="No FPG">
+                    <input class="form-control kosong" type="text" name="nofpg" id="nofpg" placeholder="No FPG">
                 </div>
               </div>
 
@@ -123,7 +123,7 @@
 
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    <select class="form-control chosen-select-width" name="idjenisbayar" id="idjenisbayar">
+                    <select class="form-control chosen-select-width kosong" name="idjenisbayar" id="idjenisbayar">
                       <option value="">Pilih Jenis Bayar</option>
                       @foreach($data['jenisBayar'] as $jenisByr)
                       <option value="{{$jenisByr->idjenisbayar}}">{{$jenisByr->jenisbayar}}</option>
@@ -140,7 +140,7 @@
 
               <div class="col-md-4 col-sm-6 col-xs-12">
                 <div class="form-group">
-                     <select class="form-control chosen-select-width" name="nosupplier" id="nosupplier">
+                     <select class="form-control chosen-select-width kosong" name="nosupplier" id="nosupplier">
                      <option value="">Pilih Supplier</option>
                       @foreach($data['supplier'] as $supplier)
                       <option value="{{$supplier->idsup}}">{{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
@@ -382,6 +382,8 @@ function dateAwal(){
             format:"dd-mm-yyyy",        
             autoclose: true,
       }).datepicker( "setDate", new Date());
+      $('.kosong').val('');
+      $('.kosong').val('').trigger('chosen:updated');
 }
 
  function cari(){

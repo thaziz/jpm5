@@ -103,6 +103,8 @@ Route::get('jurnalselaras/fpg_checkbank', 'jurnal_pembelian@fpg_checkbank');
 Route::get('jurnalselaras/get_no_po', 'jurnal_pembelian@get_no_po');
 Route::get('jurnalselaras/kendaraansppd', 'jurnal_pembelian@kendaraansppd');
 Route::get('jurnalselaras/kendaraanpo', 'jurnal_pembelian@kendaraanpo');
+Route::get('jurnalselaras/jenisbayarfpg', 'jurnal_pembelian@getjenisbayarfpg');
+Route::get('jurnalselaras/jurnalsalahkodebank', 'jurnal_pembelian@jurnalsalahkodebank');
 
 //***PEMBELIAN
 //***PEMBELIAN
@@ -143,6 +145,10 @@ Route::post('suratpermintaanpembelian/updatespp', 'PurchaseController@updatespp'
 Route::get('testing/analisa', 'PurchaseController@queryanalisa');
 
 Route::get('konfirmasi_order/konfirmasi_order' , 'PurchaseController@confirm_order');
+Route::get('konfirmasi_order/konfirmasi_order/table' , 'PurchaseController@confirm_ordertable');
+Route::get('konfirmasi_order/konfirmasi_order/notif' , 'PurchaseController@confirm_ordernotif');
+
+
 Route::get('konfirmasi_order/konfirmasi_orderdetailkeu/{id}' , 'PurchaseController@confirm_order_dtkeu');
 Route::get('konfirmasi_order/konfirmasi_orderdetailpemb/{id}' , 'PurchaseController@confirm_order_dtpemb');
 Route::get('konfirmasi_order/ajax_confirmorderdt' , 'PurchaseController@ajax_confirmorderdt');
