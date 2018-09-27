@@ -1011,7 +1011,7 @@ class jurnal_pembelian  extends Controller
                 }
         }
         $notatransaksi = $databm[$j]->bm_notatransaksi;
-        if($notatransaksi != null){
+        if($notatransaksi != 'TRANSAKSI BM'){
                 //ganti bm di bbkd_detail
               
                /*dd($idbm . $notatransaksi);*/
