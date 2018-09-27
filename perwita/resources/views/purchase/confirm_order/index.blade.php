@@ -134,7 +134,7 @@
                     
                 <div class="box-body">
                 
-                  <table id="addColumn" class="table table-bordered table-striped konfirmasi">
+                  <table width="100%" id="addColumn" class="table table-bordered table-striped konfirmasi">
                     <thead>
                      <tr>
                         <th style="width:10px">No</th>
@@ -185,7 +185,7 @@
     });
 
 
-    dateAwal();
+    
 var tablex;
 table();
      function table(){
@@ -239,7 +239,7 @@ tablex.on('draw.dt', function () {
     });
 });
 
-
+dateAwal();
 function dateAwal(){
       var d = new Date();
       d.setDate(d.getDate()-7);
@@ -258,9 +258,11 @@ function dateAwal(){
   table();  
  }
 
- function resetData(){  
-  dateAwal();
+ function resetData(){    
+  $('#tanggal1').val('');
+  $('#tanggal2').val('');
   table();
+  dateAwal();
 }  
 
     

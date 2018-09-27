@@ -563,6 +563,9 @@ Route::get('uangmukapembelian/detailuangmukapembelian', 'PurchaseController@deta
 
 
 Route::get('pelunasanhutangbank/pelunasanhutangbank', 'PurchaseController@pelunasanhutangbank');
+Route::get('pelunasanhutangbank/pelunasanhutangbank/table', 'PurchaseController@pelunasanhutangbanktable');
+Route::get('pelunasanhutangbank/pelunasanhutangbank/notif', 'PurchaseController@pelunasanhutangbanknotif');
+
 Route::get('pelunasanhutangbank/createpelunasanbank', 'PurchaseController@createpelunasanbank');
 Route::get('pelunasanhutangbank/detailpelunasanbank/{id}', 'PurchaseController@detailpelunasanbank');
 Route::get('pelunasanhutangbank/nocheck', 'PurchaseController@nocheckpelunasanhutangbank');
