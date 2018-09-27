@@ -995,21 +995,21 @@ class jurnal_pembelian  extends Controller
         $idbm = $databm[$j]->bm_id;
         
         $tgl = $databm[$j]->bm_tglterima;
-
-        $bankasal2 = DB::select("select * from masterbank where mb_kode = '$bankasal'");
-        $kelompokasal = $bankasal2[0]->mb_kelompok;
-
-        $banktujuan2 = DB::select("select * from masterbank where mb_kode = '$banktujuan'");
-        $kelompoktujuan = $banktujuan2[0]->mb_kelompok;
-
-        if($kelompokasal == $kelompoktujuan){
-          DB::table('bank_masuk')
-          ->where('bm_id' , $idbm)
-          ->update([
-            'bm_bankasaljurnal' => '109911000'
-          ]);
+        if($bankasal != null){
+                $bankasal2 = DB::select("select * from masterbank where mb_kode = '$bankasal'");
+                $kelompokasal = $bankasal2[0]->mb_kelompok;
+        
+                $banktujuan2 = DB::select("select * from masterbank where mb_kode = '$banktujuan'");
+                $kelompoktujuan = $banktujuan2[0]->mb_kelompok;
+        
+                if($kelompokasal == $kelompoktujuan){
+                  DB::table('bank_masuk')
+                  ->where('bm_id' , $idbm)
+                  ->update([
+                    'bm_bankasaljurnal' => '109911000'
+                  ]);
+                }
         }
-
         //ganti bm di bbkd_detail
         $notatransaksi = $databm[$j]->bm_notatransaksi;
        /*dd($idbm . $notatransaksi);*/
