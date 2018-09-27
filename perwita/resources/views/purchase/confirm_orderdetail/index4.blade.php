@@ -841,7 +841,7 @@
                           var tb = '<div class="form-group"> <label class="col-sm-2 col-sm-2 control-label"> Rp </label> <div class="col-sm-8"> <input type="text" class="input-sm form-control totalbiaya" name="bayar[]" value="'+addCommas(biaya)+'" readonly="" > <input type="hidden" name="tb[]" value="'+result[j].id+ "," + result[j].totalharga +'">  <input type="hidden" name="datasupplier[]" value="'+datasup+'"> </div>  </div>';
                       
                           $('tr.totalbiaya').find("td").eq(supplier3).html(tb);
-                            $('.simpan').attr('disabled', false);
+                       
                       }
                   } 
 
@@ -870,6 +870,7 @@
                             })
                       }
 
+                       $('.simpan').attr('disabled', false);
                 },
                 error : function(){
                   location.reload();

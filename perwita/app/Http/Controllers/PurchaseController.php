@@ -8321,7 +8321,17 @@ public function kekata($x) {
 
 
 	public function pelunasanhutangbank() {
-		$data['bbk'] = DB::select("select * from bukti_bank_keluar, cabang, masterbank where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order by bbk_id desc" );
+			$cabang = session::get('cabang');
+
+		if(Auth::user()->punyaAkses('Pelunasan Hutang','all')){
+			$data['bbk'] = DB::select("select * from bukti_bank_keluar, cabang, masterbank where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order by bbk_id desc" );
+			
+		}
+		else {
+			$data['bbk'] = DB::select("select * from bukti_bank_keluar, cabang, masterbank where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order and bbk_cabang = '$cabang' by bbk_id desc" );
+
+		}
+
 
 		return view('purchase/pelunasanhutangbank/index' , compact('data'));
 	}
