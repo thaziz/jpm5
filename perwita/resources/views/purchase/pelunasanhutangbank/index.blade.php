@@ -159,45 +159,7 @@
                     </tr> 
                     </thead>
 
-<<<<<<< HEAD
 
-                    <tbody>
-                    @foreach($data['bbk'] as $index=>$bbk)
-                      <tr>
-                        <td> {{$index + 1}} </td>
-                        <td> {{$bbk->bbk_nota}} </td>
-                        <td>  @if($bbk->fpg_nofpg != '')
-                                {{$bbk->fpg_nofpg}}
-                              @else
-                                -
-                              @endif
-                        </td>
-                        <td> {{$bbk->mb_nama}} </td>
-                        <td> {{ Carbon\Carbon::parse($bbk->bbk_tgl)->format('d-M-Y ') }}</td>
-                        <td> {{$bbk->bbk_keterangan}} </td>
-                        <td> {{number_format($bbk->bbk_cekbg, 2)}} </td>
-                        <td> {{number_format($bbk->bbk_biaya, 2)}}  </td>
-                        <td> {{ number_format($bbk->bbk_total, 2) }} </td>
-                        <td>
-                               @if(Auth::user()->punyaAkses('Pelunasan Hutang','ubah'))     
-                        <a class="btn btn-sm btn-success text-right" href={{url('pelunasanhutangbank/detailpelunasanbank/'.$bbk->bbk_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i></a> &nbsp; 
-                                @endif
-
-                                 @if(Auth::user()->punyaAkses('Pelunasan Hutang','print')) 
-                        <a class="btn btn-sm btn-info" href="{{url('pelunasanhutangbank/cetak/'. $bbk->bbk_id.'')}}" type="button"> <i class="fa fa-print" aria-hidden="true"></i> </a>
-                                @endif
-
-                        @if(Auth::user()->punyaAkses('Pelunasan Hutang','hapus')) 
-                        <a class="btn btn-sm btn-danger" onclick="hapus({{$bbk->bbk_id}})" type="button"> <i class="fa fa-trash" aria-hidden="true"></i> </a>
-                                @endif
-
-                        </td>
-                    </tr>
-                    @endforeach
-                   </tbody>
-
-=======
->>>>>>> f9d4758f5a217058f2d9eb17adcf772126c4acf6
                   </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
