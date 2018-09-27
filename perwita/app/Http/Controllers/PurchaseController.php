@@ -185,6 +185,169 @@ class PurchaseController extends Controller
 
 		return view('purchase.spp.index', compact('data'));
 	}
+
+
+	public function spp_indextable (Request $request) {
+
+		  $idjenisbayar='';
+  		  $tgl='';
+  		  $supplier='';
+  		  $nofpg='';
+  		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+  		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+  		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
+  		  	$tgl="and fpg_tgl >= '$tgl1' AND fpg_tgl <= '$tgl2'";
+  		  }
+  		  if($request->nosupplier!=''){
+  		  	$supplier="and fpg_supplier=$request->nosupplier";
+  		  }
+  		  if($request->idjenisbayar!=''){
+  		  	$idjenisbayar="and idjenisbayar=$request->idjenisbayar";
+  		  }
+  		  if($request->nofpg!=''){
+  		  	$nofpg="and fpg_nofpg='$request->nofpg'";
+  		  }
+
+		$data='';
+
+		$cabang = session::get('cabang');
+
+		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
+			$data= DB::select("select *,'no' as no from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode order by spp_id desc");
+		}else{
+			$data= DB::select("select *,'no' as no from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode and spp_cabang = '$cabang' order by spp_id desc");
+		}
+
+
+$data=collect($data);	
+
+
+
+
+return DataTables::of($data)->
+			editColumn('spp_tgldibutuhkan', function ($data) {            
+            	return date('d-m-Y',strtotime($data->spp_tgldibutuhkan));
+            })
+            ->addColumn('detailspp', function ($data) {            
+            	return  
+            	'<a 
+            	href='.url('suratpermintaanpembelian/detailspp/'.$data->spp_id.'').'>'.$data->spp_nospp.'</a>';
+            })
+          
+            ->editColumn('spp_status', function ($data) { 
+
+				
+                      if($data->spp_status == 'DISETUJUI'){
+                         return '<span class="label label-info">  DISETUJUI </a></span>';
+                      }
+                      elseif($data->spp_status == 'DITERIMA'){
+                          return '<span class="label label-warning">  DITERIMA </span>';
+                      }
+                      elseif($data->spp_status == 'DITOLAK'){
+                            return '<span class="label label-danger"> '.$data->spp_status.'</span>';
+                      }
+                      else {
+                            return '<span class="label label-default"> '.$data->spp_status.'</span>';
+                      }
+                      
+
+            })->editColumn('spp_cabang', function ($data) { 
+            	
+
+				$spp_cabang='';
+
+				if($data->spp_status == 'DITERBITKAN'){
+                         if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','hapus')){
+                           $spp_cabang.='<a href="#" class="btn btn-sm btn-danger" onclick="hapusData('.$data->spp_id.')"> <i class="fa fa-trash-o" aria-hidden="true"></i></a>';
+                          }
+
+                         if(Auth::user()->punyaAkses('Surat Permintaan Pembelian' , 'ubah')){
+                           $spp_cabang.='<a class="btn btn-sm btn-warning"
+                           href='.url('suratpermintaanpembelian/editspp/'.$data->spp_id.'').'>
+                           <i class="fa fa-pencil" aria-hidden="true"></i>  </a>';                           
+                        }
+
+                }
+
+                if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','print')){
+        
+					$spp_cabang .='<a class="btn btn-sm btn-success" 
+							href='.url('suratpermintaanpembelian/cetakspp/'.$data->spp_id.'').'>
+					 <i class="fa fa-print" aria-hidden="true"></i></a>';
+					
+                }
+
+
+				return $spp_cabang;
+
+
+            
+            })->addColumn('action', function ($data) {            	
+            	$action='';
+              	if($data->spp_statuskabag == 'BELUM MENGETAHUI'){
+                $action.='<span class="label label-info"> <i class="fa fa-close"> </i> '.$data->spp_statuskabag.'</span>';
+               }elseif($data->spp_statuskabag == 'SETUJU'){
+                $action.='<span class="label label-info"> <i class="fa fa-check"> </i> '.$data->spp_statuskabag.'</span>';
+               }
+               return $action;
+            })
+			->make(true);	
+
+
+
+
+		
+
+
+
+
+
+
+
+	}
+
+	public function spp_indexnotif (Request $request) {
+
+		  $idjenisbayar='';
+  		  $tgl='';
+  		  $supplier='';
+  		  $nofpg='';
+  		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+  		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+  		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
+  		  	$tgl="and fpg_tgl >= '$tgl1' AND fpg_tgl <= '$tgl2'";
+  		  }
+  		  if($request->nosupplier!=''){
+  		  	$supplier="and fpg_supplier=$request->nosupplier";
+  		  }
+  		  if($request->idjenisbayar!=''){
+  		  	$idjenisbayar="and idjenisbayar=$request->idjenisbayar";
+  		  }
+  		  if($request->nofpg!=''){
+  		  	$nofpg="and fpg_nofpg='$request->nofpg'";
+  		  }
+
+		$data='';
+
+		$cabang = session::get('cabang');
+		
+		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){			
+			$data['belumdiproses'] = DB::table("spp")->where('spp_status' , '=' , 'DITERBITKAN')->count();
+			$data['disetujui'] = DB::table("confirm_order")->where('man_keu' , '=' , 'DISETUJUI')->count();
+			$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->count();
+			$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->count();
+			$data['statuskabag'] = DB::table("spp")->where('spp_statuskabag' , '=' , 'BELUM MENGETAHUI')->count();
+		}else{
+			$data['belumdiproses'] = DB::table("spp")->where('spp_status' , '=' , 'DITERBITKAN')->where('spp_cabang' , '=' , $cabang)->count();
+			$data['disetujui'] = DB::table("confirm_order")->where('man_keu' , '=' , 'DISETUJUI')->where('co_cabang' , '=' , $cabang)->count();
+			$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->where('spp_cabang' , '=' , $cabang)->count();
+			$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->where('spp_cabang' , '=' , $cabang)->count();
+
+			$data['statuskabag'] = DB::table("spp")->where('spp_statuskabag' , '=' , 'BELUM MENGETAHUI')->where('spp_cabang' , '=' , $cabang)->count();
+		}
+
+		
+	}
 	
 
 	public function sppsetujukabag(Request $request){
@@ -1050,50 +1213,54 @@ return
             	return date('d-m-Y',strtotime($data->spp_tgldibutuhkan));
             })
             ->editColumn('staff_pemb', function ($data) { 
-
+            	$staff_pemb='';
 				  if(Auth::user()->punyaAkses('Konfirmasi Order','aktif')){
 				            if($data->staff_pemb == 'DISETUJUI'){
-				                return '<a class="label label-info" href="
+				$staff_pemb.='<a class="label label-info" href="
 				                '.url('konfirmasi_order/konfirmasi_orderdetailpemb/'.$data->co_idspp.'').'
 				                ">'.$data->staff_pemb.'</a>';                            				                
 				                          }else{
-				                return '<a class="label label-warning" href="
+				$staff_pemb.= '<a class="label label-warning" href="
 								'.url('konfirmasi_order/konfirmasi_orderdetailpemb/'.$data->co_idspp.'').'
 				                ">'.$data->staff_pemb.'</a>';                            				                
 				                          }
 				       }
 
+				return $staff_pemb;
 
             })->editColumn('spp_cabang', function ($data) { 
             	return $data->spp_cabang.'-'.$data->nama;                                 
             
             })
             ->editColumn('man_keu',function($data){
-
+			$man_keu='';
             	if(Auth::user()->punyaAkses('Konfirmasi Order Keu','aktif')){
                        if($data->man_keu == 'DISETUJUI'){
-                       return '<a class="label label-info"  href="">'.$data->man_keu.'</a>';
-                       /*{{url('konfirmasi_order/konfirmasi_orderdetailkeu/'. $data->co_idspp.'')}}*/
+                       $man_keu.= '<a class="label label-info"  href="
+				                '.url('konfirmasi_order/konfirmasi_orderdetailkeu/'.$data->co_idspp.'').'
+				                ">'.$data->man_keu.'</a>';
+                       
                           }else{
-                	   return '<a class="label label-danger" href="">'.$data->man_keu.'</a>';
-                           /*{{url('konfirmasi_order/konfirmasi_orderdetailkeu/'. $data->co_idspp.'')}}*/
+                	   $man_keu.='<a class="label label-danger" href="
+				                '.url('konfirmasi_order/konfirmasi_orderdetailkeu/'.$data->co_idspp.'').'
+				                ">'.$data->man_keu.'</a>';                           
                        }
                           
                 }
 
+                return $man_keu;
+
+
 
             })->addColumn('action', function ($data) {            	
             	if($data->man_keu == 'DISETUJUI' && $data->staff_pemb == 'DISETUJUI' )
-            	return '<a class="btn btn-sm btn-success" > <i class="fa fa-print" aria-hidden="true"></i>  </a>';
-            //href="{{url('konfirmasi_order/cetakkonfirmasi/'.$co->co_id.'')}}"
+            	return '<a class="btn btn-sm btn-success" href="
+				                '.url('konfirmasi_order/cetakkonfirmasi/'.$data->co_id.'').'
+				                ">
+				                 <i class="fa fa-print" aria-hidden="true"></i>  </a>';            
             })
 			->make(true);	
 
-
-
-
-		
-		/*return view('purchase.confirm_order.index', compact('data'));*/
 	}
 
 
@@ -10311,6 +10478,7 @@ public function kekata($x) {
   		  $nofpg='';
   		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
   		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+  		  $cabang = session::get('cabang');
   		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
   		  	$tgl="and fpg_tgl >= '$tgl1' AND fpg_tgl <= '$tgl2'";
   		  }
@@ -10375,8 +10543,8 @@ return $html;
   		  if($request->nofpg!=''){
   		  	$nofpg="and fpg_nofpg='$request->nofpg'";
   		  }
-
-$dataFpg='';
+		 $cabang = session::get('cabang');
+		 $dataFpg='';
 		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){						
 
 			$dataFpg=DB::select("select *,row_number() OVER () as no from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar $tgl $supplier $idjenisbayar $nofpg  order by fpg_nofpg desc");
@@ -10396,12 +10564,14 @@ $dataFpg='';
             	return date('d-m-Y',strtotime($dataFpg->fpg_tgl));
             })
             ->editColumn('fpg_keterangan', function ($dataFpg) { 
+            	$fpg_keterangan='';
             	if($dataFpg->fpg_posting == 'DONE'){
-                 return $dataFpg->fpg_keterangan.'<span class="label label-success"> Sudah Terposting </span> &nbsp';
+                 $fpg_keterangan.=$dataFpg->fpg_keterangan.'<span class="label label-success"> Sudah Terposting </span> &nbsp';
             	}
                 else{
-                return $dataFpg->fpg_keterangan.'<span class="label label-warning">  Belum di Posting </span> &nbsp';
+                $fpg_keterangan.= $dataFpg->fpg_keterangan.'<span class="label label-warning">  Belum di Posting </span> &nbsp';
                 }
+				return $fpg_keterangan;
             })->editColumn('fpg_totalbayar', function ($dataFpg) { 
                 return number_format($dataFpg->fpg_totalbayar, 2);                
             })->editColumn('fpg_cekbg', function ($dataFpg) { 
