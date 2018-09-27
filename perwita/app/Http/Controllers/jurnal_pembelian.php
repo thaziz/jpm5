@@ -321,6 +321,22 @@ class jurnal_pembelian  extends Controller
     });
     }
 
+    function fpgbbk(){
+      $bbk = DB::select("select * from bukti_bank_keluar");
+      for($j = 0; $j < count($bbk); $j++){
+        $jenisbayarbbk = $bbk[$j]->bbk_flag;
+        $idbbk = $bbk[$j]->bbk_id;
+        if($bbk->flag == 'CEKBG'){
+          $databbkd = DB::select("select * from bukti_bank_keluar_detail where bbkd_idbbk =  '$idbbk'");
+          $idfpg = $databbkd[0]->bbkd_idfpg
+        }
+        else if($bbk->flag == 'AKUNBG'){
+          $databbkab = DB::select("select * from bukti_bank_keluar_akunbg where bbkab_idbbk = '$idbbk'");
+
+        }
+      }
+    }
+
     function nofpg(){
         $date = Carbon::parse($tgl)->format('m');
 

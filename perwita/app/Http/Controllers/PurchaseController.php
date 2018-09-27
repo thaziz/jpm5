@@ -8312,10 +8312,6 @@ public function kekata($x) {
 				
 			}
 		}
-
-
-		
-
 		return json_encode($data);
 	}
 
@@ -8325,10 +8321,10 @@ public function kekata($x) {
 
 		if(Auth::user()->punyaAkses('Pelunasan Hutang','all')){
 			$data['bbk'] = DB::select("select * from bukti_bank_keluar, cabang, masterbank where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order by bbk_id desc" );
-			
+
 		}
 		else {
-			$data['bbk'] = DB::select("select * from bukti_bank_keluar, cabang, masterbank where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order and bbk_cabang = '$cabang' by bbk_id desc" );
+			$data['bbk'] = DB::select("select * from bukti_bank_keluar, cabang, masterbank where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order and bbk_cabang = '$cabang' order by bbk_id desc" );
 
 		}
 
