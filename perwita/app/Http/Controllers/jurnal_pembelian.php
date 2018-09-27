@@ -1090,7 +1090,7 @@ class jurnal_pembelian  extends Controller
                 $jr_no = get_id_jurnal('BM' . $kodebank , $cabangtujuan , $tgl);
                 $notabm = $databm[$j]->bm_nota;
                 
-                dd($jr_no . $notabm);
+             
 
                 $jurnal = new d_jurnal();
                 $jurnal->jr_id = $idjurnald;
