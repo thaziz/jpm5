@@ -1029,6 +1029,8 @@ class jurnal_pembelian  extends Controller
         //jurnal
         $bm_status = $databm[$j]->bm_status;
         if($bm_status == 'DITERIMA'){
+
+
               //bank asal
               $keterangan = $databm[$j]->bm_keterangan;
 
@@ -1037,7 +1039,7 @@ class jurnal_pembelian  extends Controller
               $dktujuan = getdka($banktujuan);
 
               $dkakasbank = getdka($bankasaljurnal);
-             
+              
               //terima duit
               // KAS BANK (K) VS BANK TUJUAN  (D)
               if($dkakasbank == 'K'){
@@ -1075,7 +1077,7 @@ class jurnal_pembelian  extends Controller
                   $idjurnald = 1;
                 }
 
-                $kodebank = $banktujuan2[0]->mb_kode;
+                $kodebank = $banktujuan2[0]->mb_id;
                 if($kodebank < 10){
                   $kodebank = '0' . $kodebank;
                 }
@@ -1086,7 +1088,7 @@ class jurnal_pembelian  extends Controller
                 $cabangtujuan = $databm[$j]->bm_cabangtujuan;
 
                 $jr_no = get_id_jurnal('BM' . $kodebank , $cabangtujuan , $tgl);
-
+                $notabm = $databm[$j]->bm_nota;
 
                 $jurnal = new d_jurnal();
                 $jurnal->jr_id = $idjurnald;

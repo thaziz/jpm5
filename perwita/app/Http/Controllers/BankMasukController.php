@@ -111,9 +111,9 @@ class BankMasukController extends Controller
 		$bankmasuk->bm_nota = $request->notabm;
 		$bankmasuk->bm_keterangan = $request->keteranganbm;
 		$bankmasuk->bm_namabanktujuan = $namabank;
-		$bankmasuk->bm_bankasaljurnal = $bank;
+	/*	$bankmasuk->bm_bankasaljurnal = $bank;*/
 		$bankmasuk->bm_nominal = $nominalbank;
-		$bankmasuk->bm_bankasal = $bank;
+		/*$bankmasuk->bm_bankasal = $bank;*/
 		$bankmasuk->save();
 		for($i = 0; $i < count($request->akun); $i++){
 			$nominaldt = str_replace(",", "", $request->nominal[$i]);
