@@ -8320,7 +8320,7 @@ public function kekata($x) {
 			$cabang = session::get('cabang');
 
 		if(Auth::user()->punyaAkses('Pelunasan Hutang','all')){
-			$data['bbk'] = DB::select("select * from bukti_bank_keluar, cabang, masterbank where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order by bbk_id desc" );
+			$data['bbk'] = DB::select("select * from cabang, masterbank, bukti_bank_keluar where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order by bbk_id desc" );
 
 		}
 		else {
