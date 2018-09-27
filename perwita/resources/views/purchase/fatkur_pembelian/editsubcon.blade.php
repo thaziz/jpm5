@@ -93,7 +93,7 @@
 <td> Cabang </td>
 
   <td width="10">:</td>
-  <td class="disabled"> 
+  <td class="disabled" colspan="3"> 
   <select class="form-control chosen-select-width disabled cabang" name="cabang">
     @foreach($cabang as $i)
     <option value="{{$i->kode}}" @if($data->fp_comp == $i->kode) selected @endif>{{$i->kode}} - {{$i->nama}} </option>
@@ -106,7 +106,7 @@
 No Faktur
 </td>
   <td width="10">:</td>
-<td>
+<td colspan="3">
    <input type="text" class="form-control nofaktur" name="nofaktur" value="{{$data->fp_nofaktur}}" required="" readonly="">
    <input type="hidden" class="form-control idfaktur" name="idfaktur" value="{{$data->fp_idfaktur}}" required="" readonly="">
 
@@ -116,7 +116,7 @@ No Faktur
 <tr>
   <td style="width: 100px">Tanggal</td>
   <td width="10">:</td>
-  <td width="200">
+  <td width="200" colspan="3">
     <input type="text" name="tgl_biaya_head" class="form-control" value="{{carbon\carbon::parse($data->fp_tgl)->format('d/m/Y') }}" readonly="" style="">
     <input type="hidden" name="nota_id_tt" class="form-control nota_id_tt" value="{{$valid_cetak->tt_idform or null}}" readonly="" style="">
     <input type="hidden" name="nota_no_tt" class="form-control nota_no_tt" value="{{$valid_cetak->tt_noform or null}}" readonly="" style="">
@@ -125,19 +125,19 @@ No Faktur
  <tr>
   <td style="width: 100px">Jatuh Tempo</td>
   <td width="10">:</td>
-  <td width="200">
+  <td width="200"colspan="3">
     <input type="text" name="tempo_subcon" class="form-control tempo_subcon" value="{{carbon\carbon::parse($data->fp_jatuhtempo)->format('d/m/Y')}}" >
   </td>
  </tr>
 <tr>
   <td style="width: 100px">Status </td>
   <td width="10">:</td>
-  <td width="200"><input type="text" name="status" class="form-control" value="Released" readonly="" ></td>
+  <td width="200"colspan="3"><input type="text" name="status" class="form-control" value="Released" readonly="" ></td>
  </tr>
   <tr class=" hd2" >
   <td style="width: 100px">Nama Subcon</td>
   <td width="10">:</td>
-  <td width="200" class="subcon_td disabled" >
+  <td width="200" class="subcon_td disabled"colspan="3" >
     <select class="nama_sc form-control chosen-select-width1" name="nama_subcon">
         <option value="0">- Cari - Subcon -</option>
       @foreach($subcon as $sub)
@@ -149,12 +149,12 @@ No Faktur
  <tr>
   <td style="width: 100px">No Invoice </td>
   <td width="10">:</td>
-  <td width="200"><input type="text" readonly="" value="{{$data->fp_noinvoice}}" name="invoice_subcon" class="form-control invoice_tt" ></td>
+  <td width="200" colspan="3"><input type="text" readonly="" value="{{$data->fp_noinvoice}}" name="invoice_subcon" class="form-control invoice_tt" ></td>
  </tr>  
  <tr>
   <td style="width: 100px">Tanda terima</td>
   <td width="10">:</td>
-  <td width="200">
+  <td width="200" colspan="3">
     <input type="text" readonly="" name="tanda_terima" class="form-control tanda_terima" value="{{ $tt->tt_noform or null}}">
     <input type="hidden" readonly="" name="invoice_tt" class="form-control invoice_tt" value="{{ $tt->ttd_invoice or null}}">
     <input type="hidden" readonly="" name="id_tt" class="form-control id_tt" value="{{ $tt->ttd_id or null}}">
@@ -164,13 +164,72 @@ No Faktur
  <tr>
   <td style="width: 100px">Keterangan </td>
   <td width="10">:</td>
-  <td width="200"><input type="text" value="{{$data->fp_keterangan}}" name="keterangan_subcon" class="form-control keterangan_subcon"  ></td>
+  <td width="200" colspan="3"><input type="text" value="{{$data->fp_keterangan}}" name="keterangan_subcon" class="form-control keterangan_subcon"  ></td>
  </tr>  
  <tr>
-  <td style="width: 100px">Total Biaya</td>
-  <td width="10">:</td>
-  <td width="200"><input type="text" readonly="" style="text-align: right" value="{{'Rp ' . number_format($data->fp_netto,2,',','.')}}"  class="form-control total_subcon" name="total_subcon" ></td>
+    <td style="width: 100px">Total</td>
+    <td width="10">:</td>
+    <td width="200" colspan="3">
+      <input value="0" type="text" name="total_kotor_subcon" class="form-control total_kotor_subcon" style="" readonly="">
+    </td>
+  </tr>
+ <tr>
+    <td style="width: 100px">DPP</td>
+    <td width="10">:</td>
+    <td width="200" colspan="3">
+      <input value="Rp. 0,00" type="text" name="total_dpp_subcon" class="form-control total_dpp_subcon" style="" readonly="">
+      <input value="" type="hidden" name="diskon_subcon" class="form-control diskon_subcon hanya_angka">
+    </td>
+  </tr>
  </tr>
+  <tr>
+  <td style="width: 100px" >Jenis PPN</td>
+  <td width="10">:</td>
+  <td width="200" >
+    <select onchange="hitung_ppn_subcon()" class="form-control jenis_ppn_subcon chosen-select-width1" name="jenis_ppn_subcon">
+      <option value="">Pilih - PPN</option>
+      <option @if ($data->fp_jenisppn == 'INCLUDE')
+                    selected="" 
+                  @endif class="include">INCLUDE</option>
+      <option @if ($data->fp_jenisppn == 'EXCLUDE')
+                    selected="" 
+                  @endif class="exclude">EXCLUDE</option>
+    </select>
+  </td>
+  <td style="width: 100px">
+    <input type="text" name="persen_ppn_subcon" value="10" style="text-transform: uppercase;" class="form-control persen_ppn_subcon hanya_angka center" onkeyup="hitung_ppn_subcon()">
+  </td>
+  <td width="200" >
+    <input type="text" name="ppn_subcon" readonly="" style="text-transform: uppercase;" class="form-control ppn_subcon" style="">
+  </td>
+ </tr>  
+ <tr>
+  <td style="width: 100px" >Jenis PPH</td>
+  <td width="10">:</td>
+  <td width="200" >
+    <select class="form-control jenis_pph_subcon chosen-select-width1" name="jenis_pph_subcon" onchange="hitung_pph_subcon()">
+      <option value="">Pilih - PPH</option>
+      @foreach ($pajak as $val)
+        <option @if ($data->fp_jenispph == $val->id)
+                    selected="" 
+                  @endif value="{{ $val->id }}" data-val="{{ $val->nilai }}">{{ $val->nama }}</option>
+      @endforeach
+    </select>
+  </td>
+  <td style="width: 100px">
+    <input type="text" readonly="" name="persen_pph_subcon" value="0" style="text-transform: uppercase;" class="form-control persen_pph_subcon hanya_angka center">
+  </td>
+  <td width="200" >
+    <input type="text" readonly="" name="pph_subcon" style="text-transform: uppercase;" class="form-control pph_subcon" style="">
+  </td>
+ </tr> 
+ <tr>
+    <td style="width: 100px">Total Netto</td>
+    <td width="10">:</td>
+    <td width="200" colspan="3">
+      <input value="Rp. 0,00" type="text" name="total_netto" class="form-control total_netto_subcon" style="" readonly="">
+    </td>
+  </tr>
 </table>
 </div>
 <div class="col-sm-12 detail_subcon"  >
@@ -379,6 +438,7 @@ No Faktur
   <h3>Tabel Detail Resi</h3>
   <hr>
       <button type="button" class="btn btn-primary pull-right save_subcon " id="save_subcon" onclick="save_subcon()"><i class="fa fa-save"></i> Simpan Data</button>
+      <button type="button" class="btn btn-danger pull-right" onclick="modal_pajak_subcon()" style="margin-right: 20px">Faktur Pajak</button>
       <button type="button" style="margin-right: 20px" class="btn btn-warning pull-right print_subcon" id="print_subcon" onclick="print_penerus()"><i class="fa fa-print"></i> Print</button>
       <button type="button" style="margin-right: 20px" class="btn btn-warning pull-right print-penerus" id="print-penerus" onclick="print_penerus_tt()" ><i class="fa fa-print"></i> Print Tanda Terima</button>
         <button class="btn btn-primary btn_modal_sc  pull-right " style="margin-right: 20px" type="button" > Bayar dengan Uang Muka </button>
@@ -742,6 +802,60 @@ function cancel_data() {
   $('.table_kontrak input').val('');
 }
 
+ $('.jenis_pph_subcon').change(function(){
+    var jumlah = $('.jenis_pph_subcon option:selected').data('val');
+    $('.persen_pph_subcon ').val(jumlah);
+  })
+
+  function hitung_total_subcon() {
+    var total_dpp_subcon  = $('.total_dpp_subcon').val().replace(/[^0-9\-]+/g,"")/100;
+    var ppn_subcon        = $('.ppn_subcon').val().replace(/[^0-9\-]+/g,"")/100;
+    var pph_subcon        = $('.pph_subcon').val().replace(/[^0-9\-]+/g,"")/100;
+
+    var hasil = total_dpp_subcon + ppn_subcon - pph_subcon;
+    
+    $('.total_netto_subcon').val(accounting.formatMoney(hasil, "", 2, ".",','));
+  }
+
+  function hitung_ppn_subcon() {
+    var jenis_ppn_subcon  = $('.jenis_ppn_subcon').val();
+    var ppn_subcon  = $('.total_dpp_subcon').val().replace(/[^0-9\-]+/g,"")/100;
+    var persen_ppn_subcon = $('.persen_ppn_subcon ').val();
+    var total_kotor_subcon  = $('.total_kotor_subcon').val().replace(/[^0-9\-]+/g,"")/100;
+    var diskon_subcon  = $('.diskon_subcon').val();
+    var td = total_kotor_subcon - diskon_subcon;
+    var hasil = 0;
+    if (jenis_ppn_subcon == 'EXCLUDE') {
+      hasil = persen_ppn_subcon/100 * td;
+      $('.total_dpp_subcon').val(accounting.formatMoney(td, "", 2, ".",','));
+    }else if (jenis_ppn_subcon == 'INCLUDE') {
+      hasil = persen_ppn_subcon/(100+persen_ppn_subcon*1) * td;
+      $('.total_dpp_subcon').val(accounting.formatMoney(td - hasil, "", 2, ".",','));
+    }
+
+    $('.ppn_subcon').val(accounting.formatMoney(hasil, "", 2, ".",','));
+    hitung_total_subcon();
+  }
+
+  function hitung_pph_subcon() {
+    var jenis_pph_subcon  = $('.jenis_pph_subcon ').val();
+    var total_kotor_subcon  = $('.total_kotor_subcon').val().replace(/[^0-9\-]+/g,"")/100;
+    var diskon_subcon  = $('.diskon_subcon').val();
+    var persen_pph_subcon = $('.persen_pph_subcon ').val();
+
+    var hasil = 0;
+    var td = total_kotor_subcon - diskon_subcon;
+    hasil = persen_pph_subcon/100 * td;
+    $('.pph_subcon').val(accounting.formatMoney(hasil, "", 2, ".",','));
+    hitung_total_subcon();
+  }
+
+  $('.diskon_subcon').keyup(function(){
+    hitung_subcon();
+  })
+
+
+
 function hitung_subcon() {
   var temp = 0;
   $('.d_harga_subcon').each(function(){
@@ -750,8 +864,40 @@ function hitung_subcon() {
         ini = parseFloat(ini);
     temp += ini;
   })
+  $('.total_kotor_subcon').val(accounting.formatMoney(temp, "", 2, ".",','));
+    $('.total_dpp_subcon').val(accounting.formatMoney(temp, "", 2, ".",','));
 
-  $('.total_subcon').val(accounting.formatMoney(temp, "Rp ", 2, ".",','));
+    hitung_ppn_subcon();
+    hitung_pph_subcon();
+    hitung_total_subcon();
+}
+
+function modal_pajak_subcon() {
+  var jenis_ppn_penerus   = $('.jenis_ppn_subcon ').val();
+
+  var total_dpp_penerus   = $('.total_dpp_subcon ').val().replace(/[^0-9\-]+/g,"")/100;
+
+  var ppn_penerus         = $('.ppn_subcon ').val().replace(/[^0-9\-]+/g,"")/100;
+  var persen_ppn_penerus  = $('.persen_ppn_subcon ').val();
+
+
+  var total_netto         = $('.total_netto_subcon ').val().replace(/[^0-9\-]+/g,"")/100;
+
+  if (jenis_ppn_penerus  != '') {
+
+    $('.dpp_faktur_pajak_penerus ').val(accounting.formatMoney(total_dpp_penerus, "", 2, ".",','));
+    $('.dpp_faktur_pajak_penerus1 ').val(accounting.formatMoney(total_dpp_penerus, "", 2, ".",','));
+
+    $('.nilai_ppn_pajak_penerus ').val(persen_ppn_penerus);
+    $('.ppn_pajak_penerus ').val(accounting.formatMoney(ppn_penerus, "", 2, ".",','));
+
+    $('.ppn_pajak_penerus1 ').val(accounting.formatMoney(ppn_penerus, "", 2, ".",','));
+
+    $('.netto_pajak_penerus ').val(accounting.formatMoney(total_netto, "", 2, ".",','));
+    $('#modal_pajak').modal('show');
+  }else{
+    return toastr.warning('Harap Memilih Pajak PPn terlebih Dahulu');
+  }
 }
 
 
@@ -1119,7 +1265,10 @@ function save_subcon(){
       url:baseUrl + '/fakturpembelian/subcon_update',
     data:subcon.$('input').serialize()
        +'&'+$('.head1 :input').serialize()
-       +'&'+$('.head_subcon :input').serialize(),
+       +'&'+$('.head_subcon :input').serialize()
+       +'&faktur_pajak_penerus='+$('.faktur_pajak_penerus').val()
+       +'&tanggal_pajak_penerus='+$('.tanggal_pajak_penerus').val()
+       +'&masa_pajak_penerus='+$('.masa_pajak_penerus').val(),
     type:'post',
       success:function(response){
 
@@ -1138,6 +1287,19 @@ function save_subcon(){
                   $('.modal_tt_subcon').addClass('disabled');
                   $('.append_subcon').addClass('disabled');
           });
+      }else if (response.status == 0){
+        swal({
+            title: pesan,
+                type: 'error',
+                timer: 900,
+                showConfirmButton: true
+
+        },function(){
+            $('.idfaktur').val(response.id);
+            $('.save_subcon').addClass('disabled');
+              $('.modal_tt_subcon').addClass('disabled');
+              $('.append_subcon').addClass('disabled');
+        });
       }
       },
       error:function(data){

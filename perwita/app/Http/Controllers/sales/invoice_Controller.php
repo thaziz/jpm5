@@ -102,9 +102,12 @@ class invoice_Controller extends Controller
 
                             
                             if(Auth::user()->punyaAkses('Invoice','ubah')){
-                              if ( $data->i_statusprint == 'Released') {
-                                if(cek_periode(carbon::parse($data->i_tanggal)->format('m'),carbon::parse($data->i_tanggal)->format('Y') ) != 0){
-                                  $a = '<button type="button" onclick="edit(\''.$data->i_nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
+                              if ( $data->i_faktur_pajak == null ) {
+                                $total = $data->i_total_tagihan + $data->i_debet - $data->i_kredit;
+                                if ($data->i_sisa_pelunasan == $total) {
+                                  if(cek_periode(carbon::parse($data->i_tanggal)->format('m'),carbon::parse($data->i_tanggal)->format('Y') ) != 0){
+                                    $a = '<button type="button" onclick="edit(\''.$data->i_nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
+                                  }
                                 }
                               }
                             }else{
@@ -119,7 +122,7 @@ class invoice_Controller extends Controller
 
 
                             if( Auth::user()->punyaAkses('Invoice','hapus')){
-                              if ( $data->i_statusprint == 'Released') {
+                              if ( $data->i_faktur_pajak == null ) {
                                 $total = $data->i_total_tagihan + $data->i_debet - $data->i_kredit;
                                 if ($data->i_sisa_pelunasan == $total) {
                                   if(cek_periode(carbon::parse($data->i_tanggal)->format('m'),carbon::parse($data->i_tanggal)->format('Y') ) != 0){

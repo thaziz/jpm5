@@ -85,7 +85,7 @@
           No Faktur
             </td>
             <td width="10">:</td>
-            <td>
+            <td colspan="3">
                <input type="text" name="nofaktur"  class="form-control nofaktur" value="{{$cari_fp->fp_nofaktur}}" required="" readonly="">
                <input type="hidden" class="form-control idfaktur" name="idfaktur" value="{{$cari_fp->fp_idfaktur}}" required="" readonly="">
             
@@ -95,7 +95,7 @@
           <tr>
             <td> Cabang </td>
             <td width="10">:</td>
-            <td class="disabled">  
+            <td class="disabled" colspan="3">  
               <select class="form-control cabang" name="cabang">
                 @foreach($cabang as $val)
                 <option value="{{$val->kode}}" @if($val->kode == $cari_fp->fp_comp) selected @endif> {{$val->nama}} </option>
@@ -106,7 +106,7 @@
            <tr>
             <td style="width: 100px">Tanggal</td>
             <td width="10">:</td>
-            <td width="200">
+            <td width="200" colspan="3">
               <input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="{{$date}}" readonly="" style="">
               <input type="hidden" class="form-control tgl_resi"  readonly="" style="">
               <input type="hidden" name="master_persen" class="form-control master_persen"  readonly="" style="">
@@ -115,19 +115,19 @@
            <tr>
             <td style="width: 100px">Jatuh Tempo</td>
             <td width="10">:</td>
-            <td width="200">
+            <td width="200" colspan="3">
               <input type="text" name="jatuh_tempo" class="form-control jatuh_tempo" value="{{carbon\carbon::parse($cari_fp->fp_jatuhtempo)->format('d/m/Y')}}" placeholder="Jatuh tempo" style="">
             </td>
            </tr>
           <tr>
             <td style="width: 100px">Status </td>
             <td width="10">:</td>
-            <td width="200"><input type="text" name="status" class="form-control" value="{{$cari_fp->fp_status}}" readonly="" style=""></td>
+            <td width="200" colspan="3"><input type="text" name="status" class="form-control" value="{{$cari_fp->fp_status}}" readonly="" style=""></td>
            </tr>
             <tr class="vendor">
             <td style="width: 100px">Tipe Vendor </td>
             <td width="10">:</td>
-            <td width="200" class="vendor_td disabled">
+            <td width="200" class="vendor_td disabled" colspan="3">
               <select onchange="ganti_agen(this.value)" name="vendor" class="form-control vendor1 "  style="text-align: center; " >
                 <option @if($bp->bp_tipe_vendor == 'kosong') selected @endif value="kosong">-PILIH TIPE VENDOR-</option>
                 <option @if($bp->bp_tipe_vendor == 'AGEN') selected @endif value="AGEN">Agen Penerus </option>
@@ -138,7 +138,7 @@
            <tr class="nama-kontak-kosong">
             <td style="width: 100px">Nama Agen/Vendor </td>
             <td width="10">:</td>
-            <td width="200" class="nama_kontak_td disabled">
+            <td width="200" class="nama_kontak_td disabled" colspan="3">
               <select name="" class="form-control agen_vendor" style="text-align: center; ">
                 <option value="0" selected="">-PILIH NAMA AGEN/VENDOR-</option>
               </select>
@@ -147,14 +147,14 @@
            <tr>
             <td style="width: 100px">No Invoice</td>
             <td width="10">:</td>
-            <td width="200">
+            <td width="200" colspan="3">
               <input type="text" name="Invoice_biaya" readonly="" class="form-control invoice_tt" value="{{$cari_fp->fp_noinvoice}}" placeholder="No Invoice">
             </td>
            </tr>
            <tr>
             <td style="width: 100px">Tanda terima</td>
             <td width="10">:</td>
-            <td width="200">
+            <td width="200" colspan="3">
               <input type="text" readonly="" name="tanda_terima" class="form-control tanda_terima" value="{{ $tt->tt_noform }}">
               <input type="hidden" readonly="" name="invoice_tt" class="form-control invoice_tt" value="{{ $tt->ttd_invoice }}">
               <input type="hidden" readonly="" name="id_tt" class="form-control id_tt" value="{{ $tt->ttd_id }}">
@@ -164,12 +164,78 @@
             <tr>
             <td style="width: 100px">Keterangan</td>
             <td width="10">:</td>
-            <td width="200"><input type="text" value="{{$cari_fp->fp_keterangan}}" name="Keterangan_biaya" style="text-transform: uppercase;" class="form-control" style=""></td>
+            <td width="200" colspan="3">
+              <input type="text" value="{{$cari_fp->fp_keterangan}}" name="Keterangan_biaya" style="text-transform: uppercase;" class="form-control" style=""></td>
+           </tr> 
+           <tr>
+            <td style="width: 100px">Total</td>
+            <td width="10">:</td>
+            <td width="200" colspan="3">
+              <input value="0" type="text" name="total_kotor_penerus" class="form-control total_kotor_penerus" style="" readonly="">
+            </td>
+          </tr>
+           <tr>
+              <td style="width: 100px">DPP</td>
+              <td width="10">:</td>
+              <td width="200" colspan="3" >
+                <input value="Rp. 0,00" type="text" name="total_dpp_penerus" class="form-control total_dpp_penerus" style="" readonly="">
+                <input value="" type="hidden" name="diskon_penerus" class="form-control diskon_penerus hanya_angka">
+              </td>
+            </tr>
+           </tr>
+            <tr>
+            <td style="width: 100px" >Jenis PPN</td>
+            <td width="10">:</td>
+            <td width="200" >
+              <select onchange="hitung_ppn_penerus()" class="form-control jenis_ppn_penerus chosen-select-width1" name="jenis_ppn_penerus">
+                <option value="">Pilih - PPN</option>
+                <option @if ($cari_fp->fp_jenisppn == 'INCLUDE')
+                    selected="" 
+                  @endif class="include">INCLUDE</option>
+                <option @if ($cari_fp->fp_jenisppn == 'EXCLUDE')
+                    selected="" 
+                  @endif class="exclude">EXCLUDE</option>
+              </select>
+            </td>
+            <td style="width: 100px">
+              <input type="text" name="persen_ppn_penerus" value="10" style="text-transform: uppercase;" class="form-control persen_ppn_penerus hanya_angka center" onkeyup="hitung_ppn_penerus()">
+            </td>
+            <td width="200" >
+              <input type="text" name="ppn_penerus" readonly="" style="text-transform: uppercase;" class="form-control ppn_penerus" style="">
+            </td>
            </tr>  
+           <tr>
+            <td style="width: 100px" >Jenis PPH</td>
+            <td width="10">:</td>
+            <td width="200" >
+              <select class="form-control jenis_pph_penerus chosen-select-width1" name="jenis_pph_penerus" onchange="hitung_pph_penerus()">
+                <option value="">Pilih - PPH</option>
+                @foreach ($pajak as $val)
+                  <option @if ($cari_fp->fp_jenispph == $val->id)
+                    selected="" 
+                  @endif value="{{ $val->id }}" data-val="{{ $val->nilai }}">{{ $val->nama }}</option>
+                @endforeach
+              </select>
+            </td>
+            <td style="width: 100px">
+              <input type="text" readonly="" name="persen_pph_penerus" value="0" style="text-transform: uppercase;" class="form-control persen_pph_penerus hanya_angka center">
+            </td>
+            <td width="200" >
+              <input type="text" readonly="" name="pph_penerus" style="text-transform: uppercase;" class="form-control pph_penerus" style="">
+            </td>
+           </tr> 
+           <tr>
+              <td style="width: 100px">Total Netto</td>
+              <td width="10">:</td>
+              <td width="200" colspan="3">
+                <input value="Rp. 0,00" type="text" name="total_netto" class="form-control total_netto" style="" readonly="">
+              </td>
+            </tr> 
           <tr>
-            <td colspan="3">
+            <td colspan="5">
                 <button type="button" class="btn btn-primary pull-right save_biaya" style="margin-right: 20px" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
 
+               <button type="button" class="btn btn-danger" onclick="modal_pajak_penerus()">Faktur Pajak</button>
                <button type="button" style="margin-right: 20px;" class="btn btn-warning pull-left @if($cari_fp->fp_pending_status == 'PENDING') disabled @endif " id="print-tt" onclick="cetak_tt('{{$form_tt->tt_noform or $nota}}')"><i class="fa fa-print"></i> Print Tanda Terima</button>
                <button type="button" style="margin-right: 20px;" class="btn btn-warning pull-left " id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
 
@@ -228,11 +294,6 @@
               <td width="10">:</td>
               <td width="200"><input type="text" class="form-control keterangan_biaya" style="text-transform: uppercase;" style=""></td>
              </tr>
-              <tr>
-              <td style="width: 100px">Total</td>
-              <td width="10">:</td>
-              <td width="200"><input type="text" name="total_jml" class="form-control total_jml" style="" readonly=""></td>
-              </tr>
               <tr>
               <td style="width: 100px">Nominal</td>
               <td width="10">:</td>
@@ -500,6 +561,10 @@
 @section('extra_scripts')
 <script type="text/javascript">
  var array_do = [];
+  $('.date').datepicker({
+    format:'dd-mm-yyyy',
+    autoclose: true
+  });
   var jt = $('.jatuh_tempo').datepicker({
         format:'dd/mm/yyyy',
         autoclose: true
@@ -613,14 +678,86 @@
 
 
 
+  $('.jenis_pph_penerus').change(function(){
+    var jumlah = $('.jenis_pph_penerus option:selected').data('val');
+    $('.persen_pph_penerus ').val(jumlah);
+  })
+
+  function hitung_total() {
+    var total_dpp_penerus  = $('.total_dpp_penerus').val().replace(/[^0-9\-]+/g,"")/100;
+    var ppn_penerus        = $('.ppn_penerus').val().replace(/[^0-9\-]+/g,"")/100;
+    var pph_penerus        = $('.pph_penerus').val().replace(/[^0-9\-]+/g,"")/100;
+
+    var hasil = total_dpp_penerus + ppn_penerus - pph_penerus;
+    $('.total_netto').val(accounting.formatMoney(hasil, "", 2, ".",','));
+  }
+
+  function hitung_ppn_penerus() {
+    var jenis_ppn_penerus  = $('.jenis_ppn_penerus ').val();
+    var ppn_penerus  = $('.total_dpp_penerus').val().replace(/[^0-9\-]+/g,"")/100;
+    var persen_ppn_penerus = $('.persen_ppn_penerus ').val();
+    var total_kotor_penerus  = $('.total_kotor_penerus').val().replace(/[^0-9\-]+/g,"")/100;
+    var diskon_penerus  = $('.diskon_penerus').val();
+    var td = total_kotor_penerus - diskon_penerus;
+    var hasil = 0;
+    if (jenis_ppn_penerus == 'EXCLUDE') {
+      hasil = persen_ppn_penerus/100 * td;
+      $('.total_dpp_penerus').val(accounting.formatMoney(td, "", 2, ".",','));
+    }else if (jenis_ppn_penerus == 'INCLUDE') {
+      hasil = persen_ppn_penerus/(100+persen_ppn_penerus*1) * td;
+      $('.total_dpp_penerus').val(accounting.formatMoney(td - hasil, "", 2, ".",','));
+    }
+
+    $('.ppn_penerus').val(accounting.formatMoney(hasil, "", 2, ".",','));
+    hitung_total();
+  }
+
+  function hitung_pph_penerus() {
+    var jenis_pph_penerus  = $('.jenis_pph_penerus ').val();
+    var total_kotor_penerus  = $('.total_kotor_penerus').val().replace(/[^0-9\-]+/g,"")/100;
+    var diskon_penerus  = $('.diskon_penerus').val();
+    var persen_pph_penerus = $('.persen_pph_penerus ').val();
+
+    var hasil = 0;
+    var td = total_kotor_penerus - diskon_penerus;
+    hasil = persen_pph_penerus/100 * td;
+    $('.pph_penerus').val(accounting.formatMoney(hasil, "", 2, ".",','));
+    hitung_total();
+  }
+
+  $('.diskon_penerus').keyup(function(){
+    hitung();
+  })
+
   function hitung() {
     var temp = 0;
+    var diskon_penerus =  $('.diskon_penerus').val();
+    if (diskon_penerus == '') {
+      diskon_penerus = 0;
+    }
+
     datatable1.$('.bayar_biaya').each(function(){
       temp+=parseInt($(this).val());
     })
-    $('.total_jml').val(accounting.formatMoney(temp, "", 2, ".",','));
-  }
 
+    var hasil = temp - diskon_penerus;
+    if (hasil < 0) {
+      toastr.warning('PERHATIAN! DPP tidak boleh minus');
+
+      datatable1.$('.bayar_biaya').each(function(){
+        temp+=parseInt($(this).val());
+      })
+      $('.diskon_penerus').val('0');
+      hitung();
+      return false;
+    }
+    $('.total_kotor_penerus').val(accounting.formatMoney(temp, "", 2, ".",','));
+    $('.total_dpp_penerus').val(accounting.formatMoney(hasil, "", 2, ".",','));
+
+    hitung_ppn_penerus();
+    hitung_pph_penerus();
+    hitung_total();
+  }
 
   var count = 1;
 
@@ -907,7 +1044,10 @@
           url:baseUrl + '/fakturpembelian/update_agen',
           type:'post',
           data:$('.head_biaya :input').serialize()
-               +'&'+datatable1.$('input').serialize(),
+               +'&'+datatable1.$('input').serialize()
+               +'&faktur_pajak_penerus='+$('.faktur_pajak_penerus').val()
+              +'&tanggal_pajak_penerus='+$('.tanggal_pajak_penerus').val()
+              +'&masa_pajak_penerus='+$('.masa_pajak_penerus').val(),
           success:function(response){
             if (response.status == 1) {
                 swal({
@@ -920,9 +1060,9 @@
                 
                     });
             }else{
-
               swal({
-                title: "Data Sudah Ada",
+                title: "Terjadi Kesalahan",
+                text :response.pesan,
                 type: 'error',
                 timer: 900,
                 showConfirmButton: true
@@ -943,13 +1083,41 @@
      });
   }
 
-  function print_penerus() {
-   window.open('{{url('fakturpembelian/detailbiayapenerus')}}'+'/'+'{{$cari_fp->fp_idfaktur}}');
+function print_penerus() {
+ window.open('{{url('fakturpembelian/detailbiayapenerus')}}'+'/'+'{{$cari_fp->fp_idfaktur}}');
+}
+function cetak_tt(id) {
+ var id = id.replace(/\//g, "-");
+ window.open('{{url('fakturpembelian/cetak_tt')}}'+'/'+id);
+}
+
+function modal_pajak_penerus() {
+  var jenis_ppn_penerus   = $('.jenis_ppn_penerus ').val();
+
+  var total_dpp_penerus   = $('.total_dpp_penerus ').val().replace(/[^0-9\-]+/g,"")/100;
+
+  var ppn_penerus         = $('.ppn_penerus ').val().replace(/[^0-9\-]+/g,"")/100;
+  var persen_ppn_penerus  = $('.persen_ppn_penerus ').val();
+
+
+  var total_netto         = $('.total_netto ').val().replace(/[^0-9\-]+/g,"")/100;
+
+  if (jenis_ppn_penerus  != '') {
+
+    $('.dpp_faktur_pajak_penerus ').val(accounting.formatMoney(total_dpp_penerus, "", 2, ".",','));
+    $('.dpp_faktur_pajak_penerus1 ').val(accounting.formatMoney(total_dpp_penerus, "", 2, ".",','));
+
+    $('.nilai_ppn_pajak_penerus ').val(persen_ppn_penerus);
+    $('.ppn_pajak_penerus ').val(accounting.formatMoney(ppn_penerus, "", 2, ".",','));
+
+    $('.ppn_pajak_penerus1 ').val(accounting.formatMoney(ppn_penerus, "", 2, ".",','));
+
+    $('.netto_pajak_penerus ').val(accounting.formatMoney(total_netto, "", 2, ".",','));
+    $('#modal_pajak').modal('show');
+  }else{
+    return toastr.warning('Harap Memilih Pajak PPn terlebih Dahulu');
   }
-  function cetak_tt(id) {
-   var id = id.replace(/\//g, "-");
-   window.open('{{url('fakturpembelian/cetak_tt')}}'+'/'+id);
-  }
+}
 
 
 function hitung_um() {

@@ -56,7 +56,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
-                      @if(Auth::user()->punyaAkses('Tarif Cabang Kilogram','tambah'))
+                      @if(Auth::user()->punyaAkses('Tarif Cabang Kargo','tambah'))
                        <button  type="button" class="btn btn-success " id="btn_add" name="btnok"><i class="glyphicon glyphicon-plus"></i>Tambah Data</button>
                        @endif
                       @if(Auth::user()->punyaAkses('Tarif Cabang Kargo','print'))
