@@ -1089,7 +1089,7 @@ class jurnal_pembelian  extends Controller
 
                 $jr_no = get_id_jurnal('BM' . $kodebank , $cabangtujuan , $tgl);
                 $notabm = $databm[$j]->bm_nota;
-
+                  /////////////////////////////////////////////
                 $jurnal = new d_jurnal();
                 $jurnal->jr_id = $idjurnald;
                     $jurnal->jr_year = Carbon::parse($tgl)->format('Y');
