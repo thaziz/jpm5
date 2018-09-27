@@ -1010,10 +1010,10 @@ class jurnal_pembelian  extends Controller
                   ]);
                 }
         }
-
+        $notatransaksi = $databm[$j]->bm_notatransaksi;
         if($notatransaksi != null){
                 //ganti bm di bbkd_detail
-                $notatransaksi = $databm[$j]->bm_notatransaksi;
+              
                /*dd($idbm . $notatransaksi);*/
                 $notabm = $databm[$j]->bm_nota;
                 $datafpg = DB::select("select * from fpg where fpg_nofpg = '$notatransaksi'");
