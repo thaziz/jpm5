@@ -1341,7 +1341,7 @@ return
 
 			$data['sppdt_barang'] = DB::select("select distinct codtk_kodeitem, nama_masteritem, codtk_qtyapproved, unitstock from  masteritem , confirm_order_dt_pemb, confirm_order  where co_idspp = '$id' and kode_item = codtk_kodeitem and codtk_idco = co_id ");
 			
-			$grupitem = substr($sppdt_barang[0]->codtk_kodeitem, 0,1);
+			$grupitem = substr($data['sppdt_barang'][0]->codtk_kodeitem, 0,1);
 		
 			$jenisitem = DB::select("select * from jenis_item where kode_jenisitem = '$grupitem'");
 
