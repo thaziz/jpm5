@@ -8424,7 +8424,7 @@ public function kekata($x) {
 		}
 
 
-dd($data);
+
 
 		$data=collect($data);
 
