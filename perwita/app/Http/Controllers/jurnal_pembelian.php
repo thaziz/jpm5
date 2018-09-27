@@ -987,7 +987,7 @@ class jurnal_pembelian  extends Controller
                       ]);
                     }
       }
-        
+
 
       for($j =0; $j < count($databm); $j++){
         $bankasal = $databm[$j]->bm_bankasal;
@@ -1089,7 +1089,9 @@ class jurnal_pembelian  extends Controller
 
                 $jr_no = get_id_jurnal('BM' . $kodebank , $cabangtujuan , $tgl);
                 $notabm = $databm[$j]->bm_nota;
-                  /////////////////////////////////////////////
+                
+                dd($jr_no . $notabm);
+
                 $jurnal = new d_jurnal();
                 $jurnal->jr_id = $idjurnald;
                     $jurnal->jr_year = Carbon::parse($tgl)->format('Y');
