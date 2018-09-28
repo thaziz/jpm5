@@ -108,7 +108,7 @@
 
                             <a class="btn-sm btn btn-success" href={{url('masteritem/edititem/'.$item->kode_item .'')}}> <i class="fa fa-pencil"> </i> </a>
                            &nbsp;
-                           <a href="#" class="btn-sm btn btn-danger" onclick="hapusData('{{$item->kode_item}}')"><i class="fa fa-trash-o" aria-hidden="true"></i></a></li>
+                          {{--  <a href="#" class="btn-sm btn btn-danger" onclick="hapusData('{{$item->kode_item}}')"><i class="fa fa-trash-o" aria-hidden="true"></i></a></li> --}}
                                     {{ Form::open(['url'=>'masteritem/deleteitem/'.$item->kode_item, 'method' => 'delete', 'id' => $item->kode_item ]) }}
 
                                     {{ Form::close() }}
