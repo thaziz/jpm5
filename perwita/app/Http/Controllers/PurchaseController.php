@@ -232,8 +232,7 @@ return DataTables::of($data)->
             	return              	
             	'<a 
             	href='.url('suratpermintaanpembelian/detailspp/'.$data->spp_id.'').'>'.$data->spp_nospp.'</a>';
-            })
-          
+            })          
             ->editColumn('spp_status', function ($data) { 
 
 				
@@ -8396,10 +8395,10 @@ public function kekata($x) {
   		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
   		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
 
-  		$request->biaya = str_replace(['Rp', '\\', ',',' '], '',$request->biaya);
+  		$request->biaya = str_replace(['Rp', '\\',',',' '], '',$request->biaya);
   	
 
-        $request->total = str_replace(['Rp', '\\', '.',' ',' '], '',$request->total);
+        $request->total = str_replace(['Rp', '\\',',',' ',' '], '',$request->total);
          
         
         
@@ -8422,6 +8421,7 @@ public function kekata($x) {
   		  if($request->nofpg!=''){
   		  	$nofpg="and fpg_nofpg=UPPER('$request->nofpg')";
   		  }
+  		  
 		 $cabang = session::get('cabang');
 		 
 	/*	$data= DB::select("select *,'no' as no from bukti_bank_keluar, cabang, masterbank where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order by bbk_id desc" );*/
