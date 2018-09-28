@@ -303,9 +303,6 @@
               {
                  targets: 8,
                  className: 'center'
-<<<<<<< HEAD
-              }
-=======
               },
               {
                  targets:10,
@@ -325,8 +322,7 @@
             { "data": "detail" },
             { "data": "lunas" },
             { "data": "aksi" },
-            
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
+          
             ]
     });
 
