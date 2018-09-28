@@ -5708,7 +5708,6 @@ public function purchase_order() {
 		// return 'asd';
 		$data['faktur'] = DB::select("SELECT * from faktur_pembelian
 									  inner join jenisbayar on idjenisbayar= fp_jenisbayar order by fp_tgl desc");
-<<<<<<< HEAD
 
 		$jenis = DB::table('jenisbayar')
 				   ->where('idjenisbayar',2)
@@ -5730,13 +5729,7 @@ public function purchase_order() {
 		$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier where status = 'SETUJU' and active = 'AKTIF' order by no_supplier");
 
 		$all = array_merge($agen,$vendor,$subcon,$supplier);
-=======
-						
->>>>>>> 740318967eafd58f91e304bb9b61ae8c21f97f4e
-		// return 'asd';
-<<<<<<< HEAD
-		return view('purchase/fatkur_pembelian/index', compact('data'));
-=======
+
 		return view('purchase/fatkur_pembelian/index', compact('data','jenis','all','cabang'));
 	}
 
@@ -5914,7 +5907,6 @@ public function purchase_order() {
 	                      })
 	                      ->addIndexColumn()
 	                      ->make(true);
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 	}
 
 
@@ -9900,8 +9892,6 @@ public function kekata($x) {
 				}
 
 			}
-<<<<<<< HEAD
-=======
 			else if($jenisbayarfpg == 'BIAYA'){
 				$lastidjurnal = DB::table('d_jurnal')->max('jr_id');
 				if(isset($lastidjurnal)) {
@@ -10056,7 +10046,6 @@ public function kekata($x) {
 
 				}
 			}
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 			else{
 				//save jurnal
 				$lastidjurnal = DB::table('d_jurnal')->max('jr_id');
@@ -10637,7 +10626,6 @@ public function kekata($x) {
 
 	public function formfpg() {
 		$cabang = session::get('cabang');
-<<<<<<< HEAD
 		$data['jenisBayar'] = DB::select("select idjenisbayar,jenisbayar from jenisbayar order by jenisbayar asc");
 		$data['supplier'] = DB::select("select no_supplier,nama_supplier from supplier order by no_supplier asc");
 
@@ -10649,7 +10637,6 @@ public function kekata($x) {
 		}
 		else {						
 			$data['fpg'] = DB::select("select * from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_nofpg asc limit 10");
-=======
 		$data['jenisBayar'] = DB::select("select * from jenisbayar where idjenisbayar != '8'  and idjenisbayar != 10 ");
 		$data['supplier'] =  DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 
@@ -10661,7 +10648,6 @@ public function kekata($x) {
 		}
 		else {						/*
 			$data['fpg'] = DB::select("select * from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_nofpg asc limit 10");*/
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 			$data['belumdiproses'] = DB::table("fpg")->where('fpg_posting' , '=' , 'NOT')->where('fpg_cabang' ,'=' , $cabang)->count();
 			$data['sudahdiproses'] = DB::table("fpg")->where('fpg_posting' , '=' , 'DONE')->where('fpg_cabang' ,'=' , $cabang)->count();
 		}
@@ -10671,7 +10657,6 @@ public function kekata($x) {
 		return view('purchase/formfpg/index' , compact('data'));
 	}
 
-<<<<<<< HEAD
 	function formfpgTable(Request $request){
 
 		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){						
@@ -10684,8 +10669,6 @@ dd($c);*/
 			$dataFpg=DB::select("select * from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar order by fpg_nofpg desc limit 10");
 			$dataFpg=collect($dataFpg);
 
-			return 
-=======
 	function formfpgNotif(Request $request){
 		$idjenisbayar='';
   		  $tgl='';
@@ -10773,29 +10756,21 @@ return $html;
 			}
 
 
-<<<<<<< HEAD
-		return
-=======
+
 		return 
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
->>>>>>> 740318967eafd58f91e304bb9b61ae8c21f97f4e
-			DataTables::of($dataFpg)->
+
+			DataTables::of($dataFpg)-> 
 			editColumn('fpg_tgl', function ($dataFpg) {
             	return date('d-m-Y',strtotime($dataFpg->fpg_tgl));
             })
-<<<<<<< HEAD
-            ->editColumn('fpg_keterangan', function ($dataFpg) {
-=======
             ->editColumn('fpg_keterangan', function ($dataFpg) { 
-<<<<<<< HEAD
             	if($dataFpg->fpg_posting == 'DONE'){
                  return $dataFpg->fpg_keterangan.'<span class="label label-success"> Sudah Terposting </span> &nbsp';
             	}
                 else{
                 return $dataFpg->fpg_keterangan.'<span class="label label-warning">  Belum di Posting </span> &nbsp';
                 }
-=======
->>>>>>> 740318967eafd58f91e304bb9b61ae8c21f97f4e
+
             	$fpg_keterangan='';
             	if($dataFpg->fpg_posting == 'DONE'){
                  $fpg_keterangan.=$dataFpg->fpg_keterangan.'<span class="label label-success"> Sudah Terposting </span> &nbsp';
@@ -10804,7 +10779,6 @@ return $html;
                 $fpg_keterangan.= $dataFpg->fpg_keterangan.'<span class="label label-warning">  Belum di Posting </span> &nbsp';
                 }
 				return $fpg_keterangan;
-<<<<<<< HEAD
             })->editColumn('fpg_totalbayar', function ($dataFpg) {
                 return number_format($dataFpg->fpg_totalbayar, 2);
             })->editColumn('fpg_cekbg', function ($dataFpg) {
@@ -10813,15 +10787,13 @@ return $html;
                 return '-';
             })
             ->addColumn('action', function ($dataFpg) {
-=======
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
+
             })->editColumn('fpg_totalbayar', function ($dataFpg) { 
                 return number_format($dataFpg->fpg_totalbayar, 2);                
             })->editColumn('fpg_cekbg', function ($dataFpg) { 
                 return number_format($dataFpg->fpg_cekbg, 2);                
             })->editColumn('uangmuka', function ($dataFpg) { 
                 return '-';
-<<<<<<< HEAD
             })            
             ->addColumn('no', function ($dataFpg) {               	
                 return  '1';
@@ -10848,11 +10820,8 @@ return $html;
 			return DataTables::of($dataFpg)->make(true);
 				/*$data['belumdiproses'] = DB::table("fpg")->where('fpg_posting' , '=' , 'NOT')->where('fpg_cabang' ,'=' , $cabang)->count();
 				$data['sudahdiproses'] = DB::table("fpg")->where('fpg_posting' , '=' , 'DONE')->where('fpg_cabang' ,'=' , $cabang)->count();*/
-			}	
-=======
             })                        
             ->addColumn('action', function ($dataFpg) {            	
->>>>>>> 740318967eafd58f91e304bb9b61ae8c21f97f4e
             	$html='';
             	   if(Auth::user()->punyaAkses('Form Permintaan Giro','ubah')){
 /*'<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/edit_penerus/'.$data->fp_idfaktur.'').'>
@@ -10892,7 +10861,6 @@ return $html;
             })
 			->make(true);
 
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 	}
 
 
