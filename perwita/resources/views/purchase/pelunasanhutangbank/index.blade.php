@@ -68,9 +68,9 @@
               <div class="col-md-4 col-sm-6 col-xs-12">
                 <div class="form-group">
                   <div class="input-daterange input-group">
-                    <input id="tanggal1" class="form-control input-sm datepicker2" name="tanggal1" type="text">
+                    <input id="tanggal1" class="kosong form-control input-sm datepicker2" name="tanggal1" type="text">
                     <span class="input-group-addon">-</span>
-                    <input id="tanggal2" "="" class="input-sm form-control datepicker2" name="tanggal2" type="text">
+                    <input id="tanggal2" "="" class="kosong input-sm form-control datepicker2" name="tanggal2" type="text">
                   </div>
                 </div>
               </div>
@@ -100,7 +100,7 @@
 
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    <input class="form-control" type="" name="bank" id="bank">
+                    <input class="kosong form-control" type="" name="bank" id="bank">
                 </div>
               </div>
 
@@ -112,7 +112,7 @@
 
               <div class="col-md-2 col-sm-6 col-xs-12">
                 <div class="form-group">
-                     <input class="form-control" type="" name="biaya" id="biaya">
+                     <input class="kosong form-control biaya" type="" name="biaya" id="biaya">
                 </div>
               </div>
 
@@ -122,7 +122,7 @@
 
               <div class="col-md-2 col-sm-6 col-xs-12">
                 <div class="form-group">
-                     <input class="form-control" type="" name="total" id="total">
+                     <input class="kosong form-control" type="" name="total" id="total">
                 </div>
               </div>
 
@@ -185,9 +185,23 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+$('#total').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
+$('#biaya').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
+
+
 
   var tablex;
-table();
+setTimeout(function () {            
+   table();
+   tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
+    });
+});
+
+      }, 1500);
+
      function table(){
    $('#addColumn').dataTable().fnDestroy();
    tablex = $("#addColumn").DataTable({        
@@ -251,11 +265,13 @@ function dateAwal(){
       $('#tanggal1').datepicker({
             format:"dd-mm-yyyy",        
             autoclose: true,
-      }).datepicker( "setDate", d);
+      })
+      /*.datepicker( "setDate", d);*/
       $('#tanggal2').datepicker({
             format:"dd-mm-yyyy",        
             autoclose: true,
-      }).datepicker( "setDate", new Date());
+      })
+      /*.datepicker( "setDate", new Date());*/
       $('.kosong').val('');
       $('.kosong').val('').trigger('chosen:updated');
 }
@@ -265,6 +281,8 @@ function dateAwal(){
  }
 
  function resetData(){  
+  $('.kosong').val('');
+  $('.kosong').val('').trigger('chosen:updated');
   $('#tanggal1').val('');
   $('#tanggal2').val('');  
   table();
@@ -287,6 +305,7 @@ function notif(){
     }
   });
 }
+
 
   function hapus(id){
     swal({
