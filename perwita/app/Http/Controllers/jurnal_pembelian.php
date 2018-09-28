@@ -1126,7 +1126,13 @@ class jurnal_pembelian  extends Controller
                 }
               }
               else {
-                
+                  $databmdt = DB::select("select * from bank_masuk_dt where bmdt_id = '$id'");
+                  for($m = 0; $m < count($databmdt); $m++){
+                    $akun = $databmdt[$m]->bmdt_akun;
+                    $dk = $databmdt[$m]->bmdt_dk;
+                    $nominal = $databmdt[$m]->bmdt_nominal;
+                    
+                  }
               }
              
 
