@@ -59,6 +59,109 @@
                         @endif
                 </div>
                 <div class="ibox-content">
+
+
+
+
+
+
+<div class="row" id="dataSeach">
+   
+      <div class="col-md-12 col-sm-12 col-xs-12">
+              
+               <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">No FPG</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="nofpg">
+                </div>
+              </div>
+
+
+            
+              <div class="col-md-1 col-sm-3 col-xs-12">
+                <label class="tebal">Tanggal</label>
+              </div>
+
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                  <div class="input-daterange input-group">
+                    <input id="tanggal1" class="form-control input-sm datepicker2" name="tanggal1" type="text">
+                    <span class="input-group-addon">-</span>
+                    <input id="tanggal2" "="" class="input-sm form-control datepicker2" name="tanggal2" type="text">
+                  </div>
+                </div>
+              </div>
+            
+
+              <div class="col-md-2 col-sm-6 col-xs-12" align="center">
+                <button class="btn btn-primary btn-sm btn-flat" title="Cari rentang tanggal" type="button" onclick="cari()">
+                  <strong>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </strong>
+                </button>
+                <button class="btn btn-info btn-sm btn-flat" type="button" title="Reset" onclick="resetData()">
+                  <strong>
+                    <i class="fa fa-undo" aria-hidden="true"></i>
+                  </strong>
+                </button>                
+              </div>
+      </div>
+
+
+
+      <div class="col-md-12 col-sm-12 col-xs-12">
+             
+
+
+              <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">Jenis Bayar</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <select class="form-control" name="idjenisbayar">
+                      @foreach($data['jenisBayar'] as $jenisByr)
+                      <option value="{{$jenisByr->idjenisbayar}}">{{$jenisByr->jenisbayar}}</option>
+                      @endForeach
+                    </select>
+                </div>
+              </div>
+
+
+
+              <div class="col-md-1 col-sm-3 col-xs-12">
+                <label class="tebal">Supplier</label>
+              </div>
+
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                     <select class="form-control" name="nosupplier">
+                      @foreach($data['supplier'] as $supplier)
+                      <option value="{{$supplier->no_supplier}}">{{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
+                      @endForeach
+                    </select>
+                </div>
+              </div>
+
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
                         <div class="row">
               <div class="col-xs-12">
               
@@ -102,51 +205,7 @@
                   
 
                     </thead>
-                    <tbody>
-                      @foreach($data['fpg'] as $index=>$fpg)
-                      <tr>
-                        <td> {{$index + 1}} </td>
-                        <td>  {{$fpg->fpg_nofpg}} </td>
-                        <td>  {{ Carbon\Carbon::parse($fpg->fpg_tgl)->format('d-M-Y') }} </td>
-                        <td> {{$fpg->jenisbayar}} </td>
-                       
-                        <td> {{$fpg->fpg_keterangan}}
-                        
-                            @if($fpg->fpg_posting == 'DONE')
-                              <span class="label label-success"> Sudah Terposting </span> &nbsp;
-                            @else
-                               <span class="label label-warning">  Belum di Posting </span> &nbsp;
-                            @endif  </td>
-                        <td> {{number_format($fpg->fpg_totalbayar, 2)}} </td>
-                        <td> - </td>
-                        <td> {{number_format($fpg->fpg_cekbg , 2)}} </td>
-                        
-                        <td>
-                        @if(Auth::user()->punyaAkses('Form Permintaan Giro','ubah'))
-                        <a class="btn btn-sm btn-success" href={{url('formfpg/detailformfpg/'.$fpg->idfpg.'')}}> <i class="fa fa-arrow-right" aria-hidden="true"></i> </a>
-                              @endif
-
-                        @if(Auth::user()->punyaAkses('Form Permintaan Giro','print'))
-
-                          @if($fpg->fpg_jenisbayar == '5' || $fpg->fpg_jenisbayar == '12')
-                            <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg2/'.$fpg->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a>
-                          @else
-                              <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg/'.$fpg->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a>
-                          @endif
-                        @endif
-
-                            @if(Auth::user()->punyaAkses('Form Permintaan Giro','hapus'))
-                            
-                            @if($fpg->fpg_posting == 'DONE')
-
-                            @else
-                              <a class="btn btn-sm btn-danger" onclick="hapusdata({{$fpg->idfpg}})"> <i class="fa fa-trash" aria-hidden="true"></i> </a>
-                            @endif
-                          </td>
-                                @endif
-                      </tr>
-                    @endforeach
-                    </tbody>
+                    
                    
                   </table>
                 </div><!-- /.box-body -->
@@ -173,14 +232,59 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-
+/*
      tableDetail = $('.tbl-penerimabarang').DataTable({
             responsive: true,
             searching: true,
             //paging: false,
             "pageLength": 10,
             "language": dataTableLanguage,
+    });*/
+
+
+table();
+     function table(){
+   $('#addColumn').dataTable().fnDestroy();
+   tablex = $("#addColumn").DataTable({        
+         responsive: true,
+        "language": dataTableLanguage,
+    processing: true,
+            serverSide: true,
+            ajax: {
+              "url": "{{ url("formfpg/formfpg/table") }}",
+              "type": "get",
+              data: {
+                    "_token": "{{ csrf_token() }}",
+                    "type"  :"toko",
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),
+                    },
+              },
+            columns: [
+            {data: 'no', name: 'no'},                        
+            {data: 'fpg_keterangan', name: 'fpg_keterangan'},
+            {data: 'fpg_totalbayar', name: 'fpg_totalbayar'},            
+            {data: 'uangmuka', name: 'uangmuka'},            
+          /*  {data: 's_kasir', name: 's_kasir'},                        
+            {data: 's_gross', name: 's_gross'}, 
+            {data: 's_disc_percent', name: 's_disc_percent'}, 
+            {data: 's_ongkir', name: 's_ongkir'},
+            {data: 's_net', name: 's_net'},            
+            {data: 's_status', name: 's_status'}, 
+            {data: 'action', name: 'action'},
+            */
+           
+            ],
+            "pageLength": 10,
+            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+           "fnCreatedRow": function (row, data, index) {
+            $('td', row).eq(0).html(index + 1);
+        }
     });
+}
+
+
+
 
     $('.date').datepicker({
         autoclose: true,
@@ -244,5 +348,20 @@ function(){
   });
 }
 
+
+function cari(){
+   var data=$('#dataSeach').serialize();
+   alert(data);
+   $.ajax({
+      url:baseUrl + '/formfpg/formfpg/table',
+      type:'get',
+      /*data:*/
+      dataType : 'json',
+      success:function(data){
+
+              }
+            });
+
+}
 </script>
 @endsection
