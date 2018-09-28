@@ -229,7 +229,7 @@ return DataTables::of($data)->
             	return date('d-m-Y',strtotime($data->spp_tgldibutuhkan));
             })
             ->addColumn('detailspp', function ($data) {            
-            	return  
+            	return              	
             	'<a 
             	href='.url('suratpermintaanpembelian/detailspp/'.$data->spp_id.'').'>'.$data->spp_nospp.'</a>';
             })

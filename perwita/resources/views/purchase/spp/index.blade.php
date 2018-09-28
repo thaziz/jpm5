@@ -173,8 +173,8 @@
 var tablex;
 table();
      function table(){
-   $('.tbl-item').dataTable().fnDestroy();
-   tablex = $(".tbl-item").DataTable({        
+   $('#addColumn').dataTable().fnDestroy();
+   tablex = $('#addColumn').DataTable({        
          responsive: true,
         "language": dataTableLanguage,
     processing: true,
@@ -211,7 +211,7 @@ table();
             {data: 'action', name: 'action'},
             */
            
-            ],
+            ],  
             "pageLength": 10,
             "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
            /*"fnCreatedRow": function (row, data, index) {
@@ -232,6 +232,14 @@ tablex.on('draw.dt', function () {
 });
 
 
+
+ $('#addColumn_filter input[type=search]').keyup( function () {
+  alert('d');
+        var table = $('#addColumn').DataTable(); 
+        table.search(
+            jQuery.fn.DataTable.ext.type.search.html(this.value)
+        ).draw();
+    } );
 
     $('.date').datepicker({
         autoclose: true,
