@@ -187,6 +187,9 @@
 <script type="text/javascript">
 $('#total').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
 $('#biaya').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
+
+
+
   var tablex;
 setTimeout(function () {            
    table();
