@@ -682,7 +682,20 @@ class subconController extends Controller
 
 	public function cek_aktif(Request $req)
 	{
-		
+		if ($req->cek == true) {
+			$cek = 'ACTIVE';
+		}else if ($req->cek == false){
+			$cek = 'NOT ACTIVE';
+		}
+
+		$cari = DB::table("kontrak_subcon")		
+				  ->where('ks_nota',$req->nota)
+				  ->update([
+					'ks_active'		=>	$cek,	
+				  ]);
+
+		dd($cek);
+
 	}
 }
 

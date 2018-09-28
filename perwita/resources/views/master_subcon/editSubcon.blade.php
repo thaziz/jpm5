@@ -677,21 +677,14 @@ function check(p) {
 }
 
 $('.cek_aktif').change(function(){
+  var cek = $(this).is(':checked');
+  var nota = '{{ $data->ks_nota }}';
   $.ajax({
-      url:baseUrl + '/master_subcon/check_kontrak',
-      data:{nota,kcd_dt,check,id},
+      url:baseUrl + '/master_subcon/cek_aktif',
+      data:{cek,nota},
       type:'get',
       success:function(data){
-          swal({
-          title: "Berhasil!",
-                  type: 'success',
-                  text: "Data Berhasil Diupdate",
-                  timer: 2000,
-                  showConfirmButton: true
-                  },function(){
-                    var table = $('#table_data').DataTable();
-                    table.ajax.reload(null,false);
-                  });
+          toastr.success('Berhasil Dirubah');
       },
       error:function(data){
 
@@ -703,7 +696,6 @@ $('.cek_aktif').change(function(){
     });
    }
   });
-}
 })
 </script>
 @endsection
