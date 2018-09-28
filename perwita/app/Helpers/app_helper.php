@@ -60,6 +60,7 @@
         return $jr_no;
 	}
 
+<<<<<<< HEAD
 	function get_total_neraca_parrent($id, $array){
 		$tot = 0;
 		foreach ($array as $key => $value) {
@@ -68,7 +69,218 @@
 		}
 
 		return ($tot >= 0) ? number_format($tot, 2) : "(".number_format(str_replace("-", "", $tot), 2).")";
+=======
+	function get_total_neraca_parrent($id, $deep, $initiate, $date, $throttle, $array, $withCommas = false){
+		$tot = 0; $search = strlen($id);
+
+		if($deep == 2){
+			foreach ($array as $key => $value) {
+				if($value->jenis == 2 && substr($value->nomor_id, 0, $search) == $id){
+					foreach ($value->detail as $key => $detail) {
+						foreach ($detail->akun as $key => $akun) {
+							$boundary = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
+
+							if($throttle == 'bulan')
+                              $coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+                            else
+                              $coalesce = (date('Y', strtotime($date)) < date('Y', strtotime($akun->opening_date))) ? 0 : $akun->coalesce;
+
+							if($initiate == 'A' && $akun->akun_dka == 'K')
+								$tot -= ($coalesce + $boundary);
+							else if($initiate == 'P' && $akun->akun_dka == 'D')
+								$tot -= ($coalesce + $boundary);
+							else
+								$tot += ($coalesce + $boundary);
+
+						}
+					}
+				}
+			}
+		}elseif($deep == 3){
+			foreach ($array as $key => $value) {
+				if($value->jenis == 2 && $value->nomor_id == $id){
+					foreach ($value->detail as $key => $detail) {
+						foreach ($detail->akun as $key => $akun) {
+							$boundary = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
+
+							if($throttle == 'bulan')
+                              $coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+                            else
+                              $coalesce = (date('Y', strtotime($date)) < date('Y', strtotime($akun->opening_date))) ? 0 : $akun->coalesce;
+
+							if($initiate == 'A' && $akun->akun_dka == 'K')
+								$tot -= ($coalesce + $boundary);
+							else if($initiate == 'P' && $akun->akun_dka == 'D')
+								$tot -= ($coalesce + $boundary);
+							else
+								$tot += ($coalesce + $boundary);
+						}
+					}
+				}
+			}
+		}else if($deep == 4){
+			foreach ($array as $key => $value) {
+				if($value->jenis == 3 && $value->nomor_id == $id){
+					foreach ($value->detail as $key => $detail) {
+						
+						foreach ($array as $key => $data_array) {
+							if($data_array->jenis == 2 && $data_array->nomor_id == $detail->id_group){
+								foreach ($data_array->detail as $key => $detail_array) {
+									foreach ($detail_array->akun as $key => $akun) {
+										$boundary = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
+
+										if($throttle == 'bulan')
+			                              $coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+			                            else
+			                              $coalesce = (date('Y', strtotime($date)) < date('Y', strtotime($akun->opening_date))) ? 0 : $akun->coalesce;
+										
+										if($initiate == 'A' && $akun->akun_dka == 'K')
+											$tot -= ($coalesce + $boundary);
+										else if($initiate == 'P' && $akun->akun_dka == 'D')
+											$tot -= ($coalesce + $boundary);
+										else
+											$tot += ($coalesce + $boundary);
+									}
+								}
+							}
+						}
+
+					}
+				}
+			}
+		}elseif($deep == 5){
+			// return $id;
+			foreach ($array as $key => $value) {
+				if($value->jenis == 2 && $value->nomor_id == $id){
+					foreach ($value->detail as $key => $detail) {
+						foreach ($detail->akun as $key => $akun) {
+							$boundary = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
+
+							if($throttle == 'bulan')
+                              $coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+                            else
+                              $coalesce = (date('Y', strtotime($date)) < date('Y', strtotime($akun->opening_date))) ? 0 : $akun->coalesce;
+
+							if($initiate == 'A' && $akun->akun_dka == 'K')
+								$tot -= ($coalesce + $boundary);
+							else if($initiate == 'P' && $akun->akun_dka == 'D')
+								$tot -= ($coalesce + $boundary);
+							else
+								$tot += ($coalesce + $boundary);
+						}
+					}
+				}
+			}
+		}
+
+		if($withCommas)
+			return ($tot >= 0) ? number_format($tot, 2) : "(".number_format(str_replace("-", "", $tot), 2).")";
+		else
+			return $tot;
+
 		// return $tot;
+	}
+
+	function get_total_arus_kas_parrent($id, $deep, $initiate, $date, $array){
+		$tot = 0; $search = strlen($id);
+
+		if($deep == 2){
+			foreach ($array as $key => $value) {
+				if($value->jenis == 2 && substr($value->nomor_id, 0, $search) == $id){
+					foreach ($value->detail as $key => $detail) {
+						foreach ($detail->akun as $key => $akun) {
+							$boundary = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
+							$coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+
+							$tot += $boundary;
+
+							if($value->type == 'aktiva')
+                                $tot = $tot * -1;
+
+						}
+					}
+				}
+			}
+		}elseif($deep == 3){
+			foreach ($array as $key => $value) {
+				if($value->jenis == 2 && $value->nomor_id == $id){
+					foreach ($value->detail as $key => $detail) {
+						foreach ($detail->akun as $key => $akun) {
+							$boundary = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
+							$coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+
+							$tot += $boundary;
+
+							if($value->type == 'aktiva')
+                                $tot = $tot * -1;
+						}
+					}
+				}
+			}
+		}else if($deep == 4){
+			foreach ($array as $key => $value) {
+				if($value->jenis == 3 && $value->nomor_id == $id){
+					foreach ($value->detail as $key => $detail) {
+						foreach ($array as $key => $data_array) {
+							if($data_array->jenis == 2 && $data_array->nomor_id == $detail->id_group){
+								foreach ($data_array->detail as $key => $detail_array) {
+									foreach ($detail_array->akun as $key => $akun) {
+										$boundary = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
+										$coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+
+										if($data_array->type == 'aktiva'){
+											$boundary = $boundary * -1;
+										}
+
+										$tot += $boundary;
+									}
+								}
+							}
+						}
+
+					}
+				}
+			}
+		}elseif($deep == 5){
+			// return $id;
+			foreach ($array as $key => $value) {
+				if($value->jenis == 2 && $value->nomor_id == $id){
+					foreach ($value->detail as $key => $detail) {
+						foreach ($detail->akun as $key => $akun) {
+							$boundary = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
+							$coalesce = (strtotime($date) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+
+							$tot += $boundary;
+
+							if($value->type == 'aktiva')
+                                $tot = $tot * -1;
+						}
+					}
+				}
+			}
+		}
+
+		return ($tot < 0) ? '('.number_format(str_replace('-', '', $tot), 2).')' : number_format($tot, 2);
+
+		// return ($tot >= 0) ? number_format($tot, 2) : "(".number_format(str_replace("-", "", $tot), 2).")";
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
+		// return $tot;
+	}
+
+	function get_saldo_awal_arus_kas($array, $date, $throttle){
+		$tot = 0;
+		foreach ($array as $key => $data) {
+			$mutasi = (count($data->mutasi_bank_debet) > 0) ? $data->mutasi_bank_debet[0]->total : 0;
+
+			if($throttle == 'bulan')
+              $saldo = (strtotime($date) < strtotime($data->opening_date)) ? 0 : $data->saldo;
+            else
+              $saldo = (date('Y', strtotime($date)) < date('Y', strtotime($data->opening_date))) ? 0 : $data->saldo;
+
+			$tot += ($saldo + $mutasi);
+		}
+
+		return $tot;
 	}
 
 	function date_ind($date){
@@ -196,21 +408,30 @@
 		$buland = date("m" , strtotime($tgl));
         $tahund = date("y" , strtotime($tgl));
        // dd($kodeterima);
-        $kode = DB::select("select * from masterbank where mb_id = '$kodeterima'");
-  //      dd($kode);
-        $akunbank = $kode[0]->mb_kode;
+        if($kodeterima != '999'){
+   	        $kode = DB::select("select * from masterbank where mb_id = '$kodeterima'");
+   	          //      dd($kode);
+	        $akunbank = $kode[0]->mb_kode;
+	        $idkode = $kode[0]->mb_id;
+
+        }
+        else {
+        	$kode = '99';
+        	$akunbank = '100211000';
+        	$idkode = '99';
+        }
 
 
-       $idbm = DB::select("select substr(MAX(bm_nota) , 15) as bm_nota from bank_masuk where bm_cabangtujuan = '$cabang'  and to_char(bm_tglterima, 'MM') = '08' and to_char(bm_tglterima, 'YY') = '18' and bm_banktujuan = '$akunbank'");
+       $idbm = DB::select("select substr(MAX(bm_nota) , 15) as bm_nota from bank_masuk where bm_cabangtujuan = '$cabang'  and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_banktujuan = '$akunbank'");
      //  dd($idbm);
 	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
 		$index = (integer)$idbm[0]->bm_nota + 1;
      //	dd($kode);
-     	if($kode[0]->mb_id < 10){
-     		$kodebank = '0'.(integer)$kode[0]->mb_id;
+     	if($idkode < 10){
+     		$kodebank = '0'.(integer)$idkode;
      	}
      	else {
-     		$kodebank = $kode[0]->mb_id;
+     		$kodebank = $idkode;
      	}
 
      	$index = str_pad($index, 4, '0', STR_PAD_LEFT);
@@ -220,6 +441,12 @@
         return $notabm;
 	}
 
+	function getdka($kode){
+		$data = DB::select("select * from d_akun where id_akun = '$kode'");
+		$dk = $data[0]->akun_dka;
+
+		return $dk;
+	}
 
 	function getnotakm($cabang, $tgl){
 		$bulan = date("m" , strtotime($tgl));
@@ -254,7 +481,6 @@
 				 ->join('d_jurnal_dt','jr_id','=','jrdt_jurnal')
 				 ->where('jr_ref',$nota)
 				 ->get();
-
 		$d = 0;
 		$k = 0;
 		

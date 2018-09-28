@@ -243,6 +243,10 @@
                
                 <td class="textcenter">{{$podt->podt_qtykirim}}</td>
                 <td class="textleft">{{$podt->unitstock}}</td>
+<<<<<<< HEAD
+=======
+                <td class="textcenter">{{$podt->podt_keterangan}} </td>
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
                 <td class="textright">{{number_format($podt->podt_jumlahharga, 2,",",".")}}</td>
                 <td class="textright">{{number_format($podt->podt_totalharga,2,",",".")}}</td>
         </tr>

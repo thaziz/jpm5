@@ -62,19 +62,21 @@ class penerimaan_penjualan_controller extends Controller
         // return $data;
         return Datatables::of($data)
                         ->addColumn('aksi', function ($data) {
-
+                            $a = '';
+                            $b = '';
+                            $c = '';
                             if(Auth::user()->punyaAkses('Kwitansi','ubah')){
                                 if(cek_periode(carbon::parse($data->k_tanggal)->format('m'),carbon::parse($data->k_tanggal)->format('Y') ) != 0){
-                                  $a = '<button type="button" onclick="edit(\''.$data->k_nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
+                                  if ($data->k_nomor_posting == null) {
+                                    $a = '<button type="button" onclick="edit(\''.$data->k_nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
+                                  }
                                 }
-                            }else{
-                              $a = '';
                             }
 
                             if(Auth::user()->punyaAkses('Kwitansi','print')){
                                 $b = '<button type="button" onclick="ngeprint(\''.$data->k_nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
                             }else{
-                              $b = '';
+                              $b = '<button type="button" onclick="ngeprint(\''.$data->k_nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
                             }
 
 
@@ -83,7 +85,11 @@ class penerimaan_penjualan_controller extends Controller
                                   $c = '<button type="button" onclick="hapus(\''.$data->k_nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
                                 }
                             }else{
-                              $c = '';
+                                if(cek_periode(carbon::parse($data->k_tanggal)->format('m'),carbon::parse($data->k_tanggal)->format('Y') ) != 0){
+                                  if ($data->k_nomor_posting == null) {
+                                    $c = '<button type="button" onclick="hapus(\''.$data->k_nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
+                                  }
+                                }
                             }
                             return $a . $b .$c  ;
                                    
@@ -157,7 +163,6 @@ class penerimaan_penjualan_controller extends Controller
                           }
                         })->addColumn('posting', function ($data) {
                           if ($data->k_nomor_posting == null) {
-                            # code...
                             return '<label class="label label-danger">BELUM</label>';
                           }else{
                             return '<label class="label label-success">SUDAH</label>';
@@ -1156,37 +1161,42 @@ class penerimaan_penjualan_controller extends Controller
                             ->where('kd_k_nomor',$request->nota)
                             ->get();
           $invoice_nomor = [];
-          for ($i=0; $i < count($cari_kwitansi_d); $i++) { 
-            $cari_invoice = DB::table('invoice')
-                              ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
-                              ->first();
-            
-            $i_sisa_pelunasan = $cari_invoice->i_sisa_pelunasan + $cari_kwitansi_d[$i]->kd_total_bayar;
-            $i_sisa_akhir = $cari_invoice->i_sisa_akhir + $cari_kwitansi_d[$i]->kd_total_bayar;
+          try {
+            for ($i=0; $i < count($cari_kwitansi_d); $i++) { 
+              $cari_invoice = DB::table('invoice')
+                                ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                                ->first();
+              
+              $i_sisa_pelunasan = $cari_invoice->i_sisa_pelunasan + $cari_kwitansi_d[$i]->kd_total_bayar;
+              $i_sisa_akhir = $cari_invoice->i_sisa_akhir + $cari_kwitansi_d[$i]->kd_total_bayar;
 
 
-            $update_invoice = DB::table('invoice')
-                                    ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
-                                    ->update([
-                                      'i_sisa_pelunasan' => $i_sisa_pelunasan,
-                                      'i_sisa_akhir' => $i_sisa_akhir,
-                                    ]);
-
-            $ckd = DB::table('kwitansi_d')
-                            ->where('kd_nomor_invoice',$cari_kwitansi_d[$i]->kd_nomor_invoice)
-                            ->get();
-            if ($ckd == null) {
               $update_invoice = DB::table('invoice')
-                                    ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
-                                    ->update([
-                                      'i_status' => 'Released',
-                                    ]);
+                                      ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                                      ->update([
+                                        'i_sisa_pelunasan' => $i_sisa_pelunasan,
+                                        'i_sisa_akhir' => $i_sisa_akhir,
+                                      ]);
+
+              $ckd = DB::table('kwitansi_d')
+                              ->where('kd_nomor_invoice',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                              ->get();
+              if ($ckd == null) {
+                $update_invoice = DB::table('invoice')
+                                      ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                                      ->update([
+                                        'i_status' => 'Released',
+                                      ]);
+              }
+              $cari_invoice = DB::table('invoice')
+                                ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
+                                ->first();
+              array_push($invoice_nomor, $cari_kwitansi_d[$i]->kd_nomor_invoice);
             }
-            $cari_invoice = DB::table('invoice')
-                              ->where('i_nomor',$cari_kwitansi_d[$i]->kd_nomor_invoice)
-                              ->first();
-            array_push($invoice_nomor, $cari_kwitansi_d[$i]->kd_nomor_invoice);
+          } catch (Exception $e) {
+            
           }
+            
 
 
           if (isset($request->flag_nota)) {

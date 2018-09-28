@@ -641,7 +641,7 @@
       nocheckakunbg = $('.checkakunbg').val();
       accbiayaakun = $('.accbiayaakun').val();  
 
-      alert(nocheckakunbg);
+     // alert(nocheckakunbg);
 
       if(accbiayaakun == ''){
         toastr.info("Mohon pilih data akun biaya :)");
@@ -1296,14 +1296,20 @@
                 $('#myModal2').modal('hide');
                 var a = $('ul#tabmenu').find('li.active').data('val');
                 if(a == 'AKUNBG'){
-                    $('.nofpgakunbgbiaya').val(response.fpg[0].fpg_nofpg);
-                    $('.idfpgakunbgbiaya').val(response.fpg[0].idfpg);
-                    $('.nominalakunbiaya').val(addCommas(response.fpg[0].fpgb_nominal));
-                    $('.keteranganakunbiayafpg').val(response.fpg[0].fpg_keterangan);
-                    $('.checkakunbg').val(response.fpg[0].fpgb_nocheckbg);
-                    $('.idfpgbakunbg').val(response.fpg[0].fpgb_id);
-                    $('.jumlahakunbg').val(addCommas(response.fpg[0].fpgb_nominal));
-                    $('.keteranganakunbg').val(response.fpg[0].fpg_keterangan);
+                    if(response.fpg[0].fpg_jenisbayar == '5'){                    
+                          $('.nofpgakunbgbiaya').val(response.fpg[0].fpg_nofpg);
+                          $('.idfpgakunbgbiaya').val(response.fpg[0].idfpg);
+                          $('.nominalakunbiaya').val(addCommas(response.fpg[0].fpgb_nominal));
+                          $('.keteranganakunbiayafpg').val(response.fpg[0].fpg_keterangan);
+                          $('.checkakunbg').val(response.fpg[0].fpgb_nocheckbg);
+                          $('.idfpgbakunbg').val(response.fpg[0].fpgb_id);
+                          $('.jumlahakunbg').val(addCommas(response.fpg[0].fpgb_nominal));
+                          $('.keteranganakunbg').val(response.fpg[0].fpg_keterangan);
+                        }
+                        else {
+                          toastr.info("Transaksi ini hanya bisa di pake jenis bayar transfer kas bank :) ");
+                          return false;
+                        }
                   //  alert(response.fpg[0].fpgb_nocheckbg);
                 }
                 else {

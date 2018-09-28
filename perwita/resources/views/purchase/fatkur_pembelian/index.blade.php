@@ -57,8 +57,86 @@
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
                     
+<<<<<<< HEAD
                 <div class="box-body">
                   <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
+=======
+                <div class="box-body table-responsive">
+                  <table cellpadding="3" cellspacing="0" border="0" class="table filter table-bordered" style="width: 100%">
+                        <tr>
+                            <td align="center">Tanggal Awal</td>
+                            <td align="center">
+                              <input type="text" class="min form-control date" name="min">
+                            </td>
+                            <td align="center">Tanggal Akhir</td>
+                            <td align="center">
+                              <input type="text" class="max form-control date" name="max">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">Jenis Faktur</td>
+                            <td align="left">
+                              <select class="jenis_faktur form-control chosen-select-width" >
+                                <option value="">Pilih - Jenis</option>
+                                @foreach ($jenis as $val)
+                                  <option value="{{ $val->idjenisbayar }}">{{ $val->jenisbayar }}</option>
+                                @endforeach
+                              </select>
+                            </td>
+                            <td align="center">Pihak Ketiga</td>
+                            <td align="left">
+                              <select class="pihak_ketiga form-control chosen-select-width" >
+                                <option value="">Pilih - Pihak</option>
+                                @foreach ($all as $val)
+                                  <option value="{{ $val->kode }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                                @endforeach
+                              </select>
+                            </td>
+                        </tr>
+                        @if (Auth::user()->PunyaAkses('Faktur Pembelian','cabang'))
+                          <tr>
+                            <td align="center">Cabang</td>
+                            <td align="left">
+                              <select class="cabang form-control chosen-select-width" >
+                                <option value="">Pilih - Cabang</option>
+                                @foreach ($cabang as $val)
+                                  <option value="{{ $val->kode }}">{{ $val->nama }}</option>
+                                @endforeach
+                              </select>
+                            </td>
+                            <td align="center">Cari Berdasarkan Nota</td>
+                            <td align="center">
+                              <input type="text" class="nota form-control" name="nota">
+                            </td>
+                          </tr>
+                        @else
+                        <tr>
+                            <td align="center">Cabang</td>
+                            <td align="left">
+                              <select class="cabang form-control chosen-select-width" >
+                                <option value="">Pilih - Cabang</option>
+                                @foreach ($cabang as $val)
+                                  <option @if (Auth::user()->kode_cabang == $val->kode)
+                                    selected="" 
+                                  @endif value="{{ $val->kode }}">{{ $val->nama }}</option>
+                                @endforeach
+                              </select>
+                            </td>
+                            <td align="center">Cari Berdasarkan Nota</td>
+                            <td align="center">
+                              <input type="text" class="nota form-control" name="nota">
+                            </td>
+                        </tr>
+                        @endif
+                        <tr>
+                          <td align="right" colspan="4">
+                            <button class="search btn btn-danger" type="button" onclick="filtering()"><i class="fa fa-search"> Cari</i></button>
+                            <button class=" btn btn-warning jurnal_all" type="button" ><i class="fa fa-eye"></i></button>
+                          </td>
+                        </tr>
+                    </table>
+                  <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang" style="width: 100%">
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
                     <thead align="center">
                      <tr>
                         <th style="width:10px">No</th>
@@ -69,6 +147,7 @@
                         <th> Total </th>
                         <th> Status </th>
                         <th> Detail </th>
+                        <th> Pelunasan </th>
                         <!-- <th> Allow Edit</th> -->
                         <th> Aksi </th>   
                     </tr>
@@ -224,7 +303,30 @@
               {
                  targets: 8,
                  className: 'center'
+<<<<<<< HEAD
               }
+=======
+              },
+              {
+                 targets:10,
+                 className: 'center'
+              },
+            
+            ],
+            "columns": [
+            {data: 'DT_Row_Index', name: 'DT_Row_Index'},
+            { "data": "fp_nofaktur" },
+            { "data": "fp_tgl" },
+            { "data": "jenis_faktur"},
+            { "data": "pihak_ketiga"},
+            { "data": "fp_noinvoice" },
+            { "data": "fp_netto", render: $.fn.dataTable.render.number( '.', ',', 2, '' ) },
+            { "data": "status" },
+            { "data": "detail" },
+            { "data": "lunas" },
+            { "data": "aksi" },
+            
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
             ]
     });
 

@@ -181,7 +181,7 @@
 			@foreach($data['fpg_bank'] as $index=>$fpgbank)
 			<tr class="border-none-bottom">
 				<td class="text-center"> {{$index + 1}} </td>
-				<td> {{$fpgbank->fpgb_nmbanktujuan}} </td>
+				<td> {{$data['fpg'][0]->fpg_keterangan}} </td>
 				<td>@if($fpgbank->fpgb_jenisbayarbank == 'INTERNET BANKING')
 						{{$fpgbank->fpgb_jenisbayarbank}}
 					@else

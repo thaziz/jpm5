@@ -152,7 +152,9 @@
                           </table>
 
                           <div class="deskirpsijenisbayar"> </div>
-                        </div>
+
+{{--                           <button class="btn btn-sm btn-warning" type="button" id="editdata"> <i class="fa fa-pencil"> &nbsp; </i> Edit Data ? </button>
+ --}}                        </div>
 
 
                         <div class="col-xs-6 pull-right">
@@ -655,7 +657,7 @@
                                    <div class="row">
                                      <table class="table">
                                         <tr>
-                                          <th> Kode Bank </th> <th> Nama Bank </th> <th> Cabang / Alamat </th> <th> No Account </th>
+                                          <th> Kode Bank </th> <th> No Check /BG </th> <th> Nama Bank </th> <th> Cabang Bank </th> <th> Nominal Check / BG </th>
                                         </tr>
                                         @foreach($data['fpg'] as $fpg)
                                         <tr>
@@ -668,7 +670,9 @@
                                             <input type="hidden" class="form-control kodebank" readonly="" value="{{$fpg->mb_kode}} " name="kodebank">  
                                             <input type="hidden" class="form-control mbid" readonly="" value="{{$fpg->mb_id}} " name="idbank"> </td>
 
-                                          <td> <input type="text" class="form-control nmbank" readonly="" value="{{$fpg->mb_nama}}"> </td> <td> <input type="text" class="form-control cbgbank" readonly="" value="{{$fpg->mb_cabang}}"> </td> <td> <input type="text" class="form-control account" readonly="" value="{{$fpg->mb_accno}}"> </td>                                          
+                                          <td> <input type="text" class="form-control nmbank" readonly="" value="{{$fpg->mb_nama}}"> </td> <td> <input type="text" class="form-control cbgbank" readonly="" value="{{$fpg->mb_cabang}}"> </td> <td> <input type="text" class="form-control account" readonly="" value="{{$fpg->mb_accno}}"> </td>
+
+                                          <td> <button class="btn btn-sm btn-success" type="button"> Tambah data </button> </td>                                          
                                         </tr>
                                         @endforeach
                                      </table>
@@ -677,6 +681,9 @@
                                     <div class="col-md-3">
                                     <fieldset>
                                         <input type="hidden" class="fpbgjenisbayarbank" value="">
+                                        @if($data['fpg'][0]->fpg_jenisbayar == '12')
+
+                                        @else
 
                                         @if($data['fpg_bank'][0]->fpgb_jenisbayarbank == 'INTERNET BANKING')
                                        <div class="checkbox checkbox-info checkbox-circle">
@@ -706,6 +713,7 @@
                                                 Cheque / BG
                                             </label>
                                         </div>
+                                       @endif
                                        @endif
                                     </fieldset>
                                       <br>
@@ -1049,7 +1057,13 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-    
+      $('#submit').hide();
+
+    $('#editdata').click(function(){
+      $('#submit').show();
+    });
+
+
      $('.jenisbayarbankibaking').change(function(){
           $this = $(this);
           jenisbayar = $('.jenisbayar').val();

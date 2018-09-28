@@ -29,7 +29,8 @@
             </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
-     <div class="col-md-2" style="min-height: 100px">
+<div id="notif"></div>
+     <!-- <div class="col-md-2" style="min-height: 100px">
       <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
         <h2 style='text-align:center'> <b> {{$data['belumdiproses']}} Data </b></h2> <h4 style='text-align:center'> Belum di Posting Bank Keluar </h4>
@@ -42,7 +43,7 @@
       <h2 style='text-align:center'> <b> {{$data['sudahdiproses']}} Data  </b></h2> <h4 style='text-align:center'> Sudah di Posting Bank Keluar </h4>
       </div>
     </div>
-
+ -->
 
 
     <div class="row">
@@ -65,8 +66,13 @@
 
 
 
+<<<<<<< HEAD
 <div class="row" id="dataSeach">
    
+=======
+<div class="row" >
+   <form method="post" id="dataSeach">
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
       <div class="col-md-12 col-sm-12 col-xs-12">
               
                <div class="col-md-2 col-sm-3 col-xs-12">
@@ -75,7 +81,11 @@
 
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
+<<<<<<< HEAD
                     <input class="form-control" type="text" name="nofpg">
+=======
+                    <input class="form-control kosong" type="text" name="nofpg" id="nofpg" placeholder="No FPG">
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
                 </div>
               </div>
 
@@ -122,7 +132,12 @@
 
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
+<<<<<<< HEAD
                     <select class="form-control" name="idjenisbayar">
+=======
+                    <select class="form-control chosen-select-width kosong" name="idjenisbayar" id="idjenisbayar">
+                      <option value="">Pilih Jenis Bayar</option>
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
                       @foreach($data['jenisBayar'] as $jenisByr)
                       <option value="{{$jenisByr->idjenisbayar}}">{{$jenisByr->jenisbayar}}</option>
                       @endForeach
@@ -138,9 +153,16 @@
 
               <div class="col-md-4 col-sm-6 col-xs-12">
                 <div class="form-group">
+<<<<<<< HEAD
                      <select class="form-control" name="nosupplier">
                       @foreach($data['supplier'] as $supplier)
                       <option value="{{$supplier->no_supplier}}">{{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
+=======
+                     <select class="form-control chosen-select-width kosong" name="nosupplier" id="nosupplier">
+                     <option value="">Pilih Supplier</option>
+                      @foreach($data['supplier'] as $supplier)
+                      <option value="{{$supplier->idsup}}">{{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
                       @endForeach
                     </select>
                 </div>
@@ -148,6 +170,10 @@
 
 
     </div>
+<<<<<<< HEAD
+=======
+    </form>
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 </div>
 
 
@@ -187,20 +213,18 @@
                   </table> --}}
 
 
-                  <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
+                  <table style="width: 100%" id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
                     <thead>
                      <tr>
-                        <th  style="width:10px">No </th>
-                        <th > No FPG </th>
-                        <th > Tanggal </th>
-                        <th > Jenis Bayar </th>
-                        <th > Keterangan </th>
-                        <th > Total Bayar </th>
-                        <th > Uang Muka  </th>
-                        <th > Cek / BG  </th>
-                      
-                        <th > Detail </th>
-                     
+                        <th  style="width:5%">No </th>
+                        <th style="width:10%"> No FPG </th>
+                        <th style="width:10%"> Tanggal </th>
+                        <th style="width:10%"> Jenis Bayar </th>
+                        <th style="width:20%"> Keterangan </th>
+                        <th style="width:10%"> Total Bayar </th>
+                        <th style="width:10%"> Uang Muka  </th>
+                        <th style="width:10%"> Cek / BG  </th>                      
+                        <th style="width:10%"> Detail </th>                     
                     </tr>
                   
 
@@ -241,7 +265,11 @@
             "language": dataTableLanguage,
     });*/
 
+<<<<<<< HEAD
 
+=======
+var tablex;
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 table();
      function table(){
    $('#addColumn').dataTable().fnDestroy();
@@ -254,6 +282,7 @@ table();
               "url": "{{ url("formfpg/formfpg/table") }}",
               "type": "get",
               data: {
+<<<<<<< HEAD
                     "_token": "{{ csrf_token() }}",
                     "type"  :"toko",
                     "tanggal1" :$('#tanggal1').val(),
@@ -267,6 +296,27 @@ table();
             {data: 'uangmuka', name: 'uangmuka'},            
           /*  {data: 's_kasir', name: 's_kasir'},                        
             {data: 's_gross', name: 's_gross'}, 
+=======
+                    "_token": "{{ csrf_token() }}",                    
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),
+                    "nosupplier" :$('#nosupplier').val(),
+                    "idjenisbayar" :$('#idjenisbayar').val(),
+                    "nofpg" :$('#nofpg').val(),
+                    },
+              },
+            columns: [
+            {data: 'no', name: 'no'},             
+            {data: 'fpg_nofpg', name: 'fpg_nofpg'},                           
+            {data: 'fpg_tgl', name: 'fpg_tgl'},            
+            {data: 'jenisbayar', name: 'jenisbayar'},
+            {data: 'fpg_keterangan', name: 'fpg_keterangan'},
+            {data: 'fpg_totalbayar', name: 'fpg_totalbayar'},            
+            {data: 'uangmuka', name: 'uangmuka'},            
+            {data: 'fpg_cekbg', name: 'fpg_cekbg'},                        
+            {data: 'action', name: 'action'},                        
+          /*  {data: 's_gross', name: 's_gross'}, 
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
             {data: 's_disc_percent', name: 's_disc_percent'}, 
             {data: 's_ongkir', name: 's_ongkir'},
             {data: 's_net', name: 's_net'},            
@@ -277,12 +327,32 @@ table();
             ],
             "pageLength": 10,
             "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+<<<<<<< HEAD
            "fnCreatedRow": function (row, data, index) {
             $('td', row).eq(0).html(index + 1);
         }
     });
 }
 
+=======
+           /*"fnCreatedRow": function (row, data, index) {
+            $('td', row).eq(0).html(index + 1);
+            }*/
+
+
+
+    });
+   notif();
+}
+
+tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
+    });
+});
+
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 
 
 
@@ -349,6 +419,7 @@ function(){
 }
 
 
+<<<<<<< HEAD
 function cari(){
    var data=$('#dataSeach').serialize();
    alert(data);
@@ -362,6 +433,55 @@ function cari(){
               }
             });
 
+=======
+dateAwal();
+function dateAwal(){
+      var d = new Date();
+      d.setDate(d.getDate()-7);
+
+      /*d.toLocaleString();*/
+      $('#tanggal1').datepicker({
+            format:"dd-mm-yyyy",        
+            autoclose: true,
+      }).datepicker( "setDate", d);
+      $('#tanggal2').datepicker({
+            format:"dd-mm-yyyy",        
+            autoclose: true,
+      }).datepicker( "setDate", new Date());      
+      $('.kosong').val('').trigger('chosen:updated');
+      $('.kosong').val('');      
+}
+
+ function cari(){
+  table();  
+ }
+
+ function resetData(){  
+  $('#tanggal1').val('');
+  $('#tanggal2').val('');  
+  /*$('#nofpg').val('');*/
+  $('.kosong').val('');      
+  $('.kosong').val('').trigger('chosen:updated');
+  table();
+  dateAwal();
+}  
+function notif(){
+   $.ajax({
+      url:baseUrl + '/formfpg/formfpg/notif',
+      type:'get',   
+       data: {
+                    "_token": "{{ csrf_token() }}",                    
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),
+                    "nosupplier" :$('#nosupplier').val(),
+                    "idjenisbayar" :$('#idjenisbayar').val(),
+                    "nofpg" :$('#nofpg').val(),
+                    },   
+      success:function(data){
+        $('#notif').html(data);
+    }
+  });
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 }
 </script>
 @endsection

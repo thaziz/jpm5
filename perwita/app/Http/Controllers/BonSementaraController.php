@@ -75,11 +75,70 @@ class BonSementaraController extends Controller
 		return view('purchase/bonsementara/indexcabang', compact('data'));
 	}
 
+
+	public function terbilang($x, $style=4) {
+    if($x<0) {
+        $hasil = "minus ". trim($this->kekata($x));
+    } else {
+        $hasil = trim($this->kekata($x));
+    }     
+    switch ($style) {
+        case 1:
+            $hasil = strtoupper($hasil);
+            break;
+        case 2:
+            $hasil = strtolower($hasil);
+            break;
+        case 3:
+            $hasil = ucwords($hasil);
+            break;
+        default:
+            $hasil = ucfirst($hasil);
+            break;
+    }     
+    return $hasil;
+}
+	
+	public function kekata($x) {
+    $x = abs($x);
+    $angka = array("", "satu", "dua", "tiga", "empat", "lima",
+    "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+    $temp = "";
+    if ($x <12) {
+        $temp = " ". $angka[$x];
+    } else if ($x <20) {
+        $temp = $this->kekata($x - 10). " belas";
+    } else if ($x <100) {
+        $temp = $this->kekata($x/10)." puluh". $this->kekata($x % 10);
+    } else if ($x <200) {
+        $temp = " seratus" . $this->kekata($x - 100);
+    } else if ($x <1000) {
+        $temp = $this->kekata($x/100) . " ratus" . $this->kekata($x % 100);
+    } else if ($x <2000) {
+        $temp = " seribu" . $this->kekata($x - 1000);
+    } else if ($x <1000000) {
+        $temp = $this->kekata($x/1000) . " ribu" . $this->kekata($x % 1000);
+    } else if ($x <1000000000) {
+        $temp = $this->kekata($x/1000000) . " juta" . $this->kekata($x % 1000000);
+    } else if ($x <1000000000000) {
+        $temp = $this->kekata($x/1000000000) . " milyar" . $this->kekata(fmod($x,1000000000));
+    } else if ($x <1000000000000000) {
+        $temp = $this->kekata($x/1000000000000) . " trilyun" . $this->kekata(fmod($x,1000000000000));
+    }     
+        return $temp;
+}
+
 	public function create(){
 		$data['cabang'] = DB::select("select * from cabang");
 
 
 		return view('purchase/bonsementara/createcabang' , compact('data'));	
+	}
+
+	public function printdata($id){
+		$data['bonsem'] = DB::select("select * from bonsem_pengajuan where bp_id = '$id'");
+		$data['terbilang'] = $this->terbilang($data['bonsem'][0]->bp_nominalkeu);
+		return view('purchase/bonsementara/print_bon_sementara' , compact('data'));
 	}
 
 	public function getnota(Request $request){
@@ -107,8 +166,12 @@ class BonSementaraController extends Controller
 			$data['idspp'] = '0001';
 		}
 
+		$data['nota'] =  'BS' . $bulan . $tahun . '/' . $cabang . '/' .  $data['idspp'];
 		$datacabang = DB::select("select * from cabang where kode = '$cabang'");
+		
 		$data['namacabang'] = $datacabang[0]->nama;
+
+
 		return json_encode($data);
 	}
 
@@ -390,6 +453,7 @@ class BonSementaraController extends Controller
 			}
 			
 			$updatepb->time_setujuadmin = $date;
+			$updatepb->bp_keteranganadmin = $request->keteranganadmin;
 			$updatepb->save();
 
 			return json_encode('sukses');
@@ -462,6 +526,7 @@ class BonSementaraController extends Controller
 
 			$updatepb = bonsempengajuan::find($id);
 			$updatepb->bp_jatuhtempo = $tigahari;
+			$updatepb->bp_keteranganpusat = $request->keteranganpusat;
 			$updatepb->save();
 			return json_encode('sukses');
 		});

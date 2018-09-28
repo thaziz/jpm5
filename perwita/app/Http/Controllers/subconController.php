@@ -459,225 +459,242 @@ class subconController extends Controller
 						]);
 		}
 	}
-public function nota_kontrak_subcon(request $request)
-{
+	public function nota_kontrak_subcon(request $request)
+	{
 
-	$year =Carbon::now()->format('y'); 
-	$month =Carbon::now()->format('m'); 
-	$idfaktur =   DB::table('kontrak_subcon')
-						->where('ks_cabang' , $request->cabang)
-						->max('ks_nota');
-		//	dd($nosppid);
-		if(isset($idfaktur)) {
-			$explode  = explode("/", $idfaktur);
-			$idfaktur = $explode[2];
-			$idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
-			$idfaktur = str_replace('-', '', $idfaktur) ;
-			$string = (int)$idfaktur + 1;
-			$idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
-		}
+		$year =Carbon::now()->format('y'); 
+		$month =Carbon::now()->format('m'); 
+		$idfaktur =   DB::table('kontrak_subcon')
+							->where('ks_cabang' , $request->cabang)
+							->max('ks_nota');
+			//	dd($nosppid);
+			if(isset($idfaktur)) {
+				$explode  = explode("/", $idfaktur);
+				$idfaktur = $explode[2];
+				$idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
+				$idfaktur = str_replace('-', '', $idfaktur) ;
+				$string = (int)$idfaktur + 1;
+				$idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
+			}
 
-		else {
-			$idfaktur = '001';
-		}
+			else {
+				$idfaktur = '001';
+			}
 
-		$nota = 'KSC' . $month . $year . '/' . $request->cabang . '/' .  $idfaktur;
-		return response()->json(['nota'=>$nota]);
-}
+			$nota = 'KSC' . $month . $year . '/' . $request->cabang . '/' .  $idfaktur;
+			return response()->json(['nota'=>$nota]);
+	}
 
-public function datatable_kontrak(request $request)
-{
-	// dd($request->all());
+	public function datatable_kontrak(request $request)
+	{
+		// dd($request->all());
+			$data = DB::table('kontrak_subcon_dt')
+	                  ->where('ksd_nota',$request->nota)
+	                  ->orderBy('ksd_ks_dt','ASC')
+	                  ->get();
+	        
+	        
+	        // return $data;
+	        $data = collect($data);
+	        // return $data;
+	        return Datatables::of($data)
+	                        ->addColumn('harga', function ($data) {
+	                                return number_format($data->ksd_harga,0,',','.');
+	                        })
+	                        ->addColumn('asal', function ($data) {
+
+	                          $kota = DB::table('kota')
+	                                    ->get();
+
+	                          $tipe_angkutan = DB::table('tipe_angkutan')
+	                                    ->get();
+
+	                          for ($a=0; $a < count($kota); $a++) { 
+	                            if ($data->ksd_asal == $kota[$a]->id) {
+	                              $kota_asal = $kota[$a]->nama;
+	                            }
+	                          }
+	                          return $data->ksd_asal . '-' . $kota_asal;
+	                                
+	                        })
+	                        ->addColumn('tujuan', function ($data) {
+
+	                          $kota = DB::table('kota')
+	                                    ->get();
+
+	                          $tipe_angkutan = DB::table('tipe_angkutan')
+	                                    ->get();
+
+	                          for ($a=0; $a < count($kota); $a++) { 
+	                            if ($data->ksd_tujuan == $kota[$a]->id) {
+	                              $kota_tujuan = $kota[$a]->nama;
+	                            }
+	                          }
+	                          return $data->ksd_tujuan . '-' . $kota_tujuan;
+	                        })
+	                        ->addColumn('angkutan', function ($data) {
+	                          $kota = DB::table('kota')
+	                                    ->get();
+
+	                          $tipe_angkutan = DB::table('tipe_angkutan')
+	                                    ->get();
+
+	                          for ($a=0; $a < count($tipe_angkutan); $a++) { 
+	                            if ($data->ksd_angkutan == $tipe_angkutan[$a]->kode) {
+	                              $angkutan = $tipe_angkutan[$a]->nama;
+	                            }
+	                          }
+	                          return $data->ksd_angkutan . '-' . $angkutan;
+	                        })
+	                        ->addColumn('aksi', function ($data) {
+	                          return  '<div class="btn-group">'.
+	                                   '<button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">'.
+	                                   '<label class="fa fa-pencil"></label></button>'.
+	                                   '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'.
+	                                   '<label class="fa fa-trash"></label></button>'.
+	                                  '</div>';
+	                        })
+	                        ->addColumn('tarif', function ($data) {
+	                          $jt = DB::table('jenis_tarif')
+	                                    ->get();
+	                          for ($a=0; $a < count($jt); $a++) { 
+	                            if ($data->ksd_jenis_tarif == $jt[$a]->jt_id) {
+	                              $jt = $jt[$a]->jt_nama_tarif;
+	                            }
+	                          }
+	                          return $jt;
+	                        })
+	                        ->addColumn('active', function ($data) {
+	                          if (Auth::user()->punyaAkses('Verifikasi','aktif')) {
+	                            if($data->ksd_active == true){
+	                              return '<input checked type="checkbox" onchange="check(this)" class="form-control check">';
+	                            }else{
+	                              return '<input type="checkbox" onchange="check(this)" class="form-control check">';
+	                            }
+	                          }else{
+	                              return '-';
+	                          }
+	                           
+	                        })
+	                        ->addColumn('none', function ($data) {
+	                            return '-';
+	                        })
+	                        ->make(true);
+	}
+	public function set_modal(request $request)
+	{
 		$data = DB::table('kontrak_subcon_dt')
-                  ->where('ksd_nota',$request->nota)
-                  ->orderBy('ksd_ks_dt','ASC')
-                  ->get();
-        
-        
-        // return $data;
-        $data = collect($data);
-        // return $data;
-        return Datatables::of($data)
-                        ->addColumn('harga', function ($data) {
-                                return number_format($data->ksd_harga,0,',','.');
-                        })
-                        ->addColumn('asal', function ($data) {
+	                ->where('ksd_nota',$request->nota)
+	                ->where('ksd_ks_dt',$request->ksd_dt)
+	                ->first();
+	    return response()->json(['data'=>$data]);
+	}
 
-                          $kota = DB::table('kota')
-                                    ->get();
+	public function hapus_d_kontrak(request $request)
+	{
+	// return $request->all();
+	  $data = DB::table('kontrak_subcon_dt')
+	            ->where('ksd_nota',$request->nota)
+	            ->where('ksd_ks_dt',$request->ksd_dt)
+	            ->delete();
+	}
+	public function check_kontrak(request $request)
+	{
+		if ($request->check == 'true') {
+	         // return $request->check;
 
-                          $tipe_angkutan = DB::table('tipe_angkutan')
-                                    ->get();
+	        $data_dt = DB::table('kontrak_subcon_dt')
+	            ->where('ksd_nota',$request->nota)
+	            ->where('ksd_ks_dt',$request->kcd_dt)
+	            ->update([
+	              'ksd_active' => true 
+	            ]);
 
-                          for ($a=0; $a < count($kota); $a++) { 
-                            if ($data->ksd_asal == $kota[$a]->id) {
-                              $kota_asal = $kota[$a]->nama;
-                            }
-                          }
-                          return $data->ksd_asal . '-' . $kota_asal;
-                                
-                        })
-                        ->addColumn('tujuan', function ($data) {
+	         
+	         return json_encode('success 1');
 
-                          $kota = DB::table('kota')
-                                    ->get();
+	    }else{
 
-                          $tipe_angkutan = DB::table('tipe_angkutan')
-                                    ->get();
+	      $data_dt = DB::table('kontrak_subcon_dt')
+	            ->where('ksd_nota',$request->nota)
+	            ->where('ksd_ks_dt',$request->kcd_dt)
+	            ->update([
+	              'ksd_active' => $request->check 
+	            ]);
+	         return json_encode('success 2');
+	    }
+	}
 
-                          for ($a=0; $a < count($kota); $a++) { 
-                            if ($data->ksd_tujuan == $kota[$a]->id) {
-                              $kota_tujuan = $kota[$a]->nama;
-                            }
-                          }
-                          return $data->ksd_tujuan . '-' . $kota_tujuan;
-                        })
-                        ->addColumn('angkutan', function ($data) {
-                          $kota = DB::table('kota')
-                                    ->get();
+	public function detail($id)
+	{
+		$data = DB::table('kontrak_subcon')
+					 ->join('cabang','kode','=','ks_cabang')
+					 ->where('ks_id',$id)
+					 ->orderBy('ks_id','asc')
+					 ->first();
 
-                          $tipe_angkutan = DB::table('tipe_angkutan')
-                                    ->get();
-
-                          for ($a=0; $a < count($tipe_angkutan); $a++) { 
-                            if ($data->ksd_angkutan == $tipe_angkutan[$a]->kode) {
-                              $angkutan = $tipe_angkutan[$a]->nama;
-                            }
-                          }
-                          return $data->ksd_angkutan . '-' . $angkutan;
-                        })
-                        ->addColumn('aksi', function ($data) {
-                          return  '<div class="btn-group">'.
-                                   '<button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">'.
-                                   '<label class="fa fa-pencil"></label></button>'.
-                                   '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'.
-                                   '<label class="fa fa-trash"></label></button>'.
-                                  '</div>';
-                        })
-                        ->addColumn('tarif', function ($data) {
-                          $jt = DB::table('jenis_tarif')
-                                    ->get();
-                          for ($a=0; $a < count($jt); $a++) { 
-                            if ($data->ksd_jenis_tarif == $jt[$a]->jt_id) {
-                              $jt = $jt[$a]->jt_nama_tarif;
-                            }
-                          }
-                          return $jt;
-                        })
-                        ->addColumn('active', function ($data) {
-                          if (Auth::user()->punyaAkses('Verifikasi','aktif')) {
-                            if($data->ksd_active == true){
-                              return '<input checked type="checkbox" onchange="check(this)" class="form-control check">';
-                            }else{
-                              return '<input type="checkbox" onchange="check(this)" class="form-control check">';
-                            }
-                          }else{
-                              return '-';
-                          }
-                           
-                        })
-                        ->addColumn('none', function ($data) {
-                            return '-';
-                        })
-                        ->make(true);
-}
-public function set_modal(request $request)
-{
-	$data = DB::table('kontrak_subcon_dt')
-                ->where('ksd_nota',$request->nota)
-                ->where('ksd_ks_dt',$request->ksd_dt)
-                ->first();
-    return response()->json(['data'=>$data]);
-}
-
-public function hapus_d_kontrak(request $request)
-{
-// return $request->all();
-  $data = DB::table('kontrak_subcon_dt')
-            ->where('ksd_nota',$request->nota)
-            ->where('ksd_ks_dt',$request->ksd_dt)
-            ->delete();
-}
-public function check_kontrak(request $request)
-{
-	if ($request->check == 'true') {
-         // return $request->check;
-
-        $data_dt = DB::table('kontrak_subcon_dt')
-            ->where('ksd_nota',$request->nota)
-            ->where('ksd_ks_dt',$request->kcd_dt)
-            ->update([
-              'ksd_active' => true 
-            ]);
-
-         
-         return json_encode('success 1');
-
-    }else{
-
-      $data_dt = DB::table('kontrak_subcon_dt')
-            ->where('ksd_nota',$request->nota)
-            ->where('ksd_ks_dt',$request->kcd_dt)
-            ->update([
-              'ksd_active' => $request->check 
-            ]);
-         return json_encode('success 2');
-    }
-}
-
-public function detail($id)
-{
-	$data = DB::table('kontrak_subcon')
-				 ->join('cabang','kode','=','ks_cabang')
+		$subcon = DB::table('kontrak_subcon')
+				 ->join('subcon','kode','=','ks_nama')
 				 ->where('ks_id',$id)
 				 ->orderBy('ks_id','asc')
 				 ->first();
+		$jenis_tarif = DB::table('jenis_tarif')
+					     ->get();
+		 $subcon_dt = DB::SELECT("SELECT kontrak_subcon.*,kontrak_subcon_dt.*, asal.nama as asal ,asal.id as id_asal,
+						 				tujuan.nama as tujuan, tujuan.id as id_tujuan,
+						 				angkutan.kode as kode_angkutan, angkutan.nama as angkutan
+									    from kontrak_subcon 
+									    inner join kontrak_subcon_dt
+									    on ksd_ks_id = ks_id
+									    inner join 
+									    (SELECT nama,id from kota) as asal
+									    on asal.id = ksd_asal
+									    inner join 
+							 	 	    (SELECT nama,id from kota) as tujuan
+								 	    on tujuan.id = ksd_tujuan
+								 	    inner join
+								 	    (SELECT kode,nama from tipe_angkutan) as angkutan
+								 	    on angkutan.kode  = ksd_angkutan
+								 	    where ks_id = '$id'");
 
-	$subcon = DB::table('kontrak_subcon')
-			 ->join('subcon','kode','=','ks_nama')
-			 ->where('ks_id',$id)
-			 ->orderBy('ks_id','asc')
-			 ->first();
-	$jenis_tarif = DB::table('jenis_tarif')
-				     ->get();
-	 $subcon_dt = DB::SELECT("SELECT kontrak_subcon.*,kontrak_subcon_dt.*, asal.nama as asal ,asal.id as id_asal,
-					 				tujuan.nama as tujuan, tujuan.id as id_tujuan,
-					 				angkutan.kode as kode_angkutan, angkutan.nama as angkutan
-								    from kontrak_subcon 
-								    inner join kontrak_subcon_dt
-								    on ksd_ks_id = ks_id
-								    inner join 
-								    (SELECT nama,id from kota) as asal
-								    on asal.id = ksd_asal
-								    inner join 
-						 	 	    (SELECT nama,id from kota) as tujuan
-							 	    on tujuan.id = ksd_tujuan
-							 	    inner join
-							 	    (SELECT kode,nama from tipe_angkutan) as angkutan
-							 	    on angkutan.kode  = ksd_angkutan
-							 	    where ks_id = '$id'");
+		for ($i=0; $i < count($subcon_dt); $i++) { 
+		 	$subcon_dt[$i]->ksd_harga = round($subcon_dt[$i]->ksd_harga);
+		}
+		
 
-	for ($i=0; $i < count($subcon_dt); $i++) { 
-	 	$subcon_dt[$i]->ksd_harga = round($subcon_dt[$i]->ksd_harga);
+		$sub = DB::table('subcon')
+				 ->get();
+
+		$cabang = DB::table('cabang')
+					->get();
+		$kota   = DB::table('kota')
+					->get();
+		$angkutan = DB::table('tipe_angkutan')
+					->get();
+
+		$tgl1 = Carbon::parse($data->ks_tgl_mulai)->format('d-m-Y');
+		$tgl2 = Carbon::parse($data->ks_tgl_akhir)->format('d-m-Y');
+		$tgl3 = Carbon::parse($data->ks_tgl)->format('d-m-Y');
+
+
+		return view('master_subcon.detail_subcon',compact('data','subcon','subcon_dt','tgl1','tgl2','tgl3','cabang','kota','angkutan','sub','jenis_tarif','id'));
 	}
-	
 
-	$sub = DB::table('subcon')
-			 ->get();
+	public function cek_aktif(Request $req)
+	{
+		if ($req->cek == 'true') {
+			$cek = 'ACTIVE';
+		}else if ($req->cek == 'false'){
+			$cek = 'NOT ACTIVE';
+		}
 
-	$cabang = DB::table('cabang')
-				->get();
-	$kota   = DB::table('kota')
-				->get();
-	$angkutan = DB::table('tipe_angkutan')
-				->get();
-
-	$tgl1 = Carbon::parse($data->ks_tgl_mulai)->format('d-m-Y');
-	$tgl2 = Carbon::parse($data->ks_tgl_akhir)->format('d-m-Y');
-	$tgl3 = Carbon::parse($data->ks_tgl)->format('d-m-Y');
+		$cari = DB::table("kontrak_subcon")		
+				  ->where('ks_nota',$req->nota)
+				  ->update([
+					'ks_active'		=>	$cek,	
+				  ]);
 
 
-	return view('master_subcon.detail_subcon',compact('data','subcon','subcon_dt','tgl1','tgl2','tgl3','cabang','kota','angkutan','sub','jenis_tarif','id'));
-}
+	}
 }
 

@@ -101,6 +101,15 @@ Route::get('jurnalselaras/bankmasuk', 'jurnal_pembelian@bankmasuk');
 Route::get('jurnalselaras/kasmasuk', 'jurnal_pembelian@kasmasuk');
 Route::get('jurnalselaras/fpg_checkbank', 'jurnal_pembelian@fpg_checkbank');
 Route::get('jurnalselaras/get_no_po', 'jurnal_pembelian@get_no_po');
+<<<<<<< HEAD
+=======
+Route::get('jurnalselaras/kendaraansppd', 'jurnal_pembelian@kendaraansppd');
+Route::get('jurnalselaras/kendaraanpo', 'jurnal_pembelian@kendaraanpo');
+Route::get('jurnalselaras/notabankmasuk', 'jurnal_pembelian@notabankmasuk');
+Route::get('jurnalselaras/jenisbayarfpg', 'jurnal_pembelian@getjenisbayarfpg');
+Route::get('jurnalselaras/jurnalsalahkodebank', 'jurnal_pembelian@jurnalsalahkodebank');
+Route::get('jurnalselaras/fpgbbk', 'jurnal_pembelian@fpgbbk');
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 
 //***PEMBELIAN
 //***PEMBELIAN
@@ -117,6 +126,8 @@ Route::get('detailanalisahutang' , 'Queryanalisa@detailanalisahutang');
 
 
 Route::get('suratpermintaanpembelian' , 'PurchaseController@spp_index');
+Route::get('suratpermintaanpembelian/table' , 'PurchaseController@spp_indextable');//taziz
+Route::get('suratpermintaanpembelian/notif' , 'PurchaseController@spp_indexnotif');
 Route::post('suratpermintaanpembelian/savesupplier' , 'PurchaseController@savespp');
 Route::get('suratpermintaanpembelian/createspp' , 'PurchaseController@createspp');
 Route::get('suratpermintaanpembelian/detailspp/{id}' , 'PurchaseController@detailspp');
@@ -141,6 +152,10 @@ Route::post('suratpermintaanpembelian/updatespp', 'PurchaseController@updatespp'
 Route::get('testing/analisa', 'PurchaseController@queryanalisa');
 
 Route::get('konfirmasi_order/konfirmasi_order' , 'PurchaseController@confirm_order');
+Route::get('konfirmasi_order/konfirmasi_order/table' , 'PurchaseController@confirm_ordertable');
+Route::get('konfirmasi_order/konfirmasi_order/notif' , 'PurchaseController@confirm_ordernotif');
+
+
 Route::get('konfirmasi_order/konfirmasi_orderdetailkeu/{id}' , 'PurchaseController@confirm_order_dtkeu');
 Route::get('konfirmasi_order/konfirmasi_orderdetailpemb/{id}' , 'PurchaseController@confirm_order_dtpemb');
 Route::get('konfirmasi_order/ajax_confirmorderdt' , 'PurchaseController@ajax_confirmorderdt');
@@ -315,6 +330,7 @@ Route::get('fakturpembelian/outlet_um', 'BiayaPenerusController@outlet_um');
 Route::get('fakturpembelian/subcon_um', 'BiayaPenerusController@subcon_um');
 Route::get('fakturpembelian/biaya_penerus/jurnal', 'BiayaPenerusController@jurnal');
 Route::get('fakturpembelian/biaya_penerus/jurnal_um', 'BiayaPenerusController@jurnal_um');
+Route::get('fakturpembelian/ganti_nota', 'BiayaPenerusController@ganti_nota');
 //PEMBAYARAN OUTLET
 Route::get('fakturpembelian/getpembayaranoutlet', 'BiayaPenerusController@getpembayaranoutlet')->name('getpembayaranoutlet');
 Route::get('fakturpembelian/cari_outlet', 'BiayaPenerusController@cari_outlet');
@@ -340,6 +356,7 @@ Route::get('master_subcon/set_modal', 'subconController@set_modal');
 Route::get('master_subcon/hapus_d_kontrak', 'subconController@hapus_d_kontrak');
 Route::get('master_subcon/check_kontrak', 'subconController@check_kontrak');
 Route::get('master_subcon/detail/{id}', 'subconController@detail');
+Route::get('master_subcon/cek_aktif', 'subconController@cek_aktif');
 
 
 
@@ -356,12 +373,14 @@ Route::post('bonsementaracabang/terimauang', 'BonSementaraController@terimauang'
 Route::post('bonsementaracabang/jurnalumum', 'BonSementaraController@jurnalumum');
 
 
+
 Route::get('bonsementarapusat/bonsementarapusat', 'BonSementaraController@indexpusat');
 Route::get('bonsementarapusat/setujukacab', 'BonSementaraController@setujukacab');
 Route::get('bonsementarapusat/setujukeu', 'BonSementaraController@setujukacab');
 Route::get('bonsementarapusat/updatekapus', 'BonSementaraController@updatekapus');
 Route::post('bonsementarapusat/updateadmin', 'BonSementaraController@updateadmin');
 Route::post('bonsementarapusat/updatekeu', 'BonSementaraController@updatekeu');
+Route::get('bonsementarapusat/printdata/{id}', 'BonSementaraController@printdata');
 
 
 //PEMBAYARAN SUBCON
@@ -551,6 +570,9 @@ Route::get('uangmukapembelian/detailuangmukapembelian', 'PurchaseController@deta
 
 
 Route::get('pelunasanhutangbank/pelunasanhutangbank', 'PurchaseController@pelunasanhutangbank');
+Route::get('pelunasanhutangbank/pelunasanhutangbank/table', 'PurchaseController@pelunasanhutangbanktable');
+Route::get('pelunasanhutangbank/pelunasanhutangbank/notif', 'PurchaseController@pelunasanhutangbanknotif');
+
 Route::get('pelunasanhutangbank/createpelunasanbank', 'PurchaseController@createpelunasanbank');
 Route::get('pelunasanhutangbank/detailpelunasanbank/{id}', 'PurchaseController@detailpelunasanbank');
 Route::get('pelunasanhutangbank/nocheck', 'PurchaseController@nocheckpelunasanhutangbank');
@@ -567,6 +589,12 @@ Route::get('queryanalisa', 'Queryanalisa@view');
 Route::get('bankmasuk/bankmasuk' ,'BankMasukController@bankmasuk');
 Route::get('bankmasuk/databank' ,'BankMasukController@getdata');
 Route::post('bankmasuk/saveterima' ,'BankMasukController@saveterima');
+Route::get('bankmasuk/createbankmasuk' ,'BankMasukController@create');
+Route::get('bankmasuk/getnota' ,'BankMasukController@getnota');
+Route::post('bankmasuk/save' ,'BankMasukController@savedata');
+Route::get('bankmasuk/hapusdata' ,'BankMasukController@hapusdata');
+Route::get('bankmasuk/editdata/{id}' ,'BankMasukController@editdata');
+Route::post('bankmasuk/updatedata' ,'BankMasukController@updatedata');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');
@@ -588,6 +616,10 @@ Route::get('formaju/detailformaju', 'PurchaseController@detailformaju');
 //FPG
 Route::get('formfpg/formfpg', 'PurchaseController@formfpg');
 Route::get('formfpg/formfpg/table', 'PurchaseController@formfpgTable'); //seach taziz
+<<<<<<< HEAD
+=======
+Route::get('formfpg/formfpg/notif', 'PurchaseController@formfpgNotif'); //seach taziz
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 Route::get('formfpg/createformfpg', 'PurchaseController@createformfpg');
 Route::get('formfpg/detailformfpg/{id}', 'PurchaseController@detailformfpg');
 Route::get('formfpg/changesupplier', 'PurchaseController@changesupplier');
@@ -2170,6 +2202,15 @@ Route::get('master_keuangan/laba_rugi/pdf/single/{throtle}', [
 ]);
 
 //end laba rugi
+
+//arus kas
+
+Route::get('master_keuangan/arus_kas/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_arus_kas@index_arus_kas_single',
+  'as'   => 'arus_kas.index_single'
+]);
+
+//end arus kas
 
 
 // buku besar

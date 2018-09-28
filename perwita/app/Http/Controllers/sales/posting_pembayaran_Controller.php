@@ -211,11 +211,17 @@ class posting_pembayaran_Controller extends Controller
 
     public function akun_dropdown(request $req)
     {
-      $data = DB::table('d_akun')
-                ->where('kode_cabang',$req->cabang)
-                ->orderBy('id_akun','ASC')
-                ->get();
-
+      
+      if (Auth::user()->punyaAkses('Posting Pembayaran','cabang')) {
+        $data = DB::table('d_akun')
+                  ->orderBy('id_akun','ASC')
+                  ->get();
+      }else{
+        $data = DB::table('d_akun')
+                  ->where('kode_cabang',$req->cabang)
+                  ->orderBy('id_akun','ASC')
+                  ->get();
+      }
       return response()->json(['data'=>$data]);
     }
 

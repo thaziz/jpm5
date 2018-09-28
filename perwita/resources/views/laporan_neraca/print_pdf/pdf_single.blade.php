@@ -1,7 +1,12 @@
 <!DOCTYPE html>
   <html>
     <head>
-      <title>laporan Neraca</title>
+
+      @if($throttle == 'bulan')
+        <title>Neraca {{ date_ind($request->m)." ".$request->y }}</title>
+      @elseif($throttle == 'tahun')
+        <title>Neraca {{ $request->y }}</title>
+      @endif
 
 
         <link href="{{ asset('assets/vendors/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -143,6 +148,8 @@
           </div>
           <div class="col-md-5" style="background: none; padding: 10px 15px 5px 15px">
             <ul>
+              <li><i class="fa fa-compress" style="cursor: pointer;" onclick="$('#modal_setting_neraca_perbandingan').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Perbandingan Neraca"></i></li>
+
               <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_setting_neraca').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Setting Neraca"></i></li>
 
               <li><i class="fa fa-file-text" style="cursor: pointer;" onclick="window.open('{{ route("neraca_detail.index", $throttle."?m=".$request->m."&y=".$request->y."&cab=".$request->cab) }}', '_blank')" data-toggle="tooltip" data-placement="bottom" title="Buka Lampiran Neraca"></i></li>
@@ -176,9 +183,9 @@
             <tr>
               <td style="text-align: left; padding-top: 5px;">
                 @if($throttle == 'bulan')
-                  Laporan Per Akhir Bulan {{ date_ind($request->m)." ".$request->y }}
+                  Laporan Per Bulan {{ date_ind($request->m)." ".$request->y }}
                 @elseif($throttle == 'tahun')
-                  Laporan Per Akhir Tahun {{ $request->y }}
+                  Laporan Per Tahun {{ $request->y }}
                 @endif
               </td>
               
@@ -200,6 +207,7 @@
               <td style="border-right: 3px solid #ccc;">
                 <table class="aktiva-tree" id="table-data-inside" border="0" width="100%">
                   <tbody>
+<<<<<<< HEAD
                     
                       <?php $total_aktiva = 0; $total_pasiva = 0; ?>
 
@@ -245,17 +253,87 @@
                               <tr class="treegrid-{{ str_replace('.', '-', $data_neraca_aktiva['nomor_id']) }} treegrid-parent-{{ str_replace('.', '-', $data_neraca_aktiva['parrent']) }}">
                                 <td class="{{ $level }}">&nbsp;</td>
                                 <td></td>
+=======
+                    <?php $total_aktiva = $total_pasiva = 0; ?>
+                    @foreach($detail as $data_detail)
+                      @if($data_detail->type == 'aktiva')
+
+                        @if($data_detail->jenis == 1)
+
+                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }}" id="{{ $data_detail->nomor_id }}">
+                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: bold;">{{ $data_detail->keterangan }}</td>
+                            <td class="money" style="display: none">
+                              {{ get_total_neraca_parrent($data_detail->nomor_id, 2, 'A', $data_real, $throttle, $detail, true) }}
+                            </td>
+                          </tr>
+
+                        @elseif($data_detail->jenis == 2)
+
+                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }} collapse" id="{{ $data_detail->nomor_id }}">
+                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: bold;">{{ $data_detail->keterangan }}</td>
+                            <td class="money">
+                               {{ get_total_neraca_parrent($data_detail->nomor_id, 3, 'A', $data_real, $throttle, $detail, true) }}
+                            </td>
+                          </tr>
+
+                          @foreach($data_detail->detail as $detail_dt)
+                            <tr>
+                              <tr class="treegrid-{{ str_replace('.', '-', $detail_dt->id_group) }} treegrid-parent-{{ str_replace('.', '-', $detail_dt->id_parrent) }} collapse" id="{{ $detail_dt->nomor_id }}">
+                                <td style="font-weight: 500; font-style: italic;">Group {{ $detail_dt->nama }}</td>
+                                <td class="money">
+                                  {{ get_total_neraca_parrent($detail_dt->id_parrent, 5, 'A', $data_real, $throttle, $detail, true) }}
+                                </td>
+                              </tr>
+                            </tr>
+
+                            @foreach($detail_dt->akun as $akun)
+                              <?php 
+                                $mutasi = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
+
+                                if($throttle == 'bulan')
+                                  $coalesce = (strtotime($data_real) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+                                else
+                                  $coalesce = (date('Y', strtotime($data_real)) < date('Y', strtotime($akun->opening_date))) ? 0 : $akun->coalesce;
+
+                                $total = ($coalesce + $mutasi);
+
+                                if($akun->akun_dka == 'K'){
+                                  $total = ($total * -1);
+                                }
+
+                                $total_aktiva += $total;
+
+                              ?>
+
+                              <tr>
+                                <tr class="treegrid-{{ str_replace('.', '-', $akun->id_akun) }} treegrid-parent-{{ str_replace('.', '-', $akun->group_neraca) }} collapse" id="{{ $akun->id_akun }}">
+                                  <td style="font-weight: 500; font-style: italic;">{{ $akun->nama_akun }}</td>
+                                  <td class="money">
+                                    {{ ($total < 0) ? '('.number_format(str_replace('-', '', $total), 2).')' : number_format(str_replace('-', '', $total), 2) }}
+                                  </td>
+                                </tr>
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
                               </tr>
                             @endif
                           @endif
                         @endforeach
 
+<<<<<<< HEAD
                         <tr>
                           <td colspan="2">&nbsp;</td>
                         </tr>
                         <tr>
                           <td colspan="2">&nbsp;</td>
                         </tr>
+=======
+                         @elseif($data_detail->jenis == 3)
+                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }}" id="{{ $data_detail->nomor_id }}">
+                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: 600; font-style: italic;">{{ $data_detail->keterangan }}</td>
+                            <td class="money total">
+                              {{ get_total_neraca_parrent($data_detail->nomor_id, 4, 'A', $data_real, $throttle, $detail, true) }}
+                            </td>
+                          </tr>
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 
                   </tbody>
                 </table>
@@ -264,6 +342,7 @@
               <td>
                 <table class="aktiva-tree" id="table-data-inside" border="0" width="100%">
                   <tbody>
+<<<<<<< HEAD
                     
                       @foreach($data_neraca as $data_neraca_aktiva)
                         @if($data_neraca_aktiva["type"] == "pasiva")
@@ -295,6 +374,83 @@
                                 <td class="{{ $level }}" width="60%">{{ $data_neraca_aktiva["keterangan"] }}</td>
                                 <td class="money">{{ ($totDetail >= 0) ? number_format($totDetail, 2) : "(".number_format(str_replace("-", "", $totDetail), 2).")" }}</td>
                               </tr>
+=======
+
+                    @foreach($detail as $data_detail)
+                      @if($data_detail->type == 'pasiva')
+
+                        @if($data_detail->jenis == 1)
+
+                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }}" id="{{ $data_detail->nomor_id }}">
+                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: bold;">{{ $data_detail->keterangan }}</td>
+                            <td class="money" style="display: none">
+                              {{ get_total_neraca_parrent($data_detail->nomor_id, 2, 'P', $data_real, $throttle, $detail, true) }}
+                            </td>
+                          </tr>
+
+                        @elseif($data_detail->jenis == 2)
+
+                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }} collapse" id="{{ $data_detail->nomor_id }}">
+                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: bold;">{{ $data_detail->keterangan }}</td>
+                            <td class="money">
+                               {{ get_total_neraca_parrent($data_detail->nomor_id, 3, 'P', $data_real, $throttle, $detail, true) }}
+                            </td>
+                          </tr>
+
+                          @foreach($data_detail->detail as $detail_dt)
+                            <tr>
+                              <tr class="treegrid-{{ str_replace('.', '-', $detail_dt->id_group) }} treegrid-parent-{{ str_replace('.', '-', $detail_dt->id_parrent) }} collapse" id="{{ $detail_dt->nomor_id }}">
+                                <td style="font-weight: 500; font-style: italic;">Group {{ $detail_dt->nama }}</td>
+                                <td class="money">
+                                  {{ get_total_neraca_parrent($detail_dt->id_parrent, 5, 'P', $data_real, $throttle, $detail, true) }}
+                                </td>
+                              </tr>
+                            </tr>
+
+                            @foreach($detail_dt->akun as $akun)
+                              <?php 
+                                $mutasi = (count($akun->mutasi_bank_debet) > 0) ? $akun->mutasi_bank_debet[0]->total : 0;
+
+                                if($throttle == 'bulan')
+                                  $coalesce = (strtotime($data_real) < strtotime($akun->opening_date)) ? 0 : $akun->coalesce;
+                                else
+                                  $coalesce = (date('Y', strtotime($data_real)) < date('Y', strtotime($akun->opening_date))) ? 0 : $akun->coalesce;
+
+                                $total = ($coalesce + $mutasi);
+
+                                if($akun->akun_dka == 'D'){
+                                  $total = ($total * -1);
+                                }
+
+                                $total_pasiva += $total;
+                              ?>
+
+                              <tr>
+                                <tr class="treegrid-{{ str_replace('.', '-', $akun->id_akun) }} treegrid-parent-{{ str_replace('.', '-', $akun->group_neraca) }} collapse" id="{{ $akun->id_akun }}">
+                                  <td style="font-weight: 500; font-style: italic;">{{ $akun->nama_akun }}</td>
+                                  <td class="money">
+                                    {{ ($total < 0) ? '('.number_format(str_replace('-', '', $total), 2).')' : number_format(str_replace('-', '', $total), 2) }}
+                                  </td>
+                                </tr>
+                              </tr>
+                            @endforeach
+
+                          @endforeach
+
+                        @elseif($data_detail->jenis == 4)
+                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }}" id="{{ $data_detail->nomor_id }}">
+                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: bold;">&nbsp;</td>
+                            <td></td>
+                          </tr>
+
+                         @elseif($data_detail->jenis == 3)
+                          <tr class="treegrid-{{ str_replace('.', '-', $data_detail->nomor_id) }} treegrid-parent-{{ str_replace('.', '-', $data_detail->id_parrent) }}" id="{{ $data_detail->nomor_id }}">
+                            <td class="{{ 'lv'.$data_detail->level }}" style="font-weight: 600; font-style: italic;">{{ $data_detail->keterangan }}</td>
+                            <td class="money total">
+                              {{ get_total_neraca_parrent($data_detail->nomor_id, 4, 'P', $data_real, $throttle, $detail, true) }}
+                            </td>
+                          </tr>
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 
                           @elseif($data_neraca_aktiva["jenis"] == 3)
                             <tr class="treegrid-{{ str_replace('.', '-', $data_neraca_aktiva['nomor_id']) }} treegrid-parent-{{ str_replace('.', '-', $data_neraca_aktiva['parrent']) }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
@@ -377,7 +533,7 @@
               <form id="table_setting_form">
               <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
                 <table border="0" id="form-table" class="col-md-12">
-                  <tr>
+                  {{-- <tr>
                     <td width="30%" class="text-center">Pilih Cabang</td>
                     <td colspan="2">
                         <select name="cab" class="select_validate_null form-control" id="group_laba_rugi">
@@ -391,7 +547,7 @@
                           @endforeach
                         </select>
                     </td>
-                  </tr>
+                  </tr> --}}
 
                   <tr>
                     <td width="30%" class="text-center">Jenis Neraca</td>
@@ -443,6 +599,66 @@
     </div>
       <!-- modal -->
 
+      <!-- modal -->
+    <div id="modal_setting_neraca_perbandingan" class="modal">
+      <div class="modal-dialog" style="width: 30%">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Setting Tampilan Neraca Perbandingan</h4>
+            <input type="hidden" class="parrent"/>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <form id="table_setting_form_perbandingan">
+              <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+                <table border="0" id="form-table" class="col-md-12">
+
+                  <tr>
+                    <td width="30%" class="text-center">Jenis Neraca</td>
+                    <td colspan="2">
+                        <select class="form-control" style="width:90%; height: 30px" id="tampil_perbandingan">
+                          <option value="bulan">Perbandingan Neraca Bulan</option>
+                          <option value="tahun">Perbandingan Neraca Tahun</option>
+                          {{-- <option value="p_bulan">Perbandingan Bulan</option> --}}
+                          {{-- <option value="p_tahun">Perbandingan Tahun</option> --}}
+                        </select>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td width="30%" class="text-center">Neraca 1</td>
+                    <td>
+                        <input type="text" readonly name="input_1" class="form-control perbandingan_bulan perbandingan_bulan_1" placeholder="Bulan Untuk Neraca 1" style="cursor: pointer;">
+
+                        <input type="text" readonly name="input_1" class="form-control perbandingan_tahun perbandingan_tahun_1" placeholder="Tahun Untuk Neraca 1" style="cursor: pointer; display: none">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td width="30%" class="text-center">Neraca 2</td>
+                    <td>
+                        <input type="text" readonly name="input_2" class="form-control perbandingan_bulan perbandingan_bulan_2" placeholder="Bulan Untuk Neraca 2" style="cursor: pointer;">
+
+                        <input type="text" readonly name="input_2" class="form-control perbandingan_tahun perbandingan_tahun_2" placeholder="Tahun Untuk Neraca 2" style="cursor: pointer; display: none">
+                    </td>
+                  </tr>
+
+                </table>
+              </div>
+              </form>
+
+              <div class="col-md-12 m-t" style="border-top: 1px solid #eee; padding: 10px 10px 0px 0px;">
+                <button class="btn btn-primary btn-sm pull-right" id="submit_setting_neraca_perbandingan">Submit</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+      <!-- modal -->
+
       <script type="text/javascript" src="{{ asset('assets/vendors/bootstrap/js/bootstrap.min.js') }}"></script>
 
       <!-- datepicker  --> 
@@ -469,25 +685,6 @@
           $('[data-toggle="tooltip"]').tooltip({container : 'body'});
 
           baseUrl = '{{ url('/') }}';
-
-          // $('.aktiva-tree').treegrid('getRootNodes').on('change', function(){
-          //    $(this).children('.money').first().fadeIn('200');
-          //    console.log(this);
-          // });
-
-          // $('.aktiva-tree').treegrid('getRootNodes').on('expand', function(){
-          //    $(this).children('.money').first().fadeOut('200');
-          //    console.log(this);
-          // });
-
-          // $('.pasiva-tree').treegrid('getRootNodes').on('collapse', function(){
-          //    $(this).children('.money').first().fadeIn('200');
-          //    // alert('okee');
-          // });
-
-          // $('.pasiva-tree').treegrid('getRootNodes').on('expand', function(){
-          //    $(this).children('.money').first().fadeOut('200');
-          // });
 
           // script for neraca
 
@@ -599,6 +796,72 @@
 
                   // window.location = baseUrl + "/master_keuangan/saldo_akun?" + form.serialize();
                 })
+
+          //end neraca
+
+          // script for neraca
+
+            $('.perbandingan_bulan_2').datepicker( {
+                format: "mm-yyyy",
+                viewMode: "months", 
+                minViewMode: "months"
+            })
+
+            $('.perbandingan_bulan_1').datepicker( {
+                format: "mm-yyyy",
+                viewMode: "months", 
+                minViewMode: "months"
+            }).on("changeDate", function(){
+                $('.perbandingan_bulan_2').val("");
+                $('.perbandingan_bulan_2').datepicker("setStartDate", $(this).val());
+            });
+
+            $('.perbandingan_tahun_2').datepicker( {
+                format: "yyyy",
+                viewMode: "years", 
+                minViewMode: "years"
+            })
+
+            $('.perbandingan_tahun_1').datepicker( {
+                format: "yyyy",
+                viewMode: "years", 
+                minViewMode: "years"
+            }).on("changeDate", function(){
+                $('.perbandingan_tahun_2').val("");
+                $('.perbandingan_tahun_2').datepicker("setStartDate", $(this).val());
+            });
+
+            $('#tampil_perbandingan').change(function(evt){
+                evt.preventDefault(); ctx = $(this);
+
+                if(ctx.val() == 'bulan'){
+                  $('.perbandingan_bulan').css('display', '');
+                  $('.perbandingan_tahun').css('display', 'none');
+                }else{
+                  $('.perbandingan_tahun').css('display', '');
+                  $('.perbandingan_bulan').css('display', 'none');
+                }
+            })
+
+            $('#submit_setting_neraca_perbandingan').click(function(evt){
+              evt.preventDefault();
+
+              if($('#tampil_perbandingan').val() == 'bulan'){
+                if($('.perbandingan_bulan_1').val() == '' || $('.perbandingan_bulan_2').val() == ''){
+                  alert('Tidak Boleh Ada Bulan Yang Kosong');
+                  return false;
+                }else{
+                  window.location = baseUrl+'/master_keuangan/neraca/perbandingan/'+$('#tampil_perbandingan').val()+'?d1='+$('.perbandingan_bulan_1').val()+'&d2='+$('.perbandingan_bulan_2').val();
+                }
+              }else{
+                if($('.perbandingan_tahun_1').val() == '' || $('.perbandingan_tahun_2').val() == ''){
+                  alert('Tidak Boleh Ada tahun Yang Kosong');
+                  return false;
+                }
+              }
+
+              // $('#table_setting_form_perbandingan').submit();
+            })
 
           //end neraca
 

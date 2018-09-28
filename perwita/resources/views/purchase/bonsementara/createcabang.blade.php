@@ -56,7 +56,7 @@
               <div class="box">
                 <div class="box-body">
                     <form action="post" id="savebonsem">
-                     <h3> <p > Data Kas Cabang <b class="namacabang">  </b> saat ini Rp <b class="kascabang">  500,000.00  </b> </p> </h3>
+                     
                      <br>
 
                     <table class="table">
@@ -179,7 +179,7 @@
                     
                        nospp = 'BS' + month + year2 + '/' + comp + '/' +  response.idspp;
                       console.log(nospp);
-                      $('.nonota').val(nospp);
+                      $('.nonota').val(response.nota);
                        nospp = $('.nonota').val();
                       $('.namacabang').text(response.namacabang);
               },
@@ -221,7 +221,7 @@
                     
                        nospp = 'BS' + month + year2 + '/' + comp + '/' +  response.idspp;
                       console.log(nospp);
-                      $('.nonota').val(nospp);
+                      $('.nonota').val(response.nota);
                        nospp = $('.nonota').val();
                       $('.namacabang').text(response.namacabang);
     },
@@ -264,7 +264,7 @@
                     
                        nospp = 'BS' + month + year2 + '/' + comp + '/' +  response.idspp;
                       console.log(nospp);
-                      $('.nonota').val(nospp);
+                      $('.nonota').val(response.nota);
                        nospp = $('.nonota').val();
 
                        $('.namacabang').text(response.namacabang);

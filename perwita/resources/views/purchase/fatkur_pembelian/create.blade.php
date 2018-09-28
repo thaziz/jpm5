@@ -108,7 +108,7 @@
                             <td> Cabang </td>
                             @if(Auth::user()->punyaAkses('Faktur Pembelian','cabang'))
                             <td class="cabang_td">  
-                            <select class="form-control chosen-select-width cabang" name="cabang">
+                            <select class="form-control chosen-select-width cabang" name="cabang" onchange="ganti_nota()">
                                 @foreach($data['cabang'] as $cabang)
                               <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
                               @endforeach
@@ -2198,7 +2198,7 @@
 
 
     $('.tgl').change(function(){
-       cabang = $('.cabang').val();
+      cabang = $('.cabang').val();
       var a = $('ul#tabmenu').find('li.active').data('val');
       tgl = $('.tgl').val();
       $('.cabang2').val(cabang);
@@ -5286,7 +5286,7 @@
                 jumlah = hasil;
               }
 
-              alert(jumlah);
+           
               //DPP
                $('.dpp').val(addCommas(jumlah));
                $('.dpp').val(addCommas(jumlah));
@@ -5905,7 +5905,7 @@
 
                               $('#input_data').append(rowinput);
                                 jumlahtotalharga = jumlahtotalharga + parseInt(response.po_barang[k][z].sumharga);
-                                alert(jumlahtotalharga);
+                              
                         }
                          console.log('test2' + z);
                       }
@@ -5917,7 +5917,7 @@
                   $('th.hrgpo').remove();
                   $('th.updatestockpo').remove();
                       for(var k = 0 ; k < response.po_barang.length; k++){
-                        alert(response.po_barang[k].length);
+                    
                         for(var z = 0; z < response.po_barang[k].length; z++){
                              var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].podt_kodeitem+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].podt_qtykirim+"> </th>  <th> <input type='hidden'  value="+response.po_barang[k][z].podt_totalharga+" name='totalharga[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pbdt_updatestock+" name='updatestock[]'> </th>   <th> <input type='hidden' value="+response.po_barang[k][z].po_id+" name='idpo[]'>    <th> <input type='hidden' value="+flag[0]+" name='flag'>  <input type='hidden' value="+response.po_barang[k][z].podt_jumlahharga+" name='hpp[]'>  <input type='text' value="+jenis[0]+" name='jenis'>  <input type='hidden' value="+response.po_barang[k][z].podt_akunitem+" name='akunitem[]'><input type='hidden' value="+response.po_barang[k][z].podt_keterangan+" name='keteranganitem[]'>  </th> </tr> ";
 
@@ -5927,10 +5927,10 @@
                                 alert('jumlahtotalharga');
                                 alert(jumlahtotalharga);
                         }
-                         alert(jumlahtotalharga);
+                       
                       }
 
-                    alert(response.po_barang.length);
+                
                  }           
               }
               else if(flag[0] == 'FP'){
@@ -6610,7 +6610,7 @@
 
                   if(data.status == 'Terikat Kontrak') {
                     
-                    alert('as');
+                   
                     if(arrItem.length > 0) {
                       $('.harga').attr('readonly' , true);
                       $('.item').empty();
@@ -6890,7 +6890,7 @@
     e.preventDefault();
     var old_nota =$('.nofaktur1').val();
     $('.nofaktur').val(old_nota);
-    alert(old_nota);
+    //alert(old_nota);
     $(".tmbhdatapenerus").removeClass('disabled');
     $(".save_bp_um").prop('hidden',true);
     $(".bp_tambah_um").prop('hidden',true);
@@ -7367,6 +7367,22 @@ $('.sc_dibayar_um').maskMoney({
         defaultZero: true
     });
 
-
+function ganti_nota() {
+  var flag = $('ul#tabmenu').find('li.active').data('val');
+  var cabang = $('.cabang').val();
+  if (flag == 'P' || flag == 'SC' || flag == 'O') {
+    $.ajax({
+      url:baseUrl +'/fakturpembelian/ganti_nota',
+      data: {cabang,flag},
+      dataType: 'json',
+      success:function(data){
+        $('.nofaktur').val(data.nota);
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
+  }
+    
+}
 </script>
 @endsection
