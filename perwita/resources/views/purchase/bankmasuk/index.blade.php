@@ -102,7 +102,7 @@
 
                               @if($bankmasuk->bm_notatransaksi == 'TRANSAKSI BM')
                                <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i>
-                           </a>   &nbsp;  <a class="btn btn-warning btn-xs" type="button" href="{{url('bankmasuk/editsdata/'.$bankmasuk->bm_id.'')}}"> <i class="fa fa-pencil"> </i> </a> &nbsp;  <a class="btn btn-danger btn-xs" type="button" onclick="hapusdata({{$bankmasuk->bm_id}})"> <i class="fa fa-trash"> </i> </a> 
+                           </a>   &nbsp;  <a class="btn btn-warning btn-xs" type="button" href="{{url('bankmasuk/editdata/'.$bankmasuk->bm_id.'')}}"> <i class="fa fa-pencil"> </i> </a> &nbsp;  <a class="btn btn-danger btn-xs" type="button" onclick="hapusdata({{$bankmasuk->bm_id}})"> <i class="fa fa-trash"> </i> </a> 
                               @else
                                <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i>
                              &nbsp;  Jurnal &nbsp; </a>
