@@ -3,7 +3,6 @@
 @section('title', 'dashboard')
 
 @section('content')
-
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Surat Permintaan Pembelian </h2>
@@ -29,7 +28,7 @@
             </div>
 
   <div class="wrapper wrapper-content animated fadeInRight">
-  
+
 <div id="notif"></div>
 
     </div>
@@ -48,7 +47,7 @@
 
                          @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','tambah'))
                       <div class="text-right">
-                       <a class="btn btn-sm btn-success" aria-hidden="true" href="{{ url('suratpermintaanpembelian/createspp')}}"> <i class="fa fa-plus"> Tambah Data Surat Permintaan Pembelian </i> </a> 
+                       <a class="btn btn-sm btn-success" aria-hidden="true" href="{{ url('suratpermintaanpembelian/createspp')}}"> <i class="fa fa-plus"> Tambah Data Surat Permintaan Pembelian </i> </a>
                        @endif
                     </div>
 
@@ -64,7 +63,7 @@
 <div class="row" >
    <form method="post" id="dataSeach">
       <div class="col-md-12 col-sm-12 col-xs-12">
-              
+
               <div class="col-md-2 col-sm-3 col-xs-12">
                 <label class="tebal">No SPP</label>
               </div>
@@ -76,7 +75,7 @@
               </div>
 
 
-            
+
               <div class="col-md-1 col-sm-3 col-xs-12">
                 <label class="tebal">Tanggal</label>
               </div>
@@ -90,7 +89,7 @@
                   </div>
                 </div>
               </div>
-            
+
 
               <div class="col-md-2 col-sm-6 col-xs-12" align="center">
                 <button class="btn btn-primary btn-sm btn-flat" title="Cari rentang tanggal" type="button" onclick="cari()">
@@ -102,7 +101,7 @@
                   <strong>
                     <i class="fa fa-undo" aria-hidden="true"></i>
                   </strong>
-                </button>                
+                </button>
               </div>
       </div>
     </form>
@@ -114,12 +113,12 @@
 
 
             <div class="col-xs-12">
-              
+
               <div class="box" id="seragam_box">
-             
-                    
+
+
                 <div class="box-body">
-                
+
                   <table width="100%" id="addColumn" class="table table-bordered table-striped tbl-item">
                     <thead>
                      <tr>
@@ -133,18 +132,18 @@
                         <th style="width:90px"> Detail </th>
                         <th> Status Kabag </th>
                     </tr>
-                 
+
                     </thead>
-       
-                   
+
+
                   </table>
                 </div><!-- /.box-body -->
 
-                
+
 
                 <div class="box-footer">
-                  
-                  </div><!-- /.box-footer --> 
+
+                  </div><!-- /.box-footer -->
               </div><!-- /.box -->
             </div><!-- /.col -->
           </div><!-- /.row -->
@@ -173,8 +172,13 @@
 var tablex;
 table();
      function table(){
+<<<<<<< HEAD
    $('#addColumn').dataTable().fnDestroy();
    tablex = $('#addColumn').DataTable({        
+=======
+   $('.tbl-item').dataTable().fnDestroy();
+   tablex = $(".tbl-item").DataTable({
+>>>>>>> ff64f961508b59b42ee073eec530921cbcda6cbc
          responsive: true,
         "language": dataTableLanguage,
     processing: true,
@@ -183,7 +187,7 @@ table();
               "url": "{{ url("suratpermintaanpembelian/table") }}",
               "type": "get",
               data: {
-                    "_token": "{{ csrf_token() }}",                    
+                    "_token": "{{ csrf_token() }}",
                     "tanggal1" :$('#tanggal1').val(),
                     "tanggal2" :$('#tanggal2').val(),
                     "nosupplier" :$('#nosupplier').val(),
@@ -192,25 +196,25 @@ table();
                     },
               },
             columns: [
-            {data: 'no', name: 'no'},             
-            {data: 'detailspp', name: 'detailspp'},                           
-            {data: 'spp_tgldibutuhkan', name: 'spp_tgldibutuhkan'},   
+            {data: 'no', name: 'no'},
+            {data: 'detailspp', name: 'detailspp'},
+            {data: 'spp_tgldibutuhkan', name: 'spp_tgldibutuhkan'},
             {data: 'nama', name: 'nama'},
             {data: 'spp_keperluan', name: 'spp_keperluan'},
-            {data: 'nama_department', name: 'nama_department'},   
+            {data: 'nama_department', name: 'nama_department'},
 
 
-            {data: 'spp_status', name: 'spp_status'},            
-            {data: 'spp_cabang', name: 'spp_cabang'},                        
-            {data: 'action', name: 'action'},                        
-          /*  {data: 's_gross', name: 's_gross'}, 
-            {data: 's_disc_percent', name: 's_disc_percent'}, 
+            {data: 'spp_status', name: 'spp_status'},
+            {data: 'spp_cabang', name: 'spp_cabang'},
+            {data: 'action', name: 'action'},
+          /*  {data: 's_gross', name: 's_gross'},
+            {data: 's_disc_percent', name: 's_disc_percent'},
             {data: 's_ongkir', name: 's_ongkir'},
-            {data: 's_net', name: 's_net'},            
-            {data: 's_status', name: 's_status'}, 
+            {data: 's_net', name: 's_net'},
+            {data: 's_status', name: 's_status'},
             {data: 'action', name: 'action'},
             */
-           
+
             ],  
             "pageLength": 10,
             "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
@@ -245,14 +249,14 @@ tablex.on('draw.dt', function () {
         autoclose: true,
         format: 'dd-mm-yyyy'
     });
-    
+
     function kabag(){
 
     }
 
-      
+
     function hapusData(id){
-   
+
             swal({
             title: "apa anda yakin?",
                     text: "data yang dihapus tidak akan dapat dikembalikan",
@@ -263,7 +267,7 @@ tablex.on('draw.dt', function () {
                     closeOnConfirm: false,
                     showLoaderOnConfirm: true
             },
-                    function(){                        
+                    function(){
                     $('#' +id).submit();
                     swal("Terhapus!", "Data Anda telah terhapus.", "success");
                     });
@@ -278,11 +282,11 @@ function dateAwal(){
 
       /*d.toLocaleString();*/
       $('#tanggal1').datepicker({
-            format:"dd-mm-yyyy",        
+            format:"dd-mm-yyyy",
             autoclose: true,
       }).datepicker( "setDate", d);
       $('#tanggal2').datepicker({
-            format:"dd-mm-yyyy",        
+            format:"dd-mm-yyyy",
             autoclose: true,
       }).datepicker( "setDate", new Date());
       $('.kosong').val('');
@@ -290,27 +294,27 @@ function dateAwal(){
 }
 
  function cari(){
-  table();  
+  table();
  }
 
- function resetData(){      
+ function resetData(){
   $('#tanggal1').val('');
-  $('#tanggal2').val('');  
+  $('#tanggal2').val('');
   table();
   dateAwal();
-}  
+}
 function notif(){
    $.ajax({
       url:baseUrl + '/suratpermintaanpembelian/notif',
-      type:'get',   
+      type:'get',
        data: {
-                    "_token": "{{ csrf_token() }}",                    
+                    "_token": "{{ csrf_token() }}",
                     "tanggal1" :$('#tanggal1').val(),
                     "tanggal2" :$('#tanggal2').val(),
                     "nosupplier" :$('#nosupplier').val(),
                     "idjenisbayar" :$('#idjenisbayar').val(),
                     "nofpg" :$('#nofpg').val(),
-                    },   
+                    },
       success:function(data){
         $('#notif').html(data);
     }

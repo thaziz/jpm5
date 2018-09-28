@@ -383,43 +383,6 @@ class jurnal_pembelian  extends Controller
     }
 
 
-    function kendaraansppd(){
-      $datasppd = DB::select("select * from spp_detail order by sppd_idspp asc");
-
-      $idspp = [];
-      for($j = 0; $j < count($datasppd); $j++){
-        $kendaraan = $datasppd[$j]->sppd_kendaraan;
-        $idspp2 = $datasppd[$j]->sppd_idspp;
-        $kodeitem = $datasppd[$j]->sppd_kodeitem;
-        if($kendaraan != null){
-          $dataco = DB::select("select * from confirm_order where co_idspp = '$idspp2'");
-          $mankeu = $dataco[0]->man_keu;
-          $staffpemb = $dataco[0]->staff_pemb;
-          $idco = $dataco[0]->co_id;
-          if($mankeu == 'DISETUJUI'){
-            DB::table('confirm_order_dt')
-            ->where('codt_idco' , $idco)
-            ->where('codt_kodeitem' , $kodeitem)
-            ->update([
-              'codt_kendaraan' => $kendaraan
-            ]);
-          }
-          if($staffpemb == 'DISETUJUI') {
-            DB::table('confirm_order_dt_pemb')
-            ->where('codtk_idco' , $idco)
-            ->where('codtk_kodeitem' , $kodeitem)
-            ->update([
-              'codtk_kendaraan' => $kendaraan
-            ]);
-          }
-
-          array_push($idspp, $idspp2);
-        }
-      }
-      
-      return json_encode($idspp);
-    }
-
     function gantispp(){
       
         
@@ -946,9 +909,6 @@ class jurnal_pembelian  extends Controller
       ]);
 
 
-
-
-
       for($h = 0; $h < count($databm); $h++){
             $status = $databm[$h]->bm_status;
             if($status == 'DITERIMA'){
@@ -987,6 +947,7 @@ class jurnal_pembelian  extends Controller
                       ]);
                     }
       }
+
 
 
       for($j =0; $j < count($databm); $j++){
@@ -1042,87 +1003,132 @@ class jurnal_pembelian  extends Controller
               
               //terima duit
               // KAS BANK (K) VS BANK TUJUAN  (D)
-              if($dkakasbank == 'K'){
-                  $datajurnalsama[0]['id_akun'] = $bankasaljurnal;
-                  $datajurnalsama[0]['subtotal'] = '-' . $nominal;
-                  $datajurnalsama[0]['dk'] = 'D';
-                  $datajurnalsama[0]['detail'] = $keterangan;  
+              if($bm_status != 'TRANSAKSI BM'){
+                if($dkakasbank == 'K'){
+                    $datajurnalsama[0]['id_akun'] = $bankasaljurnal;
+                    $datajurnalsama[0]['subtotal'] = '-' . $nominal;
+                    $datajurnalsama[0]['dk'] = 'D';
+                    $datajurnalsama[0]['detail'] = $keterangan;  
+                }
+                else {
+                    $datajurnalsama[0]['id_akun'] = $bankasaljurnal;
+                    $datajurnalsama[0]['subtotal'] = '-' . $nominal;
+                    $datajurnalsama[0]['dk'] = 'K';
+                    $datajurnalsama[0]['detail'] = $keterangan;  
+                }
+
+                if($dktujuan == 'D'){
+                    $datajurnalsama[1]['id_akun'] = $banktujuan;
+                    $datajurnalsama[1]['subtotal'] = $nominal;
+                    $datajurnalsama[1]['dk'] = 'D';
+                    $datajurnalsama[1]['detail'] = $keterangan;   
+                }
+                else{
+                    $datajurnalsama[0]['id_akun'] = $banktujuan;
+                    $datajurnalsama[0]['subtotal'] = $nominal;
+                    $datajurnalsama[0]['dk'] = 'K';
+                    $datajurnalsama[0]['detail'] = $keterangan;  
+                }
+
+                $lastidjurnald = DB::table('d_jurnal')->max('jr_id'); 
+                  if(isset($lastidjurnald)) {
+                    $idjurnald = $lastidjurnald;
+                    $idjurnald = (int)$idjurnald + 1;
+                  }
+                  else {
+                    $idjurnald = 1;
+                  }
+
+                  $kodebank = $banktujuan2[0]->mb_id;
+                  if($kodebank < 10){
+                    $kodebank = '0' . $kodebank;
+                  }
+                  else {
+                    $kodebank = $kodebank;
+                  }
+
+                  $cabangtujuan = $databm[$j]->bm_cabangtujuan;
+
+                  $jr_no = get_id_jurnal('BM' . $kodebank , $cabangtujuan , $tgl);
+                  $notabm = $databm[$j]->bm_nota;
+                  
+               
+
+                  $jurnal = new d_jurnal();
+                  $jurnal->jr_id = $idjurnald;
+                      $jurnal->jr_year = Carbon::parse($tgl)->format('Y');
+                      $jurnal->jr_date = $tgl;
+                      $jurnal->jr_detail = 'BUKTI BANK MASUK';
+                      $jurnal->jr_ref = $notabm;
+                      $jurnal->jr_note = $keterangan;
+                      $jurnal->jr_no = $jr_no;
+                      $jurnal->save();
+
+                  $key = 1;
+                for($je = 0; $je < count($datajurnalsama); $je++){
+                      $lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+                  if(isset($lastidjurnaldt)) {
+                    $idjurnaldt = $lastidjurnaldt;
+                    $idjurnaldt = (int)$idjurnaldt + 1;
+                  }
+                  else {
+                    $idjurnaldt = 1;
+                  }
+
+                    $jurnaldt = new d_jurnal_dt();
+                    $jurnaldt->jrdt_jurnal = $idjurnald;
+                    $jurnaldt->jrdt_detailid = $key;
+                    $jurnaldt->jrdt_acc = $datajurnalsama[$je]['id_akun'];
+                    $jurnaldt->jrdt_value = $datajurnalsama[$je]['subtotal'];
+                    $jurnaldt->jrdt_statusdk = $datajurnalsama[$je]['dk'];
+                    $jurnaldt->jrdt_detail = $datajurnalsama[$je]['detail'];
+                    $jurnaldt->save();
+                    $key++;
+                }
               }
               else {
-                  $datajurnalsama[0]['id_akun'] = $bankasaljurnal;
-                  $datajurnalsama[0]['subtotal'] = '-' . $nominal;
-                  $datajurnalsama[0]['dk'] = 'K';
-                  $datajurnalsama[0]['detail'] = $keterangan;  
+                  $databmdt = DB::select("select * from bank_masuk_dt where bmdt_id = '$id'");
+                  for($m = 0; $m < count($databmdt); $m++){
+                    $akun = $databmdt[$m]->bmdt_akun;
+                    $dk = $databmdt[$m]->bmdt_dk;
+                    $nominal = $databmdt[$m]->bmdt_nominal;
+                    $keterangan = $data
+
+                    $akundka = getdka($akun);
+
+                    if($dk == 'K'){
+                      if($akundka == 'D'){
+                        $datajurnalbeda[$i]['id_akun'] = $idakun;
+                        $datajurnalbeda[$i]['subtotal'] = '-' . $nominaldt;
+                        $datajurnalbeda[$i]['dk'] = 'K';
+                        $datajurnalbeda[$i]['detail'] = $request->keteranganakun[$i];
+                      }
+                      else {
+                        $datajurnalbeda[$i]['id_akun'] = $idakun;
+                        $datajurnalbeda[$i]['subtotal'] = $nominaldt;
+                        $datajurnalbeda[$i]['dk'] = 'K';
+                        $datajurnalbeda[$i]['detail'] = $request->keterangan[$i]; 
+                      }
+                    }
+                    else {
+                      if($akundka == 'K'){
+                        $datajurnalbeda[$i]['id_akun'] = $idakun;
+                        $datajurnalbeda[$i]['subtotal'] = '-' . $nominaldt;
+                        $datajurnalbeda[$i]['dk'] = 'D';
+                        $datajurnalbeda[$i]['detail'] = $request->keteranganakun[$i]; 
+                      }
+                      else {
+                        $datajurnalbeda[$i]['id_akun'] = $idakun;
+                        $datajurnalbeda[$i]['subtotal'] = $nominaldt;
+                        $datajurnalbeda[$i]['dk'] = 'D';
+                        $datajurnalbeda[$i]['detail'] = $request->keteranganakun[$i];
+                      }
+                    }                    
+                  }
+
+                  
               }
-
-              if($dktujuan == 'D'){
-                  $datajurnalsama[1]['id_akun'] = $banktujuan;
-                  $datajurnalsama[1]['subtotal'] = $nominal;
-                  $datajurnalsama[1]['dk'] = 'D';
-                  $datajurnalsama[1]['detail'] = $keterangan;   
-              }
-              else{
-                  $datajurnalsama[0]['id_akun'] = $banktujuan;
-                  $datajurnalsama[0]['subtotal'] = $nominal;
-                  $datajurnalsama[0]['dk'] = 'K';
-                  $datajurnalsama[0]['detail'] = $keterangan;  
-              }
-
-              $lastidjurnald = DB::table('d_jurnal')->max('jr_id'); 
-                if(isset($lastidjurnald)) {
-                  $idjurnald = $lastidjurnald;
-                  $idjurnald = (int)$idjurnald + 1;
-                }
-                else {
-                  $idjurnald = 1;
-                }
-
-                $kodebank = $banktujuan2[0]->mb_id;
-                if($kodebank < 10){
-                  $kodebank = '0' . $kodebank;
-                }
-                else {
-                  $kodebank = $kodebank;
-                }
-
-                $cabangtujuan = $databm[$j]->bm_cabangtujuan;
-
-                $jr_no = get_id_jurnal('BM' . $kodebank , $cabangtujuan , $tgl);
-                $notabm = $databm[$j]->bm_nota;
-                
              
-
-                $jurnal = new d_jurnal();
-                $jurnal->jr_id = $idjurnald;
-                    $jurnal->jr_year = Carbon::parse($tgl)->format('Y');
-                    $jurnal->jr_date = $tgl;
-                    $jurnal->jr_detail = 'BUKTI BANK MASUK';
-                    $jurnal->jr_ref = $notabm;
-                    $jurnal->jr_note = $keterangan;
-                    $jurnal->jr_no = $jr_no;
-                    $jurnal->save();
-
-                $key = 1;
-              for($je = 0; $je < count($datajurnalsama); $je++){
-                    $lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
-                if(isset($lastidjurnaldt)) {
-                  $idjurnaldt = $lastidjurnaldt;
-                  $idjurnaldt = (int)$idjurnaldt + 1;
-                }
-                else {
-                  $idjurnaldt = 1;
-                }
-
-                  $jurnaldt = new d_jurnal_dt();
-                  $jurnaldt->jrdt_jurnal = $idjurnald;
-                  $jurnaldt->jrdt_detailid = $key;
-                  $jurnaldt->jrdt_acc = $datajurnalsama[$je]['id_akun'];
-                  $jurnaldt->jrdt_value = $datajurnalsama[$je]['subtotal'];
-                  $jurnaldt->jrdt_statusdk = $datajurnalsama[$je]['dk'];
-                  $jurnaldt->jrdt_detail = $datajurnalsama[$je]['detail'];
-                  $jurnaldt->save();
-                  $key++;
-              }
 
               //cekjurnal
 

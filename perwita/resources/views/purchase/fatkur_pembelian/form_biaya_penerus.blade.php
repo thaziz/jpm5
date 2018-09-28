@@ -68,6 +68,12 @@
   </td>
  </tr>	
  <tr>
+<<<<<<< HEAD
+    <td style="width: 100px">DPP</td>
+    <td width="10">:</td>
+    <td width="200" colspan="3">
+      <input value="Rp. 0,00" type="text" name="total_jml" class="form-control total_jml" style="" readonly="">
+=======
     <td style="width: 100px">Total</td>
     <td width="10">:</td>
     <td width="200" colspan="3">
@@ -80,6 +86,7 @@
     <td width="200" colspan="3">
       <input value="Rp. 0,00" type="text" name="total_dpp_penerus" class="form-control total_dpp_penerus" style="" readonly="">
       <input value="" type="hidden" name="diskon_penerus" class="form-control diskon_penerus hanya_angka">
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
     </td>
   </tr>
  </tr>
@@ -87,6 +94,13 @@
   <td style="width: 100px" >Jenis PPN</td>
   <td width="10">:</td>
   <td width="200" >
+<<<<<<< HEAD
+    <select class="form-control jenis_ppn_penerus chosen-select-width1" name="jenis_ppn_penerus">
+      <option>Pilih - PPN</option>
+    </select>
+  </td>
+  <td style="width: 100px">PPN</td>
+=======
     <select onchange="hitung_ppn_penerus()" class="form-control jenis_ppn_penerus chosen-select-width1" name="jenis_ppn_penerus">
       <option value="">Pilih - PPN</option>
       <option class="include">INCLUDE</option>
@@ -96,6 +110,7 @@
   <td style="width: 100px">
     <input type="text" name="persen_ppn_penerus" value="10" style="text-transform: uppercase;" class="form-control persen_ppn_penerus hanya_angka center" onkeyup="hitung_ppn_penerus()">
   </td>
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
   <td width="200" >
     <input type="text" name="ppn_penerus" readonly="" style="text-transform: uppercase;" class="form-control ppn_penerus" style="">
   </td>
@@ -104,16 +119,19 @@
   <td style="width: 100px" >Jenis PPH</td>
   <td width="10">:</td>
   <td width="200" >
+<<<<<<< HEAD
+    <select class="form-control jenis_pph_penerus chosen-select-width1" name="jenis_pph_penerus">
+      <option>Pilih - PPH</option>
+=======
     <select class="form-control jenis_pph_penerus chosen-select-width1" name="jenis_pph_penerus" onchange="hitung_pph_penerus()">
       <option value="">Pilih - PPH</option>
       @foreach ($pajak as $val)
         <option value="{{ $val->id }}" data-val="{{ $val->nilai }}">{{ $val->nama }}</option>
       @endforeach
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
     </select>
   </td>
-  <td style="width: 100px">
-    <input type="text" readonly="" name="persen_pph_penerus" value="0" style="text-transform: uppercase;" class="form-control persen_pph_penerus hanya_angka center">
-  </td>
+  <td style="width: 100px">PPH</td>
   <td width="200" >
     <input type="text" readonly="" name="pph_penerus" style="text-transform: uppercase;" class="form-control pph_penerus" style="">
   </td>
@@ -409,6 +427,8 @@
   })
 
 
+<<<<<<< HEAD
+=======
   $('.jenis_pph_penerus').change(function(){
     var jumlah = $('.jenis_pph_penerus option:selected').data('val');
     $('.persen_pph_penerus ').val(jumlah);
@@ -459,17 +479,16 @@
   $('.diskon_penerus').keyup(function(){
     hitung();
   })
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 
   function hitung() {
     var temp = 0;
-    var diskon_penerus =  $('.diskon_penerus').val();
-    if (diskon_penerus == '') {
-      diskon_penerus = 0;
-    }
-
     datatable1.$('.bayar_biaya').each(function(){
       temp+=parseInt($(this).val());
     })
+<<<<<<< HEAD
+    $('.total_jml').val(accounting.formatMoney(temp, "", 2, ".",','));
+=======
 
     var hasil = temp - diskon_penerus;
     if (hasil < 0) {
@@ -488,6 +507,7 @@
     hitung_ppn_penerus();
     hitung_pph_penerus();
     hitung_total_penerus();
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
   }
 
 

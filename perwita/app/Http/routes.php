@@ -1,5 +1,3 @@
-
-
 <?php
 
 /*
@@ -592,7 +590,7 @@ Route::get('bankmasuk/getnota' ,'BankMasukController@getnota');
 Route::post('bankmasuk/save' ,'BankMasukController@savedata');
 Route::get('bankmasuk/hapusdata' ,'BankMasukController@hapusdata');
 Route::get('bankmasuk/editdata/{id}' ,'BankMasukController@editdata');
-Route::get('bankmasuk/updatedata' ,'BankMasukController@updatedata');
+Route::post('bankmasuk/updatedata' ,'BankMasukController@updatedata');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');

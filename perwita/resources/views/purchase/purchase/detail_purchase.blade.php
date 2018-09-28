@@ -234,7 +234,6 @@
                         <th style="width:250px"> Harga Per Item </th>
                         <th>  Total Harga Per Item  </th>
                         <th> Dikirim ke </th>
-                        <th> Kendaraan </th>
                         <th> Keterangan </th>
                       </tr>
 
@@ -253,14 +252,7 @@
                         
                         <td> <input type="text" class="form-control totalharg totalharga{{$i}}{{$k}}" readonly="" value="{{number_format($data['podtbarang'][$k][$i]->podt_totalharga, 2)}}"  style='text-align: right' name="totalharga2[]">  </td> <!-- totalharga -->
                         
-                        <td class='disabled'> <select class="form-control lokasigudang chosen-select" name="lokasigudang[]"> @foreach($data['gudang'] as $gudang) <option value="{{$gudang->mg_id}}" @if($gudang->mg_id == $data['podtbarang'][$k][$i]->podt_lokasigudang) selected @endif> {{$gudang->mg_namagudang}}</option> @endforeach </select> </td> <!-- lokasi gudang -->
-
-                        <td> @if($data['po'][0]->po_tipe != 'J') 
-                            {{$data['podtbarang'][$k][$i]->nopol}}
-                            @else
-                              -
-                            @endif
-                        </td>
+                        <td> <select class="form-control lokasigudang chosen-select" name="lokasigudang[]"> @foreach($data['gudang'] as $gudang) <option value="{{$gudang->mg_id}}" @if($gudang->mg_id == $data['podtbarang'][$k][$i]->podt_lokasigudang) selected @endif> {{$gudang->mg_namagudang}}</option> @endforeach </select> </td> <!-- lokasi gudang -->
 
                         <td> <input type="text" class="form-control keterangan" name="keterangandt[]" value="{{$data['podtbarang'][$k][$i]->podt_keterangan}}"> </td> <!-- Keterangan -->                       
                         <tr>

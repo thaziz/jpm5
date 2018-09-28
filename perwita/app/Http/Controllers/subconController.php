@@ -682,9 +682,9 @@ class subconController extends Controller
 
 	public function cek_aktif(Request $req)
 	{
-		if ($req->cek == true) {
+		if ($req->cek == 'true') {
 			$cek = 'ACTIVE';
-		}else if ($req->cek == false){
+		}else if ($req->cek == 'false'){
 			$cek = 'NOT ACTIVE';
 		}
 
@@ -694,7 +694,6 @@ class subconController extends Controller
 					'ks_active'		=>	$cek,	
 				  ]);
 
-		dd($cek);
 
 	}
 }

@@ -37,23 +37,67 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                    <div class="text-right">
-                       <a class="btn btn-success" aria-hidden="true" href="{{ url('pengeluaranbarang/createpengeluaranbarang')}}"> <i class="fa fa-plus"> Tambah Data Pengeluaran Barang </i> </a> 
+                       <a class="btn btn-success" aria-hidden="true" href="{{ url('pengeluaranbarang/createpengeluaranbarang')}}"> <i class="fa fa-plus"> Tambah Data Pengeluaran Barang </i> </a>
                     </div>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
+                          <div class="row" >
+                             <form method="post" id="dataSeach">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+
+                                        <div class="col-md-2 col-sm-3 col-xs-12">
+                                          <label class="tebal">No BPPB</label>
+                                        </div>
+
+                                        <div class="col-md-3 col-sm-6 col-xs-12">
+                                          <div class="form-group">
+                                              <input class="form-control kosong" type="text" name="nobppb" id="nobppb" placeholder="No BPPB">
+                                          </div>
+                                        </div>
+
+                                        <div class="col-md-1 col-sm-3 col-xs-12">
+                                          <label class="tebal">Tanggal</label>
+                                        </div>
+
+                                        <div class="col-md-4 col-sm-6 col-xs-12">
+                                          <div class="form-group">
+                                            <div class="input-daterange input-group">
+                                              <input id="tanggal1" class="form-control input-sm datepicker2" name="tanggal1" type="text">
+                                              <span class="input-group-addon">-</span>
+                                              <input id="tanggal2" "="" class="input-sm form-control datepicker2" name="tanggal2" type="text">
+                                            </div>
+                                          </div>
+                                        </div>
+
+
+                                        <div class="col-md-2 col-sm-6 col-xs-12" align="center">
+                                          <button class="btn btn-primary btn-sm btn-flat" title="Cari rentang tanggal" type="button" onclick="cari()">
+                                            <strong>
+                                              <i class="fa fa-search" aria-hidden="true"></i>
+                                            </strong>
+                                          </button>
+                                          <button class="btn btn-info btn-sm btn-flat" type="button" title="Reset" onclick="resetData()">
+                                            <strong>
+                                              <i class="fa fa-undo" aria-hidden="true"></i>
+                                            </strong>
+                                          </button>
+                                        </div>
+                                </div>
+                              </form>
+                          </div>
             <div class="col-xs-12">
-              
+
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
-                     
-                </div>        
-                    
+
+                </div>
+
                 <div class="box-body">
-                
+
                   <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
                     <thead>
                      <tr>
@@ -65,8 +109,8 @@
                         <th style="text-align: center;"> Detail </th>
                       </tr>
                     </thead>
-                    <tbody>  
-                    @foreach($data as $i => $val )                  
+                    <tbody id="showdata">
+                    @foreach($data as $i => $val )
                       <tr>
                         <td>{{$i+1}}</td>
                         <td>{{$val->pb_nota}}</td>
@@ -78,24 +122,24 @@
                         <td align="center"><label class="label label-default">Released</label></td>
                         @endif
                         @if($val->pb_status != 'Approved')
-                        <td align="center"> 
+                        <td align="center">
                           <a class="btn btn-success" href={{url('pengeluaranbarang/edit')}}/{{$val->pb_id}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>
                           <a class="btn btn-success" href={{url('pengeluaranbarang/hapus')}}/{{$val->pb_id}}><i class="fa fa-trash" aria-hidden="true"></i> </a>
                         </td>
                         @else
-                         <td align="center"> 
+                         <td align="center">
                           -
                         </td>
                         @endif
                       </tr>
                       @endforeach
-                    </tbody>             
+                    </tbody>
                   </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
                     </div>
-                  </div><!-- /.box-footer --> 
+                  </div><!-- /.box-footer -->
               </div><!-- /.box -->
             </div><!-- /.col -->
           </div><!-- /.row -->
@@ -129,7 +173,7 @@
         autoclose: true,
         format: 'yyyy-mm-dd'
     });
-    
+
    /* $('#tmbh_data_barang').click(function(){
       $("#addColumn").append('<tr> <td rowspan="3"> 1 </td> <td rowspan="3"> </td> <td rowspan="3"> </td>  <td rowspan="3"> </td> <td> halo </td> <td> 3000 </td>  <tr> <td> halo </td> <td>  5.000 </td> </tr> <tr><td> halo </td> <td> 3000 </td> </tr>');
     })*/
@@ -161,8 +205,64 @@
              parent.remove();
           })
      })
-  
-    
+
+     function resetData(){
+       $('#tanggal1').val('');
+       $('#tanggal2').val('');
+      dateAwal();
+      window.location.reload();
+    }
+
+    dateAwal();
+    function dateAwal(){
+      $('#tanggal1').datepicker({
+            format:"dd-mm-yyyy",
+            autoclose: true,
+      });
+      $('#tanggal2').datepicker({
+            format:"dd-mm-yyyy",
+            autoclose: true,
+      });
+    }
+
+    function cari(){
+      var html = '';
+      var status = '';
+      var detail = '';
+      $.ajax({
+        type: 'get',
+        data: $('#dataSeach').serialize(),
+        dataType: 'json',
+        url: baseUrl + '/pengeluaranbarang/pengeluaranbarang/cari',
+        success : function(response){
+          for (var i = 0; i < response.length; i++) {
+            if (response[i].pb_status == 'Approved') {
+              status = '<label class="label label-primary">Approved</label>';
+            } else {
+              status = '<label class="label label-default">Released</label>';
+            }
+
+            if (response[i].pb_status != 'Approved') {
+              detail = '<a class="btn btn-success" href={{url('pengeluaranbarang/edit')}}/{{$val->pb_id}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>'+
+                        ' '+
+                        '<a class="btn btn-success" href={{url('pengeluaranbarang/hapus')}}/{{$val->pb_id}}><i class="fa fa-trash" aria-hidden="true"></i> </a>';
+            } else {
+              detail = '-';
+            }
+
+            html += '<tr>'+
+              '<td>'+(i + 1)+'</td>'+
+              '<td>'+response[i].pb_nota+'</td>'+
+              '<td>'+response[i].pb_tgl+'</td>'+
+              '<td>'+response[i].pb_keperluan+'</td>'+
+              '<td align="center">'+status+'</td>'+
+              '<td align="center">'+detail+'</td>'+
+            '</tr>';
+          }
+          $('#showdata').html(html);
+        }
+      });
+    }
 
 </script>
 @endsection
