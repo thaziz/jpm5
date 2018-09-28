@@ -381,9 +381,9 @@ function dateAwal(){
       $('#tanggal2').datepicker({
             format:"dd-mm-yyyy",        
             autoclose: true,
-      }).datepicker( "setDate", new Date());
-      $('.kosong').val('');
+      }).datepicker( "setDate", new Date());      
       $('.kosong').val('').trigger('chosen:updated');
+      $('.kosong').val('');      
 }
 
  function cari(){
@@ -393,6 +393,9 @@ function dateAwal(){
  function resetData(){  
   $('#tanggal1').val('');
   $('#tanggal2').val('');  
+  /*$('#nofpg').val('');*/
+  $('.kosong').val('');      
+  $('.kosong').val('').trigger('chosen:updated');
   table();
   dateAwal();
 }  
