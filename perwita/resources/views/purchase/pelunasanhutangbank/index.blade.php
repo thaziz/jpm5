@@ -112,7 +112,7 @@
 
               <div class="col-md-2 col-sm-6 col-xs-12">
                 <div class="form-group">
-                     <input class="kosong form-control" type="" name="biaya" id="biaya">
+                     <input class="kosong form-control biaya" type="" name="biaya" id="biaya">
                 </div>
               </div>
 
@@ -185,7 +185,8 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-
+$('#total').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
+$('#biaya').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
   var tablex;
 setTimeout(function () {            
    table();
@@ -302,8 +303,7 @@ function notif(){
   });
 }
 
-$('#biaya').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
-$('#total').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
+
   function hapus(id){
     swal({
     title: "Apakah anda yakin?",
