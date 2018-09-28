@@ -8390,11 +8390,24 @@ public function kekata($x) {
   		  $nofpg='';
   		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
   		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+
+  		$request->biaya = str_replace(['Rp', '\\', ',',' '], '',$request->biaya);
+  		/*dd($request->biaya);*/
+        /*$request->biaya = str_replace(',', '.', $data);    */
+
+        $request->total = str_replace(['Rp', '\\', '.',' ',' '], '',$request->total);
+         
+        
+        
+        
+
+
+
   		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
   		  	$tgl="and bbk_tgl >= '$tgl1' AND bbk_tgl <= '$tgl2'";
   		  }  		  
   		  if($request->bank!=''){
-  		  	$bank="and mb_nama=$request->bank";
+  		  	$bank="and mb_nama=UPPER('$request->bank')";
   		  }
   		  if($request->biaya!=''){
   		  	$biaya="and bbk_biaya=$request->biaya";
@@ -8403,7 +8416,7 @@ public function kekata($x) {
   		  	$total="and bbk_total=$request->total";
   		  }
   		  if($request->nofpg!=''){
-  		  	$nofpg="and bbk_nota='$request->nofpg'";
+  		  	$nofpg="and fpg_nofpg=UPPER('$request->nofpg')";
   		  }
 		 $cabang = session::get('cabang');
 		 
