@@ -75,7 +75,9 @@
                                       </div>
                               </td>
                               <th> Nota </th>
-                               <td> <input type='text' class='form-control input-sm notabm'name="notabm" readonly="" value="{{$data['BM'][0]->bm_nota}}"> </td>
+                               <td> <input type='text' class='form-control input-sm notabm'name="notabm" readonly="" value="{{$data['BM'][0]->bm_nota}}">
+                                <input type="hidden" value="{{$data['BM'][0]->bm_id}}"  name='idbm'>
+                              </td>
                           </tr>
                         </table>
                     </div>
@@ -196,10 +198,10 @@
                         <td> {{$bmdt->bm_nota}} </td>
                         <td> {{$data['BM'][0]->mb_nama}}   </td>
                         <td> {{ Carbon\Carbon::parse($data['BM'][0]->bm_tglterima)->format('d-m-Y') }} </td>
-                        <td> <input type='text' class='form-control'value="{{$bmdt->nama_akun}}">  <input type='hidden' class='form-control akundt' name='akun[]' value="{{$bmdt->id_akun}}"> </td>
-                        <td><input type="text" class="dkdt" name="dk[]" value="{{$bmdt->bmdt_dk}}"> </td>
-                       <td><input type="text" class="form-control input-sm nominaldt" name="nominal[]" value="{{$bmdt->bmdt_nominal}}"></td>
-                       <td><input type="text" class="keterangandt form-control input-sm" name="keteranganakun[]" value="{{$bmdt->bmdt_keterangan}}"></td>
+                        <td> <input type='text' class='form-control'value="{{$bmdt->nama_akun}}" readonly="">  <input type='hidden' class='form-control akundt' name='akun[]' value="{{$bmdt->id_akun}}"> </td>
+                        <td><input type="text" class="form-control dkdt" name="dk[]" value="{{$bmdt->bmdt_dk}}" readonly=""> </td>
+                       <td><input type="text" class="form-control input-sm nominaldt" name="nominal[]" value="{{$bmdt->bmdt_nominal}}" readonly=""></td>
+                       <td><input type="text" class="keterangandt form-control input-sm" name="keteranganakun[]" value="{{$bmdt->bmdt_keterangan}}" readonly=""></td>
                         <td> <button class="btn btn-xs btn-danger removes-btn" type="button" onclick="hapus(this)"> <i class="fa fa-trash"> </i> </button> <button class="btn btn-xs btn-warning removes-btn" type="button" onclick="edit(this)"> <i class="fa fa-pencil"> </i> </button>  </td> </tr>
                       @endforeach
                   </tbody>
@@ -253,9 +255,9 @@
   })
 
   $('.akun').change(function(){
-    val = $(this).val();
+    kodeakun = $(this).val();
        $.ajax({
-      data : {cabang,tgl,bank},
+      data : {kodeakun},
       url : baseUrl + '/bankmasuk/getakun',
       type : "get",
       dataType : "json",
@@ -303,24 +305,7 @@
     })
   })
 
-    cabang = $('.cabang').val();
-    tgl = $('.tglbm').val();
-    databank = $('.bank').val();
-    kodebank = databank.split(",");
-    bank = kodebank[0];
-    $.ajax({
-      data : {cabang,tgl,bank},
-      url : baseUrl + '/bankmasuk/getnota',
-      type : "get",
-      dataType : "json",
-      success : function(response){
-        $('.notabm').val(response);
-      },
-      error : function(){
-        location.reload();
-      }
-
-    })
+   
 
   $('.tglbm').change(function(){
     tgl = $('.tglbm').val();
@@ -410,7 +395,7 @@
             "<td>"+bank+"   </td>"+
             "<td>"+tanggal+" </td>"+
             "<td> <input type='text' class='form-control akundt' name='akun[]' value='"+akun+"'> </td>" +
-            "<td><input type='text'class='dkdt' name='dk[]' value='"+dk+"'></td>"+
+            "<td><input type='text'class='form-control dkdt' name='dk[]' value='"+dk+"'></td>"+
             "<td><input type='text' class='form-control input-sm nominaldt ' name='nominal[]' value='"+nominal+"'></td>" +
             "<td><input type='text' class='keterangandt form-control input-sm' name='keteranganakun[]' value='"+keteranganakun+"'></td>"+
             "<td> <button class='btn btn-xs btn-danger removes-btn' type='button' onclick='hapus(this)'> <i class='fa fa-trash'> </i> </button> <button class='btn btn-xs btn-warning removes-btn' type='button' onclick='edit(this)'> <i class='fa fa-pencil'> </i> </button>  </td>" +
@@ -477,7 +462,7 @@
         $.ajax({
           type : "POST",          
           data : form_data2,
-          url : baseUrl + '/bankmasuk/save',
+          url : baseUrl + '/bankmasuk/updatedata',
           dataType : 'json',
           success : function (response){
             
