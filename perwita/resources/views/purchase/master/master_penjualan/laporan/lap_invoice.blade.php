@@ -96,7 +96,7 @@
                     </div>
                 </form>
                 <div class="box-body">
-                <div id="drop_here">
+                <div id="drop_here" class="col-sm-12">
                   
                 </div>
                 </div><!-- /.box-body -->

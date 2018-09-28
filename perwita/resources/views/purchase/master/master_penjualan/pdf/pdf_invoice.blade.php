@@ -11,11 +11,11 @@
   }
 </style>
 
-<div class=" pembungkus">
+<div class="  col-sm-12" >
 {{--   @if ()
     expr
   @endif --}}
-         <table id="addColumn" class="table table-bordered table-striped" style="margin-left: 3%;">
+         <table id="addColumn" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th> No Inv</th>
