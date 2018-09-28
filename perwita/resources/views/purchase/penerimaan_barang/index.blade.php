@@ -37,7 +37,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
-                        
+
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -48,11 +48,11 @@
 							</div><!-- /.box-header -->
 								<form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
 								<div class="box-body">
-								</div>        
-                    		
+								</div>
 
 
-							<div class="box-body">  
+
+							<div class="box-body">
 							<div class="row">
 								<div class="col-sm-4">
 									<table class="table" border="0">
@@ -66,7 +66,7 @@
 													@endforeach
 												</select>
 											</td>
-										</tr>								
+										</tr>
 									</table>
 								</div>
 							</div>
@@ -77,31 +77,31 @@
 								 <tr>
 									<th style="width:10px">NO</th>
 									<th> No Transaksi </th>
-								  
+
 									<th> Supplier </th>
-									<th> Status </th>							   
-									<th> Aksi </th>						  
-								</tr>					  
+									<th> Status </th>
+									<th> Aksi </th>
+								</tr>
 								</thead>
 								<tbody>
 									@for($j = 0; $j < count($data['terimasaja']); $j++)
-									<tr> <td> {{$j + 1}} </td>
-
-	                                <td> {{$data['terimasaja'][$j][0]->bt_notransaksi}}</td>
-									<td>  {{$data['terimasaja'][$j][0]->namasupplier}} </td>
-									<td> <span class='label label-info'> {{$data['terimasaja'][$j][0]->bt_statuspenerimaan}} </span> </td>
-									
-									<td> <a class='btn btn-sm btn-success' href="{{url('penerimaanbarang/detailterimabarang/' . $data['terimasaja'][$j][0]->bt_id.'')}}"> <i class='fa fa-arrow-right' aria-hidden='true'></i></a></td>
+									<tr>
+                    <td> {{$j + 1}} </td>
+                    <td> {{$data['terimasaja'][$j][0]->bt_notransaksi}}</td>
+                    <td>  {{$data['terimasaja'][$j][0]->nama_supplier}} </td>
+                    <td> <span class='label label-info'> {{$data['terimasaja'][$j][0]->bt_statuspenerimaan}} </span> </td>
+									  <td> <a class='btn btn-sm btn-success' href="{{url('penerimaanbarang/detailterimabarang/' . $data['terimasaja'][$j][0]->bt_id.'')}}"> <i class='fa fa-arrow-right' aria-hidden='true'></i></a></td>
+                  </tr>
 									@endfor
-								</tbody>   
+								</tbody>
 							</table>
 							</div><!-- /.box-body -->
-					
+
 							<div class="box-footer">
-							  <div class="pull-right">  
-								
+							  <div class="pull-right">
+
 								</div>
-							</div><!-- /.box-footer --> 
+							</div><!-- /.box-footer -->
 							</div><!-- /.box -->
 						</div><!-- /.col -->
 					</div><!-- /.row -->
@@ -145,21 +145,21 @@
 	      //        console.log(obj.is_kodeitem);
 	              $('.gudang').append("<option value="+obj.mg_id+"> <h5> "+obj.mg_namagudang+" </h5> </option>");
 	            })
-                    
+
 
     		var tablepenerimaan = $('#addColumn').DataTable();
-            tablepenerimaan.clear().draw();            	
-									
+            tablepenerimaan.clear().draw();
+
             var n = 1;
-             for(var j = 0; j < data.terimasaja.length; j++){   
-	         		
+             for(var j = 0; j < data.terimasaja.length; j++){
+
 	                var html2 = "<tr> <td>"+ n +" </td>" +
 	                                "<td>  "+data.terimasaja[j][0].bt_notransaksi+"</td>" +
 									"<td>  "+data.terimasaja[j][0].nama_supplier+" </td>" +
-									"<td> <span class='label label-info'> "+data.terimasaja[j][0].bt_statuspenerimaan+" </span> </td>" + 
+									"<td> <span class='label label-info'> "+data.terimasaja[j][0].bt_statuspenerimaan+" </span> </td>" +
 									"<td>      <a class='btn btn-sm btn-success' href={{url('penerimaanbarang/detailterimabarang')}}"+'/' +data.terimasaja[j][0].bt_id+"> <i class='fa fa-arrow-right' aria-hidden='true'></i></a> &nbsp;" +
-									"</td>";                        
-	                                  	                                  
+									"</td>";
+
 	                              html2 +=  "</tr>";
 
 	               tablepenerimaan.rows.add($(html2)).draw();
@@ -172,7 +172,7 @@
         autoclose: true,
         format: 'yyyy-mm-dd'
     });
-    
+
       $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -188,18 +188,18 @@
   			dataType : 'json',
   			success : function (data){
   			var tablepenerimaan = $('#addColumn').DataTable();
-            tablepenerimaan.clear().draw();            	
+            tablepenerimaan.clear().draw();
 			console.log(data.terimasaja.length);
             var n = 1;
-            for(var j = 0; j < data.terimasaja.length; j++){   
-	            
+            for(var j = 0; j < data.terimasaja.length; j++){
+
 	                var html2 = "<tr> <td>"+ n +" </td>" +
 	                                "<td>  "+data.terimasaja[j][0].bt_notransaksi+"</td>" +
 									"<td>  "+data.terimasaja[j][0].namasupplier+" </td>" +
-									"<td> <span class='label label-info'> "+data.terimasaja[j][0].bt_statuspenerimaan+" </span> </td>" + 
+									"<td> <span class='label label-info'> "+data.terimasaja[j][0].bt_statuspenerimaan+" </span> </td>" +
 									"<td>      <a class='btn btn-sm btn-success' href={{url('penerimaanbarang/detailterimabarang')}}"+'/' +data.terimasaja[j][0].bt_id+"> <i class='fa fa-arrow-right' aria-hidden='true'></i></a> &nbsp;" +
-									"</td>";                        
-	                                  	                                  
+									"</td>";
+
 	                              html2 +=  "</tr>";
 
 	               tablepenerimaan.rows.add($(html2)).draw();
