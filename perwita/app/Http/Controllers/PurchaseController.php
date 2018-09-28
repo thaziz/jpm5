@@ -5719,7 +5719,6 @@ public function purchase_order() {
 		$cabang = DB::table('cabang')
                   ->get();
 
-
 		$agen 	  = DB::select("SELECT kode, nama from agen order by kode");
 
 		$vendor   = DB::select("SELECT kode, nama from vendor order by kode ");
@@ -10753,7 +10752,7 @@ return $html;
 
 			$dataFpg=DB::select("select *,row_number() OVER () as no  from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_nofpg asc ");
 			$dataFpg=collect($dataFpg);
-			}
+		}
 
 
 
