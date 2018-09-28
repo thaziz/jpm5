@@ -87,7 +87,6 @@
 									@for($j = 0; $j < count($data['terimasaja']); $j++)
 									<tr> <td> {{$j + 1}} </td>
 
-
 	                                <td> {{$data['terimasaja'][$j][0]->bt_notransaksi}}</td>
 									<td>  {{$data['terimasaja'][$j][0]->namasupplier}} </td>
 									<td> <span class='label label-info'> {{$data['terimasaja'][$j][0]->bt_statuspenerimaan}} </span> </td>

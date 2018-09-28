@@ -946,9 +946,6 @@ class jurnal_pembelian  extends Controller
       ]);
 
 
-
-
-
       for($h = 0; $h < count($databm); $h++){
             $status = $databm[$h]->bm_status;
             if($status == 'DITERIMA'){
@@ -987,6 +984,7 @@ class jurnal_pembelian  extends Controller
                       ]);
                     }
       }
+
 
 
       for($j =0; $j < count($databm); $j++){
@@ -1131,8 +1129,41 @@ class jurnal_pembelian  extends Controller
                     $akun = $databmdt[$m]->bmdt_akun;
                     $dk = $databmdt[$m]->bmdt_dk;
                     $nominal = $databmdt[$m]->bmdt_nominal;
-                    
+                    $keterangan = $data
+
+                    $akundka = getdka($akun);
+
+                    if($dk == 'K'){
+                      if($akundka == 'D'){
+                        $datajurnalbeda[$i]['id_akun'] = $idakun;
+                        $datajurnalbeda[$i]['subtotal'] = '-' . $nominaldt;
+                        $datajurnalbeda[$i]['dk'] = 'K';
+                        $datajurnalbeda[$i]['detail'] = $request->keteranganakun[$i];
+                      }
+                      else {
+                        $datajurnalbeda[$i]['id_akun'] = $idakun;
+                        $datajurnalbeda[$i]['subtotal'] = $nominaldt;
+                        $datajurnalbeda[$i]['dk'] = 'K';
+                        $datajurnalbeda[$i]['detail'] = $request->keterangan[$i]; 
+                      }
+                    }
+                    else {
+                      if($akundka == 'K'){
+                        $datajurnalbeda[$i]['id_akun'] = $idakun;
+                        $datajurnalbeda[$i]['subtotal'] = '-' . $nominaldt;
+                        $datajurnalbeda[$i]['dk'] = 'D';
+                        $datajurnalbeda[$i]['detail'] = $request->keteranganakun[$i]; 
+                      }
+                      else {
+                        $datajurnalbeda[$i]['id_akun'] = $idakun;
+                        $datajurnalbeda[$i]['subtotal'] = $nominaldt;
+                        $datajurnalbeda[$i]['dk'] = 'D';
+                        $datajurnalbeda[$i]['detail'] = $request->keteranganakun[$i];
+                      }
+                    }                    
                   }
+
+                  
               }
              
 

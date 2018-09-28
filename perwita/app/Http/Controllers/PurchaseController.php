@@ -2817,6 +2817,7 @@ public function purchase_order() {
 		$data['idgudang'] = $idgudang;
 		$data['terima'] = DB::select("select * from barang_terima where bt_gudang = '$idgudang'");
 
+		//dd($data['idgudang']);
 		for($i= 0; $i < count($data['terima']); $i++) {
 			$tipe = $data['terima'][$i]->bt_flag;
 			$idbt = $data['terima'][$i]->bt_id;
@@ -2832,7 +2833,7 @@ public function purchase_order() {
 		
 
 		$data['gudang'] = DB::select("select * from mastergudang");
-	
+		dd($data);
 
 	/*	$data['penerimaan'] = DB::select("select LEFT(po_no, 2) as flag ,po_no as nobukti, po_supplier as supplier, nama_supplier as nmsupplier , po_id as id, string_agg(pb_status,',') as p   from supplier, pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id  where po_supplier = idsup and po_tipe != 'J' and po_setujufinance = 'DISETUJUI' group by po_id , po_no, nama_supplier  UNION select LEFT(fp_nofaktur, 2) as flag, fp_nofaktur as nobukti, fp_idsup as supplier , nama_supplier as nmsupplier, fp_idfaktur as id , string_agg(pb_status,',') as p  from supplier, faktur_pembelian LEFT OUTER JOIN penerimaan_barang on fp_idfaktur = pb_fp where fp_tipe != 'J' and fp_tipe != 'PO' and fp_idsup = idsup group by nobukti, supplier , nmsupplier , id order by id desc"); //kurang session login company
 		

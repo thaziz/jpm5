@@ -113,10 +113,8 @@
                    <!--    <a class="btn btn-success" href={{url('mastersupplier/editsupplier/'.$sp->idsup .'')}}> <i class="fa fa-pencil"> </i> </a> -->
 
 
-                        <a href="#" class="btn btn-danger" onclick="hapusData('{{ $sp->idsup }}')"><i class="fa fa-trash-o" aria-hidden="true"></i></a></li>
-                                    {{ Form::open(['url'=>'mastersupplier/deletesupplier/'.$sp->idsup, 'method' => 'delete', 'id' => $sp->idsup ]) }}
-
-                                    {{ Form::close() }}         
+                    {{--     <a href="#" class="btn btn-danger" onclick="hapusData('{{ $sp->idsup }}')"><i class="fa fa-trash-o" aria-hidden="true"></i></a></li> --}}
+                                           
                       </td>
                     
                     </tr>
