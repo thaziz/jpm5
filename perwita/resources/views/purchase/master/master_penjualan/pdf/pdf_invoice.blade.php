@@ -70,7 +70,7 @@
                         <td id="brutto_grandtotal"></td>
                         <td id="diskondo_grandtotal"></td>
                         <td id="diskoninv_grandtotal"></td>
-                        <td id="netto_grandtotal"></td>
+                        <td id="nettodetil_grandtotal"></td>
                         <td id="ppn_grandtotal"></td>
                         <td id="pajaklain_grandtotal"></td>
                         <td id="total_grandtotal"></td>
