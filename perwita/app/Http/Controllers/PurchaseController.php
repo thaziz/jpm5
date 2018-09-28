@@ -2833,7 +2833,6 @@ public function purchase_order() {
 
 
 		$data['gudang'] = DB::select("select * from mastergudang");
-		// dd($data);
 
 	/*	$data['penerimaan'] = DB::select("select LEFT(po_no, 2) as flag ,po_no as nobukti, po_supplier as supplier, nama_supplier as nmsupplier , po_id as id, string_agg(pb_status,',') as p   from supplier, pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id  where po_supplier = idsup and po_tipe != 'J' and po_setujufinance = 'DISETUJUI' group by po_id , po_no, nama_supplier  UNION select LEFT(fp_nofaktur, 2) as flag, fp_nofaktur as nobukti, fp_idsup as supplier , nama_supplier as nmsupplier, fp_idfaktur as id , string_agg(pb_status,',') as p  from supplier, faktur_pembelian LEFT OUTER JOIN penerimaan_barang on fp_idfaktur = pb_fp where fp_tipe != 'J' and fp_tipe != 'PO' and fp_idsup = idsup group by nobukti, supplier , nmsupplier , id order by id desc"); //kurang session login company
 
@@ -4135,6 +4134,8 @@ public function purchase_order() {
 					//jurnal FP
 
 					//akun ppn
+
+					$datajurnal2 = array_values($datajurnal);
 					$hasilppn = $datafp[0]->fp_ppn;
 					if($hasilppn != null){
 						$datakun2 = DB::select("select * from d_akun where id_akun LIKE '2302%' and kode_cabang = '$cabang'");
@@ -4163,7 +4164,7 @@ public function purchase_order() {
 								'detail' => $request->fp_keterangan,
 								);
 							}
-							array_push($datajurnal, $dataakun );
+							array_push($datajurnal2, $dataakun );
 
 							$totalhutang = floatval($totalhutang) + floatval($hasilppn);
 						}
@@ -4245,9 +4246,11 @@ public function purchase_order() {
 
 					array_push($datajurnal, $dataakun );
 		    		$key  = 1;
-		    		for($j = 0; $j < count($datajurnal); $j++){
+
+		    		for($j = 0; $j < count($datajurnal2); $j++){
 
 		    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id');
+
 						if(isset($lastidjurnaldt)) {
 							$idjurnaldt = $lastidjurnaldt;
 							$idjurnaldt = (int)$idjurnaldt + 1;
@@ -4259,10 +4262,10 @@ public function purchase_order() {
 		    			$jurnaldt = new d_jurnal_dt();
 		    			$jurnaldt->jrdt_jurnal = $idjurnal;
 		    			$jurnaldt->jrdt_detailid = $key;
-		    			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
-		    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
-		    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
-		    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
+		    			$jurnaldt->jrdt_acc = $datajurnal2[$j]['id_akun'];
+		    			$jurnaldt->jrdt_value = $datajurnal2[$j]['subtotal'];
+		    			$jurnaldt->jrdt_statusdk = $datajurnal2[$j]['dk'];
+		    			$jurnaldt->jrdt_detail = $datajurnal2[$j]['detail'];
 		    			$jurnaldt->save();
 		    			$key++;
 		    		}
@@ -4277,6 +4280,8 @@ public function purchase_order() {
 					else {
 						$idjurnal = 1;
 					}
+
+					$datajurnal2 = array_values($datajurnal);
 
 
 					$year = Carbon::parse($request->tgl_dibutuhkan)->format('Y');
@@ -4310,11 +4315,14 @@ public function purchase_order() {
 						);
 			        }
 
-					array_push($datajurnal, $dataakun );
+
+					array_push($datajurnal2, $dataakun );
 		    		$key  = 1;
-		    		for($j = 0; $j < count($datajurnal); $j++){
+
+		    		for($j = 0; $j < count($datajurnal2); $j++){
 
 		    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id');
+
 						if(isset($lastidjurnaldt)) {
 							$idjurnaldt = $lastidjurnaldt;
 							$idjurnaldt = (int)$idjurnaldt + 1;
@@ -4326,10 +4334,10 @@ public function purchase_order() {
 		    			$jurnaldt = new d_jurnal_dt();
 		    			$jurnaldt->jrdt_jurnal = $idjurnal;
 		    			$jurnaldt->jrdt_detailid = $key;
-		    			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
-		    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
-		    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
-		    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
+		    			$jurnaldt->jrdt_acc = $datajurnal2[$j]['id_akun'];
+		    			$jurnaldt->jrdt_value = $datajurnal2[$j]['subtotal'];
+		    			$jurnaldt->jrdt_statusdk = $datajurnal2[$j]['dk'];
+		    			$jurnaldt->jrdt_detail = $datajurnal2[$j]['detail'];
 		    			$jurnaldt->save();
 		    			$key++;
 		    		}
