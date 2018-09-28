@@ -6,8 +6,12 @@
 
 
 <style type="text/css">
-  #addColumn thead tr th{
+  .center{
     text-align: center;
+  }
+
+  .right{
+    text-align: right;
   }
 </style>
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -57,10 +61,6 @@
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
                     
-<<<<<<< HEAD
-                <div class="box-body">
-                  <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
-=======
                 <div class="box-body table-responsive">
                   <table cellpadding="3" cellspacing="0" border="0" class="table filter table-bordered" style="width: 100%">
                         <tr>
@@ -136,13 +136,13 @@
                         </tr>
                     </table>
                   <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang" style="width: 100%">
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
                     <thead align="center">
                      <tr>
                         <th style="width:10px">No</th>
                         <th> No Faktur </th>
                         <th> Tanggal </th>
                         <th> Jenis Faktur </th>
+                        <th> Pihak Ketiga </th>
                         <th> No Invoice </th>
                         <th> Total </th>
                         <th> Status </th>
@@ -154,99 +154,7 @@
                     </thead>
 
                     <tbody>  
-                    @foreach($data['faktur'] as $index=>$faktur)
-
-                      <tr>
-                        <td align="center"> {{$index + 1}}</td>
-                        <td>  {{$faktur->fp_nofaktur}} </td>
-                        <td>  {{$faktur->fp_tgl}} </td>
-                        <td> {{$faktur->jenisbayar}} </td>
-                        @if($faktur->fp_noinvoice != "")
-                        <td> {{$faktur->fp_noinvoice}} </td>
-                        @else
-                        <td align="center"> - </td>
-                        @endif
-                        <td>{{$faktur->fp_netto}}</td>
-                        <td align="center">
-                          @if($faktur->fp_pending_status == 'APPROVED')
-                            <label class="label label-success">APPROVED</label>
-                          @elseif($faktur->fp_pending_status == 'PENDING')
-                            <label class="label label-danger">PENDING</label>
-                            @else
-                            -
-                          @endif
-                        </td>
-                        <td align="left" align="40">
-
-                          @if($faktur->fp_jenisbayar == 6 || $faktur->fp_jenisbayar == 7 || $faktur->fp_jenisbayar == 9)
-                            <a class="fa asw fa-print" align="center"  title="edit" href="{{url('fakturpembelian/detailbiayapenerus')}}/{{$faktur->fp_idfaktur}}"> Print Detail</a>
-                          @else
-                            <a class="fa asw fa-print" align="center"  title="edit" href={{url('fakturpembelian/cetakfaktur/'.$faktur->fp_idfaktur.'')}}> Print Detail</a>
-                          @endif
-                        
-
-                          </a>
-                          <br>
-                        </td>
-                        <!-- <td align="center"><input type="checkbox" class="form-control" name="allow"></td> -->
-                       @if($faktur->fp_jenisbayar == 6 || $faktur->fp_jenisbayar == 7 || $faktur->fp_jenisbayar == 9)
-                         <td align="center"> 
-                            @if(Auth::user()->PunyaAkses('Faktur Pembelian','ubah'))
-                              @if(cek_periode(carbon\carbon::parse($faktur->fp_tgl)->format('m'),carbon\carbon::parse($faktur->fp_tgl)->format('Y') ) != 0)
-                                <a title="Edit" class="btn btn-sm btn-success" href={{url('fakturpembelian/edit_penerus/'.$faktur->fp_idfaktur.'')}}>
-                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                                </a> 
-                              @endif
-                            @endif
-
-                            @if(Auth::user()->PunyaAkses('Faktur Pembelian','hapus'))
-                              @if(cek_periode(carbon\carbon::parse($faktur->fp_tgl)->format('m'),carbon\carbon::parse($faktur->fp_tgl)->format('Y') ) != 0)
-                                <a title="Hapus" class="btn btn-sm btn-danger" onclick="hapus({{$faktur->fp_idfaktur}})">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                                </a> 
-                              @endif
-                            @endif
-                          <input type="hidden" value="{{$faktur->fp_jenisbayar}}">
-                         </td> 
-                       @else
-                        <td align="center">
-
-                            @if(Auth::user()->PunyaAkses('Faktur Pembelian','ubah'))
-                             <!--  @if(cek_periode(carbon\carbon::parse($faktur->fp_tgl)->format('m'),carbon\carbon::parse($faktur->fp_tgl)->format('Y') ) != 0)
-                                <a title="Edit" class="btn btn-sm btn-success" href={{url('fakturpembelian/detailfatkurpembelian/'.$faktur->fp_idfaktur.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> 
-                              @endif -->
-                               <a title="Edit" class="btn btn-sm btn-success" href={{url('fakturpembelian/detailfatkurpembelian/'.$faktur->fp_idfaktur.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> 
-                            @endif
-                          @if($faktur->fp_jenisbayar == 6 || $faktur->fp_jenisbayar == 7 || $faktur->fp_jenisbayar == 9)
-                            @if(Auth::user()->PunyaAkses('Faktur Pembelian','hapus'))
-                              @if(cek_periode(carbon\carbon::parse($faktur->fp_tgl)->format('m'),carbon\carbon::parse($faktur->fp_tgl)->format('Y') ) != 0)
-                                <a title="Hapus" class="btn btn-sm btn-success" onclick="hapus({{$faktur->fp_idfaktur}})">
-                                  <i class="fa fa-trash" aria-hidden="true"></i>
-                                </a> 
-                              @endif
-                            @endif
-
-                          @else
-                            @if($faktur->fp_status == 'Approved')
-                           
-                            @else
-                            @if(Auth::user()->PunyaAkses('Faktur Pembelian','hapus'))
-
-                              @if($faktur->fp_edit == 'ALLOWED')
-                              <a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData({{$faktur->fp_idfaktur}})">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                              </a>
-
-                              @endif
-                            @endif
-                          @endif
-                        <input type="hidden" value="{{$faktur->fp_jenisbayar}}">
-                       </td> 
-
-                       @endif
-                       @endif
-                      </tr>
-                      @endforeach
+ 
                      
                     </tbody>
                    
@@ -281,31 +189,42 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-     tableDetail = $('.tbl-penerimabarang').DataTable({
-            responsive: true,
-            searching: true,
-            //paging: false,
-            "pageLength": 10,
-            "language": dataTableLanguage,
+     $(document).ready( function () {
+
+         $('.tbl-penerimabarang').DataTable({
+          searching:false,
+            processing: true,
+            // responsive:true,
+            serverSide: true,
+            ajax: {
+                url:'{{ route("datatable_faktur_pembelian") }}',
+                data:{min: function() { return $('.min').val()},
+                      max: function() { return $('.max').val()},
+                      cabang: function() { return $('.cabang').val()},
+                      jenis: function() { return $('.jenis_faktur').val()},
+                      customer: function() { return $('.pihak_ketiga').val() },
+                      nomor : function() { return $('.nota ').val() }}
+            },
             columnDefs: [
               {
                  targets: 0,
                  className: 'center'
               },
               {
-                 targets: 5,
+                 targets:6,
                  className: 'right'
               },
               {
-                 targets: 6,
+                 targets:7,
                  className: 'center'
               },
               {
-                 targets: 8,
+                 targets:8,
                  className: 'center'
-<<<<<<< HEAD
-              }
-=======
+              },
+              {
+                 targets:9,
+                 className: 'center'
               },
               {
                  targets:10,
@@ -326,15 +245,19 @@
             { "data": "lunas" },
             { "data": "aksi" },
             
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
             ]
+      });
+      $.fn.dataTable.ext.errMode = 'throw';
     });
 
     $('.date').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd'
     });
-    
+  function filtering() {
+    table = $('.tbl-penerimabarang').DataTable();
+    table.ajax.reload();
+  }
     
 
    function hapus(id){
