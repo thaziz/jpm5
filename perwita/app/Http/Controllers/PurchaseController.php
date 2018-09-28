@@ -8392,8 +8392,7 @@ public function kekata($x) {
   		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
 
   		$request->biaya = str_replace(['Rp', '\\', ',',' '], '',$request->biaya);
-  		/*dd($request->biaya);*/
-        /*$request->biaya = str_replace(',', '.', $data);    */
+  	
 
         $request->total = str_replace(['Rp', '\\', '.',' ',' '], '',$request->total);
          
