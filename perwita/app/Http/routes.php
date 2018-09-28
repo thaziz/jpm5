@@ -590,6 +590,9 @@ Route::post('bankmasuk/saveterima' ,'BankMasukController@saveterima');
 Route::get('bankmasuk/createbankmasuk' ,'BankMasukController@create');
 Route::get('bankmasuk/getnota' ,'BankMasukController@getnota');
 Route::post('bankmasuk/save' ,'BankMasukController@savedata');
+Route::get('bankmasuk/hapusdata' ,'BankMasukController@hapusdata');
+Route::get('bankmasuk/editdata/{id}' ,'BankMasukController@editdata');
+Route::post('bankmasuk/updatedata' ,'BankMasukController@updatedata');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');

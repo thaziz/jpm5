@@ -47,11 +47,11 @@
                 <div class="ibox-title" style="background: white">
                     <div  style="background: white" >
                       <h5> Bank Masuk </h5>
-                      <a href="{{ url('bankmasuk/bankmasuk') }}" class="pull-right" style="color: black"><i class="fa fa-arrow-left"> Kembali</i></a>
+                      <a href="{{ url('bonsementaracabang/bonsementaracabang') }}" class="pull-right" style="color: black"><i class="fa fa-arrow-left"> Kembali</i></a>
                     </div>
                 </div>
                 <div class="ibox-content">
-                 <form method="post" action="{{url('bankmasuk/save')}}"  enctype="multipart/form-data" class="form-horizontal" id="myform">
+                 <form method="post" action="{{url('bankmasuk/update')}}"  enctype="multipart/form-data" class="form-horizontal" id="myform">
                         <div class="row">
             <div class="col-sm-12">
               <div class="box">
@@ -63,7 +63,7 @@
                             <th> Cabang </th>
                             <td> <select class="form-control chosen-select cabang" name="cabang">
                                           @foreach($data['cabang'] as $cabang)
-                                          <option value="{{$cabang->kode}}">
+                                          <option value="{{$cabang->kode}}" @if($data['BM'][0]->bm_cabangtujuan == $cabang->kode) selected="" @endif>
                                                 {{$cabang->nama}}
                                           </option>
                                           @endforeach
@@ -71,11 +71,13 @@
                             </td>
                             <th> Tanggal </th>
                             <td> <div class="input-group date">
-                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl tglbm" name="tgl" required="">
+                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl tglbm" name="tgl" required="" value="{{$data['BM'][0]->bm_tglterima}}">
                                       </div>
                               </td>
                               <th> Nota </th>
-                               <td> <input type='text' class='form-control input-sm notabm'name="notabm" readonly=""> </td>
+                               <td> <input type='text' class='form-control input-sm notabm'name="notabm" readonly="" value="{{$data['BM'][0]->bm_nota}}">
+                                <input type="hidden" value="{{$data['BM'][0]->bm_id}}"  name='idbm'>
+                              </td>
                           </tr>
                         </table>
                     </div>
@@ -88,8 +90,8 @@
                                 <th> Bank </th>
                                 <td> <select class="form-control chosen-select bank" name="bank">
                                         @foreach($data['bank'] as $bank)
-                                          <option value="{{$bank->id}},{{$bank->kode}}">
-                                             {{$bank->kode}} - {{$bank->nama}}
+                                          <option value="{{$bank->mb_id}},{{$bank->mb_kode}}">
+                                             {{$bank->mb_kode}} - {{$bank->mb_nama}}
                                           </option>
                                         </option>
                                         @endforeach
@@ -98,17 +100,17 @@
                             </tr>
                             <tr>
                               <th> DK Bank </th>
-                              <td> <input type='text' class="form-control input-sm dkbank" name='dkbank'> </td>
+                              <td> <input type='text' class="form-control input-sm dkbank" name='dkbank' value='D'> </td>
                             </tr>
 
                             <tr>
                               <th> Nominal </th>
-                              <td> <input type='text' class="form-control input-sm nominalbank" name="nominalbank"> </td>
+                              <td> <input type='text' class="form-control input-sm nominalbank" name="nominalbank" value="{{$data['BM'][0]->bm_nominal}}"> </td>
                             </tr>
 
                             <tr>
                               <th> Keterangan BM </th>
-                              <td> <input type="text" class="form-control input-sm keteranganbm" name="keteranganbm"> </td>
+                              <td> <input type="text" class="form-control input-sm keteranganbm" name="keteranganbm" value="{{$data['BM'][0]->bm_keterangan}}"> </td>
                             </tr>
                           </table>
                         </div>                     
@@ -122,7 +124,7 @@
                         <select class="form-control chosen-select tabakun akun">
                           <option value=""> Pilih Akun </option>
                           @foreach($data['akun'] as $akun)
-                            <option value="{{$akun->id_akun}},{{$akun->akun_dka}}">
+                            <option value="{{$akun->id_akun}}">
                                 {{$akun->id_akun}} - {{$akun->nama_akun}}
                             </option>  
                           @endforeach
@@ -190,6 +192,19 @@
                       </th>
                     </tr>
                   </thead>
+                  <tbody>
+                      @foreach($data['bmdt'] as $index=>$bmdt)
+                        <tr class="trbank trbank{{$bmdt->bmdt_akun}}"> <td> {{$index + 1}}  </td>
+                        <td> {{$bmdt->bm_nota}} </td>
+                        <td> {{$data['BM'][0]->mb_nama}}   </td>
+                        <td> {{ Carbon\Carbon::parse($data['BM'][0]->bm_tglterima)->format('d-m-Y') }} </td>
+                        <td> <input type='text' class='form-control'value="{{$bmdt->nama_akun}}" readonly="">  <input type='hidden' class='form-control akundt' name='akun[]' value="{{$bmdt->id_akun}}"> </td>
+                        <td><input type="text" class="form-control dkdt" name="dk[]" value="{{$bmdt->bmdt_dk}}" readonly=""> </td>
+                       <td><input type="text" class="form-control input-sm nominaldt" name="nominal[]" value="{{$bmdt->bmdt_nominal}}" readonly=""></td>
+                       <td><input type="text" class="keterangandt form-control input-sm" name="keteranganakun[]" value="{{$bmdt->bmdt_keterangan}}" readonly=""></td>
+                        <td> <button class="btn btn-xs btn-danger removes-btn" type="button" onclick="hapus(this)"> <i class="fa fa-trash"> </i> </button> <button class="btn btn-xs btn-warning removes-btn" type="button" onclick="edit(this)"> <i class="fa fa-pencil"> </i> </button>  </td> </tr>
+                      @endforeach
+                  </tbody>
                   </table>
 
                 </div><!-- /.box-body -->
@@ -240,11 +255,17 @@
   })
 
   $('.akun').change(function(){
-    val = $(this).val();
-    split = val.split(",");
-
-    dk = split[1];
-    $('.akundka').val(dk);
+    kodeakun = $(this).val();
+       $.ajax({
+      data : {kodeakun},
+      url : baseUrl + '/bankmasuk/getakun',
+      type : "get",
+      dataType : "json",
+      success : function(response){
+        $('.akundka').val(response);
+      }
+    })
+   
   })
 
   $('.nominal').change(function(){
@@ -265,7 +286,7 @@
         autoclose: true,
         format: 'dd-MM-yyyy',
         endDate : 'today',
-    }).datepicker("setDate", "0");
+    });
 
   $('.cabang').change(function(){
     cabang = $(this).val();
@@ -284,24 +305,7 @@
     })
   })
 
-    cabang = $('.cabang').val();
-    tgl = $('.tglbm').val();
-    databank = $('.bank').val();
-    kodebank = databank.split(",");
-    bank = kodebank[0];
-    $.ajax({
-      data : {cabang,tgl,bank},
-      url : baseUrl + '/bankmasuk/getnota',
-      type : "get",
-      dataType : "json",
-      success : function(response){
-        $('.notabm').val(response);
-      },
-      error : function(){
-        location.reload();
-      }
-
-    })
+   
 
   $('.tglbm').change(function(){
     tgl = $('.tglbm').val();
@@ -390,8 +394,8 @@
             "<td>"+nota+" </td>"+
             "<td>"+bank+"   </td>"+
             "<td>"+tanggal+" </td>"+
-            "<td> <input type='text' class='form-control akundt' name='akun[]' value='"+akun+","+dk+"'> </td>" +
-            "<td><input type='text'class='dkdt' name='dk[]' value='"+dk+"'></td>"+
+            "<td> <input type='text' class='form-control akundt' name='akun[]' value='"+akun+"'> </td>" +
+            "<td><input type='text'class='form-control dkdt' name='dk[]' value='"+dk+"'></td>"+
             "<td><input type='text' class='form-control input-sm nominaldt ' name='nominal[]' value='"+nominal+"'></td>" +
             "<td><input type='text' class='keterangandt form-control input-sm' name='keteranganakun[]' value='"+keteranganakun+"'></td>"+
             "<td> <button class='btn btn-xs btn-danger removes-btn' type='button' onclick='hapus(this)'> <i class='fa fa-trash'> </i> </button> <button class='btn btn-xs btn-warning removes-btn' type='button' onclick='edit(this)'> <i class='fa fa-pencil'> </i> </button>  </td>" +
@@ -426,12 +430,15 @@
     nominal = $(par).find('.nominaldt').val();
     keterangan = $(par).find('.keterangandt').val();
     nodata = $(par).find('.nodata').val();
-    alert(nodata);
+  
     $('.akun').val(akun);
     $('.akundka').val(dk);
     $('.nominal').val(nominal);
     $('.keteranganakun').val(keterangan);
     $('.no').val(nodata);
+
+    $('.akun').trigger("chosen:updated");
+    $('.akun').trigger("liszt:updated");
   }
   
 
@@ -455,7 +462,7 @@
         $.ajax({
           type : "POST",          
           data : form_data2,
-          url : baseUrl + '/bankmasuk/save',
+          url : baseUrl + '/bankmasuk/updatedata',
           dataType : 'json',
           success : function (response){
             

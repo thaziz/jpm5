@@ -426,7 +426,7 @@
                         </td>
 
                         @if($namatipe == 'NON STOCK' && $data['kodejenisitem'] == 'S')
-                        <td> {{$sppd->codtk_kendaraan}} <input type="hidden" class="form-control" value="{{$sppd->codtk_kendaraan}}" name="nopol[]"> </td>
+                        <td> {{$sppd->nopol}} <input type="hidden" class="form-control" value="{{$sppd->codtk_kendaraan}}" name="nopol[]"> </td>
                         @endif
 
                         <td>  <input type="text" class="input-sm form-control qtyrequest qtyrequest{{$idbarang}}" value="{{$sppd->codtk_qtyrequest}}" readonly="" name="qtyrequest[]" data-id="{{$idbarang}}">  </td>
