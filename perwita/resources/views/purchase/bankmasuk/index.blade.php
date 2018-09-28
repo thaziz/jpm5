@@ -1,4 +1,4 @@
-  @extends('main')
+@extends('main')
 
 @section('title', 'dashboard')
 
@@ -98,12 +98,24 @@
                         <td> {{$bankmasuk->bm_jenisbayar}}</td>
                         <td> <span class="label label-info"> {{$bankmasuk->bm_status}} </span></td>
                         <td> @if($bankmasuk->bm_status == 'DITERIMA')
-                                 <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i>
-                             &nbsp;  Jurnal &nbsp;
+                            
+
+                              @if($bankmasuk->bm_notatransaksi == 'TRANSAKSI BM')
+                               <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i>
+                           </a>   &nbsp;  <a class="btn btn-warning btn-xs" type="button" href="{{url('bankmasuk/editsdata/'.$bankmasuk->bm_id.'')}}"> <i class="fa fa-pencil"> </i> </a> &nbsp;  <a class="btn btn-danger btn-xs" type="button" onclick="hapusdata({{$bankmasuk->bm_id}})"> <i class="fa fa-trash"> </i> </a> 
+                              @else
+                               <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i>
+                             &nbsp;  Jurnal &nbsp; </a>
+
+                            @endif
                            </a>
                             @else
                             <a class="btn btn-success btn-sm" onclick="proses('{{$bankmasuk->bm_id}}')" type="button" data-toggle="modal" data-target="#myModal5"> <i class="fa fa-book"> </i> &nbsp; PROSES &nbsp; </a>
+                            
+
                             @endif
+
+
                         </td>
                         
                     </tr>
@@ -222,6 +234,57 @@
                 x1 = x1.replace(rgx, '$1' + ',' + '$2');
             }
             return x1 + x2;
+    }
+
+    function hapusdata(id){
+
+          swal({
+          title: "Apakah anda yakin?",
+          text: "Hapus Data!",
+          type: "warning",
+          showCancelButton: true,
+          showLoaderOnConfirm: true,
+          confirmButtonColor: "#DD6B55",
+          confirmButtonText: "Ya, Hapus!",
+          cancelButtonText: "Batal",
+          closeOnConfirm: false
+        },
+      $.ajax({
+        data : {id},
+        type : "get",
+        url : baseUrl + '/bankmasuk/hapusdata',
+        dataType : "json",
+        success : function(response){
+          if(response == 'sukses'){
+               swal({
+                  title: "Berhasil!",
+                          type: 'success',
+                          text: "Data Berhasil Dihapus",
+                          timer: 2000,
+                          showConfirmButton: true
+                          },function(){
+                             location.reload();
+                  });
+          }
+          else {
+
+          }
+        }
+      })
+      )
+    }
+
+    function editdata(id){
+      idbm = id;
+     $.ajax({
+        data : {idbm},
+        type : "get",
+        baseUrl : baseUrl + '/  /editdata',
+        dataType : "json",
+        success : function(response){
+
+        }
+      })
     }
 
     $('#saveterima').submit(function(){
