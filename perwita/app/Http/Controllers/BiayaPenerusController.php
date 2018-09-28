@@ -63,12 +63,9 @@ class BiayaPenerusController extends Controller
 				$akun   = DB::table('d_akun')
 						->get();
 			}
-
-			$pajak = DB::table("pajak")
-						->get();
 			
 			$jt = Carbon::now()->subDays(-30)->format('d/m/Y');
-			return view('purchase/fatkur_pembelian/form_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','pajak'));
+			return view('purchase/fatkur_pembelian/form_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun'));
 		}
 
 	public function kekata($x) {

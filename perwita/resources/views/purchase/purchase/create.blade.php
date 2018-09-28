@@ -521,9 +521,9 @@
           
           var angka = 1 + i;
             var rowTable = '<table class="table" border="0">' +
-            '<tr> <td style="width:210px"> No SPP </td> <td> : </td> <td> '+response.spp[i][0].spp_nospp+' </th> <input type="hidden" value='+response.spp[i][0].cotb_id+' name="idcotbsetuju[]"> <input type="hidden" name="jenisitem" value="'+response.jenisitem+'"> </tr>' +
+            '<tr> <td style="width:210px"> No SPP </td> <td> : </td> <td> '+response.spp[i][0].spp_nospp+' </th> <input type="hidden" value='+response.spp[i][0].cotb_id+' name="idcotbsetuju[]">  </tr>' +
             '<tr> <td>  Keperluan  </th> <td> : </td> <td>'+response.spp[i][0].spp_keperluan+'</td> </tr>' +
-            '<tr> <td>  Tgl di Butuhkan </td> <td> : </td> <td>'+response.spp[i][0].spp_tgldibutuhkan+'</td></tr>' +
+            '<tr> <td>  Tgl di Butuhkan </td> <td> : </td> <td>'+response.spp[i][0].spp_tgldibutuhkan+'</td> </tr>' +
             '<tr> <td> Pembayaran </td> <td> : </td> <td> '+response.spp[i][0].spptb_bayar+' hari </td> </tr>' +
             '<tr> <td> Total Biaya di Perlukan </td> <td> : </td><td> Rp '+ addCommas(response.spp[i][0].cotb_totalbiaya) +'</td> </tr>' +
             '<tr> <td> Cabang Pemohon </td> <td> :  </td> <td>'+response.spp[i][0].nama  +'</td> </tr>';
@@ -548,14 +548,9 @@
                         '<th style="width:80px"> Jumlah disetujui </th>' +
                         '<th style="width:80px"> Jumlah dikirim </th>' +
                         '<th style="width:130px"> Harga Per Item </th>' +
-                        '<th style="width:130px"> Total Harga</th>';
-                         if(response.kodejenisitem == 'S' && response.spp[0][0].spp_tipe == 'NS')
-                        {
-                           rowTable +=  '<th > Kendaraan </th>';  
-                        }
-
-              rowTable += '<th style="width:200px" id="tdgudang"> Dikirim Ke </th>' +          
-             '<th style="width:200px" > Keterangan </th>' +      
+                        '<th style="width:130px"> Total Harga</th>' +
+                        '<th style="width:200px" id="tdgudang"> Dikirim Ke </th>' +      
+                        '<th style="width:200px" > Keterangan </th>' +      
                     '</tr>' +
                    
                     '</thead>' +
@@ -586,28 +581,26 @@
 
                         '<td> <input type="text" class="form-control totalharga2 totalharga2'+nosup+'" readonly="" name="totalharga[]" data-id='+nosup+' readonly>  </td>';
 
-
-                        if(response.spp[0][0].spp_tipe == 'NS' && response.jenisitem == 'SPARE PART KENDARAAN') {
-                          rowTable += '<td>'+response.codt[i][j].nopol+' <input type="hidden" class="form-control" name="kendaraan[]" value='+response.codt[i][j].codt_kendaraan+'></td>';
-
-                        }
-
-
                         if(response.spp[0][0].spp_tipe != 'J'){
                           rowTable += '<td id="tdgudang"> <select class="form-control gudang" name="lokasikirim[]" class="tdgudang" readonly>';
                             for(key = 0; key < response.gudang.length; key++){
                               rowTable += '<option value='+response.gudang[key].mg_id+'>'+response.gudang[key].mg_namagudang+'</option></select></td>'
                             }
                          
+<<<<<<< HEAD
+
+                        rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required">  </td>' +
+                        '<tr>';
+
+=======
                             
                                 rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+itemsupplier+'">  </td> </tr>';
                             
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
                         }
                         else {
                           rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+itemsupplier+'">  </td> </tr>';
                         }
-
-
                        nosup++;
 
               number++;      

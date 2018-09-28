@@ -60,6 +60,7 @@
         return $jr_no;
 	}
 
+
 	function get_total_neraca_parrent($id, $deep, $initiate, $date, $throttle, $array, $withCommas = false){
 		$tot = 0; $search = strlen($id);
 

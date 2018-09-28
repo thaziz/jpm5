@@ -101,6 +101,7 @@ Route::get('jurnalselaras/bankmasuk', 'jurnal_pembelian@bankmasuk');
 Route::get('jurnalselaras/kasmasuk', 'jurnal_pembelian@kasmasuk');
 Route::get('jurnalselaras/fpg_checkbank', 'jurnal_pembelian@fpg_checkbank');
 Route::get('jurnalselaras/get_no_po', 'jurnal_pembelian@get_no_po');
+
 Route::get('jurnalselaras/kendaraansppd', 'jurnal_pembelian@kendaraansppd');
 Route::get('jurnalselaras/kendaraanpo', 'jurnal_pembelian@kendaraanpo');
 Route::get('jurnalselaras/notabankmasuk', 'jurnal_pembelian@notabankmasuk');
@@ -261,7 +262,6 @@ Route::get('master-keuangan/laporan-laba-rugi',  'laba_rugiController@index');
 
 /* end warehouse */
 Route::get('fakturpembelian/fakturpembelian', 'PurchaseController@fatkurpembelian');
-Route::get('fakturpembelian/datatable_faktur_pembelian', 'PurchaseController@datatable_faktur_pembelian')->name('datatable_faktur_pembelian');
 Route::get('fakturpembelian/createfatkurpembelian', 'PurchaseController@createfatkurpembelian');
 Route::get('fakturpembelian/detailfatkurpembelian/{id}', 'PurchaseController@detailfatkurpembelian');
 Route::get('fakturpembelian/getchangefaktur', 'PurchaseController@supplierfaktur');
@@ -615,6 +615,7 @@ Route::get('formaju/detailformaju', 'PurchaseController@detailformaju');
 //FPG
 Route::get('formfpg/formfpg', 'PurchaseController@formfpg');
 Route::get('formfpg/formfpg/table', 'PurchaseController@formfpgTable'); //seach taziz
+
 Route::get('formfpg/formfpg/notif', 'PurchaseController@formfpgNotif'); //seach taziz
 Route::get('formfpg/createformfpg', 'PurchaseController@createformfpg');
 Route::get('formfpg/detailformfpg/{id}', 'PurchaseController@detailformfpg');
@@ -893,6 +894,7 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
 
 // Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
 Route::get('reportfakturpelunasan/reportfakturpelunasan', 'LaporanPurchaseController@reportfakturpelunasan');
+Route::get('/reportfakturpelunasan/getfakturpelunasan', 'LaporanPurchaseController@getfakturpelunasan');
 Route::get('kartuhutangajax/kartuhutangajax', 'LaporanPurchaseController@kartuhutangajax');
 Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurchaseController@historisuangmukapembelian');
 //===========================================================================================================================

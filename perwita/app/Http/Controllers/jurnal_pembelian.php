@@ -383,43 +383,6 @@ class jurnal_pembelian  extends Controller
     }
 
 
-    function kendaraansppd(){
-      $datasppd = DB::select("select * from spp_detail order by sppd_idspp asc");
-
-      $idspp = [];
-      for($j = 0; $j < count($datasppd); $j++){
-        $kendaraan = $datasppd[$j]->sppd_kendaraan;
-        $idspp2 = $datasppd[$j]->sppd_idspp;
-        $kodeitem = $datasppd[$j]->sppd_kodeitem;
-        if($kendaraan != null){
-          $dataco = DB::select("select * from confirm_order where co_idspp = '$idspp2'");
-          $mankeu = $dataco[0]->man_keu;
-          $staffpemb = $dataco[0]->staff_pemb;
-          $idco = $dataco[0]->co_id;
-          if($mankeu == 'DISETUJUI'){
-            DB::table('confirm_order_dt')
-            ->where('codt_idco' , $idco)
-            ->where('codt_kodeitem' , $kodeitem)
-            ->update([
-              'codt_kendaraan' => $kendaraan
-            ]);
-          }
-          if($staffpemb == 'DISETUJUI') {
-            DB::table('confirm_order_dt_pemb')
-            ->where('codtk_idco' , $idco)
-            ->where('codtk_kodeitem' , $kodeitem)
-            ->update([
-              'codtk_kendaraan' => $kendaraan
-            ]);
-          }
-
-          array_push($idspp, $idspp2);
-        }
-      }
-      
-      return json_encode($idspp);
-    }
-
     function gantispp(){
       
         

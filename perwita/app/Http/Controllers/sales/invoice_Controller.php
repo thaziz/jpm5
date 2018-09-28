@@ -101,6 +101,11 @@ class invoice_Controller extends Controller
 
 
                             
+<<<<<<< HEAD
+                            if($data->i_statusprint == 'Released' or Auth::user()->punyaAkses('Invoice','ubah')){
+                                if(cek_periode(carbon::parse($data->i_tanggal)->format('m'),carbon::parse($data->i_tanggal)->format('Y') ) != 0){
+                                  $a = '<button type="button" onclick="edit(\''.$data->i_nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
+=======
                             if(Auth::user()->punyaAkses('Invoice','ubah')){
                               if ( $data->i_faktur_pajak == null ) {
                                 $total = $data->i_total_tagihan + $data->i_debet - $data->i_kredit;
@@ -108,8 +113,8 @@ class invoice_Controller extends Controller
                                   if(cek_periode(carbon::parse($data->i_tanggal)->format('m'),carbon::parse($data->i_tanggal)->format('Y') ) != 0){
                                     $a = '<button type="button" onclick="edit(\''.$data->i_nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
                                   }
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
                                 }
-                              }
                             }else{
                               $a = '';
                             }
@@ -121,6 +126,11 @@ class invoice_Controller extends Controller
                             }
 
 
+<<<<<<< HEAD
+                            if($data->i_statusprint == 'Released' or Auth::user()->punyaAkses('Invoice','hapus')){
+                                if(cek_periode(carbon::parse($data->i_tanggal)->format('m'),carbon::parse($data->i_tanggal)->format('Y') ) != 0){
+                                  $c = '<button type="button" onclick="hapus(\''.$data->i_nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
+=======
                             if( Auth::user()->punyaAkses('Invoice','hapus')){
                               if ( $data->i_faktur_pajak == null ) {
                                 $total = $data->i_total_tagihan + $data->i_debet - $data->i_kredit;
@@ -128,8 +138,8 @@ class invoice_Controller extends Controller
                                   if(cek_periode(carbon::parse($data->i_tanggal)->format('m'),carbon::parse($data->i_tanggal)->format('Y') ) != 0){
                                     $c = '<button type="button" onclick="hapus(\''.$data->i_nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
                                   }
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
                                 }
-                              }
                             }else{
                               $c = '';
                             }
