@@ -3894,7 +3894,7 @@
 
       if(qty != '') {
         val = val.replace(/,/g, '');
-        amount = parseInt(qty) * parseInt(val);
+        amount = parseFloat(qty) * parseFloat(val);
         num_amount = parseFloat(amount).toFixed(2);
       
 //        $(this).val(harga);
