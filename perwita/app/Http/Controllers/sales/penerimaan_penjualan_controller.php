@@ -569,7 +569,7 @@ class penerimaan_penjualan_controller extends Controller
                  ->first();
         if ($cari_nota != null) {
           DB::rollBack();
-          return response()->json(['status'=>1,'message'=>'Data Sudah Ada']);
+          return response()->json(['status'=>0,'message'=>'Data Sudah Ada']);
         }elseif ($cari_nota == null) {
           $nota = $request->nota;
         }
