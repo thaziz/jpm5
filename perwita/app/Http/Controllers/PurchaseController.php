@@ -9467,7 +9467,7 @@ public function kekata($x) {
 				if($request->dk[$j] == 'K'){
 					if($akundka2 == 'D'){
 						$datajurnalbiaya[$j]['id_akun'] = $request->akun[$j];
-						$datajurnalbiaya[$j]['subtotal'] = '-' . $jumlah;
+						$datajurnalbiaya[$j]['subtotal'] = - $jumlah;
 						$datajurnalbiaya[$j]['dk'] = 'K';
 						$datajurnalbiaya[$j]['detail'] = $request->keterangan[$j];
 					}
