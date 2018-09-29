@@ -1231,7 +1231,7 @@ class jurnal_pembelian  extends Controller
 
     function notabankmasuktransaksibm(){
      return DB::transaction(function() { 
-        $databm = DB::select("select * from bank_masuk where bm_id = '160'");
+        $databm = DB::select("select * from bank_masuk where bm_id = '157'");
         for($i = 0; $i < count($databm); $i++){
           $datajurnalbeda = [];
 

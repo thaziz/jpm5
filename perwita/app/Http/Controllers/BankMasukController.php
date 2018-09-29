@@ -386,7 +386,8 @@ class BankMasukController extends Controller
 			}
 
 		}
-
+		$notabm = $request->notabm;
+		
 		DB::DELETE("DELETE FROM d_jurnal where jr_ref = '$notabm'");
 		//save jurnal
 		$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
