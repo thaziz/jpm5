@@ -620,7 +620,8 @@ class LaporanPurchaseController extends Controller
 		$dataFakturPembelian = '';
 		$dataSearchFaktur = '';
 		$dataBG = '';
-		return view('purchase/laporan/historisfaktur', compact('dataFaktur', 'dataSearchFaktur', 'dataFakturPembelian', 'dataBG'));
+		$dataHistoriesResult = '';
+		return view('purchase/laporan/historisfaktur', compact('dataFaktur', 'dataSearchFaktur', 'dataFakturPembelian', 'dataHistoriesResult', 'dataBG'));
 	}
 
 	public function getfakturpelunasan(Request $request) {
@@ -633,6 +634,7 @@ class LaporanPurchaseController extends Controller
 		$dataHistoriesResult1 = array();
 		$dataHistoriesResult2 = array();
 		$resultHistories = array();
+		$dataHistoriesResult = '';
 		$dataBG = '';
 
 		$dataFakturSupplier = DB::table('faktur_pembelian')
@@ -797,7 +799,7 @@ class LaporanPurchaseController extends Controller
 
 		$dataHistoriesResult = array_merge($dataHistoriesResult1, $dataHistoriesResult2);
 
-		//print_r($dataHistoriesResult); die;
+		// print_r($dataHistoriesResult); die;
 
 		// print_r($data); die;
 		$dataFaktur = DB::table('faktur_pembelian')->select('fp_nofaktur')->orderBy('fp_idfaktur', 'asc')->get();

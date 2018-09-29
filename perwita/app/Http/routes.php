@@ -892,6 +892,7 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
 
 // Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
 Route::get('reportfakturpelunasan/reportfakturpelunasan', 'LaporanPurchaseController@reportfakturpelunasan');
+Route::get('/reportfakturpelunasan/getfakturpelunasan', 'LaporanPurchaseController@getfakturpelunasan');
 Route::get('kartuhutangajax/kartuhutangajax', 'LaporanPurchaseController@kartuhutangajax');
 Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurchaseController@historisuangmukapembelian');
 //===========================================================================================================================
