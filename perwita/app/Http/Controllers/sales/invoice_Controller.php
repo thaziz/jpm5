@@ -110,8 +110,11 @@ class invoice_Controller extends Controller
                                     $a = '<button type="button" onclick="edit(\''.$data->i_nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
                                   }
                                 }
+                              }elseif (Auth::user()->m_name = 'dev') {
+                                $a = '<button type="button" onclick="edit(\''.$data->i_nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
                               }
                             }else{
+
                               $a = '';
                             }
 
@@ -131,6 +134,8 @@ class invoice_Controller extends Controller
                                     $c = '<button type="button" onclick="hapus(\''.$data->i_nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
                                   }
                                 }
+                              }elseif (Auth::user()->m_name = 'dev') {
+                                $c = '<button type="button" onclick="hapus(\''.$data->i_nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
                               }
                             }else{
                               $c = '';
