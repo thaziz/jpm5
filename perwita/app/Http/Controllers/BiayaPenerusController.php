@@ -42,21 +42,66 @@ use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 use Auth;
 
- 	public function getdatapenerusedit(){
+class BiayaPenerusController extends Controller
+{
 
-		$pajak = DB::table("pajak")
-						->get();
+
+	
+	public function getdatapenerus(){
+		
 		$data = DB::table('akun')
-					  ->get();
+				  ->get();
+		$date = Carbon::now()->format('d/m/Y');
 
 		$agen = DB::table('agen')
-						  ->where('kategori','AGEN')
-						  ->orWhere('kategori','AGEN DAN OUTLET')
-						  ->get();
+				  ->where('kategori','AGEN')
+				  ->orWhere('kategori','AGEN DAN OUTLET')
+				  ->get();
 		$vendor = DB::table('vendor')
-						  ->get();
-		return view('purchase/fatkur_pembelian/editTableBiaya',compact('data','date','agen','vendor','akun_biaya','now'));
+				  ->get();
+		if (Auth::user()->punyaAKses('Biaya Penerus Hutang','all')) {
+			$akun   = DB::table('d_akun')
+					->get();
+		}else{
+			$akun   = DB::table('d_akun')
+					->get();
+		}
+		$pajak   = DB::table('pajak')
+					->get();
+		
+		$jt = Carbon::now()->subDays(-30)->format('d/m/Y');
+		return view('purchase/fatkur_pembelian/form_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','pajak'));
 	}
+
+	public function kekata($x) {
+    $x = abs($x);
+    $angka = array("", "satu", "dua", "tiga", "empat", "lima",
+    "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+    $temp = "";
+    if ($x <12) {
+        $temp = " ". $angka[$x];
+    } else if ($x <20) {
+        $temp = $this->kekata($x - 10). " belas";
+    } else if ($x <100) {
+        $temp = $this->kekata($x/10)." puluh". $this->kekata($x % 10);
+    } else if ($x <200) {
+        $temp = " seratus" . $this->kekata($x - 100);
+    } else if ($x <1000) {
+        $temp = $this->kekata($x/100) . " ratus" . $this->kekata($x % 100);
+    } else if ($x <2000) {
+        $temp = " seribu" . $this->kekata($x - 1000);
+    } else if ($x <1000000) {
+        $temp = $this->kekata($x/1000) . " ribu" . $this->kekata($x % 1000);
+    } else if ($x <1000000000) {
+        $temp = $this->kekata($x/1000000) . " juta" . $this->kekata($x % 1000000);
+    } else if ($x <1000000000000) {
+        $temp = $this->kekata($x/1000000000) . " milyar" . $this->kekata(fmod($x,1000000000));
+    } else if ($x <1000000000000000) {
+        $temp = $this->kekata($x/1000000000000) . " trilyun" . $this->kekata(fmod($x,1000000000000));
+    }     
+        return $temp;
+}
+ 
  
 	public function terbilang($x, $style=4) {
     if($x<0) {
