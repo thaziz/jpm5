@@ -2461,7 +2461,7 @@ public function purchase_order() {
 			$dataspp = DB::select("select * from spp where spp_id = '$idspp'");
 			$datacomp = $dataspp[0]->spp_cabang;
 
-			$datakun = DB::select("select * from d_akun where id_akun LIKE '$subacchutang%' and  kode_cabang = '$datacomp'");
+			$datakun = DB::select("select * from d_akun where id_akun LIKE '$subacchutang%' and  kode_cabang = '$datacomp' and is_active = '1'");
 			$acchutang = $datakun[0]->id_akun;
 
 				$po = new purchase_orderr();
@@ -8502,10 +8502,10 @@ public function kekata($x) {
 		$data['cabang'] = DB::select("select * from cabang");
 		$cabang = session::get('cabang');
 		if($cabang == 000){
-			$data['akun'] = DB::select("select * from d_akun");
+			$data['akun'] = DB::select("select * from d_akun where is_active = '1'");
 		}
 		else {
-			$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%'");
+			$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' and is_active = '1'");
 		}
 	
 		return view('purchase/pelunasanhutangbank/create', compact('data'));

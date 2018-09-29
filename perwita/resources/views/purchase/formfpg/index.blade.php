@@ -66,13 +66,12 @@
 
 
 
-<<<<<<< HEAD
 <div class="row" id="dataSeach">
    
-=======
+
 <div class="row" >
    <form method="post" id="dataSeach">
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
+
       <div class="col-md-12 col-sm-12 col-xs-12">
               
                <div class="col-md-2 col-sm-3 col-xs-12">
@@ -81,11 +80,11 @@
 
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-<<<<<<< HEAD
+
                     <input class="form-control" type="text" name="nofpg">
-=======
+
                     <input class="form-control kosong" type="text" name="nofpg" id="nofpg" placeholder="No FPG">
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
+
                 </div>
               </div>
 
@@ -153,16 +152,15 @@
 
               <div class="col-md-4 col-sm-6 col-xs-12">
                 <div class="form-group">
-<<<<<<< HEAD
+
                      <select class="form-control" name="nosupplier">
                       @foreach($data['supplier'] as $supplier)
                       <option value="{{$supplier->no_supplier}}">{{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
-=======
-                     <select class="form-control chosen-select-width kosong" name="nosupplier" id="nosupplier">
+            <select class="form-control chosen-select-width kosong" name="nosupplier" id="nosupplier">
                      <option value="">Pilih Supplier</option>
                       @foreach($data['supplier'] as $supplier)
                       <option value="{{$supplier->idsup}}">{{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
+
                       @endForeach
                     </select>
                 </div>
@@ -170,10 +168,9 @@
 
 
     </div>
-<<<<<<< HEAD
-=======
+
     </form>
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
+
 </div>
 
 
@@ -256,20 +253,9 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-/*
-     tableDetail = $('.tbl-penerimabarang').DataTable({
-            responsive: true,
-            searching: true,
-            //paging: false,
-            "pageLength": 10,
-            "language": dataTableLanguage,
-    });*/
 
-<<<<<<< HEAD
-
-=======
 var tablex;
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
+
 table();
      function table(){
    $('#addColumn').dataTable().fnDestroy();
@@ -282,7 +268,7 @@ table();
               "url": "{{ url("formfpg/formfpg/table") }}",
               "type": "get",
               data: {
-<<<<<<< HEAD
+
                     "_token": "{{ csrf_token() }}",
                     "type"  :"toko",
                     "tanggal1" :$('#tanggal1').val(),
@@ -294,51 +280,20 @@ table();
             {data: 'fpg_keterangan', name: 'fpg_keterangan'},
             {data: 'fpg_totalbayar', name: 'fpg_totalbayar'},            
             {data: 'uangmuka', name: 'uangmuka'},            
-          /*  {data: 's_kasir', name: 's_kasir'},                        
-            {data: 's_gross', name: 's_gross'}, 
-=======
-                    "_token": "{{ csrf_token() }}",                    
-                    "tanggal1" :$('#tanggal1').val(),
-                    "tanggal2" :$('#tanggal2').val(),
-                    "nosupplier" :$('#nosupplier').val(),
-                    "idjenisbayar" :$('#idjenisbayar').val(),
-                    "nofpg" :$('#nofpg').val(),
-                    },
-              },
-            columns: [
-            {data: 'no', name: 'no'},             
-            {data: 'fpg_nofpg', name: 'fpg_nofpg'},                           
-            {data: 'fpg_tgl', name: 'fpg_tgl'},            
-            {data: 'jenisbayar', name: 'jenisbayar'},
-            {data: 'fpg_keterangan', name: 'fpg_keterangan'},
-            {data: 'fpg_totalbayar', name: 'fpg_totalbayar'},            
-            {data: 'uangmuka', name: 'uangmuka'},            
-            {data: 'fpg_cekbg', name: 'fpg_cekbg'},                        
-            {data: 'action', name: 'action'},                        
-          /*  {data: 's_gross', name: 's_gross'}, 
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
-            {data: 's_disc_percent', name: 's_disc_percent'}, 
-            {data: 's_ongkir', name: 's_ongkir'},
-            {data: 's_net', name: 's_net'},            
-            {data: 's_status', name: 's_status'}, 
-            {data: 'action', name: 'action'},
-            */
+        
            
             ],
             "pageLength": 10,
             "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-<<<<<<< HEAD
+
            "fnCreatedRow": function (row, data, index) {
             $('td', row).eq(0).html(index + 1);
         }
     });
 }
 
-=======
-           /*"fnCreatedRow": function (row, data, index) {
-            $('td', row).eq(0).html(index + 1);
-            }*/
 
+       
 
 
     });
@@ -433,7 +388,6 @@ function cari(){
               }
             });
 
-=======
 dateAwal();
 function dateAwal(){
       var d = new Date();
@@ -481,7 +435,7 @@ function notif(){
         $('#notif').html(data);
     }
   });
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
+
 }
 </script>
 @endsection
