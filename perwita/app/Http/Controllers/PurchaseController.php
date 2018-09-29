@@ -3043,7 +3043,6 @@ public function purchase_order() {
 					$idpodt = $request->idpodt[$i];
 
 				
-
 					//melihatqtydisetiapitem
 				$select = DB::select("select * from penerimaan_barangdt where pbdt_item = '$iditem2' and pbdt_po = '$no_po' and pbdt_idspp = '$idspp' "); 
 				
@@ -3108,7 +3107,9 @@ public function purchase_order() {
 					$updatepo = purchase_orderdt::where([['podt_id' , '=' , $idpodt],['podt_kodeitem' , '=' , $request->kodeitem[$i]],['podt_idpo' , '=' , $no_po]]);
 
 
-					$selisihsisa = (int)$quantitikirim - (int)$request->qtyterima[$i];
+					$selisihsisa = (int)$selectdikirim[0]->podt_sisaterima - (int)$request->qtyterima[$i];
+
+				
 					$updatepo->update([
 						'podt_sisaterima' => $selisihsisa,					
 					]);
@@ -3187,7 +3188,7 @@ public function purchase_order() {
 						$updatepo = purchase_orderdt::where([['podt_id' , '=' , $idpodt],['podt_item' , '=' , $request->kodeitem[$i]],['podt_idpo' , '=' , $no_po]]);
 
 
-						$selisihsisa = (int)$quantitikirim - (int)$request->qtyterima[$i];
+						$selisihsisa = (int)$selectdikirim[0]->podt_sisaterima - (int)$request->qtyterima[$i];
 						$updatepo->update([
 							'podt_sisaterima' => $selisihsisa,					
 						]);
@@ -4464,7 +4465,7 @@ public function purchase_order() {
 			$datacomp = $datapb[0]->pb_comp;
 			$acchutangdagang = $datapb[0]->pb_acchutangdagang;
 			$iditem = $request->arrkodeitem[$i];
-
+			$mytime = Carbon::parse($datapb[0]->pb_date)->format('d-m-Y');
 
 			/*return $datagudang . $datacomp;*/
 			$datapbdt = DB::select("select * from penerimaan_barangdt where pbdt_item = '$iditem' and pbdt_idpb = '$idpb'");
@@ -4557,7 +4558,7 @@ public function purchase_order() {
 			
 				$year = Carbon::parse($mytime)->format('Y');
 				$date = Carbon::parse($mytime)->format('Y-m-d');
-				$jrno = get_id_jurnal('MM' , $cabang , $date);
+				$jrno = get_id_jurnal('MM' , $datacomp , $date);
 				$jurnal = new d_jurnal();
 				$jurnal->jr_id = $idjurnal;
 		        $jurnal->jr_year = $year;
@@ -4656,7 +4657,6 @@ public function purchase_order() {
 				'bt_statuspenerimaan' => $statuspb,
 			]);
 
-			
 		}
 		else if($flag == 'PO'){
 			$statusheaderpb = DB::select("select * from penerimaan_barang , penerimaan_barangdt where pb_id = pbdt_idpb and pb_po = '$iddetail'");
@@ -4715,6 +4715,24 @@ public function purchase_order() {
 			$query5->update([
 				'bt_statuspenerimaan' => $statuspb,
 			]);
+
+			for($h = 0; $h < count($request->arrqty); $h++){
+				$kodeitem = $request->arrkodeitem[$h];
+				$datapo = DB::select("select * from pembelian_orderdt where podt_idpo = '$iddetail' and podt_kodeitem = '$kodeitem'");
+				$datapb = DB::select("select * from penerimaan_barang , penerimaan_barangdt where pb_id = pbdt_idpb and pb_po = '$iddetail' and pbdt_item = '$kodeitem'");
+
+				$sisaterima = $datapo[0]->podt_sisaterima;
+				$qty = $datapb[0]->pbdt_qty;
+				$selisih = ((int)$sisaterima + (int)$qty) - (int)$request->arrqty[$h];
+
+				DB::table('pembelian_orderdt')
+				->where('podt_idpo' , $iddetail)
+				->where('podt_kodeitem' , $kodeitem)
+				->update([
+					'podt_sisaterima' => $selisih
+				]);
+
+			}
 
 		}
 		else {
@@ -4782,8 +4800,6 @@ public function purchase_order() {
 	}
 
 	public function detailterimabarang($id) {
-
-		
 
 		//PO
 		$data['header'] = DB::select("select * from barang_terima where bt_id = '$id'");
@@ -5140,7 +5156,7 @@ public function purchase_order() {
 
 			//update status pb header
 			//update status pb header
-			$statusheaderpb = DB::select("select * from penerimaan_barang , penerimaan_barangdt where pb_id = pbdt_idpb and pb_po = '$idtransaksi'");
+			$statusheaderpb = DB::select("select * from penerimaan_barang , penerimaan_barangdt where pb_id = pbdt_idpb and pb_po = '$idtransaksi' and pbdt_id = '$id'");
 			//$statusheaderpb[0]->pbdt_status;
 			
 			/*dd($statusheaderpb[4]->pbdt_status);*/
@@ -5154,10 +5170,10 @@ public function purchase_order() {
 				$kodeitempb = $statusheaderpb[$k]->pbdt_item;
 				$qty = $statusheaderpb[$k]->pbdt_qty;
 				$idpo = $statusheaderpb[$k]->pbdt_po;
-
+				$idpbdt = $statusheaderpb[$k]->pbdt_id;
 				$datapo = DB::select("select * from pembelian_orderdt where podt_idpo = '$idpo' and podt_kodeitem = '$kodeitempb'");
 				$sisa = $datapo[0]->podt_sisaterima;
-
+			
 				$hasilpo = (integer)$sisa + (integer)$qty; 
 
 				DB::table('pembelian_orderdt')
