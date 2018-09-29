@@ -50,11 +50,8 @@ class MasterPurchaseController extends Controller
 	public function createmasteritem() {
 		$data['cabang'] = master_cabang::all();
 		$data['jenisitem'] = masterJenisItemPurchase::all();
-		$akun = DB::table('d_akun')
-		->select('id_akun','nama_akun')
-		->where('is_active' , '1')
-		->get();
-		
+		$akun = DB::select("select * from d_akun where is_active = '1'");
+
 		$id=masterItemPurchase::max('kode_item'); 
 		
 		if(isset($id)) {
