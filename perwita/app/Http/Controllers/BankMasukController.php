@@ -386,8 +386,9 @@ class BankMasukController extends Controller
 			}
 
 		}
-
-
+		$notabm = $request->notabm;
+		
+		DB::DELETE("DELETE FROM d_jurnal where jr_ref = '$notabm'");
 		//save jurnal
 		$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
 			if(isset($lastidjurnal)) {
@@ -417,7 +418,7 @@ class BankMasukController extends Controller
 	        $jurnal->jr_date = $date;
 	        $jurnal->jr_detail = 'BUKTI BANK MASUK';
 	        $jurnal->jr_ref = $request->notabm;
-	        $jurnal->jr_note = $request->keteranganbm;
+	        $jurnal->jr_note = $request->keterangan;
 	        $jurnal->jr_no = $jr_no;
 	        $jurnal->save();
 

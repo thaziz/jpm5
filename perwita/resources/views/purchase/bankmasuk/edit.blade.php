@@ -47,7 +47,7 @@
                 <div class="ibox-title" style="background: white">
                     <div  style="background: white" >
                       <h5> Bank Masuk </h5>
-                      <a href="{{ url('bonsementaracabang/bonsementaracabang') }}" class="pull-right" style="color: black"><i class="fa fa-arrow-left"> Kembali</i></a>
+                      <a href="{{ url('bankmasuk/bankmasuk') }}" class="pull-right" style="color: black"><i class="fa fa-arrow-left"> Kembali</i></a>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -105,7 +105,7 @@
 
                             <tr>
                               <th> Nominal </th>
-                              <td> <input type='text' class="form-control input-sm nominalbank" name="nominalbank" value="{{$data['BM'][0]->bm_nominal}}"> </td>
+                              <td> <input type='text' class="form-control input-sm nominalbank" name="nominalbank" value="{{number_format($data['BM'][0]->bm_nominal , 2)}}"> </td>
                             </tr>
 
                             <tr>
@@ -200,7 +200,7 @@
                         <td> {{ Carbon\Carbon::parse($data['BM'][0]->bm_tglterima)->format('d-m-Y') }} </td>
                         <td> <input type='text' class='form-control'value="{{$bmdt->nama_akun}}" readonly="">  <input type='hidden' class='form-control akundt' name='akun[]' value="{{$bmdt->id_akun}}"> </td>
                         <td><input type="text" class="form-control dkdt" name="dk[]" value="{{$bmdt->bmdt_dk}}" readonly=""> </td>
-                       <td><input type="text" class="form-control input-sm nominaldt" name="nominal[]" value="{{$bmdt->bmdt_nominal}}" readonly=""></td>
+                       <td><input type="text" style='text-align: right' class="form-control input-sm nominaldt" name="nominal[]" value="{{number_format($bmdt->bmdt_nominal , 2)}}" readonly=""></td>
                        <td><input type="text" class="keterangandt form-control input-sm" name="keteranganakun[]" value="{{$bmdt->bmdt_keterangan}}" readonly=""></td>
                         <td> <button class="btn btn-xs btn-danger removes-btn" type="button" onclick="hapus(this)"> <i class="fa fa-trash"> </i> </button> <button class="btn btn-xs btn-warning removes-btn" type="button" onclick="edit(this)"> <i class="fa fa-pencil"> </i> </button>  </td> </tr>
                       @endforeach

@@ -47,7 +47,7 @@
                 <div class="ibox-title" style="background: white">
                     <div  style="background: white" >
                       <h5> Bank Masuk </h5>
-                      <a href="{{ url('bankmasuk/bankmasuk') }}" class="pull-right" style="color: black"><i class="fa fa-arrow-left"> Kembali</i></a>
+                      <a href="{{ url('bankmasuk/bankmasuk')}}" class="pull-right" style="color: black"><i class="fa fa-arrow-left"> Kembali</i></a>
                     </div>
                 </div>
                 <div class="ibox-content">

@@ -185,8 +185,8 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-$('#total').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
-$('#biaya').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
+$('#total').maskMoney({thousands:',', decimal:'.', precision:0});
+$('#biaya').maskMoney({thousands:',', decimal:'.', precision:0});
 
 
 
@@ -237,6 +237,7 @@ setTimeout(function () {
             ],
             "pageLength": 10,
             "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+            "bFilter": false,
            /*"fnCreatedRow": function (row, data, index) {
             $('td', row).eq(0).html(index + 1);
             }*/

@@ -168,12 +168,24 @@
 
 
 
-
 var tablex;
-table();
+setTimeout(function () {            
+   table();
+   tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
+    });
+});
+
+      }, 1500);
+
+
+
+
      function table(){
-   $('.tbl-item').dataTable().fnDestroy();
-   tablex = $(".tbl-item").DataTable({
+   $('#addColumn').dataTable().fnDestroy();
+   tablex = $('#addColumn').DataTable({        
          responsive: true,
         "language": dataTableLanguage,
     processing: true,
@@ -210,9 +222,10 @@ table();
             {data: 'action', name: 'action'},
             */
 
-            ],
+            ],  
             "pageLength": 10,
             "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+             "bFilter": false,
            /*"fnCreatedRow": function (row, data, index) {
             $('td', row).eq(0).html(index + 1);
             }*/
@@ -231,6 +244,13 @@ tablex.on('draw.dt', function () {
 });
 
 
+
+ $('#addColumn_filter input[type=search]').keyup( function () {  
+        var table = $('#addColumn').DataTable(); 
+        table.search(
+            jQuery.fn.DataTable.ext.type.search.html(this.value)
+        ).draw();
+    } );
 
     $('.date').datepicker({
         autoclose: true,
@@ -271,11 +291,13 @@ function dateAwal(){
       $('#tanggal1').datepicker({
             format:"dd-mm-yyyy",
             autoclose: true,
-      }).datepicker( "setDate", d);
+      })
+      /*.datepicker( "setDate", d);*/
       $('#tanggal2').datepicker({
             format:"dd-mm-yyyy",
             autoclose: true,
-      }).datepicker( "setDate", new Date());
+      })
+      /*.datepicker( "setDate", new Date());*/
       $('.kosong').val('');
       $('.kosong').val('').trigger('chosen:updated');
 }
@@ -287,6 +309,7 @@ function dateAwal(){
  function resetData(){
   $('#tanggal1').val('');
   $('#tanggal2').val('');
+  $('.kosong').val('');
   table();
   dateAwal();
 }
