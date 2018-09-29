@@ -250,7 +250,8 @@ function cari(){
        } else {
          detail = '<a class="btn btn-success btn-sm" href={{url('konfirmasipengeluaranbarang/printing')}}/'+response[i].pb_id+'><i class="fa fa-print" aria-hidden="true"></i> </a>';
          if (response[i].pb_jenis_keluar == 'Pemakaian Reguler') {
-           detail += '<a onclick="lihatjurnal('+response[i].pb_nota+',"PENGELUARAN BARANG GUDANG")" class="btn-xs btn-primary" aria-hidden="true"> lihat jurnal </a>';
+           detail += ' '+
+                    '<a onclick="lihatjurnal('+response[i].pb_nota+',"PENGELUARAN BARANG GUDANG")" class="btn-xs btn-primary" aria-hidden="true"> lihat jurnal </a>';
          }
        }
 
