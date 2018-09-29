@@ -44,21 +44,19 @@ use Auth;
 
  	public function getdatapenerusedit(){
 
-			$data = DB::table('akun')
+		$pajak = DB::table("pajak")
+						->get();
+		$data = DB::table('akun')
 					  ->get();
-			$date = Carbon::now()->format('d/m/Y');
 
-			$agen = DB::table('agen')
-					  ->where()
-					  ->get();
-			$vendor = DB::table('vendor')
-					  ->where()
-					  ->get();
-			$akun_biaya = DB::table('akun_biaya')
-					  ->get();
-		
-			return view('purchase/fatkur_pembelian/editTableBiaya',compact('data','date','agen','vendor','akun_biaya','now'));
-		}
+		$agen = DB::table('agen')
+						  ->where('kategori','AGEN')
+						  ->orWhere('kategori','AGEN DAN OUTLET')
+						  ->get();
+		$vendor = DB::table('vendor')
+						  ->get();
+		return view('purchase/fatkur_pembelian/editTableBiaya',compact('data','date','agen','vendor','akun_biaya','now'));
+	}
  
 	public function terbilang($x, $style=4) {
     if($x<0) {
