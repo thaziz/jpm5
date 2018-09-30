@@ -243,9 +243,9 @@
             }
 
             if (response[i].pb_status != 'Approved') {
-              detail = '<a class="btn btn-success" href={{url('pengeluaranbarang/edit')}}/{{$val->pb_id}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>'+
+              detail = '<a class="btn btn-success" href={{url('pengeluaranbarang/edit')}}/'+response[i].pb_id+'><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>'+
                         ' '+
-                        '<a class="btn btn-success" href={{url('pengeluaranbarang/hapus')}}/{{$val->pb_id}}><i class="fa fa-trash" aria-hidden="true"></i> </a>';
+                        '<a class="btn btn-success" href={{url('pengeluaranbarang/hapus')}}/'+response[i].pb_id+'><i class="fa fa-trash" aria-hidden="true"></i> </a>';
             } else {
               detail = '-';
             }
