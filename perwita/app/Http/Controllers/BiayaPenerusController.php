@@ -46,205 +46,32 @@ class BiayaPenerusController extends Controller
 {
 
 
-	public function datatable_faktur_pembelian(Request $req)
-	{
-		$cabang = DB::table('cabang')
-                  ->where('kode',$req->cabang)
-                  ->first();
-        // dd($req->all());
-	    if ($cabang == null) {
-	      $cabang == '';
-	    }else{
-	      $cabang = 'and fp_comp ='."'$cabang->kode'";
-	    }
-
-	    if ($req->min == '') {
-	      $min = '';
-	    }else{
-	      $min = 'and fp_tgl >='."'$req->min'";
-	    }
-
-	    if ($req->max == '') {
-	      $max = '';
-	    }else{
-	      $max = 'and fp_tgl <='."'$req->max'";
-	    }
-
-	    if ($req->jenis == '') {
-	      $jenis = '';
-	    }else{
-	      $jenis = 'and fp_jenisbayar ='."'$req->jenis'";
-	    }
-
-	    if ($req->customer == '') {
-	      $customer = '';
-	    }else{
-	      $customer = 'and fp_supplier ='."'$req->customer'";
-	    }
-
-
-	    if ($req->nomor != '') {
-	      if (Auth::user()->punyaAkses('Faktur Pembelian','all')) {
-	          	$data = DB::table('faktur_pembelian')
-	                    ->join('cabang','kode','=','fp_comp')
-	                    ->where('fp_nofaktur','like','%'.$req->nomor.'%')
-	                    ->get();
-	      }else{
-	          	$cabang = Auth::user()->kode_cabang;
-
-	            $data = DB::table('faktur_pembelian')
-	                    ->join('cabang','kode','=','fp_comp')
-	                    ->where('fp_comp',$cabang)
-	                    ->where('fp_nofaktur','like','%'.$req->nomor.'%')
-	                    ->get();
-	      }
-
-	    }else{
-	      if (Auth::user()->punyaAkses('Faktur Pembelian','all')) {
-	        $data = DB::table('faktur_pembelian')
-	                    ->join('cabang','kode','=','fp_comp')
-	                  ->whereRaw("fp_nofaktur != '0' $min $max $customer $jenis $cabang")
-	                  ->orderBy('fp_tgl','DESC')
-	                  ->get();
-	      }else{
-	        $cabang = Auth::user()->kode_cabang;
-	        $data = DB::table('faktur_pembelian')
-	                  ->join('cabang','kode','=','fp_comp')
-	                  ->whereRaw("fp_comp ='$cabang' $min $max $customer $jenis")
-	                  ->orderBy('fp_tgl','DESC')
-	                  ->get();
-	      }
-	    }
-
-	    $data = collect($data);
-
-	    return Datatables::of($data)
-	                      ->addColumn('aksi', function ($data) {
-	                      	$a = '';
-	                      	$b = '';
-	                      	$c = '';
-	                          if( Auth::user()->punyaAkses('Faktur Pembelian','ubah')){
-	                          	if ( $data->fp_status == 'Released') {
-	                          		if(cek_periode(carbon::parse($data->fp_tgl)->format('m'),carbon::parse($data->fp_tgl)->format('Y') ) != 0){
-	                          			if ($data->fp_jenisbayar == 6 || $data->fp_jenisbayar == 7 || $data->fp_jenisbayar == 9) {
-	                          				if ($data->fp_sisapelunasan == $data->fp_netto) {
-	                          					$a =  '<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/edit_penerus/'.$data->fp_idfaktur.'').'>
-					                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
-					                                </a>';
-	                          				}
-	                          			}else{
-	                          				if ($data->fp_sisapelunasan == $data->fp_netto) {
-	                          					$a = '<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/detailfatkurpembelian/'.$data->fp_idfaktur.'').'><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> ';
-											}
-	                          			}
-	                              	}
-	                          	}
-	                          }
-
-	                          if( Auth::user()->punyaAkses('Faktur Pembelian','hapus')){
-	                          	if ( $data->fp_status == 'Released') {
-	                          		if(cek_periode(carbon::parse($data->fp_tgl)->format('m'),carbon::parse($data->fp_tgl)->format('Y') ) != 0){
-	                          			if ($data->fp_jenisbayar == 6 || $data->fp_jenisbayar == 7 || $data->fp_jenisbayar == 9) {
-	                          				if ($data->fp_sisapelunasan == $data->fp_netto) {
-	                          					$c =  '<a title="Hapus" class="btn btn-sm btn-danger" onclick="hapus(\''.$data->fp_idfaktur.'\')">
-				                                <i class="fa fa-trash" aria-hidden="true"></i>
-				                                </a> ';
-											}
-
-	                          			}else{
-	                          				if ($data->fp_sisapelunasan == $data->fp_netto) {
-	                          					$c = '<a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData(\''.$data->fp_idfaktur.'\')">
-				                                  <i class="fa fa-trash" aria-hidden="true"></i>
-				                                </a>';
-											}
-	                          			}
-	                              	}
-	                          	}
-	                          }
-	                          return $a . $b .$c  ;
-
-
-
-	                      })->addColumn('pihak_ketiga', function ($data) {
-	                        $agen 	  = DB::select("SELECT kode, nama from agen order by kode");
-
-							$vendor   = DB::select("SELECT kode, nama from vendor order by kode ");
-
-							$subcon   = DB::select("SELECT kode, nama from subcon order by kode ");
-
-							$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier where status = 'SETUJU' and active = 'AKTIF' order by no_supplier");
-
-							$all = array_merge($agen,$vendor,$subcon,$supplier);
-
-	                        for ($i=0; $i < count($all); $i++) {
-	                          if ($data->fp_supplier == $all[$i]->kode) {
-	                              return $all[$i]->nama;
-	                          }
-	                        }
-	                      })->addColumn('status', function ($data) {
-	                        if($data->fp_pending_status == 'APPROVED')
-                            	return'<label class="label label-success">APPROVED</label>';
-                         	elseif($data->fp_pending_status == 'PENDING')
-                            	return'<label class="label label-danger">PENDING</label>';
-
-
-	                      })->addColumn('jenis_faktur', function ($data) {
-	                        $jenis = DB::table('jenisbayar')
-									   ->where('idjenisbayar',2)
-									   ->orWhere('idjenisbayar',6)
-									   ->orWhere('idjenisbayar',7)
-									   ->orWhere('idjenisbayar',9)
-									   ->get();
-
-							for ($i=0; $i < count($jenis); $i++) {
-								if ($data->fp_jenisbayar == $jenis[$i]->idjenisbayar) {
-									return $jenis[$i]->jenisbayar;
-								}
-							}
-
-
-	                      })->addColumn('detail', function ($data) {
-							if($data->fp_jenisbayar == 6 || $data->fp_jenisbayar == 7 || $data->fp_jenisbayar == 9)
-	                            return'<a class="fa asw fa-print" align="center"  title="edit" href="'.url('fakturpembelian/detailbiayapenerus').'/'.$data->fp_idfaktur.'"> Print Detail</a>';
-							else
-	                            return'<a class="fa asw fa-print" align="center"  title="edit" href='.url('fakturpembelian/cetakfaktur/'.$data->fp_idfaktur.'').'> Print Detail</a>';
-
-
-	                      })->addColumn('lunas', function ($data) {
-							if($data->fp_sisapelunasan == 0)
-                            	return'<label class="label label-info">LUNAS</label>';
-                         	else
-                            	return'<label class="label label-WARNING">BELUM</label>';
-
-
-	                      })
-	                      ->addIndexColumn()
-	                      ->make(true);
-	}
 	
 	public function getdatapenerus(){
 		
-			$data = DB::table('akun')
-					  ->get();
-			$date = Carbon::now()->format('d/m/Y');
+		$data = DB::table('akun')
+				  ->get();
+		$date = Carbon::now()->format('d/m/Y');
 
-			$agen = DB::table('agen')
-					  ->where('kategori','AGEN')
-					  ->orWhere('kategori','AGEN DAN OUTLET')
-					  ->get();
-			$vendor = DB::table('vendor')
-					  ->get();
-			if (Auth::user()->punyaAKses('Biaya Penerus Hutang','all')) {
-				$akun   = DB::table('d_akun')
-						->get();
-			}else{
-				$akun   = DB::table('d_akun')
-						->get();
-			}
-			
-			$jt = Carbon::now()->subDays(-30)->format('d/m/Y');
-			return view('purchase/fatkur_pembelian/form_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun'));
+		$agen = DB::table('agen')
+				  ->where('kategori','AGEN')
+				  ->orWhere('kategori','AGEN DAN OUTLET')
+				  ->get();
+		$vendor = DB::table('vendor')
+				  ->get();
+		if (Auth::user()->punyaAKses('Biaya Penerus Hutang','all')) {
+			$akun   = DB::table('d_akun')
+					->get();
+		}else{
+			$akun   = DB::table('d_akun')
+					->get();
 		}
+		$pajak   = DB::table('pajak')
+					->get();
+		
+		$jt = Carbon::now()->subDays(-30)->format('d/m/Y');
+		return view('purchase/fatkur_pembelian/form_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','pajak'));
+	}
 
 	public function kekata($x) {
     $x = abs($x);

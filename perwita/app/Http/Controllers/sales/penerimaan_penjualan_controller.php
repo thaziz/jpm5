@@ -567,25 +567,9 @@ class penerimaan_penjualan_controller extends Controller
         $cari_nota = DB::table('kwitansi')
                  ->where('k_nomor',$request->nota)
                  ->first();
-                 
         if ($cari_nota != null) {
-          if ($cari_nota->k_update_by == $user) {
-            DB::rollBack();
-            return response()->json(['status'=>1,'message'=>'Data Sudah Ada']);
-          }else{
-            $bulan = Carbon::parse($tgl)->format('m');
-            $tahun = Carbon::parse($tgl)->format('y');
-
-            $cari_nota = DB::select("SELECT  substring(max(k_nomor),11) as id from kwitansi
-                                            WHERE k_kode_cabang = '$request->cabang'
-                                            AND to_char(k_tanggal,'MM') = '$bulan'
-                                            AND to_char(k_tanggal,'YY') = '$tahun'
-                                            ");
-            $index = (integer)$cari_nota[0]->id + 1;
-            $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-            $nota = 'KWT' . $request->cb_cabang . $bulan . $tahun . $index;
-
-          }
+          DB::rollBack();
+          return response()->json(['status'=>0,'message'=>'Nomor Nota Sudah Ada']);
         }elseif ($cari_nota == null) {
           $nota = $request->nota;
         }

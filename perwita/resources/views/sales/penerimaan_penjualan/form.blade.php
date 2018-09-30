@@ -2681,7 +2681,7 @@ $('#btnsimpan').click(function(){
                                         $('.flag_nota').val('success');
                                 });
                             }else{
-                                toastr.warning(response.pesan)
+                                toastr.warning(response.message)
                                 return false;
                             }
                         },

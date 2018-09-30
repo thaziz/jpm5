@@ -83,6 +83,9 @@ class posting_pembayaran_Controller extends Controller
                           if ($data->jenis_pembayaran == 'U') {
                               $a = 'UANG MUKA/DP';
                           }
+                          if ($data->jenis_pembayaran == 'BN') {
+                              $a = 'BONSEM';
+                          }
                           return '<label class="label label-warning">'.$a.'</label>';
                         })
                         ->addIndexColumn()
@@ -245,7 +248,7 @@ class posting_pembayaran_Controller extends Controller
 
     public function cari_kwitansi(request $request)
     {
-        if ($request->cb_jenis_pembayaran != 'T') {
+        if ($request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'F' or $request->cb_jenis_pembayaran == 'B' or $request->cb_jenis_pembayaran == 'L') {
 
           $akun_bank = DB::table("masterbank")
                        ->where('mb_id',$request->akun_bank)
@@ -295,7 +298,8 @@ class posting_pembayaran_Controller extends Controller
               $data = $temp;
           }
 
-        }else{
+          return view('sales.posting_pembayaran.table_kwitansi',compact('data'));
+        }elseif ($request->cb_jenis_pembayaran == 'T'){
           if (Auth::user()->punyaAkses('Posting Pembayaran','cabang')) {
             $kwitansi = DB::table('kwitansi')
                       ->select('k_nomor','k_tanggal','k_netto')
@@ -350,8 +354,52 @@ class posting_pembayaran_Controller extends Controller
 
               $data = $temp;
           }
+          return view('sales.posting_pembayaran.table_kwitansi',compact('data'));
+        }elseif ($request->cb_jenis_pembayaran == 'BN'){
+          if (Auth::user()->punyaAkses('Posting Pembayaran','cabang')) {
+            $bonsem = DB::table('bonsem_pengajuan')
+                      ->where('bp_status_pengembalian','Process')
+                      ->where('bp_nomor_posting',null)
+                      ->where('bp_akun_tujuan_pengembalian',$request->akun_bank)
+                      ->get();
+          }else{
+            $bonsem = DB::table('bonsem_pengajuan')
+                      ->where('bp_status_pengembalian','Process')
+                      ->where('bp_nomor_posting',null)
+                      ->where('bp_cabang',$request->cabang)
+                      ->where('bp_akun_tujuan_pengembalian',$request->akun_bank)
+                      ->get();
+          }
+            
+
+          $bonsem_edit = DB::table('bonsem_pengajuan')
+                            ->whereIn('bp_nota',$request->nomor)
+                            ->get();
+
+          $bonsem = array_merge($bonsem,$bonsem_edit);
+          $bonsem = array_values($bonsem);
+
+          $temp1 = $bonsem;
+
+          if (isset($request->array_simpan)) {
+
+              for ($i=0; $i < count($temp1); $i++) { 
+                  for ($a=0; $a < count($request->array_simpan); $a++) { 
+                      if ($request->array_simpan[$a] == $temp1[$i]->bp_nota) {
+                          unset($bonsem[$i]);
+                      }
+                      
+                  }
+              }
+              $bonsem = array_values($bonsem);
+              $data = $bonsem;
+              
+          }else{
+
+              $data = $bonsem;
+          }
+          return view('sales.posting_pembayaran.table_bonsem',compact('data'));
         }
-        return view('sales.posting_pembayaran.table_kwitansi',compact('data'));
     }   
 
     public function cari_uang_muka(request $request)
@@ -366,7 +414,7 @@ class posting_pembayaran_Controller extends Controller
     public function append(request $request)
     {   
         // return $request->sall();
-        if ($request->cb_jenis_pembayaran != 'U') {
+        if ($request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'F' or $request->cb_jenis_pembayaran == 'B' or $request->cb_jenis_pembayaran == 'L') {
 
             for ($i=0; $i < count($request->tanggal); $i++) { 
               if (strtotime($request->tanggal[$i]) > strtotime($request->ed_tanggal)) {
@@ -388,11 +436,20 @@ class posting_pembayaran_Controller extends Controller
 
             $data = array_merge($kw,$do);
             return response()->json(['status'=>'1','data'=>$data]);
-        }else{
+        }elseif ($request->cb_jenis_pembayaran == 'U' ){
 
             $data = DB::table('uang_muka_penjualan')
                   ->join('customer','kode','=','kode_customer')
                   ->whereIn('nomor',$request->nomor)
+                  ->get();
+
+
+            return response()->json(['status'=>'1','data'=>$data]);
+        }elseif ($request->cb_jenis_pembayaran == 'BN' ){
+
+            $data = DB::table('bonsem_pengajuan')
+                  ->join('cabang','kode','=','bp_cabang')
+                  ->whereIn('bp_nota',$request->nomor)
                   ->get();
 
 
@@ -418,9 +475,13 @@ class posting_pembayaran_Controller extends Controller
             $cari_nota = DB::table('posting_pembayaran')
                               ->where('nomor',$request->nomor_posting)
                               ->first();
+            $status_nota = 'BELUM';
             if ($cari_nota != null) {
                 if ($cari_nota->nomor == $user) {
-                  return 'Data Sudah Ada';
+                  return response()->json([
+                    'status'=>0,
+                    'message'=>'Nama User Anda Belum Ada, Silahkan Hubungi Pihak Terkait'
+                  ]);
                 }else{
                   
                     $bulan = Carbon::now()->format('m');
@@ -433,7 +494,7 @@ class posting_pembayaran_Controller extends Controller
                     $index = (integer)$cari_nota[0]->id + 1;
                     $index = str_pad($index, 5, '0', STR_PAD_LEFT);
                     $nota = 'BM' . $request->cb_cabang . $bulan . $tahun . $index;
-
+                    $status_nota = 'TERPAKAI';
                 }
             }elseif ($cari_nota == null) {
                 $nota = $request->nomor_posting;
@@ -499,7 +560,7 @@ class posting_pembayaran_Controller extends Controller
                                             'tgl_posting'     => $request->ed_tanggal,
                                             'status'          => 'Approved',
                                          ]);
-                }else if ($request->cb_jenis_pembayaran != 'L'){
+                }else if ($request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'F' or $request->cb_jenis_pembayaran == 'B' ){
                     
                     $update_kwitansi = DB::table('kwitansi')
                                          ->where('k_nomor',$request->d_nomor_kwitansi[$i])
@@ -515,6 +576,16 @@ class posting_pembayaran_Controller extends Controller
                                             'tanggal_posting'     => $request->ed_tanggal,
                                          ]);
 
+                }elseif ($request->cb_jenis_pembayaran == 'BN') {
+
+
+                    $update_kwitansi = DB::table('bonsem_pengajuan')
+                                         ->where('bp_nota',$request->d_nomor_kwitansi[$i])
+                                         ->update([
+                                            'bp_tanggal_posting'    => $request->ed_tanggal,
+                                            'bp_nomor_posting'      => $request->nomor_posting,
+                                            'bp_status_pengembalian'=> 'Posting',
+                                         ]);
                 }
             }
 
@@ -979,9 +1050,97 @@ class posting_pembayaran_Controller extends Controller
                         }
                     }
                 }
+            }else if($request->cb_jenis_pembayaran == 'BN'){
+                $bank = 'BM'.$request->akun_bank;
+
+                $km =  get_id_jurnal($bank, $request->cb_cabang);
+
+                $id_jurnal=d_jurnal::max('jr_id')+1;
+                $delete = d_jurnal::where('jr_ref',$nota)->delete();
+                $save_jurnal = d_jurnal::create(['jr_id'=> $id_jurnal,
+                              'jr_year'   => carbon::parse($request->ed_tanggal)->format('Y'),
+                              'jr_date'   => carbon::parse($request->ed_tanggal)->format('Y-m-d'),
+                              'jr_detail' => 'POSTING PEMBAYARAN ' . $request->cb_jenis_pembayaran,
+                              'jr_ref'    => $nota,
+                              'jr_note'   => 'POSTING PEMBAYARAN '. strtoupper($request->ed_keterangan),
+                              'jr_insert' => carbon::now(),
+                              'jr_update' => carbon::now(),
+                              'jr_no'     => $km,
+                              ]);
+      
+                $master_bank        = DB::table('masterbank')
+                                         ->where('mb_id',$request->akun_bank)
+                                         ->first();
+
+                $akun = [];
+                $akun_val = [];
+                array_push($akun, $master_bank->mb_kode);
+                array_push($akun_val, $request->ed_jumlah);
+                for ($i=0; $i < count($request->d_nomor_kwitansi); $i++) { 
+                    $bonsem = DB::table('bonsem_pengajuan')
+                              ->where('bp_nota',$request->d_nomor_kwitansi[$i])
+                              ->first();
+                    $akun_bonsem = DB::table('d_akun')
+                                    ->where('id_akun','like','1002%')
+                                    ->where('kode_cabang','like',$bonsem->bp_cabang)
+                                    ->first();
+                    if ($akun_bonsem == null) {
+                      return response()->json([
+                        'status'=>0,
+                        'message'=>'Terdapat Nota Bonsem Yang Tidak Cabangnya Tidak Memiliki Akun Bonsem'
+                      ]);
+                    }
+                    array_push($akun, $akun_bonsem->id_akun);
+                    array_push($akun_val, $request->d_netto[$i]);
+                }
+                $data_akun = [];
+                for ($i=0; $i < count($akun); $i++) { 
+
+                    $cari_coa = DB::table('d_akun')
+                            ->where('id_akun',$akun[$i])
+                            ->first();
+
+                    if ($i == 0) {
+                        if ($cari_coa->akun_dka == 'D') {
+                            $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                            $data_akun[$i]['jrdt_detailid'] = $i+1;
+                            $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                            $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
+                            $data_akun[$i]['jrdt_type']     = null;
+                            $data_akun[$i]['jrdt_statusdk'] = 'D';
+                            $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                        }else{
+                            $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                            $data_akun[$i]['jrdt_detailid'] = $i+1;
+                            $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                            $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
+                            $data_akun[$i]['jrdt_type']     = null;
+                            $data_akun[$i]['jrdt_statusdk'] = 'K';
+                            $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                        }
+                    }else{
+                        if ($cari_coa->akun_dka == 'D') {
+                            $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                            $data_akun[$i]['jrdt_detailid'] = $i+1;
+                            $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                            $data_akun[$i]['jrdt_value']    = -round($akun_val[$i]);
+                            $data_akun[$i]['jrdt_type']     = null;
+                            $data_akun[$i]['jrdt_statusdk'] = 'K';
+                            $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                        }else{
+                            $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                            $data_akun[$i]['jrdt_detailid'] = $i+1;
+                            $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                            $data_akun[$i]['jrdt_value']    = round($akun_val[$i]);
+                            $data_akun[$i]['jrdt_type']     = null;
+                            $data_akun[$i]['jrdt_statusdk'] = 'K';
+                            $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($request->ed_keterangan);
+                        }
+                    }
+                }
             }
 
-            if ($request->cb_jenis_pembayaran == 'F' or $request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'L') {
+            if ($request->cb_jenis_pembayaran == 'F' or $request->cb_jenis_pembayaran == 'C' or $request->cb_jenis_pembayaran == 'T' or $request->cb_jenis_pembayaran == 'L'or $request->cb_jenis_pembayaran == 'BN') {
                 $jurnal_dt = d_jurnal_dt::insert($data_akun);
                 $lihat = DB::table('d_jurnal_dt')->where('jrdt_jurnal',$id_jurnal)->get();
                 // dd($lihat);
@@ -1046,11 +1205,20 @@ class posting_pembayaran_Controller extends Controller
                          ->get();
             }
             
-
-            $data_dt = DB::table('posting_pembayaran_d')
+            if ($data->jenis_pembayaran == 'BN') {
+              $data_dt = DB::table('posting_pembayaran_d')
+                         ->join('bonsem_pengajuan','nomor_penerimaan_penjualan','=','bp_nota')
+                         ->join('cabang','kode','=','bp_cabang')
+                         ->where('nomor_posting_pembayaran',$req->id)
+                         ->get();
+            }else{
+              $data_dt = DB::table('posting_pembayaran_d')
                          ->leftjoin('customer','kode','=','kode_customer')
                          ->where('nomor_posting_pembayaran',$req->id)
                          ->get();
+            }
+
+            
   
             return view('sales.posting_pembayaran.edit_posting',compact('id','data','data_dt','cabang','kota','rute','kendaraan','akun','customer','d_akun'));
         }else{
