@@ -315,6 +315,7 @@ class do_paketController extends Controller
     public function cari_harga_reguler_deliveryorder_paket(Request $request)
     {
       // dd($request->all());
+      if ($request->cek == 'false') {
         $asal = $request->kota_asal;
         $tujuan = $request->tujuan;
         $kecamatan = $request->kecamatan;
@@ -324,7 +325,6 @@ class do_paketController extends Controller
         $angkutan = $request->angkutan;
         $cabang = $request->cabang;
         $biaya_penerus = null;
-
 //============= DOKUMEN START =============================================\\
         if ($tipe == 'DOKUMEN') {
             //cari tarif zona
@@ -938,11 +938,54 @@ class do_paketController extends Controller
 
             ]);
         }
+      }else{
+        $data = DB::table('tarif_vendor')
+                  ->join('vendor','kode','=','vendor_id')
+                  ->where('tarif_vendor.cabang_vendor',$request->cabang)
+                  ->where('id_kota_asal_vendor',$request->kota_asal)
+                  ->where('id_kota_tujuan_vendor',$request->tujuan)
+                  ->where('jenis_tarif',$request->tipe)
+                  ->get();
+        $cabang = DB::table('cabang')
+                    ->get();
 
+
+        $kota = DB::table('kota')
+                    ->get();
+
+        foreach ($data as $key1 => $value1) {
+          foreach ($cabang as $key2 => $value2) {
+            if ($value2->kode == $value1->cabang_vendor) {
+              $data[$key1]->nama_cabang = $value2->nama;
+            }
+          }
+        }
+
+        foreach ($data as $key1 => $value1) {
+          foreach ($kota as $key2 => $value2) {
+            if ($value2->id == $value1->id_kota_asal_vendor) {
+              $data[$key1]->asal = $value2->nama;
+            }
+
+            if ($value2->id == $value1->id_kota_tujuan_vendor) {
+              $data[$key1]->tujuan = $value2->nama;
+            }
+          }
+        }
+        // dd($data);
+        return view('sales.do_new.ajax_modal_vendor',compact('data'));
+      }
+        
+
+
+        
         
     }
 
-
+    public function pilih_vendor(request $req)
+    {
+      # code...
+    }
 
 //SAVE DATA
     public function save_deliveryorder_paket(Request $request)

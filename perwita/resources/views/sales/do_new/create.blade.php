@@ -52,7 +52,18 @@
                         </div>
                       </div>
                     </div>
-                                
+                    <div id="modal_vendor" class="modal" >
+                      <div class="modal-dialog " style="width: 900px;">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Insert Edit Tarif Penerus Dokumen</h4>
+                          </div>
+                          <div class="modal-body modal_vendor">
+                          </div>
+                        </div>
+                      </div>
+                    </div>  
                     
                 </div>
                 
@@ -78,14 +89,14 @@
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm">Tanggal</td>
-                                                    <td >
+                                                    <td width="30%">
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control datepicker_today" name="do_tanggal" id="do_tanggal" value="">
                                                         </div>
                                                     </td>
 
                                                     <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                                    <td colspan="2">
+                                                    <td colspan="3">
                                                         <select class="form-control"  name="do_cabang" {{-- onclick="setMaxDisc()" --}} style="width:100%" id="do_cabang">
                                                             <option value="" >- Pilih -</option>
                                                             {{-- <option value="001" data-diskon="30" selected="" >sby</option> --}}
@@ -164,6 +175,8 @@
                                                             <option value="KILOGRAM" >KILOGRAM</option>
                                                             <option value="KOLI">KOLI</option>
                                                             <option value="SEPEDA">SEPEDA</option>
+                                                            <option value="FLAT">FLAT</option>
+                                                            <option value="UNIT">UNIT</option>
                                                         </select>
                                                     </td>
                                                 </tr>
@@ -177,7 +190,19 @@
                                                         </select>
                                                     </td>
                                                 </tr>
-                                                
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">Tarif Vendor</td>
+                                                    <td colspan="2">
+                                                        <div>
+                                                            <div class="checkbox checkbox-info checkbox-circle">
+                                                                <input class="cek_vendor_tidak" type="checkbox" name="cek_vendor_tidak">
+                                                                <label>
+                                                                   
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
                                                 <tr id="jenis_kendaraan">
                                                     <td style="width:120px; padding-top: 0.4cm">Jenis Kendaraan</td>
                                                     <td colspan="5">
@@ -257,26 +282,7 @@
                                                         <input type="text" class="form-control" name="do_koli" value="0" style="text-align:right">
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    {{-- <td style="width:110px; padding-top: 0.4cm">Tarif Vendor</td>
-                                                    <td colspan="2">
-                                                        <select class="chosen-select-width pointer_none" name="do_vendor_pilih" style="width:100%" id="do_vendor_pilih">
-                                                            <option value="">- Pilih -</option>
-                                                        </select>
-                                                    </td> --}}
-                                                    <td style="width:110px; padding-top: 0.4cm">Tarif Vendor</td>
-                                                    <td colspan="2">
-                                                        <div>
-                                                            <label class="radio-inline">
-                                                              <input type="radio" class="cek_vendor_ya" name="cek_vendor">Ya
-                                                            </label>
-                                                            <label class="radio-inline">
-                                                              <input type="radio" class="cek_vendor_tidak" name="cek_vendor" checked>Tidak
-                                                            </label>
-                                                        </div>
-                                                    </td>
-
-                                                </tr>
+                                                
                                                 <tr id="hidden_vendor">
                                                     <td style="padding-top: 0.4cm">Vendor</td>
                                                     <td colspan="5">
@@ -687,6 +693,9 @@
                               </div>
                             </div>
                         </div>
+
+
+
                     </div>
                 </form>
                 <div class="box-body" style="display:none">
@@ -723,27 +732,30 @@
             </div>
         </div>
     </div>
+
 </div>
 
+
+
 @endsection
+
+
 @section('extra_scripts')
 <script type="text/javascript">
+
+
 
 
 //VARIABLE GLOBAL 
 $("input[name='do_vendor']").prop('readonly',true);
 
 //CEK JIKA TARIF VENDOR DI PENCET
-$('.radio-inline').click(function() {
+$('.cek_vendor_tidak').change(function() {
    
-   if($('.cek_vendor_ya').is(':checked')) { 
+   if($('.cek_vendor_tidak').is(':checked') == true) { 
         toastr.info("Tarif vendor aktif", "Pemberitahuan!")
-        $('#tarif_vendor_bol').val('true');
-   }else if($('.cek_vendor_tidak').is(':checked'))  {
+   }else{
         toastr.warning("Tarif vendor tidak aktif", "Pemberitahuan!")
-        $('#tarif_vendor_bol').val('false');
-        $('#hidden_vendor').hide();
-
    }
 
 });
@@ -1048,60 +1060,60 @@ function hitung() {
 
 
 //CEK VENDOR / CARI MODAL / MEMUNCULKAN MODAL
-    $(".cek_vendor_ya").click(function() {
-        if ($('#do_kota_asal').val() == '' 
-            || $('#do_kota_tujuan').val() == '' 
-            || $('#do_cabang').val() == '' 
-            || $('#jenis_kiriman').find(':selected').val() == '') {
-            toastr.error('Data Kurang Lengkap ,Ada data yg Tidak Boleh Kosong!!','Peringatan !');
-        if ($('#type_kiriman').find(':selected').val() != 'KILOGRAM') {
-            toastr.error('Type kiriman harus Kilogram!!','Peringatan !');
-            $('.cek_vendor_ya').prop("checked",false);
-        }
-        if ($('#do_berat').val() == '0') {
-            toastr.error('Berat harus lebih dari 0s!!','Peringatan !');
-            $('.cek_vendor_ya').prop("checked",false);
-        }
-            $('.cek_vendor_ya').prop("checked",false);
+    // $(".cek_vendor_ya").click(function() {
+    //     if ($('#do_kota_asal').val() == '' 
+    //         || $('#do_kota_tujuan').val() == '' 
+    //         || $('#do_cabang').val() == '' 
+    //         || $('#jenis_kiriman').find(':selected').val() == '') {
+    //         toastr.error('Data Kurang Lengkap ,Ada data yg Tidak Boleh Kosong!!','Peringatan !');
+    //     if ($('#type_kiriman').find(':selected').val() != 'KILOGRAM') {
+    //         toastr.error('Type kiriman harus Kilogram!!','Peringatan !');
+    //         $('.cek_vendor_ya').prop("checked",false);
+    //     }
+    //     if ($('#do_berat').val() == '0') {
+    //         toastr.error('Berat harus lebih dari 0!!','Peringatan !');
+    //         $('.cek_vendor_ya').prop("checked",false);
+    //     }
+    //         $('.cek_vendor_ya').prop("checked",false);
 
-        }else{
-            var asal = $('#do_kota_asal').find(':selected').val();
-            var tujuan = $('#do_kota_tujuan').find(':selected').val();
-            var cabang = $('#do_cabang').find(':selected').val();
-            var jenis = $('#jenis_kiriman').find(':selected').val();
-            var tipe = $('#type_kiriman').find(':selected').val();
-            var berat = $('#do_berat').val();
+    //     }else{
+    //         var asal = $('#do_kota_asal').find(':selected').val();
+    //         var tujuan = $('#do_kota_tujuan').find(':selected').val();
+    //         var cabang = $('#do_cabang').find(':selected').val();
+    //         var jenis = $('#jenis_kiriman').find(':selected').val();
+    //         var tipe = $('#type_kiriman').find(':selected').val();
+    //         var berat = $('#do_berat').val();
 
-            if ($('.cek_vendor_ya').is(":checked") == true) {
-                $('.do_tarif_penerus').hide();
-                $.ajax({
-                type: "GET",
-                data : {a:asal,b:tujuan,c:cabang,d:jenis,e:tipe,f:berat},
-                url : ('{{ route('cari_vendor_deliveryorder_paket') }}'),
-                success: function(data){   
-                    console.log(data);
-                    $('#hidden_vendor').show();
-                    // $('#drop').html(data);
-                    $('#do_vendor_tarif').empty(); //remove all child nodes 
-                    var append_pilih = '<option value="">- Pilih -</option>';
-                    $('#do_vendor_tarif').append(append_pilih);
+    //         if ($('.cek_vendor_ya').is(":checked") == true) {
+    //             $('.do_tarif_penerus').hide();
+    //             $.ajax({
+    //             type: "GET",
+    //             data : {a:asal,b:tujuan,c:cabang,d:jenis,e:tipe,f:berat},
+    //             url : ('{{ route('cari_vendor_deliveryorder_paket') }}'),
+    //             success: function(data){   
+    //                 console.log(data);
+    //                 $('#hidden_vendor').show();
+    //                 // $('#drop').html(data);
+    //                 $('#do_vendor_tarif').empty(); //remove all child nodes 
+    //                 var append_pilih = '<option value="">- Pilih -</option>';
+    //                 $('#do_vendor_tarif').append(append_pilih);
 
-                    for (var i = 0; i < data.length; i++) {
-                        var append_baru = '<option value="'+data[i].id+'" data-vendor="'+data[i].id_tarif_vendor+'" data-waktu="'+data[i].waktu_vendor+'" data-nama="'+data[i].nama+'" data-tarif="'+data[i].tarif_vendor+'" >'+data[i].nama+' ( '+(accounting.formatMoney(data[i].waktu_vendor,"",0,'.',','))+' Hari ) '+' - '+(accounting.formatMoney(data[i].tarif_vendor,"",0,'.',','))+'</option>';
-                        $('#do_vendor_tarif').append(append_baru);
+    //                 for (var i = 0; i < data.length; i++) {
+    //                     var append_baru = '<option value="'+data[i].id+'" data-vendor="'+data[i].id_tarif_vendor+'" data-waktu="'+data[i].waktu_vendor+'" data-nama="'+data[i].nama+'" data-tarif="'+data[i].tarif_vendor+'" >'+data[i].nama+' ( '+(accounting.formatMoney(data[i].waktu_vendor,"",0,'.',','))+' Hari ) '+' - '+(accounting.formatMoney(data[i].tarif_vendor,"",0,'.',','))+'</option>';
+    //                     $('#do_vendor_tarif').append(append_baru);
                         
-                    }
+    //                 }
 
-                    $('#do_vendor_tarif').trigger('chosen:updated');
-                    $("#modal_vendor").modal("show");
-                    $('#datatable').DataTable();
-                }})
-            }else{
-                console.log('b');
+    //                 $('#do_vendor_tarif').trigger('chosen:updated');
+    //                 $("#modal_vendor").modal("show");
+    //                 $('#datatable').DataTable();
+    //             }})
+    //         }else{
+    //             console.log('b');
 
-            }
-        }
-    });
+    //         }
+    //     }
+    // });
     
 
 //CEK OUTLET / CEK KOMISI
@@ -1115,27 +1127,16 @@ function hitung() {
 
 
 //PILIH VENDOR
-    function Pilih_vendor(a){
-        // alert('a');
+    function Pilih_vendor(id){
         //field
-        var vendor_waktu = $('#do_vendor_tarif').find(':selected').data('vendor');
-        var vendor_id = $('#do_vendor_tarif').find(':selected').data('waktu');
-        var vendor_nama = $('#do_vendor_tarif').find(':selected').data('nama');
-        var vendor_tarif = $('#do_vendor_tarif').find(':selected').data('tarif');
-        //checklist
-        $("input[name='do_vendor']").prop('readonly',true);
-        $("input[name='do_dpp']").prop('readonly',true);
-        $("input[name='vendor_tarif']").prop('checked'  ,true);
-
-        if ($('.vendor_tarif').is(':checked') == true) {
-            $("input[name='do_vendor']").val(accounting.formatMoney(vendor_tarif,"",0,'.',','));
-        }
-
-        $("#do_tarif_dasar").val(accounting.formatMoney(vendor_tarif,"",0,'.',','));
-        hitung();
-
-        $('#id_tarif_vendor').val(vendor_id);
-        $('#nama_tarif_vendor').val(vendor_nama);
+        $.ajax({
+           url:'{{ url('sales/deliveryorder_paket/pilih_vendor') }}',
+           type:'get',
+           data:{id},
+           success:function(response){
+          
+           }
+        })
     }
         
         
@@ -1535,7 +1536,6 @@ $(document).on("click","#btnsimpan_tambah",function(){
 
 
 // UNTUK FORM PER 1 TENTANG BERAT DO
-
     $('#btn_cari_harga').click(function(){
         //FIELD
         var kota_asal = $("select[name='do_kota_asal']").val();
@@ -1545,6 +1545,7 @@ $(document).on("click","#btnsimpan_tambah",function(){
         var jenis =$("select[name='jenis_kiriman']").val();
         var cabang = $("select[name='do_cabang']").val();
         var berat = $("input[name='do_berat']").val();
+        var cek   = $('.cek_vendor_tidak').is(':checked');
         var jenis_sepeda;
         var input = document.getElementsByClassName( 'jns_unit' ),
         jenis_sepeda  = [].map.call(input, function( input ) {
@@ -1591,74 +1592,89 @@ $(document).on("click","#btnsimpan_tambah",function(){
             kecamatan : $("select[name='do_kecamatan_tujuan']").val(),
             berat : berat,
             sepeda: jenis_sepeda,
+            cek   : cek,
             berat_sepeda: berat_sepeda
         };
 
         //AJAX
-        $.ajax({
+        if (cek == false) {
+            $.ajax({
             url : ("{{ route('cari_harga_reguler_deliveryorder_paket') }}"),
             type: "GET",
             data : value,
             dataType:'json',
             success: function(data, textStatus, jqXHR)
             {
-
                 //jika penrus == 0
-                if (data.biaya_penerus == 0) {
-                    toastr.error('Tarif Penerus tidak ditemukan / Belum dibuat / harga 0 ','Pemberitahuan!')
-                }
-                //replace
-                $("input[name='acc_penjualan']").val(data.acc_penjualan);
-                $("#do_tarif_penerus").val(accounting.formatMoney(data.biaya_penerus,"",0,'.',','));
-                $('#do_tarif_dasar').val(accounting.formatMoney(data.harga,"",0,'.',','));
-                $('#tarif_dasar_patokan').val(data.harga);
-                
-                //kondisi jika berat kurang dari batas minimum
-                var berat_minimum_field  = $("input[name='do_berat']").val();
-                var koli                 = $("input[name='do_koli']").val();
-                var tarif_dasar_patokan  = $("input[name='tarif_dasar_patokan']").val();
-                
-                if (data.tipe == 'KILOGRAM') {
-                    if (data.batas != 0 || data.batas != null) {
-                        toastr.info('Berat minimum adalah '+'<b style="color:red">'+data.batas+'</b>'+' KG','Pemberitahuan!')
-                        if (berat_minimum_field < data.batas) {
-                            //hitung hasil dari pencarian
-                            var hitung_berat = parseFloat(data.batas)*parseFloat(data.harga);
-                            //replace berat dan tarif dasar
-                            $("input[name='do_berat']").val(data.batas);
-                            $("input[name='berat_minimum']").val(data.batas);
-                            $('#do_tarif_dasar').val(accounting.formatMoney(hitung_berat,"",0,'.',','));
-                            $('#tarif_dasar_patokan').val(data.harga);
-                        }else{
-                            //replace berat dan tarif dasar
-                            $("input[name='berat_minimum']").val(data.batas);
-                            $('#do_tarif_dasar').val(accounting.formatMoney(data.harga,"",0,'.',','));
-                            $('#tarif_dasar_patokan').val(data.harga);
-                        }
-                    }else{
-                        toastr.error('Berat minimum belum di set / kosong ','Peringatan!')
+                    if (data.biaya_penerus == 0) {
+                        toastr.error('Tarif Penerus tidak ditemukan / Belum dibuat / harga 0 ','Pemberitahuan!')
                     }
-                }
-
-                if (data.tipe == 'KOLI') {
-                    //kondisi
-                    if (koli ==  0 || koli == null) {
-                        koli = 1;            
-                    }else{
-                        koli = koli;
-                    }
-                    //hitung hasil dari pencarian
-                    var hitung_berat = parseFloat(koli)*parseFloat(data.harga);
-                    //replace berat dan tarif dasar
-                    $('#do_tarif_dasar').val(accounting.formatMoney(hitung_berat,"",0,'.',','));
+                    //replace
+                    $("input[name='acc_penjualan']").val(data.acc_penjualan);
+                    $("#do_tarif_penerus").val(accounting.formatMoney(data.biaya_penerus,"",0,'.',','));
+                    $('#do_tarif_dasar').val(accounting.formatMoney(data.harga,"",0,'.',','));
                     $('#tarif_dasar_patokan').val(data.harga);
+                    
+                    //kondisi jika berat kurang dari batas minimum
+                    var berat_minimum_field  = $("input[name='do_berat']").val();
+                    var koli                 = $("input[name='do_koli']").val();
+                    var tarif_dasar_patokan  = $("input[name='tarif_dasar_patokan']").val();
+                    
+                    if (data.tipe == 'KILOGRAM') {
+                        if (data.batas != 0 || data.batas != null) {
+                            toastr.info('Berat minimum adalah '+'<b style="color:red">'+data.batas+'</b>'+' KG','Pemberitahuan!')
+                            if (berat_minimum_field < data.batas) {
+                                //hitung hasil dari pencarian
+                                var hitung_berat = parseFloat(data.batas)*parseFloat(data.harga);
+                                //replace berat dan tarif dasar
+                                $("input[name='do_berat']").val(data.batas);
+                                $("input[name='berat_minimum']").val(data.batas);
+                                $('#do_tarif_dasar').val(accounting.formatMoney(hitung_berat,"",0,'.',','));
+                                $('#tarif_dasar_patokan').val(data.harga);
+                            }else{
+                                //replace berat dan tarif dasar
+                                $("input[name='berat_minimum']").val(data.batas);
+                                $('#do_tarif_dasar').val(accounting.formatMoney(data.harga,"",0,'.',','));
+                                $('#tarif_dasar_patokan').val(data.harga);
+                            }
+                        }else{
+                            toastr.error('Berat minimum belum di set / kosong ','Peringatan!')
+                        }
+                    }
 
-                }
-                
-                console.log(data);
-                hitung();
-            }   
-        })
+                    if (data.tipe == 'KOLI') {
+                        //kondisi
+                        if (koli ==  0 || koli == null) {
+                            koli = 1;            
+                        }else{
+                            koli = koli;
+                        }
+                        //hitung hasil dari pencarian
+                        var hitung_berat = parseFloat(koli)*parseFloat(data.harga);
+                        //replace berat dan tarif dasar
+                        $('#do_tarif_dasar').val(accounting.formatMoney(hitung_berat,"",0,'.',','));
+                        $('#tarif_dasar_patokan').val(data.harga);
+
+                    }
+                    
+                    hitung();
+                }   
+            })
+        }else{
+            $.ajax({
+                url : ("{{ route('cari_harga_reguler_deliveryorder_paket') }}"),
+                type: "GET",
+                data : value,
+                success: function(data, textStatus, jqXHR)
+                {
+                    $('.modal_vendor').html(data);
+                    $('#modal_vendor').modal('show');
+                }   
+            })
+
+        }
+
+            
 
     });    
 
