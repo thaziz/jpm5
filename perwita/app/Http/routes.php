@@ -1271,6 +1271,7 @@ Route::get('master_sales/agen/tabel', 'master_sales\agen_Controller@table_data')
 Route::get('master_sales/agen/get_data', 'master_sales\agen_Controller@get_data');
 Route::get('master_sales/agen/save_data', 'master_sales\agen_Controller@save_data');
 Route::post('master_sales/agen/hapus_data', 'master_sales\agen_Controller@hapus_data');
+Route::get('master_sales/agen/set_aktif', 'master_sales\agen_Controller@set_aktif');
 
 
 // end agen
@@ -1377,6 +1378,7 @@ Route::get('master_sales/subcon/tabel', 'master_sales\subcon_Controller@table_da
 Route::get('master_sales/subcon/get_data', 'master_sales\subcon_Controller@get_data');
 Route::get('master_sales/subcon/save_data', 'master_sales\subcon_Controller@save_data');
 Route::post('master_sales/subcon/hapus_data', 'master_sales\subcon_Controller@hapus_data');
+Route::get('master_sales/subcon/set_aktif', 'master_sales\subcon_Controller@set_aktif');
 // end subcon
 
 //Master Tarif Subcon
