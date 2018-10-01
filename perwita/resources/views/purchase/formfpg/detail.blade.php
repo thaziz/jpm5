@@ -153,8 +153,9 @@
 
                           <div class="deskirpsijenisbayar"> </div>
 
-{{--                           <button class="btn btn-sm btn-warning" type="button" id="editdata"> <i class="fa fa-pencil"> &nbsp; </i> Edit Data ? </button>
- --}}                        </div>
+                          <button class="btn btn-sm btn-warning" type="button" id="editdata"> <i class="fa fa-pencil"> &nbsp; </i> Edit Data ? </button>
+
+                        </div>
 
 
                         <div class="col-xs-6 pull-right">

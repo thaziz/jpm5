@@ -66,17 +66,8 @@
 
 
 
-<<<<<<< HEAD
-<div class="row" id="dataSeach">
-   
-
 <div class="row" >
    <form method="post" id="dataSeach">
-
-=======
-<div class="row" >
-   <form method="post" id="dataSeach">
->>>>>>> 4fd2649181a416f74f63aa8cab4bf2d5aa138116
       <div class="col-md-12 col-sm-12 col-xs-12">
               
                <div class="col-md-2 col-sm-3 col-xs-12">
@@ -85,15 +76,7 @@
 
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-<<<<<<< HEAD
-
-                    <input class="form-control" type="text" name="nofpg">
-
                     <input class="form-control kosong" type="text" name="nofpg" id="nofpg" placeholder="No FPG">
-
-=======
-                    <input class="form-control kosong" type="text" name="nofpg" id="nofpg" placeholder="No FPG">
->>>>>>> 4fd2649181a416f74f63aa8cab4bf2d5aa138116
                 </div>
               </div>
 
@@ -159,21 +142,10 @@
               <div class="col-md-4 col-sm-6 col-xs-12">
                 <div class="form-group">
 
-<<<<<<< HEAD
-                     <select class="form-control" name="nosupplier">
-                      @foreach($data['supplier'] as $supplier)
-                      <option value="{{$supplier->no_supplier}}">{{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
-            <select class="form-control chosen-select-width kosong" name="nosupplier" id="nosupplier">
-                     <option value="">Pilih Supplier</option>
-                      @foreach($data['supplier'] as $supplier)
-                      <option value="{{$supplier->idsup}}">{{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
-
-=======
                      <select class="form-control chosen-select-width kosong" name="nosupplier" id="nosupplier">
                      <option value="">Pilih Supplier</option>
                       @foreach($data['supplier'] as $supplier)
                       <option value="{{$supplier->idsup}}">{{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
->>>>>>> 4fd2649181a416f74f63aa8cab4bf2d5aa138116
                       @endForeach
                     </select>
                 </div>
@@ -183,10 +155,6 @@
     </div>
 
     </form>
-<<<<<<< HEAD
-
-=======
->>>>>>> 4fd2649181a416f74f63aa8cab4bf2d5aa138116
 </div>
 
 
@@ -269,11 +237,6 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-<<<<<<< HEAD
-
-var tablex;
-
-=======
 /*
      tableDetail = $('.tbl-penerimabarang').DataTable({
             responsive: true,
@@ -284,7 +247,6 @@ var tablex;
     });*/
 
 var tablex;
->>>>>>> 4fd2649181a416f74f63aa8cab4bf2d5aa138116
 table();
      function table(){
    $('#addColumn').dataTable().fnDestroy();
@@ -297,21 +259,6 @@ table();
               "url": "{{ url("formfpg/formfpg/table") }}",
               "type": "get",
               data: {
-<<<<<<< HEAD
-
-                    "_token": "{{ csrf_token() }}",
-                    "type"  :"toko",
-                    "tanggal1" :$('#tanggal1').val(),
-                    "tanggal2" :$('#tanggal2').val(),
-                    },
-              },
-            columns: [
-            {data: 'no', name: 'no'},                        
-            {data: 'fpg_keterangan', name: 'fpg_keterangan'},
-            {data: 'fpg_totalbayar', name: 'fpg_totalbayar'},            
-            {data: 'uangmuka', name: 'uangmuka'},            
-        
-=======
                     "_token": "{{ csrf_token() }}",                    
                     "tanggal1" :$('#tanggal1').val(),
                     "tanggal2" :$('#tanggal2').val(),
@@ -337,27 +284,15 @@ table();
             {data: 's_status', name: 's_status'}, 
             {data: 'action', name: 'action'},
             */
->>>>>>> 4fd2649181a416f74f63aa8cab4bf2d5aa138116
            
             ],
             "pageLength": 10,
             "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-<<<<<<< HEAD
-
-           "fnCreatedRow": function (row, data, index) {
-            $('td', row).eq(0).html(index + 1);
-        }
-    });
-}
-
-=======
             "bFilter": false,
            /*"fnCreatedRow": function (row, data, index) {
             $('td', row).eq(0).html(index + 1);
             }*/
->>>>>>> 4fd2649181a416f74f63aa8cab4bf2d5aa138116
 
-       
 
 
     });
@@ -437,23 +372,6 @@ function(){
 }
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-function cari(){
-   var data=$('#dataSeach').serialize();
-   alert(data);
-   $.ajax({
-      url:baseUrl + '/formfpg/formfpg/table',
-      type:'get',
-      /*data:*/
-      dataType : 'json',
-      success:function(data){
-
-              }
-            });
-
-=======
->>>>>>> 4fd2649181a416f74f63aa8cab4bf2d5aa138116
 dateAwal();
 function dateAwal(){
       var d = new Date();
@@ -503,10 +421,6 @@ function notif(){
         $('#notif').html(data);
     }
   });
-<<<<<<< HEAD
-
-=======
->>>>>>> 4fd2649181a416f74f63aa8cab4bf2d5aa138116
 }
 </script>
 @endsection

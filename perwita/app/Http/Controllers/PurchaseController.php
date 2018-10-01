@@ -8775,6 +8775,9 @@ public function kekata($x) {
 		$bbk->bbk_akunbank = $akunhutangdagang;
 		$bbk->create_by = $request->username;
 		$bbk->update_by = $request->username;
+		if($request->flag != 'BIAYA' ){
+			$bbk->bbk_idfpg = $request->idfpg[0];
+		}
 		$bbk->save();
 
 		/*dd($idbbk);*/
@@ -9437,7 +9440,7 @@ public function kekata($x) {
 			}
 		}
 		else if($request->flag == 'BIAYA') {
-				$jenisbayarfpg = 'BIAYA';
+			$jenisbayarfpg = 'BIAYA';
 			for($j=0;$j<count($request->akun);$j++){
 				$bbkb = new bukti_bank_keluar_biaya();
 
@@ -9495,6 +9498,7 @@ public function kekata($x) {
 					
 					$totaltabbiaya = (float)$totaltabbiaya + (float)$jumlah;
 				}
+				dd($jumlah);
 			}
 		}
 		else if($request->flag == 'BGAKUN'){

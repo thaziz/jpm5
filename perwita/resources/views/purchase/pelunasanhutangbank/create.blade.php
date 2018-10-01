@@ -695,8 +695,8 @@
       row = "<tr class='transaksi dataakunbg dataakunbg"+akundakun+"' data-nomor="+akundakun+"> <td>"+$nomor+"</td>" +
                   "<td> <input type='text' class='form-control input-sm nobbkdetailbg' value="+nobbk+" style='min-width:200px' readonly>  </td>" + //nobbk
                   "<td> <input type='text' class='form-control input-sm akundakundetailbg' value="+akundakun+" name='accbiayaakun[]' style='min-width:200px' readonly> </td>"+
-                  "<td> <input type='text' class='form-control input-sm dkakundetailbg' value="+dk+" name='dk[]' style='min-width:90px' readonly> </td>" +
-                  "<td> <input type='text' class='form-control input-sm jumlahakunbiayadetailbg' value="+jumlahakunbiaya+" style='min-width:200px; text-align:right' name='nominalakun[]' style='min-width:100px' readonly> </td>" +
+                  "<td> <input type='text' class='form-control input-sm dkakundetailbg ' value="+dk+" name='dk[]' style='min-width:90px' readonly> </td>" +
+                  "<td> <input type='text' class='form-control input-sm jumlahakunbiayadetailbg' value="+jumlahakunbiaya+" style='min-width:200px; text-align:right' name='nominalakun[]' style='min-width:100px' readonly data-dk='"+dk+"'> </td>" +
                   "<td> <input type='text' class='form-control input-sm keteranganakunbgdetail' value='"+keteranganakunbg+"' name='keteranganakunbg[]' style='min-width:200px' readonly> </td>" +
                   "<td> <input type='text' class='form-control input-sm nofpgdetailbg' value="+nofpg+" name='nofpg[]' readonly style='min-width:200px'> <input type='hidden' class='idfpgakunbgdetail' value="+idfpg+" name='idfpg[]'> </td>" +
                   "<td> <input type='text' class='form-control input-sm accbiayaakundetailbg' value='"+nocheckakunbg+"' name='nocheck[]' readonly style='min-width:200px'> </td>" +
@@ -710,8 +710,14 @@
         jumlahnominal = 0;
         $('.jumlahakunbiayadetailbg').each(function(){
           nominal = $(this).val();
+          dk = $(this).data('dk');
           nominal2 =  nominal.replace(/,/g, '');
-          jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+          if(dk == 'D') {
+            jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+          }
+          else {
+           jumlahnominal = parseFloat(parseFloat(nominal2) - parseFloat(jumlahnominal)).toFixed(2);
+          }
           $('.total').val(addCommas(jumlahnominal));
           $('.cekbg').val(addCommas(jumlahnominal));
         })
@@ -751,7 +757,14 @@
         $('.jumlahakunbiayadetailbg').each(function(){
           nominal = $(this).val();
           nominal2 =  nominal.replace(/,/g, '');
-          jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+          dk = $(this).data('dk');
+          if(dk == 'D'){
+             jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+          }
+          else {
+            jumlahnominal = parseFloat(parseFloat(nominal2) - parseFloat(jumlahnominal)).toFixed(2);
+
+          }
           $('.total').val(addCommas(jumlahnominal));
           $('.cekbg').val(addCommas(jumlahnominal));
         })
@@ -925,7 +938,14 @@
               return false;
             }
             else {
-              totalakun = parseFloat(parseFloat(totalakun) + parseFloat(val)).toFixed(2);
+              dk = $(this).data('dk');
+              if(dk == 'D'){
+                totalakun = parseFloat(parseFloat(totalakun) + parseFloat(val)).toFixed(2);
+              }
+              else if(dk == 'K'){
+                totalakun = parseFloat(parseFloat(totalakun) - parseFloat(val)).toFixed(2);
+
+              }
             }  
         })
         
@@ -1437,7 +1457,7 @@
               totalbiaya = parseFloat(parseFloat(totalbiaya) + parseFloat(jumlah2)).toFixed(2);
           }
           else {
-            totalbiaya = parseFloat(parseFloat(totalbiaya) + parseFloat(jumlah2)).toFixed(2);
+            totalbiaya = parseFloat(parseFloat(totalbiaya) - parseFloat(jumlah2)).toFixed(2);
           }
           $('.totalbiaya').val(addCommas(totalbiaya));
           $('.total').val(addCommas(totalbiaya));

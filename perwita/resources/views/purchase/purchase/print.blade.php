@@ -231,6 +231,8 @@
               
                 <th class="textcenter" width="10%">Jumlah</th>
                 <th class="textcenter" width="10%">Satuan</th>
+                <th class="textcenter" width="10%">Keterangan</th>
+
                 <th class="textcenter" width="15%">Harga Satuan</th>
                 <th class="textcenter" width="15%">Jumlah Harga</th>
           </tr>
@@ -243,10 +245,9 @@
                
                 <td class="textcenter">{{$podt->podt_qtykirim}}</td>
                 <td class="textleft">{{$podt->unitstock}}</td>
-<<<<<<< HEAD
-=======
+
                 <td class="textcenter">{{$podt->podt_keterangan}} </td>
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
+
                 <td class="textright">{{number_format($podt->podt_jumlahharga, 2,",",".")}}</td>
                 <td class="textright">{{number_format($podt->podt_totalharga,2,",",".")}}</td>
         </tr>
@@ -258,14 +259,6 @@
                 <td class="textleft"></td>
                 <td class="textleft"></td>
                 <td class="textright"></td>
-               
-        </tr>
-         <tr>
-                <td class="textcenter">&nbsp;</td>
-                <td class="textleft"></td>
-                <td class="textcenter"></td>
-                <td class="textleft"></td>
-                <td class="textleft"></td>
                 <td class="textright"></td>
                
         </tr>
@@ -276,6 +269,7 @@
                 <td class="textleft"></td>
                 <td class="textleft"></td>
                 <td class="textright"></td>
+                <td class="textright"></td>
                
         </tr>
          <tr>
@@ -284,6 +278,17 @@
                 <td class="textcenter"></td>
                 <td class="textleft"></td>
                 <td class="textleft"></td>
+                <td class="textright"></td>
+                <td class="textright"></td>
+               
+        </tr>
+         <tr>
+                <td class="textcenter">&nbsp;</td>
+                <td class="textleft"></td>
+                <td class="textcenter"></td>
+                <td class="textleft"></td>
+                <td class="textleft"></td>
+                <td class="textright"></td>
                 <td class="textright"></td>
                 
         </tr>
@@ -294,6 +299,7 @@
                 <td class="textleft"></td>
                 <td class="textleft"></td>
                 <td class="textright"></td>
+                <td class="textright"></td>
                
         </tr>
          <tr>
@@ -303,6 +309,8 @@
                 <td class="textleft"></td>
                 <td class="textleft"></td>
                 <td class="textright"></td>
+                <td class="textright"></td>
+        
                
         </tr>
         <tr>
@@ -322,7 +330,7 @@
               </tr>
             </table>
           </td>
-          <td  colspan="3" class="hiddenborderleft hiddenborderright">
+          <td  colspan="4" class="hiddenborderleft hiddenborderright">
             <table style="margin-left: 10px;">
               <tr> 
                 <th align="left" class="paddingbottom catatanpadding" rowspan="4"></th>
