@@ -246,8 +246,18 @@
             "language": dataTableLanguage,
     });*/
 
-var tablex;
-table();
+  var tablex;
+setTimeout(function () {            
+   table();
+   tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
+    });
+});
+
+      }, 1500);
+
      function table(){
    $('#addColumn').dataTable().fnDestroy();
    tablex = $("#addColumn").DataTable({        
