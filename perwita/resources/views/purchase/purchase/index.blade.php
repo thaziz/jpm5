@@ -56,6 +56,104 @@
                     @endif
                 </div>
                 <div class="ibox-content">
+
+
+
+<div class="row" >
+   <form method="post" id="dataSeach">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+              
+               <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">No FPG</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <input class="form-control kosong" type="text" name="nofpg" id="nofpg" placeholder="No FPG">
+                </div>
+              </div>
+
+
+            
+              <div class="col-md-1 col-sm-3 col-xs-12">
+                <label class="tebal">Tanggal</label>
+              </div>
+
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                  <div class="input-daterange input-group">
+                    <input id="tanggal1" class="form-control input-sm datepicker2" name="tanggal1" type="text">
+                    <span class="input-group-addon">-</span>
+                    <input id="tanggal2" "="" class="input-sm form-control datepicker2" name="tanggal2" type="text">
+                  </div>
+                </div>
+              </div>
+            
+
+              <div class="col-md-2 col-sm-6 col-xs-12" align="center">
+                <button class="btn btn-primary btn-sm btn-flat" title="Cari rentang tanggal" type="button" onclick="cari()">
+                  <strong>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </strong>
+                </button>
+                <button class="btn btn-info btn-sm btn-flat" type="button" title="Reset" onclick="resetData()">
+                  <strong>
+                    <i class="fa fa-undo" aria-hidden="true"></i>
+                  </strong>
+                </button>                
+              </div>
+      </div>
+
+
+
+      <div class="col-md-12 col-sm-12 col-xs-12">
+             
+
+
+           
+
+
+
+              <div class="col-md-1 col-sm-3 col-xs-12">
+                <label class="tebal">Supplier</label>
+              </div>
+
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+
+                     <select class="form-control chosen-select-width kosong" name="nosupplier" id="nosupplier">
+                     <option value="">Pilih Supplier</option>
+                      @foreach($data['supplier'] as $supplier)
+                      <option value="{{$supplier->idsup}}">{{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
+                      @endForeach
+                    </select>
+                </div>
+              </div>
+
+
+                 <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">Total Biaya</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                <input type="" name="total" class="form-control" id="total">                    
+                </div>
+              </div>
+
+
+    </div>
+
+    </form>
+</div>
+
+
+
+
+
+
+
+
                         <div class="row">
             <div class="col-xs-12">
               
@@ -272,15 +370,138 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-  //$('.labelkeuangand').hide();
+  
+$('#total').maskMoney({thousands:',', decimal:'.', precision:0});
+ var tablex;
+setTimeout(function () {            
+   table();
+   tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
+    });
+});
 
-    tableDetail = $('#addColumn').DataTable({
+      }, 1500);
+
+     function table(){
+   $('#addColumn').dataTable().fnDestroy();
+   tablex = $("#addColumn").DataTable({        
+         responsive: true,
+        "language": dataTableLanguage,
+    processing: true,
+            serverSide: true,
+            ajax: {
+              "url": "{{ url("formfpg/formfpg/table") }}",
+              "type": "get",
+              data: {
+                    "_token": "{{ csrf_token() }}",                    
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),
+                    "nosupplier" :$('#nosupplier').val(),
+                    "idjenisbayar" :$('#idjenisbayar').val(),
+                    "nofpg" :$('#nofpg').val(),
+                    },
+              },
+            columns: [
+            {data: 'no', name: 'no'},             
+            {data: 'fpg_nofpg', name: 'fpg_nofpg'},                           
+            {data: 'fpg_tgl', name: 'fpg_tgl'},            
+            {data: 'jenisbayar', name: 'jenisbayar'},
+            {data: 'fpg_keterangan', name: 'fpg_keterangan'},
+            {data: 'fpg_totalbayar', name: 'fpg_totalbayar'},            
+            {data: 'uangmuka', name: 'uangmuka'},            
+            {data: 'fpg_cekbg', name: 'fpg_cekbg'},                        
+            {data: 'action', name: 'action'},                        
+          /*  {data: 's_gross', name: 's_gross'}, 
+            {data: 's_disc_percent', name: 's_disc_percent'}, 
+            {data: 's_ongkir', name: 's_ongkir'},
+            {data: 's_net', name: 's_net'},            
+            {data: 's_status', name: 's_status'}, 
+            {data: 'action', name: 'action'},
+            */
+           
+            ],
+            "pageLength": 10,
+            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+            "bFilter": false,
+           /*"fnCreatedRow": function (row, data, index) {
+            $('td', row).eq(0).html(index + 1);
+            }*/
+
+
+
+    });
+   notif();
+}
+
+tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
+    });
+});
+
+
+
+
+dateAwal();
+function dateAwal(){
+      var d = new Date();
+      d.setDate(d.getDate()-7);
+
+      /*d.toLocaleString();*/
+      $('#tanggal1').datepicker({
+            format:"dd-mm-yyyy",        
+            autoclose: true,
+      })
+      /*.datepicker( "setDate", d);*/
+      $('#tanggal2').datepicker({
+            format:"dd-mm-yyyy",        
+            autoclose: true,
+      })
+      /*.datepicker( "setDate", new Date());      */
+      $('.kosong').val('').trigger('chosen:updated');
+      $('.kosong').val('');      
+}
+
+ function cari(){
+  table();  
+ }
+
+ function resetData(){  
+  $('#tanggal1').val('');
+  $('#tanggal2').val('');  
+  /*$('#nofpg').val('');*/
+  $('.kosong').val('');      
+  $('.kosong').val('').trigger('chosen:updated');
+  table();
+  dateAwal();
+}  
+function notif(){
+   $.ajax({
+      url:baseUrl + '/formfpg/formfpg/notif',
+      type:'get',   
+       data: {
+                    "_token": "{{ csrf_token() }}",                    
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),
+                    "nosupplier" :$('#nosupplier').val(),
+                    "idjenisbayar" :$('#idjenisbayar').val(),
+                    "nofpg" :$('#nofpg').val(),
+                    },   
+      success:function(data){
+        $('#notif').html(data);
+    }
+  });
+}
+/*    tableDetail = $('#addColumn').DataTable({
             responsive: true,
             searching: true,
             //paging: false,
             "pageLength": 10,
             "language": dataTableLanguage,
-    });
+    });*/
 
     $('.date').datepicker({
         autoclose: true,

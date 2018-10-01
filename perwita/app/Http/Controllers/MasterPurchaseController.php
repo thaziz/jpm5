@@ -1005,7 +1005,7 @@ class MasterPurchaseController extends Controller
 	public function getacchutang(Request $request) {
 		$cabang = $request->cabang;
 
-		$data = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang'");
+		$data = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang' and is_active = '1'");
 
 		return json_encode($data);
 	}
@@ -1208,7 +1208,7 @@ class MasterPurchaseController extends Controller
 				$data['kota'] = master_kota::all();
 		$data['provinsi'] = master_provinsi::all();
 		$cabang = $data['supplier'][0]->kodecabang;
-		$data['mastersup'] = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang'");
+		$data['mastersup'] = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang' and is_active = '1'");
 
 
 		
@@ -1432,7 +1432,7 @@ class MasterPurchaseController extends Controller
 				$data['kota'] = master_kota::all();
 		$data['provinsi'] = master_provinsi::all();
 		$cabang = $data['supplier'][0]->kodecabang;
-		$data['mastersup'] = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang'");
+		$data['mastersup'] = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang' and is_active = '1'");
 		
 		return view('purchase/master/master_supplier/detail_konfirmasi', compact('data'));
 	}

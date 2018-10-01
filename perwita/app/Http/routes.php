@@ -166,6 +166,8 @@ Route::get('konfirmasi_order/cekhargatotal' , 'PurchaseController@cekhargatotal'
 Route::get('purchaseorder/ajax', 'PurchaseController@createAjax');
 Route::get('purchaseorder/outputsuratspp', 'PurchaseController@pdf_spp');
 Route::get('purchaseorder/purchaseorder', 'PurchaseController@purchase_order');
+Route::get('purchaseorder/purchaseorder/notif', 'PurchaseController@purchase_ordernotif');
+Route::get('purchaseorder/purchaseorder/table', 'PurchaseController@purchase_ordertable');
 Route::get('purchaseorder/detail/{id}', 'PurchaseController@detailpurchase');
 Route::get('purchaseorder/purchasedetail/{id}', 'PurchaseController@purchasedetail');
 Route::get('purchaseorder/createpurchase', 'PurchaseController@createpurchase');
@@ -593,6 +595,8 @@ Route::post('bankmasuk/save' ,'BankMasukController@savedata');
 Route::get('bankmasuk/hapusdata' ,'BankMasukController@hapusdata');
 Route::get('bankmasuk/editdata/{id}' ,'BankMasukController@editdata');
 Route::post('bankmasuk/updatedata' ,'BankMasukController@updatedata');
+Route::post('bankmasuk/editterima' ,'BankMasukController@editterima');
+Route::get('bankmasuk/hapusjurnalbeda' ,'BankMasukController@hapusjurnalbeda');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');

@@ -185,9 +185,19 @@
     });
 
 
-    
-var tablex;
-table();
+      var tablex;
+setTimeout(function () {            
+   table();
+   tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
+    });
+});
+
+      }, 1500);
+
+
      function table(){
    $('.konfirmasi').dataTable().fnDestroy();
    tablex = $(".konfirmasi").DataTable({        
@@ -222,6 +232,7 @@ table();
             ],
             "pageLength": 10,
             "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+            "bFilter": false,
            /*"fnCreatedRow": function (row, data, index) {
             $('td', row).eq(0).html(index + 1);
             }*/
@@ -246,11 +257,13 @@ function dateAwal(){
       $('#tanggal1').datepicker({
             format:"dd-mm-yyyy",        
             autoclose: true,
-      }).datepicker( "setDate", d);
+      })
+      /*.datepicker( "setDate", d);*/
       $('#tanggal2').datepicker({
             format:"dd-mm-yyyy",        
             autoclose: true,
-      }).datepicker( "setDate", new Date());
+      })
+      /*.datepicker( "setDate", new Date());*/
       $('.kosong').val('');
 }
 
@@ -259,6 +272,7 @@ function dateAwal(){
  }
 
  function resetData(){    
+  $('.kosong').val('');
   $('#tanggal1').val('');
   $('#tanggal2').val('');
   table();
