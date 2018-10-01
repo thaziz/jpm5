@@ -16,4 +16,5 @@
     for (var selector in config1) {
         $(selector).chosen(config1[selector]);
     }
+    
 </script>
