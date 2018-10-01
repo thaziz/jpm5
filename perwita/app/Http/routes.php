@@ -166,6 +166,8 @@ Route::get('konfirmasi_order/cekhargatotal' , 'PurchaseController@cekhargatotal'
 Route::get('purchaseorder/ajax', 'PurchaseController@createAjax');
 Route::get('purchaseorder/outputsuratspp', 'PurchaseController@pdf_spp');
 Route::get('purchaseorder/purchaseorder', 'PurchaseController@purchase_order');
+Route::get('purchaseorder/purchaseorder/notif', 'PurchaseController@purchase_ordernotif');
+Route::get('purchaseorder/purchaseorder/table', 'PurchaseController@purchase_ordertable');
 Route::get('purchaseorder/detail/{id}', 'PurchaseController@detailpurchase');
 Route::get('purchaseorder/purchasedetail/{id}', 'PurchaseController@purchasedetail');
 Route::get('purchaseorder/createpurchase', 'PurchaseController@createpurchase');
