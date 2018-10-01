@@ -403,7 +403,6 @@
    	          //      dd($kode);
 	        $akunbank = $kode[0]->mb_kode;
 	        $idkode = $kode[0]->mb_id;
-
         }
         else {
         	$kode = '99';
@@ -411,12 +410,14 @@
         	$idkode = '99';
         }
 
+        //
+       $idbm = DB::select("select substr(MAX(bm_nota) , 15) as bm_nota from bank_masuk where bm_cabangtujuan = '000' and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_banktujuan = '110311000'");
 
-       $idbm = DB::select("select substr(MAX(bm_nota) , 15) as bm_nota from bank_masuk where bm_cabangtujuan = '$cabang'  and to_char(bm_tglterima, 'MM') = '$buland' and to_char(bm_tglterima, 'YY') = '$tahund' and bm_banktujuan = '$akunbank'");
-     //  dd($idbm);
-	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
+
 		$index = (integer)$idbm[0]->bm_nota + 1;
-     //	dd($kode);
+     	
+     	
+
      	if($idkode < 10){
      		$kodebank = '0'.(integer)$idkode;
      	}

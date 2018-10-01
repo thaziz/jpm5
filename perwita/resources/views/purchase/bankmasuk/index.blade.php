@@ -106,7 +106,7 @@
                             @if($bankmasuk->fpgb_jeniskelompok == 'BEDA BANK')
                               <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i> </a> &nbsp;
                               <a onclick="editjurnalbeda('{{$bankmasuk->bm_id}}')" class="btn-xs btn-warning" aria-hidden="true"  type="button" data-toggle="modal" data-target="#myModal3"> <i class="fa  fa-pencil"> </i> </a> &nbsp; 
-                              <a onclick="hapusjurnalbeda('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-danger" aria-hidden="true"> <i class="fa  fa-trash"> </i> </a>
+                              <a onclick="hapusjurnalbeda('{{$bankmasuk->bm_id}}')" class="btn-xs btn-danger" aria-hidden="true"> <i class="fa  fa-trash"> </i> </a>
                             @else
                              <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i>
                              &nbsp;  Jurnal &nbsp; </a>
@@ -320,8 +320,8 @@
           success : function (response){
                alertSuccess();
               
-               $('#myModal5').modal("toggle" );
-              // location.reload();
+               $('#myModal3').modal("toggle" );
+               location.reload();
           },
           error : function(){
            swal("Error", "Server Sedang Mengalami Masalah", "error");
@@ -368,18 +368,7 @@
       )
     }
 
-    function editdata(id){
-      idbm = id;
-     $.ajax({
-        data : {idbm},
-        type : "get",
-        baseUrl : baseUrl + '/  /editdata',
-        dataType : "json",
-        success : function(response){
-
-        }
-      })
-    }
+  
 
     $('#saveterima').submit(function(){
       event.preventDefault();
@@ -407,7 +396,7 @@
                alertSuccess();
               
                $('#myModal5').modal("toggle" );
-              // location.reload();
+               location.reload();
           },
           error : function(){
            swal("Error", "Server Sedang Mengalami Masalah", "error");
@@ -440,8 +429,50 @@
           $('.cabangtujuan').val(addCommas(response.bank[0].bm_cabangtujuan));
           $('.namabanktujuan').val(addCommas(response.bank[0].bm_namabanktujuan));
           $('.namabankasal').val(addCommas(response.bank[0].bm_namabankasal));
+          if(response.bank[0].bm_tglterima != null){
+              $('.tgl').val(response.bank[0].bm_tglterima);
+
+          }
         }
     })
+    }
+
+    function hapusjurnalbeda(id){
+
+          swal({
+          title: "Apakah anda yakin?",
+          text: "Hapus Data!",
+          type: "warning",
+          showCancelButton: true,
+          showLoaderOnConfirm: true,
+          confirmButtonColor: "#DD6B55",
+          confirmButtonText: "Ya, Hapus!",
+          cancelButtonText: "Batal",
+          closeOnConfirm: false
+        },
+      $.ajax({
+        data : {id},
+        type : "get",
+        url : baseUrl + '/bankmasuk/hapusjurnalbeda',
+        dataType : "json",
+        success : function(response){
+          if(response == 'sukses'){
+               swal({
+                  title: "Berhasil!",
+                          type: 'success',
+                          text: "Data Berhasil Dihapus",
+                          timer: 2000,
+                          showConfirmButton: true
+                          },function(){
+                             location.reload();
+                  });
+          }
+          else {
+
+          }
+        }
+      })
+      )
     }
 
     function proses(ref){
