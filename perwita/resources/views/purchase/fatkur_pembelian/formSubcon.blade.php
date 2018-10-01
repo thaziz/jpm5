@@ -469,6 +469,10 @@ $('.tempo_subcon').datepicker({
 	format:'dd/mm/yyyy'
 });
 
+$('.tgl-biaya').datepicker({
+	format:'dd/mm/yyyy'
+});
+
 
 $('.m_do_subcon').focus(function(){
 	  var  selectOutlet = $('.nama_sc').val();
