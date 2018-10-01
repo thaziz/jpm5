@@ -13910,7 +13910,7 @@ return $html;
 
 
 										$bankmasuk->bm_id = $idbm;
-										$bankmasuk->bm_bankasal = $akunkasbank;
+										$bankmasuk->bm_bankasal = $kodebank;
 										$bankmasuk->bm_cabangasal = $cabangasal;
 										$bankmasuk->bm_cabangtujuan = $cabangtujuan;
 										$bankmasuk->bm_banktujuan = $kodetujuan;

@@ -105,8 +105,8 @@
                           @else
                             @if($bankmasuk->fpgb_jeniskelompok == 'BEDA BANK')
                               <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i> </a> &nbsp;
-                            {{--   <a onclick="editjurnalbeda('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-pencil"> </i> </a> &nbsp; 
-                              <a onclick="hapusjurnalbeda('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-trash"> </i> </a> --}}
+                              <a onclick="editjurnalbeda('{{$bankmasuk->bm_id}}')" class="btn-xs btn-warning" aria-hidden="true"  type="button" data-toggle="modal" data-target="#myModal3"> <i class="fa  fa-pencil"> </i> </a> &nbsp; 
+                              <a onclick="hapusjurnalbeda('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-danger" aria-hidden="true"> <i class="fa  fa-trash"> </i> </a>
                             @else
                              <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i>
                              &nbsp;  Jurnal &nbsp; </a>
@@ -293,6 +293,42 @@
             }
             return x1 + x2;
     }
+
+
+     $('#editterima').submit(function(){
+      event.preventDefault();
+          var post_url2 = $(this).attr("action");
+          var form_data2 = $(this).serialize();
+        
+            swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: true
+          },
+          function(){
+               
+        $.ajax({
+          type : "POST",          
+          data : form_data2,
+          url : baseUrl + '/bankmasuk/editterima',
+          dataType : 'json',
+          success : function (response){
+               alertSuccess();
+              
+               $('#myModal5').modal("toggle" );
+              // location.reload();
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
+          }
+        })
+      })
+    })
 
     function hapusdata(id){
 
