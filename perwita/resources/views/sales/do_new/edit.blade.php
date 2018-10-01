@@ -190,8 +190,11 @@
                                                     <td colspan="5">
                                                         <select class="form-control" name="jenis_kiriman" id="jenis_kiriman" >
                                                             <option value="">- Pilih -</option>
-                                                            <option value="REGULER">REGULER</option>
+                                                            <option value="REGULER" selected="">REGULER</option>
                                                             <option value="EXPRESS">EXPRESS</option>
+                                                            <option value="DARAT" selected="">DARAT (Khusus Vendor)</option>
+                                                            <option value="LAUT">LAUT (Khusus Vendor)</option>
+                                                            <option value="UDARA">UDARA (Khusus Vendor)</option>
                                                         </select>
                                                     </td>
                                                 </tr>
@@ -283,8 +286,6 @@
                                                         @endif
                                                         </div>
                                                     </td>
-                                                    
-
                                                 </tr>
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">DO Outlet</td>
@@ -1080,12 +1081,14 @@ function hitung() {
             var tujuan = $('#do_kota_tujuan').find(':selected').val();
             var cabang = $('#do_cabang').find(':selected').val();
             var jenis = $('#jenis_kiriman').find(':selected').val();
+            var tipe = $('#type_kiriman').find(':selected').val();
+            var berat = $('#do_berat').val();
 
             if ($('.cek_vendor_ya').is(":checked") == true) {
                 $('.do_tarif_penerus').hide();
                 $.ajax({
                 type: "GET",
-                data : {a:asal,b:tujuan,c:cabang,d:jenis},
+                data : {a:asal,b:tujuan,c:cabang,d:jenis,e:tipe,f:berat,cek:'YA'},
                 url : ('{{ route('cari_vendor_deliveryorder_paket') }}'),
                 success: function(data){   
                     $('#drop').html(data);

@@ -73,7 +73,8 @@
                     <thead>
                      <tr>
                         <th style="width:10px">No</th>
-                        <th> NO PO </th>   
+                        <th> NO PO </th>
+                        <th> Tanggal </th>
                         <th> Cabang </th>                  
                         <th> Supplier </th>
                         <th> Total Biaya </th>
@@ -92,6 +93,7 @@
                          
                           <td> <a href="{{url('purchaseorder/detail/'. $po->po_id .'')}}">{{$po->po_no}} </a>
                             <input type='hidden' value="{{$po->po_id}}"  class="po_id">  </td>
+                          <td> {{ Carbon\Carbon::parse($po->created_at)->format('d-M-Y') }} </td>
                           <td> {{$po->nama}}</td>
                           <td> {{$po->nama_supplier}} </td>
                           <td>  Rp {{number_format($po->po_totalharga, 2)}}</td>
@@ -357,7 +359,7 @@
 
    
    function hapusData(id){
-    alert(id);
+  
     swal({
     title: "Apakah anda yakin?",
     text: "Hapus Data!",
@@ -374,9 +376,10 @@ function(){
      $.ajax({
       url:baseUrl + '/purchaseorder/deletepurchase/'+id,
       type:'get',
+      dataType : 'json',
       success:function(data){
 
-        if(data == "'sukses'"){
+        if(data.datainfo == "sukses"){
           swal({
           title: "Berhasil!",
                   type: 'success',
@@ -386,24 +389,17 @@ function(){
                   },function(){
                      location.reload();
           });
-        }else{
-         swal({
-        title: "Data Tidak Bisa Dihapus",
-                type: 'error',
-                timer: 1000,
-                showConfirmButton: false
-    });
         }
-      },
-      error:function(data){
-
-        swal({
-        title: "Terjadi Kesalahan",
-                type: 'error',
-                timer: 2000,
-                showConfirmButton: false
-    });
-   }
+         else if (data.datainfo == "gagal"){
+               swal({
+                  title: "error!",
+                          type: 'error',
+                          text: data.message,
+                          timer: 900,
+                         showConfirmButton: false                      
+                  });
+            }
+      }
   });
   });
 }

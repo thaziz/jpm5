@@ -1678,16 +1678,6 @@
                             " href="{{ url('updatestatus')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Update Status Paket</a>
                             </li>
                             @endif
-                            @if(Auth::user()->PunyaAkses('Update Status Paket','aktif'))
-                            <li >
-                            <a class="sidebar master-perusahaan 
-
-                            {{Request::is('updatestatus') ? 'active' : '' || 
-                            Request::is('updatestatus/*') ? 'active' : ''}} 
-
-                            " href="{{ url('updatestatus')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Update Status Paket</a>
-                            </li>
-                            @endif
                             @if(Auth::user()->PunyaAkses('update Status Kargo','aktif'))
                               <li >
                             <a class="sidebar master-perusahaan 

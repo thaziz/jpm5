@@ -75,7 +75,7 @@
 
                     <div class="form-group col-md-4">
                       <select class="cari_semua chosen-select-width" id="cabang"  name="cabang">
-                        <option></option>
+                        <option value="">Semua Cabang</option>
                         @foreach ($cabang as $element)
                           <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
                         @endforeach
@@ -96,7 +96,9 @@
                     </div>
                 </form>
                 <div class="box-body">
-                <div id="drop_here"></div>
+                <div id="drop_here" class="col-sm-12">
+                  
+                </div>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">

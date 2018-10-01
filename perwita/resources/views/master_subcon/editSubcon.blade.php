@@ -23,7 +23,7 @@
                     <h5> KONTRAK
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../subcon" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kem333bali</i></a>
+                     <a href="../subcon" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -105,9 +105,9 @@
                                 <td>Aktif</td>
                                 <td colspan="3">
                                   @if($data->ks_active == 'ACTIVE')
-                                    <input type="checkbox" name="ck_aktif" checked="">
+                                    <input type="checkbox" name="ck_aktif" checked="" class="cek_aktif">
                                   @else
-                                    <input type="checkbox" name="ck_aktif" >
+                                    <input type="checkbox" name="ck_aktif"  class="cek_aktif">
                                   @endif
                                 </td>
                             </tr>
@@ -675,5 +675,27 @@ function check(p) {
    }
   });
 }
+
+$('.cek_aktif').change(function(){
+  var cek = $(this).is(':checked');
+  var nota = '{{ $data->ks_nota }}';
+  $.ajax({
+      url:baseUrl + '/master_subcon/cek_aktif',
+      data:{cek,nota},
+      type:'get',
+      success:function(data){
+          toastr.success('Berhasil Dirubah');
+      },
+      error:function(data){
+
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+})
 </script>
 @endsection

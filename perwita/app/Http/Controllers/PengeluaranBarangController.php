@@ -26,14 +26,29 @@ use App\barang_terima;
 class PengeluaranBarangController extends Controller
 {
 
-	public function index() {
-		
+	public function index(Request $request) {
+
 		// return 'asd';
-		$data = DB::table('pengeluaran_barang')
-				  // ->where('pb_comp','001')
-				  ->get();
+			$data = DB::table('pengeluaran_barang')
+					  // ->where('pb_comp','001')
+					  ->get();
+
 		return view('purchase/pengeluaran_barang/index',compact('data'));
 	}
+
+	public function cari(Request $request){
+		if ($request->nobppb != '') {
+			$data = DB::table('pengeluaran_barang')
+					->where('pb_nota', $request->nobppb)
+					->get();
+		} elseif ($request->tanggal1 != '' && $request->tanggal2 != '') {
+			$data = DB::table('pengeluaran_barang')
+					->whereBetween('pb_tgl', [$request->tanggal1, $request->tanggal2])
+					->get();
+		}
+		return response()->json($data);
+	}
+
 	public function create() {
 		$now   = Carbon::now()->format('d/m/Y');
 
@@ -62,7 +77,7 @@ class PengeluaranBarangController extends Controller
 	    $index = (integer)$cari_nota[0]->id + 1;
 	    $index = str_pad($index, 4, '0', STR_PAD_LEFT);
 
-		
+
 		$nota = 'SPPB' . $bulan . $tahun . '/' . $req->cabang . '/' .$index;
 
 		return response()->json(['nota'=>$nota]);
@@ -73,7 +88,7 @@ class PengeluaranBarangController extends Controller
 	}
 
 	public function cari_stock(request $request){
-		$data = DB::select("SELECT sum(sg_qty) as sg_qty, unitstock	
+		$data = DB::select("SELECT sum(sg_qty) as sg_qty, unitstock
 								   from stock_gudang
 								   join masteritem
 								   on kode_item = sg_item
@@ -91,7 +106,7 @@ class PengeluaranBarangController extends Controller
 	}
 
 	public function akun_biaya_dropdown(Request $req)
-	{	
+	{
 
 		$idgrupitem = DB::table('masteritem')
 						->where('kode_item',$req->id)
@@ -121,7 +136,7 @@ class PengeluaranBarangController extends Controller
 
 	public function save_pengeluaran(request $request){
 		// dd($request);
-   		return DB::transaction(function() use ($request) {  
+   		return DB::transaction(function() use ($request) {
 
    			$cab = DB::table('cabang')
    					 ->where('kode',$request->cabang)
@@ -137,7 +152,7 @@ class PengeluaranBarangController extends Controller
 
 			$array_table=[];
 			$valid_table = 1;
-			for ($i=0; $i < count($request->nama_barang); $i++) { 
+			for ($i=0; $i < count($request->nama_barang); $i++) {
 				$array_table[$i] = $request->nama_barang[$i];
 			}
 
@@ -146,7 +161,7 @@ class PengeluaranBarangController extends Controller
 			}
 			// return $valid_table;
 			if ($valid == 2 && $valid_table == 1) {
-				
+
 				$tgl = str_replace('/', '-', $request->tgl);
 				$tgl = Carbon::parse($tgl)->format('Y-m-d');
 
@@ -175,7 +190,7 @@ class PengeluaranBarangController extends Controller
 							]);
 
 
-				for ($i=0; $i < count($request->nama_barang); $i++) { 
+				for ($i=0; $i < count($request->nama_barang); $i++) {
 
 					$cari_id_dt = DB::table('pengeluaran_barang_dt')
 							 ->max('pbd_id');
@@ -214,13 +229,13 @@ class PengeluaranBarangController extends Controller
 									 	'pbd_akunhutangbiaya' => $request->akun_biaya[$i],
 									 ]);
 					}
-					
+
 				}
 
 				return response()->json(['status' => 1,
 										 'id'	  => $cari_id]);
 			}else{
-				return response()->json(['status' => 0]);			
+				return response()->json(['status' => 0]);
 			}
 		});
 	}
@@ -267,7 +282,7 @@ class PengeluaranBarangController extends Controller
 
 		$array_table=[];
 		$valid_table = 1;
-		for ($i=0; $i < count($request->nama_barang); $i++) { 
+		for ($i=0; $i < count($request->nama_barang); $i++) {
 			$array_table[$i] = $request->nama_barang[$i];
 		}
 
@@ -283,7 +298,7 @@ class PengeluaranBarangController extends Controller
 									 'id'	  => $id]);
 		}else{
 
-			return response()->json(['status' => 0]);			
+			return response()->json(['status' => 0]);
 		}
 	}
 
@@ -295,7 +310,7 @@ class PengeluaranBarangController extends Controller
 
 		return view('purchase/konfirmasi_pengeluaranbarang/index',compact('data'));
 	}
-	
+
 
 	public function detailkonfirmpengeluaranbarang($id) {
 		$data = DB::table('pengeluaran_barang')
@@ -310,11 +325,11 @@ class PengeluaranBarangController extends Controller
 					->orderBy('pbd_pb_id',$id)
 					->get();
 
-		for ($i=0; $i < count($data_dt); $i++) { 
+		for ($i=0; $i < count($data_dt); $i++) {
 			$temp1[$i] = $data_dt[$i]->pbd_nama_barang;
 		}
 		// $gudang=[];
-		for ($i=0; $i < count($data_dt); $i++) { 
+		for ($i=0; $i < count($data_dt); $i++) {
 			$temp[$i] = DB::select("SELECT sum(sg_qty) as sum from stock_gudang
 									   where sg_item = '$temp1[$i]'");
 
@@ -327,17 +342,17 @@ class PengeluaranBarangController extends Controller
 							  ->get();
 
 			$jumlah1[$i]   = DB::select("SELECT sg_gudang, sg_qty as qty from
-											   stock_gudang 
+											   stock_gudang
 											   WHERE sg_cabang = '$data->pb_comp'
 											   AND sg_item = '$temp1[$i]'
 											   ORDER BY sg_gudang ASC");
 
-			
+
 		}
 
 		// return $temp;
 
-		for ($i=0; $i < count($gudang1); $i++) { 
+		for ($i=0; $i < count($gudang1); $i++) {
 			if ($gudang1[$i] == null) {
 				$gudang[$i][0]['mg_namagudang'] = 'null';
 				$gudang[$i][0]['mg_id'] = 'null';
@@ -345,21 +360,21 @@ class PengeluaranBarangController extends Controller
 				$jumlah[$i][0]['sg_gudang'] = 'null';
 				$jumlah[$i][0]['qty'] = 0;
 			}else{
-				for ($a=0; $a < count($gudang1[$i]); $a++) { 
+				for ($a=0; $a < count($gudang1[$i]); $a++) {
 					// return $gudang[$i][$a]->mg_namagudang;
 					$gudang[$i][$a]['mg_namagudang'] = $gudang1[$i][$a]->mg_namagudang;
-					$gudang[$i][$a]['mg_id'] = $gudang1[$i][$a]->mg_id;		
+					$gudang[$i][$a]['mg_id'] = $gudang1[$i][$a]->mg_id;
 					$gudang[$i][$a]['sg_id'] = $gudang1[$i][$a]->sg_id;
 					$jumlah[$i][$a]['sg_gudang'] = $jumlah1[$i][$a]->sg_gudang;
-					$jumlah[$i][$a]['qty'] = $jumlah1[$i][$a]->qty;;		
+					$jumlah[$i][$a]['qty'] = $jumlah1[$i][$a]->qty;;
 				}
 			}
 		}
 		return view('purchase/konfirmasi_pengeluaranbarang/detail',compact('data','temp','temp1','data_dt','tgl','jumlah','id','gudang'));
 	}
 	public function approve(request $request){
-		// dd($request->all()); 	
-   		return DB::transaction(function() use ($request) {  
+		// dd($request->all());
+   		return DB::transaction(function() use ($request) {
 
    		$datajurnal = [];
 		$total = [];
@@ -369,7 +384,7 @@ class PengeluaranBarangController extends Controller
 				  ->where('pb_id',$request->id)
 				  ->first();
 
-		for ($i=0; $i < count($request->pbd_nama_barang); $i++) { 
+		for ($i=0; $i < count($request->pbd_nama_barang); $i++) {
 			// save pbg
 			$cari_id_pbg = DB::table('pengeluaran_barang_gudang')
 						 ->max('pbg_id');
@@ -391,19 +406,19 @@ class PengeluaranBarangController extends Controller
 							'pbg_id' 		  => $cari_id_pbg,
 							'pbg_comp' 		  => $data->pb_comp
 						]);
-			
+
 			//save barang terima
-			$lastid = barang_terima::max('bt_id'); 
+			$lastid = barang_terima::max('bt_id');
 
 			if(isset($lastid)) {
 				$idbarangterima = $lastid;
 				$idbarangterima = (int)$idbarangterima + 1;
-				
+
 			}
 			else {
 				$idbarangterima = 1;
-				
-			}	
+
+			}
 				$idtransaksi = $request->id;
 				$datapb = DB::select("select * from pengeluaran_barang where pb_id = '$idtransaksi'");
 				$idsupplier = $datapb[0]->pb_comp;
@@ -432,17 +447,17 @@ class PengeluaranBarangController extends Controller
 						 ->where('sm_mutcat','=','1')
 						 ->orderBy('sm_date','ASC')
 						 ->get();
-						 
+
 			$kurang = $request->jumlah_setuju[$i];
 
-			for ($a=0; $a < count($cari_sm); $a++) { 
+			for ($a=0; $a < count($cari_sm); $a++) {
 
 				$sisa = $cari_sm[$a]->sm_sisa - $kurang;
 				$pengurangan_sisa = $kurang - $cari_sm[$a]->sm_sisa;
 				if ($pengurangan_sisa<0) {
 					$pengurangan_sisa = 0;
 				}
-				
+
 				$sm_use_new = $kurang - $pengurangan_sisa;
 				if ($sisa < 0) {
 					$sisa = 0;
@@ -532,10 +547,10 @@ class PengeluaranBarangController extends Controller
 									->where('sm_id',$cari_id_sm)
 									->first();
 					$temp      = round($cari_sm_keluar->sm_qty * $cari_sm_keluar->sm_hpp,2);
-		
+
 					array_push($total, $temp);
-				}	
-				
+				}
+
 				$cari_kurang = DB::table('stock_mutation')
 						 ->where('sm_id','=',$cari_sm[$a]->sm_id)
 						 ->first();
@@ -543,7 +558,7 @@ class PengeluaranBarangController extends Controller
 				$kurang = $pengurangan_sisa;
 			}
 
-			
+
 
 			$cari_stock = DB::table('stock_gudang')
 								->where('sg_id',$request->sg_id[$i])
@@ -567,9 +582,9 @@ class PengeluaranBarangController extends Controller
 					]);
 
 		$jml_setuju = [];
-		for ($i=0; $i < count($request->pbd_id1); $i++) { 
+		for ($i=0; $i < count($request->pbd_id1); $i++) {
 			$temp1 = 0;
-			for ($a=0; $a < count($request->pbd_id); $a++) { 
+			for ($a=0; $a < count($request->pbd_id); $a++) {
 				if ($request->pbd_id[$a] == $request->pbd_id1[$i]) {
 					$temp1 += $request->jumlah_setuju[$a];
 				}
@@ -601,8 +616,8 @@ class PengeluaranBarangController extends Controller
 					for($j =0; $j < count($hppsm); $j++){
 						$harga = $hppsm[$j]->psm_harga;
 						$qty = $hppsm[$j]->psm_qty;
-						
-						$hppitem = floatval($harga) * floatval($qty);						
+
+						$hppitem = floatval($harga) * floatval($qty);
 					//	return $hppitem;
 					}
 
@@ -616,7 +631,7 @@ class PengeluaranBarangController extends Controller
 							'subtotal' => $hppitem,
 							'dk' => 'K',
 							'detail' => $datapb[0]->pb_keperluan,
-						);	
+						);
 
 					}
 					else {
@@ -638,7 +653,7 @@ class PengeluaranBarangController extends Controller
 					for($j =0; $j < count($hppsm); $j++){
 						$harga = $hppsm[$j]->psm_harga;
 						$qty = $hppsm[$j]->psm_qty;
-						
+
 						$hppitem = floatval($harga) * floatval($qty);
 					}
 
@@ -652,7 +667,7 @@ class PengeluaranBarangController extends Controller
 							'subtotal' => $hppitem,
 							'dk' => 'D',
 							'detail' => $datapb[0]->pb_keperluan,
-						);	
+						);
 					}
 					else {
 						$dataakun = array (
@@ -660,16 +675,16 @@ class PengeluaranBarangController extends Controller
 							'subtotal' => '-' . $hppitem,
 							'dk' => 'D',
 							'detail' => $datapb[0]->pb_keperluan,
-						);	
+						);
 
 					}
 
 					array_push($datajurnal, $dataakun);
 				}
-				
+
 				//return $datajurnal;
 
-				$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+				$lastidjurnal = DB::table('d_jurnal')->max('jr_id');
 					if(isset($lastidjurnal)) {
 						$idjurnal = $lastidjurnal;
 						$idjurnal = (int)$idjurnal + 1;
@@ -677,8 +692,8 @@ class PengeluaranBarangController extends Controller
 					else {
 						$idjurnal = 1;
 					}
-				
-					$year = date('Y');	
+
+					$year = date('Y');
 					$date = date('Y-m-d');
 					$jurnal = new d_jurnal();
 					$jurnal->jr_id = $idjurnal;
@@ -688,14 +703,14 @@ class PengeluaranBarangController extends Controller
 			        $jurnal->jr_ref = $datapb[0]->pb_nota;
 			        $jurnal->jr_note = $datapb[0]->pb_keperluan;
 			        $jurnal->save();
-		       		
-			      
 
-				
+
+
+
 		    		$key  = 1;
 		    		for($j = 0; $j < count($datajurnal); $j++){
-		    			
-		    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+
+		    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id');
 						if(isset($lastidjurnaldt)) {
 							$idjurnaldt = $lastidjurnaldt;
 							$idjurnaldt = (int)$idjurnaldt + 1;
@@ -713,9 +728,9 @@ class PengeluaranBarangController extends Controller
 		    			$jurnaldt->jrdt_detail = $datajurnal[$j]['detail'];
 		    			$jurnaldt->save();
 		    			$key++;
-		    		} 	
-					
-			}	
+		    		}
+
+			}
 
 		return response()->json(['status'=>1]);
 	});
@@ -728,12 +743,12 @@ class PengeluaranBarangController extends Controller
 		$note = $request->note;
 		$data['jurnal'] = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk, jrdt_detail
                         FROM d_akun a join d_jurnal_dt jd
-                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
-                        (select j.jr_id from d_jurnal j where jr_ref='$lpb')")); 
+                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in
+                        (select j.jr_id from d_jurnal j where jr_ref='$lpb')"));
 		$data['countjurnal'] = count($data['jurnal']);
  		return json_encode($data);
 	}
-	
+
 	public function printing($id){
 		$data = DB::table('pengeluaran_barang')
 				  ->where('pb_id',$id)
@@ -755,7 +770,7 @@ class PengeluaranBarangController extends Controller
 		$data = DB::table('stock_opname')
 				  ->join('mastergudang','mg_id','=','so_gudang')
 				  ->get();
-		for ($i=0; $i < count($data); $i++) { 
+		for ($i=0; $i < count($data); $i++) {
 			$tgl[$i] = Carbon::parse($data[$i]->so_bulan)->format('F');
 		}
 
@@ -770,7 +785,7 @@ class PengeluaranBarangController extends Controller
 		$cabang  = DB::table('cabang')
 					 ->get();
 		$gudang = DB::table('mastergudang')
-					->get();	
+					->get();
 
 		$now = Carbon::now()->format('F');
 
@@ -778,10 +793,10 @@ class PengeluaranBarangController extends Controller
 	    		->where('so_comp','000')
 	    		->max('so_nota');
 
-	    $year  = Carbon::now()->format('Y'); 
-		$month = Carbon::now()->format('m');  	
+	    $year  = Carbon::now()->format('Y');
+		$month = Carbon::now()->format('m');
 		$now   = Carbon::now()->format('d/m/Y');
-		
+
 	   	if(isset($id)) {
 
 			$explode = explode("/", $id);
@@ -803,7 +818,7 @@ class PengeluaranBarangController extends Controller
 
 		$pb  = 'SO-' . $month . $year . '/'. '000' . '/' .  $id;
 
-		
+
 		return view('purchase/stock_opname/create',compact('cabang','now','pb'));
 	}
 
@@ -818,7 +833,7 @@ class PengeluaranBarangController extends Controller
 
 	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
 		if(count($idnota) != 0) {
-		
+
 			$explode = explode("/", $idnota[0]->so_nota);
 			$idnota = $explode[2];
 
@@ -827,7 +842,7 @@ class PengeluaranBarangController extends Controller
 		}
 
 		else {
-		
+
 			$idnota = '0001';
 		}
 
@@ -840,7 +855,7 @@ class PengeluaranBarangController extends Controller
 		return view('purchase/stock_opname/detail');
 	}
 
-	
+
 	public function cari_sm(Request $request){
 		$idgudang = $request->idgudang;
 		$idcabang = $request->idcabang;
@@ -861,10 +876,10 @@ class PengeluaranBarangController extends Controller
 
 	public function save_stock_opname(request $request){
 		/*dd($request->all());	*/
-		
+
 		/*$explode = explode("/", $request->tgl);
 		$tgl = $explode[1];*/
-		return DB::transaction(function() use ($request) {  
+		return DB::transaction(function() use ($request) {
 			$gudang = DB::table('mastergudang')
 					 ->where('mg_id',$request->cabang2)
 					 ->first();
@@ -900,7 +915,7 @@ class PengeluaranBarangController extends Controller
 							   	'update_by'   => $request->username,
 							]);
 
-		for ($i=0; $i < count($request->id_stock); $i++) { 
+		for ($i=0; $i < count($request->id_stock); $i++) {
 
 
 			if ($request->status[$i] == 'lebih') {
@@ -975,7 +990,7 @@ class PengeluaranBarangController extends Controller
 						   ->orderBy('sm_id', '=' , 'ASC')
 						   ->get();
 				$kurang = $request->val_status[$i];
-				for ($a=0; $a < count($stock); $a++) { 
+				for ($a=0; $a < count($stock); $a++) {
 
 					$sm_sisa = $stock[$a]->sm_sisa - $request->val_status[$i];
 
@@ -1061,9 +1076,9 @@ class PengeluaranBarangController extends Controller
 
 		}
 
-		
 
-			for ($i=0; $i < count($request->sg_item); $i++) { 
+
+			for ($i=0; $i < count($request->sg_item); $i++) {
 
 				$cari_max_sod = DB::table('stock_opname_dt')
 							  ->max('sod_id');
@@ -1096,20 +1111,20 @@ class PengeluaranBarangController extends Controller
 							   	'sod_keterangan'  	=> $request->keterangan[$i],
 							   	'created_at'   		=> Carbon::now(),
 							   	'updated_at'   		=> Carbon::now(),
-							   	'sod_hargaselisih'  => $harga,	
+							   	'sod_hargaselisih'  => $harga,
 							]);
-			}	
+			}
 
-			return response()->json(['status' => 1]);	
+			return response()->json(['status' => 1]);
 
 		});
-				  
-			
+
+
 	}
 
 	public function berita_acara($id){
 		 $data['stockopname'] = DB::select("select * from stock_opname, mastergudang where so_id = '$id' and so_gudang = mg_id");
-        for ($i=0; $i < count($data['stockopname']); $i++) { 
+        for ($i=0; $i < count($data['stockopname']); $i++) {
             $data['tgl'][$i] = Carbon::parse($data['stockopname'][$i]->so_bulan)->format('F');
         }
 

@@ -139,6 +139,26 @@
 </div>
 
 
+{{-- MODAL TT SUBCON --}}
+<div class="modal fade" id="modal_tt_subcon" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog" role="document" style="min-width: 800px !important; min-height: 800px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Form Tanda Terima</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body div_tt">
+        
+      </div>
+      <div class="modal-footer inline-form">
+        <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
+        <button onclick="simpan_tt()" type="button" class="btn btn-primary simpan_penerus" data-dismiss="modal">Simpan</button>
+    </div>
+  </div>
+</div>
+
 
 
 
@@ -160,5 +180,79 @@
     </div>
   </div>
 </div>
+
+<div id="modal_pajak" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="width: 800px">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">FAKTUR PAJAK MASUKAN</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-8">
+                <table class="table table_pajak_penerus">
+                  <tr>
+                    <td>No Faktur Pajak</td>
+                    <td><input value="{{ $faktur_pajak->fpm_nota or null }}" type="text" class="form-control faktur_pajak_penerus" name="faktur_pajak_penerus"></td>
+                  </tr>
+                  <tr>
+                    <td>Tanggal</td>
+                    <td><input type="text" value="{{$faktur_pajak->fpm_tgl or null }}" class="form-control date tanggal_pajak_penerus" name="tanggal_pajak_penerus"></td>
+                  </tr>
+                  <tr>
+                    <td>Masa Pajak</td>
+                    <td><input type="text" value="{{$faktur_pajak->fpm_masapajak or null }}"  class="form-control date masa_pajak_penerus" name="masa_pajak_penerus"></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-sm-6">
+                <table class="table">
+                  <caption class="center"><h4>FAKTUR PEMBELIAN</h4></caption>
+                  <tr>
+                    <td>DPP</td>
+                    <td  colspan="2">
+                      <input type="text" readonly="" class="form-control dpp_faktur_pajak_penerus" name="dpp_faktur_pajak_penerus">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>PPN</td>
+                    <td width="70">
+                      <input type="text" readonly="" class="form-control  nilai_ppn_pajak_penerus" name="nilai_ppn_pajak_penerus">
+                    </td>
+                    <td>
+                      <input type="text" readonly="" class="form-control  ppn_pajak_penerus" name="ppn_pajak_penerus">
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-sm-6">
+                <table class="table">
+                  <caption class="center"><h4>FAKTUR PAJAK</h4></caption>
+                  <tr>
+                    <td><input type="text" readonly="" class="form-control dpp_faktur_pajak_penerus1" name="dpp_faktur_pajak_penerus1"></td>
+                  </tr>
+                  <tr>
+                    <td><input type="text" readonly="" class="form-control  ppn_pajak_penerus1" name="ppn_pajak_penerus1"></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-sm-12">
+                <table class="table">
+                  <tr>
+                    <td>Netto</td>
+                    <td><input readonly="" type="text" class="form-control  netto_pajak_penerus" name="netto_pajak_penerus"></td>
+                  </tr>
+                </table>
+              </div>
+          </div><!-- /.modal-content -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="hidden" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+          </div>
+      </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</div>
+
 
 

@@ -48,6 +48,7 @@ class laporan_laba_rugi extends Controller
           ->orderBy('nomor_id', 'asc')
           ->get();
 
+      // return json_encode($dataDetail);
 
       foreach ($dataDetail as $dataDetail) {
 
@@ -151,12 +152,19 @@ class laporan_laba_rugi extends Controller
                 $no_detail++; $dataTotal += $total_akhir;
             }
           }else if($dataDetail->jenis == 3){
+            // return json_encode($data_neraca);
             $data_detail_dt = DB::table("desain_laba_rugi_detail_dt")
                           ->where("desain_laba_rugi_detail_dt.id_parrent", $dataDetail->nomor_id)
+                          ->where('desain_laba_rugi_detail_dt.id_desain', $id)
                           ->select("desain_laba_rugi_detail_dt.*")
                           ->get();
 
+            // return json_encode($dataDetail->nomor_id);
+
             foreach ($data_detail_dt as $detail_dt) {
+
+                // return json_encode($data_neraca[$detail_dt->id_group]["type"]);
+
                 if($data_neraca[$detail_dt->id_group]["type"] == "Pendapatan")
                   $dataTotal += $data_neraca[$detail_dt->id_group]["total"];
                 else

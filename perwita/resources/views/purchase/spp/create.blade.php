@@ -249,7 +249,7 @@
              <!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
-                       <input type="submit"  class="btn btn-success btn-flat simpan" disabled="" value="Simpan Data Rencana Penjualan" >     
+                       <input type="submit"  class="btn btn-success btn-flat simpan" disabled="" value="Simpan Data Rencana Pembelian" >     
                       </form>
                         <a class="btn btn-primary cek_tb"> Cek Total Biaya </a>
                     </div>
@@ -332,7 +332,7 @@
                       location.reload();
                   }
                 
-                  if(nospp === ''){
+                  if(month == 'NANN'){
                       location.reload();
                   }
 
@@ -689,6 +689,9 @@
                     $('.gudang').trigger("chosen:updated");
                      $('.gudang').trigger("liszt:updated");
                   })
+          },
+          error : function(){
+            location.reload();
           }
         })
 
@@ -726,7 +729,7 @@
       var harga = [];
       $('.cek_tb').click(function(){
         
-
+          $(this).attr('disabled' , true);
           $('.brgduplicate').empty();
           $('.supduplicate').empty();
           //pengecekan barang double
@@ -994,10 +997,9 @@
             jumlahtotal = 0;
             for(var j = 0; j < hasilrow; j++){
               if(arrIdSup[j] == idsupp[i]) {
-                jumlahtotal = parseInt(jumlahtotal + arrtotal[j]);
+                jumlahtotal = parseFloat(jumlahtotal) + parseFloat(arrtotal[j]);
                 console.log(jumlahtotal);
               //  indexhslsup1 = arrIdSup.indexOf(idsupp[i]);
-               
                
              }
 
@@ -1042,7 +1044,7 @@
                             "<td> <input type='hidden' class='form-control' readonly value='"+hasilrow+"' name='row'> </td>  </tr>";
              $('#tbl_total_sup').append(rowhslSupp);
           }
-            $('.cek_tb').attr('disabled' , true);
+            //$('.cek_tb').attr('disabled' , true);
            $('.simpan').attr('disabled', false);
          }
          
@@ -1774,6 +1776,7 @@
         var index = arrnobrg.indexOf(id);
         arrnobrg.splice(index, 1);
        parent2.remove();
+       //$('.cek_tb').attr('disabled' , true);
     })
 
    var $sup = 0;
@@ -1789,6 +1792,7 @@
         index = valsup.indexOf(idsup);
         valsup.splice(index, 1);*/
         parent.remove();
+        $('.cek_tb').attr('disabled' , false);
   })
   
 

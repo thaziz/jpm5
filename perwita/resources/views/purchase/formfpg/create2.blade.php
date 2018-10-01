@@ -493,7 +493,9 @@
                         </tr>
                       </thead>
                     <tbody>
-
+                       <div class="loading text-center" style="display: none;">
+                         <img src="{{ asset('assets/image/loading1.gif') }}" width="100px">
+                      </div>
                     </tbody>
                     </table>
                   </div>
@@ -1107,6 +1109,7 @@
                                           totalgiro = (parseFloat(totalgiro) + parseFloat(aslinominal)).toFixed(2);
                                       })
                                       $('.ChequeBg').val(addCommas(totalgiro));
+                                      $('.nominalbankasal').val(addCommas(totalgiro));
                                       $('.totbayar').val(addCommas(totalgiro));
                               })
                         }
@@ -1148,7 +1151,16 @@
 
                                           totalgiro = (parseFloat(totalgiro) + parseFloat(aslinominal)).toFixed(2);
                                       })
-                                      $('.ChequeBg').val(addCommas(totalgiro));
+
+                                      if(jenisbayar == '5'){
+                                        $('.ChequeBg').val(addCommas(totalgiro));
+                                        $('.totbayar').val(addCommas(totalgiro));
+                                        $('.nominalbankasal').val(addCommas(totalgiro))
+                                      }
+                                      else {
+                                         $('.ChequeBg').val(addCommas(totalgiro));
+                                         $('.nominalbankasal').val(addCommas(totalgiro));
+                                      }
                                      
                               })
                        
@@ -1301,7 +1313,7 @@
                 //year2 ="Anafaradina";
                  nofpg = 'FPG' + month + year2 + '/' + cabang + '/'  + response.idfpg ;
                
-                $('.nofpg').val(nofpg);
+                $('.nofpg').val(response.nofpg);
 
                 nofpg = $('.nofpg').val();
                 if(nofpg == ''){
@@ -1336,7 +1348,6 @@
                   month = '0' + month1;
                 }
 
-                console.log(d);
 
                 tahun = String(year);
 //                console.log('year' + year);
@@ -1344,7 +1355,7 @@
                 //year2 ="Anafaradina";
                  nofpg = 'FPG' + month + year2 + '/' + cabang + '/'  + response.idfpg ;
                
-                $('.nofpg').val(nofpg);
+                $('.nofpg').val(response.nofpg);
 
                 nofpg = $('.nofpg').val();
                 if(nofpg == ''){
@@ -1725,6 +1736,19 @@
                     $('.nocheck').attr('readonly' , true);
                     $('.nominaltujuanbank').attr('readonly' , true);
 
+                   if(jenisbayarpindahbuku == 'BANK'){
+                      bank = $('.bank').val();
+                      kodebanks = bank.split("+");
+                      kodebank = kodebanks[4];
+                   if(kodebank == ''){
+                    toastr.info("Mohon pilih data bank terlebih dahulu :)");
+                    return false;
+                   }
+                  }
+                  else {
+                    kastujuan = $('.kastujuan').val();
+                    kodebank = kastujuan.split[0];
+                  }
                 }
                 else {
                   $('.jenisbayarbankbg').prop({ checked: false });
@@ -1738,19 +1762,11 @@
                   $('#tbl-ibank').show();
 
                   tgl = $('.tgl').val();
-                  
-                  if(jenisbayarpindahbuku == 'BANK'){
-                      bank = $('.bank').val();
-                      kodebanks = bank.split("+");
-                      kodebank = kodebanks[4];
-                   if(kodebank == ''){
-                    toastr.info("Mohon pilih data bank terlebih dahulu :)");
-                    return false;
-                   }
-                  }else {
-                    kastujuan = $('.kastujuan').val();
-                    kodebank = kastujuan.split[0];
-                  }
+                    bank = $('.bank').val();
+                    kodebanks = bank.split("+");
+                    kodebank = kodebanks[4];
+
+                 
                   
 
                   jatuhtempo = $('.jatuhtempo').val();
@@ -2048,7 +2064,7 @@
                 //year2 ="Anafaradina";
                  nofpg = 'FPG' + month + year2 + '/' + cabang + '/'  + response.idfpg ;
                
-                $('.nofpg').val(nofpg);
+                $('.nofpg').val(response.nofpg);
 
                 nofpg = $('.nofpg').val();
                 if(nofpg == ''){
@@ -2838,11 +2854,10 @@
 
     })
 
-      
-  
-     //bank
-     $('.bank').change(function(){
-      val = $(this).val();
+    
+    //getcheck
+    $('.nocheck').click(function(){
+       val = $('.bank').val();
       string = val.split("+");
       namabank = string[1];
       alamat = string[2];
@@ -2854,12 +2869,15 @@
       $('.cbgbank').val(alamat);
       //$('.account').val(account);
       $('.kodebankbg').val(string[4]);
-      $.ajax({
+      $('.loading').css('display', 'block');
+
+       $.ajax({
           type : "post",
           data : {id},
           url : baseUrl+'/formfpg/getkodeakun',
           dataType : 'json',
           success : function (response){
+            $('.loading').css('display', 'none');
             table = response.table;
              $('.hutangbank').val(string[4]);
           var tablecek = $('#tbl-cheuque').DataTable();
@@ -2916,6 +2934,24 @@
           }
 
      })
+    })
+
+  
+     //bank
+     $('.bank').change(function(){
+      val = $(this).val();
+      string = val.split("+");
+      namabank = string[1];
+      alamat = string[2];
+      account = string[3];
+      id = string[0];
+
+      $('.valbank').val(val);
+      $('.nmbank').val(namabank);
+      $('.cbgbank').val(alamat);
+      //$('.account').val(account);
+      $('.kodebankbg').val(string[4]);
+     
 
     })
 

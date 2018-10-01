@@ -106,7 +106,9 @@
 
                                 @endif
                               </td>
-
+                              <td>
+                                <a class="btn btn-success btn-sm" href="{{url('bonsementarapusat/printdata/'. $bonsem->bp_id .'')}}"> <i class="fa fa-print"> </i> Cetak  </a>
+                              </td>
                             </tr>
                           @endforeach
                       </tbody>
@@ -167,10 +169,6 @@
                                 </form>
                                 </div>
                               </div>
-
-
-
-                        
                        </div>
                   </div> 
 

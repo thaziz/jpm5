@@ -152,6 +152,9 @@
                           </table>
 
                           <div class="deskirpsijenisbayar"> </div>
+
+                          <button class="btn btn-sm btn-warning" type="button" id="editdata"> <i class="fa fa-pencil"> &nbsp; </i> Edit Data ? </button>
+
                         </div>
 
 
@@ -264,7 +267,7 @@
                                                                     <td>  {{$data['pembayaran'][$j][$k]->nofpg}} </td>
                                                                     <td>  {{$data['pembayaran'][$j][$k]->nofaktur}} </td>
                                                                     <td>{{$data['pembayaran'][$j][$k]->tgl}} </td>
-                                                                    <td style="text-align: right">{{ number_format($data['pembayaran'][$j][$k]->pelunasan, 2) }}  </td>
+                                                                    <td style="text-align: right">{{ number_format($data['pembayaran'][$j][$k]->pelunasan, 2) }} <input type="hidden" class="datapelunasan" value="{{$data['pembayaran'][$j][$k]->pelunasan}}">  </td>
                                                                   </tr>
                                                                   <?php $n++ ?>
                                                                 @endfor
@@ -655,7 +658,7 @@
                                    <div class="row">
                                      <table class="table">
                                         <tr>
-                                          <th> Kode Bank </th> <th> Nama Bank </th> <th> Cabang / Alamat </th> <th> No Account </th>
+                                          <th> Kode Bank </th> <th> No Check /BG </th> <th> Nama Bank </th> <th> Cabang Bank </th> <th> Nominal Check / BG </th>
                                         </tr>
                                         @foreach($data['fpg'] as $fpg)
                                         <tr>
@@ -668,7 +671,9 @@
                                             <input type="hidden" class="form-control kodebank" readonly="" value="{{$fpg->mb_kode}} " name="kodebank">  
                                             <input type="hidden" class="form-control mbid" readonly="" value="{{$fpg->mb_id}} " name="idbank"> </td>
 
-                                          <td> <input type="text" class="form-control nmbank" readonly="" value="{{$fpg->mb_nama}}"> </td> <td> <input type="text" class="form-control cbgbank" readonly="" value="{{$fpg->mb_cabang}}"> </td> <td> <input type="text" class="form-control account" readonly="" value="{{$fpg->mb_accno}}"> </td>                                          
+                                          <td> <input type="text" class="form-control nmbank" readonly="" value="{{$fpg->mb_nama}}"> </td> <td> <input type="text" class="form-control cbgbank" readonly="" value="{{$fpg->mb_cabang}}"> </td> <td> <input type="text" class="form-control account" readonly="" value="{{$fpg->mb_accno}}"> </td>
+
+                                          <td> <button class="btn btn-sm btn-success" type="button"> Tambah data </button> </td>                                          
                                         </tr>
                                         @endforeach
                                      </table>
@@ -677,6 +682,9 @@
                                     <div class="col-md-3">
                                     <fieldset>
                                         <input type="hidden" class="fpbgjenisbayarbank" value="">
+                                        @if($data['fpg'][0]->fpg_jenisbayar == '12')
+
+                                        @else
 
                                         @if($data['fpg_bank'][0]->fpgb_jenisbayarbank == 'INTERNET BANKING')
                                        <div class="checkbox checkbox-info checkbox-circle">
@@ -706,6 +714,7 @@
                                                 Cheque / BG
                                             </label>
                                         </div>
+                                       @endif
                                        @endif
                                     </fieldset>
                                       <br>
@@ -850,6 +859,7 @@
 
                                 
                                 <div class="col-md-12" style="padding-top: 20px">
+                                  
                                   <table class="table table-bordered" id="tbl-bank">
                                     @if($data['fpg'][0]->fpg_jenisbayar != '11' && $data['fpg'][0]->fpg_jenisbayar != '12')
                                       
@@ -873,7 +883,7 @@
                                           <td> <banks2> {{$data['fpg_bank'][$i]->fpg_tgl}} </banks2> </td>
                                           <td> <banks2> {{$data['fpg_bank'][$i]->mb_kode}} </banks2> </td>
                                           <td> <banks2> {{$data['fpg_bank'][$i]->fpgb_jatuhtempo}} </banks2> <input type='hidden' class="jatuhtempo{{$i + 1}}" value="{{$data['fpg_bank'][$i]->fpgb_jatuhtempo}}"> </td>
-                                          <td><input type='text' data-id="{{$i + 1}}" class="input-sm form-control nominaltblbank nominalbank{{$i + 1}} nominalcheck{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" readonly name='nominalbank[]' style="text-align:right" value="{{ number_format($data['fpg_bank'][$i]->fpgb_nominal, 2) }}">
+                                          <td><input type='text' data-id="{{$i + 1}}" class="input-sm form-control nominaltblbank nominalbank{{$i + 1}} nominalcheck{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}"  name='nominalbank[]' style="text-align:right" value="{{ number_format($data['fpg_bank'][$i]->fpgb_nominal, 2) }}">
                                          
                                           </td>
                                           <td> 
@@ -895,7 +905,7 @@
                                           <td> <bank{{$i + 1}}> {{$data['fpg_bank'][$i]->fpg_tgl}} </bank> </td>
                                           <td> <bank{{$i + 1}}> {{$data['fpg_bank'][$i]->mb_kode}} </bank> </td>
                                           <td> <bank{{$i + 1}}> {{$data['fpg_bank'][$i]->fpgb_jatuhtempo}} </bank> <input type='hidden' class="jatuhtempo{{$i + 1}}" value="{{$data['fpg_bank'][$i]->fpgb_jatuhtempo}}"> </td>
-                                          <td><input type='text' data-id="{{$i + 1}}" class="input-sm form-control nominaltblbank nominalbank{{$i + 1}} nominalcheck{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" readonly name='nominalbank[]' style="text-align:right" value="{{ number_format($data['fpg_bank'][$i]->fpgb_nominal, 2) }}">
+                                          <td><input type='text' data-id="{{$i + 1}}" class="input-sm form-control nominaltblbank nominalbank{{$i + 1}} nominalcheck{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}"  name='nominalbank[]' style="text-align:right" value="{{ number_format($data['fpg_bank'][$i]->fpgb_nominal, 2) }}">
                                        
                                           </td>
                                           <td> 
@@ -1015,7 +1025,13 @@
                   
                     <a class="btn btn-warning" href={{url('formfpg/formfpg')}} id="kembali"> Kembali </a>
                     
-                    <a class="btn btn-info" href="{{url('formfpg/printformfpg/'.$data['fpg'][0]->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a>
+
+                          @if($data['fpg'][0]->fpg_jenisbayar == '5' || $data['fpg'][0]->fpg_jenisbayar == '12')
+                            <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg2/'.$data['fpg'][0]->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a>
+                          @else
+                              <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg/'.$data['fpg'][0]->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a>
+                          @endif
+
                    <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-success">
                 </form>
                     
@@ -1042,7 +1058,13 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-    
+      $('#submit').hide();
+
+    $('#editdata').click(function(){
+      $('#submit').show();
+    });
+
+
      $('.jenisbayarbankibaking').change(function(){
           $this = $(this);
           jenisbayar = $('.jenisbayar').val();
@@ -1373,6 +1395,24 @@
 
        // return false;
     })
+
+    $('.nominaltblbank').change(function(){
+       val = $(this).val();      
+       val = accounting.formatMoney(val, "", 2, ",",'.');
+       $(this).val(val);
+          totalnominal = 0;
+        $('.nominaltblbank').each(function(){
+          val = $(this).val();
+          if(val != ''){
+            nominal = val.replace(/,/g, '');
+            totalnominal = parseFloat(parseFloat(totalnominal) + parseFloat(nominal)).toFixed(2);
+            $('.ChequeBg').val(addCommas(totalnominal));
+          }
+        })
+
+
+    })
+
 
      $('#formfpg').submit(function(){
         if(!this.checkValidity() ) 
@@ -2999,21 +3039,29 @@
 
       $(this).val(formatval);
       vas = $(this).val();
-      alert(vas + 'vas');
       
-      alert(id);
+      jumlahfaktur = $('.jmlhfaktur').val();
+      replacefaktur = jumlahfaktur.replace(/,/g,'');
+
+      totalpelunasan = 0;
+      $('.datapelunasan').each(function(){
+        val = $(this).val();
+        totalpelunasan = parseFloat(totalpelunasan) + parseFloat(val);
+      })
+
+      jmlhyangkurang = parseFloat(replacefaktur) - parseFloat(totalpelunasan);
+
       if(id == ''){ //PERTAMA KALI INPUT
 
          valpelunasan = vas.replace(/,/g, '');
 
-        alert(valpelunasan);
-        alert(replace_harga);
-        if(parseFloat(valpelunasan) > parseFloat(replace_harga)){
-            if(valpelunasan != replace_harga) {
+      
+        if(parseFloat(valpelunasan) > parseFloat(jmlhyangkurang)){
+            alert(valpelunasan);
+            alert(jmlhyangkurang);
                 toastr.info('Mohon angka yang di masukkan, kurang dari sisa terbayar :) ');
                   $(this).val('');
-            }
-       
+           
         }
         else {
           hasil = parseFloat(replace_harga - valpelunasan);
@@ -3026,11 +3074,11 @@
         }
       } //END PERTAMAKALI INPUT
       else {
-     
-
+          
           valpelunasan = vas.replace(/,/g, '');
 
-        if(valpelunasan > parseInt(replace_harga)){
+        if(parseFloat(valpelunasan) > parseFloat(jmlhyangkurang)){
+
           toastr.info('Mohon angka yang di masukkan, kurang dari sisa terbayar :) ');
           $(this).val('');
         }

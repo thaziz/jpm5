@@ -99,7 +99,7 @@
                             <td class='disabledbank'> Kode Bank </td>
                             <td>
                               <select class="form-control kodebank chosen-select" name="kodebank">
-                               <option value=""> Pilih Data Bank</option>
+                              
 
                                 @foreach($data['bank'] as $bank)
                                   <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
@@ -395,12 +395,12 @@
 
                                                       <tr>
                                                         <th> D / K </th>
-                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk dkbiayabg biayabg" readonly=""> </div> <input type='hidden' class='nomorbgakun'> <input type='hidden' class='idfpgbakunbg'> </td>
+                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk dkbiayabg biayabg" > </div> <input type='hidden' class='nomorbgakun'> <input type='hidden' class='idfpgbakunbg'> </td>
                                                       </tr>
 
                                                       <tr>
                                                         <th> Jumlah </th>
-                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount  jumlahakunbg" style="text-align:right'" readonly=""> </div> </td>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount  jumlahakunbg" style="text-align:right'" > </div> </td>
                                                       </tr>
 
                                                       <tr>
@@ -565,10 +565,10 @@
     $('.date').change(function(){
       cabang = $('.cabang').val();
       tgl = $('.tglbbk').val();
-    
+      bank = $('.kodebank').val();
        $.ajax({
           type : "get",
-          data : {cabang,tgl},
+          data : {cabang,tgl,bank},
           url : baseUrl + '/pelunasanhutangbank/getnota',
           dataType : 'json',
           success : function (response){     
@@ -579,10 +579,7 @@
                 //bulan
                 var month = d.getMonth();
                 var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
-
+              
                 if(month < 10) {
                   month = '0' + month1;
                 }
@@ -594,7 +591,7 @@
                 year2 = tahun.substring(2);
                 //year2 ="Anafaradina";
                  nofaktur = 'BK' + '-' + month + year2 + '/' + cabang + '/' +  response.data ;
-                $('.nobbk').val(nofaktur);
+                $('.nobbk').val(response);
               
                 kodebank = $('.kodebank').val();
 
@@ -611,7 +608,7 @@
                 
 
                   nobbk = str + kodebank + '-' + lain;
-                  $('.nobbk').val(nobbk);
+                  $('.nobbk').val(response);
                }
               }
               else {
@@ -641,7 +638,7 @@
       nocheckakunbg = $('.checkakunbg').val();
       accbiayaakun = $('.accbiayaakun').val();  
 
-      alert(nocheckakunbg);
+     // alert(nocheckakunbg);
 
       if(accbiayaakun == ''){
         toastr.info("Mohon pilih data akun biaya :)");
@@ -695,8 +692,8 @@
       row = "<tr class='transaksi dataakunbg dataakunbg"+akundakun+"' data-nomor="+akundakun+"> <td>"+$nomor+"</td>" +
                   "<td> <input type='text' class='form-control input-sm nobbkdetailbg' value="+nobbk+" style='min-width:200px' readonly>  </td>" + //nobbk
                   "<td> <input type='text' class='form-control input-sm akundakundetailbg' value="+akundakun+" name='accbiayaakun[]' style='min-width:200px' readonly> </td>"+
-                  "<td> <input type='text' class='form-control input-sm dkakundetailbg' value="+dk+" name='dk[]' style='min-width:90px' readonly> </td>" +
-                  "<td> <input type='text' class='form-control input-sm jumlahakunbiayadetailbg' value="+jumlahakunbiaya+" style='min-width:200px; text-align:right' name='nominalakun[]' style='min-width:100px' readonly> </td>" +
+                  "<td> <input type='text' class='form-control input-sm dkakundetailbg ' value="+dk+" name='dk[]' style='min-width:90px' readonly> </td>" +
+                  "<td> <input type='text' class='form-control input-sm jumlahakunbiayadetailbg' value="+jumlahakunbiaya+" style='min-width:200px; text-align:right' name='nominalakun[]' style='min-width:100px' readonly data-dk='"+dk+"'> </td>" +
                   "<td> <input type='text' class='form-control input-sm keteranganakunbgdetail' value='"+keteranganakunbg+"' name='keteranganakunbg[]' style='min-width:200px' readonly> </td>" +
                   "<td> <input type='text' class='form-control input-sm nofpgdetailbg' value="+nofpg+" name='nofpg[]' readonly style='min-width:200px'> <input type='hidden' class='idfpgakunbgdetail' value="+idfpg+" name='idfpg[]'> </td>" +
                   "<td> <input type='text' class='form-control input-sm accbiayaakundetailbg' value='"+nocheckakunbg+"' name='nocheck[]' readonly style='min-width:200px'> </td>" +
@@ -710,8 +707,14 @@
         jumlahnominal = 0;
         $('.jumlahakunbiayadetailbg').each(function(){
           nominal = $(this).val();
+          dk = $(this).data('dk');
           nominal2 =  nominal.replace(/,/g, '');
-          jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+          if(dk == 'D') {
+            jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+          }
+          else {
+           jumlahnominal = parseFloat(parseFloat(nominal2) - parseFloat(jumlahnominal)).toFixed(2);
+          }
           $('.total').val(addCommas(jumlahnominal));
           $('.cekbg').val(addCommas(jumlahnominal));
         })
@@ -751,7 +754,14 @@
         $('.jumlahakunbiayadetailbg').each(function(){
           nominal = $(this).val();
           nominal2 =  nominal.replace(/,/g, '');
-          jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+          dk = $(this).data('dk');
+          if(dk == 'D'){
+             jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+          }
+          else {
+            jumlahnominal = parseFloat(parseFloat(nominal2) - parseFloat(jumlahnominal)).toFixed(2);
+
+          }
           $('.total').val(addCommas(jumlahnominal));
           $('.cekbg').val(addCommas(jumlahnominal));
         })
@@ -822,13 +832,14 @@
    
 
     //GET NO BBK
-    cabang = $('.cabang').val();
-    $('.valcabang').val(cabang);
+      cabang = $('.cabang').val();
+      $('.valcabang').val(cabang);
       tgl = $('.tglbbk').val();
       $('.cabang2').val(cabang);
+      bank = $('.bank').val();
        $.ajax({
           type : "get",
-          data : {cabang,tgl},
+          data : {cabang,tgl,bank},
           url : baseUrl + '/pelunasanhutangbank/getnota',
           dataType : 'json',
           success : function (response){     
@@ -854,7 +865,7 @@
                 year2 = tahun.substring(2);
                 //year2 ="Anafaradina";
                  nofaktur = 'BK' + '-' + month + year2 + '/' + cabang + '/' +  response.data ;
-                $('.nobbk').val(nofaktur);
+                $('.nobbk').val(response);
               }
               else {
                 location.reload();
@@ -915,6 +926,32 @@
           return false;
         }
 
+        nominalfpg2 = $('.nominalfpgdetailbg').val();
+        totalakun = 0;
+        $('.jumlahakunbiayadetailbg').each(function(){
+            val = $(this).val();
+            val = val.replace(/,/g, '');
+            if(val == ''){
+              toastr.info("nominal akun bg ada yang blm di isi :)");
+              return false;
+            }
+            else {
+              dk = $(this).data('dk');
+              if(dk == 'D'){
+                totalakun = parseFloat(parseFloat(totalakun) + parseFloat(val)).toFixed(2);
+              }
+              else if(dk == 'K'){
+                totalakun = parseFloat(parseFloat(totalakun) - parseFloat(val)).toFixed(2);
+
+              }
+            }  
+        })
+        
+        totalakun = addCommas(totalakun);
+        if(nominalfpg2 != totalakun){
+          toastr.info("Mohon maaf nominal FPG tidak sama dengan akun :)");
+          return false;
+        }
       }
 
 
@@ -1067,9 +1104,10 @@
      $('.cabang').change(function(){    
       var cabang = $(this).val();
       var tgl = $('.tglbbk').val();
+      var bank = $('.bank').val();
         $.ajax({    
             type :"get",
-            data : {cabang,tgl},
+            data : {cabang,tgl,bank},
             url : baseUrl + '/pelunasanhutangbank/getnota',
             dataType:'json',
             success : function(data){
@@ -1101,7 +1139,7 @@
                 
                    nobbk = 'BK-' + month + year2 + '/' + cabang + '/' +  data.data;
                 //  console.log(nospp);
-                  $('.nobbk').val(nobbk);
+                  $('.nobbk').val(response);
 
                        kodebank = $('.kodebank').val();
 
@@ -1118,7 +1156,7 @@
                         
                           nobbk = str + kodebank + '-' + lain;
 
-                          $('.nobbk').val(nobbk);
+                          $('.nobbk').val(response);
                        }
 
 
@@ -1277,14 +1315,20 @@
                 $('#myModal2').modal('hide');
                 var a = $('ul#tabmenu').find('li.active').data('val');
                 if(a == 'AKUNBG'){
-                    $('.nofpgakunbgbiaya').val(response.fpg[0].fpg_nofpg);
-                    $('.idfpgakunbgbiaya').val(response.fpg[0].idfpg);
-                    $('.nominalakunbiaya').val(addCommas(response.fpg[0].fpgb_nominal));
-                    $('.keteranganakunbiayafpg').val(response.fpg[0].fpg_keterangan);
-                    $('.checkakunbg').val(response.fpg[0].fpgb_nocheckbg);
-                    $('.idfpgbakunbg').val(response.fpg[0].fpgb_id);
-                    $('.jumlahakunbg').val(addCommas(response.fpg[0].fpgb_nominal));
-                    $('.keteranganakunbg').val(response.fpg[0].fpg_keterangan);
+                    if(response.fpg[0].fpg_jenisbayar == '5'){                    
+                          $('.nofpgakunbgbiaya').val(response.fpg[0].fpg_nofpg);
+                          $('.idfpgakunbgbiaya').val(response.fpg[0].idfpg);
+                          $('.nominalakunbiaya').val(addCommas(response.fpg[0].fpgb_nominal));
+                          $('.keteranganakunbiayafpg').val(response.fpg[0].fpg_keterangan);
+                          $('.checkakunbg').val(response.fpg[0].fpgb_nocheckbg);
+                          $('.idfpgbakunbg').val(response.fpg[0].fpgb_id);
+                          $('.jumlahakunbg').val(addCommas(response.fpg[0].fpgb_nominal));
+                          $('.keteranganakunbg').val(response.fpg[0].fpg_keterangan);
+                        }
+                        else {
+                          toastr.info("Transaksi ini hanya bisa di pake jenis bayar transfer kas bank :) ");
+                          return false;
+                        }
                   //  alert(response.fpg[0].fpgb_nocheckbg);
                 }
                 else {
@@ -1412,7 +1456,7 @@
               totalbiaya = parseFloat(parseFloat(totalbiaya) + parseFloat(jumlah2)).toFixed(2);
           }
           else {
-            totalbiaya = parseFloat(parseFloat(totalbiaya) + parseFloat(jumlah2)).toFixed(2);
+            totalbiaya = parseFloat(parseFloat(totalbiaya) - parseFloat(jumlah2)).toFixed(2);
           }
           $('.totalbiaya').val(addCommas(totalbiaya));
           $('.total').val(addCommas(totalbiaya));

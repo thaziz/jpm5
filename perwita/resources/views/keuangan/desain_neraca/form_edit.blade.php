@@ -641,6 +641,11 @@
             $("#keterangan").attr("readonly", "readonly");
           }else if(data_neraca[idx].jenis == 2 || data_neraca[idx].jenis == 3){
 
+            if(data_neraca[idx].jenis == 3){
+                $("#detail_total").css("display", "inline-block"); $("#detail_total").removeAttr("disabled");
+                grab_detail_total();
+            }
+
             $("#group_show").html("");
 
             if(data_neraca[idx].jenis == 2)
@@ -991,7 +996,7 @@
 
         $('#'+state+'_tree').jstree('rename_node', id , node_ket);
 
-        if(data_neraca[idx].jenis == 2){
+        if(data_neraca[idx].jenis == 2 || data_neraca[idx].jenis == 3){
           balancing_detail(data_neraca[idx].nomor_id);
         }
 

@@ -202,11 +202,9 @@
                                 </select>
 
                                 <select disabled id="detail_jenis" class="form-control" style="display:none;">
-                                  <option value="---"> -- Pilih Jenis Perhitungan</option>
-                                  <option value="saldo_awal"> Saldo Awal</option>
-                                  <option value="mutasi_debet"> Mutasi Debet</option>
-                                  <option value="mutasi_kredit"> Mutasi Kredit</option>
-                                  <option value="saldo_akhir"> Saldo Akhir</option>
+                                  <option value="---"> -- Pilih Jenis Detail</option>
+                                  <option value="aktiva"> Aktiva</option>
+                                  <option value="pasiva"> Passiva</option>
                                 </select>
                               </td>
                             </tr>

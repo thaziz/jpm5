@@ -11,11 +11,11 @@
   }
 </style>
 
-<div class=" pembungkus">
+<div class="  col-sm-12" >
 {{--   @if ()
     expr
   @endif --}}
-         <table id="addColumn" class="table table-bordered table-striped" style="margin-left: 3%;">
+         <table id="addColumn" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th> No Inv</th>
@@ -25,10 +25,9 @@
                             <th> Brutto </th>
                             <th> Diskon Do </th>
                             <th> Diskon Inv </th>
+                            <th> Netto DPP </th>
                             <th> PPN </th>
                             <th> PPH </th>
-                            <th> Netto DPP </th>
-                            <th> Netto detil</th>
                             <th> Total Tagihan </th>
                         </tr>
                     </thead>
@@ -44,13 +43,21 @@
                         <td>{{ $e->i_tanggal }}</td>
                         <td>{{ $e->i_jatuh_tempo }}</td>
                         <td>{{ $e->i_kode_customer }}</td>
-                        <td align="right"><input type="hidden" value="{{ $e->i_total+$e->i_diskon1+$e->i_diskon2 }}" class="total_brutto" name="">{{ number_format($e->i_total,0,',','.') }}</td>
+                        <td align="right"><input type="hidden" value="{{ $e->i_total+$e->i_diskon1+$e->i_diskon2 }}" class="total_brutto" name="">{{ number_format($e->i_total+$e->i_diskon1+$e->i_diskon2,0,',','.') }}</td>
                         <td align="right"><input type="hidden" value="{{ $e->i_diskon1 }}" class="total_diskondo" name="">{{ number_format($e->i_diskon1,0,',','.') }}</td>
                         <td align="right"><input type="hidden" value="{{ $e->i_diskon2 }}" class="total_diskoninv" name="">{{ number_format($e->i_diskon2,0,',','.') }}</td>
-                        <td align="right"><input type="hidden" value="{{ $e->i_ppnrp }}" class="total_ppn" name="">{{ number_format($e->i_ppnrp,0,',','.') }}</td>
+                        @if ($e->i_ppntpe == 'npkp')
+                            <td align="right"><input type="hidden" value="{{ $e->i_total_tagihan+$e->i_pajak_lain }}" class="total_netto" name="">{{ number_format($e->i_total_tagihan+$e->i_pajak_lain,0,',','.') }}</td>
+                        @else
+                            <td align="right"><input type="hidden" value="{{ $e->i_total_tagihan+$e->i_ppnrp+$e->i_pajak_lain }}" class="total_netto" name="">{{ number_format($e->i_total_tagihan-$e->i_ppnrp-$e->i_pajak_lain,0,',','.') }}</td>
+                        @endif
+
+                        <td align="right"><input type="hidden" value="{{ $e->i_ppnrp }}" class="total_ppn" name="">{{ number_format($e->i_ppnrp,0,',','.') }} @if ($e->i_ppntpe == 'npkp')
+                            IN
+                        @else EX @endif </td>
                         <td align="right"><input type="hidden" value="{{ $e->i_pajak_lain }}" class="total_pajak_lain" name="">{{ number_format($e->i_pajak_lain,0,',','.') }}</td>
-                        <td align="right"><input type="hidden" value="{{ $e->i_netto+$e->i_ppnrp+$e->i_pajak_lain }}" class="total_netto" name="">{{ number_format($e->i_netto,0,',','.') }}</td>
-                        <td align="right"><input type="hidden" value="{{ $e->i_netto_detail }}" class="total_netto_detil" name="">{{ number_format($e->i_netto_detail,0,',','.') }}</td>
+
+
                         <td align="right"><input type="hidden" value="{{ $e->i_total_tagihan }}" class="total_net" name=""> {{ number_format($e->i_total_tagihan,0,',','.') }}</td>
                         @endif
                         </tr>
@@ -63,10 +70,9 @@
                         <td id="brutto_grandtotal"></td>
                         <td id="diskondo_grandtotal"></td>
                         <td id="diskoninv_grandtotal"></td>
+                        <td id="nettodetil_grandtotal"></td>
                         <td id="ppn_grandtotal"></td>
                         <td id="pajaklain_grandtotal"></td>
-                        <td id="netto_grandtotal"></td>
-                        <td id="nettodetil_grandtotal"></td>
                         <td id="total_grandtotal"></td>
                       </tr>
                     </tbody>

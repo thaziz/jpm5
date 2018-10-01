@@ -11,7 +11,7 @@
   </thead>
   <tbody>
     @foreach ($data as $i => $val)
-      <tr onclick="select_tt(this)">
+      <tr onclick="select_tt(this)" data-dismiss="modal">
         <td>
           {{ $i+1 }}
           <input type="hidden" class="tt_id" value="{{ $val->tt_idform }}" name="">

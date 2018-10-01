@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\master_akun as akun;
 
 use DB;
 use Dompdf\Dompdf;
@@ -23,12 +24,12 @@ class laporan_neraca extends Controller
 
     // return $request->all();
 
-      $cabang = DB::table("cabang")->where("kode", $_GET["cab"])->select("nama")->first();
+      // $cabang = DB::table("cabang")->where("kode", $_GET["cab"])->select("nama")->first();
 
-      if(Session::get("cabang") == "000")
-          $cabangs = DB::table("cabang")->select("kode", "nama")->get();
-      else
-          $cabangs = DB::table("cabang")->where("kode", Session::get("cabang"))->select("kode", "nama")->get();
+      // if(Session::get("cabang") == "000")
+      //     $cabangs = DB::table("cabang")->select("kode", "nama")->get();
+      // else
+      //     $cabangs = DB::table("cabang")->where("kode", Session::get("cabang"))->select("kode", "nama")->get();
 
       $cek = count(DB::table("desain_neraca")->where("is_active", 1)->first());
       $desain = DB::table("desain_neraca")->select("*")->orderBy("id_desain", "desc")->get();
@@ -40,6 +41,7 @@ class laporan_neraca extends Controller
         return view("laporan_neraca.err.missing_active")->withDesain($desain);
       }
 
+<<<<<<< HEAD
       $data_neraca = []; $no = 0; $data_detail = []; $no_detail = 0;
 
       $id = DB::table("desain_neraca")->where("is_active", 1)->select("id_desain")->first()->id_desain;
@@ -66,20 +68,45 @@ class laporan_neraca extends Controller
 
             foreach ($data_detail_dt as $detail_dt) {
               if($throttle == "bulan"){
+
+                $data_date = $request->y.'-'.($request->m + 1).'-01';
+                $data_saldo = $request->y.'-'.$request->m.'-01';
+                $id_group = $detail_dt->id_group;
+
                 if($_GET["cab"] == "all"){
-                  $transaksi = DB::table("d_jurnal_dt")
-                             ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
-                             ->join("d_jurnal", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
-                             ->where("d_akun.group_neraca", $detail_dt->id_group)
-                             ->where(DB::raw("date_part('month', jr_date)"), '<=', $date)
-                             ->where("d_jurnal.jr_year", $request->y)
-                             ->select(DB::raw("sum(jrdt_value) as total"))->first();
+                  // $transaksi = DB::table("d_jurnal_dt")
+                  //            ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
+                  //            ->join("d_jurnal", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
+                  //            ->where("d_akun.group_neraca", $detail_dt->id_group)
+                  //            ->where(DB::raw("date_part('month', jr_date)"), '<=', $date)
+                  //            ->where("d_jurnal.jr_year", $request->y)
+                  //            ->select(DB::raw("sum(jrdt_value) as total"))->first();
 
-                  $saldo_awal = DB::table("d_akun")
-                                ->where("d_akun.group_neraca", $detail_dt->id_group)
-                                ->select(DB::raw("sum(opening_balance) as saldo"))->first();
+                  $saldo_awal = akun::select(DB::raw('sum(coalesce(opening_balance, 0)) as value'))
+                                ->where("d_akun.group_neraca", $id_group)
+                                ->where("d_akun.opening_date", '<=', $data_saldo)
+                                ->first();
 
-                  // return json_encode($saldo_awal);
+                  $mutasi_debet = DB::table('d_jurnal_dt')
+                                  ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
+                                  ->join('d_akun', 'd_jurnal_dt.jrdt_acc', '=', 'd_akun.id_akun')
+                                  ->where('d_akun.group_neraca', $id_group)
+                                  ->where('jr_date', '<', $data_date)
+                                  ->where('jr_date', '>=', DB::raw("opening_date"))
+                                  ->where("jrdt_statusdk", 'D')
+                                  ->select(DB::raw('sum(coalesce(d_jurnal_dt.jrdt_value, 0)) as value'))->first();
+
+                  $mutasi_kredit = DB::table('d_jurnal_dt')
+                                  ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
+                                  ->join('d_akun', 'd_jurnal_dt.jrdt_acc', '=', 'd_akun.id_akun')
+                                  ->where('d_akun.group_neraca', $id_group)
+                                  ->where('jr_date', '<', $data_date)
+                                  ->where('jr_date', '>=', DB::raw("opening_date"))
+                                  ->where("jrdt_statusdk", 'K')
+                                  ->select(DB::raw('sum(coalesce(d_jurnal_dt.jrdt_value, 0)) as value'))->first();
+
+                  // return json_encode($detail_dt->id_group);
+                  // return json_encode($saldo_awal->value." + ".$mutasi_debet->value." + ".$mutasi_kredit->value);
 
                   // $saldo_awal = DB::table("d_akun_saldo")
                   //               ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
@@ -88,18 +115,36 @@ class laporan_neraca extends Controller
                   //               ->where("d_akun_saldo.tahun", $request->y)
                   //               ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
                 }else{
-                  $transaksi = DB::table("d_jurnal_dt")
-                             ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
-                             ->join("d_jurnal", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
-                             ->where("d_akun.group_neraca", $detail_dt->id_group)
-                             ->where("d_akun.kode_cabang", $_GET["cab"])
-                             ->where(DB::raw("date_part('month', jr_date)"), '<=', $date)
-                             ->where("d_jurnal.jr_year", $request->y)
-                             ->select(DB::raw("sum(jrdt_value) as total"))->first();
+                  // $transaksi = DB::table("d_jurnal_dt")
+                  //            ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
+                  //            ->join("d_jurnal", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
+                  //            ->where("d_akun.group_neraca", $detail_dt->id_group)
+                  //            ->where("d_akun.kode_cabang", $_GET["cab"])
+                  //            ->where(DB::raw("date_part('month', jr_date)"), '<=', $date)
+                  //            ->where("d_jurnal.jr_year", $request->y)
+                  //            ->select(DB::raw("sum(jrdt_value) as total"))->first();
 
-                  $saldo_awal = DB::table("d_akun")
+                  $saldo_awal = akun::select(DB::raw('sum(coalesce(opening_balance, 0)) as value'))
                                 ->where("d_akun.group_neraca", $detail_dt->id_group)
-                                ->select(DB::raw("sum(opening_balance) as saldo"))->first();
+                                ->first();
+
+                  $mutasi_debet = DB::table('d_jurnal_dt')
+                                  ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
+                                  ->join('d_akun', 'd_jurnal_dt.jrdt_acc', '=', 'd_akun.id_akun')
+                                  ->where('d_akun.group_neraca', $id_group)
+                                  ->where('jr_date', '<', $data_date)
+                                  ->where('jr_date', '>', DB::raw("opening_date"))
+                                  ->where("jrdt_statusdk", 'D')
+                                  ->select(DB::raw('sum(coalesce(d_jurnal_dt.jrdt_value, 0)) as value'))->first();
+
+                  $mutasi_kredit = DB::table('d_jurnal_dt')
+                                  ->join('d_jurnal', 'd_jurnal.jr_id', '=', 'd_jurnal_dt.jrdt_jurnal')
+                                  ->join('d_akun', 'd_jurnal_dt.jrdt_acc', '=', 'd_akun.id_akun')
+                                  ->where('d_akun.group_neraca', $id_group)
+                                  ->where('jr_date', '<', $data_date)
+                                  ->where('jr_date', '>', DB::raw("opening_date"))
+                                  ->where("jrdt_statusdk", 'K')
+                                  ->select(DB::raw('sum(coalesce(d_jurnal_dt.jrdt_value, 0)) as value'))->first();
 
                   // $saldo_awal = DB::table("d_akun_saldo")
                   //               ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
@@ -110,49 +155,11 @@ class laporan_neraca extends Controller
                   //               ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
                 }
 
-                $total_akhir = (is_null($transaksi->total)) ? (0 + $saldo_awal->saldo) : ($transaksi->total + $saldo_awal->saldo);
+                $saldo = $saldo_awal->value + $mutasi_debet->value + $mutasi_kredit->value;
 
-              }else if($throttle == "tahun"){
-                if($_GET["cab"] == "all"){
-                  $transaksi = DB::table("d_jurnal_dt")
-                             ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
-                             ->join("d_jurnal", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
-                             ->where("d_akun.group_neraca", $detail_dt->id_group)
-                             ->where("d_jurnal.jr_year", '<=', $request->y)
-                             ->select(DB::raw("sum(jrdt_value) as total"))->first();
+                // return $saldo;
 
-                  $saldo_awal = DB::table("d_akun")
-                                ->where("d_akun.group_neraca", $detail_dt->id_group)
-                                ->select(DB::raw("sum(opening_balance) as saldo"))->first();
-
-                  // $saldo_awal = DB::table("d_akun_saldo")
-                  //               ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
-                  //               ->where("d_akun.group_neraca", $detail_dt->id_group)
-                  //               ->where("d_akun_saldo.tahun", $request->y)
-                  //               ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
-
-                }else{
-                  $transaksi = DB::table("d_jurnal_dt")
-                             ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
-                             ->join("d_jurnal", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
-                             ->where("d_akun.group_neraca", $detail_dt->id_group)
-                             ->where('d_akun.kode_cabang', $_GET["cab"])
-                             ->where("d_jurnal.jr_year", '<=', $request->y)
-                             ->select(DB::raw("sum(jrdt_value) as total"))->first();
-
-                  $saldo_awal = DB::table("d_akun")
-                                ->where("d_akun.group_neraca", $detail_dt->id_group)
-                                ->select(DB::raw("sum(opening_balance) as saldo"))->first();
-
-                  // $saldo_awal = DB::table("d_akun_saldo")
-                  //               ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
-                  //               ->where("d_akun.group_neraca", $detail_dt->id_group)
-                  //               ->where('d_akun.kode_cabang', $_GET["cab"])
-                  //               ->where("d_akun_saldo.tahun", $request->y)
-                  //               ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
-                }
-
-                $total_akhir = (is_null($transaksi->total)) ? (0 + $saldo_awal->saldo) : ($transaksi->total + $saldo_awal->saldo);
+                $total_akhir = $saldo;
 
               }
 
@@ -199,7 +206,140 @@ class laporan_neraca extends Controller
              ->withData_detail($data_detail)
              ->withCabangs($cabangs)
              ->withCabang($cabang);
+=======
+      if($throttle == 'bulan'){
+        
+        $data_date = $request->y.'-'.($request->m + 1).'-01';;
+        $data_real = $request->y.'-'.$request->m.'-01';
+        $neraca = neraca::where('is_active', 1)->first();
+        $id = $neraca->id_desain;
+
+        // return $data_date.' - '.$data_real;
+
+        $detail = neraca_detail::where('id_desain', $neraca->id_desain)
+                    ->with(['detail' => function($query) use ($id, $data_date){
+                      $query->where('id_desain', $id)->with(['akun' => function($query) use ($data_date){
+                        $query->select('id_akun', 'nama_akun', 'akun_dka', DB::raw('coalesce(opening_balance, 0)'), 'opening_date', 'group_neraca')
+                                  ->with([
+                                        'mutasi_bank_debet' => function($query) use ($data_date){
+                                              $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                                                    ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
+                                                    ->where('jr_date', '>=', DB::raw("opening_date"))
+                                                    ->where('jr_date', '<', $data_date)
+                                                    ->groupBy('jrdt_acc', 'opening_date')
+                                                    ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'), 'opening_date');
+                                        }
+                                  ])
+                                  ->orderBy('id_akun', 'asc');
+                      }]);
+                    }])
+                    ->orderBy('nomor_id', 'asc')
+                    ->get();
+
+      }else{
+
+        $data_date = ($request->y + 1).'-01-01';
+        $data_real = $request->y.'-01-01';
+        $neraca = neraca::where('is_active', 1)->first();
+        $id = $neraca->id_desain;
+
+        // return $data_date.' - '.$data_real;
+
+        $detail = neraca_detail::where('id_desain', $neraca->id_desain)
+                    ->with(['detail' => function($query) use ($id, $data_date){
+                      $query->where('id_desain', $id)->with(['akun' => function($query) use ($data_date){
+                        $query->select('id_akun', 'nama_akun', 'akun_dka', DB::raw('coalesce(opening_balance, 0)'), 'opening_date', 'group_neraca')
+                                  ->with([
+                                        'mutasi_bank_debet' => function($query) use ($data_date){
+                                              $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                                                    ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
+                                                    ->where('jr_date', '>=', DB::raw("opening_date"))
+                                                    ->where('jr_date', '<', $data_date)
+                                                    ->groupBy('jrdt_acc', 'opening_date')
+                                                    ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'), 'opening_date');
+                                        }
+                                  ])
+                                  ->orderBy('id_akun', 'asc');
+                      }]);
+                    }])
+                    ->orderBy('nomor_id', 'asc')
+                    ->get();
+
+      }
+
+      // return json_encode($detail);
+
+      return view("laporan_neraca.print_pdf.pdf_single", compact('throttle', 'request', 'neraca', 'detail', 'data_date', 'data_real'));
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
   }
 
   // laporan neraca index end
+
+  public function index_neraca_perbandingan(Request $request, $throttle){
+
+    if($throttle == 'bulan'){
+
+        $data_date_1 = explode('-', $request->d1)[1].'-'.(explode('-', $request->d1)[0] + 1).'-01';
+        $data_real_1 = explode('-', $request->d1)[1].'-'.explode('-', $request->d1)[0].'-01';
+
+        $data_date_2 = explode('-', $request->d2)[1].'-'.(explode('-', $request->d2)[0] + 1).'-01';
+        $data_real_2 = explode('-', $request->d2)[1].'-'.explode('-', $request->d2)[0].'-01';
+
+
+        $neraca = neraca::where('is_active', 1)->first();
+        $id = $neraca->id_desain;
+
+        // return $data_date.' - '.$data_real;
+
+        // data 1
+
+        $detail_1 = neraca_detail::where('id_desain', $neraca->id_desain)
+                    ->with(['detail' => function($query) use ($id, $data_date_1){
+                      $query->where('id_desain', $id)->with(['akun' => function($query) use ($data_date_1){
+                        $query->select('id_akun', 'nama_akun', 'akun_dka', DB::raw('coalesce(opening_balance, 0)'), 'opening_date', 'group_neraca')
+                                  ->with([
+                                        'mutasi_bank_debet' => function($query) use ($data_date_1){
+                                              $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                                                    ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
+                                                    ->where('jr_date', '>=', DB::raw("opening_date"))
+                                                    ->where('jr_date', '<', $data_date_1)
+                                                    ->groupBy('jrdt_acc', 'opening_date')
+                                                    ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'), 'opening_date');
+                                        }
+                                  ])
+                                  ->orderBy('id_akun', 'asc');
+                      }]);
+                    }])
+                    ->orderBy('nomor_id', 'asc')
+                    ->get();
+
+      // data 2
+
+      $detail_2 = neraca_detail::where('id_desain', $neraca->id_desain)
+                    ->with(['detail' => function($query) use ($id, $data_date_2){
+                      $query->where('id_desain', $id)->with(['akun' => function($query) use ($data_date_2){
+                        $query->select('id_akun', 'nama_akun', 'akun_dka', DB::raw('coalesce(opening_balance, 0)'), 'opening_date', 'group_neraca')
+                                  ->with([
+                                        'mutasi_bank_debet' => function($query) use ($data_date_2){
+                                              $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
+                                                    ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
+                                                    ->where('jr_date', '>=', DB::raw("opening_date"))
+                                                    ->where('jr_date', '<', $data_date_2)
+                                                    ->groupBy('jrdt_acc', 'opening_date')
+                                                    ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'), 'opening_date');
+                                        }
+                                  ])
+                                  ->orderBy('id_akun', 'asc');
+                      }]);
+                    }])
+                    ->orderBy('nomor_id', 'asc')
+                    ->get();
+
+      // return $detail_1;
+      
+      return view("laporan_neraca.print_pdf.pdf_perbandingan", compact('throttle', 'request', 'neraca', 'detail_1', 'detail_2', 'data_date_1', 'data_date_2', 'data_real_1', 'data_real_2'));
+    
+    }
+
+  }
 }

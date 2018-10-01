@@ -31,32 +31,116 @@ class do_kargo_Controller extends Controller
         }
         $kota = DB::table('kota')
                   ->get();
-        return view('sales.do_kargo.index',compact('data','kota'));
+
+        $kota = DB::table('kota')->get();
+        $kota1= DB::table('kota')->get();
+        $cabang= DB::table('cabang')->get();
+        $customer= DB::table('customer')->get();
+        $jenis_tarif = DB::table('jenis_tarif')
+                         ->where('jt_group',1)
+                         ->orWhere('jt_group',2)
+                         ->orWhere('jt_group',3)
+                         ->orderBy('jt_id','ASC')
+                         ->get();
+        return view('sales.do_kargo.index',compact('data','kota','customer','kota1','cabang','jenis_tarif'));
     }
 
-    public function datatable_do_kargo()
+    public function datatable_do_kargo(Request $req)
     {
+      $cabang = DB::table('cabang')
+                  ->where('kode',$req->cabang)
+                  ->first();
 
-      $cabang = auth::user()->kode_cabang;
-      if (Auth::user()->punyaAkses('Delivery Order','all')) {
+      if ($cabang == null) {
+        $cabang == '';
+      }else{
+        $cabang = 'and kode_cabang ='."'$cabang->kode'";
+      }
+
+      if ($req->min == '') {
+        $min = '';
+      }else{
+        $min = 'and tanggal >='."'$req->min'";
+      }
+
+      if ($req->max == '') {
+        $max = '';
+      }else{
+        $max = 'and tanggal <='."'$req->max'";
+      }
+
+      if ($req->jenis == '') {
+        $jenis = '';
+      }else{
+        $jenis = 'and jenis_pengiriman ='."'$req->jenis'";
+      }
+
+      if ($req->customer == '') {
+        $customer = '';
+      }else{
+        $customer = 'and kode_customer ='."'$req->customer'";
+      }
+
+      if ($req->kota_asal == '') {
+        $kota_asal = '';
+      }else{
+        $kota_asal = 'and id_kota_asal ='."'$req->kota_asal'";
+      }
+
+      if ($req->kota_tujuan == '') {
+        $kota_tujuan = '';
+      }else{
+        $kota_tujuan = 'and id_kota_tujuan ='."'$req->kota_tujuan'";
+      }
+
+      if ($req->status == '') {
+        $status = '';
+      }else{
+        $status = 'and status ='."'$req->status'";
+      }
+
+      if ($req->do_nomor != '') {
+        if (Auth::user()->punyaAkses('Delivery Order','all')) {
+            $data = DB::table('delivery_order')
+                      ->join('cabang','kode','=','kode_cabang')
+                      ->where('jenis','KARGO')
+                      ->where('nomor','like','%'.$req->do_nomor.'%')
+                      ->orderBy('tanggal','DESC')
+                      ->get();
+        }else{
+            $cabang = Auth::user()->kode_cabang;
+            $data = DB::table('delivery_order')
+                      ->join('cabang','kode','=','kode_cabang')
+                      ->where('jenis','KARGO')
+                      ->where('kode_cabang',$cabang)
+                      ->where('nomor','like','%'.$req->do_nomor.'%')
+                      ->orderBy('tanggal','DESC')
+                      ->get();
+        }
+        
+      }else{
+        if (Auth::user()->punyaAkses('Delivery Order','all')) {
           $data = DB::table('delivery_order')
                     ->join('cabang','kode','=','kode_cabang')
-                    ->where('jenis','KARGO')
+                    ->whereRaw("jenis = 'KARGO' $min $max $customer $jenis $cabang $kota_asal $kota_tujuan $status")
                     ->orderBy('tanggal','DESC')
                     ->get();
-      }else{
+        }else{
+          $cabang = Auth::user()->kode_cabang;
           $data = DB::table('delivery_order')
                     ->join('cabang','kode','=','kode_cabang')
                     ->where('jenis','KARGO')
                     ->where('kode_cabang',$cabang)
+                    ->whereRaw("jenis = 'KARGO' and kode_cabang='$cabang' $min $max $customer $jenis $kota_asal $kota_tujuan $status")
                     ->orderBy('tanggal','DESC')
                     ->get();
+        }
       }
-        // return $data;
-        $data = collect($data);
-        // return $data;
 
-        return Datatables::of($data)
+      $data = collect($data);
+      // return $data;
+
+      return Datatables::of($data)
                         ->addColumn('aksi', function ($data) {
 
                             if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah')){
@@ -125,6 +209,7 @@ class do_kargo_Controller extends Controller
                               ->join('kontrak_customer','kc_kode_customer','=','kode')
                               ->join('kontrak_customer_d','kcd_id','=','kc_id')
                               ->where('kcd_jenis','KARGO')
+                              ->where('kcd_active',true)
                               ->select('kode')
                               ->groupBy('kode')
                               ->orderBy('kode','ASC')
@@ -387,6 +472,7 @@ class do_kargo_Controller extends Controller
                       // ->where('kcd_kota_tujuan',$request->tujuan)
                       ->where('kc_kode_cabang',$request->cabang_select)
                       ->where('kcd_jenis','KARGO')
+                      ->where('kcd_active',true)
                       ->orderBy('kcd_id','ASC')
                       ->get();
 

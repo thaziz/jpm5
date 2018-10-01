@@ -136,8 +136,8 @@
 				<td class="border-none-header" colspan="7" style="padding: 5px;">
 					<table width="100%" class="border-none">
 						<tr>
-							<td class="bold"><TEX class="s16">PT. Jawa Pratama Mandiri</TEX><br>
-								<tex class="underline">JL KARAH AGUNG 45 SURABAYA</tex>
+							<td class="bold"><TEX class="s16">{{perusahaan()->mp_nama}}</TEX><br>
+								<tex class="underline">{{perusahaan()->mp_alamat}}</tex>
 							</td>
 							<td class="text-center"><h1 class="s16">TANDA TERIMA TAGIHAN</h1></td>
 							<td class="text-center"><tex class="bold">No. </tex><tex <!-- custom tag -- style="padding-left: 70px;margin-left:-10px;border-bottom: 1px solid black">(prenumber)</tex>

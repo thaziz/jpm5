@@ -189,7 +189,7 @@
                         <div class="row">
                           <div class="col-md-5">
 
-                            <select class="form-control jenisppn_po">
+                            <select class="form-control jenisppn_po" name="jenisppn_po">
                               <option value="T" @if($faktur->fp_jenisppn == 'T') selected="" @endif>
                                 TANPA
                               </option>
@@ -544,11 +544,7 @@
                                 <td width='150px'> Nama Item : </td>
                                 <td width="150px">
                                 <select class='form-control chosen-select-width1 item' name="nama_item" required="" id="item"> 
-                                        <option value=""> -- Pilih Barang -- </option>
-                                        <option value=""> -- Pilih Barang -- </option>                              
-                                        <option value=""> -- Pilih Barang -- </option>                              
-                                        <option value=""> -- Pilih Barang -- </option>                              
-                                                                  
+                                        <option value=""> -- Pilih Barang -- </option>                                                   
                                 </select>
 
                                 <input type="hidden" class="stock"> 

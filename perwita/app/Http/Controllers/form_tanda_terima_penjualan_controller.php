@@ -373,6 +373,13 @@ class form_tanda_terima_penjualan_controller extends Controller
 
     public function printing($id)
     {
+
+    	$data = DB::table('form_tt_penjualan')
+    			  ->join('form_tt_penjualan_d','ft_id','=','ftd_id')
+    			  ->where('ft_id',$id)
+    			  ->get();
+
+    			  
     	return view('sales.form_tanda_terima.print_tt');
     }
 

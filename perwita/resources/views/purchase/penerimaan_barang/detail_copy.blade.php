@@ -743,7 +743,14 @@
                 });
              }
              else  if(response.status == 'gagal') {
-                //alert(response.info);
+                swal({
+                title: "errpr!",
+                        type: 'error',
+                        text: response.info,
+                        timer: 900,
+                       showConfirmButton: false
+                        
+                });
              }
           },
           error : function(){
@@ -920,6 +927,7 @@
                                 "<input type='hidden' class='kodeitem4"+$noajax+" kodeitem2"+$notable+"' value="+response.barang[j][x].kode_item+">" +
                                 "<input type='hidden' class='idpbdt"+$noajax+" idpbdt2"+$notable+"' value="+response.barang[j][x].pbdt_id+">" +
                                 "<input type='hidden' class='idpb2"+$notable+"' value="+response.barang[j][x].pbdt_idpb+">" +
+                                "<input type='hidden' class='akunitem"+$notable+"' value="+response.barang[j][x].podt_akunitem+">" +
 
                                 "<td>"+ response.barang[j][x].spp_nospp +"</td> </tr>";
                           qtykirim.push(response.barang[j][x].podt_qtykirim);
@@ -976,7 +984,7 @@
                                           timer: 2000,
                                           showConfirmButton: true
                                           },function(){
-                                             location.reload();
+                                           //  location.reload();
                                   });
                                 }else{
                                  swal({
@@ -1034,7 +1042,7 @@
                   })
 
                   arrakunitem = [];
-                  $('.akunitem').each(function(){
+                  $('.akunitem' + id).each(function(){
                     val = $(this).val();
                     arrakunitem.push(val);
                   })
@@ -1068,7 +1076,7 @@
                       dataType : 'json',
                       success : function(response){
                          alertSuccess(); 
-                         location.reload();
+                       //  location.reload();
                          $('.qtyreceive2').attr('disabled', 'true');
                          $('.suratjalan' + id).attr('readonly' , true);
                       }

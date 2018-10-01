@@ -109,7 +109,7 @@ class laporan_neraca_saldo extends Controller
                   }
             ])->get();
 
-            // return json_encode($data_saldo);
+            // return json_encode($data);
 
       }else if($request->jenis == 'Tahun'){
 

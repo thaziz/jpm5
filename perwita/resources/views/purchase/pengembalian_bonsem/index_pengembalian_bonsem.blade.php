@@ -12,10 +12,10 @@
   .asw:hover{
     color: red;
   }
-  .center:{
+  td .center:{
     text-align: center !important;
   }
-  .right:{
+  td .right:{
     text-align: right !important;
   }
 </style>
@@ -106,24 +106,61 @@
                         </tr>
                     </table>
                   </div>
-                  <div class="col-sm-12 append_table table-responsive" style="overflow-y: scroll;">
-                    <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
-                      <thead align="center">
-                       <tr>
-                          <th> No. BKK </th>
-                          <th> Tanggal </th>
-                          <th> Nama Cabang </th>
-                          <th> Keperluan </th> 
-                          <th> Total </th>   
-                          <th> Status </th>
-                          <th> Aksi </th>
-                      </tr>
-                      </thead>
-                      <tbody>  
-                        
-                      </tbody>
-                    </table>
+                  <div>
+
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                      <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Bonsem</a></li>
+                      <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">History</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                      <div role="tabpanel" class="tab-pane active" id="home">
+                        <div class="col-sm-12 append_table table-responsive" style="overflow-y: scroll;"> 
+                          <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang" style="width: 100%"> 
+                            <thead align="center">
+                             <tr>
+                                <th> No. BKK </th>
+                                <th> Tanggal </th>
+                                <th> Nama Cabang </th>
+                                <th> Keperluan </th> 
+                                <th> Total </th>   
+                                <th> Status </th>
+                                <th> Aksi </th>
+                            </tr>
+                            </thead>
+                            <tbody>  
+                              
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div role="tabpanel" class="tab-pane" id="profile">
+                        <div class="col-sm-12 append_table table-responsive" style="overflow-y: scroll;">
+                          <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang-history" style="width: 100%">
+                            <thead align="center">
+                             <tr>
+                                <th> No. BKK </th>
+                                <th> Tanggal Posting</th>
+                                <th> Nama Cabang </th>
+                                <th> Keterangan </th> 
+                                <th> Total Kembali</th>   
+                                <th> Bank Tujuan </th>   
+                                <th> Status </th>
+                                <th> Aksi </th>
+                            </tr>
+                            </thead>
+                            <tbody>  
+                              
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
+                  
                 </div><!-- /.box-body -->
 
                 <div class="box-footer">
@@ -287,6 +324,44 @@ $(document).ready(function(){
           { "data": "aksi" },
           ]
     });
+
+    $('.tbl-penerimabarang-history').DataTable({
+         processing: true,
+          // responsive:true,
+          serverSide: true,
+          "order": [[ 1, "desc" ],[ 0, "desc" ]],
+          ajax: {
+              url:'{{ route("datatable_pengembalian_history") }}',
+              error:function(){
+                location.reload();
+              }
+          },
+          columnDefs: [
+            {
+               targets: 3,
+               className:'right'
+            },
+            {
+               targets: 4,
+               className:'center'
+            },
+            {
+               targets:5,
+               className:'center'
+            },
+          ],
+          "columns": [
+          { "data": "bp_nota" },
+          { "data": "bp_tanggal_pengembalian" },
+          { "data": "cabang" },
+          { "data": "bp_keterangan_pengembalian" },
+          { "data": "bp_total_pengembalian",render: $.fn.dataTable.render.number( '.', ',', 2, '' )},
+          { "data": "bank" },
+          { "data": "status"},
+          { "data": "aksi" },
+          ]
+    });
+    $('.center').css('text-align','center');
 })
 
 
@@ -441,7 +516,7 @@ function save() {
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Approve!",
     cancelButtonText: "Batal",
-    closeOnConfirm: false
+    closeOnConfirm: true
   },
 
 function(){
@@ -456,11 +531,10 @@ function(){
           title: "Error!",
                   type: 'warning',
                   text: data.pesan,
-                  timer: 2000,
-                  showConfirmButton: true
+                  timer: 200,
                   },function(){
-                    var tableDetail = $('.tbl-penerimabarang').DataTable();
-                    tableDetail.ajax.reload();
+                    // var tableDetail = $('.tbl-penerimabarang').DataTable();
+                    // tableDetail.ajax.reload();
                     return false;
           });
         }else if (data.status == '1'){
@@ -468,11 +542,10 @@ function(){
           title: "Berhasil!",
                   type: 'success',
                   text: "Data Berhasil DiApprove",
-                  timer: 2000,
-                  showConfirmButton: true
+                  timer: 200,
                   },function(){
-                     var tableDetail = $('.tbl-penerimabarang').DataTable();
-                    tableDetail.ajax.reload();
+                    //  var tableDetail = $('.tbl-penerimabarang').DataTable();
+                    // tableDetail.ajax.reload();
           });
         }
       },

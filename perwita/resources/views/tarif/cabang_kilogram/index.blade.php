@@ -133,7 +133,7 @@
                           @endif
                             <td align="center">Jenis</td>
                             <td align="center" 
-                             @if (Auth::user()->punyaAkses('Tarif Cabang Kilogram','cabang') == false)
+                             @if (Auth::user()->punyaAkses('Tarif Cabang Kilogram','cabang'))
                              colspan="3" 
                              @endif
                              >

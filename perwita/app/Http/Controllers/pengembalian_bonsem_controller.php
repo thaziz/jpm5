@@ -42,7 +42,6 @@ class pengembalian_bonsem_controller extends Controller
 			$req->tanggal_akhir = '0';
 			$req->jenis_biaya = '0';
 		}
-
 		$nama_cabang = DB::table("cabang")
 						 ->where('kode',$req->cabang)
 						 ->first();
@@ -54,18 +53,19 @@ class pengembalian_bonsem_controller extends Controller
 		}
 
 
-		if ($req->tanggal_awal != '0') {
-			$tgl_awal = carbon::parse($req->tanggal_awal)->format('Y-m-d');
-			$tanggal_awal = 'and bp_tgl >= '."'$tgl_awal'";
+		if ($req->tanggal_awal == '0' or $req->tanggal_awal == '') {
+      $tanggal_awal = '';
 		}else{
-			$tanggal_awal = '';
+      $tgl_awal = carbon::parse($req->tanggal_awal)->format('Y-m-d');
+      $tanggal_awal = 'and bp_tgl >= '."'$tgl_awal'";
 		}
 
-		if ($req->tanggal_akhir != '0') {
-			$tgl_akhir = carbon::parse($req->tanggal_akhir)->format('Y-m-d');
-			$tanggal_akhir = 'and bp_tgl <= '."'$tgl_akhir'";
+		if ($req->tanggal_akhir == '0' or $req->tanggal_akhir == '') {
+			
+      $tanggal_akhir = '';
 		}else{
-			$tanggal_akhir = '';
+      $tgl_akhir = carbon::parse($req->tanggal_akhir)->format('Y-m-d');
+      $tanggal_akhir = 'and bp_tgl <= '."'$tgl_akhir'";
 		}
 
 		if ($req->nota != '0') {
@@ -87,12 +87,12 @@ class pengembalian_bonsem_controller extends Controller
 		}else{
 			if (Auth::user()->punyaAkses('Pengembalian Bonsem','all')) {
 
-				$sql = "SELECT * FROM bonsem_pengajuan where bp_nota != '0' $cabang $tanggal_awal $tanggal_akhir ";
+				$sql = "SELECT * FROM bonsem_pengajuan where bp_terima = 'DONE' and bp_sisapemakaian != '0' $cabang $tanggal_awal $tanggal_akhir ";
 
 				$data = DB::select($sql);
 			}else{
 				$cabang = Auth::user()->kode_cabang;
-				$sql = "SELECT * FROM bonsem_pengajuan where bp_nota != '0' and bp_cabang = '$cabang' $tanggal_awal $tanggal_akhir";
+				$sql = "SELECT * FROM bonsem_pengajuan where bp_terima = 'DONE' and bp_cabang = '$cabang' and bp_sisapemakaian != '0' $tanggal_awal $tanggal_akhir";
 				$data = DB::select($sql);
 			}
 		}
@@ -101,7 +101,7 @@ class pengembalian_bonsem_controller extends Controller
         return Datatables::of($data)
             ->addColumn('aksi', function ($data) {
                 $a = '';
-            	if ($data->bp_status_pengembalian == 'Approve' or Auth::user()->punyaAkses('Pengembalian Bonsem','ubah')) {
+            	if (Auth::user()->punyaAkses('Pengembalian Bonsem','ubah')) {
             		if(cek_periode(carbon::parse($data->bp_tgl)->format('m'),carbon::parse($data->bp_tgl)->format('Y') ) != 0){
                       $a = '<a title="Edit" class="btn btn-xs btn-warning" onclick="pengembalian(\''.$data->bp_id.'\')">
                   			<i class="fa fa-arrow-right" aria-hidden="true"></i></a> ';
@@ -137,11 +137,13 @@ class pengembalian_bonsem_controller extends Controller
             })
             ->addColumn('status', function ($data) {
               if ($data->bp_status_pengembalian == 'Approve') {
-                return '<label class="label label-success">APPROVED</label>';
+                return '<label class="label label-default">APPROVED</label>';
               }else if($data->bp_status_pengembalian == 'Released'){
                 return '<label class="label label-warning">RELEASED</label>';
               }else if($data->bp_status_pengembalian == 'Process'){
                 return '<label class="label label-info">PROCESS</label>';
+              }else if($data->bp_status_pengembalian == 'Posting'){
+                return '<label class="label label-success">POSTING</label>';
               }
             })
             ->addColumn('tagihan', function ($data) {
@@ -157,6 +159,141 @@ class pengembalian_bonsem_controller extends Controller
             ->make(true);
 	}
 
+
+  public function datatable_pengembalian_history(request $req)
+  {
+    if ($req->flag == 'global') {
+      $req->nota = '0';
+    }else{
+      $req->tanggal_awal = '0';
+      $req->tanggal_akhir = '0';
+      $req->jenis_biaya = '0';
+    }
+    $nama_cabang = DB::table("cabang")
+             ->where('kode',$req->cabang)
+             ->first();
+
+    if ($nama_cabang != null) {
+      $cabang = 'and bp_cabang = '."'$req->cabang'";
+    }else{
+      $cabang = '';
+    }
+
+
+    if ($req->tanggal_awal == '0' or $req->tanggal_awal == '') {
+      $tanggal_awal = '';
+    }else{
+      $tgl_awal = carbon::parse($req->tanggal_awal)->format('Y-m-d');
+      $tanggal_awal = 'and bp_tgl >= '."'$tgl_awal'";
+    }
+
+    if ($req->tanggal_akhir == '0' or $req->tanggal_akhir == '') {
+      
+      $tanggal_akhir = '';
+    }else{
+      $tgl_akhir = carbon::parse($req->tanggal_akhir)->format('Y-m-d');
+      $tanggal_akhir = 'and bp_tgl <= '."'$tgl_akhir'";
+    }
+
+    if ($req->nota != '0') {
+      if (Auth::user()->punyaAkses('Pengembalian Bonsem','all')) {
+        $data = DB::table('bonsem_pengajuan')
+              ->where('bp_terima','DONE')
+              ->where('bp_nota','LIKE','%'.$req->nota.'%')
+              ->where('bp_status_pengembalian','!=','Released')
+              ->get();
+      }else{
+        $cabang = Auth::user()->kode_cabang;
+        $data = DB::table('bonsem_pengajuan')
+              ->where('bp_cabang',$cabang)
+              ->where('bp_terima','DONE')
+              ->where('bp_nota','LIKE','%'.$req->nota.'%')
+              ->where('bp_status_pengembalian','!=','Released')
+              ->get();
+      }
+    }else{
+      if (Auth::user()->punyaAkses('Pengembalian Bonsem','all')) {
+
+        $sql = "SELECT * FROM bonsem_pengajuan where bp_terima = 'DONE' and bp_status_pengembalian = 'Process' $cabang $tanggal_awal $tanggal_akhir ";
+
+        $data = DB::select($sql);
+      }else{
+        $cabang = Auth::user()->kode_cabang;
+        $sql = "SELECT * FROM bonsem_pengajuan where bp_terima = 'DONE' and bp_cabang = '$cabang' and bp_status_pengembalian = 'Process' $tanggal_awal $tanggal_akhir";
+        $data = DB::select($sql);
+      }
+    }
+        $data = collect($data);
+        // return $data;
+        return Datatables::of($data)
+            ->addColumn('aksi', function ($data) {
+                $a = '';
+              if (Auth::user()->punyaAkses('Pengembalian Bonsem','ubah')) {
+                if(cek_periode(carbon::parse($data->bp_tgl)->format('m'),carbon::parse($data->bp_tgl)->format('Y') ) != 0){
+                      // $a = '<a title="Edit" class="btn btn-xs btn-warning" onclick="pengembalian(\''.$data->bp_id.'\')">
+                      //   <i class="fa fa-arrow-right" aria-hidden="true"></i></a> ';
+                    }
+                }else{
+                    if ($data->bp_status_pengembalian != 'Approve') {
+                    if(cek_periode(carbon::parse($data->bp_tgl)->format('m'),carbon::parse($data->bp_tgl)->format('Y') ) != 0){
+                          // $a = '<a title="Edit" class="btn btn-xs btn-warning" onclick="pengembalian(\''.$data->bp_id.'\')">
+                          //   <i class="fa fa-arrow-right" aria-hidden="true"></i></a> ';
+                        }
+                  }
+                }
+
+                $c = '';
+                $kembali = 'pengembalian';
+                $d = '<a class="btn btn-xs btn-success" onclick="lihat_jurnal(\''.$data->bp_nota.'\',\''.$kembali.'\')" title="lihat jurnal"><i class="fa fa-eye"></i></a>';
+
+                return '<div class="btn-group">' .$a . $c .$d.'</div>' ;
+                       
+
+                       
+            })
+        
+            ->addColumn('cabang', function ($data) {
+              $kota = DB::table('cabang')
+                        ->get();
+
+              for ($i=0; $i < count($kota); $i++) { 
+                if ($data->bp_cabang == $kota[$i]->kode) {
+                    return $kota[$i]->nama;
+                }
+              }
+            })
+            ->addColumn('status', function ($data) {
+              if ($data->bp_status_pengembalian == 'Approve') {
+                return '<label class="label label-default">APPROVED</label>';
+              }else if($data->bp_status_pengembalian == 'Released'){
+                return '<label class="label label-warning">RELEASED</label>';
+              }else if($data->bp_status_pengembalian == 'Process'){
+                return '<label class="label label-info">PROCESS</label>';
+              }else if($data->bp_status_pengembalian == 'Posting'){
+                return '<label class="label label-success">POSTING</label>';
+              }
+            })->addColumn('bank', function ($data) {
+              $bank = DB::table('masterbank')
+                        ->get();
+              foreach ($bank as $key => $v) {
+                if ($data->bp_akun_tujuan_pengembalian == $v->mb_id) {
+                  return $v->mb_nama;
+                }
+              }
+            })
+            ->addColumn('tagihan', function ($data) {
+              return number_format($data->bp_sisapemakaian,2,',','.'  ); 
+            })
+            ->addColumn('print', function ($data) {
+               return $a = '<input type="hidden" class="id_print" value="'.$data->bp_id.'">
+                <a title="Print" class="" onclick="printing(\''.$data->bp_id.'\')" >
+                <i class="fa fa-print" aria-hidden="true">&nbsp; Print</i>
+                </a>';
+            })
+            ->addIndexColumn()
+            ->make(true);
+  }
+
   public function edit(Request $req)
   { 
       DB::BeginTransaction();
@@ -170,8 +307,10 @@ class pengembalian_bonsem_controller extends Controller
                     ->update([
                       'bp_status_pengembalian' => 'Process',
                       'bp_keterangan_pengembalian'=> strtoupper($req->keterangan),
-                      'bp_keterangan_pengembalian'=> strtoupper($req->keterangan),
-                      'bp_tanggal_pengembalian'=> $req->tanggal
+                      'bp_akun_tujuan_pengembalian'=> $req->akun_bank,
+                      'bp_tanggal_pengembalian'=> $req->tanggal,
+                      'bp_sisapemakaian'=> 0,
+                      'bp_total_pengembalian'=> $cari->bp_sisapemakaian
                     ]);
 
         // //JURNAL
@@ -183,6 +322,7 @@ class pengembalian_bonsem_controller extends Controller
 
         $bank = 'KK';
         $km =  get_id_jurnal($bank, $req->cabang);
+        d_jurnal::where('jr_detail','PENGEMBALIAN BONSEM')->where('jr_ref',$cari->bp_nota)->delete();
         $jurnal = d_jurnal::create(['jr_id'   => $id_jurnal,
                       'jr_year'   => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y'),
                       'jr_date'   => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
@@ -194,67 +334,69 @@ class pengembalian_bonsem_controller extends Controller
                       'jr_no'   => $km,
                       ]);
 
-
-        $akun     = [];
-        $akun_val = [];
-        $cari_akun = DB::table('d_akun')
-                       ->where('id_akun','like','1001%')
-                       ->where('kode_cabang',$req->bp_cabang)
-                       ->first();
-        array_push($akun,$cari_akun->id_akun);
-        array_push($akun_val, $cari->bp_sisapemakaian);
-
-
-        array_push($akun, $cari->bp_akunhutang);
-        array_push($akun_val, $cari->bp_sisapemakaian);
+        if ($cari->bp_sisapemakaian != 0) {
         
-        $data_akun = [];
-        for ($i=0; $i < count($akun); $i++) { 
+          $akun     = [];
+          $akun_val = [];
+          $cari_akun = DB::table('d_akun')
+                         ->where('id_akun','like','1001%')
+                         ->where('kode_cabang',$req->bp_cabang)
+                         ->first();
+          array_push($akun,$cari_akun->id_akun);
+          array_push($akun_val, $cari->bp_sisapemakaian);
 
-          $cari_coa = DB::table('d_akun')
-                    ->where('id_akun',$akun[$i])
-                    ->first();
 
-          if (substr($akun[$i],0, 4)==1001) {
-            if ($cari_coa->akun_dka == 'D') {
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']      = $akun[$i];
-                $data_akun[$i]['jrdt_value']    = -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-                        $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan);
-                $data_akun[$i]['jrdt_statusdk'] = 'K';
-            }else{
+          array_push($akun, $cari->bp_akunhutang);
+          array_push($akun_val, $cari->bp_sisapemakaian);
+          $data_akun = [];
+          for ($i=0; $i < count($akun); $i++) { 
+
+            $cari_coa = DB::table('d_akun')
+                      ->where('id_akun',$akun[$i])
+                      ->first();
+
+            if (substr($akun[$i],0, 4)==1001) {
+              if ($cari_coa->akun_dka == 'D') {
+                  $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                  $data_akun[$i]['jrdt_detailid'] = $i+1;
+                  $data_akun[$i]['jrdt_acc']      = $akun[$i];
+                  $data_akun[$i]['jrdt_value']    = -round($akun_val[$i]);
+                          $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan);
+                  $data_akun[$i]['jrdt_statusdk'] = 'K';
+              }else{
+               
+                  $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                  $data_akun[$i]['jrdt_detailid'] = $i+1;
+                  $data_akun[$i]['jrdt_acc']    = $akun[$i];
+                  $data_akun[$i]['jrdt_value']  = -round($akun_val[$i]);
+                          $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan);
+                  $data_akun[$i]['jrdt_statusdk'] = 'D';
+              }
+            }if (substr($akun[$i],0, 4)==1002) {
+              
+              if ($cari_coa->akun_dka == 'D') {
+                  $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                  $data_akun[$i]['jrdt_detailid'] = $i+1;
+                  $data_akun[$i]['jrdt_acc']    = $akun[$i];
+                  $data_akun[$i]['jrdt_value']  = round($akun_val[$i]);
+                          $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan);
+                  $data_akun[$i]['jrdt_statusdk'] = 'D';
              
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']    = $akun[$i];
-                $data_akun[$i]['jrdt_value']  = -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-                        $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan);
-                $data_akun[$i]['jrdt_statusdk'] = 'D';
-            }
-          }if (substr($akun[$i],0, 4)==1002) {
-            
-            if ($cari_coa->akun_dka == 'D') {
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']    = $akun[$i];
-                $data_akun[$i]['jrdt_value']  = filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-                        $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan);
-                $data_akun[$i]['jrdt_statusdk'] = 'D';
-           
-            }else{
-                $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
-                $data_akun[$i]['jrdt_detailid'] = $i+1;
-                $data_akun[$i]['jrdt_acc']    = $akun[$i];
-                $data_akun[$i]['jrdt_value']  = filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-                        $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan);
-                $data_akun[$i]['jrdt_statusdk'] = 'K';
+              }else{
+                  $data_akun[$i]['jrdt_jurnal']   = $id_jurnal;
+                  $data_akun[$i]['jrdt_detailid'] = $i+1;
+                  $data_akun[$i]['jrdt_acc']    = $akun[$i];
+                  $data_akun[$i]['jrdt_value']  = round($akun_val[$i]);
+                          $data_akun[$i]['jrdt_detail']   = $cari_coa->nama_akun . ' ' . strtoupper($req->keterangan);
+                  $data_akun[$i]['jrdt_statusdk'] = 'K';
+              }
             }
           }
-        }
-        $jurnal_dt = d_jurnal_dt::insert($data_akun);
-        $lihat = d_jurnal_dt::where('jrdt_jurnal',$id_jurnal)->get()->toArray();
+          $jurnal_dt = d_jurnal_dt::insert($data_akun);
+          $lihat = d_jurnal_dt::where('jrdt_jurnal',$id_jurnal)->get()->toArray();
 
+          
+        }
         DB::commit();
         return Response()->json(['status'=>1]);
       }catch(Exception $error){

@@ -850,9 +850,7 @@
                 //bulan
                 var month = d.getMonth();
                 var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
+            
 
                 if(month < 10) {
                   month = '0' + month1;
@@ -1255,6 +1253,7 @@
       $('#tbmhdatainet').hide();
 
       $('.jenisbayarbankibaking').change(function(){
+         
           $this = $(this);
           jenisbayar = $('.jenisbayar').val();
            if ($this.is(":checked")) {
@@ -1284,7 +1283,7 @@
                   tgl = $('.tgl').val();
                   bank = $('.bank').val();
                   kodebank = bank.split("+");
-                  
+                
 
                   if(kodebank == ''){
                     toastr.info("Mohon pilih data bank terlebih dahulu :)");

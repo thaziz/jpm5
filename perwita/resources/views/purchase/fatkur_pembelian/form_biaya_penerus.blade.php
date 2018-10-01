@@ -7,7 +7,7 @@
  <tr>
  	<td style="width: 100px">Tanggal</td>
  	<td width="10">:</td>
- 	<td width="200">
+ 	<td width="200" colspan="3">
  		<input type="text" name="tgl_biaya_head" class="form-control tgl-biaya tgl_biaya_head" value="{{$date}}" readonly="" style="">
  		<input type="hidden" class="form-control tgl_resi"  readonly="" style="">
  		<input type="hidden" name="master_persen" class="form-control master_persen"  readonly="" style="">
@@ -16,19 +16,19 @@
  <tr>
  	<td style="width: 100px">Jatuh Tempo</td>
  	<td width="10">:</td>
- 	<td width="200">
+ 	<td width="200" colspan="3">
  		<input type="text" name="jatuh_tempo" class="form-control jatuh_tempo" value="{{$jt}}" placeholder="Jatuh tempo" style="">
  	</td>
  </tr>
 <tr>
  	<td style="width: 100px">Status </td>
  	<td width="10">:</td>
-	<td width="200"><input type="text" name="status" class="form-control" value="Released" readonly="" style=""></td>
+	<td width="200" colspan="3"><input type="text" name="status" class="form-control" value="Released" readonly="" style=""></td>
  </tr>
   <tr class="">
  	<td style="width: 100px">Tipe Vendor </td>
  	<td width="10">:</td>
- 	<td width="200" class="vendor_td">
+ 	<td width="200" colspan="3" class="vendor_td">
  		<select onchange="ganti_agen(this.value)" name="vendor" class="form-control vendor1 "  style="text-align: center; " >
  			<option  selected="" value="kosong">-PILIH TIPE VENDOR-</option>
  			<option value="AGEN">Agen Penerus </option>
@@ -39,7 +39,7 @@
  <tr class="nama-kontak-kosong">
  	<td style="width: 100px">Nama Agen/Vendor </td>
  	<td width="10">:</td>
- 	<td width="200" class="nama_kontak_td">
+ 	<td width="200" colspan="3" class="nama_kontak_td">
  		<select name="" class="form-control agen_vendor" style="text-align: center; ">
  			<option value="0" selected="">-PILIH NAMA AGEN/VENDOR-</option>
  		</select>
@@ -48,12 +48,12 @@
  <tr>
  	<td style="width: 100px">No Invoice</td>
  	<td width="10">:</td>
- 	<td width="200"><input type="text" name="Invoice_biaya" readonly="" class="form-control invoice_tt" style="" placeholder="No Invoice"></td>
+ 	<td width="200" colspan="3"><input type="text" name="Invoice_biaya" readonly="" class="form-control invoice_tt" style="" placeholder="No Invoice"></td>
  </tr>
  <tr>
   <td style="width: 100px">Tanda terima</td>
   <td width="10">:</td>
-  <td width="200">
+  <td width="200" colspan="3">
     <input type="text" readonly="" name="tanda_terima" class="form-control tanda_terima" value="" >
     <input type="hidden" readonly="" name="invoice_tt" class="form-control invoice_tt" value="" >
     <input type="hidden" readonly="" name="id_tt" class="form-control id_tt" value="" >
@@ -63,11 +63,92 @@
   <tr>
  	<td style="width: 100px">Keterangan</td>
  	<td width="10">:</td>
- 	<td width="200"><input type="text" name="Keterangan_biaya" style="text-transform: uppercase;" class="form-control" style=""></td>
+ 	<td width="200" colspan="3">
+    <input type="text" name="Keterangan_biaya" style="text-transform: uppercase;" class="form-control" style="">
+  </td>
  </tr>	
+ <tr>
+<<<<<<< HEAD
+    <td style="width: 100px">DPP</td>
+    <td width="10">:</td>
+    <td width="200" colspan="3">
+      <input value="Rp. 0,00" type="text" name="total_jml" class="form-control total_jml" style="" readonly="">
+=======
+    <td style="width: 100px">Total</td>
+    <td width="10">:</td>
+    <td width="200" colspan="3">
+      <input value="0" type="text" name="total_kotor_penerus" class="form-control total_kotor_penerus" style="" readonly="">
+    </td>
+  </tr>
+ <tr>
+    <td style="width: 100px">DPP</td>
+    <td width="10">:</td>
+    <td width="200" colspan="3">
+      <input value="Rp. 0,00" type="text" name="total_dpp_penerus" class="form-control total_dpp_penerus" style="" readonly="">
+      <input value="" type="hidden" name="diskon_penerus" class="form-control diskon_penerus hanya_angka">
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
+    </td>
+  </tr>
+ </tr>
+  <tr>
+  <td style="width: 100px" >Jenis PPN</td>
+  <td width="10">:</td>
+  <td width="200" >
+<<<<<<< HEAD
+    <select class="form-control jenis_ppn_penerus chosen-select-width1" name="jenis_ppn_penerus">
+      <option>Pilih - PPN</option>
+    </select>
+  </td>
+  <td style="width: 100px">PPN</td>
+=======
+    <select onchange="hitung_ppn_penerus()" class="form-control jenis_ppn_penerus chosen-select-width1" name="jenis_ppn_penerus">
+      <option value="">Pilih - PPN</option>
+      <option class="include">INCLUDE</option>
+      <option class="exclude">EXCLUDE</option>
+    </select>
+  </td>
+  <td style="width: 100px">
+    <input type="text" name="persen_ppn_penerus" value="10" style="text-transform: uppercase;" class="form-control persen_ppn_penerus hanya_angka center" onkeyup="hitung_ppn_penerus()">
+  </td>
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
+  <td width="200" >
+    <input type="text" name="ppn_penerus" readonly="" style="text-transform: uppercase;" class="form-control ppn_penerus" style="">
+  </td>
+ </tr>  
+ <tr>
+  <td style="width: 100px" >Jenis PPH</td>
+  <td width="10">:</td>
+  <td width="200" >
+<<<<<<< HEAD
+    <select class="form-control jenis_pph_penerus chosen-select-width1" name="jenis_pph_penerus">
+      <option>Pilih - PPH</option>
+=======
+    <select class="form-control jenis_pph_penerus chosen-select-width1" name="jenis_pph_penerus" onchange="hitung_pph_penerus()">
+      <option value="">Pilih - PPH</option>
+      @foreach ($pajak as $val)
+        <option value="{{ $val->id }}" data-val="{{ $val->nilai }}">{{ $val->nama }}</option>
+      @endforeach
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
+    </select>
+  </td>
+  <td style="width: 100px">PPH</td>
+  <td width="200" >
+    <input type="text" readonly="" name="pph_penerus" style="text-transform: uppercase;" class="form-control pph_penerus" style="">
+  </td>
+ </tr> 
+ <tr>
+    <td style="width: 100px">Total Netto</td>
+    <td width="10">:</td>
+    <td width="200" colspan="3">
+      <input value="Rp. 0,00" type="text" name="total_netto" class="form-control total_netto_penerus" style="" readonly="">
+    </td>
+  </tr>
 <tr>
-  <td colspan="3">
+  <td colspan="5">
      <button onclick="tt_penerus()" class="btn btn-info modal_penerus_tt disabled" style="margin-right: 20px;" type="button" data-toggle="modal" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+     <button type="button" class="btn btn-danger" onclick="modal_pajak_penerus()">Faktur Pajak</button>
+      <button type="button" class="btn btn-primary pull-right disabled save save_biaya" style="margin-right: 20px" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan</button>
+
      <button type="button" style="margin-right: 20px;" class="btn btn-warning pull-left disabled" id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
   </td>
 </tr>
@@ -124,11 +205,7 @@
 	 	<td width="10">:</td>
 		<td width="200"><input type="text" class="form-control keterangan_biaya" style="text-transform: uppercase;" style=""></td>
 	 </tr>
-	  <tr>
-		<td style="width: 100px">Total</td>
-		<td width="10">:</td>
-		<td width="200"><input value="Rp. 0,00" type="text" name="total_jml" class="form-control total_jml" style="" readonly=""></td>
-	  </tr>
+	  
 	  <tr>
 		<td style="width: 100px">Nominal</td>
 		<td width="10">:</td>
@@ -141,7 +218,6 @@
       <td colspan="3">
         <button type="button" class="btn btn-primary pull-right cari-pod" onclick="appendDO();"><i class="fa fa-search">&nbsp;Append</i></button>
 
-        <button type="button" class="btn btn-primary pull-right disabled save save_biaya" style="margin-right: 20px" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
 
         <button class="btn btn-primary btn_modal_bp disabled" type="button" > Bayar dengan Uang Muka </button>
 
@@ -351,13 +427,87 @@
   })
 
 
+<<<<<<< HEAD
+=======
+  $('.jenis_pph_penerus').change(function(){
+    var jumlah = $('.jenis_pph_penerus option:selected').data('val');
+    $('.persen_pph_penerus ').val(jumlah);
+  })
+
+  function hitung_total_penerus() {
+    var total_dpp_penerus  = $('.total_dpp_penerus').val().replace(/[^0-9\-]+/g,"")/100;
+    var ppn_penerus        = $('.ppn_penerus').val().replace(/[^0-9\-]+/g,"")/100;
+    var pph_penerus        = $('.pph_penerus').val().replace(/[^0-9\-]+/g,"")/100;
+
+    var hasil = total_dpp_penerus + ppn_penerus - pph_penerus;
+    $('.total_netto_penerus').val(accounting.formatMoney(hasil, "", 2, ".",','));
+  }
+
+  function hitung_ppn_penerus() {
+    var jenis_ppn_penerus  = $('.jenis_ppn_penerus ').val();
+    var ppn_penerus  = $('.total_dpp_penerus').val().replace(/[^0-9\-]+/g,"")/100;
+    var persen_ppn_penerus = $('.persen_ppn_penerus ').val();
+    var total_kotor_penerus  = $('.total_kotor_penerus').val().replace(/[^0-9\-]+/g,"")/100;
+    var diskon_penerus  = $('.diskon_penerus').val();
+    var td = total_kotor_penerus - diskon_penerus;
+    var hasil = 0;
+    if (jenis_ppn_penerus == 'EXCLUDE') {
+      hasil = persen_ppn_penerus/100 * td;
+      $('.total_dpp_penerus').val(accounting.formatMoney(td, "", 2, ".",','));
+    }else if (jenis_ppn_penerus == 'INCLUDE') {
+      hasil = persen_ppn_penerus/(100+persen_ppn_penerus*1) * td;
+      $('.total_dpp_penerus').val(accounting.formatMoney(td - hasil, "", 2, ".",','));
+    }
+
+    $('.ppn_penerus').val(accounting.formatMoney(hasil, "", 2, ".",','));
+    hitung_total_penerus();
+  }
+
+  function hitung_pph_penerus() {
+    var jenis_pph_penerus  = $('.jenis_pph_penerus ').val();
+    var total_kotor_penerus  = $('.total_kotor_penerus').val().replace(/[^0-9\-]+/g,"")/100;
+    var diskon_penerus  = $('.diskon_penerus').val();
+    var persen_pph_penerus = $('.persen_pph_penerus ').val();
+
+    var hasil = 0;
+    var td = total_kotor_penerus - diskon_penerus;
+    hasil = persen_pph_penerus/100 * td;
+    $('.pph_penerus').val(accounting.formatMoney(hasil, "", 2, ".",','));
+    hitung_total_penerus();
+  }
+
+  $('.diskon_penerus').keyup(function(){
+    hitung();
+  })
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 
   function hitung() {
     var temp = 0;
     datatable1.$('.bayar_biaya').each(function(){
       temp+=parseInt($(this).val());
     })
+<<<<<<< HEAD
     $('.total_jml').val(accounting.formatMoney(temp, "", 2, ".",','));
+=======
+
+    var hasil = temp - diskon_penerus;
+    if (hasil < 0) {
+      toastr.warning('PERHATIAN! DPP tidak boleh minus');
+
+      datatable1.$('.bayar_biaya').each(function(){
+        temp+=parseInt($(this).val());
+      })
+      $('.diskon_penerus').val('0');
+      hitung();
+      return false;
+    }
+    $('.total_kotor_penerus').val(accounting.formatMoney(temp, "", 2, ".",','));
+    $('.total_dpp_penerus').val(accounting.formatMoney(hasil, "", 2, ".",','));
+
+    hitung_ppn_penerus();
+    hitung_pph_penerus();
+    hitung_total_penerus();
+>>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
   }
 
 
@@ -498,6 +648,34 @@
     hitung();
   }
 
+  function modal_pajak_penerus() {
+    var jenis_ppn_penerus   = $('.jenis_ppn_penerus ').val();
+
+    var total_dpp_penerus   = $('.total_dpp_penerus ').val().replace(/[^0-9\-]+/g,"")/100;
+
+    var ppn_penerus         = $('.ppn_penerus ').val().replace(/[^0-9\-]+/g,"")/100;
+    var persen_ppn_penerus  = $('.persen_ppn_penerus ').val();
+
+
+    var total_netto         = $('.total_netto_penerus ').val().replace(/[^0-9\-]+/g,"")/100;
+
+    if (jenis_ppn_penerus  != '') {
+
+      $('.dpp_faktur_pajak_penerus ').val(accounting.formatMoney(total_dpp_penerus, "", 2, ".",','));
+      $('.dpp_faktur_pajak_penerus1 ').val(accounting.formatMoney(total_dpp_penerus, "", 2, ".",','));
+
+      $('.nilai_ppn_pajak_penerus ').val(persen_ppn_penerus);
+      $('.ppn_pajak_penerus ').val(accounting.formatMoney(ppn_penerus, "", 2, ".",','));
+
+      $('.ppn_pajak_penerus1 ').val(accounting.formatMoney(ppn_penerus, "", 2, ".",','));
+
+      $('.netto_pajak_penerus ').val(accounting.formatMoney(total_netto, "", 2, ".",','));
+      $('#modal_pajak').modal('show');
+    }else{
+      return toastr.warning('Harap Memilih Pajak PPn terlebih Dahulu');
+    }
+  }
+
   function tt_penerus() {
 
     var cabang = $('.cabang').val();
@@ -563,7 +741,10 @@
           type:'post',
           data:$('.head1 :input').serialize()
               +'&'+$('.head_biaya :input').serialize()
-              +'&'+datatable1.$('input').serialize(),
+              +'&'+datatable1.$('input').serialize()
+              +'&faktur_pajak_penerus='+$('.faktur_pajak_penerus').val()
+              +'&tanggal_pajak_penerus='+$('.tanggal_pajak_penerus').val()
+              +'&masa_pajak_penerus='+$('.masa_pajak_penerus').val(),
           success:function(response){
             if (response.status == 1) {
                 swal({
@@ -789,10 +970,10 @@ $('.save_bp_um').click(function(){
     console.log(b);
     temp+=b;
   })
-  var total_jml = $('.total_jml').val();
-  total_jml   = total_jml.replace(/[^0-9\-]+/g,"")/100;
+  var total_netto = $('.total_netto').val();
+  total_netto   = total_netto.replace(/[^0-9\-]+/g,"")/100;
 
-  if (temp > total_jml) {
+  if (temp > total_netto) {
     toastr.warning("Pembayaran Lebih Besar Dari Total Faktur");
     return false;
   }
@@ -818,7 +999,9 @@ $('.save_bp_um').click(function(){
         type:'post',
         data:$('.head1 :input').serialize()
               +'&'+$('.head_biaya :input').serialize()
-              +'&'+datatable2.$('input').serialize()+'&bp_total_um='+bp_total_um,
+              +'&'+datatable2.$('input').serialize()
+              +'&bp_total_um='+bp_total_um
+             ,
         success:function(response){
           if (response.status == 1) {
               swal({
@@ -830,6 +1013,12 @@ $('.save_bp_um').click(function(){
                   },function(){
                    $('.save_bp_um').addClass('disabled');
                    $('.btn_modal_bp').addClass('disabled');
+                   $('#tmbhdataitem').addClass('disabled');
+                   $('#tmbhdatapo').addClass('disabled');
+                   $('#tmbhdatapenerus').addClass('disabled');
+                   $('#tmbhdataoutlet').addClass('disabled');
+                   $('#tmbhdataoutlet').addClass('disabled');
+                   $('#tmbhdatasubcon').addClass('disabled');
                    
                   });
           }else if(response.status == 0){

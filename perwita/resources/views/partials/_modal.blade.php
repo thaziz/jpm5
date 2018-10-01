@@ -216,7 +216,9 @@
               <input type="hidden" value="{{ csrf_token() }}" name="_token" readonly>
               <table border="0" id="form-table" class="col-md-12">
 
-                <tr>
+                <input type="hidden" readonly name="jenis" value="Bulan">
+
+                {{-- <tr>
                   <td width="40%" class="text-center">Periode Buku Besar</td>
                   <td colspan="3">
                     <select class="form-control buku_besar select_validate" name="jenis" id="periode_buku_besar" style="width: 80%;">
@@ -224,7 +226,7 @@
                       <option value="Tahun">Tahunan</option>
                     </select>
                   </td>
-                </tr>
+                </tr> --}}
 
                 <tr>
                   <td width="40%" class="text-center">Pilih Cabang</td>
@@ -232,9 +234,9 @@
                     <select class="form-control buku_besar select_bukbes_validate choosen_akun" name="buku_besar_cabang" id="buku_besar_cabang" style="width: 80%;">
                       <option value="---">-- Pilih Cabang</option>
 
-                       @if(Session::get('cabang') == '000')
+                       {{-- @if(Session::get('cabang') == '000')
                           <option value="all">SEMUA CABANG</option>
-                        @endif
+                        @endif --}}
 
                       @foreach(cabang() as $cab)
                         @if($cab->kode == Session::get('cabang') || Session::get('cabang') == '000')
