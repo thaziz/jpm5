@@ -97,24 +97,26 @@
                       
                         <td> {{$bankmasuk->bm_jenisbayar}}</td>
                         <td> <span class="label label-info"> {{$bankmasuk->bm_status}} </span></td>
-                        <td> @if($bankmasuk->bm_status == 'DITERIMA')
-                            
-
-                         @if($bankmasuk->bm_notatransaksi == 'TRANSAKSI BM')
+                        <td>
+                        @if($bankmasuk->bm_status == 'DITERIMA')
+                          @if($bankmasuk->bm_notatransaksi == 'TRANSAKSI BM')
                                <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i>
-                           </a>   &nbsp;  <a class="btn btn-warning btn-xs" type="button" href="{{url('bankmasuk/editdata/'.$bankmasuk->bm_id.'')}}"> <i class="fa fa-pencil"> </i> </a> &nbsp;  <a class="btn btn-danger btn-xs" type="button" onclick="hapusdata({{$bankmasuk->bm_id}})"> <i class="fa fa-trash"> </i> </a> 
-                              @else
-                               <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i>
+                               </a>   &nbsp;  <a class="btn btn-warning btn-xs" type="button" href="{{url('bankmasuk/editdata/'.$bankmasuk->bm_id.'')}}"> <i class="fa fa-pencil"> </i> </a> &nbsp;  <a class="btn btn-danger btn-xs" type="button" onclick="hapusdata({{$bankmasuk->bm_id}})"> <i class="fa fa-trash"> </i> </a> 
+                          @else
+                            @if($bankmasuk->fpgb_jeniskelompok == 'BEDA BANK')
+                              <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i> </a> &nbsp;
+                              <a onclick="editjurnalbeda('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-pencil"> </i> </a> &nbsp; 
+                              <a onclick="hapusjurnalbeda('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-trash"> </i> </a>
+                            @else
+                             <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i>
                              &nbsp;  Jurnal &nbsp; </a>
-
+                            @endif
                             @endif
                            </a>
-                            @else
-                            <a class="btn btn-success btn-sm" onclick="proses('{{$bankmasuk->bm_id}}')" type="button" data-toggle="modal" data-target="#myModal5"> <i class="fa fa-book"> </i> &nbsp; PROSES &nbsp; </a>
+                        @else
+                           <a class="btn btn-success btn-sm" onclick="proses('{{$bankmasuk->bm_id}}')" type="button" data-toggle="modal" data-target="#myModal5"> <i class="fa fa-book"> </i> &nbsp; PROSES &nbsp; </a>
                             
-
-                            @endif
-
+                          @endif
 
                         </td>
                         
@@ -166,7 +168,61 @@
                       </div>
 
 
-<div class="row" style="padding-bottom: 50px;"></div>
+ <!-- Edit Bank -->
+ <div class="row" style="padding-bottom: 50px;"></div>
+    <div class="modal fade" id="myModal5" tabindex="-1" role="dialog"  aria-hidden="true">
+              <div class="modal-dialog" style="min-width: 800px !important; min-height: 600px">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button style="min-height:0;" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
+                    <h2 class="modal-title" style="text-align: center;"> Terima Uang </h2>     
+                  </div>
+                                
+                  <div class="modal-body"> 
+                    <form id="editterima">
+                    <table class="table table-stripped tbl-faktur" id="tbl-faktur">
+                        <tr>
+                            <th> Nota Transaksi </th>
+                            <td> <input type="text" class="form-control input-sm notatransaksi" name="notransaksi" readonly=""> <input type="hidden" class="form-control input-sm bmid" name="id">  </td>
+                        </tr>
+                        <tr>
+                            <th> Tgl Terima </th>
+                            <td> <div class="input-group date">
+                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl" name="tgl" required="">
+                                      </div>
+                                         
+                                       
+                                      </td>
+                        </tr>
+                        <tr>
+                            <th> Bank Asal </th>
+                            <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control input-sm bankasal" name="bankasal" readonly=""> </div> <div class="col-md-6"> <input type="text" class="form-control namabankasal" readonly=""> </div> </div> </td>
+                        </tr>
+                        <tr>
+                            <th> Bank Tujuan </th>
+                            <td> <div class="row"> <div class="col-md-4"><input type="text" class="form-control input-sm banktujuan" name="banktujuan" readonly=""> </div>
+                            <div class="col-md-6">  <input type="text" class="form-control namabanktujuan" readonly=""></div> <input type="hidden" class="form-control input-sm cabangasal" name="cabangasal" readonly="">
+                            <input type="hidden" class="form-control input-sm cabangtujuan" name="cabangtujuan" readonly=""> </td>
+                        </tr>
+                        <tr>
+                            <th> Nominal </th>
+                            <td> <input type="text" class="form-control input-sm nominal" name="nominal" readonly=""></td>
+                        </tr>
+                    </table>
+                  </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary" id="buttongetid">Simpan</button>
+                       </form>
+                    </div>
+                </div>
+              </div>
+           </div>
+
+
+
+  <div class="row" style="padding-bottom: 50px;"></div>
     <div class="modal fade" id="myModal5" tabindex="-1" role="dialog"  aria-hidden="true">
               <div class="modal-dialog" style="min-width: 800px !important; min-height: 600px">
                 <div class="modal-content">
@@ -327,6 +383,28 @@
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
+
+    function editjurnalbeda(ref){
+        ref = ref;
+    $.ajax({
+        data : {ref},
+        type : 'get',
+        url : baseUrl + '/bankmasuk/databank',
+        dataType : 'json',
+        success : function(response){
+          $('.notatransaksi').val(response.bank[0].bm_notatransaksi);
+          $('.bankasal').val(response.bank[0].bm_bankasal);
+          $('.banktujuan').val(response.bank[0].bm_banktujuan);
+          $('.nominal').val(addCommas(response.bank[0].bm_nominal));
+          $('.bmid').val(response.bank[0].bm_id);
+          $('.cabangasal').val(addCommas(response.bank[0].bm_cabangasal));
+          $('.cabangtujuan').val(addCommas(response.bank[0].bm_cabangtujuan));
+          $('.namabanktujuan').val(addCommas(response.bank[0].bm_namabanktujuan));
+          $('.namabankasal').val(addCommas(response.bank[0].bm_namabankasal));
+        }
+    })
+    }
 
     function proses(ref){
         ref = ref;
