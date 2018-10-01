@@ -2092,6 +2092,8 @@ return
 
 	
 public function purchase_order() {
+		$data['jenisBayar'] = DB::select("select * from jenisbayar where idjenisbayar != '8'  and idjenisbayar != 10 ");
+		$data['supplier'] =  DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 
 		$cabang = session::get('cabang');
 
@@ -2101,14 +2103,14 @@ public function purchase_order() {
 
 			$data['countspp'] = count($data['spp']);
 			
-			$data['posetuju'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DISETUJUI'],['po_statusreturn' , '=' , 'AKTIF']])->count();
+			/*$data['posetuju'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DISETUJUI'],['po_statusreturn' , '=' , 'AKTIF']])->count();
 
 			$data['porevisi'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DIREVISI'],['po_statusreturn' , '=' , 'AKTIF']])->count();
 			$data['poditolak'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DITOLAK'],['po_statusreturn' , '=' , 'AKTIF']])->count();
 
 			$data['poblmdiproses'] = DB::table("pembelian_order")->whereNull('po_setujufinance')->where('po_statusreturn' , '=' , 'AKTIF')->count();
-
-			Session::flash('message', 'Terdapat ' . count($data['spp']). ' data SPP yang belum di proses'); 
+*/
+			/*Session::flash('message', 'Terdapat ' . count($data['spp']). ' data SPP yang belum di proses'); */
 
 		}
 		else{
@@ -2116,15 +2118,15 @@ public function purchase_order() {
 			$data['spp'] = DB::select("select * from  spp, supplier, cabang, confirm_order, confirm_order_tb where co_idspp = spp_id and man_keu = 'DISETUJUI' and staff_pemb = 'DISETUJUI' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup  and cotb_setuju = 'BELUM DI SETUJUI'");
 
 			$data['countspp'] = count($data['spp']);
-			
+			/*
 			$data['posetuju'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DISETUJUI'],['po_statusreturn' , '=' , 'AKTIF'],['po_cabang' , '=' , $cabang]])->count();
 
 			$data['porevisi'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DIREVISI'],['po_statusreturn' , '=' , 'AKTIF'], ['po_cabang' , '=' , $cabang]])->count();
 			$data['poditolak'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DITOLAK'],['po_statusreturn' , '=' , 'AKTIF'],['po_cabang' , '=' , $cabang]])->count();
 
-			$data['poblmdiproses'] = DB::table("pembelian_order")->whereNull('po_setujufinance')->where('po_statusreturn' , '=' , 'AKTIF')->where('po_cabang' , '=' , $cabang)->count();
+			$data['poblmdiproses'] = DB::table("pembelian_order")->whereNull('po_setujufinance')->where('po_statusreturn' , '=' , 'AKTIF')->where('po_cabang' , '=' , $cabang)->count();*/
 
-			Session::flash('message', 'Terdapat ' . count($data['spp']). ' data SPP yang belum di proses'); 
+			/*Session::flash('message', 'Terdapat ' . count($data['spp']). ' data SPP yang belum di proses'); */
 		}
 		
 
@@ -2136,6 +2138,57 @@ public function purchase_order() {
 
 	}
 
+
+public function purchase_ordertable(Request $request){
+	  	  $idjenisbayar='';
+  		  $tgl='';
+  		  $supplier='';
+  		  $nofpg='';
+  		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+  		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+  		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
+  		  	$tgl="and date(created_at) >= '$tgl1' AND date(created_at) <= '$tgl2'";
+  		  }
+  		  if($request->nosupplier!=''){
+  		  	$supplier="and po_supplier=$request->nosupplier";
+  		  }
+  		  if($request->idjenisbayar!=''){
+  		  	$idjenisbayar="and po_totalharga=$request->total";
+  		  }
+  		  if($request->nofpg!=''){
+  		  	$nofpg="and po_no='$request->nofpg'";
+  		  }		 
+		 $data='';
+
+		$cabang = session::get('cabang');
+
+		if(Auth::user()->punyaAkses('Purchase Order','all')){
+			$data= DB::select("select * from pembelian_order, supplier, cabang where po_supplier = idsup and po_cabang = kode  and po_statusreturn = 'AKTIF' order by po_id desc");			
+		}
+		else{
+			$data= DB::select("select * from pembelian_order, supplier, cabang where po_supplier = idsup and po_cabang = kode and po_cabang = '$cabang' and po_statusreturn = 'AKTIF' order by po_id desc");			
+		}
+
+
+}
+
+public function purchase_ordernotif(Request $request){
+			$cabang = session::get('cabang');
+
+		if(Auth::user()->punyaAkses('Purchase Order','all')){
+
+			$data['spp'] = DB::select("select * from  spp, supplier, cabang, confirm_order, confirm_order_tb where co_idspp = spp_id and staff_pemb = 'DISETUJUI' and man_keu = 'DISETUJUI' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup  and cotb_setuju = 'BELUM DI SETUJUI'");
+
+			$data['countspp'] = count($data['spp']);
+
+		}
+		else{
+			$data['spp'] = DB::select("select * from  spp, supplier, cabang, confirm_order, confirm_order_tb where co_idspp = spp_id and man_keu = 'DISETUJUI' and staff_pemb = 'DISETUJUI' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup  and cotb_setuju = 'BELUM DI SETUJUI'");
+
+			$data['countspp'] = count($data['spp']);			
+		}
+
+}
 	
 
 	public function ajax_tampilspp(Request $request){
@@ -9499,7 +9552,7 @@ public function kekata($x) {
 					
 					$totaltabbiaya = (float)$totaltabbiaya + (float)$jumlah;
 				}
-				dd($jumlah);
+				
 			}
 		}
 		else if($request->flag == 'BGAKUN'){
@@ -10007,7 +10060,7 @@ public function kekata($x) {
 		        	        if($akundkahutang == 'D'){
 		        	           	$dataakun = array (
 		        				'id_akun' => $akunhutangdagang,
-		        				'subtotal' => '-' . $totalbgakun,
+		        				'subtotal' => '-' . $total,
 		        				'dk' => 'K',
 		        				'detail' => $request->keteranganheader,
 		        				);	
@@ -10015,7 +10068,7 @@ public function kekata($x) {
 		        	        else {
 		        	        	$dataakun = array (
 		        				'id_akun' => $akunhutangdagang,
-		        				'subtotal' => '-' . $totalbgakun,
+		        				'subtotal' => '-' . $total,
 		        				'dk' => 'K',
 		        				'detail' => $request->keteranganheader,
 		        				);	
