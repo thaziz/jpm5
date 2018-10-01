@@ -2562,6 +2562,8 @@ class BiayaPenerusController extends Controller
 									   on ks_nama = kode) as res1
 									   where res1.ksd_asal = '$request->asal'
 									   and res1.ksd_tujuan = '$request->tujuan'
+									   and res1.ks_active = 'ACTIVE'
+									   and res1.ksd_active = true
 									   and res1.ks_cabang = '001'");
 
 			if ($data != null) {
@@ -2595,6 +2597,8 @@ class BiayaPenerusController extends Controller
 								 	    (SELECT kode,nama from tipe_angkutan) as angkutan
 								 	    on angkutan.kode  = ksd_angkutan
 								 	    where ks_id = '$request->id'
+								 	    and kontrak_subcon.ks_active = 'ACTIVE'
+									    and kontrak_subcon_dt.ksd_active = true
 								 	    and kontrak_subcon_dt.ksd_asal = '$request->asal'
 									    and kontrak_subcon_dt.ksd_tujuan = '$request->tujuan'");
 
@@ -2608,6 +2612,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('tipe_angkutan','kode','=','ksd_angkutan')
 					 ->where('ksd_id',$request->id)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 		$jenis_tarif = DB::table('jenis_tarif')
@@ -2624,6 +2629,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kota','id','=','ksd_asal')
 					 ->select('nama as asal','ksd_asal')
 					 ->where('ksd_id',$request->id)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -2632,6 +2638,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kota','id','=','ksd_tujuan')
 					 ->select('nama as tujuan','ksd_tujuan')
 					 ->where('ksd_id',$request->id)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -3571,6 +3578,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('tipe_angkutan','kode','=','ksd_angkutan')
 					 ->where('ks_nama',$request->selectOutlet)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -3579,6 +3587,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kota','id','=','ksd_asal')
 					 ->select('nama as asal')
 					 ->where('ks_nama',$request->selectOutlet)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -3587,6 +3596,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kota','id','=','ksd_tujuan')
 					 ->select('nama as tujuan')
 					 ->where('ks_nama',$request->selectOutlet)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -3621,6 +3631,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('tipe_angkutan','kode','=','ksd_angkutan')
 					 ->where('ks_nama',$id)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -3629,6 +3640,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kota','id','=','ksd_asal')
 					 ->select('nama as asal')
 					 ->where('ks_nama',$id)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -3637,6 +3649,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kota','id','=','ksd_tujuan')
 					 ->select('nama as tujuan')
 					 ->where('ks_nama',$id)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
