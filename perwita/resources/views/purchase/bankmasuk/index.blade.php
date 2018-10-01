@@ -105,8 +105,8 @@
                           @else
                             @if($bankmasuk->fpgb_jeniskelompok == 'BEDA BANK')
                               <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i> </a> &nbsp;
-                              <a onclick="editjurnalbeda('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-pencil"> </i> </a> &nbsp; 
-                              <a onclick="hapusjurnalbeda('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-trash"> </i> </a>
+                            {{--   <a onclick="editjurnalbeda('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-pencil"> </i> </a> &nbsp; 
+                              <a onclick="hapusjurnalbeda('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-trash"> </i> </a> --}}
                             @else
                              <a onclick="lihatjurnal('{{$bankmasuk->bm_nota}}')" class="btn-xs btn-primary" aria-hidden="true"> <i class="fa  fa-eye"> </i>
                              &nbsp;  Jurnal &nbsp; </a>
@@ -114,7 +114,9 @@
                             @endif
                            </a>
                         @else
+
                            <a class="btn btn-success btn-sm" onclick="proses('{{$bankmasuk->bm_id}}')" type="button" data-toggle="modal" data-target="#myModal5"> <i class="fa fa-book"> </i> &nbsp; PROSES &nbsp; </a>
+                         
                             
                           @endif
 
@@ -170,7 +172,7 @@
 
  <!-- Edit Bank -->
  <div class="row" style="padding-bottom: 50px;"></div>
-    <div class="modal fade" id="myModal5" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal fade" id="myModal3" tabindex="-1" role="dialog"  aria-hidden="true">
               <div class="modal-dialog" style="min-width: 800px !important; min-height: 600px">
                 <div class="modal-content">
                   <div class="modal-header">

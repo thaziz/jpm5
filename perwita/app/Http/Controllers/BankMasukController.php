@@ -65,13 +65,13 @@ class BankMasukController extends Controller
 	public function bankmasuk(){
 		$cabang = session::get('cabang');
 		if(Auth::user()->punyaAkses('Bank Masuk','all')) {
-			$data['bankmasuk'] = DB::select("select * from bank_masuk, fpg_cekbank where  bm_status = 'DITRANSFER' or bm_status = 'DITERIMA' and bm_idfpgb = fpgb_id order by bm_id desc");
+			$data['bankmasuk'] = DB::select("select * from bank_masuk LEFT OUTER JOIN fpg_cekbank on bm_idfpgb = fpgb_id where  bm_status = 'DITRANSFER' or bm_status = 'DITERIMA' and bm_idfpgb = fpgb_id order by bm_id desc");
 			$data['belumdiproses'] = DB::table("bank_masuk")->where('bm_status' , '=' , 'DITRANSFER')->count();
 			$data['sudahdiproses'] = DB::table("bank_masuk")->where('bm_status' , '=' , 'DITERIMA')->count();
 
 		}
 		else {
-			$data['bankmasuk'] = DB::select("select * from bank_masuk, fpg_cekbank where bm_cabangtujuan = '$cabang' and bm_status = 'DITRANSFER' or bm_status = 'DITERIMA' and bm_idfpgb = fpgb_id  order by bm_id desc");
+			$data['bankmasuk'] = DB::select("select * from bank_masuk LEFT OUTER JOIN fpg_cekbank on bm_idfpgb = fpgb_id where bm_cabangtujuan = '$cabang' and bm_status = 'DITRANSFER' or bm_status = 'DITERIMA' and bm_idfpgb = fpgb_id  order by bm_id desc");
 			$data['belumdiproses'] = DB::table("bank_masuk")->where([['bm_status' , '=' , 'DITRANSFER'],['bm_cabangasal' , '=' , '$cabang']])->count();
 			$data['sudahdiproses'] = DB::table("bank_masuk")->where([['bm_status' , '=' , 'DITERIMA'],['bm_cabangasal' , '=' , '$cabang']])->count();
 		}
@@ -607,18 +607,6 @@ class BankMasukController extends Controller
 		$kodebankd = $databank[0]->mb_id;
 		//JREF
 		
-
-		$ref = explode("-", $jr_no);
-
-		
-	
-
-		if($kodebankd < 10){
-			$kodebankd = '0' . $kodebankd;
-		}	
-		else {
-			$kodebankd = $kodebankd;
-		}
 
 	
 		//ENDHRREF
