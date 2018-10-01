@@ -8670,7 +8670,7 @@ public function kekata($x) {
 
 	public function getnobbk(Request $request){
 		$comp = $request->cabang;
-
+		$kodebank = $request->bank;
 		$tgl = $request->tgl;
 		//return $comp;
 		/*$idbbk = DB::select("select * from bukti_bank_keluar where bbk_cabang = '$comp'");*/
@@ -8681,26 +8681,27 @@ public function kekata($x) {
 
 
 		//return $mon;
-		$idbbk = DB::select("select * from bukti_bank_keluar where bbk_cabang = '$comp'  and to_char(bbk_tgl, 'MM') = '$bulan' and to_char(bbk_tgl, 'YY') = '$tahun' order by bbk_id desc limit 1");
+		$idbm = DB::select("select substr(MAX(bbk_nota) , 15) as bm_nota from bukti_bank_keluar where bbk_cabang = '$comp'  and to_char(bbk_tgl, 'MM') = '$bulan' and to_char(bbk_tgl, 'YY') = '$tahun' and bbk_kodebank = '$kodebank'");
 
 		
-		if(count($idbbk) > 0) {		
-			$explode = explode("/", $idbbk[0]->bbk_nota);
-			$idbbk = $explode[2];
-			$string = (int)$idbbk + 1;
-			$idbbk = str_pad($string, 4, '0', STR_PAD_LEFT);
-		}
-		else {
-			$idbbk = '0001';
-		}
+		$index = (integer)$idbm[0]->bm_nota + 1;
+     //	dd($kode);
+     	if($kodebank < 10){
+     		$kodebank = '0'.(integer)$kodebank;
+     	}
+     	else {
+     		$kodebank = $kodebank;
+     	}
+
+     	$index = str_pad($index, 4, '0', STR_PAD_LEFT);
+
+        $notabm = 'BK' . $kodebank . '-' . $bulan . $tahun . '/' . $comp . '/' . $index;
 
 
 
 		
 
-		$datainfo =['status' => 'sukses' , 'data' => $idbbk];
-
-		return json_encode($datainfo) ;
+		return json_encode($notabm) ;
 	}
 	
 

@@ -99,7 +99,7 @@
                             <td class='disabledbank'> Kode Bank </td>
                             <td>
                               <select class="form-control kodebank chosen-select" name="kodebank">
-                               <option value=""> Pilih Data Bank</option>
+                              
 
                                 @foreach($data['bank'] as $bank)
                                   <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
@@ -565,10 +565,10 @@
     $('.date').change(function(){
       cabang = $('.cabang').val();
       tgl = $('.tglbbk').val();
-    
+      bank = $('.kodebank').val();
        $.ajax({
           type : "get",
-          data : {cabang,tgl},
+          data : {cabang,tgl,bank},
           url : baseUrl + '/pelunasanhutangbank/getnota',
           dataType : 'json',
           success : function (response){     
@@ -579,10 +579,7 @@
                 //bulan
                 var month = d.getMonth();
                 var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
-
+              
                 if(month < 10) {
                   month = '0' + month1;
                 }
@@ -594,7 +591,7 @@
                 year2 = tahun.substring(2);
                 //year2 ="Anafaradina";
                  nofaktur = 'BK' + '-' + month + year2 + '/' + cabang + '/' +  response.data ;
-                $('.nobbk').val(nofaktur);
+                $('.nobbk').val(response);
               
                 kodebank = $('.kodebank').val();
 
@@ -611,7 +608,7 @@
                 
 
                   nobbk = str + kodebank + '-' + lain;
-                  $('.nobbk').val(nobbk);
+                  $('.nobbk').val(response);
                }
               }
               else {
@@ -835,13 +832,14 @@
    
 
     //GET NO BBK
-    cabang = $('.cabang').val();
-    $('.valcabang').val(cabang);
+      cabang = $('.cabang').val();
+      $('.valcabang').val(cabang);
       tgl = $('.tglbbk').val();
       $('.cabang2').val(cabang);
+      bank = $('.bank').val();
        $.ajax({
           type : "get",
-          data : {cabang,tgl},
+          data : {cabang,tgl,bank},
           url : baseUrl + '/pelunasanhutangbank/getnota',
           dataType : 'json',
           success : function (response){     
@@ -867,7 +865,7 @@
                 year2 = tahun.substring(2);
                 //year2 ="Anafaradina";
                  nofaktur = 'BK' + '-' + month + year2 + '/' + cabang + '/' +  response.data ;
-                $('.nobbk').val(nofaktur);
+                $('.nobbk').val(response);
               }
               else {
                 location.reload();
@@ -1106,9 +1104,10 @@
      $('.cabang').change(function(){    
       var cabang = $(this).val();
       var tgl = $('.tglbbk').val();
+      var bank = $('.bank').val();
         $.ajax({    
             type :"get",
-            data : {cabang,tgl},
+            data : {cabang,tgl,bank},
             url : baseUrl + '/pelunasanhutangbank/getnota',
             dataType:'json',
             success : function(data){
@@ -1140,7 +1139,7 @@
                 
                    nobbk = 'BK-' + month + year2 + '/' + cabang + '/' +  data.data;
                 //  console.log(nospp);
-                  $('.nobbk').val(nobbk);
+                  $('.nobbk').val(response);
 
                        kodebank = $('.kodebank').val();
 
@@ -1157,7 +1156,7 @@
                         
                           nobbk = str + kodebank + '-' + lain;
 
-                          $('.nobbk').val(nobbk);
+                          $('.nobbk').val(response);
                        }
 
 
