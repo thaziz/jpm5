@@ -487,11 +487,19 @@ class BankMasukController extends Controller
 	}
 
 	public function create(){
-		$data['cabang'] = DB::select("select * from cabang");	
+		$cabang = session::get('cabang');
+		if($cabang == 000){
+			$data['cabang'] = DB::select("select * from cabang");	
+		}
+		else {
+			$data['cabang'] = DB::select("select * from cabang where kode = '$cabang'");	
 
-		$data['bank'] = DB::select("select mb_id as id, mb_kode as kode, mb_nama as nama from masterbank");
+		}
+
+		$data['bank'] = DB::select("select mb_id as id, mb_kode as kode, mb_nama as nama from masterbank where mb_cabangbank = '$kode'");
 		
-		$data['akun'] = DB::select("select* from d_akun");
+		$data['akun'] = DB::select("select* from d_akun where id_akun = '1'");
+
 		return view('purchase/bankmasuk/create' , compact('data'));
 	}
 

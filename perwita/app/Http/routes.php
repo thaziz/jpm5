@@ -1623,6 +1623,8 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_controller
       //jurnal balik
       Route::get('sales/deliveryorder_paket/jurnal_balik_deliveryorder_paket', 'do_new\do_paketController@jurnal_balik_deliveryorder_paket')->name('jurnal_balik_deliveryorder_paket');
   Route::get('sales/deliveryorder_paket/{nomor}/hapus_deliveryorder_paket', 'do_new\do_paketController@hapus_deliveryorder_paket')->name('hapus_deliveryorder_paket');
+  Route::get('sales/deliveryorder_paket/pilih_vendor', 'do_new\do_paketController@pilih_vendor');
+
 
 //end of do baru
 

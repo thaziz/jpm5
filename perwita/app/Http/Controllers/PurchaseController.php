@@ -2514,7 +2514,7 @@ public function purchase_ordernotif(Request $request){
 			$dataspp = DB::select("select * from spp where spp_id = '$idspp'");
 			$datacomp = $dataspp[0]->spp_cabang;
 
-			$datakun = DB::select("select * from d_akun where id_akun LIKE '$subacchutang%' and  kode_cabang = '$datacomp'");
+			$datakun = DB::select("select * from d_akun where id_akun LIKE '$subacchutang%' and  kode_cabang = '$datacomp' and is_active = '1'");
 			$acchutang = $datakun[0]->id_akun;
 
 				$po = new purchase_orderr();
@@ -8555,10 +8555,10 @@ public function kekata($x) {
 		$data['cabang'] = DB::select("select * from cabang");
 		$cabang = session::get('cabang');
 		if($cabang == 000){
-			$data['akun'] = DB::select("select * from d_akun");
+			$data['akun'] = DB::select("select * from d_akun where is_active = '1'");
 		}
 		else {
-			$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%'");
+			$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' and is_active = '1'");
 		}
 	
 		return view('purchase/pelunasanhutangbank/create', compact('data'));
@@ -8723,7 +8723,7 @@ public function kekata($x) {
 
 	public function getnobbk(Request $request){
 		$comp = $request->cabang;
-
+		$kodebank = $request->bank;
 		$tgl = $request->tgl;
 		//return $comp;
 		/*$idbbk = DB::select("select * from bukti_bank_keluar where bbk_cabang = '$comp'");*/
@@ -8734,26 +8734,27 @@ public function kekata($x) {
 
 
 		//return $mon;
-		$idbbk = DB::select("select * from bukti_bank_keluar where bbk_cabang = '$comp'  and to_char(bbk_tgl, 'MM') = '$bulan' and to_char(bbk_tgl, 'YY') = '$tahun' order by bbk_id desc limit 1");
+		$idbm = DB::select("select substr(MAX(bbk_nota) , 15) as bm_nota from bukti_bank_keluar where bbk_cabang = '$comp'  and to_char(bbk_tgl, 'MM') = '$bulan' and to_char(bbk_tgl, 'YY') = '$tahun' and bbk_kodebank = '$kodebank'");
 
 		
-		if(count($idbbk) > 0) {		
-			$explode = explode("/", $idbbk[0]->bbk_nota);
-			$idbbk = $explode[2];
-			$string = (int)$idbbk + 1;
-			$idbbk = str_pad($string, 4, '0', STR_PAD_LEFT);
-		}
-		else {
-			$idbbk = '0001';
-		}
+		$index = (integer)$idbm[0]->bm_nota + 1;
+     //	dd($kode);
+     	if($kodebank < 10){
+     		$kodebank = '0'.(integer)$kodebank;
+     	}
+     	else {
+     		$kodebank = $kodebank;
+     	}
+
+     	$index = str_pad($index, 4, '0', STR_PAD_LEFT);
+
+        $notabm = 'BK' . $kodebank . '-' . $bulan . $tahun . '/' . $comp . '/' . $index;
 
 
 
 		
 
-		$datainfo =['status' => 'sukses' , 'data' => $idbbk];
-
-		return json_encode($datainfo) ;
+		return json_encode($notabm) ;
 	}
 	
 
@@ -8828,6 +8829,9 @@ public function kekata($x) {
 		$bbk->bbk_akunbank = $akunhutangdagang;
 		$bbk->create_by = $request->username;
 		$bbk->update_by = $request->username;
+		if($request->flag != 'BIAYA' ){
+			$bbk->bbk_idfpg = $request->idfpg[0];
+		}
 		$bbk->save();
 
 		/*dd($idbbk);*/
@@ -9490,7 +9494,7 @@ public function kekata($x) {
 			}
 		}
 		else if($request->flag == 'BIAYA') {
-				$jenisbayarfpg = 'BIAYA';
+			$jenisbayarfpg = 'BIAYA';
 			for($j=0;$j<count($request->akun);$j++){
 				$bbkb = new bukti_bank_keluar_biaya();
 
@@ -9548,6 +9552,7 @@ public function kekata($x) {
 					
 					$totaltabbiaya = (float)$totaltabbiaya + (float)$jumlah;
 				}
+				dd($jumlah);
 			}
 		}
 		else if($request->flag == 'BGAKUN'){
