@@ -13176,10 +13176,33 @@ return $html;
 	}
 
 	public function detailformfpg($id) {
-
+		$cabang = session::get('cabang');
+		
 		$fpg = DB::select("select * from fpg where idfpg = '$id'");
 		$jenisbayar = $fpg[0]->fpg_jenisbayar;
 		$data['jenisbayar'] = $fpg[0]->fpg_jenisbayar;
+
+		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
+			$data['bank'] = DB::select("select * from masterbank");
+		}
+		else {
+			$data['bank'] = DB::select("select * from masterbank where mb_cabangbank = '$cabang'");
+		}
+		
+		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
+			$data['tujuanbank'] = DB::select("select * from masterbank");
+		}
+		else {
+			$data['tujuanbank'] = DB::select("select * from masterbank wher mb_cabangbank = '$cabang'");
+		}
+
+		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
+			$data['tujuanbankkas'] = DB::select("select * from d_akun where id_akun = '100111008' or id_akun = '100111001' or id_akun = '100114017'");
+		}
+		else {
+			//$data['tujuanbank'] = DB::select("select * from masterbank wher mb_cabangbank = '$cabang'");
+		}
+
 
 		if($jenisbayar == '4'){
 			$fpg2 = DB::select("select * from fpg, d_uangmuka where idfpg = '$id' and fpg_agen = um_supplier");
