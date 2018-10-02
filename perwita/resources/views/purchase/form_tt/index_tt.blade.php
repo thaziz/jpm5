@@ -128,7 +128,7 @@
               <div class="box">
                 <div class="box-body">
                   <div class="col-sm-12">
-                    <table class="table table-bordered table-striped table_tt " id="addColumn">
+                    <table width="100%" class="table table-bordered table-striped table_tt " id="addColumn">
                       <thead style="color: white">
                         <tr>
                           <th>No</th>

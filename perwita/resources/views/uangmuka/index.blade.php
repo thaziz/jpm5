@@ -116,7 +116,7 @@
                   <div class="box-body">
                 </div>        
                 <div class="box-body">
-                  <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
+                  <table width="100%" id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
                     <thead>
                      <tr>
                         <th style="width:5px">No.</th>
