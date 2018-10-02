@@ -908,8 +908,8 @@
           if(val == ''){
             
              if(response.temp[$k] == '0'){                
-                  for($z = 0; $z < response.itemsupplier2.length; $z++){
-                    $(this).append("<option value="+response.itemsupplier2[$z].is_idsup+">" +response.itemsupplier2[$z].no_supplier+" - "+response.itemsupplier2[$z].nama_supplier+"</option>");
+                  for($z = 0; $z < response.supplier.length; $z++){
+                    $(this).append("<option value="+response.supplier[$z].is_idsup+">" +response.supplier[$z].no_supplier+" - "+response.supplier[$z].nama_supplier+"</option>");
                   
                   }
                 $(this).trigger("chosen:updated");
