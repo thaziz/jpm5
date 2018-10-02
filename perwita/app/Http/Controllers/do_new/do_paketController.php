@@ -220,7 +220,7 @@ class do_paketController extends Controller
       $jenis_tarif = $request->d;
       $type = $request->e;
       $berat = $request->f;
-
+      $vendor = '';
       //jenis_tarif jika kosong
       if ($jenis_tarif != '' || $jenis_tarif != null ) {
           $jenis_sql = "and tarif_vendor.jenis_angkutan = '$request->d'";
@@ -283,8 +283,8 @@ class do_paketController extends Controller
                                             and tarif_vendor.status = 'ya'
                                             $jenis_sql $tipe_sql
                                     ");
-
-            $vendor = DB::select("SELECT vendor.nama,jenis_tarif,tujuan.nama as tuj,asal.nama as as,id_tarif_vendor,id_kota_asal_vendor,id_kota_tujuan_vendor,
+            if ($cari_vendor10kg != null) {
+              $vendor = DB::select("SELECT vendor.nama,jenis_tarif,tujuan.nama as tuj,asal.nama as as,id_tarif_vendor,id_kota_asal_vendor,id_kota_tujuan_vendor,
                                             tarif_vendor.cabang_vendor,kode,((tarif_vendor*($berat-10))+".$cari_vendor10kg[0]->tarif_vendor.") as tarif_vendor,waktu_vendor,tarif_vendor.status from tarif_vendor 
                                             left join vendor on tarif_vendor.vendor_id = vendor.kode
                                             left join kota as asal on tarif_vendor.id_kota_asal_vendor = asal.id
@@ -295,6 +295,8 @@ class do_paketController extends Controller
                                             and tarif_vendor.status = 'ya'
                                             $jenis_sql $tipe_sql
                                     ");
+            }
+            
 
         }
       }
