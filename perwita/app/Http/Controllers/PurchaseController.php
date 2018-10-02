@@ -8213,7 +8213,9 @@ public function purchase_ordernotif(Request $request){
 			$data['idfaktur'] = '0001';
 		}
 
-		$datainfo = ['status' => 'sukses' , 'data' => $data['idfaktur']];
+		$nofaktur = 'FB' . $bulan . $tahun . '/' . $cabang . '/' . $flag . '-' . $data['idfaktur'] ;
+
+		$datainfo = ['status' => 'sukses' , 'message' => $nofaktur];
 		return json_encode($datainfo);
 	
 	}

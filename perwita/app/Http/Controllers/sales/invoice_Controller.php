@@ -139,7 +139,7 @@ class invoice_Controller extends Controller
                                     $c = '<button type="button" onclick="hapus(\''.$data->i_nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
                                   }
                                 }
-                              }elseif (Auth::user()->m_name = 'dev') {
+                              }elseif (Auth::user()->punyaAkses('Invoice','hapus')) {
                                 $total = $data->i_total_tagihan + $data->i_debet - $data->i_kredit;
                                 if ($data->i_sisa_pelunasan == $total) {
                                   if(cek_periode(carbon::parse($data->i_tanggal)->format('m'),carbon::parse($data->i_tanggal)->format('Y') ) != 0){

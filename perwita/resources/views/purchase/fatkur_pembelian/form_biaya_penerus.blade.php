@@ -410,8 +410,7 @@
   })
 
 
-<<<<<<< HEAD
-=======
+
   $('.jenis_pph_penerus').change(function(){
     var jumlah = $('.jenis_pph_penerus option:selected').data('val');
     $('.persen_pph_penerus ').val(jumlah);
@@ -462,16 +461,13 @@
   $('.diskon_penerus').keyup(function(){
     hitung();
   })
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
 
   function hitung() {
     var temp = 0;
     datatable1.$('.bayar_biaya').each(function(){
       temp+=parseInt($(this).val());
     })
-<<<<<<< HEAD
-    $('.total_jml').val(accounting.formatMoney(temp, "", 2, ".",','));
-=======
+
 
     var hasil = temp - diskon_penerus;
     if (hasil < 0) {
@@ -490,7 +486,6 @@
     hitung_ppn_penerus();
     hitung_pph_penerus();
     hitung_total_penerus();
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
   }
 
 

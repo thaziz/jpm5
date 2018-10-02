@@ -566,7 +566,7 @@
               else {
                 itemsupplier = response.itemsupplier[number];
               }
-                  
+
                rowTable += 
                         '<tr>' +
                         '<td > '+no+' <input type="hidden" value='+response.codt[i][j].kode_item+' name="kodeitem[]"> <input type="hidden" value=' +response.codt[i][j].codt_qtyapproved+' name="qtyapproved[]">  <input type="hidden" value='+response.spp[i][0].spp_id+' name="idspp[]"> </td>' +
@@ -589,13 +589,9 @@
                          
 
 
-                        rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required">  </td>' +
+                        rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+itemsupplier+'">  </td>' +
                         '<tr>';
-
-
-                            
-                                rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+itemsupplier+'">  </td> </tr>';
-                            
+                      
 
                         }
                         else {
