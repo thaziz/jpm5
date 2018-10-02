@@ -165,22 +165,11 @@ class PurchaseController extends Controller
 		$cabang = session::get('cabang');
 
 		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
-			$data['spp'] = DB::select("select * from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode order by spp_id desc");
+			$data= DB::select("select * from cabang");
 
-			$data['belumdiproses'] = DB::table("spp")->where('spp_status' , '=' , 'DITERBITKAN')->count();
-			$data['disetujui'] = DB::table("confirm_order")->where('man_keu' , '=' , 'DISETUJUI')->count();
-			$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->count();
-			$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->count();
-			$data['statuskabag'] = DB::table("spp")->where('spp_statuskabag' , '=' , 'BELUM MENGETAHUI')->count();
+			
 		}else{
-			$data['spp'] = DB::select("select * from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode and spp_cabang = '$cabang' order by spp_id desc");
-
-			$data['belumdiproses'] = DB::table("spp")->where('spp_status' , '=' , 'DITERBITKAN')->where('spp_cabang' , '=' , $cabang)->count();
-			$data['disetujui'] = DB::table("confirm_order")->where('man_keu' , '=' , 'DISETUJUI')->where('co_cabang' , '=' , $cabang)->count();
-			$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->where('spp_cabang' , '=' , $cabang)->count();
-			$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->where('spp_cabang' , '=' , $cabang)->count();
-
-			$data['statuskabag'] = DB::table("spp")->where('spp_statuskabag' , '=' , 'BELUM MENGETAHUI')->where('spp_cabang' , '=' , $cabang)->count();
+			$data= DB::select("select * from cabang where kode ='$cabang'");		
 		}
 
 		return view('purchase.spp.index', compact('data'));
@@ -192,6 +181,7 @@ class PurchaseController extends Controller
   		  $tgl='';
   		  $supplier='';
   		  $nofpg='';
+  		  $cabangOption='';
   		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
   		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
   		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
@@ -206,13 +196,16 @@ class PurchaseController extends Controller
   		  if($request->nofpg!=''){
   		  	$nofpg="and spp_nospp='$request->nofpg'";
   		  }
+  		  if($request->cabang!=''){
+  		  	$cabangOption="and spp_cabang='$request->cabang'";
+  		  }
 
 		$data='';
 
 		$cabang = session::get('cabang');
 
 		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
-			$data= DB::select("select *,'no' as no from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode $tgl $nofpg order by spp_id desc");
+			$data= DB::select("select *,'no' as no from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode $tgl $nofpg $cabangOption order by spp_id desc");
 		}else{
 			$data= DB::select("select *,'no' as no from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode and spp_cabang = '$cabang' $tgl $nofpg order by spp_id desc");
 		}
