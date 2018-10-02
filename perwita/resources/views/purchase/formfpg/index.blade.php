@@ -154,6 +154,28 @@
 
     </div>
 
+
+     <div class="col-md-12 col-sm-12 col-xs-12">
+             
+
+
+              <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">Nominal</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <input type="" name="nominal" class="form-control kosong" id="nominal">                    
+                </div>
+              </div>
+
+
+
+              
+
+
+    </div>
+
     </form>
 </div>
 
@@ -245,7 +267,7 @@
             "pageLength": 10,
             "language": dataTableLanguage,
     });*/
-
+$('#nominal').maskMoney({thousands:',', decimal:'.', precision:0});
   var tablex;
 setTimeout(function () {            
    table();
@@ -275,6 +297,7 @@ setTimeout(function () {
                     "nosupplier" :$('#nosupplier').val(),
                     "idjenisbayar" :$('#idjenisbayar').val(),
                     "nofpg" :$('#nofpg').val(),
+                    "nominal" :$('#nominal').val(),
                     },
               },
             columns: [

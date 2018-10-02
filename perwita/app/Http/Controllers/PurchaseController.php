@@ -165,22 +165,11 @@ class PurchaseController extends Controller
 		$cabang = session::get('cabang');
 
 		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
-			$data['spp'] = DB::select("select * from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode order by spp_id desc");
+			$data= DB::select("select * from cabang");
 
-			$data['belumdiproses'] = DB::table("spp")->where('spp_status' , '=' , 'DITERBITKAN')->count();
-			$data['disetujui'] = DB::table("confirm_order")->where('man_keu' , '=' , 'DISETUJUI')->count();
-			$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->count();
-			$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->count();
-			$data['statuskabag'] = DB::table("spp")->where('spp_statuskabag' , '=' , 'BELUM MENGETAHUI')->count();
+			
 		}else{
-			$data['spp'] = DB::select("select * from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode and spp_cabang = '$cabang' order by spp_id desc");
-
-			$data['belumdiproses'] = DB::table("spp")->where('spp_status' , '=' , 'DITERBITKAN')->where('spp_cabang' , '=' , $cabang)->count();
-			$data['disetujui'] = DB::table("confirm_order")->where('man_keu' , '=' , 'DISETUJUI')->where('co_cabang' , '=' , $cabang)->count();
-			$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->where('spp_cabang' , '=' , $cabang)->count();
-			$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->where('spp_cabang' , '=' , $cabang)->count();
-
-			$data['statuskabag'] = DB::table("spp")->where('spp_statuskabag' , '=' , 'BELUM MENGETAHUI')->where('spp_cabang' , '=' , $cabang)->count();
+			$data= DB::select("select * from cabang where kode ='$cabang'");		
 		}
 
 		return view('purchase.spp.index', compact('data'));
@@ -188,11 +177,11 @@ class PurchaseController extends Controller
 
 
 	public function spp_indextable (Request $request) {
-
 		  $idjenisbayar='';
   		  $tgl='';
   		  $supplier='';
   		  $nofpg='';
+  		  $cabangOption='';
   		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
   		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
   		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
@@ -207,13 +196,16 @@ class PurchaseController extends Controller
   		  if($request->nofpg!=''){
   		  	$nofpg="and spp_nospp='$request->nofpg'";
   		  }
+  		  if($request->cabang!=''){
+  		  	$cabangOption="and spp_cabang='$request->cabang'";
+  		  }
 
 		$data='';
 
 		$cabang = session::get('cabang');
 
 		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
-			$data= DB::select("select *,'no' as no from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode $tgl $nofpg order by spp_id desc");
+			$data= DB::select("select *,'no' as no from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode $tgl $nofpg $cabangOption order by spp_id desc");
 		}else{
 			$data= DB::select("select *,'no' as no from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode and spp_cabang = '$cabang' $tgl $nofpg order by spp_id desc");
 		}
@@ -2220,7 +2212,7 @@ public function purchase_ordertable(Request $request){
                            $action.='<span class="label label-warning"> '.$data->po_setujufinance.'</span>';
                         }
                         if($data->po_setujufinance == 'SETUJU'){
-                           $action.='<a class="btn btn-sm btn-info print" type="button" href='.url('print/'.$data->po_id.'').'> <i class="fa fa-print" aria-hidden="true"> </i> </a>';
+                           $action.='<a class="btn btn-sm btn-info print" type="button" href='.url('purchaseorder/print/'.$data->po_id.'').'> <i class="fa fa-print" aria-hidden="true"> </i> </a>';
                         }
                     }
 
@@ -2235,7 +2227,30 @@ public function purchase_ordertable(Request $request){
 }
 
 public function purchase_ordernotif(Request $request){
-			$cabang = session::get('cabang');
+		  $total='';
+  		  $tgl='';
+  		  $supplier='';
+  		  $nofpg='';
+  		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+  		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+
+  		  $request->total = str_replace(['Rp', '\\',',',' '], '',$request->total);
+  		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
+  		  	$tgl="and date(pembelian_order.created_at) >= '$tgl1' AND date(pembelian_order.created_at) <= '$tgl2'";
+  		  }
+  		  if($request->nosupplier!=''){
+  		  	$supplier="and po_supplier=$request->nosupplier";
+  		  }
+  		  if($request->total!=''){
+  		  	$total="and po_totalharga=$request->total";
+  		  }
+  		  if($request->nofpg!=''){
+  		  	$nofpg="and po_no='$request->nofpg'";
+  		  }		 
+
+		 $data='';
+
+         $cabang = session::get('cabang');
 
 		if(Auth::user()->punyaAkses('Purchase Order','all')){
 
@@ -2250,6 +2265,16 @@ public function purchase_ordernotif(Request $request){
 			$data['countspp'] = count($data['spp']);			
 		}
 
+
+	return
+
+'<div class="col-md-2">
+      <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <h2 style="text-align:center"> <b> '.$data['countspp'].' SPP </b></h2> <h4 style="text-align:center"> BELUM DI PROSES PO </h4>
+      </div>
+    </div>   
+  </div>';
 }
 	
 
@@ -10824,8 +10849,10 @@ return $html;
   		  $tgl='';
   		  $supplier='';
   		  $nofpg='';
+  		  $nominal='';
   		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
   		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+  		  $request->nominal = str_replace(['Rp', '\\',',',' '], '',$request->nominal);
   		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
   		  	$tgl="and fpg_tgl >= '$tgl1' AND fpg_tgl <= '$tgl2'";
   		  }
@@ -10838,17 +10865,21 @@ return $html;
   		  if($request->nofpg!=''){
   		  	$nofpg="and fpg_nofpg='$request->nofpg'";
   		  }
+  		  if($request->nominal!=''){
+  		  	$nominal="and fpg_totalbayar=$request->nominal";
+  		  }
 		 $cabang = session::get('cabang');
 		 $dataFpg='';
+
 		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){						
 
-			$dataFpg=DB::select("select *,row_number() OVER () as no from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar $tgl $supplier $idjenisbayar $nofpg  order by fpg_nofpg desc");
+			$dataFpg=DB::select("select *,row_number() OVER () as no from   jenisbayar, fpg  where  fpg_jenisbayar = idjenisbayar $tgl $supplier $idjenisbayar $nofpg $nominal order by fpg_nofpg desc");
 
 			$dataFpg=collect($dataFpg);			
 		}
 		else {	
 			
-			$dataFpg=DB::select("select *,row_number() OVER () as no  from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode order by fpg_nofpg asc ");
+			$dataFpg=DB::select("select *,row_number() OVER () as no  from   jenisbayar, fpg , cabang where  fpg_jenisbayar = idjenisbayar and fpg_cabang = '$cabang' and fpg_cabang = kode $tgl $supplier $idjenisbayar $nofpg $nominal order by fpg_nofpg asc ");
 			$dataFpg=collect($dataFpg);
 		}
 
