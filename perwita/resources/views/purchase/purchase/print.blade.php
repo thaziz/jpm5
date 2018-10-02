@@ -407,7 +407,14 @@
         <td>:</td>
         <td>{{ \Carbon\Carbon::parse($g)->format('d F Y')}} </td>
       </tr>
-      
+      <tr>
+        <td style="width: 200px;">No Pol</td>
+        <td>:</td>
+        <td> @foreach($data['kendaraan'] as $kendaraan) 
+                {{$kendaraan->nopol}} <br>
+            @endforeach
+        </td>
+      </tr>
     </table>
     <table>
       <tr>

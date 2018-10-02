@@ -994,12 +994,70 @@
             "<td>"+tgl+"</td>"+ // TGL
             "<td>"+kodebank+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]' readonly> </td>" + //BANK TUJUAN
             "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbanktujuan+"' name='idbanktujuan[]'> <input type='hidden' class='kelompokbank' name='kelompokbank[]' value='"+kelompokbank+"'> </td>" + //NAMA BANK TUJUAN
-            "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominalcekbg nominaltblbank nominalbank"+nomrbnk+"'  name='nominalbank[]' style='text-align:right' required>  </td>" + //NOMINAL
+            "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominalcekbg nominaltblbank nominalbank"+nomrbnk+"'  name='nominalbank[]' style='text-align:right' required value="+addCommas(total[$i])+" readonly>  </td>" + //NOMINAL
             "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+idbankasal+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
             nmr++;
 
             $('#tbl-tfbank').append(row);
        }
+
+         //transaksi
+          $(document).on('click','.remove-btn',function(){
+
+                        //alert(nomrbnk);
+                          nohapus = nomrbnk - 1;
+                         // alert(nohapus);
+                          var id = $(this).data('id');
+
+                          if(id == 1) {
+                            $('.nocheck').val('');
+                            $('.nominal').val('');
+                          }
+
+                       //   alert(arrnohapus);
+                          if(id == 1){
+                            if(arrnohapus.length == 2){
+                              // alert(nominalbank);
+                           //   nominaltblbank = $('.nominalbank'+arrnohapus[0]).val();
+                              noseritblbank = $('.noseri'+arrnohapus[1]).val();
+                              $('.nominal').val(nominalbank);
+                              $('.nocheck').val(noseritblbank);
+                            }
+                            else {
+                              for(var j = 0; j < arrnohapus.length; j++){
+                                nominaltblbank = $('.nominalbank'+arrnohapus[j]).val();
+                                noseritblbank = $('.noseri'+arrnohapus[j]).val();
+                                $('.nominal').val(nominaltblbank);
+                                $('.nocheck').val(noseritblbank);
+                                
+                               }
+                            }
+                            
+                          }
+                     
+                          
+                          parent = $('tr#datas'+id);
+                          $('tr#datacek'+id).show();
+                          nominalbank = $('.nominalbank' + id).val();
+
+                        
+                        
+                           if(nominalbank != ''){
+                              Totalcheq = $('.ChequeBg').val();
+                              if(Totalcheq != ''){
+                                aslinominal = nominalbank.replace(/,/g, '');
+                                 aslitotal = Totalcheq.replace(/,/g, '');
+                                dikurangi = parseInt(aslitotal) - parseInt(aslinominal);
+                             
+                                
+                                dikurangi = dikurangi.toFixed(2);
+                                $('.ChequeBg').val(dikurangi);
+
+                              }
+                           }
+                        
+                          parent.remove();
+                      })
 
           totaltransaksi = 0;
           $('.totaltransaksi').each(function(){
@@ -1009,6 +1067,7 @@
           })
 
           $('.totbayar').val(addCommas(totaltransaksi));
+
           nmr++;
 
 
