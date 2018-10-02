@@ -969,7 +969,7 @@
               html ="<tr class='totalcekpembayaran'> <td>"+response.datasupplier[$j][0].nama_supplier+" <input type='hidden' name='suppliercekbayar[]' value="+response.datasupplier[$j][0].idsup+"></td>"+
                     "<td>"+addCommas(hargasupplier[$j])+" <input type='hidden' name='totalbayarpembayaran[]' value="+hargasupplier[$j]+"></td>";
                     if(response.temp[$j] == 0){
-                    html += "<td> <div class='col-sm-4'> <input type='text' class='form-control input-sm' name='syaratkredit[]' value="+response.datasupplier[$j][0].syarat_kredit+"> </div> <div class='col-sm-4'> Hari </div></td>";
+                    html += "<td> <div class='col-sm-4'> <input type='text' class='form-control input-sm' name='syaratkredit[]' value="+response.datasupplier[$j][0].syarat_kredit+" readonly> </div> <div class='col-sm-4'> Hari </div></td>";
                     }
                     else {
                     html +=  "<td> <div class='col-sm-4'> <input type='text' class='form-control input-sm' name='syaratkredit[]' value="+response.datasupplier[$j][0].syarat_kredit+"> </div> <div class='col-sm-4'> Hari </div> </td>";

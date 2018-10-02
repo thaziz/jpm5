@@ -620,9 +620,7 @@
             success : function(data){
             $('.loadingjenis').css('display' , 'none');
 
-
-               arrItem = data;
-                  
+               arrItem = data;                 
                   if(arrItem.length > 0) {
                       $('.barang').empty();
                       $('.barang').append(" <option value=''>  -- Pilih Barang -- </option> ");
@@ -1040,7 +1038,7 @@
                             "<td style='width:240px'><input type='text' class='form-control' value='"+ outputSup[a] +"' readonly name='outputSup[]'>" + 
                             "<input type='hidden' name='idsupplier[]' value='"+kodesup[hslsyaratkredit[a]]+"'> </td>" +
                             "<td class='text-right'><input type='text' class='input-sm form-control' value='"+ addCommas(hsljmlhpmbayaran) +"'  readonly style='text-align:right'  >  <input type='hidden' class='input-sm form-control' value='"+ addCommas(hsljmlhpmbayaran) +"-"+hslkodesup[a]+"' name='totbiaya[]' readonly style='text-align:right'  ></td>" +
-                            "<td> <div class='col-sm-7'> <input type='text' class='input-sm form-control input-sm' name='syaratkredit[]' required value='"+arrsyarat[hslsyaratkredit[a]]+"'> </div> <label class='control-label col-sm-2'> Hari</label>  </td>" +
+                            "<td> <div class='col-sm-7'> <input type='text' class='input-sm form-control input-sm' name='syaratkredit[]' required value='"+arrsyarat[hslsyaratkredit[a]]+"' readonly> </div> <label class='control-label col-sm-2'> Hari</label>  </td>" +
                             "<td> <input type='hidden' class='form-control' readonly value='"+hasilrow+"' name='row'> </td>  </tr>";
              $('#tbl_total_sup').append(rowhslSupp);
           }
