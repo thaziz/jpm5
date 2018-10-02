@@ -99,6 +99,7 @@
                             <th> Persentase </th>
                             <th> acc </th>
                             <th> csf </th>
+                            <th> aktif </th>
                             <th> Aksi </th>
                         </tr>
                     </thead>
@@ -290,6 +291,7 @@
             { "data": "persen" },
             { "data": "acc_code" },
             { "data": "csf_code" },
+            { "data": "aktif_button" },
             { "data": "button" },
             ]
         });
@@ -550,6 +552,26 @@
         todayHighlight: true,
         autoclose: true
     });
+
+    $(document).on('change','.aktif',function(){
+        var cek = $(this).is(':checked');
+        var id = $(this).data('id');
+        console.log(id);
+        $.ajax({
+                type: "get",
+                url : baseUrl + "/master_sales/subcon/set_aktif",
+                dataType:"JSON",
+                data: {cek,id},
+                success: function(data, textStatus, jqXHR)
+                {
+                    return toastr.success('Data Berhasil Diupdate');
+                },
+                error: function(jqXHR, textStatus, errorThrown)
+                {
+                    swal("Error!", textStatus, "error");
+                }
+            });
+    })
 
 
 </script>

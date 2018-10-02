@@ -54,6 +54,7 @@ class BiayaPenerusController extends Controller
 		$date = Carbon::now()->format('d/m/Y');
 
 		$agen = DB::table('agen')
+				  ->where('aktif','true')
 				  ->where('kategori','AGEN')
 				  ->orWhere('kategori','AGEN DAN OUTLET')
 				  ->get();
@@ -262,6 +263,7 @@ class BiayaPenerusController extends Controller
 
 				if ($request->vendor == "AGEN") {
 					$cari_persen = DB::table('agen')
+							  ->where('aktif','true')
 					 					 ->where('kode',$request->nama_kontak2)
 					 					 ->first();
 					$komisi = $cari_persen->komisi_agen;
@@ -675,8 +677,10 @@ class BiayaPenerusController extends Controller
 					  ->get();
 
 				$agen = DB::table('agen')
+						  ->where('aktif','true')
 						  ->where('kategori','AGEN')
 						  ->orWhere('kategori','AGEN DAN OUTLET')
+						  ->where('aktif','true')
 						  ->get();
 				$vendor = DB::table('vendor')
 						  ->get();
@@ -769,8 +773,10 @@ class BiayaPenerusController extends Controller
 
 
 				$agen = DB::table('agen')
+						  ->where('aktif','true')
 						  ->where('kategori','OUTLET')
 						  ->orWhere('kategori','AGEN DAN OUTLET')
+						  ->where('aktif','true')
 						  ->get();
 
 				$data = DB::table('faktur_pembelian')
@@ -857,12 +863,14 @@ class BiayaPenerusController extends Controller
 				$date = Carbon::now()->format('d/m/Y');
 
 				$agen = DB::table('agen')
+						  ->where('aktif','true')
 						  ->get();
 
 				$akun = DB::table('master_persentase')
 						  ->get();
 
 				$subcon = DB::table('subcon')
+						  ->where('aktif','true')
 						  ->get();
 				$akun_biaya = DB::table('d_akun')
 						  ->where('id_akun','like','5'.'%')
@@ -1101,6 +1109,7 @@ class BiayaPenerusController extends Controller
 
 				if ($request->vendor == "AGEN") {
 					$cari_persen = DB::table('agen')
+							  ->where('aktif','true')
 					 					 ->where('kode',$request->nama_kontak2)
 					 					 ->first();
 					$komisi = $cari_persen->komisi_agen;
@@ -1529,6 +1538,7 @@ class BiayaPenerusController extends Controller
 			$date = Carbon::now()->format('d/m/Y');
 
 			$agen = DB::table('agen')
+					  ->where('aktif','true')
 					  ->where()
 					  ->get();
 			$vendor = DB::table('vendor')
@@ -1547,6 +1557,7 @@ class BiayaPenerusController extends Controller
 			$date = Carbon::now()->format('d/m/Y');
 
 			$agen = DB::table('agen')
+					  ->where('aktif','true')
 					  ->where('kategori','OUTLET')
 					  ->orWhere('kategori','AGEN DAN OUTLET')
 					  ->get();
@@ -1596,6 +1607,7 @@ class BiayaPenerusController extends Controller
 			
 
 			$persen = DB::table('agen')
+					  ->where('aktif','true')
 			 			 ->where('kode',$request->selectOutlet)
 			 			 ->first();
 			
@@ -1653,6 +1665,7 @@ class BiayaPenerusController extends Controller
 
 
 			$persen = DB::table('agen')
+					  ->where('aktif','true')
 			 			 ->where('kode',$request->selectOutlet)
 			 			 ->first();
 				
@@ -2028,6 +2041,7 @@ class BiayaPenerusController extends Controller
 			 	$cari_id+=1;
 			 }
 			$akun_hutang = DB::table('agen')
+					  ->where('aktif','true')
 							 ->where('kode',$request->selectOutlet)
 							 ->first();
 
@@ -2290,6 +2304,7 @@ class BiayaPenerusController extends Controller
 			$tgl[1] = str_replace(' ', '', $tgl[1]);
 
 			$akun_hutang = DB::table('agen')
+					  ->where('aktif','true')
 							 ->where('kode',$request->selectOutlet)
 							 ->first();
 
@@ -2533,6 +2548,7 @@ class BiayaPenerusController extends Controller
 			$date = Carbon::now()->format('d/m/Y');
 
 			$agen = DB::table('agen')
+					  ->where('aktif','true')
 					  ->get();
 
 			$akun = DB::table('master_persentase')
@@ -2541,6 +2557,7 @@ class BiayaPenerusController extends Controller
 			$pajak = DB::table("pajak")
 						->get();
 			$subcon = DB::table('subcon')
+						  ->where('aktif','true')
 					  ->get();
 			$akun_biaya = DB::table('d_akun')
 					  ->where('id_akun','like','5'.'%')
@@ -2562,6 +2579,8 @@ class BiayaPenerusController extends Controller
 									   on ks_nama = kode) as res1
 									   where res1.ksd_asal = '$request->asal'
 									   and res1.ksd_tujuan = '$request->tujuan'
+									   and res1.ks_active = 'ACTIVE'
+									   and res1.ksd_active = true
 									   and res1.ks_cabang = '001'");
 
 			if ($data != null) {
@@ -2595,6 +2614,8 @@ class BiayaPenerusController extends Controller
 								 	    (SELECT kode,nama from tipe_angkutan) as angkutan
 								 	    on angkutan.kode  = ksd_angkutan
 								 	    where ks_id = '$request->id'
+								 	    and kontrak_subcon.ks_active = 'ACTIVE'
+									    and kontrak_subcon_dt.ksd_active = true
 								 	    and kontrak_subcon_dt.ksd_asal = '$request->asal'
 									    and kontrak_subcon_dt.ksd_tujuan = '$request->tujuan'");
 
@@ -2608,6 +2629,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('tipe_angkutan','kode','=','ksd_angkutan')
 					 ->where('ksd_id',$request->id)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 		$jenis_tarif = DB::table('jenis_tarif')
@@ -2624,6 +2646,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kota','id','=','ksd_asal')
 					 ->select('nama as asal','ksd_asal')
 					 ->where('ksd_id',$request->id)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -2632,6 +2655,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kota','id','=','ksd_tujuan')
 					 ->select('nama as tujuan','ksd_tujuan')
 					 ->where('ksd_id',$request->id)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -2785,6 +2809,7 @@ class BiayaPenerusController extends Controller
 						 ->max('fp_idfaktur')+1;
 
 			$acc_hutang = DB::table('subcon')
+						  ->where('aktif','true')
 							->where('kode',$request->nama_subcon)
 							->first();
 			
@@ -2901,6 +2926,7 @@ class BiayaPenerusController extends Controller
 							 ->first();
 
 				$persen = DB::table('subcon')
+						  ->where('aktif','true')
 							->where('kode',$request->nama_subcon)
 							->first()->persen;
 
@@ -3192,6 +3218,7 @@ class BiayaPenerusController extends Controller
 
 
 			$acc_hutang = DB::table('subcon')
+						  ->where('aktif','true')
 							->where('kode',$request->nama_subcon)
 							->first();
 			
@@ -3297,6 +3324,7 @@ class BiayaPenerusController extends Controller
 							 ->first();
 
 				$persen = DB::table('subcon')
+						  ->where('aktif','true')
 							->where('kode',$request->nama_subcon)
 							->first()->persen;
 
@@ -3571,6 +3599,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('tipe_angkutan','kode','=','ksd_angkutan')
 					 ->where('ks_nama',$request->selectOutlet)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -3579,6 +3608,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kota','id','=','ksd_asal')
 					 ->select('nama as asal')
 					 ->where('ks_nama',$request->selectOutlet)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -3587,6 +3617,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kota','id','=','ksd_tujuan')
 					 ->select('nama as tujuan')
 					 ->where('ks_nama',$request->selectOutlet)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -3621,6 +3652,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('tipe_angkutan','kode','=','ksd_angkutan')
 					 ->where('ks_nama',$id)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -3629,6 +3661,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kota','id','=','ksd_asal')
 					 ->select('nama as asal')
 					 ->where('ks_nama',$id)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -3637,6 +3670,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kota','id','=','ksd_tujuan')
 					 ->select('nama as tujuan')
 					 ->where('ks_nama',$id)
+					 ->where('ksd_active',true)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -3670,6 +3704,7 @@ class BiayaPenerusController extends Controller
 		}
 		if ($request->val == 'AGEN') {
 			$data = DB::table('agen')
+					  ->where('aktif','true')
 					  ->where('kode_cabang',$request->cabang)
 					  ->where('kategori','AGEN')
 					  ->orWhere('kategori','AGEN DAN OUTLET')
