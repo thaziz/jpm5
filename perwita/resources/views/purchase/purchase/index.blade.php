@@ -395,6 +395,7 @@ setTimeout(function () {
             "pageLength": 10,
             "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
             "bFilter": false,
+            "responsive": false,
            /*"fnCreatedRow": function (row, data, index) {
             $('td', row).eq(0).html(index + 1);
             }*/
