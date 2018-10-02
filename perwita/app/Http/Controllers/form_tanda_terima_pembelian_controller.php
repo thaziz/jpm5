@@ -298,19 +298,27 @@ class form_tanda_terima_pembelian_controller extends Controller
     {
     	# code...
     }
-    public function datatable()
+    public function datatable(Request $request)
     {	
+    	$tgl='';
+    	$nomor='';
+    	  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+  		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+  		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
+  		  	$tgl="and tt_tgl >= '$tgl1' AND tt_tgl <= '$tgl2'";
+  		  }
+  		  if($request->nomor!=''){
+  		  	$nomor="and tt_noform='$request->nomor'";
+  		  }
+
+		$data='';
+
+
     	if (Auth::user()->punyaAkses('Form Tanda Terima Pembelian','all')) {
-			$data = DB::table('form_tt')
-				  ->orderBy('tt_idform','ASC')
-				  ->get();
+			$data = DB::select("select * from form_tt where tt_idform is not null $tgl $nomor order by tt_idform asc");			
 		}else{
 			$cabang = Auth::user()->kode_cabang;
-
-			$data = DB::table('form_tt')
-				  ->where('tt_idcabang',$cabang)
-				  ->orderBy('tt_idform','ASC')
-				  ->get();
+		  $data = DB::select("select * from form_tt where tt_idcabang='$cabang' $tgl $nomor order by tt_idform asc");	
 		}
 		
 

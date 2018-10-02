@@ -2212,7 +2212,7 @@ public function purchase_ordertable(Request $request){
                            $action.='<span class="label label-warning"> '.$data->po_setujufinance.'</span>';
                         }
                         if($data->po_setujufinance == 'SETUJU'){
-                           $action.='<a class="btn btn-sm btn-info print" type="button" href='.url('print/'.$data->po_id.'').'> <i class="fa fa-print" aria-hidden="true"> </i> </a>';
+                           $action.='<a class="btn btn-sm btn-info print" type="button" href='.url('purchaseorder/print/'.$data->po_id.'').'> <i class="fa fa-print" aria-hidden="true"> </i> </a>';
                         }
                     }
 
