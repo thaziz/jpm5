@@ -2140,42 +2140,41 @@ public function purchase_order() {
 
 
 public function purchase_ordertable(Request $request){
-	  	  $idjenisbayar='';
+	  	  $total='';
   		  $tgl='';
   		  $supplier='';
   		  $nofpg='';
   		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
   		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+
+  		  $request->total = str_replace(['Rp', '\\',',',' '], '',$request->total);
   		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
-  		  	$tgl="and date(created_at) >= '$tgl1' AND date(created_at) <= '$tgl2'";
+  		  	$tgl="and date(pembelian_order.created_at) >= '$tgl1' AND date(pembelian_order.created_at) <= '$tgl2'";
   		  }
   		  if($request->nosupplier!=''){
   		  	$supplier="and po_supplier=$request->nosupplier";
   		  }
-  		  if($request->idjenisbayar!=''){
-  		  	$idjenisbayar="and po_totalharga=$request->total";
+  		  if($request->total!=''){
+  		  	$total="and po_totalharga=$request->total";
   		  }
   		  if($request->nofpg!=''){
   		  	$nofpg="and po_no='$request->nofpg'";
   		  }		 
+
 		 $data='';
 
 		$cabang = session::get('cabang');
 
 		if(Auth::user()->punyaAkses('Purchase Order','all')){
-			$data= DB::select("select * from pembelian_order, supplier, cabang where po_supplier = idsup and po_cabang = kode  and po_statusreturn = 'AKTIF' order by po_id desc");	
+			$data= DB::select("select *, 'no' as no from pembelian_order, supplier, cabang where po_supplier = idsup and po_cabang = kode  and po_statusreturn = 'AKTIF'  $total $tgl $nofpg $supplier order by po_id desc");	
 			$data=collect($data);
 		}
 		else{
-			$data= DB::select("select * from pembelian_order, supplier, cabang where po_supplier = idsup and po_cabang = kode and po_cabang = '$cabang' and po_statusreturn = 'AKTIF' order by po_id desc");			
+			$data= DB::select("select *,'no' as no from pembelian_order, supplier, cabang where po_supplier = idsup and po_cabang = kode and po_cabang = '$cabang' and po_statusreturn = 'AKTIF'  $total $tgl $nofpg $supplier order by po_id desc");			
 			$data=collect($data);
 		}
 
 
-   
-                          
-                         
-                          
                       
                          
                    
@@ -2193,7 +2192,7 @@ public function purchase_ordertable(Request $request){
  			 	return '<a 
  			 	href='.url('purchaseorder/detail/'.$data->po_id.'').'> 			 	
  			 	'.$data->po_no.'</a>
- 			 	<input type="" value="'.$po->po_id.'"  class="po_id">';
+ 			 	<input type="hidden" value="'.$data->po_id.'"  class="po_id">';
             })
            ->editColumn('po_totalharga', function ($data) { 
                 return number_format($data->po_totalharga, 2);                

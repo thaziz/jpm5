@@ -63,7 +63,7 @@
    <form method="post" id="dataSeach">
       <div class="col-md-12 col-sm-12 col-xs-12">
               
-               <div class="col-md-2 col-sm-3 col-xs-12">
+               <div class="col-md-1 col-sm-3 col-xs-12">
                 <label class="tebal">No FPG</label>
               </div>
 
@@ -75,16 +75,16 @@
 
 
             
-              <div class="col-md-1 col-sm-3 col-xs-12">
+              <div class="col-md-2 col-sm-3 col-xs-12">
                 <label class="tebal">Tanggal</label>
               </div>
 
               <div class="col-md-4 col-sm-6 col-xs-12">
                 <div class="form-group">
                   <div class="input-daterange input-group">
-                    <input id="tanggal1" class="form-control input-sm datepicker2" name="tanggal1" type="text">
+                    <input id="tanggal1" class="form-control input-sm datepicker2 kosong" name="tanggal1" type="text">
                     <span class="input-group-addon">-</span>
-                    <input id="tanggal2" "="" class="input-sm form-control datepicker2" name="tanggal2" type="text">
+                    <input id="tanggal2" "="" class="input-sm form-control datepicker2 kosong" name="tanggal2" type="text">
                   </div>
                 </div>
               </div>
@@ -118,7 +118,7 @@
                 <label class="tebal">Supplier</label>
               </div>
 
-              <div class="col-md-4 col-sm-6 col-xs-12">
+              <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
 
                      <select class="form-control chosen-select-width kosong" name="nosupplier" id="nosupplier">
@@ -137,7 +137,7 @@
 
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                <input type="" name="total" class="form-control" id="total">                    
+                <input type="" name="total" class="form-control kosong" id="total">                    
                 </div>
               </div>
 
@@ -347,35 +347,49 @@ setTimeout(function () {
     processing: true,
             serverSide: true,
             ajax: {
-              "url": "{{ url("formfpg/formfpg/table") }}",
+              "url": "{{ url("purchaseorder/purchaseorder/table") }}",
               "type": "get",
               data: {
                     "_token": "{{ csrf_token() }}",                    
                     "tanggal1" :$('#tanggal1').val(),
                     "tanggal2" :$('#tanggal2').val(),
                     "nosupplier" :$('#nosupplier').val(),
-                    "idjenisbayar" :$('#idjenisbayar').val(),
+                    "total" :$('#total').val(),
                     "nofpg" :$('#nofpg').val(),
                     },
               },
             columns: [
             {data: 'no', name: 'no'},             
-            {data: 'fpg_nofpg', name: 'fpg_nofpg'},                           
-            {data: 'fpg_tgl', name: 'fpg_tgl'},            
-            {data: 'jenisbayar', name: 'jenisbayar'},
-            {data: 'fpg_keterangan', name: 'fpg_keterangan'},
-            {data: 'fpg_totalbayar', name: 'fpg_totalbayar'},            
-            {data: 'uangmuka', name: 'uangmuka'},            
-            {data: 'fpg_cekbg', name: 'fpg_cekbg'},                        
+            {data: 'po_no', name: 'po_no'},                           
+            {data: 'created_at', name: 'created_at'},            
+            {data: 'nama', name: 'nama'},
+            {data: 'nama_supplier', name: 'nama_supplier'},
+            {data: 'po_totalharga', name: 'po_totalharga'},            
+            {data: 'po_tipe', name: 'po_tipe'},                                           
             {data: 'action', name: 'action'},                        
-          /*  {data: 's_gross', name: 's_gross'}, 
-            {data: 's_disc_percent', name: 's_disc_percent'}, 
-            {data: 's_ongkir', name: 's_ongkir'},
-            {data: 's_net', name: 's_net'},            
-            {data: 's_status', name: 's_status'}, 
-            {data: 'action', name: 'action'},
-            */
-           
+    
+
+
+
+   
+                          
+                         
+               
+                   
+                          
+                            
+                          
+                          
+                          
+                          
+                          
+                    
+                          
+
+                    
+                                  
+
+
             ],
             "pageLength": 10,
             "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
@@ -389,13 +403,6 @@ setTimeout(function () {
     });
    notif();
 }
-
-tablex.on('draw.dt', function () {
-    var info = tablex.page.info();
-    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
-        cell.innerHTML = i + 1 + info.start;
-    });
-});
 
 
 
