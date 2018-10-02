@@ -293,6 +293,7 @@
 
      $('.tglinput').change(function(){
        var comp = $('.cabang').val();
+        var tgldate = $('.tglinput').datepicker('getDate');
         var tglinput = $('.tglinput').val();
         $('.valcabang').val(comp);
           $.ajax({    
@@ -302,7 +303,7 @@
               dataType:'json',
               success : function(data){
                if(data.status == 'sukses'){
-                        var d = new Date(tglinput);               
+                        var d = new Date(tgldate);               
                         //tahun
                         var year = d.getFullYear();
                         //bulan
@@ -312,10 +313,10 @@
                         console.log();
                         console.log(year);
 
-                        if(month < 10) {
+                        if(parseInt(month) < 10) {
                           month = '0' + month1;
                         }
-                        console.log(d);
+                        
 
                         tahun = String(year);
         //                console.log('year' + year);
@@ -324,7 +325,7 @@
 
                       
                          nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
-                        console.log(nospp);
+                     
                         $('.nospp').val(nospp);
                          nospp = $('.nospp').val();
                   }
@@ -420,7 +421,10 @@
 
 
        comp = $('.cabang').val();
+
+       tgldate = $('.tglinput').datepicker('getDate');
        tglinput = $('.tglinput').val();
+
         $.ajax({    
             type :"get",
             data : {comp,tglinput},
@@ -428,7 +432,7 @@
             dataType:'json',
             success : function(data){
                 if(data.status == 'sukses'){
-                      var d = new Date(tglinput);               
+                      var d = new Date(tgldate);               
                       //tahun
                       var year = d.getFullYear();
                       //bulan
@@ -438,6 +442,7 @@
                       console.log();
                       console.log(year);
 
+                      alert(month);
                       if(month < 10) {
                         month = '0' + month1;
                       }
@@ -475,6 +480,7 @@
     $('.cabang').change(function(){    
       var comp = $(this).val();
       var tglinput = $('.tglinput').val();
+      var tgldate = $('.tglinput').datepicker('getDate');
       $('.valcabang').val(comp);
         $.ajax({    
             type :"get",
@@ -483,7 +489,7 @@
             dataType:'json',
             success : function(data){
              if(data.status == 'sukses'){
-                      var d = new Date(tglinput);               
+                      var d = new Date(tgldate);               
                       //tahun
                       var year = d.getFullYear();
                       //bulan

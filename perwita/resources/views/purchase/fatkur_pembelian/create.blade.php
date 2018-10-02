@@ -2201,6 +2201,7 @@
       cabang = $('.cabang').val();
       var a = $('ul#tabmenu').find('li.active').data('val');
       tgl = $('.tgl').val();
+      tgldate = $('.tgl').datepicker('getDate');
       $('.cabang2').val(cabang);
        $.ajax({
           type : "get",
@@ -2210,7 +2211,7 @@
           success : function (response){     
               
               if(response.status == 'sukses'){
-                  var d = new Date(tgl);
+                  var d = new Date(tgldate);
                 
                   //tahun
                   var year = d.getFullYear();
@@ -2627,6 +2628,7 @@
      // alert(cabang);
       var a = $('ul#tabmenu').find('li.active').data('val');
       tgl = $('.tgl').val();
+       tgldate = $('.tgl').datepicker('getDate');
       $('.cabang2').val(cabang);
        $.ajax({
           type : "get",
@@ -2636,7 +2638,7 @@
           success : function (response){     
             
               if(response.status == 'sukses'){
-                  var d = new Date(tgl);
+                  var d = new Date(tgldate);
                 
                   //tahun
                   var year = d.getFullYear();
@@ -7176,8 +7178,8 @@ $(document).ready(function(){
 $('#tmbhdataitem').click(function(){
        cabang = $('.cabang').val();
        a = 'I';
-       tgl = $('.tgl').datepicker('getDate');
-
+       tgl = $('.tgl').val();
+      tgldate = $('.tgl').datepicker('getDate');
        $.ajax({
           type : "get",
           data : {cabang,a,tgl},
@@ -7186,7 +7188,7 @@ $('#tmbhdataitem').click(function(){
           success : function (response){     
             
               if(response.status == 'sukses'){
-                  var d = new Date(tgl);
+                  var d = new Date(tgldate);
                 
                   //tahun
                   var year = d.getFullYear();
@@ -7225,6 +7227,7 @@ $('#tmbhdataitem').click(function(){
      cabang = $('.cabang').val();
      a = 'PO';
      tgl = $('.tgl').val();
+     tgldate = $('.tgl').datepicker('getDate');
        $.ajax({
           type : "get",
           data : {cabang,a,tgl},
@@ -7233,7 +7236,7 @@ $('#tmbhdataitem').click(function(){
           success : function (response){     
              
               if(response.status == 'sukses'){
-                  var d = new Date(tgl);
+                  var d = new Date(tgldate);
                 
                   //tahun
                   var year = d.getFullYear();

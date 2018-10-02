@@ -902,13 +902,103 @@
           nota.push(string[2]);
           id.push(string[0]);
         }
-        alert(variabel);
+      
 
        for($i = 0; $i < variabel.length; $i++){
           var row = "<tr class='datatransaksipb data"+nmr+"'><td>"+nota[$i]+" <input type='hidden' value='"+id[$i]+"' name='idfaktur[]'> </td><td>"+cabang[$i]+" <input type='hidden' value='"+nota[$i]+"' name='notafaktur[]'> </td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[$i])+" <input type='hidden' class='form-control' name='nominalfaktur[]' value="+addCommas(total[$i])+"> </p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+"><i class='fa fa-trash'> </i> </button></td> </tr>";
             $('#tbl-dataalltransaksi').append(row);
             nmr++;
        }
+
+       nomrbnk = $('.tblbank').length;
+       nomrbnk = parseInt(nomrbnk) + 1;
+
+       //variabel tbltfbank
+      asalbank = $('.bankasal').val();
+      nofpg = $('.nofpg').val();
+
+      if(jenispindahbuku == 'BANK'){
+         banktujuan =$('.banktujuan').val();
+
+          if(banktujuan == '' || asalbank == ''){
+            toastr.info("Mohon maaf data bank asal / tujuan belum diisi :)");
+            $('.jenisbayarbankibaking').prop({checked: false });
+            return false; 
+          }
+
+          split = banktujuan.split("+");
+          kodebanktujuan = split[4];
+          norekening = split[3];
+          namabank = split[1];
+          idbanktujuan = split[0];
+          kelompoktujuan = split[5];
+      }
+      else if(jenispindahbuku == 'KAS'){
+        kastujuan = $('.kastujuan').val();
+        if(kastujuan == '' || asalbank == ''){
+          $('.jenisbayarbankibaking').prop({checked: false });
+          return false;
+        }
+
+          split = kastujuan.split("+");
+          kodebanktujuan = split[0];
+          norekening = '-';
+          namabank = split[1];
+          idbanktujuan = split[0];
+          kelompoktujuan = 'KAS';
+      }
+
+       tgl = $('.tgl').datepicker('getDate');
+      
+        splitasal = asalbank.split("+");
+        kodebank = splitasal[4];
+        idbankasal = splitasal[0];
+        kelompok = splitasal[5];
+
+        jenisbayar = $('.jenisbayar').val();
+
+        if(jenisbayar == 12 || jenisbayar == 11){
+           if(jenispindahbuku == 'BANK'){
+                    if(kelompok == kelompoktujuan){
+                      kelompokbank = 'SAMA BANK';
+                    }
+                    else if(kelompok != kelompoktujuan) {
+                      kelompokbank = 'BEDA BANK';
+                    }
+                  }
+                  else if(jenispindahbuku == 'KAS') {
+                    kelompokbank = 'KAS';
+                  }
+        }
+        else {
+          if(kelompok == kelompoktujuan){
+              kelompokbank = 'SAMA BANK';
+            }
+            else if(kelompok != kelompoktujuan) {
+              kelompokbank = 'BEDA BANK';
+            }
+        }
+
+
+      metodebayar = $('.metodebayar:checked').val();
+      if(metodebayar == 'CHECK/BG'){
+         noseri = $('.nocheck').val();
+      }
+      else {
+        noseri = '-';
+      }
+
+        for($i = 0; $i < variabel.length; $i++){
+          var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
+            "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> "+noseri+ "</a> <input type='hidden' class='noseri"+nomrbnk+"' value='"+noseri+"' name='noseri[]'></td>"+ // NOSERI
+            "<td>"+tgl+"</td>"+ // TGL
+            "<td>"+kodebank+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]' readonly> </td>" + //BANK TUJUAN
+            "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbanktujuan+"' name='idbanktujuan[]'> <input type='hidden' class='kelompokbank' name='kelompokbank[]' value='"+kelompokbank+"'> </td>" + //NAMA BANK TUJUAN
+            "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominalcekbg nominaltblbank nominalbank"+nomrbnk+"'  name='nominalbank[]' style='text-align:right' required>  </td>" + //NOMINAL
+            "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbid+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
+            nmr++;
+       }
+
           totaltransaksi = 0;
           $('.totaltransaksi').each(function(){
             val = $(this).text();
@@ -1460,8 +1550,10 @@
 
            }
 
-      noinet = 1;     
+         
       $('#tbmhdatainet').click(function(){
+        noinet = $('.tblbank').length;  
+        noinet = parseInt(noinet) + 1;
 
         asalbank = $('.bankasal').val();
         nofpg = $('.nofpg').val();
@@ -1500,7 +1592,7 @@
         }
         //alert(idbanktujuan);
       
-       tgl = $('.tgl').val();
+       tgl = $('.tgl').datepicker('getDate');
       
         splitasal = asalbank.split("+");
         kodebankasal = splitasal[4];
@@ -1532,7 +1624,7 @@
         }
 
 
-           var row =  "<tr class='tbltfbank tbltfbank"+noinet+"'> <td>"+noinet+"</td>" +
+           var row =  "<tr class='tblbank tbltfbank"+noinet+"'> <td>"+noinet+"</td>" +
                       "<td>"+nofpg+"</td>" + // NO FPG
                       "<td> - </td>" + // -
                       "<td>"+tgl+"</td>"+ 
@@ -3082,17 +3174,13 @@
        metodebayar = $('.metodebayar:checked').val();
          $('#tbltujuanpb').hide();
          $('.datatransaksi').hide();
-        if(metodebayar == 'INTERNET BANKING'){
-                $('.jenisbayarbankbg').prop({ checked: false });           
-                  $('.tujuanbank').hide();
-                  $('.tujuanbankacc').hide();
-                  $('.transferbank').hide();
-                  $('.checkbgtf').hide();
-                  $('.ibanking').show();
-        }
-        else if(metodebayar == 'TRANSFER PRIBADI') {
+        $('.jenisbayarbankbg').prop({ checked: false });           
+          $('.tujuanbank').hide();
+          $('.tujuanbankacc').hide();
           $('.transferbank').hide();
-        }
+          $('.checkbgtf').hide();
+          $('.ibanking').show();
+       
       }
      
 
