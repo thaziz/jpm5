@@ -32,13 +32,14 @@
         <br>
    <div class="wrapper wrapper-content animated fadeInRight">
    
-    <div class="col-md-2">
+   <!--  <div class="col-md-2">
       <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
         <h2 style='text-align:center'> <b> {{$data['countspp']}} SPP </b></h2> <h4 style='text-align:center'> BELUM DI PROSES PO </h4>
       </div>
     </div>   
-  </div>
+  </div> -->
+  <div id="notif"></div>
 
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -442,7 +443,7 @@ function dateAwal(){
 }  
 function notif(){
    $.ajax({
-      url:baseUrl + '/formfpg/formfpg/notif',
+      url:baseUrl + '/purchaseorder/purchaseorder/notif',
       type:'get',   
        data: {
                     "_token": "{{ csrf_token() }}",                    
