@@ -948,7 +948,7 @@
           kelompoktujuan = 'KAS';
       }
 
-       tgl = $('.tgl').datepicker('getDate');
+       tgl = $('.tgl').val();
       
         splitasal = asalbank.split("+");
         kodebank = splitasal[4];
@@ -995,8 +995,10 @@
             "<td>"+kodebank+"</td> <td> <input type='text' class='form-control kodebanktujuan' value='"+kodebanktujuan+"' name='kodebanktujuan[]' readonly> </td>" + //BANK TUJUAN
             "<td> <input type='text' class='form-control namarekening' value='"+namabank+"' name='namabanktujuan[]' readonly> <input type='hidden' class='form-control idbanktujuan' value='"+idbanktujuan+"' name='idbanktujuan[]'> <input type='hidden' class='kelompokbank' name='kelompokbank[]' value='"+kelompokbank+"'> </td>" + //NAMA BANK TUJUAN
             "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominalcekbg nominaltblbank nominalbank"+nomrbnk+"'  name='nominalbank[]' style='text-align:right' required>  </td>" + //NOMINAL
-            "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+mbid+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
+            "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"'  data-idbankdt="+idbankasal+" type='button'><i class='fa fa-trash'></i></button></td> </tr>";
             nmr++;
+
+            $('#tbl-tfbank').append(row);
        }
 
           totaltransaksi = 0;
@@ -1592,7 +1594,7 @@
         }
         //alert(idbanktujuan);
       
-       tgl = $('.tgl').datepicker('getDate');
+       tgl = $('.tgl').val();
       
         splitasal = asalbank.split("+");
         kodebankasal = splitasal[4];
