@@ -8435,7 +8435,9 @@ public function kekata($x) {
 					$status_fix = $flag . ' TIPE JASA';
 					array_push($data['status'] , $status_fix);
 				}
-			}			
+			}
+
+				
 
 			$data['supplier'] = DB::select("select * from supplier where idsup = '$idsup'");	
 			return json_encode($data);
