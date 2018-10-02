@@ -538,6 +538,8 @@ Route::get('voucherhutang/getnota', 'v_hutangController@getnota');
 
 
 Route::get('returnpembelian/returnpembelian', 'ReturnPembelianController@returnpembelian');
+Route::get('returnpembelian/returnpembelian/table', 'ReturnPembelianController@returnpembeliantable');
+
 Route::get('returnpembelian/createreturnpembelian', 'ReturnPembelianController@createreturnpembelian');
 Route::get('returnpembelian/detailreturnpembelian/{id}', 'ReturnPembelianController@detailreturnpembelian');
 Route::get('returnpembelian/getpo', 'ReturnPembelianController@getpo');

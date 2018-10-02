@@ -65,12 +65,12 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
               
                <div class="col-md-1 col-sm-3 col-xs-12">
-                <label class="tebal">No FPG</label>
+                <label class="tebal">No PO</label>
               </div>
 
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    <input class="form-control kosong" type="text" name="nofpg" id="nofpg" placeholder="No FPG">
+                    <input class="form-control kosong" type="text" name="nofpg" id="nofpg" placeholder="No PO">
                 </div>
               </div>
 
