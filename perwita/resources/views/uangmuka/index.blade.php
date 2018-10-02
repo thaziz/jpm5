@@ -47,6 +47,65 @@
                     @endif
                 </div>
                 <div class="ibox-content">
+
+
+
+<div class="row" >
+   <form method="post" id="dataSeach">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+
+              <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">Nomor</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <input class="form-control kosong" type="text" name="nomor" id="nomor" placeholder="Nomor">
+                </div>
+              </div>
+
+
+
+              <div class="col-md-1 col-sm-3 col-xs-12">
+                <label class="tebal">Tanggal</label>
+              </div>
+
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                  <div class="input-daterange input-group">
+                    <input id="tanggal1" class="form-control input-sm datepicker2" name="tanggal1" type="text">
+                    <span class="input-group-addon">-</span>
+                    <input id="tanggal2" "="" class="input-sm form-control datepicker2" name="tanggal2" type="text">
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-2 col-sm-6 col-xs-12" align="center">
+                <button class="btn btn-primary btn-sm btn-flat" title="Cari rentang tanggal" type="button" onclick="cari()">
+                  <strong>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </strong>
+                </button>
+                <button class="btn btn-info btn-sm btn-flat" type="button" title="Reset" onclick="resetData()">
+                  <strong>
+                    <i class="fa fa-undo" aria-hidden="true"></i>
+                  </strong>
+                </button>
+              </div>
+      </div>
+
+
+
+ 
+
+
+    </form>
+</div>
+
+
+
+
                         <div class="row">
             <div class="col-xs-12">
               
@@ -63,42 +122,13 @@
                         <th style="width:5px">No.</th>
                         <th> No Bukti </th>
                         <th> Tanggal </th>
-                        <th> Supplier </th>
-                       {{--  <th> Alamat </th>  --}}
-                        {{-- <th> Keterangan </th> --}}
+                        <th> Supplier </th>                    
                         <th> Jumlah </th>
                         <th> Aksi  </th>
                     </tr>
                     </thead>
                    
-                    <tbody>
-                       @foreach($data as $index => $a)
-                      <tr>
-                        <td> {{$index+1}} </td>
-                        <td> {{$a->um_nomorbukti}}  </td>
-                        <td> {{$a->um_tgl}} </td>
-                        <td> {{$a->um_supplier}} </td>
-                        {{-- <td> {{$a->um_alamat}} </td> --}}
-                       {{--  <td> {{$a->um_keterangan}} </td> --}}
-                        <td ><o style="float: left;">Rp.</o> <o style="float: right;">{{number_format($a->um_jumlah,2,',','.')}}</o></td>
-                        <td>
-                              @if(Auth::user()->punyaAkses('Uang Muka','ubah'))
-                          <a href="uangmuka/edituangmuka/{{$a->um_id}}"><i class="btn btn-primary fa fa-cog "></i></a>
-                            @endif
-
-                            @if(Auth::user()->punyaAkses('Uang Muka','hapus'))
-                          <a href="uangmuka/hapusuangmuka/{{$a->um_id}}"><i class="btn btn-danger fa fa-trash "></i></a>
-                            @endif
-
-                             @if(Auth::user()->punyaAkses('Uang Muka','print'))
-                           <a href="uangmuka/print_uangmuka/{{$a->um_id}}"><i class="btn btn-info fa fa-print "></i></a>
-                              @endif
-                        </td>
-                      </tr>
-                      @endforeach
-                      <!-- <tr> <td rowspan="4"> 1 </td> <td rowspan="4"> </td> <td rowspan="4"> </td> <td> halo </td> <td> halo </td> <td> halo </td> <tr> <td> halo </td> <td> halo </td> <td> halo </td> </tr> <tr> <td> halo </td> <td> halo</td><td> halo</td>
-                      </tr> -->
-                    </tbody>
+                   
                     
                    
                   </table>
@@ -126,13 +156,99 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-     tableDetail = $('.tbl-penerimabarang').DataTable({
-            responsive: true,
-            searching: true,
-            //paging: false,
-            "pageLength": 10,
-            "language": dataTableLanguage,
+   
+var tablex;
+setTimeout(function () {            
+   table();
+   tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
     });
+});
+
+      }, 1500);
+
+
+
+
+     function table(){
+   $('#addColumn').dataTable().fnDestroy();
+   tablex = $('#addColumn').DataTable({        
+         responsive: true,
+        "language": dataTableLanguage,
+    processing: true,
+            serverSide: true,
+            ajax: {
+              "url": "{{ url("uangmuka/table") }}",
+              "type": "get",
+              data: {
+                    "_token": "{{ csrf_token() }}",
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),                 
+                    "nomor" :$('#nomor').val(),
+                    },
+              },
+            columns: [
+            { "data": "no" },
+            { "data": "um_nomorbukti" },
+            { "data": "um_tgl" },
+            { "data": "um_supplier"},
+            { "data": "um_jumlah" },            
+            { "data": "action" },
+            ],  
+              columnDefs: [
+              {
+                 targets: 0,
+                 className: 'center'
+              },
+            ],
+            "pageLength": 10,
+            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+             "bFilter": false,
+    
+
+
+                   
+
+
+
+    });   
+}
+
+
+
+dateAwal();
+function dateAwal(){
+      var d = new Date();
+      d.setDate(d.getDate()-7);
+
+      /*d.toLocaleString();*/
+      $('#tanggal1').datepicker({
+            format:"dd-mm-yyyy",
+            autoclose: true,
+      })
+      /*.datepicker( "setDate", d);*/
+      $('#tanggal2').datepicker({
+            format:"dd-mm-yyyy",
+            autoclose: true,
+      })
+      /*.datepicker( "setDate", new Date());*/
+      $('.kosong').val('');
+      $('.kosong').val('').trigger('chosen:updated');
+}
+
+ function cari(){
+  table();
+ }
+
+ function resetData(){
+  $('#tanggal1').val('');
+  $('#tanggal2').val('');
+  $('.kosong').val('');
+  table();
+  dateAwal();
+}
 
     $('.date').datepicker({
         autoclose: true,

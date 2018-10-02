@@ -9,6 +9,7 @@ use Carbon\carbon;
 use App\Http\Controllers\Controller;
 use Session;
 use Auth;
+use Yajra\Datatables\Datatables;
 class uangmukaController extends Controller
 {
 	public function kekata($x) {
@@ -76,6 +77,69 @@ class uangmukaController extends Controller
 		}
 		return view('uangmuka.index',compact('data'));
 	}
+
+	public function table(Request $request) {
+		  $data='';		  
+  		  $tgl='';
+  		  $nomor='';
+  		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+  		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+  		
+  		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
+  		  	$tgl="and um_tgl >= '$tgl1' AND um_tgl <= '$tgl2'";
+  		  }  		    		  
+  		  if($request->nomor!=''){
+  		  	$nomor="and um_nomorbukti=UPPER('$request->nomor')";
+  		  }
+  		  
+		 $cabang = session::get('cabang');
+		
+		$data='';
+		if(Auth::user()->punyaAkses('Uang Muka','all')){
+			$data = DB::select("select *, 'no' as no from d_uangmuka  where um_id is not null $tgl $nomor order by um_id desc");
+
+		}
+		else {
+			$data = DB::select("select *,'no' as no from d_uangmuka where um_comp='$cabang' $tgl $nomor order by um_id desc");
+		}
+		
+		$data=collect($data);
+
+
+			return DataTables::of($data)		
+           ->editColumn('um_jumlah', function ($data) { 
+                return '<o style="float: left;">Rp.</o> <o style="float: right;">'.number_format($data->um_jumlah,2,',','.').'</o>';                
+            })
+           ->editColumn('um_tgl', function ($data) { 
+                return date('d-m-Y', strtotime($data->um_tgl));                
+            })           
+           ->addColumn('action', function ($data) {                 
+				$action='';
+
+            	    if(Auth::user()->punyaAkses('Uang Muka','ubah')){
+                          $action.='<a                           
+                          href='.url('uangmuka/edituangmuka/'.$data->um_id.'').'>
+                          <i class="btn btn-primary fa fa-cog "></i></a>';
+                    }
+                    if(Auth::user()->punyaAkses('Uang Muka','hapus')){
+                          $action.='<a                           
+                          href='.url('uangmuka/hapusuangmuka/'.$data->um_id.'').'>
+                          <i class="btn btn-danger fa fa-trash "></i></a>';
+                    }
+                    if(Auth::user()->punyaAkses('Uang Muka','print')){
+                           $action.='<a href='.url('uangmuka/print_uangmuka/'.$data->um_id.'').'>
+                           <i class="btn btn-info fa fa-print "></i></a>';
+                    }
+
+				return $action;
+
+
+            })
+            
+			->make(true);	
+
+	}
+
 	public function ajax(Request $request){
 		
 		$utama = $request->an;

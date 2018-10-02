@@ -2949,6 +2949,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
 
     //uangmuka
     Route::Get('uangmuka','uangmukaController@index');
+    Route::Get('uangmuka/table','uangmukaController@table');
     Route::Get('uangmuka/create','uangmukaController@create');
       Route::Get('uangmuka/ajax','uangmukaController@ajax');
     Route::Get('uangmuka/store','uangmukaController@store');
