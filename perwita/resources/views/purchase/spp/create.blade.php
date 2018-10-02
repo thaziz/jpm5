@@ -303,40 +303,15 @@
               dataType:'json',
               success : function(data){
                if(data.status == 'sukses'){
-                        var d = new Date(tgldate);               
-                        //tahun
-                        var year = d.getFullYear();
-                        //bulan
-                        var month = d.getMonth();
-                        var month1 = parseInt(month + 1)
-                        console.log(d);
-                        console.log();
-                        console.log(year);
-
-                        if(parseInt(month) < 10) {
-                          month = '0' + month1;
-                        }
-                        
-
-                        tahun = String(year);
-        //                console.log('year' + year);
-                        year2 = tahun.substring(2);
-                        //year2 ="Anafaradina";
-
-                      
-                         nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
+                  
                      
-                        $('.nospp').val(nospp);
+                        $('.nospp').val(data.data);
                          nospp = $('.nospp').val();
                   }
                   else {
                       location.reload();
                   }
                 
-                  if(month == 'NANN'){
-                      location.reload();
-                  }
-
                  
               },
               error : function(){
@@ -424,39 +399,16 @@
 
        tgldate = $('.tglinput').datepicker('getDate');
        tglinput = $('.tglinput').val();
-
         $.ajax({    
             type :"get",
-            data : {comp,tglinput},
+            data : {comp,tgldate},
             url : baseUrl + '/suratpermintaanpembelian/getnospp',
             dataType:'json',
             success : function(data){
                 if(data.status == 'sukses'){
-                      var d = new Date(tgldate);               
-                      //tahun
-                      var year = d.getFullYear();
-                      //bulan
-                      var month = d.getMonth();
-                      var month1 = parseInt(month + 1)
-                      console.log(d);
-                      console.log();
-                      console.log(year);
 
-                      alert(month);
-                      if(month < 10) {
-                        month = '0' + month1;
-                      }
-                      console.log(d);
-
-                      tahun = String(year);
-      //                console.log('year' + year);
-                      year2 = tahun.substring(2);
-                      //year2 ="Anafaradina";
-
-                    
-                       nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
-                      console.log(nospp);
-                      $('.nospp').val(nospp);
+                   
+                      $('.nospp').val(data.data);
                        nospp = $('.nospp').val();
                 }
                 else {
@@ -489,30 +441,8 @@
             dataType:'json',
             success : function(data){
              if(data.status == 'sukses'){
-                      var d = new Date(tgldate);               
-                      //tahun
-                      var year = d.getFullYear();
-                      //bulan
-                      var month = d.getMonth();
-                      var month1 = parseInt(month + 1)
-                      console.log(d);
-                      console.log();
-                      console.log(year);
-
-                      if(month < 10) {
-                        month = '0' + month1;
-                      }
-                      console.log(d);
-
-                      tahun = String(year);
-      //                console.log('year' + year);
-                      year2 = tahun.substring(2);
-                      //year2 ="Anafaradina";
-
-                    
-                       nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
-                      console.log(nospp);
-                      $('.nospp').val(nospp);
+                   
+                      $('.nospp').val(data.data);
                        nospp = $('.nospp').val();
                 }
                 else {

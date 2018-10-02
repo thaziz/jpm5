@@ -5545,10 +5545,10 @@
              if(tanggal != '') {
                syaratkredit = parseInt(response.supplier[0].syarat_kredit);
 
-               var date = new Date(tanggal);
+            //   var date = new Date(tanggal);
                var newdate = new Date(date);
 
-               newdate.setDate(newdate.getDate() + syaratkredit);
+               newdate.setDate(tanggal.getDate() + syaratkredit);
 
                var dd = newdate.getDate();
                var MM = newdate.getMonth() ;
@@ -5692,14 +5692,14 @@
      })
     })
 
-    var tanggal = $('.tgl').datepicker('getDate');
+    var tanggal = $('.tgl').val();
 
     $('.tglitem').val(tanggal);
     $('.tgl_po').val(tanggal);
 
     //menghitungjatuhtempo
     $('.tgl').change(function(){
-    tanggal = $(this).datepicker('getDate'); 
+    tanggal = $(this).val(); 
 
     $('.tgl_po').val(tanggal);
     $('.tglitem').val(tanggal);
@@ -6354,14 +6354,16 @@
               if(tanggal != '') {
                syaratkredit = parseInt(data.supplier[0].syarat_kredit);
 
-               var date = new Date(tanggal);
-               var newdate = new Date(date);
 
-               newdate.setDate(newdate.getDate() + syaratkredit);
+             //  var date = new Date(tanggal);
+               var newdate = new Date();
+
+               newdate.setDate(tanggal.getDate() + syaratkredit);
 
                var dd = newdate.getDate();
                var MM = newdate.getMonth() ;
                var y = newdate.getFullYear();
+
 
                var newyear = dd + '-' + months[MM] + '-' + y;
                $('.jatuhtempo').val(newyear);

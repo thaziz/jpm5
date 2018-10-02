@@ -424,8 +424,9 @@ return DataTables::of($data)->
 			$idspp = '0001';
 		}
 
+		$nospp = 'SPP' . $bulan . $tahun . '/' . $cabang . '/' .  $idspp;
 
-		$datainfo =['status' => 'sukses' , 'data' => $idspp];
+		$datainfo =['status' => 'sukses' , 'data' => $nospp];
 		return json_encode($datainfo) ;
 	}
 	
@@ -7415,55 +7416,7 @@ public function purchase_ordernotif(Request $request){
 		            ]);
 
 
-			/*// SAVE TANDA TERIMA
-			$idtt = DB::select("select tt_noform , max(tt_idform) from form_tt where tt_idcabang = '$cabang' GROUP BY tt_idcabang, tt_noform");
 			
-
-
-			if(is_null($idtt)) {
-				
-				$explode = explode("/", $idtt);
-				$idtt = $explode[2];
-
-				$string = (int)$idtt + 1;
-				$idtt = str_pad($string, 4, '0', STR_PAD_LEFT);
-			}
-
-			else {
-				$idtt = '0001';
-			}
-
-
-
-			$nott = 'TT' . $month . $year . '/' . $cabang . '/' .  $idtt;
-
-			//TANDA TERIMA	
-			$lastidtt = tandaterima::max('tt_idform'); 
-				if(isset($lastidtt)) {
-					$idtt = $lastidtt;
-					$idtt = (int)$idtt + 1;
-				}
-				else {
-					$idtt = 1;
-				}
-
-			$tandaterima = new tandaterima();
-
-			$tandaterima->tt_idform = $idtt;
-			$tandaterima->tt_tgl = $request->tglitem;
-			$tandaterima->tt_idsupplier =$idsup;
-			$tandaterima->tt_totalterima = $netto;
-			$tandaterima->tt_kwitansi = $request->kwitansi;
-			$tandaterima->tt_suratperan = $request->suratperan;
-			$tandaterima->tt_suratjalanasli = $request->suratjalanasli;
-			$tandaterima->tt_noform = $request->notandaterima2;
-			$tandaterima->tt_lainlain = $request->lainlain_tt2;
-			$tandaterima->tt_tglkembali = $request->jatuhtempoitem;
-			$tandaterima->tt_idcabang = $cabang;
-			$tandaterima->tt_nofp = $nofaktur;
-
-
-			$tandaterima->save();*/
 			//SAVE FAKTUR PAJAK MASUKAN
 			
 
