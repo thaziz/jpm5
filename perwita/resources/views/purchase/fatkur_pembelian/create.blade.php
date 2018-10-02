@@ -5496,7 +5496,7 @@
 
       $('.loading').css('display', 'block');
 
-      tanggal = $('.tgl').val();
+      tanggal = $('.tgl').datepicker('getDate');
       // bulan - bulan
       var months = new Array(12);
       months[0] = "January";
@@ -5602,7 +5602,7 @@
 	$('#createmodal_po').click(function(){
        $('.loading').css('display', 'block');
 
-      tanggal = $('.tgl').val();
+      tanggal = $('.tgl').datepicker('getDate');
       // bulan - bulan
       var months = new Array(12);
       months[0] = "January";
@@ -5690,14 +5690,14 @@
      })
     })
 
-    var tanggal = $('.tgl').val();
+    var tanggal = $('.tgl').datepicker('getDate');
 
     $('.tglitem').val(tanggal);
     $('.tgl_po').val(tanggal);
 
     //menghitungjatuhtempo
     $('.tgl').change(function(){
-    tanggal = $(this).val(); 
+    tanggal = $(this).datepicker('getDate'); 
 
     $('.tgl_po').val(tanggal);
     $('.tglitem').val(tanggal);
@@ -6320,7 +6320,7 @@
        var stock = variable[1];
         $('.idsupitem').val(idsup);
 
-        tanggal = $('.tgl').val();
+        tanggal = $('.tgl').datepicker('getDate');
         // bulan - bulan
         var months = new Array(12);
         months[0] = "January";
@@ -7176,7 +7176,8 @@ $(document).ready(function(){
 $('#tmbhdataitem').click(function(){
        cabang = $('.cabang').val();
        a = 'I';
-       tgl = $('.tgl').val();
+       tgl = $('.tgl').datepicker('getDate');
+
        $.ajax({
           type : "get",
           data : {cabang,a,tgl},
