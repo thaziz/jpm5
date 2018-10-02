@@ -1002,6 +1002,31 @@
                                   </table>
                                 </div>
                                 </div>
+
+                                
+                                <div class="col-md-12 dataalltransaksi">
+                                    <br>
+                                    <br>
+                                    <hr>
+                                    <div class="table-responsive">
+                                      <h3> Data Transaksi </h3>
+                                      <table class="table table-bordered" id="tbl-dataalltransaksi" style="width:50%">
+                                        <thead style="background-color: grey;color:white">
+                                        <tr>
+                                            <th> Nota Transaksi </th>
+                                            <th> Cabang Transaksi </th>
+                                            <th> Nominal </th>
+                                            <th> Hapus </th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                      </tbody>
+                                      </table>
+                                    </div>
+                                </div>
+
+
+                                
                             </div>
                         </div>
                     </div>
@@ -1347,6 +1372,10 @@
           toastr.info("Mohon maaf, fitur ini hanya untuk jenis kas :)");
           return false;
         }
+          if(jenisbayar == ''){
+            toastr.info("Mohon maaf jenis transaksi belum dipilih :)");
+            return false;
+          }
 
           kas = $('.kastujuan').val();
           if(kas == ''){

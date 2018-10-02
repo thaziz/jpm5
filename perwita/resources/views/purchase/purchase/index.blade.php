@@ -32,13 +32,14 @@
         <br>
    <div class="wrapper wrapper-content animated fadeInRight">
    
-    <div class="col-md-2">
+   <!--  <div class="col-md-2">
       <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
         <h2 style='text-align:center'> <b> {{$data['countspp']}} SPP </b></h2> <h4 style='text-align:center'> BELUM DI PROSES PO </h4>
       </div>
     </div>   
-  </div>
+  </div> -->
+  <div id="notif"></div>
 
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -64,12 +65,12 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
               
                <div class="col-md-1 col-sm-3 col-xs-12">
-                <label class="tebal">No FPG</label>
+                <label class="tebal">No PO</label>
               </div>
 
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    <input class="form-control kosong" type="text" name="nofpg" id="nofpg" placeholder="No FPG">
+                    <input class="form-control kosong" type="text" name="nofpg" id="nofpg" placeholder="No PO">
                 </div>
               </div>
 
@@ -167,11 +168,11 @@
                     
                 <div class="box-body">
                 
-                  <table id="addColumn" class="table table-bordered table-striped tbl-purchase">
+                  <table width="100%" id="addColumn" class="table table-bordered table-striped tbl-purchase">
                     <thead>
                      <tr>
                         <th style="width:10px">No</th>
-                        <th> NO PO </th>
+                        <th> No PO </th>
                         <th> Tanggal </th>
                         <th> Cabang </th>                  
                         <th> Supplier </th>
@@ -442,7 +443,7 @@ function dateAwal(){
 }  
 function notif(){
    $.ajax({
-      url:baseUrl + '/formfpg/formfpg/notif',
+      url:baseUrl + '/purchaseorder/purchaseorder/notif',
       type:'get',   
        data: {
                     "_token": "{{ csrf_token() }}",                    

@@ -56,6 +56,7 @@ use App\returnpembelian_dt;
 
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
+use Yajra\Datatables\Datatables;
 
 
 class ReturnPembelianController extends Controller
@@ -65,16 +66,67 @@ class ReturnPembelianController extends Controller
 
 	public function returnpembelian() {
 		$cabang = session::get('cabang');
-
-		if($cabang == 000){
-			$data['rn'] = DB::select("select * from returnpembelian, pembelian_order , supplier where rn_supplier = idsup and rn_idpotidakaktif = po_id ");
-		}
-		else {
-			$data['rn'] = DB::select("select * from returnpembelian , pembelian_orer, supplier where rn_supplier = idsup where rn_cabang = '$cabang' and rn_idpotidakaktif = po_id");
-		}
-
 		return view('purchase/return_pembelian/index' , compact('data'));
 	}
+
+	public function returnpembeliantable(Request $request) {		
+  		  $tgl='';
+  		  $noreturn='';  		  
+  		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+  		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+
+  		  
+  		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
+  		  	$tgl="and rn_tgl>= '$tgl1' AND rn_tgl <= '$tgl2'";
+  		  }
+  		  if($request->noreturn!=''){
+  		  	$noreturn="and rn_nota='$request->noreturn'";
+  		  }  		  
+
+		 $data='';
+
+		 $cabang = session::get('cabang');
+
+		$data='';
+
+		if($cabang == 000){
+			$data= DB::select("select *,'no' as no from returnpembelian, pembelian_order , supplier where rn_supplier = idsup and rn_idpotidakaktif = po_id  $tgl $noreturn");
+		}
+		else {
+			$data = DB::select("select *,'no' as no from returnpembelian , pembelian_orer, supplier where rn_supplier = idsup where rn_cabang = '$cabang' and rn_idpotidakaktif = po_id $tgl $noreturn ");
+		}
+
+                        
+		$data=collect($data);	
+
+			return DataTables::of($data)
+			->editColumn('rn_tgl', function ($data) {            
+            	return date('d-m-Y',strtotime($data->rn_tgl));
+            })
+           ->editColumn('po_no', function ($data) { 
+ 			 	return '<a 
+ 			 	href='.url('purchaseorder/detail/'.$data->po_id.'').'> 			 	
+ 			 	'.$data->po_no.'</a>
+ 			 	<input type="hidden" value="'.$data->po_id.'"  class="po_id">';
+            })
+           
+           ->addColumn('action', function ($data) {                 
+				$action='';
+				$action.='<a class="btn btn-sm btn-success" 
+				href='.url('returnpembelian/detailreturnpembelian/'.$data->rn_id.'').'> 			 					
+				<i class="fa fa-arrow-right" aria-hidden="true"></i> </a>  <a class="btn btn-sm btn-danger" onclick="hapusdata({{$rn->rn_id}})">
+				                              <i class="fa fa-trash"> </i> 
+				                            </a>';
+				return $action;
+
+
+            })
+            
+			->make(true);	
+
+
+
+    }
 
 	public function createreturnpembelian(){
 		$data['cabang'] = DB::select("select * from cabang");

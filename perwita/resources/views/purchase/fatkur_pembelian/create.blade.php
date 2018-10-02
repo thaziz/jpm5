@@ -2201,6 +2201,7 @@
       cabang = $('.cabang').val();
       var a = $('ul#tabmenu').find('li.active').data('val');
       tgl = $('.tgl').val();
+      tgldate = $('.tgl').datepicker('getDate');
       $('.cabang2').val(cabang);
        $.ajax({
           type : "get",
@@ -2210,7 +2211,7 @@
           success : function (response){     
               
               if(response.status == 'sukses'){
-                  var d = new Date(tgl);
+                  var d = new Date(tgldate);
                 
                   //tahun
                   var year = d.getFullYear();
@@ -2627,6 +2628,7 @@
      // alert(cabang);
       var a = $('ul#tabmenu').find('li.active').data('val');
       tgl = $('.tgl').val();
+       tgldate = $('.tgl').datepicker('getDate');
       $('.cabang2').val(cabang);
        $.ajax({
           type : "get",
@@ -2636,7 +2638,7 @@
           success : function (response){     
             
               if(response.status == 'sukses'){
-                  var d = new Date(tgl);
+                  var d = new Date(tgldate);
                 
                   //tahun
                   var year = d.getFullYear();
@@ -5543,10 +5545,10 @@
              if(tanggal != '') {
                syaratkredit = parseInt(response.supplier[0].syarat_kredit);
 
-               var date = new Date(tanggal);
+            //   var date = new Date(tanggal);
                var newdate = new Date(date);
 
-               newdate.setDate(newdate.getDate() + syaratkredit);
+               newdate.setDate(tanggal.getDate() + syaratkredit);
 
                var dd = newdate.getDate();
                var MM = newdate.getMonth() ;
@@ -5690,14 +5692,14 @@
      })
     })
 
-    var tanggal = $('.tgl').datepicker('getDate');
+    var tanggal = $('.tgl').val();
 
     $('.tglitem').val(tanggal);
     $('.tgl_po').val(tanggal);
 
     //menghitungjatuhtempo
     $('.tgl').change(function(){
-    tanggal = $(this).datepicker('getDate'); 
+    tanggal = $(this).val(); 
 
     $('.tgl_po').val(tanggal);
     $('.tglitem').val(tanggal);
@@ -6352,14 +6354,16 @@
               if(tanggal != '') {
                syaratkredit = parseInt(data.supplier[0].syarat_kredit);
 
-               var date = new Date(tanggal);
-               var newdate = new Date(date);
 
-               newdate.setDate(newdate.getDate() + syaratkredit);
+             //  var date = new Date(tanggal);
+               var newdate = new Date();
+
+               newdate.setDate(tanggal.getDate() + syaratkredit);
 
                var dd = newdate.getDate();
                var MM = newdate.getMonth() ;
                var y = newdate.getFullYear();
+
 
                var newyear = dd + '-' + months[MM] + '-' + y;
                $('.jatuhtempo').val(newyear);
@@ -7176,8 +7180,8 @@ $(document).ready(function(){
 $('#tmbhdataitem').click(function(){
        cabang = $('.cabang').val();
        a = 'I';
-       tgl = $('.tgl').datepicker('getDate');
-
+       tgl = $('.tgl').val();
+      tgldate = $('.tgl').datepicker('getDate');
        $.ajax({
           type : "get",
           data : {cabang,a,tgl},
@@ -7186,7 +7190,7 @@ $('#tmbhdataitem').click(function(){
           success : function (response){     
             
               if(response.status == 'sukses'){
-                  var d = new Date(tgl);
+                  var d = new Date(tgldate);
                 
                   //tahun
                   var year = d.getFullYear();
@@ -7225,6 +7229,7 @@ $('#tmbhdataitem').click(function(){
      cabang = $('.cabang').val();
      a = 'PO';
      tgl = $('.tgl').val();
+     tgldate = $('.tgl').datepicker('getDate');
        $.ajax({
           type : "get",
           data : {cabang,a,tgl},
@@ -7233,7 +7238,7 @@ $('#tmbhdataitem').click(function(){
           success : function (response){     
              
               if(response.status == 'sukses'){
-                  var d = new Date(tgl);
+                  var d = new Date(tgldate);
                 
                   //tahun
                   var year = d.getFullYear();

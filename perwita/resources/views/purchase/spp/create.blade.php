@@ -293,6 +293,7 @@
 
      $('.tglinput').change(function(){
        var comp = $('.cabang').val();
+        var tgldate = $('.tglinput').datepicker('getDate');
         var tglinput = $('.tglinput').val();
         $('.valcabang').val(comp);
           $.ajax({    
@@ -302,40 +303,15 @@
               dataType:'json',
               success : function(data){
                if(data.status == 'sukses'){
-                        var d = new Date(tglinput);               
-                        //tahun
-                        var year = d.getFullYear();
-                        //bulan
-                        var month = d.getMonth();
-                        var month1 = parseInt(month + 1)
-                        console.log(d);
-                        console.log();
-                        console.log(year);
-
-                        if(month < 10) {
-                          month = '0' + month1;
-                        }
-                        console.log(d);
-
-                        tahun = String(year);
-        //                console.log('year' + year);
-                        year2 = tahun.substring(2);
-                        //year2 ="Anafaradina";
-
-                      
-                         nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
-                        console.log(nospp);
-                        $('.nospp').val(nospp);
+                  
+                     
+                        $('.nospp').val(data.data);
                          nospp = $('.nospp').val();
                   }
                   else {
                       location.reload();
                   }
                 
-                  if(month == 'NANN'){
-                      location.reload();
-                  }
-
                  
               },
               error : function(){
@@ -420,38 +396,19 @@
 
 
        comp = $('.cabang').val();
+
+       tgldate = $('.tglinput').datepicker('getDate');
        tglinput = $('.tglinput').val();
         $.ajax({    
             type :"get",
-            data : {comp,tglinput},
+            data : {comp,tgldate},
             url : baseUrl + '/suratpermintaanpembelian/getnospp',
             dataType:'json',
             success : function(data){
                 if(data.status == 'sukses'){
-                      var d = new Date(tglinput);               
-                      //tahun
-                      var year = d.getFullYear();
-                      //bulan
-                      var month = d.getMonth();
-                      var month1 = parseInt(month + 1)
-                      console.log(d);
-                      console.log();
-                      console.log(year);
 
-                      if(month < 10) {
-                        month = '0' + month1;
-                      }
-                      console.log(d);
-
-                      tahun = String(year);
-      //                console.log('year' + year);
-                      year2 = tahun.substring(2);
-                      //year2 ="Anafaradina";
-
-                    
-                       nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
-                      console.log(nospp);
-                      $('.nospp').val(nospp);
+                   
+                      $('.nospp').val(data.data);
                        nospp = $('.nospp').val();
                 }
                 else {
@@ -475,6 +432,7 @@
     $('.cabang').change(function(){    
       var comp = $(this).val();
       var tglinput = $('.tglinput').val();
+      var tgldate = $('.tglinput').datepicker('getDate');
       $('.valcabang').val(comp);
         $.ajax({    
             type :"get",
@@ -483,30 +441,8 @@
             dataType:'json',
             success : function(data){
              if(data.status == 'sukses'){
-                      var d = new Date(tglinput);               
-                      //tahun
-                      var year = d.getFullYear();
-                      //bulan
-                      var month = d.getMonth();
-                      var month1 = parseInt(month + 1)
-                      console.log(d);
-                      console.log();
-                      console.log(year);
-
-                      if(month < 10) {
-                        month = '0' + month1;
-                      }
-                      console.log(d);
-
-                      tahun = String(year);
-      //                console.log('year' + year);
-                      year2 = tahun.substring(2);
-                      //year2 ="Anafaradina";
-
-                    
-                       nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
-                      console.log(nospp);
-                      $('.nospp').val(nospp);
+                   
+                      $('.nospp').val(data.data);
                        nospp = $('.nospp').val();
                 }
                 else {

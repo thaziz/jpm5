@@ -104,6 +104,30 @@
                 </button>
               </div>
       </div>
+
+
+
+      <div class="col-md-12 col-sm-12 col-xs-12">
+
+              <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">Cabang</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                   <select class="cabang form-control chosen-select-width kosong" name="cabang" id="cabang">
+                    @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
+                     <option value="">---Pilih Cabang----</option>
+                    @endif
+                     @foreach($data as $cabang)
+                     <option value="{{$cabang->kode}}">{{$cabang->nama}}</option>
+                     @endforeach
+                   </select>
+                </div>
+              </div>
+      </div>
+
+
     </form>
 </div>
 
@@ -200,6 +224,7 @@ setTimeout(function () {
                     "nosupplier" :$('#nosupplier').val(),
                     "idjenisbayar" :$('#idjenisbayar').val(),
                     "nofpg" :$('#nofpg').val(),
+                    "cabang" :$('#cabang').val(),
                     },
               },
             columns: [

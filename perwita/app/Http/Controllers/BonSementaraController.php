@@ -70,11 +70,25 @@ class BonSementaraController extends Controller
 		}
 		
 		
-		$data['bank'] = DB::select("select * from masterbank where mb_cabangbank = '$cabang'");
+		/*$data['bank'] = DB::select("select * from masterbank where mb_cabangbank = '$cabang'");*/
 
 		return view('purchase/bonsementara/indexcabang', compact('data'));
 	}
 
+	public function table(){
+		$cabang = session::get('cabang');
+		if(Auth::user()->punyaAkses('Bon Sementara Cabang','all') || Auth::user()->punyaAkses('Bon Sementara Kabang','all') ){
+			$data['bonsem'] = DB::select("select * from bonsem_pengajuan, cabang where bp_cabang = kode order by bp_id desc");
+		}
+		else {
+			$data['bonsem'] = DB::select("select * from bonsem_pengajuan, cabang where bp_cabang = '$cabang' and bp_cabang = kode order by bp_id desc");
+		}
+		
+		
+		/*$data['bank'] = DB::select("select * from masterbank where mb_cabangbank = '$cabang'");*/
+
+		return view('purchase/bonsementara/indexcabang', compact('data'));
+	}
 
 	public function terbilang($x, $style=4) {
     if($x<0) {

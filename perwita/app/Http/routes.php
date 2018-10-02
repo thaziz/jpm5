@@ -362,6 +362,7 @@ Route::get('master_subcon/cek_aktif', 'subconController@cek_aktif');
 
 // BON SEMENTARA
 Route::get('bonsementaracabang/bonsementaracabang', 'BonSementaraController@index');
+Route::get('bonsementaracabang/bonsementaracabang/table', 'BonSementaraController@table');
 Route::get('bonsementaracabang/createcabang', 'BonSementaraController@create');
 Route::get('bonsementaracabang/getnota', 'BonSementaraController@getnota');
 Route::post('bonsementaracabang/save', 'BonSementaraController@savecabang');
@@ -538,6 +539,8 @@ Route::get('voucherhutang/getnota', 'v_hutangController@getnota');
 
 
 Route::get('returnpembelian/returnpembelian', 'ReturnPembelianController@returnpembelian');
+Route::get('returnpembelian/returnpembelian/table', 'ReturnPembelianController@returnpembeliantable');
+
 Route::get('returnpembelian/createreturnpembelian', 'ReturnPembelianController@createreturnpembelian');
 Route::get('returnpembelian/detailreturnpembelian/{id}', 'ReturnPembelianController@detailreturnpembelian');
 Route::get('returnpembelian/getpo', 'ReturnPembelianController@getpo');
@@ -2947,6 +2950,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
 
     //uangmuka
     Route::Get('uangmuka','uangmukaController@index');
+    Route::Get('uangmuka/table','uangmukaController@table');
     Route::Get('uangmuka/create','uangmukaController@create');
       Route::Get('uangmuka/ajax','uangmukaController@ajax');
     Route::Get('uangmuka/store','uangmukaController@store');
