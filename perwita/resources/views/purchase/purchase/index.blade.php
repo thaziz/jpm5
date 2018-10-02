@@ -168,11 +168,11 @@
                     
                 <div class="box-body">
                 
-                  <table id="addColumn" class="table table-bordered table-striped tbl-purchase">
+                  <table width="100%" id="addColumn" class="table table-bordered table-striped tbl-purchase">
                     <thead>
                      <tr>
                         <th style="width:10px">No</th>
-                        <th> NO PO </th>
+                        <th> No PO </th>
                         <th> Tanggal </th>
                         <th> Cabang </th>                  
                         <th> Supplier </th>
