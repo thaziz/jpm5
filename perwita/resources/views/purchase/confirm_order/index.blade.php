@@ -243,12 +243,7 @@ setTimeout(function () {
    notif();
 }
 
-tablex.on('draw.dt', function () {
-    var info = tablex.page.info();
-    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
-        cell.innerHTML = i + 1 + info.start;
-    });
-});
+
 
 dateAwal();
 function dateAwal(){

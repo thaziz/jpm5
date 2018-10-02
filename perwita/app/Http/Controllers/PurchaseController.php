@@ -2163,11 +2163,74 @@ public function purchase_ordertable(Request $request){
 		$cabang = session::get('cabang');
 
 		if(Auth::user()->punyaAkses('Purchase Order','all')){
-			$data= DB::select("select * from pembelian_order, supplier, cabang where po_supplier = idsup and po_cabang = kode  and po_statusreturn = 'AKTIF' order by po_id desc");			
+			$data= DB::select("select * from pembelian_order, supplier, cabang where po_supplier = idsup and po_cabang = kode  and po_statusreturn = 'AKTIF' order by po_id desc");	
+			$data=collect($data);
 		}
 		else{
 			$data= DB::select("select * from pembelian_order, supplier, cabang where po_supplier = idsup and po_cabang = kode and po_cabang = '$cabang' and po_statusreturn = 'AKTIF' order by po_id desc");			
+			$data=collect($data);
 		}
+
+
+   
+                          
+                         
+                          
+                      
+                         
+                   
+                    
+                    
+
+
+
+
+			return DataTables::of($data)
+			->editColumn('bbk_tgl', function ($data) {            
+            	return date('d-m-Y',strtotime($data->created_at));
+            })
+           ->editColumn('po_no', function ($data) { 
+ 			 	return '<a 
+ 			 	href='.url('purchaseorder/detail/'.$data->po_id.'').'> 			 	
+ 			 	'.$data->po_no.'</a>
+ 			 	<input type="" value="'.$po->po_id.'"  class="po_id">';
+            })
+           ->editColumn('po_totalharga', function ($data) { 
+                return number_format($data->po_totalharga, 2);                
+            })
+           ->editColumn('po_tipe', function ($data) {                 
+                if($data->po_tipe == 'J'){
+                    return 'JASA';
+                }else if($data->po_tipe == 'NS'){
+                    return 'NON STOCK';
+                }else{
+                    return 'STOCK';
+                }
+            })
+           ->addColumn('action', function ($data) {                 
+				$action='';
+
+            	    if(Auth::user()->punyaAkses('Purchase Order','hapus')){
+                       $action.='<a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData('.$data->po_id.')">
+                                                              <i class="fa fa-trash" aria-hidden="true"></i>
+                              </a>';
+                    }
+
+                    if(Auth::user()->punyaAkses('Purchase Order','print')){
+                        if($data->po_setujufinance != ''){                         
+                           $action.='<span class="label label-warning"> '.$data->po_setujufinance.'</span>';
+                        }
+                        if($data->po_setujufinance == 'SETUJU'){
+                           $action.='<a class="btn btn-sm btn-info print" type="button" href='.url('print/'.$data->po_id.'').'> <i class="fa fa-print" aria-hidden="true"> </i> </a>';
+                        }
+                    }
+
+				return $action;
+
+
+            })
+            
+			->make(true);	
 
 
 }

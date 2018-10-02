@@ -213,36 +213,19 @@ setTimeout(function () {
 
             {data: 'spp_status', name: 'spp_status'},
             {data: 'spp_cabang', name: 'spp_cabang'},
-            {data: 'action', name: 'action'},
-          /*  {data: 's_gross', name: 's_gross'},
-            {data: 's_disc_percent', name: 's_disc_percent'},
-            {data: 's_ongkir', name: 's_ongkir'},
-            {data: 's_net', name: 's_net'},
-            {data: 's_status', name: 's_status'},
-            {data: 'action', name: 'action'},
-            */
+            {data: 'action', name: 'action'},   
 
             ],  
             "pageLength": 10,
             "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
              "bFilter": false,
-           /*"fnCreatedRow": function (row, data, index) {
-            $('td', row).eq(0).html(index + 1);
-            }*/
+    
 
 
 
     });
    notif();
 }
-
-tablex.on('draw.dt', function () {
-    var info = tablex.page.info();
-    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
-        cell.innerHTML = i + 1 + info.start;
-    });
-});
-
 
 
  $('#addColumn_filter input[type=search]').keyup( function () {  

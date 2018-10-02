@@ -184,52 +184,7 @@
 
                     </thead>
                     
-                    <tbody>
-                      @foreach($data['po'] as $index=>$po)
-                      <tr>
-                          <td> {{$index + 1}} </td>
-                         
-                          <td> <a href="{{url('purchaseorder/detail/'. $po->po_id .'')}}">{{$po->po_no}} </a>
-                            <input type='hidden' value="{{$po->po_id}}"  class="po_id">  </td>
-                          <td> {{ Carbon\Carbon::parse($po->created_at)->format('d-M-Y') }} </td>
-                          <td> {{$po->nama}}</td>
-                          <td> {{$po->nama_supplier}} </td>
-                          <td>  Rp {{number_format($po->po_totalharga, 2)}}</td>
-                          <td> @if($po->po_tipe == 'J')
-                                  JASA
-                              @elseif($po->po_tipe == 'NS')
-                                  NON STOCK
-                              @else
-                                  STOCK
-                              @endif
-
-                          </td>
-                          <td> 
-                        
-                            @if(Auth::user()->punyaAkses('Purchase Order','hapus'))
-                          
-                              <a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData({{$po->po_id}})">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                              </a>
-                         
-                            @endif
-
-                            @if(Auth::user()->punyaAkses('Purchase Order','print'))
-                            @if($po->po_setujufinance != '')
-                         
-                              <span class='label label-warning '> {{$po->po_setujufinance}}</span>
-                            @endif
-                              @if($po->po_setujufinance == 'SETUJU')
-                            <a class="btn btn-sm btn-info print" type="button" href="print/{{ $po->po_id }}"> <i class="fa fa-print" aria-hidden="true"> </i> </a>
-                            @endif
-                           @endif
-                          
-                             </td>
-                      </tr>
-                      @endforeach
-
-                    
-                    </tbody>
+                 
                    
                   </table>
                 </div><!-- /.box-body -->
