@@ -996,6 +996,7 @@ class do_kargo_Controller extends Controller
                   ->where('kcd_jenis','KARGO')
                   ->where('kc_kode_customer',$request->customer_do)
                   ->where('kc_kode_cabang',$request->cabang)
+                  ->where('kc_aktif','AKTIF')
                   ->orderBy('kode','ASC')
                   ->get();
         $customer = DB::table('customer')

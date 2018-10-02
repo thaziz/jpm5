@@ -81,6 +81,7 @@
                             <th> Fax </th>
                             <th> Komisi Outlet</th>
                             <th> Komisi Agen</th>
+                            <th> Status </th>
                             <th> Aksi </th>
                         </tr>
                     </thead>
@@ -326,6 +327,7 @@
             { "data": "fax" },
             { "data": "komisi" },
             { "data": "komisi_agen" },
+            { "data": "aktif_button" },
             { "data": "button" },
             ]
         });
@@ -703,7 +705,25 @@ $('.chosen-select-width212').chosen();
                         });
     
 
-    
+$(document).on('change','.aktif',function(){
+    var cek = $(this).is(':checked');
+    var id = $(this).data('id');
+    console.log(id);
+    $.ajax({
+            type: "get",
+            url : baseUrl + "/master_sales/agen/set_aktif",
+            dataType:"JSON",
+            data: {cek,id},
+            success: function(data, textStatus, jqXHR)
+            {
+                return toastr.success('Data Berhasil Diupdate');
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+                swal("Error!", textStatus, "error");
+            }
+        });
+})
 
 </script>
 @endsection

@@ -799,6 +799,7 @@
     function hapus(a){
        var par = $(a).parents('tr');
        nominal = par.find('.nominalfpgdetailbg').val();
+       dk = par.find('.dkakundetailbg').val();
 
        replacenominal = nominal.replace(/,/g , '');
        cekbg = $('.cekbg').val();
@@ -806,8 +807,16 @@
        replacecekbg = cekbg.replace(/,/g, '');
        replacetotal = total.replace(/,/g, '');
 
-       totalcekbg = parseFloat(parseFloat(replacecekbg) - parseFloat(replacenominal)).toFixed(2);
-       total = parseFloat(parseFloat(replacetotal) - parseFloat(replacenominal)).toFixed(2);
+       if(dk == 'K'){
+         totalcekbg = parseFloat(parseFloat(replacecekbg) + parseFloat(replacenominal)).toFixed(2);
+         total = parseFloat(parseFloat(replacetotal) + parseFloat(replacenominal)).toFixed(2);
+       }
+       else {
+         totalcekbg = parseFloat(parseFloat(replacecekbg) - parseFloat(replacenominal)).toFixed(2);
+         total = parseFloat(parseFloat(replacetotal) - parseFloat(replacenominal)).toFixed(2);
+
+       }
+
        $('.cekbg').val(addCommas(totalcekbg));
        $('.total').val(addCommas(total))
        par.remove();
@@ -1444,7 +1453,7 @@
           "<td>  <input type='text' class='input-sm form-control' value='"+dk+"' name='dk[]' readonly> </td>" +
           "<td> <input type='text' class='input-sm form-control jumlah' value='"+jumlah+"' name='jumlah[]' style='text-align:right' data-dk='"+dk+"' readonly> </td>" +
           "<td><input type='text' class='input-sm form-control' value=' "+keterangan+"' name='keterangan[]' readonly></td>" +
-          "<td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="+$nmrbiaya+" data-cek='"+akun+"' data-nominal='"+jumlah+"'><i class='fa fa-trash'></i></button>  </td> </tr>";
+          "<td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="+$nmrbiaya+" data-cek='"+akun+"' data-nominal='"+jumlah+"' data-dk='"+dk+"'><i class='fa fa-trash'></i></button>  </td> </tr>";
 
           $('#tbl-biaya').append(rowHtml);
 
@@ -1499,12 +1508,19 @@
             cek = $(this).data('cek');
             nominal = $(this).data('nominal');
             parentbayar = $('.transaksi'+id);
+            dk = $(this).data('dk');
         //    $('#datacek' + cek).show();
             biaya = $('.biaya').val();
             biaya2 =  biaya.replace(/,/g, '');
             nominal2 = nominal.replace(/,/g,'');
-            $('.biaya').val('')
-            nilaibiaya = parseInt(biaya2) - parseInt(nominal2).toFixed(2);
+            $('.biaya').val('');
+            if(dk == 'D'){
+               nilaibiaya = parseFloat(biaya2) - parseFloat(nominal2).toFixed(2);
+            }
+            else {
+               nilaibiaya = parseFloat(biaya2) + parseFloat(nominal2).toFixed(2);
+            }
+            
             $('.totalbiaya').val(addCommas(nilaibiaya));
             $('.total').val(addCommas(nilaibiaya));
          //   parent.remove();

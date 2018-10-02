@@ -587,16 +587,16 @@
                               rowTable += '<option value='+response.gudang[key].mg_id+'>'+response.gudang[key].mg_namagudang+'</option></select></td>'
                             }
                          
-<<<<<<< HEAD
+
 
                         rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required">  </td>' +
                         '<tr>';
 
-=======
+
                             
                                 rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+itemsupplier+'">  </td> </tr>';
                             
->>>>>>> 727c97c1b3fa6d39fa2e9ab5474fbfcb2c1576fc
+
                         }
                         else {
                           rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+itemsupplier+'">  </td> </tr>';

@@ -2675,7 +2675,7 @@ public function purchase_ordernotif(Request $request){
 					$akunitem = substr($dataitem[0]->acc_hpp, 0,4);
 				}
 
-				$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$akunitem%' and kode_cabang = '$datacomp'");
+				$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$akunitem%' and kode_cabang = '$datacomp' and is_active = '1'");
 
 				if(count($datakun2) == 0){
 					DB::rollback();
@@ -3216,7 +3216,7 @@ public function purchase_ordernotif(Request $request){
 
 					$accpersediaan = $request->accpersediaan[$i];
 
-					$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$cabang'");
+					$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$cabang' and is_active = '1'");
 
 					$akundka = $datakun2[0]->akun_dka;
 
@@ -3311,7 +3311,7 @@ public function purchase_ordernotif(Request $request){
 
 						$accpersediaan = $request->accpersediaan[$i];
 
-						$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$cabang'");
+						$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan' and kode_cabang = '$cabang' and is_active = '1'");
 
 						$akundka = $datakun2[0]->akun_dka;
 
@@ -3597,13 +3597,13 @@ public function purchase_ordernotif(Request $request){
 
 						if($request->updatestock == "TIDAK"){
 							$acchpp = $request->acchpp[$i];
-							$datakun2 = DB::select("select * from d_akun where id_akun = '$acchpp' and kode_cabang = '$cabang'");
+							$datakun2 = DB::select("select * from d_akun where id_akun = '$acchpp' and kode_cabang = '$cabang' and is_active = '1'");
 							$akundka = $datakun2[0]->akun_dka;
 
 						}
 						else {
 							$accpersediaan = $request->accpersediaan[$i];
-							$datakun2 = DB::select("select * from d_akun where id_akun = '$accpersediaan' and kode_cabang = '$cabang'");
+							$datakun2 = DB::select("select * from d_akun where id_akun = '$accpersediaan' and kode_cabang = '$cabang' and is_active = '1'");
 							$akundka = $datakun2[0]->akun_dka;
 
 						}
@@ -3681,7 +3681,7 @@ public function purchase_ordernotif(Request $request){
 							
 							if($request->updatestock == "TIDAK"){
 								$acchpp = $request->acchpp[$i];
-								$datakun2 = DB::select("select * from d_akun where id_akun = '$acchpp' and kode_cabang = '$cabang'");
+								$datakun2 = DB::select("select * from d_akun where id_akun = '$acchpp' and kode_cabang = '$cabang' and is_active = '1'");
 								$akundka = $datakun2[0]->akun_dka;
 
 								if($akundka == 'D'){
@@ -3701,7 +3701,7 @@ public function purchase_ordernotif(Request $request){
 							}
 							else {
 								$accpersediaan = $request->accpersediaan[$i];
-								$datakun2 = DB::select("select * from d_akun where id_akun = '$accpersediaan' and kode_cabang = '$cabang'");
+								$datakun2 = DB::select("select * from d_akun where id_akun = '$accpersediaan' and kode_cabang = '$cabang' and is_active = '1'");
 								$akundka = $datakun2[0]->akun_dka;
 
 								if($akundka == 'D'){
@@ -4243,7 +4243,7 @@ public function purchase_ordernotif(Request $request){
 					$datajurnal2 = array_values($datajurnal);
 					$hasilppn = $datafp[0]->fp_ppn;
 					if($hasilppn != null){
-						$datakun2 = DB::select("select * from d_akun where id_akun LIKE '2302%' and kode_cabang = '$cabang'");
+						$datakun2 = DB::select("select * from d_akun where id_akun LIKE '2302%' and kode_cabang = '$cabang' and is_active = '1'");
 						if(count($datakun2) == 0){
 							 $dataInfo=['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Belum Tersedia'];
 						   	 DB::rollback();
@@ -4285,7 +4285,7 @@ public function purchase_ordernotif(Request $request){
 						$kodepajak2 = $datapph[0]->acc1;
 						$kodepajak = substr($kodepajak2, 0,4);
 
-						$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$kodepajak%' and kode_cabang = '$cabang'");
+						$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$kodepajak%' and kode_cabang = '$cabang' and is_active = '1'");
 						if(count($datakun2) == 0){
 							$dataInfo=['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Belum Tersedia'];
 						    DB::rollback();
@@ -4459,10 +4459,10 @@ public function purchase_ordernotif(Request $request){
 					$accpersediaan = $dataitem[0]->acc_persediaan;
 
 					$accpersediaan = substr($accpersediaan, 0,4);
-					$dataakunasal = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan%' and kode_cabang = '$cabangasal'");
+					$dataakunasal = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan%' and kode_cabang = '$cabangasal' and is_active = '1'");
 					$akunasal = $dataakunasal[0]->id_akun;
 
-					$dataakuntujuan = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan%' and kode_cabang = '$cabangtujuan'");
+					$dataakuntujuan = DB::select("select * from d_akun where id_akun LIKE '$accpersediaan%' and kode_cabang = '$cabangtujuan' and is_active = '1'");
 					$akuntujuan = $dataakuntujuan[0]->id_akun;
 
 
@@ -9615,7 +9615,7 @@ public function kekata($x) {
 					
 					$totaltabbiaya = (float)$totaltabbiaya + (float)$jumlah;
 				}
-				dd($jumlah);
+				
 			}
 		}
 		else if($request->flag == 'BGAKUN'){
@@ -10123,7 +10123,7 @@ public function kekata($x) {
 		        	        if($akundkahutang == 'D'){
 		        	           	$dataakun = array (
 		        				'id_akun' => $akunhutangdagang,
-		        				'subtotal' => '-' . $totalbgakun,
+		        				'subtotal' => '-' . $total,
 		        				'dk' => 'K',
 		        				'detail' => $request->keteranganheader,
 		        				);	
@@ -10131,7 +10131,7 @@ public function kekata($x) {
 		        	        else {
 		        	        	$dataakun = array (
 		        				'id_akun' => $akunhutangdagang,
-		        				'subtotal' => '-' . $totalbgakun,
+		        				'subtotal' => '-' . $total,
 		        				'dk' => 'K',
 		        				'detail' => $request->keteranganheader,
 		        				);	
@@ -13239,10 +13239,33 @@ return $html;
 	}
 
 	public function detailformfpg($id) {
-
+		$cabang = session::get('cabang');
+		
 		$fpg = DB::select("select * from fpg where idfpg = '$id'");
 		$jenisbayar = $fpg[0]->fpg_jenisbayar;
 		$data['jenisbayar'] = $fpg[0]->fpg_jenisbayar;
+
+		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
+			$data['bank'] = DB::select("select * from masterbank");
+		}
+		else {
+			$data['bank'] = DB::select("select * from masterbank where mb_cabangbank = '$cabang'");
+		}
+		
+		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
+			$data['tujuanbank'] = DB::select("select * from masterbank");
+		}
+		else {
+			$data['tujuanbank'] = DB::select("select * from masterbank wher mb_cabangbank = '$cabang'");
+		}
+
+		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
+			$data['tujuanbankkas'] = DB::select("select * from d_akun where id_akun = '100111008' or id_akun = '100111001' or id_akun = '100114017'");
+		}
+		else {
+			//$data['tujuanbank'] = DB::select("select * from masterbank wher mb_cabangbank = '$cabang'");
+		}
+
 
 		if($jenisbayar == '4'){
 			$fpg2 = DB::select("select * from fpg, d_uangmuka where idfpg = '$id' and fpg_agen = um_supplier");
@@ -13973,7 +13996,7 @@ return $html;
 
 
 										$bankmasuk->bm_id = $idbm;
-										$bankmasuk->bm_bankasal = $akunkasbank;
+										$bankmasuk->bm_bankasal = $kodebank;
 										$bankmasuk->bm_cabangasal = $cabangasal;
 										$bankmasuk->bm_cabangtujuan = $cabangtujuan;
 										$bankmasuk->bm_banktujuan = $kodetujuan;

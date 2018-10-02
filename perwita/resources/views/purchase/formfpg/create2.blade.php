@@ -510,7 +510,8 @@
            </div> <!-- END MODAL -->   <!-- MODAL NO FAKTUR -->
           
            <!-- Modal cari Nota Transaksi -->
-                          <!-- MODAL NO FAKTUR -->
+              
+              <!-- MODAL NO FAKTUR -->
               <div class="modal fade" id="myModalTransaksi" tabindex="-1" role="dialog"  aria-hidden="true">
               <div class="modal-dialog" style="min-width: 1200px !important; min-height: 800px">
                 <div class="modal-content">
@@ -614,8 +615,8 @@
                                     </table>
                               </div>
 
-                                    <div class="col-sm-12">
-                                      <div class="row">
+                                <div class="col-sm-12">
+                                  <div class="row">
                                     <div class="col-md-3">
                                    
                                     <fieldset>
@@ -632,16 +633,12 @@
                                                 Cheque / BG
                                             </label>
                                         </div>
-
-                                        
                                     </fieldset>
                                       <br>
                                       <br>                                      
                                 </div>
                                  
                                
-
-
                                 <div class="col-xs-8 tujuanbank"> <!-- TRANSFERBANK -->
                                     <table class="table">
                                       <tr>
@@ -663,7 +660,6 @@
                                       <th> Nominal </th>
                                       
                                       <td> <input type="text" class="input-sm form-control nominal" style="text-align: right"> <input type="hidden" class="idbank"> </td>
-
 
                                     </tr>
                                     </table>
@@ -700,14 +696,9 @@
                                                   
                                                 </select>
                                       </td>
-                                    
-
                                     </tr>
 
                                     <tr>
-                                   {{--    <th> Nominal </th>                                      
-                                      <td> <input type="text" class="input-sm form-control nominal nominaltujuanbank" style="text-align: right"> <input type="hidden" class="idbank"> </td> --}}
-
                                       <td>
                                             <button class="btn btn-success btn-xs" type="button" id="tbmhdatainet">
                                             Tambah Data
@@ -1473,7 +1464,7 @@
       $('#tbmhdatainet').click(function(){
 
         asalbank = $('.bankasal').val();
-
+        nofpg = $('.nofpg').val();
         jenispindahbuku = $('.tujuanbankpb').val();
    
         if(jenispindahbuku == 'BANK'){
@@ -1482,8 +1473,7 @@
           if(banktujuan == '' || asalbank == ''){
             toastr.info("Mohon maaf data bank asal / tujuan belum diisi :)");
             $('.jenisbayarbankibaking').prop({checked: false });
-            return false;
-  
+            return false; 
           }
 
           split = banktujuan.split("+");

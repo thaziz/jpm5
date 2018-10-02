@@ -695,8 +695,6 @@
                                       </td>
                                     </tr>
                                     </table>
-
-
                                 </div>
 
 
@@ -1012,20 +1010,12 @@
           }
       })
 
-        // BANK BG TF
-       $this = $('.jenisbayarbankbgtf');
-           if ($this.is(":checked")) {
-             
-           }
-           else {
-             
-
-           }
+    
 
     //  noinet = 1;     
       $('#tbmhdatainet').click(function(){
         noinet = parseInt($('.tbltfbank').length) + 1;
-
+        alert(noinet);
       
         banktujuan =$('.banktujuan').val();
         asalbank = $('.bankasal').val();
@@ -1042,7 +1032,7 @@
         namabank = split[1];
         idbanktujuan = split[0];
         kelompoktujuan = split[5];
-       tgl = $('.tgl').val();
+        tgl = $('.tgl').val();
       
         splitasal = asalbank.split("+");
         kodebankasal = splitasal[4];
@@ -2843,12 +2833,6 @@
                         cabang = $('.cabang').val();
                        
 
-                       // alert(cabang);
-/*                        if(cabang != 000){
-                          $('.jenisbayar2').val(cabang);
-                          $('.jenisbayar2').prop('disabled', true).trigger("liszt:updated");
-                          $('.jenisbayar2').prop('disabled', true).trigger("chosen:updated");
-                        }*/
 
                     }
                     else if(idjenis == '4'){
@@ -2870,7 +2854,7 @@
    
 
       cabang = $('.cabang').val();    
-      $('.cabangfaktur').val(cabang);
+     $('.cabangfaktur').val(cabang);
 		$('#getDataFaktur').click(function(){
               var tablefaktur = $('#tbl-faktur').DataTable();
               tablefaktur.clear().draw();

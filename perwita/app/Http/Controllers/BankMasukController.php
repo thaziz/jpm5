@@ -65,12 +65,13 @@ class BankMasukController extends Controller
 	public function bankmasuk(){
 		$cabang = session::get('cabang');
 		if(Auth::user()->punyaAkses('Bank Masuk','all')) {
-			$data['bankmasuk'] = DB::select("select * from bank_masuk where  bm_status = 'DITRANSFER' or bm_status = 'DITERIMA' order by bm_id desc");
+			$data['bankmasuk'] = DB::select("select * from bank_masuk LEFT OUTER JOIN fpg_cekbank on bm_idfpgb = fpgb_id where  bm_status = 'DITRANSFER' or bm_status = 'DITERIMA' and bm_idfpgb = fpgb_id order by bm_id desc");
 			$data['belumdiproses'] = DB::table("bank_masuk")->where('bm_status' , '=' , 'DITRANSFER')->count();
 			$data['sudahdiproses'] = DB::table("bank_masuk")->where('bm_status' , '=' , 'DITERIMA')->count();
+
 		}
 		else {
-			$data['bankmasuk'] = DB::select("select * from bank_masuk where bm_cabangtujuan = '$cabang' and bm_status = 'DITRANSFER' or bm_status = 'DITERIMA'  order by bm_id desc");
+			$data['bankmasuk'] = DB::select("select * from bank_masuk LEFT OUTER JOIN fpg_cekbank on bm_idfpgb = fpgb_id where bm_cabangtujuan = '$cabang' and bm_status = 'DITRANSFER' or bm_status = 'DITERIMA' and bm_idfpgb = fpgb_id  order by bm_id desc");
 			$data['belumdiproses'] = DB::table("bank_masuk")->where([['bm_status' , '=' , 'DITRANSFER'],['bm_cabangasal' , '=' , '$cabang']])->count();
 			$data['sudahdiproses'] = DB::table("bank_masuk")->where([['bm_status' , '=' , 'DITERIMA'],['bm_cabangasal' , '=' , '$cabang']])->count();
 		}
@@ -486,6 +487,29 @@ class BankMasukController extends Controller
 	        });
 	}
 
+
+	public function hapusjurnalbeda(Request $request){
+		return DB::transaction(function() use ($request){  
+		$id = $request->id;
+		$databm = DB::select("select * from bank_masuk where bm_id = '$id'");
+		$notabm = $databm[0]->bm_nota;
+		DB::delete("DELETE from d_jurnal where jr_ref = '$notabm'");
+
+
+		$update = DB::table('bank_masuk')
+			->where('bm_id' , $id)
+			->update([
+				'bm_tglterima' => null,
+				'bm_nota' => null,
+				'bm_status' => 'DITRANSFER',
+			]);
+
+		return json_encode('sukses');
+
+		});
+
+	}
+
 	public function create(){
 		$cabang = session::get('cabang');
 		if($cabang == 000){
@@ -530,6 +554,157 @@ class BankMasukController extends Controller
 
 		return json_encode($BM);
 
+	}
+
+
+	public function editterima(Request $request){
+		return DB::transaction(function() use ($request){  
+		$id = $request->id;
+		$nominal = str_replace(",", "", $request->nominal);
+		$tgl = $request->tgl;
+
+		$update = DB::table('bank_masuk')
+			->where('bm_id' , $id)
+			->update([
+				'bm_tglterima' => null,
+				'bm_nota' => null,
+			]);
+	
+
+		$databm = DB::select("select * from bank_masuk where bm_id = '$id'");
+		$notabm2 = $databm[0]->bm_nota;
+
+		DB::delete("DELETE FROM d_jurnal where jr_ref = '$notabm2'");
+
+
+		$bankasal = $request->bankasal;
+		$dkaasal2 = DB::select("select * from d_akun where id_akun = '$bankasal'");
+		$dkaasal = $dkaasal2[0]->akun_dka;
+		$jurnaldt = []; 
+
+		$banktujuan = $request->banktujuan;
+		$dkatujuan2 = DB::select("select * from d_akun where id_akun = '$banktujuan'");
+		$dkatujuan = $dkatujuan2[0]->akun_dka;
+
+
+		$databm2 = DB::select("select * from bank_masuk where bm_id = '$id'");
+		$idfpgb = $databm2[0]->bm_idfpgb;
+
+		$datafpg = DB::select("select * from fpg, fpg_cekbank where fpgb_idfpg = idfpg and fpgb_id = '$idfpgb'");
+		$keterangan = $datafpg[0]->fpg_keterangan;
+
+		if($dkaasal == 'D'){ //banktujuan
+			$jurnaldt[0]['id_akun'] = $banktujuan;
+			$jurnaldt[0]['subtotal'] = $nominal;
+			$jurnaldt[0]['dk'] = 'D';
+			$jurnaldt[0]['detail'] = $keterangan;
+		}
+		else {
+			$jurnaldt[0]['id_akun'] = $banktujuan;
+			$jurnaldt[0]['subtotal'] = '-' . $nominal;
+			$jurnaldt[0]['dk'] = 'K';
+			$jurnaldt[0]['detail'] = $keterangan;
+		}
+
+		if($dkaasal == 'K'){//bankasal
+			$jurnaldt[1]['id_akun'] = $bankasal;
+			$jurnaldt[1]['subtotal'] = $nominal;
+			$jurnaldt[1]['dk'] = 'D';
+			$jurnaldt[1]['detail'] = $keterangan;
+		}
+		else {
+			$jurnaldt[1]['id_akun'] = $bankasal;
+			$jurnaldt[1]['subtotal'] = '-' . $nominal;
+			$jurnaldt[1]['dk'] = 'K';
+			$jurnaldt[1]['detail'] = $keterangan;
+		}
+
+		
+
+		$lastidjurnald = DB::table('d_jurnal')->max('jr_id'); 
+		if(isset($lastidjurnald)) {
+			$idjurnald = $lastidjurnald;
+			$idjurnald = (int)$idjurnald + 1;
+		}
+		else {
+			$idjurnald = 1;
+		}
+
+
+		$cabang = $request->cabangtujuan;
+		$databank = DB::select("select * from masterbank where mb_kode = '$banktujuan'");
+		$kodebankd = $databank[0]->mb_id;
+		
+
+
+		$update = DB::table('bank_masuk')
+			->where('bm_id' , $id)
+			->update([
+				'bm_tglterima' => $tgl,
+				'bm_status' => 'DITERIMA',
+			]);
+
+		$cabang = $request->cabangtujuan;
+		$notabms = getnotabm($cabang , $tgl , $kodebankd);
+
+
+
+		$datamasukpakeko = DB::Select("select * from bank_masuk where bm_id = '$id'");
+	
+
+
+		$jr_no = get_id_jurnal('BM' . $kodebankd, $cabang, $tgl);
+
+		$update = DB::table('bank_masuk')
+				->where('bm_id' , $id)
+				->update([
+					'bm_nota' => $notabms,					
+				]);
+
+		
+		$year = date('Y');	
+		$date = date('Y-m-d');
+		$jurnal = new d_jurnal();
+		$jurnal->jr_id = $idjurnald;
+        $jurnal->jr_year = date('Y');
+        $jurnal->jr_date = date('Y-m-d');
+        $jurnal->jr_detail = 'BUKTI BANK MASUK';
+        $jurnal->jr_ref = $notabms;
+        $jurnal->jr_note = $keterangan;
+        $jurnal->jr_no = $jr_no;
+        $jurnal->save();
+
+
+    $key = 1;
+	for($j = 0; $j < count($jurnaldt); $j++){
+	
+		$jurnaldts = new d_jurnal_dt();
+		$jurnaldts->jrdt_jurnal = $idjurnald;
+		$jurnaldts->jrdt_detailid = $key;
+		$jurnaldts->jrdt_acc = $jurnaldt[$j]['id_akun'];
+		$jurnaldts->jrdt_value = $jurnaldt[$j]['subtotal'];
+		$jurnaldts->jrdt_statusdk = $jurnaldt[$j]['dk'];
+		$jurnaldts->jrdt_detail = $jurnaldt[$j]['detail'];
+		$jurnaldts->save();
+		$key++;
+	}	
+
+
+		 $cekjurnal = check_jurnal($notabms);
+        if($cekjurnal == 0){
+          $dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal Tidak Balance :('];
+        DB::rollback();
+                          
+        }
+        elseif($cekjurnal == 1) {
+          $dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+                  
+        } 
+         // $dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)'];
+
+
+			return json_encode($dataInfo);
+		});
 	}
 
 	public function saveterima(Request $request){
@@ -606,18 +781,6 @@ class BankMasukController extends Controller
 		$kodebankd = $databank[0]->mb_id;
 		//JREF
 		
-
-		$ref = explode("-", $jr_no);
-
-		
-	
-
-		if($kodebankd < 10){
-			$kodebankd = '0' . $kodebankd;
-		}	
-		else {
-			$kodebankd = $kodebankd;
-		}
 
 	
 		//ENDHRREF

@@ -40,7 +40,11 @@ class subcon_Controller extends Controller
                                 $all_div = $div_1 . $div_2 . $div_3 . $div_4;
 
                                 $data[$i]['button'] = $all_div;
-                               
+                                if ($data[$i]['aktif'] == "true") {
+                                  $data[$i]['aktif_button'] = '<input type="checkbox" class="aktif form-control" checked="" data-id="'.$data[$i]['kode'].'">';
+                                }else{
+                                  $data[$i]['aktif_button'] = '<input type="checkbox" class="aktif form-control" data-id="'.$data[$i]['kode'].'">';
+                                }
                                 $i++;
         }
         $datax = array('data' => $data);
@@ -174,6 +178,16 @@ class subcon_Controller extends Controller
         $cabang = DB::table('cabang')
                   ->get();
         return view('master_sales.subcon.index',compact('kota','akun','cabang'));
+    }
+
+    public function set_aktif(request $req)
+    {
+      $data = DB::table('subcon')
+                ->where('kode',$req->id)
+                ->update([
+                  'aktif' => $req->cek
+                ]);
+      return response()->json(['status'=>1]);
     }
 
 }
