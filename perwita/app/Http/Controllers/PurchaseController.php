@@ -410,7 +410,7 @@ return DataTables::of($data)->
 
       	
 		//return $mon;
-		$idspp = DB::select("select * from spp where spp_cabang = '$cabang'  and to_char(spp_tgldibutuhkan, 'MM') = '$bulan' and to_char(spp_tgldibutuhkan, 'YY') = '$tahun' order by spp_id desc limit 1");
+		$idspp = DB::select("select * from spp where spp_cabang = '$cabang'  and to_char(spp_tglinput, 'MM') = '$bulan' and to_char(spp_tglinput, 'YY') = '$tahun' order by spp_id desc limit 1");
 
 	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
 		if(count($idspp) != 0) {		
