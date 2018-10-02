@@ -2232,9 +2232,10 @@
                   year2 = tahun.substring(2);
                   //year2 ="Anafaradina";
                    nofaktur = 'FB' + month + year2 + '/' + cabang + '/' + a + '-' + response.data ;
-                  $('.aslinofaktur').val(nofaktur);
-                  $('.nofaktur').val(nofaktur);
-                  $('.no_faktur').val(nofaktur);
+
+                  $('.aslinofaktur').val(response.message);
+                  $('.nofaktur').val(response.message);
+                  $('.no_faktur').val(response.message);
               }
               else {
                   location.reload();
@@ -2657,9 +2658,9 @@
                   year2 = tahun.substring(2);
                   //year2 ="Anafaradina";
                    nofaktur = 'FB' + month + year2 + '/' + cabang + '/' + a + '-' + response.data ;
-                  $('.aslinofaktur').val(nofaktur);
-                  $('.nofaktur').val(nofaktur);
-                  $('.no_faktur').val(nofaktur);
+                  $('.aslinofaktur').val(response.message);
+                  $('.nofaktur').val(response.message);
+                  $('.no_faktur').val(response.message);
               }
               else {
                   location.reload();
@@ -7206,9 +7207,9 @@ $('#tmbhdataitem').click(function(){
                   year2 = tahun.substring(2);
                   //year2 ="Anafaradina";
                    nofaktur = 'FB' + month + year2 + '/' + cabang + '/' + a + '-' + response.data ;
-                  $('.aslinofaktur').val(nofaktur);
-                  $('.nofaktur').val(nofaktur);
-                  $('.no_faktur').val(nofaktur);
+                  $('.aslinofaktur').val(response.message);
+                  $('.nofaktur').val(response.message);
+                  $('.no_faktur').val(response.message);
               }
               else {
                   location.reload();
@@ -7253,9 +7254,9 @@ $('#tmbhdataitem').click(function(){
                   year2 = tahun.substring(2);
                   //year2 ="Anafaradina";
                    nofaktur = 'FB' + month + year2 + '/' + cabang + '/' + 'PO' + '-' + response.data ;
-                  $('.aslinofaktur').val(nofaktur);
-                  $('.nofaktur').val(nofaktur);
-                  $('.no_faktur').val(nofaktur);
+                  $('.aslinofaktur').val(response.message);
+                  $('.nofaktur').val(response.message);
+                  $('.no_faktur').val(response.message);
               }
               else {
                   location.reload();
