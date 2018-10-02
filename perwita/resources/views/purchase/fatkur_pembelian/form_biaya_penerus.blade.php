@@ -463,6 +463,7 @@
   })
 
   function hitung() {
+    diskon_penerus = 0;
     var temp = 0;
     datatable1.$('.bayar_biaya').each(function(){
       temp+=parseInt($(this).val());
