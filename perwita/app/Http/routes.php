@@ -362,6 +362,7 @@ Route::get('master_subcon/cek_aktif', 'subconController@cek_aktif');
 
 // BON SEMENTARA
 Route::get('bonsementaracabang/bonsementaracabang', 'BonSementaraController@index');
+Route::get('bonsementaracabang/bonsementaracabang/table', 'BonSementaraController@table');
 Route::get('bonsementaracabang/createcabang', 'BonSementaraController@create');
 Route::get('bonsementaracabang/getnota', 'BonSementaraController@getnota');
 Route::post('bonsementaracabang/save', 'BonSementaraController@savecabang');
