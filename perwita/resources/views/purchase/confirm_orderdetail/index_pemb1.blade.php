@@ -874,7 +874,7 @@
 
                if(response.temp[$i] == '0'){
                   for($z = 0; $z < response.sppd.length; $z++){
-                    for($hg = 0; $hg < response.supplier.length; $hg++){
+                    for($hg = 0; $hg < response.supplier[$z].length; $hg++){
                         $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').append("<option value="+response.supplier[$z][$hg].is_idsup+">" + response.supplier[$z][$hg].no_supplier+" - "+response.supplier[$z][$hg].nama_supplier+"</option>");
                     }
                   }
@@ -911,7 +911,7 @@
             
              if(response.temp[$k] == '0'){  
                   for($h = 0; $h < response.sppd.length; $h++){
-                     for($z = 0; $z < response.supplier.length; $z++){
+                     for($z = 0; $z < response.supplier[$h].length; $z++){
                       $(this).append("<option value="+response.itemsupplier[$h][$z].is_idsup+">" +response.itemsupplier[$h][$z].no_supplier+" - "+response.itemsupplier[$h][$z].nama_supplier+"</option>");
                   
                    }
