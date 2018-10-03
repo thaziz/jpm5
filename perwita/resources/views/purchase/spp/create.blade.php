@@ -283,7 +283,52 @@
         return true;
     })
 
-     $('.date').datepicker({
+
+    $('#formId').submit(function(){
+      event.preventDefault();
+          var post_url3 = $(this).attr("action");
+          var form_data3 = $(this).serialize();
+       
+        
+           swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data Faktur Pembelian!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: false
+          },
+           function(){
+           // var accHutang=$(".idsup_po").find(':selected').data('accHutang');
+          $.ajax({
+            type : "POST",
+            data : form_data3,
+            url : post_url3,
+            dataType : "json",
+            success : function(response){
+              console.log(response);
+                if(response[0].status == "error"){                   
+                    swal({
+                        title: "error",
+                        text: response[0].message,
+                        type: "error",                        
+                    });
+                   
+                }
+                else {
+                  alertSuccess();
+                }
+            },
+            error:function(data){
+                swal("Error", "Server Sedang Mengalami Masalah", "error");
+            }
+          })
+          });
+    });
+
+    $('.date').datepicker({
         autoclose: true,
         format: 'dd-MM-yyyy',      
     }).datepicker("setDate", "0");

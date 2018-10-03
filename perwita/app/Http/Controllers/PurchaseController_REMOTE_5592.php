@@ -752,6 +752,9 @@ return DataTables::of($data)->
 				$sppdt->save();
 				$id_sppdt++;
 				$seq++;
+
+
+
 			}
 
 
@@ -789,9 +792,68 @@ return DataTables::of($data)->
 				$spptb->save();
 				$idspptb++;
 			}
+
+
+			
 		}
 
-       		return redirect('suratpermintaanpembelian');
+			$dataspp = DB::select("select * from spp, spp_detail where sppd_idspp = spp_id and spp_id = '$idspp'");
+			for($j = 0; $j < count($dataspp); $j++){
+				$kodeitem = $dataspp[$j]->sppd_kodeitem;
+				$tipespp = $dataspp[$j]->spp_tipe;
+				$cabang = $dataspp[$j]->spp_cabang;
+				$supplier = $dataspp[$j]->sppd_supplier;
+				if($tipespp == 'NS' || $tipespp == 'J'){
+					$akunitem = DB::select("select * from masteritem where kode_item = '$kodeitem'");
+					$namaitem = $akunitem[0]->nama_masteritem;
+					$akunitem2 = $akunitem[0]->acc_hpp;
+				}
+				elseif($tipespp == 'S'){
+					$akunitem = DB::select("select * from masteritem where kode_item = '$kodeitem'");
+					$akunitem2 = $akunitem[0]->acc_persediaan;
+					$namaitem = $akunitem[0]->nama_masteritem;
+				}
+
+				$akunitem3 = substr($akunitem2, 0,4);
+				$datakun = DB::select("select * from d_akun where id_akun LIKE '$akunitem3%' and kode_cabang = '$cabang' and is_active = '1'");
+
+				if(count($datakun) == 0){				
+					$dataInfo = array([
+						'status' => 'error',
+						'message' => 'data ' . $namaitem  . 'cabang ' . $cabang . ' tidak ada',
+					]);
+
+					DB::rollback();
+				}
+				else {
+
+					$akunhutang = DB::select("select * from supplier where idsup = '$supplier'");
+					$namasupplier = $akunhutang[0]->nama_supplier;
+					$hutangdagang = $akunhutang[0]->acc_hutang;
+					$akunhutangdagang = substr($hutangdagang, 0,4);
+					$datahutang = DB::select("select * from d_akun where id_akun LIKE '$akunhutangdagang%' and kode_cabang = '$cabang' and is_active = '1'");
+
+					
+					if(count($datahutang) == 0){
+						$dataInfo = array([
+							'status' => 'error',
+							'message' => 'data hutang' . $namasupplier . 'cabang' . $cabang . 'tidak ada',
+						]);
+						DB::rollback();
+					}
+					else {
+						$dataInfo = array([
+							'status' => 'sukses',						
+						]);
+					}
+				}
+
+				
+				
+
+			}
+
+       		return json_encode($dataInfo);
        	});
 	}
 
@@ -10071,7 +10133,7 @@ public function kekata($x) {
 
 				}	
 
-				
+
 			}
 			else if($jenisbayarfpg == 'BGAKUN'){
 				$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
@@ -10230,7 +10292,7 @@ public function kekata($x) {
 			}
 
 			
-			/*$cekjurnal = check_jurnal($request->nobbk);
+			$cekjurnal = check_jurnal($request->nobbk);
     		if($cekjurnal == 0){
     			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal BK Tidak Balance :('];
 				DB::rollback();
@@ -10239,9 +10301,9 @@ public function kekata($x) {
     		elseif($cekjurnal == 1) {
     			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idbbk];
 					        
-    		}*/
+    		}
 
-    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idbbk];
+    		/*	$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idbbk];*/
    			
 			return json_encode($dataInfo);
 		});		
