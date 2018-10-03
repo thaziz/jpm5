@@ -384,18 +384,32 @@ class form_tanda_terima_penjualan_controller extends Controller
     }
 
     
-    public function datatable()
-    {
+    public function datatable(Request $request){
+        $tgl='';        
+        $nomor='';        
+        $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+        $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+        
+        if($request->tanggal1!='' && $request->tanggal2!=''){         
+          $tgl="and date(created_at) >= '$tgl1' AND date(created_at) <= '$tgl2'";
+        }
+        
+        if($request->nomor!=''){
+          $nomor="and ft_nota='$request->nomor'";
+        }            
+     	$data='';
+
     	if (Auth::user()->punyaAkses('Form Tanda Terima Penjualan','all')) {
 			$data = DB::table('form_tt_penjualan')
 				  ->join('customer','kode','=','ft_customer')
 				  ->orderBy('ft_id','ASC')
-				  ->get();
+				  ->whereRaw("ft_id is not null $tgl $nomor")       
+				  ->get();			
 		}else{
 			$cabang = Auth::user()->kode_cabang;
 			$data = DB::table('form_tt_penjualan')
-				  ->join('customer','kode','=','ft_customer')
-				  ->where('ft_kode_cabang',$cabang)
+				  ->join('customer','kode','=','ft_customer')				  
+				  ->whereRaw(" ft_kode_cabang=$cabang $tgl $nomor ")       
 				  ->orderBy('ft_id','ASC')
 				  ->get();
 		}

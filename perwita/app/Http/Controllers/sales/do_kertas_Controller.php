@@ -31,27 +31,7 @@ class do_kertas_Controller extends Controller
         }
         $cabang = DB::table('cabang')
                     ->get();
-
-        // $delete = DB::table('delivery_order')
-        //             ->delete();
-
-        // $delete = DB::table('delivery_orderd')
-        //             ->delete();
-
-        // $delete = DB::table('invoice')
-        //             ->delete();
-
-        // $delete = DB::table('invoice_pembetulan')
-        //             ->delete();
-
-        // $delete = DB::table('kwitansi')
-        //             ->delete();
-
-        // $delete = DB::table('cn_dn_penjualan')
-        //             ->delete();
-
-        // $delete = DB::table('uang_muka_penjualan')
-        //             ->delete();
+     
         for ($i=0; $i < count($data); $i++) { 
             for ($a=0; $a < count($cabang); $a++) { 
                 if ($data[$i]->kode_cabang == $cabang[$a]->kode) {
@@ -62,21 +42,32 @@ class do_kertas_Controller extends Controller
         return view('sales.do_kertas.index',compact('data'));
     }
 
-    public function datatable_do_kertas()
-    {
+    public function datatable_do_kertas(Request $request){
+        $tgl='';        
+        $nomor='';        
+        $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+        $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+        
+        if($request->tanggal1!='' && $request->tanggal2!=''){         
+          $tgl="and tanggal >= '$tgl1' AND tanggal <= '$tgl2'";
+        }
+        
+        if($request->nomor!=''){
+          $nomor="and nomor='$request->nomor'";
+        }            
+     $data='';
 
       $cabang = auth::user()->kode_cabang;
       if (Auth::user()->punyaAkses('Delivery Order','all')) {
           $data = DB::table('delivery_order')
                     ->join('cabang','kode','=','kode_cabang')
-                    ->where('jenis','KORAN')
+                    ->whereRaw("jenis='KORAN' $tgl $nomor")
                     ->orderBy('tanggal','DESC')
                     ->get();
       }else{
           $data = DB::table('delivery_order')
-                    ->join('cabang','kode','=','kode_cabang')
-                    ->where('jenis','KORAN')
-                    ->where('kode_cabang',$cabang)
+                    ->join('cabang','kode','=','kode_cabang')                    
+                    ->whereRaw("jenis='KORAN' $tgl $nomor and kode_cabang='$cabang'")                    
                     ->orderBy('tanggal','DESC')
                     ->get();
       }

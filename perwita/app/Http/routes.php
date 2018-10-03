@@ -524,7 +524,10 @@ Route::get('pending_kas/save_kas/{id}', 'pendingController@save_kas');
 Route::get('pending/create', 'pendingController@create')->name('proses');
 Route::get('pending/save', 'pendingController@save')->name('save_pending');
 Route::post('pending/save', 'pendingController@save')->name('save_pending');
+
 Route::get('pending_subcon/index', 'pendingController@index_subcon');
+Route::get('pending_subcon/index/table', 'pendingController@subconTable');
+
 Route::get('pending_subcon/create', 'pendingController@create_subcon')->name('proses_subcon');
 Route::get('pending_subcon/save', 'pendingController@save_subcon');
 Route::post('pending_subcon/save', 'pendingController@save_subcon');
@@ -556,6 +559,7 @@ Route::get('returnpembelian/delete/{id}', 'ReturnPembelianController@hapusdata')
 Route::post('returnpembelian/update', 'ReturnPembelianController@updatedata');
 
 Route::get('cndnpembelian/cndnpembelian', 'cndnController@cndnpembelian');
+Route::get('cndnpembelian/cndnpembelian/table', 'cndnController@cndnpembelianTable');
 Route::get('cndnpembelian/createcndnpembelian', 'cndnController@createcndnpembelian');
 Route::get('cndnpembelian/detailcndnpembelian/{id}', 'cndnController@detailcndnpembelian');
 Route::get('cndnpembelian/getnota', 'cndnController@getnota');
@@ -1679,6 +1683,7 @@ Route::get('sales/deliveryorderkargoform/nota/{nomor}', 'sales\do_kargo_Controll
 
 // delivery order kertas
 Route::get('sales/deliveryorderkertas', 'sales\do_kertas_Controller@index');
+Route::get('sales/deliveryorderkertas/table', 'sales\do_kertas_Controller@table');
 Route::get('sales/deliveryorderkertas_form', 'sales\do_kertas_Controller@form');
 Route::get('sales/nomor_do_kertas', 'sales\do_kertas_Controller@nomor_do_kertas');
 Route::get('sales/cari_customer_kertas', 'sales\do_kertas_Controller@cari_customer_kertas');
