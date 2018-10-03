@@ -799,12 +799,12 @@ class BankMasukController extends Controller
 				]);
 
 		
-		$year = date('Y');	
-		$date = date('Y-m-d');
+		$year  Carbon::parse($tgl)->format('Y');;	
+		
 		$jurnal = new d_jurnal();
 		$jurnal->jr_id = $idjurnald;
-        $jurnal->jr_year = date('Y');
-        $jurnal->jr_date = date('Y-m-d');
+        $jurnal->jr_year = $year;
+        $jurnal->jr_date = $tgl;
         $jurnal->jr_detail = 'BUKTI BANK MASUK';
         $jurnal->jr_ref = $notabm;
         $jurnal->jr_note = $keterangan;

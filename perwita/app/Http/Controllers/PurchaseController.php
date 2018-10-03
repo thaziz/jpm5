@@ -6889,7 +6889,7 @@ public function purchase_ordernotif(Request $request){
 
 				$jr_no = get_id_jurnal('MM' , $cabang, $request->tgl_po);
 
-				$year = date('Y');	
+				//$year = date('Y');	
 				$date = date('Y-m-d');
 				$jurnal = new d_jurnal();
 				$jurnal->jr_id = $idjurnal;
