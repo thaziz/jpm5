@@ -733,6 +733,11 @@
                                         <th>
                                       Tujuan Pindah Buku </th>
                                       <td> <select class="form-control input-sm tujuanbankpb">
+
+                                                      <option value="">
+                                                        Pilih Data
+                                                      </option>
+                                                
                                                       <option value="BANK">
                                                           BANK
                                                       </option>
@@ -882,7 +887,7 @@
                                     </tr>
                                      @for($i =0; $i < count($data['fpg_bank']); $i++)
                                         @if($data['fpg_bank'][$i]->fpgb_cair == 'TIDAK')
-                                        <tr id="datas{{$i + 1}}" class='databank' data-id='{{$i + 1}}'>
+                                        <tr id="datas{{$i + 1}}" class='tblbank databank' data-id='{{$i + 1}}'>
                                           <td> {{$i + 1}} </td>
                                           <td> <banks2> {{$data['fpg_bank'][$i]->fpg_nofpg}} </banks2> </td>
                                           <td class='fpgbank' data-nocheck='{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}'> <a class='noseri noseri2{{$i + 1}}'  data-id={{$i+1}}> {{$data['fpg_bank'][$i]->fpgb_nocheckbg}} </a> <input type='hidden' class="noseri{{$i + 1}}" value="{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" name='noseri[]'> </td>
@@ -904,7 +909,7 @@
                                         </td>
                                         </tr>
                                         @else
-                                          <tr id="datas{{$i + 1}}" class='databank' data-id='{{$i + 1}}'>
+                                          <tr id="datas{{$i + 1}}" class='tbl-bank databank' data-id='{{$i + 1}}'>
                                           <td> {{$i + 1}} </td>
                                           <td> <bank{{$i + 1}}> {{$data['fpg_bank'][$i]->fpg_nofpg}} </bank> </td>
                                           <td class='fpgbank' data-nocheck='{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}'> <a class='noseri noseri2{{$i + 1}}'  data-id={{$i+1}}> {{$data['fpg_bank'][$i]->fpgb_nocheckbg}} </a> <input type='hidden' class="noseri{{$i + 1}}" value="{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" name='noseri[]'> </td>
@@ -946,7 +951,7 @@
 
                                        @for($i =0; $i < count($data['fpg_bank']); $i++)
                                         @if($data['fpg_bank'][$i]->fpgb_cair == 'TIDAK')
-                                        <tr id="datas{{$i + 1}}" class='tbltfbank databank' data-id='{{$i + 1}}'>
+                                        <tr id="datas{{$i + 1}}" class='tbltfbank tblbank databank' data-id='{{$i + 1}}'>
                                           <td> {{$i + 1}} </td>
                                           <td> <banks2> {{$data['fpg_bank'][$i]->fpg_nofpg}} </banks2> </td>
                                           <td class='fpgbank' data-nocheck='{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}'> <a class='noseri noseri2{{$i + 1}}'  data-id={{$i+1}}> {{$data['fpg_bank'][$i]->fpgb_nocheckbg}} </a> <input type='hidden' class="noseri{{$i + 1}}" value="{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" name='noseri[]'> </td>
@@ -954,7 +959,7 @@
                                           <td> <banks2> {{$data['fpg_bank'][$i]->mb_kode}} </banks2> </td>
                                           <td> {{$data['fpg_bank'][$i]->fpgb_kodebanktujuan}}</td>
                                           <td> {{$data['fpg_bank'][$i]->fpgb_nmbanktujuan}} </td>
-                                          <td> <input type='text' data-id="{{$i + 1}}" class="input-sm form-control nominaltblbank nominalbank{{$i + 1}} nominalcheck{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" readonly name='nominalbank[]' style="text-align:right" value="{{ number_format($data['fpg_bank'][$i]->fpgb_nominal, 2) }}">
+                                          <td> <input type='text' data-id="{{$i + 1}}" class="input-sm form-control nominaltblbank nominalbank{{$i + 1}} nominalcheck{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" name='nominalbank[]' style="text-align:right" value="{{ number_format($data['fpg_bank'][$i]->fpgb_nominal, 2) }}">
                                           </td>
                                           <td> 
 
@@ -968,7 +973,7 @@
                                         </td>
                                         </tr>
                                         @else
-                                          <tr id="datas{{$i + 1}}" class='tbltfbank databank' data-id='{{$i + 1}}'>
+                                          <tr id="datas{{$i + 1}}" class='tbltfbank tblbank databank' data-id='{{$i + 1}}'>
                                           <td> {{$i + 1}} </td>
                                           <td> <bank{{$i + 1}}> {{$data['fpg_bank'][$i]->fpg_nofpg}} </bank> </td>
                                           <td class='fpgbank' data-nocheck='{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}'> <a class='noseri noseri2{{$i + 1}}'  data-id={{$i+1}}> {{$data['fpg_bank'][$i]->fpgb_nocheckbg}} </a> <input type='hidden' class="noseri{{$i + 1}}" value="{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" name='noseri[]'> </td>
@@ -978,7 +983,7 @@
                                        
                                           <td> {{$data['fpg_bank'][$i]->fpgb_nmbanktujuan}}</td>
                                      
-                                          <td><input type='text' data-id="{{$i + 1}}" class="input-sm form-control nominaltblbank nominalbank{{$i + 1}} nominalcheck{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" readonly name='nominalbank[]' style="text-align:right" value="{{ number_format($data['fpg_bank'][$i]->fpgb_nominal, 2) }}">
+                                          <td><input type='text' data-id="{{$i + 1}}" class="input-sm form-control nominaltblbank nominalbank{{$i + 1}} nominalcheck{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" name='nominalbank[]' style="text-align:right" value="{{ number_format($data['fpg_bank'][$i]->fpgb_nominal, 2) }}">
                                        
                                           </td>
                                           <td> 
@@ -1044,7 +1049,6 @@
                   <div class="pull-right">
                   
                     <a class="btn btn-warning" href={{url('formfpg/formfpg')}} id="kembali"> Kembali </a>
-                    
 
                           @if($data['fpg'][0]->fpg_jenisbayar == '5' || $data['fpg'][0]->fpg_jenisbayar == '12')
                             <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg2/'.$data['fpg'][0]->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a>
@@ -1108,11 +1112,12 @@
                   $('.transferbank').show();
                   $('.tujuanbankacc').show();
                   $('.jenisbayarbankbg').prop({ checked: false }); 
-
+                  $('.jenisbayarbanktf').prop({ checked: false }); 
                   banktujuan =$('.banktujuan').val();
                   $('#tbmhdatainet').show();
                   $('.nocheck').attr('readonly' , true);
                   $('.nominaltujuanbank').attr('readonly' , true);
+                  $('tr.tblbank').remove();
                 }
                 else {
                   $('.jenisbayarbankbg').prop({ checked: false });           
@@ -1122,7 +1127,7 @@
                   $('.checkbgtf').hide();
                   $('.ibanking').show();
                   $('#tbl-ibank').show();
-
+                  $('tr.tblbank').remove();
                   tgl = $('.tgl').val();
                   bank = $('.bank').val();
                   kodebank = bank.split(",");
@@ -1192,7 +1197,10 @@
         asalbank = $('.bankasaldetail').val();
         nofpg = $('.nofpg').val();
         jenispindahbuku = $('.tujuanbankpb').val();
-   
+        
+
+
+
         if(jenispindahbuku == 'BANK'){
          banktujuan = $('.banktujuan').val();
   
@@ -1223,6 +1231,10 @@
           idbanktujuan = split[0];
           kelompoktujuan = 'KAS';
          // alert(idbanktujuan);
+        }
+        else if(jenispindahbuku == ''){
+          toastr.info("Mohon diisi Kas / Bank :)");
+          return false;
         }
         //alert(idbanktujuan);
       
@@ -1258,7 +1270,7 @@
         }
 
 
-           var row =  "<tr class='tbltfbank tbltfbank"+noinet+"'> <td>"+noinet+"</td>" +
+           var row =  "<tr class='tbltfbank tblbank tbltfbank"+noinet+"'> <td>"+noinet+"</td>" +
                       "<td>"+nofpg+"</td>" + // NO FPG
                       "<td> - </td>" + // -
                       "<td>"+tgl+"</td>"+ 
@@ -1611,9 +1623,11 @@
            if ($this.is(":checked")) {
               $('.jenisbayarbankbgtf').prop({ disabled: true, checked: false }); 
               $('.jenisbayarbanktfacc').prop({ disabled: true, checked: false });
-                $('.tujuanbank').hide();
-                $('.tujuanbankacc').hide();
-                $('.transferbank').hide();
+              $('.jenisbayarbankibaking').prop({checked: false});
+              $('.tujuanbank').hide();
+              $('.tujuanbankacc').hide();
+              $('.transferbank').hide();
+              $('tr.tblbank').remove();
            }
            else {
               $('.jenisbayarbankbgtf').prop({ disabled: false, checked: false }); 
@@ -2800,7 +2814,7 @@
                  
                     for(var i =0 ; i < mbdt.length; i++ ){  
                        nomrbnk++;
-                      var row = "<tr id='datas"+nomrbnk+"' class='databank' data-id='"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
+                      var row = "<tr id='datas"+nomrbnk+"' class='tblbank databank' data-id='"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
                       "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> "+mbdt[i][0].mbdt_noseri+ "</a> <input type='hidden' class='noseri"+nomrbnk+"' value='"+mbdt[i][0].mbdt_noseri+"' name='noseri[]'></td>"+ // NOSERI
 
                       "<td>"+tgl+"</td>"+ // TGL

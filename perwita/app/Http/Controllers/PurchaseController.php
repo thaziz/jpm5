@@ -14237,7 +14237,6 @@ return $html;
 			
 				$pelunasan2 = str_replace(',', '', $pelunasan);
 				
-
 				$deletefpgdt = DB::table('fpg_dt')->where('fpgdt_id' , '=' , $idfpgdt)->delete();
 				$datafaktur = DB::select("select * from faktur_pembelian where fp_idfaktur = '$idfp'");
 				$fp_pelunasan = $datafaktur[0]->fp_sisapelunasan;
@@ -14339,13 +14338,9 @@ return $html;
 					 	'mbdt_tglstatus' => null,
 				 	]);
 			}	
+	     }      
 
-			$deletefpgb = DB::table('fpg_cekbank')->where('fpgb_id' , '=' , $idfpgb)->delete();
-	     }      	
-        
-		
-
-		//addfaktur
+  	//addfaktur
 		for($j=0;$j<count($request->nofaktur);$j++){
 			$idfp = $request->idfaktur[$j];
 			$cekidfp = DB::select("select * from fpg_dt where  fpgdt_idfpg = '$idfpg' and fpgdt_idfp = '$idfp'");
@@ -14390,53 +14385,80 @@ return $html;
 				
 			}
 
-		//SIMPAN CHECK
-		for($j=0; $j < count($request->noseri); $j++){
-			$formfpg_bank = new formfpg_bank();
+		if($request->jenisbayarbank == 'CHECK/BG'){
+			//SIMPAN CHECK
+			for($j=0; $j < count($request->noseri); $j++){
+				$formfpg_bank = new formfpg_bank();
 
-			$lastidfpg_bank =  formfpg_bank::max('fpgb_id');;
-			if(isset($lastidfpg_bank)) {
-					$idfpg_bank = $lastidfpg_bank;
-					$idfpg_bank = (int)$idfpg_bank + 1;
-			}
-			else {
-					$idfpg_bank = 1;
-			} 
+				$lastidfpg_bank =  formfpg_bank::max('fpgb_id');;
+				if(isset($lastidfpg_bank)) {
+						$idfpg_bank = $lastidfpg_bank;
+						$idfpg_bank = (int)$idfpg_bank + 1;
+				}
+				else {
+						$idfpg_bank = 1;
+				} 
 
 
-			$idbank = $request->idbank;
-			$noseri = $request->noseri[$j];
-			$cekidbank = DB::select("select * from fpg_cekbank where fpgb_kodebank = '$idbank' and fpgb_nocheckbg = '$noseri' and fpgb_idfpg = '$idfpg'");
-			$nominalbank =  str_replace(',', '', $request->nominalbank[$j]);
-			if(count($cekidbank) > 0){
+				$idbank = $request->idbank;
+				$noseri = $request->noseri[$j];
+				$cekidbank = DB::select("select * from fpg_cekbank where fpgb_kodebank = '$idbank' and fpgb_nocheckbg = '$noseri' and fpgb_idfpg = '$idfpg'");
+				$nominalbank =  str_replace(',', '', $request->nominalbank[$j]);
+				if(count($cekidbank) > 0){
+					if($request->valrusak[$j] == 'rusak'){
+						
+						$updatefpgb = formfpg_bank::where([['fpgb_kodebank' , '=' ,$idbank],['fpgb_nocheckbg' , '=' , $noseri],['fpgb_idfpg' , '=' , $idfpg]]);
 
-				
-				if($request->valrusak[$j] == 'rusak'){
-					
-					$updatefpgb = formfpg_bank::where([['fpgb_kodebank' , '=' ,$idbank],['fpgb_nocheckbg' , '=' , $noseri],['fpgb_idfpg' , '=' , $idfpg]]);
+						$updatefpgb->update([
+							'fpgb_cair' => 'TIDAK',
+							'fpgb_setuju' => 'TIDAK',
+							]);
+						
+						$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$noseri]]);
 
-					$updatefpgb->update([
-						'fpgb_cair' => 'TIDAK',
-						'fpgb_setuju' => 'TIDAK',
-						]);
-					
-					$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$noseri]]);
+						$updatebank->update([
+						 	'mbdt_setuju' => 'T',
+						 	'mbdt_status' => 'TIDAK',
+						 	'mbdt_tglstatus' => $time
+					 	]);		
 
-					$updatebank->update([
-					 	'mbdt_setuju' => 'T',
-					 	'mbdt_status' => 'TIDAK',
-					 	'mbdt_tglstatus' => $time
-				 	]);		
+					}
+					else {
+						$updatefpgb = formfpg_bank::where([['fpgb_kodebank' , '=' ,$idbank],['fpgb_nocheckbg' , '=' , $noseri],['fpgb_idfpg' , '=' , $idfpg]]);
+						$updatefpgb->update([
+							'fpgb_jenisbayarbank' => $request->jenisbayarbank,
+							'fpgb_nocheckbg' => $noseri,
+							'fpgb_nominal' => $nominalbank
+							]);
+
+							$idbank = $request->idbank;
+							$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$request->noseri[$j]]]);
+
+							$updatebank->update([
+							 	'mbdt_nofpg' =>  $request->nofpg,
+							 	'mbdt_setuju' => 'Y',
+							 	'mbdt_status' => 'C',
+							 	'mbdt_nominal' => $nominalbank,
+							 	'mbdt_tglstatus' => $time
+						 	]);	
+
+					}
+
 
 				}
 				else {
-					$updatefpgb = formfpg_bank::where([['fpgb_kodebank' , '=' ,$idbank],['fpgb_nocheckbg' , '=' , $noseri],['fpgb_idfpg' , '=' , $idfpg]]);
-					$updatefpgb->update([
-						'fpgb_jenisbayarbank' => $request->jenisbayarbank,
-						'fpgb_nocheckbg' => $noseri,
-						'fpgb_nominal' => $nominalbank
-						]);
-
+					$nominalbank =  str_replace(',', '', $request->nominalbank[$j]);
+					$formfpg_bank->fpgb_idfpg = $idfpg;
+					$formfpg_bank->fpgb_id = $idfpg_bank;
+					$formfpg_bank->fpgb_kodebank = $request->idbank;
+					$formfpg_bank->fpgb_jenisbayarbank = $request->jenisbayarbank;
+					$formfpg_bank->fpgb_nocheckbg = $request->noseri[$j];
+					$formfpg_bank->fpgb_jatuhtempo = $request->jatuhtempo[0];
+					$formfpg_bank->fpgb_nominal = $nominalbank;
+					$formfpg_bank->fpgb_hari = $request->jatuhtempo[0];
+					$formfpg_bank->fpgb_cair = 'IYA';
+					$formfpg_bank->fpgb_setuju = 'SETUJU';
+					$formfpg_bank->save();
 						$idbank = $request->idbank;
 						$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$request->noseri[$j]]]);
 
@@ -14447,36 +14469,17 @@ return $html;
 						 	'mbdt_nominal' => $nominalbank,
 						 	'mbdt_tglstatus' => $time
 					 	]);	
+				} 
+			}
+		}
+		else if($request->jenisbayarbank == 'INTERNET BANKING') {
+			$deletefpgb = DB::table('fpg_cekbank')->where('fpgb_id' , '=' , $idfpgb)->delete();
 
-				}
-
+			for($k = 0; $k < count($request->nominalbank); $k++){
 
 			}
-			else {
-				$nominalbank =  str_replace(',', '', $request->nominalbank[$j]);
-				$formfpg_bank->fpgb_idfpg = $idfpg;
-				$formfpg_bank->fpgb_id = $idfpg_bank;
-				$formfpg_bank->fpgb_kodebank = $request->idbank;
-				$formfpg_bank->fpgb_jenisbayarbank = $request->jenisbayarbank;
-				$formfpg_bank->fpgb_nocheckbg = $request->noseri[$j];
-				$formfpg_bank->fpgb_jatuhtempo = $request->jatuhtempo[0];
-				$formfpg_bank->fpgb_nominal = $nominalbank;
-				$formfpg_bank->fpgb_hari = $request->jatuhtempo[0];
-				$formfpg_bank->fpgb_cair = 'IYA';
-				$formfpg_bank->fpgb_setuju = 'SETUJU';
-				$formfpg_bank->save();
-					$idbank = $request->idbank;
-					$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$request->noseri[$j]]]);
-
-					$updatebank->update([
-					 	'mbdt_nofpg' =>  $request->nofpg,
-					 	'mbdt_setuju' => 'Y',
-					 	'mbdt_status' => 'C',
-					 	'mbdt_nominal' => $nominalbank,
-					 	'mbdt_tglstatus' => $time
-				 	]);	
-			} 
 		}
+		
 
 		return json_encode('sukses');
 	});

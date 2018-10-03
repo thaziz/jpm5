@@ -496,7 +496,7 @@
 
                     '<tr> <td> Jenis PPn </td> <td> : </td> <td> <select class="form-control jenisppn" name="jenisppn">  <option value="T"> Tanpa </option> <option value="E"> Exclude </option> <option value="I"> Include </option> </select> </td> </tr>' + //jenisppn
 
-                    '<tr> <td> PPn </td> <td> : </td> <td> <div class="row"> <div class="col-md-5"> <input type="number" class="form-control input-sm ppn" name="ppn"> </div> <label class="col-md-2"> % </label> <div class="col-md-5">   <input type="text" style="text-align:right" class="form-control input-sm hargappn" readonly name="hasilppn"> <input type="hidden" style="text-align:right" class="form-control input-sm" readonly name="jenisitem" value="'+response.jenisitem+'">   </div> </div> </td> </tr>' + //ppn
+                    '<tr> <td> PPn </td> <td> : </td> <td> <div class="row"> <div class="col-md-5"> <input type="number" class="form-control input-sm ppn" name="ppn"> </div> <label class="col-md-2"> % </label> <div class="col-md-5">   <input type="text" style="text-align:right" class="form-control input-sm hargappn"  name="hasilppn"> <input type="hidden" style="text-align:right" class="form-control input-sm" readonly name="jenisitem" value="'+response.jenisitem+'">   </div> </div> </td> </tr>' + //ppn
 
                     '<tr> <td> Total </td> <td> : </td> <td> <label class="col-md-1"> Rp </label> <div class="col-md-8"> <input type="text" class="form-control total input-sm" readonly="" name="total" style="text-align:right">  </div> </td> </tr> </table>'; //total
 

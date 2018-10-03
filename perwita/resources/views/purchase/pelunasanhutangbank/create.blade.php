@@ -756,10 +756,10 @@
           nominal2 =  nominal.replace(/,/g, '');
           dk = $(this).data('dk');
           if(dk == 'D'){
-             jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+             jumlahnominal = parseFloat(parseFloat(jumlahnominal) + parseFloat(jumlahnominal)).toFixed(2);
           }
           else {
-            jumlahnominal = parseFloat(parseFloat(nominal2) - parseFloat(jumlahnominal)).toFixed(2);
+            jumlahnominal = parseFloat(parseFloat(jumlahnominal) - parseFloat(jumlahnominal)).toFixed(2);
 
           }
           $('.total').val(addCommas(jumlahnominal));
