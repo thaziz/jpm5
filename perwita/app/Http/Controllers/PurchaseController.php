@@ -6026,6 +6026,8 @@ public function purchase_ordernotif(Request $request){
 	                          					$a = '<a title="Edit" class="btn btn-sm btn-success" href='.url('fakturpembelian/detailfatkurpembelian/'.$data->fp_idfaktur.'').'><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> ';
 											}
 	                          			}
+	                              	}else{
+	                              		return '<label class="label label-danger">Closing</label>';
 	                              	}
 	                          	}
 	                          }
