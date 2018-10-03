@@ -205,7 +205,8 @@ setTimeout(function () {
             ],
             "pageLength": 10,
             "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-             "bFilter": false,
+            "bFilter": false,
+            "responsive": false,
     
 
 

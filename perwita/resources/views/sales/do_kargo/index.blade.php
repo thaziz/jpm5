@@ -112,7 +112,7 @@
                            <select style="width: 200px; margin-top: 20px;" name="jenis" id="jenis" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
                             <option value=""  selected=""> --Pilih --</option>
                             @foreach($jenis_tarif as $val)
-                                <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
+                                <option value="{{$val->jt_nama_tarif}}">{{$val->jt_nama_tarif}}</option>
                             @endforeach
                            </select>
                           </td>

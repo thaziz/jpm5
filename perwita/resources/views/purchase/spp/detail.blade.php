@@ -85,7 +85,7 @@
                            <tr>
                               <td> 
                                <b> Tgl Input  </b>
-                              </td> {{$spp->spp_tglinput}}
+                              </td> 
                               <td> 
                                 @if($spp->spp_tglinput == null)
                                    <input type='text' class='form-control' value="{{ Carbon\Carbon::parse($spp->tglinput)->format('d-M-Y ')}}" readonly=""> 
@@ -114,6 +114,17 @@
                             </td>
                           </tr>
 
+                          <tr>
+                            <td> Tipe SPP </td>
+                            <td> @if($spp->spp_tipe == 'S')
+                                  STOCK
+                                @elseif($spp->spp_tipe == 'NS')
+                                  NON STOCK
+                                @elseif($spp->spp_tipe == 'J')
+                                  JASA
+                                @endif
+                            </td>
+                          </tr>
                                
                         
 

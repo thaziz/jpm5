@@ -752,6 +752,9 @@ return DataTables::of($data)->
 				$sppdt->save();
 				$id_sppdt++;
 				$seq++;
+
+
+
 			}
 
 
@@ -789,6 +792,9 @@ return DataTables::of($data)->
 				$spptb->save();
 				$idspptb++;
 			}
+
+
+			
 		}
 
        		return redirect('suratpermintaanpembelian');
@@ -1494,11 +1500,12 @@ return
 
 		$data['temp'] = [];
 		$data['supplier'] = [];
+		$data['itemsupplier'] = [];
 		for($i = 0; $i < count($data['sppdt']); $i++){
 			$kodeitem = $data['sppdt'][$i]->sppd_kodeitem;
-			$data['itemsupplier'] = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
+			$itemsup = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
 
-				if(count($data['itemsupplier']) > 0){
+				if(count($itemsup) > 0){
 					$itemsupplier2 = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
 					array_push($data['temp'] , '0');
 					array_push($data['supplier'] , $itemsupplier2);
@@ -1508,6 +1515,8 @@ return
 					$data['supplier2'] = DB::select("select * from supplier");
 					array_push($data['supplier'] , $data['supplier2']);
 				}
+
+			array_push($data['itemsupplier'] , $itemsup);		
 		}
 
 
@@ -2315,8 +2324,9 @@ public function purchase_ordernotif(Request $request){
 			$data['stockjenisitem'] = $jenisitem[0]->stock;
 			$data['kodejenisitem'] = $jenisitem[0]->kode_jenisitem;
 			$tipespp = $dataspp[0]->spp_tipe;
+			$data['tipespp'] = $tipespp;
 
-			if($tipespp == 'NS' && $data['jenisitem'] == 'S'){
+			if($tipespp == 'NS' && $data['jenisitem'] == 'SPARE PART KENDARAAN'){
 				$data['codt'][] = DB::select("select * from confirm_order, confirm_order_dt , confirm_order_tb, spp, masteritem, kendaraan where co_idspp = '$idspp' and codt_idco = co_id and cotb_idco = co_id and co_idspp = spp_id and codt_supplier = cotb_supplier and codt_supplier = '$nosupplier' and codt_kodeitem = kode_item and cotb_id = '$idcotb' and co_id = '$idco' and codt_kendaraan = kendaraan.id ");
 
 			}
@@ -7060,7 +7070,7 @@ public function purchase_ordernotif(Request $request){
 						$idjurnal = 1;
 					}
 				
-					$year = Carbon::parse($tgl_po)->format('Y');	
+					$year = Carbon::parse($request->tgl_po)->format('Y');	
 					$jr_no = get_id_jurnal('MM' , $cabang, $request->tgl_po);
 
 					$jurnal = new d_jurnal();
@@ -10068,6 +10078,8 @@ public function kekata($x) {
 	    			$key++;
 
 				}	
+
+
 			}
 			else if($jenisbayarfpg == 'BGAKUN'){
 				$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
@@ -10237,7 +10249,7 @@ public function kekata($x) {
 					        
     		}
 
-    		//	$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idbbk];
+    		/*	$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idbbk];*/
    			
 			return json_encode($dataInfo);
 		});		

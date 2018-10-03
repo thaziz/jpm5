@@ -376,6 +376,8 @@ Route::post('bonsementaracabang/jurnalumum', 'BonSementaraController@jurnalumum'
 
 
 Route::get('bonsementarapusat/bonsementarapusat', 'BonSementaraController@indexpusat');
+Route::get('bonsementarapusat/bonsementarapusat/table', 'BonSementaraController@indexpusattable');
+Route::get('bonsementarapusat/bonsementarapusat/notif', 'BonSementaraController@indexpusatnotif');
 Route::get('bonsementarapusat/setujukacab', 'BonSementaraController@setujukacab');
 Route::get('bonsementarapusat/setujukeu', 'BonSementaraController@setujukacab');
 Route::get('bonsementarapusat/updatekapus', 'BonSementaraController@updatekapus');
@@ -516,12 +518,16 @@ Route::get('ikhtisar_kas/append_table', 'ikhtisarController@append_table');
 
 //PENDING
 Route::get('pending/index', 'pendingController@index');
+Route::get('pending/index/table', 'pendingController@table');
 Route::get('pending_kas/index', 'pendingController@index_kas');
 Route::get('pending_kas/save_kas/{id}', 'pendingController@save_kas');
 Route::get('pending/create', 'pendingController@create')->name('proses');
 Route::get('pending/save', 'pendingController@save')->name('save_pending');
 Route::post('pending/save', 'pendingController@save')->name('save_pending');
+
 Route::get('pending_subcon/index', 'pendingController@index_subcon');
+Route::get('pending_subcon/index/table', 'pendingController@subconTable');
+
 Route::get('pending_subcon/create', 'pendingController@create_subcon')->name('proses_subcon');
 Route::get('pending_subcon/save', 'pendingController@save_subcon');
 Route::post('pending_subcon/save', 'pendingController@save_subcon');
@@ -553,6 +559,7 @@ Route::get('returnpembelian/delete/{id}', 'ReturnPembelianController@hapusdata')
 Route::post('returnpembelian/update', 'ReturnPembelianController@updatedata');
 
 Route::get('cndnpembelian/cndnpembelian', 'cndnController@cndnpembelian');
+Route::get('cndnpembelian/cndnpembelian/table', 'cndnController@cndnpembelianTable');
 Route::get('cndnpembelian/createcndnpembelian', 'cndnController@createcndnpembelian');
 Route::get('cndnpembelian/detailcndnpembelian/{id}', 'cndnController@detailcndnpembelian');
 Route::get('cndnpembelian/getnota', 'cndnController@getnota');
@@ -1676,6 +1683,7 @@ Route::get('sales/deliveryorderkargoform/nota/{nomor}', 'sales\do_kargo_Controll
 
 // delivery order kertas
 Route::get('sales/deliveryorderkertas', 'sales\do_kertas_Controller@index');
+Route::get('sales/deliveryorderkertas/table', 'sales\do_kertas_Controller@table');
 Route::get('sales/deliveryorderkertas_form', 'sales\do_kertas_Controller@form');
 Route::get('sales/nomor_do_kertas', 'sales\do_kertas_Controller@nomor_do_kertas');
 Route::get('sales/cari_customer_kertas', 'sales\do_kertas_Controller@cari_customer_kertas');
