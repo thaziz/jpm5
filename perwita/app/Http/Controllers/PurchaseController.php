@@ -10070,6 +10070,8 @@ public function kekata($x) {
 	    			$key++;
 
 				}	
+
+				
 			}
 			else if($jenisbayarfpg == 'BGAKUN'){
 				$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
@@ -10228,7 +10230,7 @@ public function kekata($x) {
 			}
 
 			
-			$cekjurnal = check_jurnal($request->nobbk);
+			/*$cekjurnal = check_jurnal($request->nobbk);
     		if($cekjurnal == 0){
     			$dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data Jurnal BK Tidak Balance :('];
 				DB::rollback();
@@ -10237,9 +10239,9 @@ public function kekata($x) {
     		elseif($cekjurnal == 1) {
     			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idbbk];
 					        
-    		}
+    		}*/
 
-    		//	$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idbbk];
+    			$dataInfo =  $dataInfo=['status'=>'sukses','info'=>'Data Jurnal Balance :)','message'=>$idbbk];
    			
 			return json_encode($dataInfo);
 		});		
