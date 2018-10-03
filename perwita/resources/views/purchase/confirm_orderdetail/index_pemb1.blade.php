@@ -910,7 +910,7 @@
           if(val == ''){
             
              if(response.temp[$k] == '0'){  
-                  for($h = 0; $h < response.sppd.length){
+                  for($h = 0; $h < response.sppd.length; $h++){
                      for($z = 0; $z < response.supplier.length; $z++){
                       $(this).append("<option value="+response.itemsupplier[$h][$z].is_idsup+">" +response.itemsupplier[$h][$z].no_supplier+" - "+response.itemsupplier[$h][$z].nama_supplier+"</option>");
                   
