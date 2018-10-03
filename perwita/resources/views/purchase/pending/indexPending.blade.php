@@ -50,6 +50,58 @@
                      </h5>
                 </div>
                 <div class="ibox-content">
+
+
+<div class="row" >
+   <form method="post" id="dataSeach">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+
+              <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">Nomor</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <input class="form-control kosong" type="text" name="nomor" id="nomor" placeholder="Nomor">
+                </div>
+              </div>
+
+
+
+              <div class="col-md-1 col-sm-3 col-xs-12">
+                <label class="tebal">Tanggal</label>
+              </div>
+
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                  <div class="input-daterange input-group">
+                    <input id="tanggal1" class="form-control input-sm datepicker2" name="tanggal1" type="text">
+                    <span class="input-group-addon">-</span>
+                    <input id="tanggal2" "="" class="input-sm form-control datepicker2" name="tanggal2" type="text">
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-2 col-sm-6 col-xs-12" align="center">
+                <button class="btn btn-primary btn-sm btn-flat" title="Cari rentang tanggal" type="button" onclick="cari()">
+                  <strong>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </strong>
+                </button>
+                <button class="btn btn-info btn-sm btn-flat" type="button" title="Reset" onclick="resetData()">
+                  <strong>
+                    <i class="fa fa-undo" aria-hidden="true"></i>
+                  </strong>
+                </button>
+              </div>
+      </div>
+
+    </form>
+</div>
+
+
+
                         <div class="row">
             <div class="col-xs-12">
               
@@ -62,6 +114,7 @@
                 <div class="box-body">
                   <table id="addColumn" class="table table-bordered table-striped tbl1">
                     <thead align="center">
+                        <th> No.</th>
                         <th> No. Transaksi </th>
                         <th> Tanggal </th>
                         <th> Keterangan </th>
@@ -69,18 +122,7 @@
                         <th> Agen/Vendor </th>
                         <th> Aksi </th>
                     </thead>
-                    <tbody>  
-                      @foreach($data as $val)
-                      <tr>
-                        <td>{{$val->fp_nofaktur}}</td>
-                        <td><?php echo date('d/F/Y',strtotime($val->fp_tgl)); ?></td>
-                        <td>{{$val->fp_keterangan}}</td>
-                        <td>{{$val->fp_noinvoice}}</td>
-                        <td>{{$val->nama}}</td>
-                        <td align="center"><a href="{{route('proses', ['id' => $val->fp_idfaktur])}}"><button type="button" class="btn btn-primary"><i class="fa fa-cog"> Proses</i></button></a></td>
-                      </tr>
-                      @endforeach
-                    </tbody>
+                  
                    
                   </table>
                 </div><!-- /.box-body -->
@@ -114,14 +156,104 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-     tableDetail = $('.tbl1').DataTable({
-            responsive: true,
-            searching: true,
-            //paging: false,
-            "pageLength": 10,
-            "language": dataTableLanguage,
-            "sorting" :false
+var tablex;
+setTimeout(function () {            
+   table();
+   tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
     });
+});
+
+      }, 1500);
+
+     function table(){
+   $('#addColumn').dataTable().fnDestroy();
+   tablex = $("#addColumn").DataTable({        
+         responsive: true,
+        "language": dataTableLanguage,
+    processing: true,
+            serverSide: true,
+            ajax: {
+              "url": "{{ url("pending/index/table") }}",
+              "type": "get",
+              data: {
+                    "_token": "{{ csrf_token() }}",                    
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),
+                    "nomor" :$('#nomor').val(),
+                    },
+              },
+            columns: [
+            {data: 'no', name: 'no'},             
+            {data: 'fp_nofaktur', name: 'fp_nofaktur'},                           
+            {data: 'fp_tgl', name: 'fp_tgl'},            
+            {data: 'fp_keterangan', name: 'fp_keterangan'},            
+            {data: 'fp_noinvoice', name: 'fp_noinvoice'},
+            {data: 'nama', name: 'nama'},
+            {data: 'action', name: 'action'},
+
+ 
+                        
+                        
+                        
+                        
+                  
+                            
+
+    
+     
+            ],
+            "pageLength": 10,
+            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+            "bFilter": false,
+            "responsive": false,
+           /*"fnCreatedRow": function (row, data, index) {
+            $('td', row).eq(0).html(index + 1);
+            }*/
+
+
+
+    });
+   
+}
+
+
+
+
+dateAwal();
+function dateAwal(){
+      var d = new Date();
+      d.setDate(d.getDate()-7);
+
+      /*d.toLocaleString();*/
+      $('#tanggal1').datepicker({
+            format:"dd-mm-yyyy",
+            autoclose: true,
+      })
+      /*.datepicker( "setDate", d);*/
+      $('#tanggal2').datepicker({
+            format:"dd-mm-yyyy",
+            autoclose: true,
+      })
+      /*.datepicker( "setDate", new Date());*/
+      $('.kosong').val('');
+      $('.kosong').val('').trigger('chosen:updated');
+}
+
+ function cari(){
+  table();
+ }
+
+ function resetData(){
+  $('#tanggal1').val('');
+  $('#tanggal2').val('');
+  $('.kosong').val('');
+  table();
+  dateAwal();
+}
+
 
     $('.date').datepicker({
         autoclose: true,
