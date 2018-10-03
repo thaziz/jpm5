@@ -319,6 +319,7 @@
                 }
                 else {
                   alertSuccess();
+                  $('.simpan').hide();
                 }
             },
             error:function(data){
