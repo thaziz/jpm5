@@ -518,6 +518,7 @@ Route::get('ikhtisar_kas/append_table', 'ikhtisarController@append_table');
 
 //PENDING
 Route::get('pending/index', 'pendingController@index');
+Route::get('pending/index/table', 'pendingController@table');
 Route::get('pending_kas/index', 'pendingController@index_kas');
 Route::get('pending_kas/save_kas/{id}', 'pendingController@save_kas');
 Route::get('pending/create', 'pendingController@create')->name('proses');

@@ -664,7 +664,7 @@ class BonSementaraController extends Controller
 		 $cabang = session::get('cabang');
 		 $data='';
 
-		$data=DB::select("select *,'no' as no from bonsem_pengajuan, cabang where bp_setujukacab = 'SETUJU' and bp_cabang = kode order by bp_id desc");
+		$data=DB::select("select *,'no' as no from bonsem_pengajuan, cabang where bp_setujukacab = 'SETUJU' and bp_cabang = kode $tgl $nomor order by bp_id desc");
 
 		$dataFpg=collect($data);
 		return 

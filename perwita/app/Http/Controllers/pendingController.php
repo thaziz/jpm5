@@ -17,10 +17,11 @@ use App\master_note;
 use Auth;
 use App\d_jurnal;
 use App\d_jurnal_dt;
+use Yajra\Datatables\Datatables;
 class pendingController extends Controller
 {
 	public function index(){
-		$cabang = Auth::user()->kode_cabang;
+	/*	$cabang = Auth::user()->kode_cabang;
 		if (Auth::user()->punyaAkses('Pending','all')) {
 			$agen = DB::table('faktur_pembelian')
 				  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
@@ -55,13 +56,91 @@ class pendingController extends Controller
 			$data = array_merge($agen,$vendor);
 		}
 	 	
-
+*/
 		// return Auth::user()->m_level;
 
 
 	
 
 		return view('purchase.pending.indexPending',compact('data'));
+	}
+
+	public function table(Request $request){
+
+		 $tgl='';  		  
+  		  $nomor='';  		  
+  		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+  		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+  		  
+  		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
+  		  	$tgl="and fp_tgl >= '$tgl1' AND fp_tgl <= '$tgl2'";
+  		  }
+  		  
+  		  if($request->nomor!=''){
+  		  	$nomor="and fp_nofaktur='$request->nomor'";
+  		  }  		  
+		 $cabang = session::get('cabang');
+		 $data='';
+
+		
+		if (Auth::user()->punyaAkses('Pending','all')) {
+			$agen = DB::table('faktur_pembelian')
+				  ->selectRaw("faktur_pembelian.*, biaya_penerus.*, agen.*, 'no' as no")
+				  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
+				  ->join('agen','bp_kode_vendor','=','kode')
+				  ->whereRaw("fp_pending_status= 'PENDING' $tgl $nomor")	  				  
+				  ->get();
+
+			$vendor = DB::table('faktur_pembelian')
+					  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
+					  ->join('vendor','bp_kode_vendor','=','kode')					  
+					  ->whereRaw("fp_pending_status= 'PENDING' $tgl $nomor")	  				  
+					  ->selectRaw("faktur_pembelian.*, biaya_penerus.*, vendor.*,'no' as no")
+					  ->get();
+
+
+			$data = array_merge($agen,$vendor);
+			
+		}else{
+			$agen = DB::table('faktur_pembelian')
+				  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
+				  ->join('agen','bp_kode_vendor','=','kode')
+				  ->whereRaw("fp_pending_status= 'PENDING' $tgl $nomor and fp_comp=$cabang")					  
+				  ->selectRaw("faktur_pembelian.*, biaya_penerus.*, agen.*, 'no' as no")
+				  ->get();
+
+			$vendor = DB::table('faktur_pembelian')
+					  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
+					  ->join('vendor','bp_kode_vendor','=','kode')
+					  ->whereRaw("fp_pending_status= 'PENDING' $tgl $nomor and fp_comp=$cabang")					  	
+					  ->selectRaw("faktur_pembelian.*, biaya_penerus.*, vendor.*,'no' as no")
+					  ->get();
+
+			
+			$data = array_merge($agen,$vendor);
+		}
+	 	
+
+		
+
+	$dataFpg=collect($data);	
+		return 
+			DataTables::of($dataFpg)->
+			editColumn('fp_tgl', function ($dataFpg) {            
+            	return date('d-m-Y',strtotime($dataFpg->fp_tgl));
+            })            
+            ->addColumn('action', function ($dataFpg) {            
+            	  return '<a            	   
+            	  href='.url('pending/create?id='.$dataFpg->fp_idfaktur.'').'>
+            	  <button type="button" class="btn btn-primary"><i class="fa fa-cog"> Proses</i></button></a></td>';
+            })
+			->make(true);	
+
+
+
+	
+
+		
 	}
 
 	public function create(request $request){
