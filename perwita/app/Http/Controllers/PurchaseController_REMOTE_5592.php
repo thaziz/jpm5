@@ -1494,11 +1494,12 @@ return
 
 		$data['temp'] = [];
 		$data['supplier'] = [];
+		$data['itemsupplier'] = [];
 		for($i = 0; $i < count($data['sppdt']); $i++){
 			$kodeitem = $data['sppdt'][$i]->sppd_kodeitem;
-			$data['itemsupplier'] = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
+			$itemsup = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
 
-				if(count($data['itemsupplier']) > 0){
+				if(count($itemsup) > 0){
 					$itemsupplier2 = DB::select("select * from itemsupplier, supplier where is_kodeitem = '$kodeitem' and is_idsup = idsup");
 					array_push($data['temp'] , '0');
 					array_push($data['supplier'] , $itemsupplier2);
@@ -1508,6 +1509,8 @@ return
 					$data['supplier2'] = DB::select("select * from supplier");
 					array_push($data['supplier'] , $data['supplier2']);
 				}
+
+			array_push($data['itemsupplier'] , $itemsup);		
 		}
 
 
@@ -2205,12 +2208,12 @@ public function purchase_ordertable(Request $request){
             	    if(Auth::user()->punyaAkses('Purchase Order','hapus')){
                        $action.='<a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData('.$data->po_id.')">
                                                               <i class="fa fa-trash" aria-hidden="true"></i>
-                              </a>';
+                              </a>&nbsp;&nbsp';
                     }
 
                     if(Auth::user()->punyaAkses('Purchase Order','print')){
                         if($data->po_setujufinance != ''){                         
-                           $action.='<span class="label label-warning"> '.$data->po_setujufinance.'</span>';
+                           $action.='<span class="label label-warning"> '.$data->po_setujufinance.'</span>&nbsp;&nbsp';
                         }
                         if($data->po_setujufinance == 'SETUJU'){
                            $action.='<a class="btn btn-sm btn-info print" type="button" href='.url('purchaseorder/print/'.$data->po_id.'').'> <i class="fa fa-print" aria-hidden="true"> </i> </a>';
@@ -2315,8 +2318,9 @@ public function purchase_ordernotif(Request $request){
 			$data['stockjenisitem'] = $jenisitem[0]->stock;
 			$data['kodejenisitem'] = $jenisitem[0]->kode_jenisitem;
 			$tipespp = $dataspp[0]->spp_tipe;
+			$data['tipespp'] = $tipespp;
 
-			if($tipespp == 'NS' && $data['jenisitem'] == 'S'){
+			if($tipespp == 'NS' && $data['jenisitem'] == 'SPARE PART KENDARAAN'){
 				$data['codt'][] = DB::select("select * from confirm_order, confirm_order_dt , confirm_order_tb, spp, masteritem, kendaraan where co_idspp = '$idspp' and codt_idco = co_id and cotb_idco = co_id and co_idspp = spp_id and codt_supplier = cotb_supplier and codt_supplier = '$nosupplier' and codt_kodeitem = kode_item and cotb_id = '$idcotb' and co_id = '$idco' and codt_kendaraan = kendaraan.id ");
 
 			}
@@ -10845,10 +10849,10 @@ return $html;
             ->editColumn('fpg_keterangan', function ($dataFpg) { 
             	$fpg_keterangan='';
             	if($dataFpg->fpg_posting == 'DONE'){
-                 $fpg_keterangan.=$dataFpg->fpg_keterangan.'<span class="label label-success"> Sudah Terposting </span> &nbsp';
+                 $fpg_keterangan.=$dataFpg->fpg_keterangan.'&nbsp;&nbsp<span class="label label-success"> Sudah Terposting </span> &nbsp';
             	}
                 else{
-                $fpg_keterangan.= $dataFpg->fpg_keterangan.'<span class="label label-warning">  Belum di Posting </span> &nbsp';
+                $fpg_keterangan.= $dataFpg->fpg_keterangan.'&nbsp;&nbsp<span class="label label-warning">  Belum di Posting </span> &nbsp';
                 }
 				return $fpg_keterangan;
             })->editColumn('fpg_totalbayar', function ($dataFpg) { 
@@ -10867,7 +10871,7 @@ return $html;
 
                   $html.="<a class='btn btn-sm btn-success' 
                   href=".url("formfpg/detailformfpg/".$dataFpg->idfpg."").">
-                  <i 			class='fa fa-arrow-right' aria-hidden='true'></i> </a>";
+                  <i 			class='fa fa-arrow-right' aria-hidden='true'></i> </a>&nbsp;&nbsp";
             	   }
 
 
@@ -10875,11 +10879,11 @@ return $html;
                    if($dataFpg->fpg_jenisbayar == '5' || $dataFpg->fpg_jenisbayar == '12'){
                        $html.= "<a class='btn btn-sm btn-info'                        
                        href=".url("formfpg/printformfpg2/".$dataFpg->idfpg."").">
-                            	<i class='fa fa-print' aria-hidden='true'></i></a>";
+                            	<i class='fa fa-print' aria-hidden='true'></i></a>&nbsp;&nbsp";
                    }else{
                    	   $html.="<a class='btn btn-sm btn-info'                    	   
                    	   href=".url("formfpg/printformfpg/".$dataFpg->idfpg."").">
-                   	    <i class='fa fa-print' aria-hidden='true'></i> </a>";
+                   	    <i class='fa fa-print' aria-hidden='true'></i> </a>&nbsp;&nbsp";
              			}                          
             }
 
@@ -10890,7 +10894,7 @@ return $html;
                             if($dataFpg->fpg_posting == 'DONE'){
 
                             }else{
-						$html.="<a class='btn btn-sm btn-danger' onclick='hapusdata($dataFpg->idfpg)'> <i class='fa fa-trash' aria-hidden='true'></i> </a>";
+						$html.="<a class='btn btn-sm btn-danger' onclick='hapusdata($dataFpg->idfpg)'> <i class='fa fa-trash' aria-hidden='true'></i> </a>&nbsp;&nbsp";
                             }
             }
 
