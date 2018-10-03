@@ -960,6 +960,7 @@
                                           <td> {{$data['fpg_bank'][$i]->fpgb_kodebanktujuan}}</td>
                                           <td> {{$data['fpg_bank'][$i]->fpgb_nmbanktujuan}} </td>
                                           <td> <input type='text' data-id="{{$i + 1}}" class="input-sm form-control nominaltblbank nominalbank{{$i + 1}} nominalcheck{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" name='nominalbank[]' style="text-align:right" value="{{ number_format($data['fpg_bank'][$i]->fpgb_nominal, 2) }}">
+                                            
                                           </td>
                                           <td> 
 

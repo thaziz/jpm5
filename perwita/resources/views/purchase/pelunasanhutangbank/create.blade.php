@@ -710,10 +710,10 @@
           dk = $(this).data('dk');
           nominal2 =  nominal.replace(/,/g, '');
           if(dk == 'D') {
-            jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+            jumlahnominal = parseFloat(parseFloat(jumlahnominal) + parseFloat(nominal2)).toFixed(2);
           }
           else {
-           jumlahnominal = parseFloat(parseFloat(nominal2) - parseFloat(jumlahnominal)).toFixed(2);
+           jumlahnominal = parseFloat(parseFloat(jumlahnominal) - parseFloat(nominal2)).toFixed(2);
           }
           $('.total').val(addCommas(jumlahnominal));
           $('.cekbg').val(addCommas(jumlahnominal));
@@ -798,7 +798,7 @@
 
     function hapus(a){
        var par = $(a).parents('tr');
-       nominal = par.find('.nominalfpgdetailbg').val();
+       nominal = par.find('.jumlahakunbiayadetailbg').val();
        dk = par.find('.dkakundetailbg').val();
 
        replacenominal = nominal.replace(/,/g , '');
@@ -806,7 +806,8 @@
        total = $('.total').val();
        replacecekbg = cekbg.replace(/,/g, '');
        replacetotal = total.replace(/,/g, '');
-
+       alert(replacecekbg);
+       alert(replacenominal);
        if(dk == 'K'){
          totalcekbg = parseFloat(parseFloat(replacecekbg) + parseFloat(replacenominal)).toFixed(2);
          total = parseFloat(parseFloat(replacetotal) + parseFloat(replacenominal)).toFixed(2);
