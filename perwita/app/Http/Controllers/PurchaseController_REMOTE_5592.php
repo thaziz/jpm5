@@ -7062,7 +7062,7 @@ public function purchase_ordernotif(Request $request){
 						$idjurnal = 1;
 					}
 				
-					$year = Carbon::parse($tgl_po)->format('Y');	
+					$year = Carbon::parse($request->tgl_po)->format('Y');	
 					$jr_no = get_id_jurnal('MM' , $cabang, $request->tgl_po);
 
 					$jurnal = new d_jurnal();
