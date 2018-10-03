@@ -41,6 +41,65 @@
                     </div>
                 </div>
                 <div class="ibox-content">
+
+
+
+
+<div class="row" >
+   <form method="post" id="dataSeach">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+
+              <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">Nomor</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <input class="form-control kosong" type="text" name="nomor" id="nomor" placeholder="Nomor">
+                </div>
+              </div>
+
+
+
+              <div class="col-md-1 col-sm-3 col-xs-12">
+                <label class="tebal">Tanggal</label>
+              </div>
+
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                  <div class="input-daterange input-group">
+                    <input id="tanggal1" class="form-control input-sm datepicker2" name="tanggal1" type="text">
+                    <span class="input-group-addon">-</span>
+                    <input id="tanggal2" "="" class="input-sm form-control datepicker2" name="tanggal2" type="text">
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-2 col-sm-6 col-xs-12" align="center">
+                <button class="btn btn-primary btn-sm btn-flat" title="Cari rentang tanggal" type="button" onclick="cari()">
+                  <strong>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </strong>
+                </button>
+                <button class="btn btn-info btn-sm btn-flat" type="button" title="Reset" onclick="resetData()">
+                  <strong>
+                    <i class="fa fa-undo" aria-hidden="true"></i>
+                  </strong>
+                </button>
+              </div>
+      </div>
+
+
+
+ 
+
+
+    </form>
+</div>
+
+
+
                         <div class="row">
             <div class="col-xs-12">
               
@@ -48,9 +107,9 @@
                 <div class="box-body">
                   <div class="col-sm-12">
                   <div class="table-responsive">
-                    <table class="table table-bordered table-striped table_tt ">
-                      <thead style="color: white">
-                        <tr>
+                 <table style="width: 100%" width="100%" id="addColumn" class="table table-bordered table-striped tbl-purchase">
+                    <thead>
+                     <tr>
                           <th>No</th>
                           <th> Cabang </th>
                           <th>Nomor</th>
@@ -61,58 +120,19 @@
                           <th> Status </th>
                           <th> Proses </th>
                           <th> Terima Uang </th>
-                          <th> Aksi </th>                    
-                        </tr>
-                      </thead>
-                      <tbody>
+                          <th> Aksi </th>            
+                          <th> Print </th> 
+                      
+                    </tr>                  
 
-                          @foreach($data['bonsem'] as $index=>$bonsem)
-                          <tr>
-                            <td> {{$index + 1}} </td>
-                            <td> {{$bonsem->nama}} </td>
-                            <td> {{$bonsem->bp_nota}} </td>
-                            <td> {{ Carbon\Carbon::parse($bonsem->bp_tgl)->format('d-m-Y') }} </td>
-                            <td>{{ number_format($bonsem->bp_nominal ,2)}} </td>
-                            <td> @if($bonsem->bp_nominalkacab == null)
-                                    <span class="label label-info"> BELUM DI PROSES </span>
-                                 @else
-                                  {{ number_format($bonsem->bp_nominalkeu ,2)}} 
-                                 @endif</td>
-                            <td> {{$bonsem->bp_keperluan}} </td>
-                            <td style="text-align:center"> <span class="label label-success">  {{$bonsem->status_pusat}} </span></td>
-                            <td style="text-align:center">
-
-                               @if(Auth::user()->PunyaAkses('Bon Sementara Kabang','aktif'))
-                             <button type="button" class="btn btn-sm btn-primary" onclick="kacab({{$bonsem->bp_id}})" data-toggle="modal" data-target="#myModal2">  PROSES KACAB </button>      
-                              @endif
-
-                             </td>
-
-                             <td> @if(Auth::user()->PunyaAkses('Bon Sementara Kabang','aktif'))
-                                    @if($bonsem->bp_statusend == 'CAIR') 
-                                    <button class="btn btn-sm btn-danger" onclick="uangterima({{$bonsem->bp_id}})" data-toggle="modal" data-target="#modaluangterima"> <i class="fa fa-money"> </i> Terima Uang ? </button> </td>
-                                      @endif
-                                  @endif
-                             <td>
-                               @if(Auth::user()->PunyaAkses('Bon Sementara Cabang','aktif'))
-                                @if($bonsem->bp_setujukacab != 'SETUJU')
-                                <button class="btn btn-warning btn-sm" onclick="editform({{$bonsem->bp_id}})" data-toggle="modal" data-target="#myModaledit"> <i class="fa fa-pencil"> </i>  </button>
-                                <button class="btn btn-danger btn-sm" onclick="hapusData({{$bonsem->bp_id}})"> <i class="fa fa-trash"> </i> </button>
-                                @else
-                                  @if($bonsem->status_pusat == 'UANG DI TERIMA')
-                                  <button onclick="lihatjurnal('{{$bonsem->bp_nota or null}}','BON SEMENTARA')" class=" btn btn-xs btn-primary"> <i class="fa fa-eye"> </i> Jurnal </button>
-                                  @endif
-                                @endif
-
-                                @endif
-                              </td>
-                              <td>
-                                <a class="btn btn-success btn-sm" href="{{url('bonsementarapusat/printdata/'. $bonsem->bp_id .'')}}"> <i class="fa fa-print"> </i> Cetak  </a>
-                              </td>
-                            </tr>
-                          @endforeach
-                      </tbody>
-                    </table>
+                    </thead>
+                    
+                 
+                   
+                  
+                 
+                   
+                  </table>
                     </div>
                   </div>
                 </div><!-- /.box-body -->
@@ -366,6 +386,101 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+var tablex;
+setTimeout(function () {            
+   table();
+   tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
+    });
+});
+
+      }, 1500);
+
+     function table(){
+   $('#addColumn').dataTable().fnDestroy();
+   tablex = $("#addColumn").DataTable({        
+         responsive: true,
+        "language": dataTableLanguage,
+    processing: true,
+            serverSide: true,
+            ajax: {
+              "url": "{{ url("bonsementaracabang/bonsementaracabang/table") }}",
+              "type": "get",
+              data: {
+                    "_token": "{{ csrf_token() }}",                    
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),
+                    "nomor" :$('#nomor').val(),
+                    },
+              },
+            columns: [
+            {data: 'no', name: 'no'},             
+            {data: 'nama', name: 'nama'},                           
+            {data: 'bp_nota', name: 'bp_nota'},            
+            {data: 'bp_tgl', name: 'bp_tgl'},
+            {data: 'bp_nominal', name: 'bp_nominal'},
+            {data: 'bp_nominalkacab', name: 'bp_nominalkacab'},
+            {data: 'bp_keperluan', name: 'bp_keperluan'},
+            {data: 'status_pusat', name: 'status_pusat'},
+            {data: 'proseskacab', name: 'proseskacab'},
+            {data: 'bp_statusend', name: 'bp_statusend'},
+            {data: 'bp_setujukacab', name: 'bp_setujukacab'},
+            {data: 'action', name: 'action'},
+    
+     
+            ],
+            "pageLength": 10,
+            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+            "bFilter": false,
+            "responsive": false,
+           /*"fnCreatedRow": function (row, data, index) {
+            $('td', row).eq(0).html(index + 1);
+            }*/
+
+
+
+    });
+   
+}
+
+
+
+
+dateAwal();
+function dateAwal(){
+      var d = new Date();
+      d.setDate(d.getDate()-7);
+
+      /*d.toLocaleString();*/
+      $('#tanggal1').datepicker({
+            format:"dd-mm-yyyy",
+            autoclose: true,
+      })
+      /*.datepicker( "setDate", d);*/
+      $('#tanggal2').datepicker({
+            format:"dd-mm-yyyy",
+            autoclose: true,
+      })
+      /*.datepicker( "setDate", new Date());*/
+      $('.kosong').val('');
+      $('.kosong').val('').trigger('chosen:updated');
+}
+
+ function cari(){
+  table();
+ }
+
+ function resetData(){
+  $('#tanggal1').val('');
+  $('#tanggal2').val('');
+  $('.kosong').val('');
+  table();
+  dateAwal();
+}
+
+
 
    clearInterval(reset);
     var reset =setInterval(function(){

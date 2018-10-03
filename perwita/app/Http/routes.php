@@ -376,6 +376,8 @@ Route::post('bonsementaracabang/jurnalumum', 'BonSementaraController@jurnalumum'
 
 
 Route::get('bonsementarapusat/bonsementarapusat', 'BonSementaraController@indexpusat');
+Route::get('bonsementarapusat/bonsementarapusat/table', 'BonSementaraController@indexpusattable');
+Route::get('bonsementarapusat/bonsementarapusat/notif', 'BonSementaraController@indexpusatnotif');
 Route::get('bonsementarapusat/setujukacab', 'BonSementaraController@setujukacab');
 Route::get('bonsementarapusat/setujukeu', 'BonSementaraController@setujukacab');
 Route::get('bonsementarapusat/updatekapus', 'BonSementaraController@updatekapus');

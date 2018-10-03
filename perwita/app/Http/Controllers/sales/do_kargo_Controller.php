@@ -74,7 +74,6 @@ class do_kargo_Controller extends Controller
       }else{
         $jenis = 'and jenis_pengiriman ='."'$req->jenis'";
       }
-
       if ($req->customer == '') {
         $customer = '';
       }else{
