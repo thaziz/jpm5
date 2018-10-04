@@ -799,7 +799,7 @@ class BankMasukController extends Controller
 				]);
 
 		
-		$year  Carbon::parse($tgl)->format('Y');;	
+		$year =  Carbon::parse($tgl)->format('Y');;
 		
 		$jurnal = new d_jurnal();
 		$jurnal->jr_id = $idjurnald;
