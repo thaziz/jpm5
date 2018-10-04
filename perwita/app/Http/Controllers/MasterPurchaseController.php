@@ -839,7 +839,7 @@ class MasterPurchaseController extends Controller
 				$masterbankdt->mbdt_noseri = $request->nosericek[$i];
 				$masterbankdt->mbdt_noseri = $request->nosericek[$i];
 				$masterbankdt->mbdt_id = $idbankdt;
-				$masterbankdt->mbdt_seri = $request->seri;
+				$masterbankdt->mbdt_seri = strtoupper($request->seri);
 				$masterbankdt->mbdt_idmb = $idbank;
 				$masterbankdt->save();
 
