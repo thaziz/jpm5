@@ -67,7 +67,7 @@
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td colspan="3">
-                                    <div class="input-group date" style="width: 100%">
+                                    <div class="input-group " style="width: 100%">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" readonly="" name="ed_tanggal" value="{{$data->tanggal}}">
                                     </div>
                                 </td>
