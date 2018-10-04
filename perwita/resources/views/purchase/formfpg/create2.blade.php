@@ -905,10 +905,34 @@
       
 
        for($i = 0; $i < variabel.length; $i++){
-          var row = "<tr class='datatransaksipb data"+nmr+"'><td>"+nota[$i]+" <input type='hidden' value='"+id[$i]+"' name='idfaktur[]'> </td><td>"+cabang[$i]+" <input type='hidden' value='"+nota[$i]+"' name='notafaktur[]'> </td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[$i])+" <input type='hidden' class='form-control' name='nominalfaktur[]' value="+addCommas(total[$i])+"> </p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+"><i class='fa fa-trash'> </i> </button></td> </tr>";
+          var row = "<tr class='datatransaksipb data"+nmr+"'><td>"+nota[$i]+" <input type='hidden' value='"+id[$i]+"' name='idfaktur[]'> </td><td>"+cabang[$i]+" <input type='hidden' value='"+nota[$i]+"' name='notafaktur[]'> </td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[$i])+" <input type='hidden' class='form-control' name='nominalfaktur[]' value="+addCommas(total[$i])+"> </p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+" data-nominal="+total[$i]+"><i class='fa fa-trash'> </i> </button></td> </tr>";
             $('#tbl-dataalltransaksi').append(row);
             nmr++;
        }
+
+       totaltransaksi = 0;
+          $('.totaltransaksi').each(function(){
+            val = $(this).text();
+            aslinominal = val.replace(/,/g, '');
+            totaltransaksi = (parseFloat(totaltransaksi) + parseFloat(aslinominal)).toFixed(2);
+          })
+
+          $('.totbayar').val(addCommas(totaltransaksi));
+          nmr++;
+
+
+          $('.removes-transaksi').click(function(){
+              id = $(this).data('id');
+              nominal = $(this).data('nominal');
+              $('.data' + id).remove();
+             
+              totalbayar = $('.totbayar').val();
+              asliharga = nominal.replace(/,/g,'');
+              aslitotbayar = totalbayar.replace(/,/g,'');
+
+              hargafinal = (parseFloat(aslitotbayar) - parseFloat(asliharga)).toFixed(2);
+              $('.totbayar').val(addCommas(hargafinal));
+          })
 
       });
 

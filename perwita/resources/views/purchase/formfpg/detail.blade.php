@@ -920,7 +920,7 @@
                                        
                                           </td>
                                           <td> 
-                                             <button class='btn btn-sm btn-danger remove-btn' data-id="{{$i + 1}}"  data-idbankdt="{{$data['fpg_bank'][$i]->mb_id}} " data-idfpgb="{{$data['fpg_bank'][$i]->fpgb_id}}" data-noseri="{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" data-kodebank="{{$data['fpg_bank'][$i]->mb_kode}}" type='button'><i class='fa fa-trash'></i> </button>  
+                                             <button class='btn btn-sm btn-danger remove-btn' data-id="{{$i + 1}}"  data-idbankdt="{{$data['fpg_bank'][$i]->mb_id}} " data-idfpgb="{{$data['fpg_bank'][$i]->fpgb_id}}" data-noseri="{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" data-kodebank="{{$data['fpg_bank'][$i]->mb_kode}}" data-nominal="{{$data['fpg_bank'][$i]->fpgb_nominal}}" type='button'><i class='fa fa-trash'></i> </button>  
 
                                            </td> 
 
@@ -954,11 +954,14 @@
                                         <tr id="datas{{$i + 1}}" class='tbltfbank tblbank databank' data-id='{{$i + 1}}'>
                                           <td> {{$i + 1}} </td>
                                           <td> <banks2> {{$data['fpg_bank'][$i]->fpg_nofpg}} </banks2> </td>
+
                                           <td class='fpgbank' data-nocheck='{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}'> <a class='noseri noseri2{{$i + 1}}'  data-id={{$i+1}}> {{$data['fpg_bank'][$i]->fpgb_nocheckbg}} </a> <input type='hidden' class="noseri{{$i + 1}}" value="{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" name='noseri[]'> </td>
+
                                           <td> <banks2> {{$data['fpg_bank'][$i]->fpg_tgl}} </banks2> </td>
                                           <td> <banks2> {{$data['fpg_bank'][$i]->mb_kode}} </banks2> </td>
-                                          <td> {{$data['fpg_bank'][$i]->fpgb_kodebanktujuan}}</td>
-                                          <td> {{$data['fpg_bank'][$i]->fpgb_nmbanktujuan}} </td>
+                                          <td> {{$data['fpg_bank'][$i]->fpgb_kodebanktujuan}} <input type="hidden" name="kodebanktujuan[]" value="{{$data['fpg_bank'][$i]->fpgb_kodebanktujuan}}"></td>
+                                          <td> {{$data['fpg_bank'][$i]->fpgb_nmbanktujuan}} <input type="hidden" name="namabanktujuan[]" value="{{$data['fpg_bank'][$i]->fpgb_nmbanktujuan}}"> </td>
+
                                           <td> <input type='text' data-id="{{$i + 1}}" class="input-sm form-control nominaltblbank nominalbank{{$i + 1}} nominalcheck{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" name='nominalbank[]' style="text-align:right" value="{{ number_format($data['fpg_bank'][$i]->fpgb_nominal, 2) }}">
                                             
                                           </td>
@@ -977,18 +980,24 @@
                                           <tr id="datas{{$i + 1}}" class='tbltfbank tblbank databank' data-id='{{$i + 1}}'>
                                           <td> {{$i + 1}} </td>
                                           <td> <bank{{$i + 1}}> {{$data['fpg_bank'][$i]->fpg_nofpg}} </bank> </td>
+
                                           <td class='fpgbank' data-nocheck='{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}'> <a class='noseri noseri2{{$i + 1}}'  data-id={{$i+1}}> {{$data['fpg_bank'][$i]->fpgb_nocheckbg}} </a> <input type='hidden' class="noseri{{$i + 1}}" value="{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" name='noseri[]'> </td>
+
                                           <td> <bank{{$i + 1}}> {{$data['fpg_bank'][$i]->fpg_tgl}} </bank> </td>
                                           <td> <bank{{$i + 1}}> {{$data['fpg_bank'][$i]->mb_kode}} </bank> </td>
-                                           <td> {{$data['fpg_bank'][$i]->fpgb_kodebanktujuan}}</td>
+                                          
+                                          <td> {{$data['fpg_bank'][$i]->fpgb_kodebanktujuan}} <input type="hidden" name="kodebanktujuan[]" value="{{$data['fpg_bank'][$i]->fpgb_kodebanktujuan}}">
+                                            <input type="hidden" name="idbanktujuan[]" value="{{$data['fpg_bank'][$i]->fpgb_banktujuan}}">
+                                            <input type="hidden" name="kelompokbank[]" value="{{$data['fpg_bank'][$i]->fpgb_jeniskelompok}}">
+                                          </td>
                                        
-                                          <td> {{$data['fpg_bank'][$i]->fpgb_nmbanktujuan}}</td>
+                                          <td> {{$data['fpg_bank'][$i]->fpgb_nmbanktujuan}}  <input type="hidden" name="namabanktujuan[]" value="{{$data['fpg_bank'][$i]->fpgb_nmbanktujuan}}"> </td>
                                      
                                           <td><input type='text' data-id="{{$i + 1}}" class="input-sm form-control nominaltblbank nominalbank{{$i + 1}} nominalcheck{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" name='nominalbank[]' style="text-align:right" value="{{ number_format($data['fpg_bank'][$i]->fpgb_nominal, 2) }}">
                                        
                                           </td>
                                           <td> 
-                                             <button class='btn btn-sm btn-danger remove-btn' data-id="{{$i + 1}}"  data-idbankdt="{{$data['fpg_bank'][$i]->mb_id}} " data-idfpgb="{{$data['fpg_bank'][$i]->fpgb_id}}" data-noseri="{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" data-kodebank="{{$data['fpg_bank'][$i]->mb_kode}}" type='button'><i class='fa fa-trash'></i> </button>  
+                                             <button class='btn btn-sm btn-danger remove-btn' data-id="{{$i + 1}}"  data-idbankdt="{{$data['fpg_bank'][$i]->mb_id}} " data-idfpgb="{{$data['fpg_bank'][$i]->fpgb_id}}" data-noseri="{{$data['fpg_bank'][$i]->fpgb_nocheckbg}}" data-kodebank="{{$data['fpg_bank'][$i]->mb_kode}}" data-nominal="{{$data['fpg_bank'][$i]->fpgb_nominal}}" type='button'><i class='fa fa-trash'></i> </button>  
 
                                            </td> 
 
@@ -999,10 +1008,10 @@
                                           </div>
                                         </td>
                                         </tr>
-                                      </table>
+                                  
                                         @endif
                                       @endfor
-
+                                          </table>
                                     @endif
 
                                   </table>
@@ -1020,12 +1029,20 @@
                                         <thead style="background-color: grey;color:white">
                                         <tr>
                                             <th> Nota Transaksi </th>
-                                            <th> Cabang Transaksi </th>
                                             <th> Nominal </th>
                                             <th> Hapus </th>
                                         </tr>
                                       </thead>
                                       <tbody>
+                                        @if(count($data['datatransaksi']) != 0)
+                                        @foreach($data['datatransaksi'] as $index=>$datatransaksi)
+                                          <tr class="datatransaksipb data{{$index}}">
+                                            <td> {{$datatransaksi->fpgdt_nofaktur}} <input type='hidden' name='idfaktur[]' value='{{$datatransaksi->fpgdt_idfp}}'>  <input type='hidden' name='notafaktur[]' value='{{$datatransaksi->fpgdt_nofaktur}}'> <input type='hidden' name='nominalfaktur[]' value='{{$datatransaksi->fpgdt_pelunasan}}'> </td>
+                                            <td> {{number_format($datatransaksi->fpgdt_pelunasan , 2)}}</td>
+                                            <td> <button class='removes-transaksi btn btn-xs btn-danger' data-id="{{$index}}" data-nominal="{{$datatransaksi->fpgdt_pelunasan}}" type="button" data-id="{{$index}}"> <i class='fa fa-trash'> </i> </button> </td>
+                                          </tr>
+                                        @endforeach
+                                        @endif
                                       </tbody>
                                       </table>
                                     </div>
@@ -1200,8 +1217,6 @@
         jenispindahbuku = $('.tujuanbankpb').val();
         
 
-
-
         if(jenispindahbuku == 'BANK'){
          banktujuan = $('.banktujuan').val();
   
@@ -1324,9 +1339,9 @@
                         nominaltf2 = nominaltf.replace(/,/g,'');
                         jumlahtf = parseFloat(parseFloat(jumlahtf) + parseFloat(nominaltf2)).toFixed(2);
                       })
-                      alert(jumlahtf);
-                      alert(jenisbayar);
+                      
                       if(jenisbayar == 12){
+                       // alert(jumlahtf);
                         $('.totbayar').val(addCommas(jumlahtf));
                         $('.ChequeBg').val(addCommas(jumlahtf));  
                       }
@@ -1466,10 +1481,10 @@
           nota.push(string[2]);
           id.push(string[0]);
         }
-        alert(variabel);
+       // alert(variabel);
 
        for($i = 0; $i < variabel.length; $i++){
-          var row = "<tr class='datatransaksipb data"+nmr+"'><td>"+nota[$i]+" <input type='hidden' value='"+id[$i]+"' name='idfaktur[]'> </td><td>"+cabang[$i]+" <input type='hidden' value='"+nota[$i]+"' name='notafaktur[]'> </td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[$i])+" <input type='hidden' class='form-control' name='nominalfaktur[]' value="+addCommas(total[$i])+"> </p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+"><i class='fa fa-trash'> </i> </button></td> </tr>";
+          var row = "<tr class='datatransaksipb data"+nmr+"'><td>"+nota[$i]+" <input type='hidden' value='"+id[$i]+"' name='idfaktur[]'> <td>"+cabang[$i]+"</td></td><td><p class='totaltransaksi totaltransaksi"+nmr+"'>"+addCommas(total[$i])+" <input type='hidden' class='form-control' name='nominalfaktur[]' value="+addCommas(total[$i])+"> </p></td> <td> <button class='btn btn-xs btn-danger removes-transaksi' type='button' data-id="+nmr+" data-nominal="+total[$i]+"><i class='fa fa-trash'> </i> </button></td> </tr>";
             $('#tbl-dataalltransaksi').append(row);
             nmr++;
        }
@@ -1486,17 +1501,30 @@
 
           $('.removes-transaksi').click(function(){
               id = $(this).data('id');
-             // alert(id);
+             nominal = $(this).data('nominal');
               $('.data' + id).remove();
-              harga = $('.totaltransaksi').val();
+           
               totalbayar = $('.totbayar').val();
-              asliharga = harga.replace(/,/g,'');
+              asliharga = nominal.replace(/,/g,'');
               aslitotbayar = totalbayar.replace(/,/g,'');
-
               hargafinal = (parseFloat(aslitotbayar) - parseFloat(asliharga)).toFixed(2);
               $('.totbayar').val(addCommas(hargafinal));
           })
       });
+
+
+        $('.removes-transaksi').click(function(){
+              id = $(this).data('id');
+             nominal = $(this).data('nominal');
+              $('.data' + id).remove();
+           
+              totalbayar = $('.totbayar').val();
+              asliharga = nominal.replace(/,/g,'');
+              aslitotbayar = totalbayar.replace(/,/g,'');
+              hargafinal = (parseFloat(aslitotbayar) - parseFloat(asliharga)).toFixed(2);
+              $('.totbayar').val(addCommas(hargafinal));
+          })
+
 
      $('#getbank').click(function(){
        // alert('hei');
@@ -1659,6 +1687,8 @@
        // return false;
     })
 
+
+
     $('.nominaltblbank').change(function(){
        val = $(this).val();      
        val = accounting.formatMoney(val, "", 2, ",",'.');
@@ -1673,7 +1703,13 @@
           }
         })
 
-
+        jenisbayar = $('.jenisbayar').val();
+     
+        if(jenisbayar == 5|| jenisbayar == 12){
+       
+          $('.ChequeBg').val(addCommas(totalnominal));
+          $('.totbayar').val(addCommas(totalnominal));
+        }
     })
 
 
@@ -1747,7 +1783,7 @@
           success : function (response){
            
                 alertSuccess(); 
-              window.location.href = baseUrl + "/formfpg/formfpg";
+           
            
           },
           error : function(){
@@ -2129,7 +2165,7 @@
 
                           creditnota = data.faktur[0][0].fp_creditnota;
                           debitnota = data.faktur[0][0].fp_debitnota;
-                          alert(debitnota);
+                          //alert(debitnota);
                           if(creditnota == null){
                             creditnota = parseFloat(0.00).toFixed(2);
                           }
@@ -2929,90 +2965,27 @@
             var noseri = $(this).data('noseri');
             var idfpgb = $(this).data('idfpgb');
             var mbid = $(this).data('idbankdt');
+            var nominal = $(this).data('nominal');
 
-            if(id == 1) {
-              $('.nocheck').val('');
-              $('.nominal').val('');
-              $('.jthtmpo_bank').val('');
-              $('.hari_bank').val('');
-            }
+            cekbg = $('.ChequeBg').val();
+            total = $('.totbayar').val();
 
-            lengthbank = $('.databank').length;
-        
+            cekbg = cekbg.replace(/,/g, '');
+            total = total.replace(/,/g, '');
 
-            if(id == 1){
-              if(lengthbank.length == 2){
-               //  alert(nominalbank);
-             //   nominaltblbank = $('.nominalbank'+arrnohapus[0]).val();
-                noseritblbank = $('.noseri'+arrnohapus[1]).val();
-                $('.nominal').val(nominalbank);
-                $('.nocheck').val(noseritblbank);
-              }
-              else {
-                for(var j = 0; j < lengthbank.length; j++){
-                  nominaltblbank = $('.nominalbank'+arrnohapus[j]).val();
-                  noseritblbank = $('.noseri'+arrnohapus[j]).val();
-                  $('.nominal').val(nominaltblbank);
-                  $('.nocheck').val(noseritblbank);
-                  
-                 }
-              }
+            jenisbayar = $('.jenisbayar').val();
+            dikurangi = parseFloat(parseFloat(cekbg) - parseFloat(nominal)).toFixed(2);
+            if(jenisbayar == '5' || jenisbayar == '12'){
               
+              $('.ChequeBg').val(addCommas(dikurangi));
+              $('.totbayar').val(addCommas(dikurangi));
+            }
+            else {
+              $('.ChequeBg').val(addCommas(dikurangi));
             }
 
 
-            
             parent = $('tr#datas'+id);
-            $('tr#datacek'+id).show();
-            nominalbank = $('.nominalbank' + id).val();
-
-
-            var totbayar = $('.totbayar').val();
-
-            $('.ChequeBg').val(totbayar);
-
-            lengthtblbank = $('.nominaltblbank').length;
-
-            lengthunthapus = lengthtblbank - 1;
-        //    alert(lengthunthapus);
-            totalbayar2 = totbayar.replace(/,/g, '');
-         /*   pembagian = totalbayar2 / lengthunthapus;
-            
-            $('.nominaltblbank').val(pembagian);*/
-
-           /*$('.nominaltblbank').each(function(){
-             id = $(this).data('id');
-              alert(id);
-              alert(pembagian);
-             $('nominalbank' + id).val(addCommas(pembagian));
-           })*/
-          
-             if(nominalbank != ''){
-                Totalcheq = $('.ChequeBg').val();
-                if(Totalcheq != ''){
-                  aslinominal = nominalbank.replace(/,/g, '');
-                   aslitotal = Totalcheq.replace(/,/g, '');
-                  dikurangi = parseInt(aslitotal) - parseInt(aslinominal);
-               
-                  
-                  dikurangi = dikurangi.toFixed(2);
-                  $('.ChequeBg').val(dikurangi);
-
-                }
-             }
-              
-             totbar = $('.totbayar').val();
-             cek = $('.ChequeBg').val();
-            // alert('test');
-             if(totbar != cek){
-                toastr.info('Jumlah Total Bayar , tidak sama dengan Jumlah Bayar Mohon di lengkapi form input, lalu simpan data anda :) ');
-                 $('html,body').animate({scrollTop: $('.ChequeBg').offset().top}, 200, function() {
-                
-                    $('.ChequeBg').focus();
-                   
-                });
-             }
-
             parent.remove();
 
         })
@@ -3322,8 +3295,8 @@
 
       
         if(parseFloat(valpelunasan) > parseFloat(jmlhyangkurang)){
-            alert(valpelunasan);
-            alert(jmlhyangkurang);
+           // alert(valpelunasan);
+           // alert(jmlhyangkurang);
                 toastr.info('Mohon angka yang di masukkan, kurang dari sisa terbayar :) ');
                   $(this).val('');
            
