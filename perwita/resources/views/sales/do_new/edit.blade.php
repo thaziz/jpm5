@@ -65,7 +65,7 @@
                                                     <td style="padding-top: 0.4cm">Tanggal</td>
                                                     <td colspan="1">
                                                         <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control datepicker_today" name="do_tanggal" id="do_tanggal" value="{{ $data->tanggal }}">
+                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control " name="do_tanggal" id="" readonly="" value="{{ $data->tanggal }}">
                                                         </div>
                                                     </td>
 
