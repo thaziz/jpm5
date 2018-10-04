@@ -562,6 +562,67 @@
     });
 
 
+    $('.kodebank').change(function(){
+      cabang = $('.cabang').val();
+      tgl = $('.tglbbk').val();
+      bank = $('.kodebank').val();
+       $.ajax({
+          type : "get",
+          data : {cabang,tgl,bank},
+          url : baseUrl + '/pelunasanhutangbank/getnota',
+          dataType : 'json',
+          success : function (response){     
+              if(response.status = 'sukses'){
+                var d = new Date(tgl);                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+              
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+                 nofaktur = 'BK' + '-' + month + year2 + '/' + cabang + '/' +  response.data ;
+                $('.nobbk').val(response);
+              
+                kodebank = $('.kodebank').val();
+
+               if(kodebank != ''){
+                  
+                  split = nofaktur.split("-");
+                  bank = split[0];
+                  lain = split[1];
+                  if(parseInt(kodebank) < parseInt(10)){
+                      kodebank = '0' + kodebank;
+                  }
+                  
+                  str = bank.substr(0,2);
+                
+
+                  nobbk = str + kodebank + '-' + lain;
+                  $('.nobbk').val(response);
+               }
+              }
+              else {
+                location.reload();
+              }
+               
+              
+          },
+          eror : function(){
+            location.reload();
+          }
+        })
+    })
+
     $('.date').change(function(){
       cabang = $('.cabang').val();
       tgl = $('.tglbbk').val();
