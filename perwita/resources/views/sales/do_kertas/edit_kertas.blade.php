@@ -68,7 +68,7 @@
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td colspan="3">
                                     <div class="input-group date" style="width: 100%">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" readonly="" name="ed_tanggal" value="{{carbon\carbon::now()->format('d/m/Y')}}">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" readonly="" name="ed_tanggal" value="{{$daata->tanggal}}">
                                     </div>
                                 </td>
                             </tr>                        
