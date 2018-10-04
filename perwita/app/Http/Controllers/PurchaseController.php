@@ -13301,7 +13301,7 @@ return $html;
 		$fpg = DB::select("select * from fpg where idfpg = '$id'");
 		$jenisbayar = $fpg[0]->fpg_jenisbayar;
 		$data['jenisbayar'] = $fpg[0]->fpg_jenisbayar;
-
+		$data['datatransaksi'] = [];
 		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
 			$data['bank'] = DB::select("select * from masterbank");
 		}
