@@ -13778,7 +13778,8 @@ return $html;
 							}
 							else {
 									$idfpg_bank = 1;
-							} 
+							} 	
+
 								$nominalbank =  str_replace(',', '', $request->nominalbank[$j]);
 								$formfpg_bank->fpgb_idfpg = $idfpg;
 								$formfpg_bank->fpgb_id = $idfpg_bank;
@@ -13787,7 +13788,6 @@ return $html;
 								$formfpg_bank->fpgb_nominal = $nominalbank;
 								$formfpg_bank->fpgb_cair = 'IYA';
 								$formfpg_bank->fpgb_setuju = 'SETUJU';
-
 
 
 								$formfpg_bank->fpgb_nocheckbg = null;
@@ -14106,19 +14106,37 @@ return $html;
 					$formfpg_bank->fpgb_nominal = $nominalbank;
 					$formfpg_bank->fpgb_cair = 'IYA';
 					$formfpg_bank->fpgb_setuju = 'SETUJU';
-					$formfpg_bank->save();
+					$formfpg_bank->save();		 		 
+				}
+				}
 
+				$arrnoseri = [];
+				for($key = 0; $key < count($request->noseri); $key++){
+					array_push($arrnoseri, $request->noseri[$key]);
+				}
 
-					$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$request->noseri[$j]]]);
+				$resultunique2 = array_unique($arrnoseri);
+				$resultunique = array_values($resultunique2);
+
+				for($key = 0; $key < count($resultunique); $key++){
+					$nominalseri = 0;
+					for($j = 0; $j < count($request->noseri); $j++){
+						if($request->noseri[$j] == $resultunique[$key]){
+							$seri = str_replace(",", "", $request->nominalbank[$j]);
+							$nominalseri = floatval($nominalseri) +  floatval($seri);
+						//	dd($request->noseri[$j]);
+						}
+					}
+
+					$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$resultunique[$key]]]);
 
 					$updatebank->update([
 					 	'mbdt_nofpg' =>  $request->nofpg,
 					 	'mbdt_setuju' => 'Y',
 					 	'mbdt_status' => 'C',
-					 	'mbdt_nominal' => $nominalbank,
-					 	'mbdt_tglstatus' => $time
-				 	]);			 		 
-				}
+					 	'mbdt_nominal' => $nominalseri,
+					 	'mbdt_tglstatus' => $request->tglfpg
+				 	]);	
 				}
 
 
@@ -14214,6 +14232,7 @@ return $html;
 			'fpg_cekbg' => $cekbg,
 			'update_by' => $request->username,
 			'fpg_keterangan' => $request->keterangan,
+			'fpg_tgl' => $request->tglfpg,
 			]);	
 
 			//deletenofaktur		
@@ -14424,6 +14443,8 @@ return $html;
 				$noseri = $request->noseri[$j];
 				
 					$nominalbank =  str_replace(',', '', $request->nominalbank[$j]);
+
+
 					$formfpg_bank->fpgb_idfpg = $idfpg;
 					$formfpg_bank->fpgb_id = $idfpg_bank;
 					$formfpg_bank->fpgb_kodebank = $request->idbank;
@@ -14434,11 +14455,11 @@ return $html;
 					$formfpg_bank->fpgb_hari = $request->jatuhtempo[0];
 					$formfpg_bank->fpgb_cair = 'IYA';
 					$formfpg_bank->fpgb_setuju = 'SETUJU';
-					$fpgbank->fpgb_banktujuan = $request->idbanktujuan[$j];
-					$fpgbank->fpgb_nmbanktujuan = $request->namabanktujuan[$j];
-					$fpgbank->fpgb_kodebanktujuan = $request->kodebanktujuan[$j];
-					$fpgbank->fpgb_banktujuan = $request->kodebanktujuan[$j];
-					$fpgbank->fpgb_jeniskelompok = $request->kelompokbank[$j];
+					$formfpg_bank->fpgb_banktujuan = $request->idbanktujuan[$j];
+					$formfpg_bank->fpgb_nmbanktujuan = $request->namabanktujuan[$j];
+					$formfpg_bank->fpgb_kodebanktujuan = $request->kodebanktujuan[$j];
+					$formfpg_bank->fpgb_banktujuan = $request->kodebanktujuan[$j];
+					$formfpg_bank->fpgb_jeniskelompok = $request->kelompokbank[$j];
 					$formfpg_bank->save();
 
 					if($request->valrusak[$j] == 'rusak'){
@@ -14455,29 +14476,17 @@ return $html;
 						$updatebank->update([
 						 	'mbdt_setuju' => 'T',
 						 	'mbdt_status' => 'TIDAK',
-						 	'mbdt_tglstatus' => $time
+						 	'mbdt_tglstatus' => $request->tglfpg,
 					 	]);		
 
 					}
-					else {
-						$idbank = $request->idbank;
-						$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$request->noseri[$j]]]);
-
-						$updatebank->update([
-						 	'mbdt_nofpg' =>  $request->nofpg,
-						 	'mbdt_setuju' => 'Y',
-						 	'mbdt_status' => 'C',
-						 	'mbdt_nominal' => $nominalbank,
-						 	'mbdt_tglstatus' => $time
-					 	]);	
-				
-					}
+					
 
 		/*		$nofpg = $request->nofpg;
 				DB::DELETE("DELETE FROM bank_masuk where bm_notatransaksi = '$nofpg'");
 */
 				$kodebank = $request->idbank;
-				$kodetujuan = $request->idbanktujuan[$j];
+				$kodetujuan = $request->kodebanktujuan[$j];
 				if($request->kelompokbank[$j] == 'SAMA BANK'){
 					$bankmasuk = new bank_masuk();
 
@@ -14495,7 +14504,7 @@ return $html;
 					$namaasal = $bankasal[0]->mb_nama;
 					$mbkode = $bankasal[0]->mb_kode;
 			
-					$banktujuan = DB::select("select * from masterbank where mb_id = '$kodetujuan'");
+					$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
 					$cabangtujuan = $banktujuan[0]->mb_cabangbank;
 					$namatujuan = $banktujuan[0]->mb_nama;
 
@@ -14537,7 +14546,7 @@ return $html;
 				$namaasal = $bankasal[0]->mb_nama;
 				$mbkode = $bankasal[0]->mb_kode;
 
-				$banktujuan = DB::select("select * from masterbank where mb_id = '$kodetujuan'");
+				$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
 				$cabangtujuan = $banktujuan[0]->mb_cabangbank;
 				$namatujuan = $banktujuan[0]->mb_nama;
 
@@ -14746,8 +14755,12 @@ return $html;
 			}
 		}
 
+
+
+		//INPUT DATA TRANSAKSI
 		$idfpg = $request->idfpg;
 		$datafpgdt = DB::select("select * from fpg, fpg_dt where idfpg = '$idfpg' and fpgdt_idfpg = idfpg");
+
 		if(count($datafpgdt) != 0){
 			for($k = 0 ; $k < count($datafpgdt);$k++){
 				$nofaktur = $datafpgdt[$k]->fpgdt_nofaktur;
@@ -14814,7 +14827,78 @@ return $html;
 						$formfpg_dt->save();
 			}
 		}
+		else {
+			for($j = 0; $j < count($request->notafaktur); $j++){
+					$substr = substr($request->notafaktur[$j], 0,2);				
+					$nominalfaktur = str_replace("," , "" , $request->nominalfaktur[$j]);
+					if($substr == 'IK'){
+						$updatikhtisar = ikhtisar_kas::where('ik_nota' , '=' , $request->notafaktur[$j]);
+						$updatikhtisar->update([
+						 	'ik_pelunasan' => 0.00,
+						 	'ik_status' => 'DONE',	 	
+					 	]);	
+					 }
+					 else if($substr == 'BS'){					 	
+					 	$updatikhtisar = bonsempengajuan::where('bp_nota' , '=' , $request->notafaktur[$j]);
+						$updatikhtisar->update([
+						 	'bp_pelunasan' => 0.00,
+						 	'bp_pencairan' => $nominalfaktur,	 	
+					 	]);
+					 }
+
+						$lastidfpg =  formfpg_dt::max('fpgdt_id');;
+						if(isset($lastidfpg)) {
+								$idfpg_dt = $lastidfpg;
+								$idfpg_dt = (int)$idfpg_dt + 1;
+						}
+						else {
+								$idfpg_dt = 1;
+						} 
+
+						$nominalfaktur = str_replace("," , "" , $request->nominalfaktur[$j]);
+						$formfpg_dt = new formfpg_dt();
+						$formfpg_dt->fpgdt_idfpg = $idfpg;
+						$formfpg_dt->fpgdt_id = $idfpg_dt;
+						$formfpg_dt->fpgdt_tgl = $request->tglfpg;
+						$formfpg_dt->fpgdt_jumlahtotal = $nominalfaktur;
+						$formfpg_dt->fpgdt_pelunasan = $nominalfaktur;
+						$formfpg_dt->fpgdt_sisafaktur = 0.00;
+						$formfpg_dt->fpgdt_idfp = $request->idfaktur[$j];
+						$formfpg_dt->fpgdt_keterangan = $request->keterangan;
+						$formfpg_dt->fpgdt_nofaktur = $request->notafaktur[$j];
+						$formfpg_dt->save();
+			}
+		}
 		
+
+		$arrnoseri = [];
+			for($key = 0; $key < count($request->noseri); $key++){
+				array_push($arrnoseri, $request->noseri[$key]);
+			}
+
+			$resultunique2 = array_unique($arrnoseri);
+			$resultunique = array_values($resultunique2);
+
+			for($key = 0; $key < count($resultunique); $key++){
+				$nominalseri = 0;
+				for($j = 0; $j < count($request->noseri); $j++){
+					if($request->noseri[$j] == $resultunique[$key]){
+						$seri = str_replace(",", "", $request->nominalbank[$j]);
+						$nominalseri = floatval($nominalseri) +  floatval($seri);
+					//	dd($request->noseri[$j]);
+					}
+				}
+
+				$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$resultunique[$key]]]);
+
+				$updatebank->update([
+				 	'mbdt_nofpg' =>  $request->nofpg,
+				 	'mbdt_setuju' => 'Y',
+				 	'mbdt_status' => 'C',
+				 	'mbdt_nominal' => $nominalseri,
+				 	'mbdt_tglstatus' => $request->tglfpg
+			 	]);	
+			}
 
 		return json_encode('sukses');
 	});

@@ -1003,6 +1003,7 @@
 
       //tambah data
       $('#tmbhdatajenisbayar').click(function(){
+
          metodebayar = $('.metodebayar:checked').val();
          tujuanpindahbuku = $('.tujuanbankpb').val();
          $('#bankasal').addClass('disabled');
@@ -1159,15 +1160,7 @@
                        
                       }
                     
-                    // IF CHECKBG                  
-                    if(jenisbayar == '12' == jenisbayar == '11'){
-                      $('.nominalbank1').val(nominaltujuan);
-                      $('.ChequeBg').val(nominaltujuan);  
-                    }
-                    else {
-                      $('.nominalbank1').val(nominalbank);
-                      $('.ChequeBg').val(nominalbank);
-                    }
+                  
                   
 
 
@@ -2030,6 +2023,7 @@
 
     $('.date').change(function(){
        tgl = $('.tglfpg').val();
+       cabang = $('.cabang').val();
          $.ajax({
           type : "get",
           data : {cabang,tgl},
