@@ -751,14 +751,15 @@ class BankMasukController extends Controller
 			$jurnaldt[0]['detail'] = $keterangan;
 		}
 
+		$akunkasbank = '109911000';
 		if($dkaasal == 'K'){//bankasal
-			$jurnaldt[1]['id_akun'] = $bankasal;
-			$jurnaldt[1]['subtotal'] = $nominal;
+			$jurnaldt[1]['id_akun'] = $akunkasbank;
+			$jurnaldt[1]['subtotal'] = '-' . $nominal;
 			$jurnaldt[1]['dk'] = 'D';
 			$jurnaldt[1]['detail'] = $keterangan;
 		}
 		else {
-			$jurnaldt[1]['id_akun'] = $bankasal;
+			$jurnaldt[1]['id_akun'] = $akunkasbank;
 			$jurnaldt[1]['subtotal'] = '-' . $nominal;
 			$jurnaldt[1]['dk'] = 'K';
 			$jurnaldt[1]['detail'] = $keterangan;

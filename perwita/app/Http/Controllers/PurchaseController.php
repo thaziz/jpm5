@@ -14390,10 +14390,22 @@ return $html;
 
 			for($g = 0; $g < count($datafpgb); $g++){
 				$noseri = $datafpgb[$g]->fpgb_nocheckbg;
+				$idbank = $datafpgb[$g]->fpgb_kodebank;
+
 				if($noseri != ''){
-					
+					$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$request->noseri[$j]]]);
+
+					$updatebank->update([
+					 	'mbdt_nofpg' =>  null,
+					 	'mbdt_setuju' => null,
+					 	'mbdt_status' => null,
+					 	'mbdt_nominal' => null,
+					 	'mbdt_tglstatus' => null
+				 	]);	
 				}
 			}
+
+			DB::DELETE("DELETE FROM fpg_cekbank where fpgb_idfpg = '$idfpg'");
 
 			for($j=0; $j < count($request->noseri); $j++){
 				$formfpg_bank = new formfpg_bank();
@@ -14410,51 +14422,7 @@ return $html;
 
 				$idbank = $request->idbank;
 				$noseri = $request->noseri[$j];
-				$cekidbank = DB::select("select * from fpg_cekbank where fpgb_kodebank = '$idbank' and fpgb_nocheckbg = '$noseri' and fpgb_idfpg = '$idfpg'");
-				$nominalbank =  str_replace(',', '', $request->nominalbank[$j]);
-				if(count($cekidbank) > 0){
-					if($request->valrusak[$j] == 'rusak'){
-						
-						$updatefpgb = formfpg_bank::where([['fpgb_kodebank' , '=' ,$idbank],['fpgb_nocheckbg' , '=' , $noseri],['fpgb_idfpg' , '=' , $idfpg]]);
-
-						$updatefpgb->update([
-							'fpgb_cair' => 'TIDAK',
-							'fpgb_setuju' => 'TIDAK',
-							]);
-						
-						$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$noseri]]);
-
-						$updatebank->update([
-						 	'mbdt_setuju' => 'T',
-						 	'mbdt_status' => 'TIDAK',
-						 	'mbdt_tglstatus' => $time
-					 	]);		
-
-					}
-					else {
-						$updatefpgb = formfpg_bank::where([['fpgb_kodebank' , '=' ,$idbank],['fpgb_nocheckbg' , '=' , $noseri],['fpgb_idfpg' , '=' , $idfpg]]);
-						$updatefpgb->update([
-							'fpgb_jenisbayarbank' => $request->jenisbayarbank,
-							'fpgb_nocheckbg' => $noseri,
-							'fpgb_nominal' => $nominalbank
-							]);
-
-							$idbank = $request->idbank;
-							$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$request->noseri[$j]]]);
-
-							$updatebank->update([
-							 	'mbdt_nofpg' =>  $request->nofpg,
-							 	'mbdt_setuju' => 'Y',
-							 	'mbdt_status' => 'C',
-							 	'mbdt_nominal' => $nominalbank,
-							 	'mbdt_tglstatus' => $time
-						 	]);	
-
-					}
-
-
-				}
-				else {
+				
 					$nominalbank =  str_replace(',', '', $request->nominalbank[$j]);
 					$formfpg_bank->fpgb_idfpg = $idfpg;
 					$formfpg_bank->fpgb_id = $idfpg_bank;
@@ -14472,6 +14440,26 @@ return $html;
 					$fpgbank->fpgb_banktujuan = $request->kodebanktujuan[$j];
 					$fpgbank->fpgb_jeniskelompok = $request->kelompokbank[$j];
 					$formfpg_bank->save();
+
+					if($request->valrusak[$j] == 'rusak'){
+						
+						$updatefpgb = formfpg_bank::where([['fpgb_kodebank' , '=' ,$request->idbank],['fpgb_nocheckbg' , '=' , $noseri],['fpgb_idfpg' , '=' , $idfpg]]);
+
+						$updatefpgb->update([
+							'fpgb_cair' => 'TIDAK',
+							'fpgb_setuju' => 'TIDAK',
+							]);
+						
+						$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $request->idbank], ['mbdt_noseri' , '=' ,$noseri]]);
+
+						$updatebank->update([
+						 	'mbdt_setuju' => 'T',
+						 	'mbdt_status' => 'TIDAK',
+						 	'mbdt_tglstatus' => $time
+					 	]);		
+
+					}
+					else {
 						$idbank = $request->idbank;
 						$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$request->noseri[$j]]]);
 
@@ -14482,7 +14470,9 @@ return $html;
 						 	'mbdt_nominal' => $nominalbank,
 						 	'mbdt_tglstatus' => $time
 					 	]);	
-				} 
+				
+					}
+
 		/*		$nofpg = $request->nofpg;
 				DB::DELETE("DELETE FROM bank_masuk where bm_notatransaksi = '$nofpg'");
 */
@@ -14596,8 +14586,8 @@ return $html;
                 'km_idfpgb' => $idfpg_bank,
 
        			 );
-            $simpan = DB::table('kas_masuk')->insert($datakm);
-		}
+          	  $simpan = DB::table('kas_masuk')->insert($datakm);
+			}
 
 			} //end for
 		}
