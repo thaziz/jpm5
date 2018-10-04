@@ -14385,6 +14385,16 @@ return $html;
 			$nofpg = $request->nofpg;
 			DB::DELETE("DELETE FROM bank_masuk where bm_notatransaksi = '$nofpg'");
 			DB::DELETE("DELETE FROM kas_masuk where km_notatransaksi = '$nofpg'");
+
+			$datafpgb = DB::select("select * from fpg , fpg_cekbank where fpgb_idfpg = idfpg and idfpg = '$idfpg'");
+
+			for($g = 0; $g < count($datafpgb); $g++){
+				$noseri = $datafpgb[$g]->fpgb_nocheckbg;
+				if($noseri != ''){
+					
+				}
+			}
+
 			for($j=0; $j < count($request->noseri); $j++){
 				$formfpg_bank = new formfpg_bank();
 
