@@ -548,12 +548,16 @@
                                            @foreach($data['fpgd'] as $index=>$fpgd)
                                             <tr class='field dataitemfaktur' id="field{{$index + 1}}" data-nota="{{$fpgd->bp_nota}}">
                                             <td> {{$index + 1}} </td>
-                                            <td> <a class='nofp nofp{{$index + 1}}' data-id="{{$index + 1}}"> {{$fpgd->fpgdt_nofaktur}} </a>   <input type='hidden' class="datanofaktur nofaktur{{$index + 1}}" value="{{$fpgd->fpgdt_nofaktur}}" name='nofaktur[]'>  <input type='hidden'  value="{{$fpgd->fpgdt_id}}" name='idfaktur[]'> </td>
+                                            <td> <a class='nofp nofp{{$index + 1}}' data-id="{{$index + 1}}"> {{$fpgd->fpgdt_nofaktur}} </a>   <input type='hidden' class="datanofaktur nofaktur{{$index + 1}}" value="{{$fpgd->fpgdt_nofaktur}}" name='nofaktur[]'>  <input type='hidden'  value="{{$fpgd->fpgdt_idfp}}" name='idfaktur[]'> </td>
                                             <td> {{ Carbon\Carbon::parse($fpgd->fpgdt_tgl)->format('d-M-Y ') }}  </td> <!-- Format Tgl -->
                                             <td> - </td> 
                                             <td> {{ number_format($fpgd->bp_nominalkeu, 2) }}  </td>                                            <!-- NETTO -->
 
-                                            <td class='fakturitem{{$index + 1}}' data-pelunasanfaktur="{{ number_format($fpgd->fpgdt_pelunasan, 2)}}" data-sisapelunasanfaktur="{{ number_format($fpgd->bp_pelunasan, 2)}}"> <input type='hidden' class="sisapelunasan{{$index + 1}}" value="{{ number_format($fpgd->bp_pelunasan, 2)}}"> <input type='text' class="input-sm form-control pelunasanitem pelunasan{{$index + 1}}" style='text-align:right' readonly data-id="{{$index + 1}}" name="pelunasan[]" value="{{number_format($fpgd->fpgdt_pelunasan, 2)}}"> <input type='hidden' class="netto{{$index + 1}}" value="{{ number_format($fpgd->bp_nominalkeu, 2)}}" name='netto[]'></td>  <!-- PELUNASAN -->
+                                            <td class='fakturitem{{$index + 1}}' data-pelunasanfaktur="{{number_format($fpgd->fpgdt_pelunasan, 2)}}" data-sisapelunasanfaktur="{{ number_format($fpgd->bp_pelunasan, 2)}}">
+
+                                              <input type='hidden' class="sisapelunasan{{$index + 1}}" value="{{ number_format($fpgd->bp_pelunasan, 2)}}"> <input type='text' class="input-sm form-control pelunasanitem pelunasan{{$index + 1}}" style='text-align:right' readonly data-id="{{$index + 1}}" name="pelunasan[]" value="{{number_format($fpgd->fpgdt_pelunasan, 2)}}"> <input type='hidden' class="netto{{$index + 1}}" value="{{ number_format($fpgd->bp_nominalkeu, 2)}}" name='netto[]'></td>  <!-- PELUNASAN -->
+
+
 
                                             <td class='pembayarankanan{{$index + 1}}' data-pembayaranaslifaktur="{{ number_format($data['perhitungan'][$index], 2) }}">  <input type='text' class='input-sm pembayaranitem pembayaranitem{{$index + 1}} form-control' style='text-align:right' readonly data-id="{{$index + 1}}" name='pembayaran[]' value="{{ number_format($data['perhitungan'][$index], 2) }}">  </td> <!-- PEMBAYARAN -->
 
@@ -572,7 +576,7 @@
                                              @foreach($data['fpgd'] as $index=>$fpgd)
                                             <tr class='field dataitemfaktur' id="field{{$index + 1}}" data-nota="{{$fpgd->bp_nota}}">
                                             <td> {{$index + 1}} </td>
-                                            <td> <a class='nofp nofp{{$index + 1}}' data-id="{{$index + 1}}"> {{$fpgd->fpgdt_nofaktur}} </a>   <input type='hidden' class="datanofaktur nofaktur{{$index + 1}}" value="{{$fpgd->fpgdt_nofaktur}}" name='nofaktur[]'>  <input type='hidden'  value="{{$fpgd->fpgdt_id}}" name='idfaktur[]'> </td>
+                                            <td> <a class='nofp nofp{{$index + 1}}' data-id="{{$index + 1}}"> {{$fpgd->fpgdt_nofaktur}} </a>   <input type='hidden' class="datanofaktur nofaktur{{$index + 1}}" value="{{$fpgd->fpgdt_nofaktur}}" name='nofaktur[]'>  <input type='hidden'  value="{{$fpgd->fpgdt_idfp}}" name='idfaktur[]'> </td>
                                             <td> {{ Carbon\Carbon::parse($fpgd->fpgdt_tgl)->format('d-M-Y ') }}  </td> <!-- Format Tgl -->
                                             <td> - </td> 
                                             <td> {{ number_format($fpgd->bp_nominalkeu, 2) }}  </td>                                            <!-- NETTO -->
@@ -866,6 +870,14 @@
                                   </td>
                                </tr>
                                 @endif
+
+                                 <tr>
+                                  <td>
+                                    <button class="btn btn-success btn-xs" type="button" id="tbmhdatainet">Tambah Data
+                                    </button>
+                                  </td>
+                               </tr>
+
                                 </table>
                               </div>
 
@@ -1143,6 +1155,8 @@
 
     $('.banktujuan2').hide();
     $('.kastujuan2').hide();
+
+    $('#tbmhdatainet').hide();
 
    $('.tujuanbankpb').change(function(){
     val = $(this).val();

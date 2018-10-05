@@ -100,7 +100,12 @@
 
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    <input class="kosong form-control" type="" name="bank" id="bank">
+                    <select class="form-control chosen-select" id="bank" name="bank">
+                      @foreach($data['bank'] as $bank)
+                      <option value="{{$bank->mb_nama}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
+                      @endforeach
+                    </select>
+                   {{--  <input class="kosong form-control" type="" name="bank" id="bank"> --}}
                 </div>
               </div>
 

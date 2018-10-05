@@ -8552,7 +8552,8 @@ public function kekata($x) {
 
 	public function pelunasanhutangbank() {
 
-		return view('purchase/pelunasanhutangbank/index');
+		$data['bank'] = DB::select("select * from masterbank");
+		return view('purchase/pelunasanhutangbank/index' , compact('data'));
 	}
 
 
@@ -14363,8 +14364,7 @@ return $html;
   	//addfaktur
 		for($j=0;$j<count($request->nofaktur);$j++){
 			$idfp = $request->idfaktur[$j];
-			
-				
+		
 				$formfpg_dt = new formfpg_dt();
 
 				$lastidfpg =  formfpg_dt::max('fpgdt_id');;
