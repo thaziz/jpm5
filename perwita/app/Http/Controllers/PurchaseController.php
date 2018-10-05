@@ -10780,7 +10780,7 @@ public function kekata($x) {
 		DB::delete("DELETE from  d_jurnal where jr_ref = '$nobbk' and jr_detail = 'BUKTI BANK KELUAR'");
 		DB::delete("DELETE from bukti_bank_keluar where bbk_id = '$id'");
 
-		//return 'ok';
+		return 'ok';
 	});
 	}
 
