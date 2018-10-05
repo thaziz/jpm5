@@ -73,8 +73,8 @@
                               <tr>
                                 <th> Tanggal </th>
                                 <td>  
-                                      <div class="input-group">
-                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl" name="tglfpg" required="" value="{{ Carbon\Carbon::parse($fpg->fpg_tgl)->format('d-M-Y ') }}"> 
+                                      <div class="input-group date">
+                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tglfpg" name="tglfpg" required="" value="{{ Carbon\Carbon::parse($fpg->fpg_tgl)->format('d-M-Y ') }}"> 
                                       </div>
                                </td>
                               </tr>
@@ -483,17 +483,32 @@
                                             @foreach($data['fpgd'] as $index=>$fpgd)
                                             <tr class='field dataitemfaktur' id="field{{$index + 1}}" data-nota="{{$fpgd->ik_total}}">
                                             <td> {{$index + 1}} </td>
-                                            <td> <a class='nofp nofp{{$index + 1}}' data-id="{{$index + 1}}"> {{$fpgd->ik_nota}} </a>   <input type='hidden' class="datanofaktur nofaktur{{$index + 1}}" value="{{$fpgd->ik_nota}}" name='nofaktur[]'>  <input type='hidden'  value="{{$fpgd->ik_id}}" name='idfaktur[]'> </td>
+                                            <td>
+                                              <a class='nofp nofp{{$index + 1}}' data-id="{{$index + 1}}"> {{$fpgd->ik_nota}} </a>   <input type='hidden' class="datanofaktur nofaktur{{$index + 1}}" value="{{$fpgd->ik_nota}}" name='nofaktur[]'>  <input type='hidden'  value="{{$fpgd->ik_id}}" name='idfaktur[]'>
+                                            </td> <!-- nota faktur -->
+                                            
                                             <td> {{ Carbon\Carbon::parse($fpgd->fpgdt_tgl)->format('d-M-Y ') }}  </td> <!-- Format Tgl -->
                                             <td> - </td> 
-                                            <td> {{ number_format($fpgd->ik_total, 2) }}  </td>                                            <!-- NETTO -->
+                                            <td> {{ number_format($fpgd->ik_total, 2) }}  </td>      <!-- NETTO -->
 
-                                            <td class='fakturitem{{$index + 1}}' data-pelunasanfaktur="{{ number_format($fpgd->ik_pelunasan, 2)}}" data-sisapelunasanfaktur="{{ number_format($fpgd->ik_pelunasan, 2)}}"> <input type='hidden' class="sisapelunasan{{$index + 1}}" value="{{ number_format($fpgd->ik_pelunasan, 2)}}"> <input type='text' class="input-sm form-control pelunasanitem pelunasan{{$index + 1}}" style='text-align:right' readonly data-id="{{$index + 1}}" name="pelunasan[]" value="{{number_format($fpgd->ik_pelunasan, 2)}}"> <input type='hidden' class="netto{{$index + 1}}" value="{{ number_format($fpgd->ik_total, 2)}}" name='netto[]'></td>  <!-- PELUNASAN -->
+                                            <td class='fakturitem{{$index + 1}}' data-pelunasanfaktur="{{ number_format($fpgd->fpgdt_pelunasan, 2)}}" data-sisapelunasanfaktur="{{ number_format($fpgd->ik_pelunasan, 2)}}"> 
 
-                                            <td class='pembayarankanan{{$index + 1}}' data-pembayaranaslifaktur="{{ number_format($data['perhitungan'][$index], 2) }}">  <input type='text' class='input-sm pembayaranitem pembayaranitem{{$index + 1}} form-control' style='text-align:right' readonly data-id="{{$index + 1}}" name='pembayaran[]' value="{{ number_format($data['perhitungan'][$index], 2) }}">  </td> <!-- PEMBAYARAN -->
+                                              <input type='hidden' class="sisapelunasan{{$index + 1}}" value="{{ number_format($fpgd->ik_pelunasan, 2)}}">
+                                              
+                                              <input type='text' class="input-sm form-control pelunasanitem pelunasan{{$index + 1}}" style='text-align:right' readonly data-id="{{$index + 1}}" name="pelunasan[]" value="{{number_format($fpgd->fpgdt_pelunasan, 2)}}">
+
+                                              <input type='hidden' class="netto{{$index + 1}}" value="{{ number_format($fpgd->ik_total, 2)}}" name='netto[]'></td>  <!-- PELUNASAN -->
 
 
-                                            <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}" value="{{ number_format($fpgd->ik_pelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
+                                            <td class='pembayarankanan{{$index + 1}}' data-pembayaranaslifaktur="{{ number_format($fpgd->ik_total - $fpgd->ik_pelunasan) }}">
+
+                                              <input type='text' class='input-sm pembayaranitem pembayaranitem{{$index + 1}} form-control' style='text-align:right' readonly data-id="{{$index + 1}}" name='pembayaran[]' value="{{ number_format($fpgd->ik_total - $fpgd->ik_pelunasan) }}">
+
+                                            </td> <!-- PEMBAYARAN -->
+
+                                            <td>
+                                              <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}" value="{{number_format($fpgd->ik_pelunasan) }}" readonly name='sisapelunasan[]' style="text-align: right">
+                                            </td>
                                             <!-- SISA PELUNASAN -->
 
                                             <td> <input type='text' class='input-sm form-control keteranganitem{{$index + 1}}' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td>
@@ -1175,11 +1190,7 @@
          metodebayar = $('.metodebayar:checked').val();
          tujuanpindahbuku = $('.tujuanbankpb').val();
 
-         if(tujuanpindahbuku == ''){
-          toastr.info("Mohon maaf, tujuan belum dipilih :)");
-          return false;
-         }
-
+      
          $('#bankasal').addClass('disabled');
          kelompok_mb = $('.kelompokbank_mb').val();
         if(metodebayar == 'CHECK/BG'){
@@ -1215,6 +1226,13 @@
 
                     jenisbayar = $('.jenisbayar').val();
                       if(jenisbayar == '12' || jenisbayar == '11') {
+                           if(tujuanpindahbuku == ''){
+                            toastr.info("Mohon maaf, tujuan belum dipilih :)");
+                            return false;
+                           }
+
+
+
                         if(tujuanpindahbuku == 'BANK'){
                           banktujuan = $('.banktujuan').val();
                           if(banktujuan == ''){
@@ -2322,7 +2340,7 @@
         autoclose: true,
         format: 'dd-MM-yyyy',
         endDate : 'today',
-    }).datepicker("setDate", "0");;
+    });
     
      var nmr = $('.dataitemfaktur').length;
      var jumlahfaktur = 0;
@@ -2804,12 +2822,7 @@
                 pelunasanitem = $('.pelunasan' +id).val();
                 var nilaiaslipelunasan = $('.fakturitem' + id).data('sisapelunasanfaktur');
                 var pelunasanasli = $('.fakturitem' + id).data('pelunasanfaktur');
-              //  hasilpelunasan = $('.pelunasan' + id).val();
-
-          /*        hasilpelunasan2 =  hasilpelunasan.replace(/,/g, '');
-                sisapelunasan2 =  sisapelunasan.replace(/,/g, '');
-                pembayaranheader2 = pembayaranheader.replace(/,/g, '');
-          */        
+         
 
                 nilaiaslipelunasan2 = nilaiaslipelunasan.replace(/,/g,'');
                 pelunasanasli2 = pelunasanasli.replace(/,/g,'');
@@ -3564,7 +3577,7 @@
          valpelunasan = vas.replace(/,/g, '');
 
       
-        if(parseFloat(valpelunasan) > parseFloat(jmlhyangkurang)){
+        if(parseFloat(valpelunasan) > parseFloat(replace_harga)){
            // alert(valpelunasan);
            // alert(jmlhyangkurang);
                 toastr.info('Mohon angka yang di masukkan, kurang dari sisa terbayar :) ');
@@ -3582,10 +3595,10 @@
         }
       } //END PERTAMAKALI INPUT
       else {
-          
+         
           valpelunasan = vas.replace(/,/g, '');
 
-        if(parseFloat(valpelunasan) > parseFloat(jmlhyangkurang)){
+        if(parseFloat(valpelunasan) > parseFloat(replace_harga)){
 
           toastr.info('Mohon angka yang di masukkan, kurang dari sisa terbayar :) ');
           $(this).val('');

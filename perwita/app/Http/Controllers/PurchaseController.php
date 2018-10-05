@@ -13440,7 +13440,7 @@ return $html;
 				$idfp1 = $data['fpgd'][$i]->fpgdt_idfp;
 				$nofaktur = $data['fpgd'][$i]->ik_nota;
 
-				$data['pembayaran'][] = DB::select("select fpg_nofpg as nofpg, fpg_tgl as tgl, fpgdt_pelunasan as pelunasan, v_nomorbukti as nofaktur, v_id as idfp from fpg,fpg_dt, v_hutang where fpgdt_idfp ='$idfp1' and fpgdt_idfpg = idfpg and fpgdt_idfp = v_id and fpgdt_nofaktur = v_nomorbukti union select bkk_nota as nofpg, bkk_tgl as tgl, bkkd_total as pelunasan, bkkd_ref as nofaktur, v_id as idfp from bukti_kas_keluar, bukti_kas_keluar_detail, v_hutang where bkkd_bkk_id = bkk_id and bkkd_ref = '$nofaktur' and bkkd_ref = v_nomorbukti");
+				$data['pembayaran'][] = DB::select("select fpg_nofpg as nofpg, fpg_tgl as tgl, fpgdt_pelunasan as pelunasan, ik_nota as nofaktur, ik_id as idfp from fpg,fpg_dt, ikhtisar_kas where fpgdt_idfp ='$idfp1' and fpgdt_idfpg = idfpg and fpgdt_idfp = ik_id and fpgdt_nofaktur = ik_nota union select bkk_nota as nofpg, bkk_tgl as tgl, bkkd_total as pelunasan, bkkd_ref as nofaktur, ik_id as idfp from bukti_kas_keluar, bukti_kas_keluar_detail, ikhtisar_kas where bkkd_bkk_id = bkk_id and bkkd_ref = '$nofaktur' and bkkd_ref = ik_nota");
 
 			}
 
@@ -14279,6 +14279,8 @@ return $html;
 				->update([
 					'ik_pelunasan' => $penjumlahan
 				]);
+
+
 			}
 			else if($jenisbayar == '4'){
 				$pelunasan = $request->pelunasan[$j];
@@ -14357,10 +14359,7 @@ return $html;
   	//addfaktur
 		for($j=0;$j<count($request->nofaktur);$j++){
 			$idfp = $request->idfaktur[$j];
-			$cekidfp = DB::select("select * from fpg_dt where  fpgdt_idfpg = '$idfpg' and fpgdt_idfp = '$idfp'");
 			
-
-
 				
 				$formfpg_dt = new formfpg_dt();
 
@@ -14389,15 +14388,8 @@ return $html;
 				$formfpg_dt->fpgdt_nofaktur = $request->nofaktur[$j];
 				$formfpg_dt->fpgdt_sisapelunasanumfp = $pelunasan;
 				$formfpg_dt->save();
-
-
-
-				$updatefaktur = fakturpembelian::where('fp_nofaktur', '=', $request->nofaktur[$j]);
-					$updatefaktur->update([
-					 	'fp_sisapelunasan' => $sisafaktur,	 	
-				 	]);			 				 
-				
 			}
+
 
 		if($request->jenisbayarbank == 'CHECK/BG'){
 			//SIMPAN CHECK
@@ -14412,7 +14404,7 @@ return $html;
 				$idbank = $datafpgb[$g]->fpgb_kodebank;
 
 				if($noseri != ''){
-					$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$request->noseri[$j]]]);
+					$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$request->noseri[$g]]]);
 
 					$updatebank->update([
 					 	'mbdt_nofpg' =>  null,
@@ -14782,7 +14774,8 @@ return $html;
 				 }
 			}
 
-			DB::delete("DELETE from fpg_dt where fpgdt_idfpg = '$idfpg'");
+			if(count($request->notafaktur) != 0){
+				DB::delete("DELETE from fpg_dt where fpgdt_idfpg = '$idfpg'");
 
 			for($j = 0; $j < count($request->notafaktur); $j++){
 					$substr = substr($request->notafaktur[$j], 0,2);
@@ -14869,7 +14862,7 @@ return $html;
 						$formfpg_dt->save();
 			}
 		}
-		
+		}
 
 		$arrnoseri = [];
 			for($key = 0; $key < count($request->noseri); $key++){
