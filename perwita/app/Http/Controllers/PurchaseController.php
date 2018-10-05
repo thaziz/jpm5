@@ -7701,10 +7701,17 @@ public function purchase_ordernotif(Request $request){
 				}
 				
 
-				$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$akunitem%' and kode_cabang = '$comp'");
-				$dataakunitem = $datakun2[0]->id_akun;
-				$dataakundka = $datakun2[0]->akun_dka;
+				$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$akunitem%' and kode_cabang = '$comp' and is_active = '1'");
+				//dd($datakun2);
+				if(count($datakun2) == 0){
+					return $dataInfo =  $dataInfo=['status'=>'gagal','info'=>'Data akun Item ' . $akunitem .' Tidak ada di cabang ' .  $cabang .':('];
+					DB::rollback();
 
+				}
+				else {
+					$dataakunitem = $datakun2[0]->id_akun;
+					$dataakundka = $datakun2[0]->akun_dka;
+				}
 
 
 				if(isset($lastidfpdt)) {
@@ -11323,11 +11330,11 @@ return $html;
 						$datas['fp1'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_terimabarang = 'SUDAH' order by fp_idfaktur asc");
 					}
 					else{
-						$datas['fp'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_terimabarang = 'SUDAH' order by fp_idfaktur asc");
+						$datas['fp'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_terimabarang = 'SUDAH' and fp_comp = '$cabang' order by fp_idfaktur asc");
 	
-						$datas['fp1'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_terimabarang = 'SUDAH' order by fp_idfaktur asc");
+						$datas['fp1'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_terimabarang = 'SUDAH' and fp_comp = '$cabang' order by fp_idfaktur asc");
 					}
-
+					
 					if(count($request->arrnofaktur) != 0){
 						for($i = 0 ; $i < count($datas['fp']); $i++){
 							for($j = 0; $j < count($request->arrnofaktur); $j++){
@@ -14881,7 +14888,7 @@ return $html;
 					//	dd($request->noseri[$j]);
 					}
 				}
-
+				$idbank = $request->idbank;
 				$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$resultunique[$key]]]);
 
 				$updatebank->update([

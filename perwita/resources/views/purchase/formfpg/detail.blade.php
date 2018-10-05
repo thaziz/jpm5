@@ -68,7 +68,7 @@
 
                               <tr>
                                 <th> No FPG </th>
-                                <td> <input type='text' class='input-sm form-control nofpg' value="{{$fpg->fpg_nofpg}}" readonly="" name="nofpg">     <input type="hidden" name="_token" value="{{ csrf_token() }}"> <input type='hidden' class='input-sm form-control nofpg' value="{{$fpg->idfpg}}" readonly="" name="idfpg"> </td>
+                                <td> <input type='text' class='input-sm form-control nofpg' value="{{$fpg->fpg_nofpg}}" readonly="" name="nofpg">     <input type="hidden" name="_token" value="{{ csrf_token() }}"> <input type='hidden' class='input-sm form-control' value="{{$fpg->idfpg}}" readonly="" name="idfpg"> </td>
                               </tr>
                               <tr>
                                 <th> Tanggal </th>
@@ -2223,7 +2223,7 @@
      $('.btnfaktur').click(function(){
               var idsup = $('.kodejenisbayar').val();
               var nosupplier = $('.kodejenisbayar').val();
-              var idjenisbayar = $('.jenisbayarheader').val();
+              var idjenisbayar = $('.jenisbayar').val();
               var cabang = $('.cabang').val();
                 
                  arrnofaktur = [];
@@ -2350,7 +2350,7 @@
     //alert(nmr);
 
      $('#buttongetid').click(function(){
-        jenisbayar = $('.jenisbayarheader').val();
+        jenisbayar = $('.jenisbayar').val();
         var checked = $(".check:checked").map(function(){
           return this.id;
         }).toArray();
