@@ -153,21 +153,17 @@ class BonSementaraController extends Controller
                 return $bp_setujukacab;
             })    
 
-
-
- 
-
-
-
-  
-
-
             ->addColumn('action', function ($dataFpg) {            	
             	$html='';
-            	   
-            	$html.='<a class="btn btn-success btn-sm" 
-            			href='.url('bonsementarapusat/printdata/'.$dataFpg->bp_id.'').'>
-            	 <i class="fa fa-print"> </i> Cetak  </a>';
+            	 
+            	if($dataFpg->bp_setujukeu == 'SETUJU'){ 
+	            	$html.='<a class="btn btn-success btn-sm" 
+	            			href='.url('bonsementarapusat/printdata/'.$dataFpg->bp_id.'').'>
+	            	 <i class="fa fa-print"> </i> Cetak  </a>';
+            	 }
+            	 else {
+            	 	$html .= "";
+            	 }
             	return $html;           
             })
 			->make(true);	
@@ -708,21 +704,21 @@ class BonSementaraController extends Controller
                     }
                 }
 
+                return $prosesmodal;
 
             })     
             ->addColumn('action', function ($dataFpg) {            	
-             return '<a class="btn btn-success btn-sm"
-             href='.url('bonsementarapusat/printdata/'.$dataFpg->bp_id.'').'><i class="fa fa-print"> </i> Cetak  </a>';
+             $prosesmodal = '';
+             if($dataFpg->bp_setujukeu == 'SETUJU'){
+                  $prosesmodal .= '<a class="btn btn-success btn-sm"
+                  href='.url('bonsementarapusat/printdata/'.$dataFpg->bp_id.'').'><i class="fa fa-print"> </i> Cetak  </a>';
+               }
+
+               return $prosesmodal;
+              /* return '<a class="btn btn-success btn-sm"
+                  href='.url('bonsementarapusat/printdata/'.$dataFpg->bp_id.'').'><i class="fa fa-print"> </i> Cetak  </a>';*/
             })
-			->make(true);	
-
-
-                       
-                           
-                          
-                      
-
-		
+			->make(true);
 	}
 
 	public function indexpusatnotif(){

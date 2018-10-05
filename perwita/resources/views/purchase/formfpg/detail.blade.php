@@ -74,7 +74,7 @@
                                 <th> Tanggal </th>
                                 <td>  
                                       <div class="input-group date">
-                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tglfpg" name="tglfpg" required="" value="{{ Carbon\Carbon::parse($fpg->fpg_tgl)->format('d-M-Y ') }}"> 
+                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl tglfpg" name="tglfpg" required="" value="{{ Carbon\Carbon::parse($fpg->fpg_tgl)->format('d-M-Y ') }}"> 
                                       </div>
                                </td>
                               </tr>
@@ -807,7 +807,7 @@
                                         </div>
                                         @else
                                           <div class="checkbox checkbox-info checkbox-circle">
-                                            <input id="jenisbayaribaking" type="checkbox" name="jenisbayarbank" value="INTERNET BANKING" class="metodebayar jenisbayarbankibaking" disabled="">
+                                            <input id="jenisbayaribaking" type="checkbox" name="jenisbayarbank" value="INTERNET BANKING" class="metodebayar jenisbayarbankibaking">
                                             <label for="jenisbayarbankcekbg">
                                                Internet Banking
                                             </label>
@@ -1039,6 +1039,22 @@
                                 </div>
 
                                 
+                                 <div class="col-md-12 ibanking" style="padding-top: 20px">
+                                  <table class="table table-bordered" id="tbl-ibank">
+                                    <tr>
+                                      <th> Nomor </th>
+                                      <th> No Bukti </th>
+                                      <th> Tanggal </th>
+                                      <th> Kode Bank </th>
+                                      <th> Jatuh Tempo </th>
+                                      <th> Nominal </th>
+                                      <th> Aksi </th>
+                                     
+                                    </tr>
+                                  </table>
+                                </div>
+
+
                                 <div class="col-md-12 dataalltransaksi">
                                     <br>
                                     <br>
@@ -1139,6 +1155,8 @@
       $('.banktujuan2').show(); 
     }
   })
+
+   $('#tbl-ibank').hide();
 
    $('.tglfpg').change(function(){
        tgl = $('.tglfpg').val();
@@ -1469,11 +1487,13 @@
                   $('.checkbgtf').hide();
                   $('.ibanking').show();
                   $('#tbl-ibank').show();
+                  $('#tbl-bank').hide();
                   $('tr.tblbank').remove();
                   tgl = $('.tgl').val();
-                  bank = $('.bank').val();
-                  kodebank = bank.split(",");
+                  bank = $('.bankasaldetail').val();
+                  kodebank = bank.split("+");
                   
+                  alert(tgl);
 
                   if(kodebank == ''){
                     toastr.info("Mohon pilih data bank terlebih dahulu :)");

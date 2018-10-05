@@ -6447,14 +6447,10 @@ public function purchase_ordernotif(Request $request){
 
 				$datafp = DB::select("select * from faktur_pembelian where fp_nofaktur = '$nofaktur'");
 				if(count($datafp) != 0){
-/*						$explode = explode("/", $datafp[0]->fp_nofaktur);
-						$idfaktur3 = $explode[2];
-						$string = explode("-", $idfaktur3);
-						$idfaktur2 = $string[1];
-						$idfakturss = (int)$idfaktur2 + 1;
-						$akhirfaktur = str_pad($idfakturss, 4, '0', STR_PAD_LEFT);
-						$nofaktur = $explode[0] .'/' . $explode[1] . '/'  . $string[0] . '-' . $akhirfaktur;
-*/						
+/*						
+*/				$dataInfo=['status'=>'gagal','info'=>'Nota ' . $nofaktur . 'sudah ada di dalam database'];
+				    DB::rollback();
+			            return json_encode($dataInfo);
 				}
 				else {
 					$nofaktur = $nofaktur;
@@ -11334,7 +11330,7 @@ return $html;
 	
 						$datas['fp1'] = DB::select("select * from faktur_pembelian, supplier, form_tt , form_tt_d, cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , form_tt_d , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and tt_idform = ttd_id and ttd_faktur = fp_nofaktur and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_terimabarang = 'SUDAH' and fp_comp = '$cabang' order by fp_idfaktur asc");
 					}
-					
+
 					if(count($request->arrnofaktur) != 0){
 						for($i = 0 ; $i < count($datas['fp']); $i++){
 							for($j = 0; $j < count($request->arrnofaktur); $j++){
@@ -14290,7 +14286,7 @@ return $html;
 
 			}
 			else if($jenisbayar == '4'){
-				$pelunasan = $request->pelunasan[$j];
+				$pelunasan = $request->pelunasan[$k];
 
 				$pelunasan2 = str_replace(',', '', $pelunasan);
 				
@@ -14306,7 +14302,8 @@ return $html;
 						]);
 			}
 			else if($jenisbayar == '11'){
-				$pelunasan = $request->pelunasan[$j];
+
+				$pelunasan = $request->pelunasan[$k];
 
 				$pelunasan2 = str_replace(',', '', $pelunasan);
 				
@@ -14316,13 +14313,13 @@ return $html;
 				$fp_pelunasan = $datafaktur[0]->bp_pelunasan;
 
 				$penjumlahan = (float)$fp_pelunasan + (float)$pelunasan2;
-				$updatefaktur = fakturpembelian::where('bp_id', '=' , $idfp);
+				$updatefaktur = bonsempengajuan::where('bp_id', '=' , $idfp);
 						$updatefaktur->update([
 							'bp_pelunasan' => $penjumlahan,
 						]);
 			}
 			else if($jenisbayar == '13'){
-				$pelunasan = $request->pelunasan[$j];
+				$pelunasan = $request->pelunasan[$k];
 
 				$pelunasan2 = str_replace(',', '', $pelunasan);
 				
@@ -14332,7 +14329,7 @@ return $html;
 				$fp_pelunasan = $datafaktur[0]->bp_pencairan;
 
 				$penjumlahan = (float)$fp_pelunasan + (float)$pelunasan2;
-				$updatefaktur = fakturpembelian::where('bp_id', '=' , $idfp);
+				$updatefaktur = bonsempengajuan::where('bp_id', '=' , $idfp);
 						$updatefaktur->update([
 							'bp_pencairan' => $penjumlahan,
 						]);
@@ -14600,6 +14597,26 @@ return $html;
 			} //end for
 		}
 		else if($request->jenisbayarbank == 'INTERNET BANKING') {
+
+			$datafpgb = DB::select("select * from fpg , fpg_cekbank where fpgb_idfpg = idfpg and idfpg = '$idfpg'");
+
+			for($g = 0; $g < count($datafpgb); $g++){
+				$noseri = $datafpgb[$g]->fpgb_nocheckbg;
+				$idbank = $datafpgb[$g]->fpgb_kodebank;
+
+				if($noseri != ''){
+					$updatebank = masterbank_dt::where([['mbdt_idmb', '=', $idbank], ['mbdt_noseri' , '=' ,$request->noseri[$g]]]);
+
+					$updatebank->update([
+					 	'mbdt_nofpg' =>  null,
+					 	'mbdt_setuju' => null,
+					 	'mbdt_status' => null,
+					 	'mbdt_nominal' => null,
+					 	'mbdt_tglstatus' => null
+				 	]);	
+				}
+			}
+
 			$deletefpgb = DB::table('fpg_cekbank')->where('fpgb_idfpg' , '=' , $idfpg)->delete();
 			$nofpg = $request->nofpg;
 			DB::DELETE("DELETE FROM bank_masuk where bm_notatransaksi = '$nofpg'");
