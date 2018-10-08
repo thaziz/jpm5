@@ -496,7 +496,7 @@
 
                     '<tr> <td> Jenis PPn </td> <td> : </td> <td> <select class="form-control jenisppn" name="jenisppn">  <option value="T"> Tanpa </option> <option value="E"> Exclude </option> <option value="I"> Include </option> </select> </td> </tr>' + //jenisppn
 
-                    '<tr> <td> PPn </td> <td> : </td> <td> <div class="row"> <div class="col-md-5"> <input type="number" class="form-control input-sm ppn" name="ppn"> </div> <label class="col-md-2"> % </label> <div class="col-md-5">   <input type="text" style="text-align:right" class="form-control input-sm hargappn" readonly name="hasilppn">   </div> </div> </td> </tr>' + //ppn
+                    '<tr> <td> PPn </td> <td> : </td> <td> <div class="row"> <div class="col-md-5"> <input type="number" class="form-control input-sm ppn" name="ppn"> </div> <label class="col-md-2"> % </label> <div class="col-md-5">   <input type="text" style="text-align:right" class="form-control input-sm hargappn"  name="hasilppn"> <input type="hidden" style="text-align:right" class="form-control input-sm" readonly name="jenisitem" value="'+response.jenisitem+'">   </div> </div> </td> </tr>' + //ppn
 
                     '<tr> <td> Total </td> <td> : </td> <td> <label class="col-md-1"> Rp </label> <div class="col-md-8"> <input type="text" class="form-control total input-sm" readonly="" name="total" style="text-align:right">  </div> </td> </tr> </table>'; //total
 
@@ -521,9 +521,9 @@
           
           var angka = 1 + i;
             var rowTable = '<table class="table" border="0">' +
-            '<tr> <td style="width:210px"> No SPP </td> <td> : </td> <td> '+response.spp[i][0].spp_nospp+' </th> <input type="hidden" value='+response.spp[i][0].cotb_id+' name="idcotbsetuju[]"> <input type="hidden" name="jenisitem" value="'+response.jenisitem+'"> </tr>' +
+            '<tr> <td style="width:210px"> No SPP </td> <td> : </td> <td> '+response.spp[i][0].spp_nospp+' </th> <input type="hidden" value='+response.spp[i][0].cotb_id+' name="idcotbsetuju[]">  </tr>' +
             '<tr> <td>  Keperluan  </th> <td> : </td> <td>'+response.spp[i][0].spp_keperluan+'</td> </tr>' +
-            '<tr> <td>  Tgl di Butuhkan </td> <td> : </td> <td>'+response.spp[i][0].spp_tgldibutuhkan+'</td></tr>' +
+            '<tr> <td>  Tgl di Butuhkan </td> <td> : </td> <td>'+response.spp[i][0].spp_tgldibutuhkan+'</td> </tr>' +
             '<tr> <td> Pembayaran </td> <td> : </td> <td> '+response.spp[i][0].spptb_bayar+' hari </td> </tr>' +
             '<tr> <td> Total Biaya di Perlukan </td> <td> : </td><td> Rp '+ addCommas(response.spp[i][0].cotb_totalbiaya) +'</td> </tr>' +
             '<tr> <td> Cabang Pemohon </td> <td> :  </td> <td>'+response.spp[i][0].nama  +'</td> </tr>';
@@ -548,14 +548,13 @@
                         '<th style="width:80px"> Jumlah disetujui </th>' +
                         '<th style="width:80px"> Jumlah dikirim </th>' +
                         '<th style="width:130px"> Harga Per Item </th>' +
-                        '<th style="width:130px"> Total Harga</th>';
-                         if(response.kodejenisitem == 'S' && response.spp[0][0].spp_tipe == 'NS')
-                        {
-                           rowTable +=  '<th > Kendaraan </th>';  
-                        }
-
-              rowTable += '<th style="width:200px" id="tdgudang"> Dikirim Ke </th>' +          
-             '<th style="width:200px" > Keterangan </th>' +      
+                        '<th style="width:130px"> Total Harga</th>' +
+                        '<th style="width:200px" id="tdgudang"> Dikirim Ke </th>';
+                if(response.tipespp == 'NS' && response.kodejenisitem == 'S'){
+                rowTable += '<th> Kendaraan </th>';
+                         }
+                    
+                rowTable += '<th style="width:200px" > Keterangan </th>' +      
                     '</tr>' +
                    
                     '</thead>' +
@@ -571,7 +570,7 @@
               else {
                 itemsupplier = response.itemsupplier[number];
               }
-                  
+
                rowTable += 
                         '<tr>' +
                         '<td > '+no+' <input type="hidden" value='+response.codt[i][j].kode_item+' name="kodeitem[]"> <input type="hidden" value=' +response.codt[i][j].codt_qtyapproved+' name="qtyapproved[]">  <input type="hidden" value='+response.spp[i][0].spp_id+' name="idspp[]"> </td>' +
@@ -586,28 +585,25 @@
 
                         '<td> <input type="text" class="form-control totalharga2 totalharga2'+nosup+'" readonly="" name="totalharga[]" data-id='+nosup+' readonly>  </td>';
 
-
-                        if(response.spp[0][0].spp_tipe == 'NS' && response.jenisitem == 'SPARE PART KENDARAAN') {
-                          rowTable += '<td>'+response.codt[i][j].nopol+' <input type="hidden" class="form-control" name="kendaraan[]" value='+response.codt[i][j].codt_kendaraan+'></td>';
-
-                        }
-
-
                         if(response.spp[0][0].spp_tipe != 'J'){
                           rowTable += '<td id="tdgudang"> <select class="form-control gudang" name="lokasikirim[]" class="tdgudang" readonly>';
                             for(key = 0; key < response.gudang.length; key++){
                               rowTable += '<option value='+response.gudang[key].mg_id+'>'+response.gudang[key].mg_namagudang+'</option></select></td>'
                             }
+                        if(response.tipespp == 'NS' && response.kodejenisitem == 'S'){
+                            rowTable += '<td> <input type="text" class="form-control kendaraan"  data-id='+nosup+' value="'+response.codt[i][j].nopol+'" readonly> <input type="hidden" class="form-control kendaraan" name="kendaraan[]" data-id='+nosup+' value="'+response.codt[i][j].codt_kendaraan+'" readonly></td>'
+                          }
                          
-                            
-                                rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+itemsupplier+'">  </td> </tr>';
-                            
+                        rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+itemsupplier+'">  </td>';
+                        
+                          
+
+                          rowTable += '</tr>';
+
                         }
                         else {
                           rowTable += '<td> <input type="text" class="form-control  keterangandt'+nosup+'" name="keterangandt[]" data-id='+nosup+' required" value="'+itemsupplier+'">  </td> </tr>';
                         }
-
-
                        nosup++;
 
               number++;      

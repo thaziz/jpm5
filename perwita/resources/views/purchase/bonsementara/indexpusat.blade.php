@@ -75,6 +75,64 @@
                     </div>
                 </div>
                 <div class="ibox-content">
+
+
+
+<div class="row" >
+   <form method="post" id="dataSeach">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+
+              <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">Nomor</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <input class="form-control kosong" type="text" name="nomor" id="nomor" placeholder="Nomor">
+                </div>
+              </div>
+
+
+
+              <div class="col-md-1 col-sm-3 col-xs-12">
+                <label class="tebal">Tanggal</label>
+              </div>
+
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                  <div class="input-daterange input-group">
+                    <input id="tanggal1" class="form-control input-sm datepicker2" name="tanggal1" type="text">
+                    <span class="input-group-addon">-</span>
+                    <input id="tanggal2" "="" class="input-sm form-control datepicker2" name="tanggal2" type="text">
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-2 col-sm-6 col-xs-12" align="center">
+                <button class="btn btn-primary btn-sm btn-flat" title="Cari rentang tanggal" type="button" onclick="cari()">
+                  <strong>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </strong>
+                </button>
+                <button class="btn btn-info btn-sm btn-flat" type="button" title="Reset" onclick="resetData()">
+                  <strong>
+                    <i class="fa fa-undo" aria-hidden="true"></i>
+                  </strong>
+                </button>
+              </div>
+      </div>
+
+
+
+ 
+
+
+    </form>
+</div>
+
+
+
                         <div class="row">
             <div class="col-xs-12">
               
@@ -82,7 +140,7 @@
                 <div class="box-body">
                   <div class="col-sm-12">
                   <div class="table-responsive">
-                    <table class="table table-bordered table-striped table_tt ">
+                    <table id="addColumn" class="table table-bordered table-striped table_tt ">
                       <thead style="color: white">
                         <tr>
                           <th>No</th>
@@ -93,48 +151,15 @@
                           <th> Nominal Admin Pusat </th>
                           <th> Nominal Mankeu </th>
                           <th> Status </th>
-                          <th> Proses </th>                         
+                          <th> Proses </th>  
+                          <th> Print </th>                       
                         </tr>
                       </thead>
                       <tbody>
 
-                          @foreach($data['pb'] as $index=>$bonsem)
-                          <tr>
-                            <td> {{$index + 1}} </td>
-                            <td> {{$bonsem->nama}} </td>
-                            <td> {{$bonsem->bp_nota}} </td>
-                            <td> {{ Carbon\Carbon::parse($bonsem->bp_tgl)->format('d-m-Y') }} </td>
-                            <td>{{ number_format($bonsem->bp_nominalkacab ,2)}} </td>
-                            <td style="text-align:right"> @if($bonsem->bp_nominaladmin == null)
-                                  <span class="label label-info"> BELUM DI PROSES </span>
-                                @else
-                                  {{ number_format($bonsem->bp_nominaladmin, 2)}}
-                                @endif
-                            </td>
-                            <td style="text-align:right"> @if($bonsem->bp_nominalkeu == null)
-                                  <span class="label label-info"> BELUM DI PROSES </span>
-                                @else
-                                  {{ number_format($bonsem->bp_nominalkeu, 2)}}
-                                @endif
-                            </td>
-                            <td> <span class="label label-info"> {{$bonsem->status_pusat}} </span> </td>
-                          
-                            <td style="text-align:center">
-                                @if(Auth::user()->PunyaAkses('Bon Sementara Pusat','aktif'))
-                             <button type="button" class="btn btn-sm btn-primary" onclick="setujuadmin({{$bonsem->bp_id}})" data-toggle="modal" data-target="#myModal2">  ADMIN PUSAT  </button>
-                             @endif
-
-                              @if(Auth::user()->PunyaAkses('Bon Sementara Menkeu','aktif'))
-                                @if($bonsem->bp_setujuadmin == 'SETUJU')
-
-                              <button type="button" class="btn btn-sm btn-primary" onclick="setujukeu({{$bonsem->bp_id}})" data-toggle="modal" data-target="#myModalMenkeu">  MANAGER KEUANGAN  </button>
-                              @endif
-                              @endif
+                        
 
 
-                             </td>
-                            </tr>
-                          @endforeach
                       </tbody>
                     </table>
                     </div>
@@ -196,6 +221,11 @@
                                           <tr>
                                             <th> Keterangan Kepala Cabang </th>
                                             <td> <input type="text" class="form-control keterangankacab edit" name="keterangankacab" readonly> </td>
+                                          </tr>
+
+                                            <tr>
+                                            <th> Keterangan Admin Pusat </th>
+                                            <td> <input type="text" class="form-control keteranganadminpusat " name="keteranganadmin"> </td>
                                           </tr>
                                         </table>
 
@@ -269,6 +299,11 @@
                                             <th> Keterangan Kepala Cabang </th>
                                             <td> <input type="text" class="form-control keterangankacab edit" name="keterangankacab" readonly> </td>
                                           </tr>
+
+                                          <tr>
+                                            <th> Keterangan Pusat </th>
+                                            <td> <input type="text" class="form-control keteranganpusat edit" name="keteranganpusat"> </td>
+                                          </tr>
                                         </table>
 
                                       </div>
@@ -308,6 +343,135 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+var tablex;
+setTimeout(function () {            
+   table();
+   tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
+    });
+});
+
+      }, 1500);
+
+     function table(){
+   $('#addColumn').dataTable().fnDestroy();
+   tablex = $("#addColumn").DataTable({        
+         responsive: true,
+        "language": dataTableLanguage,
+    processing: true,
+            serverSide: true,
+            ajax: {
+              "url": "{{ url("bonsementarapusat/bonsementarapusat/table") }}",
+              "type": "get",
+              data: {
+                    "_token": "{{ csrf_token() }}",                    
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),
+                    "nomor" :$('#nomor').val(),
+                    },
+              },
+            columns: [
+            {data: 'no', name: 'no'},             
+            {data: 'nama', name: 'nama'},                           
+            {data: 'bp_nota', name: 'bp_nota'},            
+            {data: 'bp_tgl', name: 'bp_tgl'},            
+            {data: 'bp_nominalkacab', name: 'bp_nominalkacab'},
+            {data: 'bp_nominaladmin', name: 'bp_nominaladmin'},
+            {data: 'bp_nominalkeu', name: 'bp_nominalkeu'},
+            {data: 'status_pusat', name: 'status_pusat'},
+            {data: 'prosesmodal', name: 'prosesmodal'},
+            {data: 'action', name: 'action'},
+
+
+                            
+
+    
+     
+            ],
+            "pageLength": 10,
+            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+            "bFilter": false,
+            "responsive": false,
+           /*"fnCreatedRow": function (row, data, index) {
+            $('td', row).eq(0).html(index + 1);
+            }*/
+
+
+
+    });
+   
+}
+
+
+
+
+dateAwal();
+function dateAwal(){
+      var d = new Date();
+      d.setDate(d.getDate()-7);
+
+      /*d.toLocaleString();*/
+      $('#tanggal1').datepicker({
+            format:"dd-mm-yyyy",
+            autoclose: true,
+      })
+      /*.datepicker( "setDate", d);*/
+      $('#tanggal2').datepicker({
+            format:"dd-mm-yyyy",
+            autoclose: true,
+      })
+      /*.datepicker( "setDate", new Date());*/
+      $('.kosong').val('');
+      $('.kosong').val('').trigger('chosen:updated');
+}
+
+ function cari(){
+  table();
+ }
+
+ function resetData(){
+  $('#tanggal1').val('');
+  $('#tanggal2').val('');
+  $('.kosong').val('');
+  table();
+  dateAwal();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  $.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -355,7 +519,7 @@ $('#statuskeu').submit(function(event){
           success : function (response){
                alertSuccess();
                $('.simpandata').attr('disabled' ,true);
-               $('#myModal2').modal("toggle" );
+               $('#myModalMenkeu').modal("toggle" );
                location.reload();
           },
           error : function(){

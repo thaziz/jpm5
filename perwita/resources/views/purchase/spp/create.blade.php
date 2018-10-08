@@ -283,7 +283,53 @@
         return true;
     })
 
-     $('.date').datepicker({
+
+    $('#formId').submit(function(){
+      event.preventDefault();
+          var post_url3 = $(this).attr("action");
+          var form_data3 = $(this).serialize();
+       
+        
+           swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data Faktur Pembelian!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: false
+          },
+           function(){
+           // var accHutang=$(".idsup_po").find(':selected').data('accHutang');
+          $.ajax({
+            type : "POST",
+            data : form_data3,
+            url : post_url3,
+            dataType : "json",
+            success : function(response){
+              console.log(response);
+                if(response[0].status == "error"){                   
+                    swal({
+                        title: "error",
+                        text: response[0].message,
+                        type: "error",                        
+                    });
+                   
+                }
+                else {
+                  alertSuccess();
+                  $('.simpan').hide();
+                }
+            },
+            error:function(data){
+                swal("Error", "Server Sedang Mengalami Masalah", "error");
+            }
+          })
+          });
+    });
+
+    $('.date').datepicker({
         autoclose: true,
         format: 'dd-MM-yyyy',      
     }).datepicker("setDate", "0");
@@ -293,6 +339,7 @@
 
      $('.tglinput').change(function(){
        var comp = $('.cabang').val();
+        var tgldate = $('.tglinput').datepicker('getDate');
         var tglinput = $('.tglinput').val();
         $('.valcabang').val(comp);
           $.ajax({    
@@ -302,40 +349,15 @@
               dataType:'json',
               success : function(data){
                if(data.status == 'sukses'){
-                        var d = new Date(tglinput);               
-                        //tahun
-                        var year = d.getFullYear();
-                        //bulan
-                        var month = d.getMonth();
-                        var month1 = parseInt(month + 1)
-                        console.log(d);
-                        console.log();
-                        console.log(year);
-
-                        if(month < 10) {
-                          month = '0' + month1;
-                        }
-                        console.log(d);
-
-                        tahun = String(year);
-        //                console.log('year' + year);
-                        year2 = tahun.substring(2);
-                        //year2 ="Anafaradina";
-
-                      
-                         nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
-                        console.log(nospp);
-                        $('.nospp').val(nospp);
+                  
+                     
+                        $('.nospp').val(data.data);
                          nospp = $('.nospp').val();
                   }
                   else {
                       location.reload();
                   }
                 
-                  if(month == 'NANN'){
-                      location.reload();
-                  }
-
                  
               },
               error : function(){
@@ -420,38 +442,19 @@
 
 
        comp = $('.cabang').val();
+
+       tgldate = $('.tglinput').datepicker('getDate');
        tglinput = $('.tglinput').val();
         $.ajax({    
             type :"get",
-            data : {comp,tglinput},
+            data : {comp,tgldate},
             url : baseUrl + '/suratpermintaanpembelian/getnospp',
             dataType:'json',
             success : function(data){
                 if(data.status == 'sukses'){
-                      var d = new Date(tglinput);               
-                      //tahun
-                      var year = d.getFullYear();
-                      //bulan
-                      var month = d.getMonth();
-                      var month1 = parseInt(month + 1)
-                      console.log(d);
-                      console.log();
-                      console.log(year);
 
-                      if(month < 10) {
-                        month = '0' + month1;
-                      }
-                      console.log(d);
-
-                      tahun = String(year);
-      //                console.log('year' + year);
-                      year2 = tahun.substring(2);
-                      //year2 ="Anafaradina";
-
-                    
-                       nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
-                      console.log(nospp);
-                      $('.nospp').val(nospp);
+                   
+                      $('.nospp').val(data.data);
                        nospp = $('.nospp').val();
                 }
                 else {
@@ -475,6 +478,7 @@
     $('.cabang').change(function(){    
       var comp = $(this).val();
       var tglinput = $('.tglinput').val();
+      var tgldate = $('.tglinput').datepicker('getDate');
       $('.valcabang').val(comp);
         $.ajax({    
             type :"get",
@@ -483,30 +487,8 @@
             dataType:'json',
             success : function(data){
              if(data.status == 'sukses'){
-                      var d = new Date(tglinput);               
-                      //tahun
-                      var year = d.getFullYear();
-                      //bulan
-                      var month = d.getMonth();
-                      var month1 = parseInt(month + 1)
-                      console.log(d);
-                      console.log();
-                      console.log(year);
-
-                      if(month < 10) {
-                        month = '0' + month1;
-                      }
-                      console.log(d);
-
-                      tahun = String(year);
-      //                console.log('year' + year);
-                      year2 = tahun.substring(2);
-                      //year2 ="Anafaradina";
-
-                    
-                       nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
-                      console.log(nospp);
-                      $('.nospp').val(nospp);
+                   
+                      $('.nospp').val(data.data);
                        nospp = $('.nospp').val();
                 }
                 else {
@@ -620,9 +602,7 @@
             success : function(data){
             $('.loadingjenis').css('display' , 'none');
 
-
-               arrItem = data;
-                  
+               arrItem = data;                 
                   if(arrItem.length > 0) {
                       $('.barang').empty();
                       $('.barang').append(" <option value=''>  -- Pilih Barang -- </option> ");
@@ -1040,7 +1020,7 @@
                             "<td style='width:240px'><input type='text' class='form-control' value='"+ outputSup[a] +"' readonly name='outputSup[]'>" + 
                             "<input type='hidden' name='idsupplier[]' value='"+kodesup[hslsyaratkredit[a]]+"'> </td>" +
                             "<td class='text-right'><input type='text' class='input-sm form-control' value='"+ addCommas(hsljmlhpmbayaran) +"'  readonly style='text-align:right'  >  <input type='hidden' class='input-sm form-control' value='"+ addCommas(hsljmlhpmbayaran) +"-"+hslkodesup[a]+"' name='totbiaya[]' readonly style='text-align:right'  ></td>" +
-                            "<td> <div class='col-sm-7'> <input type='text' class='input-sm form-control input-sm' name='syaratkredit[]' required value='"+arrsyarat[hslsyaratkredit[a]]+"'> </div> <label class='control-label col-sm-2'> Hari</label>  </td>" +
+                            "<td> <div class='col-sm-7'> <input type='text' class='input-sm form-control input-sm' name='syaratkredit[]' required value='"+arrsyarat[hslsyaratkredit[a]]+"' readonly> </div> <label class='control-label col-sm-2'> Hari</label>  </td>" +
                             "<td> <input type='hidden' class='form-control' readonly value='"+hasilrow+"' name='row'> </td>  </tr>";
              $('#tbl_total_sup').append(rowhslSupp);
           }

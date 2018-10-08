@@ -15,10 +15,10 @@ class agen_Controller extends Controller
 
          $cabang = Auth::user()->kode_cabang;
       if (Auth::user()->punyaAkses('Agen','all')) {
-          $sql = "    SELECT a.kode, a. nama, a.kategori, k.nama kota, a.alamat, a.telpon, a.fax, a.komisi,a.komisi_agen FROM agen a
+          $sql = "    SELECT a.kode, a. nama, a.kategori, k.nama kota, a.alamat, a.telpon, a.fax, a.komisi,a.komisi_agen,a.aktif FROM agen a
                     LEFT JOIN kota k ON k.id=a.id_kota  ";
       }else{
-         $sql = "    SELECT a.kode, a. nama, a.kategori, k.nama kota, a.alamat, a.telpon, a.fax, a.komisi,a.komisi_agen FROM agen a
+         $sql = "    SELECT a.kode, a. nama, a.kategori, k.nama kota, a.alamat, a.telpon, a.fax, a.komisi,a.komisi_agen,a.aktif FROM agen a
                     LEFT JOIN kota k ON k.id=a.id_kota where kode_cabang = '$cabang' ";
       }
 
@@ -47,7 +47,13 @@ class agen_Controller extends Controller
 
                                 $data[$i]['button'] = $all_div;
                                
-                                $i++;
+            if ($data[$i]['aktif'] == "true") {
+              $data[$i]['aktif_button'] = '<input type="checkbox" class="aktif form-control" checked="" data-id="'.$data[$i]['kode'].'">';
+            }else{
+              $data[$i]['aktif_button'] = '<input type="checkbox" class="aktif form-control" data-id="'.$data[$i]['kode'].'">';
+            }
+          $i++;
+
         }
         $datax = array('data' => $data);
         echo json_encode($datax);
@@ -181,6 +187,16 @@ class agen_Controller extends Controller
         $cabang = DB::select(DB::raw(" SELECT kode,nama FROM cabang ORDER BY nama ASC "));
         $akun= DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
         return view('master_sales.agen.index',compact('kota','cabang','akun'));
+    }
+
+    public function set_aktif(request $req)
+    {
+      $data = DB::table('agen')
+                ->where('kode',$req->id)
+                ->update([
+                  'aktif' => $req->cek
+                ]);
+      return response()->json(['status'=>1]);
     }
 
 }

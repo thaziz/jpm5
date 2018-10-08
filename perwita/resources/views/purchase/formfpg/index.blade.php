@@ -123,6 +123,7 @@
 
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
+
                     <select class="form-control chosen-select-width kosong" name="idjenisbayar" id="idjenisbayar">
                       <option value="">Pilih Jenis Bayar</option>
                       @foreach($data['jenisBayar'] as $jenisByr)
@@ -140,6 +141,7 @@
 
               <div class="col-md-4 col-sm-6 col-xs-12">
                 <div class="form-group">
+
                      <select class="form-control chosen-select-width kosong" name="nosupplier" id="nosupplier">
                      <option value="">Pilih Supplier</option>
                       @foreach($data['supplier'] as $supplier)
@@ -151,6 +153,29 @@
 
 
     </div>
+
+
+     <div class="col-md-12 col-sm-12 col-xs-12">
+             
+
+
+              <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">Nominal</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <input type="" name="nominal" class="form-control kosong" id="nominal">                    
+                </div>
+              </div>
+
+
+
+              
+
+
+    </div>
+
     </form>
 </div>
 
@@ -242,9 +267,19 @@
             "pageLength": 10,
             "language": dataTableLanguage,
     });*/
-dateAwal();
-var tablex;
-table();
+$('#nominal').maskMoney({thousands:',', decimal:'.', precision:0});
+  var tablex;
+setTimeout(function () {            
+   table();
+   tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
+    });
+});
+
+      }, 1500);
+
      function table(){
    $('#addColumn').dataTable().fnDestroy();
    tablex = $("#addColumn").DataTable({        
@@ -262,6 +297,7 @@ table();
                     "nosupplier" :$('#nosupplier').val(),
                     "idjenisbayar" :$('#idjenisbayar').val(),
                     "nofpg" :$('#nofpg').val(),
+                    "nominal" :$('#nominal').val(),
                     },
               },
             columns: [
@@ -285,6 +321,7 @@ table();
             ],
             "pageLength": 10,
             "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+            "bFilter": false,
            /*"fnCreatedRow": function (row, data, index) {
             $('td', row).eq(0).html(index + 1);
             }*/
@@ -295,12 +332,7 @@ table();
    notif();
 }
 
-tablex.on('draw.dt', function () {
-    var info = tablex.page.info();
-    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
-        cell.innerHTML = i + 1 + info.start;
-    });
-});
+
 
 
 
@@ -368,7 +400,7 @@ function(){
 }
 
 
-
+dateAwal();
 function dateAwal(){
       var d = new Date();
       d.setDate(d.getDate()-7);
@@ -377,13 +409,15 @@ function dateAwal(){
       $('#tanggal1').datepicker({
             format:"dd-mm-yyyy",        
             autoclose: true,
-      }).datepicker( "setDate", d);
+      })
+      /*.datepicker( "setDate", d);*/
       $('#tanggal2').datepicker({
             format:"dd-mm-yyyy",        
             autoclose: true,
-      }).datepicker( "setDate", new Date());
-      $('.kosong').val('');
+      })
+      /*.datepicker( "setDate", new Date());      */
       $('.kosong').val('').trigger('chosen:updated');
+      $('.kosong').val('');      
 }
 
  function cari(){
@@ -391,8 +425,13 @@ function dateAwal(){
  }
 
  function resetData(){  
-  dateAwal();
+  $('#tanggal1').val('');
+  $('#tanggal2').val('');  
+  /*$('#nofpg').val('');*/
+  $('.kosong').val('');      
+  $('.kosong').val('').trigger('chosen:updated');
   table();
+  dateAwal();
 }  
 function notif(){
    $.ajax({

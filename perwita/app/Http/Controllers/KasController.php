@@ -695,28 +695,24 @@ class KasController extends Controller
 			]);
 		}
 
-	    $cari_nota = DB::table('bukti_kas_keluar')
-					   ->where('bkk_nota',$request->no_trans)
+	    $cari_nota = DB::table('biaya_penerus_kas')
+					   ->where('bpk_nota',$request->no_trans)
 					   ->first();
 		if ($cari_nota != null) {
-			if ($cari_nota->updated_by == $user) {
-				return 'Data Sudah Ada';
-			}else{
-				$bulan = Carbon::parse(str_replace('/', '-', $request->tN))->format('m');
-			    $tahun = Carbon::parse(str_replace('/', '-', $request->tN))->format('y');
+			$bulan = Carbon::parse(str_replace('/', '-', $request->tN))->format('m');
+		    $tahun = Carbon::parse(str_replace('/', '-', $request->tN))->format('y');
 
-			    $cari_nota = DB::select("SELECT  substring(max(bpk_nota),13) as id from biaya_penerus_kas
-			                                    WHERE bpk_comp = '$request->cabang'
-			                                    AND to_char(bpk_tanggal,'MM') = '$bulan'
-			                                    AND to_char(bpk_tanggal,'YY') = '$tahun'
-			                                    ");
-			    $index = (integer)$cari_nota[0]->id + 1;
-			    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
+		    $cari_nota = DB::select("SELECT  substring(max(bpk_nota),13) as id from biaya_penerus_kas
+		                                    WHERE bpk_comp = '$request->cabang'
+		                                    AND to_char(bpk_tanggal,'MM') = '$bulan'
+		                                    AND to_char(bpk_tanggal,'YY') = '$tahun'
+		                                    ");
+		    $index = (integer)$cari_nota[0]->id + 1;
+		    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
 
-				
+			
 
-				$nota = 'BPK' . $bulan . $tahun . '/' . $request->cabang . '/' .$index;
-			}
+			$nota = 'BPK' . $bulan . $tahun . '/' . $request->cabang . '/' .$index;
 		}elseif ($cari_nota == null) {
 			$nota = $request->no_trans;
 		}

@@ -32,13 +32,14 @@
         <br>
    <div class="wrapper wrapper-content animated fadeInRight">
    
-    <div class="col-md-2">
+   <!--  <div class="col-md-2">
       <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
         <h2 style='text-align:center'> <b> {{$data['countspp']}} SPP </b></h2> <h4 style='text-align:center'> BELUM DI PROSES PO </h4>
       </div>
     </div>   
-  </div>
+  </div> -->
+  <div id="notif"></div>
 
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -56,6 +57,104 @@
                     @endif
                 </div>
                 <div class="ibox-content">
+
+
+
+<div class="row" >
+   <form method="post" id="dataSeach">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+              
+               <div class="col-md-1 col-sm-3 col-xs-12">
+                <label class="tebal">No PO</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <input class="form-control kosong" type="text" name="nofpg" id="nofpg" placeholder="No PO">
+                </div>
+              </div>
+
+
+            
+              <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">Tanggal</label>
+              </div>
+
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                  <div class="input-daterange input-group">
+                    <input id="tanggal1" class="form-control input-sm datepicker2 kosong" name="tanggal1" type="text">
+                    <span class="input-group-addon">-</span>
+                    <input id="tanggal2" "="" class="input-sm form-control datepicker2 kosong" name="tanggal2" type="text">
+                  </div>
+                </div>
+              </div>
+            
+
+              <div class="col-md-2 col-sm-6 col-xs-12" align="center">
+                <button class="btn btn-primary btn-sm btn-flat" title="Cari rentang tanggal" type="button" onclick="cari()">
+                  <strong>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </strong>
+                </button>
+                <button class="btn btn-info btn-sm btn-flat" type="button" title="Reset" onclick="resetData()">
+                  <strong>
+                    <i class="fa fa-undo" aria-hidden="true"></i>
+                  </strong>
+                </button>                
+              </div>
+      </div>
+
+
+
+      <div class="col-md-12 col-sm-12 col-xs-12">
+             
+
+
+           
+
+
+
+              <div class="col-md-1 col-sm-3 col-xs-12">
+                <label class="tebal">Supplier</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+
+                     <select class="form-control chosen-select-width kosong" name="nosupplier" id="nosupplier">
+                     <option value="">Pilih Supplier</option>
+                      @foreach($data['supplier'] as $supplier)
+                      <option value="{{$supplier->idsup}}">{{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
+                      @endForeach
+                    </select>
+                </div>
+              </div>
+
+
+                 <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">Total Biaya</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                <input type="" name="total" class="form-control kosong" id="total">                    
+                </div>
+              </div>
+
+
+    </div>
+
+    </form>
+</div>
+
+
+
+
+
+
+
+
                         <div class="row">
             <div class="col-xs-12">
               
@@ -69,11 +168,11 @@
                     
                 <div class="box-body">
                 
-                  <table id="addColumn" class="table table-bordered table-striped tbl-purchase">
+                  <table width="100%" id="addColumn" class="table table-bordered table-striped tbl-purchase">
                     <thead>
                      <tr>
                         <th style="width:10px">No</th>
-                        <th> NO PO </th>
+                        <th> No PO </th>
                         <th> Tanggal </th>
                         <th> Cabang </th>                  
                         <th> Supplier </th>
@@ -86,52 +185,7 @@
 
                     </thead>
                     
-                    <tbody>
-                      @foreach($data['po'] as $index=>$po)
-                      <tr>
-                          <td> {{$index + 1}} </td>
-                         
-                          <td> <a href="{{url('purchaseorder/detail/'. $po->po_id .'')}}">{{$po->po_no}} </a>
-                            <input type='hidden' value="{{$po->po_id}}"  class="po_id">  </td>
-                          <td> {{ Carbon\Carbon::parse($po->created_at)->format('d-M-Y') }} </td>
-                          <td> {{$po->nama}}</td>
-                          <td> {{$po->nama_supplier}} </td>
-                          <td>  Rp {{number_format($po->po_totalharga, 2)}}</td>
-                          <td> @if($po->po_tipe == 'J')
-                                  JASA
-                              @elseif($po->po_tipe == 'NS')
-                                  NON STOCK
-                              @else
-                                  STOCK
-                              @endif
-
-                          </td>
-                          <td> 
-                        
-                            @if(Auth::user()->punyaAkses('Purchase Order','hapus'))
-                          
-                              <a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData({{$po->po_id}})">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                              </a>
-                         
-                            @endif
-
-                            @if(Auth::user()->punyaAkses('Purchase Order','print'))
-                            @if($po->po_setujufinance != '')
-                         
-                              <span class='label label-warning '> {{$po->po_setujufinance}}</span>
-                            @endif
-                              @if($po->po_setujufinance == 'SETUJU')
-                            <a class="btn btn-sm btn-info print" type="button" href="print/{{ $po->po_id }}"> <i class="fa fa-print" aria-hidden="true"> </i> </a>
-                            @endif
-                           @endif
-                          
-                             </td>
-                      </tr>
-                      @endforeach
-
-                    
-                    </tbody>
+                 
                    
                   </table>
                 </div><!-- /.box-body -->
@@ -272,15 +326,146 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-  //$('.labelkeuangand').hide();
+  
+$('#total').maskMoney({thousands:',', decimal:'.', precision:0});
+ var tablex;
+setTimeout(function () {            
+   table();
+   tablex.on('draw.dt', function () {
+    var info = tablex.page.info();
+    tablex.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1 + info.start;
+    });
+});
 
-    tableDetail = $('#addColumn').DataTable({
+      }, 1500);
+
+     function table(){
+   $('#addColumn').dataTable().fnDestroy();
+   tablex = $("#addColumn").DataTable({        
+         responsive: true,
+        "language": dataTableLanguage,
+    processing: true,
+            serverSide: true,
+            ajax: {
+              "url": "{{ url("purchaseorder/purchaseorder/table") }}",
+              "type": "get",
+              data: {
+                    "_token": "{{ csrf_token() }}",                    
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),
+                    "nosupplier" :$('#nosupplier').val(),
+                    "total" :$('#total').val(),
+                    "nofpg" :$('#nofpg').val(),
+                    },
+              },
+            columns: [
+            {data: 'no', name: 'no'},             
+            {data: 'po_no', name: 'po_no'},                           
+            {data: 'created_at', name: 'created_at'},            
+            {data: 'nama', name: 'nama'},
+            {data: 'nama_supplier', name: 'nama_supplier'},
+            {data: 'po_totalharga', name: 'po_totalharga'},            
+            {data: 'po_tipe', name: 'po_tipe'},                                           
+            {data: 'action', name: 'action'},                        
+    
+
+
+
+   
+                          
+                         
+               
+                   
+                          
+                            
+                          
+                          
+                          
+                          
+                          
+                    
+                          
+
+                    
+                                  
+
+
+            ],
+            "pageLength": 10,
+            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+            "bFilter": false,
+            "responsive": false,
+           /*"fnCreatedRow": function (row, data, index) {
+            $('td', row).eq(0).html(index + 1);
+            }*/
+
+
+
+    });
+   notif();
+}
+
+
+
+
+dateAwal();
+function dateAwal(){
+      var d = new Date();
+      d.setDate(d.getDate()-7);
+
+      /*d.toLocaleString();*/
+      $('#tanggal1').datepicker({
+            format:"dd-mm-yyyy",        
+            autoclose: true,
+      })
+      /*.datepicker( "setDate", d);*/
+      $('#tanggal2').datepicker({
+            format:"dd-mm-yyyy",        
+            autoclose: true,
+      })
+      /*.datepicker( "setDate", new Date());      */
+      $('.kosong').val('').trigger('chosen:updated');
+      $('.kosong').val('');      
+}
+
+ function cari(){
+  table();  
+ }
+
+ function resetData(){  
+  $('#tanggal1').val('');
+  $('#tanggal2').val('');  
+  /*$('#nofpg').val('');*/
+  $('.kosong').val('');      
+  $('.kosong').val('').trigger('chosen:updated');
+  table();
+  dateAwal();
+}  
+function notif(){
+   $.ajax({
+      url:baseUrl + '/purchaseorder/purchaseorder/notif',
+      type:'get',   
+       data: {
+                    "_token": "{{ csrf_token() }}",                    
+                    "tanggal1" :$('#tanggal1').val(),
+                    "tanggal2" :$('#tanggal2').val(),
+                    "nosupplier" :$('#nosupplier').val(),
+                    "idjenisbayar" :$('#idjenisbayar').val(),
+                    "nofpg" :$('#nofpg').val(),
+                    },   
+      success:function(data){
+        $('#notif').html(data);
+    }
+  });
+}
+/*    tableDetail = $('#addColumn').DataTable({
             responsive: true,
             searching: true,
             //paging: false,
             "pageLength": 10,
             "language": dataTableLanguage,
-    });
+    });*/
 
     $('.date').datepicker({
         autoclose: true,

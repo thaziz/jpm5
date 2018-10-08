@@ -137,11 +137,13 @@ class pengembalian_bonsem_controller extends Controller
             })
             ->addColumn('status', function ($data) {
               if ($data->bp_status_pengembalian == 'Approve') {
-                return '<label class="label label-success">APPROVED</label>';
+                return '<label class="label label-default">APPROVED</label>';
               }else if($data->bp_status_pengembalian == 'Released'){
                 return '<label class="label label-warning">RELEASED</label>';
               }else if($data->bp_status_pengembalian == 'Process'){
                 return '<label class="label label-info">PROCESS</label>';
+              }else if($data->bp_status_pengembalian == 'Posting'){
+                return '<label class="label label-success">POSTING</label>';
               }
             })
             ->addColumn('tagihan', function ($data) {
@@ -198,7 +200,7 @@ class pengembalian_bonsem_controller extends Controller
         $data = DB::table('bonsem_pengajuan')
               ->where('bp_terima','DONE')
               ->where('bp_nota','LIKE','%'.$req->nota.'%')
-              ->where('bp_status_pengembalian','LIKE','%Process%')
+              ->where('bp_status_pengembalian','!=','Released')
               ->get();
       }else{
         $cabang = Auth::user()->kode_cabang;
@@ -206,7 +208,7 @@ class pengembalian_bonsem_controller extends Controller
               ->where('bp_cabang',$cabang)
               ->where('bp_terima','DONE')
               ->where('bp_nota','LIKE','%'.$req->nota.'%')
-              ->where('bp_status_pengembalian','LIKE','%Process%')
+              ->where('bp_status_pengembalian','!=','Released')
               ->get();
       }
     }else{
@@ -228,14 +230,14 @@ class pengembalian_bonsem_controller extends Controller
                 $a = '';
               if (Auth::user()->punyaAkses('Pengembalian Bonsem','ubah')) {
                 if(cek_periode(carbon::parse($data->bp_tgl)->format('m'),carbon::parse($data->bp_tgl)->format('Y') ) != 0){
-                      $a = '<a title="Edit" class="btn btn-xs btn-warning" onclick="pengembalian(\''.$data->bp_id.'\')">
-                        <i class="fa fa-arrow-right" aria-hidden="true"></i></a> ';
+                      // $a = '<a title="Edit" class="btn btn-xs btn-warning" onclick="pengembalian(\''.$data->bp_id.'\')">
+                      //   <i class="fa fa-arrow-right" aria-hidden="true"></i></a> ';
                     }
                 }else{
                     if ($data->bp_status_pengembalian != 'Approve') {
                     if(cek_periode(carbon::parse($data->bp_tgl)->format('m'),carbon::parse($data->bp_tgl)->format('Y') ) != 0){
-                          $a = '<a title="Edit" class="btn btn-xs btn-warning" onclick="pengembalian(\''.$data->bp_id.'\')">
-                            <i class="fa fa-arrow-right" aria-hidden="true"></i></a> ';
+                          // $a = '<a title="Edit" class="btn btn-xs btn-warning" onclick="pengembalian(\''.$data->bp_id.'\')">
+                          //   <i class="fa fa-arrow-right" aria-hidden="true"></i></a> ';
                         }
                   }
                 }
@@ -262,11 +264,21 @@ class pengembalian_bonsem_controller extends Controller
             })
             ->addColumn('status', function ($data) {
               if ($data->bp_status_pengembalian == 'Approve') {
-                return '<label class="label label-success">APPROVED</label>';
+                return '<label class="label label-default">APPROVED</label>';
               }else if($data->bp_status_pengembalian == 'Released'){
                 return '<label class="label label-warning">RELEASED</label>';
               }else if($data->bp_status_pengembalian == 'Process'){
                 return '<label class="label label-info">PROCESS</label>';
+              }else if($data->bp_status_pengembalian == 'Posting'){
+                return '<label class="label label-success">POSTING</label>';
+              }
+            })->addColumn('bank', function ($data) {
+              $bank = DB::table('masterbank')
+                        ->get();
+              foreach ($bank as $key => $v) {
+                if ($data->bp_akun_tujuan_pengembalian == $v->mb_id) {
+                  return $v->mb_nama;
+                }
               }
             })
             ->addColumn('tagihan', function ($data) {
@@ -297,7 +309,8 @@ class pengembalian_bonsem_controller extends Controller
                       'bp_keterangan_pengembalian'=> strtoupper($req->keterangan),
                       'bp_akun_tujuan_pengembalian'=> $req->akun_bank,
                       'bp_tanggal_pengembalian'=> $req->tanggal,
-                      'bp_sisapemakaian'=> 0
+                      'bp_sisapemakaian'=> 0,
+                      'bp_total_pengembalian'=> $cari->bp_sisapemakaian
                     ]);
 
         // //JURNAL

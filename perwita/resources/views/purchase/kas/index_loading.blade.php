@@ -241,7 +241,7 @@ function filtering_nota() {
 function(){
 
      $.ajax({
-      url:baseUrl + '/biaya_penerus_loading/hapuskas/'+id,
+      url:baseUrl + '/biaya_penerus/hapuskas/'+id,
       type:'get',
       success:function(data){
         if (data.status == '1') {

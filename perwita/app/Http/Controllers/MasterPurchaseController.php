@@ -50,7 +50,8 @@ class MasterPurchaseController extends Controller
 	public function createmasteritem() {
 		$data['cabang'] = master_cabang::all();
 		$data['jenisitem'] = masterJenisItemPurchase::all();
-		$akun = DB::table('d_akun')->select('id_akun','nama_akun')->get();
+		$akun = DB::select("select * from d_akun where is_active = '1'");
+
 		$id=masterItemPurchase::max('kode_item'); 
 		
 		if(isset($id)) {
@@ -84,53 +85,53 @@ class MasterPurchaseController extends Controller
 		if($stock == 'Y'){
 			if($updatestock == 'T'){
 				if($idgrupitem == 'P'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang' and is_active = '1'");
 				}
 				else if($idgrupitem == 'S'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' and is_active = '1' ");
 				}
 				else if($idgrupitem == 'A'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang' and is_active = '1'");
 				}
 				else if($idgrupitem == 'C'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang' and is_active = '1'");
 				}
 				else {
-					$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' ");
+					$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and is_active = '1' ");
 				}
 			}
 			else if($updatestock == 'Y'){
 				if($idgrupitem == 'P'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1501%' and kode_cabang = '000'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1501%' and kode_cabang = '000' and is_active = '1'");
 					//return json_encode($data);
 				}
 				else if($idgrupitem == 'S'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1502%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1502%' and kode_cabang = '$cabang' and is_active = '1'");
 				}
 				else if($idgrupitem == 'A'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1503%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1503%' and kode_cabang = '$cabang' and is_active = '1'");
 				}
 				else if($idgrupitem == 'L'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1599%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1599%' and kode_cabang = '$cabang' and is_active = '1'");
 
 				}
 				else if($idgrupitem == 'C'){
 					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
 				}
 				else {
-					$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and is_active = '1'");
 				}
 			}
 		}		
 		else {
 			if($idgrupitem == 'C'){
-				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '1604%'");
+				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '1604%' and is_active = '1'");
 			}
 			else if($idgrupitem == 'B'){
-				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' or id_akun LIKE '7%' or id_akun LIKE '8%' and kode_cabang = '$cabang'");
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' or id_akun LIKE '7%' or id_akun LIKE '8%' and kode_cabang = '$cabang' and is_active = '1'");
 			}
 			else {
-				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
+				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and is_active = '1'");
 			}
 			
 		}
@@ -152,43 +153,43 @@ class MasterPurchaseController extends Controller
 		if($stock == 'Y'){
 			if($updatestock == 'T'){
 				if($cabang == 000){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '7%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '7%' and kode_cabang = '$cabang' and is_active = '1'");
 				}
 				else {
 					if($idgrupitem == 'P'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5311%' and kode_cabang = '$cabang'");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5311%' and kode_cabang = '$cabang' and is_active = '1'");
 					}
 					else if($idgrupitem == 'S'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '$cabang' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' or id_akun LIKE '6113%' and kode_cabang = '$cabang'");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '$cabang' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' or id_akun LIKE '6113%' and kode_cabang = '$cabang' and is_active = '1'");
 					}
 					else if($idgrupitem == 'A'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang' and is_active = '1'");
 					}
 					else if($idgrupitem == 'C'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6102%' and kode_cabang = '$cabang'");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6102%' and kode_cabang = '$cabang' and is_active = '1'");
 					}
 					else {
-						$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' ");
+						$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and is_active = '1' ");
 					}
 				}
 			}
 			else if($updatestock == 'Y'){
 				if($idgrupitem == 'P'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1501%' and kode_cabang = '000'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1501%' and kode_cabang = '000' and is_active = '1'");
 					//return json_encode($data);
 				}
 				else if($idgrupitem == 'S'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1502%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1502%' and kode_cabang = '$cabang' and is_active = '1'");
 				}
 				else if($idgrupitem == 'A'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1503%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1503%' and kode_cabang = '$cabang' and is_active = '1'");
 				}
 				else if($idgrupitem == 'L'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1599%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1599%' and kode_cabang = '$cabang' and is_active = '1'");
 
 				}
 				else if($idgrupitem == 'C'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang' and is_active = '1'");
 				}
 				else {
 					$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
@@ -198,18 +199,18 @@ class MasterPurchaseController extends Controller
 		else {
 
 			if($idgrupitem == 'C'){
-				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '1604%'");
+				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '1604%' and is_active = '1'");
 			}
 			else if($idgrupitem == 'B'){
 				if($cabang == 000){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '7%' and  kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '7%' and  kode_cabang = '$cabang' and is_active = '1'");
 				}
 				else {
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' and kode_cabang = '$cabang' and is_active = '1'");
 				}
 			}
 			else {
-				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
+				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and is_active = '1'");
 			}
 			
 		}
@@ -232,63 +233,63 @@ class MasterPurchaseController extends Controller
 		if($stock == 'Y'){
 			if($updatestock == 'T'){
 				if($cabang == 000){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '7%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '7%' and kode_cabang = '$cabang' and is_active = '1'");
 				}
 				else {
 					if($idgrupitem == 'P'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5311%' and kode_cabang = '$cabang'");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5311%' and kode_cabang = '$cabang' and is_active = '1'");
 					}
 					else if($idgrupitem == 'S'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '$cabang' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' or id_akun LIKE '6113%' and kode_cabang = '$cabang'");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '$cabang' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' or id_akun LIKE '6113%' and kode_cabang = '$cabang' and is_active = '1'");
 					}
 					else if($idgrupitem == 'A'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang' and is_active = '1'");
 					}
 					else if($idgrupitem == 'C'){
-						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6102%' and kode_cabang = '$cabang'");
+						$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6102%' and kode_cabang = '$cabang' and is_active = '1'");
 					}
 					else {
-						$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' ");
+						$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and is_active = '1'");
 					}
 				}
 			}
 			else if($updatestock == 'Y'){
 				if($idgrupitem == 'P'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1501%' and kode_cabang = '000'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1501%' and kode_cabang = '000' and is_active = '1'");
 					//return json_encode($data);
 				}
 				else if($idgrupitem == 'S'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1502%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1502%' and kode_cabang = '$cabang' and is_active = '1'");
 				}
 				else if($idgrupitem == 'A'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1503%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1503%' and kode_cabang = '$cabang' and is_active = '1'");
 				}
 				else if($idgrupitem == 'L'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1599%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1599%' and kode_cabang = '$cabang' and is_active = '1'");
 
 				}
 				else if($idgrupitem == 'C'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang' and is_active = '1'");
 				}
 				else {
-					$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and is_active = '1'");
 				}
 			}
 		}		
 		else {
 			if($idgrupitem == 'C'){
-				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '1604%'");
+				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '1604%' and is_active = '1'");
 			}
 			else if($idgrupitem == 'B'){
-				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' or id_akun LIKE '7%' or id_akun LIKE '8%' and kode_cabang = '$cabang'");
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' or id_akun LIKE '7%' or id_akun LIKE '8%' and kode_cabang = '$cabang' and is_active = '1'");
 			}
 			else {
-				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
+				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and is_active = '1'");
 			}
 			
 		}
 		
-		$data['akunmaster'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
+		$data['akunmaster'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and is_active = '1'");
 
 		
 		return json_encode($data);
@@ -838,7 +839,7 @@ class MasterPurchaseController extends Controller
 				$masterbankdt->mbdt_noseri = $request->nosericek[$i];
 				$masterbankdt->mbdt_noseri = $request->nosericek[$i];
 				$masterbankdt->mbdt_id = $idbankdt;
-				$masterbankdt->mbdt_seri = $request->seri;
+				$masterbankdt->mbdt_seri = strtoupper($request->seri);
 				$masterbankdt->mbdt_idmb = $idbank;
 				$masterbankdt->save();
 
@@ -1004,7 +1005,7 @@ class MasterPurchaseController extends Controller
 	public function getacchutang(Request $request) {
 		$cabang = $request->cabang;
 
-		$data = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang'");
+		$data = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang' and is_active = '1'");
 
 		return json_encode($data);
 	}
@@ -1207,7 +1208,7 @@ class MasterPurchaseController extends Controller
 				$data['kota'] = master_kota::all();
 		$data['provinsi'] = master_provinsi::all();
 		$cabang = $data['supplier'][0]->kodecabang;
-		$data['mastersup'] = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang'");
+		$data['mastersup'] = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang' and is_active = '1'");
 
 
 		
@@ -1431,7 +1432,7 @@ class MasterPurchaseController extends Controller
 				$data['kota'] = master_kota::all();
 		$data['provinsi'] = master_provinsi::all();
 		$cabang = $data['supplier'][0]->kodecabang;
-		$data['mastersup'] = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang'");
+		$data['mastersup'] = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang' and is_active = '1'");
 		
 		return view('purchase/master/master_supplier/detail_konfirmasi', compact('data'));
 	}

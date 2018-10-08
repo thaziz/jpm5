@@ -46,8 +46,8 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title" style="background: white">
                     <div  style="background: white" >
-                      <h5> Bon Sementara </h5>
-                      <a href="{{ url('bonsementaracabang/bonsementaracabang') }}" class="pull-right" style="color: black"><i class="fa fa-arrow-left"> Kembali</i></a>
+                      <h5> Bank Masuk </h5>
+                      <a href="{{ url('bankmasuk/bankmasuk')}}" class="pull-right" style="color: black"><i class="fa fa-arrow-left"> Kembali</i></a>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -57,46 +57,55 @@
               <div class="box">
                 <div class="box-body">
                   <div class="table-responsive">
-                  <div class="col-sm-12">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <table class="table">
-                                <tr>
-                                  <th> Cabang </th>
-                                  <td> <select class="form-control chosen-select cabang" name="cabang">
+                    <div class="col-sm-12">
+                        <table class="table">
+                          <tr>
+                            <th> Cabang </th>
+                            <td> <select class="form-control chosen-select cabang" name="cabang">
                                           @foreach($data['cabang'] as $cabang)
                                           <option value="{{$cabang->kode}}">
                                                 {{$cabang->nama}}
                                           </option>
                                           @endforeach
                                         </select>
-                                  </td>
-                                </tr>
-
-                                <tr>
-                                      <th> Nota </th>
-                                      <td> <input type='text' class='form-control input-sm notabm'name="notabm"> </td>
-                                </tr>
-                      
-                            <tr>
-                              <th> Tanggal </th>
-                              <td> <div class="input-group date">
+                            </td>
+                            <th> Tanggal </th>
+                            <td> <div class="input-group date">
                                           <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl tglbm" name="tgl" required="">
                                       </div>
                               </td>
-                            </tr>
+                              <th> Nota </th>
+                               <td> <input type='text' class='form-control input-sm notabm'name="notabm" readonly=""> </td>
+                          </tr>
+                        </table>
+                    </div>
+                  <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <table class="table">
+                                
                             <tr>
                                 <th> Bank </th>
                                 <td> <select class="form-control chosen-select bank" name="bank">
                                         @foreach($data['bank'] as $bank)
-                                          <option value="{{$bank->mb_id}},{{$bank->mb_kode}}">
-                                             {{$bank->mb_kode}} - {{$bank->mb_nama}}
+                                          <option value="{{$bank->id}},{{$bank->kode}}">
+                                             {{$bank->kode}} - {{$bank->nama}}
                                           </option>
                                         </option>
                                         @endforeach
                                       </select>
                                 </td>
                             </tr>
+                            <tr>
+                              <th> DK Bank </th>
+                              <td> <input type='text' class="form-control input-sm dkbank" name='dkbank'> </td>
+                            </tr>
+
+                            <tr>
+                              <th> Nominal </th>
+                              <td> <input type='text' class="form-control input-sm nominalbank" name="nominalbank"> </td>
+                            </tr>
+
                             <tr>
                               <th> Keterangan BM </th>
                               <td> <input type="text" class="form-control input-sm keteranganbm" name="keteranganbm"> </td>
@@ -123,7 +132,7 @@
 
                       <tr>
                         <th> DK </th>
-                        <td> <input type="text" class="form-control input-sm tabakun akundka"> <input type='text' class='no'> </td>
+                        <td> <input type="text" class="form-control input-sm tabakun akundka"> <input type='hidden' class='no'> </td>
                       </tr>
 
                       <tr>
@@ -171,7 +180,7 @@
                         Akun
                       </th>
                       <th>
-                         Dk
+                         DK
                       </th>
                       <th>
                         Nominal
@@ -224,6 +233,12 @@
             return x1 + x2;
     }
 
+
+  $('.bank').change(function(){
+    val = $(this).val();
+    $('.dkbank').val('D');
+  })
+
   $('.akun').change(function(){
     val = $(this).val();
     split = val.split(",");
@@ -233,6 +248,13 @@
   })
 
   $('.nominal').change(function(){
+     val =$(this).val();
+     val = accounting.formatMoney(val, "", 2, ",",'.');
+     nominal = val.replace(/,/g, '');
+     $(this).val(addCommas(nominal));
+  })
+
+  $('.nominalbank').change(function(){
      val =$(this).val();
      val = accounting.formatMoney(val, "", 2, ",",'.');
      nominal = val.replace(/,/g, '');
@@ -350,7 +372,6 @@
     bank = bank[1];
     nodata = [];
     
-  
 
     $('.akundt').each(function(){
       val = $(this).val();
@@ -365,14 +386,14 @@
 
 
     if(index == -1){
-      html = "<tr class='trbank trbank"+akun+"'> <td>"+no+" <input type='text' class='nodata' value='"+no+"'></td>" +
+      html = "<tr class='trbank trbank"+akun+"'> <td>"+no+" <input type='hidden' class='nodata' value='"+no+"'></td>" +
             "<td>"+nota+" </td>"+
             "<td>"+bank+"   </td>"+
             "<td>"+tanggal+" </td>"+
-            "<td> <input type='text' class='akundt' name='akun[]' value='"+akun+","+dk+"'> </td>" +
+            "<td> <input type='text' class='form-control akundt' name='akun[]' value='"+akun+","+dk+"'> </td>" +
             "<td><input type='text'class='dkdt' name='dk[]' value='"+dk+"'></td>"+
-            "<td><input type='text' class='nominaldt' name='nominal[]' value='"+nominal+"'></td>" +
-            "<td><input type='text' class='keterangandt' name='keteranganakun[]' value='"+keteranganakun+"'></td>"+
+            "<td><input type='text' class='form-control input-sm nominaldt ' name='nominal[]' value='"+nominal+"'></td>" +
+            "<td><input type='text' class='keterangandt form-control input-sm' name='keteranganakun[]' value='"+keteranganakun+"'></td>"+
             "<td> <button class='btn btn-xs btn-danger removes-btn' type='button' onclick='hapus(this)'> <i class='fa fa-trash'> </i> </button> <button class='btn btn-xs btn-warning removes-btn' type='button' onclick='edit(this)'> <i class='fa fa-pencil'> </i> </button>  </td>" +
             "</tr>";
 
@@ -380,9 +401,9 @@
 
     }
     else {
-      alert('no');
+  
          var a  = $('.trbank'+akun);
-         $(a).find('.akundt').val(akun);
+         $(a).find('.akundt').val(dataakun);
          $(a).find('.dkdt').val(dk);
          $(a).find('.nominaldt').val(nominal);
          $(a).find('.keterangandt').val(keteranganakun);

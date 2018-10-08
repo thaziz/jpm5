@@ -214,22 +214,27 @@ class do_paketController extends Controller
     public function cari_vendor_deliveryorder_paket(Request $request)
     {
         // dd($request->all());
-      $asal = $request->a;
+      $asal = (integer)$request->a;
       $tujuan = $request->b;
       $cabang = $request->c;
-      $jenis = $request->d;
+      $jenis_tarif = $request->d;
       $type = $request->e;
       $berat = $request->f;
-
-      //jenis jika kosong
-      if ($jenis != '' || $jenis != null ) {
-          $jenis_sql = "and tarif_vendor.jenis = '$request->d'";
+      $vendor = '';
+      //jenis_tarif jika kosong
+      if ($jenis_tarif != '' || $jenis_tarif != null ) {
+          $jenis_sql = "and tarif_vendor.jenis_angkutan = '$request->d'";
       }else{
           $jenis_sql = '';
-      }        
+      }     
 
+      if ($type != '' || $type != null ) {
+          $tipe_sql = "and tarif_vendor.jenis_tarif = '$request->e'";
+      }else{
+          $tipe_sql = '';
+      }        
       if ($type == 'DOKUMEN') {
-         $vendor = DB::select("SELECT vendor.nama,jenis,tujuan.nama as tuj,asal.nama as as,id_tarif_vendor,id_kota_asal_vendor,id_kota_tujuan_vendor,
+         $vendor = DB::select("SELECT vendor.nama,jenis_tarif,tujuan.nama as tuj,asal.nama as as,id_tarif_vendor,id_kota_asal_vendor,id_kota_tujuan_vendor,
                                     tarif_vendor.cabang_vendor,kode,tarif_dokumen as tarif_vendor,waktu_vendor,tarif_vendor.status from tarif_vendor 
                                         left join vendor on tarif_vendor.vendor_id = vendor.kode
                                         left join kota as asal on tarif_vendor.id_kota_asal_vendor = asal.id
@@ -242,7 +247,7 @@ class do_paketController extends Controller
                                     ");
       }else if($type == 'KILOGRAM'){
         if ($berat < 10) {
-            $vendor = DB::select("SELECT vendor.nama,jenis,tujuan.nama as tuj,asal.nama as as,id_tarif_vendor,id_kota_asal_vendor,id_kota_tujuan_vendor,
+            $vendor = DB::select("SELECT vendor.nama,jenis_tarif,tujuan.nama as tuj,asal.nama as as,id_tarif_vendor,id_kota_asal_vendor,id_kota_tujuan_vendor,
                                         tarif_vendor.cabang_vendor,kode,(tarif_vendor*$berat) as tarif_vendor,waktu_vendor,tarif_vendor.status from tarif_vendor 
                                             left join vendor on tarif_vendor.vendor_id = vendor.kode
                                             left join kota as asal on tarif_vendor.id_kota_asal_vendor = asal.id
@@ -255,7 +260,7 @@ class do_paketController extends Controller
                                             $jenis_sql
                                     ");
         }else if($berat == 10){
-            $vendor = DB::select("SELECT vendor.nama,jenis,tujuan.nama as tuj,asal.nama as as,id_tarif_vendor,id_kota_asal_vendor,id_kota_tujuan_vendor,
+            $vendor = DB::select("SELECT vendor.nama,jenis_tarif,tujuan.nama as tuj,asal.nama as as,id_tarif_vendor,id_kota_asal_vendor,id_kota_tujuan_vendor,
                                         tarif_vendor.cabang_vendor,kode,tarif_vendor,waktu_vendor,tarif_vendor.status from tarif_vendor 
                                             left join vendor on tarif_vendor.vendor_id = vendor.kode
                                             left join kota as asal on tarif_vendor.id_kota_asal_vendor = asal.id
@@ -276,11 +281,10 @@ class do_paketController extends Controller
                                             and id_kota_tujuan_vendor = $tujuan
                                             and tarif_vendor.cabang_vendor = '$cabang'
                                             and tarif_vendor.status = 'ya'
-                                            and keterangan = 'Tarif <= 10 Kg'
-                                            $jenis_sql
+                                            $jenis_sql $tipe_sql
                                     ");
-
-            $vendor = DB::select("SELECT vendor.nama,jenis,tujuan.nama as tuj,asal.nama as as,id_tarif_vendor,id_kota_asal_vendor,id_kota_tujuan_vendor,
+            if ($cari_vendor10kg != null) {
+              $vendor = DB::select("SELECT vendor.nama,jenis_tarif,tujuan.nama as tuj,asal.nama as as,id_tarif_vendor,id_kota_asal_vendor,id_kota_tujuan_vendor,
                                             tarif_vendor.cabang_vendor,kode,((tarif_vendor*($berat-10))+".$cari_vendor10kg[0]->tarif_vendor.") as tarif_vendor,waktu_vendor,tarif_vendor.status from tarif_vendor 
                                             left join vendor on tarif_vendor.vendor_id = vendor.kode
                                             left join kota as asal on tarif_vendor.id_kota_asal_vendor = asal.id
@@ -289,9 +293,10 @@ class do_paketController extends Controller
                                             and id_kota_tujuan_vendor = $tujuan
                                             and tarif_vendor.cabang_vendor = '$cabang'
                                             and tarif_vendor.status = 'ya'
-                                            and keterangan = 'Tarif Kg selanjutnya <= 10 Kg'
-                                            $jenis_sql
+                                            $jenis_sql $tipe_sql
                                     ");
+            }
+            
 
         }
       }

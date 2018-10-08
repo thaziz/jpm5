@@ -62,19 +62,21 @@ class penerimaan_penjualan_controller extends Controller
         // return $data;
         return Datatables::of($data)
                         ->addColumn('aksi', function ($data) {
-
+                            $a = '';
+                            $b = '';
+                            $c = '';
                             if(Auth::user()->punyaAkses('Kwitansi','ubah')){
                                 if(cek_periode(carbon::parse($data->k_tanggal)->format('m'),carbon::parse($data->k_tanggal)->format('Y') ) != 0){
-                                  $a = '<button type="button" onclick="edit(\''.$data->k_nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
+                                  if ($data->k_nomor_posting == null) {
+                                    $a = '<button type="button" onclick="edit(\''.$data->k_nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></button>';
+                                  }
                                 }
-                            }else{
-                              $a = '';
                             }
 
                             if(Auth::user()->punyaAkses('Kwitansi','print')){
                                 $b = '<button type="button" onclick="ngeprint(\''.$data->k_nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
                             }else{
-                              $b = '';
+                              $b = '<button type="button" onclick="ngeprint(\''.$data->k_nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
                             }
 
 
@@ -83,7 +85,11 @@ class penerimaan_penjualan_controller extends Controller
                                   $c = '<button type="button" onclick="hapus(\''.$data->k_nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
                                 }
                             }else{
-                              $c = '';
+                                if(cek_periode(carbon::parse($data->k_tanggal)->format('m'),carbon::parse($data->k_tanggal)->format('Y') ) != 0){
+                                  if ($data->k_nomor_posting == null) {
+                                    $c = '<button type="button" onclick="hapus(\''.$data->k_nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
+                                  }
+                                }
                             }
                             return $a . $b .$c  ;
                                    
@@ -157,7 +163,6 @@ class penerimaan_penjualan_controller extends Controller
                           }
                         })->addColumn('posting', function ($data) {
                           if ($data->k_nomor_posting == null) {
-                            # code...
                             return '<label class="label label-danger">BELUM</label>';
                           }else{
                             return '<label class="label label-success">SUDAH</label>';
@@ -562,25 +567,9 @@ class penerimaan_penjualan_controller extends Controller
         $cari_nota = DB::table('kwitansi')
                  ->where('k_nomor',$request->nota)
                  ->first();
-                 
         if ($cari_nota != null) {
-          if ($cari_nota->k_update_by == $user) {
-            DB::rollBack();
-            return response()->json(['status'=>1,'message'=>'Data Sudah Ada']);
-          }else{
-            $bulan = Carbon::parse($tgl)->format('m');
-            $tahun = Carbon::parse($tgl)->format('y');
-
-            $cari_nota = DB::select("SELECT  substring(max(k_nomor),11) as id from kwitansi
-                                            WHERE k_kode_cabang = '$request->cabang'
-                                            AND to_char(k_tanggal,'MM') = '$bulan'
-                                            AND to_char(k_tanggal,'YY') = '$tahun'
-                                            ");
-            $index = (integer)$cari_nota[0]->id + 1;
-            $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-            $nota = 'KWT' . $request->cb_cabang . $bulan . $tahun . $index;
-
-          }
+          DB::rollBack();
+          return response()->json(['status'=>0,'message'=>'Nomor Nota Sudah Ada']);
         }elseif ($cari_nota == null) {
           $nota = $request->nota;
         }

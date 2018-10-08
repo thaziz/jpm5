@@ -40,50 +40,40 @@ class tarif_VendorController extends Controller
         // echo json_encode($datax);
         return Datatables::of($data)
         ->addColumn('button', function ($data) {
-                        $c =  '<div class="btn-group">'.
-                                   '<button type="button" onclick="edit(this)" class="btn btn-info btn-sm" title="edit" id="'.$data->id_tarif_sama.'">'.
-                                   '<label class="fa fa-pencil"></label></button>'.
-                                   '<button type="button" onclick="hapus(this)" class="btn btn-danger btn-sm" title="hapus" id="'.$data->id_tarif_sama.'">'.
-                                   '<label class="fa fa-trash"></label></button>'.
-                                  '</div>';
+                                $a = '';
+                                $b = '';
+                                if (Auth::user()->punyaAkses('Tarif Penerus Vendor','ubah')) {
+                                   $a =  '<button type="button" onclick="edit(\''.$data->id_tarif_vendor.'\')" class="btn btn-info btn-sm" title="edit"><label class="fa fa-pencil"></label></button>';
+                                }
 
+                                if (Auth::user()->punyaAkses('Tarif Penerus Vendor','hapus')) {
+                                   $b =  '<button type="button" onclick="hapus(\''.$data->id_tarif_vendor.'\')" class="btn btn-danger btn-sm" title="hapus"><label class="fa fa-trash"></label></button>';
+                                }
 
-                        $asal   = '<input type="hidden" class="asal" value="'.$data->id_kota_asal_vendor.'">';
-                        $tujuan = '<input type="hidden" class="tujuan" value="'.$data->id_kota_tujuan_vendor.'">';
-                        $cabang = '<input type="hidden" class="cabang" value="'.$data->cabang_vendor.'">';
-                        $vendor = '<input type="hidden" class="vendor_id" value="'.$data->vendor_id.'">';
+                                   
+                    return '<div class="btn-group">'.$a.$b.'</div>';
 
-                        $data1 = DB::table("tarif_vendor")
-                              ->where('id_kota_asal_vendor',$data->id_kota_asal_vendor)
-                              ->where('id_kota_tujuan_vendor',$data->id_kota_tujuan_vendor)
-                              ->where('cabang_vendor',$data->cabang_vendor)
-                              ->where('vendor_id',$data->vendor_id)
+                })->addColumn('active', function ($data) {
+                  if (Auth::user()->punyaAkses('Verifikasi','aktif')) {
+                    if($data->status == 'ya'){
+                      return '<input checked type="checkbox" onchange="check(\''.$data->id_tarif_vendor.'\',\''.$data->status.'\')" class="form-control check">';
+                    }else{
+                      return '<input type="checkbox" onchange="check(\''.$data->id_tarif_vendor.'\',\''.$data->status.'\')" class="form-control check">';
+                    }
+                  }else{
+                      return '-';
+                  }
+                   
+                })->addColumn('vendor', function ($data) {
+                    $vendor = DB::table('vendor')
                               ->get();
-
-                        for ($i=0; $i < count($data1); $i++) { 
-                            $a[$i]= '<input type="hidden" class="waktu_'.$data1[$i]->jenis.'" value="'.$data1[$i]->waktu_vendor.'">';
-                        } 
-                        for ($i=0; $i < count($data1); $i++) { 
-                            $b[$i] = '<input type="hidden" class="tarif_'.$data1[$i]->jenis.'" value="'.$data1[$i]->waktu_vendor.'">';
-                        } 
-
-                        $a = implode('', $a);
-                        $b = implode('', $b);
-                        return $c.$a .$b. $asal.$tujuan.$cabang.$vendor;
-                })
-                        ->addColumn('active', function ($data) {
-                          if (Auth::user()->punyaAkses('Verifikasi','aktif')) {
-                            if($data->status == 'ya'){
-                              return '<input checked type="checkbox" onchange="check(this)" class="form-control check">';
-                            }else{
-                              return '<input type="checkbox" onchange="check(this)" class="form-control check">';
-                            }
-                          }else{
-                              return '-';
-                          }
-                           
-                        })
-        ->make(true);
+                    foreach ($vendor as $key => $value) {
+                        if ($data->vendor_id == $value->kode) {
+                            return $value->nama;
+                        }
+                    }
+                   
+                })->make(true);
 
     }
 
@@ -91,207 +81,125 @@ class tarif_VendorController extends Controller
     {
 
     }
-    public function get_data (Request $request) {
-        $asal = $request->asal;
-        $tujuan = $request->tujuan;
-        $vendor = $request->vendor_id;
-        $cabang = $request->cabang;
+    public function get_data (Request $req) {
         
         $data = DB::table('tarif_vendor')
-                        ->where('id_kota_asal_vendor','=',$asal)
-                        ->where('id_kota_tujuan_vendor','=',$tujuan)
-                        ->where('vendor_id','=',$vendor)
-                        ->where('cabang_vendor','=',$cabang)
-                        ->get();
+                        ->where('id_tarif_vendor','=',$req->id)
+                        ->first();
 
-        return response()->json($data);
+        return response()->json(['data'=>$data]);
     }
 
-    public function save_data (Request $request) {
-        // dd($request);   
-        $simpan='';
-        $crud = $request->crud;
-        if ($request->cb_keterangan == null ) {
-            $request->cb_keterangan = ' - ';
-        }
-        $id_old                   = [   $request->id_tarif_vendor_reg,
-                                        $request->id_tarif_vendor_reg_1,
-                                        $request->id_tarif_vendor_reg_2,
-                                        $request->id_tarif_vendor_ex,
-                                        $request->id_tarif_vendor_ex_1,
-                                        $request->id_tarif_vendor_ex_2,];
-
-        $waktu                    = [   $request->waktu_regular,
-                                        $request->waktu_regular,
-                                        $request->waktu_regular,
-                                        $request->waktu_express,
-                                        $request->waktu_express,
-                                        $request->waktu_express,];
-
-        $tarif                    = [   $request->tarifkertas_reguler,
-                                        $request->tarif10kg_reguler,
-                                        $request->tarifsel_reguler,
-                                        $request->tarifkertas_express,
-                                        $request->tarif10kg_express,
-                                        $request->tarifsel_express,];
-
-        
-        $berat_minimum            = [   $request->berat_minimum_reg,
-                                        $request->berat_minimum_reg,
-                                        $request->berat_minimum_reg,
-                                        $request->berat_minimum_ex,
-                                        $request->berat_minimum_ex,
-                                        $request->berat_minimum_ex,];
-        
-        $keterangan               = [   'Tarif Kertas / Kg',
-                                        'Tarif <= 10 Kg',
-                                        'Tarif Kg selanjutnya <= 10 Kg',
-                                        'Tarif Kertas / Kg',
-                                        'Tarif <= 10 Kg',
-                                        'Tarif Kg selanjutnya <= 10 Kg',];
-
-        $jenis                    = [   'REGULER',
-                                        'REGULER',
-                                        'REGULER',
-                                        'EXPRESS',
-                                        'EXPRESS',
-                                        'EXPRESS'];
-        // return $waktu;
-        
-        $asal = $request->asal;
-        $tujuan = $request->tujuan;
-        $vendor = $request->vendor_id;
-        $cabang = $request->cabang;
-
-        $id_sama = DB::table('tarif_vendor')->max('id_tarif_sama');
-                    if ($id_sama == null) {
-                        $id_sama = 1 ;
-                    }else{
-                        $id_sama +=1 ;
-                    }   
-        // return Carbon::now();
-        if ($crud == 'N') {
-            // return $waktu;
-            for ($i=0; $i <count($tarif) ; $i++) { 
-                $id = DB::table('tarif_vendor')->max('id_tarif_vendor');
-                    if ($id == null) {
-                        $id = 1 ;
-                    }else{
-                        $id +=1 ;
-                    }
-
-                $data[$i] = array(
+    public function save_data (Request $req) {
+        DB::beginTransaction();
+        try {
+            if ($req->ed_kode_old == '') {
+                $id = DB::table("tarif_vendor")
+                        ->max('id_tarif_vendor')+1;
+                $data = array(
                     'id_tarif_vendor' => $id,
-                    'id_tarif_sama' => $id_sama,
-                    'id_kota_asal_vendor' => $request->cb_kota_asal,
-                    'id_kota_tujuan_vendor' => $request->cb_kota_tujuan,
-                    'vendor_id' => $request->cb_vendor,
-                    'cabang_vendor' => $request->cb_cabang,
-                    'acc_vendor' => $request->cb_acc_penjualan,
-                    'csf_vendor' => $request->cb_csf_penjualan,
-                    'waktu_vendor' => $waktu[$i],
-                    'tarif_vendor' => $tarif[$i],
-                    'berat_minimum' => $berat_minimum[$i],
-                    'tarif_dokumen' => $request->tarif_dokumen,
+                    'id_tarif_sama' => 0,
+                    'id_kota_asal_vendor' => $req->cb_kota_asal,
+                    'id_kota_tujuan_vendor' => $req->cb_kota_tujuan,
+                    'vendor_id' => $req->cb_vendor,
+                    'cabang_vendor' => $req->cb_cabang,
+                    'acc_vendor' => $req->cb_acc_penjualan,
+                    'csf_vendor' => $req->cb_csf_penjualan,
+                    'waktu_vendor' => $req->waktu_regular,
+                    'tarif_vendor' => $req->tarifkertas_reguler,
+                    'tarif_kurang_10' => $req->tarif10kg_reguler,
+                    'tarif_setelah_10' => $req->tarifsel_reguler,
+                    'berat_minimum' => $req->berat_minimum_reg,
                     'created_at' => Carbon::now(),
-                    'jenis' => $jenis[$i],
-                    'keterangan' => $keterangan[$i],
-                    'created_by' => auth::user()->m_name,
-                );
-                
-                $simpan = DB::table('tarif_vendor')->insert($data[$i]);
-
-            // return $data;
-            }
-        }elseif ($crud == 'E') {
-
-            for ($i=0; $i <count($tarif) ; $i++) { 
-                $id = DB::table('tarif_vendor')->max('id_tarif_vendor');
-                    if ($id == null) {
-                        $id = 1 ;
-                    }else{
-                        $id +=1 ;
-                    }
-
-                $data[$i] = array(
-                    'id_tarif_vendor' => $id_old[$i],
-                    'id_tarif_sama' => $id_sama,
-                    'id_kota_asal_vendor' => $request->cb_kota_asal,
-                    'id_kota_tujuan_vendor' => $request->cb_kota_tujuan,
-                    'vendor_id' => $request->cb_vendor,
-                    'cabang_vendor' => $request->cb_cabang,
-                    'acc_vendor' => $request->cb_acc_penjualan,
-                    'csf_vendor' => $request->cb_csf_penjualan,
-                    'waktu_vendor' => $waktu[$i],
-                    'tarif_vendor' => $tarif[$i],
-                    'berat_minimum' => $berat_minimum[$i],
-                    'tarif_dokumen' => $request->tarif_dokumen,
                     'updated_at' => Carbon::now(),
-                    'jenis' => $jenis[$i],
-                    'keterangan' => $keterangan[$i],
+                    'jenis_angkutan' => $req->jenis_angkutan,
+                    'jenis_tarif' => $req->jenis_tarif,
+                    'created_by' => auth::user()->m_name,
                     'updated_by' => auth::user()->m_name,
                 );
                 
-                $simpan = DB::table('tarif_vendor')->where('id_tarif_vendor','=',$id_old[$i])->update($data[$i]);
+                $simpan = DB::table('tarif_vendor')->insert($data);
 
-            // return $data;
+              
+                // if($simpan == TRUE){
+                    
+                //     $data = ['kontrak'=>url('sales/tarif_vendor'),'status'=>'Tarif Vendor'];
+
+                //     Mail::send('email.email', $data, function ($mail)
+                //         {
+                //           // Email dikirimkan ke address "momo@deviluke.com" 
+                //           // dengan nama penerima "Momo Velia Deviluke"
+                //           $mail->from('jpm@gmail.com', 'SYSTEM JPM');
+
+                //           $mail->to('puspitadury1987@gmail.com', 'Admin');
+                     
+                //           // Copy carbon dikirimkan ke address "haruna@sairenji" 
+                //           // dengan nama penerima "Haruna Sairenji"
+                //           $mail->cc('puspitadury1987@gmail.com', 'ADMIN JPM');
+                          
+                //           $mail->subject('KONTRAK VERIFIKASI');
+                //     });
+                //     DB::commit();
+                //     return response()->json(['status'=>1,'crud'=>'N']);
+                // }else{
+                    DB::commit();
+                    return response()->json(['status'=>1,'crud'=>'N']);
+                // }
+            }else{
+                $data = array(
+                    'id_tarif_sama' => 0,
+                    'id_kota_asal_vendor' => $req->cb_kota_asal,
+                    'id_kota_tujuan_vendor' => $req->cb_kota_tujuan,
+                    'vendor_id' => $req->cb_vendor,
+                    'cabang_vendor' => $req->cb_cabang,
+                    'acc_vendor' => $req->cb_acc_penjualan,
+                    'csf_vendor' => $req->cb_csf_penjualan,
+                    'waktu_vendor' => $req->waktu_regular,
+                    'tarif_vendor' => $req->tarifkertas_reguler,
+                    'tarif_kurang_10' => $req->tarif10kg_reguler,
+                    'tarif_setelah_10' => $req->tarifsel_reguler,
+                    'berat_minimum' => $req->berat_minimum_reg,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                    'jenis_angkutan' => $req->jenis_angkutan,
+                    'jenis_tarif' => $req->jenis_tarif,
+                    'created_by' => auth::user()->m_name,
+                    'updated_by' => auth::user()->m_name,
+                );
+                
+                $simpan = DB::table('tarif_vendor')->where('id_tarif_vendor',$req->ed_kode_old)->update($data);
+                DB::commit();
+                return response()->json(['status'=>2,'crud'=>'E']);
             }
+        } catch (Exception $e) {
+            DB::rollBack();
+            dd($e);
         }
-        if($simpan == TRUE){
             
-            $data = ['kontrak'=>url('sales/tarif_vendor'),'status'=>'Tarif Vendor'];
-
-            Mail::send('email.email', $data, function ($mail)
-                {
-                  // Email dikirimkan ke address "momo@deviluke.com" 
-                  // dengan nama penerima "Momo Velia Deviluke"
-                  $mail->from('jpm@gmail.com', 'SYSTEM JPM');
-
-                  $mail->to('puspitadury1987@gmail.com', 'Admin');
-             
-                  // Copy carbon dikirimkan ke address "haruna@sairenji" 
-                  // dengan nama penerima "Haruna Sairenji"
-                  $mail->cc('puspitadury1987@gmail.com', 'ADMIN JPM');
-                  
-                  $mail->subject('KONTRAK VERIFIKASI');
-            });
-            return response()->json(['status'=>1,'crud'=>'N']);
-        }else{
-            return response()->json(['status'=>0,'crud'=>'N']);
-        }
     }
 
-    public function hapus_data (Request $request) {
-        $hapus='';
-        // $id=$request->id;
-        $asal = $request->asal;
-        $tujuan = $request->tujuan;
-        $vendor = $request->vendor_id;
-        $cabang = $request->cabang;
-        // dd($request->all());
+
+
+    public function hapus_data (Request $req) {
+
         $data = DB::table('tarif_vendor')
-                        ->where('id_kota_asal_vendor','=',$asal)
-                        ->where('id_kota_tujuan_vendor','=',$tujuan)
-                        // ->where('vendor_id','=',$vendor)
-                        ->where('cabang_vendor','=',$cabang)
+                        ->where('id_tarif_vendor','=',$req->id)
                         ->delete();
 
-        if($hapus == TRUE){
-            $result['error']='';	
-            $result['result']=1;
-        }else{
-            $result['error']=$hapus;
-            $result['result']=0;
-        }
-        echo json_encode($result);
+        return response()->json(['status'=>1,'crud'=>'E']);
     }
 
     public function index(){
-        // return'a';
+        
+        $cabang = Auth::user()->kode_cabang;
         $kota = DB::select(DB::raw(" SELECT id,kode_kota,nama FROM kota ORDER BY nama ASC "));
         $zona = DB::select(DB::raw(" SELECT * FROM zona ORDER BY nama ASC "));
         $prov = DB::select(DB::raw(" SELECT * FROM provinsi ORDER BY nama ASC "));
-        $akun = DB::select(DB::raw(" SELECT * FROM d_akun "));
+        if (Auth::user()->punyaAkses('Tarif Penerus Vendor','cabang')) {
+            $akun = DB::select(DB::raw(" SELECT * FROM d_akun where id_akun like '4%'"));
+        }else{
+            $akun = DB::select(DB::raw(" SELECT * FROM d_akun where id_akun like '4%' and kode_cabang = '$cabang'"));
+        }
         $vendor = DB::table('vendor')->get();
         $cabang = DB::select(DB::raw(" SELECT kode,nama FROM cabang ORDER BY kode ASC "));
         return view('tarif.tarif_vendor.index',compact('kota','zona','cabang','prov','akun','vendor'));
@@ -302,34 +210,22 @@ class tarif_VendorController extends Controller
         // dd($request->all());
       // return dd($request->all());
 
-        if ($request->check == 'true') {
+        if ($request->status == 'tidak') {
          // return $request->check;
-
             $data_dt = DB::table('tarif_vendor')
-                ->where('id_kota_asal_vendor',$request->asal)
-                ->where('id_kota_tujuan_vendor',$request->tujuan)
-                ->where('cabang_vendor',$request->cabang)
-                ->where('vendor_id',$request->vendor_id)
-                ->where('jenis',$request->jenis)
+                ->where('id_tarif_vendor',$request->id)
                 ->update([
                   'status' => 'ya' 
                 ]);
 
-             
-            return json_encode('success 1');
-
+            return response()->json(['status'=>1,'crud'=>'E']);
         }else{
-
             $data_dt = DB::table('tarif_vendor')
-                ->where('id_kota_asal_vendor',$request->asal)
-                ->where('id_kota_tujuan_vendor',$request->tujuan)
-                ->where('cabang_vendor',$request->cabang)
-                ->where('vendor_id',$request->vendor_id)
-                ->where('jenis',$request->jenis)
+                ->where('id_tarif_vendor',$request->id)
                 ->update([
                   'status' => 'tidak' 
                 ]);
-            return json_encode('success 2');
+            return response()->json(['status'=>2,'crud'=>'E']);
         }
     }
 

@@ -174,6 +174,9 @@
                                                             <option value="">- Pilih -</option>
                                                             <option value="REGULER" selected="">REGULER</option>
                                                             <option value="EXPRESS">EXPRESS</option>
+                                                            <option value="DARAT" selected="">DARAT (Khusus Vendor)</option>
+                                                            <option value="LAUT">LAUT (Khusus Vendor)</option>
+                                                            <option value="UDARA">UDARA (Khusus Vendor)</option>
                                                         </select>
                                                     </td>
                                                 </tr>
@@ -1076,7 +1079,7 @@ function hitung() {
                 $('.do_tarif_penerus').hide();
                 $.ajax({
                 type: "GET",
-                data : {a:asal,b:tujuan,c:cabang,d:jenis,e:tipe,f:berat},
+                data : {a:asal,b:tujuan,c:cabang,d:jenis,e:tipe,f:berat,cek:'YA'},
                 url : ('{{ route('cari_vendor_deliveryorder_paket') }}'),
                 success: function(data){   
                     console.log(data);

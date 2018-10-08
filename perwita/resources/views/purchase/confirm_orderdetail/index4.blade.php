@@ -426,7 +426,7 @@
                         </td>
 
                         @if($namatipe == 'NON STOCK' && $data['kodejenisitem'] == 'S')
-                        <td> {{$sppd->codtk_kendaraan}} <input type="hidden" class="form-control" value="{{$sppd->codtk_kendaraan}}" name="nopol[]"> </td>
+                        <td> {{$sppd->nopol}} <input type="hidden" class="form-control" value="{{$sppd->codtk_kendaraan}}" name="nopol[]"> </td>
                         @endif
 
                         <td>  <input type="text" class="input-sm form-control qtyrequest qtyrequest{{$idbarang}}" value="{{$sppd->codtk_qtyrequest}}" readonly="" name="qtyrequest[]" data-id="{{$idbarang}}">  </td>
@@ -578,6 +578,7 @@
 
   $('#formsave').submit(function(event){
         event.preventDefault();
+           $('.simpantb').hide();
           var post_url2 = $(this).attr("action");
           var form_data2 = $(this).serialize();
             swal({
@@ -598,7 +599,7 @@
           dataType : 'json',
           success : function (response){
              alertSuccess(); 
-             $('.simpan').hide();
+             $('.simpantb').hide();
           },
           error : function(){
            swal("Error", "Server Sedang Mengalami Masalah", "error");
@@ -841,7 +842,7 @@
                           var tb = '<div class="form-group"> <label class="col-sm-2 col-sm-2 control-label"> Rp </label> <div class="col-sm-8"> <input type="text" class="input-sm form-control totalbiaya" name="bayar[]" value="'+addCommas(biaya)+'" readonly="" > <input type="hidden" name="tb[]" value="'+result[j].id+ "," + result[j].totalharga +'">  <input type="hidden" name="datasupplier[]" value="'+datasup+'"> </div>  </div>';
                       
                           $('tr.totalbiaya').find("td").eq(supplier3).html(tb);
-                            $('.simpan').attr('disabled', false);
+                       
                       }
                   } 
 
@@ -870,6 +871,7 @@
                             })
                       }
 
+                       $('.simpan').attr('disabled', false);
                 },
                 error : function(){
                   location.reload();

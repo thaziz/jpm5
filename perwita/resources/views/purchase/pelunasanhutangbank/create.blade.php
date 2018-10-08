@@ -99,7 +99,7 @@
                             <td class='disabledbank'> Kode Bank </td>
                             <td>
                               <select class="form-control kodebank chosen-select" name="kodebank">
-                               <option value=""> Pilih Data Bank</option>
+                              
 
                                 @foreach($data['bank'] as $bank)
                                   <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
@@ -562,13 +562,13 @@
     });
 
 
-    $('.date').change(function(){
+    $('.kodebank').change(function(){
       cabang = $('.cabang').val();
       tgl = $('.tglbbk').val();
-    
+      bank = $('.kodebank').val();
        $.ajax({
           type : "get",
-          data : {cabang,tgl},
+          data : {cabang,tgl,bank},
           url : baseUrl + '/pelunasanhutangbank/getnota',
           dataType : 'json',
           success : function (response){     
@@ -579,10 +579,7 @@
                 //bulan
                 var month = d.getMonth();
                 var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
-
+              
                 if(month < 10) {
                   month = '0' + month1;
                 }
@@ -594,7 +591,7 @@
                 year2 = tahun.substring(2);
                 //year2 ="Anafaradina";
                  nofaktur = 'BK' + '-' + month + year2 + '/' + cabang + '/' +  response.data ;
-                $('.nobbk').val(nofaktur);
+                $('.nobbk').val(response);
               
                 kodebank = $('.kodebank').val();
 
@@ -611,7 +608,68 @@
                 
 
                   nobbk = str + kodebank + '-' + lain;
-                  $('.nobbk').val(nobbk);
+                  $('.nobbk').val(response);
+               }
+              }
+              else {
+                location.reload();
+              }
+               
+              
+          },
+          eror : function(){
+            location.reload();
+          }
+        })
+    })
+
+    $('.date').change(function(){
+      cabang = $('.cabang').val();
+      tgl = $('.tglbbk').val();
+      bank = $('.kodebank').val();
+       $.ajax({
+          type : "get",
+          data : {cabang,tgl,bank},
+          url : baseUrl + '/pelunasanhutangbank/getnota',
+          dataType : 'json',
+          success : function (response){     
+              if(response.status = 'sukses'){
+                var d = new Date(tgl);                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+              
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+                 nofaktur = 'BK' + '-' + month + year2 + '/' + cabang + '/' +  response.data ;
+                $('.nobbk').val(response);
+              
+                kodebank = $('.kodebank').val();
+
+               if(kodebank != ''){
+                  
+                  split = nofaktur.split("-");
+                  bank = split[0];
+                  lain = split[1];
+                  if(parseInt(kodebank) < parseInt(10)){
+                      kodebank = '0' + kodebank;
+                  }
+                  
+                  str = bank.substr(0,2);
+                
+
+                  nobbk = str + kodebank + '-' + lain;
+                  $('.nobbk').val(response);
                }
               }
               else {
@@ -641,7 +699,7 @@
       nocheckakunbg = $('.checkakunbg').val();
       accbiayaakun = $('.accbiayaakun').val();  
 
-      alert(nocheckakunbg);
+     // alert(nocheckakunbg);
 
       if(accbiayaakun == ''){
         toastr.info("Mohon pilih data akun biaya :)");
@@ -695,8 +753,8 @@
       row = "<tr class='transaksi dataakunbg dataakunbg"+akundakun+"' data-nomor="+akundakun+"> <td>"+$nomor+"</td>" +
                   "<td> <input type='text' class='form-control input-sm nobbkdetailbg' value="+nobbk+" style='min-width:200px' readonly>  </td>" + //nobbk
                   "<td> <input type='text' class='form-control input-sm akundakundetailbg' value="+akundakun+" name='accbiayaakun[]' style='min-width:200px' readonly> </td>"+
-                  "<td> <input type='text' class='form-control input-sm dkakundetailbg' value="+dk+" name='dk[]' style='min-width:90px' readonly> </td>" +
-                  "<td> <input type='text' class='form-control input-sm jumlahakunbiayadetailbg' value="+jumlahakunbiaya+" style='min-width:200px; text-align:right' name='nominalakun[]' style='min-width:100px' readonly> </td>" +
+                  "<td> <input type='text' class='form-control input-sm dkakundetailbg ' value="+dk+" name='dk[]' style='min-width:90px' readonly> </td>" +
+                  "<td> <input type='text' class='form-control input-sm jumlahakunbiayadetailbg' value="+jumlahakunbiaya+" style='min-width:200px; text-align:right' name='nominalakun[]' style='min-width:100px' readonly data-dk='"+dk+"'> </td>" +
                   "<td> <input type='text' class='form-control input-sm keteranganakunbgdetail' value='"+keteranganakunbg+"' name='keteranganakunbg[]' style='min-width:200px' readonly> </td>" +
                   "<td> <input type='text' class='form-control input-sm nofpgdetailbg' value="+nofpg+" name='nofpg[]' readonly style='min-width:200px'> <input type='hidden' class='idfpgakunbgdetail' value="+idfpg+" name='idfpg[]'> </td>" +
                   "<td> <input type='text' class='form-control input-sm accbiayaakundetailbg' value='"+nocheckakunbg+"' name='nocheck[]' readonly style='min-width:200px'> </td>" +
@@ -710,8 +768,14 @@
         jumlahnominal = 0;
         $('.jumlahakunbiayadetailbg').each(function(){
           nominal = $(this).val();
+          dk = $(this).data('dk');
           nominal2 =  nominal.replace(/,/g, '');
-          jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+          if(dk == 'D') {
+            jumlahnominal = parseFloat(parseFloat(jumlahnominal) + parseFloat(nominal2)).toFixed(2);
+          }
+          else {
+           jumlahnominal = parseFloat(parseFloat(jumlahnominal) - parseFloat(nominal2)).toFixed(2);
+          }
           $('.total').val(addCommas(jumlahnominal));
           $('.cekbg').val(addCommas(jumlahnominal));
         })
@@ -751,7 +815,14 @@
         $('.jumlahakunbiayadetailbg').each(function(){
           nominal = $(this).val();
           nominal2 =  nominal.replace(/,/g, '');
-          jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+          dk = $(this).data('dk');
+          if(dk == 'D'){
+             jumlahnominal = parseFloat(parseFloat(jumlahnominal) + parseFloat(jumlahnominal)).toFixed(2);
+          }
+          else {
+            jumlahnominal = parseFloat(parseFloat(jumlahnominal) - parseFloat(jumlahnominal)).toFixed(2);
+
+          }
           $('.total').val(addCommas(jumlahnominal));
           $('.cekbg').val(addCommas(jumlahnominal));
         })
@@ -788,16 +859,26 @@
 
     function hapus(a){
        var par = $(a).parents('tr');
-       nominal = par.find('.nominalfpgdetailbg').val();
+       nominal = par.find('.jumlahakunbiayadetailbg').val();
+       dk = par.find('.dkakundetailbg').val();
 
        replacenominal = nominal.replace(/,/g , '');
        cekbg = $('.cekbg').val();
        total = $('.total').val();
        replacecekbg = cekbg.replace(/,/g, '');
        replacetotal = total.replace(/,/g, '');
+       alert(replacecekbg);
+       alert(replacenominal);
+       if(dk == 'K'){
+         totalcekbg = parseFloat(parseFloat(replacecekbg) + parseFloat(replacenominal)).toFixed(2);
+         total = parseFloat(parseFloat(replacetotal) + parseFloat(replacenominal)).toFixed(2);
+       }
+       else {
+         totalcekbg = parseFloat(parseFloat(replacecekbg) - parseFloat(replacenominal)).toFixed(2);
+         total = parseFloat(parseFloat(replacetotal) - parseFloat(replacenominal)).toFixed(2);
 
-       totalcekbg = parseFloat(parseFloat(replacecekbg) - parseFloat(replacenominal)).toFixed(2);
-       total = parseFloat(parseFloat(replacetotal) - parseFloat(replacenominal)).toFixed(2);
+       }
+
        $('.cekbg').val(addCommas(totalcekbg));
        $('.total').val(addCommas(total))
        par.remove();
@@ -822,13 +903,14 @@
    
 
     //GET NO BBK
-    cabang = $('.cabang').val();
-    $('.valcabang').val(cabang);
+      cabang = $('.cabang').val();
+      $('.valcabang').val(cabang);
       tgl = $('.tglbbk').val();
       $('.cabang2').val(cabang);
+      bank = $('.kodebank').val();
        $.ajax({
           type : "get",
-          data : {cabang,tgl},
+          data : {cabang,tgl,bank},
           url : baseUrl + '/pelunasanhutangbank/getnota',
           dataType : 'json',
           success : function (response){     
@@ -854,7 +936,7 @@
                 year2 = tahun.substring(2);
                 //year2 ="Anafaradina";
                  nofaktur = 'BK' + '-' + month + year2 + '/' + cabang + '/' +  response.data ;
-                $('.nobbk').val(nofaktur);
+                $('.nobbk').val(response);
               }
               else {
                 location.reload();
@@ -882,7 +964,7 @@
     });
 
      $('#formbbk').submit(function(event){
-        
+          $('.simpansukses').hide();
      if($('tr.transaksi').length == 0 ){
       toastr.info("Harap Input Data Transaksi :) ");
       return false;
@@ -925,7 +1007,14 @@
               return false;
             }
             else {
-              totalakun = parseFloat(parseFloat(totalakun) + parseFloat(val)).toFixed(2);
+              dk = $(this).data('dk');
+              if(dk == 'D'){
+                totalakun = parseFloat(parseFloat(totalakun) + parseFloat(val)).toFixed(2);
+              }
+              else if(dk == 'K'){
+                totalakun = parseFloat(parseFloat(totalakun) - parseFloat(val)).toFixed(2);
+
+              }
             }  
         })
         
@@ -1086,9 +1175,10 @@
      $('.cabang').change(function(){    
       var cabang = $(this).val();
       var tgl = $('.tglbbk').val();
+      var bank = $('.kodebank').val();
         $.ajax({    
             type :"get",
-            data : {cabang,tgl},
+            data : {cabang,tgl,bank},
             url : baseUrl + '/pelunasanhutangbank/getnota',
             dataType:'json',
             success : function(data){
@@ -1120,7 +1210,7 @@
                 
                    nobbk = 'BK-' + month + year2 + '/' + cabang + '/' +  data.data;
                 //  console.log(nospp);
-                  $('.nobbk').val(nobbk);
+                  $('.nobbk').val(response);
 
                        kodebank = $('.kodebank').val();
 
@@ -1137,7 +1227,7 @@
                         
                           nobbk = str + kodebank + '-' + lain;
 
-                          $('.nobbk').val(nobbk);
+                          $('.nobbk').val(response);
                        }
 
 
@@ -1296,14 +1386,20 @@
                 $('#myModal2').modal('hide');
                 var a = $('ul#tabmenu').find('li.active').data('val');
                 if(a == 'AKUNBG'){
-                    $('.nofpgakunbgbiaya').val(response.fpg[0].fpg_nofpg);
-                    $('.idfpgakunbgbiaya').val(response.fpg[0].idfpg);
-                    $('.nominalakunbiaya').val(addCommas(response.fpg[0].fpgb_nominal));
-                    $('.keteranganakunbiayafpg').val(response.fpg[0].fpg_keterangan);
-                    $('.checkakunbg').val(response.fpg[0].fpgb_nocheckbg);
-                    $('.idfpgbakunbg').val(response.fpg[0].fpgb_id);
-                    $('.jumlahakunbg').val(addCommas(response.fpg[0].fpgb_nominal));
-                    $('.keteranganakunbg').val(response.fpg[0].fpg_keterangan);
+                    if(response.fpg[0].fpg_jenisbayar == '5'){                    
+                          $('.nofpgakunbgbiaya').val(response.fpg[0].fpg_nofpg);
+                          $('.idfpgakunbgbiaya').val(response.fpg[0].idfpg);
+                          $('.nominalakunbiaya').val(addCommas(response.fpg[0].fpgb_nominal));
+                          $('.keteranganakunbiayafpg').val(response.fpg[0].fpg_keterangan);
+                          $('.checkakunbg').val(response.fpg[0].fpgb_nocheckbg);
+                          $('.idfpgbakunbg').val(response.fpg[0].fpgb_id);
+                          $('.jumlahakunbg').val(addCommas(response.fpg[0].fpgb_nominal));
+                          $('.keteranganakunbg').val(response.fpg[0].fpg_keterangan);
+                        }
+                        else {
+                          toastr.info("Transaksi ini hanya bisa di pake jenis bayar transfer kas bank :) ");
+                          return false;
+                        }
                   //  alert(response.fpg[0].fpgb_nocheckbg);
                 }
                 else {
@@ -1419,7 +1515,7 @@
           "<td>  <input type='text' class='input-sm form-control' value='"+dk+"' name='dk[]' readonly> </td>" +
           "<td> <input type='text' class='input-sm form-control jumlah' value='"+jumlah+"' name='jumlah[]' style='text-align:right' data-dk='"+dk+"' readonly> </td>" +
           "<td><input type='text' class='input-sm form-control' value=' "+keterangan+"' name='keterangan[]' readonly></td>" +
-          "<td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="+$nmrbiaya+" data-cek='"+akun+"' data-nominal='"+jumlah+"'><i class='fa fa-trash'></i></button>  </td> </tr>";
+          "<td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="+$nmrbiaya+" data-cek='"+akun+"' data-nominal='"+jumlah+"' data-dk='"+dk+"'><i class='fa fa-trash'></i></button>  </td> </tr>";
 
           $('#tbl-biaya').append(rowHtml);
 
@@ -1431,7 +1527,7 @@
               totalbiaya = parseFloat(parseFloat(totalbiaya) + parseFloat(jumlah2)).toFixed(2);
           }
           else {
-            totalbiaya = parseFloat(parseFloat(totalbiaya) + parseFloat(jumlah2)).toFixed(2);
+            totalbiaya = parseFloat(parseFloat(totalbiaya) - parseFloat(jumlah2)).toFixed(2);
           }
           $('.totalbiaya').val(addCommas(totalbiaya));
           $('.total').val(addCommas(totalbiaya));
@@ -1474,12 +1570,19 @@
             cek = $(this).data('cek');
             nominal = $(this).data('nominal');
             parentbayar = $('.transaksi'+id);
+            dk = $(this).data('dk');
         //    $('#datacek' + cek).show();
             biaya = $('.biaya').val();
             biaya2 =  biaya.replace(/,/g, '');
             nominal2 = nominal.replace(/,/g,'');
-            $('.biaya').val('')
-            nilaibiaya = parseInt(biaya2) - parseInt(nominal2).toFixed(2);
+            $('.biaya').val('');
+            if(dk == 'D'){
+               nilaibiaya = parseFloat(biaya2) - parseFloat(nominal2).toFixed(2);
+            }
+            else {
+               nilaibiaya = parseFloat(biaya2) + parseFloat(nominal2).toFixed(2);
+            }
+            
             $('.totalbiaya').val(addCommas(nilaibiaya));
             $('.total').val(addCommas(nilaibiaya));
          //   parent.remove();

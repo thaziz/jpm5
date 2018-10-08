@@ -12,10 +12,10 @@
   .asw:hover{
     color: red;
   }
-  .center:{
+  td .center:{
     text-align: center !important;
   }
-  .right:{
+  td .right:{
     text-align: right !important;
   }
 </style>
@@ -142,10 +142,11 @@
                             <thead align="center">
                              <tr>
                                 <th> No. BKK </th>
-                                <th> Tanggal </th>
+                                <th> Tanggal Posting</th>
                                 <th> Nama Cabang </th>
-                                <th> Keperluan </th> 
-                                <th> Total </th>   
+                                <th> Keterangan </th> 
+                                <th> Total Kembali</th>   
+                                <th> Bank Tujuan </th>   
                                 <th> Status </th>
                                 <th> Aksi </th>
                             </tr>
@@ -351,14 +352,16 @@ $(document).ready(function(){
           ],
           "columns": [
           { "data": "bp_nota" },
-          { "data": "bp_tgl" },
+          { "data": "bp_tanggal_pengembalian" },
           { "data": "cabang" },
-          { "data": "bp_keperluan" },
-          { "data": "tagihan" },
+          { "data": "bp_keterangan_pengembalian" },
+          { "data": "bp_total_pengembalian",render: $.fn.dataTable.render.number( '.', ',', 2, '' )},
+          { "data": "bank" },
           { "data": "status"},
           { "data": "aksi" },
           ]
     });
+    $('.center').css('text-align','center');
 })
 
 

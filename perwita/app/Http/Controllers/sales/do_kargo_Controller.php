@@ -74,7 +74,6 @@ class do_kargo_Controller extends Controller
       }else{
         $jenis = 'and jenis_pengiriman ='."'$req->jenis'";
       }
-
       if ($req->customer == '') {
         $customer = '';
       }else{
@@ -233,7 +232,9 @@ class do_kargo_Controller extends Controller
         $outlet = DB::select(" SELECT kode,nama FROM agen WHERE kode<>'NON OUTLET' ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
         $tipe_angkutan =DB::select("SELECT kode,nama FROM tipe_angkutan");
-        $subcon =DB::select("SELECT * FROM subcon");
+        $subcon =DB::table('subcon')
+                   ->where('aktif','true')
+                   ->get();
         $now = Carbon::now()->format('d/m/Y');
         $bulan_depan = Carbon::now()->subDay(-30)->format('d/m/Y');
         $jenis_tarif = DB::table('jenis_tarif')
@@ -948,7 +949,9 @@ class do_kargo_Controller extends Controller
         $outlet = DB::select(" SELECT kode,nama FROM agen WHERE kode<>'NON OUTLET' ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
         $tipe_angkutan =DB::select("SELECT kode,nama FROM tipe_angkutan");
-        $subcon =DB::select("SELECT * FROM subcon");
+        $subcon =DB::table('subcon')
+                   ->where('aktif','true')
+                   ->get();
         $now = Carbon::now()->format('d/m/Y');
         $bulan_depan = Carbon::now()->subDay(-30)->format('d/m/Y');
         $jenis_tarif = DB::table('jenis_tarif')
@@ -996,6 +999,7 @@ class do_kargo_Controller extends Controller
                   ->where('kcd_jenis','KARGO')
                   ->where('kc_kode_customer',$request->customer_do)
                   ->where('kc_kode_cabang',$request->cabang)
+                  ->where('kc_aktif','AKTIF')
                   ->orderBy('kode','ASC')
                   ->get();
         $customer = DB::table('customer')

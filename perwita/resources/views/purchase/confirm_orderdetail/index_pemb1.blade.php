@@ -873,9 +873,9 @@
               $('.hargamanual' + $key + '[data-kodeitem = '+kodeitem+']').val(addCommas(response.sppd[$j].sppd_harga));
 
                if(response.temp[$i] == '0'){
-                  for($z = 0; $z < response.supplier.length; $z++){
-                    for($h = 0; $h < response.supplier[$z].length; $h++){
-                        $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').append("<option value="+response.supplier[$z][$h].is_idsup+">" + response.supplier[$z][$h].no_supplier+" - "+response.supplier[$z][$h].nama_supplier+"</option>");
+                  for($z = 0; $z < response.sppd.length; $z++){
+                    for($hg = 0; $hg < response.supplier[$z].length; $hg++){
+                        $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').append("<option value="+response.supplier[$z][$hg].is_idsup+">" + response.supplier[$z][$hg].no_supplier+" - "+response.supplier[$z][$hg].nama_supplier+"</option>");
                     }
                   }
                }
@@ -909,18 +909,21 @@
           val = $(this).val();
           if(val == ''){
             
-             if(response.temp[$k] == '0'){                
-                  for($z = 0; $z < response.itemsupplier2.length; $z++){
-                    $(this).append("<option value="+response.itemsupplier2[$z].is_idsup+">" +response.itemsupplier2[$z].no_supplier+" - "+response.itemsupplier2[$z].nama_supplier+"</option>");
+             if(response.temp[$k] == '0'){  
+                  for($h = 0; $h < response.sppd.length; $h++){
+                     for($z = 0; $z < response.supplier[$h].length; $z++){
+                      $(this).append("<option value="+response.itemsupplier[$h][$z].is_idsup+">" +response.itemsupplier[$h][$z].no_supplier+" - "+response.itemsupplier[$h][$z].nama_supplier+"</option>");
                   
-                  }
+                   }
+                  }              
+                 
                 $(this).trigger("chosen:updated");
                 $(this).trigger("liszt:updated");
                }
                else if(response.temp[$k] == '1'){
              
-                  for($z = 0; $z < response.supplier.length; $z++){                 
-                    $(this).append("<option value="+response.supplier[$z].idsup+">" +response.supplier[$z].no_supplier+" - "+response.supplier[$z].nama_supplier+"</option>");
+                  for($z = 0; $z < response.supplier2.length; $z++){                 
+                    $(this).append("<option value="+response.supplier2[$z].idsup+">" +response.supplier2[$z].no_supplier+" - "+response.supplier[$z].nama_supplier+"</option>");
                   }
 
                  $(this).trigger("chosen:updated");

@@ -139,6 +139,26 @@
 </div>
 
 
+{{-- MODAL TT SUBCON --}}
+<div class="modal fade" id="modal_tt_subcon" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog" role="document" style="min-width: 800px !important; min-height: 800px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Form Tanda Terima</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body div_tt">
+        
+      </div>
+      <div class="modal-footer inline-form">
+        <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
+        <button onclick="simpan_tt()" type="button" class="btn btn-primary simpan_penerus" data-dismiss="modal">Simpan</button>
+    </div>
+  </div>
+</div>
+
 
 
 
@@ -174,15 +194,15 @@
                 <table class="table table_pajak_penerus">
                   <tr>
                     <td>No Faktur Pajak</td>
-                    <td><input type="text" class="form-control faktur_pajak_penerus" name="faktur_pajak_penerus"></td>
+                    <td><input value="{{ $faktur_pajak->fpm_nota or null }}" type="text" class="form-control faktur_pajak_penerus" name="faktur_pajak_penerus"></td>
                   </tr>
                   <tr>
                     <td>Tanggal</td>
-                    <td><input type="text" class="form-control date tanggal_pajak_penerus" name="tanggal_pajak_penerus"></td>
+                    <td><input type="text" value="{{$faktur_pajak->fpm_tgl or null }}" class="form-control date tanggal_pajak_penerus" name="tanggal_pajak_penerus"></td>
                   </tr>
                   <tr>
                     <td>Masa Pajak</td>
-                    <td><input type="text" class="form-control date masa_pajak_penerus" name="masa_pajak_penerus"></td>
+                    <td><input type="text" value="{{$faktur_pajak->fpm_masapajak or null }}"  class="form-control date masa_pajak_penerus" name="masa_pajak_penerus"></td>
                   </tr>
                 </table>
               </div>
@@ -231,7 +251,7 @@
             <button type="hidden" class="btn btn-primary" data-dismiss="modal">Save changes</button>
           </div>
       </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+</div><!-- /.modal -->
 </div>
 
 

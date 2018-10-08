@@ -49,7 +49,8 @@ class LaporanPurchaseController extends Controller
 		}else{
 			return view("purchase/laporan/pdf/masterItem",compact('data2'));
 		}
-	}public function masteritemgudang(Request $request){
+	}
+	public function masteritemgudang(Request $request){
 		$dd = $request->asw;
 		$data1 = [];
 		for ($o=0; $o < count($dd); $o++) { 
@@ -64,7 +65,8 @@ class LaporanPurchaseController extends Controller
 		}else{
 			return view("purchase/laporan/pdf/masterGudang",compact('data2'));
 		}
-	}public function mastersupplier(Request $request){
+	}
+	public function mastersupplier(Request $request){
 		// dd($request);
 		$dd = $request->asw;
 		$data1 = [];
@@ -80,7 +82,8 @@ class LaporanPurchaseController extends Controller
 		}else{
 			return view("purchase/laporan/pdf/masterSupplier",compact('data2'));
 		}
-	}public function masterbayarbank(Request $request){
+	}
+	public function masterbayarbank(Request $request){
 		// dd($request);
 		$dd = $request->asw;
 		$data1 = [];
@@ -612,10 +615,195 @@ class LaporanPurchaseController extends Controller
 		 return view('purchase/laporan/mutasihutang');
 	}
 
-	
-
 	public function reportfakturpelunasan() {
-		 return view('purchase/laporan/historisfaktur');
+		$dataFaktur = DB::table('faktur_pembelian')->select('fp_nofaktur')->orderBy('fp_idfaktur', 'asc')->get();
+		$dataFakturPembelian = '';
+		$dataSearchFaktur = '';
+		$dataBG = '';
+		$dataHistoriesResult = '';
+		return view('purchase/laporan/historisfaktur', compact('dataFaktur', 'dataSearchFaktur', 'dataFakturPembelian', 'dataHistoriesResult', 'dataBG'));
+	}
+
+	public function getfakturpelunasan(Request $request) {
+		// echo json_encode($request->no_faktur);
+
+		$dataFakturPembelian = '';
+		$dataSearchFaktur = '';
+		$dataHistories1 = '';
+		$dataHistories2 = '';
+		$dataHistoriesResult1 = array();
+		$dataHistoriesResult2 = array();
+		$resultHistories = array();
+		$dataHistoriesResult = '';
+		$dataBG = '';
+
+		$dataFakturSupplier = DB::table('faktur_pembelian')
+				->select('faktur_pembelian.fp_supplier')
+				->where('faktur_pembelian.fp_nofaktur', $request->faktur)
+				->first();
+
+		// print_r($dataFakturSupplier); die;
+		if (count($dataFakturSupplier) != 0)
+		{
+			$dataCekSupplier = DB::table('supplier')
+							->where('no_supplier', $dataFakturSupplier->fp_supplier)
+							->count();
+
+			$dataCekVendor = DB::table('vendor')
+								->where('kode', $dataFakturSupplier->fp_supplier)
+								->count();
+
+			$dataCekSubcon = DB::table('subcon')
+								->where('kode', $dataFakturSupplier->fp_supplier)
+								->count();
+		}
+		else
+		{
+			$dataCekSupplier = 0;
+			$dataCekVendor = 0;
+			$dataCekSubcon= 0;
+		}
+		
+
+		// print_r($dataCekVendor); die;
+
+		if ($dataCekSupplier != 0) {
+			$dataFakturPembelian = DB::table('faktur_pembelian')
+				->select('faktur_pembelian.*', 'faktur_pembeliandt.*', 'supplier.no_supplier', 'supplier.nama_supplier', 'supplier.alamat as alamat_supplier', 'fakturpajakmasukan.fpm_nota', 'fakturpajakmasukan.fpm_tgl', 'pajak.nama as nama_pph')
+				->join('faktur_pembeliandt', 'faktur_pembelian.fp_idfaktur', '=', 'faktur_pembeliandt.fpdt_idfp', 'left')
+				->join('supplier', 'faktur_pembelian.fp_supplier', '=', 'supplier.no_supplier', 'left')
+				->join('fakturpajakmasukan', 'faktur_pembelian.fp_idfaktur', '=', 'fakturpajakmasukan.fpm_idfaktur', 'left')
+				->join('pajak', 'faktur_pembelian.fp_jenispph', '=', 'pajak.id', 'left')
+				->where('faktur_pembelian.fp_nofaktur', $request->faktur)
+				->first();
+
+			$dataSearchFaktur = DB::table('faktur_pembelian')
+				->select('faktur_pembeliandt.fpdt_kodeitem', 'faktur_pembeliandt.fpdt_updatedstock', 'faktur_pembeliandt.fpdt_qty')
+				->join('faktur_pembeliandt', 'faktur_pembelian.fp_idfaktur', '=', 'faktur_pembeliandt.fpdt_idfp', 'left')
+				->join('supplier', 'faktur_pembelian.fp_supplier', '=', 'supplier.no_supplier', 'left')
+				->where('faktur_pembelian.fp_nofaktur', $request->faktur)
+				->get();
+
+			$dataHistories1 = DB::table('faktur_pembeliandt')
+				->select('faktur_pembelian.*', 'faktur_pembeliandt.*')
+				->join('faktur_pembelian', 'faktur_pembelian.fp_idfaktur', '=', 'faktur_pembeliandt.fpdt_idfp', 'right')
+				->where('faktur_pembelian.fp_nofaktur', $request->faktur)
+				->first();
+
+			$dataHistories2 = DB::table('bukti_bank_keluar_detail')
+				->select('bukti_bank_keluar.bbk_nota', 'bukti_bank_keluar.bbk_tgl', 'bukti_bank_keluar.bbk_keterangan', 'bukti_bank_keluar.bbk_total')
+				->join('bukti_bank_keluar', 'bukti_bank_keluar_detail.bbkd_idbbk', '=', 'bukti_bank_keluar.bbk_id', 'left')
+				->where('bukti_bank_keluar_detail.bbkd_idfpg', $dataFakturPembelian->fp_idfaktur)
+				->get();
+
+			$dataBG = DB::table('fpg_dt')
+						->select('fpg.fpg_nofpg', 'fpg.fpg_tgl', 'fpg.fpg_keterangan', 'fpg_dt.fpgdt_jumlahtotal', 'fpg_cekbank.fpgb_nocheckbg')
+						->join('fpg', 'fpg_dt.fpgdt_idfpg', '=', 'fpg.idfpg', 'left')
+						->join('fpg_cekbank', 'fpg.idfpg', '=', 'fpg_cekbank.fpgb_idfpg', 'left')
+						->where('fpg_dt.fpgdt_nofaktur', $request->faktur)
+						->get();
+		}
+		if ($dataCekVendor > 0) {
+			$dataFakturPembelian = DB::table('faktur_pembelian')
+				->select('faktur_pembelian.*', 'faktur_pembeliandt.*', 'vendor.kode as no_supplier', 'vendor.nama as nama_supplier', 'vendor.alamat as alamat_supplier', 'fakturpajakmasukan.fpm_nota', 'fakturpajakmasukan.fpm_tgl', 'pajak.nama as nama_pph')
+				->join('faktur_pembeliandt', 'faktur_pembelian.fp_idfaktur', '=', 'faktur_pembeliandt.fpdt_idfp', 'left')
+				->join('vendor', 'faktur_pembelian.fp_supplier', '=', 'vendor.kode', 'left')
+				->join('fakturpajakmasukan', 'faktur_pembelian.fp_idfaktur', '=', 'fakturpajakmasukan.fpm_idfaktur', 'left')
+				->join('pajak', 'faktur_pembelian.fp_jenispph', '=', 'pajak.id', 'left')
+				->where('faktur_pembelian.fp_nofaktur', $request->faktur)
+				->first();
+
+
+			$dataSearchFaktur = DB::table('faktur_pembelian')
+				->select('faktur_pembeliandt.fpdt_kodeitem', 'faktur_pembeliandt.fpdt_updatedstock', 'faktur_pembeliandt.fpdt_qty')
+				->join('faktur_pembeliandt', 'faktur_pembelian.fp_idfaktur', '=', 'faktur_pembeliandt.fpdt_idfp', 'left')
+				->join('vendor', 'faktur_pembelian.fp_supplier', '=', 'vendor.kode', 'left')
+				->where('faktur_pembelian.fp_nofaktur', $request->faktur)
+				->get();
+
+			$dataHistories1 = DB::table('faktur_pembelian')
+				->select('faktur_pembelian.*', 'faktur_pembeliandt.*')
+				->join('faktur_pembeliandt', 'faktur_pembelian.fp_idfaktur', '=', 'faktur_pembeliandt.fpdt_idfp', 'left')
+				->where('faktur_pembelian.fp_nofaktur', $request->faktur)
+				->first();
+
+			$dataHistories2 = DB::table('bukti_bank_keluar_detail')
+				->select('bukti_bank_keluar.bbk_nota', 'bukti_bank_keluar.bbk_tgl', 'bukti_bank_keluar.bbk_keterangan', 'bukti_bank_keluar.bbk_total')
+				->join('bukti_bank_keluar', 'bukti_bank_keluar_detail.bbkd_idbbk', '=', 'bukti_bank_keluar.bbk_id', 'left')
+				->where('bukti_bank_keluar_detail.bbkd_idfpg', $dataFakturPembelian->fp_idfaktur)
+				->get();
+
+			$dataBG = DB::table('fpg_dt')
+						->select('fpg.fpg_nofpg', 'fpg.fpg_tgl', 'fpg.fpg_keterangan', 'fpg_dt.fpgdt_jumlahtotal', 'fpg_cekbank.fpgb_nocheckbg')
+						->join('fpg', 'fpg_dt.fpgdt_idfpg', '=', 'fpg.idfpg', 'left')
+						->join('fpg_cekbank', 'fpg.idfpg', '=', 'fpg_cekbank.fpgb_idfpg', 'left')
+						->where('fpg_dt.fpgdt_nofaktur', $request->faktur)
+						->get();
+
+		} 
+		if ($dataCekSubcon > 0) {
+			$dataFakturPembelian = DB::table('faktur_pembelian')
+				->select('faktur_pembelian.*', 'faktur_pembeliandt.*', 'subcon.kode as no_supplier', 'subcon.nama as nama_supplier', 'subcon.alamat as alamat_supplier', 'fakturpajakmasukan.fpm_nota', 'fakturpajakmasukan.fpm_tgl', 'pajak.nama as nama_pph')
+				->join('faktur_pembeliandt', 'faktur_pembelian.fp_idfaktur', '=', 'faktur_pembeliandt.fpdt_idfp', 'left')
+				->join('subcon', 'faktur_pembelian.fp_supplier', '=', 'subcon.kode', 'left')
+				->join('fakturpajakmasukan', 'faktur_pembelian.fp_idfaktur', '=', 'fakturpajakmasukan.fpm_idfaktur', 'left')
+				->join('pajak', 'faktur_pembelian.fp_jenispph', '=', 'pajak.id', 'left')
+				->where('faktur_pembelian.fp_nofaktur', $request->faktur)
+				->first();
+
+			$dataSearchFaktur = DB::table('faktur_pembelian')
+				->select('faktur_pembeliandt.fpdt_kodeitem', 'faktur_pembeliandt.fpdt_updatedstock', 'faktur_pembeliandt.fpdt_qty')
+				->join('faktur_pembeliandt', 'faktur_pembelian.fp_idfaktur', '=', 'faktur_pembeliandt.fpdt_idfp', 'left')
+				->join('subcon', 'faktur_pembelian.fp_supplier', '=', 'subcon.kode', 'left')
+				->where('faktur_pembelian.fp_nofaktur', $request->faktur)
+				->get();
+
+			$dataHistories1 = DB::table('faktur_pembelian')
+				->select('faktur_pembelian.*', 'faktur_pembeliandt.*')
+				->join('faktur_pembeliandt', 'faktur_pembelian.fp_idfaktur', '=', 'faktur_pembeliandt.fpdt_idfp', 'left')
+				->where('faktur_pembelian.fp_nofaktur', $request->faktur)
+				->first();
+
+			$dataHistories2 = DB::table('bukti_bank_keluar_detail')
+				->select('bukti_bank_keluar.bbk_nota', 'bukti_bank_keluar.bbk_tgl', 'bukti_bank_keluar.bbk_keterangan', 'bukti_bank_keluar.bbk_total')
+				->join('bukti_bank_keluar', 'bukti_bank_keluar_detail.bbkd_idbbk', '=', 'bukti_bank_keluar.bbk_id', 'left')
+				->where('bukti_bank_keluar_detail.bbkd_idfpg', $dataFakturPembelian->fp_idfaktur)
+				->get();
+
+			$dataBG = DB::table('fpg_dt')
+						->select('fpg.fpg_nofpg', 'fpg.fpg_tgl', 'fpg.fpg_keterangan', 'fpg_dt.fpgdt_jumlahtotal', 'fpg_cekbank.fpgb_nocheckbg')
+						->join('fpg', 'fpg_dt.fpgdt_idfpg', '=', 'fpg.idfpg', 'left')
+						->join('fpg_cekbank', 'fpg.idfpg', '=', 'fpg_cekbank.fpgb_idfpg', 'left')
+						->where('fpg_dt.fpgdt_nofaktur', $request->faktur)
+						->get();
+		}
+
+		$dataHistoriesRow1 = array(
+			$dataHistories1->fp_nofaktur,
+			$dataHistories1->fp_tgl,
+			$dataHistories1->fp_keterangan,
+			$dataHistories1->fp_netto
+		);
+
+		$dataHistoriesResult1[] = $dataHistoriesRow1;
+
+		foreach ($dataHistories2 as $value) {
+			$dataHistoriesRow = array(
+				$value->bbk_nota,
+				$value->bbk_tgl,
+				$value->bbk_keterangan,
+				$value->bbk_total
+			);
+			$dataHistoriesResult2[] = $dataHistoriesRow;
+		}
+
+		$dataHistoriesResult = array_merge($dataHistoriesResult1, $dataHistoriesResult2);
+
+		// print_r($dataHistoriesResult); die;
+
+		// print_r($data); die;
+		$dataFaktur = DB::table('faktur_pembelian')->select('fp_nofaktur')->orderBy('fp_idfaktur', 'asc')->get();
+		return view('purchase/laporan/historisfaktur', compact('dataFaktur', 'dataFakturPembelian', 'dataSearchFaktur', 'dataHistoriesResult', 'dataBG'));
 	}
 
 	public function reportanalisausiahutang() {
@@ -753,4 +941,6 @@ class LaporanPurchaseController extends Controller
                         <i class="fa fa-print" aria-hidden="true"></i> Download PDF 
                     </a> 
 	*/
+
+    
 }

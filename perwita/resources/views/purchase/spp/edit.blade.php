@@ -49,8 +49,8 @@
                     <h5> Surat Permintaan Pembelian
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                    <div class="ibox-tools">
-                        
+                    <div class="text-right">
+                        <a  class="btn btn-sm btn-default" href={{url('suratpermintaanpembelian')}}> <i class="fa fa-arrow-left"> </i>Kembali </a>
                     </div>
                 </div>
 
@@ -569,14 +569,12 @@
 
                if(response.temp[$i] == '0'){
                   for($z = 0; $z < response.supplier.length; $z++){
-                    for($j = 0; $j < response.supplier[$z].length; $j++){
-                      $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').append("<option value="+response.supplier[$z][$j].is_idsup+">" + response.supplier[$z][$j].no_supplier+" - "+response.supplier[$z][$j].nama_supplier+"</option>");
-                    }
+                    $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').append("<option value="+response.supplier[$z][0].is_idsup+">" + response.supplier[$z][0].no_supplier+" - "+response.supplier[$z][0].nama_supplier+"</option>");
                   }
                }
                else if(response.temp[$i] == '1'){
-                  for($z = 0; $z < response.supplier.length; $z++){
-                    $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').append("<option value="+response.supplier[$z][0].idsup+">" +response.supplier[$z][0].no_supplier+" - "+response.supplier[$z][0].nama_supplier+"</option>");
+                  for($z = 0; $z < response.supplier2.length; $z++){
+                    $('.suppliercek' + $key + '[data-kodeitem = '+kodeitem+']').append("<option value="+response.supplier2[$z].idsup+">" +response.supplier2[$z].no_supplier+" - "+response.supplier2[$z].nama_supplier+"</option>");
                     
                   }
                }  
@@ -604,8 +602,8 @@
           if(val == ''){
             
              if(response.temp[$k] == '0'){                
-                  for($z = 0; $z < response.itemsupplier2.length; $z++){
-                    $(this).append("<option value="+response.itemsupplier2[$z].is_idsup+">" +response.itemsupplier2[$z].no_supplier+" - "+response.itemsupplier2[$z].nama_supplier+"</option>");
+                  for($z = 0; $z < response.itemsupplier.length; $z++){
+                    $(this).append("<option value="+response.itemsupplier[$z][0].is_idsup+">" +response.itemsupplier[$z][0].no_supplier+" - "+response.itemsupplier[$z][0].nama_supplier+"</option>");
                   
                   }
                 $(this).trigger("chosen:updated");
@@ -613,8 +611,8 @@
                }
                else if(response.temp[$k] == '1'){
              
-                  for($z = 0; $z < response.supplier.length; $z++){                 
-                    $(this).append("<option value="+response.supplier[$z].idsup+">" +response.supplier[$z].no_supplier+" - "+response.supplier[$z].nama_supplier+"</option>");
+                  for($z = 0; $z < response.supplier2.length; $z++){                 
+                    $(this).append("<option value="+response.supplier2[$z].idsup+">" +response.supplier2[$z].no_supplier+" - "+response.supplier2[$z].nama_supplier+"</option>");
                   }
 
                  $(this).trigger("chosen:updated");
@@ -971,7 +969,7 @@
               html ="<tr class='totalcekpembayaran'> <td>"+response.datasupplier[$j][0].nama_supplier+" <input type='hidden' name='suppliercekbayar[]' value="+response.datasupplier[$j][0].idsup+"></td>"+
                     "<td>"+addCommas(hargasupplier[$j])+" <input type='hidden' name='totalbayarpembayaran[]' value="+hargasupplier[$j]+"></td>";
                     if(response.temp[$j] == 0){
-                    html += "<td> <div class='col-sm-4'> <input type='text' class='form-control input-sm' name='syaratkredit[]' value="+response.datasupplier[$j][0].syarat_kredit+"> </div> <div class='col-sm-4'> Hari </div></td>";
+                    html += "<td> <div class='col-sm-4'> <input type='text' class='form-control input-sm' name='syaratkredit[]' value="+response.datasupplier[$j][0].syarat_kredit+" readonly> </div> <div class='col-sm-4'> Hari </div></td>";
                     }
                     else {
                     html +=  "<td> <div class='col-sm-4'> <input type='text' class='form-control input-sm' name='syaratkredit[]' value="+response.datasupplier[$j][0].syarat_kredit+"> </div> <div class='col-sm-4'> Hari </div> </td>";

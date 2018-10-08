@@ -57,6 +57,7 @@ use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 use Auth;
 use App\bonsempengajuan;
+use Yajra\Datatables\Datatables;
 
 class BonSementaraController extends Controller
 {
@@ -70,16 +71,175 @@ class BonSementaraController extends Controller
 		}
 		
 		
-		$data['bank'] = DB::select("select * from masterbank where mb_cabangbank = '$cabang'");
+		/*$data['bank'] = DB::select("select * from masterbank where mb_cabangbank = '$cabang'");*/
 
 		return view('purchase/bonsementara/indexcabang', compact('data'));
 	}
+
+	public function table(Request $request){		  
+  		  $tgl='';  		  
+  		  $nomor='';  		  
+  		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+  		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+  		  
+  		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
+  		  	$tgl="and bp_tgl >= '$tgl1' AND bp_tgl <= '$tgl2'";
+  		  }
+  		  
+  		  if($request->nomor!=''){
+  		  	$nomor="and bp_nota='$request->nomor'";
+  		  }  		  
+		 $cabang = session::get('cabang');
+		 $data='';
+
+
+		if(Auth::user()->punyaAkses('Bon Sementara Cabang','all') || Auth::user()->punyaAkses('Bon Sementara Kabang','all') ){
+			$data= DB::select("select *,'no' as no from bonsem_pengajuan, cabang where bp_cabang = kode  $tgl $nomor  order by bp_id desc");
+		}
+		else {
+			$data= DB::select("select *,'no' as no from bonsem_pengajuan, cabang where bp_cabang = '$cabang' and bp_cabang = kode $tgl $nomor order by bp_id desc");
+		}
+		$dataFpg=collect($data);
+
+
+		return 
+			DataTables::of($dataFpg)->
+			editColumn('bp_tgl', function ($dataFpg) {            
+            	return date('d-m-Y',strtotime($dataFpg->bp_tgl));
+            })
+            ->editColumn('bp_nominal', function ($dataFpg) { 
+                return number_format($dataFpg->bp_nominal, 2);                
+            })->editColumn('bp_nominalkacab', function ($dataFpg) { 
+                if($dataFpg->bp_nominalkacab == null){
+                    return '<span class="label label-info"> BELUM DI PROSES </span>';
+                 }else{
+                    return number_format($dataFpg->bp_nominalkeu ,2);
+                 }
+
+            })
+            ->editColumn('status_pusat', function ($dataFpg) { 
+                return '<span class="label label-success"> '.$dataFpg->status_pusat.'</span>';
+            })   
+            ->editColumn('status_pusat', function ($dataFpg) { 
+                return '<span class="label label-success"> '.$dataFpg->status_pusat.'</span>';
+            })     
+            ->addColumn('proseskacab', function ($dataFpg) { 
+               	if(Auth::user()->PunyaAkses('Bon Sementara Kabang','aktif')){
+                     return '<button type="button" class="btn btn-sm btn-primary" onclick="kacab('.$dataFpg->bp_id.')" data-toggle="modal" data-target="#myModal2">  PROSES KACAB </button>';
+                }
+
+            })     
+            ->editColumn('bp_statusend', function ($dataFpg) {               
+				if(Auth::user()->PunyaAkses('Bon Sementara Kabang','aktif')){
+                    if($dataFpg->bp_statusend == 'CAIR') {
+                         return '<button class="btn btn-sm btn-danger" onclick="uangterima('.$dataFpg->bp_id.')" data-toggle="modal" data-target="#modaluangterima"> <i class="fa fa-money"> </i> Terima Uang ? </button>';
+                    }
+                 }
+
+            })     
+            ->editColumn('bp_setujukacab', function ($dataFpg) {  
+            	$bp_setujukacab='';             
+				if(Auth::user()->PunyaAkses('Bon Sementara Cabang','aktif')){
+                    if($dataFpg->bp_setujukacab != 'SETUJU'){
+                       $bp_setujukacab.= '<button class="btn btn-warning btn-sm" onclick="editform('.$dataFpg->bp_id.')" data-toggle="modal" data-target="#myModaledit"> <i class="fa fa-pencil"> </i>  </button>
+                            <button class="btn btn-danger btn-sm" onclick="hapusData('.$dataFpg->bp_id.')"> <i class="fa fa-trash"> </i> </button>';
+                    }else{
+                        if($dataFpg->status_pusat == 'UANG DI TERIMA'){
+                         $bp_setujukacab.= '<button onclick="lihatjurnal('.$dataFpg->bp_nota or null.',"BON SEMENTARA")" class=" btn btn-xs btn-primary"> <i class="fa fa-eye"> </i> Jurnal </button>';
+                    	}
+                    }
+
+                }
+                return $bp_setujukacab;
+            })    
+
+            ->addColumn('action', function ($dataFpg) {            	
+            	$html='';
+            	 
+            	if($dataFpg->bp_setujukeu == 'SETUJU'){ 
+	            	$html.='<a class="btn btn-success btn-sm" 
+	            			href='.url('bonsementarapusat/printdata/'.$dataFpg->bp_id.'').'>
+	            	 <i class="fa fa-print"> </i> Cetak  </a>';
+            	 }
+            	 else {
+            	 	$html .= "";
+            	 }
+            	return $html;           
+            })
+			->make(true);	
+
+		    
+
+
+                          
+
+                             
+
+	}
+
+	public function terbilang($x, $style=4) {
+    if($x<0) {
+        $hasil = "minus ". trim($this->kekata($x));
+    } else {
+        $hasil = trim($this->kekata($x));
+    }     
+    switch ($style) {
+        case 1:
+            $hasil = strtoupper($hasil);
+            break;
+        case 2:
+            $hasil = strtolower($hasil);
+            break;
+        case 3:
+            $hasil = ucwords($hasil);
+            break;
+        default:
+            $hasil = ucfirst($hasil);
+            break;
+    }     
+    return $hasil;
+}
+	
+	public function kekata($x) {
+    $x = abs($x);
+    $angka = array("", "satu", "dua", "tiga", "empat", "lima",
+    "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+    $temp = "";
+    if ($x <12) {
+        $temp = " ". $angka[$x];
+    } else if ($x <20) {
+        $temp = $this->kekata($x - 10). " belas";
+    } else if ($x <100) {
+        $temp = $this->kekata($x/10)." puluh". $this->kekata($x % 10);
+    } else if ($x <200) {
+        $temp = " seratus" . $this->kekata($x - 100);
+    } else if ($x <1000) {
+        $temp = $this->kekata($x/100) . " ratus" . $this->kekata($x % 100);
+    } else if ($x <2000) {
+        $temp = " seribu" . $this->kekata($x - 1000);
+    } else if ($x <1000000) {
+        $temp = $this->kekata($x/1000) . " ribu" . $this->kekata($x % 1000);
+    } else if ($x <1000000000) {
+        $temp = $this->kekata($x/1000000) . " juta" . $this->kekata($x % 1000000);
+    } else if ($x <1000000000000) {
+        $temp = $this->kekata($x/1000000000) . " milyar" . $this->kekata(fmod($x,1000000000));
+    } else if ($x <1000000000000000) {
+        $temp = $this->kekata($x/1000000000000) . " trilyun" . $this->kekata(fmod($x,1000000000000));
+    }     
+        return $temp;
+}
 
 	public function create(){
 		$data['cabang'] = DB::select("select * from cabang");
 
 
 		return view('purchase/bonsementara/createcabang' , compact('data'));	
+	}
+
+	public function printdata($id){
+		$data['bonsem'] = DB::select("select * from bonsem_pengajuan where bp_id = '$id'");
+		$data['terbilang'] = $this->terbilang($data['bonsem'][0]->bp_nominalkeu);
+		return view('purchase/bonsementara/print_bon_sementara' , compact('data'));
 	}
 
 	public function getnota(Request $request){
@@ -107,8 +267,12 @@ class BonSementaraController extends Controller
 			$data['idspp'] = '0001';
 		}
 
+		$data['nota'] =  'BS' . $bulan . $tahun . '/' . $cabang . '/' .  $data['idspp'];
 		$datacabang = DB::select("select * from cabang where kode = '$cabang'");
+		
 		$data['namacabang'] = $datacabang[0]->nama;
+
+
 		return json_encode($data);
 	}
 
@@ -390,6 +554,7 @@ class BonSementaraController extends Controller
 			}
 			
 			$updatepb->time_setujuadmin = $date;
+			$updatepb->bp_keteranganadmin = $request->keteranganadmin;
 			$updatepb->save();
 
 			return json_encode('sukses');
@@ -462,6 +627,7 @@ class BonSementaraController extends Controller
 
 			$updatepb = bonsempengajuan::find($id);
 			$updatepb->bp_jatuhtempo = $tigahari;
+			$updatepb->bp_keteranganpusat = $request->keteranganpusat;
 			$updatepb->save();
 			return json_encode('sukses');
 		});
@@ -473,10 +639,101 @@ class BonSementaraController extends Controller
 			$data['pencairan'] = DB::table("bonsem_pengajuan")->where('status_pusat' , '=' , 'PENCAIRAN')->count();
 			$data['selesai'] = DB::table("bonsem_pengajuan")->where('status_pusat' , '=' , 'SELESAI')->count();
 
+		/*$data['pb'] = DB::select("select * from bonsem_pengajuan, cabang where bp_setujukacab = 'SETUJU' and bp_cabang = kode order by bp_id desc");*/
+
+		return view('purchase/bonsementara/indexpusat' , compact('data'));
+	}
+
+	public function indexpusattable(Request $request){		  
+  		  $tgl='';  		  
+  		  $nomor='';  		  
+  		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
+  		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
+  		  
+  		  if($request->tanggal1!='' && $request->tanggal2!=''){  		  	
+  		  	$tgl="and bp_tgl >= '$tgl1' AND bp_tgl <= '$tgl2'";
+  		  }
+  		  
+  		  if($request->nomor!=''){
+  		  	$nomor="and bp_nota='$request->nomor'";
+  		  }  		  
+		 $cabang = session::get('cabang');
+		 $data='';
+
+		$data=DB::select("select *,'no' as no from bonsem_pengajuan, cabang where bp_setujukacab = 'SETUJU' and bp_cabang = kode $tgl $nomor order by bp_id desc");
+
+		$dataFpg=collect($data);
+		return 
+			DataTables::of($dataFpg)->
+			editColumn('bp_tgl', function ($dataFpg) {            
+            	return date('d-m-Y',strtotime($dataFpg->bp_tgl));
+            })
+            ->editColumn('bp_nominalkacab', function ($dataFpg) { 
+                return number_format($dataFpg->bp_nominalkacab, 2);                       
+            })->editColumn('bp_nominaladmin', function ($dataFpg) { 
+            	$bp_nominaladmin='';
+               	if($dataFpg->bp_nominaladmin == null){
+                       $bp_nominaladmin.='<span class="label label-info"> BELUM DI PROSES </span>';
+                }else{
+                	   $bp_nominaladmin.=number_format($dataFpg->bp_nominaladmin, 2);
+                }
+                return $bp_nominaladmin;                
+
+            })
+            ->editColumn('bp_nominalkeu', function ($dataFpg) { 
+            	$bp_nominalkeu='';
+                if($dataFpg->bp_nominalkeu == null){
+                    $bp_nominalkeu.='<span class="label label-info"> BELUM DI PROSES </span>';
+                }else{
+                    $bp_nominalkeu.=number_format($dataFpg->bp_nominalkeu, 2);                
+                }
+
+            })   
+            ->editColumn('status_pusat', function ($dataFpg) { 
+                return '<span class="label label-info"> '.$dataFpg->status_pusat.'</span>';
+            })     
+            ->addColumn('prosesmodal', function ($dataFpg) { 
+            	$prosesmodal='';
+               	if(Auth::user()->PunyaAkses('Bon Sementara Pusat','aktif')){
+                 	$prosesmodal.='<button type="button" class="btn btn-sm btn-primary" onclick="setujuadmin('.$dataFpg->bp_id.')" data-toggle="modal" data-target="#myModal2">  ADMIN PUSAT  </button>';
+                }
+
+                if(Auth::user()->PunyaAkses('Bon Sementara Menkeu','aktif')){
+                    if($dataFpg->bp_setujuadmin == 'SETUJU'){
+                        $prosesmodal.='<button type="button" class="btn btn-sm btn-primary" onclick="setujukeu('.$dataFpg->bp_id.')" data-toggle="modal" data-target="#myModalMenkeu">  MANAGER KEUANGAN  </button>';
+                    }
+                }
+
+                return $prosesmodal;
+
+            })     
+            ->addColumn('action', function ($dataFpg) {            	
+             $prosesmodal = '';
+             if($dataFpg->bp_setujukeu == 'SETUJU'){
+                  $prosesmodal .= '<a class="btn btn-success btn-sm"
+                  href='.url('bonsementarapusat/printdata/'.$dataFpg->bp_id.'').'><i class="fa fa-print"> </i> Cetak  </a>';
+               }
+
+               return $prosesmodal;
+              /* return '<a class="btn btn-success btn-sm"
+                  href='.url('bonsementarapusat/printdata/'.$dataFpg->bp_id.'').'><i class="fa fa-print"> </i> Cetak  </a>';*/
+            })
+			->make(true);
+	}
+
+	public function indexpusatnotif(){
+			$data['adminbelumdiproses'] = DB::table("bonsem_pengajuan")->whereNull('bp_setujuadmin')->where('bp_setujukacab' , '=' , 'SETUJU')->count();
+			$data['mankeubelumproses'] = DB::table("bonsem_pengajuan")->whereNull('bp_setujukeu')->where('bp_setujukacab' , '=' , 'SETUJU')->count();
+			$data['pencairan'] = DB::table("bonsem_pengajuan")->where('status_pusat' , '=' , 'PENCAIRAN')->count();
+			$data['selesai'] = DB::table("bonsem_pengajuan")->where('status_pusat' , '=' , 'SELESAI')->count();
+
 		$data['pb'] = DB::select("select * from bonsem_pengajuan, cabang where bp_setujukacab = 'SETUJU' and bp_cabang = kode order by bp_id desc");
 
 		return view('purchase/bonsementara/indexpusat' , compact('data'));
 	}
+
+
+	
 
 	
 
