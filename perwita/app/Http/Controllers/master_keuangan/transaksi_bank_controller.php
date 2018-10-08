@@ -74,6 +74,7 @@ class transaksi_bank_controller extends Controller
 
         $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])
                         ->where(DB::raw('substring(id_akun, 1, 2)'), '11')
+                        ->where('is_active', 1)
                         ->whereIn('id_akun', function($query){
                             $query->distinct('mb_kode')
                                         ->from('masterbank')
@@ -82,7 +83,11 @@ class transaksi_bank_controller extends Controller
                         })
                         ->get();
 
-        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1001')->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1003')->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1099')->get();
+        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])
+                        ->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1001')
+                        ->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1003')
+                        ->where('is_active', 1)
+                        ->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1099')->get();
 
         // return json_encode($akun_real);
 
@@ -122,6 +127,7 @@ class transaksi_bank_controller extends Controller
 
         $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])
                         ->where(DB::raw('substring(id_akun, 1, 2)'), '11')
+                        ->where('is_active', 1)
                         ->whereIn('id_akun', function($query){
                             $query->distinct('mb_kode')
                                         ->from('masterbank')
@@ -130,7 +136,11 @@ class transaksi_bank_controller extends Controller
                         })
                         ->get();
 
-        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1001')->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1003')->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1099')->get();
+        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])
+                        ->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1001')
+                        ->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1003')
+                        ->where('is_active', 1)
+                        ->where(DB::raw('substring(id_akun, 1, 4)'), '!=', '1099')->get();
 
         return view("keuangan.transaksi_bank.edit")
                 ->withCabangs($cabangs)

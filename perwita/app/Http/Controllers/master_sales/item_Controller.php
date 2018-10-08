@@ -153,9 +153,11 @@ class item_Controller extends Controller
         $satuan = DB::select(DB::raw(" SELECT kode,nama FROM satuan ORDER BY nama ASC "));
         $akun = DB::table('d_akun')
                    ->where('id_akun','like','4'.'%')
+                   ->where('is_active', 1)
                   ->get();
         $akun1 = DB::table('d_akun')
                    ->where('id_akun','like','4'.'%')
+                   ->where('is_active', 1)
                   ->get();
 
         return view('master_sales.item.index',compact('satuan','grup_item','akun','akun1'));

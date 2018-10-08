@@ -69,9 +69,16 @@ class transaksi_memorial extends Controller
            $cabangs = DB::table('cabang')->where("kode", $request->cab)->select("kode", "nama")->get();
 
         $cabang = DB::table('cabang')->select("kode")->first();
-        $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '10')->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
 
-        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '10')->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
+        $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])
+                        ->where('is_active', 1)
+                        ->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '10')
+                        ->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
+
+        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])
+                        ->where('is_active', 1)
+                        ->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '10')
+                        ->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
 
         return view("keuangan.transaksi_memorial.insert")
                 ->withCabangs($cabangs)
@@ -106,9 +113,16 @@ class transaksi_memorial extends Controller
 
 
         $cabang = DB::table('cabang')->select("kode")->first();
-        $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '10')->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
 
-        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '10')->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
+        $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])
+                        ->where('is_active', 1)
+                        ->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '10')
+                        ->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
+
+        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])
+                        ->where('is_active', 1)
+                        ->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '10')
+                        ->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
 
         return view("keuangan.transaksi_memorial.edit")
                 ->withCabangs($cabangs)
