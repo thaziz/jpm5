@@ -28,6 +28,7 @@ class loginController extends Controller {
     }
 
     public function login(Request $req) {
+        dd($req->all());
         $username = $req->username;
         $password = $req->password;
         $user = mMember::whereRaw("m_username  = '$req->username'")->first();
