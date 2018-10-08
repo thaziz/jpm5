@@ -8552,7 +8552,8 @@ public function kekata($x) {
 
 	public function pelunasanhutangbank() {
 
-		return view('purchase/pelunasanhutangbank/index');
+		$data['bank'] = DB::select("select * from masterbank");
+		return view('purchase/pelunasanhutangbank/index' , compact('data'));
 	}
 
 
@@ -10780,7 +10781,7 @@ public function kekata($x) {
 		DB::delete("DELETE from  d_jurnal where jr_ref = '$nobbk' and jr_detail = 'BUKTI BANK KELUAR'");
 		DB::delete("DELETE from bukti_bank_keluar where bbk_id = '$id'");
 
-		//return 'ok';
+		return 'ok';
 	});
 	}
 
@@ -10997,7 +10998,7 @@ return $html;
 		}
 
 		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
-			$data['tujuanbankkas'] = DB::select("select * from d_akun where id_akun = '100111008' or id_akun = '100111001' or id_akun = '100114017'");
+			$data['tujuanbankkas'] = DB::select("select * from d_akun where id_akun = '100111008' or id_akun = '100111001' or id_akun = '100114017' or id_akun = '100111000'");
 		}
 		else {
 			//$data['tujuanbank'] = DB::select("select * from masterbank wher mb_cabangbank = '$cabang'");
@@ -14363,8 +14364,7 @@ return $html;
   	//addfaktur
 		for($j=0;$j<count($request->nofaktur);$j++){
 			$idfp = $request->idfaktur[$j];
-			
-				
+		
 				$formfpg_dt = new formfpg_dt();
 
 				$lastidfpg =  formfpg_dt::max('fpgdt_id');;
@@ -14673,7 +14673,7 @@ return $html;
 					$namaasal = $bankasal[0]->mb_nama;
 					$mbkode = $bankasal[0]->mb_kode;
 			
-					$banktujuan = DB::select("select * from masterbank where mb_id = '$kodetujuan'");
+					$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
 					$cabangtujuan = $banktujuan[0]->mb_cabangbank;
 					$namatujuan = $banktujuan[0]->mb_nama;
 
@@ -14717,7 +14717,7 @@ return $html;
 				$namaasal = $bankasal[0]->mb_nama;
 				
 
-				$banktujuan = DB::select("select * from masterbank where mb_id = '$kodetujuan'");
+				$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
 				$cabangtujuan = $banktujuan[0]->mb_cabangbank;
 				$namatujuan = $banktujuan[0]->mb_nama;
 

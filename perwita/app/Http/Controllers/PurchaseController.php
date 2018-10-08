@@ -10998,7 +10998,7 @@ return $html;
 		}
 
 		if(Auth::user()->punyaAkses('Form Permintaan Giro','all')){
-			$data['tujuanbankkas'] = DB::select("select * from d_akun where id_akun = '100111008' or id_akun = '100111001' or id_akun = '100114017'");
+			$data['tujuanbankkas'] = DB::select("select * from d_akun where id_akun = '100111008' or id_akun = '100111001' or id_akun = '100114017' or id_akun = '100111000'");
 		}
 		else {
 			//$data['tujuanbank'] = DB::select("select * from masterbank wher mb_cabangbank = '$cabang'");
@@ -14673,7 +14673,7 @@ return $html;
 					$namaasal = $bankasal[0]->mb_nama;
 					$mbkode = $bankasal[0]->mb_kode;
 			
-					$banktujuan = DB::select("select * from masterbank where mb_id = '$kodetujuan'");
+					$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
 					$cabangtujuan = $banktujuan[0]->mb_cabangbank;
 					$namatujuan = $banktujuan[0]->mb_nama;
 
@@ -14717,7 +14717,7 @@ return $html;
 				$namaasal = $bankasal[0]->mb_nama;
 				
 
-				$banktujuan = DB::select("select * from masterbank where mb_id = '$kodetujuan'");
+				$banktujuan = DB::select("select * from masterbank where mb_kode = '$kodetujuan'");
 				$cabangtujuan = $banktujuan[0]->mb_cabangbank;
 				$namatujuan = $banktujuan[0]->mb_nama;
 

@@ -793,7 +793,7 @@
                                 <div class="row">
                                 <div class="col-xs-3">
                                   <fieldset>
-                                      <input type="hidden" class="fpbgjenisbayarbank" value="">
+                                      <input type="hidden" class="fpbgjenisbayarbank" value="{{$data['fpg_bank'][0]->fpgb_jenisbayarbank}}">
                                      
                                        @if($data['fpg_bank'][0]->fpgb_jenisbayarbank == 'INTERNET BANKING')
                                        <div class="checkbox checkbox-info checkbox-circle">
@@ -1488,10 +1488,12 @@
                   $('.jenisbayarbankbg').prop({ checked: false }); 
                   $('.jenisbayarbanktf').prop({ checked: false }); 
                   banktujuan =$('.banktujuan').val();
-                  $('#tbmhdatainet').show();
                   $('.nocheck').attr('readonly' , true);
                   $('.nominaltujuanbank').attr('readonly' , true);
                   $('tr.tblbank').remove();
+                    if($('.fpbgjenisbayarbank').val() != 'INTERNET BANKING') {
+                        $('#tbmhdatainet').show();      
+                    }
                 }
                 else {
                   $('.jenisbayarbankbg').prop({ checked: false });           
@@ -1507,7 +1509,9 @@
                   bank = $('.bankasaldetail').val();
                   kodebank = bank.split("+");
                   
-                  alert(tgl);
+                    if($('.fpbgjenisbayarbank').val() != 'INTERNET BANKING') {
+                        $('#tbmhdatainet').show();      
+                    }
 
                   if(kodebank == ''){
                     toastr.info("Mohon pilih data bank terlebih dahulu :)");
@@ -2301,6 +2305,42 @@
                            n++; 
                         }
                       }
+                     else if(idjenisbayar == '6' || idjenisbayar == '7'|| idjenisbayar == '9') {
+                 
+                     // alert(fp.length);                      
+                       for(var i = 0; i < fp.length; i++){ 
+                           var html2 = "<tr class='data"+n+"' id='data"+fp[i].fp_nofaktur+"'> <td>"+n+"</td>" +
+                                       "<td>"+fp[i].namacabang+"</td>" +
+                                      "<td>"+fp[i].fp_nofaktur+"</td>" +
+                                      "<td> - </td>";                                   
+                                      if(idjenisbayar == '9') {
+                              html2 +=  "<td>"+fp[i].namavendor +"</td>";                                            
+                                      }
+                                      else {
+                              html2 += "<td>"+fp[i].namaoutlet+"</td>";
+                                      }
+
+                                      html2 += "<td> - </td>";
+                                      if(idjenisbayar == 6){
+                                        html2 += "<td>"+fp[i].fp_jatuhtempo+"</td>";
+                                      }
+                                      else {
+                                        html2 += "<td> - </td>";
+                                      }
+
+                                   html2 += "<td>"+addCommas(fp[i].fp_sisapelunasan)+"</td> ";
+
+                                   
+                                    html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].fp_idfaktur+","+fp[i].fp_nofaktur+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                  "<label></label>" +
+                                  "</div></td>";
+                                      
+                             html2 +=  "</tr>"; 
+                             tablefaktur.rows.add($(html2)).draw(); 
+                            n++; 
+                            console.log(n +'n');
+                              }
+                    }
                     else if(idjenisbayar == '3'){
                       for(var j =0; j < fp.length; j++){
                             var html2 = "<tr class='data"+n+"' id='data"+fp[j].v_nomorbukti+"'> <td>"+n+"</td>" +
@@ -2319,7 +2359,78 @@
                            tablefaktur.rows.add($(html2)).draw(); 
                            n++; 
                         }
-                    }
+                    } // voucher hutang
+                     else if(idjenisbayar == '1'){
+                         for(var i = 0; i < fp.length; i++){    
+                           
+                               var html2 = "<tr class='data"+n+"' id='data"+fp[i].ik_nota+"'> <td>"+n+"</td>" +
+                                             "<td>"+fp[i].nama+"</td>" +
+                                            "<td>"+fp[i].ik_nota+"</td>" +
+                                            "<td> - </td>" +                                       
+                                          
+                                            "<td>"+fp[i].nama +"</td>"+
+                                            "<td> - </td>" +
+                                            "<td> - </td>" +
+                                            "<td>"+addCommas(fp[i].ik_pelunasan)+"</td> ";
+
+                                         
+                                          html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].ik_id+","+fp[i].ik_nota+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                        "<label></label>" +
+                                        "</div></td>";
+                                            
+                             html2 +=  "</tr>"; 
+                             tablefaktur.rows.add($(html2)).draw(); 
+                            n++; 
+
+                            console.log(n +'n');
+                           }                                           
+                      } // END ELSE IF JENISBAYAR GIRO
+                      else if (idjenisbayar == '11'){ // BON SEMENTARA 
+                           for(var i = 0; i < fp.length; i++){                                
+                                 var html2 = "<tr class='data"+n+"' id='data"+fp[i].bp_nota+"'> <td>"+n+"</td>" +
+                                               "<td>"+fp[i].nama+"</td>" +
+                                              "<td>"+fp[i].bp_nota+"</td>" +
+                                              "<td> - </td>" +                                       
+                                            
+                                              "<td>"+fp[i].nama +"</td>"+
+                                              "<td> - </td>" +
+                                              "<td> - </td>" +
+                                              "<td>"+addCommas(fp[i].bp_pelunasan)+"</td> ";
+
+                                           
+                                            html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].bp_id+","+fp[i].bp_nota+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                          "<label></label>" +
+                                          "</div></td>";
+                                              
+                               html2 +=  "</tr>"; 
+                               tablefaktur.rows.add($(html2)).draw(); 
+                              n++; 
+                             } 
+                      }
+                        else if(jenisbayar == '13'){
+                           for(var i = 0; i < fp.length; i++){    
+                             
+                                 var html2 = "<tr class='data"+n+"' id='data"+fp[i].bp_nota+"'> <td>"+n+"</td>" +
+                                               "<td>"+fp[i].nama+"</td>" +
+                                              "<td>"+fp[i].bp_nota+"</td>" +
+                                              "<td> - </td>" +                                       
+                                            
+                                              "<td>"+fp[i].nama +"</td>"+
+                                              "<td> - </td>" +
+                                              "<td> - </td>" +
+                                              "<td>"+addCommas(fp[i].bp_pencairan)+"</td> ";
+
+                                           
+                                            html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].bp_id+","+fp[i].bp_nota+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                          "<label></label>" +
+                                          "</div></td>";
+                                              
+                               html2 +=  "</tr>"; 
+                               tablefaktur.rows.add($(html2)).draw(); 
+                              n++; 
+                              console.log(n +'n');
+                             } 
+                      }
                    } 
                 })
      })
@@ -2508,8 +2619,6 @@
                     console.log(data);
                     $('#myModal5').modal('hide');
                       $('.check').attr('checked' , false);
-
-
 
                      if(jenisbayar == '2' || jenisbayar == '6' || jenisbayar == '7' || jenisbayar == '9') {
                           $('.nofaktur').val(data.faktur[0][0].fp_nofaktur);
@@ -2728,7 +2837,6 @@
                                arrnofaktur.push(val);
                             }
                     }
-
              // GIRO KAS KECIL
                else if(jenisbayar == '1'){
                          $('.nofaktur').val(data.faktur[0][0].ik_nota);
@@ -2776,17 +2884,75 @@
                                   "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].ik_nota+" data-idfaktur="+data.faktur[i][0].ik_id+" type='button'><i class='fa fa-trash'></i></button> </td>" +
                                   "</tr>";
 
-                           
-                             
-
                             $('.tbl-item').append(row);
                         
                             jumlahfaktur = jumlahfaktur + parseFloat(sisapelunasan);
                             jumlahfakturs = jumlahfaktur.toFixed(2);
-                       }
-
+                       } // end for
+                            tblitem = $('.field').length;
+                       //     console.log('tblitem2' + tblitem);
+                             arrnofaktur = [];
+           
+                            var nmr2 = 1;
+                            for(var z =0; z < tblitem; z++ ){
+                              val = $('.nofaktur'+nmr2 ).val();
+                         //     console.log(val + 'val');
+                              nmr2++;
+                               arrnofaktur.push(val);
+                            }
+                    } // end jenis bayar GIRO KAS KECIL
+                    else if(jenisbayar == '11'){
+                         $('.nofaktur').val(data.faktur[0][0].bp_nota);
+                          $('.tglfaktur').val(data.faktur[0][0].bp_tgl);
+/*                          $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
+*/                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
+                         // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
                           
-                     
+                          $('.sisatrbyr').val(addCommas(data.faktur[0][0].bp_pelunasan));
+                          $('.sisafaktur').val(addCommas(data.faktur[0][0].bp_pelunasan));
+                          $('.pelunasan').attr('readonly' , false);
+                          $('.jmlhfaktur').val(addCommas(data.faktur[0][0].bp_nominalkeu));
+                          $('.hutangdagang').val(data.faktur[0][0].bp_akunhutang); 
+                            $('.cabangfaktur').val(data.faktur[0][0].bp_akunhutang);
+
+
+                     //LOOPING DATA NO FAKTUR 
+
+                    for(var i = 0 ; i < data.faktur.length; i++){
+                       nmr++;
+                        totalpembayaranfp = 0;
+                        for(var l=0;l<data.pembayaran[i].length;l++){
+                            pelunasanfp = data.pembayaran[i][l].pelunasan;
+                           // alert(pelunasan);
+                            totalpembayaranfp = parseFloat(parseFloat(totalpembayaranfp) + parseFloat(pelunasanfp)).toFixed(2);
+                        }
+
+
+                        sisapelunasan = data.faktur[i][0].fp_sisapelunasan;
+                       var row = "<tr class='field field"+nmr+"' id='field"+nmr+"' data-id='"+nmr+"' data-nota='"+data.faktur[i][0].bp_nota+"'> <td>"+nmr+"</td>" + //nmr
+                                 "<td> <a class='nofp nofp"+nmr+"' data-id='"+nmr+"' data-idfaktur="+data.faktur[i][0].bp_id+">"+data.faktur[i][0].bp_nota+" </a><input type='hidden' class='datanofaktur nofaktur"+nmr+"' value="+data.faktur[i][0].bp_nota+" name='nofaktur[]'> <input type='hidden' class='datanofaktur'  value="+data.faktur[i][0].bp_id+" name='idfaktur[]'>  </td>"+  //nofaktur
+                                  "<td>"+data.faktur[i][0].bp_tgl+" <input type='hidden' class='tgl"+nmr+"' value="+data.faktur[i][0].bp_tgl+"></td>" + //tgl
+
+                                  "<td style='text-align:center'> - </td>" + //jatuhtempo
+
+                                  "<td>"+addCommas(data.faktur[i][0].bp_nominalkeu)+" <input type='hidden' class='sisapelunasan"+nmr+"' value="+data.faktur[i][0].bp_pelunasan+"> </td> <input type='hidden' class='netto"+nmr+"' value="+data.faktur[i][0].bp_nominalkeu+" name='netto[]'> </td>"+ //netto
+
+                                   "<td> <input type='text' class='input-sm pelunasanitem pelunasan"+nmr+" form-control' style='text-align:right' readonly data-id="+nmr+" name='pelunasan[]'>   </td>" +   //pelunasan         
+
+                                   "<td> <input type='text' class='input-sm pembayaranitem pembayaranitem"+data.faktur[i][0].bp_id+" form-control' style='text-align:right' readonly data-id="+nmr+" name='pembayaran[]' value="+addCommas(totalpembayaranfp)+"> </td>" +
+
+
+                                  "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].bp_pelunasan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
+
+                                  "<td> <input type='text' class='input-sm form-control keterangandetail' name='fpgdt_keterangan[]'> </td>" +
+
+                                  "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].bp_nota+" data-idfaktur="+data.faktur[i][0].bp_id+" type='button'><i class='fa fa-trash'></i></button> </td>" +
+                                  "</tr>";
+
+                            $('.tbl-item').append(row);
+                            jumlahfaktur = jumlahfaktur + parseFloat(sisapelunasan);
+                            jumlahfakturs = jumlahfaktur.toFixed(2);
+                       }
                             tblitem = $('.field').length;
                        //     console.log('tblitem2' + tblitem);
                              arrnofaktur = [];
@@ -2799,6 +2965,72 @@
                                arrnofaktur.push(val);
                             }
                     }
+                    else if(jenisbayar == '13'){
+                      $('.nofaktur').val(data.faktur[0][0].bp_nota);
+                          $('.tglfaktur').val(data.faktur[0][0].bp_tgl);
+/*                          $('.jatuhtempo').val(data.faktur[0][0].v_tempo);
+*/                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
+                         // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
+                          
+                          $('.sisatrbyr').val(addCommas(data.faktur[0][0].bp_pencairan));
+                          $('.sisafaktur').val(addCommas(data.faktur[0][0].bp_pencairan));
+                          $('.pelunasan').attr('readonly' , false);
+                          $('.jmlhfaktur').val(addCommas(data.faktur[0][0].bp_pencairan));
+                          $('.hutangdagang').val(data.faktur[0][0].bp_akunhutang); 
+                          $('.cabangfaktur').val(data.faktur[0][0].bp_akunhutang);
+
+
+                     //LOOPING DATA NO FAKTUR 
+
+                    for(var i = 0 ; i < data.faktur.length; i++){
+                       nmr++;
+                        totalpembayaranfp = 0;
+                        for(var l=0;l<data.pembayaran[i].length;l++){
+                            pelunasanfp = data.pembayaran[i][l].pelunasan;
+                           // alert(pelunasan);
+                            totalpembayaranfp = parseFloat(parseFloat(totalpembayaranfp) + parseFloat(pelunasanfp)).toFixed(2);
+                        }
+
+
+                        sisapelunasan = data.faktur[i][0].fp_sisapelunasan;
+                       var row = "<tr class='field field"+nmr+"' id='field"+nmr+"' data-id='"+nmr+"' data-nota='"+data.faktur[i][0].bp_nota+"'> <td>"+nmr+"</td>" + //nmr
+                                 "<td> <a class='nofp nofp"+nmr+"' data-id='"+nmr+"' data-idfaktur="+data.faktur[i][0].bp_id+">"+data.faktur[i][0].bp_nota+" </a><input type='hidden' class='datanofaktur nofaktur"+nmr+"' value="+data.faktur[i][0].bp_nota+" name='nofaktur[]'> <input type='hidden' class='datanofaktur'  value="+data.faktur[i][0].bp_id+" name='idfaktur[]'>  </td>"+  //nofaktur
+                                  "<td>"+data.faktur[i][0].bp_tgl+" <input type='hidden' class='tgl"+nmr+"' value="+data.faktur[i][0].bp_tgl+"></td>" + //tgl
+
+                                  "<td style='text-align:center'> - </td>" + //jatuhtempo
+
+                                  "<td>"+addCommas(data.faktur[i][0].bp_pencairan)+" <input type='hidden' class='sisapelunasan"+nmr+"' value="+data.faktur[i][0].bp_pencairan+"> </td> <input type='hidden' class='netto"+nmr+"' value="+data.faktur[i][0].bp_pencairan+" name='netto[]'> </td>"+ //netto
+
+                                   "<td> <input type='text' class='input-sm pelunasanitem pelunasan"+nmr+" form-control' style='text-align:right' readonly data-id="+nmr+" name='pelunasan[]'>   </td>" +   //pelunasan         
+
+                                   "<td> <input type='text' class='input-sm pembayaranitem pembayaranitem"+data.faktur[i][0].bp_id+" form-control' style='text-align:right' readonly data-id="+nmr+" name='pembayaran[]' value="+addCommas(totalpembayaranfp)+"> </td>" +
+
+
+                                  "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].bp_pencairan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
+
+                                  "<td> <input type='text' class='input-sm form-control keterangandetail' name='fpgdt_keterangan[]'> </td>" +
+
+                                  "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].bp_nota+" data-idfaktur="+data.faktur[i][0].bp_id+" type='button'><i class='fa fa-trash'></i></button> </td>" +
+                                  "</tr>";
+
+                            $('.tbl-item').append(row);
+                            jumlahfaktur = jumlahfaktur + parseFloat(sisapelunasan);
+                            jumlahfakturs = jumlahfaktur.toFixed(2);
+                       }
+                            tblitem = $('.field').length;
+                       //     console.log('tblitem2' + tblitem);
+                             arrnofaktur = [];
+           
+                            var nmr2 = 1;
+                            for(var z =0; z < tblitem; z++ ){
+                              val = $('.nofaktur'+nmr2 ).val();
+                         //     console.log(val + 'val');
+                              nmr2++;
+                               arrnofaktur.push(val);
+                            }
+                    }
+
+
 					
 					
 					
