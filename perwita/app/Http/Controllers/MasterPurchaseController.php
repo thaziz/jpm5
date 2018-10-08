@@ -68,7 +68,7 @@ class MasterPurchaseController extends Controller
 			$data['id'] ='A-000001';
 		}
 
-	//	dd($data['jenisitem']);
+		// dd($data['jenisitem']);
 		
 		return view('purchase/master/master_item/create', compact('data','akun'));
 	}

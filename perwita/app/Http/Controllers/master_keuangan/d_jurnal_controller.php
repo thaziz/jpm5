@@ -73,8 +73,13 @@ class d_jurnal_controller extends Controller
            $cabangs = DB::table('cabang')->where("kode", $request->cab)->select("kode", "nama")->get();
 
         $cabang = DB::table('cabang')->select("kode")->first();
-        $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '10')->get();
-        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
+        $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])
+                        ->where('is_active', 1)
+                        ->where(DB::raw('substring(id_akun, 1, 2)'), '10')->get();
+
+        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])
+                        ->where('is_active', 1)
+                        ->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
 
         // return $cabangs;
 
@@ -109,8 +114,14 @@ class d_jurnal_controller extends Controller
 
 
         $cabang = DB::table('cabang')->select("kode")->first();
-        $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '10')->get();
-        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
+
+        $akun_real = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])
+                        ->where('is_active', 1)
+                        ->where(DB::raw('substring(id_akun, 1, 2)'), '10')->get();
+
+        $akun_all = master_akun::select(["id_akun", "nama_akun", "kode_cabang"])
+                        ->where('is_active', 1)
+                        ->where(DB::raw('substring(id_akun, 1, 2)'), '!=', '11')->get();
 
         return view("keuangan.jurnal.edit")
                 ->withCabangs($cabangs)
