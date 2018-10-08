@@ -30,7 +30,8 @@ class laporan_neraca_saldo extends Controller
       	$data_date = $tahun.'-'.$bulan.'-01'; 
 
             $data_saldo = akun::select('id_akun', 'nama_akun', 'akun_dka', DB::raw('coalesce(opening_balance, 0)'), 'opening_date')
-                                ->orderBy('id_akun', 'asc')->with([
+                                ->orderBy('id_akun', 'asc')
+                                ->with([
                                       'mutasi_bank_debet' => function($query) use ($data_date){
                                             $query->join('d_jurnal', 'd_jurnal.jr_id', '=', 'jrdt_jurnal')
                                                   ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
