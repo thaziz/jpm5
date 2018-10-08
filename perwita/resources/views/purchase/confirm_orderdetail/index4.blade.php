@@ -578,6 +578,7 @@
 
   $('#formsave').submit(function(event){
         event.preventDefault();
+           $('.simpantb').hide();
           var post_url2 = $(this).attr("action");
           var form_data2 = $(this).serialize();
             swal({

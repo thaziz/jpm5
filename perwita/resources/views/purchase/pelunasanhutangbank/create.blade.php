@@ -964,7 +964,7 @@
     });
 
      $('#formbbk').submit(function(event){
-        
+          $('.simpansukses').hide();
      if($('tr.transaksi').length == 0 ){
       toastr.info("Harap Input Data Transaksi :) ");
       return false;
