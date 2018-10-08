@@ -8496,6 +8496,8 @@ public function kekata($x) {
   		  $biaya='';
   		  $total='';
   		  $nofpg='';
+  		  $nobk='';
+  		  
   		  $tgl1=date('Y-m-d',strtotime($request->tanggal1));
   		  $tgl2=date('Y-m-d',strtotime($request->tanggal2));
 
@@ -8525,6 +8527,9 @@ public function kekata($x) {
   		  if($request->nofpg!=''){
   		  	$nofpg="and fpg_nofpg=UPPER('$request->nofpg')";
   		  }
+  		  if($request->nobk!=''){
+  		  	$nobk="and bbk_nota=UPPER('$request->nobk')";
+  		  }
   		  
 		 $cabang = session::get('cabang');
 		 
@@ -8536,11 +8541,11 @@ public function kekata($x) {
 
 	   $cabang = session::get('cabang');
 		if(Auth::user()->punyaAkses('Pelunasan Hutang','all')){
-			$data= DB::select("select *,'no' as no from cabang, masterbank, bukti_bank_keluar LEFT OUTER JOIN fpg on bbk_idfpg = idfpg where bbk_cabang = cabang.kode and bbk_kodebank = mb_id $tgl $bank $biaya $total $nofpg order by bbk_id desc" );
+			$data= DB::select("select *,'no' as no from cabang, masterbank, bukti_bank_keluar LEFT OUTER JOIN fpg on bbk_idfpg = idfpg where bbk_cabang = cabang.kode and bbk_kodebank = mb_id $nobk $tgl $bank $biaya $total $nofpg order by bbk_id desc" );
 
 		}
 		else {
-			$data= DB::select("select *,'no' as no from cabang, masterbank, bukti_bank_keluar LEFT OUTER JOIN fpg on bbk_idfpg = idfpg where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order and bbk_cabang = '$cabang' $tgl $bank $biaya $total $nofpg order by bbk_id desc" );
+			$data= DB::select("select *,'no' as no from cabang, masterbank, bukti_bank_keluar LEFT OUTER JOIN fpg on bbk_idfpg = idfpg where bbk_cabang = cabang.kode and bbk_kodebank = mb_id order and bbk_cabang = '$cabang' $tgl $bank $biaya $total $nofpg $nobk order by bbk_id desc" );
 
 		}
 
