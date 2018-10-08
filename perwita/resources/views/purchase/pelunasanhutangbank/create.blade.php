@@ -907,7 +907,7 @@
       $('.valcabang').val(cabang);
       tgl = $('.tglbbk').val();
       $('.cabang2').val(cabang);
-      bank = $('.bank').val();
+      bank = $('.kodebank').val();
        $.ajax({
           type : "get",
           data : {cabang,tgl,bank},
@@ -1175,7 +1175,7 @@
      $('.cabang').change(function(){    
       var cabang = $(this).val();
       var tgl = $('.tglbbk').val();
-      var bank = $('.bank').val();
+      var bank = $('.kodebank').val();
         $.ajax({    
             type :"get",
             data : {cabang,tgl,bank},
