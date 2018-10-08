@@ -132,6 +132,26 @@
               </div>
 
     </div>
+
+     <div class="col-md-12 col-sm-12 col-xs-12">
+            
+              <div class="col-md-2 col-sm-3 col-xs-12">
+                <label class="tebal">No. BK</label>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <input class="kosong form-control" type="" name="nobk" id="nobk">
+                </div>
+              </div>
+
+
+
+
+             
+
+    </div>
+
     </form>
 </div>
 
@@ -225,6 +245,7 @@ setTimeout(function () {
                     "total" :$('#total').val(),
                     "bank" :$('#bank').val(),
                     "nofpg" :$('#nofpg').val(),
+                    "nobk" :$('#nobk').val(),
                     },
               },
             columns: [            
