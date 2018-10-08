@@ -519,7 +519,7 @@ $('#statuskeu').submit(function(event){
           success : function (response){
                alertSuccess();
                $('.simpandata').attr('disabled' ,true);
-               $('#myModal2').modal("toggle" );
+               $('#myModalMenkeu').modal("toggle" );
                location.reload();
           },
           error : function(){

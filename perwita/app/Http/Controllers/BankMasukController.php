@@ -751,14 +751,15 @@ class BankMasukController extends Controller
 			$jurnaldt[0]['detail'] = $keterangan;
 		}
 
+		$akunkasbank = '109911000';
 		if($dkaasal == 'K'){//bankasal
-			$jurnaldt[1]['id_akun'] = $bankasal;
-			$jurnaldt[1]['subtotal'] = $nominal;
+			$jurnaldt[1]['id_akun'] = $akunkasbank;
+			$jurnaldt[1]['subtotal'] = '-' . $nominal;
 			$jurnaldt[1]['dk'] = 'D';
 			$jurnaldt[1]['detail'] = $keterangan;
 		}
 		else {
-			$jurnaldt[1]['id_akun'] = $bankasal;
+			$jurnaldt[1]['id_akun'] = $akunkasbank;
 			$jurnaldt[1]['subtotal'] = '-' . $nominal;
 			$jurnaldt[1]['dk'] = 'K';
 			$jurnaldt[1]['detail'] = $keterangan;
@@ -799,12 +800,12 @@ class BankMasukController extends Controller
 				]);
 
 		
-		$year = date('Y');	
-		$date = date('Y-m-d');
+		$year =  Carbon::parse($tgl)->format('Y');;
+		
 		$jurnal = new d_jurnal();
 		$jurnal->jr_id = $idjurnald;
-        $jurnal->jr_year = date('Y');
-        $jurnal->jr_date = date('Y-m-d');
+        $jurnal->jr_year = $year;
+        $jurnal->jr_date = $tgl;
         $jurnal->jr_detail = 'BUKTI BANK MASUK';
         $jurnal->jr_ref = $notabm;
         $jurnal->jr_note = $keterangan;

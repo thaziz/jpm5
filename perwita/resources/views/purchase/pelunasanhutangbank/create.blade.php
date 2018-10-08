@@ -562,6 +562,67 @@
     });
 
 
+    $('.kodebank').change(function(){
+      cabang = $('.cabang').val();
+      tgl = $('.tglbbk').val();
+      bank = $('.kodebank').val();
+       $.ajax({
+          type : "get",
+          data : {cabang,tgl,bank},
+          url : baseUrl + '/pelunasanhutangbank/getnota',
+          dataType : 'json',
+          success : function (response){     
+              if(response.status = 'sukses'){
+                var d = new Date(tgl);                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+              
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+                 nofaktur = 'BK' + '-' + month + year2 + '/' + cabang + '/' +  response.data ;
+                $('.nobbk').val(response);
+              
+                kodebank = $('.kodebank').val();
+
+               if(kodebank != ''){
+                  
+                  split = nofaktur.split("-");
+                  bank = split[0];
+                  lain = split[1];
+                  if(parseInt(kodebank) < parseInt(10)){
+                      kodebank = '0' + kodebank;
+                  }
+                  
+                  str = bank.substr(0,2);
+                
+
+                  nobbk = str + kodebank + '-' + lain;
+                  $('.nobbk').val(response);
+               }
+              }
+              else {
+                location.reload();
+              }
+               
+              
+          },
+          eror : function(){
+            location.reload();
+          }
+        })
+    })
+
     $('.date').change(function(){
       cabang = $('.cabang').val();
       tgl = $('.tglbbk').val();
@@ -710,10 +771,10 @@
           dk = $(this).data('dk');
           nominal2 =  nominal.replace(/,/g, '');
           if(dk == 'D') {
-            jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+            jumlahnominal = parseFloat(parseFloat(jumlahnominal) + parseFloat(nominal2)).toFixed(2);
           }
           else {
-           jumlahnominal = parseFloat(parseFloat(nominal2) - parseFloat(jumlahnominal)).toFixed(2);
+           jumlahnominal = parseFloat(parseFloat(jumlahnominal) - parseFloat(nominal2)).toFixed(2);
           }
           $('.total').val(addCommas(jumlahnominal));
           $('.cekbg').val(addCommas(jumlahnominal));
@@ -756,10 +817,10 @@
           nominal2 =  nominal.replace(/,/g, '');
           dk = $(this).data('dk');
           if(dk == 'D'){
-             jumlahnominal = parseFloat(parseFloat(nominal2) + parseFloat(jumlahnominal)).toFixed(2);
+             jumlahnominal = parseFloat(parseFloat(jumlahnominal) + parseFloat(jumlahnominal)).toFixed(2);
           }
           else {
-            jumlahnominal = parseFloat(parseFloat(nominal2) - parseFloat(jumlahnominal)).toFixed(2);
+            jumlahnominal = parseFloat(parseFloat(jumlahnominal) - parseFloat(jumlahnominal)).toFixed(2);
 
           }
           $('.total').val(addCommas(jumlahnominal));
@@ -798,7 +859,7 @@
 
     function hapus(a){
        var par = $(a).parents('tr');
-       nominal = par.find('.nominalfpgdetailbg').val();
+       nominal = par.find('.jumlahakunbiayadetailbg').val();
        dk = par.find('.dkakundetailbg').val();
 
        replacenominal = nominal.replace(/,/g , '');
@@ -806,7 +867,8 @@
        total = $('.total').val();
        replacecekbg = cekbg.replace(/,/g, '');
        replacetotal = total.replace(/,/g, '');
-
+       alert(replacecekbg);
+       alert(replacenominal);
        if(dk == 'K'){
          totalcekbg = parseFloat(parseFloat(replacecekbg) + parseFloat(replacenominal)).toFixed(2);
          total = parseFloat(parseFloat(replacetotal) + parseFloat(replacenominal)).toFixed(2);

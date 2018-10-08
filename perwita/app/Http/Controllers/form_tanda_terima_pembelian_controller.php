@@ -282,8 +282,8 @@ class form_tanda_terima_pembelian_controller extends Controller
 		$data = DB::table('form_tt')
 				  ->join('form_tt_d','ttd_id','=','tt_idform')
     			  ->where('tt_idform',$req->id)
+    			  ->where('ttd_faktur','!=',null)
     			  ->get();
-
     	if ($data == null) {
     		$data = DB::table('form_tt')
 				  ->join('form_tt_d','ttd_id','=','tt_idform')
