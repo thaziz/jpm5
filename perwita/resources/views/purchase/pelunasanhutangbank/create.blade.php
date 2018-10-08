@@ -1210,7 +1210,7 @@
                 
                    nobbk = 'BK-' + month + year2 + '/' + cabang + '/' +  data.data;
                 //  console.log(nospp);
-                  $('.nobbk').val(response);
+                  $('.nobbk').val(data);
 
                        kodebank = $('.kodebank').val();
 
@@ -1227,7 +1227,7 @@
                         
                           nobbk = str + kodebank + '-' + lain;
 
-                          $('.nobbk').val(response);
+                          $('.nobbk').val(data);
                        }
 
 

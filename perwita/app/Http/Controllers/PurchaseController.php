@@ -9061,11 +9061,13 @@ public function kekata($x) {
 						$datafpgdt = DB::select("select * from fpg, fpg_dt where idfpg = '$idfpg' and fpgdt_idfpg = idfpg");
 						for($j = 0 ; $j < count($datafpgdt); $j++){
 							$notabonsem = $datafpgdt[$j]->fpgdt_nofaktur;
-							$date =  date('Y-m-d');
 							$updatebonsem = bonsempengajuan::where('bp_nota' , '=' , $notabonsem);
 							$updatebonsem->update([
 								'bp_statusend' =>'FPG',
 							]);
+
+							$dbfpg = DB::select("select * from bonsem_pengajuan where bp_nota = '$notabonsem'");
+							dd($dbfpg);
 						}
 					}
 
