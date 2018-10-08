@@ -8879,7 +8879,7 @@ public function kekata($x) {
 	}
 	
 
-	public function simpanbbk (Request $request){
+	public function simpanbbk(Request $request){
 		return DB::transaction(function() use ($request) { 
 
 		$tempdone = 0;
@@ -9061,13 +9061,12 @@ public function kekata($x) {
 						$datafpgdt = DB::select("select * from fpg, fpg_dt where idfpg = '$idfpg' and fpgdt_idfpg = idfpg");
 						for($j = 0 ; $j < count($datafpgdt); $j++){
 							$notabonsem = $datafpgdt[$j]->fpgdt_nofaktur;
-							$updatebonsem = bonsempengajuan::where('bp_nota' , '=' , $notabonsem);
-							$updatebonsem->update([
-								'bp_statusend' =>'FPG',
+							DB::table('bonsem_pengajuan')
+							->where('bp_nota' , $notabonsem)
+							->update([
+								'bp_statusend' => 'FPG'
 							]);
-
-							$dbfpg = DB::select("select * from bonsem_pengajuan where bp_nota = '$notabonsem'");
-							dd($dbfpg);
+						
 						}
 					}
 
@@ -10713,6 +10712,20 @@ public function kekata($x) {
 					}
 				}
 				
+				$datafpgd = DB::select("select * from fpg, fpg_dt  where idfpg = '$idfpg' and fpgdt_idfpg = idfpg");
+				for($k = 0; $k < count($datafpgd); $k++){
+					$nofaktur = $datafpgd[$k]->fpgdt_nofaktur;
+					$jenisfpg = $datafpgd[$k]->fpg_jenisbayar;
+					if($jenisfpg == 11){
+						DB::table('bonsem_pengajuan')
+						->where('bp_nota' , $nofaktur)
+						->update([
+							'bp_statusend' => null
+						]);
+					}
+				}
+
+
 				for($j = 0; $j < count($datafpg); $j++){
 				$notafpg = $datafpg[$j]->fpg_nofpg;
 			
@@ -10752,7 +10765,7 @@ public function kekata($x) {
 							
 						}
 						
-						}				
+						}
 					}
 				}
 				

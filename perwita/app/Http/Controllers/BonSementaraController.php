@@ -688,6 +688,8 @@ class BonSementaraController extends Controller
                     $bp_nominalkeu.=number_format($dataFpg->bp_nominalkeu, 2);                
                 }
 
+                return $bp_nominalkeu;
+
             })   
             ->editColumn('status_pusat', function ($dataFpg) { 
                 return '<span class="label label-info"> '.$dataFpg->status_pusat.'</span>';

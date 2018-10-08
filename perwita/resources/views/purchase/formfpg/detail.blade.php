@@ -153,8 +153,9 @@
 
                           <div class="deskirpsijenisbayar"> </div>
 
+                          @if($fpg->fpg_posting != 'DONE')
                           <button class="btn btn-xs btn-warning" type="button" id="editdata"> <i class="fa fa-pencil"> &nbsp; </i> Edit Data ? </button>
-
+                          @endif
                         </div>
 
 
@@ -2407,7 +2408,7 @@
                               n++; 
                              } 
                       }
-                        else if(jenisbayar == '13'){
+                        else if(idjenisbayar == '13'){
                            for(var i = 0; i < fp.length; i++){    
                              
                                  var html2 = "<tr class='data"+n+"' id='data"+fp[i].bp_nota+"'> <td>"+n+"</td>" +
