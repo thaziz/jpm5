@@ -512,12 +512,13 @@ function save_subcon(){
 	                },function(){
 	                   location.reload();
 	        });
-    	}else{
+    	}else if(response.status == 0){
+    		var pesan = response.pesan;
     		swal({
-       		title: "Harap isi form dengan benar",
-                type: 'error',
-                timer: 900,
-               showConfirmButton: true
+       		title: pesan,
+            type: 'error',
+            timer: 900,
+            showConfirmButton: true
 
     		});
     	}

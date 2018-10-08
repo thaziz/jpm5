@@ -494,7 +494,7 @@
 				$k+=$temp;
 			}
 		}
-
+		
 		if ($d == $k) {
 			return 1;
 		}else{

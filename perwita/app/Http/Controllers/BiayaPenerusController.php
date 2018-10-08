@@ -3094,7 +3094,6 @@ class BiayaPenerusController extends Controller
 				array_push($akun, $akun_pph->id_akun);
 				array_push($akun_val, $fp_pph);
 			}
-
 			$data_akun = [];
 			for ($i=0; $i < count($akun); $i++) { 
 
