@@ -450,23 +450,7 @@ class kasKeluarController extends Controller
 							   ->first();
 							   
 				if ($cari_nota != null) {
-					if ($cari_nota->updated_by == $user) {
-						return 'Data Sudah Ada';
-					}else{
-						$bulan = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('m');
-					    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
-
-					    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),13) as id from bukti_kas_keluar
-					                                    WHERE bkk_comp = '$req->cabang'
-					                                    AND to_char(bkk_tgl,'MM') = '$bulan'
-					                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
-
-					    $index = (integer)$cari_nota[0]->id + 1;
-					    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
-
-						
-						$nota = 'BKK' . $bulan . $tahun . '/' . $req->cabang . '/' .$index;
-					}
+					return 'Data Sudah Ada';
 				}elseif ($cari_nota == null) {
 					$nota = $req->nota;
 				}
@@ -2177,23 +2161,7 @@ class kasKeluarController extends Controller
 						   ->first();
 						   
 			if ($cari_nota != null) {
-				if ($cari_nota->updated_by == $user) {
-					return 'Data Sudah Ada';
-				}else{
-					$bulan = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('m');
-				    $tahun = Carbon::parse(str_replace('/', '-', $req->tanggal))->format('y');
-
-				    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),13) as id from bukti_kas_keluar
-				                                    WHERE bkk_comp = '$req->cabang'
-				                                    AND to_char(bkk_tgl,'MM') = '$bulan'
-				                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
-
-				    $index = (integer)$cari_nota[0]->id + 1;
-				    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
-
-					
-					$nota = 'BKK' . $bulan . $tahun . '/' . $req->cabang . '/' .$index;
-				}
+				return 'Data Sudah Ada';
 			}elseif ($cari_nota == null) {
 				$nota = $req->nota;
 			}
